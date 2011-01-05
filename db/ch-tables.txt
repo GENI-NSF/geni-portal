@@ -1,0 +1,117 @@
+Look for PG & Expedient table definitions for ideas on slots
+Think @ whether we store details of what aggregates have, avail schedule
+SFA
+think splitting data by function
+
+
+Users
+	InCommon ID
+	Our ID (primary key)
+	Name
+	username?
+	email
+	tel?
+	affiliation
+	home CH
+	public key/cert (is this a separate table)
+	public key issued
+	public key expiration
+	public key signer
+	person who vouched for them
+	role (many in a separate table?)
+	signed user agreement? (multiple possible in separate table?)
+	URN
+	ssh key(s)?
+	hrn?
+
+Aggregates
+	ID (PK)
+	'home' CH
+	control framework
+	physical loc
+	org affiliation
+	nickname
+	admin contact name
+	admin contact email
+	admin contact tel
+	tech contact name
+	tech contact email
+	tech contact tel
+	GENI API URL
+	URN
+	public key/cert (is this a separate table)
+	public key issued
+	public key expiration
+	public key signer
+	type of resource (multiple possible?)
+	summary resource description
+	usage agreement (name / reference?)
+	availability level (how many 9s)
+	last heard from (for liveness?)
+	latest Advertisement RSpec
+	version info (geni api, rspec type, rspec version, ?)
+	
+Aggregate Schedule
+	  AggID (FK)
+	  Some kind of schedule of availability?
+
+Slices
+	ID
+	URN
+	Creator User ID
+	creation DTG
+	expires DTG
+	home CH
+	are creds cached?
+
+Slivers
+	ID
+	URN
+	Slice ID
+	Creator User ID
+	creation DTG
+	expires DTG
+	Agg ID
+	manifest rspec
+
+Resources
+	Managing Agg
+	URN
+	Type
+	schedule of availability
+	description
+	ad rspec fragment
+
+Federated Clearinghouses
+	  cert
+	  id
+	  url
+	  location
+	  org / affiliation
+	  admin contact
+	  admin contact email
+	  admin contact tel
+	  tech contact
+	  tech contact email
+	  tech contact tel
+	  version info (api, ?)
+
+Transactions?
+	user ID
+	source IP
+	incoming method (UI, API, ?)
+	target AM ID
+	DTG
+	call
+	rspec in arg
+	return
+	return DTG
+
+Portals
+
+Admins / Ops Centers
+
+Principals
+
+CRL info
+
