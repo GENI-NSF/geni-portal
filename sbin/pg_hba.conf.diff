@@ -1,7 +1,0 @@
---- pg_hba.conf.orig	2011-01-07 13:21:05.936789520 -0500
-+++ pg_hba.conf	2011-01-07 13:31:12.880789053 -0500
-@@ -84,3 +84,4 @@
- host    all         all         127.0.0.1/32          md5
- # IPv6 local connections:
- host    all         all         ::1/128               md5
-+host    all         all         0.0.0.0/0             md5
