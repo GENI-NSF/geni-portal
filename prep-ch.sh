@@ -14,8 +14,7 @@ check_errs()
   fi
 }
 
-# XXX php-postgres? pear-php?
-PKGS="postgresql git-core apache2"
+PKGS="postgresql git-core apache2 php5-pgsql php-mdb2-driver-pgsql php5-uuid"
 
 /usr/bin/apt-get update
 check_errs $? "apt-get failed to update"
