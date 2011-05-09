@@ -1,4 +1,6 @@
 
+-- avoid innocuous NOTICEs about automatic sequence creation
+set client_min_messages='WARNING';
 
 -- ----------------------------------------------------------------------
 -- How do we represent account requests? Separate table?
@@ -19,10 +21,13 @@ CREATE TABLE schema_version (
 -- A geni user account
 -- ----------------------------------------------------------------------
 DROP TABLE IF EXISTS account CASCADE;
+DROP TYPE IF EXISTS account_status;
+
+CREATE TYPE account_status AS ENUM ('requested', 'active', 'disabled');
 
 CREATE TABLE account (
   account_id SERIAL,
-  valid boolean,
+  status ACCOUNT_STATUS,
   PRIMARY KEY (account_id)
 );
 
@@ -66,3 +71,27 @@ CREATE TABLE shib_attribute (
   name varchar,
   PRIMARY KEY (name)
 );
+
+-- ----------------------------------------------------------------------
+-- Slices
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS slice CASCADE;
+
+CREATE TABLE slice (
+  slice_id UUID,
+  name varchar,
+  expiration timestamp,
+  PRIMARY KEY (slice_id)
+);
+
+-- ----------------------------------------------------------------------
+-- Account to slice mapping
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS account_slice;
+CREATE TABLE account_slice (
+  account_id INTEGER REFERENCES account,
+  slice_id UUID REFERENCES slice
+);
+
+CREATE INDEX account_slice_index_account_id ON account_slice (account_id);
+CREATE INDEX account_slice_index_slice_id ON account_slice (slice_id);
