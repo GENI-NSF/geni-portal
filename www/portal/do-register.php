@@ -82,6 +82,26 @@ foreach ($attrs as $attr) {
   }
 }
 
+// --------------------------------------------------
+// Send mail about the new account request
+// --------------------------------------------------
+function relative_url($relpath) {
+  $protocol = "http";
+  if (array_key_exists('HTTPS', $_SERVER)) {
+    $protocol = "https";
+  }
+  $host  = $_SERVER['HTTP_HOST'];
+  $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+  $extra = $relpath;
+  return "$protocol://$host$uri/$extra";
+}
+
+$url = relative_url("env.php");
+mail("admin@example.com",
+     "New portal account request",
+     "There is a new account request for $eppn. Please review this request"
+     . " at $url");
+
 ?>
 
 <?php
