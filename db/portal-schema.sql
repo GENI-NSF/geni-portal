@@ -31,6 +31,31 @@ CREATE TABLE account (
   PRIMARY KEY (account_id)
 );
 
+CREATE VIEW requested_account AS
+  SELECT * FROM account WHERE status = 'requested';
+
+CREATE VIEW active_account AS
+  SELECT * FROM account WHERE status = 'active';
+
+CREATE VIEW disabled_account AS
+  SELECT * FROM account WHERE status = 'disabled';
+
+-- ----------------------------------------------------------------------
+-- A geni user privilege
+-- ----------------------------------------------------------------------
+
+DROP TABLE IF EXISTS account_privilege CASCADE;
+DROP TYPE IF EXISTS site_privilege;
+
+CREATE TYPE site_privilege AS ENUM ('admin', 'slice');
+
+CREATE TABLE account_privilege (
+  account_id UUID REFERENCES account,
+  privilege SITE_PRIVILEGE
+);
+CREATE INDEX account_privilege_index_account_id
+  ON account_privilege (account_id);
+
 
 -- ----------------------------------------------------------------------
 -- An identity from an external identity provider
