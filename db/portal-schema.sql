@@ -26,7 +26,7 @@ DROP TYPE IF EXISTS account_status;
 CREATE TYPE account_status AS ENUM ('requested', 'active', 'disabled');
 
 CREATE TABLE account (
-  account_id SERIAL,
+  account_id UUID,
   status ACCOUNT_STATUS,
   PRIMARY KEY (account_id)
 );
@@ -41,9 +41,10 @@ CREATE TABLE identity (
   identity_id SERIAL,
   provider_url varchar,
   eppn varchar,
+  affiliation varchar,
   -- We may need to support other shib id fields
   -- like transient id, etc.
-  account_id INTEGER REFERENCES account,
+  account_id UUID REFERENCES account,
   PRIMARY KEY (identity_id)
 );
 
@@ -57,8 +58,7 @@ CREATE TABLE identity_attribute (
   identity_id INTEGER references identity,
   name varchar,
   value varchar,
-  self_asserted boolean,
-  PRIMARY KEY (identity_id)
+  self_asserted boolean
 );
 
 
@@ -89,7 +89,7 @@ CREATE TABLE slice (
 -- ----------------------------------------------------------------------
 DROP TABLE IF EXISTS account_slice;
 CREATE TABLE account_slice (
-  account_id INTEGER REFERENCES account,
+  account_id UUID REFERENCES account,
   slice_id UUID REFERENCES slice
 );
 
