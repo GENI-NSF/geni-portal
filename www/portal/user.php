@@ -1,24 +1,7 @@
 <?php
 
-//----------------------------------------------------------------------
-// Create the database connection.
-//
-// We should probably place this in a db-util file in the future.
-//----------------------------------------------------------------------
-require_once 'MDB2.php';
-
-function portal_conn()
-{
-  $db_dsn = 'pgsql://portal:portal@localhost/portal';
-  $db_options = array('debug' => 5,
-                      'result_buffering' => false,
-                      );
-  $portal_db =& MDB2::singleton($db_dsn, $db_options);
-  if (PEAR::isError($portal_db)) {
-    die("Error connecting: " . $portal_db->getMessage());
-  }
-  return $portal_db;
-}
+require_once 'db-util.php';
+require_once 'util.php';
 
 //----------------------------------------------------------------------
 // A class representing an experimenter who has logged in
@@ -27,25 +10,38 @@ function portal_conn()
 class GeniUser
 {
   public $eppn = NULL;
+  public $account_id = NULL;
+  public $status = NULL;
 
-  function __construct($eppn) {
-    $this->$eppn = $eppn;
+  function __construct() {
   }
 
-  public function isValid() {
-    return True;
+  function loadAccount() {
+    print "in GeniUser->loadAccount<br/>";
+    $dict = loadAccount($this->account_id);
+    $this->status = $dict['status'];
+  }
+
+  function isActive() {
+    return $this->status == 'active';
+  }
+  function isRequested() {
+    return $this->status == 'requested';
+  }
+  function isDisabled() {
+    return $this->status == 'disabled';
   }
 }
 
 // Loads an experimenter from the database.
-function geni_loadUser($eppn)
+function geni_loadUser()
 {
   $conn = portal_conn();
   $conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
 
+  $eppn = $_SERVER['eppn'];
   $query = 'SELECT * FROM identity WHERE eppn = '
     . $conn->quote($eppn, 'text');
-
   $res =& $conn->queryAll($query);
 
   // Always check that result is not an error
@@ -54,24 +50,24 @@ function geni_loadUser($eppn)
   }
 
   $row_count = count($res);
-  print("Query was: " . $query);
-  print("Found " . $row_count . " rows");
+  print("Query was: $query<br/>");
+  print("Found $row_count rows<br/>");
 
   if ($row_count == 0) {
-    /* Redirect to a different page in the current
-       directory that was requested */
-    $protocol = "http";
-    if (array_key_exists('HTTPS', $_SERVER)) {
-      $protocol = "https";
-    }
-    $host  = $_SERVER['HTTP_HOST'];
-    $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $extra = 'register.php';
-    header("Location: $protocol://$host$uri/$extra");
-    exit;
+    // New identity, go to registration page
+    relative_redirect("register.php");
   } else if ($row_count == 1) {
-    // The identity already exists!
-    die("This user already exists");
+    // The identity already exists, find the account
+    $row = $res[0];
+    foreach ($row as $var => $value) {
+      print "geni_loadUser row $var = $value<br/>";
+    }
+
+    $user = new GeniUser();
+    //    $user->$eppn = $res[0]['eppn'];
+    $user->account_id = $res[0]['account_id'];
+    $user->loadAccount();
+    return $user;
   } else {
     // More than one row! Something is wrong!
     die("Too many identity matches.");
