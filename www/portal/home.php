@@ -16,14 +16,18 @@ if (array_key_exists('givenName', $_SERVER)) {
 </center>
 
 <?php
-$eppn = $_SERVER['eppn'];
-$user = geni_loadUser($eppn);
+$user = geni_loadUser();
 if (is_null($user)) {
-  echo "User is null<br/>";
-} else if ($user->isValid()) {
-  echo "User exists and is valid.<br/>";
+  echo "User is null.<br/>";
 } else {
-  echo "User exists and is not valid.<br/>";
+  echo "User exists.<br/>";
+  if ($user->isRequested()) {
+    print "User $user->account_id has been requested.";
+  } else if ($user->isDisabled()) {
+    print "User $user->account_id has been disabled.";
+  } else if ($user->isActive()) {
+    print "User $user->account_id is active.";
+  }
 }
 ?>
 
