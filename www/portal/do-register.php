@@ -1,35 +1,43 @@
 <?php
+require_once("db-util.php");
+require_once("util.php");
 require_once("user.php");
-include("header.php");
-?>
-<h2>Not Implemented Yet.</h2>
 
-<?php
-// Insert into identity table
-
- // Check for the existence of each, error if not available.
-$eppn = $_SERVER['eppn'];
-$affiliation = $_SERVER['affiliation'];
-$shib_idp = $_SERVER['Shib-Identity-Provider'];
-
+//--------------------------------------------------
+// Create the database connection
+//--------------------------------------------------
 $conn = portal_conn();
 if (PEAR::isError($conn)) {
   die("error connecting to db: " . $conn->getMessage());
 }
 
-$uuid = exec('/usr/bin/uuidgen');
+//--------------------------------------------------
+// Insert into account table
+//--------------------------------------------------
+$account_id = exec('/usr/bin/uuidgen');
 $sql = "INSERT INTO account (account_id, status) VALUES ("
-  . $conn->quote($uuid, 'text')
+  . $conn->quote($account_id, 'text')
   . ", 'requested');";
 $result = $conn->exec($sql);
 if (PEAR::isError($result)) {
   die("error on account insert: " . $result->getMessage());
 }
 
-$sql = "INSERT INTO identity (provider_url, eppn, affiliation) VALUES ("
+//--------------------------------------------------
+// Insert into identity table
+//--------------------------------------------------
+
+// TODO: Check for the existence of each, error if not available.
+$eppn = $_SERVER['eppn'];
+$affiliation = $_SERVER['affiliation'];
+$shib_idp = $_SERVER['Shib-Identity-Provider'];
+
+$sql = "INSERT INTO identity (provider_url, eppn, affiliation, account_id)"
+  . "VALUES ("
   . $conn->quote($shib_idp, 'text')
   . ", " . $conn->quote($eppn, 'text')
   . ", " . $conn->quote($affiliation, 'text')
+  . ", " . $conn->quote($account_id, 'text')
   . ");";
 // print $sql . "<br/>";
 
@@ -39,27 +47,28 @@ if (PEAR::isError($result)) {
 }
 
 //--------------------------------------------------
-// Now pull the id out of that newly inserted record
-// and add the additional attributes.
+// Now pull the id out of that newly inserted identity record and add
+// the additional attributes.
 //--------------------------------------------------
-
 $sql = "SELECT identity_id from identity WHERE provider_url = "
   . $conn->quote($shib_idp, 'text')
   . " AND eppn = "
   . $conn->quote($eppn, 'text')
   . ";";
-print "Query = $sql<br/>";
+//print "Query = $sql<br/>";
 $resultset = $conn->query($sql);
 if (PEAR::isError($resultset)) {
   die("error on identity id select: " . $resultset->getMessage());
 }
 $rows = $resultset->fetchall(MDB2_FETCHMODE_ASSOC);
 $rowcount = count($rows);
-print "rowcount = $rowcount<br/>";
+//print "rowcount = $rowcount<br/>";
 $identity_id = $rows[0]['identity_id'];
-print "identity_id = $identity_id<br/>";
+//print "identity_id = $identity_id<br/>";
 
+//--------------------------------------------------
 // Add extra attributes
+//--------------------------------------------------
 $attrs = array('givenName','sn', 'mail','telephoneNumber');
 foreach ($attrs as $attr) {
   print "attr = $attr<br/>";
@@ -85,17 +94,6 @@ foreach ($attrs as $attr) {
 // --------------------------------------------------
 // Send mail about the new account request
 // --------------------------------------------------
-function relative_url($relpath) {
-  $protocol = "http";
-  if (array_key_exists('HTTPS', $_SERVER)) {
-    $protocol = "https";
-  }
-  $host  = $_SERVER['HTTP_HOST'];
-  $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-  $extra = $relpath;
-  return "$protocol://$host$uri/$extra";
-}
-
 $url = relative_url("env.php");
 mail("admin@example.com",
      "New portal account request",
@@ -103,6 +101,17 @@ mail("admin@example.com",
      . " at $url");
 
 ?>
+
+<?php
+include("header.php");
+?>
+<h2>Your account request has been submitted.</h2>
+Go to the <a href=
+<?php
+$url = relative_url("home.php");
+print $url
+?>
+>portal home page</a>
 
 <?php
 $array = $_POST;
