@@ -9,17 +9,28 @@ require_once 'util.php';
 //----------------------------------------------------------------------
 class GeniUser
 {
+  public $identity_id;
+  public $idp_url;
   public $eppn = NULL;
   public $account_id = NULL;
+  public $affiliation;
   public $status = NULL;
+  public $attributes;
 
   function __construct() {
   }
 
   function loadAccount() {
-    print "in GeniUser->loadAccount<br/>";
+    /* print "in GeniUser->loadAccount<br/>"; */
     $dict = loadAccount($this->account_id);
     $this->status = $dict['status'];
+    /*
+     * It seems to be necessary to use a temporary
+     * variable rather than assigning directly to
+     * the instance variable. I don't know why.
+     */
+    $attrs = loadIdentityAttributes($this->identity_id);
+    $this->attributes = $attrs;
   }
 
   function isActive() {
@@ -50,8 +61,8 @@ function geni_loadUser()
   }
 
   $row_count = count($res);
-  print("Query was: $query<br/>");
-  print("Found $row_count rows<br/>");
+  /* print("Query was: $query<br/>"); */
+  /* print("Found $row_count rows<br/>"); */
 
   if ($row_count == 0) {
     // New identity, go to registration page
@@ -59,13 +70,16 @@ function geni_loadUser()
   } else if ($row_count == 1) {
     // The identity already exists, find the account
     $row = $res[0];
-    foreach ($row as $var => $value) {
-      print "geni_loadUser row $var = $value<br/>";
-    }
+    /* foreach ($row as $var => $value) { */
+    /*   print "geni_loadUser row $var = $value<br/>"; */
+    /* } */
 
     $user = new GeniUser();
-    //    $user->$eppn = $res[0]['eppn'];
-    $user->account_id = $res[0]['account_id'];
+    $user->identity_id = $row['identity_id'];
+    $user->idp_url = $row['provider_url'];
+    $user->affiliation = $row['affiliation'];
+    $user->eppn = $row['eppn'];
+    $user->account_id = $row['account_id'];
     $user->loadAccount();
     return $user;
   } else {
