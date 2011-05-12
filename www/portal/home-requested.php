@@ -16,12 +16,7 @@ Please check back again later.
 <h3>Debug</h3>
 <?php
 $array = $user->attributes;
-foreach ($user->attributes as $attr) {
-  $name = $attr['name'];
-  $value = $attr['value'];
+foreach ($user->attributes as $name => $value) {
   print "$name = $value<br/>";
-  /* foreach ($attr as $var => $value) { */
-  /*   print "attribute: $var = $value<br/>"; */
-  /* } */
 }
 ?>

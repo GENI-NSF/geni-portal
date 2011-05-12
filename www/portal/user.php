@@ -16,6 +16,7 @@ class GeniUser
   public $affiliation;
   public $status = NULL;
   public $attributes;
+  public $raw_attrs;
 
   function __construct() {
   }
@@ -30,7 +31,10 @@ class GeniUser
      * the instance variable. I don't know why.
      */
     $attrs = loadIdentityAttributes($this->identity_id);
-    $this->attributes = $attrs;
+    $this->raw_attrs = $attrs;
+    foreach ($attrs as $attr) {
+      $this->attributes[$attr['name']] = $attr['value'];
+    }
   }
 
   function isActive() {
