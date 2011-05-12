@@ -3,42 +3,27 @@ require_once("user.php");
 $GENI_TITLE = "GENI Portal Home";
 include("header.php");
 ?>
-<br/><br/>
-<center>
-Welcome
-<?php
-if (array_key_exists('givenName', $_SERVER)) {
-  $first = $_SERVER['givenName'];
-  echo "$first";
-}
-?>
-!
-</center>
-
+<div id="home-body">
 <?php
 $user = geni_loadUser();
 if (is_null($user)) {
-  echo "User is null.<br/>";
+  // TODO: Handle unknown state
+  print "Unable to load user record.<br/>";
 } else {
-  echo "User exists.<br/>";
   if ($user->isRequested()) {
-    print "User $user->account_id has been requested.";
+    include("home-requested.php");
   } else if ($user->isDisabled()) {
-    print "User $user->account_id has been disabled.";
+    print "User $user->eppn has been disabled.";
   } else if ($user->isActive()) {
-    print "User $user->account_id is active.";
+    include("home-active.php");
+  } else {
+    // TODO: Handle unknown state
+    print "Unknown account state: $user->status<br/>";
   }
 }
 ?>
-
+</div>
 <br/>
-<h2 align = "center"> You have successfully logged in via Shibboleth</h2>
-<?php
-$array = $_SERVER;
-foreach ($array as $var => $value) {
-    print "$var = $value<br/>";
-    }
-?>
 <?php
 include("footer.php");
 ?>
