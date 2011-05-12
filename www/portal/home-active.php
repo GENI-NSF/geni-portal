@@ -9,10 +9,11 @@
 <center>
 Welcome
 <?php
-if (array_key_exists('givenName', $_SERVER)) {
-  $first = $_SERVER['givenName'];
-  echo "$first";
-}
+print $user->prettyName();
 ?>
 !
 </center>
+<?php
+include("tools-slice.php");
+include("tools-admin.php");
+?>

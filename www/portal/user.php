@@ -46,6 +46,26 @@ class GeniUser
   function isDisabled() {
     return $this->status == 'disabled';
   }
+
+  function prettyName() {
+    if (array_key_exists('givenName', $this->attributes)
+        && array_key_exists('sn', $this->attributes)) {
+      return $this->attributes['givenName']
+        . " " . $this->attributes['sn'];
+    } else {
+      return $this->eppn;
+    }
+  }
+
+  // For now, everyone can create slices
+  function privSlice() {
+    return true;
+  }
+
+  // For now, everyone is an admin
+  function privAdmin() {
+    return true;
+  }
 }
 
 // Loads an experimenter from the database.
