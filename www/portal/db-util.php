@@ -65,4 +65,55 @@ function loadIdentityAttributes($identity_id) {
     /* print "num val attrs = " . count($value) . "<br/>"; */
   return $value;
 }
+
+function db_create_slice($account_id, $slice_id, $name)
+{
+  $conn = portal_conn();
+  $my_tx = $conn->beginTransaction();
+  $sql = "INSERT INTO slice (slice_id, name) VALUES ("
+    . $conn->quote($slice_id, 'text')
+    . ', ' . $conn->quote($name, 'text')
+    . ');';
+  /* print "command = $sql<br/>"; */
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    $my_tx = $conn->rollback();
+    die("error on slice insert: " . $result->getMessage());
+  }
+  $sql = "INSERT INTO account_slice (account_id, slice_id) VALUES ("
+    . $conn->quote($account_id, 'text')
+    . ', ' . $conn->quote($slice_id, 'text')
+    . ');';
+  /* print "command 2 = $sql<br/>"; */
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    $my_tx = $conn->rollback();
+    die("error on account_slice insert: " . $result->getMessage());
+  }
+  $my_tx = $conn->commit();
+}
+
+function fetch_slices($account_id)
+{
+  $conn = portal_conn();
+  $sql = "SELECT slice.slice_id, slice.name, slice.expiration"
+    . " FROM slice, account_slice"
+    . " WHERE account_slice.account_id = "
+    . $conn->quote($account_id, 'text')
+    . " AND slice.slice_id = account_slice.slice_id"
+    . ";";
+  // print "Query = $sql<br/>";
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch_slices select: " . $resultset->getMessage());
+  }
+  $value = array();
+  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+    // Append to the array
+    $value[] = $row;
+  }
+  // TODO: close the connection?
+  return $value;
+}
+
 ?>
