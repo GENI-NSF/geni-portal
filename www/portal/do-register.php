@@ -14,7 +14,7 @@ if (PEAR::isError($conn)) {
 //--------------------------------------------------
 // Insert into account table
 //--------------------------------------------------
-$account_id = exec('/usr/bin/uuidgen');
+$account_id = make_uuid();
 $sql = "INSERT INTO account (account_id, status) VALUES ("
   . $conn->quote($account_id, 'text')
   . ", 'requested');";

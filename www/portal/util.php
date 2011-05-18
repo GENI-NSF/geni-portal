@@ -27,4 +27,8 @@ function relative_redirect($relpath) {
   exit;
 }
 
+function make_uuid() {
+  $uuid = exec('/usr/bin/uuidgen');
+  return $uuid;
+}
 ?>
