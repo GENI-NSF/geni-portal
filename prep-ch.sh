@@ -25,6 +25,11 @@ check_errs $? "apt-get failed to dist-upgrade"
 /usr/bin/apt-get install -y ${PKGS}
 check_errs $? "apt-get failed to install packages"
 
+#
+# Restart Apache to find the new php packages.
+#
+sudo /usr/sbin/service apache2 restart
+
 # Set postgres password
 echo
 echo
