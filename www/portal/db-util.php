@@ -69,10 +69,14 @@ function loadIdentityAttributes($identity_id) {
 function db_create_slice($account_id, $slice_id, $name)
 {
   $conn = portal_conn();
+  $expires = new DateTime();
+  $expires->add(new DateInterval('P30D'));
+
   $my_tx = $conn->beginTransaction();
-  $sql = "INSERT INTO slice (slice_id, name) VALUES ("
+  $sql = "INSERT INTO slice (slice_id, name, expiration) VALUES ("
     . $conn->quote($slice_id, 'text')
     . ', ' . $conn->quote($name, 'text')
+    . ', ' . $conn->quote($expires->format('Y-m-d H:i:s'), 'timestamp')
     . ');';
   /* print "command = $sql<br/>"; */
   $result = $conn->exec($sql);
