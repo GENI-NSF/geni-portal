@@ -31,6 +31,26 @@ check_errs $? "apt-get failed to dist-upgrade"
 check_errs $? "apt-get failed to install packages"
 
 #
+# gcf installation
+#
+SHARE_DIR=/usr/share/geni-portal
+
+# Make a directory for gcf to live in
+/usr/bin/sudo /bin/mkdir "${SHARE_DIR}"
+
+GCF=gcf-1.3-rc1
+GCF_PKG=${GCF}.tar.gz
+/usr/bin/wget http://www.gpolab.bbn.com/internal/projects/proto-ch/${GCF_PKG}
+/usr/bin/sudo /bin/tar xzfC "${GCF_PKG}" "${SHARE_DIR}"
+/usr/bin/sudo /bin/ln -s ${SHARE_DIR}/${GCF} ${SHARE_DIR}/gcf
+
+SFA_TMP_FILES="/tmp/sfa.log /tmp/sfa_import.log"
+/usr/bin/touch ${SFA_TMP_FILES}
+/bin/chmod 777 ${SFA_TMP_FILES}
+
+/usr/bin/sudo /bin/cp -R gcf.d ${SHARE_DIR}
+
+#
 # Restart Apache to find the new php packages.
 #
 /usr/bin/sudo /usr/sbin/service apache2 restart
