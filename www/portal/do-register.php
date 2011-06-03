@@ -1,4 +1,5 @@
 <?php
+require_once("settings.php");
 require_once("db-util.php");
 require_once("util.php");
 require_once("user.php");
@@ -95,7 +96,7 @@ foreach ($attrs as $attr) {
 // Send mail about the new account request
 // --------------------------------------------------
 $url = relative_url("env.php");
-mail("admin@example.com",
+mail($portal_admin_email,
      "New portal account request",
      "There is a new account request for $eppn. Please review this request"
      . " at $url");

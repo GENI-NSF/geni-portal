@@ -23,12 +23,7 @@
 //----------------------------------------------------------------------
 ?>
 <?php
-//--------------------------------------------------
-// Globals - should go to settings
-//--------------------------------------------------
-$portal_gcf_dir = '/tmp/gcf';
-$portal_gcf_cfg_dir = '/tmp/gcf/portal';
-
+require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
 if (! $user->privSlice()) {
@@ -59,7 +54,7 @@ $slice = fetch_slice($slice_id);
 // TODO: Pass expiration to slicecred.py
 
 // Run slicecred.py and return it as the content.
-$cmd_array = array($portal_gcf_dir . '/slicecred.py',
+$cmd_array = array($portal_gcf_dir . '/src/slicecred.py',
                    $portal_gcf_cfg_dir . '/gcf.ini',
                    $slice['name'],
                    $portal_gcf_cfg_dir . '/ch-key.pem',
