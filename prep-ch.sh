@@ -16,19 +16,24 @@ check_errs()
 
 PKGS="postgresql git-core apache2 php5-pgsql php-mdb2-driver-pgsql php5-uuid"
 
-/usr/bin/apt-get update
+# Packages for gcf/omni
+PKGS="$PKGS python-m2crypto python-dateutil python-pyopenssl"
+PKGS="$PKGS libxmlsec1 xmlsec1 libxmlsec1-openssl libxmlsec1-dev"
+
+
+/usr/bin/sudo /usr/bin/apt-get update
 check_errs $? "apt-get failed to update"
 
-/usr/bin/apt-get -y dist-upgrade
+/usr/bin/sudo /usr/bin/apt-get -y dist-upgrade
 check_errs $? "apt-get failed to dist-upgrade"
 
-/usr/bin/apt-get install -y ${PKGS}
+/usr/bin/sudo /usr/bin/apt-get install -y ${PKGS}
 check_errs $? "apt-get failed to install packages"
 
 #
 # Restart Apache to find the new php packages.
 #
-sudo /usr/sbin/service apache2 restart
+/usr/bin/sudo /usr/sbin/service apache2 restart
 
 # Set postgres password
 echo
@@ -43,7 +48,7 @@ echo "@"
 #----------------------------------------------------------------------
 # Patch postgresql.conf to listen for network connections
 #----------------------------------------------------------------------
-/usr/bin/patch --backup -p 0 /etc/postgresql/8.4/main/postgresql.conf <<EOF
+/usr/bin/sudo /usr/bin/patch --backup -p 0 /etc/postgresql/8.4/main/postgresql.conf <<EOF
 --- postgresql.conf.orig	2011-01-07 13:20:50.840787089 -0500
 +++ postgresql.conf	2011-01-07 13:23:10.984792098 -0500
 @@ -60,6 +60,7 @@
@@ -60,7 +65,7 @@ check_errs $? "failed to patch postgresql.conf"
 #----------------------------------------------------------------------
 # Patch pg_hba.conf to allow md5 authentication from anywhere
 #----------------------------------------------------------------------
-/usr/bin/patch --backup -p 0 /etc/postgresql/8.4/main/pg_hba.conf <<EOF
+/usr/bin/sudo /usr/bin/patch --backup -p 0 /etc/postgresql/8.4/main/pg_hba.conf <<EOF
 --- pg_hba.conf.orig	2011-01-07 13:21:05.936789520 -0500
 +++ pg_hba.conf	2011-01-07 13:31:12.880789053 -0500
 @@ -84,3 +84,4 @@
@@ -74,13 +79,13 @@ check_errs $? "failed to patch pg_hba.conf"
 #----------------------------------------------------------------------
 # Restart PostgreSQL
 #----------------------------------------------------------------------
-/usr/sbin/service postgresql-8.4 restart
+/usr/bin/sudo /usr/sbin/service postgresql-8.4 restart
 check_errs $? "failed to restart postgresql-8.4"
 
 #----------------------------------------------------------------------
 # Create the portal user and db
 #----------------------------------------------------------------------
-sudo -u postgres /usr/bin/createuser -S -D -R portal
+/usr/bin/sudo -u postgres /usr/bin/createuser -S -D -R portal
 check_errs $? "failed to create user portal"
 
 echo
@@ -89,10 +94,10 @@ echo "@@@@@@@@@@@@@@@@@@@@@"
 echo "@"
 echo "@ Please enter a new database password for the 'portal' user"
 echo "@"
-sudo -u postgres /usr/bin/psql -c "\\password portal"
+/usr/bin/sudo -u postgres /usr/bin/psql -c "\\password portal"
 check_errs $? "failed to set the password for portal user"
 
-sudo -u postgres /usr/bin/createdb portal
+/usr/bin/sudo -u postgres /usr/bin/createdb portal
 check_errs $? "failed to create the portal database"
 
 #----------------------------------------------------------------------
