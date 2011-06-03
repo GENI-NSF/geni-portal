@@ -120,4 +120,21 @@ function fetch_slices($account_id)
   return $value;
 }
 
+function fetch_slice($slice_id)
+{
+  $conn = portal_conn();
+  $sql = "SELECT slice.slice_id, slice.name, slice.expiration"
+    . " FROM slice"
+    . " WHERE slice.slice_id = "
+    . $conn->quote($slice_id, 'text')
+    . ";";
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch_slice select: " . $resultset->getMessage());
+  }
+  // There should be one and only one slice with this id
+  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+  return $row;
+}
+
 ?>
