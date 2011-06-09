@@ -162,15 +162,16 @@ function fetch_slice($slice_id)
   return $row;
 }
 
-function db_add_public_key($account_id, $public_key, $description)
+function db_add_public_key($account_id, $public_key, $filename, $description)
 {
   $conn = portal_conn();
   $public_key_id = make_uuid();
   $sql = "INSERT INTO public_key "
-    . "(public_key_id, account_id, public_key, description) VALUES ("
+    . "(public_key_id, account_id, public_key, filename, description) VALUES ("
     . $conn->quote($public_key_id, 'text')
     . ', ' . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($public_key, 'text')
+    . ', ' . $conn->quote($filename, 'text')
     . ', ' . $conn->quote($description, 'text')
     . ');';
   /* print "command = $sql<br/>"; */

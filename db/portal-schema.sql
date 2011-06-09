@@ -129,6 +129,7 @@ CREATE TABLE public_key (
   public_key_id UUID,
   account_id UUID REFERENCES account,
   public_key VARCHAR,
+  filename VARCHAR,
   description VARCHAR,
   certificate VARCHAR
 );

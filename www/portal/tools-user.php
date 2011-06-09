@@ -34,18 +34,15 @@ if (! $user->privSlice()) {
 $keys = db_fetch_public_keys($user->account_id);
 if (count($keys) > 0) {
   print "\n<table border=\"1\">\n";
-  print "<tr><th>Description</th><th>Key Prefix</th><th>Certificate</th></tr>\n";
+  print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th></tr>\n";
   $base_url = relative_url("certificate.php?");
   foreach ($keys as $key) {
-    $description = $key['description'];
-    $key_prefix = substr($key['public_key'], 0, 10);
-    $certificate = $key['certificate'];
     $args['id'] = $key['public_key_id'];
     $query = http_build_query($args);
     $download_url = $base_url . $query;
     print "<tr>"
-      . "<td>" . htmlentities($description) . "</td>"
-      . "<td>" . htmlentities($key_prefix) . "</td>"
+      . "<td>" . htmlentities($key['filename']) . "</td>"
+      . "<td>" . htmlentities($key['description']) . "</td>"
       . "<td><a href=\"" . $download_url . "\">Download Certificate</a></td>"
       . "</tr>\n";
   }
@@ -55,12 +52,4 @@ if (count($keys) > 0) {
 }
 ?>
 <br/>
-<b>Upload a public key</b><br/>
-<form action="uploadkey.php" method="post" enctype="multipart/form-data">
-<label for="file">Public Key File:</label>
-<input type="file" name="file" id="file" />
-<label for="file">Description (optional):</label>
-<input type="text" name="description"/>
-<br/>
-<input type="submit" name="submit" value="Upload"/>
-</form>
+<a href="uploadkey">Upload a public key</a>
