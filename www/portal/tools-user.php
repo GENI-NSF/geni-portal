@@ -29,7 +29,33 @@ if (! $user->privSlice()) {
 }
 ?>
 <h1>User Tools</h1>
-<h2>Private Key</h2>
+<h2>Public Keys</h2>
+<?php
+$keys = db_fetch_public_keys($user->account_id);
+if (count($keys) > 0) {
+  print "\n<table border=\"1\">\n";
+  print "<tr><th>Description</th><th>Key Prefix</th><th>Certificate</th></tr>\n";
+  $base_url = relative_url("certificate.php?");
+  foreach ($keys as $key) {
+    $description = $key['description'];
+    $key_prefix = substr($key['public_key'], 0, 10);
+    $certificate = $key['certificate'];
+    $args['id'] = $key['public_key_id'];
+    $query = http_build_query($args);
+    $download_url = $base_url . $query;
+    print "<tr>"
+      . "<td>" . htmlentities($description) . "</td>"
+      . "<td>" . htmlentities($key_prefix) . "</td>"
+      . "<td><a href=\"" . $download_url . "\">Download Certificate</a></td>"
+      . "</tr>\n";
+  }
+  print "</table>\n";
+} else {
+  print "<i>No public keys.</i><br/>\n";
+}
+?>
+<br/>
+<b>Upload a public key</b><br/>
 <form action="uploadkey.php" method="post" enctype="multipart/form-data">
 <label for="file">Public Key File:</label>
 <input type="file" name="file" id="file" />
