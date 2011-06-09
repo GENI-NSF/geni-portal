@@ -1,4 +1,28 @@
 <?php
+//----------------------------------------------------------------------
+// Copyright (c) 2011 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
+?>
+<?php
 
 //----------------------------------------------------------------------
 // Database utility functions
@@ -135,6 +159,23 @@ function fetch_slice($slice_id)
   // There should be one and only one slice with this id
   $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
   return $row;
+}
+
+function db_add_public_key($account_id, $public_key, $description)
+{
+  $conn = portal_conn();
+
+  $sql = "INSERT INTO public_key "
+    . "(account_id, public_key, description) VALUES ("
+    . $conn->quote($account_id, 'text')
+    . ', ' . $conn->quote($public_key, 'text')
+    . ', ' . $conn->quote($description, 'text')
+    . ');';
+  print "command = $sql<br/>";
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on public key insert: " . $result->getMessage());
+  }
 }
 
 ?>

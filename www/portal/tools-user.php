@@ -23,24 +23,18 @@
 //----------------------------------------------------------------------
 ?>
 <?php
-//----------------------------------------------------------------------
-// This is sub-content, a part of the home page (home.php).
-//----------------------------------------------------------------------
-
-// Notes:
-// $user should be bound to the current user
+require_once("user.php");
+if (! $user->privSlice()) {
+  exit();
+}
 ?>
-<center>
-Welcome
-<?php
-print $user->prettyName();
-?>
-!
-</center>
-<?php
-include("tools-user.php");
-print "<hr/>\n";
-include("tools-slice.php");
-print "<hr/>\n";
-include("tools-admin.php");
-?>
+<h1>User Tools</h1>
+<h2>Private Key</h2>
+<form action="uploadkey.php" method="post" enctype="multipart/form-data">
+<label for="file">Public Key File:</label>
+<input type="file" name="file" id="file" />
+<label for="file">Description (optional):</label>
+<input type="text" name="description"/>
+<br/>
+<input type="submit" name="submit" value="Upload"/>
+</form>

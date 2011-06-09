@@ -120,3 +120,16 @@ CREATE TABLE account_slice (
 
 CREATE INDEX account_slice_index_account_id ON account_slice (account_id);
 CREATE INDEX account_slice_index_slice_id ON account_slice (slice_id);
+
+-- ----------------------------------------------------------------------
+-- Public keys
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS public_key;
+CREATE TABLE public_key (
+  account_id UUID REFERENCES account,
+  public_key VARCHAR,
+  description VARCHAR,
+  certificate VARCHAR
+);
+
+CREATE INDEX public_key_index_account_id ON public_key (account_id);
