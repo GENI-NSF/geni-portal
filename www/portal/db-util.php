@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 ?>
 <?php
+require_once 'util.php';
 
 //----------------------------------------------------------------------
 // Database utility functions
@@ -164,18 +165,76 @@ function fetch_slice($slice_id)
 function db_add_public_key($account_id, $public_key, $description)
 {
   $conn = portal_conn();
-
+  $public_key_id = make_uuid();
   $sql = "INSERT INTO public_key "
-    . "(account_id, public_key, description) VALUES ("
-    . $conn->quote($account_id, 'text')
+    . "(public_key_id, account_id, public_key, description) VALUES ("
+    . $conn->quote($public_key_id, 'text')
+    . ', ' . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($public_key, 'text')
     . ', ' . $conn->quote($description, 'text')
     . ');';
-  print "command = $sql<br/>";
+  /* print "command = $sql<br/>"; */
   $result = $conn->exec($sql);
   if (PEAR::isError($result)) {
     die("error on public key insert: " . $result->getMessage());
   }
 }
 
+function db_add_key_cert($account_id, $public_key_id, $certificate)
+{
+  $conn = portal_conn();
+  $sql = "UPDATE public_key"
+    . " SET certificate = "
+    . $conn->quote($certificate, 'text')
+    . " WHERE account_id = "
+    . $conn->quote($account_id, 'text')
+    . " AND public_key_id = "
+    . $conn->quote($public_key_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on certificate insert: " . $result->getMessage());
+  }
+}
+
+function db_fetch_public_keys($account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT *"
+    . " FROM public_key "
+    . " WHERE public_key.account_id = "
+    . $conn->quote($account_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch public keys: " . $resultset->getMessage());
+  }
+  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+    // Append to the array
+    $value[] = $row;
+  }
+  return $value;
+}
+
+function db_fetch_public_key($key_id, $account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT *"
+    . " FROM public_key "
+    . " WHERE public_key.account_id = "
+    . $conn->quote($account_id, 'text')
+    . " AND public_key.public_key_id = "
+    . $conn->quote($key_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch public keys: " . $resultset->getMessage());
+  }
+  return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+}
 ?>
