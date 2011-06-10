@@ -36,13 +36,15 @@ check_errs $? "apt-get failed to install packages"
 SHARE_DIR=/usr/share/geni-portal
 
 # Make a directory for gcf to live in
-/usr/bin/sudo /bin/mkdir "${SHARE_DIR}"
+if [ ! -d "${SHARE_DIR}" ]; then
+  /usr/bin/sudo /bin/mkdir "${SHARE_DIR}"
+fi
 
-GCF=gcf-1.3-rc1
+GCF=gcf-1.3-rc1-tom
 GCF_PKG=${GCF}.tar.gz
 /usr/bin/wget http://www.gpolab.bbn.com/internal/projects/proto-ch/${GCF_PKG}
 /usr/bin/sudo /bin/tar xzfC "${GCF_PKG}" "${SHARE_DIR}"
-/usr/bin/sudo /bin/ln -s ${SHARE_DIR}/${GCF} ${SHARE_DIR}/gcf
+/usr/bin/sudo /bin/ln -s -f ${SHARE_DIR}/${GCF} ${SHARE_DIR}/gcf
 
 SFA_TMP_FILES="/tmp/sfa.log /tmp/sfa_import.log"
 /usr/bin/touch ${SFA_TMP_FILES}
