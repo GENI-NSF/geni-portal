@@ -31,5 +31,8 @@ cleandb:
 syncm:
 	$(RSYNC) -aztv ../proto-ch marilac.gpolab:
 
+syncd:
+	$(RSYNC) -aztv ../proto-ch dagoola.gpolab:
+
 syncpanther:
 	$(RSYNC) -aztv ../proto-ch panther.gpolab:
