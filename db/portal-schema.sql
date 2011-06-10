@@ -28,6 +28,7 @@ CREATE TYPE account_status AS ENUM ('requested', 'active', 'disabled');
 CREATE TABLE account (
   account_id UUID,
   status ACCOUNT_STATUS,
+  username VARCHAR UNIQUE,
   PRIMARY KEY (account_id)
 );
 
