@@ -234,7 +234,24 @@ function db_fetch_public_key($key_id, $account_id)
   /* print "command = $sql<br/>"; */
   $resultset = $conn->query($sql);
   if (PEAR::isError($resultset)) {
-    die("error on fetch public keys: " . $resultset->getMessage());
+    die("error on fetch public key: " . $resultset->getMessage());
+  }
+  return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+}
+
+function db_fetch_user_by_username($username)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT *"
+    . " FROM account "
+    . " WHERE username = "
+    . $conn->quote($username, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch user by username: " . $resultset->getMessage());
   }
   return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
 }

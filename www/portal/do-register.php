@@ -4,6 +4,42 @@ require_once("db-util.php");
 require_once("util.php");
 require_once("user.php");
 
+function derive_username() {
+  // See http://www.linuxjournal.com/article/9585
+  // try to figure out a reasonable username.
+  $email_addr = NULL;
+  if (array_key_exists('mail', $_SERVER)) {
+    $email_addr = $_SERVER['mail'];
+  } else if (array_key_exists('mail', $_POST)) {
+    $email_addr = $_POST['mail'];
+  } else {
+    // Use a fake one.
+    $email_addr = 'unknown@example.com';
+  }
+
+  print "<br/>derive2: email_addr = $email_addr<br/>\n";
+
+  // Now get the username portion.
+  $atindex = strrpos($email_addr, "@");
+  print "atindex = $atindex<br/>\n";
+  $username = substr($email_addr, 0, $atindex);
+  print "base username = $username<br/>\n";
+  if (! db_fetch_user_by_username($username)) {
+    print "no conflict with $username<br/>\n";
+    return $username;
+  } else {
+    for ($i = 1; $i <= 99; $i++) {
+      $tmpname = $username . $i;
+      print "trying $tmpname<br/>\n";
+      if (! db_fetch_user_by_username($tmpname)) {
+        print "no conflict with $tmpname<br/>\n";
+        return $tmpname;
+      }
+    }
+  }
+  die("Unable to find a username based on $username");
+}
+
 //--------------------------------------------------
 // Create the database connection
 //--------------------------------------------------
@@ -16,8 +52,10 @@ if (PEAR::isError($conn)) {
 // Insert into account table
 //--------------------------------------------------
 $account_id = make_uuid();
-$sql = "INSERT INTO account (account_id, status) VALUES ("
+$username = derive_username();
+$sql = "INSERT INTO account (account_id, username, status) VALUES ("
   . $conn->quote($account_id, 'text')
+  . ", ". $conn->quote($username, 'text')
   . ", 'requested');";
 $result = $conn->exec($sql);
 if (PEAR::isError($result)) {

@@ -25,6 +25,7 @@ class GeniUser
     /* print "in GeniUser->loadAccount<br/>"; */
     $dict = loadAccount($this->account_id);
     $this->status = $dict['status'];
+    $this->username = $dict['username'];
     /*
      * It seems to be necessary to use a temporary
      * variable rather than assigning directly to

@@ -26,11 +26,7 @@
 require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
-if (! $user->privSlice()) {
-  exit();
-}
-?>
-<?php
+
 function no_key_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No key id specified.';
@@ -55,9 +51,6 @@ if ($public_key['certificate'] == NULL) {
   $key_file = tempnam(sys_get_temp_dir(), 'portal');
   file_put_contents($key_file, $public_key['public_key']);
 
-  // TODO: what user name?
-  $name = 'alice';
-
   // Run gen-certs.py and return it as the content.
   $cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
                      '-f',
@@ -66,7 +59,7 @@ if ($public_key['certificate'] == NULL) {
                      '-d',
                      '/tmp',
                      '-u',
-                     $name,
+                     $user->username,
                      '--pubkey',
                      $key_file,
                      '--exp'
@@ -75,7 +68,7 @@ if ($public_key['certificate'] == NULL) {
   $result = exec($command, $output, $status);
   /* print_r($output); */
   // The cert is on disk, read the file and store it in the db.
-  $cert_file = '/tmp/' . $name . "-cert.pem";
+  $cert_file = '/tmp/' . $user->username . "-cert.pem";
   $contents = file_get_contents($cert_file);
   db_add_key_cert($user->account_id, $key_id, $contents);
   // Delete the temporary key file
