@@ -29,27 +29,20 @@ if (! $user->privSlice()) {
 }
 ?>
 <h1>User Tools</h1>
-<h2>Public Keys</h2>
+<h2>Public Key</h2>
 <?php
-$keys = db_fetch_public_keys($user->account_id);
-if (count($keys) > 0) {
+$key = db_fetch_public_key($user->account_id);
+if ($key) {
   print "\n<table border=\"1\">\n";
   print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th></tr>\n";
-  $base_url = relative_url("certificate.php?");
-  foreach ($keys as $key) {
-    $args['id'] = $key['public_key_id'];
-    $query = http_build_query($args);
-    $download_url = $base_url . $query;
-    print "<tr>"
-      . "<td>" . htmlentities($key['filename']) . "</td>"
-      . "<td>" . htmlentities($key['description']) . "</td>"
-      . "<td><a href=\"" . $download_url . "\">Download Certificate</a></td>"
-      . "</tr>\n";
-  }
+  $download_url = relative_url("certificate.php");
+  print "<tr>"
+    . "<td>" . htmlentities($key['filename']) . "</td>"
+    . "<td>" . htmlentities($key['description']) . "</td>"
+    . "<td><a href=\"" . $download_url . "\">Download Certificate</a></td>"
+    . "</tr>\n";
   print "</table>\n";
 } else {
-  print "<i>No public keys.</i><br/>\n";
+  print "<a href=\"uploadkey.php\">Please upload a public key</a>\n";
 }
 ?>
-<br/>
-<a href="uploadkey">Upload a public key</a>

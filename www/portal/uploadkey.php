@@ -41,9 +41,27 @@ A new file is created, public_key.pem, with the public key.
 
  */
 
+//------------------------------------------------------------
+// Load the user
+//------------------------------------------------------------
+require_once("settings.php");
+require_once("user.php");
+$user = geni_loadUser();
+
+//------------------------------------------------------------
+// If user has a key, redirect to home page
+//------------------------------------------------------------
+$key = db_fetch_public_key($user->account_id);
+if ($key) {
+  relative_redirect("home.php");
+}
+
 if (count($_POST) == 0) {
   // Display the form and exit
+  $GENI_TITLE = "Upload public key";
+  include("header.php");
   include('uploadkey.html');
+  include("footer.php");
   exit;
 }
 
@@ -72,6 +90,35 @@ if (array_key_exists("description", $_POST)) {
 /* echo "Passing description: $description<br/>"; */
 db_add_public_key($user->account_id, $contents,
                   $_FILES["file"]["name"], $description);
+
+//------------------------------------------------------------
+// Generate the certificate
+//------------------------------------------------------------
+
+// Run gen-certs.py and return it as the content.
+$cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
+                   '-f',
+                   $portal_gcf_cfg_dir . '/gcf.ini',
+                   '--notAll',
+                   '-d',
+                   '/tmp',
+                   '-u',
+                   $user->username,
+                   '--pubkey',
+                   $_FILES["file"]["tmp_name"],
+                   '--exp'
+                   );
+$command = implode(" ", $cmd_array);
+$result = exec($command, $output, $status);
+/* print_r($output); */
+// The cert is on disk, read the file and store it in the db.
+$cert_file = '/tmp/' . $user->username . "-cert.pem";
+$contents = file_get_contents($cert_file);
+db_add_key_cert($user->account_id, $contents);
+
+// Delete the cert file
+unlink($cert_file);
+
 relative_redirect('home');
 ?>
 Your key was uploaded.<br/>
