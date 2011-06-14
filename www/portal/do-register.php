@@ -17,22 +17,22 @@ function derive_username() {
     $email_addr = 'unknown@example.com';
   }
 
-  print "<br/>derive2: email_addr = $email_addr<br/>\n";
+  /* print "<br/>derive2: email_addr = $email_addr<br/>\n"; */
 
   // Now get the username portion.
   $atindex = strrpos($email_addr, "@");
-  print "atindex = $atindex<br/>\n";
+  /* print "atindex = $atindex<br/>\n"; */
   $username = substr($email_addr, 0, $atindex);
-  print "base username = $username<br/>\n";
+  /* print "base username = $username<br/>\n"; */
   if (! db_fetch_user_by_username($username)) {
-    print "no conflict with $username<br/>\n";
+    /* print "no conflict with $username<br/>\n"; */
     return $username;
   } else {
     for ($i = 1; $i <= 99; $i++) {
       $tmpname = $username . $i;
-      print "trying $tmpname<br/>\n";
+      /* print "trying $tmpname<br/>\n"; */
       if (! db_fetch_user_by_username($tmpname)) {
-        print "no conflict with $tmpname<br/>\n";
+        /* print "no conflict with $tmpname<br/>\n"; */
         return $tmpname;
       }
     }
@@ -110,7 +110,7 @@ $identity_id = $rows[0]['identity_id'];
 //--------------------------------------------------
 $attrs = array('givenName','sn', 'mail','telephoneNumber');
 foreach ($attrs as $attr) {
-  print "attr = $attr<br/>";
+  /* print "attr = $attr<br/>"; */
   if (array_key_exists($attr, $_SERVER)) {
     $value = $_SERVER[$attr];
   } else {
@@ -123,7 +123,7 @@ foreach ($attrs as $attr) {
     . ", " . $conn->quote($value, 'text')
     . ", " . $conn->quote(false)
     . ");";
-  print "attr insert: $sql<br/>";
+  /* print "attr insert: $sql<br/>"; */
   $result = $conn->exec($sql);
   if (PEAR::isError($result)) {
     die("error on attr $attr insert: " . $result->getMessage());
