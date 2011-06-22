@@ -107,8 +107,11 @@ CREATE TABLE slice (
   slice_id UUID,
   name varchar,
   expiration timestamp,
+  owner UUID REFERENCES account (account_id),
   PRIMARY KEY (slice_id)
 );
+
+CREATE INDEX slice_index_owner ON slice (owner);
 
 -- ----------------------------------------------------------------------
 -- Account to slice mapping

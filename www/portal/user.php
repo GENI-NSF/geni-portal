@@ -36,6 +36,7 @@ class GeniUser
     foreach ($attrs as $attr) {
       $this->attributes[$attr['name']] = $attr['value'];
     }
+    $this->privileges = loadAccountPrivileges($this->account_id);
   }
 
   function isActive() {
@@ -60,12 +61,12 @@ class GeniUser
 
   // For now, everyone can create slices
   function privSlice() {
-    return true;
+    return in_array ("slice", $this->privileges);
   }
 
   // For now, everyone is an admin
   function privAdmin() {
-    return true;
+    return in_array ("admin", $this->privileges);
   }
 }
 

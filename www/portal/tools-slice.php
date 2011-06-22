@@ -1,8 +1,5 @@
 <?php
 require_once("user.php");
-if (! $user->privSlice()) {
-  exit();
-}
 ?>
 <h1>Existing Slices</h1>
 <?php
@@ -27,9 +24,11 @@ if (count($slices) > 0) {
 } else {
   print "<i>No slices.</i><br/>\n";
 }
+
+/* Only show create slice link if user has appropriate privilege. */
+if ($user->privSlice()) {
+  print "<a href=\""
+    . relative_url("createslice")
+    . "\">Create a new slice</a>";
+}
 ?>
-<a href="
-<?php
-print relative_url("createslice");
-?>
-">Create a new slice</a>

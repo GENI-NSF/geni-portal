@@ -24,9 +24,6 @@
 ?>
 <?php
 require_once("user.php");
-if (! $user->privSlice()) {
-  exit();
-}
 ?>
 <h1>User Tools</h1>
 <h2>Public Keys</h2>
