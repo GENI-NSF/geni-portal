@@ -27,24 +27,11 @@ require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
 
-function no_key_error() {
-  header('HTTP/1.1 404 Not Found');
-  print 'No key id specified.';
-  exit();
-}
-
-if (! count($_GET)) {
-  // No parameters. Return an error result?
-  // For now, return nothing.
-  no_key_error();
-}
-if (array_key_exists('id', $_GET)) {
-  $key_id = $_GET['id'];
-} else {
-  no_key_error();
-}
 // Look up the key...
-$public_key = db_fetch_public_key($key_id, $user->account_id);
+$public_key = db_fetch_public_key($user->account_id);
+if (! $public_key) {
+  relative_redirect("home.php");
+}
 
 if ($public_key['certificate'] == NULL) {
   // Write the public key to a file

@@ -53,18 +53,28 @@ $slice = fetch_slice($slice_id);
 // TODO: Does the $user have permissions on this $slice?
 // TODO: Pass expiration to slicecred.py
 
+
+$key = db_fetch_public_key($user->account_id);
+if (! $key) {
+  relative_redirect("home.php");
+}
+$cert_file = tempnam(sys_get_temp_dir(), 'portal');
+file_put_contents($cert_file, $key['certificate']);
+
 // Run slicecred.py and return it as the content.
 $cmd_array = array($portal_gcf_dir . '/src/slicecred.py',
                    $portal_gcf_cfg_dir . '/gcf.ini',
                    $slice['name'],
                    $portal_gcf_cfg_dir . '/ch-key.pem',
                    $portal_gcf_cfg_dir . '/ch-cert.pem',
-                   // This should be the user's cert
-                   $portal_gcf_cfg_dir . '/alice-cert.pem'
+                   $cert_file
                    );
 $command = implode(" ", $cmd_array);
 $result = exec($command, $output, $status);
 //print_r($output);
+
+// Clean up, clean up
+//unlink($cert_file);
 
 $file = $slice['name'] . "-cred.xml";
 // Set headers for download
