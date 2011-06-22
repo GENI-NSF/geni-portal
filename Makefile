@@ -1,5 +1,5 @@
 
-.PHONY = default install cleandb syncm
+.PHONY = default install cleandb syncm abac
 
 RSYNC = /usr/bin/rsync
 PSQL = /usr/bin/psql
@@ -7,6 +7,8 @@ DB.USER = portal
 DB.HOST = localhost
 DB.DB = portal
 CLEANDB.SQL = db/portal-schema.sql db/portal-data.sql
+LIB.DIR = /usr/share/geni-portal
+ABAC.DIR = $(LIB.DIR)/abac
 
 default:
 	echo "try make install"
@@ -36,3 +38,15 @@ syncd:
 
 syncpanther:
 	$(RSYNC) -aztv ../proto-ch panther.gpolab:
+
+$(ABAC.DIR):
+	sudo mkdir -p $(ABAC.DIR)
+
+
+$(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem: $(ABAC.DIR)
+	/usr/local/bin/creddy --generate --cn GeniPortal
+	/usr/bin/sudo /bin/mv GeniPortal_ID.pem GeniPortal_private.pem $(ABAC.DIR)
+	/usr/bin/sudo /bin/chown www-data $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem
+	/usr/bin/sudo /bin/chgrp www-data $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem
+
+abac: $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem

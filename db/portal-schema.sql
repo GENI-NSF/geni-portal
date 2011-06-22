@@ -140,3 +140,16 @@ CREATE TABLE public_key (
 
 CREATE INDEX public_key_index_public_key_id ON public_key (public_key_id);
 CREATE INDEX public_key_index_account_id ON public_key (account_id);
+
+-- ----------------------------------------------------------------------
+-- ABAC identities
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS abac;
+CREATE TABLE abac (
+  account_id UUID REFERENCES account,
+  abac_id VARCHAR,
+  abac_key VARCHAR,
+  abac_fingerprint VARCHAR
+);
+
+CREATE INDEX abac_index_account_id ON abac (account_id);

@@ -17,22 +17,22 @@ function derive_username() {
     $email_addr = 'unknown@example.com';
   }
 
-  print "<br/>derive2: email_addr = $email_addr<br/>\n";
+  // print "<br/>derive2: email_addr = $email_addr<br/>\n";
 
   // Now get the username portion.
   $atindex = strrpos($email_addr, "@");
-  print "atindex = $atindex<br/>\n";
+  // print "atindex = $atindex<br/>\n";
   $username = substr($email_addr, 0, $atindex);
-  print "base username = $username<br/>\n";
+  // print "base username = $username<br/>\n";
   if (! db_fetch_user_by_username($username)) {
-    print "no conflict with $username<br/>\n";
+    // print "no conflict with $username<br/>\n";
     return $username;
   } else {
     for ($i = 1; $i <= 99; $i++) {
       $tmpname = $username . $i;
-      print "trying $tmpname<br/>\n";
+      // print "trying $tmpname<br/>\n";
       if (! db_fetch_user_by_username($tmpname)) {
-        print "no conflict with $tmpname<br/>\n";
+        // print "no conflict with $tmpname<br/>\n";
         return $tmpname;
       }
     }
@@ -110,7 +110,7 @@ $identity_id = $rows[0]['identity_id'];
 //--------------------------------------------------
 $attrs = array('givenName','sn', 'mail','telephoneNumber');
 foreach ($attrs as $attr) {
-  print "attr = $attr<br/>";
+  // print "attr = $attr<br/>";
   if (array_key_exists($attr, $_SERVER)) {
     $value = $_SERVER[$attr];
   } else {
@@ -123,12 +123,60 @@ foreach ($attrs as $attr) {
     . ", " . $conn->quote($value, 'text')
     . ", " . $conn->quote(false)
     . ");";
-  print "attr insert: $sql<br/>";
+  // print "attr insert: $sql<br/>";
   $result = $conn->exec($sql);
   if (PEAR::isError($result)) {
     die("error on attr $attr insert: " . $result->getMessage());
   }
 }
+
+// ----------------------------------------------------------------------
+// Add an ABAC cert and key. This should probably be done when
+// and admin approves the request, but we don't have that page
+// yet, so... do it here for now, and migrate it later.
+// ----------------------------------------------------------------------
+$cmd_array = array("/usr/local/bin/creddy",
+                   "--generate",
+                   "--cn",
+                   $username
+                   );
+$command = implode(" ", $cmd_array);
+$orig_dir = getcwd();
+chdir(sys_get_temp_dir());
+$result = exec($command, $output, $status);
+$abac_id_file = $username . "_ID.pem";
+$abac_key_file = $username . "_private.pem";
+$abac_id = file_get_contents($abac_id_file);
+$abac_key = file_get_contents($abac_key_file);
+
+// Get the ABAC fingerprint for use in creating attributes later
+$cmd_array = array("/usr/local/bin/creddy",
+                   "--keyid",
+                   "--cert",
+                   $abac_id_file
+                   );
+$command = implode(" ", $cmd_array);
+// Clear the previous output
+unset($output);
+$result = exec($command, $output, $status);
+$abac_fingerprint = $output[0];
+unlink($abac_id_file);
+unlink($abac_key_file);
+chdir($orig_dir);
+
+// Put this stuff in the database
+$sql = "INSERT INTO abac"
+  . "(account_id, abac_id, abac_key, abac_fingerprint) VALUES ("
+  . $conn->quote($account_id, 'text')
+  . ", ". $conn->quote($abac_id, 'text')
+  . ", ". $conn->quote($abac_key, 'text')
+  . ", ". $conn->quote($abac_fingerprint, 'text')
+  . ");";
+$result = $conn->exec($sql);
+if (PEAR::isError($result)) {
+  die("error on abac insert: " . $result->getMessage());
+}
+
 
 // --------------------------------------------------
 // Send mail about the new account request
