@@ -246,4 +246,23 @@ function db_fetch_user_by_username($username)
   }
   return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
 }
+
+function fetch_abac_fingerprint($account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT abac_fingerprint"
+    . " FROM abac "
+    . " WHERE account_id = "
+    . $conn->quote($account_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch abac fingerprint: " . $resultset->getMessage());
+  }
+  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+  return $row["abac_fingerprint"];
+}
+
 ?>
