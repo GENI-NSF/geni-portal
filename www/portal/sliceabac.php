@@ -56,7 +56,7 @@ $tmpfile = tempnam(sys_get_temp_dir(), "portal");
 // TODO: Does the $user have permissions on this $slice?
 // TODO: Pass expiration to slicecred.py
 
-// Run slicecred.py and return it as the content.
+// Run creddy to generate an owner credential
 $cmd_array = array("/usr/local/bin/creddy",
                    "--attribute",
                    "--issuer",
