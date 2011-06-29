@@ -56,6 +56,8 @@ $tmpfile = tempnam(sys_get_temp_dir(), "portal");
 // TODO: Does the $user have permissions on this $slice?
 // TODO: Pass expiration to slicecred.py
 
+$slice_hash = sha1($slice["urn"]);
+
 // Run creddy to generate an owner credential
 $cmd_array = array("/usr/local/bin/creddy",
                    "--attribute",
@@ -64,7 +66,7 @@ $cmd_array = array("/usr/local/bin/creddy",
                    "--key",
                    "/usr/share/geni-portal/abac/GeniPortal_private.pem",
                    "--role",
-                   "Owner_" . $slice["name"],
+                   "Owner_" . $slice_hash,
                    "--subject-id",
                    $abac_fingerprint,
                    "--validity",
