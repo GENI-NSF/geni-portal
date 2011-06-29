@@ -74,7 +74,7 @@ $result = exec($command, $output, $status);
 //print_r($output);
 
 // Clean up, clean up
-//unlink($cert_file);
+unlink($cert_file);
 
 $file = $slice['name'] . "-cred.xml";
 // Set headers for download
