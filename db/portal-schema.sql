@@ -108,6 +108,7 @@ CREATE TABLE slice (
   name varchar unique,
   expiration timestamp,
   owner UUID REFERENCES account (account_id),
+  urn varchar unique not null,
   PRIMARY KEY (slice_id)
 );
 
