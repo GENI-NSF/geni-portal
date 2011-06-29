@@ -287,4 +287,39 @@ function fetch_abac_fingerprint($account_id)
   return $row["abac_fingerprint"];
 }
 
+function fetch_abac_id($account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT abac_id"
+    . " FROM abac "
+    . " WHERE account_id = "
+    . $conn->quote($account_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch abac id: " . $resultset->getMessage());
+  }
+  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+  return $row["abac_id"];
+}
+
+function fetch_abac_key($account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT abac_key"
+    . " FROM abac "
+    . " WHERE account_id = "
+    . $conn->quote($account_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch abac key: " . $resultset->getMessage());
+  }
+  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+  return $row["abac_key"];
+}
 ?>

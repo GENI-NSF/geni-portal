@@ -23,28 +23,19 @@
 //----------------------------------------------------------------------
 ?>
 <?php
+require_once("settings.php");
 require_once("user.php");
-?>
-<h1>User Tools</h1>
-<h2>Public Key</h2>
-<?php
-$key = db_fetch_public_key($user->account_id);
-if ($key) {
-  print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th></tr>\n";
-  $download_url = relative_url("certificate.php");
-  print "<tr>"
-    . "<td>" . htmlentities($key['filename']) . "</td>"
-    . "<td>" . htmlentities($key['description']) . "</td>"
-    . "<td><a href=\"" . $download_url . "\">Download Certificate</a></td>"
-    . "</tr>\n";
-  print "</table>\n";
-} else {
-  print "<a href=\"uploadkey.php\">Please upload a public key</a>\n";
-}
-?>
-<h2>ABAC</h2>
-<?php
-print "<a href=\"abac-id.php\">Download your ABAC ID</a><br/>\n";
-print "<a href=\"abac-key.php\">Download your ABAC private key</a>\n";
+$user = geni_loadUser();
+
+$abac_key = fetch_abac_key($user->account_id);
+// TODO: make sure you got an abac key
+
+$file = $user->username . "_private.pem";
+// Set headers for download
+header("Cache-Control: public");
+header("Content-Description: File Transfer");
+header("Content-Disposition: attachment; filename=$file");
+header("Content-Type: application/pem");
+header("Content-Transfer-Encoding: binary");
+print $abac_key;
 ?>
