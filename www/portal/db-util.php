@@ -180,6 +180,26 @@ function fetch_slice($slice_id)
   return $row;
 }
 
+function fetch_slice_by_name($name)
+{
+  $conn = portal_conn();
+  $sql = "SELECT * FROM slice"
+    . " WHERE slice.name = "
+    . $conn->quote($name, 'text')
+    . ";";
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch_slice select: " . $resultset->getMessage());
+  }
+  if ($resultset->numRows() == 0) {
+    return NULL;
+  } else {
+    // There should be one and only one slice with this name
+    $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    return $row;
+  }
+}
+
 function db_add_public_key($account_id, $public_key, $filename, $description)
 {
   $conn = portal_conn();

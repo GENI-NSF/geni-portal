@@ -26,27 +26,37 @@ if (count($_GET)) {
 
 // Do we have all the required params?
 if ($name) {
-  // Yes, create a new slice.
-  /* print "name = $name, creating slice<br/>"; */
-  $slice_id = make_uuid();
-  /* print "slice id = $slice_id<br/>"; */
-  db_create_slice($user->account_id, $slice_id, $name);
-  /* print "done creating slice<br/>"; */
-  relative_redirect('home');
-} else {
-  // No, present the form
-  include("header.php");
-  print '<form method="GET" action="createslice">';
-  print "\n";
-  print 'Slice name: ';
-  print "\n";
-  print '<input type="text" name="name"/><br/>';
-  print "\n";
-  print '<input type="submit" value="Create slice"/>';
-  print "\n";
-  print '</form>';
-  print "\n";
+  $slice = fetch_slice_by_name($name);
+  if (is_null($slice)) {
+    // no slice by that name, create it
+    /* print "name = $name, creating slice<br/>"; */
+    $slice_id = make_uuid();
+    /* print "slice id = $slice_id<br/>"; */
+    db_create_slice($user->account_id, $slice_id, $name);
+    /* print "done creating slice<br/>"; */
+    relative_redirect('home');
+  } else {
+    $message = "Slice name \"" . $name . "\" is already taken."
+      . " Please choose a different name." ;
+  }
 }
+
+// If here, present the form
+include("header.php");
+if ($message) {
+  // It would be nice to put this in red...
+  print "<i>" . $message . "</i>\n";
+}
+print '<form method="GET" action="createslice">';
+print "\n";
+print 'Slice name: ';
+print "\n";
+print '<input type="text" name="name"/><br/>';
+print "\n";
+print '<input type="submit" value="Create slice"/>';
+print "\n";
+print '</form>';
+print "\n";
 ?>
 <?php
 include("footer.php");

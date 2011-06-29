@@ -105,7 +105,7 @@ DROP TABLE IF EXISTS slice CASCADE;
 
 CREATE TABLE slice (
   slice_id UUID,
-  name varchar,
+  name varchar unique,
   expiration timestamp,
   owner UUID REFERENCES account (account_id),
   PRIMARY KEY (slice_id)
