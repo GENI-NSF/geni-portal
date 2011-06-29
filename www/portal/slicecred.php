@@ -56,7 +56,12 @@ $slice = fetch_slice($slice_id);
 
 $key = db_fetch_public_key($user->account_id);
 if (! $key) {
-  relative_redirect("home.php");
+  include("header.php");
+  print "Please"
+    . " <a href=\"" . relative_url("home.php") . "\">upload a public key</a>"
+    . " so that a credential can be generated.";
+  include("footer.php");
+  exit();
 }
 $cert_file = tempnam(sys_get_temp_dir(), 'portal');
 file_put_contents($cert_file, $key['certificate']);
