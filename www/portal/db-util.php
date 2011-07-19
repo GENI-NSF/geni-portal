@@ -191,7 +191,7 @@ function fetch_slice_by_name($name)
     . ";";
   $resultset = $conn->query($sql);
   if (PEAR::isError($resultset)) {
-    die("error on fetch_slice select: " . $resultset->getMessage());
+    die("error on fetch_slice_by_name select: " . $resultset->getMessage());
   }
   if ($resultset->numRows() == 0) {
     return NULL;
