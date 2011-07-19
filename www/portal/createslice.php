@@ -11,6 +11,7 @@ require_once("db-util.php");
 <?php
 $user = geni_loadUser();
 $name = NULL;
+$message = NULL;
 if (count($_GET)) {
   // parse the args
   /* print "got parameters<br/>"; */
