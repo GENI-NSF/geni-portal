@@ -57,7 +57,7 @@ if ($public_key['certificate'] == NULL) {
   // The cert is on disk, read the file and store it in the db.
   $cert_file = '/tmp/' . $user->username . "-cert.pem";
   $contents = file_get_contents($cert_file);
-  db_add_key_cert($user->account_id, $key_id, $contents);
+  db_add_key_cert($user->account_id, $contents);
   // Delete the temporary key file
   unlink($key_file);
   // Delete the cert file
