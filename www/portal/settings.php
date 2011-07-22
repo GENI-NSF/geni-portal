@@ -38,4 +38,7 @@ $portal_gcf_dir = '/usr/share/geni-portal/gcf';
 // Where to find the local gcf configuration directory.
 $portal_gcf_cfg_dir = '/usr/share/geni-portal/gcf.d';
 
+// Set to true for demo situations to auto approve new accounts.
+$portal_auto_approve = true;
+
 ?>
