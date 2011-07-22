@@ -106,7 +106,9 @@ $cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
                    $user->username,
                    '--pubkey',
                    $_FILES["file"]["tmp_name"],
-                   '--exp'
+                   '--exp',
+                   '--email',
+                   $user->email()
                    );
 $command = implode(" ", $cmd_array);
 $result = exec($command, $output, $status);
