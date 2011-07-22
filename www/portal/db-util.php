@@ -322,4 +322,35 @@ function fetch_abac_key($account_id)
   $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
   return $row["abac_key"];
 }
+
+function approve_account($account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "UPDATE account"
+    . " SET status = 'active'"
+    . " WHERE account_id = "
+    . $conn->quote($account_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on update account active: " . $resultset->getMessage());
+  }
+
+  $sql = "INSERT INTO account_privilege"
+    . " VALUES("
+    . $conn->quote($account_id, 'text')
+    . ", 'slice'"
+    . ');';
+  /* print "command = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on insert slice privilege: " . $resultset->getMessage());
+  }
+
+
+  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+  return $row["abac_key"];
+}
 ?>
