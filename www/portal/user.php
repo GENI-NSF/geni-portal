@@ -49,6 +49,11 @@ class GeniUser
     return $this->status == 'disabled';
   }
 
+  function email() {
+    /* return the value of the 'mail' attribute from the IdP. */
+    return $this->attributes['mail'];
+  }
+
   function prettyName() {
     if (array_key_exists('givenName', $this->attributes)
         && array_key_exists('sn', $this->attributes)) {
