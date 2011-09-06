@@ -233,10 +233,10 @@ print $url
 >portal home page</a>
 
 <?php
-$array = $_POST;
-foreach ($array as $var => $value) {
-    print "POST[$var] = $value<br/>";
-    }
+//$array = $_POST;
+//foreach ($array as $var => $value) {
+//    print "POST[$var] = $value<br/>";
+//    }
 ?>
 
 <hr/>
