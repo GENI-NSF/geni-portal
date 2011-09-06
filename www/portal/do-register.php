@@ -137,15 +137,17 @@ foreach ($attrs as $attr) {
   /* print "attr = $attr<br/>"; */
   if (array_key_exists($attr, $_SERVER)) {
     $value = $_SERVER[$attr];
+    $self_asserted = false;
   } else {
     $value = $_POST[$attr];
+    $self_asserted = true;
   }
   $sql = "INSERT INTO identity_attribute "
     . "(identity_id, name, value, self_asserted) VALUES ("
     . $conn->quote($identity_id, 'integer')
     . ", " . $conn->quote($attr, 'text')
     . ", " . $conn->quote($value, 'text')
-    . ", " . $conn->quote(false)
+    . ", " . $conn->quote($self_asserted)
     . ");";
   /* print "attr insert: $sql<br/>"; */
   $result = $conn->exec($sql);
