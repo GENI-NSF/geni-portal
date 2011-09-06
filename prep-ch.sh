@@ -40,7 +40,7 @@ if [ ! -d "${SHARE_DIR}" ]; then
   /usr/bin/sudo /bin/mkdir "${SHARE_DIR}"
 fi
 
-GCF=gcf-1.3-rc1-tom
+GCF=gcf-1.3.2
 GCF_PKG=${GCF}.tar.gz
 /usr/bin/wget http://www.gpolab.bbn.com/internal/projects/proto-ch/${GCF_PKG}
 /usr/bin/sudo /bin/tar xzfC "${GCF_PKG}" "${SHARE_DIR}"
