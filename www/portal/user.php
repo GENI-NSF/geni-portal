@@ -81,6 +81,12 @@ function geni_loadUser()
   $conn = portal_conn();
   $conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
 
+  // Short circuit if no eppn. We require eppn as the persistent db key.
+  if (! array_key_exists('eppn', $_SERVER)) {
+    // No eppn was found - redirect to a gentle error page
+    relative_redirect("error-eppn.php");
+  }
+
   $eppn = $_SERVER['eppn'];
   $query = 'SELECT * FROM identity WHERE eppn = '
     . $conn->quote($eppn, 'text');
