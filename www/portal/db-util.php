@@ -353,4 +353,41 @@ function approve_account($account_id)
   $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
   return $row["abac_key"];
 }
+
+function requestedAccounts() {
+  /* print "in db-util loadAccount<br/>"; */
+  $conn = portal_conn();
+  $sql = "SELECT * FROM requested_account;";
+  /* print "Query = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on loadAccount select: " . $resultset->getMessage());
+  }
+  $value = array();
+  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+    $value[] = $row;
+  }
+  // TODO: close the connection?
+  return $value;
+}
+
+function loadIdentitiesByAccountId($account_id) {
+  $conn = portal_conn();
+  $sql = "SELECT * FROM identity WHERE account_id = "
+  . $conn->quote($account_id, 'text')
+  . ";";
+  /* print "Query = $sql<br/>"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on loadIdentityAttributes select: " . $resultset->getMessage());
+  }
+  $value = array();
+  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+    // Append to the array
+    $value[] = $row;
+  }
+  // TODO: close the connection?
+  return $value;
+}
+
 ?>
