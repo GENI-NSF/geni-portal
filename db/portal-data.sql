@@ -1,4 +1,4 @@
-INSERT INTO schema_version(key, extra) values ('001', 'schema version');
+INSERT INTO schema_version(key, extra) values ('003', 'schema version');
 
 -- Fake tmitchel data
 -- INSERT INTO identity

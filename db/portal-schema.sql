@@ -152,3 +152,19 @@ CREATE TABLE abac (
 );
 
 CREATE INDEX abac_index_account_id ON abac (account_id);
+
+-- ----------------------------------------------------------------------
+-- ABAC identities
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS abac_assertion;
+CREATE TABLE abac_assertion (
+  issuer VARCHAR, -- the issuer fingerprint
+  issuer_role VARCHAR,
+  subject VARCHAR, -- the subject fingerprint
+  expiration TIMESTAMP,
+  credential VARCHAR -- Base64 encoded abac assertion
+);
+
+CREATE INDEX abac_assertion_issuer ON abac_assertion (issuer);
+CREATE INDEX abac_assertion_issuer_role ON abac_assertion (issuer_role);
+CREATE INDEX abac_assertion_subject ON abac_assertion (subject);
