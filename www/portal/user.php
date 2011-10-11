@@ -2,6 +2,7 @@
 
 require_once 'db-util.php';
 require_once 'util.php';
+require 'abac.php';
 
 //----------------------------------------------------------------------
 // A class representing an experimenter who has logged in
@@ -118,6 +119,10 @@ function geni_loadUser()
     $user->eppn = $row['eppn'];
     $user->account_id = $row['account_id'];
     $user->loadAccount();
+
+    // Cache the IDP attributes as ABAC assertions
+    abac_store_idp_attrs($user);
+
     return $user;
   } else {
     // More than one row! Something is wrong!

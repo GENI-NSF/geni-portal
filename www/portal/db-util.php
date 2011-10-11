@@ -390,4 +390,27 @@ function loadIdentitiesByAccountId($account_id) {
   return $value;
 }
 
+function storeAbacAssertion($assertion,
+                            $issuer_fingerprint,
+                            $issuer_role,
+                            $subject_fingerprint,
+                            $expiration) {
+  $conn = portal_conn();
+  $base64_assertion = base64_encode($assertion);
+  $sql = "INSERT INTO abac_assertion ("
+    . "issuer, issuer_role, subject, expiration, credential"
+    . ") VALUES ("
+    . $conn->quote($issuer_fingerprint, 'text')
+    . ', ' . $conn->quote($issuer_role, 'text')
+    . ', ' . $conn->quote($subject_fingerprint, 'text')
+    . ', ' . $conn->quote($expiration->format('Y-m-d H:i:s'), 'timestamp')
+    . ', ' . $conn->quote($base64_assertion, 'text')
+    . ');';
+  /* print "command = $sql<br/>"; */
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on abac assertion insert: " . $result->getMessage());
+  }
+}
+
 ?>
