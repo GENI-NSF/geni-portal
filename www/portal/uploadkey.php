@@ -57,16 +57,39 @@ if ($key) {
 }
 
 $error = NULL;
-if (array_key_exists('file', $_FILES)
-    && $_FILES['file']['error'] != 0) {
-  // An error occurred with the upload.
+if (array_key_exists('file', $_FILES)) {
   $errorcode = $_FILES['file']['error'];
-  if ($errorcode == UPLOAD_ERR_NO_FILE) {
-    $error = "No file was uploaded.";
+  if ($errorcode != 0) {
+    // An error occurred with the upload.
+    if ($errorcode == UPLOAD_ERR_NO_FILE) {
+      $error = "No file was uploaded.";
+    } else {
+      $error = "Unknown upload error (code = $errorcode).";
+    }
   } else {
-    $error = "Unknown upload error (code = $errorcode).";
+    // A file was uploaded. Make sure it is an SSL key.
+    $cmd_array = array('/usr/bin/openssl',
+                       'rsa',
+                       '-pubin',
+                       '-in',
+                       $_FILES["file"]["tmp_name"],
+                       );
+    $command = implode(" ", $cmd_array);
+    $result = exec($command, $output, $status);
+    if ($status != 0) {
+      $fname = $_FILES['file']['name'];
+      $error = "File $fname is not a valid SSL public key.";
+    }
   }
 }
+
+//----------------------------------------------------------------------
+// Check for valid ssl public key:
+//
+//  /usr/bin/openssl rsa -pubin -in public_key.pem
+//
+//  /usr/bin/openssl rsa -pubin -in $_FILES['file']['tmp_name']
+//----------------------------------------------------------------------
 
 if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
