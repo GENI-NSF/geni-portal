@@ -56,22 +56,31 @@ if ($key) {
   relative_redirect("home.php");
 }
 
-if (count($_POST) == 0) {
+$error = NULL;
+if (array_key_exists('file', $_FILES)
+    && $_FILES['file']['error'] != 0) {
+  // An error occurred with the upload.
+  $errorcode = $_FILES['file']['error'];
+  if ($errorcode == UPLOAD_ERR_NO_FILE) {
+    $error = "No file was uploaded.";
+  } else {
+    $error = "Unknown upload error (code = $errorcode).";
+  }
+}
+
+if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
   $GENI_TITLE = "Upload public key";
   include("header.php");
+  if ($error != NULL) {
+    echo "<div id=\"error-message\""
+      . " style=\"background: #dddddd;font-weight: bold\">\n";
+    echo "$error";
+    echo "</div>\n";
+  }
   include('uploadkey.html');
   include("footer.php");
   exit;
-}
-
-if ($_FILES["file"]["error"] > 0) {
-  echo "Error: " . $_FILES["file"]["error"] . "<br />";
-} else {
-  echo "Upload: " . $_FILES["file"]["name"] . "<br />";
-  echo "Type: " . $_FILES["file"]["type"] . "<br />";
-  echo "Size: " . ($_FILES["file"]["size"] / 1024) . " Kb<br />";
-  echo "Stored in: " . $_FILES["file"]["tmp_name"];
 }
 
 // The public key is in $_FILES["file"]["tmp_name"]
