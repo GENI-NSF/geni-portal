@@ -26,6 +26,9 @@ www:
 install: www
 	sudo /bin/cp www/portal/* /var/www/secure
 	sudo /bin/cp www/images/* /var/www/images
+	@echo
+	@echo "*** Remember to check www/portal/settings.php! ***"
+	@echo
 
 cleandb:
 	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
