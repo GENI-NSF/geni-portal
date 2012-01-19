@@ -48,6 +48,10 @@ function derive_username() {
   /* print "atindex = $atindex<br/>\n"; */
   $username = substr($email_addr, 0, $atindex);
   /* print "base username = $username<br/>\n"; */
+
+  // Sanitize the username so it can be used in ABAC
+  $username = strtolower($username);
+  $username = preg_replace("/[^a-z0-9_]/", "", $username);
   if (! db_fetch_user_by_username($username)) {
     /* print "no conflict with $username<br/>\n"; */
     return $username;
