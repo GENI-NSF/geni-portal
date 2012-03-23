@@ -235,6 +235,23 @@ function db_add_key_cert($account_id, $certificate)
   }
 }
 
+function db_add_inside_key_cert($account_id, $certificate, $key)
+{
+  $conn = portal_conn();
+  $sql = "INSERT into inside_key (CERTIFICATE, PRIVATE_KEY, ACCOUNT_ID) values ("
+    . $conn->quote($certificate, 'text')
+    . ', '
+    . $conn->quote($key, 'text')
+    . ', '
+    . $conn->quote($account_id, 'text')
+    . ');';
+  print "command = $sql<br/>"; 
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on inside key/certificate insert: " . $result->getMessage());
+  }
+}
+
 function db_fetch_public_key($account_id)
 {
   $conn = portal_conn();

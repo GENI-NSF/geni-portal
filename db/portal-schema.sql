@@ -141,6 +141,18 @@ CREATE TABLE public_key (
 CREATE INDEX public_key_index_account_id ON public_key (account_id);
 
 -- ----------------------------------------------------------------------
+-- Inside keys
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS inside_key;
+CREATE TABLE inside_key (
+  account_id UUID REFERENCES account UNIQUE,
+  private_key VARCHAR,
+  certificate VARCHAR
+);
+
+CREATE INDEX inside_key_index_account_id ON inside_key (account_id);
+
+-- ----------------------------------------------------------------------
 -- ABAC identities
 -- ----------------------------------------------------------------------
 DROP TABLE IF EXISTS abac;

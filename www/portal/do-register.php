@@ -207,6 +207,43 @@ if (PEAR::isError($result)) {
   die("error on abac insert: " . $result->getMessage());
 }
 
+// --------------------------------------------------
+// Create new private key and certificate ("inside keys")
+// --------------------------------------------------
+
+// *** FIX ME ***
+$email_addr = NULL;
+if (array_key_exists('mail', $_SERVER)) {
+  $email_addr = $_SERVER['mail'];
+} else if (array_key_exists('mail', $_POST)) {
+  $email_addr = $_POST['mail'];
+} else {
+  // Use a fake one.
+  $email_addr = 'unknown@example.com';
+}
+$cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
+                   '-c',
+                   $portal_gcf_cfg_dir . '/gcf.ini',
+                   '--notAll',
+                   '-d',
+                   '/tmp',
+                   '-u',
+                   $username,
+                   '--exp',
+                   '--email',
+                   $email_addr
+                   );
+$command = implode(" ", $cmd_array);
+$result = exec($command, $output, $status);
+print_r($output); 
+// The cert is on disk, read the file and store it in the db.
+$cert_file = '/tmp/' . $username . "-cert.pem";
+$key_file = '/tmp/' . $username . "-key.pem";
+$cert_contents = file_get_contents($cert_file);
+$key_contents = file_get_contents($key_file);
+db_add_inside_key_cert($account_id, $cert_contents, $key_contents);
+// unlink($cert_file);
+// unlink($key_file);
 
 // --------------------------------------------------
 // Send mail about the new account request
