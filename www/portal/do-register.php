@@ -235,15 +235,15 @@ $cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
                    );
 $command = implode(" ", $cmd_array);
 $result = exec($command, $output, $status);
-print_r($output); 
+/* print_r($output);  */
 // The cert is on disk, read the file and store it in the db.
 $cert_file = '/tmp/' . $username . "-cert.pem";
 $key_file = '/tmp/' . $username . "-key.pem";
 $cert_contents = file_get_contents($cert_file);
 $key_contents = file_get_contents($key_file);
 db_add_inside_key_cert($account_id, $cert_contents, $key_contents);
-// unlink($cert_file);
-// unlink($key_file);
+unlink($cert_file);
+unlink($key_file);
 
 // --------------------------------------------------
 // Send mail about the new account request
