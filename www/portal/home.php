@@ -16,6 +16,8 @@ if (is_null($user)) {
     print "User $user->eppn has been disabled.";
   } else if ($user->isActive()) {
     include("home-active.php");
+    // Uncomment below if you want jquery tabs example
+    //include("home-active-tabs.php");
   } else {
     // TODO: Handle unknown state
     print "Unknown account state: $user->status<br/>";
