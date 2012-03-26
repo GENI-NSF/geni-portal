@@ -235,6 +235,23 @@ function db_add_key_cert($account_id, $certificate)
   }
 }
 
+function db_add_inside_key_cert($account_id, $certificate, $key)
+{
+  $conn = portal_conn();
+  $sql = "INSERT into inside_key (CERTIFICATE, PRIVATE_KEY, ACCOUNT_ID) values ("
+    . $conn->quote($certificate, 'text')
+    . ', '
+    . $conn->quote($key, 'text')
+    . ', '
+    . $conn->quote($account_id, 'text')
+    . ');';
+/*  print "command = $sql<br/>";  */
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on inside key/certificate insert: " . $result->getMessage());
+  }
+}
+
 function db_fetch_public_key($account_id)
 {
   $conn = portal_conn();
@@ -242,6 +259,23 @@ function db_fetch_public_key($account_id)
   $sql = "SELECT *"
     . " FROM public_key "
     . " WHERE public_key.account_id = "
+    . $conn->quote($account_id, 'text')
+    . ';';
+  /* print "command = $sql<br/>\n"; */
+  $resultset = $conn->query($sql);
+  if (PEAR::isError($resultset)) {
+    die("error on fetch public key: " . $resultset->getMessage());
+  }
+  return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+}
+
+function db_fetch_inside_private_key_cert($account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT private_key, certificate"
+    . " FROM inside_key "
+    . " WHERE inside_key.account_id = "
     . $conn->quote($account_id, 'text')
     . ';';
   /* print "command = $sql<br/>\n"; */

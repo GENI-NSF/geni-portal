@@ -3,9 +3,10 @@
 ?>
 
 <?php
-require_once("user.php");
-require_once("util.php");
+require_once("settings.php");
 require_once("db-util.php");
+require_once("util.php");
+require_once("user.php");
 ?>
 
 <?php
@@ -25,6 +26,49 @@ if (count($_GET)) {
   /* print "no parameters in _GET<br/>"; */
 }
 
+function omni_create_slice($user, $slice_id, $name)
+{
+    /* Write key and credential files */
+    $row = db_fetch_inside_private_key_cert($user->account_id);
+    $cert = $row['certificate'];
+    $private_key = $row['private_key'];
+    $cert_file = '/tmp/' . $user->username . "-cert.pem";
+    $key_file = '/tmp/' . $user->username . "-key.pem";	
+    $omni_file = '/tmp/' . $user->username . "-omni.ini";
+    file_put_contents($cert_file, $cert);
+    file_put_contents($key_file, $private_key);
+
+    /* Create OMNI config file */
+    $omni_config = "[omni]\n"
+    . "default_cf = my_gcf\n"
+    . "[my_gcf]\n"
+    . "type=gcf\n"
+    . "authority=geni:gpo:portal\n"
+    . "ch=https://localhost:8000\n"
+    . "cert=" . $cert_file . "\n"
+    . "key=" . $key_file;
+    file_put_contents($omni_file, $omni_config);
+
+    /* Call OMNI */
+    global $portal_gcf_dir;
+    $cmd_array = array($portal_gcf_dir . '/src/omni.py',
+                   '-c',
+		   $omni_file,
+		   'createslice',
+		   $name
+                   );
+     $command = implode(" ", $cmd_array);
+     $result = exec($command, $output, $status);
+//     print_r($output);  
+//     print_r($result);
+//     print "RESULT = " . $result . "\n";
+//     print "STATUS = " . $status . "\n";
+     unlink($cert_file);
+     unlink($key_file);
+     unlink($omni_file);
+
+}
+
 // Do we have all the required params?
 if ($name) {
   $slice = fetch_slice_by_name($name);
@@ -33,6 +77,10 @@ if ($name) {
     /* print "name = $name, creating slice<br/>"; */
     $slice_id = make_uuid();
     /* print "slice id = $slice_id<br/>"; */
+
+    /* Get a slice from GCF slice authority */
+    omni_create_slice($user, $slice_id, $name);
+
     db_create_slice($user->account_id, $slice_id, $name);
     /* print "done creating slice<br/>"; */
     relative_redirect('home');
