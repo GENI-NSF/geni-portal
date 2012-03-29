@@ -69,6 +69,35 @@ function omni_create_slice($user, $slice_id, $name)
 
 }
 
+function sa_create_slice($user, $slice_id, $name)
+{
+  $sa_url = 'https://dagoola.gpolab.bbn.com/sa/sa_controller.php';
+  $message['operation'] = 'create_slice';
+  $message['slice_name'] = $name;
+  $message = json_encode($message);
+  // sign
+  // encrypt
+  $tmpfile = tempnam(sys_get_temp_dir(), "msg");
+  file_put_contents($tmpfile, $message);
+  $ch = curl_init();
+  $fp = fopen($tmpfile, "r");
+  curl_setopt($ch, CURLOPT_URL, $sa_url);
+  curl_setopt($ch, CURLOPT_PUT, true);
+  curl_setopt($ch, CURLOPT_INFILE, $fp);
+  curl_setopt($ch, CURLOPT_INFILESIZE, strlen($message));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $result = curl_exec($ch);
+  $error = curl_error($ch);
+  curl_close($ch);
+  fclose($fp);
+  unlink($tmpfile);
+  if ($error) {
+    error_log("sa_create_slice error: $error");
+    $result = NULL;
+  }
+  return $result;
+}
+
 // Do we have all the required params?
 if ($name) {
   $slice = fetch_slice_by_name($name);
@@ -79,7 +108,10 @@ if ($name) {
     /* print "slice id = $slice_id<br/>"; */
 
     /* Get a slice from GCF slice authority */
-    omni_create_slice($user, $slice_id, $name);
+    //omni_create_slice($user, $slice_id, $name);
+    $result = sa_create_slice($user, $slice_id, $name);
+    $pretty_result = print_r($result, true);
+    error_log("sa_create_slice result: $pretty_result\n");
 
     db_create_slice($user->account_id, $slice_id, $name);
     /* print "done creating slice<br/>"; */
