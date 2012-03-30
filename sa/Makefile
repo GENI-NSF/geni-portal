@@ -3,7 +3,7 @@
 WWW_OWNER=www-data
 WWW_GROUP=www-data
 
-DESTDIR=/usr/share/geni-sa
+DESTDIR=/usr/share/geni-ch/sa
 WWWDIR=$(DESTDIR)/www
 LIBDIR=$(DESTDIR)/php
 DBDIR=$(DESTDIR)/db

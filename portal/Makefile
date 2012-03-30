@@ -9,7 +9,7 @@ DB.USER = portal
 DB.HOST = localhost
 DB.DB = portal
 CLEANDB.SQL = db/portal-schema.sql db/portal-data.sql
-LIB.DIR = /usr/share/geni-portal
+LIB.DIR = /usr/share/geni-ch/portal
 ABAC.DIR = $(LIB.DIR)/abac
 
 default:
