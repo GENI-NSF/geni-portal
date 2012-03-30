@@ -1,0 +1,46 @@
+
+Before installing the prototype GENI clearinghouse software, you must
+prepare your machine. This involves installing dependencies and
+configuring the database (PostgreSQL).
+
+ 1. Install the Shibboleth service provider. This is done separately
+    from the prototype clearinghouse installation. From the sp
+    directory in the shib git repository and run the following
+    scripts:
+
+      prep-sp.sh
+      install-sp.sh
+
+ 2. Copy the proto-ch directory onto the destination machine.
+
+ 3. Run the 'prep-ch.sh' script to install dependencies (packages and
+    gcf) and configure the PostgreSQL database.
+
+ 4. In each directory within proto-ch (portal, sa, ...) run "sudo make
+    install".
+
+ 5. Configure Apache to run the prototype clearinghouse services and
+    portal.
+
+    Add the following lines to /etc/apache2/sites-available/default-ssl:
+
+      Include /usr/share/geni-ch/portal/apache2.conf
+      Include /usr/share/geni-ch/sa/apache2.conf
+
+ 6. Restart Apache.
+
+      /usr/bin/sudo /usr/sbin/service apache2 restart
+
+ 7. Test the slice authority. From the proto-ch/sa directory, run the
+    following command:
+
+      curl  -k -T sample.msg https://host.example.com/sa/sa_controller.php
+
+    That should output "created my slice 2" if everything is working
+    properly. If no output is shown, look in
+    /var/log/apache2/error.log for error messages that might indicate
+    what the problem is.
+
+ 8. Log in to the portal. Navigate to:
+
+      https://host.example.com/secure/home.php
