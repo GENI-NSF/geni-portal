@@ -39,13 +39,13 @@ cleandb:
 	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
 
 syncm:
-	$(RSYNC) -aztv ../proto-ch marilac.gpolab.bbn.com:
+	$(RSYNC) -aztv ../portal marilac.gpolab.bbn.com:
 
 syncd:
-	$(RSYNC) -aztv ../proto-ch dagoola.gpolab.bbn.com:
+	$(RSYNC) -aztv ../portal dagoola.gpolab.bbn.com:
 
 syncpanther:
-	$(RSYNC) -aztv ../proto-ch panther.gpolab.bbn.com:
+	$(RSYNC) -aztv ../portal panther.gpolab.bbn.com:
 
 $(ABAC.DIR):
 	sudo mkdir -p $(ABAC.DIR)

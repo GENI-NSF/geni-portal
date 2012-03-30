@@ -31,10 +31,10 @@ install:
 	$(WWWINSTALL) -m 0644 apache2.conf $(DESTDIR)
 
 syncd:
-	$(RSYNC) -aztv ../geni-sa dagoola.gpolab.bbn.com:
+	$(RSYNC) -aztv ../sa dagoola.gpolab.bbn.com:
 
 syncm:
-	$(RSYNC) -aztv ../geni-sa marilac.gpolab.bbn.com:
+	$(RSYNC) -aztv ../sa marilac.gpolab.bbn.com:
 
 clean:
 
