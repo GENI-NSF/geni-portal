@@ -3,6 +3,26 @@ require_once("user.php");
 $GENI_TITLE = "GENI Portal Home";
 include("header.php");
 ?>
+<!-- HTML code borrowed from Trac for a menu bar -->
+<!--
+<div id="mainnav" class="nav">
+  <ul>
+    <li class="active first">
+      <a accesskey="1" href="/syseng/wiki">Home</a>
+    </li>
+    <li>
+      <a accesskey="2" href="/syseng/timeline">Projects</a>
+    </li>
+    <li>
+      <a accesskey="3" href="/syseng/roadmap">Slices</a>
+    </li>
+    <li>
+      <a href="/syseng/report">Admin</a>
+    </li>
+  </ul>
+</div>
+-->
+
 <div id="home-body">
 <?php
 $user = geni_loadUser();
