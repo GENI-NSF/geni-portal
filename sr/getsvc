@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Run curl to fetch a credential
+
+# Usage: getsvc <svc type> <json|xml>
+
+curl --insecure --get -H "Accept: application/${2}" \
+     https://dagoola.gpolab.bbn.com/sr/services.php/${1}
