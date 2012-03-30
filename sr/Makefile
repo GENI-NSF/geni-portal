@@ -3,11 +3,18 @@
 WWW_OWNER=www-data
 WWW_GROUP=www-data
 
-DESTDIR=/usr/share/geni-sr
+DESTDIR=/usr/share/geni-ch/sr
 WWWDIR=$(DESTDIR)/www
 LIBDIR=$(DESTDIR)/php
 DBDIR=$(DESTDIR)/db
 PGDIR=$(DBDIR)/postgresql
+
+PSQL = /usr/bin/psql
+DB.USER = portal
+DB.HOST = localhost
+DB.DB = portal
+CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
+
 
 # Programs
 RSYNC = /usr/bin/rsync
@@ -33,6 +40,9 @@ install:
 
 syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)
+
+cleandb:
+	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
 
 clean:
 
