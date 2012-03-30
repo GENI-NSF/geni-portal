@@ -1,3 +1,4 @@
+<?php
 /* Top level message handler for a PHP top-level process
  * to handle smime encrypted/signed message files as JSON files
  *
@@ -5,7 +6,6 @@
  * run the signified function with arguments
  * take the result and JSON encode into a document, encrypt and sign and return response
  */
-<?php
 
 function handle_message($prefix)
 {
