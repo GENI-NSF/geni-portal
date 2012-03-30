@@ -1,6 +1,5 @@
 <?php
 
-require_once("smime.php");
 require_once("message_handler.php");
 
 function create_slice($args)
