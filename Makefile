@@ -14,7 +14,8 @@ RSYNC = /usr/bin/rsync
 INSTALL ?= /usr/bin/install
 WWWINSTALL = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
 
-.PHONY: default install syncd syncm synci syncp clean distclean
+.PHONY: default install clean distclean
+.PHONY: syncm syncd synci syncs syncp
 
 default:
 	@echo "Try make install"
@@ -29,13 +30,16 @@ syncd:
 	$(RSYNC) --exclude .git -aztv ../proto-ch dagoola.gpolab.bbn.com:
 
 syncm:
-	$(RSYNC) -aztv ../proto-ch marilac.gpolab.bbn.com:
+	$(RSYNC) --exclude .git -aztv ../proto-ch marilac.gpolab.bbn.com:
 
 synci:
-	$(RSYNC) -aztv ../proto-ch illyrica.gpolab.bbn.com:
+	$(RSYNC) --exclude .git -aztv ../proto-ch illyrica.gpolab.bbn.com:
+
+syncs:
+	$(RSYNC) --exclude .git -aztv ../proto-ch sergyar.gpolab.bbn.com:
 
 syncp:
-	$(RSYNC) -aztv ../proto-ch panther.gpolab.bbn.com:
+	$(RSYNC) --exclude .git -aztv ../proto-ch panther.gpolab.bbn.com:
 
 clean:
 

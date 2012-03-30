@@ -14,6 +14,9 @@ RSYNC = /usr/bin/rsync
 INSTALL ?= /usr/bin/install
 WWWINSTALL = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
 
+.PHONY: default install
+.PHONY: syncm syncd synci syncs syncp
+
 default:
 	echo "try make install"
 
@@ -27,13 +30,6 @@ install:
 #	$(WWWINSTALL) -m 0644 db/postgresql/* $(PGDIR)
 #	$(WWWINSTALL) -m 0644 apache2.conf $(DESTDIR)
 
-
-syncm:
-	$(RSYNC) -aztv ../lib marilac.gpolab.bbn.com:
-
-syncd:
-	$(RSYNC) -aztv ../lib dagoola.gpolab.bbn.com:
-
-syncpanther:
-	$(RSYNC) -aztv ../lib panther.gpolab.bbn.com:
+syncm syncd synci syncs syncp:
+	(cd .. && $(MAKE) $@)
 

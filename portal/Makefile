@@ -1,5 +1,6 @@
 
-.PHONY = default install cleandb syncm abac
+.PHONY = default install cleandb abac gcf
+.PHONY: syncm syncd synci syncs syncp
 
 RSYNC = /usr/bin/rsync
 PSQL = /usr/bin/psql
@@ -38,14 +39,8 @@ install: www
 cleandb:
 	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
 
-syncm:
-	$(RSYNC) -aztv ../portal marilac.gpolab.bbn.com:
-
-syncd:
-	$(RSYNC) -aztv ../portal dagoola.gpolab.bbn.com:
-
-syncpanther:
-	$(RSYNC) -aztv ../portal panther.gpolab.bbn.com:
+syncm syncd synci syncs syncp:
+	(cd .. && $(MAKE) $@)
 
 $(ABAC.DIR):
 	sudo mkdir -p $(ABAC.DIR)
