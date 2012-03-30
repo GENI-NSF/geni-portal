@@ -71,7 +71,9 @@ function omni_create_slice($user, $slice_id, $name)
 
 function sa_create_slice($user, $slice_id, $name)
 {
-  $sa_url = 'https://dagoola.gpolab.bbn.com/sa/sa_controller.php';
+  /* Could be HTTP_HOST or SERVER_NAME */
+  $http_host = $_SERVER['HTTP_HOST'];
+  $sa_url = "https://" . $http_host . "/sa/sa_controller.php";
   $message['operation'] = 'create_slice';
   $message['slice_name'] = $name;
   $message = json_encode($message);
