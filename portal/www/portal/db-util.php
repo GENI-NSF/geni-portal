@@ -26,19 +26,13 @@
 require_once 'util.php';
 require_once 'db_utils.php';
 
-function loadAccount($account_id) {
+function loadAccount($account_id) 
+{
   /* print "in db-util loadAccount<br/>"; */
   $conn = portal_conn();
   $sql = "SELECT * FROM account WHERE account_id = "
-  . $conn->quote($account_id, 'text')
-  . ";";
-  /* print "Query = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on loadAccount select: " . $resultset->getMessage());
-  }
-  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
-  // TODO: close the connection?
+    . $conn->quote($account_id, 'text');
+  $row = db_fetch_row($sql);
   return $row;
 }
 
@@ -46,43 +40,22 @@ function loadAccountPrivileges($account_id) {
   /* print "in db-util loadAccount<br/>"; */
   $conn = portal_conn();
   $sql = "SELECT privilege FROM account_privilege WHERE account_id = "
-  . $conn->quote($account_id, 'text')
-  . ";";
+    . $conn->quote($account_id, 'text');
   /* print "Query = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on loadAccount select: " . $resultset->getMessage());
-  }
+  $rows = db_fetch_rows($sql);
   $privs = array();
-  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+  foreach ($rows as $row) {
     $privs[] = $row["privilege"];
   }
-  // TODO: close the connection?
   return $privs;
 }
 
 function loadIdentityAttributes($identity_id) {
   $conn = portal_conn();
   $sql = "SELECT * FROM identity_attribute WHERE identity_id = "
-  . $conn->quote($identity_id, 'integer')
-  . ";";
+    . $conn->quote($identity_id, 'integer');
   /* print "Query = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on loadIdentityAttributes select: " . $resultset->getMessage());
-  }
-  //$rows = $resultset->fetchAll(MDB2_FETCHMODE_ASSOC);
-  $value = array();
-  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
-    // Append to the array
-    $value[] = $row;
-  }
-  // TODO: close the connection?
-    /* foreach ($value as $var => $value) { */
-    /*   print "geni_loadUser row $var = $value<br/>"; */
-    /* } */
-    /* print "returning $value<br/>"; */
-    /* print "num val attrs = " . count($value) . "<br/>"; */
+  $value = db_fetch_rows($sql);
   return $value;
 }
 
@@ -100,23 +73,16 @@ function db_create_slice($account_id, $slice_id, $name)
     . ', ' . $conn->quote($expires->format('Y-m-d H:i:s'), 'timestamp')
     . ', ' . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($urn, 'text')
-    . ');';
+    . ')';
   /* print "command = $sql<br/>"; */
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    $my_tx = $conn->rollback();
-    die("error on slice insert: " . $result->getMessage());
-  }
+  $result = db_execute_statement($sql, "slice insert", true);
+
   $sql = "INSERT INTO account_slice (account_id, slice_id) VALUES ("
     . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($slice_id, 'text')
-    . ');';
+    . ')';
   /* print "command 2 = $sql<br/>"; */
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    $my_tx = $conn->rollback();
-    die("error on account_slice insert: " . $result->getMessage());
-  }
+  $result = db_execute_statement($sql, "account_slice insert", true);
   $my_tx = $conn->commit();
 }
 
@@ -126,20 +92,10 @@ function fetch_slices($account_id)
   $sql = "SELECT slice.* FROM slice, account_slice"
     . " WHERE account_slice.account_id = "
     . $conn->quote($account_id, 'text')
-    . " AND slice.slice_id = account_slice.slice_id"
-    . ";";
-  // print "Query = $sql<br/>";
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch_slices select: " . $resultset->getMessage());
-  }
-  $value = array();
-  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
-    // Append to the array
-    $value[] = $row;
-  }
-  // TODO: close the connection?
-  return $value;
+    . " AND slice.slice_id = account_slice.slice_id";
+// print "Query = $sql<br/>";
+$value = db_fetch_rows($sql);
+return $value;
 }
 
 function fetch_slice($slice_id)
@@ -147,14 +103,8 @@ function fetch_slice($slice_id)
   $conn = portal_conn();
   $sql = "SELECT * FROM slice"
     . " WHERE slice.slice_id = "
-    . $conn->quote($slice_id, 'text')
-    . ";";
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch_slice select: " . $resultset->getMessage());
-  }
-  // There should be one and only one slice with this id
-  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    . $conn->quote($slice_id, 'text');
+  $row = db_fetch_row($sql);
   return $row;
 }
 
@@ -163,19 +113,9 @@ function fetch_slice_by_name($name)
   $conn = portal_conn();
   $sql = "SELECT * FROM slice"
     . " WHERE slice.name = "
-    . $conn->quote($name, 'text')
-    . ";";
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch_slice_by_name select: " . $resultset->getMessage());
-  }
-  if ($resultset->numRows() == 0) {
-    return NULL;
-  } else {
-    // There should be one and only one slice with this name
-    $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
-    return $row;
-  }
+    . $conn->quote($name, 'text');
+  $row = db_fetch_row($sql, "fetch_slice_by_name");
+  return $row;
 }
 
 function db_add_public_key($account_id, $public_key, $filename, $description)
@@ -186,13 +126,10 @@ function db_add_public_key($account_id, $public_key, $filename, $description)
     . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($public_key, 'text')
     . ', ' . $conn->quote($filename, 'text')
-    . ', ' . $conn->quote($description, 'text')
-    . ');';
+    . ', ' . $conn->quote($description, 'text');
   /* print "command = $sql<br/>"; */
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    die("error on public key insert: " . $result->getMessage());
-  }
+  $result = db_execute_statement($sql, "public key insert");
+  return $result;
 }
 
 function db_add_key_cert($account_id, $certificate)
@@ -202,13 +139,10 @@ function db_add_key_cert($account_id, $certificate)
     . " SET certificate = "
     . $conn->quote($certificate, 'text')
     . " WHERE account_id = "
-    . $conn->quote($account_id, 'text')
-    . ';';
+    . $conn->quote($account_id, 'text');
   /* print "command = $sql<br/>"; */
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    die("error on certificate insert: " . $result->getMessage());
-  }
+  $result = db_execute_statement($sql, "certificate insert");
+  return $result;
 }
 
 function db_add_inside_key_cert($account_id, $certificate, $key)
@@ -219,30 +153,21 @@ function db_add_inside_key_cert($account_id, $certificate, $key)
     . ', '
     . $conn->quote($key, 'text')
     . ', '
-    . $conn->quote($account_id, 'text')
-    . ');';
-/*  print "command = $sql<br/>";  */
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    die("error on inside key/certificate insert: " . $result->getMessage());
-  }
+    . $conn->quote($account_id, 'text');
+  /*  print "command = $sql<br/>";  */
+  $result = db_execute_statement($sql, "inside key/certificaste");
+  return $result;
 }
 
 function db_fetch_public_key($account_id)
 {
   $conn = portal_conn();
-
   $sql = "SELECT *"
     . " FROM public_key "
     . " WHERE public_key.account_id = "
-    . $conn->quote($account_id, 'text')
-    . ';';
-  /* print "command = $sql<br/>\n"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch public key: " . $resultset->getMessage());
-  }
-  return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    . $conn->quote($account_id, 'text');
+  $row = db_fetch_row($sql, "fetch public key");
+  return $row;
 }
 
 function db_fetch_inside_private_key_cert($account_id)
@@ -252,14 +177,9 @@ function db_fetch_inside_private_key_cert($account_id)
   $sql = "SELECT private_key, certificate"
     . " FROM inside_key "
     . " WHERE inside_key.account_id = "
-    . $conn->quote($account_id, 'text')
-    . ';';
-  /* print "command = $sql<br/>\n"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch public key: " . $resultset->getMessage());
-  }
-  return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    . $conn->quote($account_id, 'text');
+  $row = db_fetch_row($sql, "fetch inside private key");
+  return $row;
 }
 
 function db_fetch_user_by_username($username)
@@ -269,14 +189,9 @@ function db_fetch_user_by_username($username)
   $sql = "SELECT *"
     . " FROM account "
     . " WHERE username = "
-    . $conn->quote($username, 'text')
-    . ';';
-  /* print "command = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch user by username: " . $resultset->getMessage());
-  }
-  return $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    . $conn->quote($username, 'text');
+  $row = db_fetch_row($sql, "fetch user by username");
+  return $row;
 }
 
 function fetch_abac_fingerprint($account_id)
@@ -286,14 +201,8 @@ function fetch_abac_fingerprint($account_id)
   $sql = "SELECT abac_fingerprint"
     . " FROM abac "
     . " WHERE account_id = "
-    . $conn->quote($account_id, 'text')
-    . ';';
-  /* print "command = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch abac fingerprint: " . $resultset->getMessage());
-  }
-  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    . $conn->quote($account_id, 'text');
+  $row = db_fetch_row($sql, "fetch abac fingerprint");
   return $row["abac_fingerprint"];
 }
 
@@ -304,14 +213,8 @@ function fetch_abac_id($account_id)
   $sql = "SELECT abac_id"
     . " FROM abac "
     . " WHERE account_id = "
-    . $conn->quote($account_id, 'text')
-    . ';';
-  /* print "command = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch abac id: " . $resultset->getMessage());
-  }
-  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    . $conn->quote($account_id, 'text');
+  $row = db_fetch_row($sql, "fetch abac id");
   return $row["abac_id"];
 }
 
@@ -322,14 +225,8 @@ function fetch_abac_key($account_id)
   $sql = "SELECT abac_key"
     . " FROM abac "
     . " WHERE account_id = "
-    . $conn->quote($account_id, 'text')
-    . ';';
-  /* print "command = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on fetch abac key: " . $resultset->getMessage());
-  }
-  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    . $conn->quote($account_id, 'text');
+  $row = db_fetch_row($sql, "fetch abac key");
   return $row["abac_key"];
 }
 
@@ -340,63 +237,35 @@ function approve_account($account_id)
   $sql = "UPDATE account"
     . " SET status = 'active'"
     . " WHERE account_id = "
-    . $conn->quote($account_id, 'text')
-    . ';';
+    . $conn->quote($account_id, 'text');
   /* print "command = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on update account active: " . $resultset->getMessage());
-  }
+  $result = db_execute_statement($sql, "update account active");
 
   $sql = "INSERT INTO account_privilege"
     . " VALUES("
     . $conn->quote($account_id, 'text')
     . ", 'slice'"
-    . ');';
+    . ')';
   /* print "command = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on insert slice privilege: " . $resultset->getMessage());
-  }
-
-
-  $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+  $row = db_fetch_row($sql, "approve account");
   return $row["abac_key"];
 }
 
 function requestedAccounts() {
   /* print "in db-util loadAccount<br/>"; */
   $conn = portal_conn();
-  $sql = "SELECT * FROM requested_account;";
+  $sql = "SELECT * FROM requested_account";
   /* print "Query = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on loadAccount select: " . $resultset->getMessage());
-  }
-  $value = array();
-  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
-    $value[] = $row;
-  }
-  // TODO: close the connection?
+  $value = db_fetch_rows($sql, "loadAccount select");
   return $value;
 }
 
 function loadIdentitiesByAccountId($account_id) {
   $conn = portal_conn();
   $sql = "SELECT * FROM identity WHERE account_id = "
-  . $conn->quote($account_id, 'text')
-  . ";";
+    . $conn->quote($account_id, 'text');
   /* print "Query = $sql<br/>"; */
-  $resultset = $conn->query($sql);
-  if (PEAR::isError($resultset)) {
-    die("error on loadIdentityAttributes select: " . $resultset->getMessage());
-  }
-  $value = array();
-  while ($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
-    // Append to the array
-    $value[] = $row;
-  }
-  // TODO: close the connection?
+  $value = db_fetch_rows($sql, "loadIdentityAttributes select");
   return $value;
 }
 
@@ -415,12 +284,10 @@ function storeAbacAssertion($assertion,
     . ', ' . $conn->quote($subject_fingerprint, 'text')
     . ', ' . $conn->quote($expiration->format('Y-m-d H:i:s'), 'timestamp')
     . ', ' . $conn->quote($base64_assertion, 'text')
-    . ');';
+    . ')';
   /* print "command = $sql<br/>"; */
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    die("error on abac assertion insert: " . $result->getMessage());
-  }
+  $result = db_execute_statement($sql, "abac assertion insert");
+  return $result;
 }
 
 ?>

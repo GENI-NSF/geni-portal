@@ -29,7 +29,7 @@ function get_services($args)
 
   $query = "SELECT * FROM " . $SR_TABLENAME;
   error_log("SR.GS QUERY = " . $query);
-  $rows = db_fetch_rows($query);
+  $rows = db_fetch_rows($query, "SR.get_services");
   return $rows;
 }
 
@@ -47,7 +47,7 @@ function get_services_of_type($args)
     SR_TABLE_FIELDNAME::SERVICE_TYPE . 
     " = '" . $service_type . "'";
   error_log("SR.GSOT QUERY = " . $query);
-  $rows = db_fetch_rows($query);
+  $rows = db_fetch_rows($query, "SR.get_services_of_type");
   return $rows;
 }
 
@@ -70,7 +70,7 @@ function register_service($args)
     ", ". 
     "'" . $service_url . "')";
   error_log("SR.RegisterService STMT = " . $stmt);
-  $result = db_execute_statement($stmt);
+  $result = db_execute_statement($stmt, "SR.register_service");
   return $result;
 }
 /*
@@ -91,7 +91,7 @@ function remove_service($args)
     SR_TABLE_FIELDNAME::SERVICE_URL . " = '" .
     $service_url . "'";
   error_log("SR.RemoveService STMT = " . $stmt);
-  $result = db_execute_statement($stmt);
+  $result = db_execute_statement($stmt, "SR.remove_service");
   return $result;
 }
 
