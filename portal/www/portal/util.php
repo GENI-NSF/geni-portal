@@ -1,5 +1,7 @@
 <?php
 
+require_once('smime.php');
+
 //----------------------------------------------------------------------
 // Utility functions
 //----------------------------------------------------------------------
@@ -55,10 +57,12 @@ function put_message($url, $message)
   fclose($fp);
   unlink($tmpfile);
   if ($error) {
-    error_log("sa_create_slice error: $error");
+    error_log("put_message error: $error");
     $result = NULL;
   }
+  $result = decode_result($result);
   return $result;
 }
+
 
 ?>
