@@ -24,6 +24,11 @@ function encode_result($result)
   return json_encode($result);
 }
 
+function decode_result($result)
+{
+  return json_decode($result, true); // Return associative array
+}
+
 function parse_message($msg)
 {
   $map = json_decode($msg, true);
@@ -33,6 +38,11 @@ function parse_message($msg)
   unset($map['operation']);
   $funcargs[1] = $map;
   return $funcargs;
+}
+
+function parse_result($result)
+{
+  return $result;
 }
 
 ?>

@@ -50,6 +50,7 @@ function db_fetch_rows($query)
   while($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
     $rows[] = $row;
   }
+
   return $rows;
 }
 
