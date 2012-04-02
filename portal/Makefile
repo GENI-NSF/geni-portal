@@ -9,7 +9,7 @@ INSTALL.WWW = /usr/bin/install -o www-data -g www-data
 DB.USER = portal
 DB.HOST = localhost
 DB.DB = portal
-CLEANDB.SQL = db/portal-schema.sql db/portal-data.sql
+CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
 LIB.DIR = /usr/share/geni-ch/portal
 ABAC.DIR = $(LIB.DIR)/abac
 
