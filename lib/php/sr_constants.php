@@ -42,4 +42,13 @@ class SR_TABLE_FIELDNAME {
   const SERVICE_CERT = "service_cert";
 }
 
+/* Get name of singleton service registry (SR) instance */
+function get_sr_url()
+{
+  /* Could be HTTP_HOST or SERVER_NAME */
+  $http_host = $_SERVER['HTTP_HOST'];
+  $sr_url = "https://" . $http_host . "/sr/sr_controller.php";
+  return $sr_url;
+}
+
 ?>
