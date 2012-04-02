@@ -153,7 +153,8 @@ function db_add_inside_key_cert($account_id, $certificate, $key)
     . ', '
     . $conn->quote($key, 'text')
     . ', '
-    . $conn->quote($account_id, 'text');
+    . $conn->quote($account_id, 'text')
+    . ")";
   /*  print "command = $sql<br/>";  */
   $result = db_execute_statement($sql, "inside key/certificaste");
   return $result;
