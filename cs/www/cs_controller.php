@@ -34,26 +34,44 @@ require_once('cs_constants.php');
  */
 function create_assertion($args)
 {
-  $signer = $args[CS_ARGUMENTS::SIGNER];
-  $principal = $args[CS_ARGUMENTS::PRINCIPAL];
-  $attribute = $args[CS_ARGUMENTS::ATTRIBUTE];
-  $context_type = $args[CS_ARGUMENTS::CONTEXT_TYPE];
-  $context = $args[CS_ARGUMENTS::CONTEXT];
+  global $CS_ASSERTION_TABLENAME;
+  $signer = $args[CS_ARGUMENT::SIGNER];
+  $principal = $args[CS_ARGUMENT::PRINCIPAL];
+  $attribute = $args[CS_ARGUMENT::ATTRIBUTE];
+  $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+  $context = '0';
+  if ($context_type != CS_CONTEXT_TYPE::NONE) {
+    $context = $args[CS_ARGUMENT::CONTEXT];
+  }
+
+  // Expire in 30 days
+  $expiration = new DateTime();
+  $expiration->add(new DateInterval('P30D'));
 
   $assertion_cert = create_assertion_cert($signer, $principal, 
-					  $attribute, $context_type, $context);
-  $sql = "INSERT INTO " . CS_ASSERTION_TABLENAME . "(" 
+					  $attribute, $context_type, $context,
+					  $expiration);
+  $context_field_clause = "";
+  $context_value_clause = "";
+  if ($context_type != CS_CONTEXT_TYPE::NONE) {
+    $context_field_clause = CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . ", ";
+    $context_value_clause = "'" . $context . "', ";
+  }
+
+  $sql = "INSERT INTO " . $CS_ASSERTION_TABLENAME . "(" 
     . CS_ASSERTION_TABLE_FIELDNAME::SIGNER . ", "
     . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . ", "
     . CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE . ", "
     . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
-    . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . ", "
+    . $context_field_clause 
+    . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . ", "
     . CS_ASSERTION_TABLE_FIELDNAME::ASSERTION_CERT . ") VALUES ( "
     . "'" . $signer . "', "
     . "'" . $principal . "', "
     . "'" . $attribute . "', "
     . "'" . $context_type . "', "
-    . "'" . $context . "', "
+    . $context_value_clause 
+    . "'" . $expiration->format('Y-m-d H:i:s') . "', "
     . "'" . $assertion_cert . "') ";
   $result = db_execute_statement($sql);
   return result;
@@ -69,50 +87,46 @@ function create_assertion($args)
  */
 function create_policy($args)
 {
-  $signer = $args[CS_ARGUMENTS::SIGNER];
-  $attribute = $args[CS_ARGUMENTS::ATTRIBUTE];
-  $context_type = $args[CS_ARGUMENTS::CONTEXT_TYPE];
-  $action = $args[CS_ARGUMENTS::ACTION];
+  global $CS_POLICY_TABLENAME;
+  $signer = $args[CS_ARGUMENT::SIGNER];
+  $attribute = $args[CS_ARGUMENT::ATTRIBUTE];
+  $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+  $action = $args[CS_ARGUMENT::ACTION];
 
-  // Expire in 30 days
-  $expiration = new DateTime();
-  $exipration->add(new DateInterval('P30D');
-
-  $assertion_cert = create_assertion_cert($signer, $principal, 
-					  $attribute, $context_type, $context);
-  $sql = "INSERT INTO " . CS_ASSERTION_TABLENAME . "(" 
-    . CS_ASSERTION_TABLE_FIELDNAME::SIGNER . ", "
-    . CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE . ", "
-    . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
-    . CS_ASSERTION_TABLE_FIELDNAME::ACTION . ", "
-    . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . ", "
-    . CS_ASSERTION_TABLE_FIELDNAME::POLICY_CERT . ") VALUES ( "
+  $policy_cert = create_policy_cert($signer,  
+				    $attribute, $context_type, $action);
+  $sql = "INSERT INTO " . $CS_POLICY_TABLENAME . "(" 
+    . CS_POLICY_TABLE_FIELDNAME::SIGNER . ", "
+    . CS_POLICY_TABLE_FIELDNAME::ATTRIBUTE . ", "
+    . CS_POLICY_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
+    . CS_POLICY_TABLE_FIELDNAME::ACTION . ", "
+    . CS_POLICY_TABLE_FIELDNAME::POLICY_CERT . ") VALUES ( "
     . "'" . $signer . "', "
-    . "'" . $attribute . "', "
-    . "'" . $context_type . "', "
-    . "'" . $action . "', "    
-    . "'" . $expiration . "', "
+    . "" . $attribute . ", "
+    . "" . $context_type . ", "
+    . "" . $action . ", "    
     . "'" . $policy_cert . "') ";
   $result = db_execute_statement($sql);
-  return result;
+  return $result;
 }
 
 /*
  * Renew a given assertion with given ID
  * Args:
  *   ID - ID of assertion to be renewed
- *   renewal_time - time to which the assertion is to be renewed 
- *          (absolute, not relative)
  * Return : Success/failure
  */
 function renew_assertion($args)
 {
+  global $CS_ASSERTION_TABLENAME;
   $id = $args[CS_ARGUMENT::ID];
-  $renewal_time = $args[CS_ARGUMENT::RENEWAL_TIME];
-  $sql = "update " . CS_ASSERTION_TABLENAME . " SET " 
-    . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . " = '" . $renewal_time . "'"
-    . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = '" $id . "'";
-  $result = $db_execute_statement($sql);
+  $expiration = new DateTime();
+  $expiration->add(new DateInterval('P20D')); // 20 days increment
+  $sql = "update " . $CS_ASSERTION_TABLENAME . " SET " 
+    . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . " = '" 
+    . $expiration->format('Y-m-d H:i:s') . "'"
+    . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = '" . $id . "'";
+  $result = db_execute_statement($sql);
   return $result;
 }
 
@@ -124,10 +138,11 @@ function renew_assertion($args)
  */
 function delete_policy($args)
 {
+  global $CS_POLICY_TABLENAME;
   $id = $args[CS_ARGUMENT::ID];
-  $sql = "delete from " . CS_POLICY_TABLENAME . 
-    . " WHERE " . CS_POLICY_TABLE_FIELDNAME::ID . " = '" $id . "'";
-  $result = $db_execute_statement($sql);
+  $sql = "delete from " . $CS_POLICY_TABLENAME 
+    . " WHERE " . CS_POLICY_TABLE_FIELDNAME::ID . " = '" . $id . "'";
+  $result = db_execute_statement($sql);
   return $result;
 }
 
@@ -142,21 +157,27 @@ function delete_policy($args)
  */
 function query_assertions($args)
 {
+  global $CS_ASSERTION_TABLENAME;
   $principal = $args[CS_ARGUMENT::PRINCIPAL];
-  $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
-  $context = $args[CS_ARGUMENT::CONTEXT];
   if ($principal == -1) { // For testing
     $sql = "select * from " . $CS_ASSERTION_TABLENAME;
-  } else if ($context_type == CS_CONTEXT_TYPE::NONE) {
-    $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
-      . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = '" . $principal . "'";
   } else {
-    $sql = "select * from " + $CS_CREDENTIAL_TABLENAME . " WHERE " 
-      . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = '" . $principal 
-      . "' AND " 
-      . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = '" . $context_type
-      . "' AND "
-      . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . " = '" . $context;
+    $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+    $context = null;
+    if ($context_type != CS_CONTEXT_TYPE::NONE) {
+      $context = $args[CS_ARGUMENT::CONTEXT];
+    }
+    if ($context_type == CS_CONTEXT_TYPE::NONE) {
+      $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
+	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = '" . $principal . "'";
+    } else {
+      $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
+	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = '" . $principal 
+	. "' AND " 
+	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = '" . $context_type
+	. "' AND "
+	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . " = '" . $context;
+    }
   }
   $rows = db_fetch_rows($sql);
   return $rows;
@@ -169,20 +190,27 @@ function query_assertions($args)
  */
 function query_policies($args)
 {
-
   // TODO - Should there be arguments? Do I know what subset I want
-  $sql = "select * from " + $CS_POLICY_TABLENAME;
+  global $CS_POLICY_TABLENAME;
+  $sql = "select * from " . $CS_POLICY_TABLENAME;
   $rows = db_fetch_rows($sql);
-  return rows;
+  return $rows;
 }
 
 function create_assertion_cert($signer, $principal, 
-			       $attribute, $context_type, $context)
+			       $attribute, $context_type, $context, 
+			       $expiration)
 {
   // *** TODO
   return null;
 }
 
+function create_policy_cert($signer, 
+			    $attribute, $context_type, $action)
+{
+  // *** TODO
+  return null;
+}
 
 handle_message("CS");
 

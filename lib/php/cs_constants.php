@@ -16,12 +16,12 @@ class CS_ATTRIBUTE_TYPE {
   const SLICE_AUDITOR = 8;
   const SLIVER_LEAD = 9;
   const SLIVER_MEMBER = 10;
-  const SLICE_AUDITOR = 11;
+  const SLIVER_AUDITOR = 11;
 
 }
 
 /* Set of known action types */
-class CS_ATTRIBUTE_TYPE {
+class CS_ACTION_TYPE {
   const MEMBER_DELEGATE = 1;
   const MEMBER_READ = 2;
   const MEMBER_WRITE = 3;
@@ -32,7 +32,7 @@ class CS_ATTRIBUTE_TYPE {
   const PROJECT_DELEGATE = 8;
   const PROJECT_READ = 9;
   const PROJECT_WRITE = 10;
-  const SLICE_DELEGATE = 11
+  const SLICE_DELEGATE = 11;
   const SLICE_READ = 12;
   const SLICE_WRITE = 13;
   const SLIVER_DELEGATE = 14;
@@ -40,7 +40,7 @@ class CS_ATTRIBUTE_TYPE {
   const SLIVER_WRITE = 16;
 }
 
-/* Set of known context types for services within GENI CH credential store */`
+/* Set of known context types for services within GENI CH credential store */
 /* We store/retrieve by index into this array, but print the strings */
 $CS_CONTEXT_TYPE_NAMES = array("NONE", 
 			       "PROJECT",
@@ -62,7 +62,7 @@ class CS_ARGUMENT
   const SIGNER = "signer";
   const PRINCIPAL = "principal";
   const ATTRIBUTE = "attribute";
-  const ACTION = "action";`
+  const ACTION = "action";
   const CONTEXT_TYPE = "context_type";
   const CONTEXT = "context";
   const RENEWAL_TIME = "renewal_time";
