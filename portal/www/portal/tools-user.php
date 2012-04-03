@@ -52,5 +52,9 @@ print "<a href=\"abac-key.php\">Download your ABAC private key</a>\n";
 <?php
 print "<a href=\"sr_controller_test.php\">Service Registry Test</a>\n";
 ?>
+<h2>CS</h2>
+<?php
+print "<a href=\"cs_controller_test.php\">Credential Registry Serviceore Test</a>\n";
+?>
 
 

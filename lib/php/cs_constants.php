@@ -4,6 +4,42 @@
  * GENI Clearinghouse Credential Store
  */
 
+/* Set of known attribute types */
+class CS_ATTRIBUTE_TYPE {
+  const REGISTRAR = 1;
+  const ADMIN = 2;
+  const PROJECT_LEAD = 3;
+  const PROJECT_MEMBER = 4;
+  const PROJECT_AUDITOR = 5;
+  const SLICE_LEAD = 6;
+  const SLICE_MEMBER = 7;
+  const SLICE_AUDITOR = 8;
+  const SLIVER_LEAD = 9;
+  const SLIVER_MEMBER = 10;
+  const SLICE_AUDITOR = 11;
+
+}
+
+/* Set of known action types */
+class CS_ATTRIBUTE_TYPE {
+  const MEMBER_DELEGATE = 1;
+  const MEMBER_READ = 2;
+  const MEMBER_WRITE = 3;
+  const SERVICE_DELEGATE = 4;
+  const SERVICE_READ = 5;
+  const SERVICE_WRITE = 6;
+  const PROJECT_CREATE = 7;
+  const PROJECT_DELEGATE = 8;
+  const PROJECT_READ = 9;
+  const PROJECT_WRITE = 10;
+  const SLICE_DELEGATE = 11
+  const SLICE_READ = 12;
+  const SLICE_WRITE = 13;
+  const SLIVER_DELEGATE = 14;
+  const SLIVER_READ = 15;
+  const SLIVER_WRITE = 16;
+}
+
 /* Set of known context types for services within GENI CH credential store */`
 /* We store/retrieve by index into this array, but print the strings */
 $CS_CONTEXT_TYPE_NAMES = array("NONE", 

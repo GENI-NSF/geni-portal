@@ -145,8 +145,10 @@ function query_assertions($args)
   $principal = $args[CS_ARGUMENT::PRINCIPAL];
   $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
   $context = $args[CS_ARGUMENT::CONTEXT];
-  if ($context_type == CS_CONTEXT_TYPE::NONE) {
-    $sql = "select * from " + $CS_ASSERTION_TABLENAME . " WHERE " 
+  if ($principal == -1) { // For testing
+    $sql = "select * from " . $CS_ASSERTION_TABLENAME;
+  } else if ($context_type == CS_CONTEXT_TYPE::NONE) {
+    $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
       . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = '" . $principal . "'";
   } else {
     $sql = "select * from " + $CS_CREDENTIAL_TABLENAME . " WHERE " 

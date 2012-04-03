@@ -20,18 +20,19 @@ INSERT INTO cs_attribute (id, name) values (11, 'SLIVER_AUDITOR');
 INSERT INTO cs_action (id, name) values (1, 'MEMBER_DELEGATE'); 
 INSERT INTO cs_action (id, name) values (2, 'MEMBER_READ');
 INSERT INTO cs_action (id, name) values (3, 'MEMBER_WRITE');
-INSERT INTO cs_action (id, name) values (4, 'SERVICE_READ');
-INSERT INTO cs_action (id, name) values (5, 'SERVICE_WRITE');
-INSERT INTO cs_action (id, name) values (6, 'PROJECT_CREATE');
-INSERT INTO cs_action (id, name) values (7, 'PROJECT_DELEGATE');
-INSERT INTO cs_action (id, name) values (8, 'PROJECT_READ');
-INSERT INTO cs_action (id, name) values (9, 'PROJECT_WRITE');
-INSERT INTO cs_action (id, name) values (10, 'SLICE_DELEGATE');
-INSERT INTO cs_action (id, name) values (11, 'SLICE_READ');
-INSERT INTO cs_action (id, name) values (12, 'SLICE_WRITE');
-INSERT INTO cs_action (id, name) values (13, 'SLIVER_DELEGATE');
-INSERT INTO cs_action (id, name) values (14, 'SLIVER_READ');
-INSERT INTO cs_action (id, name) values (15, 'SLIVER_WRITE');
+INSERT INTO cs_action (id, name) values (4, 'SERVICE_DELEGATE');
+INSERT INTO cs_action (id, name) values (5, 'SERVICE_READ');
+INSERT INTO cs_action (id, name) values (6, 'SERVICE_WRITE');
+INSERT INTO cs_action (id, name) values (7, 'PROJECT_CREATE');
+INSERT INTO cs_action (id, name) values (8, 'PROJECT_DELEGATE');
+INSERT INTO cs_action (id, name) values (9, 'PROJECT_READ');
+INSERT INTO cs_action (id, name) values (10, 'PROJECT_WRITE');
+INSERT INTO cs_action (id, name) values (11, 'SLICE_DELEGATE');
+INSERT INTO cs_action (id, name) values (12, 'SLICE_READ');
+INSERT INTO cs_action (id, name) values (13, 'SLICE_WRITE');
+INSERT INTO cs_action (id, name) values (14, 'SLIVER_DELEGATE');
+INSERT INTO cs_action (id, name) values (15, 'SLIVER_READ');
+INSERT INTO cs_action (id, name) values (16, 'SLIVER_WRITE');
 
 -- Need to insert the policies at CS initialization time
 -- The attributes are written by the MA through the CS interface
