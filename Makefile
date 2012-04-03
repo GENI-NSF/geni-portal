@@ -22,7 +22,7 @@ default:
 
 install:
 	$(WWWINSTALL) -d $(DESTDIR)
-	for d in lib portal sa sr; do \
+	for d in lib portal sa sr authz cs ma pa logging; do \
 	  (cd "$${d}" && $(MAKE) $@) \
 	done
 
