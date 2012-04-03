@@ -54,7 +54,7 @@ print "<a href=\"sr_controller_test.php\">Service Registry Test</a>\n";
 ?>
 <h2>CS</h2>
 <?php
-print "<a href=\"cs_controller_test.php\">Credential Registry Serviceore Test</a>\n";
+print "<a href=\"cs_controller_test.php\">Credential Store Test</a>\n";
 ?>
 
 
