@@ -38,7 +38,7 @@ function portal_conn()
 
 function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
 {
-  error_log('db_execute_statement ' . $stmt);
+  //  error_log('db_execute_statement ' . $stmt);
   $conn = portal_conn();
   $result = $conn->exec($stmt);
   if (PEAR::isError($result)) {
@@ -53,7 +53,7 @@ function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
 
 function db_fetch_rows($query, $msg = "")
 {
-  error_log('db_fetch_rows ' . $query);
+  //  error_log('db_fetch_rows ' . $query);
   $conn = portal_conn();
   $resultset = $conn->query($query);
   if (PEAR::isError($resultset)) {
@@ -69,7 +69,7 @@ function db_fetch_rows($query, $msg = "")
 
 function db_fetch_row($query, $msg = "")
 {
-  error_log('db_fetch_rows ' . $query);
+  //  error_log('db_fetch_rows ' . $query);
   $conn = portal_conn();
   $resultset = $conn->query($query);
   if (PEAR::isError($resultset)) {

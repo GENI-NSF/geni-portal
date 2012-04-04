@@ -60,7 +60,11 @@ function put_message($url, $message)
     error_log("put_message error: $error");
     $result = NULL;
   }
+  //  error_log("Received raw result : " . $result);
+  $result = trim($result); // Remove trailing newlines
   $result = decode_result($result);
+  // error_log("Decoded raw result : " . $result);
+
   return $result;
 }
 

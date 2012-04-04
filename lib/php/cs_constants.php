@@ -20,24 +20,11 @@ class CS_ATTRIBUTE_TYPE {
 
 }
 
-/* Set of known action types */
-class CS_ACTION_TYPE {
-  const MEMBER_DELEGATE = 1;
-  const MEMBER_READ = 2;
-  const MEMBER_WRITE = 3;
-  const SERVICE_DELEGATE = 4;
-  const SERVICE_READ = 5;
-  const SERVICE_WRITE = 6;
-  const PROJECT_CREATE = 7;
-  const PROJECT_DELEGATE = 8;
-  const PROJECT_READ = 9;
-  const PROJECT_WRITE = 10;
-  const SLICE_DELEGATE = 11;
-  const SLICE_READ = 12;
-  const SLICE_WRITE = 13;
-  const SLIVER_DELEGATE = 14;
-  const SLIVER_READ = 15;
-  const SLIVER_WRITE = 16;
+/* Set of known privilege types */
+class CS_PRIVILEGE_TYPE {
+  const DELEGATE = 1;
+  const READ = 2;
+  const WRITE = 3;
 }
 
 /* Set of known context types for services within GENI CH credential store */
@@ -62,10 +49,11 @@ class CS_ARGUMENT
   const SIGNER = "signer";
   const PRINCIPAL = "principal";
   const ATTRIBUTE = "attribute";
-  const ACTION = "action";
+  const PRIVILEGE = "privilege";
   const CONTEXT_TYPE = "context_type";
   const CONTEXT = "context";
   const RENEWAL_TIME = "renewal_time";
+  const ACTION = "action";
 }
 
 /* Name of table to which the CS persists/retrieves credentials */
@@ -91,7 +79,7 @@ class CS_POLICY_TABLE_FIELDNAME {
   const SIGNER = "signer";
   const ATTRIBUTE = "attribute";
   const CONTEXT_TYPE = "context_type";
-  const ACTION = "action";
+  const PRIVILEGE = "privilege";
   const POLICY_CERT = "policy_cert";
 }
 

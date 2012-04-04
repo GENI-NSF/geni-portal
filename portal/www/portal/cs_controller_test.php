@@ -34,18 +34,11 @@ function dump_all_assertions_and_policies()
 	      $policy[CS_POLICY_TABLE_FIELDNAME::SIGNER] . " " . 
 	      $policy[CS_POLICY_TABLE_FIELDNAME::ATTRIBUTE] . " " . 
 	      $policy[CS_POLICY_TABLE_FIELDNAME::CONTEXT_TYPE] . " " . 
-	      $policy[CS_POLICY_TABLE_FIELDNAME::ACTION] . " " . 
+	      $policy[CS_POLICY_TABLE_FIELDNAME::PRIVILEGE] . " " . 
 	      $policy[CS_POLICY_TABLE_FIELDNAME::POLICY_CERT]);
   }
 
 }
-
-// create_assertion(signer, principal, attribute, context_type, context)
-// create_policy(signer, attribute, context_type, action)
-// renew_assertion(id, time)
-// delete_policy(id)
-// query_assertions(principal, context_type, context)
-// query_policies()
 
 $create_assertion_message['operation'] = 'create_assertion';
 $create_assertion_message[CS_ARGUMENT::SIGNER] = '22222222222222222222222222222222';
@@ -53,31 +46,72 @@ $create_assertion_message[CS_ARGUMENT::PRINCIPAL] = '333333333333333333333333333
 $create_assertion_message[CS_ARGUMENT::ATTRIBUTE] = CS_ATTRIBUTE_TYPE::ADMIN;
 $create_assertion_message[CS_ARGUMENT::CONTEXT_TYPE] = '0';
 $result = put_message($cs_url, $create_assertion_message);
+error_log("RES(1) = " . $result);
 dump_all_assertions_and_policies($result);
 
 $create_assertion_message[CS_ARGUMENT::SIGNER] = '22222222222222222222222222222222';
 $create_assertion_message[CS_ARGUMENT::PRINCIPAL] = '33333333333333333333333333333333';
-$create_assertion_message[CS_ARGUMENT::ATTRIBUTE] = CS_ATTRIBUTE_TYPE::PROJECT_AUDITOR;
-$create_assertion_message[CS_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;;
+$create_assertion_message[CS_ARGUMENT::ATTRIBUTE] = CS_ATTRIBUTE_TYPE::PROJECT_LEAD;
+$create_assertion_message[CS_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
 $create_assertion_message[CS_ARGUMENT::CONTEXT] = '44444444444444444444444444444444';
 $result = put_message($cs_url, $create_assertion_message);
+error_log("RES(2) = " . $result);
 dump_all_assertions_and_policies();
 
 $create_policy_message['operation'] = 'create_policy';
 $create_policy_message[CS_ARGUMENT::SIGNER] = '22222222222222222222222222222222';
 $create_policy_message[CS_ARGUMENT::ATTRIBUTE] = CS_ATTRIBUTE_TYPE::ADMIN;
 $create_policy_message[CS_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::NONE;
-$create_policy_message[CS_ARGUMENT::ACTION] = CS_ACTION_TYPE::PROJECT_CREATE;
+$create_policy_message[CS_ARGUMENT::PRIVILEGE] = CS_PRIVILEGE_TYPE::WRITE;
 $result = put_message($cs_url, $create_policy_message);
+error_log("RES(3) = " . $result);
 dump_all_assertions_and_policies();
 
 $create_policy_message[CS_ARGUMENT::SIGNER] = '22222222222222222222222222222222';
-$create_policy_message[CS_ARGUMENT::ATTRIBUTE] = CS_ATTRIBUTE_TYPE::SLICE_LEAD;
-$create_policy_message[CS_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
-$create_policy_message[CS_ARGUMENT::CONTEXT] = '55555555555555555555555555555555';
-$create_policy_message[CS_ARGUMENT::ACTION] = CS_ACTION_TYPE::SLICE_WRITE;
+$create_policy_message[CS_ARGUMENT::ATTRIBUTE] = CS_ATTRIBUTE_TYPE::PROJECT_LEAD;
+$create_policy_message[CS_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
+$create_policy_message[CS_ARGUMENT::PRIVILEGE] = CS_PRIVILEGE_TYPE::WRITE;
 $result = put_message($cs_url, $create_policy_message);
+error_log("RES(4) = " . $result);
 dump_all_assertions_and_policies();
+
+$create_policy_message[CS_ARGUMENT::SIGNER] = '22222222222222222222222222222222';
+$create_policy_message[CS_ARGUMENT::ATTRIBUTE] = CS_ATTRIBUTE_TYPE::PROJECT_LEAD;
+$create_policy_message[CS_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
+$create_policy_message[CS_ARGUMENT::PRIVILEGE] = CS_PRIVILEGE_TYPE::WRITE;
+$result = put_message($cs_url, $create_policy_message);
+error_log("RES(5) = " . $result);
+dump_all_assertions_and_policies();
+
+$request_authorization_message['operation'] = 'request_authorization';
+$request_authorization_message['principal'] = '33333333333333333333333333333333';
+$request_authorization_message['action'] = 'create_assertion';
+$request_authorization_message['context_type'] = CS_CONTEXT_TYPE::NONE;
+$result = put_message($cs_url, $request_authorization_message);
+error_log("Auth(1) = " . $result);
+
+$request_authorization_message['operation'] = 'request_authorization';
+$request_authorization_message['principal'] = '33333333333333333333333333333334';
+$request_authorization_message['action'] = 'create_assertion';
+$request_authorization_message['context_type'] = CS_CONTEXT_TYPE::NONE;
+$result = put_message($cs_url, $request_authorization_message);
+error_log("Auth(2) = " . $result);
+
+$request_authorization_message['operation'] = 'request_authorization';
+$request_authorization_message['principal'] = '33333333333333333333333333333333';
+$request_authorization_message['action'] = 'create_slice';
+$request_authorization_message['context_type'] = CS_CONTEXT_TYPE::PROJECT;
+$request_authorization_message['context'] = '44444444444444444444444444444444';
+$result = put_message($cs_url, $request_authorization_message);
+error_log("Auth(3) = " . $result);
+
+$request_authorization_message['operation'] = 'request_authorization';
+$request_authorization_message['principal'] = '33333333333333333333333333333334';
+$request_authorization_message['action'] = 'create_slice';
+$request_authorization_message['context_type'] = CS_CONTEXT_TYPE::PROJECT;
+$request_authorization_message['context'] = '44444444444444444444444444444444';
+$result = put_message($cs_url, $request_authorization_message);
+error_log("Auth(4) = " . $result);
 
 $renew_assertion_message['operation'] = 'renew_assertion';
 $renew_assertion_message['id'] = '1';

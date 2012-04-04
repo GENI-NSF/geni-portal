@@ -11,17 +11,17 @@ require_once("smime.php");
 
 function handle_message($prefix)
 {
-  error_log($prefix . ": starting");
+  //  error_log($prefix . ": starting");
   $request_method = strtolower($_SERVER['REQUEST_METHOD']);
   switch($request_method)
     {
     case 'put':
       $putdata = fopen("php://input", "r");
       $data = '';
-      error_log($prefix . " starting to read...");
+      //      error_log($prefix . " starting to read...");
       while ($putchunk = fread($putdata, 1024))
 	{
-	  error_log("Read chunk: $putchunk");
+	  //	  error_log("Read chunk: $putchunk");
 	  $data .= $putchunk;
 	}
       fclose($putdata);
@@ -36,7 +36,7 @@ function handle_message($prefix)
 	  } else {
 	    $error = "Unknown upload error (code = $errorcode).";
 	  }
-	  error_log($prefix . ": $error");
+	  //	  error_log($prefix . ": $error");
 	} else {
 	  $msg_file = $_FILES["file"]["tmp_name"];
 	}
@@ -44,7 +44,8 @@ function handle_message($prefix)
       break;
     }
    
-  error_log($prefix . ": finished switch");
+  //  error_log($prefix . ": finished switch");
+  //  error_log("Data = " . $data);
   // Now process the data
   $data = smime_decrypt($data);
   $msg = smime_validate($data);
@@ -52,7 +53,10 @@ function handle_message($prefix)
    
   $funcargs = parse_message($msg);
   $result = call_user_func($funcargs[0], $funcargs[1]);
+  //  error_log("RESULT = " . $result);
   $output = encode_result($result);
+  //  error_log("RESULT(enc) = " . $output);
+  //  error_log("RESULT(dec) = " . decode_result($output));
   $output = smime_sign_message($output);
   $output = smime_encrypt($output);
   print $output;

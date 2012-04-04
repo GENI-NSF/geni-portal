@@ -16,24 +16,29 @@ INSERT INTO cs_attribute (id, name) values (9, 'SLIVER_LEAD');
 INSERT INTO cs_attribute (id, name) values (10, 'SLIVER_MEMBER');
 INSERT INTO cs_attribute (id, name) values (11, 'SLIVER_AUDITOR');
 
--- Define (permissions to perform) Actions 
-INSERT INTO cs_action (id, name) values (1, 'MEMBER_DELEGATE'); 
-INSERT INTO cs_action (id, name) values (2, 'MEMBER_READ');
-INSERT INTO cs_action (id, name) values (3, 'MEMBER_WRITE');
-INSERT INTO cs_action (id, name) values (4, 'SERVICE_DELEGATE');
-INSERT INTO cs_action (id, name) values (5, 'SERVICE_READ');
-INSERT INTO cs_action (id, name) values (6, 'SERVICE_WRITE');
-INSERT INTO cs_action (id, name) values (7, 'PROJECT_CREATE');
-INSERT INTO cs_action (id, name) values (8, 'PROJECT_DELEGATE');
-INSERT INTO cs_action (id, name) values (9, 'PROJECT_READ');
-INSERT INTO cs_action (id, name) values (10, 'PROJECT_WRITE');
-INSERT INTO cs_action (id, name) values (11, 'SLICE_DELEGATE');
-INSERT INTO cs_action (id, name) values (12, 'SLICE_READ');
-INSERT INTO cs_action (id, name) values (13, 'SLICE_WRITE');
-INSERT INTO cs_action (id, name) values (14, 'SLIVER_DELEGATE');
-INSERT INTO cs_action (id, name) values (15, 'SLIVER_READ');
-INSERT INTO cs_action (id, name) values (16, 'SLIVER_WRITE');
+-- Define  privileges
+INSERT INTO cs_privilege (id, name) values (1, 'DELEGATE'); 
+INSERT INTO cs_privilege (id, name) values (2, 'READ');
+INSERT INTO cs_privilege (id, name) values (3, 'WRITE');
 
--- Need to insert the policies at CS initialization time
--- The attributes are written by the MA through the CS interface
+-- Define actions
+-- CS_CONTROLLER actions
+INSERT INTO cs_action (id, name, privilege, context_type) values (1, 'create_assertion', 3, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (2, 'create_policy', 3, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (3, 'renew_assertion', 3, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (4, 'delete_policy', 3, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (5, 'query_assertions', 2, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (6, 'query_policies', 2, 0);
+
+-- SA_CONTROLLER actions
+INSERT INTO cs_action (id, name, privilege, context_type) values (7, 'create_slice', 3, 1);
+
+-- SR_CONTROLLER actions
+INSERT INTO cs_action (id, name, privilege, context_type) values (8, 'get_services', 2, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (9, 'get_services_of_type', 2, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (10, 'register_service', 3, 0);
+INSERT INTO cs_action (id, name, privilege, context_type) values (11, 'remove_service', 3, 0);
+
+
+
 
