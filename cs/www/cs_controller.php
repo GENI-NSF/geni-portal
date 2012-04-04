@@ -10,16 +10,19 @@ require_once('cs_constants.php');
  *    Attributes (signed assertions that principal P has 
  *         attribute A, possibly in context C)
  *    Policies (signed statements that principals with attribute A possibly in 
+ *         context X have a given privilege)
  * 
  * Supports 4 'write' interfaces:
  * id <= create_assertion(signer, principal, attribute, context_type, context)
- * id <= create_policy(signer, attribute, context_type, action)
+ * id <= create_policy(signer, attribute, context_type, privilege)
  * renew_assertion(id)
  * delete_policy(id);
  * 
- * Supports 2 'read' interfaces:
+ * Supports 3 'read' interfaces:
  * assertions <= query_assertions(principal, context_type, context)
  * policies <= query_policies();
+ * success/failure => request_authorization(principal, action, 
+ *      context_type, context)
  **/
 
 
@@ -74,7 +77,7 @@ function create_assertion($args)
     . "'" . $expiration->format('Y-m-d H:i:s') . "', "
     . "'" . $assertion_cert . "') ";
   $result = db_execute_statement($sql);
-  return result;
+  return $result;
 }
 
 /* Create a policy and store in CS
@@ -82,7 +85,7 @@ function create_assertion($args)
  *    signer - UUID of signer (asserter) of policy
  *    attribute - id/index of attribute type
  *    context_type - type of context in which attribute holds
- *    action - id/index of action type
+ *    privilege - id/index of privilege type
  * Return: ID of policy
  */
 function create_policy($args)
@@ -91,20 +94,20 @@ function create_policy($args)
   $signer = $args[CS_ARGUMENT::SIGNER];
   $attribute = $args[CS_ARGUMENT::ATTRIBUTE];
   $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
-  $action = $args[CS_ARGUMENT::ACTION];
+  $privilege = $args[CS_ARGUMENT::PRIVILEGE];
 
   $policy_cert = create_policy_cert($signer,  
-				    $attribute, $context_type, $action);
+				    $attribute, $context_type, $privilege);
   $sql = "INSERT INTO " . $CS_POLICY_TABLENAME . "(" 
     . CS_POLICY_TABLE_FIELDNAME::SIGNER . ", "
     . CS_POLICY_TABLE_FIELDNAME::ATTRIBUTE . ", "
     . CS_POLICY_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
-    . CS_POLICY_TABLE_FIELDNAME::ACTION . ", "
+    . CS_POLICY_TABLE_FIELDNAME::PRIVILEGE . ", "
     . CS_POLICY_TABLE_FIELDNAME::POLICY_CERT . ") VALUES ( "
     . "'" . $signer . "', "
     . "" . $attribute . ", "
     . "" . $context_type . ", "
-    . "" . $action . ", "    
+    . "" . $privilege . ", "    
     . "'" . $policy_cert . "') ";
   $result = db_execute_statement($sql);
   return $result;
@@ -197,6 +200,39 @@ function query_policies($args)
   return $rows;
 }
 
+/*
+ * Return whether a given principal is allowed to take a given 
+ * action in a given context.
+ */
+function request_authorization($args)
+{
+  $principal = $args[CS_ARGUMENT::PRINCIPAL];
+  $action = $args[CS_ARGUMENT::ACTION];
+  $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+  if($context_type == CS_CONTEXT_TYPE::NONE) {
+    $context_clause = "cs_action.context_type = 0";
+  } else {
+    $context = $args[CS_ARGUMENT::CONTEXT];
+    $context_clause = "cs_action.context_type <> 0 and cs_assertion.context = '" . $context . "'";
+  }
+  $sql = "select * from cs_action, cs_policy, cs_assertion where "
+    . "cs_assertion.principal = '" .  $principal . "' and "
+    . "cs_assertion.context_type = cs_action.context_type and "
+    . "cs_policy.context_type = cs_action.context_type and "
+    . $context_clause . " and "
+    . "cs_assertion.attribute = cs_policy.attribute and "
+    . "cs_action.privilege = cs_policy.privilege and "
+    . "cs_action.name = '" . $action . "'";
+
+  $rows = db_fetch_rows($sql, "CS_AUTH");
+  $result = 0;
+  if (count($rows) > 0) {
+    $result = 1;
+  }
+  return $result;
+}
+
+
 function create_assertion_cert($signer, $principal, 
 			       $attribute, $context_type, $context, 
 			       $expiration)
@@ -206,7 +242,7 @@ function create_assertion_cert($signer, $principal,
 }
 
 function create_policy_cert($signer, 
-			    $attribute, $context_type, $action)
+			    $attribute, $context_type, $privilege)
 {
   // *** TODO
   return null;
