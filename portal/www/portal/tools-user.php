@@ -43,8 +43,11 @@ if ($key) {
   print "<a href=\"uploadkey.php\">Please upload a public key</a>\n";
 }
 ?>
-<h2>ABAC</h2>
 <?php
-print "<a href=\"abac-id.php\">Download your ABAC ID</a><br/>\n";
-print "<a href=\"abac-key.php\">Download your ABAC private key</a>\n";
+if ($portal_enable_abac)
+  {
+    print '<h2>ABAC</h2>\n';
+    print "<a href=\"abac-id.php\">Download your ABAC ID</a><br/>\n";
+    print "<a href=\"abac-key.php\">Download your ABAC private key</a>\n";
+  }
 ?>
