@@ -106,7 +106,7 @@ if ($name) {
 
     db_create_slice($user->account_id, $slice_id, $name);
     /* print "done creating slice<br/>"; */
-    relative_redirect('home');
+    relative_redirect('slices.php');
   } else {
     $message = "Slice name \"" . $name . "\" is already taken."
       . " Please choose a different name." ;
@@ -114,7 +114,8 @@ if ($name) {
 }
 
 // If here, present the form
-include("header.php");
+require_once("header.php");
+show_header('GENI Portal: Debug', '');
 if ($message) {
   // It would be nice to put this in red...
   print "<i>" . $message . "</i>\n";

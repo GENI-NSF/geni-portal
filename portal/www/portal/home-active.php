@@ -39,9 +39,9 @@ print $user->prettyName();
 </center>
 <?php
 include("tools-user.php");
-print "<hr/>\n";
-include("tools-slice.php");
-print "<hr/>\n";
+//print "<hr/>\n";
+//include("tools-slice.php");
+//print "<hr/>\n";
 if ($user->privAdmin()) {
   include("tools-admin.php");
 }

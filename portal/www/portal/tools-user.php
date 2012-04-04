@@ -48,13 +48,3 @@ if ($key) {
 print "<a href=\"abac-id.php\">Download your ABAC ID</a><br/>\n";
 print "<a href=\"abac-key.php\">Download your ABAC private key</a>\n";
 ?>
-<h2>SR</h2>
-<?php
-print "<a href=\"sr_controller_test.php\">Service Registry Test</a>\n";
-?>
-<h2>CS</h2>
-<?php
-print "<a href=\"cs_controller_test.php\">Credential Store Test</a>\n";
-?>
-
-
