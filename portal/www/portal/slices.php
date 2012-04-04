@@ -9,8 +9,10 @@ $user = geni_loadUser();
 $slices = fetch_slices($user->account_id);
 if (count($slices) > 0) {
   print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th><th>Expiration</th><th>URN</th><th>Credential</th>"
-    . "<th>ABAC Credential</th></tr>\n";
+  print "<tr><th>Name</th><th>Expiration</th><th>URN</th><th>Credential</th>";
+  if ($portal_enable_abac) {
+    print "<th>ABAC Credential</th></tr>\n";
+  }
   $base_url = relative_url("slicecred.php?");
   $abac_url = relative_url("sliceabac.php?");
   foreach ($slices as $slice) {
@@ -23,9 +25,11 @@ if (count($slices) > 0) {
       . "<td>" . htmlentities($slice['name']) . "</td>"
       . "<td>" . htmlentities($slice['expiration']) . "</td>"
       . "<td>" . htmlentities($slice['urn']) . "</td>"
-      . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
-      . "<td><a href=\"$sliceabac_url\">Get ABAC Credential</a></td>"
-      . "</tr>\n";
+      . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>");
+    if ($portal_enable_abac) {
+      print "<td><a href=\"$sliceabac_url\">Get ABAC Credential</a></td>";
+    }
+    print "</tr>\n";
   }
   print "</table>\n";
 } else {

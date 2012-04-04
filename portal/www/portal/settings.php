@@ -41,6 +41,7 @@ $portal_gcf_cfg_dir = '/usr/share/geni-ch/portal/gcf.d';
 // Set to true for demo situations to auto approve new accounts.
 $portal_auto_approve = false;
 
+// Set to false to hide ABAC content.
 $portal_enable_abac = false;
 
 //----------------------------------------------------------------------
