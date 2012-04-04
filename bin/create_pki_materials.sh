@@ -6,11 +6,19 @@
 # otherwise cert is self-signed
 
 # To initialize the CA dir:
+# We keep the CA materials in /usr/share/geni-ch/.ca
 #
-# mkdir geniCA
-# touch geniCA/index.txt
-# echo "01" > geniCA/serial
+# sudo mkdir /usr/share/geni-ch/.ca
+# sudo cd /usr/share/geni-ch/.ca
+# sudo touch geniCA/index.txt
+# sudo echo "01" > geniCA/serial
 #
+#
+# Then to create materials
+# This first call creates both root and SA
+# create_pki_materials.sh /usr/share/geni-ch/.pki SA
+# This uses the root materials to sign the MA, etc.
+# create_pki_materials.sh /usr/share/geni-ch/.pki MA /usr/share/geni-ch/.pki
 
 # Parse arguments
 TARGET=$1

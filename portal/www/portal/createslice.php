@@ -8,6 +8,7 @@ require_once("db-util.php");
 require_once("util.php");
 require_once("user.php");
 require_once("sr_constants.php");
+require_once("sr_client.php");
 ?>
 
 <?php
@@ -64,23 +65,16 @@ function omni_create_slice($user, $slice_id, $name)
 //     print_r($result);
 //     print "RESULT = " . $result . "\n";
 //     print "STATUS = " . $status . "\n";
-     unlink($cert_file);
-     unlink($key_file);
-     unlink($omni_file);
+//     unlink($cert_file);
+//     unlink($key_file);
+//     unlink($omni_file);
 
 }
 
 function sa_create_slice($user, $slice_id, $name)
 {
-  /** Get the singleton SR (service registry) and ask for all SA's **/
-  $sr_url = get_sr_url();
-  $message['operation'] = 'get_services_of_type';
-  $message[SR_ARGUMENT::SERVICE_TYPE] = SR_SERVICE_TYPE::SLICE_AUTHORITY;
-  $result = put_message($sr_url, $message);
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
-  /** Grab the first SA (eventually this will be selected from a user menu **/
-  $sa_row = $result[0];
-  $sa_url = $sa_row[SR_TABLE_FIELDNAME::SERVICE_URL];
   //  error_log($sa_url);
   
   $message['operation'] = 'create_slice';

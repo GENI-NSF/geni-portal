@@ -1,4 +1,4 @@
-<?php
+s<?php
 
 /* Set of constants for managine calls and data records for 
  * GENI Clearinghouse Service Registry

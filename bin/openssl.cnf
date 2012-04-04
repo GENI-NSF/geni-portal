@@ -2,7 +2,7 @@
  default_ca      = CA_default            # The default ca section
  
  [ CA_default ]
- dir            = ./geniCA              # top dir
+ dir            = /usr/share/geni-ch/.caA              # top dir
  database       = $dir/index.txt        # index file.
  new_certs_dir  = $dir/newcerts         # new certs dir
  
