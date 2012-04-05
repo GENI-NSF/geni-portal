@@ -51,3 +51,6 @@ if ($portal_enable_abac)
     print "<a href=\"abac-key.php\">Download your ABAC private key</a>\n";
   }
 ?>
+
+<h2>Edit Account Details</h2>
+Modify user supplied account details <a href="modify.php">here</a><br/>
