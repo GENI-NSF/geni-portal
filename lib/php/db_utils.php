@@ -94,8 +94,12 @@ function db_fetch_row($query, $msg = "")
   //  error_log('db_fetch_rows ' . $query);
   $conn = portal_conn();
   $resultset = $conn->query($query);
-  if (PEAR::isError($resultset)) {
-    die("error " . $msg . ": " . $resultset->getMessage());
+  if (PEAR::isError($resultset) || MDB2::isError($resultset)) {
+    die("error " . $msg . ": '" . $resultset->getMessage() . "', doing query: '" . $query . "'<br/>\n");
+  }
+  if (MDB2::isError($resultset->numRows())) {
+    print("error " . $msg . ": '" . $resultset->numRows()->getMessage() . "', doing query: '" . $query . "'<br/>\n");
+    return null;
   }
   if ($resultset->numRows() == 0) {
     return null;
