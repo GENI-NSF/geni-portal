@@ -33,9 +33,9 @@ function derive_username() {
   // try to figure out a reasonable username.
   $email_addr = NULL;
   if (array_key_exists('mail', $_SERVER)) {
-    $email_addr = $_SERVER['mail'];
+    $email_addr = filter_input(INPUT_SERVER, 'mail', FILTER_SANITIZE_EMAIL);
   } else if (array_key_exists('mail', $_POST)) {
-    $email_addr = $_POST['mail'];
+    $email_addr = filter_input(INPUT_POST, 'mail', FILTER_SANITIZE_EMAIL);
   } else {
     // Use a fake one.
     $email_addr = 'unknown@example.com';
@@ -95,6 +95,7 @@ if (PEAR::isError($result)) {
 //--------------------------------------------------
 
 // TODO: Check for the existence of each, error if not available.
+// TODO: Use filters to sanitize these
 $eppn = $_SERVER['eppn'];
 $affiliation = $_SERVER['affiliation'];
 $shib_idp = $_SERVER['Shib-Identity-Provider'];
@@ -137,6 +138,7 @@ $identity_id = $rows[0]['identity_id'];
 // Add extra attributes
 //--------------------------------------------------
 $attrs = array('givenName','sn', 'mail','telephoneNumber');
+// FIXME: Use filters to sanitize these
 foreach ($attrs as $attr) {
   /* print "attr = $attr<br/>"; */
   if (array_key_exists($attr, $_SERVER)) {
@@ -214,9 +216,9 @@ if (PEAR::isError($result)) {
 // *** FIX ME ***
 $email_addr = NULL;
 if (array_key_exists('mail', $_SERVER)) {
-  $email_addr = $_SERVER['mail'];
+  $email_addr = filter_input(INPUT_SERVER, 'mail', FILTER_SANITIZE_EMAIL);
 } else if (array_key_exists('mail', $_POST)) {
-  $email_addr = $_POST['mail'];
+  $email_addr = filter_input(INPUT_POST, 'mail', FILTER_SANITIZE_EMAIL);
 } else {
   // Use a fake one.
   $email_addr = 'unknown@example.com';
@@ -258,6 +260,7 @@ mail($portal_admin_email,
 
 <?php
 include("header.php");
+show_header('GENI Portal Home', $TAB_HOME);
 ?>
 <h2>Your account request has been submitted.</h2>
 Go to the <a href=
