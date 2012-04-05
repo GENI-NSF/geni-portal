@@ -22,7 +22,7 @@ function get_version($am_url, $user)
     . "authority=geni:gpo:portal\n"
     . "ch=https://localhost:8000\n"
     . "cert=" . $cert_file . "\n"
-    . "key=" . $key_file;
+    . "key=" . $key_file . "\n";
     file_put_contents($omni_file, $omni_config);
 
     /* Call OMNI */
@@ -83,7 +83,7 @@ function omni_list_resources($am_url, $user)
     . "authority=geni:gpo:portal\n"
     . "ch=https://localhost:8000\n"
     . "cert=" . $cert_file . "\n"
-    . "key=" . $key_file;
+    . "key=" . $key_file . "\n";
     file_put_contents($omni_file, $omni_config);
 
     /* Call OMNI */
