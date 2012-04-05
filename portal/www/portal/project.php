@@ -26,8 +26,10 @@ require_once("user.php");
 require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-?>
-<h1>GENI Project: Foo</h1>
-<?php
+$project = "<None>";
+if (array_key_exists("project_id", $_GET)) {
+  $project = $_GET['project_id'];
+}
+print "<h1>GENI Project: " . $project . "</h1>\n";
 include("footer.php");
 ?>
