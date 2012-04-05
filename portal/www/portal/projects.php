@@ -28,6 +28,11 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 ?>
 <h1>GENI Projects</h1>
+Your projects:
+<ul>
+<li><a href="projects.php?project_id=My Project">My Project</a><br/></li>
+<li><a href="projects.php?project_id=My Other Project">My Other Project</a><br/></li>
+</ul>
 <?php
 include("footer.php");
 ?>
