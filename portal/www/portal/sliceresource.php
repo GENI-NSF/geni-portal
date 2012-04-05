@@ -62,9 +62,6 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 $am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 error_log("AM_URL = " . $am_url);
 
-// Get the slice credential from the SA
-$slice_credential = get_slice_credential($sa_url, $slice_id, $user);
-
 $result = get_version($am_url, $user);
 error_log("VERSION = " . $result);
 
@@ -73,7 +70,11 @@ $rspec = list_resources($am_url, $user);
 error_log("RSPEC = " . $rspec);
 */
 
-$sliver_output = create_sliver($am_url, $user, "Slice Credential", "FOO-SLIVER", "/tmp/RSPEC.xml");
+// Get the slice credential from the SA
+$slice_credential = get_slice_credential($sa_url, $slice_id, $user);
+
+$sliver_output = create_sliver($am_url, $user, $slice_credential,
+                               $slice_id, "/tmp/RSPEC.xml");
 error_log("SLIVER_OUTPUT = " . $sliver_output);
 
 relative_redirect('slices');
