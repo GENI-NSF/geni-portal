@@ -11,7 +11,7 @@ require_once("smime.php");
 
 function handle_message($prefix)
 {
-  //  error_log($prefix . ": starting");
+  error_log($prefix . ": starting");
   $request_method = strtolower($_SERVER['REQUEST_METHOD']);
   switch($request_method)
     {
@@ -60,7 +60,7 @@ function handle_message($prefix)
   //   error_log("RESULT(dec) = " . decode_result($output));
   $output = smime_sign_message($output);
   $output = smime_encrypt($output);
-  //  error_log("BEFORE PRINT:" . $output);
+  //   error_log("BEFORE PRINT:" . $output);
   print $output;
 }
 
