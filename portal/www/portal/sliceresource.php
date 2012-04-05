@@ -68,9 +68,7 @@ $slice_credential = get_slice_credential($sa_url, $slice_id, $user);
 $result = get_version($am_url, $user);
 error_log("VERSION = " . $result);
 
-/*
 $rspec = list_resources($am_url, $user);
 error_log("RSPEC = " . $rspec);
-*/
 
 ?>
