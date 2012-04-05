@@ -95,17 +95,25 @@ function db_fetch_row($query, $msg = "")
   $conn = portal_conn();
   $resultset = $conn->query($query);
   if (PEAR::isError($resultset) || MDB2::isError($resultset)) {
-    die("error " . $msg . ": '" . $resultset->getMessage() . "', doing query: '" . $query . "'<br/>\n");
+    die("error " . $msg . ": '" . $resultset->getMessage() . "', details: '" . $resultset->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
   }
   if (MDB2::isError($resultset->numRows())) {
-    print("error " . $msg . ": '" . $resultset->numRows()->getMessage() . "', doing query: '" . $query . "'<br/>\n");
-    return null;
+    if (strpos($resultset->numRows()->getUserInfo(), "method not implemented") < 0) {
+      // pgsql doesnt do numrows
+      die("error " . $msg . ": '" . $resultset->numRows()->getMessage() . "', details: '" . $resultset->numRows()->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
+    }
   }
-  if ($resultset->numRows() == 0) {
+  $nr = $resultset->numRows(); 
+  if (is_int($nr) && $nr == 0) {
     return null;
   } else {
     $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
+    //print "result has " . count($row) . " rows<br/>\n";
     // TODO : Close the connection?
+    if (! isset($row) || count($row) == 0) {
+      //print "empty row<br/>\n";
+      return null;
+    }
     return $row;
   }
 }

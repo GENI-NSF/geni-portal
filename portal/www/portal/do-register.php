@@ -145,7 +145,11 @@ foreach ($attrs as $attr) {
     $value = $_SERVER[$attr];
     $self_asserted = false;
   } else {
-    $value = $_POST[$attr];
+    if (array_key_exists($attr, $_POST)) {
+      $value = $_POST[$attr];
+    } else {
+      $value = null;
+    }
     $self_asserted = true;
   }
   $sql = "INSERT INTO identity_attribute "
@@ -241,6 +245,7 @@ $result = exec($command, $output, $status);
 // The cert is on disk, read the file and store it in the db.
 $cert_file = '/tmp/' . $username . "-cert.pem";
 $key_file = '/tmp/' . $username . "-key.pem";
+// FIXME: Wrap these in try/catch to suppress warnings on missing files
 $cert_contents = file_get_contents($cert_file);
 $key_contents = file_get_contents($key_file);
 db_add_inside_key_cert($account_id, $cert_contents, $key_contents);
