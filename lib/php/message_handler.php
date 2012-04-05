@@ -11,7 +11,7 @@ require_once("smime.php");
 
 function handle_message($prefix)
 {
-  error_log($prefix . ": starting");
+  // error_log($prefix . ": starting");
   $request_method = strtolower($_SERVER['REQUEST_METHOD']);
   switch($request_method)
     {
