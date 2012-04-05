@@ -31,14 +31,29 @@ require_once("util.php");
 
 $TAB_HOME = 'Home';
 $TAB_SLICES = 'Slices';
+$TAB_PROJECTS = 'Projects';
+$TAB_ADMIN = 'Admin';
 $TAB_DEBUG = 'Debug';
+require_once("user.php");
+$user = null;
+if (array_key_exists("SCRIPT_NAME", $_SERVER) && ! strpos($_SERVER["SCRIPT_NAME"], "register.php") >= 0) {
+  $user = geni_loadUser();
+}
+
 $standard_tabs = array(array('name' => $TAB_HOME,
                              'url' => 'home.php'),
+                       array('name' => $TAB_PROJECTS,
+                             'url' => 'projects.php'),
                        array('name' => $TAB_SLICES,
                              'url' => 'slices.php'),
                        array('name' => $TAB_DEBUG,
                              'url' => 'debug.php')
                        );
+
+if (isset($user) && ! is_null($user) && $user->privAdmin()) {
+  array_push($standard_tabs, array('name' => $TAB_ADMIN,
+				   'url' => 'admin.php'));
+}
 
 function show_tab_bar($active_tab)
 {
