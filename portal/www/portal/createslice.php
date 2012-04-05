@@ -124,7 +124,7 @@ if ($name) {
     db_create_slice($user->account_id, $slice_id, $name);
     /* print "done creating slice<br/>"; */
     // Redirect to this slice's page now...
-    relative_redirect('slice.php?name='.$name);
+    relative_redirect('slice.php?slice_id='.$slice_id);
   } else {
     $message = "Slice name \"" . $name . "\" is already taken."
       . " Please choose a different name." ;

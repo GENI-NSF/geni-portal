@@ -30,8 +30,8 @@ $user = geni_loadUser();
 <h1>GENI Projects</h1>
 Your projects:
 <ul>
-<li><a href="project.php?project_id=My%20Project">My Project</a><br/></li>
-<li><a href="project.php?project_id=My%20Other%20Project">My Other Project</a><br/></li>
+<li><a href="project.php?project_id=MyProject">My Project</a><br/></li>
+<li><a href="project.php?project_id=MyOtherProject">My Other Project</a><br/></li>
 </ul>
 <?php
 include("footer.php");

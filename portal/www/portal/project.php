@@ -31,5 +31,11 @@ if (array_key_exists("project_id", $_GET)) {
   $project = $_GET['project_id'];
 }
 print "<h1>GENI Project: " . $project . "</h1>\n";
+// Redirect to this Project's edit page now...
+
+$edit_url = 'edit-project.php?project_id='.$project;
+
+print '<a href='.$edit_url.'>Edit</a>';
+
 include("footer.php");
 ?>
