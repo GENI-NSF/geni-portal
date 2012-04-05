@@ -62,8 +62,7 @@ function create_slice_credential($args)
   //print_r($output);
 
   // Clean up, clean up
-  error_log("SA CSC: not deleting $cert_file");
-  #unlink($cert_file);
+  unlink($cert_file);
 
   /* The slice credential is printed to stdout, which is captured in
      $output as an array of lines. Crunch them all together in a
