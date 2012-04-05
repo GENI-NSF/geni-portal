@@ -47,8 +47,9 @@ if (count($slices) > 0) {
     $slicecred_url = $base_url . $query;
     $sliceresource_url = $resource_base_url . $query;
     $sliceabac_url = $abac_url . $query;
+    $slice_name = $slice['name'];
     print "<tr>"
-      . "<td>" . htmlentities($slice['name']) . "</td>"
+      . ("<td><a href=\"$sliceresource_url\">$slice_name</a></td>")
       . "<td>" . htmlentities($slice['expiration']) . "</td>"
       . "<td>" . htmlentities($slice['urn']) . "</td>"
       . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
