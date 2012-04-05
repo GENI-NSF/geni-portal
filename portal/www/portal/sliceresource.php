@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2011 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -21,41 +21,54 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-
-require_once("user.php");
 ?>
-<h1>Existing Slices</h1>
 <?php
-$slices = fetch_slices($user->account_id);
-if (count($slices) > 0) {
-  print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th><th>Expiration</th><th>URN</th><th>Credential</th>"
-    . "<th>ABAC Credential</th></tr>\n";
-  $base_url = relative_url("slicecred.php?");
-  $abac_url = relative_url("sliceabac.php?");
-  foreach ($slices as $slice) {
-    $slice_id = $slice['slice_id'];
-    $args['id'] = $slice_id;
-    $query = http_build_query($args);
-    $slicecred_url = $base_url . $query;
-    $sliceabac_url = $abac_url . $query;
-    print "<tr>"
-      . "<td>" . htmlentities($slice['name']) . "</td>"
-      . "<td>" . htmlentities($slice['expiration']) . "</td>"
-      . "<td>" . htmlentities($slice['urn']) . "</td>"
-      . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
-      . "<td><a href=\"$sliceabac_url\">Get ABAC Credential</a></td>"
-      . "</tr>\n";
-  }
-  print "</table>\n";
-} else {
-  print "<i>No slices.</i><br/>\n";
+require_once("settings.php");
+require_once("user.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
+require_once("am_client.php");
+require_once("sa_client.php");
+$user = geni_loadUser();
+if (! $user->privSlice()) {
+  exit();
+}
+?>
+<?php
+function no_slice_error() {
+  header('HTTP/1.1 404 Not Found');
+  print 'No slice id specified.';
+  exit();
 }
 
-/* Only show create slice link if user has appropriate privilege. */
-if ($user->privSlice()) {
-  print "<a href=\""
-    . relative_url("createslice")
-    . "\">Create a new slice</a>";
+if (! count($_GET)) {
+  // No parameters. Return an error result?
+  // For now, return nothing.
+  no_slice_error();
 }
+if (array_key_exists('id', $_GET)) {
+  $slice_id = $_GET['id'];
+} else {
+  no_slice_error();
+}
+
+// Look up the slice...
+$slice = fetch_slice($slice_id);
+
+// Get slice authority URL
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+
+// Get an AM
+$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+error_log("AM_URL = " . $am_url);
+
+// Get the slice credential from the SA
+$slice_credential = get_slice_credential($sa_url, $slice_id, $user);
+
+$result = get_version($am_url, $user);
+error_log("VERSION = " . $result);
+
+$rspec = list_resources($am_url, $user);
+error_log("RSPEC = " . $rspec);
+
 ?>

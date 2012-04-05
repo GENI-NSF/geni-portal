@@ -99,7 +99,7 @@ foreach (array_keys($shib_fields) as $fieldkey) {
       }
     }
     if (!$is_user) {
-      shib_input($fieldkey, $shib_fields[$fieldkey]);
+      shib_input($fieldkey, $shib_fields[$fieldkey], null);
     }
   }
   foreach ($attrs as $a) {

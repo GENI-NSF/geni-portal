@@ -55,7 +55,7 @@ function decode_result($result)
 function parse_message($msg)
 {
   $map = json_decode($msg, true);
-  $pretty_map = print_r($map, true);
+  //  $pretty_map = print_r($map, true);
   //  error_log("json_decode returned $pretty_map");
   $funcargs[0] = $map['operation'];
   unset($map['operation']);

@@ -31,6 +31,11 @@ function create_slice($args)
   return "created $slice_name";
 }
 
+function create_slice_credential($args)
+{
+  // *** WRITE ME
+}
+
 handle_message("SA");
 
 ?>

@@ -48,6 +48,7 @@ function get_services_of_type($args)
     " = '" . $service_type . "'";
   error_log("SR.GSOT QUERY = " . $query);
   $rows = db_fetch_rows($query, "SR.get_services_of_type");
+  error_log("ROWS = " . $rows);
   return $rows;
 }
 
