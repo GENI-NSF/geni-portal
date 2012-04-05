@@ -46,6 +46,7 @@ function handle_message($prefix)
    
   //  error_log($prefix . ": finished switch");
   //  error_log("Data = " . $data);
+
   // Now process the data
   $data = smime_decrypt($data);
   $msg = smime_validate($data);
@@ -55,10 +56,11 @@ function handle_message($prefix)
   $result = call_user_func($funcargs[0], $funcargs[1]);
   //  error_log("RESULT = " . $result);
   $output = encode_result($result);
-  //  error_log("RESULT(enc) = " . $output);
-  //  error_log("RESULT(dec) = " . decode_result($output));
+  //   error_log("RESULT(enc) = " . $output);
+  //   error_log("RESULT(dec) = " . decode_result($output));
   $output = smime_sign_message($output);
   $output = smime_encrypt($output);
+  //  error_log("BEFORE PRINT:" . $output);
   print $output;
 }
 

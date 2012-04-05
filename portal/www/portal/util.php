@@ -39,7 +39,9 @@ function make_uuid() {
 //--------------------------------------------------
 function put_message($url, $message)
 {
+  //  error_log("PUT_MESSAGE " . $message);
   $message = json_encode($message);
+  //  error_log("PUT_MESSAGE(enc) " . $message);
   // sign
   // encrypt
   $tmpfile = tempnam(sys_get_temp_dir(), "msg");
@@ -62,8 +64,9 @@ function put_message($url, $message)
   }
   //  error_log("Received raw result : " . $result);
   $result = trim($result); // Remove trailing newlines
+  $result = substr($result, 1); // Remove initial 's' /* *** WHY ??? *** - MSB 4-5-2012 */
   $result = decode_result($result);
-  // error_log("Decoded raw result : " . $result);
+  //  error_log("Decoded raw result : " . $result);
 
   return $result;
 }

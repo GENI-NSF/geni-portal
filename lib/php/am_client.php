@@ -37,21 +37,29 @@ function get_version($am_url, $user)
 		       "getversion",
 		       );
      $command = implode(" ", $cmd_array);
+     //     error_log("COMMAND = " . $command);
      $result = exec($command, $output, $status);
+     //     error_log("OUTPUT:" . $output);
+     //     error_log("COUNT(OUTPUT):" . count($output));
+     //     foreach($output as $line) {
+     //       error_log("LINE:" . $line);
+     //     }
+     //     error_log("STATUS:" . $status);
+     //     error_log("RESULT" . $result);
 //     print_r($output);  
 //     print_r($result);
 //     print "RESULT = " . $result . "\n";
 //     print "STATUS = " . $status . "\n";
-//     unlink($cert_file);
-//     unlink($key_file);
-//     unlink($omni_file);
-
+     unlink($cert_file);
+     unlink($key_file);
+     unlink($omni_file);
+     return $result;
 }
 
 function list_resources($am_url, $user)
 {
   // We're going to call omni to do this 
-  $result = omni_list_resources($am_url);
+  $result = omni_list_resources($am_url, $user);
   return $result;
 }
 

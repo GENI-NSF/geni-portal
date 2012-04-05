@@ -2,13 +2,13 @@
 
 require_once('util.php');
 require_once('sr_constants.php');
+require_once('sr_client.php');
 
 function dump_rows($rows)
 {
   global $SR_SERVICE_TYPE_NAMES;
   $count = count($rows);
   $index = 0;
-  $row = $rows[$index];
   foreach ($rows as $row) {  
     $service_type_index = $row[SR_ARGUMENT::SERVICE_TYPE];
     $service_type_name = $SR_SERVICE_TYPE_NAMES[$service_type_index];
@@ -20,30 +20,20 @@ function dump_rows($rows)
 
 error_log("SR TEST\n");
 
-/* Could be HTTP_HOST or SERVER_NAME */
-$http_host = $_SERVER['HTTP_HOST'];
-$sr_url = "https://" . $http_host . "/sr/sr_controller.php";
+$sr_url = get_sr_url();
+$rows = get_services();
+dump_rows($rows);
 
-$get_services_message['operation'] = 'get_services';
-$result = put_message($sr_url, $get_services_message);
-dump_rows($result);
+$rows = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+dump_rows($rows);
 
-$message['operation'] = 'get_services_of_type';
-$message[SR_ARGUMENT::SERVICE_TYPE] = SR_SERVICE_TYPE::AGGREGATE_MANAGER;
-$result = put_message($sr_url, $message);
-dump_rows($result);
+$result = register_service(SR_SERVICE_TYPE::LOGGING_SERVICE, 'http://foo.bar');
+$rows = get_services();
+dump_rows($rows);
 
-$message['operation'] = 'register_service';
-$message[SR_ARGUMENT::SERVICE_TYPE] = SR_SERVICE_TYPE::LOGGING_SERVICE;
-$message[SR_ARGUMENT::SERVICE_URL] = 'http://foo.bar';
-$result = put_message($sr_url, $message);
-$result = put_message($sr_url, $get_services_message);
-dump_rows($result);
-
-$message['operation'] = 'remove_service';
-$result = put_message($sr_url, $message);
-$result = put_message($sr_url, $get_services_message);
-dump_rows($result);
+$result = remove_service(SR_SERVICE_TYPE::LOGGING_SERVICE, 'http://foo.bar');
+$rows = get_services();
+dump_rows($rows);
 
 relative_redirect('home');
 ?>

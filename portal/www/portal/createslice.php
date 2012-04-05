@@ -65,9 +65,9 @@ function omni_create_slice($user, $slice_id, $name)
 //     print_r($result);
 //     print "RESULT = " . $result . "\n";
 //     print "STATUS = " . $status . "\n";
-//     unlink($cert_file);
-//     unlink($key_file);
-//     unlink($omni_file);
+     unlink($cert_file);
+     unlink($key_file);
+     unlink($omni_file);
 
 }
 

@@ -60,16 +60,17 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 // Get an AM
 $am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+error_log("AM_URL = " . $am_url);
 
 // Get the slice credential from the SA
-$slice_credential = get_slice_credential($slice_id, $user);
+$slice_credential = get_slice_credential($sa_url, $slice_id, $user);
 
 $result = get_version($am_url, $user);
 error_log("VERSION = " . $result);
 
+/*
 $rspec = list_resources($am_url, $user);
-
 error_log("RSPEC = " . $rspec);
-
+*/
 
 ?>
