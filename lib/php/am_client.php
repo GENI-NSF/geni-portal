@@ -2,7 +2,12 @@
 
 // Routines for clients speaking to an aggregate maanger
 
-function invoke_omni_function($am_url, $user, $omni_method)
+// Generic invocation of omni function 
+// Args:
+//    $am_url: URL of AM to which to connect
+//    $user : Structure with user information (for creating temporary files)
+//    $args: list of arguments (including the method itself) included
+function invoke_omni_function($am_url, $user, $args)
 {
     /* Write key and credential files */
     $row = db_fetch_inside_private_key_cert($user->account_id);
@@ -34,10 +39,11 @@ function invoke_omni_function($am_url, $user, $omni_method)
 		       '-a',
 		       $am_url, 
 		       '--api-version',
-		       '2',
-		       $omni_method
-		       );
-     $command = implode(" ", $cmd_array);
+		       '2');
+    for($i = 0; $i < count($args); $i++) {
+      $cmd_array[] = $args[$i];
+    }
+    $command = implode(" ", $cmd_array);
 
      error_log("COMMAND = " . $command);
      $handle = popen($command . " 2>&1", "r");
@@ -58,15 +64,39 @@ function invoke_omni_function($am_url, $user, $omni_method)
      return $output;
 }
 
+// Get version of AM API at given AM
 function get_version($am_url, $user)
 {
-  $output = invoke_omni_function($am_url, $user, "getversion");
+  $args = array('getversion');
+  $output = invoke_omni_function($am_url, $user, $args);
   return $output;
 }
 
+
+// List resources available at an aggregate
 function list_resources($am_url, $user)
 {
-  $output = invoke_omni_function($am_url, $user, "listresources");
+  $args = array('listresources');
+  $output = invoke_omni_function($am_url, $user, $args);
+  return $output;
+}
+
+// Create a sliver on a given AM with given rspec
+function create_sliver($am_url, $user, $slice_credential, $slice_name, $rspec_filename)
+{
+  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
+  file_put_contents($slice_credential_filename, $slice_credential);
+  //  $user_credential_filename = '/tmp/' . $user->username . ".usercredential";
+  //  file_put_contents($slice_credential_filename, $user_credential);
+  $args = array("--slicecredfile", 
+		$slice_credential_filename, 
+		//		"--usercredfile", 
+		//		$user_cred_filename, 
+		'createsliver',
+		$slice_name, 
+		$rspec_filename);
+  $output = invoke_omni_function($am_url, $user, $args);
+  unlink($slice_credential_filename);
   return $output;
 }
 

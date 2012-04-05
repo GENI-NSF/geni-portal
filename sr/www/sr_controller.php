@@ -25,10 +25,10 @@ require_once('sr_constants.php');
 function get_services($args)
 {
   global $SR_TABLENAME;
-  error_log("listing all services");
+  // error_log("listing all services");
 
   $query = "SELECT * FROM " . $SR_TABLENAME;
-  error_log("SR.GS QUERY = " . $query);
+  // error_log("SR.GS QUERY = " . $query);
   $rows = db_fetch_rows($query, "SR.get_services");
   return $rows;
 }
@@ -41,14 +41,14 @@ function get_services_of_type($args)
 {
   global $SR_TABLENAME;
   $service_type = $args[SR_ARGUMENT::SERVICE_TYPE]; 
-  error_log("listing services of type " . $service_type);
+  // error_log("listing services of type " . $service_type);
 
   $query = "SELECT * FROM " . $SR_TABLENAME . " WHERE " . 
     SR_TABLE_FIELDNAME::SERVICE_TYPE . 
     " = '" . $service_type . "'";
-  error_log("SR.GSOT QUERY = " . $query);
+  // error_log("SR.GSOT QUERY = " . $query);
   $rows = db_fetch_rows($query, "SR.get_services_of_type");
-  error_log("ROWS = " . $rows);
+  // error_log("ROWS = " . $rows);
   return $rows;
 }
 
@@ -63,14 +63,14 @@ function register_service($args)
   global $SR_TABLENAME;
   $service_type = $args[SR_ARGUMENT::SERVICE_TYPE];
   $service_url = $args[SR_ARGUMENT::SERVICE_URL];
-  error_log("register service $service_type $service_url");
+  // error_log("register service $service_type $service_url");
   $stmt = "INSERT INTO " . $SR_TABLENAME . "(" . 
     SR_TABLE_FIELDNAME::SERVICE_TYPE . ", " . 
     SR_TABLE_FIELDNAME::SERVICE_URL . ") VALUES (" . 
     "'" . $service_type . "'" . 
     ", ". 
     "'" . $service_url . "')";
-  error_log("SR.RegisterService STMT = " . $stmt);
+  // error_log("SR.RegisterService STMT = " . $stmt);
   $result = db_execute_statement($stmt, "SR.register_service");
   return $result;
 }
@@ -84,14 +84,14 @@ function remove_service($args)
   global $SR_TABLENAME;
   $service_type = $args[SR_ARGUMENT::SERVICE_TYPE];
   $service_url = $args[SR_ARGUMENT::SERVICE_URL];
-  error_log("remove service $service_type $service_url");
+  // error_log("remove service $service_type $service_url");
   $stmt = "DELETE FROM " . $SR_TABLENAME . " WHERE " . 
     SR_TABLE_FIELDNAME::SERVICE_TYPE . " = '" . 
     $service_type . "' " . 
     " AND " . 
     SR_TABLE_FIELDNAME::SERVICE_URL . " = '" .
     $service_url . "'";
-  error_log("SR.RemoveService STMT = " . $stmt);
+  // error_log("SR.RemoveService STMT = " . $stmt);
   $result = db_execute_statement($stmt, "SR.remove_service");
   return $result;
 }
