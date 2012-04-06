@@ -29,8 +29,11 @@ $user = geni_loadUser();
 $slice = "<None>";
 if (array_key_exists("id", $_GET)) {
   $slice = $_GET['id'];
+  $slice_item = fetch_slice($slice);
+  $slice_name = $slice_item['name'];
 }
-print "<h1>Add resources to GENI Slice: " . $slice . "</h1>\n";
+
+print "<h1>Add resources to GENI Slice: " . $slice_name . " (" . $slice . ")</h1>\n";
 
 $edit_url = 'do-edit-slice.php?id='.$slice;
 print '<a href='.$edit_url.'>Submit</a>';
