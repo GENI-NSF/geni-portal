@@ -70,7 +70,7 @@ if (! isset($ACTIVE_TAB)) {
   $ACTIVE_TAB = $TAB_HOME;
 }
 
-function show_header($title, $active_tab)
+function show_header($title, $active_tab = '')
 {
   echo '<!DOCTYPE HTML>';
   echo '<html>';
