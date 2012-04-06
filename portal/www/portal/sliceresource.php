@@ -25,6 +25,7 @@
 <?php
 require_once("settings.php");
 require_once("user.php");
+require_once("file_utils.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("am_client.php");
@@ -73,9 +74,15 @@ error_log("RSPEC = " . $rspec);
 // Get the slice credential from the SA
 $slice_credential = get_slice_credential($sa_url, $slice_id, $user);
 
+// Retrieve a canned RSpec
+$rspec = fetchRSpecById(1);
+$rspec_file = writeDataToTempFile($rspec);
+
+// Call create sliver at the AM
 $sliver_output = create_sliver($am_url, $user, $slice_credential,
-                               $slice_id, "/tmp/RSPEC.xml");
-error_log("SLIVER_OUTPUT = " . $sliver_output);
+                               $slice_id, $rspec_file);
+unlink($rspec_file);
+error_log("CreateSliver output = " . $sliver_output);
 
 relative_redirect('slices');
 
