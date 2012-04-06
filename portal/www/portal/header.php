@@ -40,7 +40,7 @@ $standard_tabs = array(array('name' => $TAB_HOME,
                              'url' => 'debug.php')
                        );
 
-function show_tab_bar($active_tab)
+function show_tab_bar($active_tab = '')
 {
   global $standard_tabs;
   echo '<div id="mainnav" class="nav">';
