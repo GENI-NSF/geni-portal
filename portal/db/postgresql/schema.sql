@@ -197,3 +197,17 @@ CREATE TABLE rspec (
 
 CREATE INDEX rspec_name ON rspec (name);
 CREATE INDEX rspec_schema ON rspec (schema);
+
+-- ----------------------------------------------------------------------
+-- ssh keys
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS ssh_key;
+CREATE TABLE ssh_key (
+  id SERIAL,
+  account_id UUID REFERENCES account NOT NULL,
+  filename VARCHAR,
+  description VARCHAR,
+  public_key VARCHAR NOT NULL,
+  PRIMARY KEY (id)
+);
+CREATE INDEX ssh_key_account_id ON ssh_key (account_id);

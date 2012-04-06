@@ -1,0 +1,18 @@
+<br/>
+<b>Upload an SSH public key</b><br/>
+<form action="uploadsshkey.php" method="post" enctype="multipart/form-data">
+  <label for="file">SSH Public Key File:</label>
+  <input type="file" name="file" id="file" />
+  <br/>
+  <label for="file">Description (optional):</label>
+  <input type="text" name="description"/>
+  <br/>
+  <input type="submit" name="submit" value="Upload"/>
+</form>
+<br/>
+Note: An SSH public key can be found in your $HOME/.ssh directory on
+Unix-based systems. Public keys will usually have a .pub extension.
+<br/><br/>
+<b>Mac OS X Users</b>: in the file chooser dialog, press
+Command-Shift-. (period) to display hidden directories so that the
+.ssh directory is visible.

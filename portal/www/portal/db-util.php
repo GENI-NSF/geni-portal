@@ -308,4 +308,28 @@ function fetchRSpecMetaData() {
   return $rows;
 }
 
+function fetchSshKeys($account_id) {
+  $conn = portal_conn();
+  $sql = "SELECT * from ssh_key where account_id = "
+    . $conn->quote($account_id, 'text');
+  /* print "Query = $sql<br/>"; */
+  $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
+  return $rows;
+}
+
+function insertSshKey($account_id, $public_key, $filename, $description)
+{
+  $conn = portal_conn();
+  $sql = "INSERT INTO ssh_key "
+    . "(account_id, public_key, filename, description) VALUES ("
+    . $conn->quote($account_id, 'text')
+    . ', ' . $conn->quote($public_key, 'text')
+    . ', ' . $conn->quote($filename, 'text')
+    . ', ' . $conn->quote($description, 'text')
+    . ');';
+  /* print "command = $sql<br/>"; */
+  $result = db_execute_statement($sql, "insertSshKey");
+  return $result;
+}
+
 ?>
