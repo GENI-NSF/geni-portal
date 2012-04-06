@@ -180,3 +180,20 @@ CREATE TABLE abac_assertion (
 CREATE INDEX abac_assertion_issuer ON abac_assertion (issuer);
 CREATE INDEX abac_assertion_issuer_role ON abac_assertion (issuer_role);
 CREATE INDEX abac_assertion_subject ON abac_assertion (subject);
+
+-- ----------------------------------------------------------------------
+-- RSpecs
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS rspec;
+CREATE TABLE rspec (
+  id SERIAL,
+  name VARCHAR NOT NULL,
+  schema VARCHAR NOT NULL,         -- ProtoGENI, GENI, etc.
+  schema_version VARCHAR NOT NULL, -- 2, 3, etc.
+  description VARCHAR NOT NULL,
+  rspec VARCHAR NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE INDEX rspec_name ON rspec (name);
+CREATE INDEX rspec_schema ON rspec (schema);
