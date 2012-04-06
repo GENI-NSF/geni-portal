@@ -30,9 +30,10 @@ $project = "<None>";
 if (array_key_exists("id", $_GET)) {
   $project = $_GET['id'];
 }
-print "<h1>GENI Project: " . $project . "</h1>\n";
-$edit_url = 'edit-project.php?id='.$project;
-print '<a href='.$edit_url.'>Edit</a>';
+print "<h1>EDIT GENI Project: " . $project . "</h1>\n";
+
+$edit_url = 'do-edit-project.php?id='.$project;
+print '<a href='.$edit_url.'>Submit</a>';
 
 include("footer.php");
 ?>

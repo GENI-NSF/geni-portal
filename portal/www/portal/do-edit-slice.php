@@ -24,15 +24,14 @@
 
 require_once("user.php");
 require_once("header.php");
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
-$project = "<None>";
+$slice = "<None>";
 if (array_key_exists("id", $_GET)) {
-  $project = $_GET['id'];
+  $slice = $_GET['id'];
 }
-print "<h1>GENI Project: " . $project . "</h1>\n";
-$edit_url = 'edit-project.php?id='.$project;
-print '<a href='.$edit_url.'>Edit</a>';
+
+relative_redirect('slice.php?id='.$slice);
 
 include("footer.php");
 ?>

@@ -39,6 +39,7 @@ if (count($slices) > 0) {
   }
   $base_url = relative_url("slicecred.php?");
   $resource_base_url = relative_url("sliceresource.php?");
+  $slice_base_url = relative_url("slice.php?");
   $abac_url = relative_url("sliceabac.php?");
   foreach ($slices as $slice) {
     $slice_id = $slice['slice_id'];
@@ -46,10 +47,11 @@ if (count($slices) > 0) {
     $query = http_build_query($args);
     $slicecred_url = $base_url . $query;
     $sliceresource_url = $resource_base_url . $query;
+    $slice_url = $slice_base_url . $query;
     $sliceabac_url = $abac_url . $query;
     $slice_name = $slice['name'];
     print "<tr>"
-      . ("<td><a href=\"$sliceresource_url\">$slice_name</a></td>")
+      . ("<td><a href=\"$slice_url\">$slice_name</a></td>")
       . "<td>" . htmlentities($slice['expiration']) . "</td>"
       . "<td>" . htmlentities($slice['urn']) . "</td>"
       . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")

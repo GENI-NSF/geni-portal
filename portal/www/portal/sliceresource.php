@@ -76,6 +76,6 @@ error_log("RSPEC = " . $rspec);
 $sliver_output = create_sliver($am_url, $user, "Slice Credential", "FOO-SLIVER", "/tmp/RSPEC.xml");
 error_log("SLIVER_OUTPUT = " . $sliver_output);
 
-relative_redirect('slices');
+relative_redirect('slice?id='.$slice_id);
 
 ?>

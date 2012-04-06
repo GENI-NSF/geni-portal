@@ -30,9 +30,8 @@ $project = "<None>";
 if (array_key_exists("id", $_GET)) {
   $project = $_GET['id'];
 }
-print "<h1>GENI Project: " . $project . "</h1>\n";
-$edit_url = 'edit-project.php?id='.$project;
-print '<a href='.$edit_url.'>Edit</a>';
+
+relative_redirect('project.php?id='.$project);
 
 include("footer.php");
 ?>
