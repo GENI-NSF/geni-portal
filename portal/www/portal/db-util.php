@@ -291,4 +291,21 @@ function storeAbacAssertion($assertion,
   return $result;
 }
 
+function fetchRSpecById($id) {
+  $conn = portal_conn();
+  $sql = "SELECT rspec.rspec FROM rspec where rspec.id = "
+    . $conn->quote($id, 'integer');
+  /* print "Query = $sql<br/>"; */
+  $row = db_fetch_row($sql, "fetchRSpecById($id)");
+  return $row['rspec'];
+}
+
+function fetchRSpecMetaData() {
+  $conn = portal_conn();
+  $sql = "SELECT rspec.id, rspec.name, rspec.description FROM rspec;";
+  /* print "Query = $sql<br/>"; */
+  $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
+  return $rows;
+}
+
 ?>
