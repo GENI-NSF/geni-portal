@@ -36,7 +36,7 @@ $TAB_ADMIN = 'Admin';
 $TAB_DEBUG = 'Debug';
 require_once("user.php");
 $user = null;
-if (array_key_exists("SCRIPT_NAME", $_SERVER) && ! strpos($_SERVER["SCRIPT_NAME"], "register.php") >= 0) {
+if (array_key_exists("SCRIPT_NAME", $_SERVER) && ! (strpos($_SERVER["SCRIPT_NAME"], "register.php") >= 0)) {
   $user = geni_loadUser();
 }
 
