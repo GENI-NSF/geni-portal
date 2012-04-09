@@ -31,13 +31,38 @@ if (array_key_exists("id", $_GET)) {
   $slice = $_GET['id'];
   $slice_item = fetch_slice($slice);
   $slice_name = $slice_item['name'];
-}
+  $slice_urn = $slice_item['urn'];
+  $slice_owner_id = $slice_item['owner'];
+  //  $owner = fetch_user(
+  $slice_owner_name = $_item['owner'];
+  $owner_email = "owner test";
+  $slice_expiration = $slice_item['expiration'];
 
+}
 
 $edit_url = 'edit-slice.php?id='.$slice;
 $add_url = 'slice-add-resources.php?id='.$slice;
 $res_url = 'sliceresource.php?id='.$slice;
-print "<h1>GENI Slice: " . $slice_name . " (" . $slice . ")</h1>\n";
+print "<h1>GENI Slice: " . $slice_name ." </h1>\n";
+print "<ul>";
+print "<li>Slice URN: " . $slice_urn . "</li>";
+print "<li>Slice UUID: " . $slice . "</li>";
+print "<li>Slice Owner: " . $slice_owner_name . " <a href='mailto:" . $owner_email . "'>e-mail</a>" . "</li>";
+print "<li>Slice Expiration: " . $slice_expiration . "</li>";
+print "</ul>";
+
+print "Date to renew until: ";
+print "<form method='POST' action='do-renew.php'>";
+print "<input type='text' name='Renew'/>";
+print "<input type='submit' value='Renew'/>";
+print "</form>";
+print "<br/>";
+
+print "Members:";
+print "<ul>";
+print "<li>Member 1</li>";
+print "</ul>";
+
 print '<ul><li>';
 print '<a href='.$edit_url.'>Edit</a>';
 print '</li><li>';
