@@ -42,7 +42,7 @@ include("tools-user.php");
 //print "<hr/>\n";
 //include("tools-slice.php");
 //print "<hr/>\n";
-//if ($user->privAdmin()) {
-//  include("tools-admin.php");
-//}
+if ($user->privAdmin()) {
+  include("tools-admin.php");
+}
 ?>
