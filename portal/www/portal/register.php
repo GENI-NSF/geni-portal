@@ -23,7 +23,7 @@
 //----------------------------------------------------------------------
 
 include("header.php");
-show_header('GENI Portal Home', $TAB_HOME);
+show_header('GENI Portal Home', $TAB_HOME, 0); // 0=Don't load user to show header
 ?>
 
 <?php
