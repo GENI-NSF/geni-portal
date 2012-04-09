@@ -33,6 +33,10 @@ Your projects:
 <li><a href="project.php?id=MyProject">My Project</a><br/></li>
 <li><a href="project.php?id=MyOtherProject">My Other Project</a><br/></li>
 </ul>
+<br/>
+<a href="edit-project.php">Create New Project</a><br/>
 <?php
+  // FIXME: Add All Projects?
+
 include("footer.php");
 ?>

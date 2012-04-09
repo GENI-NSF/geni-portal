@@ -26,14 +26,53 @@ require_once("user.php");
 require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project = "<None>";
+$project = "<new>";
+$isnew = true;
 if (array_key_exists("id", $_GET)) {
   $project = $_GET['id'];
+  $isnew = false;
+  print "<h1>EDIT GENI Project: " . $project . "</h1>\n";
+} else {
+  print "<h1>NEW GENI Project</h1>\n";
 }
-print "<h1>EDIT GENI Project: " . $project . "</h1>\n";
-
-$edit_url = 'do-edit-project.php?id='.$project;
-print '<a href='.$edit_url.'>Submit</a>';
+?>
+<form method="POST" action="do-edit-project.php">
+<?php
+  if (! $isnew) {
+    print "<input type=\"hidden\" name=\"id\" value=\"$project\"/>\n";
+  }
+$fields = array("Name", "Purpose");
+foreach ($fields as $field) {
+  print "<b>$field</b>: <input type=\"text\" name=\"$field\" ";
+  if (! $isnew) {
+    $v = "foo$field"; // FIXME: pull from DB
+  }
+  print "value=\"$v\"/><br/>\n";
+}
+print "<br/><br/>\n";
+print "FIXME: Per project policy defaults go here.<br/><br/>\n";
+if ($isnew) {
+  print "Provide a comma-separate list of email addresses of people to invite to your project:<br/>\n";
+  print "<input type=\"textarea\" name=\"invites\"/>\n";
+} else {
+  print "<h3>Project members</h3>\n";
+  print "<table border=\"1\">\n";
+  print "<tr><th>Project Member</th><th>Roles</th></tr>\n";
+  print "<tr><td><a href=\"/project-member.php?id=joe\">Joe</a></td><td>Lead</td></tr>\n";
+  print "</table>\n";
+}
+print "<br/>\n";
+if (! $isnew) {
+  print "Enter email of proposed new project leader to invite them:<br/>\n";
+  print "<input type=\"text\" name=\"newlead\"/><br/>\n";
+}
+print "<input type=\"submit\" value=\"";
+if ($isnew) {
+  print "Register\"/>\n";
+} else {
+  print "Edit\"/>\n";
+}
+print "</form>\n";
 
 include("footer.php");
 ?>
