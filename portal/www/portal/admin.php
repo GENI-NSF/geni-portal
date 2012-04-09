@@ -27,7 +27,13 @@ require_once("header.php");
 show_header('GENI Portal: Administration', $TAB_ADMIN);
 $user = geni_loadUser();
 ?>
-<h1>Administer stuff</h1>
+<center>
+Welcome, 
 <?php
+print $user->prettyName();
+?>
+</center>
+<?php
+include("tools-admin.php");
 include("footer.php");
 ?>

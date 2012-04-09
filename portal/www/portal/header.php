@@ -36,8 +36,11 @@ $TAB_ADMIN = 'Admin';
 $TAB_DEBUG = 'Debug';
 require_once("user.php");
 $user = null;
-if (array_key_exists("SCRIPT_NAME", $_SERVER) && ! (strpos($_SERVER["SCRIPT_NAME"], "register.php") >= 0)) {
-  $user = geni_loadUser();
+if (array_key_exists("SCRIPT_NAME", $_SERVER)) {
+  $spos = strpos($_SERVER["SCRIPT_NAME"], "register.php");
+  if (! isset($spos) || $spos == null || $spos < 0) {
+    $user = geni_loadUser();
+  }
 }
 
 $standard_tabs = array(array('name' => $TAB_HOME,
@@ -50,9 +53,11 @@ $standard_tabs = array(array('name' => $TAB_HOME,
                              'url' => 'debug.php')
                        );
 
-if (isset($user) && ! is_null($user) && $user->privAdmin()) {
-  array_push($standard_tabs, array('name' => $TAB_ADMIN,
+if (isset($user) && ! is_null($user)) {
+  if ($user->privAdmin()) {
+    array_push($standard_tabs, array('name' => $TAB_ADMIN,
 				   'url' => 'admin.php'));
+  }
 }
 
 function show_tab_bar($active_tab)
