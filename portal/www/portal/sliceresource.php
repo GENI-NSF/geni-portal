@@ -55,6 +55,8 @@ if (array_key_exists('id', $_GET)) {
 
 // Look up the slice...
 $slice = fetch_slice($slice_id);
+$slice_urn = $slice['urn'];
+$slice_name = $slice['name'];
 
 // Get slice authority URL
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -80,7 +82,7 @@ $rspec_file = writeDataToTempFile($rspec);
 
 // Call create sliver at the AM
 $sliver_output = create_sliver($am_url, $user, $slice_credential,
-                               $slice_id, $rspec_file);
+                               $slice_urn, $rspec_file);
 unlink($rspec_file);
 error_log("CreateSliver output = " . $sliver_output);
 
