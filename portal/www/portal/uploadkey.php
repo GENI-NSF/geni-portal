@@ -95,6 +95,7 @@ if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
   $GENI_TITLE = "Upload public key";
   include("header.php");
+  show_header('GENI Portal Home', $TAB_HOME, 0); // 0=Don't load user to show header
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";

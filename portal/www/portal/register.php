@@ -43,7 +43,7 @@ function shib_input($shib_name, $pretty_name)
 <br/><br/>
 <h2> Registration Page </h2>
 <br/>
-<b>Note</b>: By registering on this page, you agree:<br/>
+<b>Note</b>: By registering on this page, you agree to:<br/>
 <ul>
   <li><a href="">GENI Code of Ethics</a>: Be nice!</li>
   <li><a href="">GENI Privacy Policy</a>: We may use and share your InCommon attributes among GENI operators...</li>
