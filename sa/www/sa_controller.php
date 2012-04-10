@@ -23,14 +23,11 @@
 //----------------------------------------------------------------------
 
 require_once("message_handler.php");
+require_once('sa_constants.php');
+require_once('file_utils.php');
+require_once('db_utils.php');
 
-function create_slice($args)
-{
-  $slice_name = $args['slice_name'];
-  error_log("created $slice_name");
-  return "created $slice_name";
-}
-
+/* Create a slice credential and return it */
 function create_slice_credential($args)
 {
   /* Extract method arguments. */
@@ -57,7 +54,7 @@ function create_slice_credential($args)
                      $cert_file
                      );
   $command = implode(" ", $cmd_array);
-  error_log("SA CSC: command = $command");
+  //  error_log("SA CSC: command = $command");
   $result = exec($command, $output, $status);
   //print_r($output);
 
@@ -72,6 +69,109 @@ function create_slice_credential($args)
   $result = array('slice_credential' => $slice_cred);
   return $result;
 }
+
+/* Create a slice for given project, name, urn, owner_id */
+function create_slice($args)
+{
+  global $SA_SLICE_TABLENAME;
+
+  $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
+  $project_id = $args[SA_ARGUMENT::PROJECT_ID];
+  $slice_urn = $args[SA_ARGUMENT::SLICE_URN];
+  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+  $slice_id = make_uuid();
+
+  $expiration = new DateTime();
+  $expiration->add(new DateInterval('P30D')); // 30 days increment
+
+  $sql = "INSERT INTO " 
+    . $SA_SLICE_TABLENAME 
+    . " ( "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_URN . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ") "
+    . " VALUES (" 
+    . "'" . $slice_id . "', "
+    . "'" . $slice_name . "', "
+    . "'" . $project_id . "', "
+    . "'" . $slice_urn . "', "
+    . "'" . $expiration->format('Y-m-d H:i:s'). "', "
+    . "'" . $owner_id . "') ";
+ 
+  //  error_log("SA.INSERT sql = " . $sql);
+  $result = db_execute_statement($sql);
+  return $slice_id;
+}
+
+function lookup_slices($args)
+{
+  global $SA_SLICE_TABLENAME;
+  $project_id = $args[SA_ARGUMENT::PROJECT_ID];
+
+  $sql = "SELECT " 
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
+    . " FROM " . $SA_SLICE_TABLENAME
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID
+    . " = '" . $project_id . "'";
+  //  error_log("LOOKUP_SLICES.SQL = " . $sql);
+  $rows = db_fetch_rows($sql);
+  //  error_log("LOOKUP_SLICES.ROWS = " . print_r($rows, true));
+  $slice_ids = array();
+  foreach ($rows as $row) {
+    //    error_log("LOOKUP_SLICES.ROW = " . print_r($row, true));
+    $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    //    error_log("LOOKUP_SLICES.SID = " . print_r($slice_id, true));
+    $slice_ids[] = $slice_id;
+  }
+  //  error_log("LOOKUP_SLICES.SLICE_IDS = " . print_r($slice_ids, true));
+  return $slice_ids;
+}
+
+function lookup_slice($args)
+{
+  global $SA_SLICE_TABLENAME;
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+
+  $sql = "SELECT " 
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
+    . " FROM " . $SA_SLICE_TABLENAME
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
+    . " = '" . $slice_id . "'";
+  //  error_log("LOOKUP_SLICE.SQL = " . $sql);
+  $row = db_fetch_row($sql);
+  // error_log("LOOKUP_SLICE.ROW = " . print_r($row, true));
+  return $row;
+}
+
+function renew_slice($args)
+{
+  global $SA_SLICE_TABLENAME;
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+
+  $expiration = new DateTime();
+  $expiration->add(new DateInterval('P20D')); // 20 days increment
+
+  $sql = "UPDATE " . $SA_SLICE_TABLENAME 
+    . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = '"
+    . $expiration->format('Y-m-d H:i:s') . "'"
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = '" . $slice_id  . "'";
+
+  //  error_log("RENEW.sql = " . $sql);
+
+  $result = db_execute_statement($sql);
+  return $result;
+
+}
+
+
 
 handle_message("SA");
 
