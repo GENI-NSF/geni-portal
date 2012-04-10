@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2012 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,36 +22,35 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once("user.php");
-require_once("header.php");
-show_header('GENI Portal: Debug', $TAB_DEBUG);
-?>
-<div id="debug-body">
-<?php
-$user = geni_loadUser();
-?>
-<h2>SR</h2>
-<?php
-print "<a href=\"sr_controller_test.php\">Service Registry Test</a>\n";
-?>
-<h2>PA</h2>
-<?php
-print "<a href=\"pa_controller_test.php\">Project Authority Test</a>\n";
-?>
-<h2>SA</h2>
-<?php
-print "<a href=\"sa_controller_test.php\">Slice Authority Test</a>\n";
-?>
-<h2>MA</h2>
-<?php
-print "<a href=\"ma_controller_test.php\">Member Authority Test</a>\n";
-?>
-<h2>CS</h2>
-<?php
-print "<a href=\"cs_controller_test.php\">Credential Store Test</a>\n";
-?>
-</div><!-- debug-body -->
-<br/>
-<?php
-include("footer.php");
+/* Set of constants for managing calls and data records for 
+ * GENI Clearinghouse Project Authority
+ */
+
+/* Set of arguments in calls to PA interface */
+class PA_ARGUMENT 
+{
+  const PROJECT_ID = "project_id";
+  const PROJECT_NAME = "project_name";
+  const LEAD_ID = "lead_id";
+  const PROJECT_EMAIL = "project_email";
+  const PROJECT_PURPOSE  = "project_purpose";
+  const MEMBER_ID = "member_id";
+  const ROLE_TYPE = "role_type";
+}
+
+/* Name of table containing per-project info */
+$PA_PROJECT_TABLENAME = "pa_project";
+
+class PA_PROJECT_TABLE_FIELDNAME 
+{
+  const NAME = "name";
+  const PROJECT_ID = "project_id";
+  const PROJECT_NAME = "project_name";
+  const LEAD_ID = "lead_id";
+  const PROJECT_EMAIL = "project_email";
+  const PROJECT_PURPOSE = "project_purpose";
+}
+
+
+
 ?>

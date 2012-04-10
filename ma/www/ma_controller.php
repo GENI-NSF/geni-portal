@@ -1,2 +1,155 @@
 <?php
+require_once('message_handler.php');
+require_once('db_utils.php');
+require_once('file_utils.php');
+require_once('ma_constants.php');
+
+/**
+ * GENI Clearinghouse Member Authority (MA) controller interface
+ * The MA maintains a list of role relationships between members and other entities (projects, slices)
+ * or general contexts 
+ * That is, a person (member) can have a role with respect to a particular slice or project
+ *   in which case the context_type is project or slice and the context_id is the UUID of that slice or
+ *      project
+ * Alternatively, the person (member) can have a role with respect to a cotnext type that has no
+ *     specific context id, such as being the admin of membership records or the auditor of logs
+
+ * 
+ * Supports these methods:
+ *   add_attribute(ma_url, member_id, role_type, context_type, context_id);
+ *   remove_attribute(ma_url, member_id, role_type, context_type, context_id);
+ *   update_role(ma_url, member_id, role_type, context_type, context_id);
+ *   lookup_attributes(ma_url, member_id);
+ */
+
+/* Add a new attribute for a given member */
+function add_attribute($args)
+{
+  global $MA_MEMBER_TABLENAME;
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $role_type = $args[MA_ARGUMENT::ROLE_TYPE];
+  $context_type = $args[MA_ARGUMENT::CONTEXT_TYPE];
+  $context_id = $args[MA_ARGUMENT::CONTEXT_ID];
+
+  if ($context_id == null) {
+    $sql = "INSERT INTO "  
+    . $MA_MEMBER_TABLENAME
+    . "( " 
+    . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
+    . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . ", "
+    . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . ") "
+    . " VALUES (" 
+    . "'" . $member_id . "', "
+      . $role_type . ", "
+      . $context_type . ")";
+  } else {
+    $sql = "INSERT INTO "  
+    . $MA_MEMBER_TABLENAME
+    . "( " 
+    . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
+    . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . ", "
+    . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
+    . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_ID . ") "
+    . " VALUES (" 
+    . "'" . $member_id . "', "
+    . $role_type . ", "
+    . $context_type . ", "
+    . "'" . $context_id . "')";
+  }
+  //  error_log("INSERT.SQL = " . $sql);
+
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+function remove_attribute($args)
+{
+  global $MA_MEMBER_TABLENAME;
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $role_type = $args[MA_ARGUMENT::ROLE_TYPE];
+  $context_type = $args[MA_ARGUMENT::CONTEXT_TYPE];
+  $context_id = $args[MA_ARGUMENT::CONTEXT_ID];
+
+  if ($context_id == null) {
+    $sql = "DELETE FROM " 
+      . $MA_MEMBER_TABLENAME
+      . " WHERE " 
+      . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $member_id . "' AND "
+      . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . " = " . $role_type . " AND "
+      . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type;
+  } else {
+    $sql = "DELETE FROM " 
+      . $MA_MEMBER_TABLENAME
+      . " WHERE " 
+      . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $member_id . "' AND "
+      . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . " = " . $role_type . " AND "
+      . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type . " AND "
+      . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
+  }
+
+  //  error_log("DELETE.SQL = " . $sql);
+
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+function update_role($args)
+{
+  global $MA_MEMBER_TABLENAME;
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $role_type = $args[MA_ARGUMENT::ROLE_TYPE];
+  $context_type = $args[MA_ARGUMENT::CONTEXT_TYPE];
+  $context_id = $args[MA_ARGUMENT::CONTEXT_ID];
+  
+  if ($context_id == null) {
+    $sql = "UPDATE " 
+      . $MA_MEMBER_TABLENAME 
+      . " SET " . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . " = " . $role_type
+      . " WHERE " 
+      . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $member_id . "' AND "
+      . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type;
+  } else {
+    $sql = "UPDATE " 
+      . $MA_MEMBER_TABLENAME 
+      . " SET " . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . " = " . $role_type
+      . " WHERE " 
+      . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $member_id . "' AND "
+      . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type . " AND "
+      . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "' ";
+  }
+
+  // error_log("UPDATE.SQL = " . $sql);
+
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+function lookup_attributes($args)
+{
+  global $MA_MEMBER_TABLENAME;
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+
+  $sql = "SELECT " 
+    . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . ", "
+    . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
+    . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_ID. " "
+    . " FROM " 
+    . $MA_MEMBER_TABLENAME
+    . " WHERE " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $member_id . "'";
+
+  //  error_log("QUERY.sql = " . $sql);
+
+  $attribs = db_fetch_rows($sql);
+  //  error_log("QUERY.attribs = " . print_r($attribs, true));
+  return $attribs;
+    
+}
+
+handle_message("MA");
+
+
 ?>

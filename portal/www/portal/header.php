@@ -46,7 +46,7 @@ $standard_tabs = array(array('name' => $TAB_HOME,
                              'url' => 'debug.php')
                        );
 
-function show_tab_bar($active_tab, $load_user=true)
+function show_tab_bar($active_tab = '', $load_user=true)
 {
   global $standard_tabs;
   global $TAB_ADMIN;
@@ -90,7 +90,7 @@ if (! isset($ACTIVE_TAB)) {
   $ACTIVE_TAB = $TAB_HOME;
 }
 
-function show_header($title, $active_tab, $load_user=1)
+function show_header($title, $active_tab = '', $load_user=1)
 {
   echo '<!DOCTYPE HTML>';
   echo '<html>';

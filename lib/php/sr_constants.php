@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-/* Set of constants for managine calls and data records for 
+/* Set of constants for managing calls and data records for 
  * GENI Clearinghouse Service Registry
  */
 

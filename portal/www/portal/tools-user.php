@@ -26,8 +26,41 @@
 require_once("user.php");
 ?>
 <h1>User Tools</h1>
-<h2>Public Key</h2>
 <?php
+/*----------------------------------------------------------------------
+ * SSH key management
+ *----------------------------------------------------------------------
+ */
+print "<h2>SSH Keys</h2>\n";
+$keys = fetchSshKeys($user->account_id);
+if (count($keys) == 0)
+  {
+    // No ssh keys are present.
+    print "No ssh keys have been uploaded. ";
+    print "Please <a href=\"uploadsshkey.php\">upload an ssh key</a>.\n";
+  }
+else
+  {
+    print "\n<table border=\"1\">\n";
+    print "<tr><th>Name</th><th>Description</th></tr>\n";
+    foreach ($keys as $key)
+      {
+        print "<tr>"
+          . "<td>" . htmlentities($key['filename']) . "</td>"
+          . "<td>" . htmlentities($key['description']) . "</td>"
+          . "</tr>\n";
+      }
+    print "</table>\n";
+    print "<br/>\n";
+    print "<a href=\"uploadsshkey.php\">Upload another ssh key</a>.\n";
+  }
+
+
+/*----------------------------------------------------------------------
+ * SSL key management
+ *----------------------------------------------------------------------
+ */
+print "<h2>Keys and Certificates for command line tools</h2>\n";
 $key = db_fetch_public_key($user->account_id);
 if ($key) {
   print "\n<table border=\"1\">\n";
@@ -42,8 +75,12 @@ if ($key) {
 } else {
   print "<a href=\"uploadkey.php\">Please upload a public key</a>\n";
 }
-?>
-<?php
+
+
+/*----------------------------------------------------------------------
+ * ABAC (if enabled)
+ *----------------------------------------------------------------------
+ */
 if ($portal_enable_abac)
   {
     print '<h2>ABAC</h2>\n';

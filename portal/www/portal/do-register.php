@@ -25,6 +25,7 @@
 <?php
 require_once("settings.php");
 require_once("db-util.php");
+require_once("file_utils.php");
 require_once("util.php");
 require_once("user.php");
 
