@@ -25,7 +25,7 @@
 require_once('util.php');
 require_once('cs_constants.php');
 
-error_log("cs TEST\n");
+error_log("CS TEST\n");
 
 /* Could be HTTP_HOST or SERVER_NAME */
 $http_host = $_SERVER['HTTP_HOST'];

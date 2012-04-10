@@ -44,4 +44,14 @@ function writeDataToTempFile($data, $prefix = "geni-")
   return $tmpfile;
 }
 
+/**
+ * create a UUID
+ */
+function make_uuid() {
+  $uuid = exec('/usr/bin/uuidgen');
+  return $uuid;
+}
+
+
+
 ?>

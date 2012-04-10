@@ -91,6 +91,7 @@ CREATE TABLE identity_attribute (
 -- ----------------------------------------------------------------------
 -- Shibboleth attributes, based on attribute-map.xml
 -- ----------------------------------------------------------------------
+-- *** CANDIDATE FOR DELETION ***
 DROP TABLE IF EXISTS shib_attribute;
 
 CREATE TABLE shib_attribute (
@@ -155,6 +156,7 @@ CREATE INDEX inside_key_index_account_id ON inside_key (account_id);
 -- ----------------------------------------------------------------------
 -- ABAC identities
 -- ----------------------------------------------------------------------
+-- *** CANDIDATE for DELETE ***
 DROP TABLE IF EXISTS abac;
 CREATE TABLE abac (
   account_id UUID REFERENCES account,
@@ -168,6 +170,7 @@ CREATE INDEX abac_index_account_id ON abac (account_id);
 -- ----------------------------------------------------------------------
 -- ABAC identities
 -- ----------------------------------------------------------------------
+-- *** CANDIDATE for DELETE ***
 DROP TABLE IF EXISTS abac_assertion;
 CREATE TABLE abac_assertion (
   issuer VARCHAR, -- the issuer fingerprint

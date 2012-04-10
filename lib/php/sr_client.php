@@ -32,9 +32,9 @@ function get_first_service_of_type($service_type)
   $message[SR_ARGUMENT::SERVICE_TYPE] = $service_type;
   $result = put_message($sr_url, $message);
 
-  error_log("SR_URL: " . $sr_url);
-  error_log("GFSOT: " . $result);
-  error_log("ROW: " . $result[0]);
+  //  error_log("SR_URL: " . $sr_url);
+  //  error_log("GFSOT: " . $result);
+  //  error_log("ROW: " . $result[0]);
 
   /** Grab the first SA (eventually this will be selected from a user menu **/
   $row = $result[0];
