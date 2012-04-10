@@ -55,30 +55,30 @@ if (array_key_exists("newlead", $_REQUEST)) {
   // FIXME validate inputs
   $newlead = $_REQUEST['newlead'];
 }
-print "ID=$project, Name=$name, Purpose=$purpose, newlead=$newlead\n";
+print "ID=$project, Name=$name, Purpose=$purpose, newlead=$newlead.<br/>\n";
 
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
 
 $sr_url = get_sr_url();
-print "SR: $sr_url\n";
+print "SR: $sr_url<br/>\n";
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 print "PA: $pa_url\n";
 if (! isset($pa_url) || $pa_url==null) {
-  print "Got no PA!";
+  print "Got no PA!<br/>\n";
   $http_host = $_SERVER['HTTP_HOST'];
   $pa_url = "https://" . $http_host . "/pa/pa_controller.php";
   $result = register_service(SR_SERVICE_TYPE::PROJECT_AUTHORITY, $pa_url);
-  print "Registered PA $pa_url: $result\n";
+  print "Registered PA $pa_url: $result<br/>\n";
 }
 if ($isnew) {
   // Re-check authorization?
   // Auto?
   $project = create_project($pa_url, $name, $lead, $email, $purpose);
-  print $project;
+  print "Created project, got ID: $project<.br/>\n";
   // Return on error?
 } else {
   $result = update_project($pa_url, $project, $name, $newlead, $email, $purpose);
-  print $result;
+  print "Edited project $project, got result: $result.<br/>\n";
   // Return on error?
 }
 
