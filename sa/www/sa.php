@@ -24,6 +24,7 @@
 
 require_once("RestUtils.php");
 require_once("db.php");
+require_once("file_utils.php");
 
 // Requires package "php-xml-serializer"
 require_once 'XML/Serializer.php';
@@ -65,14 +66,6 @@ function encodeResult($data, $svc_type, $svc_array)
       RestUtils::sendResponse(200, $serializer->serialize($svc_array),
                               'application/xml');
     }
-}
-
-//
-// Extract this to a util function
-//
-function make_uuid() {
-  $uuid = exec('/usr/bin/uuidgen');
-  return $uuid;
 }
 
 
