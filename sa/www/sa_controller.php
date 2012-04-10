@@ -81,8 +81,7 @@ function create_slice($args)
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
 
-  $expiration = new DateTime();
-  $expiration->add(new DateInterval('P30D')); // 30 days increment
+  $expiration = get_future_date(30); // 30 days increment
 
   $sql = "INSERT INTO " 
     . $SA_SLICE_TABLENAME 
@@ -98,7 +97,7 @@ function create_slice($args)
     . "'" . $slice_name . "', "
     . "'" . $project_id . "', "
     . "'" . $slice_urn . "', "
-    . "'" . $expiration->format('Y-m-d H:i:s'). "', "
+    . "'" . db_date_format($expiration) . "', "
     . "'" . $owner_id . "') ";
  
   //  error_log("SA.INSERT sql = " . $sql);
@@ -156,12 +155,11 @@ function renew_slice($args)
   global $SA_SLICE_TABLENAME;
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
 
-  $expiration = new DateTime();
-  $expiration->add(new DateInterval('P20D')); // 20 days increment
+  $expiration = get_future_date(20);// 20 days increment
 
   $sql = "UPDATE " . $SA_SLICE_TABLENAME 
     . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = '"
-    . $expiration->format('Y-m-d H:i:s') . "'"
+    . db_date_format($expiration) . "'"
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = '" . $slice_id  . "'";
 
   //  error_log("RENEW.sql = " . $sql);
