@@ -25,6 +25,15 @@
 require_once("user.php");
 require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
+$user = geni_loadUser();
+$project = "None";
+if (array_key_exists("id", $_GET)) {
+  $project = $_GET['id'];
+}
+// FIXME: remove the project from the DB
+// Invalidate credentials?
+// Remove slices from the DB?
+// FIXME
 relative_redirect('projects.php');
 
 include("footer.php");

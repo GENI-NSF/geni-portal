@@ -26,9 +26,10 @@ require_once("user.php");
 require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project = "<new>";
+$project = "new";
 $isnew = true;
 if (array_key_exists("id", $_GET)) {
+  // FIXME: Use filters to validate input
   $project = $_GET['id'];
   $isnew = false;
   print "<h1>EDIT GENI Project: " . $project . "</h1>\n";
@@ -49,21 +50,33 @@ foreach ($fields as $field) {
   }
   print "value=\"$v\"/><br/>\n";
 }
-print "<br/><br/>\n";
-print "FIXME: Per project policy defaults go here.<br/><br/>\n";
+print "<br/>\n";
+
+print "<h2>Project Policy Defaults</h2>\n";
+print "FIXME: Per project policy defaults go here.<br/>\n";
+print "Slice Membership policy: Project members get <b>User</b> rights on all project slices.<br/><br/>\n";
+
 if ($isnew) {
   print "Provide a comma-separate list of email addresses of people to invite to your project:<br/>\n";
   print "<input type=\"textarea\" name=\"invites\"/>\n";
 } else {
   print "<h3>Project members</h3>\n";
   print "<table border=\"1\">\n";
-  print "<tr><th>Project Member</th><th>Roles</th></tr>\n";
-  print "<tr><td><a href=\"/project-member.php?id=joe\">Joe</a></td><td>Lead</td></tr>\n";
+  // FIXME: loop over members retrieved from the DB
+  // FIXME each of these is editable, an action, etc
+  print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
+  print "<tr><td><a href=\"project-member.php?id=$project&member=joe\">Joe</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project&member=joe\">Delete</a></td><td><mailto=\"\">Email Joe</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?id=$project&member=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?id=$project&member=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";
-if (! $isnew) {
-  print "Enter email of proposed new project leader to invite them:<br/>\n";
+print "<b>Project Leader</b><br/>\n";
+print "There is exactly one project leader for each project. Project leaders are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
+if ($isnew) {
+  print "You will be the leader of your new project.<br/>\n";
+} else {
+  print "Project leader is: <b>Joe</b><br/>\n";
+  print "To transfer project leaders, enter email of proposed new project leader to ask them to take over:<br/>\n";
   print "<input type=\"text\" name=\"newlead\"/><br/>\n";
 }
 print "<input type=\"submit\" value=\"";

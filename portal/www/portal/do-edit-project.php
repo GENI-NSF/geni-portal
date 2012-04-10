@@ -27,8 +27,8 @@ require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 $project = "<None>";
-if (array_key_exists("id", $_GET)) {
-  $project = $_GET['id'];
+if (array_key_exists("id", $_REQUEST)) {
+  $project = $_REQUEST['id'];
 }
 
 relative_redirect('project.php?id='.$project);

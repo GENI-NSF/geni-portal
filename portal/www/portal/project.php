@@ -26,7 +26,7 @@ require_once("user.php");
 require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project = "<None>";
+$project = "None";
 if (array_key_exists("id", $_GET)) {
   $project = $_GET['id'];
 }
@@ -57,7 +57,10 @@ if ($user->privAdmin()) {
 <h2>Project members</h2>
 <table border="1">
 <tr><th>Project Member</th><th>Roles</th></tr>
-<tr><td><a href="/project-member.php?id=joe">Joe</a></td><td>Lead</td></tr>
+<?php
+   // FIXME: See project-member.php. Replace all that with a table or 2 here?
+   print "<tr><td><a href=\"project-member.php?id=" . $project . "&member=joe\">Joe</a></td><td>Lead</td></tr>\n";
+?>
 </table>
 
 <?php

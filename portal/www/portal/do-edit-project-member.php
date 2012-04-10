@@ -27,14 +27,18 @@ require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 $project = "None";
-if (array_key_exists("id", $_GET)) {
-  $project = $_GET['id'];
+// FIXME filter input
+if (array_key_exists("id", $_REQUEST)) {
+  $project = $_REQUEST['id'];
 }
-print "<h1>DELETE GENI Project: " . $project . "</h1>\n";
-// FIXME: What does happen when you delete a project?
-print "<b>Warning</b>: This operation is not reversible. Running slices will not be removed, but you will no longer be able to renew slices or use the GENI portal to modify them.<br/><br/>\n";
-$edit_url = 'do-delete-project.php?id='.$project;
-print '<a href='.$edit_url.'>Delete</a>';
+$member = "None";
+if (array_key_exists("member", $_REQUEST)) {
+  $member = $_REQUEST['member'];
+}
+
+// FIXME do real stuff here!
+
+relative_redirect('project-member.php?id='.$project . "&member=" . $member);
 
 include("footer.php");
 ?>
