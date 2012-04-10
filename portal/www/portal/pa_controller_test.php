@@ -64,4 +64,6 @@ dump_projects();
 $result = delete_project($pa_url, $project_id2);
 dump_projects();
 
+relative_redirect('debug');
+
 ?>

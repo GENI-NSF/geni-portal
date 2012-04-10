@@ -26,7 +26,7 @@
  * GENI Clearinghouse Project Authority
  */
 
-/* Set of argumets in calls to PA interface */
+/* Set of arguments in calls to PA interface */
 class PA_ARGUMENT 
 {
   const PROJECT_ID = "project_id";

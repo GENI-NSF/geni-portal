@@ -42,6 +42,10 @@ print "<a href=\"pa_controller_test.php\">Project Authority Test</a>\n";
 <?php
 print "<a href=\"sa_controller_test.php\">Slice Authority Test</a>\n";
 ?>
+<h2>MA</h2>
+<?php
+print "<a href=\"ma_controller_test.php\">Member Authority Test</a>\n";
+?>
 <h2>CS</h2>
 <?php
 print "<a href=\"cs_controller_test.php\">Credential Store Test</a>\n";
