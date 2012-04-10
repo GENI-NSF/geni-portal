@@ -33,12 +33,13 @@ $user = geni_loadUser();
 $slices = fetch_slices($user->account_id);
 if (count($slices) > 0) {
   print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th><th>Expiration</th><th>URN</th><th>Credential</th><th>Resources</th>";
+  print "<tr><th>Name</th><th>Expiration</th><th>URN</th><th>Credential</th><th>Resources</th><th>Delete Sliver</th>";
   if ($portal_enable_abac) {
     print "<th>ABAC Credential</th></tr>\n";
   }
   $base_url = relative_url("slicecred.php?");
   $resource_base_url = relative_url("sliceresource.php?");
+  $delete_sliver_base_url = relative_url("sliverdelete.php?");
   $abac_url = relative_url("sliceabac.php?");
   foreach ($slices as $slice) {
     $slice_id = $slice['slice_id'];
@@ -46,6 +47,7 @@ if (count($slices) > 0) {
     $query = http_build_query($args);
     $slicecred_url = $base_url . $query;
     $sliceresource_url = $resource_base_url . $query;
+    $delete_sliver_url = $delete_sliver_base_url . $query;
     $sliceabac_url = $abac_url . $query;
     $slice_name = $slice['name'];
     print "<tr>"
@@ -53,7 +55,8 @@ if (count($slices) > 0) {
       . "<td>" . htmlentities($slice['expiration']) . "</td>"
       . "<td>" . htmlentities($slice['urn']) . "</td>"
       . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
-      . ("<td><a href=\"$sliceresource_url\">Get Resources</a></td>");
+      . ("<td><a href=\"$sliceresource_url\">Get Resources</a></td>")
+      . ("<td><a href=\"$delete_sliver_url\">Delete Sliver</a></td>");
     if ($portal_enable_abac) {
       print "<td><a href=\"$sliceabac_url\">Get ABAC Credential</a></td>";
     }
