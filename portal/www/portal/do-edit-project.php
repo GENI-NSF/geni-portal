@@ -24,14 +24,65 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('util.php');
+require_once('pa_constants.php');
+require_once('pa_client.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project = "<None>";
+$project = "None";
+$isnew = true;
+$name = "";
+$email = "";
+$purpose = "";
+$lead = $user->account_id;
+$newlead = "";
 if (array_key_exists("id", $_REQUEST)) {
+  // FIXME validate inputs
   $project = $_REQUEST['id'];
+  $isnew = false;
+}
+if (array_key_exists("Name", $_REQUEST)) {
+  // FIXME validate inputs
+  $name = $_REQUEST['Name'];
+}
+if (array_key_exists("Purpose", $_REQUEST)) {
+  // FIXME validate inputs
+  $purpose = $_REQUEST['Purpose'];
+}
+if (array_key_exists("newlead", $_REQUEST)) {
+  // FIXME validate inputs
+  $newlead = $_REQUEST['newlead'];
+}
+print "ID=$project, Name=$name, Purpose=$purpose, newlead=$newlead\n";
+
+// FIXME: If got a newlead diff from in DB, then send a message to them to accept it
+
+$sr_url = get_sr_url();
+print "SR: $sr_url\n";
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+print "PA: $pa_url\n";
+if (! isset($pa_url) || $pa_url==null) {
+  print "Got no PA!";
+  $http_host = $_SERVER['HTTP_HOST'];
+  $pa_url = "https://" . $http_host . "/pa/pa_controller.php";
+  $result = register_service(SR_SERVICE_TYPE::PROJECT_AUTHORITY, $pa_url);
+  print "Registered PA $pa_url: $result\n";
+}
+if ($isnew) {
+  // Re-check authorization?
+  // Auto?
+  $project = create_project($pa_url, $name, $lead, $email, $purpose);
+  print $project;
+  // Return on error?
+} else {
+  $result = update_project($pa_url, $project, $name, $newlead, $email, $purpose);
+  print $result;
+  // Return on error?
 }
 
-relative_redirect('project.php?id='.$project);
+//relative_redirect('project.php?id='.$project);
 
 include("footer.php");
 ?>

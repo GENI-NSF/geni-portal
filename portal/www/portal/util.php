@@ -76,7 +76,7 @@ function put_message($url, $message)
   fclose($fp);
   unlink($tmpfile);
   if ($error) {
-    error_log("put_message error: $error");
+    error_log("put_message error: $error, URL: $url, Message: $message");
     $result = NULL;
   }
   // error_log("Received raw result : " . $result);

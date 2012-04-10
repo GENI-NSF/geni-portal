@@ -52,6 +52,8 @@ foreach ($fields as $field) {
 }
 print "<br/>\n";
 
+// FIXME: Is project email user settable? A PA generated alias for the project lead's email? Just the project lead's email?
+
 print "<h2>Project Policy Defaults</h2>\n";
 print "FIXME: Per project policy defaults go here.<br/>\n";
 print "Slice Membership policy: Project members get <b>User</b> rights on all project slices.<br/><br/>\n";
@@ -74,6 +76,7 @@ print "<b>Project Leader</b><br/>\n";
 print "There is exactly one project leader for each project. Project leaders are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
 if ($isnew) {
   print "You will be the leader of your new project.<br/>\n";
+  print "<input type=\"hidden\" name=\"newlead\" value=\"$member\"/>\n";
 } else {
   print "Project leader is: <b>Joe</b><br/>\n";
   print "To transfer project leaders, enter email of proposed new project leader to ask them to take over:<br/>\n";
