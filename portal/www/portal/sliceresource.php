@@ -72,7 +72,7 @@ error_log("RSPEC = " . $rspec);
 */
 
 // Get the slice credential from the SA
-$slice_credential = get_slice_credential($sa_url, $slice_id, $user);
+$slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 
 // Retrieve a canned RSpec
 $rspec = fetchRSpecById(1);
