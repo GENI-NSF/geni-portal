@@ -24,20 +24,35 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('util.php');
+require_once('pa_constants.php');
+require_once('pa_client.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 $project = "None";
 if (array_key_exists("id", $_GET)) {
   $project = $_GET['id'];
 }
-print "<h1>GENI Project: " . $project . "</h1>\n";
+$sr_url = get_sr_url();
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+$details = lookup_project($pa_url, $project);
+$name = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+$email = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
+$purpose = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+$leadid = $details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+$lead = geni_loadUser($leadid);
+print "<h1>GENI Project: " . $name . "</h1>\n";
 $edit_url = 'edit-project.php?id='.$project;
+print "<b>Name</b>: $name<br/>\n";
+// look up lead name
+$leadname = $lead->prettyName();
+print "<b>Warning: Project name is public</b><br/>\n";
+print "<b>Lead</b>: $leadname<br/>\n";
+print "<b>Project purpose</b>: $purpose<br/>";
+print "<b>Project email</b>: <a href=\"mailto:\">$email</a><br/>\n";
 ?>
-<b>Name</b>: Foo<br/>
-<b>Warning: Project name is public</b><br/>
-<b>Lead</b>: Joe<br/>
-<b>Project purpose</b>: do stuff<br/>
-<b>Project email</b>: <a href="mailto:">project21@geni.net</a><br/>
 <b>Other static info</b>: etc<br/>
 <?php
 print '<a href='.$edit_url.'>Edit Project</a><br/>';
