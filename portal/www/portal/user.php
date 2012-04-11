@@ -99,20 +99,26 @@ class GeniUser
 }
 
 // Loads an experimenter from the database.
-function geni_loadUser()
+function geni_loadUser($id='')
 {
   $conn = portal_conn();
   $conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
 
-  // Short circuit if no eppn. We require eppn as the persistent db key.
-  if (! array_key_exists('eppn', $_SERVER)) {
-    // No eppn was found - redirect to a gentle error page
-    relative_redirect("error-eppn.php");
+  if ($id == '') {
+    // Short circuit if no eppn. We require eppn as the persistent db key.
+    if (! array_key_exists('eppn', $_SERVER)) {
+      // No eppn was found - redirect to a gentle error page
+      relative_redirect("error-eppn.php");
+    }
+
+    $eppn = $_SERVER['eppn'];
+
+    $query = 'SELECT * FROM identity WHERE eppn = '
+      . $conn->quote($eppn, 'text');
+  } else {
+    $query = 'SELECT * FROM identity WHERE account_id = ' . $conn->quote($id, 'text');
   }
 
-  $eppn = $_SERVER['eppn'];
-  $query = 'SELECT * FROM identity WHERE eppn = '
-    . $conn->quote($eppn, 'text');
   $res =& $conn->queryAll($query);
 
   // Always check that result is not an error
