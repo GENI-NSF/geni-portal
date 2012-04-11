@@ -101,8 +101,10 @@ function create_slice($args)
     . "'" . $owner_id . "') ";
  
   //  error_log("SA.INSERT sql = " . $sql);
-  $result = db_execute_statement($sql);
-  return $slice_id;
+  $db_result = db_execute_statement($sql);
+
+  // Return the standard info about the slice.
+  return lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
 }
 
 function lookup_slices($args)
