@@ -47,8 +47,9 @@ foreach ($fields as $field) {
   print "<b>$field</b>: <input type=\"text\" name=\"$field\" ";
   if (! $isnew) {
     $v = "foo$field"; // FIXME: pull from DB
+    print "value=\"foo$field\"";
   }
-  print "value=\"$v\"/><br/>\n";
+  print "/><br/>\n";
 }
 print "<br/>\n";
 
@@ -76,7 +77,7 @@ print "<b>Project Leader</b><br/>\n";
 print "There is exactly one project leader for each project. Project leaders are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
 if ($isnew) {
   print "You will be the leader of your new project.<br/>\n";
-  print "<input type=\"hidden\" name=\"newlead\" value=\"$member\"/>\n";
+  print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
   print "Project leader is: <b>Joe</b><br/>\n";
   print "To transfer project leaders, enter email of proposed new project leader to ask them to take over:<br/>\n";
