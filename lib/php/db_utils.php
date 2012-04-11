@@ -118,4 +118,21 @@ function db_fetch_row($query, $msg = "")
   }
 }
 
+$DATE_FORMAT = 'Y-m-d H:i:s';
+
+// Get date N days in future from now
+function get_future_date($num_days)
+{
+  $dt = new DateTime();
+  $dt->add(new DateInterval('P' . $num_days . 'D'));
+  return $dt;
+}
+
+// Get format for date for inserting into database 
+function db_date_format($date)
+{
+  global $DATE_FORMAT;
+  return $date->format($DATE_FORMAT);
+}
+
 ?>

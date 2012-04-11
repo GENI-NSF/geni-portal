@@ -48,8 +48,7 @@ function create_assertion($args)
   }
 
   // Expire in 30 days
-  $expiration = new DateTime();
-  $expiration->add(new DateInterval('P30D'));
+  $expiration = get_future_date(30);
 
   $assertion_cert = create_assertion_cert($signer, $principal, 
 					  $attribute, $context_type, $context,
@@ -74,7 +73,7 @@ function create_assertion($args)
     . "'" . $attribute . "', "
     . "'" . $context_type . "', "
     . $context_value_clause 
-    . "'" . $expiration->format('Y-m-d H:i:s') . "', "
+    . "'" . db_date_format($expiration) . "', "
     . "'" . $assertion_cert . "') ";
   $result = db_execute_statement($sql);
   return $result;
@@ -123,11 +122,10 @@ function renew_assertion($args)
 {
   global $CS_ASSERTION_TABLENAME;
   $id = $args[CS_ARGUMENT::ID];
-  $expiration = new DateTime();
-  $expiration->add(new DateInterval('P20D')); // 20 days increment
+  $expiration = get_future_date(20);
   $sql = "update " . $CS_ASSERTION_TABLENAME . " SET " 
     . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . " = '" 
-    . $expiration->format('Y-m-d H:i:s') . "'"
+    . db_date_format($expiration) . "'"
     . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = '" . $id . "'";
   $result = db_execute_statement($sql);
   return $result;

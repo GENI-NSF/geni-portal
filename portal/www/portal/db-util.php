@@ -62,15 +62,14 @@ function loadIdentityAttributes($identity_id) {
 function db_create_slice($account_id, $slice_id, $name)
 {
   $conn = portal_conn();
-  $expires = new DateTime();
-  $expires->add(new DateInterval('P30D'));
+  $expires = get_future_date(30);
   $urn = "urn:publicid:IDN+geni:gpo:portal+slice+" . $name;
 
   $my_tx = $conn->beginTransaction();
   $sql = "INSERT INTO slice (slice_id, name, expiration, owner, urn) VALUES ("
     . $conn->quote($slice_id, 'text')
     . ', ' . $conn->quote($name, 'text')
-    . ', ' . $conn->quote($expires->format('Y-m-d H:i:s'), 'timestamp')
+    . ', ' . $conn->quote(db_date_format($expires), 'timestamp')
     . ', ' . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($urn, 'text')
     . ')';
@@ -283,7 +282,7 @@ function storeAbacAssertion($assertion,
     . $conn->quote($issuer_fingerprint, 'text')
     . ', ' . $conn->quote($issuer_role, 'text')
     . ', ' . $conn->quote($subject_fingerprint, 'text')
-    . ', ' . $conn->quote($expiration->format('Y-m-d H:i:s'), 'timestamp')
+    . ', ' . $conn->quote(db_date_format($expiration), 'timestamp')
     . ', ' . $conn->quote($base64_assertion, 'text')
     . ')';
   /* print "command = $sql<br/>"; */
