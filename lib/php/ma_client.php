@@ -7,6 +7,7 @@
 //   lookup_attributes(ma_url, member_id);
 
 require_once('ma_constants.php');
+require_once('message_handler.php');
 
 //  Create an attribute with given role, context_type and context_id (possibly null)
 function add_attribute($ma_url, $member_id, $role_type, $context_type, $context_id)

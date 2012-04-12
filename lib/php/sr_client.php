@@ -2,6 +2,8 @@
 
 // Routines to help clients of the service registry
 
+require_once('message_handler.php');
+
 // Return all services in registry
 function get_services()
 {

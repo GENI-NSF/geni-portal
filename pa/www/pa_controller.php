@@ -5,6 +5,9 @@ require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('file_utils.php');
 require_once('pa_constants.php');
+require_once('cs_client.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
 
 /**
  * GENI Clearinghouse Project Authority (PA) controller interface
@@ -18,6 +21,9 @@ require_once('pa_constants.php');
  *   update_project(pa_url, project_id, lead_id, project_email, project_purpose);
  *
  **/
+
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
 /**
  * Create project of given name, lead_id, email and purpose
@@ -53,6 +59,12 @@ function create_project($args)
   $result = db_execute_statement($sql);
 
   //  error_log("CREATE " . $result . " " . $sql);
+
+  // Create an assertion that this lead is the lead of the project (and has associated privileges)
+  global $cs_url;
+  $signer = null; // *** FIX ME
+  create_assertion($cs_url, $signer, $lead_id, CS_ATTRIBUTE_TYPE::LEAD,
+		   CS_CONTEXT_TYPE::PROJECT, $project_id);
 
   return $project_id;
 }
