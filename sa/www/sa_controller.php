@@ -108,13 +108,35 @@ function create_slice($args)
 function lookup_slices($args)
 {
   global $SA_SLICE_TABLENAME;
-  $project_id = $args[SA_ARGUMENT::PROJECT_ID];
+  if (array_key_exists(SA_ARGUMENT::PROJECT_ID, $args)) {
+    $project_id = $args[SA_ARGUMENT::PROJECT_ID];
+  }
+  if (array_key_exists(SA_ARGUMENT::OWNER_ID, $args)) {
+    $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+  }
+  if (array_key_exists(SA_ARGUMENT::SLICE_NAME, $args)) {
+    $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
+  }
 
   $sql = "SELECT " 
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
     . " FROM " . $SA_SLICE_TABLENAME
-    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID
-    . " = '" . $project_id . "'";
+    . " WHERE ";
+  if (isset($project_id)) {
+    $sql = $sql . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID .
+      " = '" . $project_id . "'";
+  }
+  if (isset($owner_id)) {
+    $sql = $sql . SA_SLICE_TABLE_FIELDNAME::OWNER_ID .
+      " = '" . $owner_id . "'";
+  }
+  if (isset($slice_name)) {
+    $sql = $sql . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME .
+      " = '" . $slice_name . "'";
+  }
+  $sql = $sql . " ORDER BY " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . 
+    ", " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID;
+
   //  error_log("LOOKUP_SLICES.SQL = " . $sql);
   $rows = db_fetch_rows($sql);
   //  error_log("LOOKUP_SLICES.ROWS = " . print_r($rows, true));

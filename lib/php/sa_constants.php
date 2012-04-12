@@ -26,7 +26,7 @@
  * GENI Clearinghouse Slice Authority
  */
 
-/* Set of arguments to callse SA interface */
+/* Set of arguments to calls SA interface */
 class SA_ARGUMENT
 {
   const PROJECT_ID = "project_id";
