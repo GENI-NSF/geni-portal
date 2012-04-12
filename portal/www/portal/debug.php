@@ -34,6 +34,10 @@ $user = geni_loadUser();
 <?php
 print "<a href=\"sr_controller_test.php\">Service Registry Test</a>\n";
 ?>
+<h2>AuthZ</h2>
+<?php
+print "<a href=\"permission_manager_test.php\">Permission Manager Test</a>\n";
+?>
 <h2>PA</h2>
 <?php
 print "<a href=\"pa_controller_test.php\">Project Authority Test</a>\n";
