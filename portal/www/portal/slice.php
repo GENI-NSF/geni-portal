@@ -49,12 +49,6 @@ if (array_key_exists("id", $_GET)) {
   $owner_email = $owner->email();
 }
 
-/* $sr_url = get_sr_url(); */
-
-
-
-
-
 $edit_url = 'edit-slice.php?id='.$slice;
 $add_url = 'slice-add-resources.php?id='.$slice;
 $res_url = 'sliceresource.php?id='.$slice;

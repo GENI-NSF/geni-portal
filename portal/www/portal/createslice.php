@@ -36,18 +36,29 @@ require_once("sa_client.php");
 
 $user = geni_loadUser();
 $name = NULL;
+$project_id = NULL;
 $message = NULL;
 if (count($_GET)) {
   // parse the args
   /* print "got parameters<br/>"; */
+  if (array_key_exists('project_id', $_GET)) {
+    /* print "found name<br/>"; */
+    $project_id = $_GET['project_id'];
+  } else {
+    error_log("Missing project_id in _GET.<br/>"); 
+    die("Missing project_id in _GET.<br/>"); 
+  }
+  error_log("got project_id = $project_id<br/>"); 
   if (array_key_exists('name', $_GET)) {
     /* print "found name<br/>"; */
     $name = $_GET['name'];
+    error_log("got name = $name<br/>"); 
   }
-  /* print "got name = $name<br/>"; */
 
 } else {
-  /* print "no parameters in _GET<br/>"; */
+  error_log("Missing project_id in _GET.<br/>"); 
+  die("Missing project_id in _GET.<br/>"); 
+
 }
 
 function omni_create_slice($user, $slice_id, $name)
@@ -106,9 +117,6 @@ function sa_create_slice($user, $slice_name, $project_id)
 // Do we have all the required params?
 if ($name) {
   // Create the slice...
-
-  // FIXME: need project id
-  $project_id = 'geni';
   $result = sa_create_slice($user, $name, $project_id);
   $pretty_result = print_r($result, true);
   error_log("sa_create_slice result: $pretty_result\n");
@@ -130,6 +138,12 @@ if ($message) {
   print "<i>" . $message . "</i>\n";
 }
 print '<form method="GET" action="createslice">';
+print "\n";
+print "Project name:";
+print "\n";
+print "<input type='text' name='project_id' value='$project_id' disabled='disabled'/>";
+print "\n";
+print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
 print "\n";
 print 'Slice name: ';
 print "\n";
