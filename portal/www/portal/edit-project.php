@@ -24,30 +24,42 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
+require_once("pa_client.php");
+require_once("pa_constants.php");
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+}
+require_once("pa_client.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 $project = "new";
 $isnew = true;
 if (array_key_exists("id", $_GET)) {
   // FIXME: Use filters to validate input
-  $project = $_GET['id'];
+  $project_id = $_GET['id'];
   $isnew = false;
-  print "<h1>EDIT GENI Project: " . $project . "</h1>\n";
+  $project = lookup_project($pa_url, $project_id);
+  print "<h1>EDIT GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</h1>\n";
 } else {
+  $project_id = "new";
   print "<h1>NEW GENI Project</h1>\n";
 }
 ?>
 <form method="POST" action="do-edit-project.php">
 <?php
   if (! $isnew) {
-    print "<input type=\"hidden\" name=\"id\" value=\"$project\"/>\n";
+    print "<input type=\"hidden\" name=\"id\" value=\"$project_id\"/>\n";
   }
-$fields = array("Name", "Purpose");
+$fields = array(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL, PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE);
+$field_labels = array("Name", "Email", "Purpose");
+$ind = -1;
 foreach ($fields as $field) {
-  print "<b>$field</b>: <input type=\"text\" name=\"$field\" ";
+  $ind = $ind + 1;
+  print "<b>" . $field_labels[$ind] . "</b>: <input type=\"text\" name=\"$field\" ";
   if (! $isnew) {
-    $v = "foo$field"; // FIXME: pull from DB
-    print "value=\"foo$field\"";
+    print "value=\"" . $project[$field] . "\"";
   }
   print "/><br/>\n";
 }
@@ -68,8 +80,8 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"project-member.php?id=$project&member=joe\">Joe</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project&member=joe\">Delete</a></td><td><mailto=\"\">Email Joe</a></td></tr>\n";
-  print "<tr><td><a href=\"project-member.php?id=$project&member=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?id=$project&member=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?id=$project_id&member=joe\">Joe</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=joe\">Delete</a></td><td><mailto=\"\">Email Joe</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?id=$project_id&member=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";
