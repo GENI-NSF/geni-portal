@@ -113,5 +113,17 @@ function fetch_slice_by_id($slice_id)
   return $row;
 }
 
+function slice_urn_from_cert($slice_cert)
+{
+  $cert = openssl_x509_parse($slice_cert);
+  $extensions = $cert['extensions'];
+  $subject_alt_name = $extensions['subjectAltName'];
+  $fields = explode(",", $subject_alt_name);
+  $pattern = '/^URI:urn:publicid:IDN/';
+  $urn_array = preg_grep($pattern, $fields);
+  // FIXME: what if no subject alt name matched $pattern?
+  $result = substr($urn_array[0], 4);
+  return $result;
+}
 
 ?>
