@@ -29,24 +29,28 @@ require_once('pa_constants.php');
 require_once('pa_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once("sa_client.php");
 show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
 $slice = "<None>";
 if (array_key_exists("id", $_GET)) {
   $slice = $_GET['id'];
-  $slice_item = fetch_slice($slice);
-  $name = $slice_item['name'];
-  $slice_urn = $slice_item['urn'];
-  $slice_owner_id = $slice_item['owner'];
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  $slice_item = lookup_slice($sa_url, $slice);
+  $pretty_result = print_r($slice_item, true);
+  error_log("fetch_slice result: $pretty_result\n");
+
+  $name = $slice_item[SA_ARGUMENT::SLICE_NAME];
+  $slice_expiration = $slice_item[SA_ARGUMENT::EXPIRATION];
+  $slice_urn = $slice_item[SA_ARGUMENT::SLICE_URN];
+  $slice_owner_id = $slice_item[SA_ARGUMENT::OWNER_ID];
   $owner = geni_loadUser($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
   $owner_email = $owner->email();
-  $slice_expiration = $slice_item['expiration'];
 }
 
 /* $sr_url = get_sr_url(); */
-/* $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY); */
-/* $name = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; */
+
 
 
 

@@ -44,6 +44,12 @@ $portal_db = null;
 //--------------------------------------------------
 function portal_conn()
 {
+  // This is here only for backward compatibility.
+  return db_conn();
+}
+
+function db_conn()
+{
   global $portal_db;
   $db_dsn = 'pgsql://portal:portal@localhost/portal';
   $db_options = array('debug' => 5,
@@ -61,12 +67,13 @@ function portal_conn()
 function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
 {
   //  error_log('db_execute_statement ' . $stmt);
-  $conn = portal_conn();
+  $conn = db_conn();
   $result = $conn->exec($stmt);
   if (PEAR::isError($result)) {
     if ($rollback_on_error) {
       $conn->rollbackTransaction();
     }
+    error_log("DB_EXECUTE_STATEMENT ERROR ($msg): " . $result->getMessage());
     die("error " . $msg . ": " . $result->getMessage());
   }
   // TODO : Close the connection?
@@ -76,7 +83,7 @@ function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
 function db_fetch_rows($query, $msg = "")
 {
   //  error_log('db_fetch_rows ' . $query);
-  $conn = portal_conn();
+  $conn = db_conn();
   $resultset = $conn->query($query);
   if (PEAR::isError($resultset)) {
     die("error " . $msg . ": " . $resultset->getMessage());
@@ -92,7 +99,7 @@ function db_fetch_rows($query, $msg = "")
 function db_fetch_row($query, $msg = "")
 {
   //  error_log('db_fetch_rows ' . $query);
-  $conn = portal_conn();
+  $conn = db_conn();
   $resultset = $conn->query($query);
   if (PEAR::isError($resultset) || MDB2::isError($resultset)) {
     die("error " . $msg . ": '" . $resultset->getMessage() . "', details: '" . $resultset->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");

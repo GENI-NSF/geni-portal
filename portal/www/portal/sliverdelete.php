@@ -63,29 +63,17 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 // Get an AM
 $am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-error_log("AM_URL = " . $am_url);
-
-$result = get_version($am_url, $user);
-error_log("VERSION = " . $result);
-
-/*
-$rspec = list_resources($am_url, $user);
-error_log("RSPEC = " . $rspec);
-*/
+error_log("SLIVER_DELETE AM_URL = " . $am_url);
 
 // Get the slice credential from the SA
-$slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+$slice_credential = get_slice_credential($sa_url, $slice_name, $user);
 
-// Retrieve a canned RSpec
-$rspec = fetchRSpecById(1);
-$rspec_file = writeDataToTempFile($rspec);
-
-// Call create sliver at the AM
-$sliver_output = create_sliver($am_url, $user, $slice_credential,
+// Call delete sliver at the AM
+$sliver_output = delete_sliver($am_url, $user, $slice_credential,
                                $slice_urn, $rspec_file);
-unlink($rspec_file);
-error_log("CreateSliver output = " . $sliver_output);
 
-relative_redirect('slice?id='.$slice_id);
+error_log("DeleteSliver output = " . $sliver_output);
+
+relative_redirect('slices');
 
 ?>

@@ -7,6 +7,7 @@ DESTDIR=/usr/share/geni-ch/sa
 WWWDIR=$(DESTDIR)/www
 LIBDIR=$(DESTDIR)/php
 DBDIR=$(DESTDIR)/db
+BINDIR=$(DESTDIR)/bin
 PGDIR=$(DBDIR)/postgresql
 
 PSQL = /usr/bin/psql
@@ -31,7 +32,9 @@ install:
 	$(WWWINSTALL) -d $(WWWDIR)
 	$(WWWINSTALL) -d $(LIBDIR)
 	$(WWWINSTALL) -d $(DBDIR)
+	$(WWWINSTALL) -d $(BINDIR)
 	$(WWWINSTALL) -d $(PGDIR)
+	$(WWWINSTALL) bin/mkslicecert $(BINDIR)/mkslicecert
 	$(WWWINSTALL) -m 0644 www/* $(WWWDIR)
 	$(WWWINSTALL) -m 0644 php/* $(LIBDIR)
 	$(WWWINSTALL) -m 0644 db/postgresql/* $(PGDIR)

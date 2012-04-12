@@ -1,0 +1,141 @@
+#!/usr/bin/env python
+# Mode: -*- python -*-
+
+#----------------------------------------------------------------------
+# Copyright (c) 2012 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the "Work") to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+#----------------------------------------------------------------------
+
+#----------------------------------------------------------------------
+# Create and return a slice certificate.
+#
+# Usage: mkslicecert mycert mykey s1 7 s1.proj@sa.geni.net \
+#                    17C842EC-F2F9-448D-95D3-1284F96D64AC
+#
+#    Note: "s1" is the slice name
+#          "7" is expiration days
+#
+#----------------------------------------------------------------------
+
+# sa/bin/mkslicecert --gcfpath=/usr/share/geni-ch/portal/gcf/src \
+#                   /usr/share/geni-ch/portal/gcf.d/ch-cert.pem \
+#                   /usr/share/geni-ch/portal/gcf.d/ch-key.pem \
+#                   s1 7 slice-s1@geni.net `uuidgen`
+
+from optparse import OptionParser
+import sys
+
+# NOTE: gcf imports happen below after gcf has been added to the
+# import path.
+
+def make_opt_parser():
+    usage = ("usage: %prog [options] <authority cert> <authority key>"
+             + " <slice name> <expire days> <slice email> <slice uuid>")
+    parser = OptionParser(usage)
+    parser.add_option("--gcfpath", help="location of gcf src dir")
+    return parser
+
+def verify_auth_cert_file(cert_file):
+    "Verify that file exists and contains a certificate."
+    return True
+
+def verify_auth_key_file(key_file):
+    "Verify that file exists and contains a [private] key."
+    return True
+
+def verify_slice_name(name):
+    "Verify that name is a valid slice name."
+    # FIXME: need some regexes?
+    return True
+
+def verify_expire_days(expire_days):
+    "Verify that this is a convertible to an integer."
+    return True
+
+def verify_slice_email(slice_email):
+    "Verify a valid email address."
+    return True
+
+def verify_slice_uuid(uuid):
+    "Verify that this is a valid UUID."
+    return True
+
+def load_auth_cert(cert_file):
+    issuer_cert = GID(filename=cert_file)
+    return issuer_cert
+
+def load_auth_key(key_file):
+    issuer_cert = Keypair(filename=key_file)
+    return issuer_cert
+
+def slice_urn_from_auth_urn(auth_urn, slice_name):
+    urn_parts = auth_urn.split('+')
+    urn_parts[-2] = 'slice'
+    urn_parts[-1] = slice_name
+    return '+'.join(urn_parts)
+
+opt_parser = make_opt_parser()
+(options, args) = opt_parser.parse_args()
+
+if options.gcfpath:
+    sys.path.append(options.gcfpath)
+
+import geni.util.cert_util as cert_util
+from sfa.trust.gid import GID
+from sfa.trust.certificate import Keypair
+from geni.util.urn_util import URN
+
+if len(args) != 6:
+    print "got length %d" % (len(args))
+    opt_parser.print_usage()
+    sys.exit(1)
+
+auth_cert_file = args[0]
+auth_key_file = args[1]
+slice_name = args[2]
+expire_days = args[3]
+slice_email = args[4]
+slice_uuid = args[5]
+
+if not (verify_auth_cert_file(auth_cert_file)
+        or verify_auth_key_file(auth_key_file)
+        or verify_slice_name(slice_name)
+        or verify_expire_days(expire_days)
+        or verify_slice_email(slice_email)
+        or verify_slice_uuid(slice_uuid)):
+    sys.exit(1)
+
+auth_cert = load_auth_cert(auth_cert_file)
+auth_key = load_auth_key(auth_key_file)
+expire_days = int(expire_days)
+
+slice_urn = slice_urn_from_auth_urn(auth_cert.get_urn(), slice_name)
+
+(slice_cert, slice_keypair) = cert_util.create_cert(slice_urn,
+                                                    issuer_key=auth_key,
+                                                    issuer_cert=auth_cert,
+                                                    ca=False,
+                                                    lifeDays=expire_days,
+                                                    email=slice_email,
+                                                    uuidarg=slice_uuid)
+# Now print the slice cert. Do we care about the keypair?
+save_parents = False
+print slice_cert.save_to_string(save_parents=save_parents)

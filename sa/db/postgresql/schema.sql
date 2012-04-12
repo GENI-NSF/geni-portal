@@ -17,6 +17,8 @@ create TABLE sa_slice (
   expiration TIMESTAMP,
   owner_id UUID,
   slice_urn VARCHAR,
+  slice_email VARCHAR,
+  certificate VARCHAR,
   PRIMARY KEY (id)
 );
 

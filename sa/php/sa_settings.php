@@ -22,32 +22,22 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-/* Set of constants for managing calls and data records for 
- * GENI Clearinghouse Slice Authority
- */
+//--------------------------------------------------
+// Site settings for slice authority
+//--------------------------------------------------
 
-/* Set of arguments to callse SA interface */
-class SA_ARGUMENT
-{
-  const PROJECT_ID = "project_id";
-  const SLICE_NAME = "slice_name";
-  const SLICE_ID = "slice_id";
-  const SLICE_URN = "slice_urn";
-  const OWNER_ID = "owner_id";
-  const EXPIRATION = "expiration";
-}
+// Certificate for signing slice certificates and slice credentials.
+$sa_authority_cert = '/usr/share/geni-ch/portal/gcf.d/ch-cert.pem';
 
-/* Name of table containing slice info */
-$SA_SLICE_TABLENAME = "sa_slice";
+// Private key matching $sa_authority_cert
+$sa_authority_private_key = '/usr/share/geni-ch/portal/gcf.d/ch-key.pem';
 
-/* Fields in SA slice table */
-class SA_SLICE_TABLE_FIELDNAME {
-  const SLICE_ID = "slice_id";
-  const SLICE_NAME = "slice_name";
-  const PROJECT_ID = "project_id";
-  const EXPIRATION = "expiration";
-  const OWNER_ID = "owner_id";
-  const SLICE_URN = "slice_urn";
-  const SLICE_EMAIL = "slice_email";
-  const CERTIFICATE = "certificate";
-}
+// Directory holding slice authority programs
+$sa_mkslicecert_prog = '/usr/share/geni-ch/sa/bin/mkslicecert';
+
+// The lifetime of slice certificates in days. 3650 = 10 years.
+$sa_slice_cert_life_days = 3650;
+
+// The location of the gcf src dir for including in python programs
+$sa_gcf_include_path = '/usr/share/geni-ch/portal/gcf/src';
+?>

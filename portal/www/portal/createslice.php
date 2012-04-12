@@ -23,9 +23,7 @@
 //----------------------------------------------------------------------
 
 // Form for creating a slice. Submit to self.
-?>
 
-<?php
 require_once("settings.php");
 require_once("db-util.php");
 require_once("file_utils.php");
@@ -33,9 +31,9 @@ require_once("util.php");
 require_once("user.php");
 require_once("sr_constants.php");
 require_once("sr_client.php");
-?>
+require_once("sa_client.php");
 
-<?php
+
 $user = geni_loadUser();
 $name = NULL;
 $message = NULL;
@@ -95,41 +93,33 @@ function omni_create_slice($user, $slice_id, $name)
 
 }
 
-function sa_create_slice($user, $slice_id, $name)
+function sa_create_slice($user, $slice_name, $project_id)
 {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-
-  //  error_log($sa_url);
-  
-  $message['operation'] = 'create_slice';
-  $message['slice_name'] = $name;
-  $result = put_message($sa_url, $message);
+  $owner_id = $user->account_id;
+  $result = create_slice($sa_url, $project_id, $slice_name, "slice_urn",
+                         $owner_id);
   return $result;
 }
 
+
 // Do we have all the required params?
 if ($name) {
-  $slice = fetch_slice_by_name($name);
-  if (is_null($slice)) {
-    // no slice by that name, create it
-    /* print "name = $name, creating slice<br/>"; */
-    $slice_id = make_uuid();
-    /* print "slice id = $slice_id<br/>"; */
+  // Create the slice...
 
-    /* Get a slice from GCF slice authority */
-    //omni_create_slice($user, $slice_id, $name);
-    $result = sa_create_slice($user, $slice_id, $name);
-    $pretty_result = print_r($result, true);
-    error_log("sa_create_slice result: $pretty_result\n");
-
-    db_create_slice($user->account_id, $slice_id, $name);
-    /* print "done creating slice<br/>"; */
-    // Redirect to this slice's page now...
-    relative_redirect('slice.php?id='.$slice_id);
-  } else {
-    $message = "Slice name \"" . $name . "\" is already taken."
-      . " Please choose a different name." ;
-  }
+  // FIXME: need project id
+  $project_id = 'geni';
+  $result = sa_create_slice($user, $name, $project_id);
+  $pretty_result = print_r($result, true);
+  error_log("sa_create_slice result: $pretty_result\n");
+ 
+  // Redirect to this slice's page now...
+  $slice_id = $result['slice_id'];
+  relative_redirect('slice.php?id='.$slice_id);
+// } else {
+//  $message = "Slice name \"" . $name . "\" is already taken."
+//     . " Please choose a different name." ;
+//  }
 }
 
 // If here, present the form
