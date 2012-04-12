@@ -29,9 +29,15 @@ require_once("db-util.php");
 require_once("file_utils.php");
 require_once("util.php");
 require_once("user.php");
+require_once('pa_constants.php');
+require_once('pa_client.php');
 require_once("sr_constants.php");
 require_once("sr_client.php");
 require_once("sa_client.php");
+
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+}
 
 
 $user = geni_loadUser();
@@ -44,6 +50,13 @@ if (count($_GET)) {
   if (array_key_exists('project_id', $_GET)) {
     /* print "found name<br/>"; */
     $project_id = $_GET['project_id'];
+
+    $project_details = lookup_project($pa_url, $project_id);
+    error_log("pa_url result: $pa_url\n");
+    error_log("project_details result: $project_details\n");
+    $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    error_log("slice_project_name result: $slice_project_name\n");
+
   } else {
     error_log("Missing project_id in _GET.<br/>"); 
     die("Missing project_id in _GET.<br/>"); 
@@ -141,7 +154,7 @@ print '<form method="GET" action="createslice">';
 print "\n";
 print "Project name:";
 print "\n";
-print "<input type='text' name='project_id' value='$project_id' disabled='disabled'/>";
+print "<input type='text' name='slice_project_name' value='$slice_project_name' disabled='disabled'/>";
 print "\n";
 print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
 print "\n";
