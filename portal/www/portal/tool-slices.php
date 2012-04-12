@@ -23,6 +23,8 @@
 //----------------------------------------------------------------------
 
 require_once("user.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
 require_once("sa_client.php");
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
