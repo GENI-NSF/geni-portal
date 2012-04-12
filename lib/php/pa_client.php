@@ -21,6 +21,8 @@ function create_project($pa_url, $project_name, $lead_id, $project_email, $proje
 
   // error_log("CP.args = " . print_r($create_project_message, true) . " " . $create_project_message);
 
+  // FIXME: Disallow if project_name already taken!
+
   $project_id = put_message($pa_url, $create_project_message);
   return $project_id;
 }
@@ -41,11 +43,20 @@ function get_projects($pa_url)
   return $project_ids;
 }
 
+function get_projects_by_lead($pa_url, $lead_id)
+{
+  $get_projects_message['operation'] = 'get_projects';
+  $get_projects_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
+  $project_ids = put_message($pa_url, $get_projects_message);
+  return $project_ids;
+}
+
 function lookup_project($pa_url, $project_id)
 {
   $lookup_project_message['operation'] = 'lookup_project';
   $lookup_project_message['project_id'] = $project_id;
   $details = put_message($pa_url, $lookup_project_message);
+  // FIXME: Could be >1?
   return $details;
 }
 
