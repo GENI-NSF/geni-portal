@@ -35,7 +35,10 @@ $project = "None";
 if (array_key_exists("id", $_GET)) {
   $project = $_GET['id'];
 }
-$sr_url = get_sr_url();
+$result = "";
+if (array_key_exists("result", $_GET)) {
+  $result = $_GET['result'];
+}
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $details = lookup_project($pa_url, $project);
 $name = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -43,7 +46,8 @@ $email = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
 $purpose = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
 $leadid = $details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = geni_loadUser($leadid);
-print "<h1>GENI Project: " . $name . "</h1>\n";
+
+print "<h1>GENI Project: " . $name . "$result</h1>\n";
 $edit_url = 'edit-project.php?id='.$project;
 print "<b>Name</b>: $name<br/>\n";
 // look up lead name
