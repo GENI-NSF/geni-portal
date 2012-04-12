@@ -26,6 +26,7 @@ require_once("user.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("sa_client.php");
+require_once("pa_client.php");
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
@@ -76,7 +77,7 @@ if (count($slice_ids) > 0) {
          . "</a></td>")
       . "<td>" . htmlentities($expiration) . "</td>"
       . "<td>" . htmlentities($slice_urn) . "</td>"
-      . "<td>" . htmlentities($slice_project_name) . "</td>"
+      . "<td><a href=\"project.php?id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>"
       . "<td>" . htmlentities($slice_owner_name) . "</td>"
       . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
       . ("<td><a href=\"$sliceresource_url\">Get Resources</a></td>")

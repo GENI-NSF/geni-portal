@@ -32,30 +32,38 @@ require_once('sr_client.php');
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 $project = "None";
+$project_id = "None";
 $isnew = true;
 $name = "";
 $email = "";
 $purpose = "";
-$lead = $user->account_id;
+$lead_id = $user->account_id;
 $newlead = "";
 if (array_key_exists("id", $_REQUEST)) {
   // FIXME validate inputs
-  $project = $_REQUEST['id'];
+  $project_id = $_REQUEST['id'];
   $isnew = false;
 }
-if (array_key_exists("Name", $_REQUEST)) {
+if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $_REQUEST)) {
   // FIXME validate inputs
-  $name = $_REQUEST['Name'];
+  $name = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 }
-if (array_key_exists("Purpose", $_REQUEST)) {
+if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE, $_REQUEST)) {
   // FIXME validate inputs
-  $purpose = $_REQUEST['Purpose'];
+  $purpose = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+}
+if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL, $_REQUEST)) {
+  // FIXME validate inputs
+  $email = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
 }
 if (array_key_exists("newlead", $_REQUEST)) {
   // FIXME validate inputs
   $newlead = $_REQUEST['newlead'];
+  if (is_null($newlead) || $newlead == '') {
+    $newlead = $lead_id;
+  }
 }
-print "ID=$project, Name=$name, Purpose=$purpose, newlead=$newlead.<br/>\n";
+//print "ID=$project_id, Name=$name, Purpose=$purpose, newlead=$newlead.<br/>\n";
 
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
 
@@ -74,17 +82,24 @@ $result = null;
 if ($isnew) {
   // Re-check authorization?
   // Auto?
-  $project = create_project($pa_url, $name, $lead, $email, $purpose);
+  // Ensure project name is unique?!
+  $project_id = create_project($pa_url, $name, $lead_id, $email, $purpose);
   $result = "New";
-  print "Created project, got ID: $project<.br/>\n";
+  //  print "Created project, got ID: $project_id<.br/>\n";
   // Return on error?
 } else {
-  $result = update_project($pa_url, $project, $name, $newlead, $email, $purpose);
-  print "Edited project $project, got result: $result.<br/>\n";
+  //  error_log("about to update project");
+  $result = update_project($pa_url, $project_id, $name, $newlead, $email, $purpose);
+  if ($result == '') {
+    error_log("update_project failed? empty...");
+  } else {
+    $result = "updated";
+  }
+  //  print "Edited project $project, got result: $result.<br/>\n";
   // Return on error?
 }
 
-relative_redirect('project.php?id='.$project . "&result=" . $result);
+relative_redirect('project.php?id='.$project_id . "&result=" . $result);
 
 include("footer.php");
 ?>

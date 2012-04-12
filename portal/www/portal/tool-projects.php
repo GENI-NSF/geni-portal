@@ -48,7 +48,7 @@ if (count($project_ids) > 0) {
     print ("<tr><td> <a href=\"project.php?id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
 	   "</a> </td><td> <a href=\"project-member.php?id=$project_id&member=" .
 	   $lead->account_id . "\">" . $lead->prettyName() . "</a> </td><td> " .
-	   "<a href=\"" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
+	   "<a href=\"mailto:" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
 	   "\">" . 
 	   $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
 	   "</a> </td><td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 

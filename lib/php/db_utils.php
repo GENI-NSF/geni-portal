@@ -73,7 +73,7 @@ function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
     if ($rollback_on_error) {
       $conn->rollbackTransaction();
     }
-    error_log("DB_EXECUTE_STATEMENT ERROR ($msg): " . $result->getMessage());
+    error_log("DB_EXECUTE_STATEMENT ERROR ($msg): " . $result->getMessage() . ", " . $result->getUserInfo());
     die("error " . $msg . ": " . $result->getMessage());
   }
   // TODO : Close the connection?
