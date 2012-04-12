@@ -30,45 +30,28 @@ require_once('sa_utils.php');
 require_once("sa_settings.php");
 
 /* Create a slice credential and return it */
-function create_slice_credential($args)
+function get_slice_credential($args)
 {
+  /* site settings */
+  global $sa_authority_cert;
+  global $sa_authority_private_key;
+  global $sa_gcf_include_path;
+
   /* Extract method arguments. */
-  $pretty_args = print_r($args, true);
-  error_log("SA CSC: args = $pretty_args");
-  $slice_name = $args['slice_name'];
-  $exp_cert = $args['experimenter_certificate'];
-  error_log("SA CSC: exp_cert = $exp_cert");
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $experimenter_cert = $args[SA_ARGUMENT::EXP_CERT];
 
-  /* Info for settings file. */
-  error_log('SA FIXME: hardcoded path to gcf install');
-  $portal_gcf_dir = '/usr/share/geni-ch/portal/gcf';
-  $portal_gcf_cfg_dir = '/usr/share/geni-ch/portal/gcf.d';
+  /* Locate relevant info about the slice. */
+  $slice_row = fetch_slice_by_id($slice_id);
+  $slice_cert = $slice_row[SA_SLICE_TABLE_FIELDNAME::CERTIFICATE];
+  $expiration = strtotime($slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRATION]);
 
-  $cert_file = tempnam(sys_get_temp_dir(), 'sa-');
-  file_put_contents($cert_file, $exp_cert);
-
-  // Run slicecred.py and return it as the content.
-  $cmd_array = array($portal_gcf_dir . '/src/slicecred.py',
-                     $portal_gcf_cfg_dir . '/gcf.ini',
-                     $slice_name,
-                     $portal_gcf_cfg_dir . '/ch-key.pem',
-                     $portal_gcf_cfg_dir . '/ch-cert.pem',
-                     $cert_file
-                     );
-  $command = implode(" ", $cmd_array);
-  //  error_log("SA CSC: command = $command");
-  $result = exec($command, $output, $status);
-  //print_r($output);
-
-  // Clean up, clean up
-  unlink($cert_file);
-
-  /* The slice credential is printed to stdout, which is captured in
-     $output as an array of lines. Crunch them all together in a
-     single string, separated by newlines.
-  */
-  $slice_cred = implode("\n", $output);
-  $result = array('slice_credential' => $slice_cred);
+  $slice_cred = create_slice_credential($slice_cert,
+                                        $experimenter_cert,
+                                        $expiration,
+                                        $sa_authority_cert,
+                                        $sa_authority_private_key);
+  $result = array(SA_ARGUMENT::SLICE_CREDENTIAL => $slice_cred);
   return $result;
 }
 
@@ -148,7 +131,11 @@ function lookup_slices($args)
 
 function lookup_slice($args)
 {
+  // FIXME: use sa_utils::fetch_slice_by_id and then
+  // filter columns before returning (we don't need everything!)
+
   global $SA_SLICE_TABLENAME;
+
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
 
   $sql = "SELECT " 
