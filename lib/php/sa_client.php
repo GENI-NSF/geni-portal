@@ -1,4 +1,26 @@
 <?php
+//----------------------------------------------------------------------
+// Copyright (c) 2012 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
 
 // Client-side interface to GENI Clearinghouse Slice Authority (SA)
 //
@@ -46,13 +68,45 @@ function lookup_slices($sa_url, $project_id)
   return $slice_ids;
 }
 
+/* Lookup slice ids for given project and owner */
+// FIXME: Need a way to look up all slices I can access
+function lookup_slices_by_project_and_owner($sa_url, $project_id, $owner_id)
+{
+  $lookup_slices_message['operation'] = 'lookup_slices';
+  $lookup_slices_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $lookup_slices_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
+  $slice_ids = put_message($sa_url, $lookup_slices_message);
+  return $slice_ids;
+}
+
+/* Lookup slice ids for given  owner */
+// FIXME: Need a way to look up all slices I can access
+function lookup_slices_by_owner($sa_url, $owner_id)
+{
+  $lookup_slices_message['operation'] = 'lookup_slices';
+  $lookup_slices_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
+  $slice_ids = put_message($sa_url, $lookup_slices_message);
+  return $slice_ids;
+}
+
 /* lookup details of slice of given id */
+// Return array(id, name, project_id, expiration, owner_id, urn)
 function lookup_slice($sa_url, $slice_id)
 {
   $lookup_slice_message['operation'] = 'lookup_slice';
   $lookup_slice_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $slice = put_message($sa_url, $lookup_slice_message);
   return $slice;
+}
+
+/* lookup slices by slice name, project ID */
+function lookup_slices_by_project_and_name($sa_url, $project_id, $slice_name)
+{
+  $lookup_slice_message['operation'] = 'lookup_slices';
+  $lookup_slices_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $lookup_slice_message[SA_ARGUMENT::SLICE_NAME] = $slice_name;
+  $slice = put_message($sa_url, $lookup_slices_message);
+  return $slice_ids;
 }
 
 /* Renew slice of given id */
