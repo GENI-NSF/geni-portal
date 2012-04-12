@@ -30,12 +30,17 @@ require_once('pa_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_client.php");
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+}
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+}
 show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
 $slice = "<None>";
 if (array_key_exists("id", $_GET)) {
   $slice = $_GET['id'];
-  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $slice_item = lookup_slice($sa_url, $slice);
   $pretty_result = print_r($slice_item, true);
   error_log("fetch_slice result: $pretty_result\n");
@@ -47,13 +52,23 @@ if (array_key_exists("id", $_GET)) {
   $owner = geni_loadUser($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
   $owner_email = $owner->email();
+
+  $slice_project_id = $slice_item[SA_ARGUMENT::PROJECT_ID];
+  error_log("slice_project_id result: $slice_project_id\n");
+  $project_details = lookup_project($pa_url, $slice_project_id);
+  error_log("pa_url result: $pa_url\n");
+  error_log("project_details result: $project_details\n");
+  $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  error_log("slice_project_name result: $slice_project_name\n");
 }
 
 $edit_url = 'edit-slice.php?id='.$slice;
 $add_url = 'slice-add-resources.php?id='.$slice;
 $res_url = 'sliceresource.php?id='.$slice;
+$proj_url = 'project.php?id='.$slice_project_id;
 print "<h1>GENI Slice: " . $name ." </h1>\n";
 print "<b>Name</b>: $name<br/>\n";
+print "<b>Member of Project</b>: <a href=$proj_url>$slice_project_name</a><br/>\n";
 print "<b>Warning: Slice name is public</b><br/>\n";
 print "<b>Slice URN</b>: $slice_urn<br/>\n";
 print "<b>Slice UUID</b>: $slice<br/>\n";
