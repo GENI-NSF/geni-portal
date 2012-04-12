@@ -76,6 +76,12 @@ function handle_message($prefix)
   // XXX Error check smime_validate result here
    
   $funcargs = parse_message($msg);
+
+  /*** TEMP FIX ***/
+  $signer = $funcargs[1]['signer'];
+  //  error_log("Received : SIGNER = " . $signer);
+  /*** END OF TEMP FIX ***/
+
   $result = call_user_func($funcargs[0], $funcargs[1]);
   //  error_log("RESULT = " . $result);
   $output = encode_result($result);
@@ -85,6 +91,69 @@ function handle_message($prefix)
   $output = smime_encrypt($output);
   //   error_log("BEFORE PRINT:" . $output);
   print $output;
+}
+
+//--------------------------------------------------
+// Get account_ID for current user on portal
+//--------------------------------------------------
+function get_account_id()
+{
+  $eppn = $_SERVER['eppn'];
+  $query = "SELECT account_id from identity where eppn = '" . $eppn . "'";
+  $row = db_fetch_row($query);
+  error_log("GAI QUERY = " . $query . " ROW = " . print_r($row, true));
+  $account_id = $row['account_id'];
+  return $account_id;
+}
+
+$ACCOUNT_ID = null; // *** TEMP FIX
+
+//--------------------------------------------------
+// Send a message (via PUT) to a given URL and return response
+//--------------------------------------------------
+function put_message($url, $message)
+{
+  //  error_log("PUT_MESSAGE " . $message);
+
+  // *** TEMP FIX - Stick the account id as 'signer' field in message
+  global $ACCOUNT_ID;
+  if ($ACCOUNT_ID == null) { // First time through
+    $ACCOUNT_ID = get_account_id();
+  }
+  $signer = $ACCOUNT_ID;
+  $message['signer'] = $signer;
+  //  error_log("MSG (SEND) = " . print_r($message, true));
+  //  error_log("Sent : SIGNER = " . $signer);
+  // *** END OF TEMP FIX
+
+  $message = json_encode($message);
+  //  error_log("PUT_MESSAGE(enc) " . $message);
+  // sign
+  // encrypt
+  $tmpfile = tempnam(sys_get_temp_dir(), "msg");
+  file_put_contents($tmpfile, $message);
+  $ch = curl_init();
+  $fp = fopen($tmpfile, "r");
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_PUT, true);
+  curl_setopt($ch, CURLOPT_INFILE, $fp);
+  curl_setopt($ch, CURLOPT_INFILESIZE, strlen($message));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $result = curl_exec($ch);
+  $error = curl_error($ch);
+  curl_close($ch);
+  fclose($fp);
+  unlink($tmpfile);
+  if ($error) {
+    error_log("put_message error: $error");
+    $result = NULL;
+  }
+  // error_log("Received raw result : " . $result);
+  $result = trim($result); // Remove trailing newlines
+  $result = decode_result($result);
+  //  error_log("Decoded raw result : " . $result);
+
+  return $result;
 }
 
 ?>

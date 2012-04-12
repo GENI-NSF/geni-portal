@@ -8,6 +8,7 @@
 //   update_project(pa_url, project_name, project_id, lead_id, project_email, project_purpose);
 
 require_once('pa_constants.php');
+require_once('message_handler.php');
 
 // Create a project with given name, lead_id (UUID of lead member), email to contact on all 
 // matters related to project, and documentation purpose of project

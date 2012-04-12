@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 
 require_once('smime.php');
+require_once('db_utils.php');
 
 //----------------------------------------------------------------------
 // Utility functions
@@ -51,41 +52,6 @@ function relative_redirect($relpath) {
   exit;
 }
 
-//--------------------------------------------------
-// Send a message (via PUT) to a given URL and return response
-//--------------------------------------------------
-function put_message($url, $message)
-{
-  //  error_log("PUT_MESSAGE " . $message);
-  $message = json_encode($message);
-  //  error_log("PUT_MESSAGE(enc) " . $message);
-  // sign
-  // encrypt
-  $tmpfile = tempnam(sys_get_temp_dir(), "msg");
-  file_put_contents($tmpfile, $message);
-  $ch = curl_init();
-  $fp = fopen($tmpfile, "r");
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_PUT, true);
-  curl_setopt($ch, CURLOPT_INFILE, $fp);
-  curl_setopt($ch, CURLOPT_INFILESIZE, strlen($message));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  $result = curl_exec($ch);
-  $error = curl_error($ch);
-  curl_close($ch);
-  fclose($fp);
-  unlink($tmpfile);
-  if ($error) {
-    error_log("put_message error: $error");
-    $result = NULL;
-  }
-  // error_log("Received raw result : " . $result);
-  $result = trim($result); // Remove trailing newlines
-  $result = decode_result($result);
-  //  error_log("Decoded raw result : " . $result);
-
-  return $result;
-}
 
 
 ?>
