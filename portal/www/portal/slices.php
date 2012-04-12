@@ -49,6 +49,7 @@ if (count($slice_ids) > 0) {
     print "<th>ABAC Credential</th></tr>\n";
   }
   $base_url = relative_url("slicecred.php?");
+  $slice_base_url = relative_url("slice.php?");
   $resource_base_url = relative_url("sliceresource.php?");
   $delete_sliver_base_url = relative_url("sliverdelete.php?");
   $abac_url = relative_url("sliceabac.php?");
@@ -59,6 +60,7 @@ if (count($slice_ids) > 0) {
     $args['id'] = $slice_id;
     $query = http_build_query($args);
     $slicecred_url = $base_url . $query;
+    $slice_url = $slice_base_url . $query;
     $sliceresource_url = $resource_base_url . $query;
     $delete_sliver_url = $delete_sliver_base_url . $query;
     $sliceabac_url = $abac_url . $query;
@@ -66,7 +68,7 @@ if (count($slice_ids) > 0) {
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
     $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
     print "<tr>"
-      . ("<td><a href=\"$sliceresource_url\">" . htmlentities($slice_name)
+      . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
          . "</a></td>")
       . "<td>" . htmlentities($expiration) . "</td>"
       . "<td>" . htmlentities($slice_urn) . "</td>"
