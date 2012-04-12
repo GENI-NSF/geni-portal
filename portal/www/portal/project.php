@@ -38,6 +38,9 @@ if (array_key_exists("id", $_GET)) {
 $result = "";
 if (array_key_exists("result", $_GET)) {
   $result = $_GET['result'];
+  if (! is_null($result) && $result != '') {
+    $result = " (" . $result . ")";
+  }
 }
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $details = lookup_project($pa_url, $project_id);
