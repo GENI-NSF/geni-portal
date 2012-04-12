@@ -60,6 +60,12 @@ function create_assertion($args)
     $context_value_clause = "'" . $context . "', ";
   }
 
+  $signer_value = "'" . $signer . "'";
+  if ($signer == null) {
+    $signer_value = "null";
+  }
+
+
   $sql = "INSERT INTO " . $CS_ASSERTION_TABLENAME . "(" 
     . CS_ASSERTION_TABLE_FIELDNAME::SIGNER . ", "
     . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . ", "
@@ -68,13 +74,16 @@ function create_assertion($args)
     . $context_field_clause 
     . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . ", "
     . CS_ASSERTION_TABLE_FIELDNAME::ASSERTION_CERT . ") VALUES ( "
-    . "'" . $signer . "', "
+    . $signer_value . ", "
     . "'" . $principal . "', "
     . "'" . $attribute . "', "
     . "'" . $context_type . "', "
     . $context_value_clause 
     . "'" . db_date_format($expiration) . "', "
     . "'" . $assertion_cert . "') ";
+
+  error_log("CS.create sql = " . $sql);
+
   $result = db_execute_statement($sql);
   return $result;
 }

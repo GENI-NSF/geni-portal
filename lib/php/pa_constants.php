@@ -32,6 +32,7 @@ class PA_ARGUMENT
   const PROJECT_ID = "project_id";
   const PROJECT_NAME = "project_name";
   const LEAD_ID = "lead_id";
+  const PREVIOUS_LEAD_ID = "previous_lead_id";
   const PROJECT_EMAIL = "project_email";
   const PROJECT_PURPOSE  = "project_purpose";
   const MEMBER_ID = "member_id";

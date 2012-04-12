@@ -77,10 +77,12 @@ function handle_message($prefix)
    
   $funcargs = parse_message($msg);
 
-  /*** TEMP FIX ***/
+  /*
+  /// *** TEMP FIX
   $signer = $funcargs[1]['signer'];
   //  error_log("Received : SIGNER = " . $signer);
-  /*** END OF TEMP FIX ***/
+  // *** END OF TEMP FIX 
+  */
 
   $result = call_user_func($funcargs[0], $funcargs[1]);
   //  error_log("RESULT = " . $result);
@@ -93,6 +95,8 @@ function handle_message($prefix)
   print $output;
 }
 
+/*
+ * *** TEMP FIX
 //--------------------------------------------------
 // Get account_ID for current user on portal
 //--------------------------------------------------
@@ -106,7 +110,9 @@ function get_account_id()
   return $account_id;
 }
 
-$ACCOUNT_ID = null; // *** TEMP FIX
+$ACCOUNT_ID = null; 
+// END OF TEMP FIX 
+*/
 
 //--------------------------------------------------
 // Send a message (via PUT) to a given URL and return response
@@ -115,6 +121,8 @@ function put_message($url, $message)
 {
   //  error_log("PUT_MESSAGE " . $message);
 
+  /* 
+   * *** TEMP FIX
   // *** TEMP FIX - Stick the account id as 'signer' field in message
   global $ACCOUNT_ID;
   if ($ACCOUNT_ID == null) { // First time through
@@ -125,6 +133,7 @@ function put_message($url, $message)
   //  error_log("MSG (SEND) = " . print_r($message, true));
   //  error_log("Sent : SIGNER = " . $signer);
   // *** END OF TEMP FIX
+  */
 
   $message = json_encode($message);
   //  error_log("PUT_MESSAGE(enc) " . $message);
