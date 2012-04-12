@@ -29,14 +29,8 @@ $user = geni_loadUser();
 ?>
 <h1>GENI Projects</h1>
 Your projects:
-<ul>
-<li><a href="project.php?id=MyProject">My Project</a><br/></li>
-<li><a href="project.php?id=MyOtherProject">My Other Project</a><br/></li>
-</ul>
-<br/>
-<a href="edit-project.php">Create New Project</a><br/>
 <?php
-  // FIXME: Add All Projects?
+include("tool-projects.php");
 
 include("footer.php");
 ?>

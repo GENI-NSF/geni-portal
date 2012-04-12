@@ -61,11 +61,8 @@ print "<a href=\"http://groups.geni.net/geni/wiki/ProtoGENIFlashClient\"><image 
 
   // List of my projects
   print "<h2>My Projects</h2>\n";
+include("tool-projects.php");
 ?>
-<ul>
-<li><a href="project.php?id=MyProject">My Project</a><br/></li>
-<li><a href="project.php?id=MyOtherProject">My Other Project</a><br/></li>
-</ul>
 <br>
 <?php
 
