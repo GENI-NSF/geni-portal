@@ -59,21 +59,23 @@ print "ID=$project, Name=$name, Purpose=$purpose, newlead=$newlead.<br/>\n";
 
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
 
-$sr_url = get_sr_url();
-print "SR: $sr_url<br/>\n";
+//$sr_url = get_sr_url();
+//print "SR: $sr_url<br/>\n";
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-print "PA: $pa_url\n";
+//print "PA: $pa_url\n";
 if (! isset($pa_url) || $pa_url==null) {
-  print "Got no PA!<br/>\n";
+  //print "Got no PA!<br/>\n";
   $http_host = $_SERVER['HTTP_HOST'];
   $pa_url = "https://" . $http_host . "/pa/pa_controller.php";
   $result = register_service(SR_SERVICE_TYPE::PROJECT_AUTHORITY, $pa_url);
-  print "Registered PA $pa_url: $result<br/>\n";
+  error_log("Registered PA $pa_url: $result\n");
 }
+$result = null;
 if ($isnew) {
   // Re-check authorization?
   // Auto?
   $project = create_project($pa_url, $name, $lead, $email, $purpose);
+  $result = "New";
   print "Created project, got ID: $project<.br/>\n";
   // Return on error?
 } else {
@@ -82,7 +84,7 @@ if ($isnew) {
   // Return on error?
 }
 
-//relative_redirect('project.php?id='.$project);
+relative_redirect('project.php?id='.$project . "&result=" . $result);
 
 include("footer.php");
 ?>
