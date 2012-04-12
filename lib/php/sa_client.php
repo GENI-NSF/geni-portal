@@ -47,12 +47,11 @@ function get_slice_credential($sa_url, $slice_id, $user_id)
 }
 
 /* Create a new slice record in database, return slice_id */
-function create_slice($sa_url, $project_id, $slice_name, $slice_urn, $owner_id)
+function create_slice($sa_url, $project_id, $slice_name, $owner_id)
 {
   $create_slice_message['operation'] = 'create_slice';
   $create_slice_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
   $create_slice_message[SA_ARGUMENT::SLICE_NAME] = $slice_name;
-  $create_slice_message[SA_ARGUMENT::SLICE_URN] = $slice_urn;
   $create_slice_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
   $slice_id = put_message($sa_url, $create_slice_message);
   return $slice_id;
