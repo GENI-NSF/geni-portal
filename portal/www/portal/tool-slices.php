@@ -34,9 +34,9 @@ if (! isset($pa_url)) {
 }
 // FIXME: This looks up slices OWNED by this user
 if (isset($project_id)) {
-  $slice_ids = lookup_slices($sa_url, $user->account_id, $project_id);
+  $slice_ids = lookup_slices_by_project_and_owner($sa_url, $project_id, $user->account_id);
 } else {
-  $slice_ids = lookup_slices($sa_url, $user->account_id);
+  $slice_ids = lookup_slices_by_owner($sa_url, $user->account_id);
 }
 if (count($slice_ids) > 0) {
   print "\n<table border=\"1\">\n";
@@ -93,7 +93,11 @@ if (count($slice_ids) > 0) {
 
 /* Only show create slice link if user has appropriate privilege. */
 if ($user->privSlice()) {
-  print "<a href=\""
-    . relative_url("createslice")
-    . "\">Create a new slice</a><br/>\n";
+  print "<a href=\"";
+  if (isset($project_id)) {
+    print relative_url("createslice?project_id=$project_id");
+  } else {
+    print relative_url("createslice");
+  }
+  print "\">Create a new slice</a><br/>\n";
 }
