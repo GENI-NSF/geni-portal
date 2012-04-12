@@ -23,32 +23,62 @@
 //----------------------------------------------------------------------
 
 require_once("user.php");
-$slices = fetch_slices($user->account_id);
-if (count($slices) > 0) {
+require_once("sa_client.php");
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+}
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+}
+// FIXME: This looks up slices OWNED by this user
+if (isset($project_id)) {
+  $slice_ids = lookup_slices($sa_url, $user->account_id, $project_id);
+} else {
+  $slice_ids = lookup_slices($sa_url, $user->account_id);
+}
+if (count($slice_ids) > 0) {
   print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th><th>Expiration</th><th>URN</th><th>Credential</th><th>Resources</th>";
+  print ("<tr><th>Name</th><th>Expiration</th><th>URN</th>"
+	 . "<th>Project</th><th>Owner</th>"
+         . "<th>Credential</th><th>Resources</th><th>Delete Sliver</th>");
   if ($portal_enable_abac) {
     print "<th>ABAC Credential</th></tr>\n";
   }
   $base_url = relative_url("slicecred.php?");
-  $resource_base_url = relative_url("sliceresource.php?");
   $slice_base_url = relative_url("slice.php?");
+  $resource_base_url = relative_url("sliceresource.php?");
+  $delete_sliver_base_url = relative_url("sliverdelete.php?");
   $abac_url = relative_url("sliceabac.php?");
-  foreach ($slices as $slice) {
-    $slice_id = $slice['slice_id'];
+
+  foreach ($slice_ids as $slice_id) {
+    // FIXME: Add PROJECT_ID, OWNER_ID
+    $slice = lookup_slice($sa_url, $slice_id);
+    $slice_id = $slice[SA_ARGUMENT::SLICE_ID];
     $args['id'] = $slice_id;
     $query = http_build_query($args);
     $slicecred_url = $base_url . $query;
-    $sliceresource_url = $resource_base_url . $query;
     $slice_url = $slice_base_url . $query;
+    $sliceresource_url = $resource_base_url . $query;
+    $delete_sliver_url = $delete_sliver_base_url . $query;
     $sliceabac_url = $abac_url . $query;
-    $slice_name = $slice['name'];
+    $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+    $expiration = $slice[SA_ARGUMENT::EXPIRATION];
+    $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
+    $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
+    $project_details = lookup_project($pa_url, $slice_project_id);
+    $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
+    $slice_owner_name = geni_loadUser($slice_owner_id)->prettyName();
     print "<tr>"
-      . ("<td><a href=\"$slice_url\">$slice_name</a></td>")
-      . "<td>" . htmlentities($slice['expiration']) . "</td>"
-      . "<td>" . htmlentities($slice['urn']) . "</td>"
+      . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
+         . "</a></td>")
+      . "<td>" . htmlentities($expiration) . "</td>"
+      . "<td>" . htmlentities($slice_urn) . "</td>"
+      . "<td>" . htmlentities($slice_project_name) . "</td>"
+      . "<td>" . htmlentities($slice_owner_name) . "</td>"
       . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
-      . ("<td><a href=\"$sliceresource_url\">Get Resources</a></td>");
+      . ("<td><a href=\"$sliceresource_url\">Get Resources</a></td>")
+      . ("<td><a href=\"$delete_sliver_url\">Delete Sliver</a></td>");
     if ($portal_enable_abac) {
       print "<td><a href=\"$sliceabac_url\">Get ABAC Credential</a></td>";
     }
