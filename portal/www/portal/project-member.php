@@ -24,29 +24,39 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
+require_once("pa_client.php");
+require_once("pa_constants.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 $project = "None";
 $member = "None";
 // FIXME: Use filters to validate input
 if (array_key_exists("id", $_REQUEST)) {
-  $project = $_REQUEST['id'];
+  $project_id = $_REQUEST['id'];
 }
 if (array_key_exists("member", $_REQUEST)) {
-  $member = $_REQUEST['member'];
+  $member_id = $_REQUEST['member'];
 }
-print "<h1>GENI Project: " . $project . ", Member: " . $member . "</h1>\n";
+$member = geni_loadUser($member_id);
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+}
+require_once("pa_client.php");
+$project = lookup_project($pa_url, $project_id);
+print "<h1>GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . ", Member: " . $member->prettyName() . "</h1>\n";
 
 // FIXME: Retrieve info from DB
 print "<br/>\n";
 
 print "<form method=\"POST\" action=\"do-edit-project-member.php\">\n";
 print "<b>Project Permissions</b><br/><br/>\n";
-print "<b>Name</b>: " . $member . "<br/>\n";
-print "<input type=\"hidden\" name=\"id\" value=\"" . $project . "\"/>\n";
-print "<input type=\"hidden\" name=\"member\" value=\"" . $member . "\"/>\n";
+print "<b>Name</b>: " . $member->prettyName() . "<br/>\n";
+print "<input type=\"hidden\" name=\"id\" value=\"" . $project_id . "\"/>\n";
+print "<input type=\"hidden\" name=\"member\" value=\"" . $member_id . "\"/>\n";
 $fields = array("Role", "Permissions");
-$roleperms = array("Lead", "Write");
+$roleperms = array("Lead", "Write", "Permissions");
 // FIXME: Query this user's role & permissions from DB, put in $roleperms with keys from $fields
 $rolevals = array("Admin", "Member", "Auditor");
 $permvals = array("Read", "Write", "Delegate");
