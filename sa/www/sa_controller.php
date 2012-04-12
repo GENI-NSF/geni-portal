@@ -26,6 +26,8 @@ require_once("message_handler.php");
 require_once('sa_constants.php');
 require_once('file_utils.php');
 require_once('db_utils.php');
+require_once('sa_utils.php');
+require_once("sa_settings.php");
 
 /* Create a slice credential and return it */
 function create_slice_credential($args)
@@ -74,6 +76,9 @@ function create_slice_credential($args)
 function create_slice($args)
 {
   global $SA_SLICE_TABLENAME;
+  global $sa_slice_cert_life_days;
+  global $sa_authority_cert;
+  global $sa_authority_private_key;
 
   $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
@@ -81,8 +86,15 @@ function create_slice($args)
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
 
+  $slice_email = 'slice-' . $slice_name . '@sa.example.com';
+  $slice_cert = create_slice_certificate($slice_name, $slice_email,
+                                         $slice_id, $sa_slice_cert_life_days,
+                                         $sa_authority_cert,
+                                         $sa_authority_private_key);
+
   $expiration = get_future_date(30); // 30 days increment
 
+  $conn = db_conn();
   $sql = "INSERT INTO " 
     . $SA_SLICE_TABLENAME 
     . " ( "
@@ -91,16 +103,19 @@ function create_slice($args)
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
-    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ") "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CERTIFICATE . ") "
     . " VALUES (" 
-    . "'" . $slice_id . "', "
-    . "'" . $slice_name . "', "
-    . "'" . $project_id . "', "
-    . "'" . $slice_urn . "', "
-    . "'" . db_date_format($expiration) . "', "
-    . "'" . $owner_id . "') ";
+    . $conn->quote($slice_id, 'text') . ", "
+    . $conn->quote($slice_name, 'text') . ", "
+    . $conn->quote($project_id, 'text') . ", "
+    . $conn->quote($slice_urn, 'text') . ", "
+    . $conn->quote(db_date_format($expiration), 'timestamp') . ", "
+    . $conn->quote($owner_id, 'text') . ", "
+    . $conn->quote($slice_email, 'text') . ", "
+    . $conn->quote($slice_cert, 'text') . ") ";
  
-  //  error_log("SA.INSERT sql = " . $sql);
   $db_result = db_execute_statement($sql);
 
   // Return the standard info about the slice.
