@@ -32,8 +32,11 @@ $sa_authority_cert = '/usr/share/geni-ch/portal/gcf.d/ch-cert.pem';
 // Private key matching $sa_authority_cert
 $sa_authority_private_key = '/usr/share/geni-ch/portal/gcf.d/ch-key.pem';
 
-// Directory holding slice authority programs
+// Location of "mkslicecert" program
 $sa_mkslicecert_prog = '/usr/share/geni-ch/sa/bin/mkslicecert';
+
+// Location of "mkslicecred" program
+$sa_mkslicecred_prog = '/usr/share/geni-ch/sa/bin/mkslicecred';
 
 // The lifetime of slice certificates in days. 3650 = 10 years.
 $sa_slice_cert_life_days = 3650;

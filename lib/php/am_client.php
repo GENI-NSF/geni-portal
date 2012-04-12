@@ -141,16 +141,11 @@ function list_resources($am_url, $user)
 function create_sliver($am_url, $user, $slice_credential, $slice_urn,
                        $rspec_filename)
 {
-  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
-  file_put_contents($slice_credential_filename, $slice_credential);
-  //  $user_credential_filename = '/tmp/' . $user->username . ".usercredential";
-  //  file_put_contents($slice_credential_filename, $user_credential);
+  $slice_credential_filename = writeDataToTempFile($slice_credential);
   $args = array("--slicecredfile", 
 		$slice_credential_filename, 
-		//		"--usercredfile", 
-		//		$user_cred_filename, 
 		'createsliver',
-		$slice_name, 
+		$slice_urn,
 		$rspec_filename);
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
