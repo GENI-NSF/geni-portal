@@ -61,9 +61,10 @@ print "<b>Slice URN</b>: $slice_urn<br/>\n";
 print "<b>Slice UUID</b>: $slice<br/>\n";
 print "<b>Slice Owner</b>: $slice_owner_name <a href='mailto:$owner_email'>e-mail</a><br/>\n";
 print "<b>Slice Expiration</b>: $slice_expiration<br/>\n";
+print "<b>Other static info</b>: etc<br/>";
+print "<a href=$edit_url>Edit Slice</a>";
 ?>
-<b>Other static info</b>: etc<br/>
-<a href=$edit_url>Edit Slice</a>
+
 <br/>
 <b>Date to renew until</b>:  <br/>
 <form method='POST' action='do-renew.php'>
@@ -72,8 +73,11 @@ print "<b>Slice Expiration</b>: $slice_expiration<br/>\n";
 </form>
 
 <br/>
-<a href='.$add_url.'>Add Resources</a>
+<?php
+  print "<a href='$add_url'>Add Resources</a>";
+?>
 <br/>
+
 <?php
 if ($user->privAdmin()) {
   print "Approve new slice members<br/>\n";
