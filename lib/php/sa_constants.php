@@ -35,6 +35,8 @@ class SA_ARGUMENT
   const SLICE_URN = "slice_urn";
   const OWNER_ID = "owner_id";
   const EXPIRATION = "expiration";
+  const EXP_CERT = "experimenter_certificate";
+  const SLICE_CREDENTIAL = "slice_credential";
 }
 
 /* Name of table containing slice info */

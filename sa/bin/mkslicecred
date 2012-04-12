@@ -1,0 +1,108 @@
+#!/usr/bin/env python
+# Mode: -*- python -*-
+
+#----------------------------------------------------------------------
+# Copyright (c) 2012 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the "Work") to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+#----------------------------------------------------------------------
+
+#----------------------------------------------------------------------
+# Create and return a slice credential.
+#
+# Sample usage: mkslicecred sa-cert sa-key slice-cert exp-cert \
+#                           "2012-03-22T17:00:00"
+#
+#
+#----------------------------------------------------------------------
+
+# sa/bin/mkslicecred --gcfpath=/usr/share/geni-ch/portal/gcf/src \
+#                    /usr/share/geni-ch/portal/gcf.d/ch-cert.pem \
+#                    /usr/share/geni-ch/portal/gcf.d/ch-key.pem \
+#                    slice-cert alice-cert "2012-04-30T17:00:00"
+
+import dateutil.parser
+from optparse import OptionParser
+import sys
+
+
+def make_opt_parser():
+    usage = ("usage: %prog [options] <authority cert> <authority key>"
+             + " <slice cert> <experimenter cert> <expiration>")
+    parser = OptionParser(usage)
+    parser.add_option("--gcfpath", help="location of gcf src dir")
+    return parser
+
+def validate_auth_cert_file(arg):
+    return arg
+
+def validate_auth_key_file(arg):
+    return arg
+
+def validate_slice_cert(arg):
+    cert = GID(filename=arg)
+    return cert
+
+def validate_exp_cert(arg):
+    cert = GID(filename=arg)
+    return cert
+
+def validate_expiration(arg):
+    "Parse the date and return a datetime in 'naive UTC'"
+    try:
+        time = dateutil.parser.parse(arg)
+    except Exception, exc:
+        sys.stderr.write('Invalid expiration: %s' % (str(exc)))
+        raise
+    time = cred_util.naiveUTC(time)
+    return time
+
+
+opt_parser = make_opt_parser()
+(options, args) = opt_parser.parse_args()
+
+if options.gcfpath:
+    sys.path.append(options.gcfpath)
+
+# Do gcf imports now, after sys.path is updated
+from sfa.trust.gid import GID
+import geni.util.cred_util as cred_util
+
+if len(args) != 5:
+    opt_parser.print_usage()
+    sys.exit(1)
+
+try:
+    auth_cert_file = validate_auth_cert_file(args[0])
+    auth_key_file = validate_auth_key_file(args[1])
+    slice_cert = validate_slice_cert(args[2])
+    exp_cert = validate_exp_cert(args[3])
+    expiration = validate_expiration(args[4])
+except Exception, exc:
+    # If there's an exception, just quit.
+    # The validate routines should have printed an error.
+    sys.stderr.write('Unknown exception: %s' % (str(exc)))
+    sys.exit(1)
+
+
+slice_cred = cred_util.create_credential(exp_cert, slice_cert, expiration,
+                                         'slice', auth_key_file, auth_cert_file,
+                                         [auth_cert_file])
+print slice_cred.save_to_string()

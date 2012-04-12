@@ -53,28 +53,22 @@ if (array_key_exists('id', $_GET)) {
   no_slice_error();
 }
 
-// Look up the slice...
-$slice = fetch_slice($slice_id);
-$slice_urn = $slice['urn'];
-$slice_name = $slice['name'];
+// Get an AM
+$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+// error_log("AM_URL = " . $am_url);
+
+$result = get_version($am_url, $user);
+// error_log("VERSION = " . $result);
 
 // Get slice authority URL
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
-// Get an AM
-$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-error_log("AM_URL = " . $am_url);
-
-$result = get_version($am_url, $user);
-error_log("VERSION = " . $result);
-
-/*
-$rspec = list_resources($am_url, $user);
-error_log("RSPEC = " . $rspec);
-*/
-
 // Get the slice credential from the SA
 $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+
+// Get the slice URN via the SA
+$slice = lookup_slice($sa_url, $slice_id);
+$slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
 // Retrieve a canned RSpec
 $rspec = fetchRSpecById(1);
