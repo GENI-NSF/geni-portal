@@ -110,7 +110,7 @@ function get_projects($args)
   }
 
   $project_ids = array();
-  error_log("GET_PROJECTS.sql = " . $sql . "\n");
+  //  error_log("GET_PROJECTS.sql = " . $sql . "\n");
 
   $project_id_rows = db_fetch_rows($sql);
   foreach($project_id_rows as $project_id_row) {
