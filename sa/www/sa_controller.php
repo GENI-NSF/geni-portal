@@ -65,7 +65,6 @@ function create_slice($args)
 
   $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
-  $slice_urn = $args[SA_ARGUMENT::SLICE_URN];
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
 
@@ -74,6 +73,8 @@ function create_slice($args)
                                          $slice_id, $sa_slice_cert_life_days,
                                          $sa_authority_cert,
                                          $sa_authority_private_key);
+
+  $slice_urn = slice_urn_from_cert($slice_cert);
 
   $expiration = get_future_date(30); // 30 days increment
 
