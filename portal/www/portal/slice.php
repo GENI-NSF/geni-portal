@@ -24,52 +24,89 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('util.php');
+require_once('pa_constants.php');
+require_once('pa_client.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
 show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
 $slice = "<None>";
 if (array_key_exists("id", $_GET)) {
   $slice = $_GET['id'];
   $slice_item = fetch_slice($slice);
-  $slice_name = $slice_item['name'];
+  $name = $slice_item['name'];
   $slice_urn = $slice_item['urn'];
   $slice_owner_id = $slice_item['owner'];
-  //  $owner = fetch_user(
-  $slice_owner_name = $_item['owner'];
-  $owner_email = "owner test";
+  $owner = geni_loadUser($slice_owner_id);
+  $slice_owner_name = $owner->prettyName();
+  $owner_email = $owner->email();
   $slice_expiration = $slice_item['expiration'];
-
 }
+
+/* $sr_url = get_sr_url(); */
+/* $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY); */
+/* $name = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; */
+
+
+
 
 $edit_url = 'edit-slice.php?id='.$slice;
 $add_url = 'slice-add-resources.php?id='.$slice;
 $res_url = 'sliceresource.php?id='.$slice;
-print "<h1>GENI Slice: " . $slice_name ." </h1>\n";
-print "<ul>";
-print "<li>Slice URN: " . $slice_urn . "</li>";
-print "<li>Slice UUID: " . $slice . "</li>";
-print "<li>Slice Owner: " . $slice_owner_name . " <a href='mailto:" . $owner_email . "'>e-mail</a>" . "</li>";
-print "<li>Slice Expiration: " . $slice_expiration . "</li>";
-print "</ul>";
+print "<h1>GENI Slice: " . $name ." </h1>\n";
+print "<b>Name</b>: $name<br/>\n";
+print "<b>Warning: Slice name is public</b><br/>\n";
+print "<b>Slice URN</b>: $slice_urn<br/>\n";
+print "<b>Slice UUID</b>: $slice<br/>\n";
+print "<b>Slice Owner</b>: $slice_owner_name <a href='mailto:$owner_email'>e-mail</a><br/>\n";
+print "<b>Slice Expiration</b>: $slice_expiration<br/>\n";
+?>
+<b>Other static info</b>: etc<br/>
+<a href=$edit_url>Edit Slice</a>
+<br/>
+<b>Date to renew until</b>:  <br/>
+<form method='POST' action='do-renew.php'>
+<input type='text' name='Renew'/>
+<input type='submit' value='Renew'/>
+</form>
 
-print "Date to renew until: ";
-print "<form method='POST' action='do-renew.php'>";
-print "<input type='text' name='Renew'/>";
-print "<input type='submit' value='Renew'/>";
-print "</form>";
-print "<br/>";
+<br/>
+<a href='.$add_url.'>Add Resources</a>
+<br/>
+<?php
+if ($user->privAdmin()) {
+  print "Approve new slice members<br/>\n";
+  print "?Invite new slice member?<br/>\n";
+}
+?>
 
-print "Members:";
-print "<ul>";
-print "<li>Member 1</li>";
-print "</ul>";
 
-print '<ul><li>';
-print '<a href='.$edit_url.'>Edit</a>';
-print '</li><li>';
-print '<a href='.$add_url.'>Add Resources</a>';
-print '</li><li>';
-print '<a href='.$res_url.'>Resources</a>';
-print '</li></ul>';
+
+
+<h2>Slice members</h2>
+<table border="1">
+<tr><th>Slice Member</th><th>Roles</th></tr>
+<?php
+   // FIXME: See project-member.php. Replace all that with a table or 2 here?
+   print "<tr><td><a href=\"project-member.php?id=" . $slice . "&member=joe\">Joe</a></td><td>Lead</td></tr>\n";
+?>
+</table>
+
+<?php
+  print "<br/><a href=\"mailto:$owner_email\">Contact the slice owner: $slice_owner_name</a><br/>\n";
+?>
+
+<h2>Recent Slice Actions</h2>
+[stuff goes here...]<br/><br/>
+
+
+<?php
+if ($user->privAdmin()) {
+  print "<a href=\"delete-slice.php?id=" . $slice . "\">Delete Slice " . $name. "</a><br/>\n";
+}
+
+
 
 include("footer.php");
 ?>
