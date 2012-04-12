@@ -48,4 +48,6 @@ class SA_SLICE_TABLE_FIELDNAME {
   const EXPIRATION = "expiration";
   const OWNER_ID = "owner_id";
   const SLICE_URN = "slice_urn";
+  const SLICE_EMAIL = "slice_email";
+  const CERTIFICATE = "certificate";
 }
