@@ -26,42 +26,36 @@
  * GENI Clearinghouse Credential Store
  */
 
-/* Set of known attribute types */
+/* Set of known attribute or role types */
 class CS_ATTRIBUTE_TYPE {
-  const REGISTRAR = 1;
-  const ADMIN = 2;
-  const PROJECT_LEAD = 3;
-  const PROJECT_MEMBER = 4;
-  const PROJECT_AUDITOR = 5;
-  const SLICE_LEAD = 6;
-  const SLICE_MEMBER = 7;
-  const SLICE_AUDITOR = 8;
-  const SLIVER_LEAD = 9;
-  const SLIVER_MEMBER = 10;
-  const SLIVER_AUDITOR = 11;
-
+  const LEAD = 0;
+  const ADMIN = 1;
+  const MEMBER = 2;
+  const AUDITOR = 3;
 }
 
-/* Set of known privilege types */
-class CS_PRIVILEGE_TYPE {
-  const DELEGATE = 1;
-  const READ = 2;
-  const WRITE = 3;
-}
 
 /* Set of known context types for services within GENI CH credential store */
 /* We store/retrieve by index into this array, but print the strings */
-$CS_CONTEXT_TYPE_NAMES = array("NONE", 
+$CS_CONTEXT_TYPE_NAMES = array("RESOURCE",
 			       "PROJECT",
 			       "SLICE",
-			       "SLIVER");
+			       "SERVICE", 
+			       "MEMBER");
 
 class CS_CONTEXT_TYPE
 {
-  const NONE = 0;
-  const PROJECT = 1;
-  const SLICE = 2;
-  const SLIVER = 3;
+  const RESOURCE = 0; // Generic actions with respect to resources (aggregates, e.g.)
+  const PROJECT = 1; // Manage project properties using the Project Authority
+  const SLICE = 2; // Manage slice properties using the Slice Authority
+  const SERVICE = 3; // Manage service properties using the Service Registory
+  const MEMBER = 4; // Manage member privileges using the Member Authority
+}
+
+// Is the context type one for a specific object (true) or general to a class of operations (false)?
+function is_context_type_specific($context_type) 
+{
+  return $context_type == CS_CONTEXT_TYPE::PROJECT || $context_type == CS_CONTEXT_TYPE::SLICE;
 }
 
 /* Set of arguments in calls to the SR interface */
