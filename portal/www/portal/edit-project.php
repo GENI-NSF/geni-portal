@@ -47,6 +47,7 @@ if (array_key_exists("id", $_GET)) {
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
   $lead = geni_loadUser($leadid);
   $leadname = $lead->prettyName();
+  $leademail = $lead->email();
   print "<h1>EDIT GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</h1>\n";
 } else {
   $project_id = "new";
@@ -55,7 +56,6 @@ if (array_key_exists("id", $_GET)) {
 ?>
 <form method="POST" action="do-edit-project.php">
 <table border="1">
-<tr><th>Name</th><th>Value</th></tr>
 <?php
   if (! $isnew) {
     print "<input type=\"hidden\" name=\"id\" value=\"$project_id\"/>\n";
@@ -90,7 +90,7 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"project-member.php?id=$project_id&member=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=$leadid\">Delete</a></td><td><mailto=\"\">Email $leadname</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?id=$project_id&member=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=$leadid\">Delete</a></td><td><mailto=\"$leademail\">Email $leadname</a></td></tr>\n";
   print "<tr><td><a href=\"project-member.php?id=$project_id&member=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
