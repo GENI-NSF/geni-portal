@@ -43,22 +43,24 @@ if ($user->privAdmin()) {
   include("tools-admin.php");
 }
 
-// FIXME: If people can ask to join a project or slice, then the Lead or Admin need
-// to see messages here to approve them
-
-  // messages for you or all
-print "<h2>GENI Messages</h2>\n<br/>\n";
+// Table with GENI wide or per user messages, plus a GENI map
 // FIXME: We need a table of messages: account_id, datetime, message
 // Then a query by account_id ordered by time
 // Do messages timeout? Get deleted by being displayed once?
 // Or must the users explicitly delete each one?
-print "Friday, 4/6/12: You've been added to Project: <a href=\"project.php?id=MyProject\">MyProject</a><br/>\n";
-print "Tuesday, March 12, 2012: GENI is really rocking today!<br/>\n";
-
-  // GENI map?
-print "<h3>GENI Map<h3>\n<br/>\n";
-print "<a href=\"http://groups.geni.net/geni/wiki/ProtoGENIFlashClient\"><image width=\"25%\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/></a>\n";
-
+?>
+<table>
+<tr><th width="25%"><h3>GENI Messages</h3></th><th width="25%"><h3>GENI Map</h3></th></tr>
+<tr><td>
+<ul>
+<li>Friday, 4/6/12: You've been added to Project: <a href="project.php?id=MyProject">MyProject</a></li><br/>
+<li>Tuesday, March 12, 2012: GENI is really rocking today!</li>
+</ul>
+</td>
+<td align="center">
+<a href="http://groups.geni.net/geni/wiki/ProtoGENIFlashClient"><image width="50%" src="http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw"/></a>
+</td></tr></table>
+<?php
   // List of my projects
   print "<h2>My Projects</h2>\n";
 include("tool-projects.php");
@@ -67,6 +69,7 @@ include("tool-projects.php");
 <?php
 
   // List of my slices
+unset($project_id);
   print "<h2>My Slices</h2>\n";
   include("tool-slices.php");
 
