@@ -152,6 +152,20 @@ function create_sliver($am_url, $user, $slice_credential, $slice_urn,
   return $output;
 }
 
+// Get sliver status at an AM
+function sliver_status($am_url, $user, $slice_credential, $slice_urn)
+{
+  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
+  file_put_contents($slice_credential_filename, $slice_credential);
+  $args = array("--slicecredfile",
+		$slice_credential_filename,
+		'sliverstatus',
+		$slice_urn);
+  $output = invoke_omni_function($am_url, $user, $args);
+  unlink($slice_credential_filename);
+  return $output;
+}
+
 // Delete a sliver at an AM
 function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
 {
