@@ -99,20 +99,28 @@ class GeniUser
 }
 
 // Loads an experimenter from the database.
-function geni_loadUser()
+function geni_loadUser($id='')
 {
   $conn = portal_conn();
   $conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
 
-  // Short circuit if no eppn. We require eppn as the persistent db key.
-  if (! array_key_exists('eppn', $_SERVER)) {
-    // No eppn was found - redirect to a gentle error page
-    relative_redirect("error-eppn.php");
+  if ($id == '') {
+    // Short circuit if no eppn. We require eppn as the persistent db key.
+    if (! array_key_exists('eppn', $_SERVER)) {
+      // No eppn was found - redirect to a gentle error page
+      relative_redirect("error-eppn.php");
+    }
+
+    $eppn = $_SERVER['eppn'];
+
+    $query = 'SELECT * FROM identity WHERE eppn = '
+      . $conn->quote($eppn, 'text');
+  } else {
+    // FIXME: There may be multiple identities with the same account
+    // So which identity do you use
+    $query = 'SELECT * FROM identity WHERE account_id = ' . $conn->quote($id, 'text');
   }
 
-  $eppn = $_SERVER['eppn'];
-  $query = 'SELECT * FROM identity WHERE eppn = '
-    . $conn->quote($eppn, 'text');
   $res =& $conn->queryAll($query);
 
   // Always check that result is not an error
@@ -124,12 +132,37 @@ function geni_loadUser()
   /* print("Query was: $query<br/>"); */
   /* print("Found $row_count rows<br/>"); */
 
+  $rownum = -1;
   if ($row_count == 0) {
     // New identity, go to registration page
     relative_redirect("register.php");
-  } else if ($row_count == 1) {
+  } else if ($row_count > 1) {
+    if ($id != '') {
+      // An account ID was selected. Which identity do we use?
+      // Pick the max by identity ID for now
+      $rowcur = 0;
+      $idmax = 0;
+      foreach ($res as $row) {
+	$rowcur = $rowcur+1;
+	if ($row['identity_id'] > $idmax) {
+	  $idmax = $row['identity_id'];
+	  $rownum = $rowcur;
+	}
+      }
+    } else {
+      // More than one row! Something is wrong!
+      die("Too many identity matches - " . $row_count . " identities for eppn " . $eppn . ".");
+    }
+  } else {
+    $rownum = 0;
+  }
+ 
+  if ($rownum >= 0) {
+    // There is exactly 1 such identity, or an account_id was
+    // specified, and we picked the row we want
+
     // The identity already exists, find the account
-    $row = $res[0];
+    $row = $res[$rownum];
     /* foreach ($row as $var => $value) { */
     /*   print "geni_loadUser row $var = $value<br/>"; */
     /* } */
@@ -144,11 +177,7 @@ function geni_loadUser()
 
     // Cache the IDP attributes as ABAC assertions
     abac_store_idp_attrs($user);
-
     return $user;
-  } else {
-    // More than one row! Something is wrong!
-    die("Too many identity matches - " . $row_count . " identities for eppn " . $eppn . ".");
   }
 }
 ?>

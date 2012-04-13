@@ -31,18 +31,38 @@ require_once("util.php");
 
 $TAB_HOME = 'Home';
 $TAB_SLICES = 'Slices';
+$TAB_PROJECTS = 'Projects';
+$TAB_ADMIN = 'Admin';
 $TAB_DEBUG = 'Debug';
+require_once("user.php");
+
 $standard_tabs = array(array('name' => $TAB_HOME,
                              'url' => 'home.php'),
+                       array('name' => $TAB_PROJECTS,
+                             'url' => 'projects.php'),
                        array('name' => $TAB_SLICES,
                              'url' => 'slices.php'),
                        array('name' => $TAB_DEBUG,
                              'url' => 'debug.php')
                        );
 
-function show_tab_bar($active_tab = '')
+function show_tab_bar($active_tab = '', $load_user=true)
 {
   global $standard_tabs;
+  global $TAB_ADMIN;
+
+  // Do we check per user permissions/state to modify the set of tabs?
+  if ($load_user) {
+    $user = geni_loadUser();
+    
+    if (isset($user) && ! is_null($user)) {
+      if ($user->privAdmin()) {
+      array_push($standard_tabs, array('name' => $TAB_ADMIN,
+				       'url' => 'admin.php'));
+      }
+    }
+  }
+
   echo '<div id="mainnav" class="nav">';
   echo '<ul>';
   foreach ($standard_tabs as $tab) {
@@ -70,7 +90,7 @@ if (! isset($ACTIVE_TAB)) {
   $ACTIVE_TAB = $TAB_HOME;
 }
 
-function show_header($title, $active_tab = '')
+function show_header($title, $active_tab = '', $load_user=1)
 {
   echo '<!DOCTYPE HTML>';
   echo '<html>';
@@ -93,7 +113,7 @@ function show_header($title, $active_tab = '')
   echo '<div id="header">';
   echo '<img src="/images/geni.png" alt="GENI"/>';
   echo '<img src="/images/portal.png" alt="Portal"/>';
-  show_tab_bar($active_tab);
+  show_tab_bar($active_tab, $load_user);
   echo '</div>';
   echo '<div id="content">';
 }

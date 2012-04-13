@@ -26,7 +26,7 @@
  * GENI Clearinghouse Slice Authority
  */
 
-/* Set of arguments to callse SA interface */
+/* Set of arguments to calls SA interface */
 class SA_ARGUMENT
 {
   const PROJECT_ID = "project_id";
@@ -35,6 +35,8 @@ class SA_ARGUMENT
   const SLICE_URN = "slice_urn";
   const OWNER_ID = "owner_id";
   const EXPIRATION = "expiration";
+  const EXP_CERT = "experimenter_certificate";
+  const SLICE_CREDENTIAL = "slice_credential";
 }
 
 /* Name of table containing slice info */

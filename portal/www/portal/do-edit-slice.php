@@ -24,16 +24,14 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("sa_client.php");
-require_once("sa_constants.php");
-
 show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
-?>
-<h1>Existing Slices</h1>
-<?php
-include("tool-slices.php");
+$slice = "<None>";
+if (array_key_exists("id", $_GET)) {
+  $slice = $_GET['id'];
+}
+
+relative_redirect('slice.php?id='.$slice);
+
 include("footer.php");
 ?>

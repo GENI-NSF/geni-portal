@@ -24,16 +24,17 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("sa_client.php");
-require_once("sa_constants.php");
-
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-?>
-<h1>Existing Slices</h1>
-<?php
-include("tool-slices.php");
+$project = "None";
+if (array_key_exists("id", $_GET)) {
+  $project = $_GET['id'];
+}
+print "<h1>DELETE GENI Project: " . $project . "</h1>\n";
+// FIXME: What does happen when you delete a project?
+print "<b>Warning</b>: This operation is not reversible. Running slices will not be removed, but you will no longer be able to renew slices or use the GENI portal to modify them.<br/><br/>\n";
+$edit_url = 'do-delete-project.php?id='.$project;
+print '<a href='.$edit_url.'>Delete</a>';
+
 include("footer.php");
 ?>

@@ -24,16 +24,17 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("sa_client.php");
-require_once("sa_constants.php");
-
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-?>
-<h1>Existing Slices</h1>
-<?php
-include("tool-slices.php");
+$project = "None";
+if (array_key_exists("id", $_GET)) {
+  $project = $_GET['id'];
+}
+// FIXME: remove the project from the DB
+// Invalidate credentials?
+// Remove slices from the DB?
+// FIXME
+relative_redirect('projects.php');
+
 include("footer.php");
 ?>

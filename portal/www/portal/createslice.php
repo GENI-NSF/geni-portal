@@ -29,25 +29,49 @@ require_once("db-util.php");
 require_once("file_utils.php");
 require_once("util.php");
 require_once("user.php");
+require_once('pa_constants.php');
+require_once('pa_client.php');
 require_once("sr_constants.php");
 require_once("sr_client.php");
 require_once("sa_client.php");
 
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+}
+
 
 $user = geni_loadUser();
 $name = NULL;
+$project_id = NULL;
 $message = NULL;
 if (count($_GET)) {
   // parse the args
   /* print "got parameters<br/>"; */
+  if (array_key_exists('project_id', $_GET)) {
+    /* print "found name<br/>"; */
+    $project_id = $_GET['project_id'];
+
+    $project_details = lookup_project($pa_url, $project_id);
+    error_log("pa_url result: $pa_url\n");
+    error_log("project_details result: $project_details\n");
+    $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    error_log("slice_project_name result: $slice_project_name\n");
+
+  } else {
+    error_log("Missing project_id in _GET.<br/>"); 
+    die("Missing project_id in _GET.<br/>"); 
+  }
+  error_log("got project_id = $project_id<br/>"); 
   if (array_key_exists('name', $_GET)) {
     /* print "found name<br/>"; */
     $name = $_GET['name'];
+    error_log("got name = $name<br/>"); 
   }
-  /* print "got name = $name<br/>"; */
 
 } else {
-  /* print "no parameters in _GET<br/>"; */
+  error_log("Missing project_id in _GET.<br/>"); 
+  die("Missing project_id in _GET.<br/>"); 
+
 }
 
 function omni_create_slice($user, $slice_id, $name)
@@ -97,8 +121,7 @@ function sa_create_slice($user, $slice_name, $project_id)
 {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $owner_id = $user->account_id;
-  $result = create_slice($sa_url, $project_id, $slice_name, "slice_urn",
-                         $owner_id);
+  $result = create_slice($sa_url, $project_id, $slice_name, $owner_id);
   return $result;
 }
 
@@ -106,14 +129,17 @@ function sa_create_slice($user, $slice_name, $project_id)
 // Do we have all the required params?
 if ($name) {
   // Create the slice...
-
-  // FIXME: need project id
-  $project_id = 'geni';
   $result = sa_create_slice($user, $name, $project_id);
   $pretty_result = print_r($result, true);
   error_log("sa_create_slice result: $pretty_result\n");
-
-  relative_redirect('slices.php');
+ 
+  // Redirect to this slice's page now...
+  $slice_id = $result['slice_id'];
+  relative_redirect('slice.php?id='.$slice_id);
+// } else {
+//  $message = "Slice name \"" . $name . "\" is already taken."
+//     . " Please choose a different name." ;
+//  }
 }
 
 // If here, present the form
@@ -124,6 +150,12 @@ if ($message) {
   print "<i>" . $message . "</i>\n";
 }
 print '<form method="GET" action="createslice">';
+print "\n";
+print "Project name:";
+print "\n";
+print "<input type='text' name='slice_project_name' value='$slice_project_name' disabled='disabled'/>";
+print "\n";
+print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
 print "\n";
 print 'Slice name: ';
 print "\n";

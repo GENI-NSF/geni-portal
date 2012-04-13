@@ -61,5 +61,69 @@ function create_slice_certificate($slice_name, $slice_email, $slice_uuid,
   return $slice_cert;
 }
 
+/**
+ * Create a slice credential and return it.
+ *
+ * The result is a string containing the signed credential (XML).
+ */
+function create_slice_credential($slice_cert, $experimenter_cert, $expiration,
+                                 $auth_cert_file, $auth_key_file)
+{
+  global $sa_mkslicecred_prog;
+  global $sa_gcf_include_path;
+
+  /* Write the slice and experimenter cert to a temp files. */
+  $slice_cert_file = writeDataToTempFile($slice_cert, "sa-");
+  $experimenter_cert_file = writeDataToTempFile($experimenter_cert, "sa-");
+
+  /* Run mkslicecred. */
+  $cmd_array = array($sa_mkslicecred_prog,
+                     '--gcfpath',
+                     $sa_gcf_include_path,
+                     $auth_cert_file,
+                     $auth_key_file,
+                     $slice_cert_file,
+                     $experimenter_cert_file,
+                     date("c", $expiration));
+  $command = implode(" ", $cmd_array);
+  $result = exec($command, $output, $status);
+
+  /* Clean up temp files */
+  unlink($slice_cert_file);
+  unlink($experimenter_cert_file);
+
+  /* The slice credential is printed to stdout, which is captured in
+     $output as an array of lines. Crunch them all together in a
+     single string, separated by newlines.
+  */
+  $slice_cred = implode("\n", $output);
+  return $slice_cred;
+}
+
+function fetch_slice_by_id($slice_id)
+{
+  global $SA_SLICE_TABLENAME;
+
+  $conn = db_conn();
+  $sql = ("SELECT * FROM $SA_SLICE_TABLENAME WHERE "
+          . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
+          . " = "
+          . $conn->quote($slice_id, 'text'));
+  $row = db_fetch_row($sql);
+  return $row;
+}
+
+function slice_urn_from_cert($slice_cert)
+{
+  $cert = openssl_x509_parse($slice_cert);
+  $extensions = $cert['extensions'];
+  $subject_alt_name = $extensions['subjectAltName'];
+  $fields = explode(",", $subject_alt_name);
+  $pattern = '/^URI:urn:publicid:IDN/';
+  $urn_array = preg_grep($pattern, $fields);
+  // FIXME: what if no subject alt name matched $pattern?
+  $result = substr($urn_array[0], 4);
+  return $result;
+}
 
 ?>

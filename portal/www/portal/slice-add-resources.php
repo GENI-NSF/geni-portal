@@ -24,16 +24,20 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("sa_client.php");
-require_once("sa_constants.php");
-
 show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
-?>
-<h1>Existing Slices</h1>
-<?php
-include("tool-slices.php");
+$slice = "<None>";
+if (array_key_exists("id", $_GET)) {
+  $slice = $_GET['id'];
+  $slice_item = fetch_slice($slice);
+  $slice_name = $slice_item['name'];
+}
+
+print "<h1>Add resources to GENI Slice: " . $slice_name . " (" . $slice . ")</h1>\n";
+
+//$edit_url = 'do-edit-slice.php?id='.$slice;
+$edit_url = 'sliceresource.php?id='.$slice;
+print '<a href='.$edit_url.'>Submit</a>';
+
 include("footer.php");
 ?>

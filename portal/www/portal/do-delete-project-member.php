@@ -24,16 +24,21 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("sa_client.php");
-require_once("sa_constants.php");
-
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-?>
-<h1>Existing Slices</h1>
-<?php
-include("tool-slices.php");
+$project = "None";
+// FIXME filter input
+if (array_key_exists("id", $_REQUEST)) {
+  $project = $_REQUEST['id'];
+}
+$member = "None";
+if (array_key_exists("member", $_REQUEST)) {
+  $member = $_REQUEST['member'];
+}
+
+// FIXME do real stuff here!
+
+relative_redirect('project.php?id='.$project);
+
 include("footer.php");
 ?>
