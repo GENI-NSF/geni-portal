@@ -35,7 +35,8 @@ if (array_key_exists("id", $_GET)) {
 
 print "<h1>Add resources to GENI Slice: " . $slice_name . " (" . $slice . ")</h1>\n";
 
-$edit_url = 'do-edit-slice.php?id='.$slice;
+//$edit_url = 'do-edit-slice.php?id='.$slice;
+$edit_url = 'sliceresource.php?id='.$slice;
 print '<a href='.$edit_url.'>Submit</a>';
 
 include("footer.php");
