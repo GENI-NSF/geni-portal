@@ -41,6 +41,9 @@ if (array_key_exists("id", $_GET)) {
   $project_id = $_GET['id'];
   $isnew = false;
   $project = lookup_project($pa_url, $project_id);
+  $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+  $lead = geni_loadUser($leadid);
+  $leadname = $lead->prettyName();
   print "<h1>EDIT GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</h1>\n";
 } else {
   $project_id = "new";
@@ -84,7 +87,7 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"project-member.php?id=$project_id&member=joe\">Joe</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=joe\">Delete</a></td><td><mailto=\"\">Email Joe</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?id=$project_id&member=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=$leadid\">Delete</a></td><td><mailto=\"\">Email $leadname</a></td></tr>\n";
   print "<tr><td><a href=\"project-member.php?id=$project_id&member=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
@@ -95,7 +98,7 @@ if ($isnew) {
   print "You will be the leader of your new project.<br/>\n";
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
-  print "Project leader is: <b>Joe</b><br/>\n";
+  print "Project leader is: <b>$leadname</b><br/>\n";
   print "To transfer project leaders, enter email of proposed new project leader to ask them to take over:<br/>\n";
   print "<input type=\"text\" name=\"newlead\"/><br/>\n";
 }
