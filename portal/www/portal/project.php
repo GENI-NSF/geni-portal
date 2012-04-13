@@ -66,6 +66,7 @@ print "<tr><td><b>Project email</b></td><td><a href=\"mailto:\">$email</a></td><
 print "</table>\n";
 print "<br/>\n";
 print '<a href='.$edit_url.'>Edit Project</a><br/>';
+print "<br/><a href=\"delete-project.php?id=$project_id\">Delete Project</a><br/>";
 ?>
 <h2>Project slices:</h2>
 <?php
