@@ -55,6 +55,7 @@ if (array_key_exists("id", $_GET)) {
   $slice_expiration = $slice_item[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice_item[SA_ARGUMENT::SLICE_URN];
   //  error_log("slice_urn result: $slice_urn\n");
+  $slice_email = "not.yet.supported@example.com";
   $slice_owner_id = $slice_item[SA_ARGUMENT::OWNER_ID];
   $owner = geni_loadUser($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
@@ -68,21 +69,23 @@ if (array_key_exists("id", $_GET)) {
   $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   //  error_log("slice_project_name result: $slice_project_name\n");
   $proj_url = 'project.php?id='.$slice_project_id;
+  $slice_own_url = 'slice-member.php?id='.$slice_owner_id;
 }
 
 print "<h1>EDIT GENI Slice: " . $slice_name ."</h1>\n";
 print "<table border=\"1\">\n";
 print "<form method=\"POST\" action=\"do-edit-slice.php\">\n";
 print "<input type=\"hidden\" name=\"id\" value=\"$slice_id\"/>\n";
-print "<tr><th>Name</th><th>Value</th></tr>\n";
-print "<tr><td><b>Name</b></td><td><input type=\"text\" name=\"" . SA_ARGUMENT::SLICE_NAME . "\" value=\"$slice_name\"/></td></tr>\n";
-print "<tr><td><b>Member of Project</b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
+// print "<tr><th>Name</th><th>Value</th></tr>\n";
+print "<tr><td><b>Slice Name <a href='#warn'>*</a> </b></td><td>$slice_name</td></tr>\n";
+print "<tr><td><b>Member of Project<a href='#warn'>*</a> </b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
 print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
-print "<tr><td><b>Slice Owner</b></td><td>$slice_owner_name <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>e-mail</a></td></tr>\n";
+print "<tr><td><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "<tr><td><b>Slice Expiration</b></td><td>$slice_expiration</td></tr>\n";
 print "</table>\n";
-print "<b>Warning: Slice name is public</b><br/>\n";
+print "<b id='warn'>* Warning: Slice and project names are public</b><br/>\n";
 
 print "<h2>Slice Policy Defaults</h2>\n";
 print "FIXME: Per slice policy defaults go here.<br/>\n";
@@ -92,7 +95,7 @@ if ($isnew) {
   print "Provide a comma-separate list of email addresses of people to invite to your slice:<br/>\n";
   print "<input type=\"textarea\" name=\"invites\"/>\n";
 } else {
-  print "<h3>Slice members</h3>\n";
+  print "<h2>Slice members</h3>\n";
   print "<table border=\"1\">\n";
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
