@@ -52,16 +52,15 @@ $lead = geni_loadUser($leadid);
 
 print "<h1>GENI Project: " . $name . "$result</h1>\n";
 $edit_url = 'edit-project.php?id='.$project_id;
-print "<b>Name</b>: $name<br/>\n";
+print "<table><tr><th>Name</th><th>Value</th></tr>\n";
+print "<tr><td><b>Name</b></td><td>$name</td></tr>\n";
 // look up lead name
 $leadname = $lead->prettyName();
-print "<b>Warning: Project name is public</b><br/>\n";
-print "<b>Lead</b>: $leadname<br/>\n";
-print "<b>Project purpose</b>: $purpose<br/>";
-print "<b>Project email</b>: <a href=\"mailto:\">$email</a><br/>\n";
-?>
-<b>Other static info</b>: etc<br/>
-<?php
+print "<tr><td><b>Lead</b></td><td>$leadname</td></tr>\n";
+print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
+print "<tr><td><b>Project email</b></td><td><a href=\"mailto:\">$email</a></td></tr>\n";
+print "</table>\n";
+print "<br/>\n";
 print '<a href='.$edit_url.'>Edit Project</a><br/>';
 ?>
 <h2>Project slices:</h2>
@@ -81,12 +80,12 @@ if ($user->privAdmin()) {
 <tr><th>Project Member</th><th>Roles</th></tr>
 <?php
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
-   print "<tr><td><a href=\"project-member.php?id=" . $project_id . "&member=joe\">Joe</a></td><td>Lead</td></tr>\n";
+   print "<tr><td><a href=\"project-member.php?id=" . $project_id . "&member=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
 ?>
 </table>
 
 <?php
-  print "<br/><a href=\"mailto:\">Contact the project leader</a><br/>\n";
+  print "<br/><a href=\"mailto:$email\">Contact the project leader</a><br/>\n";
 ?>
 
 <h2>Recent Project Actions</h2>
@@ -95,7 +94,7 @@ if ($user->privAdmin()) {
 
 <?php
 if ($user->privAdmin()) {
-  print "<a href=\"delete-project.php?id=" . $project_id . "\">Delete Project " . $project_id . "</a><br/>\n";
+  print "<a href=\"delete-project.php?id=" . $project_id . "\">Delete Project " . $name . "</a><br/>\n";
 }
 include("footer.php");
 ?>

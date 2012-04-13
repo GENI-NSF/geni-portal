@@ -94,11 +94,9 @@ if (count($slice_ids) > 0) {
 
 /* Only show create slice link if user has appropriate privilege. */
 if ($user->privSlice()) {
-  print "<a href=\"";
   if (isset($project_id)) {
+    print "<a href=\"";
     print relative_url("createslice?project_id=$project_id");
-  } else {
-    print relative_url("createslice");
+    print "\">Create a new slice</a><br/>\n";
   }
-  print "\">Create a new slice</a><br/>\n";
 }
