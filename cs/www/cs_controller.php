@@ -44,7 +44,7 @@ function create_assertion($args)
   $attribute = $args[CS_ARGUMENT::ATTRIBUTE];
   $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
   $context = '0';
-  if (!is_context_type_specific($context_type)) {
+  if (is_context_type_specific($context_type)) {
     $context = $args[CS_ARGUMENT::CONTEXT];
   }
 
@@ -56,7 +56,7 @@ function create_assertion($args)
 					  $expiration);
   $context_field_clause = "";
   $context_value_clause = "";
-  if (!is_context_type_specific($context_type)) {
+  if (is_context_type_specific($context_type)) {
     $context_field_clause = CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . ", ";
     $context_value_clause = "'" . $context . "', ";
   }
