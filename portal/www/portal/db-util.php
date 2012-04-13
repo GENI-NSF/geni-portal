@@ -25,6 +25,7 @@
 <?php
 require_once 'util.php';
 require_once 'db_utils.php';
+require_once 'response_format.php';
 
 function loadAccount($account_id) 
 {
@@ -33,7 +34,7 @@ function loadAccount($account_id)
   $sql = "SELECT * FROM account WHERE account_id = "
     . $conn->quote($account_id, 'text');
   $row = db_fetch_row($sql);
-  return $row;
+  return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
 function loadAccountPrivileges($account_id) {
@@ -42,7 +43,8 @@ function loadAccountPrivileges($account_id) {
   $sql = "SELECT privilege FROM account_privilege WHERE account_id = "
     . $conn->quote($account_id, 'text');
   /* print "Query = $sql<br/>"; */
-  $rows = db_fetch_rows($sql);
+  $result = db_fetch_rows($sql);
+  $rows = $result[RESPONSE_ARGUMENT::VALUE];
   $privs = array();
   foreach ($rows as $row) {
     $privs[] = $row["privilege"];
@@ -56,7 +58,7 @@ function loadIdentityAttributes($identity_id) {
     . $conn->quote($identity_id, 'integer');
   /* print "Query = $sql<br/>"; */
   $value = db_fetch_rows($sql);
-  return $value;
+  return $value[RESPONSE_ARGUMENT::VALUE];
 }
 
 function db_create_slice($account_id, $slice_id, $name)
@@ -92,9 +94,9 @@ function fetch_slices($account_id)
     . " WHERE account_slice.account_id = "
     . $conn->quote($account_id, 'text')
     . " AND slice.slice_id = account_slice.slice_id";
-// print "Query = $sql<br/>";
-$value = db_fetch_rows($sql);
-return $value;
+  // print "Query = $sql<br/>";
+  $value = db_fetch_rows($sql);
+  return $value[RESPONSE_ARGUMENT::VALUE];
 }
 
 function fetch_slice($slice_id)
@@ -104,7 +106,7 @@ function fetch_slice($slice_id)
     . " WHERE slice.slice_id = "
     . $conn->quote($slice_id, 'text');
   $row = db_fetch_row($sql);
-  return $row;
+  return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
 function fetch_slice_by_name($name)
@@ -114,7 +116,7 @@ function fetch_slice_by_name($name)
     . " WHERE slice.name = "
     . $conn->quote($name, 'text');
   $row = db_fetch_row($sql, "fetch_slice_by_name");
-  return $row;
+  return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
 function db_add_public_key($account_id, $public_key, $filename, $description)
@@ -128,7 +130,7 @@ function db_add_public_key($account_id, $public_key, $filename, $description)
     . ', ' . $conn->quote($description, 'text');
   /* print "command = $sql<br/>"; */
   $result = db_execute_statement($sql, "public key insert");
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 function db_add_key_cert($account_id, $certificate)
@@ -141,7 +143,7 @@ function db_add_key_cert($account_id, $certificate)
     . $conn->quote($account_id, 'text');
   /* print "command = $sql<br/>"; */
   $result = db_execute_statement($sql, "certificate insert");
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 function db_add_inside_key_cert($account_id, $certificate, $key)
@@ -156,7 +158,7 @@ function db_add_inside_key_cert($account_id, $certificate, $key)
     . ")";
   /*  print "command = $sql<br/>";  */
   $result = db_execute_statement($sql, "inside key/certificaste");
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 function db_fetch_public_key($account_id)
@@ -167,7 +169,7 @@ function db_fetch_public_key($account_id)
     . " WHERE public_key.account_id = "
     . $conn->quote($account_id, 'text');
   $row = db_fetch_row($sql, "fetch public key");
-  return $row;
+  return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
 function db_fetch_inside_private_key_cert($account_id)
@@ -179,7 +181,7 @@ function db_fetch_inside_private_key_cert($account_id)
     . " WHERE inside_key.account_id = "
     . $conn->quote($account_id, 'text');
   $row = db_fetch_row($sql, "fetch inside private key");
-  return $row;
+  return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
 function db_fetch_user_by_username($username)
@@ -191,7 +193,7 @@ function db_fetch_user_by_username($username)
     . " WHERE username = "
     . $conn->quote($username, 'text');
   $row = db_fetch_row($sql, "fetch user by username");
-  return $row;
+  return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
 function fetch_abac_fingerprint($account_id)
@@ -202,7 +204,8 @@ function fetch_abac_fingerprint($account_id)
     . " FROM abac "
     . " WHERE account_id = "
     . $conn->quote($account_id, 'text');
-  $row = db_fetch_row($sql, "fetch abac fingerprint");
+  $result = db_fetch_row($sql, "fetch abac fingerprint");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row["abac_fingerprint"];
 }
 
@@ -214,7 +217,8 @@ function fetch_abac_id($account_id)
     . " FROM abac "
     . " WHERE account_id = "
     . $conn->quote($account_id, 'text');
-  $row = db_fetch_row($sql, "fetch abac id");
+  $result = db_fetch_row($sql, "fetch abac id");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row["abac_id"];
 }
 
@@ -226,7 +230,8 @@ function fetch_abac_key($account_id)
     . " FROM abac "
     . " WHERE account_id = "
     . $conn->quote($account_id, 'text');
-  $row = db_fetch_row($sql, "fetch abac key");
+  $result = db_fetch_row($sql, "fetch abac key");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row["abac_key"];
 }
 
@@ -247,7 +252,8 @@ function approve_account($account_id)
     . ", 'slice'"
     . ')';
   /* print "command = $sql<br/>"; */
-  $row = db_fetch_row($sql, "approve account");
+  $result = db_fetch_row($sql, "approve account");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row["abac_key"];
 }
 
@@ -257,7 +263,7 @@ function requestedAccounts() {
   $sql = "SELECT * FROM requested_account";
   /* print "Query = $sql<br/>"; */
   $value = db_fetch_rows($sql, "loadAccount select");
-  return $value;
+  return $value[RESPONSE_ARGUMENT::VALUE];
 }
 
 function loadIdentitiesByAccountId($account_id) {
@@ -266,7 +272,7 @@ function loadIdentitiesByAccountId($account_id) {
     . $conn->quote($account_id, 'text');
   /* print "Query = $sql<br/>"; */
   $value = db_fetch_rows($sql, "loadIdentityAttributes select");
-  return $value;
+  return $value[RESPONSE_ARGUMENT::VALUE];
 }
 
 function storeAbacAssertion($assertion,
@@ -287,7 +293,7 @@ function storeAbacAssertion($assertion,
     . ')';
   /* print "command = $sql<br/>"; */
   $result = db_execute_statement($sql, "abac assertion insert");
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 function fetchRSpecById($id) {
@@ -295,7 +301,8 @@ function fetchRSpecById($id) {
   $sql = "SELECT rspec.rspec FROM rspec where rspec.id = "
     . $conn->quote($id, 'integer');
   /* print "Query = $sql<br/>"; */
-  $row = db_fetch_row($sql, "fetchRSpecById($id)");
+  $result = db_fetch_row($sql, "fetchRSpecById($id)");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row['rspec'];
 }
 
@@ -304,7 +311,7 @@ function fetchRSpecMetaData() {
   $sql = "SELECT rspec.id, rspec.name, rspec.description FROM rspec;";
   /* print "Query = $sql<br/>"; */
   $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
-  return $rows;
+  return $rows[RESPONSE_ARGUMENT::VALUE];
 }
 
 function fetchSshKeys($account_id) {
@@ -313,7 +320,7 @@ function fetchSshKeys($account_id) {
     . $conn->quote($account_id, 'text');
   /* print "Query = $sql<br/>"; */
   $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
-  return $rows;
+  return $rows[RESPONSE_ARGUMENT::VALUE];
 }
 
 function insertSshKey($account_id, $public_key, $filename, $description)
@@ -328,7 +335,7 @@ function insertSshKey($account_id, $public_key, $filename, $description)
     . ');';
   /* print "command = $sql<br/>"; */
   $result = db_execute_statement($sql, "insertSshKey");
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 ?>
