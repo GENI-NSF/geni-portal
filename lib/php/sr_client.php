@@ -33,6 +33,11 @@ function get_first_service_of_type($service_type)
   $message['operation'] = 'get_services_of_type';
   $message[SR_ARGUMENT::SERVICE_TYPE] = $service_type;
   $result = put_message($sr_url, $message);
+  if (! isset($result) || is_null($result) || count($result) <= 0) {
+    global $SR_SERVICE_TYPE_NAMES;
+    error_log("Found 0 services of type " . $SR_SERVICE_TYPE_NAMES[$service_type]);
+    return null;
+  }
 
   //    error_log("SR_URL: " . $sr_url);
   //    error_log("ST: " . $service_type);
