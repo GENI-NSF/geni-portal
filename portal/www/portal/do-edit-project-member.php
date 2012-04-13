@@ -24,21 +24,24 @@
 
 require_once("user.php");
 require_once("header.php");
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project = "None";
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+$project_id = "None";
 // FIXME filter input
 if (array_key_exists("id", $_REQUEST)) {
-  $project = $_REQUEST['id'];
+  $project_id = $_REQUEST['id'];
 }
-$member = "None";
+$member_id = "None";
 if (array_key_exists("member", $_REQUEST)) {
-  $member = $_REQUEST['member'];
+  $member_id = $_REQUEST['member'];
 }
 
 // FIXME do real stuff here!
 
-relative_redirect('project-member.php?id='.$project . "&member=" . $member);
+relative_redirect('project-member.php?id='.$project_id . "&member=" . $member_id);
 
 include("footer.php");
 ?>

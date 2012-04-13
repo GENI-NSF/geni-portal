@@ -24,8 +24,11 @@
 
 require_once("user.php");
 require_once("header.php");
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 ?>
 <h1>GENI Projects</h1>
 Your projects:

@@ -47,6 +47,9 @@ A new file is created, public_key.pem, with the public key.
 require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
 
 //------------------------------------------------------------
 // If user has a key, redirect to home page

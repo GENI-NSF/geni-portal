@@ -24,8 +24,11 @@
 
 require_once("user.php");
 require_once("header.php");
-show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
+  relative_redirect('home.php');
+}
+show_header('GENI Portal: Slices', $TAB_SLICES);
 $slice = "<None>";
 if (array_key_exists("id", $_GET)) {
   $slice = $_GET['id'];

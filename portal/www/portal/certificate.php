@@ -26,6 +26,9 @@
 require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
 
 // Look up the key...
 $public_key = db_fetch_public_key($user->account_id);

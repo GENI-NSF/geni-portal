@@ -31,8 +31,8 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
 $user = geni_loadUser();
-if (! $user->privSlice()) {
-  exit();
+if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
+  relative_redirect('home.php');
 }
 ?>
 <?php

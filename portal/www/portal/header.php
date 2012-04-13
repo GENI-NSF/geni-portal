@@ -65,15 +65,17 @@ function show_tab_bar($active_tab = '', $load_user=true)
 
   echo '<div id="mainnav" class="nav">';
   echo '<ul>';
-  foreach ($standard_tabs as $tab) {
-    echo '<li';
-    if ($active_tab == $tab['name']) {
-      echo ' class="active first">';
-    } else {
-      echo '>';
+  if (isset($user) && ! is_null($user) && $user->isActive()) {
+    foreach ($standard_tabs as $tab) {
+      echo '<li';
+      if ($active_tab == $tab['name']) {
+	echo ' class="active first">';
+      } else {
+	echo '>';
+      }
+      echo '<a href="' . relative_url($tab['url']) . '">' . $tab['name'] . '</a>';
+      echo '</li>';
     }
-    echo '<a href="' . relative_url($tab['url']) . '">' . $tab['name'] . '</a>';
-    echo '</li>';
   }
   echo '</ul>';
   echo '</div>';

@@ -27,6 +27,9 @@ require_once("user.php");
 require_once("header.php");
 
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
 
 $error = NULL;
 if (array_key_exists('file', $_FILES)) {
