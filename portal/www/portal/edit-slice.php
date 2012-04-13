@@ -35,6 +35,8 @@ if (array_key_exists("id", $_GET)) {
 
 print "<h1>EDIT GENI Slice: " . $slice_name . " (" . $slice . ")</h1>\n";
 
+print "<b>Warning: Slice name is public</b><br/>\n";
+
 $edit_url = 'do-edit-slice.php?id='.$slice;
 print '<a href='.$edit_url.'>Submit</a>';
 
