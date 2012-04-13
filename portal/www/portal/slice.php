@@ -76,6 +76,10 @@ $proj_url = 'project.php?id='.$slice_project_id;
 $slice_own_url = 'slice-member.php?id='.$slice_owner_id;
 $slicecred_url = "slicecred.php?id=".$slice;
 
+
+$status_url = 'sliver-status.php?id='.$slice;
+$listres_url = 'list-resources.php?id='.$slice;
+
 print "<h1>GENI Slice: " . $name ." </h1>\n";
 print "<table border=\"1\">\n";
 // print "<tr><th>Name </th><th>Value</th></tr>\n";
@@ -101,6 +105,12 @@ if ($user->privSlice()) {
   print "<a href='$add_url'>Add Resources</a>";
   print "<br/>";
 }
+
+print "<a href=$status_url>Sliver Status</a>";
+print "<br/>";
+print "<a href=$listres_url>ListResources</a>";
+print "<br/>";
+
 if ($user->privAdmin()) {
   print "<a href=\"delete-slice.php?id=" . $slice . "\">Delete Slice " . $name. "</a>\n";
   print "<br/>";

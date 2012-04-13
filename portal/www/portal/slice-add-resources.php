@@ -24,6 +24,16 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('util.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
+require_once("sa_constants.php");
+require_once("sa_client.php");
+
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+}
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
   relative_redirect('home.php');
@@ -32,15 +42,24 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 $slice = "<None>";
 if (array_key_exists("id", $_GET)) {
   $slice = $_GET['id'];
-  $slice_item = fetch_slice($slice);
-  $slice_name = $slice_item['name'];
+
+  $slice_item = lookup_slice($sa_url, $slice);
+  $slice_name = $slice_item[SA_ARGUMENT::SLICE_NAME];
 }
 
-print "<h1>Add resources to GENI Slice: " . $slice_name . " (" . $slice . ")</h1>\n";
+print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
+
+print "<p>Click 'Submit' to reserve a default set of resources at an available AM.</p>";
+print "<p>Otherwise click 'Cancel'.</p>";
+print '<br/>';
 
 //$edit_url = 'do-edit-slice.php?id='.$slice;
+$cancel_url = 'slice.php?id='.$slice;
 $edit_url = 'sliceresource.php?id='.$slice;
-print '<a href='.$edit_url.'>Submit</a>';
+print '<a href='.$edit_url.'><b>Submit</b></a>';
+print '<br/>';
+print '<a href='.$cancel_url.'>Cancel</a>';
+
 
 include("footer.php");
 ?>
