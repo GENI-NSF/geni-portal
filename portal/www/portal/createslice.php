@@ -133,8 +133,8 @@ function sa_create_slice($user, $slice_name, $project_id)
 if ($name) {
   // Create the slice...
   $result = sa_create_slice($user, $name, $project_id);
-  //  $pretty_result = print_r($result, true);
-  //  error_log("sa_create_slice result: $pretty_result\n");
+  /* $pretty_result = print_r($result, true); */
+  /* error_log("sa_create_slice result: $pretty_result\n"); */
  
   // Redirect to this slice's page now...
   $slice_id = $result[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
@@ -148,7 +148,7 @@ if ($message) {
   // It would be nice to put this in red...
   print "<i>" . $message . "</i>\n";
 }
-print "<h2>Create New Slice</h2\n";
+print "<h2>Create New Slice</h2>\n";
 print "Project name: <b>$slice_project_name</b><br/>\n";
 print '<form method="GET" action="createslice">';
 print "\n";

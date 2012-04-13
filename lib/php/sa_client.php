@@ -53,8 +53,18 @@ function create_slice($sa_url, $project_id, $slice_name, $owner_id)
   $create_slice_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
   $create_slice_message[SA_ARGUMENT::SLICE_NAME] = $slice_name;
   $create_slice_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
-  $slice_id = put_message($sa_url, $create_slice_message);
-  return $slice_id;
+  $slice_res = put_message($sa_url, $create_slice_message);
+  $slice = null;
+  if (isset($slice_res) && is_array($slice_res)) {
+    if (array_key_exists("code", $slice_res) && ($slice_res["code"] == 0) && array_key_exists("value", $slice_res)) {
+      $slice = $slice_res["value"];
+    } else if (array_key_exists("code", $slice_res)) {
+      error_log("create_slice got result code " . $slice_res["code"] . ", output: " . $slice_res["output"]);
+    } else {
+      error_log("create_slice got malformed return");
+    }
+  }
+  return $slice;
 }
 
 /* Lookup slice ids for given project */
