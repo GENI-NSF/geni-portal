@@ -128,7 +128,7 @@ function db_fetch_row($query, $msg = "")
   if (PEAR::isError($resultset) || MDB2::isError($resultset)) {
     error_log("DB ERROR: " . $msg . ": '" . MDB2::errorMessage() . "', details: '" . 
 	      $resultset->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
-    return generate_datbase_response(RESPONSE_ERROR::DATABASE, null, $resultset);
+    return generate_database_response(RESPONSE_ERROR::DATABASE, null, $resultset);
   }
   if (MDB2::isError($resultset->numRows())) {
     if (strpos($resultset->numRows()->getUserInfo(), "method not implemented") < 0) {
