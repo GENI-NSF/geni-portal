@@ -32,8 +32,11 @@ if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
 require_once("pa_client.php");
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $project = "new";
 $isnew = true;
 if (array_key_exists("id", $_GET)) {

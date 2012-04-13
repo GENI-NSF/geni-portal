@@ -35,7 +35,7 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 $project_ids = get_projects_by_lead($pa_url, $user->account_id);
-print "Got " . count($project_ids) . " projects for you<br/>\n";
+print "Found " . count($project_ids) . " project(s) for you:<br/>\n";
 if (count($project_ids) > 0) {
   print "\n<table border=\"1\">\n";
   print ("<tr><th>Name</th><th>Lead</th><th>Email</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
@@ -52,7 +52,7 @@ if (count($project_ids) > 0) {
 	   "\">" . 
 	   $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
 	   "</a> </td><td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
-	   " </td><td> " . count($slice_ids) . " </td><td> " .
+	   " </td><td align=\"center\"> " . count($slice_ids) . " </td><td> " .
 	   "<a href=\"createslice.php?project_id=$project_id\">Create Slice</a></td></tr>\n");
   }
   print "</table>\n";

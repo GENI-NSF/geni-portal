@@ -40,7 +40,6 @@ function shib_input($shib_name, $pretty_name)
 }
 ?>
 
-<br/><br/>
 <h2> Registration Page </h2>
 <br/>
 <b>Note</b>: By registering on this page, you agree to:<br/>

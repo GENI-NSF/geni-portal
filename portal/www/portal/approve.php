@@ -27,6 +27,9 @@ require_once("settings.php");
 require_once("util.php");
 require_once("user.php");
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privAdmin()) {
+  relative_redirect('home.php');
+}
 if (array_key_exists('id', $_GET)) {
   $account_id = $_GET['id'];
   approve_account($account_id);

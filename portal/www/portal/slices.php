@@ -29,8 +29,11 @@ require_once("sr_constants.php");
 require_once("sa_client.php");
 require_once("sa_constants.php");
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+show_header('GENI Portal: Slices', $TAB_SLICES);
 ?>
 <h1>Existing Slices</h1>
 <?php

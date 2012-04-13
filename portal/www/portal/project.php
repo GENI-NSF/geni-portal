@@ -29,8 +29,12 @@ require_once('pa_constants.php');
 require_once('pa_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+
 $project = "None";
 if (array_key_exists("id", $_GET)) {
   $project_id = $_GET['id'];
@@ -62,6 +66,7 @@ print "<tr><td><b>Project email</b></td><td><a href=\"mailto:\">$email</a></td><
 print "</table>\n";
 print "<br/>\n";
 print '<a href='.$edit_url.'>Edit Project</a><br/>';
+print "<br/><a href=\"delete-project.php?id=$project_id\">Delete Project</a><br/>";
 ?>
 <h2>Project slices:</h2>
 <?php

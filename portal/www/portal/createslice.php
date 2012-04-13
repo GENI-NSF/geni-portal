@@ -41,6 +41,9 @@ if (! isset($pa_url)) {
 
 
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
+  relative_redirect('home.php');
+}
 $name = NULL;
 $project_id = NULL;
 $message = NULL;

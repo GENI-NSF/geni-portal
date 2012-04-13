@@ -24,11 +24,29 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('sr_constants.php');
+require_once('sr_client.php');
+require_once('pa_constants.php');
+require_once('pa_client.php');
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project = "None";
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+$project_id = "None";
 if (array_key_exists("id", $_GET)) {
-  $project = $_GET['id'];
+  $project_id = $_GET['id'];
+}
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+$project = lookup_project($pa_url, $project_id);
+if (isset($project) && ! is_null($project)) {
+  // FIXME: Do anything to slices first? Members?
+  $result = delete_project($pa_url, $project_id);
+  if (! $result) {
+    error_log("Failed to Delete project $project_id: $result");
+  }
+} else {
+  error_log("Didnt find to delete project $project_id");
 }
 // FIXME: remove the project from the DB
 // Invalidate credentials?
