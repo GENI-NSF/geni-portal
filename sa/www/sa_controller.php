@@ -77,6 +77,8 @@ function create_slice($args)
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
 
+  //  error_log("SA.CS.args = " . print_r($args, true));
+
   $slice_email = 'slice-' . $slice_name . '@sa.example.com';
   $slice_cert = create_slice_certificate($slice_name, $slice_email,
                                          $slice_id, $sa_slice_cert_life_days,

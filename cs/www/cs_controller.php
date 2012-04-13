@@ -48,6 +48,8 @@ function create_assertion($args)
     $context = $args[CS_ARGUMENT::CONTEXT];
   }
 
+  //  error_log("CA.args = " . print_r($args, true));
+
   // Expire in 30 days
   $expiration = get_future_date(30);
 
