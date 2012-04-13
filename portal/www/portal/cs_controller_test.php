@@ -25,12 +25,14 @@
 require_once('util.php');
 require_once('cs_constants.php');
 require_once('cs_client.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
 
 error_log("CS TEST\n");
 
-/* Could be HTTP_HOST or SERVER_NAME */
-$http_host = $_SERVER['HTTP_HOST'];
-$cs_url = "https://" . $http_host . "/cs/cs_controller.php";
+// Get URL of Credential Store
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
 function dump_all_assertions_and_policies()
 {

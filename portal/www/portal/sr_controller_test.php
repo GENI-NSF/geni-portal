@@ -57,5 +57,5 @@ $result = remove_service(SR_SERVICE_TYPE::LOGGING_SERVICE, 'http://foo.bar');
 $rows = get_services();
 dump_rows($rows);
 
-relative_redirect('home');
+relative_redirect('debug');
 ?>

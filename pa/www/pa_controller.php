@@ -4,6 +4,7 @@
 require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('file_utils.php');
+require_once('response_format.php');
 require_once('pa_constants.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
@@ -105,12 +106,16 @@ function get_projects($args)
   $project_ids = array();
   //  error_log("GET_PROJECTS.sql = " . $sql);
 
-  $project_id_rows = db_fetch_rows($sql);
-  foreach($project_id_rows as $project_id_row) {
-    $project_id = $project_id_row[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-    $project_ids[] = $project_id;
-  }
-  return $project_ids;
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $project_id_rows = $result[RESPONSE_ARGUMENT::VALUE];
+    foreach($project_id_rows as $project_id_row) {
+      $project_id = $project_id_row[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+      $project_ids[] = $project_id;
+    }
+    return generate_response(RESPONSE_ERROR::NONE, $project_ids, '');
+  } else
+    return $result;
 }
 
 

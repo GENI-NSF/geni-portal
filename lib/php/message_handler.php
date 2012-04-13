@@ -31,6 +31,7 @@
  */
 
 require_once("smime.php");
+require_once('response_format.php');
 
 function handle_message($prefix)
 {
@@ -162,7 +163,12 @@ function put_message($url, $message)
   $result = decode_result($result);
   //  error_log("Decoded raw result : " . $result);
 
-  return $result;
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("ERROR.CODE " . print_r($result[RESPONSE_ARGUMENT::CODE], true));
+    error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));
+    error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
+  }
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 ?>
