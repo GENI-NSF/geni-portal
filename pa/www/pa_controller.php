@@ -150,6 +150,10 @@ function lookup_project($args)
   global $PA_PROJECT_TABLENAME;
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! isset($project_id) || isnull($project_id) || $project_id == '') {
+    error_log("Missing project ID to lookup_project");
+    return null;
+  }
 
   $sql = "select "  
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
