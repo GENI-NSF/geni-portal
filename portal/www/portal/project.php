@@ -53,16 +53,17 @@ $email = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
 $purpose = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
 $leadid = $details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = geni_loadUser($leadid);
+$leademail = $lead->email();
 
 print "<h1>GENI Project: " . $name . "$result</h1>\n";
 $edit_url = 'edit-project.php?id='.$project_id;
-print "<table><tr><th>Name</th><th>Value</th></tr>\n";
+print "<table border=\"1\">\n";
 print "<tr><td><b>Name</b></td><td>$name</td></tr>\n";
 // look up lead name
 $leadname = $lead->prettyName();
 print "<tr><td><b>Lead</b></td><td>$leadname</td></tr>\n";
 print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
-print "<tr><td><b>Project email</b></td><td><a href=\"mailto:\">$email</a></td></tr>\n";
+print "<tr><td><b>Project email</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "</table>\n";
 print "<br/>\n";
 print '<a href='.$edit_url.'>Edit Project</a><br/>';
@@ -73,24 +74,20 @@ print "<br/><a href=\"delete-project.php?id=$project_id\">Delete Project</a><br/
 include("tool-slices.php");
 ?>
 <br/>
-<?php
-if ($user->privAdmin()) {
-  print "Approve new project members<br/>\n";
-  print "?Invite new project member?<br/>\n";
-}
-?>
-
 <h2>Project members</h2>
 <table border="1">
 <tr><th>Project Member</th><th>Roles</th></tr>
 <?php
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
    print "<tr><td><a href=\"project-member.php?id=" . $project_id . "&member=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
+if ($user->privAdmin()) {
+  print "Approve/invite new project members<br/>\n";
+}
 ?>
 </table>
 
 <?php
-  print "<br/><a href=\"mailto:$email\">Contact the project leader</a><br/>\n";
+  print "<br/><a href=\"mailto:$leademail\">Contact the project leader</a><br/>\n";
 ?>
 
 <h2>Recent Project Actions</h2>

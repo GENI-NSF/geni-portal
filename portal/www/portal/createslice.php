@@ -55,20 +55,20 @@ if (count($_GET)) {
     $project_id = $_GET['project_id'];
 
     $project_details = lookup_project($pa_url, $project_id);
-    error_log("pa_url result: $pa_url\n");
-    error_log("project_details result: $project_details\n");
+    /* error_log("pa_url result: $pa_url\n"); */
+    /* error_log("project_details result: $project_details\n"); */
     $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    error_log("slice_project_name result: $slice_project_name\n");
+    //    error_log("slice_project_name result: $slice_project_name\n");
 
   } else {
     error_log("Missing project_id in _GET.<br/>"); 
     die("Missing project_id in _GET.<br/>"); 
   }
-  error_log("got project_id = $project_id<br/>"); 
+  //  error_log("got project_id = $project_id<br/>"); 
   if (array_key_exists('name', $_GET)) {
     /* print "found name<br/>"; */
     $name = $_GET['name'];
-    error_log("got name = $name<br/>"); 
+    //    error_log("got name = $name<br/>"); 
   }
 
 } else {
@@ -133,16 +133,12 @@ function sa_create_slice($user, $slice_name, $project_id)
 if ($name) {
   // Create the slice...
   $result = sa_create_slice($user, $name, $project_id);
-  $pretty_result = print_r($result, true);
-  error_log("sa_create_slice result: $pretty_result\n");
+  //  $pretty_result = print_r($result, true);
+  //  error_log("sa_create_slice result: $pretty_result\n");
  
   // Redirect to this slice's page now...
-  $slice_id = $result['slice_id'];
+  $slice_id = $result[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   relative_redirect('slice.php?id='.$slice_id);
-// } else {
-//  $message = "Slice name \"" . $name . "\" is already taken."
-//     . " Please choose a different name." ;
-//  }
 }
 
 // If here, present the form
@@ -152,11 +148,9 @@ if ($message) {
   // It would be nice to put this in red...
   print "<i>" . $message . "</i>\n";
 }
+print "<h2>Create New Slice</h2\n";
+print "Project name: <b>$slice_project_name</b><br/>\n";
 print '<form method="GET" action="createslice">';
-print "\n";
-print "Project name:";
-print "\n";
-print "<input type='text' name='slice_project_name' value='$slice_project_name' disabled='disabled'/>";
 print "\n";
 print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
 print "\n";
