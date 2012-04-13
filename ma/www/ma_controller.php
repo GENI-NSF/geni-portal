@@ -3,6 +3,7 @@ require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('file_utils.php');
 require_once('ma_constants.php');
+require_once('response_format.php');
 
 /**
  * GENI Clearinghouse Member Authority (MA) controller interface
@@ -60,7 +61,7 @@ function add_attribute($args)
   //  error_log("INSERT.SQL = " . $sql);
 
   $result = db_execute_statement($sql);
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 function remove_attribute($args)
@@ -92,7 +93,7 @@ function remove_attribute($args)
   //  error_log("DELETE.SQL = " . $sql);
 
   $result = db_execute_statement($sql);
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 function update_role($args)
@@ -124,7 +125,7 @@ function update_role($args)
   // error_log("UPDATE.SQL = " . $sql);
 
   $result = db_execute_statement($sql);
-  return $result;
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 function lookup_attributes($args)
@@ -143,7 +144,8 @@ function lookup_attributes($args)
 
   //  error_log("QUERY.sql = " . $sql);
 
-  $attribs = db_fetch_rows($sql);
+  $result = db_fetch_rows($sql);
+  $attribs = $result[RESPONSE_ARGUMENT::VALUE];
   //  error_log("QUERY.attribs = " . print_r($attribs, true));
   return $attribs;
     

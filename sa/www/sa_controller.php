@@ -75,7 +75,7 @@ function create_slice_credential($args)
   */
   $slice_cred = implode("\n", $output);
   $result = array('slice_credential' => $slice_cred);
-  return $result;
+  return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
 
 /* Create a slice for given project, name, urn, owner_id */
@@ -122,7 +122,7 @@ function create_slice($args)
   add_attribute($ma_url, $owner_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::SLICE, $slice_id);
 
 
-  return $slice_id;
+  return generate_response(RESPONSE_ERROR::NONE, $slice_id, '');
 }
 
 function lookup_slices($args)
@@ -136,17 +136,20 @@ function lookup_slices($args)
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID
     . " = '" . $project_id . "'";
   //  error_log("LOOKUP_SLICES.SQL = " . $sql);
-  $rows = db_fetch_rows($sql);
-  //  error_log("LOOKUP_SLICES.ROWS = " . print_r($rows, true));
-  $slice_ids = array();
-  foreach ($rows as $row) {
-    //    error_log("LOOKUP_SLICES.ROW = " . print_r($row, true));
-    $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-    //    error_log("LOOKUP_SLICES.SID = " . print_r($slice_id, true));
-    $slice_ids[] = $slice_id;
-  }
-  //  error_log("LOOKUP_SLICES.SLICE_IDS = " . print_r($slice_ids, true));
-  return $slice_ids;
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $rows = $result[RESPONSE_ARGUMENT::VALUE];
+    //  error_log("LOOKUP_SLICES.ROWS = " . print_r($rows, true));
+    $slice_ids = array();
+    foreach ($rows as $row) {
+      //    error_log("LOOKUP_SLICES.ROW = " . print_r($row, true));
+      $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+      //    error_log("LOOKUP_SLICES.SID = " . print_r($slice_id, true));
+      $slice_ids[] = $slice_id;
+    }
+    return generate_response(RESPONSE_ERROR::NONE, $slice_ids, '');
+  } else
+    return $result;
 }
 
 function lookup_slice($args)

@@ -3,6 +3,7 @@
 require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('sr_constants.php');
+require_once('response_format.php');
 
 /**
  * GENI Clearinghouse Service Registry (SR) controller interface
@@ -29,8 +30,9 @@ function get_services($args)
 
   $query = "SELECT * FROM " . $SR_TABLENAME;
   // error_log("SR.GS QUERY = " . $query);
-  $rows = db_fetch_rows($query, "SR.get_services");
-  return $rows;
+  $result = db_fetch_rows($query, "SR.get_services");
+  //  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  return $result;
 }
 
 /* Get all services of given type currently registered with SR 
@@ -46,10 +48,12 @@ function get_services_of_type($args)
   $query = "SELECT * FROM " . $SR_TABLENAME . " WHERE " . 
     SR_TABLE_FIELDNAME::SERVICE_TYPE . 
     " = '" . $service_type . "'";
-  // error_log("SR.GSOT QUERY = " . $query);
-  $rows = db_fetch_rows($query, "SR.get_services_of_type");
+  //  error_log("SR.GSOT QUERY = " . $query);
+  $result = db_fetch_rows($query, "SR.get_services_of_type");
+  //  $rows = $result[RESPONSE_ARGUMENT::VALUE];
   // error_log("ROWS = " . $rows);
-  return $rows;
+  //  error_log("SR.GSOT RESULT = " . print_r($result, true));
+  return $result;
 }
 
 /*

@@ -22,6 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once('response_format.php');
 
 /**
  * Set of functions to help server side message handles to access (read/write) database
@@ -53,7 +54,8 @@ function portal_conn()
     $portal_db =& MDB2::singleton($db_dsn, $db_options);
   }
   if (PEAR::isError($portal_db)) {
-    die("Error connecting: " . $portal_db->getMessage());
+    error_log("DB ERROR: Error connecting: " . $portal_db);
+    die("Error connecting: " . $portal_db);
   }
   return $portal_db;
 }
@@ -62,59 +64,85 @@ function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
 {
   //  error_log('db_execute_statement ' . $stmt);
   $conn = portal_conn();
+
+  $code = RESPONSE_ERROR::NONE;
+  
   $result = $conn->exec($stmt);
+  $value = $result;
+  $output = null;
+  
   if (PEAR::isError($result)) {
+    $code = RESPONSE_ERROR::DATABASE;
+    $output = $result;
+    $value = null;
     if ($rollback_on_error) {
       $conn->rollbackTransaction();
     }
-    die("error " . $msg . ": " . $result->getMessage());
   }
-  // TODO : Close the connection?
-  return $result;
+
+  return generate_database_response($code, $value, $output);
 }
 
 function db_fetch_rows($query, $msg = "")
 {
   //  error_log('db_fetch_rows ' . $query);
   $conn = portal_conn();
+  $code = RESPONSE_ERROR::NONE;
+  
   $resultset = $conn->query($query);
-  if (PEAR::isError($resultset)) {
-    die("error " . $msg . ": " . $resultset->getMessage());
-  }
+  $value = $resultset;
+  $output = null;
+  
   $rows = array();
-  while($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
-    $rows[] = $row;
+  if (PEAR::isError($resultset)) {
+    $code = RESPONSE_ERROR::DATABASE;
+    $value = null;
+    $output = $resultset;
+    
+    error_log("DB ERROR " . $msg . ": " . MDB2::errorMessage());
+  } else {
+    while($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+      $rows[] = $row;
+    }
+    $value = $rows;
   }
-  // TODO : Close the connection?
-  return $rows;
+
+  $result = generate_database_response($code, $value, $output);
+  
+  return $result;
 }
+
 
 function db_fetch_row($query, $msg = "")
 {
   //  error_log('db_fetch_rows ' . $query);
   $conn = portal_conn();
+  $code = RESPONSE_ERROR::NONE;
   $resultset = $conn->query($query);
   if (PEAR::isError($resultset) || MDB2::isError($resultset)) {
-    die("error " . $msg . ": '" . $resultset->getMessage() . "', details: '" . $resultset->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
+    error_log("DB ERROR: " . $msg . ": '" . MDB2::errorMessage() . "', details: '" . 
+	      $resultset->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
+    return generate_datbase_response(RESPONSE_ERROR::DATABASE, null, $resultset);
   }
   if (MDB2::isError($resultset->numRows())) {
     if (strpos($resultset->numRows()->getUserInfo(), "method not implemented") < 0) {
       // pgsql doesnt do numrows
-      die("error " . $msg . ": '" . $resultset->numRows()->getMessage() . "', details: '" . $resultset->numRows()->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
+      error_log("DB ERROR: " . $msg . ": '" . $resultset->numRows()->errorMessage() . "', details: '" . 
+		$resultset->numRows()->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
+      return generate_database_response(RESPONSE_ERROR::DATABASE, null, $resultset);
     }
   }
   $nr = $resultset->numRows(); 
   if (is_int($nr) && $nr == 0) {
-    return null;
+    return generate_database_response($code, null, null);
   } else {
     $row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC);
     //print "result has " . count($row) . " rows<br/>\n";
-    // TODO : Close the connection?
     if (! isset($row) || count($row) == 0) {
       //print "empty row<br/>\n";
-      return null;
+      return generate_database_response($code, null, null);
     }
-    return $row;
+    return generate_database_response($code, $row, null);
   }
 }
 
@@ -134,5 +162,26 @@ function db_date_format($date)
   global $DATE_FORMAT;
   return $date->format($DATE_FORMAT);
 }
+
+// Add a quote to an argument in database-specific manner
+function quotify($str)
+{
+  $conn = portal_conn();
+  return $conn->quote($str);
+}
+
+// Pull out only the 'userinfo' field from error
+function generate_database_response($code, $value, $output)
+{
+  if ($code == RESPONSE_ERROR::NONE) {
+    return generate_response($code, $value, $output);
+  } else 
+    {
+      $userinfo = $output->getUserInfo();
+
+      return generate_response($code, $value, $userinfo);
+    }
+}
+
 
 ?>

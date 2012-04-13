@@ -3,6 +3,7 @@
 require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('cs_constants.php');
+require_once('response_format.php');
 
 /**
  * GENI Clearinghouse Credential Store (CS) controller interface
@@ -61,9 +62,12 @@ function create_assertion($args)
   }
 
   $signer_value = "'" . $signer . "'";
+  /*
+  ** TEMP TESTING
   if ($signer == null) {
     $signer_value = "null";
   }
+  */
 
 
   $sql = "INSERT INTO " . $CS_ASSERTION_TABLENAME . "(" 
@@ -82,9 +86,11 @@ function create_assertion($args)
     . "'" . db_date_format($expiration) . "', "
     . "'" . $assertion_cert . "') ";
 
-  error_log("CS.create sql = " . $sql);
+  //  error_log("CS.create sql = " . $sql);
 
   $result = db_execute_statement($sql);
+
+  //  error_log("CS.create.result = " . print_r($result, true));
   return $result;
 }
 
