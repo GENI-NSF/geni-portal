@@ -29,6 +29,7 @@ require_once('pa_constants.php');
 require_once('pa_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once("sa_constants.php");
 require_once("sa_client.php");
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -48,10 +49,13 @@ if (array_key_exists("id", $_GET)) {
   $name = $slice_item[SA_ARGUMENT::SLICE_NAME];
   $slice_expiration = $slice_item[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice_item[SA_ARGUMENT::SLICE_URN];
+  // FIX ME: not supported yet  $slice_email = $slice_item[SA_ARGUMENT::SLICE_EMAIL];
+  $slice_email = "not.yet.supported@example.com";
   $slice_owner_id = $slice_item[SA_ARGUMENT::OWNER_ID];
   $owner = geni_loadUser($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
   $owner_email = $owner->email();
+
 
   $slice_project_id = $slice_item[SA_ARGUMENT::PROJECT_ID];
   //error_log("slice_project_id result: $slice_project_id\n");
@@ -66,19 +70,41 @@ $edit_url = 'edit-slice.php?id='.$slice;
 $add_url = 'slice-add-resources.php?id='.$slice;
 $res_url = 'sliceresource.php?id='.$slice;
 $proj_url = 'project.php?id='.$slice_project_id;
+$slice_own_url = 'slice-member.php?id='.$slice_owner_id;
+$slicecred_url = "slicecred.php?id=".$slice;
+
 print "<h1>GENI Slice: " . $name ." </h1>\n";
-print "<table><tr><th>Name</th><th>Value</th></tr>\n";
-print "<tr><td><b>Name</b></td><td>$name</td></tr>\n";
-print "<tr><td><b>Member of Project</b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
+print "<table border=\"1\">\n";
+// print "<tr><th>Name </th><th>Value</th></tr>\n";
+print "<tr><td><b>Slice Name <a href='#warn'>*</a> </b></td><td>$name</td></tr>\n";
+print "<tr><td><b>Member of Project <a href='#warn'>*</a> </b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
 print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice</td></tr>\n";
-print "<tr><td><b>Slice Owner</b></td><td>$slice_owner_name <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>e-mail</a></td></tr>\n";
+print "<tr><td><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "<tr><td><b>Slice Expiration</b></td><td>$slice_expiration</td></tr>\n";
 print "</table>\n";
-print "<br/>\n";
-print "<a href=$edit_url>Edit Slice</a>";
-?>
 
+print "<b id='warn'>* Warning: Slice and project names are public</b><br/>\n";
+print "<br/>\n";
+
+print "<h2>Slice Actions</h2>\n";
+
+if ($user->privSlice()) {
+  print "<a href=$slicecred_url>Download Slice Cred</a>";
+  print "<br/>";
+  print "<a href=$edit_url>Edit Slice</a>";
+  print "<br/>";
+  print "<a href='$add_url'>Add Resources</a>";
+  print "<br/>";
+}
+if ($user->privAdmin()) {
+  print "<a href=\"delete-slice.php?id=" . $slice . "\">Delete Slice " . $name. "</a>\n";
+  print "<br/>";
+  print "<a href=\"shutdown-slice.php?id=" . $slice . "\">Shutdown Slice " . $name. "</a>\n";
+  print "<br/>";
+}
+?>
 <br/>
 <form method='POST' action='do-renew.php'>
 <b>Date to renew until</b>: <input type='text' name='Renew' 
@@ -88,19 +114,6 @@ print "<a href=$edit_url>Edit Slice</a>";
 ?>
 <input type='submit' name= 'Renew' value='Renew'/>
 </form>
-
-<br/>
-<?php
-  print "<a href='$add_url'>Add Resources</a>";
-?>
-<br/>
-
-<?php
-if ($user->privAdmin()) {
-  print "Approve new slice members<br/>\n";
-  print "?Invite new slice member?<br/>\n";
-}
-?>
 
 <h2>Slice members</h2>
 <table border="1">
@@ -112,19 +125,15 @@ if ($user->privAdmin()) {
 </table>
 
 <?php
-  print "<br/><a href=\"mailto:$owner_email\">Contact the slice owner: $slice_owner_name</a><br/>\n";
+if ($user->privAdmin()) {
+  print "Approve new slice members<br/>\n";
+  print "?Invite new slice member?<br/>\n";
+}
 ?>
 
 <h2>Recent Slice Actions</h2>
 [stuff goes here...]<br/><br/>
 
-
 <?php
-if ($user->privAdmin()) {
-  print "<a href=\"delete-slice.php?id=" . $slice . "\">Delete Slice " . $name. "</a><br/>\n";
-}
-
-
-
 include("footer.php");
 ?>
