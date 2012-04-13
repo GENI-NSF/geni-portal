@@ -73,7 +73,7 @@ function create_project($args)
   global $ma_url;
   add_attribute($ma_url, $lead_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
-  return $project_id;
+  return generate_response(RESPONSE_ERROR::NONE, $project_id, '');
 }
 
 /**

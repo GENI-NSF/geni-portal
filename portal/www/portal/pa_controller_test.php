@@ -54,7 +54,7 @@ $lead2 = '99999999999999999999999999999998';
 $lead3 = '99999999999999999999999999999997';
 
 $project_id = create_project($pa_url, "PROJ1", $lead1, "example@foo.com", "Save the world");
-//error_log("PID = " . $project_id);
+error_log("PID = " . $project_id);
 dump_projects();
 
 $result = update_project($pa_url, $project_id, "PROJ2", "foo@example.com", "More saving");

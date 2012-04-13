@@ -61,14 +61,12 @@ function create_assertion($args)
     $context_value_clause = "'" . $context . "', ";
   }
 
+  // *** TEMP TESTING
   $signer_value = "'" . $signer . "'";
-  /*
-  ** TEMP TESTING
   if ($signer == null) {
     $signer_value = "null";
   }
-  */
-
+  // *** END TEMP TESTING
 
   $sql = "INSERT INTO " . $CS_ASSERTION_TABLENAME . "(" 
     . CS_ASSERTION_TABLE_FIELDNAME::SIGNER . ", "

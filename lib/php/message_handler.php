@@ -163,6 +163,8 @@ function put_message($url, $message)
   $result = decode_result($result);
   //  error_log("Decoded raw result : " . $result);
 
+  //  error_log("MH.RESULT = " . print_r($result, true));
+
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     error_log("ERROR.CODE " . print_r($result[RESPONSE_ARGUMENT::CODE], true));
     error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));

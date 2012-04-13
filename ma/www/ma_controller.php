@@ -145,9 +145,9 @@ function lookup_attributes($args)
   //  error_log("QUERY.sql = " . $sql);
 
   $result = db_fetch_rows($sql);
-  $attribs = $result[RESPONSE_ARGUMENT::VALUE];
+  // $attribs = $result[RESPONSE_ARGUMENT::VALUE];
   //  error_log("QUERY.attribs = " . print_r($attribs, true));
-  return $attribs;
+  return $result;
     
 }
 
