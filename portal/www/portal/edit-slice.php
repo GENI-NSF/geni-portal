@@ -69,8 +69,10 @@ if (array_key_exists("id", $_GET)) {
 
 print "<h1>EDIT GENI Slice: " . $slice_name ."</h1>\n";
 print "<table border=\"1\">\n";
+print "<form method=\"POST\" action=\"do-edit-slice.php\">\n";
+print "<input type=\"hidden\" name=\"id\" value=\"$slice_id\"/>\n";
 print "<tr><th>Name</th><th>Value</th></tr>\n";
-print "<tr><td><b>Name</b></td><td>$slice_name</td></tr>\n";
+print "<tr><td><b>Name</b></td><td><input type=\"text\" name=\"" . SA_ARGUMENT::SLICE_NAME . "\" value=\"$slice_name\"/></td></tr>\n";
 print "<tr><td><b>Member of Project</b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
 print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
@@ -92,7 +94,7 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Slice Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"slice-member.php?id=$slice_id&member=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td><td>All</td><td><a href=\"do-delete-slice-member.php?id=$slice_id&member=$slice_owner_id\">Delete</a></td><td><mailto=\"$owner_email\">Email Joe</a></td></tr>\n";
+  print "<tr><td><a href=\"slice-member.php?id=$slice_id&member=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td><td>All</td><td><a href=\"do-delete-slice-member.php?id=$slice_id&member=$slice_owner_id\">Delete</a></td><td><mailto=\"$owner_email\">Email $slice_owner_name</a></td></tr>\n";
   print "<tr><td><a href=\"slice-member.php?id=$slice_id&member=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-slice-member.php?id=$slice_id&member=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
@@ -103,7 +105,7 @@ if ($isnew) {
   print "You will be the owner of your new slice.<br/>\n";
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
-  print "Slice owner is: <b>slice_owner_name</b><br/>\n";
+  print "Slice owner is: <b>$slice_owner_name</b><br/>\n";
   print "To transfer slice leaders, enter email of proposed new slice leader to ask them to take over:<br/>\n";
   print "<input type=\"text\" name=\"newlead\"/><br/>\n";
 }
@@ -114,12 +116,6 @@ if ($isnew) {
   print "Edit\"/>\n";
 }
 print "</form>\n";
-
-
-print "<b>Warning: Slice name is public</b><br/>\n";
-
-$edit_url = 'do-edit-slice.php?id='.$slice_id;
-print '<a href='.$edit_url.'>Submit</a>';
 
 include("footer.php");
 ?>
