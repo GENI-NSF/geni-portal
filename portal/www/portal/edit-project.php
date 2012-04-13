@@ -48,6 +48,8 @@ if (array_key_exists("id", $_GET)) {
 }
 ?>
 <form method="POST" action="do-edit-project.php">
+<table border="1">
+<tr><th>Name</th><th>Value</th></tr>
 <?php
   if (! $isnew) {
     print "<input type=\"hidden\" name=\"id\" value=\"$project_id\"/>\n";
@@ -57,12 +59,13 @@ $field_labels = array("Name", "Email", "Purpose");
 $ind = -1;
 foreach ($fields as $field) {
   $ind = $ind + 1;
-  print "<b>" . $field_labels[$ind] . "</b>: <input type=\"text\" name=\"$field\" ";
+  print "<tr><td><b>" . $field_labels[$ind] . "</b></td><td><input type=\"text\" name=\"$field\" ";
   if (! $isnew) {
     print "value=\"" . $project[$field] . "\"";
   }
-  print "/><br/>\n";
+  print "/></td></tr>\n";
 }
+print "<b>Warning: Project name is public</b><br/>\n";
 print "<br/>\n";
 
 // FIXME: Is project email user settable? A PA generated alias for the project lead's email? Just the project lead's email?
