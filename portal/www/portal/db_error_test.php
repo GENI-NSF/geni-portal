@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2011 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,36 +22,28 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-/* Set of constants for managing calls and data records for 
- * GENI Clearinghouse Project Authority
- */
+require_once('util.php');
+require_once('cs_constants.php');
+require_once('cs_client.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
 
-/* Set of arguments in calls to PA interface */
-class PA_ARGUMENT 
-{
-  const PROJECT_ID = "project_id";
-  const PROJECT_NAME = "project_name";
-  const LEAD_ID = "lead_id";
-  const PREVIOUS_LEAD_ID = "previous_lead_id";
-  const PROJECT_EMAIL = "project_email";
-  const PROJECT_PURPOSE  = "project_purpose";
-  const MEMBER_ID = "member_id";
-  const ROLE_TYPE = "role_type";
-}
+error_log("DB TEST\n");
 
-/* Name of table containing per-project info */
-$PA_PROJECT_TABLENAME = "pa_project";
+// Get URL of Credential Store
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
-class PA_PROJECT_TABLE_FIELDNAME 
-{
-  const NAME = "name";
-  const PROJECT_ID = "project_id";
-  const PROJECT_NAME = "project_name";
-  const LEAD_ID = "lead_id";
-  const PROJECT_EMAIL = "project_email";
-  const PROJECT_PURPOSE = "project_purpose";
-}
+$signer = null;
+$principal_id = '3';
 
+$result = create_assertion($cs_url, 
+			   $signer,
+			   $principal_id, 
+			   CS_ATTRIBUTE_TYPE::ADMIN,
+			   CS_CONTEXT_TYPE::RESOURCE,
+			   null);
 
+relative_redirect('debug');
 
 ?>

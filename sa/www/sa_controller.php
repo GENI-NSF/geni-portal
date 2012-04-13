@@ -23,11 +23,19 @@
 //----------------------------------------------------------------------
 
 require_once("message_handler.php");
-require_once('sa_constants.php');
 require_once('file_utils.php');
 require_once('db_utils.php');
 require_once('sa_utils.php');
 require_once("sa_settings.php");
+require_once('sa_constants.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
+require_once('cs_client.php');
+require_once('ma_client.php');
+
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 /* Create a slice credential and return it */
 function get_slice_credential($args)
@@ -51,8 +59,9 @@ function get_slice_credential($args)
                                         $expiration,
                                         $sa_authority_cert,
                                         $sa_authority_private_key);
+
   $result = array(SA_ARGUMENT::SLICE_CREDENTIAL => $slice_cred);
-  return $result;
+  return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
 
 /* Create a slice for given project, name, urn, owner_id */
@@ -103,7 +112,19 @@ function create_slice($args)
   $db_result = db_execute_statement($sql);
 
   // Return the standard info about the slice.
-  return lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
+  $slice_info = lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
+
+  // Create an assertion that this owner is the 'lead' of the project (and has associated privileges)
+  global $cs_url;
+  $signer = null; // *** FIX ME
+  create_assertion($cs_url, $signer, $owner_id, CS_ATTRIBUTE_TYPE::LEAD,
+		   CS_CONTEXT_TYPE::SLICE, $slice_id);
+
+  // Associate the lead with the slice with role 'lead'
+  global $ma_url;
+  add_attribute($ma_url, $owner_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::SLICE, $slice_id);
+
+  return generate_response(RESPONSE_ERROR::NONE, $slice_info, '');
 }
 
 function lookup_slices($args)
@@ -141,17 +162,20 @@ function lookup_slices($args)
     ", " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID;
 
   //  error_log("LOOKUP_SLICES.SQL = " . $sql);
-  $rows = db_fetch_rows($sql);
-  //  error_log("LOOKUP_SLICES.ROWS = " . print_r($rows, true));
-  $slice_ids = array();
-  foreach ($rows as $row) {
-    //    error_log("LOOKUP_SLICES.ROW = " . print_r($row, true));
-    $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-    //    error_log("LOOKUP_SLICES.SID = " . print_r($slice_id, true));
-    $slice_ids[] = $slice_id;
-  }
-  //  error_log("LOOKUP_SLICES.SLICE_IDS = " . print_r($slice_ids, true));
-  return $slice_ids;
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $rows = $result[RESPONSE_ARGUMENT::VALUE];
+    //  error_log("LOOKUP_SLICES.ROWS = " . print_r($rows, true));
+    $slice_ids = array();
+    foreach ($rows as $row) {
+      //    error_log("LOOKUP_SLICES.ROW = " . print_r($row, true));
+      $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+      //    error_log("LOOKUP_SLICES.SID = " . print_r($slice_id, true));
+      $slice_ids[] = $slice_id;
+    }
+    return generate_response(RESPONSE_ERROR::NONE, $slice_ids, '');
+  } else
+    return $result;
 }
 
 function lookup_slice($args)

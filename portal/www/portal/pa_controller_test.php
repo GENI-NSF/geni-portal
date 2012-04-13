@@ -49,15 +49,20 @@ function dump_projects()
   }
 }
 
-$project_id = create_project($pa_url, "PROJ1", "LEAD1", "example@foo.com", "Save the world");
-//error_log("PID = " . $project_id);
+$lead1 = '99999999999999999999999999999999';
+$lead2 = '99999999999999999999999999999998';
+$lead3 = '99999999999999999999999999999997';
+
+$project_id = create_project($pa_url, "PROJ1", $lead1, "example@foo.com", "Save the world");
+error_log("PID = " . $project_id);
 dump_projects();
 
-$result = update_project($pa_url, $project_id, "PROJ2", "LEAD2", "foo@example.com", "More saving");
+$result = update_project($pa_url, $project_id, "PROJ2", "foo@example.com", "More saving");
+$result = change_lead($pa_url, $project_id, $lead1, $lead2);
 //error_log("UPDATE.result = " . $result);
 dump_projects();
 
-$project_id2 = create_project($pa_url, "PROJ3", "LEAD3", "foo@bar.net", "Waste of time");
+$project_id2 = create_project($pa_url, "PROJ3", $lead3, "foo@bar.net", "Waste of time");
 //error_log("PID = " . $project_id);
 dump_projects();
 

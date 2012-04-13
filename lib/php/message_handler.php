@@ -31,6 +31,7 @@
  */
 
 require_once("smime.php");
+require_once('response_format.php');
 
 function handle_message($prefix)
 {
@@ -77,10 +78,12 @@ function handle_message($prefix)
    
   $funcargs = parse_message($msg);
 
-  /*** TEMP FIX ***/
+  /*
+  /// *** TEMP FIX
   $signer = $funcargs[1]['signer'];
   //  error_log("Received : SIGNER = " . $signer);
-  /*** END OF TEMP FIX ***/
+  // *** END OF TEMP FIX 
+  */
 
   $result = call_user_func($funcargs[0], $funcargs[1]);
   //  error_log("RESULT = " . $result);
@@ -93,6 +96,8 @@ function handle_message($prefix)
   print $output;
 }
 
+/*
+ * *** TEMP FIX
 //--------------------------------------------------
 // Get account_ID for current user on portal
 //--------------------------------------------------
@@ -106,7 +111,9 @@ function get_account_id()
   return $account_id;
 }
 
-$ACCOUNT_ID = null; // *** TEMP FIX
+$ACCOUNT_ID = null; 
+// END OF TEMP FIX 
+*/
 
 //--------------------------------------------------
 // Send a message (via PUT) to a given URL and return response
@@ -115,6 +122,8 @@ function put_message($url, $message)
 {
   //  error_log("PUT_MESSAGE " . $message);
 
+  /* 
+   * *** TEMP FIX
   // *** TEMP FIX - Stick the account id as 'signer' field in message
   global $ACCOUNT_ID;
   if ($ACCOUNT_ID == null) { // First time through
@@ -125,6 +134,7 @@ function put_message($url, $message)
   //  error_log("MSG (SEND) = " . print_r($message, true));
   //  error_log("Sent : SIGNER = " . $signer);
   // *** END OF TEMP FIX
+  */
 
   $message = json_encode($message);
   //  error_log("PUT_MESSAGE(enc) " . $message);
@@ -153,7 +163,14 @@ function put_message($url, $message)
   $result = decode_result($result);
   //  error_log("Decoded raw result : " . $result);
 
-  return $result;
+  //  error_log("MH.RESULT = " . print_r($result, true));
+
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("ERROR.CODE " . print_r($result[RESPONSE_ARGUMENT::CODE], true));
+    error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));
+    error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
+  }
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
 ?>

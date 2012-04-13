@@ -22,36 +22,33 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-/* Set of constants for managing calls and data records for 
- * GENI Clearinghouse Project Authority
- */
+// Standard format for responses from services: A dictionary of [code, value, output]
 
-/* Set of arguments in calls to PA interface */
-class PA_ARGUMENT 
-{
-  const PROJECT_ID = "project_id";
-  const PROJECT_NAME = "project_name";
-  const LEAD_ID = "lead_id";
-  const PREVIOUS_LEAD_ID = "previous_lead_id";
-  const PROJECT_EMAIL = "project_email";
-  const PROJECT_PURPOSE  = "project_purpose";
-  const MEMBER_ID = "member_id";
-  const ROLE_TYPE = "role_type";
+class RESPONSE_ARGUMENT {
+  const CODE = 'code'; // Error code: no error if 0
+  const VALUE = 'value'; // Result of call if no error
+  const OUTPUT = 'output'; // Error info if error
 }
 
-/* Name of table containing per-project info */
-$PA_PROJECT_TABLENAME = "pa_project";
-
-class PA_PROJECT_TABLE_FIELDNAME 
+// Canonical representation of message response
+// Dictionary: [
+//       code = (error code, 0 => no error), 
+//       value => (result if no error), 
+//       output => error info if error)]
+//       ]
+function generate_response($code, $value, $output)
 {
-  const NAME = "name";
-  const PROJECT_ID = "project_id";
-  const PROJECT_NAME = "project_name";
-  const LEAD_ID = "lead_id";
-  const PROJECT_EMAIL = "project_email";
-  const PROJECT_PURPOSE = "project_purpose";
+  $result[RESPONSE_ARGUMENT::CODE] = $code;
+  $result[RESPONSE_ARGUMENT::VALUE] = $value;
+  $result[RESPONSE_ARGUMENT::OUTPUT] = $output;
+  return $result;
 }
 
-
+class RESPONSE_ERROR {
+  const NONE = 0;
+  const DATABASE = 1;
+  const AUTHENTICATION = 2;
+  const AUTHORIZATION = 3;
+}
 
 ?>

@@ -25,10 +25,12 @@
 require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('file_utils.php');
+require_once('response_format.php');
 require_once('pa_constants.php');
-require_once('cs_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('ma_client.php');
+require_once('cs_client.php');
 
 /**
  * GENI Clearinghouse Project Authority (PA) controller interface
@@ -39,12 +41,13 @@ require_once('sr_client.php');
  *   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose)
  *   delete_project(pa_url, project_id);
  *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
- *   update_project(pa_url, project_id, lead_id, project_email, project_purpose);
- *
+ *   update_project(pa_url, project_id, project_email, project_purpose);
+ *   change_lead(pa_url, project_id, previous_lead_id, new_lead_id); *
  **/
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 /**
  * Create project of given name, lead_id, email and purpose
@@ -79,7 +82,7 @@ function create_project($args)
   //  error_log("SQL = " . $sql);
   $result = db_execute_statement($sql);
 
-  //  error_log("CREATE " . $result . " " . $sql);
+  //  error_log("CREATE " . $result . " " . $sql . " " . $project_id);
 
   // Create an assertion that this lead is the lead of the project (and has associated privileges)
   global $cs_url;
@@ -87,7 +90,11 @@ function create_project($args)
   create_assertion($cs_url, $signer, $lead_id, CS_ATTRIBUTE_TYPE::LEAD,
 		   CS_CONTEXT_TYPE::PROJECT, $project_id);
 
-  return $project_id;
+  // Associate the lead with the project with role 'lead'
+  global $ma_url;
+  add_attribute($ma_url, $lead_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::PROJECT, $project_id);
+
+  return generate_response(RESPONSE_ERROR::NONE, $project_id, '');
 }
 
 /**
@@ -124,12 +131,16 @@ function get_projects($args)
   $project_ids = array();
   //  error_log("GET_PROJECTS.sql = " . $sql . "\n");
 
-  $project_id_rows = db_fetch_rows($sql);
-  foreach($project_id_rows as $project_id_row) {
-    $project_id = $project_id_row[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-    $project_ids[] = $project_id;
-  }
-  return $project_ids;
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $project_id_rows = $result[RESPONSE_ARGUMENT::VALUE];
+    foreach($project_id_rows as $project_id_row) {
+      $project_id = $project_id_row[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+      $project_ids[] = $project_id;
+    }
+    return generate_response(RESPONSE_ERROR::NONE, $project_ids, '');
+  } else
+    return $result;
 }
 
 
@@ -162,14 +173,12 @@ function update_project($args)
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
-  $lead_id = $args[PA_ARGUMENT::LEAD_ID];
   $project_email = $args[PA_ARGUMENT::PROJECT_EMAIL];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
 
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME 
     . " SET " 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = '" . $project_name . "', "
-    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = '" . $lead_id . "', "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . " = '" . $project_email . "', "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . " = '" . $project_purpose . "' "
     . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
@@ -179,8 +188,30 @@ function update_project($args)
 
   $result = db_execute_statement($sql);
   return $result;
-
 }
+
+/* update lead of given project */
+function change_lead($args)
+{
+  global $PA_PROJECT_TABLENAME;
+
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $previous_lead_id = $args[PA_ARGUMENT::PREVIOUS_LEAD_ID];
+  $new_lead_id = $args[PA_ARGUMENT::LEAD_ID];
+
+  $sql = "UPDATE " . $PA_PROJECT_TABLENAME
+    . " SET " 
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = '" . $new_lead_id . "'"
+    . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
+    . " = '" . $project_id . "'";
+  //  error_log("CHANGE_LEAD.sql = " . $sql);
+  $result = db_execute_statement($sql);
+
+  // *** FIX ME - Delete previous from MA and from CS
+
+  return $result;
+}
+
 
 handle_message("PA");
 

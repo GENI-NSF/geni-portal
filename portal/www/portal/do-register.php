@@ -231,6 +231,7 @@ if (array_key_exists('mail', $_SERVER)) {
 $cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
                    '-c',
                    $portal_gcf_cfg_dir . '/gcf.ini',
+		   '--uuid', $account_id,
                    '--notAll',
                    '-d',
                    '/tmp',
