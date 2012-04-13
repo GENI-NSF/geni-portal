@@ -62,9 +62,9 @@ function dump_all_assertions_and_policies()
 
 }
 
-$signer = '22222222222222222222222222222222';
+$signer =       '22222222222222222222222222222222';
 $principal_id = '33333333333333333333333333333333';
-$project_id = '44444444444444444444444444444444';
+$project_id =   '44444444444444444444444444444444';
 
 $result = create_assertion($cs_url, 
 			   $signer,
