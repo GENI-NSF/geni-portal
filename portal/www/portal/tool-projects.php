@@ -35,8 +35,8 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 $project_ids = get_projects_by_lead($pa_url, $user->account_id);
-print "Found " . count($project_ids) . " project(s) for you:<br/>\n";
 if (count($project_ids) > 0) {
+  print "Found " . count($project_ids) . " project(s) for you:<br/>\n";
   print "\n<table border=\"1\">\n";
   print ("<tr><th>Name</th><th>Lead</th><th>Email</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
 
