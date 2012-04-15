@@ -4,6 +4,7 @@ require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('cs_constants.php');
 require_once('response_format.php');
+require_once('permission_manager.php');
 
 /**
  * GENI Clearinghouse Credential Store (CS) controller interface
@@ -241,6 +242,34 @@ function request_authorization($args)
   $result = 0;
   if (count($rows) > 0) {
     $result = 1;
+  }
+  return $result;
+}
+
+function get_permissions($args)
+{
+  $principal = $args[CS_ARGUMENT::PRINCIPAL];
+
+  // cs_assertion : id, signer, principal, attribute, context_type, context, expiration
+  // cs_policy    : id, signer, attribute, context_type, privilege, policy_cert
+  // cs_action : id, name, privilege, context_type
+  $sql = "select " 
+    . "cs_action.name, cs_assertion.context_type, cs_assertion.context"
+    . " from cs_assertion, cs_policy, cs_action"
+    . " where "
+    . " cs_assertion.principal = '" . $principal . "'"
+    . " and cs_assertion.attribute = cs_policy.attribute"
+    . " and cs_assertion.context_type = cs_policy.context_type"
+    . " and cs_action.privilege = cs_policy.privilege"
+    . " and cs_action.context_type = cs_policy.context_type";
+  error_log("SQL = " . $sql);
+  $rows = db_fetch_rows($sql);
+  if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $rows = $rows[RESPONSE_ARGUMENT::VALUE];
+    $permission_set = compute_permission_set($rows);
+    $result = generate_response(RESPONSE_ERROR::NONE, $permission_set, null);
+  } else {
+    $result = $rows;
   }
   return $result;
 }

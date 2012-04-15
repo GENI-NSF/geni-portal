@@ -87,4 +87,12 @@ function request_authorization($cs_url, $principal, $action, $context_type, $con
   return $result;
 }
 
+function get_permissions($cs_url, $principal)
+{
+  $get_permissions_message['operation'] = 'get_permissions';
+  $get_permissions_message[CS_ARGUMENT::PRINCIPAL] = $principal;
+  $result = put_message($cs_url, $get_permissions_message);
+  return $result;
+}
+
 ?>
