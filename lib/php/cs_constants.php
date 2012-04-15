@@ -28,28 +28,31 @@
 
 /* Set of known attribute or role types */
 class CS_ATTRIBUTE_TYPE {
-  const LEAD = 0;
-  const ADMIN = 1;
-  const MEMBER = 2;
-  const AUDITOR = 3;
+  const LEAD = 1;
+  const ADMIN = 2;
+  const MEMBER = 3;
+  const AUDITOR = 4;
 }
 
 
 /* Set of known context types for services within GENI CH credential store */
 /* We store/retrieve by index into this array, but print the strings */
-$CS_CONTEXT_TYPE_NAMES = array("RESOURCE",
+$CS_CONTEXT_TYPE_NAMES = array(
 			       "PROJECT",
 			       "SLICE",
+			       "RESOURCE",
 			       "SERVICE", 
 			       "MEMBER");
 
 class CS_CONTEXT_TYPE
 {
-  const RESOURCE = 0; // Generic actions with respect to resources (aggregates, e.g.)
+  // These have contex_types have contexts: PROJECT_ID and SLICE_ID respectively
   const PROJECT = 1; // Manage project properties using the Project Authority
   const SLICE = 2; // Manage slice properties using the Slice Authority
-  const SERVICE = 3; // Manage service properties using the Service Registory
-  const MEMBER = 4; // Manage member privileges using the Member Authority
+  // These are context free: you either have the attribute wrt. this context type or you don't
+  const RESOURCE = 3; // Generic actions with respect to resources (aggregates, e.g.)
+  const SERVICE = 4; // Manage service properties using the Service Registory
+  const MEMBER = 5; // Manage member privileges using the Member Authority
 }
 
 // Is the context type one for a specific object (true) or general to a class of operations (false)?
