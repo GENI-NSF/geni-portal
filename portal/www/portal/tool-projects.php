@@ -47,6 +47,11 @@ if (count($project_ids) > 0) {
     $project = lookup_project($pa_url, $project_id);
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     $slice_ids = lookup_slices($sa_url, $project_id);
+
+    $create_slice_link = "<a href=\"createslice.php?project_id=$project_id\">Create Slice</a>";
+    if(!$user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+      $create_slice_link = "";
+    }
     print ("<tr><td> <a href=\"project.php?project_id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
 	   "</a> </td><td> <a href=\"project-member.php?project_id=$project_id&member_id=" .
 	   $lead->account_id . "\">" . $lead->prettyName() . "</a> </td><td> " .
@@ -55,7 +60,7 @@ if (count($project_ids) > 0) {
 	   $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
 	   "</a> </td><td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
 	   " </td><td align=\"center\"> " . count($slice_ids) . " </td><td> " .
-	   "<a href=\"createslice.php?project_id=$project_id\">Create Slice</a></td></tr>\n");
+	   $create_slice_link . "</td></tr>\n");
   }
   print "</table>\n";
 } else {
