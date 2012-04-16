@@ -83,8 +83,8 @@ $listres_url = 'listresources.php?id='.$slice;
 print "<h1>GENI Slice: " . $name ." </h1>\n";
 print "<table border=\"1\">\n";
 // print "<tr><th>Name </th><th>Value</th></tr>\n";
-print "<tr><td><b>Slice Name <a href='#warn'>*</a> </b></td><td>$name</td></tr>\n";
-print "<tr><td><b>Member of Project <a href='#warn'>*</a> </b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
+print "<tr><td><b>Slice Name (public) </b></td><td>$name</td></tr>\n";
+print "<tr><td><b>Member of Project (public) </b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
 print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice</td></tr>\n";
 print "<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>e-mail</a></td></tr>\n";
@@ -92,7 +92,7 @@ print "<tr><td><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_na
 print "<tr><td><b>Slice Expiration</b></td><td>$slice_expiration</td></tr>\n";
 print "</table>\n";
 
-print "<b id='warn'>* Warning: Slice and project names are public</b><br/>\n";
+print "<b id='warn'>Warning: Slice and project names are public</b><br/>\n";
 print "<br/>\n";
 
 print "<h2>Slice Actions</h2>\n";
