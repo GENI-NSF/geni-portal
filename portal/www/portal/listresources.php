@@ -68,7 +68,7 @@ $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 $name = $slice[SA_ARGUMENT::SLICE_NAME];
 
 // Call list resources at the AM
-$output = list_resources($am_url, $user, $slice_credential,
+$output = list_resources_on_slice($am_url, $user, $slice_credential,
                                $slice_urn);
 
 error_log("ListResources output = " . $output);

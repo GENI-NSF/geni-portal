@@ -137,6 +137,21 @@ function list_resources($am_url, $user)
   return $output;
 }
 
+// list resources at an AM
+function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
+{
+  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
+  file_put_contents($slice_credential_filename, $slice_credential);
+  $args = array("--slicecredfile",
+		$slice_credential_filename,
+		'listresources',
+		$slice_urn);
+  $output = invoke_omni_function($am_url, $user, $args);
+  unlink($slice_credential_filename);
+  return $output;
+}
+
+
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_credential, $slice_urn,
                        $rspec_filename)
