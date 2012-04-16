@@ -136,6 +136,11 @@ function put_message($url, $message)
   // *** END OF TEMP FIX
   */
 
+  if (! isset($url) || is_null($url) || trim($url) == '') {
+    error_log("put_message error: empty URL");
+    return null;
+  }
+
   $message = json_encode($message);
   //  error_log("PUT_MESSAGE(enc) " . $message);
   // sign
@@ -160,6 +165,10 @@ function put_message($url, $message)
   }
   // error_log("Received raw result : " . $result);
   $result = trim($result); // Remove trailing newlines
+  if (strpos($result, "404 Not Found")) {
+    error_log("put_message error: Page $url Not Found");
+    return null;
+  }
   $result = decode_result($result);
   //  error_log("Decoded raw result : " . $result);
 
