@@ -21,57 +21,44 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-
+?>
+<?php
+require_once("settings.php");
 require_once("user.php");
-require_once("header.php");
-show_header('GENI Portal: Debug', $TAB_DEBUG);
-?>
-<div id="debug-body">
-<?php
+require_once("file_utils.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
+require_once("am_client.php");
+require_once("sa_client.php");
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive() ) {
+  relative_redirect('home.php');
+}
 ?>
-<h2>DB</h2>
 <?php
-print "<a href=\"db_error_test.php\">Database Error Test</a>\n";
-?>
-<h2>SR</h2>
-<?php
-print "<a href=\"sr_controller_test.php\">Service Registry Test</a>\n";
-?>
-<h2>AuthZ</h2>
-<?php
-print "<a href=\"permission_manager_test.php\">Permission Manager Test</a>\n";
-?>
-<h2>PA</h2>
-<?php
-print "<a href=\"pa_controller_test.php\">Project Authority Test</a>\n";
-?>
-<h2>SA</h2>
-<?php
-print "<a href=\"sa_controller_test.php\">Slice Authority Test</a>\n";
-?>
-<h2>MA</h2>
-<?php
-print "<a href=\"ma_controller_test.php\">Member Authority Test</a>\n";
-?>
-<h2>CS</h2>
-<?php
-print "<a href=\"cs_controller_test.php\">Credential Store Test</a>\n";
-?>
+// Get an AM
+$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+// error_log("AM_URL = " . $am_url);
 
-<h2>AM</h2>
-<?php
-print "<a href=\"getversion.php\">GetVersion on AM</a>\n";
-?>
-<br/>
-<?php
-print "<a href=\"listresources_plain.php\">ListResources on AM (no slice)</a>\n";
-?>
+$result = get_version($am_url, $user);
+// error_log("VERSION = " . $result);
 
 
+error_log("GetVersion output = " . $result);
 
-</div><!-- debug-body -->
-<br/>
-<?php
+$header = "GetVersion";
+$text = $result;
+
+require_once("header.php");
+show_header('GENI Portal: Debug',  $TAB_DEBUG);
+print "<h2>$header</h2>\n";
+
+$text2 = explode("\n",$text);
+foreach ($text2 as $line_num => $line) {
+    echo htmlspecialchars($line) . "<br />\n";
+}
+
+print "\n";
 include("footer.php");
+
 ?>
