@@ -152,6 +152,22 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
 }
 
 
+// renewsliver at an AM
+function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
+{
+  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
+  file_put_contents($slice_credential_filename, $slice_credential);
+  $args = array("--slicecredfile",
+		$slice_credential_filename,
+		'renewsliver',
+		$slice_urn,
+		$time);
+  $output = invoke_omni_function($am_url, $user, $args);
+  unlink($slice_credential_filename);
+  return $output;
+}
+
+
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_credential, $slice_urn,
                        $rspec_filename)
