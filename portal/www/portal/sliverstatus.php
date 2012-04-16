@@ -65,6 +65,7 @@ $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 // Get the slice URN via the SA
 $slice = lookup_slice($sa_url, $slice_id);
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
+$name = $slice[SA_ARGUMENT::SLICE_NAME];
 
 // Call sliver status at the AM
 $sliver_output = sliver_status($am_url, $user, $slice_credential,
@@ -72,6 +73,11 @@ $sliver_output = sliver_status($am_url, $user, $slice_credential,
 
 error_log("SliverStatus output = " . $sliver_output);
 
-relative_redirect('slices');
+$header = "Status of Slivers on slice: $name";
+$text = $sliver_output;
+$slice_name = $name;
+include("print-text.php");
+
+//relative_redirect('slices');
 
 ?>

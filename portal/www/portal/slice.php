@@ -77,7 +77,7 @@ $slice_own_url = 'slice-member.php?id='.$slice_owner_id;
 $slicecred_url = "slicecred.php?id=".$slice;
 
 
-$status_url = 'sliver-status.php?id='.$slice;
+$status_url = 'sliverstatus.php?id='.$slice;
 $listres_url = 'list-resources.php?id='.$slice;
 
 print "<h1>GENI Slice: " . $name ." </h1>\n";
@@ -113,6 +113,8 @@ print "<br/>";
 
 if ($user->privAdmin()) {
   print "<a href=\"delete-slice.php?id=" . $slice . "\">Delete Slice " . $name. "</a>\n";
+  print "<br/>";
+  print "<a href=\"sliverdelete.php?id=" . $slice . "\">Delete Sliver " . $name. "</a>\n";
   print "<br/>";
   print "<a href=\"shutdown-slice.php?id=" . $slice . "\">Shutdown Slice " . $name. "</a>\n";
   print "<br/>";
