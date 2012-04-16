@@ -262,7 +262,7 @@ function get_permissions($args)
     . " and cs_assertion.context_type = cs_policy.context_type"
     . " and cs_action.privilege = cs_policy.privilege"
     . " and cs_action.context_type = cs_policy.context_type";
-  error_log("SQL = " . $sql);
+  //  error_log("SQL = " . $sql);
   $rows = db_fetch_rows($sql);
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     $rows = $rows[RESPONSE_ARGUMENT::VALUE];

@@ -24,7 +24,22 @@
 
 require_once 'db-util.php';
 require_once 'util.php';
+require_once 'cs_client.php';
+require_once 'sr_constants.php';
+require_once 'sr_client.php';
 require 'abac.php';
+
+//------------------------------------------------------------------------
+// Grab pointer to URL variable for credential store
+//------------------------------------------------------------------------
+$cs_url = null;
+
+//------------------------------------------------------------------------
+// Hold onto permissions for this account. Refresh periodically
+//------------------------------------------------------------------------
+$permission_manager = null; // Set of permissions read for user
+$permission_manager_timestamp = 0; // Last time permissions were read
+$permission_manager_account_id = null; // Account for which permissions were read
 
 //----------------------------------------------------------------------
 // A class representing an experimenter who has logged in
@@ -43,6 +58,9 @@ class GeniUser
 
   function __construct() {
   }
+
+  // If we haven't re-read the permissions in this many seconds, re-read
+  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = 30; 
 
   function loadAccount() {
     /* print "in GeniUser->loadAccount<br/>"; */
@@ -87,16 +105,54 @@ class GeniUser
     }
   }
 
+  // Is given permission (function/method/action) allowed in given contesxt_type/context_id
+  // for given user?
+  function isAllowed($permission, $context_type, $context_id)
+  {
+    global $cs_url;
+    global $permission_manager;
+    global $permission_manager_timestamp;
+    global $permission_manager_account_id;
+    $now = time();
+    if (
+		($permission_manager == null) || 
+		($permission_manager_account_id != $this->account_id) ||
+		($permission_manager_timestamp - $now > GeniUser::STALE_PERMISSION_MANAGER_THRESHOLD_SEC)
+	) 
+      {
+	if ($cs_url == null) {
+	  $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+	}
+	$permission_manager = get_permissions($cs_url, $this->account_id);
+	$permission_manager_timestamp = now;
+	$permission_manager_account_id = $this->account_id;
+	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " . 
+		  print_r($permission_manager, true));
+      }
+    return $permission_manager->is_allowed($permission, $context_type, $context_id);
+  }
+
+  // Create slice is allowed on a per-project basis
+  function privSlice_new($project_id) {
+    return isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id);
+  }
+
   // For now, everyone can create slices
   function privSlice() {
     return in_array ("slice", $this->privileges);
+  }
+
+  // Determine if a person has 'admin' privileges of given context_type
+  function privAdmin_new($context_type)
+  {
+    return isAllowed('admin', $context_type, null);
   }
 
   // For now, everyone is an admin
   function privAdmin() {
     return in_array ("admin", $this->privileges);
   }
-}
+} // End of class GeniUser
 
 // Loads an experimenter from the database.
 function geni_loadUser($id='')
@@ -179,5 +235,6 @@ function geni_loadUser($id='')
     abac_store_idp_attrs($user);
     return $user;
   }
+
 }
 ?>
