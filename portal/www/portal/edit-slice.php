@@ -74,7 +74,7 @@ if (array_key_exists("id", $_GET)) {
 
 print "<h1>EDIT GENI Slice: " . $slice_name ."</h1>\n";
 print "<table border=\"1\">\n";
-print "<form method=\"POST\" action=\"do-edit-slice.php\">\n";
+print "<form method=\"POST\" action=\"do-edit-slice.php?id=$slice_id\">\n";
 print "<input type=\"hidden\" name=\"id\" value=\"$slice_id\"/>\n";
 // print "<tr><th>Name</th><th>Value</th></tr>\n";
 print "<tr><td><b>Slice Name <a href='#warn'>*</a> </b></td><td>$slice_name</td></tr>\n";
