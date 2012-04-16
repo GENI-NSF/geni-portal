@@ -223,27 +223,41 @@ function request_authorization($args)
   $principal = $args[CS_ARGUMENT::PRINCIPAL];
   $action = $args[CS_ARGUMENT::ACTION];
   $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
-  if(is_context_type_specific($context_type)) {
-    $context_clause = "cs_action.context_type = 0";
+  if(!is_context_type_specific($context_type)) {
+    $context_clause = "";
+    $context = "";
   } else {
     $context = $args[CS_ARGUMENT::CONTEXT];
-    $context_clause = "cs_action.context_type <> 0 and cs_assertion.context = '" . $context . "'";
+    $context_clause = "cs_assertion.context = '" . $context . "' and";
   }
   $sql = "select * from cs_action, cs_policy, cs_assertion where "
     . "cs_assertion.principal = '" .  $principal . "' and "
     . "cs_assertion.context_type = cs_action.context_type and "
     . "cs_policy.context_type = cs_action.context_type and "
-    . $context_clause . " and "
+    . "cs_action.context_type = " . $context_type . " and "
+    . $context_clause
     . "cs_assertion.attribute = cs_policy.attribute and "
     . "cs_action.privilege = cs_policy.privilege and "
     . "cs_action.name = '" . $action . "'";
 
+  // error_log("CS.Request_authorization.sql = " . $sql);
+
   $rows = db_fetch_rows($sql, "CS_AUTH");
+  $code = $rows[RESPONSE_ARGUMENT::CODE];
+  $rows = $rows[RESPONSE_ARGUMENT::VALUE];
   $result = 0;
-  if (count($rows) > 0) {
+  if (code == RESPONSE_ERROR::NONE && count($rows) > 0) {
     $result = 1;
   }
-  return $result;
+  //  error_log("SUCCESS = " . $result . " ROWS " . count($rows));
+  //  error_log("ROWS = " . print_r($rows, true));
+  if ($result > 0) {
+    return generate_response(RESPONSE_ERROR::NONE, $result, '');
+  }  else {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, -1, 
+			     "No authorization for action " . $action . " for " . 
+			     $principal . " in context " . $context_type . ' ' . $context);
+  }
 }
 
 function get_permissions($args)
@@ -267,7 +281,7 @@ function get_permissions($args)
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     $rows = $rows[RESPONSE_ARGUMENT::VALUE];
     $permission_manager = compute_permission_manager($rows);
-    error_log("CS.get_permissions " . $permission_manager);
+    //    error_log("CS.get_permissions " . $permission_manager);
     $result = generate_response(RESPONSE_ERROR::NONE, $permission_manager, null);
   } else {
     $result = $rows;

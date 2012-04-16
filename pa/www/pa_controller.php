@@ -56,6 +56,7 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 function create_project($args)
 {
   global $PA_PROJECT_TABLENAME;
+  global $cs_url;
 
   //  error_log("ARGS = " . print_r($args, true));
 
@@ -64,6 +65,15 @@ function create_project($args)
   $project_email = $args[PA_ARGUMENT::PROJECT_EMAIL];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   $project_id = make_uuid();
+
+  $permitted = request_authorization($cs_url, $lead_id, 'create_project', 
+				     CS_CONTEXT_TYPE::RESOURCE, null);
+  //  error_log("PERMITTED = " . $permitted);
+  if ($permitted < 1) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, 
+			     "Principal " . $lead_id  . " may not create project");
+  } 
+
   
   $sql = "INSERT INTO " . $PA_PROJECT_TABLENAME 
     . "(" 

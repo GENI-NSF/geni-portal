@@ -30,17 +30,6 @@ require_once 'sr_client.php';
 require_once 'permission_manager.php';
 require 'abac.php';
 
-//------------------------------------------------------------------------
-// Grab pointer to URL variable for credential store
-//------------------------------------------------------------------------
-$cs_url = null;
-
-//------------------------------------------------------------------------
-// Hold onto permissions for this account. Refresh periodically
-//------------------------------------------------------------------------
-$permission_manager = null; // Set of permissions read for user
-$permission_manager_timestamp = 0; // Last time permissions were read
-$permission_manager_account_id = null; // Account for which permissions were read
 
 //----------------------------------------------------------------------
 // A class representing an experimenter who has logged in
@@ -56,6 +45,20 @@ class GeniUser
   public $status = NULL;
   public $attributes;
   public $raw_attrs;
+
+  // Some static variables
+  //------------------------------------------------------------------------
+  // Grab pointer to URL variable for credential store
+  //------------------------------------------------------------------------
+  static $cs_url = null;
+
+  //------------------------------------------------------------------------
+  // Hold onto permissions for this account. Refresh periodically
+  //------------------------------------------------------------------------
+  static $permission_manager = null; // Set of permissions read for user
+  static $permission_manager_timestamp = 0; // Last time permissions were read
+  static $permission_manager_account_id = null; // Account for which permissions were read
+
 
   function __construct() {
   }
@@ -110,44 +113,31 @@ class GeniUser
   // for given user?
   function isAllowed($permission, $context_type, $context_id)
   {
-    global $cs_url;
-    global $permission_manager;
-    global $permission_manager_timestamp;
-    global $permission_manager_account_id;
     $now = time();
     if (
-		($permission_manager == null) || 
-		($permission_manager_account_id != $this->account_id) ||
-		($permission_manager_timestamp - $now > GeniUser::STALE_PERMISSION_MANAGER_THRESHOLD_SEC)
+	(self::$permission_manager == null) || 
+	(self::$permission_manager_account_id != $this->account_id) ||
+	(self::$permission_manager_timestamp - $now > GeniUser::STALE_PERMISSION_MANAGER_THRESHOLD_SEC)
 	) 
       {
-	if ($cs_url == null) {
-	  $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+	error_log("PM = " . self::$permission_manager . ", " . $this->account_id . ", " . self::$permission_manager_account_id);
+	error_log("PMT = " . self::$permission_manager_timestamp  . " " . $now);
+	if (self::$cs_url == null) {
+	  self::$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 	}
-	$permission_manager = get_permissions($cs_url, $this->account_id);
-	$permission_manager_timestamp = $now;
-	$permission_manager_account_id = $this->account_id;
-	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " . 
-		  print_r($permission_manager, true));
+	self::$permission_manager = get_permissions(self::$cs_url, $this->account_id);
+	self::$permission_manager_timestamp = $now;
+	self::$permission_manager_account_id = $this->account_id;
+	error_log("Refreshing permission manager " . self::$permission_manager_timestamp . " " . 
+		  print_r(self::$permission_manager, true));
       }
     //    error_log("PM = " . print_r($permission_manager, true));
-    return $permission_manager->is_allowed($permission, $context_type, $context_id);
-  }
-
-  // Create slice is allowed on a per-project basis
-  function privSlice_new($project_id) {
-    return isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id);
+    return self::$permission_manager->is_allowed($permission, $context_type, $context_id);
   }
 
   // For now, everyone can create slices
   function privSlice() {
     return in_array ("slice", $this->privileges);
-  }
-
-  // Determine if a person has 'admin' privileges of given context_type
-  function privAdmin_new($context_type)
-  {
-    return isAllowed('admin', $context_type, null);
   }
 
   // For now, everyone is an admin
