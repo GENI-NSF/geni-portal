@@ -60,6 +60,6 @@ if (count($project_ids) > 0) {
   print "<i> No projects.</i><br/>\n";
 }
 print "<br/>\n";
-if (true) {
+if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
   print "<a href=\"edit-project.php\">Create New Project</a><br/>\n";
 }

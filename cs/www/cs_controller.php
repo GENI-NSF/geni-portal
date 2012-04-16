@@ -266,8 +266,9 @@ function get_permissions($args)
   $rows = db_fetch_rows($sql);
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     $rows = $rows[RESPONSE_ARGUMENT::VALUE];
-    $permission_set = compute_permission_set($rows);
-    $result = generate_response(RESPONSE_ERROR::NONE, $permission_set, null);
+    $permission_manager = compute_permission_manager($rows);
+    error_log("CS.get_permissions " . $permission_manager);
+    $result = generate_response(RESPONSE_ERROR::NONE, $permission_manager, null);
   } else {
     $result = $rows;
   }

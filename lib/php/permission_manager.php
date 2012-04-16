@@ -7,13 +7,18 @@
  *    context free
  *    in context of a particular entity (by UUID)
  */
-class PermissionSet {
-  function __construct() {
+class PermissionManager {
+  public function __construct() {
     $this->allowed_actions_no_context = array();
     $this->allowed_actions_in_context = array();
   }
 
-  // Add a new permission (in context) to permission set
+  public function __toString() {
+    return "[" . print_r($this->allowed_actions_no_context, true) . " " . 
+      print_r($this->allowed_actions_in_context, true) . "]";
+  }
+
+  // Add a new permission (in context) to permission manager
   function add($permission, $context_type, $context)
   {
     if (is_context_type_specific($context_type)) {
@@ -37,33 +42,34 @@ class PermissionSet {
   public $allowed_actions_in_context; 
 
   // Is given permission allowed in given context?
- function is_allowed($permission, $context_type, $context_id) {
+  public function is_allowed($permission, $context_type, $context_id) {
     $result = false;
-    if (is_context_type_specific($context_type)) {
-      $result = in_array($permission, $allowed_actions_no_context);
+    if (!is_context_type_specific($context_type)) {
+      $result = in_array($permission, $this->allowed_actions_no_context);
     } else {
-      $contexts = $allowed_actions_context[$permission];
-      if ($contexts != null) {
-	$result = in_array($context_id, $contexts);
+      if (in_array($context_id, $this->allowed_actions_in_context)) {
+	$permissions_for_context = $this->allowed_actions_in_context[$context_id];
+	$result = in_array($permission, $permissions_for_context);
       }
     }
     return $result;
   }
 }
 
-// Compute permission set from a given set of rows with all permissions selected
+// Compute permission manager from a given set of rows with all permissions selected
 // for a given principal
-function compute_permission_set($rows)
+function compute_permission_manager($rows)
 {
-  $ps = new PermissionSet();
+  $pm  = new PermissionManager();
   foreach($rows as $row)
     {
       $permission = $row['name'];
       $context_type = $row[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE];
       $context = $row[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
-      $ps->add($permission, $context_type, $context);
+      $pm->add($permission, $context_type, $context);
     }
-  return $ps;
+  //  error_log("CPM = " . $pm);
+  return $pm;
 }
 
 

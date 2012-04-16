@@ -92,7 +92,13 @@ function get_permissions($cs_url, $principal)
   $get_permissions_message['operation'] = 'get_permissions';
   $get_permissions_message[CS_ARGUMENT::PRINCIPAL] = $principal;
   $result = put_message($cs_url, $get_permissions_message);
-  return $result;
+  //  error_log("GP = " . $result . "  " . print_r($result, true));
+  // Reconstruct the Permission Manager from across the wire (it gets returned as an array)
+  $pm = new PermissionManager();
+  $pm->allowed_actions_no_context = $result['allowed_actions_no_context'];
+  $pm->allowed_actions_in_context = $result['allowed_actions_in_context'];
+  //  error_log("GP.pm = " . $pm);
+  return $pm;
 }
 
 ?>

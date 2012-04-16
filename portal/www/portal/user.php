@@ -27,6 +27,7 @@ require_once 'util.php';
 require_once 'cs_client.php';
 require_once 'sr_constants.php';
 require_once 'sr_client.php';
+require_once 'permission_manager.php';
 require 'abac.php';
 
 //------------------------------------------------------------------------
@@ -124,11 +125,12 @@ class GeniUser
 	  $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 	}
 	$permission_manager = get_permissions($cs_url, $this->account_id);
-	$permission_manager_timestamp = now;
+	$permission_manager_timestamp = $now;
 	$permission_manager_account_id = $this->account_id;
 	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " . 
 		  print_r($permission_manager, true));
       }
+    //    error_log("PM = " . print_r($permission_manager, true));
     return $permission_manager->is_allowed($permission, $context_type, $context_id);
   }
 
