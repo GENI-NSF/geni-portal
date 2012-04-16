@@ -121,11 +121,12 @@ if ($user->privAdmin()) {
 }
 ?>
 <br/>
-<form method='POST' action='do-renew.php'>
-<b>Date to renew until</b>: <input type='text' name='Renew' 
 <?php
-  print "value=\"$slice_expiration\"/><br/>\n";
-  print "<input type=\"hidden\" name=\"id\" value=\"$slice\"/><br/>\n";
+ //print "<form method='POST' action=\"do-renew.php?id=$slice\">";
+print "<form method='GET' action=\"do-renew.php\">";
+print "<b>Date to renew until</b>: <input type='text' name='slice_expiration'";
+print "value=\"$slice_expiration\"/><br/>\n";
+print "<input type=\"hidden\" name=\"id\" value=\"$slice\"/><br/>\n";
 ?>
 <input type='submit' name= 'Renew' value='Renew'/>
 </form>
