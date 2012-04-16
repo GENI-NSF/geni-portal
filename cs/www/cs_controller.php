@@ -228,7 +228,7 @@ function request_authorization($args)
     $context = "";
   } else {
     $context = $args[CS_ARGUMENT::CONTEXT];
-    $context_clause = "cs_assertion.context = '" . $context . "' and";
+    $context_clause = "cs_assertion.context = '" . $context . "' and ";
   }
   $sql = "select * from cs_action, cs_policy, cs_assertion where "
     . "cs_assertion.principal = '" .  $principal . "' and "
@@ -240,17 +240,17 @@ function request_authorization($args)
     . "cs_action.privilege = cs_policy.privilege and "
     . "cs_action.name = '" . $action . "'";
 
-  // error_log("CS.Request_authorization.sql = " . $sql);
+  //  error_log("CS.Request_authorization.sql = " . $sql);
 
   $rows = db_fetch_rows($sql, "CS_AUTH");
   $code = $rows[RESPONSE_ARGUMENT::CODE];
   $rows = $rows[RESPONSE_ARGUMENT::VALUE];
   $result = 0;
-  if (code == RESPONSE_ERROR::NONE && count($rows) > 0) {
+  if ($code == RESPONSE_ERROR::NONE && count($rows) > 0) {
     $result = 1;
   }
-  //  error_log("SUCCESS = " . $result . " ROWS " . count($rows));
-  //  error_log("ROWS = " . print_r($rows, true));
+  //    error_log("SUCCESS = " . $result . " ROWS " . count($rows));
+  //    error_log("ROWS = " . print_r($rows, true));
   if ($result > 0) {
     return generate_response(RESPONSE_ERROR::NONE, $result, '');
   }  else {

@@ -120,8 +120,8 @@ class GeniUser
 	(self::$permission_manager_timestamp - $now > GeniUser::STALE_PERMISSION_MANAGER_THRESHOLD_SEC)
 	) 
       {
-	error_log("PM = " . self::$permission_manager . ", " . $this->account_id . ", " . self::$permission_manager_account_id);
-	error_log("PMT = " . self::$permission_manager_timestamp  . " " . $now);
+	//	error_log("PM = " . self::$permission_manager . ", " . $this->account_id . ", " . self::$permission_manager_account_id);
+	///	error_log("PMT = " . self::$permission_manager_timestamp  . " " . $now);
 	if (self::$cs_url == null) {
 	  self::$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 	}

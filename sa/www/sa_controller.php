@@ -71,11 +71,19 @@ function create_slice($args)
   global $sa_slice_cert_life_days;
   global $sa_authority_cert;
   global $sa_authority_private_key;
+  global $cs_url;
 
   $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
+
+  $permitted = request_authorization($cs_url, $owner_id, 'create_slice', 
+				     CS_CONTEXT_TYPE::PROJECT, $project_id);
+  if ($permitted < 1) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
+			    "Principal " . $owner_id . " may not create slice in project " . $project_id);
+  }
 
   //  error_log("SA.CS.args = " . print_r($args, true));
 
