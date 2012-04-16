@@ -58,7 +58,6 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 // Get an AM
 $am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-error_log("SLIVER_DELETE AM_URL = " . $am_url);
 
 // Get the slice credential from the SA
 $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
@@ -67,20 +66,19 @@ $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 $slice = lookup_slice($sa_url, $slice_id);
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 $name = $slice[SA_ARGUMENT::SLICE_NAME];
-error_log("SLIVER_DELETE SLICE_URN = $slice_urn");
 
-// Call delete sliver at the AM
-$sliver_output = delete_sliver($am_url, $user, $slice_credential,
+// Call list resources at the AM
+$output = list_resources($am_url, $user, $slice_credential,
                                $slice_urn);
 
-error_log("DeleteSliver output = " . $sliver_output);
+error_log("ListResources output = " . $output);
 
-$header = "Deleted Sliver on slice: $name";
-$text = $sliver_output;
+
+$header = "Resources on slice: $name";
+$text = $output;
 $slice_name = $name;
 include("print-text.php");
 
-
-// relative_redirect('slices');
+//relative_redirect('slices');
 
 ?>

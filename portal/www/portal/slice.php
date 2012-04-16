@@ -78,7 +78,7 @@ $slicecred_url = "slicecred.php?id=".$slice;
 
 
 $status_url = 'sliverstatus.php?id='.$slice;
-$listres_url = 'list-resources.php?id='.$slice;
+$listres_url = 'listresources.php?id='.$slice;
 
 print "<h1>GENI Slice: " . $name ." </h1>\n";
 print "<table border=\"1\">\n";
@@ -108,15 +108,15 @@ if ($user->privSlice()) {
 
 print "<a href=$status_url>Sliver Status</a>";
 print "<br/>";
-print "<a href=$listres_url>ListResources</a>";
+print "<a href=$listres_url>ListResources</a> -- not working yet";
 print "<br/>";
 
 if ($user->privAdmin()) {
-  print "<a href=\"delete-slice.php?id=" . $slice . "\">Delete Slice " . $name. "</a>\n";
+  print "<a href=\"delete-slice.php?id=" . $slice . "\">Delete Slice " . $name. "</a> -- not working yet\n";
   print "<br/>";
-  print "<a href=\"sliverdelete.php?id=" . $slice . "\">Delete Sliver " . $name. "</a>\n";
+  print "<a href=\"confirm-sliverdelete.php?id=" . $slice . "\">Delete Sliver " . $name. "</a>\n";
   print "<br/>";
-  print "<a href=\"shutdown-slice.php?id=" . $slice . "\">Shutdown Slice " . $name. "</a>\n";
+  print "<a href=\"shutdown-slice.php?id=" . $slice . "\">Shutdown Slice " . $name. "</a> -- not working yet\n";
   print "<br/>";
 }
 ?>
