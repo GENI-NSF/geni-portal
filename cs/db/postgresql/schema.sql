@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS cs_privilege;
 DROP TABLE IF EXISTS cs_assertion;
 DROP TABLE IF EXISTS cs_policy;
 DROP TABLE IF EXISTS cs_action;
+DROP TABLE IF EXISTS cs_context_type;;
 
 -- List of all known attributes/roles on a principal
 CREATE TABLE cs_attribute (
@@ -56,5 +57,11 @@ CREATE TABLE cs_policy (
   context_type INT, -- 0 = NONE, 1 = PROJECT, 2 = SLICE, 3 = SLIVER
   privilege INT, -- Index into cs_privilege
   policy_cert VARCHAR
+);
+
+-- A mapping of context type ID to name
+CREATE TABLE cs_context_type (
+  id serial,
+  name VARCHAR
 );
 

@@ -1,13 +1,18 @@
 <?php
 
-require('permission_manager.php');
-require('util.php');
+require_once('util.php');
+require_once('cs_client.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
 
-global $ALL_ACTION_SPECS;
+error_log("PM TEST");
 
-$id = '33333333333333333333333333333333';
-//error_log("AAS = " . print_r($ALL_ACTION_SPECS, true));
-$ps = compute_permission_set($id);
+// Get URL of Credential Store
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+
+$id = '25818eb0-1721-456f-a3e2-c91ce3867083'; // mbrinn
+$ps = get_permissions($cs_url, $id);
 error_log("PS = " . print_r($ps, true));
 
 relative_redirect('debug');
