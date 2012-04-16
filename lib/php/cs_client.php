@@ -19,6 +19,7 @@
 
 require_once('cs_constants.php');
 require_once('message_handler.php');
+require_once('permission_manager.php');
 
 function create_assertion($cs_url, $signer, $principal, $attribute, $context_type, $context)
 {
