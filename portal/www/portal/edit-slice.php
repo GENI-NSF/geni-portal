@@ -44,7 +44,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Slices', $TAB_SLICES);
-$slice_id = "<None>";
+$slice_id = "None";
 if (array_key_exists("id", $_GET)) {
   $slice_id = $_GET['id'];
   $slice_item = lookup_slice($sa_url, $slice_id);

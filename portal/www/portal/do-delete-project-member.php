@@ -26,19 +26,19 @@ require_once("user.php");
 require_once("header.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project = "None";
+$project_id = "None";
 // FIXME filter input
-if (array_key_exists("id", $_REQUEST)) {
-  $project = $_REQUEST['id'];
+if (array_key_exists("project_id", $_REQUEST)) {
+  $project_id = $_REQUEST['project_id'];
 }
-$member = "None";
-if (array_key_exists("member", $_REQUEST)) {
-  $member = $_REQUEST['member'];
+$member_id = "None";
+if (array_key_exists("member_id", $_REQUEST)) {
+  $member_id = $_REQUEST['member_id'];
 }
 
 // FIXME do real stuff here!
 
-relative_redirect('project.php?id='.$project);
+relative_redirect('project.php?project_id='.$project_id);
 
 include("footer.php");
 ?>

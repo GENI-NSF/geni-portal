@@ -28,12 +28,14 @@ require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once("sa_client.php");
+
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
+
 $project_ids = get_projects_by_lead($pa_url, $user->account_id);
 if (count($project_ids) > 0) {
   print "Found " . count($project_ids) . " project(s) for you:<br/>\n";
@@ -45,8 +47,8 @@ if (count($project_ids) > 0) {
     $project = lookup_project($pa_url, $project_id);
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     $slice_ids = lookup_slices($sa_url, $project_id);
-    print ("<tr><td> <a href=\"project.php?id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
-	   "</a> </td><td> <a href=\"project-member.php?id=$project_id&member=" .
+    print ("<tr><td> <a href=\"project.php?project_id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
+	   "</a> </td><td> <a href=\"project-member.php?project_id=$project_id&member_id=" .
 	   $lead->account_id . "\">" . $lead->prettyName() . "</a> </td><td> " .
 	   "<a href=\"mailto:" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
 	   "\">" . 
@@ -60,6 +62,7 @@ if (count($project_ids) > 0) {
   print "<i> No projects.</i><br/>\n";
 }
 print "<br/>\n";
+
 if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
   print "<a href=\"edit-project.php\">Create New Project</a><br/>\n";
 }

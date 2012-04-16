@@ -28,26 +28,37 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
-$project = "None";
-$member = "None";
-// FIXME: Use filters to validate input
-if (array_key_exists("id", $_REQUEST)) {
-  $project_id = $_REQUEST['id'];
-}
-if (array_key_exists("member", $_REQUEST)) {
-  $member_id = $_REQUEST['member'];
-}
-$member = geni_loadUser($member_id);
+
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
-require_once("pa_client.php");
-$project = lookup_project($pa_url, $project_id);
+$project = "None";
+$member = "None";
+// FIXME: Use filters to validate input
+if (array_key_exists("project_id", $_REQUEST)) {
+  $project_id = $_REQUEST['project_id'];
+  $project = lookup_project($pa_url, $project_id);
+}
+if (array_key_exists("member_id", $_REQUEST)) {
+  $member_id = $_REQUEST['member_id'];
+  $member = geni_loadUser($member_id);
+}
+if ($project == "None") {
+  print "<h2>Error: Couldn't find project</h2>";
+  include("footer.php");
+  exit();
+}
+if ($member == "None") {
+  print "<h2>Error: Couldn't find member</h2>";
+  include("footer.php");
+  exit();
+}
 print "<h1>GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . ", Member: " . $member->prettyName() . "</h1>\n";
 
 // FIXME: Retrieve info from DB
@@ -56,8 +67,8 @@ print "<br/>\n";
 print "<form method=\"POST\" action=\"do-edit-project-member.php\">\n";
 print "<b>Project Permissions</b><br/><br/>\n";
 print "<b>Name</b>: " . $member->prettyName() . "<br/>\n";
-print "<input type=\"hidden\" name=\"id\" value=\"" . $project_id . "\"/>\n";
-print "<input type=\"hidden\" name=\"member\" value=\"" . $member_id . "\"/>\n";
+print "<input type=\"hidden\" name=\"project_id\" value=\"" . $project_id . "\"/>\n";
+print "<input type=\"hidden\" name=\"member_id\" value=\"" . $member_id . "\"/>\n";
 $fields = array("Role", "Permissions");
 $roleperms = array("Lead", "Write", "Permissions");
 // FIXME: Query this user's role & permissions from DB, put in $roleperms with keys from $fields
