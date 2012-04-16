@@ -35,9 +35,15 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
-$project = "None";
-if (array_key_exists("id", $_GET)) {
-  $project_id = $_GET['id'];
+$project_id = "None";
+$project = null;
+$name = "None";
+$email = "";
+$purpose = "";
+$leademail = "";
+$leadname = "";
+if (array_key_exists("project_id", $_GET)) {
+  $project_id = $_GET['project_id'];
 }
 $result = "";
 if (array_key_exists("result", $_GET)) {
@@ -46,28 +52,29 @@ if (array_key_exists("result", $_GET)) {
     $result = " (" . $result . ")";
   }
 }
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-$details = lookup_project($pa_url, $project_id);
-$name = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-$email = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
-$purpose = $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-$leadid = $details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-$lead = geni_loadUser($leadid);
-$leademail = $lead->email();
+if ($project_id != "None" && $project_id != "-1") {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+  $project = lookup_project($pa_url, $project_id);
+  $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
+  $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+  $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+  $lead = geni_loadUser($leadid);
+  $leademail = $lead->email();
+  $leadname = $lead->prettyName();
+}
 
 print "<h1>GENI Project: " . $name . "$result</h1>\n";
-$edit_url = 'edit-project.php?id='.$project_id;
+$edit_url = 'edit-project.php?project_id='.$project_id;
 print "<table border=\"1\">\n";
 print "<tr><td><b>Name</b></td><td>$name</td></tr>\n";
-// look up lead name
-$leadname = $lead->prettyName();
 print "<tr><td><b>Lead</b></td><td>$leadname</td></tr>\n";
 print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
 print "<tr><td><b>Project email</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "</table>\n";
 print "<br/>\n";
 print '<a href='.$edit_url.'>Edit Project</a><br/>';
-print "<br/><a href=\"delete-project.php?id=$project_id\">Delete Project</a><br/>";
+print "<br/><a href=\"delete-project.php?project_id=$project_id\">Delete Project</a><br/>";
 ?>
 <h2>Project slices:</h2>
 <?php
@@ -79,7 +86,7 @@ include("tool-slices.php");
 <tr><th>Project Member</th><th>Roles</th></tr>
 <?php
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
-   print "<tr><td><a href=\"project-member.php?id=" . $project_id . "&member=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
+   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
 if ($user->privAdmin()) {
   print "Approve/invite new project members<br/>\n";
 }
@@ -96,7 +103,7 @@ if ($user->privAdmin()) {
 
 <?php
 if ($user->privAdmin()) {
-  print "<a href=\"delete-project.php?id=" . $project_id . "\">Delete Project " . $name . "</a><br/>\n";
+  print "<a href=\"delete-project.php?project_id=" . $project_id . "\">Delete Project " . $name . "</a><br/>\n";
 }
 include("footer.php");
 ?>

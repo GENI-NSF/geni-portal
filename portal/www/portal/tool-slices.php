@@ -27,12 +27,14 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("sa_client.php");
 require_once("pa_client.php");
+
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
+
 // FIXME: This looks up slices OWNED by this user
 if (isset($project_id)) {
   $slice_ids = lookup_slices_by_project_and_owner($sa_url, $project_id, $user->account_id);

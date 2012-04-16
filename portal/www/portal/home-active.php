@@ -60,32 +60,28 @@ if ($user->privAdmin()) {
 <td align="center">
 <a href="http://groups.geni.net/geni/wiki/ProtoGENIFlashClient"><image width="50%" src="http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw"/></a>
 </td></tr></table>
+
 <?php
-  // List of my projects
-  print "<h2>My Projects</h2>\n";
+// List of my projects
+print "<h2>My Projects</h2>\n";
 include("tool-projects.php");
 ?>
+
 <br>
+
 <?php
-
-  // List of my slices
+// List of my slices
 unset($project_id);
-  print "<h2>My Slices</h2>\n";
-  include("tool-slices.php");
+print "<h2>My Slices</h2>\n";
+include("tool-slices.php");
 
-  // Download outside cert & regen certs, or upload key
+// Download outside cert & regen certs, or upload key
 include("tools-user.php");
 
-  // Links to wiki, help, tutorials
+// Links to wiki, help, tutorials
 ?>
 <h2>GENI Help</h2>
 <ul>
 <li><a href="http://groups.geni.net/geni/wiki">GENI Wiki</a></li>
 <li>Other links here</li>
 </ul>
-
-<?php
-//print "<hr/>\n";
-//include("tools-slice.php");
-//print "<hr/>\n";
-?>

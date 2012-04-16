@@ -37,11 +37,12 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
+
 $project = "new";
 $isnew = true;
-if (array_key_exists("id", $_GET)) {
+if (array_key_exists("project_id", $_GET)) {
   // FIXME: Use filters to validate input
-  $project_id = $_GET['id'];
+  $project_id = $_GET['project_id'];
   $isnew = false;
   $project = lookup_project($pa_url, $project_id);
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
@@ -58,7 +59,7 @@ if (array_key_exists("id", $_GET)) {
 <table border="1">
 <?php
   if (! $isnew) {
-    print "<input type=\"hidden\" name=\"id\" value=\"$project_id\"/>\n";
+    print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
   }
 $fields = array(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL, PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE);
 $field_labels = array("Name", "Email", "Purpose");
@@ -90,8 +91,8 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"project-member.php?id=$project_id&member=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=$leadid\">Delete</a></td><td><mailto=\"$leademail\">Email $leadname</a></td></tr>\n";
-  print "<tr><td><a href=\"project-member.php?id=$project_id&member=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?id=$project_id&member=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?project_id=$project_id&member_id=$leadid\">Delete</a></td><td><mailto=\"$leademail\">Email $leadname</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?proejct_id=$project_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";
