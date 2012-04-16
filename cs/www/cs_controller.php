@@ -246,7 +246,7 @@ function request_authorization($args)
   $code = $rows[RESPONSE_ARGUMENT::CODE];
   $rows = $rows[RESPONSE_ARGUMENT::VALUE];
   $result = 0;
-  if (code == RESPONSE_ERROR::NONE && count($rows) > 0) {
+  if ($code == RESPONSE_ERROR::NONE && count($rows) > 0) {
     $result = 1;
   }
   //  error_log("SUCCESS = " . $result . " ROWS " . count($rows));
@@ -278,6 +278,7 @@ function get_permissions($args)
     . " and cs_action.context_type = cs_policy.context_type";
   //  error_log("SQL = " . $sql);
   $rows = db_fetch_rows($sql);
+  //  error_log("ROWS = " . print_r($rows, true));
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     $rows = $rows[RESPONSE_ARGUMENT::VALUE];
     $permission_manager = compute_permission_manager($rows);
