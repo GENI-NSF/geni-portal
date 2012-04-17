@@ -110,9 +110,18 @@ class GeniUser
 
     global $cs_url;
     $now = time();
-    $permission_manager = $_SESSION[PERMISSION_MANAGER_TAG];
-    $permission_manager_timestamp = $_SESSION[PERMISSION_MANAGER_TIMESTAMP_TAG];
-    $permission_manager_account_id = $_SESSION[PERMISSION_MANAGER_ACCOUNT_ID_TAG];
+    $permission_manager = null;
+    if (array_key_exists(PERMISSION_MANAGER_TAG, $_SESSION)) {
+      $permission_manager = $_SESSION[PERMISSION_MANAGER_TAG];
+    }
+    $permission_manager_timestamp = null;
+    if (array_key_exists(PERMISSION_MANAGER_TIMESTAMP_TAG, $_SESSION)) {
+      $permission_manager_timestamp = $_SESSION[PERMISSION_MANAGER_TIMESTAMP_TAG];
+    }
+    $permission_manager_account_id = null;
+    if (array_key_exists(PERMISSION_MANAGER_ACCOUNT_ID_TAG, $_SESSION)) {
+      $permission_manager_account_id = $_SESSION[PERMISSION_MANAGER_ACCOUNT_ID_TAG];
+    }
 
     //    error_log("SESSION = " . print_r($_SESSION, true));
 
