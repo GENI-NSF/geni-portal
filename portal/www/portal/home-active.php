@@ -49,17 +49,22 @@ if ($user->privAdmin()) {
 // Do messages timeout? Get deleted by being displayed once?
 // Or must the users explicitly delete each one?
 ?>
-<table>
-<tr><th width="25%"><h3>GENI Messages</h3></th><th width="25%"><h3>GENI Map</h3></th></tr>
+<table width="50%">
+<tr><th width="25%"><h3>GENI Messages</h3></th>
+<!-- <th width="25%"><h3>GENI Map</h3></th> -->
+</tr>
 <tr><td>
 <ul>
 <li>Friday, 4/6/12: You've been added to Project: <a href="project.php?id=MyProject">MyProject</a></li><br/>
 <li>Tuesday, March 12, 2012: GENI is really rocking today!</li>
 </ul>
 </td>
+<!-- 
 <td align="center">
 <a href="http://groups.geni.net/geni/wiki/ProtoGENIFlashClient"><image width="50%" src="http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw"/></a>
-</td></tr></table>
+</td>
+-->
+</tr></table>
 
 <?php
 // List of my projects
@@ -76,13 +81,4 @@ unset($project);
 print "<h2>My Slices</h2>\n";
 include("tool-slices.php");
 
-// Download outside cert & regen certs, or upload key
-include("tools-user.php");
-
-// Links to wiki, help, tutorials
 ?>
-<h2>GENI Help</h2>
-<ul>
-<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki</a></li>
-<li>Other links here</li>
-</ul>

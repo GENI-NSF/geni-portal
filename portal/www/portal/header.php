@@ -34,6 +34,8 @@ $TAB_SLICES = 'Slices';
 $TAB_PROJECTS = 'Projects';
 $TAB_ADMIN = 'Admin';
 $TAB_DEBUG = 'Debug';
+$TAB_HELP = "Help";
+$TAB_PROFILE = "Profile";
 require_once("user.php");
 
 $standard_tabs = array(array('name' => $TAB_HOME,
@@ -42,6 +44,10 @@ $standard_tabs = array(array('name' => $TAB_HOME,
                              'url' => 'projects.php'),
                        array('name' => $TAB_SLICES,
                              'url' => 'slices.php'),
+                       array('name' => $TAB_PROFILE,
+                             'url' => 'profile.php'),
+                       array('name' => $TAB_HELP,
+                             'url' => 'help.php'),
                        array('name' => $TAB_DEBUG,
                              'url' => 'debug.php')
                        );
