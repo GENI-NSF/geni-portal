@@ -66,6 +66,17 @@ function create_project($args)
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   $project_id = make_uuid();
 
+  $exists_sql = "select count(*) from " . $PA_PROJECT_TABLENAME 
+    . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = '" . $project_name . "'";
+  $exists_response = db_fetch_row($exists_sql);
+  $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
+  $exists = $exists['count'];
+  if ($exists > 0) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Project of name " . $project_name . " already exists.");
+  }
+
+
   $permitted = request_authorization($cs_url, $lead_id, 'create_project', 
 				     CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
