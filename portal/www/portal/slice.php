@@ -45,8 +45,7 @@ if (isset($slice)) {
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  // FIX ME: not supported yet  $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
-  $slice_email = "not.yet.supported@example.com";
+  $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
   $owner = geni_loadUser($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
@@ -78,7 +77,8 @@ print "<tr><td><b>Slice Name (public) </b></td><td>$slice_name</td></tr>\n";
 print "<tr><td><b>Member of Project (public) </b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
 print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
-print "<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>e-mail</a></td></tr>\n";
+print ("<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>"
+       . "$slice_email</a></td></tr>\n");
 print "<tr><td><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "<tr><td><b>Slice Expiration</b></td><td>$slice_expiration</td></tr>\n";
 print "</table>\n";
