@@ -87,8 +87,8 @@ if (count($slice_ids) > 0) {
          . "</a></td>")
       . "<td>" . htmlentities($expiration) . "</td>"
       . "<td>" . htmlentities($slice_urn) . "</td>"
-      . "<td><a href=\"project.php?id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>"
-      . "<td>" . htmlentities($slice_owner_name) . "</td>"
+      . "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>"
+      . "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>"
       . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
       . ("<td><a href=\"$sliceresource_url\">Get Resources</a></td>")
       . ("<td><a href=\"$sliver_status_url\">Sliver Status</a></td>")
