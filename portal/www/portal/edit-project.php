@@ -64,9 +64,15 @@ $field_labels = array("Name", "Email", "Purpose");
 $ind = -1;
 foreach ($fields as $field) {
   $ind = $ind + 1;
+  if ($isnew && $field_labels[$ind] == "Email") {
+    continue;
+  }
   print "<tr><td><b>" . $field_labels[$ind] . "</b></td><td><input type=\"text\" name=\"$field\" ";
   if (! $isnew) {
     print "value=\"" . $project[$field] . "\"";
+  }
+  if ($field_labels[$ind] == "Email") {
+    print "disabled=\"disabled\"";
   }
   print "/></td></tr>\n";
 }
@@ -74,15 +80,15 @@ print "</table>\n";
 print "<b>Warning: Project name is public</b><br/>\n";
 print "<br/>\n";
 
-// FIXME: Is project email user settable? A PA generated alias for the project lead's email? Just the project lead's email?
-
 print "<h2>Project Policy Defaults</h2>\n";
 print "FIXME: Per project policy defaults go here.<br/>\n";
 print "Slice Membership policy: Project members get <b>User</b> rights on all project slices.<br/><br/>\n";
 
 if ($isnew) {
+  print "<p style=\"color: grey\">\n";
   print "Provide a comma-separated list of email addresses of people to invite to your project:<br/>\n";
   print "<input type=\"textarea\" name=\"invites\" disabled=\"disabled\"/>\n";
+  print "</p>\n";
 } else {
   print "<h3>Project members</h3>\n";
   print "<table border=\"1\">\n";
@@ -94,6 +100,7 @@ if ($isnew) {
   print "</table>\n";
 }
 print "<br/>\n";
+
 print "<b>Project Leader</b><br/>\n";
 print "There is exactly one project leader for each project. Project leaders are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
 if ($isnew) {
