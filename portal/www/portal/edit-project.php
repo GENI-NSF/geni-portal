@@ -101,8 +101,9 @@ if ($isnew) {
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
   print "Project leader is: <b>$leadname</b><br/>\n";
+  print "<p style=\"color: grey\">\n";
   print "To transfer project leaders, enter email of proposed new project leader to ask them to take over:<br/>\n";
-  print "<input type=\"text\" name=\"newlead\"/><br/>\n";
+  print "<input type=\"text\" name=\"newlead\" disabled=\"disabled\"/></p><br/>\n";
 }
 print "<input type=\"submit\" value=\"";
 if ($isnew) {
