@@ -78,6 +78,21 @@ function create_slice($args)
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
 
+  $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME 
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = '" . $slice_name . "'" 
+    . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'";
+  error_log("SQL = " . $exists_sql);
+  $exists_response = db_fetch_row($exists_sql);
+  error_log("Exists " . print_r($exists_response, true));
+  $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
+  $exists = $exists['count'];
+  if ($exists > 0) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Slice of name " . $slice_name . " already exists in project.");
+  }
+
+
+
   $permitted = request_authorization($cs_url, $owner_id, 'create_slice', 
 				     CS_CONTEXT_TYPE::PROJECT, $project_id);
   if ($permitted < 1) {
