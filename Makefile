@@ -20,11 +20,11 @@ WWWINSTALL = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
 default:
 	@echo "Try make install"
 
-install:
-	$(WWWINSTALL) -d $(DESTDIR)
-	for d in lib portal sa sr authz cs ma pa logging; do \
-	  (cd "$${d}" && $(MAKE) $@) \
-	done
+#install:
+#	$(WWWINSTALL) -d $(DESTDIR)
+#	for d in lib portal sa sr authz cs ma pa logging; do \
+#	  (cd "$${d}" && $(MAKE) $@) \
+#	done
 
 syncd:
 	$(RSYNC) --exclude .git -aztv ../proto-ch dagoola.gpolab.bbn.com:
@@ -45,3 +45,13 @@ clean:
 
 distclean:
 	find . -name '*~' -exec rm {} \;
+
+
+# Thanks to http://highlandsun.com/hyc/GNUYou.htm
+SUBDIRS = lib portal sa sr authz cs ma pa logging
+install cleandb:
+	@$(MAKE) $(SUBDIRS) TARG=$@
+$(SUBDIRS)::
+	@cd $@; echo making $(TARG) in $@...; \
+	$(MAKE) $(TARG)
+.PHONY: $(SUBDIRS)
