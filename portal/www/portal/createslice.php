@@ -163,6 +163,7 @@ print '<input type="text" name="name"/><br/>';
 print "\n";
 print '<input type="submit" value="Create slice"/>';
 print "\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print '</form>';
 print "\n";
 ?>

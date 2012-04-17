@@ -110,6 +110,7 @@ if ($isnew) {
 } else {
   print "Edit\"/>\n";
 }
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print "</form>\n";
 
 include("footer.php");

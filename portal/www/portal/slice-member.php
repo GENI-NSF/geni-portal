@@ -61,6 +61,8 @@ print "<input type=\"hidden\" name=\"member_id\" value=\"" . $member_id . "\"/>\
 
 // FIXME
 
-print "<input type=\"submit\" value=\"Edit\"/></form>\n";
+print "<input type=\"submit\" value=\"Edit\"/>\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "</form>\n";
 include("footer.php");
 ?>

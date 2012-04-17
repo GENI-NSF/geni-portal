@@ -47,6 +47,7 @@ print "<h1>DELETE GENI Project: " . $name . "</h1>\n";
 print "<b>Warning</b>: This operation is not reversible. Running slices will not be removed, but you will no longer be able to renew slices or use the GENI portal to modify them.<br/><br/>\n";
 $edit_url = 'do-delete-project.php?project_id='.$project_id;
 print '<a href='.$edit_url.'>Delete</a>';
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 
 include("footer.php");
 ?>
