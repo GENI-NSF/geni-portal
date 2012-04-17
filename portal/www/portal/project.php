@@ -71,7 +71,7 @@ print "<h1>GENI Project: " . $name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 print "<table border=\"1\">\n";
 print "<tr><td><b>Name</b></td><td>$name</td></tr>\n";
-print "<tr><td><b>Lead</b></td><td>$leadname</td></tr>\n";
+print "<tr><td><b>Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a></td></tr>\n";
 print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
 print "<tr><td><b>Project email</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "</table>\n";
@@ -105,8 +105,5 @@ if ($user->privAdmin()) {
 
 
 <?php
-if ($user->privAdmin()) {
-  print "<a href=\"delete-project.php?project_id=" . $project_id . "\">Delete Project " . $name . "</a><br/>\n";
-}
 include("footer.php");
 ?>
