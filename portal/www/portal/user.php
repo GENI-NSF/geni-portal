@@ -30,6 +30,13 @@ require_once 'sr_client.php';
 require_once 'permission_manager.php';
 require 'abac.php';
 
+session_start();
+
+const PERMISSION_MANAGER_TAG = 'permission_manager';
+const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
+const PERMISSION_MANAGER_ACCOUNT_ID_TAG = 'permission_manager_account_id';
+
+$cs_url = null;
 
 //----------------------------------------------------------------------
 // A class representing an experimenter who has logged in
@@ -45,19 +52,6 @@ class GeniUser
   public $status = NULL;
   public $attributes;
   public $raw_attrs;
-
-  // Some static variables
-  //------------------------------------------------------------------------
-  // Grab pointer to URL variable for credential store
-  //------------------------------------------------------------------------
-  static $cs_url = null;
-
-  //------------------------------------------------------------------------
-  // Hold onto permissions for this account. Refresh periodically
-  //------------------------------------------------------------------------
-  static $permission_manager = null; // Set of permissions read for user
-  static $permission_manager_timestamp = 0; // Last time permissions were read
-  static $permission_manager_account_id = null; // Account for which permissions were read
 
 
   function __construct() {
@@ -113,26 +107,41 @@ class GeniUser
   // for given user?
   function isAllowed($permission, $context_type, $context_id)
   {
+
+    global $cs_url;
     $now = time();
+    $permission_manager = $_SESSION[PERMISSION_MANAGER_TAG];
+    $permission_manager_timestamp = $_SESSION[PERMISSION_MANAGER_TIMESTAMP_TAG];
+    $permission_manager_account_id = $_SESSION[PERMISSION_MANAGER_ACCOUNT_ID_TAG];
+
+    //    error_log("SESSION = " . print_r($_SESSION, true));
+
+    //    error_log("PMT = " . $permission_manager_timestamp  . " " . $now);
+
     if (
-	(self::$permission_manager == null) || 
-	(self::$permission_manager_account_id != $this->account_id) ||
-	(self::$permission_manager_timestamp - $now > GeniUser::STALE_PERMISSION_MANAGER_THRESHOLD_SEC)
+	($permission_manager == null) || 
+	($permission_manager_account_id != $this->account_id) ||
+	($now - $permission_manager_timestamp  > GeniUser::STALE_PERMISSION_MANAGER_THRESHOLD_SEC)
 	) 
       {
-	//	error_log("PM = " . self::$permission_manager . ", " . $this->account_id . ", " . self::$permission_manager_account_id);
-	///	error_log("PMT = " . self::$permission_manager_timestamp  . " " . $now);
-	if (self::$cs_url == null) {
-	  self::$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+	//	error_log("PM = " . $permission_manager . ", " . $this->account_id . ", " . $permission_manager_account_id);
+	error_log("PMT = " . $permission_manager_timestamp  . " " . $now);
+	if ($cs_url == null) {
+	  $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 	}
-	self::$permission_manager = get_permissions(self::$cs_url, $this->account_id);
-	self::$permission_manager_timestamp = $now;
-	self::$permission_manager_account_id = $this->account_id;
-	error_log("Refreshing permission manager " . self::$permission_manager_timestamp . " " . 
-		  print_r(self::$permission_manager, true));
+	$permission_manager = get_permissions($cs_url, $this->account_id);
+	$permission_manager_timestamp = $now;
+	$permission_manager_account_id = $this->account_id;
+	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " 
+		  . $permission_manager_account_id . " " 
+		  . print_r($permission_manager, true));
+	$_SESSION[PERMISSION_MANAGER_TAG] = $permission_manager;
+	$_SESSION[PERMISSION_MANAGER_TIMESTAMP_TAG] = $now;
+	$_SESSION[PERMISSION_MANAGER_ACCOUNT_ID_TAG] = $this->account_id;
       }
     //    error_log("PM = " . print_r($permission_manager, true));
-    return self::$permission_manager->is_allowed($permission, $context_type, $context_id);
+    $result = $permission_manager->is_allowed($permission, $context_type, $context_id);
+    return $result;
   }
 
   // For now, everyone can create slices

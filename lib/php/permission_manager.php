@@ -43,7 +43,7 @@ class PermissionManager {
 
   // Is given permission allowed in given context?
   public function is_allowed($permission, $context_type, $context_id) {
-    $result = false;
+    $result = 0;
     if (!is_context_type_specific($context_type)) {
       $result = in_array($permission, $this->allowed_actions_no_context);
     } else {
@@ -52,6 +52,10 @@ class PermissionManager {
 	$result = in_array($permission, $permissions_for_context);
       }
     }
+    //    error_log("PM.IA " . $permission . " " . 
+    //	      print_r($context_type, true) . " " . 
+    //	      print_r($context_id, true) . " " . 
+    //	      "a" . print_r($result, true) . "a ");
     return $result;
   }
 }

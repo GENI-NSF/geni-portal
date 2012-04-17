@@ -4,22 +4,16 @@ require_once('util.php');
 require_once('cs_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('user.php');
 
 error_log("PM TEST");
 
-$t_start = time();
+$user = geni_loadUser();
+$result = $user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null);
+error_log("R1 = " . print_r($result, true));
 
-// Get URL of Credential Store
-$sr_url = get_sr_url();
-$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
-
-$id = '25818eb0-1721-456f-a3e2-c91ce3867083'; // mbrinn
-$ps = get_permissions($cs_url, $id);
-error_log("PS = " . print_r($ps, true));
-
-sleep(5);
-$t_end = time();
-error_log("NOW = " . $t_end . " WAS " . $t_start . " DIFF " . ($t_end - $t_start));
+$result2 = $user->isAllowed('create_foo', CS_CONTEXT_TYPE::MEMBER, null);
+error_log("R2= " . print_r($result2, true));
 
 relative_redirect('debug');
 
