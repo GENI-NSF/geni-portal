@@ -81,8 +81,8 @@ print "FIXME: Per project policy defaults go here.<br/>\n";
 print "Slice Membership policy: Project members get <b>User</b> rights on all project slices.<br/><br/>\n";
 
 if ($isnew) {
-  print "Provide a comma-separate list of email addresses of people to invite to your project:<br/>\n";
-  print "<input type=\"textarea\" name=\"invites\"/>\n";
+  print "Provide a comma-separated list of email addresses of people to invite to your project:<br/>\n";
+  print "<input type=\"textarea\" name=\"invites\" disabled=\"disabled\"/>\n";
 } else {
   print "<h3>Project members</h3>\n";
   print "<table border=\"1\">\n";
