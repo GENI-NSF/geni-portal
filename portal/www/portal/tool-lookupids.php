@@ -42,10 +42,16 @@ $script = $pinfo['filename'];
 
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+  if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
+    error_log("Found no PA in SR!'");
+  }
 }
 
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no SA in SR!'");
+  }
 }
 
 if (array_key_exists("project_id", $_REQUEST)) {
