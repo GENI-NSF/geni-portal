@@ -133,7 +133,7 @@ db_add_public_key($user->account_id, $contents,
 
 // Run gen-certs.py and return it as the content.
 $cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
-                   '-f',
+                   '-c',
                    $portal_gcf_cfg_dir . '/gcf.ini',
                    '--notAll',
                    '-d',
