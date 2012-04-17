@@ -1,3 +1,5 @@
+-- avoid innocuous NOTICEs about automatic sequence creation
+set client_min_messages='WARNING';
 
 -- Tables for the PA (Project Authority)
 -- ----------------------------------------------------------------------
