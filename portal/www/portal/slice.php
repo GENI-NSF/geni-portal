@@ -103,7 +103,7 @@ print "<a href=$listres_url>ListResources</a> -- not working yet";
 print "<br/>";
 
 if ($user->privAdmin()) {
-  print "<a href=\"delete-slice.php?slice_id=" . $slice_id . "\">Delete Slice " . $slice_name. "</a> -- not working yet\n";
+  print "<a href=\"delete-slice.php?slice_id=" . $slice_id . "\">Disable Slice " . $slice_name. "</a> -- not working yet\n";
   print "<br/>";
   print "<a href=\"confirm-sliverdelete.php?slice_id=" . $slice_id . "\">Delete Sliver " . $slice_name. "</a>\n";
   print "<br/>";
