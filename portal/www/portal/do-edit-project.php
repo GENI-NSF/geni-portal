@@ -37,10 +37,9 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 $isnew = true;
 $name = "";
-$email = "";
 $purpose = "";
 $lead_id = $user->account_id;
-$newlead = "";
+$newlead = $lead_id;
 unset($project);
 include("tool-lookupids.php");
 if (isset($project)) {
@@ -55,10 +54,7 @@ if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE, $_REQUEST)) {
   // FIXME validate inputs
   $purpose = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
 }
-if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL, $_REQUEST)) {
-  // FIXME validate inputs
-  $email = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
-}
+
 if (array_key_exists("newlead", $_REQUEST)) {
   // FIXME validate inputs
   $newlead = $_REQUEST['newlead'];
@@ -75,7 +71,7 @@ if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
-  $project_id = create_project($pa_url, $name, $lead_id, $email, $purpose);
+  $project_id = create_project($pa_url, $name, $lead_id, $purpose);
   if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("do-edit-project create_project got project_id $project_id");
     $result = "Error";
@@ -89,7 +85,7 @@ if ($isnew) {
 
   // FIXME: Diff new vals from old?
 
-  $result = update_project($pa_url, $project_id, $name, $email, $purpose);
+  $result = update_project($pa_url, $project_id, $name, $purpose);
   if ($result == '') {
     error_log("update_project failed? empty...");
   } else {

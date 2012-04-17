@@ -62,7 +62,6 @@ function create_project($args)
 
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
   $lead_id = $args[PA_ARGUMENT::LEAD_ID];
-  $project_email = $args[PA_ARGUMENT::PROJECT_EMAIL];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   $project_id = make_uuid();
 
@@ -74,6 +73,7 @@ function create_project($args)
 			     "Principal " . $lead_id  . " may not create project");
   } 
 
+  $project_email = 'project-' . $project_name . '@example.com';
   
   $sql = "INSERT INTO " . $PA_PROJECT_TABLENAME 
     . "(" 
@@ -187,13 +187,11 @@ function update_project($args)
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
-  $project_email = $args[PA_ARGUMENT::PROJECT_EMAIL];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
 
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME 
     . " SET " 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = '" . $project_name . "', "
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . " = '" . $project_email . "', "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . " = '" . $project_purpose . "' "
     . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
     . " = '" . $project_id . "'";

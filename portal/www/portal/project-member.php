@@ -53,7 +53,7 @@ print "<h1>GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] 
 // FIXME: Retrieve info from DB
 print "<br/>\n";
 
-print "<form method=\"POST\" action=\"do-edit-project-member.php\">\n";
+print "<form style=\"color: grey\" method=\"POST\" action=\"do-edit-project-member.php\">\n";
 print "<b>Project Permissions</b><br/><br/>\n";
 print "<b>Name</b>: " . $member->prettyName() . "<br/>\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"" . $project_id . "\"/>\n";
