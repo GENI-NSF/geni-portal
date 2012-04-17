@@ -87,7 +87,7 @@ function create_slice($args)
 
   //  error_log("SA.CS.args = " . print_r($args, true));
 
-  $slice_email = 'slice-' . $slice_name . '@sa.example.com';
+  $slice_email = 'slice-' . $slice_name . '@example.com';
   $slice_cert = create_slice_certificate($slice_name, $slice_email,
                                          $slice_id, $sa_slice_cert_life_days,
                                          $sa_authority_cert,
