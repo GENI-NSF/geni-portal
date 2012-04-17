@@ -24,17 +24,13 @@
 
 require_once("user.php");
 require_once("header.php");
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
-$project_id = "None";
-// FIXME filter input
-if (array_key_exists("project_id", $_REQUEST)) {
-  $project_id = $_REQUEST['project_id'];
+if (! isset($user) || ! $user->isActive()) {
+  relative_redirect("home.php");
 }
-$member_id = "None";
-if (array_key_exists("member_id", $_REQUEST)) {
-  $member_id = $_REQUEST['member_id'];
-}
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+
+include("tool-lookupids.php");
 
 // FIXME do real stuff here!
 

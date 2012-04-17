@@ -42,9 +42,7 @@ $email = "";
 $purpose = "";
 $leademail = "";
 $leadname = "";
-if (array_key_exists("project_id", $_GET)) {
-  $project_id = $_GET['project_id'];
-}
+
 $result = "";
 if (array_key_exists("result", $_GET)) {
   $result = $_GET['result'];
@@ -52,16 +50,21 @@ if (array_key_exists("result", $_GET)) {
     $result = " (" . $result . ")";
   }
 }
-if ($project_id != "None" && $project_id != "-1") {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  $project = lookup_project($pa_url, $project_id);
+
+include("tool-lookupids.php");
+
+if (! is_null($project) && $project != "None") {
   $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-  $lead = geni_loadUser($leadid);
-  $leademail = $lead->email();
-  $leadname = $lead->prettyName();
+  if (uuid_is_valid($leadid)) {
+    $lead = geni_loadUser($leadid);
+    $leademail = $lead->email();
+    $leadname = $lead->prettyName();
+  } else {
+    error_log("project.php: Invalid lead id from DB for project $name");
+  }
 }
 
 print "<h1>GENI Project: " . $name . "$result</h1>\n";

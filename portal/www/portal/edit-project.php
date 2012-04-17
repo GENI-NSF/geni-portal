@@ -28,9 +28,6 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
 require_once("pa_client.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -38,21 +35,22 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
-$project = "new";
-$isnew = true;
-if (array_key_exists("project_id", $_GET)) {
-  // FIXME: Use filters to validate input
-  $project_id = $_GET['project_id'];
+include("tool-lookupids.php");
+if (! isset($project)) {
+  $project = "new";
+  $isnew = true;
+  print "<h1>NEW GENI Project</h1>\n";
+} else {
   $isnew = false;
-  $project = lookup_project($pa_url, $project_id);
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+  if (! uuid_is_valid($leadid)) {
+    error_log("edit-project: invalid leadid from DB for project $project_id");
+    exit();
+  }
   $lead = geni_loadUser($leadid);
   $leadname = $lead->prettyName();
   $leademail = $lead->email();
   print "<h1>EDIT GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</h1>\n";
-} else {
-  $project_id = "new";
-  print "<h1>NEW GENI Project</h1>\n";
 }
 ?>
 <form method="POST" action="do-edit-project.php">
@@ -92,7 +90,7 @@ if ($isnew) {
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
   print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?project_id=$project_id&member_id=$leadid\">Delete</a></td><td><mailto=\"$leademail\">Email $leadname</a></td></tr>\n";
-  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?proejct_id=$project_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?project_id=$project_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";

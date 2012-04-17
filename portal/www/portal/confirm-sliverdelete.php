@@ -30,21 +30,18 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 
-if (! isset($sa_url)) {
-  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-}
-
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Slices', $TAB_SLICES);
 $slice = "None";
-if (array_key_exists("id", $_GET)) {
-  $slice = $_GET['id'];
+$slice_name = "None";
 
-  $slice_item = lookup_slice($sa_url, $slice);
-  $slice_name = $slice_item[SA_ARGUMENT::SLICE_NAME];
+include("tool-lookupids.php");
+
+if (isset($slice) && $slice != "None") {
+  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
 }
 
 print "<h1>Delete Resources from GENI Slice: " . $slice_name . "</h1>\n";
@@ -53,8 +50,8 @@ print "<p>Click 'Submit' to delete resources.</p>";
 print "<p>Otherwise click 'Cancel'.</p>";
 print '<br/>';
 
-$cancel_url = 'slice.php?id='.$slice;
-$edit_url = 'sliverdelete.php?id='.$slice;
+$cancel_url = 'slice.php?slice_id='.$slice_id;
+$edit_url = 'sliverdelete.php?slice_id='.$slice_id;
 print '<a href='.$edit_url.'><b>Submit</b></a>';
 print '<br/>';
 print '<a href='.$cancel_url.'>Cancel</a>';

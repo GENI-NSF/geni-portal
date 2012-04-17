@@ -72,6 +72,7 @@ include("tool-projects.php");
 <?php
 // List of my slices
 unset($project_id);
+unset($project);
 print "<h2>My Slices</h2>\n";
 include("tool-slices.php");
 

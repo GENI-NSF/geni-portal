@@ -53,13 +53,16 @@ if (count($_GET)) {
   if (array_key_exists('project_id', $_GET)) {
     /* print "found name<br/>"; */
     $project_id = $_GET['project_id'];
-
-    $project_details = lookup_project($pa_url, $project_id);
-    /* error_log("pa_url result: $pa_url\n"); */
-    /* error_log("project_details result: $project_details\n"); */
-    $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    //    error_log("slice_project_name result: $slice_project_name\n");
-
+    if (uuid_is_valid($project_id)) {
+      $project = lookup_project($pa_url, $project_id);
+      /* error_log("pa_url result: $pa_url\n"); */
+      /* error_log("project result: $project\n"); */
+      $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      //    error_log("slice_project_name result: $slice_project_name\n");
+    } else {
+      error_log("createslice: invalid project_id from GET");
+      relative_redirect("home.php");
+    }
   } else {
     error_log("Missing project_id in _GET.<br/>"); 
     die("Missing project_id in _GET.<br/>"); 
@@ -138,7 +141,7 @@ if ($name) {
  
   // Redirect to this slice's page now...
   $slice_id = $result[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-  relative_redirect('slice.php?id='.$slice_id);
+  relative_redirect('slice.php?slice_id='.$slice_id);
 }
 
 // If here, present the form

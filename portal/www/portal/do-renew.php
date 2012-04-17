@@ -31,8 +31,8 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
 $user = geni_loadUser();
-if (! $user->privSlice()) {
-  exit();
+if (! $user->privSlice() || ! $user->isActive()) {
+  relative_redirect("home.php");
 }
 ?>
 <?php
@@ -53,9 +53,10 @@ if (! count($_GET)) {
   // For now, return nothing.
   no_slice_error();
 }
-if (array_key_exists('id', $_GET)) {
-  $slice_id = $_GET['id'];
-} else {
+
+include("tool-lookupids.php");
+
+if (! isset($slice)) {
   no_slice_error();
 }
 
@@ -64,9 +65,6 @@ if (array_key_exists('slice_expiration', $_GET)) {
 } else {
   no_time_error();
 }
-
-// Get slice authority URL
-$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 // Get an AM
 $am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);

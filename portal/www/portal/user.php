@@ -132,9 +132,9 @@ class GeniUser
 	$permission_manager = get_permissions($cs_url, $this->account_id);
 	$permission_manager_timestamp = $now;
 	$permission_manager_account_id = $this->account_id;
-	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " 
-		  . $permission_manager_account_id . " " 
-		  . print_r($permission_manager, true));
+	//	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " 
+	//		  . $permission_manager_account_id . " " 
+	//		  . print_r($permission_manager, true));
 	$_SESSION[PERMISSION_MANAGER_TAG] = $permission_manager;
 	$_SESSION[PERMISSION_MANAGER_TIMESTAMP_TAG] = $now;
 	$_SESSION[PERMISSION_MANAGER_ACCOUNT_ID_TAG] = $this->account_id;

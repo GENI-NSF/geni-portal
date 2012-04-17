@@ -35,20 +35,9 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
 $project = "None";
 $member = "None";
-// FIXME: Use filters to validate input
-if (array_key_exists("project_id", $_REQUEST)) {
-  $project_id = $_REQUEST['project_id'];
-  $project = lookup_project($pa_url, $project_id);
-}
-if (array_key_exists("member_id", $_REQUEST)) {
-  $member_id = $_REQUEST['member_id'];
-  $member = geni_loadUser($member_id);
-}
+include("tool-lookupids.php");
 if ($project == "None") {
   print "<h2>Error: Couldn't find project</h2>";
   include("footer.php");

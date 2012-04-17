@@ -47,9 +47,9 @@ if (! count($_GET)) {
   // For now, return nothing.
   no_slice_error();
 }
-if (array_key_exists('id', $_GET)) {
-  $slice_id = $_GET['id'];
-} else {
+unset($slice);
+include("tool-lookupids.php");
+if (! isset($slice)) {
   no_slice_error();
 }
 
@@ -60,14 +60,10 @@ $am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 $result = get_version($am_url, $user);
 // error_log("VERSION = " . $result);
 
-// Get slice authority URL
-$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-
 // Get the slice credential from the SA
 $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 
 // Get the slice URN via the SA
-$slice = lookup_slice($sa_url, $slice_id);
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 $name = $slice[SA_ARGUMENT::SLICE_NAME];
 
@@ -86,6 +82,6 @@ $text = $sliver_output;
 $slice_name = $name;
 include("print-text.php");
 
-//relative_redirect('slice?id='.$slice_id);
+//relative_redirect('slice?slice_id='.$slice_id);
 
 ?>

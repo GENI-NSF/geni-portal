@@ -26,6 +26,9 @@
 require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
 
 $abac_key = fetch_abac_key($user->account_id);
 // TODO: make sure you got an abac key

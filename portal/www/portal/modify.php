@@ -25,6 +25,9 @@
 require_once("user.php");
 require_once 'db-util.php';
 $user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
 include("header.php");
 show_header('GENI Portal Home', $TAB_HOME);
 ?>

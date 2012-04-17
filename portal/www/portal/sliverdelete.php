@@ -31,8 +31,8 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
 $user = geni_loadUser();
-if (! $user->privSlice()) {
-  exit();
+if (! $user->privSlice() || ! $user->isActive()) {
+  relative_redirect('home.php');
 }
 ?>
 <?php
@@ -47,14 +47,12 @@ if (! count($_GET)) {
   // For now, return nothing.
   no_slice_error();
 }
-if (array_key_exists('id', $_GET)) {
-  $slice_id = $_GET['id'];
-} else {
+unset($slice);
+include("tool-lookupids.php");
+
+if (! isset($slice)) {
   no_slice_error();
 }
-
-// Get slice authority URL
-$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 // Get an AM
 $am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
@@ -64,7 +62,6 @@ error_log("SLIVER_DELETE AM_URL = " . $am_url);
 $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 
 // Get the slice URN via the SA
-$slice = lookup_slice($sa_url, $slice_id);
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 $name = $slice[SA_ARGUMENT::SLICE_NAME];
 error_log("SLIVER_DELETE SLICE_URN = $slice_urn");

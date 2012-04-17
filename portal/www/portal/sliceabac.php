@@ -26,8 +26,8 @@
 require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
-if (! $user->privSlice()) {
-  exit();
+if (! $user->privSlice() || ! $user->isActive()) {
+  relative_redirect("home.php");
 }
 ?>
 <?php
@@ -42,8 +42,11 @@ if (! count($_GET)) {
   // For now, return nothing.
   no_slice_error();
 }
-if (array_key_exists('id', $_GET)) {
-  $slice_id = $_GET['id'];
+if (array_key_exists('slice_id', $_GET)) {
+  $slice_id = $_GET['slice_id'];
+  if (! uuid_is_valid($slice_id)) {
+    no_slice_error();
+  }
 } else {
   no_slice_error();
 }

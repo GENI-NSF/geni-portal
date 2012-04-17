@@ -28,6 +28,9 @@ require_once("util.php");
 require_once("user.php");
 
 $user=geni_loadUser();
+if (! isset($user) || ! $user->isActive()) {
+  relative_redirect("home.php");
+}
 
 // Diff the fields
 // Validate the inputs

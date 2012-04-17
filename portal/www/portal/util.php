@@ -52,6 +52,12 @@ function relative_redirect($relpath) {
   exit;
 }
 
-
+// Determine if a uuid is valid
+function uuid_is_valid($uuid) {
+  if (! isset($uuid) || is_null($uuid)) {
+    return false;
+  }
+  return (boolean) preg_match('/^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$/', $uuid);
+}
 
 ?>

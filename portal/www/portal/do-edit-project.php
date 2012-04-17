@@ -35,19 +35,18 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
-$project = "None";
-$project_id = "None";
 $isnew = true;
 $name = "";
 $email = "";
 $purpose = "";
 $lead_id = $user->account_id;
 $newlead = "";
-if (array_key_exists("project_id", $_REQUEST)) {
-  // FIXME validate inputs
-  $project_id = $_REQUEST['project_id'];
+unset($project);
+include("tool-lookupids.php");
+if (isset($project)) {
   $isnew = false;
 }
+
 if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $_REQUEST)) {
   // FIXME validate inputs
   $name = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -63,7 +62,7 @@ if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL, $_REQUEST)) {
 if (array_key_exists("newlead", $_REQUEST)) {
   // FIXME validate inputs
   $newlead = $_REQUEST['newlead'];
-  if (is_null($newlead) || $newlead == '') {
+  if (is_null($newlead) || $newlead == '' || ! uuid_is_valid($newlead)) {
     $newlead = $lead_id;
   }
 }
@@ -71,24 +70,14 @@ if (array_key_exists("newlead", $_REQUEST)) {
 
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
 
-//$sr_url = get_sr_url();
-//print "SR: $sr_url<br/>\n";
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-//print "PA: $pa_url\n";
-if (! isset($pa_url) || $pa_url==null) {
-  //print "Got no PA!<br/>\n";
-  $http_host = $_SERVER['HTTP_HOST'];
-  $pa_url = "https://" . $http_host . "/pa/pa_controller.php";
-  $result = register_service(SR_SERVICE_TYPE::PROJECT_AUTHORITY, $pa_url);
-  error_log("Registered PA $pa_url: $result\n");
-}
 $result = null;
 if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
   $project_id = create_project($pa_url, $name, $lead_id, $email, $purpose);
-  if ($project_id == "-1") {
+  if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
+    error_log("do-edit-project create_project got project_id $project_id");
     $result = "Error";
   } else {
     $result = "New";
@@ -97,14 +86,16 @@ if ($isnew) {
   // Return on error?
 } else {
   //  error_log("about to update project");
-  //  $result = update_project($pa_url, $project_id, $name, $newlead, $email, $purpose);
+
+  // FIXME: Diff new vals from old?
+
   $result = update_project($pa_url, $project_id, $name, $email, $purpose);
   if ($result == '') {
     error_log("update_project failed? empty...");
   } else {
     $result = "updated";
   }
-  $project = lookup_project($pa_url, $project_id);
+
   if ($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] != $newlead) {
     $result2 = change_lead($pa_url, $project_id, $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID], $newlead);
     if ($result2 == '') {

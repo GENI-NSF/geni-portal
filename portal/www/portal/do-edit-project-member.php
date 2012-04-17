@@ -31,15 +31,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
-$project_id = "None";
-$member_id = "None";
-// FIXME filter input
-if (array_key_exists("project_id", $_REQUEST)) {
-  $project_id = $_REQUEST['project_id'];
-}
-if (array_key_exists("member_id", $_REQUEST)) {
-  $member_id = $_REQUEST['member_id'];
-}
+include("tool-lookupids.php");
 
 // FIXME do real stuff here!
 

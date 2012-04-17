@@ -44,6 +44,10 @@ if (count($project_ids) > 0) {
 
   // name, lead_id, email, purpose
   foreach ($project_ids as $project_id) {
+    if (! uuid_is_valid($project_id)) {
+      error_log("tool-projects got invalid project_id from all get_projects_by_lead");
+      continue;
+    }
     $project = lookup_project($pa_url, $project_id);
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     $slice_ids = lookup_slices($sa_url, $project_id);

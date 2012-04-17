@@ -55,6 +55,11 @@ function invoke_omni_function($am_url, $user, $args)
 {
     $username = $user->username;
 
+    if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
+
     /* Write key and credential files */
     $row = db_fetch_inside_private_key_cert($user->account_id);
     $cert = $row['certificate'];
@@ -123,6 +128,11 @@ function invoke_omni_function($am_url, $user, $args)
 // Get version of AM API at given AM
 function get_version($am_url, $user)
 {
+  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
+  }
+
   $args = array('getversion');
   $output = invoke_omni_function($am_url, $user, $args);
   return $output;
@@ -132,6 +142,11 @@ function get_version($am_url, $user)
 // List resources available at an aggregate
 function list_resources($am_url, $user)
 {
+  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
+  }
+
   $args = array('listresources');
   $output = invoke_omni_function($am_url, $user, $args);
   return $output;
@@ -140,6 +155,16 @@ function list_resources($am_url, $user)
 // list resources at an AM
 function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
 {
+  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
+  }
+
+  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+    error_log("am_client cannot act on a slice without a credential");
+    return("Missing slice credential");
+  }
+
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
@@ -155,6 +180,16 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
 // renewsliver at an AM
 function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
 {
+  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
+  }
+
+  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+    error_log("am_client cannot act on a slice without a credential");
+    return("Missing slice credential");
+  }
+
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
@@ -172,6 +207,16 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
 function create_sliver($am_url, $user, $slice_credential, $slice_urn,
                        $rspec_filename)
 {
+  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
+  }
+
+  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+    error_log("am_client cannot act on a slice without a credential");
+    return("Missing slice credential");
+  }
+
   $slice_credential_filename = writeDataToTempFile($slice_credential);
   $args = array("--slicecredfile", 
 		$slice_credential_filename, 
@@ -186,6 +231,16 @@ function create_sliver($am_url, $user, $slice_credential, $slice_urn,
 // Get sliver status at an AM
 function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 {
+  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
+  }
+
+  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+    error_log("am_client cannot act on a slice without a credential");
+    return("Missing slice credential");
+  }
+
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
@@ -200,6 +255,16 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 // Delete a sliver at an AM
 function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
 {
+  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    error_log("am_client cannot invoke Omni without an AM URL");
+    return("Missing AM URL");
+  }
+
+  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+    error_log("am_client cannot act on a slice without a credential");
+    return("Missing slice credential");
+  }
+
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",

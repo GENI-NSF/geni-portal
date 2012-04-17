@@ -24,29 +24,43 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('pa_constants.php');
-require_once('pa_client.php');
+require_once("sr_client.php");
+require_once("sr_constants.php");
+require_once("pa_client.php");
+require_once("pa_constants.php");
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
+show_header('GENI Portal: Slices', $TAB_SLICES);
 
-$project_id = "None";
-$name = "None";
+$slice = "None";
+$member = "None";
 include("tool-lookupids.php");
-if (isset($project)) {
-  $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+if ($slice == "None") {
+  print "<h2>Error: Couldn't find slice</h2>";
+  include("footer.php");
+  exit();
 }
+if ($member == "None") {
+  print "<h2>Error: Couldn't find member</h2>";
+  include("footer.php");
+  exit();
+}
+print "<h1>GENI Slice: " . $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME] . ", Member: " . $member->prettyName() . "</h1>\n";
 
-print "<h1>DELETE GENI Project: " . $name . "</h1>\n";
-// FIXME: What does happen when you delete a project?
-print "<b>Warning</b>: This operation is not reversible. Running slices will not be removed, but you will no longer be able to renew slices or use the GENI portal to modify them.<br/><br/>\n";
-$edit_url = 'do-delete-project.php?project_id='.$project_id;
-print '<a href='.$edit_url.'>Delete</a>';
+// FIXME: Retrieve info from DB
+print "<br/>\n";
 
+print "<form method=\"POST\" action=\"do-edit-slice-member.php\">\n";
+print "<b>Slice Permissions</b><br/><br/>\n";
+print "<b>Name</b>: " . $member->prettyName() . "<br/>\n";
+print "<input type=\"hidden\" name=\"slice_id\" value=\"" . $slice_id . "\"/>\n";
+print "<input type=\"hidden\" name=\"member_id\" value=\"" . $member_id . "\"/>\n";
+
+// FIXME
+
+print "<input type=\"submit\" value=\"Edit\"/></form>\n";
 include("footer.php");
 ?>

@@ -27,6 +27,7 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("sa_client.php");
 require_once("pa_client.php");
+require_once("util.php");
 
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -36,7 +37,7 @@ if (! isset($pa_url)) {
 }
 
 // FIXME: This looks up slices OWNED by this user
-if (isset($project_id)) {
+if (isset($project_id) && uuid_is_valid($project_id)) {
   $slice_ids = lookup_slices_by_project_and_owner($sa_url, $project_id, $user->account_id);
 } else {
   $slice_ids = lookup_slices_by_owner($sa_url, $user->account_id);
@@ -59,9 +60,13 @@ if (count($slice_ids) > 0) {
 
   foreach ($slice_ids as $slice_id) {
     // FIXME: Add PROJECT_ID, OWNER_ID
+    if (! uuid_is_valid($slice_id)) {
+      error_log("tool-slices: invalid slice_id from lookup_slices");
+      continue;
+    }
     $slice = lookup_slice($sa_url, $slice_id);
     $slice_id = $slice[SA_ARGUMENT::SLICE_ID];
-    $args['id'] = $slice_id;
+    $args['slice_id'] = $slice_id;
     $query = http_build_query($args);
     $slicecred_url = $base_url . $query;
     $slice_url = $slice_base_url . $query;
@@ -73,8 +78,8 @@ if (count($slice_ids) > 0) {
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
     $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
-    $project_details = lookup_project($pa_url, $slice_project_id);
-    $slice_project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    $project = lookup_project($pa_url, $slice_project_id);
+    $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
     $slice_owner_name = geni_loadUser($slice_owner_id)->prettyName();
     print "<tr>"
