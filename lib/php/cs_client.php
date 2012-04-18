@@ -102,4 +102,14 @@ function get_permissions($cs_url, $principal)
   return $pm;
 }
 
+// Get list of members and their roles with respect to a particular context
+function get_members($cs_url, $context_type, $context_id)
+{
+  $get_members_message['operation'] = 'get_members';
+  $get_members_message[CS_ARGUMENT::CONTEXT_TYPE] = $context_type;
+  $get_members_message[CS_ARGUMENT::CONTEXT] = $context_id;
+  $result = put_message($cs_url, $get_members_message);
+  return $result;
+}
+
 ?>
