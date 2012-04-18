@@ -35,6 +35,12 @@ require_once('response_format.php');
 
 function handle_message($prefix)
 {
+
+  // Make sure session is active
+  if(!isset($_SESSION)) {
+    session_start();
+  }
+
   // error_log($prefix . ": starting");
   $request_method = strtolower($_SERVER['REQUEST_METHOD']);
   switch($request_method)
@@ -115,12 +121,32 @@ $ACCOUNT_ID = null;
 // END OF TEMP FIX 
 */
 
+const MESSAGE_STACK_TAG = 'message_stack';
+
 //--------------------------------------------------
 // Send a message (via PUT) to a given URL and return response
 //--------------------------------------------------
 function put_message($url, $message)
 {
   //  error_log("PUT_MESSAGE " . $message);
+
+  // Make sure session is active
+  // Make sure session is active
+  if(!isset($_SESSION)) {
+    session_start();
+  }
+
+
+  // Push the URL and Message on session 'message_stack'
+  $message_stack = array();
+  if (array_key_exists(MESSAGE_STACK_TAG, $_SESSION)) {
+    $message_stack = $_SESSION[MESSAGE_STACK_TAG];
+  }
+  $message_stack_entry['url'] = $url;
+  $message_stack_entry['message'] = $message;
+  array_push($message_stack, $message_stack_entry);
+  $_SESSION[MESSAGE_STACK_TAG] = $message_stack;
+  error_log("PM.call MS = " . print_r($_SESSION[MESSAGE_STACK_TAG], true));
 
   /* 
    * *** TEMP FIX
@@ -173,6 +199,10 @@ function put_message($url, $message)
   //  error_log("Decoded raw result : " . $result);
 
   //  error_log("MH.RESULT = " . print_r($result, true));
+
+  // Pop call off the message stack
+  array_pop($_SESSION[MESSAGE_STACK_TAG]);
+  error_log("PM.return MS = " . print_r($_SESSION[MESSAGE_STACK_TAG], true));
 
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     error_log("ERROR.CODE " . print_r($result[RESPONSE_ARGUMENT::CODE], true));
