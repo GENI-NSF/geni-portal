@@ -47,9 +47,11 @@ function get_projects($pa_url)
 
 function get_projects_by_lead($pa_url, $lead_id)
 {
+  error_log("GPBL.start " . $lead_id . time());
   $get_projects_message['operation'] = 'get_projects';
   $get_projects_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
   $project_ids = put_message($pa_url, $get_projects_message);
+  error_log("GPBL.end " . $lead_id . time());
   return $project_ids;
 }
 
