@@ -36,6 +36,9 @@ const PERMISSION_MANAGER_TAG = 'permission_manager';
 const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
 const PERMISSION_MANAGER_ACCOUNT_ID_TAG = 'permission_manager_account_id';
 
+const USER_CACHE_ACCOUNT_ID_TAG = 'user_cache_account_id';
+const USER_CACHE_EPPN_TAG = 'user_cache_eppn';
+
 $cs_url = null;
 
 //----------------------------------------------------------------------
@@ -134,7 +137,7 @@ class GeniUser
 	) 
       {
 	//	error_log("PM = " . $permission_manager . ", " . $this->account_id . ", " . $permission_manager_account_id);
-	error_log("PMT = " . $permission_manager_timestamp  . " " . $now);
+	//	error_log("PMT = " . $permission_manager_timestamp  . " " . $now);
 	if ($cs_url == null) {
 	  $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 	}
@@ -164,11 +167,14 @@ class GeniUser
   }
 } // End of class GeniUser
 
+
+
 // Loads an experimenter from the database.
 function geni_loadUser($id='')
 {
   $conn = portal_conn();
   $conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
+  $eppn = '';
 
   if ($id == '') {
     // Short circuit if no eppn. We require eppn as the persistent db key.
@@ -185,6 +191,14 @@ function geni_loadUser($id='')
     // FIXME: There may be multiple identities with the same account
     // So which identity do you use
     $query = 'SELECT * FROM identity WHERE account_id = ' . $conn->quote($id, 'text');
+  }
+
+  // Try to return a value from cache
+  if (strcmp($id, '') <> 0 || strcmp($eppn, '') <> 0) {
+    $user_from_cache = geni_loadUser_cache($id, $eppn);
+    if ($user_from_cache != null) {
+      return $user_from_cache;
+    }
   }
 
   $res =& $conn->queryAll($query);
@@ -243,8 +257,55 @@ function geni_loadUser($id='')
 
     // Cache the IDP attributes as ABAC assertions
     abac_store_idp_attrs($user);
+
+    // Cache the user by account_id
+    ensure_user_cache();
+    $user_cache_account_id = $_SESSION[USER_CACHE_ACCOUNT_ID_TAG];
+    $user_cache_eppn = $_SESSION[USER_CACHE_EPPN_TAG];
+    $user_cache_account_id[$user->account_id] = $user;
+    $user_cache_eppn[$user->eppn] = $user;
+    $_SESSION[USER_CACHE_ACCOUNT_ID_TAG] = $user_cache_account_id;
+    $_SESSION[USER_CACHE_EPPN_TAG] = $user_cache_eppn;
+    //    error_log("Caching " . print_r($user, true) . " " . $user->account_id . " " . $user->eppn);
+
     return $user;
   }
 
 }
+
+// Loads an exerimenter from the cache if there
+function geni_loadUser_cache($account_id, $eppn)
+{
+  ensure_user_cache();
+  $user = null;
+  //  error_log("GLUC -" . $account_id . "- -" . $eppn . "- -" . strcmp($account_id, '') . "-");
+  if (strcmp($account_id, '') <> 0) {
+    $user_cache_account_id = $_SESSION[USER_CACHE_ACCOUNT_ID_TAG];
+    //    error_log("CACHE_AI = " . print_r($user_cache_account_id, true));
+    if (array_key_exists($account_id, $user_cache_account_id)) {
+      $user = $user_cache_account_id[$account_id];
+    }
+  }
+  if ($user == null && strcmp($eppn, '') <> 0) {
+    $user_cache_eppn = $_SESSION[USER_CACHE_EPPN_TAG];
+    //    error_log("CACHE_EPPN = " . print_r($user_cache_eppn, true));
+    if (array_key_exists($eppn, $user_cache_eppn)) {
+      $user = $user_cache_eppn[$eppn];
+    }
+  }
+
+  // error_log('CACHE ACCT=' . $account_id . ' EPPN=' . $eppn . " USER=" . print_r($user, true));
+  return $user;
+}
+
+function ensure_user_cache()
+{
+  if (!array_key_exists(USER_CACHE_ACCOUNT_ID_TAG, $_SESSION)) {
+    $_SESSION[USER_CACHE_ACCOUNT_ID_TAG] = array();
+  }
+  if (!array_key_exists(USER_CACHE_EPPN_TAG, $_SESSION)) {
+    $_SESSION[USER_CACHE_EPPN_TAG] = array();
+  }
+}
+
 ?>
