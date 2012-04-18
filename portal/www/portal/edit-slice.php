@@ -42,10 +42,11 @@ $slice_id = "None";
 $slice_name = "None";
 unset($slice);
 include("tool-lookupids.php");
+include("tool-breadcrumbs.php");
 if (isset($slice)) {
   /* $pretty_result = print_r($slice, true); */
   /* error_log("fetch_slice result: $pretty_result\n"); */
-  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   //  error_log("slice_name result: $slice_name\n");
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
@@ -58,8 +59,8 @@ if (isset($slice)) {
 
   //  error_log("slice_project_id result: $slice_project_id\n");
   /* error_log("project result: $project\n"); */
-  $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  //  error_log("slice_project_name result: $slice_project_name\n");
+  //  $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  //  error_log("slice project_name result: $project_name\n");
   $proj_url = 'project.php?project_id='.$slice_project_id;
   $slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
 } else {
@@ -73,7 +74,7 @@ print "<form method=\"POST\" action=\"do-edit-slice.php?slice_id=$slice_id\">\n"
 print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
 // print "<tr><th>Name</th><th>Value</th></tr>\n";
 print "<tr><td><b>Slice Name <a href='#warn'>*</a> </b></td><td>$slice_name</td></tr>\n";
-print "<tr><td><b>Member of Project<a href='#warn'>*</a> </b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
+print "<tr><td><b>Member of Project<a href='#warn'>*</a> </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
 print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
 print "<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>e-mail</a></td></tr>\n";

@@ -36,8 +36,11 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 show_header('GENI Portal: Slices', $TAB_SLICES);
 
 $slice = "None";
+$slice_name = "None";
 $member = "None";
+$member_name = "None";
 include("tool-lookupids.php");
+include("tool-breadcrumbs.php");
 if ($slice == "None") {
   print "<h2>Error: Couldn't find slice</h2>";
   include("footer.php");
@@ -48,14 +51,14 @@ if ($member == "None") {
   include("footer.php");
   exit();
 }
-print "<h1>GENI Slice: " . $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME] . ", Member: " . $member->prettyName() . "</h1>\n";
+print "<h1>GENI Slice: " . $slice_name . ", Member: " . $member_name . "</h1>\n";
 
 // FIXME: Retrieve info from DB
 print "<br/>\n";
 
 print "<form method=\"POST\" action=\"do-edit-slice-member.php\">\n";
 print "<b>Slice Permissions</b><br/><br/>\n";
-print "<b>Name</b>: " . $member->prettyName() . "<br/>\n";
+print "<b>Name</b>: " . $member_name . "<br/>\n";
 print "<input type=\"hidden\" name=\"slice_id\" value=\"" . $slice_id . "\"/>\n";
 print "<input type=\"hidden\" name=\"member_id\" value=\"" . $member_id . "\"/>\n";
 

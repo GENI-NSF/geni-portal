@@ -42,16 +42,11 @@ if (! count($_GET)) {
   // For now, return nothing.
   no_slice_error();
 }
-if (array_key_exists('slice_id', $_GET)) {
-  $slice_id = $_GET['slice_id'];
-  if (! uuid_is_valid($slice_id)) {
-    no_slice_error();
-  }
-} else {
+$slice = null;
+include("tool-lookupids.php");
+if (is_null($slice) || $slice == '') {
   no_slice_error();
 }
-// Look up the slice...
-$slice = fetch_slice($slice_id);
 
 // TODO: Does the $user have permissions on this $slice?
 // TODO: Pass expiration to slicecred.py
@@ -61,9 +56,11 @@ $key = db_fetch_public_key($user->account_id);
 if (! $key) {
   include("header.php");
   show_header('GENI Portal: Slices', $TAB_SLICES);
+  include("tool-breadcrumbs.php");
+  print "<h2>Error Getting Slice Credential</h2>\n";
   print "Please"
-    . " <a href=\"" . relative_url("home.php") . "\">upload a public key</a>"
-    . " so that a credential can be generated.";
+    . " <a href=\"" . relative_url("uploadkey.php") . "\">upload a public key</a>"
+    . " so that a credential can be retrieved.";
   include("footer.php");
   exit();
 }
@@ -73,7 +70,7 @@ file_put_contents($cert_file, $key['certificate']);
 // Run slicecred.py and return it as the content.
 $cmd_array = array($portal_gcf_dir . '/src/slicecred.py',
                    $portal_gcf_cfg_dir . '/gcf.ini',
-                   $slice['name'],
+                   $slice_name,
                    $portal_gcf_cfg_dir . '/ch-key.pem',
                    $portal_gcf_cfg_dir . '/ch-cert.pem',
                    $cert_file

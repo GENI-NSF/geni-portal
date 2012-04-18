@@ -39,10 +39,7 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 $slice_id = "None";
 $slice_name = "None";
 include("tool-lookupids.php");
-if (isset($slice)) {
-  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-}
-
+include("tool-breadcrumbs.php");
 print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
 
 print "<p>Click 'Submit' to reserve a default set of resources at an available AM.</p>";

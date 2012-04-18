@@ -35,49 +35,19 @@ require_once("sr_constants.php");
 require_once("sr_client.php");
 require_once("sa_client.php");
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
-
-
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
   relative_redirect('home.php');
 }
-$name = NULL;
+
+$slice_name = NULL;
 $project_id = NULL;
 $message = NULL;
-if (count($_GET)) {
-  // parse the args
-  /* print "got parameters<br/>"; */
-  if (array_key_exists('project_id', $_GET)) {
-    /* print "found name<br/>"; */
-    $project_id = $_GET['project_id'];
-    if (uuid_is_valid($project_id)) {
-      $project = lookup_project($pa_url, $project_id);
-      /* error_log("pa_url result: $pa_url\n"); */
-      /* error_log("project result: $project\n"); */
-      $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-      //    error_log("slice_project_name result: $slice_project_name\n");
-    } else {
-      error_log("createslice: invalid project_id from GET");
-      relative_redirect("home.php");
-    }
-  } else {
-    error_log("Missing project_id in _GET.<br/>"); 
-    die("Missing project_id in _GET.<br/>"); 
-  }
-  //  error_log("got project_id = $project_id<br/>"); 
-  if (array_key_exists('name', $_GET)) {
-    /* print "found name<br/>"; */
-    $name = $_GET['name'];
-    //    error_log("got name = $name<br/>"); 
-  }
+include("tool-lookupids.php");
 
-} else {
-  error_log("Missing project_id in _GET.<br/>"); 
-  die("Missing project_id in _GET.<br/>"); 
-
+if (is_null($project_id) || $project_id == '') {
+  error_log("createslice: invalid project_id from GET");
+  relative_redirect("home.php");
 }
 
 function omni_create_slice($user, $slice_id, $name)
@@ -133,9 +103,9 @@ function sa_create_slice($user, $slice_name, $project_id)
 
 
 // Do we have all the required params?
-if ($name) {
+if ($slice_name) {
   // Create the slice...
-  $result = sa_create_slice($user, $name, $project_id);
+  $result = sa_create_slice($user, $slice_name, $project_id);
   /* $pretty_result = print_r($result, true); */
   /* error_log("sa_create_slice result: $pretty_result\n"); */
  
@@ -151,8 +121,9 @@ if ($message) {
   // It would be nice to put this in red...
   print "<i>" . $message . "</i>\n";
 }
+include("tool-breadcrumbs.php");
 print "<h2>Create New Slice</h2>\n";
-print "Project name: <b>$slice_project_name</b><br/>\n";
+print "Project name: <b>$project_name</b><br/>\n";
 print '<form method="GET" action="createslice">';
 print "\n";
 print "<input type='hidden' name='project_id' value='$project_id'/><br/>";

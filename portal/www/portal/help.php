@@ -30,6 +30,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Help', $TAB_HELP);
+include("tool-breadcrumbs.php");
 // Links to wiki, help, tutorials
 ?>
 <h2>GENI Help</h2>

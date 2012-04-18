@@ -36,6 +36,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-lookupids.php");
+include("tool-breadcrumbs.php");
 if (! isset($project)) {
   $project = "new";
   $isnew = true;

@@ -25,8 +25,9 @@
 <?php
 require_once("header.php");
 show_header('GENI Portal: Slices',  $TAB_SLICES);
+include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
-// print "Project name: <b>$slice_project_name</b><br/>\n";
+// print "Project name: <b>$project_name</b><br/>\n";
 
 $text2 = explode("\n",$text);
 foreach ($text2 as $line_num => $line) {

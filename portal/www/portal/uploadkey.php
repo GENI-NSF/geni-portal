@@ -46,6 +46,7 @@ A new file is created, public_key.pem, with the public key.
 //------------------------------------------------------------
 require_once("settings.php");
 require_once("user.php");
+require_once("header.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -97,8 +98,8 @@ if (array_key_exists('file', $_FILES)) {
 if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
   $GENI_TITLE = "Upload public key";
-  include("header.php");
-  show_header('GENI Portal Home', $TAB_HOME, 0); // 0=Don't load user to show header
+  show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
+  include("tool-breadcrumbs.php");
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";
@@ -112,7 +113,6 @@ if ($error != NULL || count($_POST) == 0) {
 
 // The public key is in $_FILES["file"]["tmp_name"]
 $contents = file_get_contents($_FILES["file"]["tmp_name"]);
-require_once("user.php");
 $user = geni_loadUser();
 $description = NULL;
 /* echo "<h1>GET</h1>"; */

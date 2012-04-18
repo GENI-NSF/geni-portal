@@ -38,11 +38,12 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 show_header('GENI Portal: Slices', $TAB_SLICES);
 unset($slice);
 include("tool-lookupids.php");
+include("tool-breadcrumbs.php");
 if (isset($slice)) {
   //$pretty_result = print_r($slice, true);
   //error_log("fetch_slice result: $pretty_result\n");
 
-  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
@@ -51,8 +52,8 @@ if (isset($slice)) {
   $slice_owner_name = $owner->prettyName();
   $owner_email = $owner->email();
 
-  $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  //error_log("slice_project_name result: $slice_project_name\n");
+  $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  //error_log("slice project_name result: $project_name\n");
 } else {
   print "Unable to load slice<br/>\n";
   include("footer.php");
@@ -74,7 +75,7 @@ print "<h1>GENI Slice: " . $slice_name ." </h1>\n";
 print "<table border=\"1\">\n";
 // print "<tr><th>Name </th><th>Value</th></tr>\n";
 print "<tr><td><b>Slice Name (public) </b></td><td>$slice_name</td></tr>\n";
-print "<tr><td><b>Member of Project (public) </b></td><td><a href=$proj_url>$slice_project_name</a></td></tr>\n";
+print "<tr><td><b>Member of Project (public) </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
 print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
 print ("<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>"

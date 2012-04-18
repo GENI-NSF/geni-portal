@@ -36,13 +36,11 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $project_id = "None";
-$name = "None";
+$project_name = "None";
 include("tool-lookupids.php");
-if (isset($project)) {
-  $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-}
+include("tool-breadcrumbs.php");
 
-print "<h1>DISABLE GENI Project: " . $name . "</h1>\n";
+print "<h1>DISABLE GENI Project: " . $project_name . "</h1>\n";
 // FIXME: What does happen when you delete a project?
 print "<b>Warning</b>: This operation is not reversible. Running slices will not be removed, but you will no longer be able to renew slices or use the GENI portal to modify them.<br/><br/>\n";
 $edit_url = 'do-disable-project.php?project_id='.$project_id;

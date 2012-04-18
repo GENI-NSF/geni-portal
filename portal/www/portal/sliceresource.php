@@ -65,7 +65,6 @@ $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 
 // Get the slice URN via the SA
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-$name = $slice[SA_ARGUMENT::SLICE_NAME];
 
 // Retrieve a canned RSpec
 $rspec = fetchRSpecById(1);
@@ -77,9 +76,8 @@ $sliver_output = create_sliver($am_url, $user, $slice_credential,
 unlink($rspec_file);
 error_log("CreateSliver output = " . $sliver_output);
 
-$header = "Created Sliver on slice: $name";
+$header = "Created Sliver on slice: $slice_name";
 $text = $sliver_output;
-$slice_name = $name;
 include("print-text.php");
 
 //relative_redirect('slice?slice_id='.$slice_id);

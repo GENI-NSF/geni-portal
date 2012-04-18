@@ -63,7 +63,6 @@ $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 
 // Get the slice URN via the SA
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-$name = $slice[SA_ARGUMENT::SLICE_NAME];
 error_log("SLIVER_DELETE SLICE_URN = $slice_urn");
 
 // Call delete sliver at the AM
@@ -72,11 +71,9 @@ $sliver_output = delete_sliver($am_url, $user, $slice_credential,
 
 error_log("DeleteSliver output = " . $sliver_output);
 
-$header = "Deleted Sliver on slice: $name";
+$header = "Deleted Sliver on slice: $slice_name";
 $text = $sliver_output;
-$slice_name = $name;
 include("print-text.php");
-
 
 // relative_redirect('slices');
 

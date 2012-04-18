@@ -29,6 +29,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
+include("tool-breadcrumbs.php");
 ?>
 <h1>GENI Projects</h1>
 Your projects:

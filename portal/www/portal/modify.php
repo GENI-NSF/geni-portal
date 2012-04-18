@@ -29,7 +29,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 include("header.php");
-show_header('GENI Portal Home', $TAB_HOME);
+show_header('GENI Portal: Profile', $TAB_PROFILE);
+include("tool-breadcrumbs.php");
 ?>
 
 <?php

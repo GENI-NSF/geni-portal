@@ -37,7 +37,7 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 $project_id = "None";
 $project = null;
-$name = "None";
+$project_name = "None";
 $email = "";
 $purpose = "";
 $leademail = "";
@@ -52,9 +52,9 @@ if (array_key_exists("result", $_GET)) {
 }
 
 include("tool-lookupids.php");
+include("tool-breadcrumbs.php");
 
 if (! is_null($project) && $project != "None") {
-  $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
@@ -63,14 +63,14 @@ if (! is_null($project) && $project != "None") {
     $leademail = $lead->email();
     $leadname = $lead->prettyName();
   } else {
-    error_log("project.php: Invalid lead id from DB for project $name");
+    error_log("project.php: Invalid lead id from DB for project $project_name");
   }
 }
 
-print "<h1>GENI Project: " . $name . "$result</h1>\n";
+print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 print "<table border=\"1\">\n";
-print "<tr><td><b>Name</b></td><td>$name</td></tr>\n";
+print "<tr><td><b>Name</b></td><td>$project_name</td></tr>\n";
 print "<tr><td><b>Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a></td></tr>\n";
 print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
 print "<tr><td><b>Project email</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
