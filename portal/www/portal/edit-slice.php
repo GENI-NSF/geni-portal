@@ -97,7 +97,7 @@ if ($isnew) {
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Slice Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
   print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td><td>All</td><td><a href=\"do-delete-slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">Delete</a></td><td><mailto=\"$owner_email\">Email $slice_owner_name</a></td></tr>\n";
-  print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-slice-member.php?slice_id=$slice_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
+  //  print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-slice-member.php?slice_id=$slice_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";

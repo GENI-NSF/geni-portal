@@ -97,7 +97,7 @@ if ($isnew) {
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
   print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><a href=\"do-delete-project-member.php?project_id=$project_id&member_id=$leadid\">Delete</a></td><td><mailto=\"$leademail\">Email $leadname</a></td></tr>\n";
-  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?project_id=$project_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
+  //  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-project-member.php?project_id=$project_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";
