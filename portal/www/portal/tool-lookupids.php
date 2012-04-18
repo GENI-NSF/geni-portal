@@ -38,7 +38,7 @@ require_once("sa_client.php");
 // Name of actual script being used here
 $file = $_SERVER["SCRIPT_NAME"];
 $pinfo = pathinfo($file);
-$script = $pinfo['filename'];
+$script = $pinfo['basename'];
 
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
@@ -58,9 +58,14 @@ if (array_key_exists("project_id", $_REQUEST)) {
   $project_id = $_REQUEST['project_id'];
   if (uuid_is_valid($project_id)) {
     $project = lookup_project($pa_url, $project_id);
+    if (isset($project) && is_array($project) && array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $project)) {
+      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    }
   } else {
-    error_log($script . ": invalid project_id from REQUEST");
-    $project_id = "none";
+    if ($project_id != '') {
+      error_log($script . ": invalid project_id from REQUEST");
+      $project_id = "none";
+    }
   }
 }
 
@@ -68,6 +73,9 @@ if (array_key_exists("slice_id", $_REQUEST)) {
   $slice_id = $_REQUEST['slice_id'];
   if (uuid_is_valid($slice_id)) {
     $slice = lookup_slice($sa_url, $slice_id);
+    if (isset($slice) && is_array($slice) && array_key_exists(SA_SLICE_TABLE_FIELDNAME::SLICE_NAME, $slice)) {
+      $slice_name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+    }
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
     if (! uuid_is_valid($slice_project_id)) {
       error_log($script . ": invalid slice_project_id from DB for slice_id $slice_id");
@@ -79,6 +87,9 @@ if (array_key_exists("slice_id", $_REQUEST)) {
 	  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 	}
 	$project = lookup_project($pa_url, $project_id);
+	if (isset($project) && is_array($project) && array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $project)) {
+	  $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+	}
       } else {
 	if ($project_id != $slice_project_id) {
 	  error_log($script . ": slice_id $slice_id has project id $slice_project_id != REQUEST project_id $project_id");
@@ -86,8 +97,10 @@ if (array_key_exists("slice_id", $_REQUEST)) {
       }
     }
   } else {
-    error_log($script . ": invalid slice_id from REQUEST");
-    $slice_id = "none";
+    if ($slice_id != '') {
+      error_log($script . ": invalid slice_id from REQUEST");
+      $slice_id = "none";
+    }
   }
 }
 
@@ -95,8 +108,11 @@ if (array_key_exists("member_id", $_REQUEST)) {
   $member_id = $_REQUEST['member_id'];
   if (uuid_is_valid($member_id)) {
     $member = geni_loadUser($member_id);
+    $member_name = $member->prettyName();
   } else {
-    error_log($script . ": invalid member_id from REQUEST");
-    $member_id = "none";
+    if ($member_id != '') {
+      error_log($script . ": invalid member_id from REQUEST");
+      $member_id = "none";
+    }
   }
 }
