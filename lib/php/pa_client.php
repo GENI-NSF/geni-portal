@@ -46,19 +46,21 @@ function get_projects($pa_url)
 
 function get_projects_by_lead($pa_url, $lead_id)
 {
-  error_log("GPBL.start " . $lead_id . time());
+  //  error_log("GPBL.start " . $lead_id . " " . time());
   $get_projects_message['operation'] = 'get_projects';
   $get_projects_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
   $project_ids = put_message($pa_url, $get_projects_message);
-  error_log("GPBL.end " . $lead_id . time());
+  //  error_log("GPBL.end " . $lead_id . " " . time());
   return $project_ids;
 }
 
 function lookup_project($pa_url, $project_id)
 {
+  //  error_log("LP.start " . $project_id . " " . time());
   $lookup_project_message['operation'] = 'lookup_project';
   $lookup_project_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $details = put_message($pa_url, $lookup_project_message);
+  //  error_log("LP.end " . $project_id . " " . time());
   // FIXME: Could be >1?
   return $details;
 }
