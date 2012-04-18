@@ -42,16 +42,11 @@ if (! count($_GET)) {
   // For now, return nothing.
   no_slice_error();
 }
-if (array_key_exists('slice_id', $_GET)) {
-  $slice_id = $_GET['slice_id'];
-  if (! uuid_is_valid($slice_id)) {
-    no_slice_error();
-  }
-} else {
+$slice = null;
+include("tool-lookupids.php");
+if (is_null($slice) || $slice == '') {
   no_slice_error();
 }
-// Look up the slice...
-$slice = fetch_slice($slice_id);
 $abac_fingerprint = fetch_abac_fingerprint($user->account_id);
 /* print "abac_fingerprint = $abac_fingerprint<br/>\n"; */
 $tmpfile = tempnam(sys_get_temp_dir(), "portal");
@@ -89,7 +84,7 @@ $result = exec($command, $output, $status);
 $abac_attr = file_get_contents($tmpfile);
 unlink($tmpfile);
 
-$file = $slice['name'] . "-abac.der";
+$file = $slice_name . "-abac.der";
 /* print "$file<br/>\n"; */
 // Set headers for download
 header("Cache-Control: public");
