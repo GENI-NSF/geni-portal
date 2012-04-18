@@ -113,9 +113,11 @@ function lookup_slices_by_project_and_name($sa_url, $project_id, $slice_name)
 // Return array(id, name, project_id, expiration, owner_id, urn)
 function lookup_slice($sa_url, $slice_id)
 {
+  //  error_log("LS.start " . $slice_id . " " . time());
   $lookup_slice_message['operation'] = 'lookup_slice';
   $lookup_slice_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $slice = put_message($sa_url, $lookup_slice_message);
+  //  error_log("LS.end " . $slice_id . " " . time());
   return $slice;
 }
 

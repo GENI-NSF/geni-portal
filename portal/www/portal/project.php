@@ -67,6 +67,12 @@ if (! is_null($project) && $project != "None") {
   }
 }
 
+// *** This code should fill in the "Project members" table below, 
+// *** once we know how to link with identity_attribute
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$members = get_members($cs_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
+//error_log("members = " . print_r($members, true));
+
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 print "<table border=\"1\">\n";

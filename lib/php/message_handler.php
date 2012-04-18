@@ -35,6 +35,7 @@ require_once('response_format.php');
 
 function handle_message($prefix)
 {
+
   // error_log($prefix . ": starting");
   $request_method = strtolower($_SERVER['REQUEST_METHOD']);
   switch($request_method)
@@ -115,12 +116,15 @@ $ACCOUNT_ID = null;
 // END OF TEMP FIX 
 */
 
+const MESSAGE_STACK_TAG = 'message_stack';
+
 //--------------------------------------------------
 // Send a message (via PUT) to a given URL and return response
 //--------------------------------------------------
 function put_message($url, $message)
 {
   //  error_log("PUT_MESSAGE " . $message);
+
 
   /* 
    * *** TEMP FIX
@@ -175,10 +179,17 @@ function put_message($url, $message)
   //  error_log("MH.RESULT = " . print_r($result, true));
 
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("SCRIPT_NAME = " . $_SERVER['SCRIPT_NAME']);
     error_log("ERROR.CODE " . print_r($result[RESPONSE_ARGUMENT::CODE], true));
     error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));
     error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
+
+    relative_redirect('error-text.php' . "?" . $result[RESPONSE_ARGUMENT::OUTPUT]);
   }
+
+
+  //     error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
+
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 

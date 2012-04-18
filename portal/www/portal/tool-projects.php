@@ -37,6 +37,7 @@ if (! isset($sa_url)) {
 }
 
 $project_ids = get_projects_by_lead($pa_url, $user->account_id);
+
 if (count($project_ids) > 0) {
   print "Found " . count($project_ids) . " project(s) for you:<br/>\n";
   print "\n<table border=\"1\">\n";
@@ -49,7 +50,9 @@ if (count($project_ids) > 0) {
       continue;
     }
     $project = lookup_project($pa_url, $project_id);
+    //    error_log("Before load user " . time());
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
+    //    error_log("After load user " . time());
     $slice_ids = lookup_slices($sa_url, $project_id);
 
     $create_slice_link = "<a href=\"createslice.php?project_id=$project_id\">Create Slice</a>";

@@ -290,6 +290,23 @@ function get_permissions($args)
   return $result;
 }
 
+function get_members($args)
+{
+  $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+  $context_id = $args[CS_ARGUMENT::CONTEXT];
+
+  $sql = "select username, cs_attribute.name " 
+    . " from account, cs_attribute, cs_assertion " 
+    . " where account_id = cs_assertion.principal "
+    . " and cs_assertion.context_type = '" . $context_type . "'" 
+    . " and cs_assertion.context = '" . $context_id . "'"
+    . " and cs_assertion.attribute = cs_attribute.id";
+  error_log("get_members.sql = " . $sql);
+  $rows = db_fetch_rows($sql);
+  return $rows;
+}
+
+
 
 function create_assertion_cert($signer, $principal, 
 			       $attribute, $context_type, $context, 
