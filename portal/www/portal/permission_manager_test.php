@@ -37,6 +37,8 @@ error_log("R1 = " . print_r($result, true));
 $result2 = $user->isAllowed('create_foo', CS_CONTEXT_TYPE::MEMBER, null);
 error_log("R2= " . print_r($result2, true));
 
+error_log("PRIVS = " . print_r($_SESSION[PERMISSION_MANAGER_TAG], true));
+
 relative_redirect('debug');
 
 ?>
