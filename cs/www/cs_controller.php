@@ -301,7 +301,7 @@ function get_members($args)
     . " cs_assertion.context_type = '" . $context_type . "'" 
     . " and cs_assertion.context = '" . $context_id . "'"
     . " and cs_assertion.attribute = cs_attribute.id";
-  error_log("get_members.sql = " . $sql);
+  //  error_log("get_members.sql = " . $sql);
   $rows = db_fetch_rows($sql);
   return $rows;
 }
