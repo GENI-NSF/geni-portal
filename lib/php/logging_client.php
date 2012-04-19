@@ -1,23 +1,21 @@
 <?php
 
 require_once('logging_constants.php');
-require_once('user.php');
 
 // Client side services for Logging of events within GENI clearinghouse
 
 // Log an event to the logging service
 // Event consists of 
-//    user_id (the writer of the log entry)
 //    message - Text of log message
 //    contexts - List of context_type/context_id pairs by which to index message
-function log_event($log_url, $message, $contexts )
+//    user_id (the writer of the log entry)
+function log_event($log_url, $message, $contexts, $user_id )
 {
   $log_event_message['operation'] = 'log_event';
   $log_event_message[LOGGING_ARGUMENT::EVENT_TIME] = time();
-  $user = geni_loadUser();
-  $log_event_message[LOGGING_ARGUMENT::USER_ID] = $user->account_id;
   $log_event_message[LOGGING_ARGUMENT::MESSAGE] = $message;
   $log_event_message[LOGGING_ARGUMENT::CONTEXTS] = $contexts;
+  $log_event_message[LOGGING_ARGUMENT::USER_ID] = $user_id;
   //  error_log("LOG_EVENT : " . print_r($log_event_message, true));
   $result = put_message($log_url, $log_event_message);
   return $result;
