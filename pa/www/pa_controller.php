@@ -31,6 +31,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('ma_client.php');
 require_once('cs_client.php');
+require_once('logging_client.php');
 
 /**
  * GENI Clearinghouse Project Authority (PA) controller interface
@@ -48,6 +49,7 @@ require_once('cs_client.php');
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 /**
  * Create project of given name, lead_id, email and purpose
@@ -114,6 +116,12 @@ function create_project($args)
   // Associate the lead with the project with role 'lead'
   global $ma_url;
   add_attribute($ma_url, $lead_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::PROJECT, $project_id);
+
+  // Log the creation
+  global $log_url;
+  $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
+  $context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
+  log_event($log_url, "Created project " . $project_name, array($context), $lead_id);
 
   return generate_response(RESPONSE_ERROR::NONE, $project_id, '');
 }

@@ -28,6 +28,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('logging_constants.php');
 require_once('logging_client.php');
+require_once('user.php');
 
 // Services for logging CH events within the GENI Clearinghouse
 
@@ -54,11 +55,13 @@ $slice_contexts = array();
 $slice_contexts[] = $project_context;
 $slice_contexts[] = $slice_context;
 
-log_event($log_url, 'Project Created', $project_contexts);
-log_event($log_url, 'Slice Created', $slice_contexts);
+$me = geni_loadUser()->account_id;
+
+log_event($log_url, 'Project Created', $project_contexts, $me);
+log_event($log_url, 'Slice Created', $slice_contexts, $me);
 
 error_log("By ALL");
-$rows = get_log_entries_by_author($log_url, geni_loadUser()->account_id);
+$rows = get_log_entries_by_author($log_url, $me);
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
