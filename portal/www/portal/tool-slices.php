@@ -102,12 +102,3 @@ if (count($slice_ids) > 0) {
 } else {
   print "<i>No slices.</i><br/>\n";
 }
-
-/* Only show create slice link if user has appropriate privilege. */
-if ($user->privSlice()) {
-  if (isset($project_id)) {
-    print "<button onClick=\"window.location='";
-    print relative_url("createslice?project_id=$project_id'");
-    print "\"><b>Create a new slice</b></button>\n";
-  }
-}

@@ -78,7 +78,15 @@ $edit_url = 'edit-project.php?project_id='.$project_id;
 print "<table><tr>\n";
 print "<td><button onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button></td>\n";
 print "<td><button onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
-print "</table>\n";
+/* Only show create slice link if user has appropriate privilege. */
+if ($user->privSlice()) {
+  if (isset($project_id)) {
+    print "<td><button onClick=\"window.location='";
+    print relative_url("createslice?project_id=$project_id'");
+    print "\"><b>Create a new slice</b></button></td>\n";
+  }
+}
+print "</tr></table>\n";
 
 print "<h2>Project Details</h2>\n";
 print "<table border=\"1\">\n";

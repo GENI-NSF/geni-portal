@@ -76,6 +76,3 @@ if (count($project_ids) > 0) {
 }
 print "<br/>\n";
 
-if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
-  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
-}

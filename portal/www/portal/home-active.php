@@ -76,5 +76,9 @@ include("tool-slices.php");
 
 // List of my projects
 print "<h2>My Projects</h2>\n";
+if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
+  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button><br/>\n";
+  print "<br/>\n";
+}
 include("tool-projects.php");
 ?>
