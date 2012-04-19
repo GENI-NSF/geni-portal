@@ -35,10 +35,14 @@ require_once("sa_client.php");
 $file = $_SERVER["SCRIPT_NAME"];
 $pinfo = pathinfo($file);
 $script = $pinfo['basename'];
-$referrer_file = $_SERVER["HTTP_REFERER"];
-$pinfo = pathinfo($referrer_file);
-$referrer_uri = $pinfo['basename'];
-$referrer_script = strstr($referrer_uri, "?", true);
+
+$referrer_script = "";
+if (array_key_exists("HTTP_REFERER", $_SERVER)) {
+  $referrer_file = $_SERVER["HTTP_REFERER"];
+  $pinfo = pathinfo($referrer_file);
+  $referrer_uri = $pinfo['basename'];
+  $referrer_script = strstr($referrer_uri, "?", true);
+}
 
 /* FIXME: for immediate parent, do onclick history.back(-1) ?*/
 // Problem with that is that you may be going down in the hierarchy
