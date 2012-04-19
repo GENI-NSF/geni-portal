@@ -59,7 +59,7 @@ if (! $key) {
   include("tool-breadcrumbs.php");
   print "<h2>Error Getting Slice Credential</h2>\n";
   print "Please"
-    . " <a href=\"" . relative_url("uploadkey.php") . "\">upload a public key</a>"
+    . " <button onClick=\"window.location='" . relative_url("uploadkey.php") . "'\">Upload a public key</button>"
     . " so that a credential can be retrieved.";
   include("footer.php");
   exit();

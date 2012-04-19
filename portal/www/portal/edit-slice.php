@@ -51,7 +51,7 @@ if (isset($slice)) {
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   //  error_log("slice_urn result: $slice_urn\n");
-  $slice_email = "not.yet.supported@example.com";
+  $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
   $owner = geni_loadUser($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
@@ -70,8 +70,6 @@ if (isset($slice)) {
 
 print "<h1>EDIT GENI Slice: " . $slice_name ."</h1>\n";
 print "<table border=\"1\">\n";
-print "<form method=\"POST\" action=\"do-edit-slice.php?slice_id=$slice_id\">\n";
-print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
 // print "<tr><th>Name</th><th>Value</th></tr>\n";
 print "<tr><td><b>Slice Name <a href='#warn'>*</a> </b></td><td>$slice_name</td></tr>\n";
 print "<tr><td><b>Member of Project<a href='#warn'>*</a> </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
@@ -79,11 +77,21 @@ print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
 print "<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>e-mail</a></td></tr>\n";
 print "<tr><td><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-print "<tr><td><b>Slice Expiration</b></td><td>$slice_expiration</td></tr>\n";
+print "<tr><td><b>Slice Expiration</b></td><td>\n";
+print "<form method='GET' action=\"do-renew-slice.php\">";
+print "<input type='text' name='slice_expiration'";
+print "value=\"$slice_expiration\"/>\n";
+print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
+?>
+<input type='submit' name= 'Renew' value='Renew Slice'/>
+</form></td></tr>
+<?php
 print "</table>\n";
 print "<b id='warn'>* Warning: Slice and project names are public</b><br/>\n";
 
 print "<h2>Slice Policy Defaults</h2>\n";
+print "<form method=\"POST\" action=\"do-edit-slice.php?slice_id=$slice_id\">\n";
+print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
 print "FIXME: Per slice policy defaults go here.<br/>\n";
 print "Slice Membership policy: Slice members get <b>User</b> rights on all project slices.<br/><br/>\n";
 
@@ -96,8 +104,7 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Slice Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td><td>All</td><td><a href=\"do-delete-slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">Delete</a></td><td><mailto=\"$owner_email\">Email $slice_owner_name</a></td></tr>\n";
-  //  print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=sam\">Sam</a></td><td>Member</td><td>Write</td><td><a href=\"do-delete-slice-member.php?slice_id=$slice_id&member_id=sam\">Delete</a></td><td><mailto=\"\">Email Sam</a></td></tr>\n";
+  print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td><td>All</td><td><button onclick=\"window.location='do-delete-slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id'\">Delete</button></td><td><a href=mailto:\"$owner_email\">Email $slice_owner_name</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";
