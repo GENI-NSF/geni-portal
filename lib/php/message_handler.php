@@ -123,7 +123,7 @@ const MESSAGE_STACK_TAG = 'message_stack';
 //--------------------------------------------------
 function put_message($url, $message)
 {
-  //  error_log("PUT_MESSAGE " . $message);
+  //  error_log("PUT_MESSAGE " . $url . " " . $message);
 
 
   /* 

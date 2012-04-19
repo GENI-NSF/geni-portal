@@ -34,6 +34,10 @@ $user = geni_loadUser();
 <?php
 print "<a href=\"db_error_test.php\">Database Error Test</a>\n";
 ?>
+<h2>LOG</h2>
+<?php
+print "<a href=\"logging_test.php\">Logging Test</a>\n";
+?>
 <h2>SR</h2>
 <?php
 print "<a href=\"sr_controller_test.php\">Service Registry Test</a>\n";
