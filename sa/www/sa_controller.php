@@ -233,8 +233,20 @@ function renew_slice($args)
 {
   global $SA_SLICE_TABLENAME;
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $requested = $args[SA_ARGUMENT::EXPIRATION];
+  //  error_log("got req $requested");
+  $req_dt = new DateTime($requested);
 
-  $expiration = get_future_date(20);// 20 days increment
+  // FIXME: Shouldn't this depend on the current expiration?
+  $max_expiration = get_future_date(20);// 20 days increment
+
+  if ($req_dt > $max_expiration) {
+    //    error_log("req is bigger: " . date_diff($max_expiration, $req_dt)->format('%R%a days'));
+    $expiration = $max_expiration;
+  } else {
+    $expiration = $req_dt;
+    //    error_log("max is bigger: " . date_diff($req_dt, $max_expiration)->format('%R%a days'));
+  }
 
   $sql = "UPDATE " . $SA_SLICE_TABLENAME 
     . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = '"
@@ -244,6 +256,7 @@ function renew_slice($args)
   //  error_log("RENEW.sql = " . $sql);
 
   $result = db_execute_statement($sql);
+  // FIXME: If that succeeded, return the new slice expiration
   return $result;
 
 }

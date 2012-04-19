@@ -122,10 +122,11 @@ function lookup_slice($sa_url, $slice_id)
 }
 
 /* Renew slice of given id */
-function renew_slice($sa_url, $slice_id)
+function renew_slice($sa_url, $slice_id, $expiration)
 {
   $renew_slice_message['operation'] = 'renew_slice';
   $renew_slice_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
+  $renew_slice_message[SA_ARGUMENT::EXPIRATION] = $expiration;
   $result = put_message($sa_url, $renew_slice_message);
   return $result;
 }
