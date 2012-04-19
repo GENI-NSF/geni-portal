@@ -36,7 +36,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 ?>
-<h1>Existing Slices</h1>
+<h1>My Slices</h1>
 <?php
 include("tool-slices.php");
 include("footer.php");

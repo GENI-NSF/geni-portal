@@ -89,12 +89,12 @@ if (count($slice_ids) > 0) {
       . "<td>" . htmlentities($slice_urn) . "</td>"
       . "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>"
       . "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>"
-      . ("<td><a href=\"$slicecred_url\">Get Credential</a></td>")
-      . ("<td><a href=\"$sliceresource_url\">Get Resources</a></td>")
-      . ("<td><a href=\"$sliver_status_url\">Sliver Status</a></td>")
-      . ("<td><a href=\"$delete_sliver_url\">Delete Sliver</a></td>");
+      . ("<td><button onClick=\"window.location='$slicecred_url'\"><b>Get Credential</b></button></td>")
+      . ("<td><button onClick=\"window.location='$sliceresource_url'\"><b>Get Resources</b></button></td>")
+      . ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>")
+      . ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Sliver</b></button></td>");
     if ($portal_enable_abac) {
-      print "<td><a href=\"$sliceabac_url\">Get ABAC Credential</a></td>";
+      print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
     }
     print "</tr>\n";
   }
@@ -106,8 +106,8 @@ if (count($slice_ids) > 0) {
 /* Only show create slice link if user has appropriate privilege. */
 if ($user->privSlice()) {
   if (isset($project_id)) {
-    print "<a href=\"";
-    print relative_url("createslice?project_id=$project_id");
-    print "\">Create a new slice</a><br/>\n";
+    print "<button onClick=\"window.location='";
+    print relative_url("createslice?project_id=$project_id'");
+    print "\"><b>Create a new slice</b></button>\n";
   }
 }

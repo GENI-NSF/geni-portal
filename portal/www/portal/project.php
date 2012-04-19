@@ -75,6 +75,12 @@ error_log("members = " . print_r($members, true));
 
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
+print "<table><tr>\n";
+print "<td><button onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button></td>\n";
+print "<td><button onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
+print "</table>\n";
+
+print "<h2>Project Details</h2>\n";
 print "<table border=\"1\">\n";
 print "<tr><td><b>Name</b></td><td>$project_name</td></tr>\n";
 print "<tr><td><b>Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a></td></tr>\n";
@@ -82,8 +88,7 @@ print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
 print "<tr><td><b>Project email</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "</table>\n";
 print "<br/>\n";
-print '<a href='.$edit_url.'>Edit Project</a><br/>';
-print "<br/><a href=\"disable-project.php?project_id=$project_id\">Disable Project</a><br/>";
+print "&nbsp;<a href=\"mailto:$leademail\">Contact the project leader</a><br/>\n";
 ?>
 <h2>Project slices:</h2>
 <?php
@@ -105,14 +110,13 @@ include("tool-slices.php");
   }
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
 //   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
-if ($user->privAdmin()) {
-  print "Approve/invite new project members<br/>\n";
-}
 ?>
 </table>
 
 <?php
-  print "<br/><a href=\"mailto:$leademail\">Contact the project leader</a><br/>\n";
+if ($user->privAdmin()) {
+  print "Approve/invite new project members<br/>\n";
+}
 ?>
 
 <h2>Recent Project Actions</h2>

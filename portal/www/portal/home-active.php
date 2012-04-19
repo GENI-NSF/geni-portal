@@ -67,18 +67,13 @@ if ($user->privAdmin()) {
 </tr></table>
 
 <?php
-// List of my projects
-print "<h2>My Projects</h2>\n";
-include("tool-projects.php");
-?>
-
-<br>
-
-<?php
 // List of my slices
 unset($project_id);
 unset($project);
 print "<h2>My Slices</h2>\n";
 include("tool-slices.php");
 
+// List of my projects
+print "<h2>My Projects</h2>\n";
+include("tool-projects.php");
 ?>

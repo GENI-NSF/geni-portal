@@ -52,9 +52,8 @@ print '<br/>';
 
 $cancel_url = 'slice.php?slice_id='.$slice_id;
 $edit_url = 'sliverdelete.php?slice_id='.$slice_id;
-print '<a href='.$edit_url.'><b>Submit</b></a>';
-print '<br/>';
-print '<a href='.$cancel_url.'>Cancel</a>';
+print "<button onclick=\"window.location='.$edit_url.'\"><b>Submit</b></button>    \n";
+print "<button onclick=\"window.location='.$cancel_url.'\">Cancel</button>";
 
 
 include("footer.php");

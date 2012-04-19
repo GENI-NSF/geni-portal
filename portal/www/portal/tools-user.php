@@ -37,7 +37,7 @@ if (count($keys) == 0)
   {
     // No ssh keys are present.
     print "No ssh keys have been uploaded. ";
-    print "Please <a href=\"uploadsshkey.php\">upload an ssh key</a>.\n";
+    print "Please <button onClick=\"window.location='uploadsshkey.php'\">Upload an SSH key</button>.\n";
   }
 else
   {
@@ -52,7 +52,7 @@ else
       }
     print "</table>\n";
     print "<br/>\n";
-    print "<a href=\"uploadsshkey.php\">Upload another ssh key</a>.\n";
+    print "<button onClick=\"window.location='uploadsshkey.php'\">Upload another SSH key</button>.\n";
   }
 
 
@@ -69,11 +69,11 @@ if ($key) {
   print "<tr>"
     . "<td>" . htmlentities($key['filename']) . "</td>"
     . "<td>" . htmlentities($key['description']) . "</td>"
-    . "<td><a href=\"" . $download_url . "\">Download Certificate</a></td>"
+    . "<td><button onClick=\"window.location='" . $download_url . "'\">Download Certificate</button></td>"
     . "</tr>\n";
   print "</table>\n";
 } else {
-  print "<a href=\"uploadkey.php\">Please upload a public key</a>\n";
+  print "<button onClick=\"window.location='uploadkey.php'\">Please upload a public key</button>\n";
 }
 
 
@@ -84,10 +84,10 @@ if ($key) {
 if ($portal_enable_abac)
   {
     print '<h2>ABAC</h2>\n';
-    print "<a href=\"abac-id.php\">Download your ABAC ID</a><br/>\n";
-    print "<a href=\"abac-key.php\">Download your ABAC private key</a>\n";
+    print "<button onClick=\"window.location='abac-id.php'\">Download your ABAC ID</button><br/>\n";
+    print "<button onClick=\"window.location='abac-key.php'\">Download your ABAC private key</button>\n";
   }
 ?>
 
 <h2>Edit Account Details</h2>
-Modify user supplied account details <a href="modify.php">here</a><br/>
+Modify user supplied account details <button onClick="window.location='modify.php'">here</button><br/>

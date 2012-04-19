@@ -32,7 +32,8 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 ?>
 <h1>GENI Projects</h1>
-Your projects:
+<h2>My Projects</h2>
+
 <?php
 include("tool-projects.php");
 

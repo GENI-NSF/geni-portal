@@ -49,10 +49,8 @@ print '<br/>';
 //$edit_url = 'do-edit-slice.php?slice_id='.$slice_id;
 $cancel_url = 'slice.php?slice_id='.$slice_id;
 $edit_url = 'sliceresource.php?slice_id='.$slice_id;
-print '<a href='.$edit_url.'><b>Submit</b></a>';
-print '<br/>';
-print '<a href='.$cancel_url.'>Cancel</a>';
-
+print "<button onClick=\"window.location='$edit_url'\"><b>Submit</b></button>    \n";
+print "<button onClick=\"window.location='$cancel_url'\">Cancel</button>\n";
 
 include("footer.php");
 ?>

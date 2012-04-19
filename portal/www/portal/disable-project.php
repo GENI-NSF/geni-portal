@@ -44,8 +44,8 @@ print "<h1>DISABLE GENI Project: " . $project_name . "</h1>\n";
 // FIXME: What does happen when you delete a project?
 print "<b>Warning</b>: This operation is not reversible. Running slices will not be removed, but you will no longer be able to renew slices or use the GENI portal to modify them.<br/><br/>\n";
 $edit_url = 'do-disable-project.php?project_id='.$project_id;
-print '<a href='.$edit_url.'>Disable</a>';
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "<button onClick=\"window.location='".$edit_url."'\"><b>Disable</b></button>   \n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/><br/>\n";
 
 include("footer.php");
 ?>

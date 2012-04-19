@@ -36,8 +36,8 @@ foreach ($text2 as $line_num => $line) {
 
 print "\n";
 
-print "<a href='slices.php'>All slices</a>";
+print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";
-print "<a href='slice.php?slice_id=$slice_id'>To slice $slice_name</a>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
 include("footer.php");
 ?>

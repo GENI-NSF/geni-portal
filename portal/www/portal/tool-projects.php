@@ -54,8 +54,9 @@ if (count($project_ids) > 0) {
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     //    error_log("After load user " . time());
     $slice_ids = lookup_slices($sa_url, $project_id);
-
-    $create_slice_link = "<a href=\"createslice.php?project_id=$project_id\">Create Slice</a>";
+    //<button style="width:65;height:65" onClick="window.location='http://www.javascriptkit.com'"><b>Home</b></button>
+    // http://www.javascriptkit.com/howto/button.shtml
+    $create_slice_link = "<button style=\"\" onClick=\"window.location='" . "createslice.php?project_id=$project_id" . "'\"><b>Create Slice</b></button>";
     if(!$user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
       $create_slice_link = "";
     }
@@ -76,5 +77,5 @@ if (count($project_ids) > 0) {
 print "<br/>\n";
 
 if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
-  print "<a href=\"edit-project.php\">Create New Project</a><br/>\n";
+  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
 }

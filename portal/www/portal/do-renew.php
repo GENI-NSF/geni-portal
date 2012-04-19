@@ -78,7 +78,6 @@ error_log("point A $slice_id");
 $slice = lookup_slice($sa_url, $slice_id);
 error_log("point B $slice_id");
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-$name = $slice[SA_ARGUMENT::SLICE_NAME];
 error_log("SLIVER_RENEW SLICE_URN = $slice_urn");
 
 // Call renew sliver at the AM
@@ -87,9 +86,8 @@ $sliver_output = renew_sliver($am_url, $user, $slice_credential,
 
 error_log("RenewSliver output = " . $sliver_output);
 
-$header = "Renewed Sliver on slice: $name";
+$header = "Renewed Sliver on slice: $slice_name";
 $text = $sliver_output;
-$slice_name = $name;
 include("print-text.php");
 
 
