@@ -52,12 +52,12 @@ function log_event($args)
     . "'" . $user_id . "', "
     . "'" . $message . "')";
 
-  error_log("LOG.SQL = " . $sql);
+  //  error_log("LOG.SQL = " . $sql);
 
   $result = db_execute_statement($sql);
 
   if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
-    error_log("INSERT RESULT = " . print_r($result, true));
+    //    error_log("INSERT RESULT = " . print_r($result, true));
     $lastval_sql = "select lastval()";
     $result = db_fetch_row($lastval_sql);
     $lastval = $result[RESPONSE_ARGUMENT::VALUE]['lastval'];
@@ -74,7 +74,7 @@ function log_event($args)
 	. $lastval . ", "
 	. $context_type  . ", "
 	. "'" . $context_id . "')";
-      error_log("INSERT.SQL = " . $insert_sql);
+      //      error_log("INSERT.SQL = " . $insert_sql);
       $insert_result = db_execute_statement($insert_sql);
 	
     }
@@ -103,7 +103,7 @@ function get_log_entries_by_author($args)
     .           $LOGGING_CONTEXT_TABLENAME . "." . LOGGING_CONTEXT_TABLE_FIELDNAME::ID 
     . " AND " . LOGGING_TABLE_FIELDNAME::USER_ID . " = '" . $user_id . "'";
     
-  error_log("LOG.SQL = " . $sql);
+  //  error_log("LOG.SQL = " . $sql);
 
   $rows = db_fetch_rows($sql);
 
@@ -133,7 +133,7 @@ function get_log_entries_for_context($args)
     . " AND " . LOGGING_CONTEXT_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type
     . " AND " . LOGGING_CONTEXT_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
     
-  error_log("LOG.SQL = " . $sql);
+  //  error_log("LOG.SQL = " . $sql);
 
   $rows = db_fetch_rows($sql);
 

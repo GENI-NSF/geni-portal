@@ -31,6 +31,8 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
+require_once('logging_client.php');
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -161,7 +163,20 @@ if ($user->privAdmin()) {
 ?>
 
 <h2>Recent Slice Actions</h2>
-[stuff goes here...]<br/><br/>
+<table border="1">
+<tr><th>Time</th><th>Message</th>
+<?php
+  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+  $entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
+  foreach($entries as $entry) {
+    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+    $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+    //    error_log("ENTRY = " . print_r($entry, true));
+    print "<tr><td>$time</td><td>$message</td></tr>\n";
+  }
+?>
+</table>
+<br/><br/>
 
 <?php
 include("footer.php");
