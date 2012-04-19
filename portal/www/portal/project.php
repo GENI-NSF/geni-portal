@@ -71,7 +71,7 @@ if (! is_null($project) && $project != "None") {
 // *** once we know how to link with identity_attribute
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $members = get_members($cs_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
-//error_log("members = " . print_r($members, true));
+error_log("members = " . print_r($members, true));
 
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
@@ -94,8 +94,17 @@ include("tool-slices.php");
 <table border="1">
 <tr><th>Project Member</th><th>Roles</th></tr>
 <?php
+
+  foreach($members as $member) {
+     $member_id = $member['principal'];
+     $member_user = geni_loadUser($member_id);
+     $member_name = $member_user->prettyName();
+     $member_role = $member['name'];
+     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
+   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td></tr>\n";
+  }
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
-   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
+//   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
 if ($user->privAdmin()) {
   print "Approve/invite new project members<br/>\n";
 }

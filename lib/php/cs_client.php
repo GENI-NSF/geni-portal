@@ -103,6 +103,7 @@ function get_permissions($cs_url, $principal)
 }
 
 // Get list of members and their roles with respect to a particular context
+// Returns rows with 'principal' (as account_id) and 'name' (as role)
 function get_members($cs_url, $context_type, $context_id)
 {
   $get_members_message['operation'] = 'get_members';
