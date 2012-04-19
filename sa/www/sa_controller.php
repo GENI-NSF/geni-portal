@@ -32,10 +32,12 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('cs_client.php');
 require_once('ma_client.php');
+require_once('logging_client.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 /* Create a slice credential and return it */
 function get_slice_credential($args)
@@ -148,6 +150,15 @@ function create_slice($args)
   // Associate the lead with the slice with role 'lead'
   global $ma_url;
   add_attribute($ma_url, $owner_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::SLICE, $slice_id);
+
+  // Log the creation
+  global $log_url;
+  $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
+  $project_context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
+  $slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
+  $slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
+  log_event($log_url, "Created slice " . $slice_name, array($project_context, $slice_context), $owner_id);
+
 
   return generate_response(RESPONSE_ERROR::NONE, $slice_info, '');
 }
