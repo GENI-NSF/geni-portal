@@ -105,7 +105,7 @@ include("tool-slices.php");
      $member_user = geni_loadUser($member_id);
      $member_name = $member_user->prettyName();
      $member_role = $member['name'];
-     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
+     //     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
    print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td></tr>\n";
   }
    // FIXME: See project-member.php. Replace all that with a table or 2 here?

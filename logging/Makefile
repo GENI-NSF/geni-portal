@@ -35,14 +35,14 @@ install:
 	$(WWWINSTALL) -d $(PGDIR)
 	$(WWWINSTALL) -m 0644 www/* $(WWWDIR)
 #	$(WWWINSTALL) -m 0644 php/* $(LIBDIR)
-#	$(WWWINSTALL) -m 0644 db/postgresql/* $(PGDIR)
+	$(WWWINSTALL) -m 0644 db/postgresql/* $(PGDIR)
 	$(WWWINSTALL) -m 0644 apache2.conf $(DESTDIR)
 
 syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)
 
 cleandb:
-#	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
+	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
 
 clean:
 

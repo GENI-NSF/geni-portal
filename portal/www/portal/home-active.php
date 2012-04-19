@@ -34,6 +34,7 @@
 Welcome, 
 <?php
 print $user->prettyName();
+
 ?>
 !
 </center>
