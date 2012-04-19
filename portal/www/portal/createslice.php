@@ -44,6 +44,9 @@ $slice_name = NULL;
 $project_id = NULL;
 $message = NULL;
 include("tool-lookupids.php");
+if (array_key_exists("slice_name", $_REQUEST)) {
+  $slice_name = $_REQUEST['slice_name'];
+}
 
 if (is_null($project_id) || $project_id == '') {
   error_log("createslice: invalid project_id from GET");
@@ -130,7 +133,7 @@ print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
 print "\n";
 print 'Slice name: ';
 print "\n";
-print '<input type="text" name="name"/><br/>';
+print '<input type="text" name="slice_name"/><br/>';
 print "\n";
 print '<input type="submit" value="Create slice"/>';
 print "\n";
