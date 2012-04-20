@@ -22,7 +22,7 @@ require_once('cs_constants.php');
 
 function request_authorization($principal, $action, $context_type, $context)
 {
-  $result 1;
+  $result = 1;
   return $result;
 }
 
