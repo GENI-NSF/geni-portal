@@ -56,6 +56,7 @@ print "<h1>GENI Project: " . $project_name . ", Member: " . $member_name . "</h1
 // FIXME: Retrieve info from DB
 print "<br/>\n";
 
+/*
 print "<form style=\"color: grey\" method=\"POST\" action=\"do-edit-project-member.php\">\n";
 print "<b>Project Permissions</b><br/><br/>\n";
 print "<b>Name</b>: " . $member_name . "<br/>\n";
@@ -79,6 +80,52 @@ foreach ($rolevals as $role) {
   print ">" . $role . "</option>\n";
 }
 print "</select>\n<br/>\n";
+*/
+
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+$project_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+//error_log("SA = " .  print_r($project_attributes, true));
+$slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, null);
+//error_log("SA = " .  print_r($slice_attributes, true));
+
+print("<br>\n");
+print("<b>Project Roles</b>");
+print("\n<table border=\"1\">\n");
+print ("<tr><th>Project</th><th>Role</th></tr>");
+foreach($project_attribs as $attrib) {
+  $project_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
+  $project_link = "<a href=\"project.php?project_id=$project_id\">" . $project_name . "</a>";
+  $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  print("<tr><td>$project_link</td><td>$role</td></tr>\n");
+}
+print("</table>\n\n");
+print("<br>\n");
+
+print("<br>\n");
+print("<b>Slice Roles</b>");
+print("\n<table border=\"1\">\n");
+print ("<tr><th>Slice</th><th>Role</th></tr>");
+$slices = lookup_slices($sa_url, $project_id, null);
+//error_log("SLICES = " . print_r($slices, true));
+//error_log("ATTRIBS = " . print_r($slice_attribs, true));
+foreach($slice_attribs as $attrib) {
+  $slice_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
+  $slice_name = null;
+  foreach($slices as $slice) {
+    if($slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID] == $slice_id) {
+      $slice_name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+      break;
+    }
+  }
+  if ($slice_name == null) { continue; }
+  $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
+  $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
+}
+print("</table>\n\n");
+
+/*
 
 print "<b>Permissions</b>:<br/>\n";
 foreach ($permvals as $perm) {
@@ -123,5 +170,8 @@ print "</table>\n";
 print "<input type=\"submit\" value=\"Edit\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print "</form>\n";
+
+*/
+
 include("footer.php");
 ?>

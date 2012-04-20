@@ -53,9 +53,29 @@ if ($member == "None") {
 }
 print "<h1>GENI Slice: " . $slice_name . ", Member: " . $member_name . "</h1>\n";
 
+
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+//error_log("SLICE ATTRIBS = " . print_r($attributes, true));
+
+print("<b>Slice Roles</b>");
+print("\n<table border=\"1\">\n");
+print ("<tr><th>Slice</th><th>Role</th></tr>");
+foreach($slice_attribs as $attrib) {
+  $slice_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
+  $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
+  $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
+}
+print("</table>\n\n");
+
+
+
+
 // FIXME: Retrieve info from DB
 print "<br/>\n";
 
+/*
 print "<form method=\"POST\" action=\"do-edit-slice-member.php\">\n";
 print "<b>Slice Permissions</b><br/><br/>\n";
 print "<b>Name</b>: " . $member_name . "<br/>\n";
@@ -67,5 +87,7 @@ print "<input type=\"hidden\" name=\"member_id\" value=\"" . $member_id . "\"/>\
 print "<input type=\"submit\" value=\"Edit\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print "</form>\n";
+*/
+
 include("footer.php");
 ?>

@@ -75,10 +75,18 @@ class CS_ARGUMENT
   const ACTION = "action";
 }
 
+/* Name of table mapping CS attributes to names */
+$CS_ATTRIBUTE_TABLENAME = "cs_attribute";
 /* Name of table to which the CS persists/retrieves credentials */
 $CS_ASSERTION_TABLENAME = "cs_assertion";
 /* Name of table to which the CS persists/retrieves policies */
 $CS_POLICY_TABLENAME = "cs_policy";
+
+/* CS Attribute table */
+class CS_ATTRIBUTE_TABLE_FIELDNAME {
+  const ID = "id";
+  const NAME = "name";
+}
 
 /* CS Credential table has the following fields */
 class CS_ASSERTION_TABLE_FIELDNAME {

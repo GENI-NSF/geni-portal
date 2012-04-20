@@ -88,6 +88,17 @@ function request_authorization($cs_url, $principal, $action, $context_type, $con
   return $result;
 }
 
+function get_attributes($cs_url, $principal, $context_type, $context)
+{
+  $get_attributes_message['operation'] = 'get_attributes';
+  $get_attributes_message[CS_ARGUMENT::PRINCIPAL] = $principal;
+  $get_attributes_message[CS_ARGUMENT::CONTEXT_TYPE] = $context_type;
+  $get_attributes_message[CS_ARGUMENT::CONTEXT] = $context;
+  //  error_log("GA.message = " . print_r($get_attributes_message, true));
+  $result = put_message($cs_url, $get_attributes_message);
+  return $result;
+}
+
 function get_permissions($cs_url, $principal)
 {
   $get_permissions_message['operation'] = 'get_permissions';

@@ -306,6 +306,39 @@ function get_members($args)
   return $rows;
 }
 
+function get_attributes($args)
+{
+  global $CS_ATTRIBUTE_TABLENAME;
+  global $CS_ASSERTION_TABLENAME;
+  $principal = $args[CS_ARGUMENT::PRINCIPAL];
+  $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+  $context_id = $args[CS_ARGUMENT::CONTEXT];
+
+  $context_clause = "";
+  if($context_id <> null) {
+    $context_clause = " AND " . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT
+    . " = '" . $context_id . "'";
+  }
+
+  //  error_log("ARGS = " . print_r($args, true));
+  $sql = "select " 
+    . $CS_ATTRIBUTE_TABLENAME . "." . CS_ATTRIBUTE_TABLE_FIELDNAME::NAME
+    . ", " . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT
+    . " FROM " . $CS_ASSERTION_TABLENAME . ", " . $CS_ATTRIBUTE_TABLENAME
+    . " WHERE " 
+    . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE .  " = " 
+    . $CS_ATTRIBUTE_TABLENAME . "." . CS_ATTRIBUTE_TABLE_FIELDNAME::ID
+    . " AND " . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL 
+    . " = '" . $principal . "'"
+    . " AND " . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE
+    . " = " . $context_type
+    . $context_clause;
+
+  //  error_log("GA.sql = " . $sql);
+  $attribs = db_fetch_rows($sql);
+  return $attribs;
+
+}
 
 
 function create_assertion_cert($signer, $principal, 
