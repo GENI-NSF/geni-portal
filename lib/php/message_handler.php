@@ -116,15 +116,12 @@ $ACCOUNT_ID = null;
 // END OF TEMP FIX 
 */
 
-const MESSAGE_STACK_TAG = 'message_stack';
-
 //--------------------------------------------------
 // Send a message (via PUT) to a given URL and return response
 //--------------------------------------------------
 function put_message($url, $message)
 {
-  //  error_log("PUT_MESSAGE " . $url . " " . $message);
-
+  //  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation']);
 
   /* 
    * *** TEMP FIX

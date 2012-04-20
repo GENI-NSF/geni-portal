@@ -37,12 +37,13 @@ function loadAccount($account_id)
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
+/*
 function loadAccountPrivileges($account_id) {
-  /* print "in db-util loadAccount<br/>"; */
+  // print "in db-util loadAccount<br/>"; 
   $conn = portal_conn();
   $sql = "SELECT privilege FROM account_privilege WHERE account_id = "
     . $conn->quote($account_id, 'text');
-  /* print "Query = $sql<br/>"; */
+// print "Query = $sql<br/>"; 
   $result = db_fetch_rows($sql);
   $rows = $result[RESPONSE_ARGUMENT::VALUE];
   $privs = array();
@@ -51,6 +52,7 @@ function loadAccountPrivileges($account_id) {
   }
   return $privs;
 }
+*/
 
 function loadIdentityAttributes($identity_id) {
   $conn = portal_conn();

@@ -30,7 +30,7 @@ require_once 'sr_client.php';
 require_once 'permission_manager.php';
 require 'abac.php';
 
-session_start();
+if (!isset($_SESSION)) { session_start(); $_SESSION = array(); }
 
 const PERMISSION_MANAGER_TAG = 'permission_manager';
 const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
@@ -78,7 +78,6 @@ class GeniUser
     foreach ($attrs as $attr) {
       $this->attributes[$attr['name']] = $attr['value'];
     }
-    $this->privileges = loadAccountPrivileges($this->account_id);
   }
 
   function isActive() {
@@ -156,14 +155,18 @@ class GeniUser
     return $result;
   }
 
-  // For now, everyone can create slices
-  function privSlice() {
-    return in_array ("slice", $this->privileges);
+  // Does user have create slice privilege on given project?
+  function privSlice($project_id=null) {
+    // ***
+    //    $result = $permission_manager->is_allowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id);
+    //    return $result;
+    return true;
   }
 
-  // For now, everyone is an admin
+  // Does user have admin privileges?
   function privAdmin() {
-    return in_array ("admin", $this->privileges);
+    // ***
+    return true;
   }
 } // End of class GeniUser
 
