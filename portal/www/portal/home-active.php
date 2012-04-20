@@ -55,11 +55,35 @@ if ($user->privAdmin()) {
 <!-- <th width="25%"><h3>GENI Map</h3></th> -->
 </tr>
 <tr><td>
+<table>
+<?php
+   // FIXME: foreach project or slice where user is admin or lead, get log entries for that context
+   // and forach slice where user is ad
+require_once('logging_client.php');
+require_once('sr_constants.php');
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+$entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::MEMBER, $user->account_id);
+$entries = array_merge($entries, get_log_entries_by_author($log_url, $user->account_id));
+if (is_array($entries) && count($entries) > 0) {
+  foreach($entries as $entry) {
+    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+    $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+    //    error_log("ENTRY = " . print_r($entry, true));
+    print "<tr><td>$time:</td><td>&nbsp;$message</td></tr>\n";
+  }
+} else {
+  print "<tr><td><i>No messages.</i></td></tr>\n";
+}
+?>
+</table>
+</td>
+<!--
 <ul>
-<li>Friday, 4/6/12: You've been added to Project: <a href="project.php?id=MyProject">MyProject</a></li><br/>
+<li>Friday, 4/6/12: You have been added to Project: <a href="project.php?id=MyProject">MyProject</a></li><br/>
 <li>Tuesday, March 12, 2012: GENI is really rocking today!</li>
 </ul>
 </td>
+-->
 <!-- 
 <td align="center">
 <a href="http://groups.geni.net/geni/wiki/ProtoGENIFlashClient"><image width="50%" src="http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw"/></a>
