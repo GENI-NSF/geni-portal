@@ -83,9 +83,9 @@ function create_slice($args)
   $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME 
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = '" . $slice_name . "'" 
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'";
-  error_log("SQL = " . $exists_sql);
+  //  error_log("SQL = " . $exists_sql);
   $exists_response = db_fetch_row($exists_sql);
-  error_log("Exists " . print_r($exists_response, true));
+  //  error_log("Exists " . print_r($exists_response, true));
   $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
   $exists = $exists['count'];
   if ($exists > 0) {
