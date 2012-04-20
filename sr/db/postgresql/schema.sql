@@ -14,3 +14,5 @@ CREATE TABLE service_registry (
   PRIMARY KEY (id)
 );
 
+-- Common query but DB not using it ?yet?
+-- CREATE INDEX service_registry_index_type ON service_registry(service_type);

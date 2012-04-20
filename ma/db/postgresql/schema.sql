@@ -18,3 +18,5 @@ CREATE TABLE ma_member (
   PRIMARY KEY (id)
 );
 
+-- A common query, but so far the DB Doesn't use this.
+-- CREATE INDEX ma_member_index_member ON ma_member (member_id);
