@@ -32,11 +32,11 @@
 <h2>Account requested</h2>
 Your account is awaiting administrative approval.
 You will receive an email when an administrator approves
-or rejects your account.
-
-Please check back again later.
+or rejects your account.<br/>
+<br/>
+Please <a href="javascript:location.reload()">check back</a> again later.
 <hr/>
-<h3>Debug</h3>
+<h3>Requested Account Details</h3>
 <?php
 $array = $user->attributes;
 foreach ($user->attributes as $name => $value) {
