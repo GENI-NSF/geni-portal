@@ -52,6 +52,12 @@ INSERT INTO cs_action (id, name, privilege, context_type) values (18, 'lookup_pr
 INSERT INTO cs_action (id, name, privilege, context_type) values (19, 'update_project', 3, 1);
 INSERT INTO cs_action (id, name, privilege, context_type) values (20, 'change_lead', 3, 1);
 
+-- PORTAL 'admin' actions: These are catch-all privileges in a particular context
+-- and should go away when we refactor
+INSERT INTO cs_action(id, name, privilege, context_type) VALUES (21, 'administer_resources', 3, 3);
+INSERT INTO cs_action(id, name, privilege, context_type) VALUES (22, 'administer_services', 3, 4);
+INSERT INTO cs_action(id, name, privilege, context_type) VALUES (23, 'administer_members', 3, 5);
+
 -- Define initial set of policies
 -- A LEAD of a context_type has DELEGATE, READ AND WRITE PRIVILEGE in that context
 INSERT INTO cs_policy (signer,  attribute, context_type, privilege, policy_cert) values
