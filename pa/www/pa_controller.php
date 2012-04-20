@@ -121,7 +121,7 @@ function create_project($args)
   global $log_url;
   $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
   $context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
-  log_event($log_url, "Created project " . $project_name, array($context), $lead_id);
+  log_event($log_url, "Created project: " . $project_name, array($context), $lead_id);
 
   return generate_response(RESPONSE_ERROR::NONE, $project_id, '');
 }
