@@ -96,7 +96,9 @@ if ($user->privSlice()) {
   print "<td><button onClick=\"window.location='$edit_url'\">Edit Slice</button></td>\n";
 }
 
-if ($user->privAdmin()) {
+// FIXME: What is the right thing to check here?
+//if ($user->privAdmin()) {
+if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew Slice'/>\n";
@@ -156,7 +158,9 @@ print "<b id='warn'>Warning: Slice and project names are public</b><br/>\n";
 </table>
 
 <?php
-if ($user->privAdmin()) {
+  //if ($user->privAdmin()) {
+  // FIXME: What is the right thing to check here?
+if ($user->privSlice()) {
   print "Approve new slice members<br/>\n";
   print "?Invite new slice member?<br/>\n";
 }

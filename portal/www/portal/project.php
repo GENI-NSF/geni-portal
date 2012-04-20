@@ -124,8 +124,11 @@ include("tool-slices.php");
 </table>
 
 <?php
-if ($user->privAdmin()) {
-  print "Approve/invite new project members<br/>\n";
+  //if ($user->privAdmin()) {
+  // FIXME: the right thing here is to check they are lead or admin on the project
+  // look for update_project
+if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  print "<br/><div style=\"color:grey\">Approve/invite new project members</div><br/>\n";
 }
 ?>
 
