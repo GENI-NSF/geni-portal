@@ -156,17 +156,15 @@ class GeniUser
   }
 
   // Does user have create slice privilege on given project?
-  function privSlice($project_id=null) {
-    // ***
-    //    $result = $permission_manager->is_allowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id);
-    //    return $result;
-    return true;
+  function privSlice() {
+    $allowed = $this->isAllowed('administer_resources', CS_CONTEXT_TYPE::RESOURCE, null);
+    return $allowed;
   }
 
   // Does user have admin privileges?
   function privAdmin() {
-    // ***
-    return true;
+    $allowed = $this->isAllowed('administer_members', CS_CONTEXT_TYPE::MEMBER, null);
+    return $allowed;
   }
 } // End of class GeniUser
 
