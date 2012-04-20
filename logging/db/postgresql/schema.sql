@@ -11,7 +11,7 @@ CREATE TABLE logging_entry (
   id SERIAL,
   event_time TIMESTAMP, 
   user_id UUID,
-  message vARCHAR,
+  message VARCHAR,
   PRIMARY KEY (id)
 );
 
@@ -20,4 +20,3 @@ CREATE TABLE logging_entry_context (
   context_type INT,
   context_id UUID
 );
-

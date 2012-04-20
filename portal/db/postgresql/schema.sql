@@ -74,6 +74,9 @@ CREATE TABLE identity (
   PRIMARY KEY (identity_id)
 );
 
+-- Common indices that don't help ?yet?
+-- CREATE INDEX identity_index_eppn ON identity (eppn);
+-- CREATE INDEX identity_index_account ON identity (account_id);
 
 -- ----------------------------------------------------------------------
 -- Identity attributes
@@ -86,7 +89,8 @@ CREATE TABLE identity_attribute (
   value varchar,
   self_asserted boolean
 );
-
+-- Common query but not helping ?yet?
+-- CREATE INDEX identity_attribute_index_identity ON identity_attribute (identity_id);
 
 -- ----------------------------------------------------------------------
 -- Shibboleth attributes, based on attribute-map.xml
