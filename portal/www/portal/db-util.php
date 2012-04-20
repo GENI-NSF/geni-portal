@@ -248,13 +248,13 @@ function approve_account($account_id)
   /* print "command = $sql<br/>"; */
   $result = db_execute_statement($sql, "update account active");
 
-  $sql = "INSERT INTO account_privilege"
-    . " VALUES("
-    . $conn->quote($account_id, 'text')
-    . ", 'slice'"
-    . ')';
-  /* print "command = $sql<br/>"; */
-  $result = db_fetch_row($sql, "approve account");
+  /* $sql = "INSERT INTO account_privilege" */
+  /*   . " VALUES(" */
+  /*   . $conn->quote($account_id, 'text') */
+  /*   . ", 'slice'" */
+  /*   . ')'; */
+  /* /\* print "command = $sql<br/>"; *\/ */
+  /* $result = db_fetch_row($sql, "approve account"); */
   $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row["abac_key"];
 }

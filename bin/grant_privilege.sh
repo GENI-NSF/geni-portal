@@ -2,6 +2,10 @@
 #Grant given privillege to given user
 # Usage: grant_privilege.sh user privilege
 # Example privileges are 'slice'
+
+echo "Don't you mean create_assertion.sh?"
+echo
+
 if [ $# -ne 2 ]; then
     echo "Usage: grant_privilege.sh username privilege"
     exit
