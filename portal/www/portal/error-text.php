@@ -29,7 +29,10 @@ $header = "Error";
 print "<h2>$header</h2>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";
 
-error_log("$_GET = " . print_r($_GET, true));
+// error_log('$_GET = ' . print_r($_GET, true));
+
+// error_log('$_SERVER = ' . print_r($_SERVER, true));
+
 foreach ($_GET as $line_num => $line) {
   //  error_log("LINE_NUM " . $line_num);
   //  error_log("LINE " . $line);
@@ -37,6 +40,14 @@ foreach ($_GET as $line_num => $line) {
   echo $text . "<br />\n";
 }
 
+print "\n";
+print "<form method=\"GET\" action-\"back\">";
+print "\n";
+$http_referer = $_SERVER['HTTP_REFERER'];
+//error_log("HTTP_REFERER = " . $http_referer);
+print "<input type=\"button\" value=\"Back\" onClick=\"history.back(-1)\"/>\n";
+print "\n";
+print "</form>";
 print "\n";
 
 include("footer.php");
