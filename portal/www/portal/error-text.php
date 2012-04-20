@@ -25,14 +25,14 @@
 <?php
 require_once("header.php");
 show_header('GENI Portal: Home',  $TAB_SLICES);
+$header = "Error";
 print "<h2>$header</h2>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";
 
 error_log("$_GET = " . print_r($_GET, true));
-print "Error: ";
 foreach ($_GET as $line_num => $line) {
-  error_log("LINE_NUM " . $line_num);
-  error_log("LINE " . $line);
+  //  error_log("LINE_NUM " . $line_num);
+  //  error_log("LINE " . $line);
   $text = str_replace('_', ' ', htmlspecialchars($line_num));
   echo $text . "<br />\n";
 }
