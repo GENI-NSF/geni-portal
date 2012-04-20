@@ -78,7 +78,15 @@ if (count($slice_ids) > 0) {
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
     $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
-    $project = lookup_project($pa_url, $slice_project_id);
+    if (isset($projects) and array_key_exists($slice_project_id, $projects)) {
+      $project = $projects[$slice_project_id];
+    } else {
+      $project = lookup_project($pa_url, $slice_project_id);
+      if (! isset($projects)) {
+	$projects = array();
+      }
+      $projects[$slice_project_id] = $project;
+    }
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
     $slice_owner_name = geni_loadUser($slice_owner_id)->prettyName();

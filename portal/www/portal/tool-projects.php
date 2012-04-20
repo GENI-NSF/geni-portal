@@ -49,7 +49,15 @@ if (count($project_ids) > 0) {
       error_log("tool-projects got invalid project_id from all get_projects_by_lead");
       continue;
     }
-    $project = lookup_project($pa_url, $project_id);
+    if (isset($projects) and array_key_exists($project_id, $projects)) {
+      $project = $projects[$project_id];
+    } else {
+      $project = lookup_project($pa_url, $project_id);
+      if (! isset($projects)) {
+	$projects = array();
+      }
+      $projects[$project_id] = $project;
+    }
     //    error_log("Before load user " . time());
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     //    error_log("After load user " . time());
