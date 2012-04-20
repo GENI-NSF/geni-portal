@@ -172,6 +172,36 @@ function get_projects($args)
     return $result;
 }
 
+// Return list of all projects and data. 
+// Optionally, filtered by lead_id if provided
+function lookup_projects($args)
+{
+  global $PA_PROJECT_TABLENAME;
+
+  $lead_id = null;
+  $lead_clause = "";
+  //  error_log("LP.args = " . print_r($args, true));
+  if(array_key_exists(PA_ARGUMENT::LEAD_ID, $args)) {
+    $lead_id = $args[PA_ARGUMENT::LEAD_ID];
+    $lead_clause = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = '" . $lead_id . "'";
+  }
+
+  $sql = "select "  
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE 
+    . " FROM " . $PA_PROJECT_TABLENAME 
+    . $lead_clause;
+
+  //  error_log("LookupProjects.sql = " . $sql);
+ 
+  $rows = db_fetch_rows($sql);
+  return $rows;
+
+}
+
 
 /* Lookup details of given project */
 function lookup_project($args)

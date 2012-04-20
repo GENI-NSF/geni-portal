@@ -36,32 +36,24 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
-$project_ids = get_projects_by_lead($pa_url, $user->account_id);
+$projects = lookup_projects($pa_url, $user->account_id);
 
-if (count($project_ids) > 0) {
-  print "Found " . count($project_ids) . " project(s) for you:<br/>\n";
+if (count($projects) > 0) {
+  print "Found " . count($projects) . " project(s) for you:<br/>\n";
   print "\n<table border=\"1\">\n";
   print ("<tr><th>Name</th><th>Lead</th><th>Email</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
 
   // name, lead_id, email, purpose
-  foreach ($project_ids as $project_id) {
+  foreach ($projects as $project) {
+    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     if (! uuid_is_valid($project_id)) {
       error_log("tool-projects got invalid project_id from all get_projects_by_lead");
       continue;
     }
-    if (isset($projects) and array_key_exists($project_id, $projects)) {
-      $project = $projects[$project_id];
-    } else {
-      $project = lookup_project($pa_url, $project_id);
-      if (! isset($projects)) {
-	$projects = array();
-      }
-      $projects[$project_id] = $project;
-    }
     //    error_log("Before load user " . time());
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     //    error_log("After load user " . time());
-    $slice_ids = lookup_slices($sa_url, $project_id);
+    $slice_ids = lookup_slice_ids($sa_url, $project_id);
     //<button style="width:65;height:65" onClick="window.location='http://www.javascriptkit.com'"><b>Home</b></button>
     // http://www.javascriptkit.com/howto/button.shtml
     $create_slice_link = "<button style=\"\" onClick=\"window.location='" . "createslice.php?project_id=$project_id" . "'\"><b>Create Slice</b></button>";

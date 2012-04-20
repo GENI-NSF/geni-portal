@@ -164,7 +164,7 @@ function create_slice($args)
   return generate_response(RESPONSE_ERROR::NONE, $slice_info, '');
 }
 
-function lookup_slices($args)
+function lookup_slice_ids($args)
 {
   global $SA_SLICE_TABLENAME;
   if (array_key_exists(SA_ARGUMENT::PROJECT_ID, $args)) {
@@ -213,6 +213,54 @@ function lookup_slices($args)
     return generate_response(RESPONSE_ERROR::NONE, $slice_ids, '');
   } else
     return $result;
+}
+
+function lookup_slices($args)
+{
+  global $SA_SLICE_TABLENAME;
+  $project_id = $args[SA_ARGUMENT::PROJECT_ID];
+  $project_id_clause = '';
+  if ($project_id <> null) {
+    $project_id_clause = SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'";
+  }
+
+  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+  $owner_id_clause = '';
+  if ($owner_id <> null) {
+    $owner_id_clause = SA_SLICE_TABLE_FIELDNAME::OWNER_ID . " = '" . $owner_id . "'";
+  }
+
+  $where_clause = "";
+  if ($owner_id <> null || $project_id <> null) {
+    $where_clause = " WHERE ";
+    if ($project_id <> null)  {
+      $where_clause = $where_clause . $project_id_clause;
+    }
+    if ($owner_id <> null)  {
+      if ($project_id <> null) {
+	$where_clause = $where_clause . " AND ";
+      }
+      $where_clause = $where_clause . $owner_id_clause;
+    }
+  }
+
+  $sql = "SELECT " 
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
+    . " FROM " . $SA_SLICE_TABLENAME
+    . $where_clause;
+
+  //  error_log("lookup_slices.sql = " . $sql);
+
+  $rows = db_fetch_rows($sql);
+
+  return $rows;
+  
 }
 
 function lookup_slice($args)

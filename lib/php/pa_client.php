@@ -54,6 +54,16 @@ function get_projects_by_lead($pa_url, $lead_id)
   return $project_ids;
 }
 
+function lookup_projects($pa_url, $lead_id=null)
+{
+  $lookup_projects['operation'] = 'lookup_projects';
+  if( $lead_id <> null) {
+    $lookup_projects[PA_ARGUMENT::LEAD_ID] = $lead_id;
+  }
+  $projects = put_message($pa_url, $lookup_projects);
+  return $projects;
+}
+
 function lookup_project($pa_url, $project_id)
 {
   //  error_log("LP.start " . $project_id . " " . time());

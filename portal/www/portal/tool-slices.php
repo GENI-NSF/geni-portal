@@ -38,11 +38,11 @@ if (! isset($pa_url)) {
 
 // FIXME: This looks up slices OWNED by this user
 if (isset($project_id) && uuid_is_valid($project_id)) {
-  $slice_ids = lookup_slices_by_project_and_owner($sa_url, $project_id, $user->account_id);
+  $slices = lookup_slices($sa_url, $project_id, $user->account_id);
 } else {
-  $slice_ids = lookup_slices_by_owner($sa_url, $user->account_id);
+  $slices = lookup_slices($sa_url, null, $user->account_id);
 }
-if (count($slice_ids) > 0) {
+if (count($slices) > 0) {
   print "\n<table border=\"1\">\n";
   print ("<tr><th>Name</th><th>Expiration</th><th>URN</th>"
 	 . "<th>Project</th><th>Owner</th>"
@@ -58,14 +58,15 @@ if (count($slice_ids) > 0) {
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
 
-  foreach ($slice_ids as $slice_id) {
+  $projects = lookup_projects($pa_url, $user->account_id);
+
+  foreach ($slices as $slice) {
+    $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     // FIXME: Add PROJECT_ID, OWNER_ID
     if (! uuid_is_valid($slice_id)) {
       error_log("tool-slices: invalid slice_id from lookup_slices");
       continue;
     }
-    $slice = lookup_slice($sa_url, $slice_id);
-    $slice_id = $slice[SA_ARGUMENT::SLICE_ID];
     $args['slice_id'] = $slice_id;
     $query = http_build_query($args);
     $slicecred_url = $base_url . $query;
@@ -78,15 +79,18 @@ if (count($slice_ids) > 0) {
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
     $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
-    if (isset($projects) and array_key_exists($slice_project_id, $projects)) {
-      $project = $projects[$slice_project_id];
-    } else {
-      $project = lookup_project($pa_url, $slice_project_id);
-      if (! isset($projects)) {
-	$projects = array();
+
+    //    error_log("PROJECTS = " . $slice_project_id . " " . print_r($projects, true));
+
+    // Lookup the project for this project ID
+    $project = null;
+    foreach($projects as $candidate) {
+      if($candidate[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID] == $slice_project_id) {
+	$project = $candidate;
+	break;
       }
-      $projects[$slice_project_id] = $project;
     }
+
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
     $slice_owner_name = geni_loadUser($slice_owner_id)->prettyName();

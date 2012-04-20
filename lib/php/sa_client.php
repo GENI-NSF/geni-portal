@@ -72,41 +72,51 @@ function create_slice($sa_url, $project_id, $slice_name, $owner_id)
 }
 
 /* Lookup slice ids for given project */
-function lookup_slices($sa_url, $project_id)
+function lookup_slice_ids($sa_url, $project_id)
 {
-  $lookup_slices_message['operation'] = 'lookup_slices';
-  $lookup_slices_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
-  $slice_ids = put_message($sa_url, $lookup_slices_message);
+  $lookup_slice_ids_message['operation'] = 'lookup_slice_ids';
+  $lookup_slice_ids_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $slice_ids = put_message($sa_url, $lookup_slice_ids_message);
   return $slice_ids;
 }
 
 /* Lookup slice ids for given project and owner */
-function lookup_slices_by_project_and_owner($sa_url, $project_id, $owner_id)
+function lookup_slice_ids_by_project_and_owner($sa_url, $project_id, $owner_id)
 {
-  $lookup_slices_message['operation'] = 'lookup_slices';
-  $lookup_slices_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
-  $lookup_slices_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
-  $slice_ids = put_message($sa_url, $lookup_slices_message);
+  $lookup_slice_ids_message['operation'] = 'lookup_slice_ids';
+  $lookup_slice_ids_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $lookup_slice_ids_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
+  $slice_ids = put_message($sa_url, $lookup_slice_ids_message);
   return $slice_ids;
 }
 
 /* Lookup slice ids for given owner */
-function lookup_slices_by_owner($sa_url, $owner_id)
+function lookup_slice_ids_by_owner($sa_url, $owner_id)
 {
-  $lookup_slices_message['operation'] = 'lookup_slices';
-  $lookup_slices_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
-  $slice_ids = put_message($sa_url, $lookup_slices_message);
+  $lookup_slice_ids_message['operation'] = 'lookup_slice_ids';
+  $lookup_slice_ids_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
+  $slice_ids = put_message($sa_url, $lookup_slice_ids_message);
   return $slice_ids;
 }
 
-/* lookup slices by slice name, project ID */
+/* lookup slice ids by slice name, project ID */
 function lookup_slices_by_project_and_name($sa_url, $project_id, $slice_name)
 {
-  $lookup_slice_message['operation'] = 'lookup_slices';
-  $lookup_slices_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
-  $lookup_slice_message[SA_ARGUMENT::SLICE_NAME] = $slice_name;
-  $slice = put_message($sa_url, $lookup_slices_message);
+  $lookup_slice_ids_message['operation'] = 'lookup_slice_ids';
+  $lookup_slice_ids_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $lookup_slice_ids_message[SA_ARGUMENT::SLICE_NAME] = $slice_name;
+  $slice = put_message($sa_url, $lookup_slice_ids_message);
   return $slice_ids;
+}
+
+/* lookup a set of slices by name, project_id, owner */
+function lookup_slices($sa_url, $project_id, $owner_id)
+{
+  $lookup_slices_message['operation'] = 'lookup_slices';
+  $lookup_slices_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $lookup_slices_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
+  $slices = put_message($sa_url, $lookup_slices_message);
+  return $slices;
 }
 
 /* lookup details of slice of given id */
