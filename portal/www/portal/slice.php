@@ -107,7 +107,7 @@ if ($user->privSlice()) {
   print "value=\"$slice_expiration\"/>\n";
   print "</form></td>\n";
 
-  print "<td><button title=\"not working yet\" onClick=\"window.location='delete-slice.php?slice_id=" . $slice_id . "'\">Disable Slice " . $slice_name. "</button></td>\n";
+  print "<td><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice " . $slice_name. "</button></td>\n";
   print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Sliver " . $slice_name. "</button></td>\n";
   print "<td><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice " . $slice_name. "</button></td>\n";
 }
