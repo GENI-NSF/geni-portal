@@ -42,15 +42,16 @@ include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
 
-print "<p>Click 'Submit' to reserve a default set of resources at an available AM.</p>";
+print "<p>Click to reserve a default set of resources at an available AM.</p>";
 print "<p>Otherwise click 'Cancel'.</p>";
 print '<br/>';
 
 //$edit_url = 'do-edit-slice.php?slice_id='.$slice_id;
 $cancel_url = 'slice.php?slice_id='.$slice_id;
 $edit_url = 'sliceresource.php?slice_id='.$slice_id;
-print "<button onClick=\"window.location='$edit_url'\"><b>Submit</b></button>    \n";
-print "<button onClick=\"window.location='$cancel_url'\">Cancel</button>\n";
+print "<button onClick=\"window.location='$edit_url'\"><b>Reserve Resources</b></button>    \n";
+//print "<button onClick=\"window.location='$cancel_url'\">Cancel</button>\n";
+print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 
 include("footer.php");
 ?>
