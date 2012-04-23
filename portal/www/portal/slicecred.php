@@ -82,7 +82,7 @@ $result = exec($command, $output, $status);
 // Clean up, clean up
 unlink($cert_file);
 
-$file = $slice['name'] . "-cred.xml";
+$file = $slice_name . "-cred.xml";
 // Set headers for download
 header("Cache-Control: public");
 header("Content-Description: File Transfer");
