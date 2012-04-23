@@ -93,7 +93,7 @@ if ($user->privSlice()) {
   print "</form></td>\n";
 
   print "<td><button onClick=\"window.location='$slicecred_url'\">Download Slice Cred</button></td>\n";
-  print "<td><button onClick=\"window.location='$edit_url'\">Edit Slice</button></td>\n";
+  print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Slivers for " . $slice_name. "</button></td>\n";
 }
 
 // FIXME: What is the right thing to check here?
@@ -107,8 +107,8 @@ if ($user->privSlice()) {
   print "value=\"$slice_expiration\"/>\n";
   print "</form></td>\n";
 
+  print "<td><button onClick=\"window.location='$edit_url'\">Edit Slice</button></td>\n";
   print "<td><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice " . $slice_name. "</button></td>\n";
-  print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Sliver " . $slice_name. "</button></td>\n";
   print "<td><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice " . $slice_name. "</button></td>\n";
 }
 print "</tr></table>\n";
