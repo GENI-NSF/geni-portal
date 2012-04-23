@@ -69,11 +69,20 @@ if ($public_key['certificate'] == NULL) {
   $contents = $public_key['certificate'];
 }
 
+$filename = $public_key['filename'];
+if (! isset($filename) || is_null($filename) || trim($filename) == '') {
+  $pn = $user->prettyName();
+  $filename_base=str_replace(' ', '', $pn);
+} else {
+  $f_pi = pathinfo($filename);
+  $filename_base = $f_pi['filename'];
+}
+$filename = $filename_base . "-cert.pem";
 
 // Set headers for download
 header("Cache-Control: public");
 header("Content-Description: File Transfer");
-header("Content-Disposition: attachment; filename=cert.pem");
+header("Content-Disposition: attachment; filename=$filename");
 header("Content-Type: application/pem");
 header("Content-Transfer-Encoding: binary");
 print $contents;
