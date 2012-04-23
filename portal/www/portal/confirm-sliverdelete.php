@@ -46,14 +46,14 @@ if (isset($slice) && $slice != "None") {
 
 print "<h1>Delete Resources from GENI Slice: " . $slice_name . "</h1>\n";
 
-print "<p>Click 'Submit' to delete resources.</p>";
-print "<p>Otherwise click 'Cancel'.</p>";
-print '<br/>';
+print "<p>Click 'Submit' to delete resources.</p>\n";
+print "<p>Otherwise click 'Cancel'.</p>\n";
+print "<br/>\n";
 
-$cancel_url = 'slice.php?slice_id='.$slice_id;
-$edit_url = 'sliverdelete.php?slice_id='.$slice_id;
-print "<button onclick=\"window.location='.$edit_url.'\"><b>Submit</b></button>    \n";
-print "<button onclick=\"window.location='.$cancel_url.'\">Cancel</button>";
+$cancel_url = "slice.php?slice_id=$slice_id";
+$edit_url = "sliverdelete.php?slice_id=$slice_id";
+print "<button onclick=\"window.location='$edit_url'\"><b>Submit</b></button>\n";
+print "<button onclick=\"window.location='$cancel_url'\">Cancel</button>\n";
 
 
 include("footer.php");
