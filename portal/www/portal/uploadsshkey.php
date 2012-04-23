@@ -83,7 +83,7 @@ if (array_key_exists("description", $_POST)) {
 insertSshKey($user->account_id, $contents, $_FILES["file"]["name"],
              $description);
 
-relative_redirect('home');
+relative_redirect('profile');
 ?>
 Your key was uploaded.<br/>
-<a href="home.php">Home page</a>
+<a href="profile.php">My Profile page</a>

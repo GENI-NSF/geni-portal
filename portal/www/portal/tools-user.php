@@ -49,10 +49,11 @@ else
           . "<td>" . htmlentities($key['filename']) . "</td>"
           . "<td>" . htmlentities($key['description']) . "</td>"
           . "</tr>\n";
+	// FIXME: Way to delete a key?
       }
     print "</table>\n";
     print "<br/>\n";
-    print "<button onClick=\"window.location='uploadsshkey.php'\">Upload another SSH key</button>.\n";
+    print "<button onClick=\"window.location='uploadsshkey.php'\">Upload another SSH key</button>\n";
   }
 
 
@@ -72,6 +73,7 @@ if ($key) {
     . "<td><button onClick=\"window.location='" . $download_url . "'\">Download Certificate</button></td>"
     . "</tr>\n";
   print "</table>\n";
+  // FIXME: Way to delete a key?
 } else {
   print "<button onClick=\"window.location='uploadkey.php'\">Please upload a public key</button>\n";
 }

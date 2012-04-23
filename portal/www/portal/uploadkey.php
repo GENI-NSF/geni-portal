@@ -80,9 +80,12 @@ if (array_key_exists('file', $_FILES)) {
                        );
     $command = implode(" ", $cmd_array);
     $result = exec($command, $output, $status);
+    //error_log("Ran openssl on uploaded cert with command: $command");
     if ($status != 0) {
       $fname = $_FILES['file']['name'];
       $error = "File $fname is not a valid SSL public key.";
+    } else {
+      //error_log("no error");
     }
   }
 }
@@ -124,8 +127,9 @@ if (array_key_exists("description", $_POST)) {
   $description = $_POST["description"];
 }
 /* echo "Passing description: $description<br/>"; */
-db_add_public_key($user->account_id, $contents,
+$res = db_add_public_key($user->account_id, $contents,
                   $_FILES["file"]["name"], $description);
+//error_log("db_add_pub had result $res");
 
 //------------------------------------------------------------
 // Generate the certificate
@@ -152,12 +156,17 @@ $result = exec($command, $output, $status);
 // The cert is on disk, read the file and store it in the db.
 $cert_file = '/tmp/' . $user->username . "-cert.pem";
 $contents = file_get_contents($cert_file);
-db_add_key_cert($user->account_id, $contents);
+$res = db_add_key_cert($user->account_id, $contents);
+//error_log("db_add_key had res $res");
 
 // Delete the cert file
 unlink($cert_file);
+//error_log("doing redirect home at the bottom of the page");
 
-relative_redirect('home');
+// FIXME: We redirect here - so that text at the bottom isn't shown?
+// Do we want a page that shows the result?!
+
+relative_redirect('profile');
 ?>
 Your key was uploaded.<br/>
-<a href="home.php">Home page</a>
+<a href="profile.php">My Profile page</a>
