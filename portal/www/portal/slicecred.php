@@ -82,11 +82,13 @@ $result = exec($command, $output, $status);
 // Clean up, clean up
 unlink($cert_file);
 
-$file = $slice_name . "-cred.xml";
+// FIXME: slice name only unique within project. Need slice URN?
+$cred_filename = $slice_name . "-cred.xml";
+
 // Set headers for download
 header("Cache-Control: public");
 header("Content-Description: File Transfer");
-header("Content-Disposition: attachment; filename=$file");
+header("Content-Disposition: attachment; filename=$cred_filename");
 header("Content-Type: text/xml");
 header("Content-Transfer-Encoding: binary");
 print implode("\n", $output);
