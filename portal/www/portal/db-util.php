@@ -124,14 +124,23 @@ function fetch_slice_by_name($name)
 function db_add_public_key($account_id, $public_key, $filename, $description)
 {
   $conn = portal_conn();
+  if (! isset($description) || is_null($description)) {
+    $description = '';
+  }
   $sql = "INSERT INTO public_key "
     . "(account_id, public_key, filename, description) VALUES ("
     . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($public_key, 'text')
     . ', ' . $conn->quote($filename, 'text')
     . ', ' . $conn->quote($description, 'text');
-  /* print "command = $sql<br/>"; */
+  $sql = $sql . ")";
+  //  error_log("command = $sql");
   $result = db_execute_statement($sql, "public key insert");
+  if ($result[RESPONSE_ARGUMENT::CODE] != 0) {
+    error_log("db_add_public_key got error: " . $result[RESPONSE_ARGUMENT::OUTPUT]);
+  }
+  //  error_log("res code = " . $result[RESPONSE_ARGUMENT::CODE]);
+  //  error_log("res output = " . $result[RESPONSE_ARGUMENT::OUTPUT]);
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
@@ -145,6 +154,9 @@ function db_add_key_cert($account_id, $certificate)
     . $conn->quote($account_id, 'text');
   /* print "command = $sql<br/>"; */
   $result = db_execute_statement($sql, "certificate insert");
+  if ($result[RESPONSE_ARGUMENT::CODE] != 0) {
+    error_log("db_add_key_cert got error: " . $result[RESPONSE_ARGUMENT::OUTPUT]);
+  }
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
