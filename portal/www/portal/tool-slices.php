@@ -44,17 +44,22 @@ if (isset($project_id) && uuid_is_valid($project_id)) {
 }
 if (count($slices) > 0) {
   print "\n<table border=\"1\">\n";
-  print ("<tr><th>Name</th><th>Expiration</th><th>URN</th>"
-	 . "<th>Project</th><th>Owner</th>"
+  print ("<tr><th>Name</th>");
+  print ("<th>Project</th>");
+  print ("<th>Expiration</th>");
+  print ("<th>Owner</th>"
          . "<th>Credential</th><th>Resources</th><th>Sliver Status</th>"
          . "<th>Delete Sliver</th>");
   if ($portal_enable_abac) {
-    print "<th>ABAC Credential</th></tr>\n";
+    print "<th>ABAC Credential</th>";
   }
+  print ("<th>URN</th>");
+  print "</tr>\n";
+
   $base_url = relative_url("slicecred.php?");
   $slice_base_url = relative_url("slice.php?");
-  $resource_base_url = relative_url("sliceresource.php?");
-  $delete_sliver_base_url = relative_url("sliverdelete.php?");
+  $resource_base_url = relative_url("slice-add-resources.php?");
+  $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
 
@@ -96,18 +101,18 @@ if (count($slices) > 0) {
     $slice_owner_name = geni_loadUser($slice_owner_id)->prettyName();
     print "<tr>"
       . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
-         . "</a></td>")
-      . "<td>" . htmlentities($expiration) . "</td>"
-      . "<td>" . htmlentities($slice_urn) . "</td>"
-      . "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>"
-      . "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>"
-      . ("<td><button onClick=\"window.location='$slicecred_url'\"><b>Get Credential</b></button></td>")
+         . "</a></td>");
+    print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
+    print "<td>" . htmlentities($expiration) . "</td>";
+    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
+    print ("<td><button onClick=\"window.location='$slicecred_url'\"><b>Get Credential</b></button></td>")
       . ("<td><button onClick=\"window.location='$sliceresource_url'\"><b>Get Resources</b></button></td>")
       . ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>")
-      . ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Sliver</b></button></td>");
+      . ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
     }
+    print "<td>" . htmlentities($slice_urn) . "</td>";
     print "</tr>\n";
   }
   print "</table>\n";
