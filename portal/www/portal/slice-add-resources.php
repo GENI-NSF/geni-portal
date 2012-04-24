@@ -30,6 +30,19 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 
+function show_rspec_chooser() {
+  $all_rmd = fetchRSpecMetaData();
+  print "Resources:\n";
+  print "<select>\n";
+  foreach ($all_rmd as $rmd) {
+    $rid = $rmd['id'];
+    $rname = $rmd['name'];
+    $rdesc = $rmd['description'];
+    print "<option value=\"$rid\" title=\"$rdesc\">$rname</option>\n";
+  }
+  print "</select>\n";
+}
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
   relative_redirect('home.php');
@@ -50,6 +63,8 @@ if (count($keys) == 0) {
   print "Please <button onClick=\"window.location='uploadsshkey.php'\">Upload an SSH key</button> to enable logon to nodes.\n";
   print "<br/>\n";
 }
+
+show_rspec_chooser();
 
 print "<p>Click to reserve a default set of resources at an available AM.</p>";
 print "<p>Otherwise click 'Cancel'.</p>";
