@@ -34,10 +34,12 @@
 require_once('sa_constants.php');
 
 /* Create a slice credential for given SLICE ID and user */
-function get_slice_credential($sa_url, $slice_id, $user_id)
+function get_slice_credential($sa_url, $slice_id, $user_id, $cert=null)
 {
-  $row = db_fetch_inside_private_key_cert($user_id);
-  $cert = $row['certificate'];
+  if (is_null($cert)) {
+    $row = db_fetch_inside_private_key_cert($user_id);
+    $cert = $row['certificate'];
+  }
   if (! isset($cert) || is_null($cert) || $cert == "") {
     error_log("Cannot get_slice_cred without a user cert");
     return null;

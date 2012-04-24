@@ -64,23 +64,10 @@ if (! $key) {
   include("footer.php");
   exit();
 }
-$cert_file = tempnam(sys_get_temp_dir(), 'portal');
-file_put_contents($cert_file, $key['certificate']);
 
-// Run slicecred.py and return it as the content.
-$cmd_array = array($portal_gcf_dir . '/src/slicecred.py',
-                   $portal_gcf_cfg_dir . '/gcf.ini',
-                   $slice_name,
-                   $portal_gcf_cfg_dir . '/ch-key.pem',
-                   $portal_gcf_cfg_dir . '/ch-cert.pem',
-                   $cert_file
-                   );
-$command = implode(" ", $cmd_array);
-$result = exec($command, $output, $status);
-//print_r($output);
-
-// Clean up, clean up
-unlink($cert_file);
+// Get the slice credential from the SA
+$slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id, 
+					 $key['certificate']);
 
 // FIXME: slice name only unique within project. Need slice URN?
 $cred_filename = $slice_name . "-cred.xml";
@@ -91,5 +78,5 @@ header("Content-Description: File Transfer");
 header("Content-Disposition: attachment; filename=$cred_filename");
 header("Content-Type: text/xml");
 header("Content-Transfer-Encoding: binary");
-print implode("\n", $output);
+print $slice_credential;
 ?>
