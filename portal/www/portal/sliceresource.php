@@ -41,6 +41,16 @@ function no_slice_error() {
   print 'No slice id specified.';
   exit();
 }
+function no_rspec_error() {
+  header('HTTP/1.1 404 Not Found');
+  if (array_key_exists("rspec_id", $_REQUEST)) {
+    $rspec_id = $_REQUEST['rspec_id'];
+    print "Invalid rspec id \"$rspec_id\" specified.";
+  } else {
+    print 'No rspec id specified.';
+  }
+  exit();
+}
 
 if (! count($_GET)) {
   // No parameters. Return an error result?
@@ -48,9 +58,14 @@ if (! count($_GET)) {
   no_slice_error();
 }
 unset($slice);
+unset($rspec);
 include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();
+}
+if (! isset($rspec) || is_null($rspec)) {
+  //  no_rspec_error();
+  $rspec = fetchRSpecById(1);
 }
 
 // Get an AM
@@ -67,7 +82,6 @@ $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
 // Retrieve a canned RSpec
-$rspec = fetchRSpecById(1);
 $rspec_file = writeDataToTempFile($rspec);
 
 // Call create sliver at the AM
