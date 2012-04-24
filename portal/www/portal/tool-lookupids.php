@@ -116,3 +116,14 @@ if (array_key_exists("member_id", $_REQUEST)) {
     }
   }
 }
+
+if (array_key_exists("rspec_id", $_REQUEST)) {
+  $rspec_id = $_REQUEST['rspec_id'];
+  $rspec = fetchRSpecById($rspec_id);
+  if (is_null($rspec)) {
+    if ($rspec_id != '') {
+      error_log($script . ": invalid rspec_id $rspec_id from REQUEST");
+      $rspec_id = "none";
+    }
+  }
+}
