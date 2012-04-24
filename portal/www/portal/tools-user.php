@@ -65,12 +65,13 @@ print "<h2>Keys and Certificates for command line tools</h2>\n";
 $key = db_fetch_public_key($user->account_id);
 if ($key) {
   print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th></tr>\n";
+  print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th><th>Owner URN</th></tr>\n";
   $download_url = relative_url("certificate.php");
   print "<tr>"
     . "<td>" . htmlentities($key['filename']) . "</td>"
     . "<td>" . htmlentities($key['description']) . "</td>"
     . "<td><button onClick=\"window.location='" . $download_url . "'\">Download Certificate</button></td>"
+    . "<td>urn:publicid:IDN+geni:gpo:portal+user+" . $user->username . "</td>"
     . "</tr>\n";
   print "</table>\n";
   // FIXME: Way to delete a key?
