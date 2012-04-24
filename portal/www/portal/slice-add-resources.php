@@ -42,6 +42,15 @@ include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
 
+// Put up a warning to upload SSH keys, if not done yet.
+$keys = fetchSshKeys($user->account_id);
+if (count($keys) == 0) {
+  // No ssh keys are present.
+  print "No ssh keys have been uploaded. ";
+  print "Please <button onClick=\"window.location='uploadsshkey.php'\">Upload an SSH key</button> to enable logon to nodes.\n";
+  print "<br/>\n";
+}
+
 print "<p>Click to reserve a default set of resources at an available AM.</p>";
 print "<p>Otherwise click 'Cancel'.</p>";
 print '<br/>';
