@@ -49,6 +49,7 @@ if (count($slices) > 0) {
   print ("<th>Expiration</th>");
   print ("<th>Owner</th>"
          . "<th>Credential</th><th>Resources</th><th>Sliver Status</th>"
+	 . "<th>Flack</th>"
          . "<th>Delete Sliver</th>");
   if ($portal_enable_abac) {
     print "<th>ABAC Credential</th>";
@@ -107,8 +108,9 @@ if (count($slices) > 0) {
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
     print ("<td><button onClick=\"window.location='$slicecred_url'\"><b>Get Credential</b></button></td>")
       . ("<td><button onClick=\"window.location='$sliceresource_url'\"><b>Get Resources</b></button></td>")
-      . ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>")
-      . ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
+      . ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
+  print "<td><button onClick=\"window.location='http://groups.geni.net/geni/wiki/ProtoGENIFlashClient'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+    print ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
     }

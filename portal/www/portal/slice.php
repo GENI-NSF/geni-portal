@@ -93,6 +93,7 @@ if ($user->privSlice()) {
   print "</form></td>\n";
 
   print "<td><button onClick=\"window.location='$slicecred_url'\">Download Slice Cred</button></td>\n";
+  print "<td><button onClick=\"window.location='http://groups.geni.net/geni/wiki/ProtoGENIFlashClient'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
   print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Slivers for " . $slice_name. "</button></td>\n";
 }
 
