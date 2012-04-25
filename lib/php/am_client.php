@@ -49,7 +49,24 @@ function get_template_omni_config($user)
 {
     /* Create OMNI config file */
     $username = $user->username;
-    // FIXME: Add shortcuts for all known AMs?
+
+    // Add shortcuts for all known AMs?
+    // Note this makes the config long in the extreme case....
+    require_once("sr_client.php");
+    require_once("sr_constants.php");
+    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+    $nicknames = "";
+    foreach ($ams as $am) {
+      $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+      if (! isset($name) || is_null($name) || trim($name) == '') {
+	continue;
+      }
+      $name = str_replace(' ', '-', $name);
+      $name = str_replace(',', '', $name);
+      $name = str_replace('=', '', $name);
+      $nicknames = $nicknames . $name . "=," . $am[SR_TABLE_FIELDNAME::SERVICE_URL] . "\n";
+    }
+
     $omni_config = "[omni]\n"
       . "default_cf = portal\n"
       . "users = $username\n"
@@ -63,7 +80,13 @@ function get_template_omni_config($user)
       . "\n"
       . "[$username]\n"
       . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
-      . "keys=/PATH/TO/SSH/PUBLIC/KEY.pem\n";
+      . "keys=/PATH/TO/SSH/PUBLIC/KEY.pub\n";
+
+    $omni_config = $omni_config
+      . "\n"
+      . "[aggregate_nicknames]\n"
+      . $nicknames;
+
     return $omni_config;
 }
 
