@@ -44,7 +44,8 @@ function show_rspec_chooser() {
 }
 
 $user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
+if (!isset($user) || is_null($user) || ! $user->isActive()
+    || ! $user->privSlice()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Slices', $TAB_SLICES);
@@ -60,7 +61,8 @@ $keys = fetchSshKeys($user->account_id);
 if (count($keys) == 0) {
   // No ssh keys are present.
   print "No ssh keys have been uploaded. ";
-  print "Please <button onClick=\"window.location='uploadsshkey.php'\">Upload an SSH key</button> to enable logon to nodes.\n";
+  print ("Please <button onClick=\"window.location='uploadsshkey.php'\">"
+         . "Upload an SSH key</button> to enable logon to nodes.\n");
   print "<br/>\n";
 }
 
@@ -73,11 +75,8 @@ print "<p>Click to reserve a default set of resources at an available AM.</p>";
 print "<p>Otherwise click 'Cancel'.</p>";
 print '<br/>';
 
-//$edit_url = 'do-edit-slice.php?slice_id='.$slice_id;
-$cancel_url = 'slice.php?slice_id='.$slice_id;
-$edit_url = 'sliceresource.php?slice_id='.$slice_id;
-print "<button onClick=\"document.getElementById('f1').submit();\"><b>Reserve Resources</b></button>    \n";
-//print "<button onClick=\"window.location='$cancel_url'\">Cancel</button>\n";
+print ("<button onClick=\"document.getElementById('f1').submit();\">"
+       . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 
 include("footer.php");
