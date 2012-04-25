@@ -51,6 +51,16 @@ function no_rspec_error() {
   }
   exit();
 }
+function no_am_error() {
+  header('HTTP/1.1 404 Not Found');
+  if (array_key_exists("am_id", $_REQUEST)) {
+    $am_id = $_REQUEST['am_id'];
+    print "Invalid aggregate manager id \"$am_id\" specified.";
+  } else {
+    print 'No aggregate manager id specified.';
+  }
+  exit();
+}
 
 if (! count($_GET)) {
   // No parameters. Return an error result?
@@ -59,6 +69,7 @@ if (! count($_GET)) {
 }
 unset($slice);
 unset($rspec);
+unset($am);
 include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();
@@ -67,9 +78,12 @@ if (! isset($rspec) || is_null($rspec)) {
   //  no_rspec_error();
   $rspec = fetchRSpecById(1);
 }
+if (! isset($am) || is_null($am)) {
+  no_am_error();
+}
 
 // Get an AM
-$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+$am_url = $am[SR_ARGUMENT::SERVICE_URL];
 // error_log("AM_URL = " . $am_url);
 
 $result = get_version($am_url, $user);
