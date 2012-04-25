@@ -8,6 +8,9 @@ if [ $# -ne 1 ]; then
     exit
 fi
 
-./activate_account.sh $1
-./create_assertion.sh $1 lead resource
+export p=`dirname $0`
+
+$p/activate_account.sh $1
+$p/create_assertion.sh $1 lead resource
+
 exit
