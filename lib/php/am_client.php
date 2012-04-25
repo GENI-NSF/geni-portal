@@ -67,6 +67,50 @@ function get_template_omni_config($user)
     return $omni_config;
 }
 
+/**
+ * Create a temporary omni config file for $user and return the file
+ * name.
+ *
+ * N.B. the caller is responsible for removing the file (via unlink()).
+ */
+function write_omni_config($user)
+{
+    $username = $user->username;
+
+    /* Write key and credential files. */
+    $row = db_fetch_inside_private_key_cert($user->account_id);
+    $cert = $row['certificate'];
+    $cert_file = writeDataToTempFile($cert, "$username-cert-");
+    $private_key = $row['private_key'];
+    $key_file = writeDataToTempFile($private_key, "$username-key-");
+
+    /* Write ssh keys to tmp files. */
+    $ssh_key_files = write_ssh_keys($user);
+    $all_key_files = implode(',', $ssh_key_files);
+
+    /* Create OMNI config file */
+    $omni_config = "[omni]\n"
+      . "default_cf = my_gcf\n"
+      . "users = $username\n"
+      . "[my_gcf]\n"
+      . "type=gcf\n"
+      . "authority=geni:gpo:portal\n"
+      . "ch=https://localhost:8000\n"
+      . "cert=$cert_file\n"
+      . "key=$key_file\n"
+      . "[$username]\n"
+      . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+      . "keys=$all_key_files\n";
+
+    $omni_file = writeDataToTempFile($omni_config, "$username-omni-");
+
+    $result = array($omni_file, $cert_file, $key_file);
+    foreach ($ssh_key_files as $f) {
+      $result[] = $f;
+    }
+    return $result;
+}
+
 // Generic invocation of omni function 
 // Args:
 //    $am_url: URL of AM to which to connect
@@ -297,6 +341,43 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
 		$slice_urn);
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
+  return $output;
+}
+
+function ready_to_login($am_url, $user, $slice_cred, $slice_urn)
+{
+  global $portal_gcf_dir;
+
+  $tmp_files = write_omni_config($user);
+  $omni_config = $tmp_files[0];
+
+  $slice_cred_file = writeDataToTempFile($slice_cred);
+  $tmp_files[] = $slice_cred_file;
+
+  $cmd_array = array($portal_gcf_dir . '/examples/readyToLogin.py',
+                     '-c', $omni_config,
+                     '-a', $am_url,
+                     '--slicecredfile', $slice_cred_file,
+                     $slice_urn);
+  $command = implode(" ", $cmd_array);
+
+  error_log("COMMAND = " . $command);
+  putenv("PYTHONPATH=$portal_gcf_dir/src");
+  $handle = popen($command . " 2>&1", "r");
+  $output= '';
+  $read = fread($handle, 1024);
+  while($read != null) {
+    if ($read != null)
+      $output = $output . $read;
+    $read = fread($handle, 1024);
+  }
+  pclose($handle);
+
+  /* Now delete all the tmp files. */
+  foreach ($tmp_files as $f) {
+    unlink($f);
+  }
+
   return $output;
 }
 
