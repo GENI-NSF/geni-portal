@@ -33,7 +33,7 @@ require_once("sa_client.php");
 function show_rspec_chooser() {
   $all_rmd = fetchRSpecMetaData();
   print "Resources:\n";
-  print "<select>\n";
+  print '<select name="rspec_id">\n';
   foreach ($all_rmd as $rmd) {
     $rid = $rmd['id'];
     $rname = $rmd['name'];
@@ -64,7 +64,10 @@ if (count($keys) == 0) {
   print "<br/>\n";
 }
 
+print '<form id="f1" action="sliceresource.php" method="get">';
 show_rspec_chooser();
+print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
+print '</form>';
 
 print "<p>Click to reserve a default set of resources at an available AM.</p>";
 print "<p>Otherwise click 'Cancel'.</p>";
@@ -73,7 +76,7 @@ print '<br/>';
 //$edit_url = 'do-edit-slice.php?slice_id='.$slice_id;
 $cancel_url = 'slice.php?slice_id='.$slice_id;
 $edit_url = 'sliceresource.php?slice_id='.$slice_id;
-print "<button onClick=\"window.location='$edit_url'\"><b>Reserve Resources</b></button>    \n";
+print "<button onClick=\"document.getElementById('f1').submit();\"><b>Reserve Resources</b></button>    \n";
 //print "<button onClick=\"window.location='$cancel_url'\">Cancel</button>\n";
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 
