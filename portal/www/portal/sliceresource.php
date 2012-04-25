@@ -62,7 +62,7 @@ function no_am_error() {
   exit();
 }
 
-if (! count($_GET)) {
+if (! count($_REQUEST)) {
   // No parameters. Return an error result?
   // For now, return nothing.
   no_slice_error();

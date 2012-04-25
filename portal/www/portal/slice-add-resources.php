@@ -33,7 +33,9 @@ require_once("sa_client.php");
 function show_rspec_chooser() {
   $all_rmd = fetchRSpecMetaData();
   print "Choose Resources:\n";
-  print '<select name="rspec_id">\n';
+  print "<select name=\"rspec_id\""
+    //. " onchange=\"$('#paste_rspec').hide(500)\""
+    . ">\n";
   foreach ($all_rmd as $rmd) {
     $rid = $rmd['id'];
     $rname = $rmd['name'];
@@ -41,6 +43,7 @@ function show_rspec_chooser() {
     print "<option value=\"$rid\" title=\"$rdesc\">$rname</option>\n";
   }
   print "</select>\n";
+  // print "<textarea id=\"paste_rspec\" name=\"rspec\" rows=\"10\" cols=\"40\"></textarea>\n";
 }
 
 function show_am_chooser() {
@@ -79,7 +82,7 @@ if (count($keys) == 0) {
   print "<br/>\n";
 }
 
-print '<form id="f1" action="sliceresource.php" method="get">';
+print '<form id="f1" action="sliceresource.php" method="post">';
 show_rspec_chooser();
 print '<br/><br/>';
 show_am_chooser();
