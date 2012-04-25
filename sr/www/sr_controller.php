@@ -56,6 +56,22 @@ function get_services_of_type($args)
   return $result;
 }
 
+/* Get the service with the given id.
+ * Args: Service id
+ * Return: List of services with that id or an empty list of no services match.
+ */
+function get_service_by_id($args)
+{
+  global $SR_TABLENAME;
+  $service_id = $args[SR_ARGUMENT::SERVICE_ID];
+  $id_column = SR_TABLE_FIELDNAME::SERVICE_ID;
+  $conn = db_conn();
+  $query = "SELECT * FROM $SR_TABLENAME WHERE"
+    . " $id_column = " . $conn->quote($service_id, 'integer');
+  $result = db_fetch_rows($query, "SR.get_service_by_id");
+  return $result;
+}
+
 /*
  * Register service of given type and given URL
  * *** TO DO: Create certificate (and key pair) for service

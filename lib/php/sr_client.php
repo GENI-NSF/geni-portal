@@ -116,6 +116,32 @@ function get_first_service_of_type($service_type)
   return $url;
 }
 
+// Return the service with the given id, or NULL if no service has the
+// given id.
+function get_service_by_id($service_id)
+{
+  global $services_cached;
+  if ($services_cached) {
+    $services = $_SESSION[SERVICE_REGISTRY_CACHE_TAG];
+    foreach($services as $service) {
+      if ($service[SR_TABLE_FIELDNAME::SERVICE_ID] == $service_id) {
+        return $service;
+      }
+    }
+  }
+  $sr_url = get_sr_url();
+  $message['operation'] = 'get_service_by_id';
+  $message[SR_ARGUMENT::SERVICE_ID] = $service_id;
+  $result = put_message($sr_url, $message);
+  if (count($result) == 0) {
+    // No service found
+    return null;
+  } else {
+    // return the lone service.
+    return $result[0];
+  }
+}
+
 // Regisgter service of given type and URL with registry
 function register_service($service_type, $service_url)
 {
