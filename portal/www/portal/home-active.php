@@ -64,12 +64,17 @@ require_once('sr_constants.php');
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 $entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::MEMBER, $user->account_id);
 $entries = array_merge($entries, get_log_entries_by_author($log_url, $user->account_id));
+$messages = array();
 if (is_array($entries) && count($entries) > 0) {
   foreach($entries as $entry) {
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
-    //    error_log("ENTRY = " . print_r($entry, true));
-    print "<tr><td>$time:</td><td>&nbsp;$message</td></tr>\n";
+    $msg = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE] . $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+    if (!in_array($msg, $messages)) {
+      $messages[] = $msg;
+      $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+      $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+      //    error_log("ENTRY = " . print_r($entry, true));
+      print "<tr><td>$time:</td><td>&nbsp;$message</td></tr>\n";
+    }
   }
 } else {
   print "<tr><td><i>No messages.</i></td></tr>\n";
