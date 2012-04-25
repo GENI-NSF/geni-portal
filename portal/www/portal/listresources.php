@@ -54,29 +54,57 @@ if (! isset($slice)) {
 }
 
 $text = "";
-// Get an AM
-$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-if (! isset($am_url)) {
-  $text = "No known aggregates - ";
+// Takes an arg am_id which may have multiple values. Each is treated
+// as the ID from the DB of an AM which should be queried
+// If no such arg is given, then query the DB and query all registered AMs
+
+if (! isset($ams) || is_null($ams)) {
+  // Didnt get an array of AMs
+  if (! isset($am) || is_null($am)) {
+    // Nor a single am
+    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  } else {
+    $ams = array();
+    $ams[] = $am;
+  }
 }
 
-// Get the slice credential from the SA
-$slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
+  error_log("Found no AMs!");
+  $slivers_output = "No AMs registered.";
+} else {
+  $slivers_output = "";
 
-// Get the slice URN via the SA
-$slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-$name = $slice[SA_ARGUMENT::SLICE_NAME];
+  // Get the slice credential from the SA
+  $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+  
+  // Get the slice URN via the SA
+  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
-// Call list resources at the AM
-$output = list_resources_on_slice($am_url, $user, $slice_credential,
-                               $slice_urn);
+  foreach ($ams as $am) {
+    if (is_array($am)) {
+      if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
+	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+	//	error_log("Got am_url $am_url");
+      } else {
+	error_log("Malformed array of AM URLs?");
+	continue;
+      }
+    } else {
+      $am_url = $am;
+    }
 
-error_log("ListResources output = " . $output);
+    // Call list resources at the AM
+    $output = list_resources_on_slice($am_url, $user, $slice_credential,
+				      $slice_urn);
 
+    error_log("ListResources output = " . $output);
+    $slivers_output = $slivers_output . $output . "\n";
+  }
+}
 
-$header = "Resources on slice: $name";
-$text = $text . $output;
-$slice_name = $name;
+$header = "Resources on slice: $slice_name";
+$text = $text . $slivers_output;
 include("print-text.php");
 
 //relative_redirect('slices');

@@ -66,28 +66,58 @@ if (array_key_exists('slice_expiration', $_GET)) {
   no_time_error();
 }
 
-// Get an AM
-$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-error_log("SLIVER_RENEW AM_URL = " . $am_url);
+// Takes an arg am_id which may have multiple values. Each is treated
+// as the ID from the DB of an AM which should be queried
+// If no such arg is given, then query the DB and query all registered AMs
 
-// Get the slice credential from the SA
-$slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+if (! isset($ams) || is_null($ams)) {
+  // Didnt get an array of AMs
+  if (! isset($am) || is_null($am)) {
+    // Nor a single am
+    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  } else {
+    $ams = array();
+    $ams[] = $am;
+  }
+}
 
-error_log("point A $slice_id");
-// Get the slice URN via the SA
-$slice = lookup_slice($sa_url, $slice_id);
-error_log("point B $slice_id");
-$slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-error_log("SLIVER_RENEW SLICE_URN = $slice_urn");
+if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
+  error_log("Found no AMs!");
+  $slivers_output = "No AMs registered.";
+} else {
+  $slivers_output = "";
+  // Get the slice credential from the SA
+  $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+  
+  // Get the slice URN via the SA
+  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
+  error_log("SLIVER_RENEW SLICE_URN = $slice_urn");
 
-// Call renew sliver at the AM
-$sliver_output = renew_sliver($am_url, $user, $slice_credential,
-                               $slice_urn, $slice_expiration);
+  foreach ($ams as $am) {
+    if (is_array($am)) {
+      if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
+	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+      } else {
+	error_log("Malformed array of AM URLs?");
+	continue;
+      }
+    } else {
+      $am_url = $am;
+    }
+    error_log("SLIVER_RENEW AM_URL = " . $am_url);
 
-error_log("RenewSliver output = " . $sliver_output);
+    // Call renew sliver at the AM
+    $sliver_output = renew_sliver($am_url, $user, $slice_credential,
+				  $slice_urn, $slice_expiration);
+
+    error_log("RenewSliver output = " . $sliver_output);
+    $slivers_output = $slivers_output . $sliver_output . "\n";
+  }
+}
+
 
 $header = "Renewed Sliver on slice: $slice_name";
-$text = $sliver_output;
+$text = $slivers_output;
 include("print-text.php");
 
 

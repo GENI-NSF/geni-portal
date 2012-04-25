@@ -86,7 +86,7 @@ if (! isset($am) || is_null($am)) {
 $am_url = $am[SR_ARGUMENT::SERVICE_URL];
 // error_log("AM_URL = " . $am_url);
 
-$result = get_version($am_url, $user);
+//$result = get_version($am_url, $user);
 // error_log("VERSION = " . $result);
 
 // Get the slice credential from the SA

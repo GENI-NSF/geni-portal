@@ -36,18 +36,49 @@ if (!isset($user) || is_null($user) || ! $user->isActive() ) {
 }
 ?>
 <?php
-// Get an AM
-$am_url = get_first_service_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-// error_log("AM_URL = " . $am_url);
+// Takes an arg am_id which may have multiple values. Each is treated
+// as the ID from the DB of an AM which should be queried
+// If no such arg is given, then query the DB and query all registered AMs
 
-$result = get_version($am_url, $user);
-// error_log("VERSION = " . $result);
+if (! isset($ams) || is_null($ams)) {
+  // Didnt get an array of AMs
+  if (! isset($am) || is_null($am)) {
+    // Nor a single am
+    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  } else {
+    $ams = array();
+    $ams[] = $am;
+  }
+}
 
+if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
+  error_log("Found no AMs!");
+  $slivers_output = "No AMs registered.";
+} else {
+  $slivers_output = "";
 
-error_log("GetVersion output = " . $result);
+  foreach ($ams as $am) {
+    if (is_array($am)) {
+      if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
+	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+      } else {
+	error_log("Malformed array of AM URLs?");
+	continue;
+      }
+    } else {
+      $am_url = $am;
+    }
+
+    $result = get_version($am_url, $user);
+    // error_log("VERSION = " . $result);
+
+    error_log("GetVersion output = " . $result);
+    $slivers_output = $slivers_output . $result . "\n";
+  }
+}
 
 $header = "GetVersion";
-$text = $result;
+$text = $slivers_output;
 
 require_once("header.php");
 show_header('GENI Portal: Debug',  $TAB_DEBUG);
