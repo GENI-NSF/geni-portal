@@ -127,3 +127,14 @@ if (array_key_exists("rspec_id", $_REQUEST)) {
     }
   }
 }
+
+if (array_key_exists("am_id", $_REQUEST)) {
+  $am_id = $_REQUEST['am_id'];
+  $am = get_service_by_id($am_id);
+  if (is_null($am)) {
+    if ($am_id != '') {
+      error_log($script . ": invalid am_id $am_id from REQUEST");
+      $am_id = null;
+    }
+  }
+}
