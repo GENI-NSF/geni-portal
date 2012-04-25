@@ -8,9 +8,11 @@ DROP TABLE IF EXISTS service_registry;
 
 CREATE TABLE service_registry (
   id SERIAL,
-  service_type INT,
-  service_url VARCHAR,
-  service_cert vARCHAR,
+  service_type INT NOT NULL,
+  service_url VARCHAR NOT NULL,
+  service_cert VARCHAR,
+  service_name VARCHAR,
+  service_description VARCHAR,
   PRIMARY KEY (id)
 );
 
