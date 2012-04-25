@@ -266,6 +266,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
 		$slice_urn,
 		$time);
   $output = invoke_omni_function($am_url, $user, $args);
+  // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
   return $output;
 }
@@ -291,6 +292,8 @@ function create_sliver($am_url, $user, $slice_credential, $slice_urn,
 		'createsliver',
 		$slice_urn,
 		$rspec_filename);
+  // FIXME: Note that this AM has resources
+  // slice_id, am_url or ID, duration?
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
   return $output;
@@ -339,6 +342,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
 		$slice_credential_filename,
 		'deletesliver',
 		$slice_urn);
+  // Note that this AM no longer has resources
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
   return $output;
