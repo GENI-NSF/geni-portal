@@ -64,14 +64,21 @@ else
 print "<h2>Keys and Certificates for command line tools</h2>\n";
 $key = db_fetch_public_key($user->account_id);
 if ($key) {
+  require_once("am_client.php");
+  // must double backslash things in the omni_config here....
+  $omni_config = get_template_omni_config($user);
+  $omni_config = str_replace("\n", "\\n", $omni_config);
+  $configalert = "Here is a template Omni config file.\\nTo use this:\\n\\t1. Save it to a file named portal_omni_config.\\n\\t2. Download your certificate, noting the path.\\n\\t3. Edit the portal_omni_config to correct \\n\\t\\t(a) the certificate path, \\n\\t\\t(b) the path to the SSL private key used to generate your certificate, and \\n\\t\\t(c) the path to your SSH key to use for node logon.\\n\\t4. When running omni: \\n\\t\\ta) Do: omni -c portal_omni_config --slicecred <path to downloaded slice credential> ... to specify the path to this omni config and your downloaded slice credential\\n\\t\\tb) Use the full slice URN when naming your slice, not just the slice name\\n\\n$omni_config\\n";
+
   print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th><th>Owner URN</th></tr>\n";
+  print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th><th>Owner URN</th><th>Omni Config</th></tr>\n";
   $download_url = relative_url("certificate.php");
   print "<tr>"
     . "<td>" . htmlentities($key['filename']) . "</td>"
     . "<td>" . htmlentities($key['description']) . "</td>"
     . "<td><button onClick=\"window.location='" . $download_url . "'\">Download Certificate</button></td>"
     . "<td>urn:publicid:IDN+geni:gpo:portal+user+" . $user->username . "</td>"
+    . "<td><button onClick=\"JavaScript:alert('$configalert')\">Get Omni Config</button></td>"
     . "</tr>\n";
   print "</table>\n";
   // FIXME: Way to delete a key?

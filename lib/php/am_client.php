@@ -45,6 +45,27 @@ function write_ssh_keys($user)
   return $result;
 }
 
+function get_template_omni_config($user)
+{
+    /* Create OMNI config file */
+    $username = $user->username;
+    // FIXME: Add shortcuts for all known AMs?
+    $omni_config = "[omni]\n"
+      . "default_cf = portal\n"
+      . "users = $username\n"
+      . "\n"
+      . "[portal]\n"
+      . "type=gcf\n"
+      . "authority=geni:gpo:portal\n"
+      . "ch=https://notused.example.com\n"
+      . "cert=/PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
+      . "key=/PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
+      . "\n"
+      . "[$username]\n"
+      . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+      . "keys=/PATH/TO/SSH/PUBLIC/KEY.pem\n";
+    return $omni_config;
+}
 
 // Generic invocation of omni function 
 // Args:
