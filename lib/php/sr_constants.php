@@ -52,6 +52,7 @@ class SR_ARGUMENT
 {
   const SERVICE_URL = "service_url";
   const SERVICE_TYPE = "service_type";
+  const SERVICE_ID = "service_id";
 }
 
 /* Name of table to which the SR persists/retrieves model state */
@@ -59,9 +60,12 @@ $SR_TABLENAME = "service_registry";
 
 /* SR table has the following fields */
 class SR_TABLE_FIELDNAME {
+  const SERVICE_ID = "id";
   const SERVICE_TYPE = "service_type";
   const SERVICE_URL = "service_url";
   const SERVICE_CERT = "service_cert";
+  const SERVICE_NAME = "service_name";
+  const SERVICE_DESCRIPTION = "service_description";
 }
 
 /* Get name of singleton service registry (SR) instance */
