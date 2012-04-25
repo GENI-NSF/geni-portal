@@ -112,7 +112,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   /* echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>'; */
 
   /* Stylesheet(s) */
-  echo '<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
+  echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
 
   /* Close the "head" */
