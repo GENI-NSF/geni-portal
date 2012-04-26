@@ -33,8 +33,8 @@ require_once("sa_client.php");
 function show_rspec_chooser() {
   $all_rmd = fetchRSpecMetaData();
   print "Choose Resources:\n";
-  print "<select name=\"rspec_id\""
-    //. " onchange=\"$('#paste_rspec').hide(500)\""
+  print "<select name=\"rspec_id\" id=\"rspec_select\""
+    . " onchange=\"rspec_onchange()\""
     . ">\n";
   foreach ($all_rmd as $rmd) {
     $rid = $rmd['id'];
@@ -42,8 +42,25 @@ function show_rspec_chooser() {
     $rdesc = $rmd['description'];
     print "<option value=\"$rid\" title=\"$rdesc\">$rname</option>\n";
   }
+  print "<option value=\"paste\" title=\"Paste your own RSpec\">Paste</option>\n";
+  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
-  // print "<textarea id=\"paste_rspec\" name=\"rspec\" rows=\"10\" cols=\"40\"></textarea>\n";
+
+  // RSpec entry area
+  print '<span id="paste_rspec" style="display:none;vertical-align:top;">'
+    . PHP_EOL;
+  print '<label for="paste_rspec2">RSpec:</label>' . PHP_EOL;
+  print "<textarea id=\"paste_rspec2\" name=\"rspec\" rows=\"10\" cols=\"40\""
+    //. " style=\"display: none;\""
+    . "></textarea>\n";
+  print '</span>' . PHP_EOL;
+
+  // RSpec upload
+  print '<span id="upload_rspec" style="display:none;">'
+    . PHP_EOL;
+  print '<label for="rspec_file">RSpec File:</label>' . PHP_EOL;
+  print '<input type="file" name="rspec_file" id="rspec_file" />' . PHP_EOL;
+  print '</span>' . PHP_EOL;
 }
 
 function show_am_chooser() {
@@ -64,6 +81,9 @@ if (!isset($user) || is_null($user) || ! $user->isActive()
     || ! $user->privSlice()) {
   relative_redirect('home.php');
 }
+
+$mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
+add_js_script($mydir . '/slice-add-resources.js');
 show_header('GENI Portal: Slices', $TAB_SLICES);
 
 $slice_id = "None";

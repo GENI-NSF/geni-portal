@@ -98,8 +98,17 @@ if (! isset($ACTIVE_TAB)) {
   $ACTIVE_TAB = $TAB_HOME;
 }
 
+$extra_js = array();
+function add_js_script($script_url)
+{
+  global $extra_js;
+  $extra_js[] = $script_url;
+}
+
 function show_header($title, $active_tab = '', $load_user=1)
 {
+  global $extra_js;
+
   echo '<!DOCTYPE HTML>';
   echo '<html>';
   echo '<head>';
@@ -108,8 +117,12 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '</title>';
 
   /* Javascript stuff. */
-  /* echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>'; */
-  /* echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>'; */
+  echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>';
+  echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>';
+
+  foreach ($extra_js as $js_url) {
+    echo '<script src="' . $js_url . '"></script>' . PHP_EOL;
+  }
 
   /* Stylesheet(s) */
   echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
