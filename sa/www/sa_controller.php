@@ -315,6 +315,15 @@ function renew_slice($args)
 
   //  error_log("RENEW.sql = " . $sql);
 
+  // Log the creation
+  global $log_url;
+  $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
+  $project_context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
+  $slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
+  $slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
+  log_event($log_url, "Renewed slice " . $slice_name, array($project_context, $slice_context), $owner_id);
+
+
   $result = db_execute_statement($sql);
   // FIXME: If that succeeded, return the new slice expiration
   return $result;

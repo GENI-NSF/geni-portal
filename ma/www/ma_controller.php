@@ -23,6 +23,7 @@ require_once('response_format.php');
  *   lookup_attributes(ma_url, member_id);
  */
 
+
 /* Add a new attribute for a given member */
 function add_attribute($args)
 {
@@ -61,6 +62,7 @@ function add_attribute($args)
   //  error_log("INSERT.SQL = " . $sql);
 
   $result = db_execute_statement($sql);
+
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
