@@ -32,6 +32,7 @@
 
 require_once("smime.php");
 require_once('response_format.php');
+require_once('util.php');
 
 function handle_message($prefix)
 {
