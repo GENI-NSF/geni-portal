@@ -6,6 +6,7 @@ require_once('cs_constants.php');
 require_once('response_format.php');
 require_once('permission_manager.php');
 require_once('sr_constants.php');
+require_once('sr_client.php');
 
 /**
  * GENI Clearinghouse Credential Store (CS) controller interface

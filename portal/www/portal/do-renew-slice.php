@@ -28,6 +28,8 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
+require_once('util.php');
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
   relative_redirect('home.php');
@@ -46,8 +48,8 @@ if (isset($slice)) {
   $old_slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
 }
 
-$res = renew_slice($sa_url, $slice_id, $req_exp);
-// call sa_client renew_slice($slice_id, $expiration)
+$res = renew_slice($sa_url, $slice_id, $req_exp, $user->account_id);
+// call sa_client renew_slice($slice_id, $expiration, $owner)
 
 //error_log("Renew Slice output = " . $res);
 

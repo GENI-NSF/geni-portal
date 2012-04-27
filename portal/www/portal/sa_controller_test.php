@@ -71,7 +71,8 @@ $slice_info2 = $slice_info2['value'];
 $slice_id2 = $slice_info2['slice_id'];
 error_log("SLICE_ID2 = " . $slice_id2);
 dump_slices($project);
-renew_slice($sa_url, $slice_id2);
+$expire = time();
+renew_slice($sa_url, $slice_id2, $expire, $owner);
 dump_slices($project);
 
 relative_redirect('debug');

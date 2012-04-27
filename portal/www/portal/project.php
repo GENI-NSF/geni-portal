@@ -134,7 +134,7 @@ if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
 
 <h2>Recent Project Actions</h2>
 <table border="1">
-<tr><th>Time</th><th>Message</th>
+<tr><th>Time</th><th>Message</th><th>Member</th>
 <?php
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 $entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
@@ -142,8 +142,11 @@ if (is_array($entries)) {
   foreach($entries as $entry) {
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+    $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
+    $member = geni_loadUser($member_id);
+    $member_name = $member->prettyName();
     //    error_log("ENTRY = " . print_r($entry, true));
-    print "<tr><td>$time</td><td>$message</td></tr>\n";
+    print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
   }
 }
 ?>

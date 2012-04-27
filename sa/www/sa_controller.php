@@ -294,6 +294,7 @@ function renew_slice($args)
   global $SA_SLICE_TABLENAME;
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $requested = $args[SA_ARGUMENT::EXPIRATION];
+  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   //  error_log("got req $requested");
   $req_dt = new DateTime($requested);
 
@@ -315,13 +316,11 @@ function renew_slice($args)
 
   //  error_log("RENEW.sql = " . $sql);
 
-  // Log the creation
+  // Log the renewal
   global $log_url;
-  $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
-  $project_context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
   $slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
   $slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
-  log_event($log_url, "Renewed slice " . $slice_name, array($project_context, $slice_context), $owner_id);
+  log_event($log_url, "Renewed slice " , array($slice_context), $owner_id);
 
 
   $result = db_execute_statement($sql);

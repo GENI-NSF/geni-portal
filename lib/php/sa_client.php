@@ -29,7 +29,7 @@
 //   slice_id <= create_slice(project_id, slice_name, urn, owner_id);
 //   slice_ids <= lookup_slices(project_id);
 //   slice_details <= lookup_slice(slice_id);
-//   renew_slice(slice_id);
+//   renew_slice(slice_id, expiration, owner_id);
 
 require_once('sa_constants.php');
 
@@ -134,11 +134,12 @@ function lookup_slice($sa_url, $slice_id)
 }
 
 /* Renew slice of given id */
-function renew_slice($sa_url, $slice_id, $expiration)
+function renew_slice($sa_url, $slice_id, $expiration, $owner_id)
 {
   $renew_slice_message['operation'] = 'renew_slice';
   $renew_slice_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $renew_slice_message[SA_ARGUMENT::EXPIRATION] = $expiration;
+  $renew_slice_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
   $result = put_message($sa_url, $renew_slice_message);
   return $result;
 }
