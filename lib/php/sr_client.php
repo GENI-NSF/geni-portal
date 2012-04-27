@@ -4,7 +4,6 @@
 
 require_once('message_handler.php');
 
-const HARDCODED = false;
 const CACHED = true;
 const SERVICE_REGISTRY_CACHE_TAG = 'service_registry_cache';
 
@@ -18,32 +17,14 @@ if (CACHED) {
   $services_cached = true;
 }
 
-$HARDCODED_SERVICES[] = 
-  array(
-	array(SR_TABLE_FIELDNAME::SERVICE_TYPE => SR_SERVICE_TYPE::SLICE_AUTHORITY, 
-	      SR_TABLE_FIELDNAME::SERVICE_URL => "https://marilac.gpolab.bbn.com/sa/sa_controller.php"),
-	array(SR_TABLE_FIELDNAME::SERVICE_TYPE => SR_SERVICE_TYPE::PROJECT_AUTHORITY, 
-	      SR_TABLE_FIELDNAME::SERVICE_URL => "https://marilac.gpolab.bbn.com/pa/pa_controller.php"),
-	array(SR_TABLE_FIELDNAME::SERVICE_TYPE => SR_SERVICE_TYPE::MEMBER_AUTHORITY, 
-	      SR_TABLE_FIELDNAME::SERVICE_URL => "https://marilac.gpolab.bbn.com/ma/ma_controller.php"),
-	array(SR_TABLE_FIELDNAME::SERVICE_TYPE => SR_SERVICE_TYPE::LOGGING_SERVICE, 
-	      SR_TABLE_FIELDNAME::SERVICE_URL => "https://marilac.gpolab.bbn.com/logging/logging_controller.php"),
-	array(SR_TABLE_FIELDNAME::SERVICE_TYPE => SR_SERVICE_TYPE::CREDENTIAL_STORE, 
-	      SR_TABLE_FIELDNAME::SERVICE_URL => "https://marilac.gpolab.bbn.com/cs/cs_controller.php")
-	);
-
 
 // Return all services in registry
 function get_services()
 {
-  if (HARDCODED) {
-    global $HARDCODED_SERVICES;
-    return $HARDCODED_SERVICES;
-  }
   global $services_cached;
   if ($services_cached) {
     $services = $_SESSION[SERVICE_REGISTRY_CACHE_TAG];
-    return services;
+    return $services;
   } 
   $sr_url = get_sr_url();
   $get_services_message['operation'] = 'get_services';
@@ -75,20 +56,6 @@ function get_services_of_type($service_type)
 // Get first registered service of given service type
 function get_first_service_of_type($service_type)
 {
-  if (HARDCODED) {
-    switch($service_type) {
-    case SR_SERVICE_TYPE::SLICE_AUTHORITY:
-      return "https://marilac.gpolab.bbn.com/sa/sa_controller.php";
-    case SR_SERVICE_TYPE::PROJECT_AUTHORITY:
-      return "https://marilac.gpolab.bbn.com/pa/pa_controller.php";
-    case SR_SERVICE_TYPE::MEMBER_AUTHORITY:
-      return "https://marilac.gpolab.bbn.com/ma/ma_controller.php";
-    case SR_SERVICE_TYPE::LOGGING_SERVICE:
-      return "https://marilac.gpolab.bbn.com/logging/logging_controller.php";
-    case SR_SERVICE_TYPE::CREDENTIAL_STORE:
-      return "https://marilac.gpolab.bbn.com/cs/cs_controller.php";
-    }
-  }
   global $services_cached;
   if ($services_cached) {
     $sot = get_services_of_type($service_type);
