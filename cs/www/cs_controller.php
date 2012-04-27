@@ -7,6 +7,7 @@ require_once('response_format.php');
 require_once('permission_manager.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('logging_client.php');
 
 /**
  * GENI Clearinghouse Credential Store (CS) controller interface
@@ -96,12 +97,14 @@ function create_assertion($args)
   $result = db_execute_statement($sql);
 
   // Log the creation
-  global $log_url;
-  $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = $context_type;
-  $context[LOGGING_ARGUMENT::CONTEXT_ID] = $context;
-  log_event($log_url, "Created assertion ATTRIB=" . $attribute . 
-	    " PRINC=" . $principal,
-	    array($context), $signer);
+  if ($signer != null) {
+    global $log_url;
+    $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = $context_type;
+    $context[LOGGING_ARGUMENT::CONTEXT_ID] = $context;
+    log_event($log_url, "Created assertion ATTRIB=" . $attribute . 
+	      " PRINC=" . $principal,
+	      array($context), $signer);
+  }
 
   //  error_log("CS.create.result = " . print_r($result, true));
   return $result;
@@ -139,12 +142,14 @@ function create_policy($args)
   $result = db_execute_statement($sql);
 
   // Log the creation
-  global $log_url;
-  $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = $context_type;
-  $context[LOGGING_ARGUMENT::CONTEXT_ID] = null;
-  log_event($log_url, "Created policy ATTRIB=" . $attribute . 
-	    " PRIV=" . $privilege, 
-	    array($context), $signer);
+  if ($signer != null) {
+    global $log_url;
+    $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = $context_type;
+    $context[LOGGING_ARGUMENT::CONTEXT_ID] = null;
+    log_event($log_url, "Created policy ATTRIB=" . $attribute . 
+	      " PRIV=" . $privilege, 
+	      array($context), $signer);
+  }
 
 
   return $result;
