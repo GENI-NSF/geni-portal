@@ -1,0 +1,26 @@
+#!/bin/sh
+# -*- mode:sh -*-
+
+if [ -z "$1" -o -z "$2" ]; then
+    echo "Usage: sign-auth-req <req file> <cert output file> [CA]" 1>&2
+    exit 1
+fi
+
+REQ=$1
+OUT=$2
+
+if [ -z "$3" -o "$3" != "CA" ]; then
+    EXTARG=""
+else
+    EXTARG="-extensions v3_ca"
+fi
+
+OPENSSL=/usr/bin/openssl
+CONF=/usr/share/geni-ch/CA/openssl.cnf
+
+# This is the policy in the $CONF file that checks fields for validity.
+# Policy anything is not restrictive in any way.
+POLICYARG="-policy policy_anything"
+
+"${OPENSSL}" ca -config "${CONF}" ${EXTARG} ${POLICYARG} -batch \
+                -in "${REQ}" -out "${OUT}"
