@@ -35,7 +35,7 @@ install:
 	$(WWWINSTALL) -d $(BINDIR)
 	$(WWWINSTALL) -d $(PGDIR)
 	$(WWWINSTALL) bin/mkslicecert $(BINDIR)/mkslicecert
-	$(WWWINSTALL) bin/mkslicecred $(BINDIR)/mkslicecred
+	$(WWWINSTALL) bin/mkcred $(BINDIR)/mkcred
 	$(WWWINSTALL) -m 0644 www/* $(WWWDIR)
 	$(WWWINSTALL) -m 0644 php/* $(LIBDIR)
 	$(WWWINSTALL) -m 0644 db/postgresql/* $(PGDIR)
