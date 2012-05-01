@@ -30,6 +30,7 @@ install: www
 	sudo /bin/cp www/portal/* /var/www/secure
 	sudo /bin/cp www/images/* /var/www/images
 	sudo /bin/cp -r www/common /var/www/
+	sudo /bin/cp www/index.php /var/www/index.php
 	sudo $(INSTALL.WWW) -m 755 -d /var/www/policy
 	sudo $(INSTALL.WWW) -m 644 www/policy/* /var/www/policy
 	@echo
