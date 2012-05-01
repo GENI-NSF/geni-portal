@@ -101,6 +101,46 @@ function create_slice_credential($slice_cert, $experimenter_cert, $expiration,
   return $slice_cred;
 }
 
+/**
+ * Create a user credential and return it.
+ *
+ * The result is a string containing the signed credential (XML).
+ */
+function create_user_credential($experimenter_cert, $expiration,
+                                 $auth_cert_file, $auth_key_file)
+{
+  global $sa_mkcred_prog;
+  global $sa_gcf_include_path;
+
+  /* Write the slice and experimenter cert to a temp files. */
+  $slice_cert_file = writeDataToTempFile($slice_cert, "sa-");
+  $experimenter_cert_file = writeDataToTempFile($experimenter_cert, "sa-");
+
+  /* Run mkcred. */
+  $cmd_array = array($sa_mkcred_prog,
+		     'user',
+                     '--gcfpath',
+                     $sa_gcf_include_path,
+                     $auth_cert_file,
+                     $auth_key_file,
+                     $experimenter_cert_file,
+                     $experimenter_cert_file,
+                     date("c", $expiration));
+  $command = implode(" ", $cmd_array);
+  $result = exec($command, $output, $status);
+
+  /* Clean up temp files */
+  unlink($slice_cert_file);
+  unlink($experimenter_cert_file);
+
+  /* The slice credential is printed to stdout, which is captured in
+     $output as an array of lines. Crunch them all together in a
+     single string, separated by newlines.
+  */
+  $slice_cred = implode("\n", $output);
+  return $slice_cred;
+}
+
 function fetch_slice_by_id($slice_id)
 {
   global $SA_SLICE_TABLENAME;
