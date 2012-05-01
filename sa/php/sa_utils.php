@@ -69,15 +69,16 @@ function create_slice_certificate($slice_name, $slice_email, $slice_uuid,
 function create_slice_credential($slice_cert, $experimenter_cert, $expiration,
                                  $auth_cert_file, $auth_key_file)
 {
-  global $sa_mkslicecred_prog;
+  global $sa_mkcred_prog;
   global $sa_gcf_include_path;
 
   /* Write the slice and experimenter cert to a temp files. */
   $slice_cert_file = writeDataToTempFile($slice_cert, "sa-");
   $experimenter_cert_file = writeDataToTempFile($experimenter_cert, "sa-");
 
-  /* Run mkslicecred. */
-  $cmd_array = array($sa_mkslicecred_prog,
+  /* Run mkcred. */
+  $cmd_array = array($sa_mkcred_prog,
+		     'slice',
                      '--gcfpath',
                      $sa_gcf_include_path,
                      $auth_cert_file,
