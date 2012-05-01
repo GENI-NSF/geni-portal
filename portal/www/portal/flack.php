@@ -30,8 +30,9 @@ const FLACK_1_FILENAME = "flackportal-1.html";
 const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
 const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
+const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
-// Generate flack pages and return URL of top-level page
+// Generate flack pages and return contents of generated page
 function generate_flack_page($slice_urn, $ch_url, $sa_url, $user_cert, $user_key, $am_root_cert_bundle)
 {
 
@@ -40,18 +41,19 @@ function generate_flack_page($slice_urn, $ch_url, $sa_url, $user_cert, $user_key
   $content_2 = file_get_contents(FLACK_2_FILENAME);
   $content_3 = file_get_contents(FLACK_3_FILENAME);
 
-  $set_commands = 'setServerCert("' . $user_cert . '");' . "\n" 
+  $set_commands = 'setServerCert("' . $am_root_cert_bundle . '");' . "\n" 
     . 'setClientKey("' . $user_key . '");' . "\n"
     . 'setClientCert("' . $user_cert . '");' . "\n";
 
-  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&churl=$ch_url";
+  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=" . SA_URN. "&churl=$ch_url";
 
   $content = $content_1 . $set_commands . $content_2 . '"' . URL_PREAMBLE . $url_params . $content_3;
   file_put_contents($filename, $content);
-  return $filename;
+  return $content;
 }
 
-$filename = generate_flack_page('111', '222', '333', '444', '555', '666');
-print "FILENAME = " . $filename . "\n";
+$content = generate_flack_page('111', '222', '333', '444', '555', '666');
+
+print $content;
 
 ?>
