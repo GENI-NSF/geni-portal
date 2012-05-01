@@ -25,9 +25,10 @@
 #----------------------------------------------------------------------
 
 #----------------------------------------------------------------------
-# Create and return a slice credential.
+# Create and return a credential (slice or user).
 #
-# Sample usage: mkslicecred sa-cert sa-key slice-cert exp-cert \
+# Sample usage: mkcred [user|slice] signer-cert signer-key target-cert 
+#                           owner-cert \
 #                           "2012-03-22T17:00:00"
 #
 #
@@ -44,11 +45,16 @@ import sys
 
 
 def make_opt_parser():
-    usage = ("usage: %prog [options] <authority cert> <authority key>"
+    usage = ("usage: %prog [options] <cred_type> <authority cert> <authority key>"
              + " <slice cert> <experimenter cert> <expiration>")
     parser = OptionParser(usage)
     parser.add_option("--gcfpath", help="location of gcf src dir")
     return parser
+
+def validate_cred_type(arg):
+    if(arg == 'user' or arg == 'slice'):
+        return arg;
+    raise Exception("Illegal credential type %s" % (arg));
 
 def validate_auth_cert_file(arg):
     return arg
@@ -85,16 +91,17 @@ if options.gcfpath:
 from sfa.trust.gid import GID
 import geni.util.cred_util as cred_util
 
-if len(args) != 5:
+if len(args) != 6:
     opt_parser.print_usage()
     sys.exit(1)
 
 try:
-    auth_cert_file = validate_auth_cert_file(args[0])
-    auth_key_file = validate_auth_key_file(args[1])
-    slice_cert = validate_slice_cert(args[2])
-    exp_cert = validate_exp_cert(args[3])
-    expiration = validate_expiration(args[4])
+    cred_type = validate_cred_type(args[0])
+    auth_cert_file = validate_auth_cert_file(args[1])
+    auth_key_file = validate_auth_key_file(args[2])
+    target_cert = validate_slice_cert(args[3])
+    owner_cert = validate_exp_cert(args[4])
+    expiration = validate_expiration(args[5])
 except Exception, exc:
     # If there's an exception, just quit.
     # The validate routines should have printed an error.
@@ -102,7 +109,7 @@ except Exception, exc:
     sys.exit(1)
 
 
-slice_cred = cred_util.create_credential(exp_cert, slice_cert, expiration,
-                                         'slice', auth_key_file, auth_cert_file,
+cred = cred_util.create_credential(owner_cert, target_cert, expiration,
+                                         cred_type, auth_key_file, auth_cert_file,
                                          [auth_cert_file])
-print slice_cred.save_to_string()
+print cred.save_to_string()
