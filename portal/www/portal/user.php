@@ -95,6 +95,14 @@ class GeniUser
     return $this->attributes['mail'];
   }
 
+  /* FIXME: This needs to be an MA function. */
+  function urn() {
+    $fqdn = $_SERVER['SERVER_NAME'];
+    $site = implode(':', array_reverse(explode('.', $fqdn)));
+    $urn = "urn:publicid:IDN+$site+user+" . $this->username;
+    return $urn;
+  }
+
   function prettyName() {
     if (array_key_exists('givenName', $this->attributes)
         && array_key_exists('sn', $this->attributes)) {
