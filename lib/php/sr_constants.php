@@ -45,6 +45,7 @@ class SR_SERVICE_TYPE
   const AUTHORIZATION_SERVICE = 4;
   const LOGGING_SERVICE = 5;
   const CREDENTIAL_STORE = 6;
+  const CERTIFICATE_AUTHORITY = 7;
 }
 
 /* Set of arguments in calls to the SR interface */
