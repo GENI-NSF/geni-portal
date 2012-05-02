@@ -77,8 +77,10 @@ function get_user_credential($args)
   /* Extract method arguments. */
   $experimenter_cert = $args[SA_ARGUMENT::EXP_CERT];
 
+  // FIXME: Refuse to issue this credential if this experimenter cert is not one of ours
+
   // FIXME: Parametrize
-  $expiration = get_future_date(30); // 30 days increment
+  $expiration = get_future_date(30)->getTimestamp(); // 30 days increment
 
   $user_cred = create_user_credential($experimenter_cert,
                                         $expiration,
