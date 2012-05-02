@@ -36,39 +36,6 @@ if (! $public_key) {
   relative_redirect("home.php");
 }
 
-if ($public_key['certificate'] == NULL) {
-  // Write the public key to a file
-  $key_file = tempnam(sys_get_temp_dir(), 'portal');
-  file_put_contents($key_file, $public_key['public_key']);
-
-  // Run gen-certs.py and return it as the content.
-  $cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
-                     '-f',
-                     $portal_gcf_cfg_dir . '/gcf.ini',
-                     '--notAll',
-                     '-d',
-                     '/tmp',
-                     '-u',
-                     $user->username,
-                     '--pubkey',
-                     $key_file,
-                     '--exp'
-                     );
-  $command = implode(" ", $cmd_array);
-  $result = exec($command, $output, $status);
-  /* print_r($output); */
-  // The cert is on disk, read the file and store it in the db.
-  $cert_file = '/tmp/' . $user->username . "-cert.pem";
-  $contents = file_get_contents($cert_file);
-  db_add_key_cert($user->account_id, $contents);
-  // Delete the temporary key file
-  unlink($key_file);
-  // Delete the cert file
-  unlink($cert_file);
-} else {
-  $contents = $public_key['certificate'];
-}
-
 $filename = $public_key['filename'];
 if (! isset($filename) || is_null($filename) || trim($filename) == '') {
   $pn = $user->prettyName();
@@ -85,5 +52,5 @@ header("Content-Description: File Transfer");
 header("Content-Disposition: attachment; filename=$filename");
 header("Content-Type: application/pem");
 header("Content-Transfer-Encoding: binary");
-print $contents;
+print $public_key['certificate'];
 ?>
