@@ -23,6 +23,10 @@
 //----------------------------------------------------------------------
 
 require_once('file_utils.php');
+require_once('user.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
+require_once('db-util.php');
 
 // Utilities to generate page for embedding flack in the portal for a given slice
 
@@ -31,9 +35,13 @@ const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
 const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
+const SA_URL = "***SA_URL***";
+const CH_URL = "***CH_URL***";
 
-// Generate flack pages and return contents of generated page
-function generate_flack_page($slice_urn, $ch_url, $sa_url, $user_cert, $user_key, $am_root_cert_bundle)
+// Generate flack pages given all parameters
+// and return contents of generated page
+function generate_flack_page_internal($slice_urn, $ch_url, $sa_url, 
+				      $user_cert, $user_key, $am_root_cert_bundle)
 {
 
   $filename = "/tmp/" . make_uuid() . ".html";
@@ -52,7 +60,40 @@ function generate_flack_page($slice_urn, $ch_url, $sa_url, $user_cert, $user_key
   return $content;
 }
 
-$content = generate_flack_page('111', '222', '333', '444', '555', '666');
+function generate_flack_page($slice_urn)
+{
+  $user = geni_loadUser();
+  $sr_url = get_sr_url();
+  $am_services = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $ca_services = get_services_of_type(SR_SERVICE_TYPE::CERTIFICATE_AUTHORITY);
+  $ca_service = $ca_services[0];
+
+  //  error_log("AMs = " . print_r($am_services, true));
+  //  error_log("CA = " . print_r($ca_service, true));
+
+  // Get user private inside key and cert
+  $user_id = $user->account_id;
+  $user_cert_key = db_fetch_inside_private_key_cert($user_id);
+  $user_cert = $user_cert_key['certificate'];
+  $user_key = $user_cert_key['private_key'];
+
+  // Compute bundle of AM and CA certs
+  $root_cert_filename = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT];
+  //  error_log("FILE = " . $root_cert_filename);
+  $root_cert = file_get_contents($root_cert_filename);
+  $am_root_cert_bundle = $root_cert . "\n";
+  foreach($am_services as $am_service) {
+    $am_service_cert_filename = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT];
+    //    error_log("FILE = " . $am_service_cert_filename);
+    $am_service_cert = file_get_contents($am_service_cert_filename);
+    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert . "\n";
+  }
+
+  $content = generate_flack_page_internal($slice_urn, CH_URL, SA_URL, $user_cert, $user_key, 
+					  $am_root_cert_bundle);
+}
+
+$content = generate_flack_page_internal('111', '222', '333', '444', '555', '666');
 
 print $content;
 
