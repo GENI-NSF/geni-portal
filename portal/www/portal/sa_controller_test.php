@@ -23,15 +23,25 @@
 //----------------------------------------------------------------------
 
 require_once('util.php');
+require_once('file_utils.php');
+require_once('db_utils.php');
 require_once('sa_constants.php');
 require_once('sa_client.php');
+require_once('pa_constants.php');
+require_once('pa_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('user.php');
+
 
 error_log("SA TEST\n");
 
 $sr_url = get_sr_url();
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+
+$user = geni_loadUser();
+$owner = $user->account_id;
 
 function dump_slice($row)
 {
@@ -48,32 +58,36 @@ function dump_slice($row)
 function dump_slices($project)
 {
   global $sa_url;
-  $slice_ids = lookup_slices($sa_url, $project);
-  //  error_log("DSS.rows = " . print_r($slice_ids, true));
-  foreach($slice_ids as $slice_id) {
-    $slice = lookup_slice($sa_url, $slice_id);
+  global $owner;
+  $slices = lookup_slices($sa_url, $project, $owner);
+  error_log("DSS.rows = " . print_r($slices, true));
+  foreach($slices as $slice) {
     dump_slice($slice);
   }
 }
 
-$project = '11111111111111111111111111111111';
-$owner = '22222222222222222222222222222222';
-
-
+$project_name = make_uuid();
+$project = create_project($pa_url, $project_name, $owner, '');
 $slice_info = create_slice($sa_url, $project, 'SSS', $owner);
-$slice_info = $slice_info['value'];
-//error_log("SLICE_INFO " . print_r($slice_info, true));
+error_log("SLICE_INFO " . print_r($slice_info, true));
 $slice_id = $slice_info['slice_id'];
 error_log("SLICE_ID = " . $slice_id);
 dump_slices($project);
 $slice_info2 = create_slice($sa_url, $project, 'TTT', $owner);
-$slice_info2 = $slice_info2['value'];
 $slice_id2 = $slice_info2['slice_id'];
 error_log("SLICE_ID2 = " . $slice_id2);
 dump_slices($project);
-$expire = time();
+$now = new DateTime();
+$expire = db_date_format($now);
 renew_slice($sa_url, $slice_id2, $expire, $owner);
 dump_slices($project);
+
+$slice_urn = $slice_info[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
+$slice_info2 = lookup_slice_by_urn($sa_url, $slice_urn);
+error_log("LSBU " . $slice_urn);
+dump_slice($slice_info2);
+
+delete_project($pa_url, $project);
 
 relative_redirect('debug');
 

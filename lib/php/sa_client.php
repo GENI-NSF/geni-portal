@@ -29,6 +29,7 @@
 //   slice_id <= create_slice(project_id, slice_name, urn, owner_id);
 //   slice_ids <= lookup_slices(project_id);
 //   slice_details <= lookup_slice(slice_id);
+//   slice_details <= lookup_slice_by_urn(slice_urn);
 //   renew_slice(slice_id, expiration, owner_id);
 
 require_once('sa_constants.php');
@@ -128,6 +129,18 @@ function lookup_slice($sa_url, $slice_id)
   //  error_log("LS.start " . $slice_id . " " . time());
   $lookup_slice_message['operation'] = 'lookup_slice';
   $lookup_slice_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
+  $slice = put_message($sa_url, $lookup_slice_message);
+  //  error_log("LS.end " . $slice_id . " " . time());
+  return $slice;
+}
+
+/* lookup details of slice of given slice URN */
+// Return array(id, name, project_id, expiration, owner_id, urn)
+function lookup_slice_by_urn($sa_url, $slice_urn)
+{
+  //  error_log("LS.start " . $slice_id . " " . time());
+  $lookup_slice_message['operation'] = 'lookup_slice_by_urn';
+  $lookup_slice_message[SA_ARGUMENT::SLICE_URN] = $slice_urn;
   $slice = put_message($sa_url, $lookup_slice_message);
   //  error_log("LS.end " . $slice_id . " " . time());
   return $slice;

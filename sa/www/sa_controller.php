@@ -289,13 +289,39 @@ function lookup_slice($args)
   return $row;
 }
 
+function lookup_slice_by_urn($args)
+{
+  // FIXME: create sa_utils::fetch_slice_by_urn and then
+  // filter columns before returning (we don't need everything!)
+
+  global $SA_SLICE_TABLENAME;
+
+  $slice_urn = $args[SA_ARGUMENT::SLICE_URN];
+
+  $sql = "SELECT " 
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
+    . " FROM " . $SA_SLICE_TABLENAME
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_URN
+    . " = '" . $slice_urn . "'";
+  //  error_log("LOOKUP_SLICE.SQL = " . $sql);
+  $row = db_fetch_row($sql);
+  // error_log("LOOKUP_SLICE.ROW = " . print_r($row, true));
+  return $row;
+}
+
 function renew_slice($args)
 {
   global $SA_SLICE_TABLENAME;
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $requested = $args[SA_ARGUMENT::EXPIRATION];
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
-  //  error_log("got req $requested");
+  // error_log("got req $requested");
   $req_dt = new DateTime($requested);
 
   // FIXME: Shouldn't this depend on the current expiration?
