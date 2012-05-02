@@ -22,6 +22,8 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once('file_utils.php');
+
 /**
  * Functions to help with certificate handling.
  */
