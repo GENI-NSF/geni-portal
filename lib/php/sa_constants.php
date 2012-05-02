@@ -37,6 +37,7 @@ class SA_ARGUMENT
   const EXPIRATION = "expiration";
   const EXP_CERT = "experimenter_certificate";
   const SLICE_CREDENTIAL = "slice_credential";
+  const USER_CREDENTIAL = "user_credential";
   const SLICE_EMAIL = "slice_email";
 }
 

@@ -209,19 +209,28 @@ function lookup_project($args)
   global $PA_PROJECT_TABLENAME;
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
-  if (! isset($project_id) || is_null($project_id) || $project_id == '') {
-    error_log("Missing project ID to lookup_project");
+  $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
+  if ((! isset($project_id) || is_null($project_id) || $project_id == '')  && (! isset($project_name) || is_null($project_name) || $project_name == '')) {
+    error_log("Missing project ID and project name to lookup_project");
     return null;
   }
 
+  if (isset($project_id) && ! is_null($project_id) && $project_id != '') {
+    $where = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
+      . " = '" . $project_id . "'";
+  } else {
+    $where = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME 
+      . " = '" . $project_name . "'";
+  }
+
   $sql = "select "  
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE 
     . " FROM " . $PA_PROJECT_TABLENAME
-    . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
-    . " = '" . $project_id . "'";
+    . $where;
 
   //  error_log("LOOKUP.sql = " . $sql);
 

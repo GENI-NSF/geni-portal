@@ -66,6 +66,31 @@ function get_slice_credential($args)
   return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
 
+/* Create a user credential and return it */
+function get_user_credential($args)
+{
+  /* site settings */
+  global $sa_authority_cert;
+  global $sa_authority_private_key;
+  global $sa_gcf_include_path;
+
+  /* Extract method arguments. */
+  $experimenter_cert = $args[SA_ARGUMENT::EXP_CERT];
+
+  // FIXME: Refuse to issue this credential if this experimenter cert is not one of ours
+
+  // FIXME: Parametrize
+  $expiration = get_future_date(30)->getTimestamp(); // 30 days increment
+
+  $user_cred = create_user_credential($experimenter_cert,
+                                        $expiration,
+                                        $sa_authority_cert,
+                                        $sa_authority_private_key);
+
+  $result = array(SA_ARGUMENT::USER_CREDENTIAL => $user_cred);
+  return generate_response(RESPONSE_ERROR::NONE, $result, '');
+}
+
 /* Create a slice for given project, name, urn, owner_id */
 function create_slice($args)
 {
@@ -305,6 +330,7 @@ function lookup_slice_by_urn($args)
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CERTIFICATE . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_URN
