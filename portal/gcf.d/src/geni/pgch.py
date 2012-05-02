@@ -252,7 +252,7 @@ class PGClearinghouse(object):
             self.logger.info("Registering AM %s at %s", urn, url)
             self.aggs.append((urn, url))
             
-    def loadURLs():
+    def loadURLs(self):
         for (key, val) in self.config['clearinghouse'].items():
             if key.lower() == 'sa_url':
                 self.sa_url = val.strip()
@@ -262,6 +262,9 @@ class PGClearinghouse(object):
                 continue
             if key.lower() == 'sr_url':
                 self.sr_url = val.strip()
+                continue
+            if key.lower() == 'pa_url':
+                self.pa_url = val.strip()
                 continue
         
     def runserver(self, addr, keyfile=None, certfile=None,
@@ -311,7 +314,7 @@ class PGClearinghouse(object):
         elif os.path.isdir(os.path.expanduser(ca_certs)):
             self.ca_cert_fnames = [os.path.join(os.path.expanduser(ca_certs), name) for name in os.listdir(os.path.expanduser(ca_certs)) if name != cred_util.CredentialVerifier.CATEDCERTSFNAME]
 
-        self._cred_verifier = geni.CredentialVerifier(ca_certs)
+        self._cred_verifier = cred_util.CredentialVerifier(ca_certs)
 
         # Create the xmlrpc server, load the rootkeys and do the ssl thing.
         self._server = self._make_server(addr, keyfile, certfile,
@@ -342,6 +345,7 @@ class PGClearinghouse(object):
 
     def GetCredential(self, args=None):
         # FIXME: Validate client cert signed by me?
+        # Without that, we give an experimenter credential to anyone
         #args: credential, type, uuid, urn
         credential = None
         if args and args.has_key('credential'):
@@ -373,12 +377,16 @@ class PGClearinghouse(object):
                 argsdict=dict(experimenter_certificate=self._server.pem_cert)
                 restriple = None
                 try:
-                    restriple = invokeCH(sa_url, "get_user_credential", self.logger, argsdict)
+                    restriple = invokeCH(self.sa_url, "get_user_credential", self.logger, argsdict)
                 except Exception, e:
                     self.logger.error("GetCred exception invoking get_user_credential: %s", e)
                     raise
-                return getValueFromTriple(restriple, self.logger, "get_user_credential")
-
+                res = getValueFromTriple(restriple, self.logger, "get_user_credential", unwrap=True)
+                if res and res.has_key("user_credential"):
+                    return res["user_credential"]
+                else:
+                    self.logger.error("GetCred got result not array or no user_credential: %s", res)
+                    raise Exception("GetCred got result not array or no user_credential: %s" % res)
 
         if not type or type.lower() != 'slice':
             self.logger.error("Expected type of slice, got %s", type)
@@ -402,7 +410,10 @@ class PGClearinghouse(object):
             return self.CreateSlice(urn)
 
         # Validate user credential
-        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
+        creds = list()
+        creds.append(credential)
+        privs = ()
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, creds, None, privs)
 
         # Need the slice_id given the urn
         # need the client cert
@@ -411,11 +422,17 @@ class PGClearinghouse(object):
             argsdict=dict(slice_urn=urn)
             slicetriple = None
             try:
-                slicetriple = invokeCH(sa_url, 'lookup_slice_by_urn', self.logger, argsdict)
+                slicetriple = invokeCH(self.sa_url, 'lookup_slice_by_urn', self.logger, argsdict)
             except Exception, e:
                 self.logger.error("Exception doing lookup_slice: %s" % e)
                 raise
-            sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred", unwrap=True)
+            sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred")
+            if sliceval and sliceval.has_key("code") and sliceval["code"] == 0:
+                sliceval = sliceval["value"]
+            else:
+                self.logger.info("Found no slice by urn %s" % urn)
+                return sliceval
+
             if not sliceval or not sliceval.has_key('slice_id'):
                 self.logger.error("malformed slice value from lookup_slice: %s" % sliceval)
                 raise Exception("malformed sliceval from lookup_slice")
@@ -426,7 +443,7 @@ class PGClearinghouse(object):
         argsdict = dict(experimenter_certificate=self._server.pem_cert, slice_id=slice_id)
         res = None
         try:
-            res = invokeCH(sa_url, 'get_slice_credential', self.logger, argsdict)
+            res = invokeCH(self.sa_url, 'get_slice_credential', self.logger, argsdict)
         except Exception, e:
             self.logger.error("Exception doing get_slice_cred: %s" % e)
             raise
@@ -466,7 +483,10 @@ class PGClearinghouse(object):
             raise Exception("Resolve missing credential")
 
         # Validate user credential
-        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
+        creds = list()
+        creds.append(credential)
+        privs = ()
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, creds, None, privs)
 
         # confirm type is Slice or User
         if not type:
@@ -520,12 +540,18 @@ class PGClearinghouse(object):
                     op = 'lookup_slice'
                 slicetriple = None
                 try:
-                    slicetriple = invokeCH(sa_url, op, self.logger, argsdict)
+                    slicetriple = invokeCH(self.sa_url, op, self.logger, argsdict)
                 except Exception, e:
                     self.logger.error("Exception doing lookup_slice: %s" % e)
                     raise
                 # FIXME: What do we return if there is no such slice?
-                sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred", unwrap=True)
+                sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred")
+                if sliceval and sliceval.has_key("code") and sliceval["code"] == 0:
+                    sliceval = sliceval["value"]
+                else:
+                    self.logger.info("Found no slice by urn %s" % urn)
+                    return sliceval
+
                 if not sliceval or not sliceval.has_key('slice_id'):
                     self.logger.error("malformed slice value from lookup_slice: %s" % sliceval)
                     raise Exception("malformed sliceval from lookup_slice")
@@ -589,7 +615,10 @@ class PGClearinghouse(object):
             raise Exception("Register missing credential")
 
         # Validate user credential
-        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
+        creds = list()
+        creds.append(credential)
+        privs = ()
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, creds, None, privs)
 
         # confirm type is Slice or User
         if not type:
@@ -624,7 +653,7 @@ class PGClearinghouse(object):
                 argsdict = dict(project_name=project_name)
                 projtriple = None
                 try:
-                    projtriple = invokeCH(pa_url, "lookup_project", self.logger, argsdict)
+                    projtriple = invokeCH(self.pa_url, "lookup_project", self.logger, argsdict)
                 except Exception, e:
                     self.logger.error("Exception getting project of name %s: %s", project_name, e)
                     #raise
@@ -634,7 +663,7 @@ class PGClearinghouse(object):
             argsdict = dict(project_id=project_id, slice_name=slice_name, owner_id=owner_id)
             slicetriple = None
             try:
-                slicetriple = invokeCH(sa_url, "create_slice", self.logger, argsdict)
+                slicetriple = invokeCH(self.sa_url, "create_slice", self.logger, argsdict)
             except Exception, e:
                 self.logger.error("Exception creating slice %s: %s" % (urn, e))
                 raise
@@ -645,7 +674,7 @@ class PGClearinghouse(object):
             argsdict = dict(experimenter_certificate=self._server.pem_cert, slice_id=sliceval['slice_id'])
             res = None
             try:
-                res = invokeCH(sa_url, 'get_slice_credential', self.logger, argsdict)
+                res = invokeCH(self.sa_url, 'get_slice_credential', self.logger, argsdict)
             except Exception, e:
                 self.logger.error("Exception doing get_slice_cred after create_slice: %s" % e)
                 raise
@@ -668,14 +697,19 @@ class PGClearinghouse(object):
         if credential is None:
             raise Exception("Resolve missing credential")
 
+        self.logger.info("in delegate getkeys about to do cred verify")
         # Validate user credential
-        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
-
+        creds = list()
+        creds.append(credential)
+        privs = ()
+        self.logger.info("type of credential: %s. Type of creds: %s", type(credential), type(creds))
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, creds, None, privs)
+        self.logger.info("getkeys did cred verify")
         # With the real CH, the SSH keys are held by the portal, not the CH
         # see db-util.php#fetchSshKeys which queries the ssh_key table in the portal DB
         # it takes an account_id
         user_uuid = user_gid.get_uuid();
-        self.logger.debug("GetKeys called for user with uuid %s" % user_uuid)
+        self.logger.info("GetKeys called for user with uuid %s" % user_uuid)
         # FIXME
         # I could add code here that invokes via a shell to log into the portaldb directly or something...
 
@@ -703,7 +737,10 @@ class PGClearinghouse(object):
             raise Exception("Resolve missing credential")
 
         # Validate user credential
-        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
+        creds = list()
+        creds.append(credential)
+        privs = ()
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, creds, None, privs)
 
         if self.gcf:
             ret = list()
@@ -716,7 +753,7 @@ class PGClearinghouse(object):
             argsdict = dict(service_type=0)
             amstriple = None
             try:
-                amstriple = invokeCH(sr_url, "get_services_of_type", self.logger, argsdict)
+                amstriple = invokeCH(self.sr_url, "get_services_of_type", self.logger, argsdict)
             except Exception, e:
                 self.logger.error("Exception looking up AMs at SR: %s", e)
                 raise
@@ -938,7 +975,7 @@ def invokeCH(url, operation, logger, argsdict, mycert=None, mykey=None):
     argstr = json.dumps(toencode)
 
     logger.info("Will do put of %s", argstr)
-    print ("Doing  put of %s" % argstr)
+#    print ("Doing  put of %s" % argstr)
 
     # now http put this, grab result into putres
     # This is the most trivial put client. This appears to be harder to do / less common than you would expect.
@@ -955,14 +992,14 @@ def invokeCH(url, operation, logger, argsdict, mycert=None, mykey=None):
         putresHandle = opener.open(req)
     except Exception, e:
         logger.error("invokeCH failed to open conn to %s: %s", url, e)
-        return None
+        raise Exception("invokeCH failed to open conn to %s: %s" % (url, e))
 
     if putresHandle:
         try:
             putres=putresHandle.read()
         except Exception, e:
             logger.error("invokeCH failed to read result of put to %s: %s", url, e)
-            return None
+            raise Exception("invokeCH failed to read result of put to %s: %s" % (url, e))
 
     resdict = None
     if putres:
@@ -974,10 +1011,10 @@ def invokeCH(url, operation, logger, argsdict, mycert=None, mykey=None):
 
 def getValueFromTriple(triple, logger, opname, unwrap=False):
     if not triple:
-        self.logger.error("Got empty result triple after %s" % opname)
+        logger.error("Got empty result triple after %s" % opname)
         raise Exception("Return struct was null for %s" % opname)
     if not triple.has_key('value'):
-        self.logger.error("Malformed return from %s: %s" % (opname, triple))
+        logger.error("Malformed return from %s: %s" % (opname, triple))
         raise Exception("malformed return from %s: %s" % (opname, triple))
     if unwrap:
         return triple['value']
