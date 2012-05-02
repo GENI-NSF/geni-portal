@@ -32,6 +32,8 @@ import datetime
 import traceback
 import uuid
 import os
+import json
+import urllib2
 
 import dateutil.parser
 from SecureXMLRPCServer import SecureXMLRPCServer
@@ -193,10 +195,11 @@ class PGSAnCHServer(object):
 
 class PGClearinghouse(object):
 
-    def __init__(self):
+    def __init__(self, gcf=False):
         self.logger = cred_util.logging.getLogger('gcf-pgch')
         self.slices = {}
         self.aggs = []
+        self.gcf=gcf
 
     def load_aggregates(self):
         """Loads aggregates from the clearinghouse section of the config file.
@@ -229,9 +232,17 @@ class PGClearinghouse(object):
             self.logger.info("Registering AM %s at %s", urn, url)
             self.aggs.append((urn, url))
             
-        
-        
-        
+    def loadURLs():
+        for (key, val) in self.config['clearinghouse'].items():
+            if key.lower() == 'sa_url':
+                self.sa_url = val.strip()
+                continue
+            if key.lower() == 'ma_url':
+                self.ma_url = val.strip()
+                continue
+            if key.lower() == 'sr_url':
+                self.sr_url = val.strip()
+                continue
         
     def runserver(self, addr, keyfile=None, certfile=None,
                   ca_certs=None, authority=None,
@@ -267,6 +278,8 @@ class PGClearinghouse(object):
         # Load up the aggregates
         self.load_aggregates()
         
+        # load up URLs for things we proxy for
+        self.loadURLs()
 
         # This is the arg to _make_server
         ca_certs_onefname = cred_util.CredentialVerifier.getCAsFileFromDir(ca_certs)
@@ -329,7 +342,12 @@ class PGClearinghouse(object):
         self.logger.debug("Constructed user_gid")
         if credential is None:
             # return user credential
-            return self.CreateUserCredential(self._server.pem_cert)
+
+            if self.gcf:
+                return self.CreateUserCredential(self._server.pem_cert)
+            else:
+                # follow make_user_credential in sa/php/sa_utils?
+                raise Exception("Real CH get user cred not implemented")
 
         if not type or type.lower() != 'slice':
             self.logger.error("Expected type of slice, got %s", type)
@@ -338,18 +356,44 @@ class PGClearinghouse(object):
         if not urn and not uuid:
             raise Exception("Missing ID for slice to get credential for")
         if urn and not urn_util.is_valid_urn(urn):
-            self.logger.error("URN not a valid URN: %s", id)
+            self.logger.error("URN not a valid URN: %s", urn)
             # Confirm it is a valid UUID
-            raise Exception("FIXME: Look up slice by UUID")
+            raise Exception("Given invalid URN to look up slice %s. FIXME: Look up slice by UUID?" % urn)
 
         if uuid:
             # FIXME: Check a valid UUID
             # look up by uuid
-            self.logger.error("Got UUID in GetCredential - unsupported")
+            raise Exception("Got UUID in GetCredential - unsupported")
 
-        # For now, do this as a createslice
-        # FIXME: This must look it up
-        return self.CreateSlice(urn)
+        if self.gcf:
+            # For now, do this as a createslice
+            return self.CreateSlice(urn)
+            # FIXME: This must look it up
+
+        # FIXME: Need the slice_id given the urn
+        # need the client cert
+        # lookup_slice with arg slice_urn
+        argsdict=dict(slice_urn=urn)
+        slicetriple = None
+        try:
+            slicetriple = invokeCH(sa_url, 'lookup_slice_by_urn', self.logger, argsdict)
+        except Exception, e:
+            self.logger.error("Exception doing lookup_slice: %s" % e)
+            raise
+        sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred")
+        if not sliceval or not sliceval.has_key('slice_id'):
+            self.logger.error("malformed slice value from lookup_slice: %s" % sliceval)
+            raise Exception("malformed sliceval from lookup_slice")
+        slice_id=sliceval['slice_id']
+        self.logger.info("Found slice id %s for urn %s", slice_id, urn)
+        argsdict = dict(experimenter_certificate=self._server.pem_cert, slice_id=slice_id)
+        res = None
+        try:
+            res = invokeCH(sa_url, 'get_slice_credential', self.logger, argsdict)
+        except Exception, e:
+            self.logger.error("Exception doing get_slice_cred: %s" % e)
+            raise
+        return getValueFromTriple(res, self.logger, "get_slice_credential")
 
     def Resolve(self, args):
         # args: credential, hrn, urn, uuid, type
@@ -685,3 +729,93 @@ class PGClearinghouse(object):
         # are my user and slice
         return cred_util.create_credential(user_gid, slice_gid, expiration, 'slice', self.keyfile, self.certfile, self.trusted_root_files, delegatable)
 
+# Force the unicode strings python creates to be ascii
+def _decode_list(data):
+    rv = []
+    for item in data:
+        if isinstance(item, unicode):
+            item = item.encode('utf-8')
+        elif isinstance(item, list):
+            item = _decode_list(item)
+        elif isinstance(item, dict):
+            item = _decode_dict(item)
+        rv.append(item)
+    return rv
+
+# Force the unicode strings python creates to be ascii
+def _decode_dict(data):
+    rv = {}
+    for key, value in data.iteritems():
+        if isinstance(key, unicode):
+           key = key.encode('utf-8')
+        if isinstance(value, unicode):
+           value = value.encode('utf-8')
+        elif isinstance(value, list):
+           value = _decode_list(value)
+        elif isinstance(value, dict):
+           value = _decode_dict(value)
+        rv[key] = value
+    return rv
+
+def invokeCH(url, operation, logger, argsdict, mycert=None, mykey=None):
+    # Invoke the real CH
+    # for now, this should json encode the args and operation, do an http put
+    # entry 1 in dict is named operation and is the operation, rest are args
+    # json decode result, getting a dict
+    # return the result
+    if not operation or operation.strip() == '':
+        raise Exception("missing operation")
+    if not url or url.strip() == '':
+        raise Exception("missing url")
+    if not argsdict:
+        raise Exception("missing argsdict")
+
+    # Put operation in front of argsdict
+    toencode = dict(operation=operation)
+    for (k,v) in argsdict.items():
+        toencode[k]=v
+    argstr = json.dumps(toencode)
+
+    logger.info("Will do put of %s", argstr)
+    print ("Doing  put of %s" % argstr)
+
+    # now http put this, grab result into putres
+    # This is the most trivial put client. This appears to be harder to do / less common than you would expect.
+    # See httplib2 for an alternative approach using another library.
+    # This approach isn't very robust, may have other issues
+    opener = urllib2.build_opener(urllib2.HTTPSHandler)
+    req = urllib2.Request(url, data=argstr)
+    req.add_header('Content-Type', 'application/json')
+    req.get_method = lambda: 'PUT'
+
+    putres = None
+    putresHandle = None
+    try:
+        putresHandle = opener.open(req)
+    except Exception, e:
+        logger.error("invokeCH failed to open conn to %s: %s", url, e)
+        return None
+
+    if putresHandle:
+        try:
+            putres=putresHandle.read()
+        except Exception, e:
+            logger.error("invokeCH failed to read result of put to %s: %s", url, e)
+            return None
+
+    resdict = None
+    if putres:
+        logger.debug("invokeCH Got result of %s" % putres)
+        resdict = json.loads(putres, encoding='ascii', object_hook=_decode_dict)
+    
+    # FIXME: Check for code, value, output keys?
+    return resdict
+
+def getValueFromTriple(triple, logger, opname):
+    if not triple:
+        self.logger.error("Got empty result triple after %s" % opname)
+        raise Exception("Return struct was null for %s" % opname)
+    if not triple.has_key('value'):
+        self.logger.error("Malformed return from %s: %s" % (opname, triple))
+        raise Exception("malformed return from %s: %s" % (opname, triple))
+    return triple['value']
