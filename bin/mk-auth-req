@@ -1,18 +1,17 @@
 #!/bin/sh
 # -*- mode:sh -*-
 
-if [ -z "$1" -o -z "$2" -o -z "$3" ]; then
-    echo "Usage: mk-auth-req <authority> <key output file> <req output file>" 1>&2
+if [ -z "$1" -o -z "$2" ]; then
+    echo "Usage: mk-auth-req <key output file> <req output file>" 1>&2
     exit 1
 fi
 
-AUTHORITY=$1
-KEYFILE=$2
-REQFILE=$3
+KEYFILE=$1
+REQFILE=$2
 
 OPENSSL=/usr/bin/openssl
-FQDN=`hostname -f`
-SUBJECT="/CN=${AUTHORITY}.${FQDN}"
+UUID=`/usr/bin/uuidgen -t`
+SUBJECT="/CN=${UUID}"
 
 "${OPENSSL}" req -new -newkey rsa:1024 -nodes \
                  -subj "${SUBJECT}" \
