@@ -91,10 +91,11 @@ function generate_flack_page($slice_urn)
 
   $content = generate_flack_page_internal($slice_urn, CH_URL, SA_URL, $user_cert, $user_key, 
 					  $am_root_cert_bundle);
+
+  return $content;
 }
 
-$content = generate_flack_page_internal('111', '222', '333', '444', '555', '666');
-
-print $content;
+// $content = generate_flack_page_internal('111', '222', '333', '444', '555', '666');
+// print $content;
 
 ?>
