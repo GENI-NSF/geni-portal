@@ -90,7 +90,11 @@ class PGSAnCHServer(object):
             value = self._delegate.GetCredential(args)
         except Exception, e:
             output = str(e)
-            code = 1 # FIXME: Better codes
+            code = 1 # FIXME: Better codes.
+
+        # If the underlying thing is a triple, return it as is
+        if isinstance(value, dict) and value.has_key('value'):
+            return value
             
         return dict(code=code, value=value, output=output)
 
@@ -132,6 +136,10 @@ class PGSAnCHServer(object):
             output = str(e)
             code = 1 # FIXME: Better codes
             
+        # If the underlying thing is a triple, return it as is
+        if isinstance(value, dict) and value.has_key('value'):
+            return value
+            
         return dict(code=code, value=value, output=output)
 
     def Register(self, args):
@@ -149,6 +157,10 @@ class PGSAnCHServer(object):
             output = str(e)
             code = 1 # FIXME: Better codes
             
+        # If the underlying thing is a triple, return it as is
+        if isinstance(value, dict) and value.has_key('value'):
+            return value
+            
         return dict(code=code, value=value, output=output)
 
 # Skipping Remove, DiscoverResources
@@ -165,6 +177,10 @@ class PGSAnCHServer(object):
         except Exception, e:
             output = str(e)
             code = 1 # FIXME: Better codes
+            
+        # If the underlying thing is a triple, return it as is
+        if isinstance(value, dict) and value.has_key('value'):
+            return value
             
         return dict(code=code, value=value, output=output)
 
@@ -188,6 +204,10 @@ class PGSAnCHServer(object):
         except Exception, e:
             output = str(e)
             code = 1 # FIXME: Better codes
+            
+        # If the underlying thing is a triple, return it as is
+        if isinstance(value, dict) and value.has_key('value'):
+            return value
             
         return dict(code=code, value=value, output=output)
 
@@ -291,6 +311,8 @@ class PGClearinghouse(object):
         elif os.path.isdir(os.path.expanduser(ca_certs)):
             self.ca_cert_fnames = [os.path.join(os.path.expanduser(ca_certs), name) for name in os.listdir(os.path.expanduser(ca_certs)) if name != cred_util.CredentialVerifier.CATEDCERTSFNAME]
 
+        self._cred_verifier = geni.CredentialVerifier(ca_certs)
+
         # Create the xmlrpc server, load the rootkeys and do the ssl thing.
         self._server = self._make_server(addr, keyfile, certfile,
                                          ca_certs_onefname)
@@ -347,7 +369,16 @@ class PGClearinghouse(object):
                 return self.CreateUserCredential(self._server.pem_cert)
             else:
                 # follow make_user_credential in sa/php/sa_utils?
-                raise Exception("Real CH get user cred not implemented")
+                # get_user_credential(experimenter_certificate=exp_cert)
+                argsdict=dict(experimenter_certificate=self._server.pem_cert)
+                restriple = None
+                try:
+                    restriple = invokeCH(sa_url, "get_user_credential", self.logger, argsdict)
+                except Exception, e:
+                    self.logger.error("GetCred exception invoking get_user_credential: %s", e)
+                    raise
+                return getValueFromTriple(restriple, self.logger, "get_user_credential")
+
 
         if not type or type.lower() != 'slice':
             self.logger.error("Expected type of slice, got %s", type)
@@ -358,34 +389,40 @@ class PGClearinghouse(object):
         if urn and not urn_util.is_valid_urn(urn):
             self.logger.error("URN not a valid URN: %s", urn)
             # Confirm it is a valid UUID
-            raise Exception("Given invalid URN to look up slice %s. FIXME: Look up slice by UUID?" % urn)
+            raise Exception("Given invalid URN to look up slice %s. Look up slice by UUID?" % urn)
 
         if uuid:
             # FIXME: Check a valid UUID
             # look up by uuid
-            raise Exception("Got UUID in GetCredential - unsupported")
+            if self.gcf:
+                raise Exception("Got UUID in GetCredential - unsupported")
 
         if self.gcf:
             # For now, do this as a createslice
             return self.CreateSlice(urn)
-            # FIXME: This must look it up
 
-        # FIXME: Need the slice_id given the urn
+        # Validate user credential
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
+
+        # Need the slice_id given the urn
         # need the client cert
         # lookup_slice with arg slice_urn
-        argsdict=dict(slice_urn=urn)
-        slicetriple = None
-        try:
-            slicetriple = invokeCH(sa_url, 'lookup_slice_by_urn', self.logger, argsdict)
-        except Exception, e:
-            self.logger.error("Exception doing lookup_slice: %s" % e)
-            raise
-        sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred")
-        if not sliceval or not sliceval.has_key('slice_id'):
-            self.logger.error("malformed slice value from lookup_slice: %s" % sliceval)
-            raise Exception("malformed sliceval from lookup_slice")
-        slice_id=sliceval['slice_id']
-        self.logger.info("Found slice id %s for urn %s", slice_id, urn)
+        if not uuid:
+            argsdict=dict(slice_urn=urn)
+            slicetriple = None
+            try:
+                slicetriple = invokeCH(sa_url, 'lookup_slice_by_urn', self.logger, argsdict)
+            except Exception, e:
+                self.logger.error("Exception doing lookup_slice: %s" % e)
+                raise
+            sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred", unwrap=True)
+            if not sliceval or not sliceval.has_key('slice_id'):
+                self.logger.error("malformed slice value from lookup_slice: %s" % sliceval)
+                raise Exception("malformed sliceval from lookup_slice")
+            slice_id=sliceval['slice_id']
+            self.logger.info("Found slice id %s for urn %s", slice_id, urn)
+        else:
+            slice_id = uuid
         argsdict = dict(experimenter_certificate=self._server.pem_cert, slice_id=slice_id)
         res = None
         try:
@@ -428,7 +465,8 @@ class PGClearinghouse(object):
         if credential is None:
             raise Exception("Resolve missing credential")
 
-        # FIXME validate credential as user cred
+        # Validate user credential
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
 
         # confirm type is Slice or User
         if not type:
@@ -437,17 +475,31 @@ class PGClearinghouse(object):
         if type.lower() == 'slice':
             # type is slice
 
-            # FIXME: Handle slice uuid as input here
+            if hrn and not urn:
+                # FIXME: Convert hrn to urn
+                urn = sfa.util.xrn.hrn_to_urn(hrn, "slice")
+                self.loger.debug("Made slice urn %s from hrn %s", urn, hrn)
+                #raise Exception("We don't handle hrn inputs")
 
             if not urn or not urn_util.is_valid_urn(urn):
                 self.logger.error("Didnt get a valid URN for slice in resolve: %s", urn)
                 if uuid:
                     self.logger.error("Got a UUID instead? %s" % uuid)
-                raise Exception("Didnt get a valid URN for slice in resolve: %s", urn)
+                    # FIXME For gcf, could loop over all slices, extract uuid, and compare
+                    if self.gcf:
+                        raise Exception("Didnt get a valid URN for slice in resolve: %s", urn)
 
-            # For type slice, error means no known slice. Else the slice exists.
-            if self.slices.has_key(urn):
-                return dict(urn=urn, uuid='', creator_uuid='', creator_urn='', gid='', component_managers=list())
+            if self.gcf:
+                # FIXME: Handle uuid input
+                # For type slice, error means no known slice. Else the slice exists.
+                if self.slices.has_key(urn):
+                    slice_cred = self.slices[urn]
+                    slice_cert = slice_cred.get_gid_object()
+                    slice_uuid = slice_cert.get_uuid()
+                    owner_cert = slice_cred.get_gid_caller()
+                    owner_urn = owner_cert.get_urn()
+                    owner_uuid = owner_cert.get_uuid()
+                    return dict(urn=urn, uuid=slice_uuid, creator_uuid=owner_uuid, creator_urn=owner_urn, gid=slice_cred.get_gid_object().save_to_string(), component_managers=list())
 #{
 #  "urn"  : "URN of the slice",
 #  "uuid" : "rfc4122 universally unique identifier",
@@ -456,14 +508,53 @@ class PGClearinghouse(object):
 #  "gid"  : "ProtoGENI Identifier (an x509 certificate)",
 #  "component_managers" : "List of CM URNs which are known to contain slivers or tickets in this slice. May be stale"
 #}
+                else:
+                    raise Exception("No such slice %s locally" % urn)
             else:
-                raise Exception("No such slice locally")
+                # Call the real CH
+                if urn and not uuid:
+                    argsdict=dict(slice_urn=urn)
+                    op = 'lookup_slice_by_urn'
+                else:
+                    argsdict=dict(slice_id=uuid)
+                    op = 'lookup_slice'
+                slicetriple = None
+                try:
+                    slicetriple = invokeCH(sa_url, op, self.logger, argsdict)
+                except Exception, e:
+                    self.logger.error("Exception doing lookup_slice: %s" % e)
+                    raise
+                # FIXME: What do we return if there is no such slice?
+                sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred", unwrap=True)
+                if not sliceval or not sliceval.has_key('slice_id'):
+                    self.logger.error("malformed slice value from lookup_slice: %s" % sliceval)
+                    raise Exception("malformed sliceval from lookup_slice")
+#{
+#  "urn"  : "URN of the slice",
+#  "uuid" : "rfc4122 universally unique identifier",
+#  "creator_uuid" : "UUID of the user who created the slice",
+#  "creator_urn" : "URN of the user who created the slice",
+#  "gid"  : "ProtoGENI Identifier (an x509 certificate)",
+#  "component_managers" : "List of CM URNs which are known to contain slivers or tickets in this slice. May be stale"
+#}
+                # Got back slice_id, slice_name, project_id, expiration, owner_id, slice_email, certificate, slice_urn
+                # slice_id = slice_uuid
+                # owner_id == creator_uuid (for now)
+                # certificate = gid
+                # creator urn is harder - need to ask the MA I think
+                return dict(urn=urn, uuid=sliceval['slice_id'], creator_uuid=sliceval['owner_id'], creator_urn='', gid=sliceval['certificate'], component_managers=list())
 
         elif type.lower() == 'user':
             # type is user
             # This should be an hrn. Maybe handle others?
+            if hrn and not urn:
+                urn = sfa.util.xrn.hrn_to_urn(hrn, "user")
+            # Now I need an owner uuid from the urn
+            # FIXME: We don't have this yet!
             # return a list of slices
+            #
             # FIXME
+            self.logger.warn("Resolve(user) unimplemented. Was asked about user with hrn=%s (or urn=%s, uuid=%s)" % (hrn, urn, uuid))
             return dict(slices=list())
         else:
             self.logger.error("Unknown type %s" % type)
@@ -497,7 +588,8 @@ class PGClearinghouse(object):
         if credential is None:
             raise Exception("Register missing credential")
 
-        # FIXME validate credential as user cred
+        # Validate user credential
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
 
         # confirm type is Slice or User
         if not type:
@@ -508,10 +600,56 @@ class PGClearinghouse(object):
             raise Exception("Can't register non slice %s" % type)
 
         if not urn and hrn is not None:
-            # FIXME: Convert hrn to urn
-            raise Exception("hrn to Register not supported")
+            # Convert hrn to urn
+            urn = sfa.util.xrn.hrn_to_urn(hrn, "slice")
+            #raise Exception("hrn to Register not supported")
 
-        return self.CreateSlice(urn)
+        if not urn or not url_util.is_valid_urn(urn):
+            raise Exception("invalid slice urn to create: %s" % urn)
+
+        if self.gcf:
+            return self.CreateSlice(urn)
+        else:
+            # Infer owner_id from current user's cert and uuid in there
+            # pull out slice name from urn
+            # but what about project_id? look for something after authority before +authority+?
+            owner_id = user_gid.get_uuid()
+            sUrn = urn_util.URN(urn=urn)
+            slice_name = sUrn.getName()
+            slice_auth = sUrn.getAuthority()
+            # Compare that with SLICE_AUTHORITY
+            project_id = ''
+            if slice_auth and slice_auth.startswith(SLICE_AUTHORITY) and len(slice_auth) > len(SLICE_AUTHORITY)+1:
+                project_name = slice_auth[len(SLICE_AUTHORITY)+1:]
+                argsdict = dict(project_name=project_name)
+                projtriple = None
+                try:
+                    projtriple = invokeCH(pa_url, "lookup_project", self.logger, argsdict)
+                except Exception, e:
+                    self.logger.error("Exception getting project of name %s: %s", project_name, e)
+                    #raise
+                if projtriple:
+                    projval = getValueFromTriple(projtriple, self.logger, "lookup_project for create_slice", unwrap=True)
+                    project_id = projval['project_id']
+            argsdict = dict(project_id=project_id, slice_name=slice_name, owner_id=owner_id)
+            slicetriple = None
+            try:
+                slicetriple = invokeCH(sa_url, "create_slice", self.logger, argsdict)
+            except Exception, e:
+                self.logger.error("Exception creating slice %s: %s" % (urn, e))
+                raise
+            sliceval = getValueFromTriple(slicetriple, self.logger, "create_slice", unwrap=True)
+
+            # OK, this gives us the info about the slice.
+            # Now though we need the slice credential
+            argsdict = dict(experimenter_certificate=self._server.pem_cert, slice_id=sliceval['slice_id'])
+            res = None
+            try:
+                res = invokeCH(sa_url, 'get_slice_credential', self.logger, argsdict)
+            except Exception, e:
+                self.logger.error("Exception doing get_slice_cred after create_slice: %s" % e)
+                raise
+            return getValueFromTriple(res, self.logger, "get_slice_credential after create_slice")
 
     def GetKeys(self, args):
         credential = None
@@ -530,9 +668,19 @@ class PGClearinghouse(object):
         if credential is None:
             raise Exception("Resolve missing credential")
 
-        # FIXME validate credential as user cred
+        # Validate user credential
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
+
+        # With the real CH, the SSH keys are held by the portal, not the CH
+        # see db-util.php#fetchSshKeys which queries the ssh_key table in the portal DB
+        # it takes an account_id
+        user_uuid = user_gid.get_uuid();
+        self.logger.debug("GetKeys called for user with uuid %s" % user_uuid)
+        # FIXME
+        # I could add code here that invokes via a shell to log into the portaldb directly or something...
+
         ret = list()
-        ret.append(dict(type='ssh', key='some SSH public key'))
+#        ret.append(dict(type='ssh', key='some SSH public key'))
         return ret
 
     def ListComponents(self, args):
@@ -543,7 +691,6 @@ class PGClearinghouse(object):
         # cred is user cred or slice cred - Omni uses user cred
         # return list( of dict(gid=<cert>, hrn=<hrn>, url=<AM URL>))
         # Matt seems to say hrn is not critical, and can maybe even skip cert
-        # FIXME: Implement using ListAggregates
 
         # FIXME: Validate client cert signed by me?
         try:
@@ -555,13 +702,27 @@ class PGClearinghouse(object):
         if credential is None:
             raise Exception("Resolve missing credential")
 
-        # FIXME validate credential as user cred
-        ret = list()
-        for (urn, url) in self.aggs:
-            # FIXME: convert urn to hrn
-            hrn = urn
-            ret.append(dict(gid='amcert', hrn=hrn, url=url))
-        return ret
+        # Validate user credential
+        self._cred_verifier.verify_from_strings(self._server.pem_cert, list(credential), None, list())
+
+        if self.gcf:
+            ret = list()
+            for (urn, url) in self.aggs:
+                # convert urn to hrn
+                hrn = sfa.util.xrn.urn_to_hrn(urn, "am")
+                ret.append(dict(gid='amcert', hrn=hrn, url=url))
+            return ret
+        else:
+            argsdict = dict(service_type=0)
+            amstriple = None
+            try:
+                amstriple = invokeCH(sr_url, "get_services_of_type", self.logger, argsdict)
+            except Exception, e:
+                self.logger.error("Exception looking up AMs at SR: %s", e)
+                raise
+            return getValueFromTriple(amstriple, self.logger, "get_services_of_type(AM)")
+
+# ==========================
 
     def GetVersion(self):
         self.logger.info("Called GetVersion")
@@ -811,11 +972,14 @@ def invokeCH(url, operation, logger, argsdict, mycert=None, mykey=None):
     # FIXME: Check for code, value, output keys?
     return resdict
 
-def getValueFromTriple(triple, logger, opname):
+def getValueFromTriple(triple, logger, opname, unwrap=False):
     if not triple:
         self.logger.error("Got empty result triple after %s" % opname)
         raise Exception("Return struct was null for %s" % opname)
     if not triple.has_key('value'):
         self.logger.error("Malformed return from %s: %s" % (opname, triple))
         raise Exception("malformed return from %s: %s" % (opname, triple))
-    return triple['value']
+    if unwrap:
+        return triple['value']
+    else:
+        return triple
