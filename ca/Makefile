@@ -32,3 +32,6 @@ $(CAINDEX):
 
 uninstall:
 	$(RM) -r $(CATOP)
+
+# empty target for compatibility
+cleandb:
