@@ -113,7 +113,6 @@ function create_user_credential($experimenter_cert, $expiration,
   global $sa_gcf_include_path;
 
   /* Write the slice and experimenter cert to a temp files. */
-  $slice_cert_file = writeDataToTempFile($slice_cert, "sa-");
   $experimenter_cert_file = writeDataToTempFile($experimenter_cert, "sa-");
 
   /* Run mkcred. */
@@ -130,15 +129,14 @@ function create_user_credential($experimenter_cert, $expiration,
   $result = exec($command, $output, $status);
 
   /* Clean up temp files */
-  unlink($slice_cert_file);
   unlink($experimenter_cert_file);
 
-  /* The slice credential is printed to stdout, which is captured in
+  /* The user credential is printed to stdout, which is captured in
      $output as an array of lines. Crunch them all together in a
      single string, separated by newlines.
   */
-  $slice_cred = implode("\n", $output);
-  return $slice_cred;
+  $user_cred = implode("\n", $output);
+  return $user_cred;
 }
 
 function fetch_slice_by_id($slice_id)
