@@ -52,6 +52,12 @@ SFA_TMP_FILES="/tmp/sfa.log /tmp/sfa_import.log"
 
 /usr/bin/sudo /bin/cp -R gcf.d ${SHARE_DIR}
 
+
+#
+# Enable Apache rewrite module
+#
+/usr/bin/sudo /usr/sbin/a2enmod rewrite
+
 #
 # Restart Apache to find the new php packages.
 #
