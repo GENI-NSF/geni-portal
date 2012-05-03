@@ -526,7 +526,12 @@ class PGClearinghouse(object):
         except Exception, e:
             self.logger.error("Exception doing get_slice_cred: %s" % e)
             raise
-        return getValueFromTriple(res, self.logger, "get_slice_credential")
+        getValueFromTriple(res, self.logger, "get_slice_credential")
+        if not res['value']:
+            return res
+        if not isinstance(res['value'], dict) and res['value'].has_key('slice_credential'):
+            return res
+        return res['value']['slice_credential']
 
     def Resolve(self, args):
         # args: credential, hrn, urn, uuid, type
