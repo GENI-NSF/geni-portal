@@ -208,8 +208,12 @@ function lookup_project($args)
 {
   global $PA_PROJECT_TABLENAME;
 
-  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
-  $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
+  if (array_key_exists(PA_ARGUMENT::PROJECT_ID, $args)) {
+    $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  }
+  if (array_key_exists(PA_ARGUMENT::PROJECT_NAME, $args)) {
+    $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
+  }
   if ((! isset($project_id) || is_null($project_id) || $project_id == '')  && (! isset($project_name) || is_null($project_name) || $project_name == '')) {
     error_log("Missing project ID and project name to lookup_project");
     return null;
