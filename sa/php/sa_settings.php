@@ -27,10 +27,10 @@
 //--------------------------------------------------
 
 // Certificate for signing slice certificates and slice credentials.
-$sa_authority_cert = '/usr/share/geni-ch/portal/gcf.d/ch-cert.pem';
+$sa_authority_cert = '/usr/share/geni-ch/sa/sa-cert.pem';
 
 // Private key matching $sa_authority_cert
-$sa_authority_private_key = '/usr/share/geni-ch/portal/gcf.d/ch-key.pem';
+$sa_authority_private_key = '/usr/share/geni-ch/sa/sa-key.pem';
 
 // Location of "mkslicecert" program
 $sa_mkslicecert_prog = '/usr/share/geni-ch/sa/bin/mkslicecert';
