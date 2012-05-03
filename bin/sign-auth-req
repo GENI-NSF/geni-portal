@@ -37,7 +37,7 @@ CONF=/usr/share/geni-ch/CA/openssl.cnf
 # Policy anything is not restrictive in any way.
 POLICYARG="-policy policy_anything"
 
-"${OPENSSL}" ca -config "${CONF}" ${POLICYARG} -batch \
+"${OPENSSL}" ca -config "${CONF}" ${POLICYARG} -batch -notext \
                 -extfile "${EXT_FILE}" -extensions "${EXT_NAME}" \
                 -in "${REQ}" -out "${OUT}"
 
