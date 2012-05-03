@@ -29,29 +29,6 @@ require_once('file_utils.php');
  */
 
 
-/**
- * Get the PEM portion of a certificate file. When openssl signs a
- * certificate request, the resulting certificate file has a text
- * portion and a PEM portion. This function loads just the PEM portion
- * and returns it as a string.
- *
- * Return a string of PEM contents are successfully loaded, null
- * otherwise.
- */
-function get_pem_contents($file)
-{
-  $cmd_array = array('/usr/bin/openssl',
-                     'x509',
-                     '-in', $file);
-  $command = implode(" ", $cmd_array);
-  $result = exec($command, $output, $status);
-  if ($status != 0) {
-    error_log("Command $command returned status $status.\n");
-    return null;
-  }
-  return implode("\n", $output);
-}
-
 function make_csr($uuid, $email, &$csrfile, &$keyfile, $temp_prefix="geni-")
 {
   $csrfile = null;
@@ -107,6 +84,7 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
                      '-in', $csr_file,
                      '-extensions', $extname,
                      '-batch',
+                     '-notext',
                      '-cert', $signer_cert_file,
                      '-keyfile', $signer_key_file,
                      '2>&1');
@@ -122,13 +100,13 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
    * Now load the contents of the generated cert and concatentate with
    * the signer to form a chain certificate (suitable for framing).
    */
-  $cert_pem = get_pem_contents($cert_file);
-  if (is_null($cert_pem)) {
+  $cert_pem = file_get_contents($cert_file);
+  if (! $cert_pem) {
     error_log("Unable to load user cert from $cert_file.\n");
     return FALSE;
   }
-  $signer_pem = get_pem_contents($signer_cert_file);
-  if (is_null($signer_pem)) {
+  $signer_pem = file_get_contents($signer_cert_file);
+  if (! $signer_pem) {
     error_log("Unable to load signer cert from $signer_cert_file.\n");
     return FALSE;
   }
