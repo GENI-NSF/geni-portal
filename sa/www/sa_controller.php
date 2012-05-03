@@ -105,6 +105,16 @@ function create_slice($args)
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
 
+  if (! isset($project_id) || is_null($project_id) || $project_id == '') {
+    error_log("Empty project id to create_slice " . $slice_name);
+    return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid project ID");
+  }
+
+  if (! isset($owner_id) || is_null($owner_id) || $owner_id == '') {
+    error_log("Empty owner id to create_slice " . $slice_name);
+    return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid owner ID");
+  }
+
   $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME 
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = '" . $slice_name . "'" 
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'";
