@@ -97,8 +97,13 @@ class GeniUser
 
   /* FIXME: This needs to be an MA function. */
   function urn() {
-    $fqdn = $_SERVER['SERVER_NAME'];
-    $site = implode(':', array_reverse(explode('.', $fqdn)));
+    exec('/bin/hostname -s', $site, $status);
+    if ($status) {
+      error_log("error running \"/bin/hostname -s\": $site");
+      $site = 'unknown';
+    } else {
+      $site = $site[0];
+    }
     $urn = "urn:publicid:IDN+$site+user+" . $this->username;
     return $urn;
   }
