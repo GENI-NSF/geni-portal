@@ -15,7 +15,24 @@ if [ -f "${CAKEY}" -o -f "${CACERT}" ]; then
     exit 1
 fi
 
+SHORT_HOST=`/bin/hostname -s`
+
+URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+ca"
+
+EXT_FILE=`/bin/mktemp`
+cp "${CACONF}" "${EXT_FILE}"
+EXT_NAME='v3_genica'
+cat >> "${EXT_FILE}" <<EOF
+[$EXT_NAME]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer:always
+subjectAltName=email:copy,${URN}
+basicConstraints = CA:true
+EOF
+
 # Create the root certificate
 /usr/bin/openssl req -x509 -nodes -days 365 -subj "/CN=${FQDN}" \
                      -newkey rsa:1024 -keyout "${CAKEY}" -out "${CACERT}" \
-                     -extensions v3_ca -config "${CACONF}"
+                     -config "${EXT_FILE}" -extensions "${EXT_NAME}"
+
+/bin/rm "${EXT_FILE}"
