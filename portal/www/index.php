@@ -17,9 +17,21 @@ function show_header($title)
   echo '</head>';
   echo '<body>';
   echo '<div id="header">';
+  echo '<table>';
+  echo '<tr><td>';
   echo '<img src="/images/geni.png" alt="GENI"/>';
+  echo '</td><td>';
   echo '<img src="/images/portal.png" alt="Portal"/>';
+  echo '</td><td>';
+  echo '<div id="loginButtons">';
+  echo "<button type='button' onClick=\"window.location=\'secure/home.php\'\"><b>Login</b></button>";
+  echo '<br/>';
+  echo '<a href="login-help.php"><b>Get help logging in</b></a>';
+  echo '</td>';
+  echo '</table>';
   echo '</div>';
+  echo '</div>';
+  echo '<hr/>';
   echo '<div id="content">';
 }
 
@@ -28,21 +40,16 @@ show_header()
 
 
 <h1> Welcome to the GENI Portal </h1>
-<br/>
-<button onClick="window.location='secure/home.php'"><b>Login</b></button>
-<br/>
-<!-- <button onClick="window.location=''"><b>Get An Account</b></button>
-<br/>-->
 
-<h2>Getting an account</h2>
 <p>
-  If you are affiliated with an United States College or University which is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, you can <a href="secure/home.php">login</a> and request your account be generated.  Otherwise, <a href="">request an account.</a>
+  The <b>GENI Portal</b> is the main interface to <a href="http://www.geni.net">GENI</a>, an NSF funded virtual testbed supporting computer networking research and innovation.
+</p><p>
+  <b>Become a GENI Experimenter</b>: The GENI Portal supports single sign on through the <a href="http://www.incommonfederation.org">InCommon</a> federation. If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">request a GENI account</a> using your InCommon single sign on username and password.  If you are not affiliated with an InCommon federated institution, <a href="">request a GENI account</a>.
+</p>
+<p>
+  <b>About GENI</b>: More Information about using GENI can be found on the <a href="http://groups.geni.net/geni">GENI wiki</a>.
 </p>
 
-<h2>About GENI</h2>
-<p>
-<a href="http://www.geni.net">GENI webpage</a> is an NSF funded virtual testbed. Information about using GENI can be found on the <a href="http://groups.geni.net/geni">GENI wiki</a>.
-</p>
 
 <h2>Announcements</h2>
 <ul>

@@ -1,3 +1,15 @@
+#header > #loginButtons {
+ display: block;
+ float: right;
+ padding: 1cm 1cm;
+ text-align: center;
+}
+
+#loginButtons button {
+ width: 17em;
+ padding: .25cm .25cm;
+}
+
 /* Navigation */
 .nav h2, .nav hr { display: none }
 .nav ul { font-size: 10px; list-style: none; margin: 0; text-align: right }
