@@ -468,7 +468,7 @@ class PGClearinghouse(object):
                     return restriple
                 
                 res = getValueFromTriple(restriple, self.logger, "get_user_credential", unwrap=True)
-                self.logger.info("Got res from get_user_cred: %s", res)
+                #self.logger.info("Got res from get_user_cred: %s", res)
                 if res and res.has_key("user_credential") and res["user_credential"].strip() != '':
                     return res["user_credential"]
                 else:
@@ -887,7 +887,7 @@ class PGClearinghouse(object):
                     hrn = 'AM-hrn-unknown'
                     urn = 'AM-urn-unknown'
                     if gidS and gidS.strip() != '':
-                        self.logger.info("Got AM cert for url %s:\n%s", url, gidS)
+                        self.logger.debug("Got AM cert for url %s:\n%s", url, gidS)
                         try:
                             gidO = gid.GID(string=gidS)
                             urnC = gidO.get_urn()
