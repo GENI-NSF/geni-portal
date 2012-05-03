@@ -19,6 +19,40 @@ require_once('response_format.php');
  *
  **/
 
+/* 
+   Load certificate contents for a given service row
+ */
+function load_certificate_contents_for_service($service)
+{
+  $cert_filename = $service[SR_TABLE_FIELDNAME::SERVICE_CERT];
+  //  error_log("Reading " . $cert_filename);
+  $cert_file_contents = null;
+  if($cert_filename != null) {
+    $cert_file_contents = file_get_contents($cert_filename);
+  }
+  $service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS] = $cert_file_contents;
+  return $service;
+}
+
+/* 
+   Load certificate contents for each of a list of service rows
+ */
+function load_certificate_contents_for_services($services)
+{
+  //  error_log("LCCFS.PRE " . print_r($services, true));
+  if ($services[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $rows = $services[RESPONSE_ARGUMENT::VALUE];
+    $updated_rows = array();
+    foreach($rows as $row) {
+      $updated_row = load_certificate_contents_for_service($row);
+      $updated_rows[] = $updated_row;
+    }
+    $services[RESPONSE_ARGUMENT::VALUE] = $updated_rows;
+  }
+  //  error_log("LCCFS.POST " . print_r($services, true));
+  return $services;
+}
+
 /* Get all services currently registered with SR 
  * Args: None
  * Return: List of services
@@ -32,6 +66,9 @@ function get_services($args)
   // error_log("SR.GS QUERY = " . $query);
   $result = db_fetch_rows($query, "SR.get_services");
   //  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  //  error_log("GS.PRE " . print_r($result, true));
+  $result = load_certificate_contents_for_services($result);
+  //  error_log("GS.POST " . print_r($result, true));
   return $result;
 }
 
@@ -48,11 +85,12 @@ function get_services_of_type($args)
   $query = "SELECT * FROM " . $SR_TABLENAME . " WHERE " . 
     SR_TABLE_FIELDNAME::SERVICE_TYPE . 
     " = '" . $service_type . "'";
-  //  error_log("SR.GSOT QUERY = " . $query);
+  //   error_log("SR.GSOT QUERY = " . $query);
   $result = db_fetch_rows($query, "SR.get_services_of_type");
   //  $rows = $result[RESPONSE_ARGUMENT::VALUE];
   // error_log("ROWS = " . $rows);
   //  error_log("SR.GSOT RESULT = " . print_r($result, true));
+  $result = load_certificate_contents_for_services($result);
   return $result;
 }
 
@@ -69,6 +107,7 @@ function get_service_by_id($args)
   $query = "SELECT * FROM $SR_TABLENAME WHERE"
     . " $id_column = " . $conn->quote($service_id, 'integer');
   $result = db_fetch_rows($query, "SR.get_service_by_id");
+  $result = load_certificate_contents_for_services($result);
   return $result;
 }
 

@@ -12,8 +12,10 @@ if (CACHED) {
   if (!isset($_SESSION)) { session_start(); $_SESSION = array(); }
   if (!array_key_exists(SERVICE_REGISTRY_CACHE_TAG, $_SESSION)) {
     $services = get_services();
+    error_log("Calling get services " . print_r($services, true));
     $_SESSION[SERVICE_REGISTRY_CACHE_TAG] = $services;
   }
+  error_log("Caching services: " . print_r($_SESSION[SERVICE_REGISTRY_CACHE_TAG], true));
   $services_cached = true;
 }
 
@@ -61,6 +63,7 @@ function get_services_of_type($service_type)
 function get_first_service_of_type($service_type)
 {
   global $services_cached;
+  global $SR_SERVICE_TYPE_NAMES;
   if ($services_cached) {
     $sot = get_services_of_type($service_type);
     if (isset($sot) && ! is_null($sot) && is_array($sot) && count($sot) > 0) {
