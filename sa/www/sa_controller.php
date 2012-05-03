@@ -140,12 +140,12 @@ function create_slice($args)
   //  error_log("SA.CS.args = " . print_r($args, true));
 
   $slice_email = 'slice-' . $slice_name . '@example.com';
-  $slice_cert = create_slice_certificate($slice_name, $slice_email,
+  $slice_cert = create_slice_certificate($project_id, $slice_name, $slice_email,
                                          $slice_id, $sa_slice_cert_life_days,
                                          $sa_authority_cert,
                                          $sa_authority_private_key);
 
-  $slice_urn = slice_urn_from_cert($slice_cert);
+  $slice_urn = urn_from_cert($slice_cert);
 
   // FIXME: Parametrize
   $expiration = get_future_date(30); // 30 days increment

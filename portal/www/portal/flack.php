@@ -35,8 +35,12 @@ const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
 const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
-const SA_URL = "***SA_URL***";
-const CH_URL = "***CH_URL***";
+
+$http_host = $_SERVER['HTTP_HOST'];
+$sa_ch_port = 8443;
+$SA_URL = "https://$http_host:$sa_ch_port";
+$CH_URL = "https://$http_host:$sa_ch_port";
+
 
 // Generate flack pages given all parameters
 // and return contents of generated page
@@ -85,7 +89,9 @@ function generate_flack_page($slice_urn)
     $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert . "\n";
   }
 
-  $content = generate_flack_page_internal($slice_urn, CH_URL, SA_URL, $user_cert, $user_key, 
+  global $SA_URL;
+  global $CH_URL;
+  $content = generate_flack_page_internal($slice_urn, $CH_URL, $SA_URL, $user_cert, $user_key, 
 					  $am_root_cert_bundle);
 
   return $content;

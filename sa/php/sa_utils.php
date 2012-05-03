@@ -27,38 +27,35 @@
 //--------------------------------------------------
 
 require_once("sa_settings.php");
+require_once("cert_utils.php");
 
 /**
  * Create a slice certificate and return it.
  *
  * The result is a string containing the PEM encoded certificate.
  */
-function create_slice_certificate($slice_name, $slice_email, $slice_uuid,
-                                  $cert_life_days, $auth_cert_file,
-                                  $auth_key_file)
+function create_slice_certificate($project_name, $slice_name, $slice_email,
+                                  $slice_uuid, $cert_life_days,
+                                  $signer_cert_file, $signer_key_file)
 {
-  global $sa_mkslicecert_prog;
-  global $sa_gcf_include_path;
+  $cert = file_get_contents($signer_cert_file);
+  $signer_urn = urn_from_cert($cert);
+  if (parse_urn($signer_urn, $authority, $type, $name)) {
+    $project_authority = "$authority:$project_name";
+    $slice_urn = make_urn($project_authority, 'slice', $slice_name);
+  } else {
+    error_log("Error parsing signer URN.");
+    return null;
+  }
 
-  // Run slicecred.py and return it as the content.
-  $cmd_array = array($sa_mkslicecert_prog,
-                     '--gcfpath',
-                     $sa_gcf_include_path,
-                     $auth_cert_file,
-                     $auth_key_file,
-                     $slice_name,
-                     $cert_life_days,
-                     $slice_email,
-                     $slice_uuid);
-  $command = implode(" ", $cmd_array);
-  $result = exec($command, $output, $status);
-
-  /* The slice certificate is printed to stdout, which is captured in
-     $output as an array of lines. Crunch them all together in a
-     single string, separated by newlines.
-  */
-  $slice_cert = implode("\n", $output);
-  return $slice_cert;
+  if (make_cert_and_key($slice_uuid, $slice_email, $slice_urn,
+                        $signer_cert_file, $signer_key_file,
+                        &$cert, &$key, $temp_prefix="geni-")) {
+    return $cert;
+  } else {
+    error_log("Error creating certificate and key.");
+    return null;
+  }
 }
 
 /**
@@ -161,18 +158,4 @@ function fetch_slice_by_id($slice_id)
   }
   return $row;
 }
-
-function slice_urn_from_cert($slice_cert)
-{
-  $cert = openssl_x509_parse($slice_cert);
-  $extensions = $cert['extensions'];
-  $subject_alt_name = $extensions['subjectAltName'];
-  $fields = explode(",", $subject_alt_name);
-  $pattern = '/^URI:urn:publicid:IDN/';
-  $urn_array = preg_grep($pattern, $fields);
-  // FIXME: what if no subject alt name matched $pattern?
-  $result = substr($urn_array[0], 4);
-  return $result;
-}
-
 ?>

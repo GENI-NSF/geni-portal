@@ -12,10 +12,10 @@ if (CACHED) {
   if (!isset($_SESSION)) { session_start(); $_SESSION = array(); }
   if (!array_key_exists(SERVICE_REGISTRY_CACHE_TAG, $_SESSION)) {
     $services = get_services();
-    error_log("Calling get services " . print_r($services, true));
+    //    error_log("Calling get services " . print_r($services, true));
     $_SESSION[SERVICE_REGISTRY_CACHE_TAG] = $services;
   }
-  error_log("Caching services: " . print_r($_SESSION[SERVICE_REGISTRY_CACHE_TAG], true));
+  //  error_log("Caching services: " . print_r($_SESSION[SERVICE_REGISTRY_CACHE_TAG], true));
   $services_cached = true;
 }
 

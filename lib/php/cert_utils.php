@@ -46,7 +46,7 @@ function get_pem_contents($file)
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
   if ($status != 0) {
-    print "Command $command returned status $status.\n";
+    error_log("Command $command returned status $status.\n");
     return null;
   }
   return implode("\n", $output);
@@ -76,7 +76,8 @@ function make_csr($uuid, $email, &$csrfile, &$keyfile, $temp_prefix="geni-")
     $keyfile = $keytmpfile;
     return TRUE;
   } else {
-    print "Command $command returned status $status.\n";
+    error_log("Command $command returned status $status.\n");
+    error_log("Output was: " . print_r($output));
     return FALSE;
   }
 }
@@ -112,7 +113,8 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
   if ($status != 0) {
-    print "Command $command returned status $status.\n";
+    error_log("Command $command returned status $status.\n");
+    error_log("Output was: " . print_r($output));
     return FALSE;
   }
 
@@ -122,12 +124,12 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
    */
   $cert_pem = get_pem_contents($cert_file);
   if (is_null($cert_pem)) {
-    print "Unable to load user cert from $cert_file.\n";
+    error_log("Unable to load user cert from $cert_file.\n");
     return FALSE;
   }
   $signer_pem = get_pem_contents($signer_cert_file);
   if (is_null($signer_pem)) {
-    print "Unable to load signer cert from $signer_cert_file.\n";
+    error_log("Unable to load signer cert from $signer_cert_file.\n");
     return FALSE;
   }
   $cert = $cert_pem . "\n" . $signer_pem;
@@ -159,4 +161,42 @@ function make_cert_and_key($uuid, $email, $urn,
   return TRUE;
 }
 
+function urn_from_cert($cert)
+{
+  $cert = openssl_x509_parse($cert);
+  $extensions = $cert['extensions'];
+  $subject_alt_name = $extensions['subjectAltName'];
+  $fields = array_map('trim', explode(",", $subject_alt_name));
+  $pattern = '/^\s*URI:urn:publicid:IDN/';
+  $matches = preg_grep($pattern, $fields);
+  $matches = array_values($matches);
+  if (count($matches) > 0) {
+    $result = substr($matches[0], 4);
+  } else {
+    $result = "NO+URN+FOUND";
+  }
+  return $result;
+}
+
+function parse_urn($urn, &$authority, &$type, &$name)
+{
+  $pattern = '/urn:publicid:IDN\+([^\+]+)\+([^\+]+)\+([^\+]+)$/';
+  $match_count = preg_match($pattern, $urn, $matches);
+  if ($match_count == 1) {
+    $authority = $matches[1];
+    $type = $matches[2];
+    $name = $matches[3];
+    return TRUE;
+  } else {
+    $authority = null;
+    $type = null;
+    $name = null;
+    return FALSE;
+  }
+}
+
+function make_urn($authority, $type, $name)
+{
+  return "urn:publicid:IDN+$authority+$type+$name";
+}
 ?>
