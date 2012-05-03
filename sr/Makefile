@@ -7,7 +7,9 @@ DESTDIR=/usr/share/geni-ch/sr
 WWWDIR=$(DESTDIR)/www
 LIBDIR=$(DESTDIR)/php
 DBDIR=$(DESTDIR)/db
+CERTSDIR=$(DESTDIR)/certs
 PGDIR=$(DBDIR)/postgresql
+
 
 PSQL = /usr/bin/psql
 DB.USER = portal
@@ -29,10 +31,12 @@ default:
 
 install:
 	$(WWWINSTALL) -d $(DESTDIR)
+	$(WWWINSTALL) -d $(CERTSDIR)
 	$(WWWINSTALL) -d $(WWWDIR)
 	$(WWWINSTALL) -d $(LIBDIR)
 	$(WWWINSTALL) -d $(DBDIR)
 	$(WWWINSTALL) -d $(PGDIR)
+	$(WWWINSTALL) -m 0644 certs/* $(CERTSDIR)
 	$(WWWINSTALL) -m 0644 www/* $(WWWDIR)
 	$(WWWINSTALL) -m 0644 php/* $(LIBDIR)
 	$(WWWINSTALL) -m 0644 db/postgresql/* $(PGDIR)
