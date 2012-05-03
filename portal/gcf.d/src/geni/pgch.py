@@ -1166,6 +1166,9 @@ def getValueFromTriple(triple, logger, opname, unwrap=False):
     else:
         return triple
 
+# Wait for pyOpenSSL v0.13 which will let us get the client cert chain from the SSL connection
+# for now, assume all experimenters are issued by the local MA
+# FIXME: check that?!
 def hackAddMA(experimenter_cert, logger):
 #/usr/share/geni-ch/ma/ma-cert.pem
     mc = ''
