@@ -26,7 +26,7 @@
 //
 // Consists of these methods:
 //   get_slice_credential(slice_id, user_id)
-//   slice_id <= create_slice(project_id, slice_name, urn, owner_id);
+//   slice_id <= create_slice(project_id, project_name, slice_name, owner_id);
 //   slice_ids <= lookup_slices(project_id);
 //   slice_details <= lookup_slice(slice_id);
 //   slice_details <= lookup_slice_by_urn(slice_urn);
@@ -54,10 +54,12 @@ function get_slice_credential($sa_url, $slice_id, $user_id, $cert=null)
 }
 
 /* Create a new slice record in database, return slice_id */
-function create_slice($sa_url, $project_id, $slice_name, $owner_id)
+function create_slice($sa_url, $project_id, $project_name, $slice_name,
+                      $owner_id)
 {
   $create_slice_message['operation'] = 'create_slice';
   $create_slice_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $create_slice_message[SA_ARGUMENT::PROJECT_NAME] = $project_name;
   $create_slice_message[SA_ARGUMENT::SLICE_NAME] = $slice_name;
   $create_slice_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
   $slice_res = put_message($sa_url, $create_slice_message);
