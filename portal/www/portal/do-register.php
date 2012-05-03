@@ -218,22 +218,9 @@ if (PEAR::isError($result)) {
 // --------------------------------------------------
 // Create new private key and certificate ("inside keys")
 // --------------------------------------------------
-
-
-
-// FIXME: Is there a better way to get the email address?
-$email_addr = NULL;
-if (array_key_exists('mail', $_SERVER)) {
-  $email_addr = filter_input(INPUT_SERVER, 'mail', FILTER_SANITIZE_EMAIL);
-} else if (array_key_exists('mail', $_POST)) {
-  $email_addr = filter_input(INPUT_POST, 'mail', FILTER_SANITIZE_EMAIL);
-} else {
-  // Use a fake one.
-  $email_addr = 'unknown@example.com';
-}
-
-// FIXME: do not hardcode URNs
-$urn = "urn:publicid:IDN+geni:gpo:portal+user+" . $username;
+$user = geni_loadUser();
+$email_addr = $user->email();
+$urn = $user->urn();
 $signer_cert_file = "/usr/share/geni-ch/ma/ma-cert.pem";
 $signer_key_file = "/usr/share/geni-ch/ma/ma-key.pem";
 $result = make_cert_and_key($account_id, $email_addr, $urn,
