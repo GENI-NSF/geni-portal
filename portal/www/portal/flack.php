@@ -78,14 +78,10 @@ function generate_flack_page($slice_urn)
   $user_key = $user_cert_key['private_key'];
 
   // Compute bundle of AM and CA certs
-  $root_cert_filename = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT];
-  //  error_log("FILE = " . $root_cert_filename);
-  $root_cert = file_get_contents($root_cert_filename);
+  $root_cert = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
   $am_root_cert_bundle = $root_cert . "\n";
   foreach($am_services as $am_service) {
-    $am_service_cert_filename = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT];
-    //    error_log("FILE = " . $am_service_cert_filename);
-    $am_service_cert = file_get_contents($am_service_cert_filename);
+    $am_service_cert = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
     $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert . "\n";
   }
 
