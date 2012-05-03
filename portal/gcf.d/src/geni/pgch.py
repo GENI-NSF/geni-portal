@@ -83,18 +83,34 @@ class PGSAnCHServer(object):
         #    where omni always uses the urn
         # return is slice credential
         #args: credential, type, uuid, urn
-        code = 0
-        output = ''
-        value = ''
+        code = None
+        output = None
+        value = None
         try:
             value = self._delegate.GetCredential(args)
         except Exception, e:
             output = str(e)
             code = 1 # FIXME: Better codes.
-
+            value = ''
+            
         # If the underlying thing is a triple, return it as is
         if isinstance(value, dict) and value.has_key('value'):
-            return value
+            if value.has_key('code'):
+                code = value['code']
+            if value.has_key('output'):
+                output = value['output']
+            value = value['value']
+
+        if value is None:
+            value = ""
+            if code is None or code == 0:
+                code = 1
+            if output is None:
+                output = "Slice or user not found"
+        if output is None:
+            output = ""
+        if code is None:
+            code = 0
             
         return dict(code=code, value=value, output=output)
 
@@ -126,20 +142,35 @@ class PGSAnCHServer(object):
 #  "gid"  : "ProtoGENI Identifier (an x509 certificate)",
 #  "name" : "common name",
 #}
-        code = 0
-        output = ''
-        value = ''
+        code = None
+        output = None
+        value = None
         try:
             self.logger.debug("Calling resolve in delegate")
             value = self._delegate.Resolve(args)
         except Exception, e:
             output = str(e)
+            value = ""
             code = 1 # FIXME: Better codes
             
         # If the underlying thing is a triple, return it as is
         if isinstance(value, dict) and value.has_key('value'):
-            return value
-            
+            if value.has_key('code'):
+                code = value['code']
+            if value.has_key('output'):
+                output = value['output']
+            value = value['value']
+
+        if value is None:
+            value = ""
+            if code is None or code == 0:
+                code = 1
+            if output is None:
+                output = "Slice or user not found"
+        if output is None:
+            output = ""
+        if code is None:
+            code = 0
         return dict(code=code, value=value, output=output)
 
     def Register(self, args):
@@ -147,20 +178,36 @@ class PGSAnCHServer(object):
         # args are credential, hrn, urn, type
         # cred is user cred, type must be Slice
         # returns slice cred
-        code = 0
-        output = ''
-        value = ''
+        code = None
+        output = None
+        value = None
         try:
             self.logger.debug("Calling register in delegate")
             value = self._delegate.Register(args)
         except Exception, e:
             output = str(e)
             code = 1 # FIXME: Better codes
+            value = ''
             
         # If the underlying thing is a triple, return it as is
         if isinstance(value, dict) and value.has_key('value'):
-            return value
-            
+            if value.has_key('code'):
+                code = value['code']
+            if value.has_key('output'):
+                output = value['output']
+            value = value['value']
+
+        if value is None:
+            value = ""
+            if code is None or code == 0:
+                code = 1
+            if output is None:
+                output = "User not found or couldn't create slice"
+        if output is None:
+            output = ""
+        if code is None:
+            code = 0
+
         return dict(code=code, value=value, output=output)
 
 # Skipping Remove, DiscoverResources
@@ -169,18 +216,34 @@ class PGSAnCHServer(object):
         # cred is user cred
         # return list( of dict(type='ssh', key=$key))
         # args: credential
-        code = 0
-        output = ''
-        value = ''
+        code = None
+        output = None
+        value = None
         try:
             value = self._delegate.GetKeys(args)
         except Exception, e:
             output = str(e)
             code = 1 # FIXME: Better codes
+            value = ''
             
         # If the underlying thing is a triple, return it as is
         if isinstance(value, dict) and value.has_key('value'):
-            return value
+            if value.has_key('code'):
+                code = value['code']
+            if value.has_key('output'):
+                output = value['output']
+            value = value['value']
+
+        if value is None:
+            value = ""
+            if code is None or code == 0:
+                code = 1
+            if output is None:
+                output = "User not found or couldnt get SSH keys"
+        if output is None:
+            output = ""
+        if code is None:
+            code = 0
             
         return dict(code=code, value=value, output=output)
 
@@ -196,19 +259,35 @@ class PGSAnCHServer(object):
         # return list( of dict(gid=<cert>, hrn=<hrn>, url=<AM URL>))
         # Matt seems to say hrn is not critical, and can maybe even skip cert
         # args: credential
-        code = 0
-        output = ''
-        value = ''
+        code = None
+        output = None
+        value = None
         try:
             value = self._delegate.GetKeys(args)
         except Exception, e:
             output = str(e)
             code = 1 # FIXME: Better codes
+            value = ''
             
         # If the underlying thing is a triple, return it as is
         if isinstance(value, dict) and value.has_key('value'):
-            return value
-            
+            if value.has_key('code'):
+                code = value['code']
+            if value.has_key('output'):
+                output = value['output']
+            value = value['value']
+
+        if value is None:
+            value = ""
+            if code is None or code == 0:
+                code = 1
+            if output is None:
+                output = "User not found or couldnt list AMs"
+        if output is None:
+            output = ""
+        if code is None:
+            code = 0
+
         return dict(code=code, value=value, output=output)
 
 # Skipping PostCRL, List, GetVersion
@@ -427,7 +506,7 @@ class PGClearinghouse(object):
                 self.logger.error("Exception doing lookup_slice: %s" % e)
                 raise
             sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred")
-            if sliceval and sliceval.has_key("code") and sliceval["code"] == 0:
+            if sliceval and sliceval.has_key("code") and sliceval["code"] == 0 and sliceval.has_key("value") and sliceval["value"]:
                 sliceval = sliceval["value"]
             else:
                 self.logger.info("Found no slice by urn %s" % urn)
@@ -546,7 +625,7 @@ class PGClearinghouse(object):
                     raise
                 # FIXME: What do we return if there is no such slice?
                 sliceval = getValueFromTriple(slicetriple, self.logger, "lookup_slice to get slice cred")
-                if sliceval and sliceval.has_key("code") and sliceval["code"] == 0:
+                if sliceval and sliceval.has_key("code") and sliceval["code"] == 0 and sliceval.has_key("value") and sliceval["value"]:
                     sliceval = sliceval["value"]
                 else:
                     self.logger.info("Found no slice by urn %s" % urn)
