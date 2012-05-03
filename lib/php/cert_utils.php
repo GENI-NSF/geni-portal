@@ -67,7 +67,8 @@ function make_csr($uuid, $email, &$csrfile, &$keyfile, $temp_prefix="geni-")
                      '-keyout', $keytmpfile,
                      '-out', $csrtmpfile,
                      '-subj', $subject,
-                     '-batch');
+                     '-batch',
+                     '2>&1');
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
   if ($status == 0) {
@@ -106,7 +107,8 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
                      '-extensions', $extname,
                      '-batch',
                      '-cert', $signer_cert_file,
-                     '-keyfile', $signer_key_file);
+                     '-keyfile', $signer_key_file,
+                     '2>&1');
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
   if ($status != 0) {
