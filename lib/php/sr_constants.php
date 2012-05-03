@@ -29,12 +29,13 @@
 /* Set of known services types for services within GENI CH SR */
 /* We store/retrieve by index into this array, but print the strings */
 $SR_SERVICE_TYPE_NAMES = array("AGGREGATE_MANAGER", 
-				      "SLICE_AUTHORITY", 
-				      "PROJECT_AUTHORITY", 
-				      "MEMBER_AUTHORITY",
-				      "AUTHORIZATION_SERVICE",
-				      "LOGGING_SERVICE",
-				      "CREDENTIAL_STORE");
+			       "SLICE_AUTHORITY", 
+			       "PROJECT_AUTHORITY", 
+			       "MEMBER_AUTHORITY",
+			       "AUTHORIZATION_SERVICE",
+			       "LOGGING_SERVICE",
+			       "CREDENTIAL_STORE", 
+			       "CERTIFICATE_AUTHORITY");
 
 class SR_SERVICE_TYPE
 {
@@ -65,6 +66,7 @@ class SR_TABLE_FIELDNAME {
   const SERVICE_TYPE = "service_type";
   const SERVICE_URL = "service_url";
   const SERVICE_CERT = "service_cert";
+  const SERVICE_CERT_CONTENTS = "service_cert_contents";
   const SERVICE_NAME = "service_name";
   const SERVICE_DESCRIPTION = "service_description";
 }

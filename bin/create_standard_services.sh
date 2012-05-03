@@ -12,7 +12,7 @@ FQDN=`hostname -f`
 ./sign-auth-req "${BASEDIR}/sr/sr-req.pem" "${BASEDIR}/sr/sr-cert.pem" sr
 
 # Add the root cert location
-echo "insert into service_registry (service_type, service_url, service_cert) values (7, '', '${BASEDIR}/CA/ca-cert.pem');" > $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert) values (7, '', '${BASEDIR}/CA/cacert.pem');" > $FILENAME
 
 # SA
 ./mk-auth-req "${BASEDIR}/sa/sa-key.pem" "${BASEDIR}/sa/sa-req.pem"
