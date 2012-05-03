@@ -39,10 +39,14 @@ function get_services_of_type($service_type)
   if ($services_cached) {
     $services = $_SESSION[SERVICE_REGISTRY_CACHE_TAG];
     $sot = array();
-    foreach($services as $service) {
-      if ($service[SR_TABLE_FIELDNAME::SERVICE_TYPE] == $service_type) {
-	$sot[] = $service;
+    if (isset($services) && ! is_null($services) && is_array($services)) {
+      foreach($services as $service) {
+	if ($service[SR_TABLE_FIELDNAME::SERVICE_TYPE] == $service_type) {
+	  $sot[] = $service;
+	}
       }
+    } else {
+      error_log("get_services_of_type: Caching services but cache had non array?");
     }
     return $sot;
   }
@@ -59,7 +63,12 @@ function get_first_service_of_type($service_type)
   global $services_cached;
   if ($services_cached) {
     $sot = get_services_of_type($service_type);
-    return $sot[0][SR_TABLE_FIELDNAME::SERVICE_URL];
+    if (isset($sot) && ! is_null($sot) && is_array($sot) && count($sot) > 0) {
+      return $sot[0][SR_TABLE_FIELDNAME::SERVICE_URL];
+    } else {
+      error_log("Got back 0 cached services of type " . $SR_SERVICE_TYPE_NAMES[$service_type]);
+      return null;
+    }
   }
   /** Get the singleton SR (service registry) and ask for all services of given type **/
   $sr_url = get_sr_url();

@@ -26,6 +26,7 @@
 require_once("settings.php");
 require_once("db-util.php");
 require_once("file_utils.php");
+require_once("cert_utils.php");
 require_once("util.php");
 require_once("user.php");
 
@@ -217,42 +218,18 @@ if (PEAR::isError($result)) {
 // --------------------------------------------------
 // Create new private key and certificate ("inside keys")
 // --------------------------------------------------
-
-// *** FIX ME ***
-$email_addr = NULL;
-if (array_key_exists('mail', $_SERVER)) {
-  $email_addr = filter_input(INPUT_SERVER, 'mail', FILTER_SANITIZE_EMAIL);
-} else if (array_key_exists('mail', $_POST)) {
-  $email_addr = filter_input(INPUT_POST, 'mail', FILTER_SANITIZE_EMAIL);
-} else {
-  // Use a fake one.
-  $email_addr = 'unknown@example.com';
+$user = geni_loadUser();
+$email_addr = $user->email();
+$urn = $user->urn();
+$signer_cert_file = "/usr/share/geni-ch/ma/ma-cert.pem";
+$signer_key_file = "/usr/share/geni-ch/ma/ma-key.pem";
+$result = make_cert_and_key($account_id, $email_addr, $urn,
+                            $signer_cert_file, $signer_key_file,
+                            $cert, $key);
+if ($result) {
+  db_add_inside_key_cert($account_id, $cert, $key);
 }
-$cmd_array = array($portal_gcf_dir . '/src/gen-certs.py',
-                   '-c',
-                   $portal_gcf_cfg_dir . '/gcf.ini',
-		   '--uuid', $account_id,
-                   '--notAll',
-                   '-d',
-                   '/tmp',
-                   '-u',
-                   $username,
-                   '--exp',
-                   '--email',
-                   $email_addr
-                   );
-$command = implode(" ", $cmd_array);
-$result = exec($command, $output, $status);
-/* print_r($output);  */
-// The cert is on disk, read the file and store it in the db.
-$cert_file = '/tmp/' . $username . "-cert.pem";
-$key_file = '/tmp/' . $username . "-key.pem";
-// FIXME: Wrap these in try/catch to suppress warnings on missing files
-$cert_contents = file_get_contents($cert_file);
-$key_contents = file_get_contents($key_file);
-db_add_inside_key_cert($account_id, $cert_contents, $key_contents);
-unlink($cert_file);
-unlink($key_file);
+
 
 // --------------------------------------------------
 // Send mail about the new account request

@@ -83,7 +83,9 @@ if ($key) {
   print "</table>\n";
   // FIXME: Way to delete a key?
 } else {
-  print "<button onClick=\"window.location='uploadkey.php'\">Please upload a public key</button>\n";
+  //  print "<button onClick=\"window.location='uploadkey.php'\">Please upload a public key</button>\n";
+  print "<button onClick=\"window.location='downloadkeycert.php'\">"
+    . "Download certificate and key</button>\n";
 }
 
 

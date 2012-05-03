@@ -75,6 +75,17 @@ function lookup_project($pa_url, $project_id)
   return $details;
 }
 
+function lookup_project_by_name($pa_url, $project_name)
+{
+  //  error_log("LP.start " . $project_id . " " . time());
+  $lookup_project_message['operation'] = 'lookup_project';
+  $lookup_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
+  $details = put_message($pa_url, $lookup_project_message);
+  //  error_log("LP.end " . $project_id . " " . time());
+  // FIXME: Could be >1?
+  return $details;
+}
+
 function update_project($pa_url, $project_id, $project_name, $project_purpose)
 {
   $update_project_message['operation'] = 'update_project';

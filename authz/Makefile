@@ -42,7 +42,6 @@ syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)
 
 cleandb:
-	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
 
 clean:
 

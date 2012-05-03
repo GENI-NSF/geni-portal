@@ -1,0 +1,21 @@
+#!/bin/sh
+
+#------------------------------------------------------------
+# Initialize the Clearinghouse Certificate Authority
+#------------------------------------------------------------
+
+CATOP=/usr/share/geni-ch/CA
+CACONF="${CATOP}"/openssl.cnf
+CAKEY="${CATOP}"/private/cakey.pem
+CACERT="${CATOP}"/cacert.pem
+FQDN=`hostname -f`
+
+if [ -f "${CAKEY}" -o -f "${CACERT}" ]; then
+    echo "Cowardly refusing to overwrite ${CAKEY} and ${CACERT}."
+    exit 1
+fi
+
+# Create the root certificate
+/usr/bin/openssl req -x509 -nodes -days 365 -subj "/CN=${FQDN}" \
+                     -newkey rsa:1024 -keyout "${CAKEY}" -out "${CACERT}" \
+                     -extensions v3_ca -config "${CACONF}"

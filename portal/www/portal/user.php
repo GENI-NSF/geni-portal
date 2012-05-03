@@ -95,6 +95,19 @@ class GeniUser
     return $this->attributes['mail'];
   }
 
+  /* FIXME: This needs to be an MA function. */
+  function urn() {
+    exec('/bin/hostname -s', $site, $status);
+    if ($status) {
+      error_log("error running \"/bin/hostname -s\": $site");
+      $site = 'unknown';
+    } else {
+      $site = $site[0];
+    }
+    $urn = "urn:publicid:IDN+$site+user+" . $this->username;
+    return $urn;
+  }
+
   function prettyName() {
     if (array_key_exists('givenName', $this->attributes)
         && array_key_exists('sn', $this->attributes)) {

@@ -1,0 +1,44 @@
+#!/bin/sh
+# -*- mode:sh -*-
+
+if [ -z "$1" -o -z "$2" ]; then
+    echo "Usage: sign-auth-req <req file> <cert output file> <authority> [CA]" 1>&2
+    exit 1
+fi
+
+REQ=$1
+OUT=$2
+AUTHORITY=$3
+
+
+SHORT_HOST=`/bin/hostname -s`
+
+URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${AUTHORITY}"
+
+EXT_FILE=`/bin/mktemp`
+EXT_NAME='v3_auth'
+cat > "${EXT_FILE}" <<EOF
+[$EXT_NAME]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer:always
+subjectAltName=email:copy,URI:${URN}
+EOF
+
+if [ -z "$4" -o "$4" != "CA" ]; then
+    echo 'basicConstraints = CA:false' >> "${EXT_FILE}"
+else
+    echo 'basicConstraints = CA:true' >> "${EXT_FILE}"
+fi
+
+OPENSSL=/usr/bin/openssl
+CONF=/usr/share/geni-ch/CA/openssl.cnf
+
+# This is the policy in the $CONF file that checks fields for validity.
+# Policy anything is not restrictive in any way.
+POLICYARG="-policy policy_anything"
+
+"${OPENSSL}" ca -config "${CONF}" ${POLICYARG} -batch \
+                -extfile "${EXT_FILE}" -extensions "${EXT_NAME}" \
+                -in "${REQ}" -out "${OUT}"
+
+/bin/rm "${EXT_FILE}"
