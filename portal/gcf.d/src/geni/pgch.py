@@ -640,10 +640,10 @@ class PGClearinghouse(object):
                 if self.slices.has_key(urn):
                     slice_cred = self.slices[urn]
                     slice_cert = slice_cred.get_gid_object()
-                    slice_uuid = slice_cert.get_uuid()
+                    slice_uuid = str(uuid.UUID(int=slice_cert.get_uuid()))
                     owner_cert = slice_cred.get_gid_caller()
                     owner_urn = owner_cert.get_urn()
-                    owner_uuid = owner_cert.get_uuid()
+                    owner_uuid = str(uuid.UUID(int=owner_cert.get_uuid()))
                     return dict(urn=urn, uuid=slice_uuid, creator_uuid=owner_uuid, creator_urn=owner_urn, gid=slice_cred.get_gid_object().save_to_string(), component_managers=list())
 #{
 #  "urn"  : "URN of the slice",
@@ -775,7 +775,7 @@ class PGClearinghouse(object):
             # Infer owner_id from current user's cert and uuid in there
             # pull out slice name from urn
             # but what about project_id? look for something after authority before +authority+?
-            owner_id = user_gid.get_uuid()
+            owner_id = str(uuid.UUID(int=user_gid.get_uuid()))
             sUrn = urn_util.URN(urn=urn)
             slice_name = sUrn.getName()
             slice_auth = sUrn.getAuthority()
@@ -803,6 +803,7 @@ class PGClearinghouse(object):
             except Exception, e:
                 self.logger.error("Exception creating slice %s: %s" % (urn, e))
                 raise
+
             # Will raise an exception if triple malformed
             slicetriple = getValueFromTriple(slicetriple, self.logger, "create_slice")
             if not slicetriple['value']:
@@ -864,8 +865,8 @@ class PGClearinghouse(object):
         # With the real CH, the SSH keys are held by the portal, not the CH
         # see db-util.php#fetchSshKeys which queries the ssh_key table in the portal DB
         # it takes an account_id
-        user_uuid = user_gid.get_uuid();
-        user_urn = user_gid.get_urn();
+        user_uuid = str(uuid.UUID(int=user_gid.get_uuid()))
+        user_urn = user_gid.get_urn()
         if not user_uuid:
             self.logger.warn("GetKeys couldnt get uuid for user from cert with urn %s" % user_urn)
         else:
