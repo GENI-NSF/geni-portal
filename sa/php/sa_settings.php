@@ -43,4 +43,6 @@ $sa_slice_cert_life_days = 3650;
 
 // The location of the gcf src dir for including in python programs
 $sa_gcf_include_path = '/usr/share/geni-ch/portal/gcf/src';
+
+$sa_trusted_roots = array('/usr/share/geni-ch/CA/cacert.pem');
 ?>
