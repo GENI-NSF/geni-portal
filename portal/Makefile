@@ -73,7 +73,7 @@ GCF_DEPS = 	$(GCF.D) \
 install-gcf: $(GCF_DEPS)
 
 
-install: $(LIB.DIR) www
+install: $(LIB.DIR) www install-gcf
 	sudo /bin/cp www/portal/* /var/www/secure
 	sudo /bin/cp www/images/* /var/www/images
 	sudo /bin/cp -r www/common /var/www/
