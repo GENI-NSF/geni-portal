@@ -49,6 +49,8 @@ def make_opt_parser():
              + " <slice cert> <experimenter cert> <expiration>")
     parser = OptionParser(usage)
     parser.add_option("--gcfpath", help="location of gcf src dir")
+    parser.add_option("-r", "--root", action="append",
+                      help="add a root certificate")
     return parser
 
 def validate_cred_type(arg):
@@ -110,6 +112,6 @@ except Exception, exc:
 
 
 cred = cred_util.create_credential(owner_cert, target_cert, expiration,
-                                         cred_type, auth_key_file, auth_cert_file,
-                                         [auth_cert_file])
+                                   cred_type, auth_key_file, auth_cert_file,
+                                   options.root)
 print cred.save_to_string()
