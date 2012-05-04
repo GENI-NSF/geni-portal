@@ -384,6 +384,10 @@ class PGClearinghouse(object):
         # load up URLs for things we proxy for
         self.loadURLs()
 
+        self.macert = ''
+        if self.config['clearinghouse'].has_key('macert_path'):
+            self.macert = self.config['clearinghouse']['macert_path']
+
         # This is the arg to _make_server
         ca_certs_onefname = cred_util.CredentialVerifier.getCAsFileFromDir(ca_certs)
 
@@ -393,6 +397,13 @@ class PGClearinghouse(object):
             self.ca_cert_fnames = [os.path.expanduser(ca_certs)]
         elif os.path.isdir(os.path.expanduser(ca_certs)):
             self.ca_cert_fnames = [os.path.join(os.path.expanduser(ca_certs), name) for name in os.listdir(os.path.expanduser(ca_certs)) if name != cred_util.CredentialVerifier.CATEDCERTSFNAME]
+
+        self.trusted_roots = []
+        for fname in self.ca_cert_fnames:
+            try:
+                self.trusted_roots.append(gid.GID(filename=fname))
+            except Exception, exc:
+                self.logger.error("Failed to load trusted root cert from %s: %s", fname, exc)
 
         self._cred_verifier = cred_util.CredentialVerifier(ca_certs)
 
@@ -424,8 +435,6 @@ class PGClearinghouse(object):
         return dt
 
     def GetCredential(self, args=None):
-        # FIXME: Validate client cert signed by me?
-        # Without that, we give an experimenter credential to anyone
         #args: credential, type, uuid, urn
         credential = None
         if args and args.has_key('credential'):
@@ -440,23 +449,36 @@ class PGClearinghouse(object):
         if args and args.has_key('uuid'):
             uuid = args['uuid']
         self.logger.debug("In getCred")
+        
+        # Construct cert, pulling in the intermediate signer cert if any (SSL doesn't give us the chain)
+        user_certstr = addMACert(self._server.pem_cert, self.logger, self.macert)
+
+        # Construct the GID
         try:
-            user_gid = gid.GID(string=hackAddMA(self._server.pem_cert, self.logger))
+            user_gid = gid.GID(string=user_certstr)
         except Exception, exc:
             self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
             raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+
         self.logger.debug("Constructed user_gid")
+
+        # Validate the GID is trusted by our roots
+        try:
+            user_gid.verify_chain(self.trusted_roots)
+        except Exception, exc:
+            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            raise
+
         if credential is None:
             # return user credential
 
             if self.gcf:
-                return self.CreateUserCredential(self._server.pem_cert)
+                return self.CreateUserCredential(user_certstr)
             else:
                 # follow make_user_credential in sa/php/sa_utils?
                 # get_user_credential(experimenter_certificate=exp_cert)
-                ecert = hackAddMA(self._server.pem_cert, self.logger)
-                self.logger.debug("About to send exp cert with just %s " % ecert)
-                argsdict=dict(experimenter_certificate=ecert)
+                self.logger.debug("About to send exp cert with just %s " % user_certstr)
+                argsdict=dict(experimenter_certificate=user_certstr)
                 restriple = None
                 try:
                     restriple = invokeCH(self.sa_url, "get_user_credential", self.logger, argsdict)
@@ -501,7 +523,7 @@ class PGClearinghouse(object):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(hackAddMA(self._server.pem_cert, self.logger), creds, None, privs)
+        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
 
         # Need the slice_id given the urn
         # need the client cert
@@ -528,7 +550,7 @@ class PGClearinghouse(object):
             self.logger.info("Found slice id %s for urn %s", slice_id, urn)
         else:
             slice_id = uuid
-        argsdict = dict(experimenter_certificate=hackAddMA(self._server.pem_cert, self.logger), slice_id=slice_id)
+        argsdict = dict(experimenter_certificate=user_certstr, slice_id=slice_id)
         res = None
         try:
             res = invokeCH(self.sa_url, 'get_slice_credential', self.logger, argsdict)
@@ -549,12 +571,22 @@ class PGClearinghouse(object):
         # type is Slice or User
         # Return is dict: (see above)
 
-        # FIXME: Validate client cert signed by me?
+        # Get full user cert chain (append MA if any)
+        user_certstr = addMACert(self._server.pem_cert, self.logger, self.macert)
+
+        # Construct GID
         try:
-            user_gid = gid.GID(string=hackAddMA(self._server.pem_cert, self.logger))
+            user_gid = gid.GID(string=user_certstr)
         except Exception, exc:
             self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
             raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+
+        # Validate GID
+        try:
+            user_gid.verify_chain(self.trusted_roots)
+        except Exception, exc:
+            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            raise
 
         credential = None
         if args and args.has_key('credential'):
@@ -579,7 +611,7 @@ class PGClearinghouse(object):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(hackAddMA(self._server.pem_cert, self.logger), creds, None, privs)
+        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
 
         # confirm type is Slice or User
         if not type:
@@ -589,7 +621,7 @@ class PGClearinghouse(object):
             # type is slice
 
             if hrn and not urn:
-                # FIXME: Convert hrn to urn
+                # Convert hrn to urn
                 urn = sfa.util.xrn.hrn_to_urn(hrn, "slice")
                 self.loger.debug("Made slice urn %s from hrn %s", urn, hrn)
                 #raise Exception("We don't handle hrn inputs")
@@ -684,12 +716,20 @@ class PGClearinghouse(object):
         # args are credential, hrn, urn, type
         # cred is user cred, type must be Slice
         # returns slice cred
-        # FIXME: Validate client cert signed by me?
+
+        user_certstr = addMACert(self._server.pem_cert, self.logger, self.macert)
+
         try:
-            user_gid = gid.GID(string=hackAddMA(self._server.pem_cert, self.logger))
+            user_gid = gid.GID(string=user_certstr)
         except Exception, exc:
             self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
             raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+
+        try:
+            user_gid.verify_chain(self.trusted_roots)
+        except Exception, exc:
+            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            raise
 
         credential = None
         if args and args.has_key('credential'):
@@ -711,7 +751,7 @@ class PGClearinghouse(object):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(hackAddMA(self._server.pem_cert, self.logger), creds, None, privs)
+        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
 
         # confirm type is Slice or User
         if not type:
@@ -775,7 +815,7 @@ class PGClearinghouse(object):
 
             # OK, this gives us the info about the slice.
             # Now though we need the slice credential
-            argsdict = dict(experimenter_certificate=hackAddMA(self._server.pem_cert, self.logger), slice_id=sliceval['slice_id'])
+            argsdict = dict(experimenter_certificate=user_certstr, slice_id=sliceval['slice_id'])
             res = None
             try:
                 res = invokeCH(self.sa_url, 'get_slice_credential', self.logger, argsdict)
@@ -796,12 +836,19 @@ class PGClearinghouse(object):
         # cred is user cred
         # return list( of dict(type='ssh', key=$key))
 
-        # FIXME: Validate client cert signed by me?
+        user_certstr = addMACert(self._server.pem_cert, self.logger, self.macert)
+
         try:
-            user_gid = gid.GID(string=hackAddMA(self._server.pem_cert, self.logger))
+            user_gid = gid.GID(string=user_certstr)
         except Exception, exc:
             self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
             raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+
+        try:
+            user_gid.verify_chain(self.trusted_roots)
+        except Exception, exc:
+            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            raise
 
         if credential is None:
             raise Exception("Resolve missing credential")
@@ -812,7 +859,7 @@ class PGClearinghouse(object):
         creds.append(credential)
         privs = ()
         self.logger.info("type of credential: %s. Type of creds: %s", type(credential), type(creds))
-        self._cred_verifier.verify_from_strings(hackAddMA(self._server.pem_cert, self.logger), creds, None, privs)
+        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
         self.logger.info("getkeys did cred verify")
         # With the real CH, the SSH keys are held by the portal, not the CH
         # see db-util.php#fetchSshKeys which queries the ssh_key table in the portal DB
@@ -840,12 +887,19 @@ class PGClearinghouse(object):
         # return list( of dict(gid=<cert>, hrn=<hrn>, url=<AM URL>))
         # Matt seems to say hrn is not critical, and can maybe even skip cert
 
-        # FIXME: Validate client cert signed by me?
+        user_certstr = addMACert(self._server.pem_cert, self.logger, self.macert)
+
         try:
-            user_gid = gid.GID(string=hackAddMA(self._server.pem_cert, self.logger))
+            user_gid = gid.GID(string=user_certstr)
         except Exception, exc:
             self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
             raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+
+        try:
+            user_gid.verify_chain(self.trusted_roots)
+        except Exception, exc:
+            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            raise
 
         if credential is None:
             raise Exception("Resolve missing credential")
@@ -854,7 +908,7 @@ class PGClearinghouse(object):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(hackAddMA(self._server.pem_cert, self.logger), creds, None, privs)
+        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
 
         if self.gcf:
             ret = list()
@@ -1168,13 +1222,15 @@ def getValueFromTriple(triple, logger, opname, unwrap=False):
 
 # Wait for pyOpenSSL v0.13 which will let us get the client cert chain from the SSL connection
 # for now, assume all experimenters are issued by the local MA
-# FIXME: check that?!
-def hackAddMA(experimenter_cert, logger):
+def addMACert(experimenter_cert, logger, macertpath):
 #/usr/share/geni-ch/ma/ma-cert.pem
+    if macertpath is None or macertpath.strip() == '':
+        return experimenter_cert
+
     mc = ''
     add = False
     try:
-        with open("/usr/share/geni-ch/ma/ma-cert.pem") as macert:
+        with open(macertpath) as macert:
             for line in macert:
                 if add or ("BEGIN CERT" in line):
                     add = True
