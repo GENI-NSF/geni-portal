@@ -796,7 +796,7 @@ class PGClearinghouse(object):
                 if projtriple:
                     projval = getValueFromTriple(projtriple, self.logger, "lookup_project for create_slice", unwrap=True)
                     project_id = projval['project_id']
-            argsdict = dict(project_id=project_id, slice_name=slice_name, owner_id=owner_id)
+            argsdict = dict(project_id=project_id, slice_name=slice_name, owner_id=owner_id, project_name=project_name)
             slicetriple = None
             try:
                 slicetriple = invokeCH(self.sa_url, "create_slice", self.logger, argsdict)
