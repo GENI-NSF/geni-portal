@@ -70,9 +70,14 @@ function prepare_cert_for_javascript($cert)
 {
   $new_cert = "";
   $lines = explode("\n", $cert);
+  $first = true;
   foreach($lines as $line) {
-    $new_cert = $new_cert . $line . "\\\n";
-//    error_log("LINE = " . $line);
+    if ($line == null or $line == "") continue;
+    if(!$first) { $new_cert = $new_cert . "\\\n"; } 
+    $first = false; 
+    $new_cert = $new_cert . $line;
+    //    error_log("NC = " . $new_cert);
+    //    error_log("LINE = " . $line);
   }
   return $new_cert;
 }
@@ -100,7 +105,7 @@ function generate_flack_page($slice_urn)
   $am_root_cert_bundle = $root_cert . "\n";
   foreach($am_services as $am_service) {
     $am_service_cert = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
-    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert . "\n";
+    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert;
   }
 
   $user_cert = prepare_cert_for_javascript($user_cert);
