@@ -64,6 +64,24 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
   return $content;
 }
 
+// Take cert text and make it into a javascript acceptable strint
+// by adding "\" onto the end of each line
+function prepare_cert_for_javascript($cert)
+{
+  $new_cert = "";
+  $lines = explode("\n", $cert);
+  $first = true;
+  foreach($lines as $line) {
+    if ($line == null or $line == "") continue;
+    if(!$first) { $new_cert = $new_cert . "\\\n"; } 
+    $first = false; 
+    $new_cert = $new_cert . $line;
+    //    error_log("NC = " . $new_cert);
+    //    error_log("LINE = " . $line);
+  }
+  return $new_cert;
+}
+
 function generate_flack_page($slice_urn)
 {
   $user = geni_loadUser();
@@ -81,13 +99,18 @@ function generate_flack_page($slice_urn)
   $user_cert = $user_cert_key['certificate'];
   $user_key = $user_cert_key['private_key'];
 
+
   // Compute bundle of AM and CA certs
   $root_cert = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
   $am_root_cert_bundle = $root_cert . "\n";
   foreach($am_services as $am_service) {
     $am_service_cert = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
-    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert . "\n";
+    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert;
   }
+
+  $user_cert = prepare_cert_for_javascript($user_cert);
+  $user_key = prepare_cert_for_javascript($user_key);
+  $am_root_cert_bundle = prepare_cert_for_javascript($am_root_cert_bundle);
 
   global $SA_URL;
   global $CH_URL;

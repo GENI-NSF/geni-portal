@@ -30,6 +30,7 @@
 class SA_ARGUMENT
 {
   const PROJECT_ID = "project_id";
+  const PROJECT_NAME = "project_name";
   const SLICE_NAME = "slice_name";
   const SLICE_ID = "slice_id";
   const SLICE_URN = "slice_urn";
