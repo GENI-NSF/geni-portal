@@ -62,17 +62,13 @@ $(GCF.DIR)/src/gcf-pgch.py: gcf.d/src/gcf-pgch.py
 $(GCF.DIR)/src/geni/pgch.py: gcf.d/src/geni/pgch.py
 	$(INSTALL.WWW) -m 644 $^ $@
 
-$(GCF.DIR)/src/geni/__init__.py: gcf.d/src/geni/__init__.py
-	$(INSTALL.WWW) -m 644 $^ $@
-
 GCF_DEPS = 	$(GCF.D) \
 		$(GCF.D)/gcf.ini \
 		$(GCF.D)/omni.ini \
 		$(GCF.D)/trusted_roots \
 		$(GCF.D)/trusted_roots/cacert.pem \
 		$(GCF.DIR)/src/gcf-pgch.py \
-		$(GCF.DIR)/src/geni/pgch.py \
-		$(GCF.DIR)/src/geni/__init__.py
+		$(GCF.DIR)/src/geni/pgch.py
 
 install-gcf: $(GCF_DEPS)
 
