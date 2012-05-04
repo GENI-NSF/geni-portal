@@ -102,12 +102,19 @@ function create_slice($args)
 
   $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
+  $project_name = $args[SA_ARGUMENT::PROJECT_NAME];
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
   $slice_id = make_uuid();
 
   if (! isset($project_id) || is_null($project_id) || $project_id == '') {
     error_log("Empty project id to create_slice " . $slice_name);
     return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid project ID");
+  }
+
+  if (! isset($project_name) || is_null($project_name) || $project_name == '') {
+    error_log("Empty project name to create_slice " . $slice_name);
+    return generate_response(RESPONSE_ERROR::DATABASE, null,
+                             "Cannot create slice without a valid project name");
   }
 
   if (! isset($owner_id) || is_null($owner_id) || $owner_id == '') {
@@ -140,12 +147,13 @@ function create_slice($args)
   //  error_log("SA.CS.args = " . print_r($args, true));
 
   $slice_email = 'slice-' . $slice_name . '@example.com';
-  $slice_cert = create_slice_certificate($slice_name, $slice_email,
-                                         $slice_id, $sa_slice_cert_life_days,
+  $slice_cert = create_slice_certificate($project_name, $slice_name,
+                                         $slice_email, $slice_id,
+                                         $sa_slice_cert_life_days,
                                          $sa_authority_cert,
                                          $sa_authority_private_key);
 
-  $slice_urn = slice_urn_from_cert($slice_cert);
+  $slice_urn = urn_from_cert($slice_cert);
 
   // FIXME: Parametrize
   $expiration = get_future_date(30); // 30 days increment
