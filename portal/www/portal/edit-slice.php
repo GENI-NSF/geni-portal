@@ -87,7 +87,7 @@ print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
 </form></td></tr>
 <?php
 print "</table>\n";
-print "<b id='warn'>* Warning: Slice and project names are public</b><br/>\n";
+print "<b id='warn'>* Note: Slice and project names are public</b><br/>\n";
 
 print "<h2>Slice Policy Defaults</h2>\n";
 print "<form method=\"POST\" action=\"do-edit-slice.php?slice_id=$slice_id\">\n";
