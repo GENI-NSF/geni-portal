@@ -21,10 +21,10 @@ function show_header($title)
   echo '<tr><td>';
   echo '<img src="/images/geni.png" alt="GENI"/>';
   echo '</td><td>';
-  echo '<img src="/images/portal.png" alt="Portal"/>';
+  echo '<a href="index.php"><img src="/images/portal.png" alt="Portal"/></a>';
   echo '</td><td>';
   echo '<div id="loginButtons">';
-  echo "<button type='button' onClick=\"window.location=\'secure/home.php\'\"><b>Login</b></button>";
+  echo '<button onClick="window.location.href=\'secure/home.php\'"><b>Login</b></button>';
   echo '<br/>';
   echo '<a href="login-help.php"><b>Get help logging in</b></a>';
   echo '</td>';
@@ -35,55 +35,44 @@ function show_header($title)
   echo '<div id="content">';
 }
 
-show_header()
+show_header("Welcome to the GENI Portal")
 ?>
 
 
 <h1> Welcome to the GENI Portal </h1>
 
 <p>
-  The <b>GENI Portal</b> is the main interface to <a href="http://www.geni.net">GENI</a>, an NSF funded virtual testbed supporting computer networking research and innovation.
+  The <b>GENI Portal</b> is the main interface to <a href="http://www.geni.net">GENI</a>, an <a href="http://www.nsf.gov/">NSF</a> funded virtual testbed supporting computer networking research and innovation.
 </p><p>
-  <b>Become a GENI Experimenter</b>: The GENI Portal supports single sign on through the <a href="http://www.incommonfederation.org">InCommon</a> federation. If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">request a GENI account</a> using your InCommon single sign on username and password.  If you are not affiliated with an InCommon federated institution, <a href="">request a GENI account</a>.
+  <b>Become a GENI Experimenter</b>: The GENI Portal supports single sign on through the <a href="http://www.incommonfederation.org">InCommon</a> federation. If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">request a GENI account</a> using your InCommon single sign on username and password.  If you are not affiliated with an InCommon federated institution, <a href="mailto:help@geni.net">request a single sign on login for the GENI Portal</a>.
 </p>
 <p>
   <b>About GENI</b>: More Information about using GENI can be found on the <a href="http://groups.geni.net/geni">GENI wiki</a>.
 </p>
 
 
-<h2>Announcements</h2>
+<h2>GENI News</h2>
 <ul>
 <li>
- * recent activity pulled from the log table ???
+ Recent activity pulled from the log table?
 </li><li>
 <ul><li>
-   * New project created at 1:23pm
+   New project created at 1:23pm
 </li><li>
-   * New slice created at 2:05am
+   New slice created at 2:05am
 </li></ul>
 </li>
 </ul>
 
-
-<h2> Misc </h2>
-
-<ul>
-<li>
- + CHIP: total number of active accounts/slices for some period
-   * plot of new experimenters as a function of month
-</li>
-
-<li>
- Links about GENI resources
+<h2>Find out more about using GENI</h2>
 <ul><li>
- + Help/tutorial links as seen on the deeper pages
-<ul><li>
-   + What resources are available
+   <a href="http://groups.geni.net/geni/wiki/GENIExperimenterWelcome">Information for GENI experimenters</a>
 </li><li>
-   + Links to tutorial pages on GENI wiki
+  <a href="http://groups.geni.net/geni/wiki/UnderstandingGENI">Understanding GENI</a> (includes a list of available resources)
 </li><li>
-   + Link to Flack (in it's public mode)
-</li></ul>
+  See where GENI resources are located using Flack, a graphical GENI resource reservation tool
+</li><li>
+  Get <a href="mailto:help@geni.net">help</a> using GENI
 </li>
 </ul>
 
