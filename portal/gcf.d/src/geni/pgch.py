@@ -440,11 +440,14 @@ class PGClearinghouse(Clearinghouse):
             raise Exception("Given invalid URN to look up slice %s. Look up slice by UUID?" % urn)
 
         if uuid:
-            # FIXME: Check a valid UUID
+            # Check a valid UUID
             try:
                 uuidO = uuid.UUID(uuid)
             except:
                 self.logger.error("Invalid uuid in GetCredential: %s", uuid)
+                if not self.gcf and urn:
+                    # For non GCF if we have a URN, use that
+                    uuid = None
 
             # look up by uuid
             if self.gcf:
@@ -555,7 +558,7 @@ class PGClearinghouse(Clearinghouse):
         if type.lower() == 'slice':
             # type is slice
 
-            if hrn and not urn:
+            if hrn and (not urn or not urn_util.is_valid_urn(urn)):
                 # Convert hrn to urn
                 urn = sfa.util.xrn.hrn_to_urn(hrn, "slice")
                 self.loger.debug("Made slice urn %s from hrn %s", urn, hrn)
@@ -565,6 +568,13 @@ class PGClearinghouse(Clearinghouse):
                 self.logger.error("Didnt get a valid URN for slice in resolve: %s", urn)
                 if uuid:
                     self.logger.error("Got a UUID instead? %s" % uuid)
+                    try:
+                        uuidO = uuid.UUID(uuid)
+                    except:
+                        self.logger.error("Resolve(slice): Invalid UUID %s", uuid)
+                        raise Exception("Resolve(slice): No valid URN (even using hrn) and no valid UUID")
+                        # FIXME: then what?
+
                     # FIXME For gcf, could loop over all slices, extract uuid, and compare
                     if self.gcf:
                         raise Exception("Didnt get a valid URN for slice in resolve: %s", urn)
@@ -633,8 +643,21 @@ class PGClearinghouse(Clearinghouse):
         elif type.lower() == 'user':
             # type is user
             # This should be an hrn. Maybe handle others?
-            if hrn and not urn:
+            if hrn and (not urn or not urn_util.is_valid_urn(urn)):
                 urn = sfa.util.xrn.hrn_to_urn(hrn, "user")
+                self.loger.debug("Made user urn %s from hrn %s", urn, hrn)
+            if not urn or not urn_util.is_valid_urn(urn):
+                self.logger.error("Didnt get a valid URN for user in resolve: %s", urn)
+                if uuid:
+                    self.logger.error("Got a UUID instead? %s" % uuid)
+                    try:
+                        uuidO = uuid.UUID(uuid)
+                    except:
+                        self.logger.error("Resolve(user): Invalid UUID %s", uuid)
+                        raise Exception("Resolve(user): No valid URN (even using hrn) and no valid UUID")
+                else:
+                    raise Exception("Resolve(user): No valid URN (even using hrn) and no valid UUID")
+                        # FIXME: then what?
             # Now I need an owner uuid from the urn
             # FIXME: We don't have this yet!
             # return a list of slices
@@ -789,14 +812,14 @@ class PGClearinghouse(Clearinghouse):
         if credential is None:
             raise Exception("Resolve missing credential")
 
-        self.logger.info("in delegate getkeys about to do cred verify")
+#        self.logger.info("in delegate getkeys about to do cred verify")
         # Validate user credential
         creds = list()
         creds.append(credential)
         privs = ()
-        self.logger.info("type of credential: %s. Type of creds: %s", type(credential), type(creds))
+#        self.logger.info("type of credential: %s. Type of creds: %s", type(credential), type(creds))
         self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
-        self.logger.info("getkeys did cred verify")
+#        self.logger.info("getkeys did cred verify")
         # With the real CH, the SSH keys are held by the portal, not the CH
         # see db-util.php#fetchSshKeys which queries the ssh_key table in the portal DB
         # it takes an account_id
@@ -953,7 +976,7 @@ def invokeCH(url, operation, logger, argsdict, mycert=None, mykey=None):
         toencode[k]=v
     argstr = json.dumps(toencode)
 
-    logger.info("Will do put of %s", argstr)
+    logger.debug("Will do put of %s", argstr)
 #    print ("Doing  put of %s" % argstr)
 
     # now http put this, grab result into putres
