@@ -34,7 +34,13 @@ require_once("smime.php");
 require_once('response_format.php');
 require_once('util.php');
 
-function handle_message($prefix)
+function default_cacerts()
+{
+  return array('/usr/share/geni-ch/CA/cacert.pem');
+}
+
+function handle_message($prefix, $cacerts=null, $receiver_cert=null,
+                        $receiver_key=null)
 {
 
   // error_log($prefix . ": starting");
@@ -75,19 +81,24 @@ function handle_message($prefix)
 
   // Now process the data
   $data = smime_decrypt($data);
-  $msg = smime_validate($data);
+
+  // No CAs specified, use the default set.
+  if (is_null($cacerts)) {
+    $cacerts = default_cacerts();
+  }
+  $msg = smime_validate($data, $cacerts);
   // XXX Error check smime_validate result here
    
-  $funcargs = parse_message($msg);
+  if (is_null($msg)) {
+    /* Message failed to verify. Return authentication failure. */
+    $result = generate_response(RESPONSE_ERROR::AUTHENTICATION,
+                                NULL,
+                                "Message verification failed.");
+  } else {
+    $funcargs = parse_message($msg);
+    $result = call_user_func($funcargs[0], $funcargs[1]);
+  }
 
-  /*
-  /// *** TEMP FIX
-  $signer = $funcargs[1]['signer'];
-  //  error_log("Received : SIGNER = " . $signer);
-  // *** END OF TEMP FIX 
-  */
-
-  $result = call_user_func($funcargs[0], $funcargs[1]);
   //  error_log("RESULT = " . $result);
   $output = encode_result($result);
   //   error_log("RESULT(enc) = " . $output);
@@ -120,7 +131,7 @@ $ACCOUNT_ID = null;
 //--------------------------------------------------
 // Send a message (via PUT) to a given URL and return response
 //--------------------------------------------------
-function put_message($url, $message)
+function put_message($url, $message, $signer_cert=null, $signer_key=null)
 {
   //  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation']);
 
@@ -145,7 +156,7 @@ function put_message($url, $message)
 
   $message = json_encode($message);
   //  error_log("PUT_MESSAGE(enc) " . $message);
-  // sign
+  $message = smime_sign_message($message, $signer_cert, $signer_key);
   // encrypt
   $tmpfile = tempnam(sys_get_temp_dir(), "msg");
   file_put_contents($tmpfile, $message);
