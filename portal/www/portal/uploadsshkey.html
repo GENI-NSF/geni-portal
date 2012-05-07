@@ -1,5 +1,10 @@
 <br/>
 <b>Upload an SSH public key</b><br/>
+<br/>
+Upload an SSH public key. This key will be provided to Aggregates when
+you create slivers. Some aggregates will install this key on reserved
+nodes, for use in logging in to your reserved resources.
+<br/><br/>
 <form action="uploadsshkey.php" method="post" enctype="multipart/form-data">
   <label for="file">SSH Public Key File:</label>
   <input type="file" name="file" id="file" />
@@ -16,3 +21,5 @@ Unix-based systems. Public keys will usually have a .pub extension.
 <b>Mac OS X Users</b>: in the file chooser dialog, press
 Command-Shift-. (period) to display hidden directories so that the
 .ssh directory is visible.
+<br/><br/>
+<b>FIXME</b>: To create a new SSH public key......

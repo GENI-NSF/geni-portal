@@ -78,7 +78,7 @@ foreach ($fields as $field) {
   print "/></td></tr>\n";
 }
 print "</table>\n";
-print "<b>Warning: Project name is public</b><br/>\n";
+print "<b>Note: Project name is public</b><br/>\n";
 print "<br/>\n";
 
 print "<h2>Project Policy Defaults</h2>\n";

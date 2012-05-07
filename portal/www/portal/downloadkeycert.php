@@ -27,10 +27,15 @@ require_once("user.php");
 require_once("header.php");
 require_once("cert_utils.php");
 
+// FIXME: JS to validate PW at client
+
 function show_form($error_msg)
 {
   print "<br/>\n";
   print "<b>Download certificate and key</b><br/>\n";
+  print "<br/>For <i>advanced</i> users: This page allows advanced users to download an SSL certificate and private key" .
+    " suitable for use with Omni and other GENI tools, to authenticate to aggregates and other GENI servers.<br/>\n";
+  print "This is not necessary for typical GENI experimenters, using the GENI Portal.<br/><br/>\n";
   if ($error_msg) {
     print "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n"
@@ -39,7 +44,9 @@ function show_form($error_msg)
   }
   print "<form action=\"downloadkeycert.php\" method=\"post\">\n";
   print "<label for=\"password\">Password:</label>\n";
-  print "<input type=\"password\" name=\"password\"/>\n";
+  print "<input type=\"password\" name=\"password\"/><br/>\n";
+  print "<label for=\"password2\">Confirm Password:</label>\n";
+  print "<input type=\"password\" name=\"password2\"/>\n";
   print "<br/>\n";
   print "<input type=\"submit\" name=\"submit\" value=\"Download\"/>\n";
   print "</form>\n";
@@ -63,10 +70,19 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 /* Decide whether to show the form. */
 $show_form = True;
 $error_msg = null;
+$password = "";
+$password2 = "";
 if (array_key_exists('password', $_POST)) {
   $password = $_POST['password'];
-  if (validate_password($password, $error_msg)) {
+}
+if (array_key_exists('password2', $_POST)) {
+  $password2 = $_POST['password2'];
+}
+if ($password != "" && validate_password($password, $error_msg)) {
+  if ($password == $password2) {
     $show_form = False;
+  } else {
+    $error_msg = "Password entries don't match.";
   }
 }
 
