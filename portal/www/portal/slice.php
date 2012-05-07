@@ -81,7 +81,7 @@ if ($user->privSlice()) {
   print "<td><button onClick=\"window.location='$add_url'\"><b>Add Resources</b></button></td>\n";
 }
 print "<td><button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button></td>\n";
-print "<td><button title=\"not working yet\" onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>\n";
+print "<td><button onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>\n";
 // -- not working yet";
 if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew.php\">";
@@ -92,14 +92,9 @@ if ($user->privSlice()) {
   print "value=\"$slice_expiration\"/>\n";
   print "</form></td>\n";
 
-  print "<td><button onClick=\"window.location='$slicecred_url'\">Download Slice Cred</button></td>\n";
   print "<td><button onClick=\"window.location='http://groups.geni.net/geni/wiki/ProtoGENIFlashClient'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
   print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Slivers for " . $slice_name. "</button></td>\n";
-}
 
-// FIXME: What is the right thing to check here?
-//if ($user->privAdmin()) {
-if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew Slice'/>\n";
@@ -109,6 +104,7 @@ if ($user->privSlice()) {
   print "</form></td>\n";
 
   print "<td><button onClick=\"window.location='$edit_url'\">Edit Slice</button></td>\n";
+  print "<td><button onClick=\"window.location='$slicecred_url'\">Download Slice Cred</button></td>\n";
   print "<td><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice " . $slice_name. "</button></td>\n";
   print "<td><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice " . $slice_name. "</button></td>\n";
 }
@@ -146,7 +142,7 @@ print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
 <?php
 print "</table>\n";
 
-print "<b id='warn'>Warning: Slice and project names are public</b><br/>\n";
+print "<b id='warn'>Note: Slice and project names are public</b><br/>\n";
 ?>
 
 <h2>Slice members</h2>

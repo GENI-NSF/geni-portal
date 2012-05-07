@@ -57,7 +57,9 @@ if (! $key) {
   include("header.php");
   show_header('GENI Portal: Slices', $TAB_SLICES);
   include("tool-breadcrumbs.php");
-  print "<h2>Error Getting Slice Credential</h2>\n";
+  print "<h2>Cannot Download Slice Credential</h2>\n";
+  print "This page allows you to download a slice credential file, for use in other tools (e.g. Omni).\n";
+  print "This is advanced functionality, not required for typical GENI users.\n";
   print "Please"
     . " <button onClick=\"window.location='" . relative_url("uploadkey.php") . "'\">Upload a public key</button>"
     . " so that a credential can be retrieved.";
