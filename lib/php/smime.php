@@ -34,7 +34,7 @@ function smime_validate($message, $cacerts)
   $decoded = json_decode($message, true);
   if (! is_null($decoded)) {
     /* Decoding succeeded, so not smime encoded. */
-    error_log("smime_validate: no smime detected.");
+    /* error_log("smime_validate: no smime detected."); */
     return $message;
   } else {
     error_log("smime_validate: smime detected.");
