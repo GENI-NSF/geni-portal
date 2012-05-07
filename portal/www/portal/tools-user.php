@@ -37,6 +37,7 @@ if (count($keys) == 0)
   {
     // No ssh keys are present.
     print "No ssh keys have been uploaded. ";
+    print "SSH keys are used to log in to many reserved compute resources.<br/><br/>\n";
     print "Please <button onClick=\"window.location='uploadsshkey.php'\">Upload an SSH key</button>.\n";
   }
 else
@@ -83,6 +84,7 @@ if ($key) {
   print "</table>\n";
   // FIXME: Way to delete a key?
 } else {
+  print "For <i>Advanced</i> users: download an SSL certificate and private key, in order to use other GENI tools, such as Omni.<br/><br/>\n";
   //  print "<button onClick=\"window.location='uploadkey.php'\">Please upload a public key</button>\n";
   print "<button onClick=\"window.location='downloadkeycert.php'\">"
     . "Download certificate and key</button>\n";
