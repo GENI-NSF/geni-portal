@@ -441,6 +441,11 @@ class PGClearinghouse(Clearinghouse):
 
         if uuid:
             # FIXME: Check a valid UUID
+            try:
+                uuidO = uuid.UUID(uuid)
+            except:
+                self.logger.error("Invalid uuid in GetCredential: %s", uuid)
+
             # look up by uuid
             if self.gcf:
                 raise Exception("Got UUID in GetCredential - unsupported")
