@@ -48,13 +48,15 @@ if (count($slices) > 0) {
   print ("<th>Project</th>");
   print ("<th>Expiration</th>");
   print ("<th>Owner</th>"
-         . "<th>Credential</th><th>Resources</th><th>Sliver Status</th>"
+         . "<th>Resources</th><th>Sliver Status</th>"
+	 . "<th>List Resources</th>"
 	 . "<th>Flack</th>"
          . "<th>Delete Sliver</th>");
   if ($portal_enable_abac) {
     print "<th>ABAC Credential</th>";
   }
   print ("<th>URN</th>");
+  print ("<th>Credential</th>");
   print "</tr>\n";
 
   $base_url = relative_url("slicecred.php?");
@@ -81,6 +83,7 @@ if (count($slices) > 0) {
     $delete_sliver_url = $delete_sliver_base_url . $query;
     $sliver_status_url = $sliver_status_base_url . $query;
     $sliceabac_url = $abac_url . $query;
+    $listres_url = 'listresources.php' . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
     $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
@@ -106,15 +109,17 @@ if (count($slices) > 0) {
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
     print "<td>" . htmlentities($expiration) . "</td>";
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
-    print ("<td><button onClick=\"window.location='$slicecred_url'\"><b>Get Credential</b></button></td>")
-      . ("<td><button onClick=\"window.location='$sliceresource_url'\"><b>Get Resources</b></button></td>")
-      . ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
+    print ("<td><button onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button></td>");
+    print ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
+    // FIXME: List Resources
+    print ("<td><button onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>");
   print "<td><button onClick=\"window.location='http://groups.geni.net/geni/wiki/ProtoGENIFlashClient'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
     print ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
     }
     print "<td>" . htmlentities($slice_urn) . "</td>";
+    print ("<td><button onClick=\"window.location='$slicecred_url'\"><b>Get Credential</b></button></td>");
     print "</tr>\n";
   }
   print "</table>\n";
