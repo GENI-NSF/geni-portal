@@ -39,11 +39,15 @@ function default_cacerts()
   return array('/usr/share/geni-ch/CA/cacert.pem');
 }
 
-function handle_message($prefix, $cacerts=null, $receiver_cert=null,
-                        $receiver_key=null)
+/*
+ * Extract the message depending on how it was sent.
+ *
+ * Currently only handles 'put'.
+ *
+ * Returns the message as a string.
+ */
+function extract_message()
 {
-
-  // error_log($prefix . ": starting");
   $request_method = strtolower($_SERVER['REQUEST_METHOD']);
   switch($request_method)
     {
@@ -58,7 +62,8 @@ function handle_message($prefix, $cacerts=null, $receiver_cert=null,
 	}
       fclose($putdata);
       break;
-    case 'post':
+    case 'postXXX':
+      /* This case is incomplete. */
       if (array_key_exists('file', $_FILES)) {
 	$errorcode = $_FILES['file']['error'];
 	if ($errorcode != 0) {
@@ -75,9 +80,32 @@ function handle_message($prefix, $cacerts=null, $receiver_cert=null,
       }
       break;
     }
-   
-  //  error_log($prefix . ": finished switch");
-  //  error_log("Data = " . $data);
+  return $data;
+}
+
+/*
+ * Top level message handler for services. Processes an incoming
+ * message, invokes the appropriate function, signs and encrypts the
+ * result.
+ *
+ * $prefix - a string prefix for debugging
+ *
+ * $cacerts - an array of files or directories containing CA
+ *            certificates. See PHP openssl documentation for info
+ *            on the format of directories.
+ *
+ * $receiver_cert - the certificate for signing responses.
+ *
+ * $receiver_key - the key for decrypting incoming messages and
+ *                 signing outgoing responses.
+ *
+ * Returns nothing.
+ */
+function handle_message($prefix, $cacerts=null, $receiver_cert = null,
+                        $receiver_key=null)
+{
+  // error_log($prefix . ": starting");
+  $data = extract_message();
 
   // Now process the data
   $data = smime_decrypt($data);
@@ -87,8 +115,6 @@ function handle_message($prefix, $cacerts=null, $receiver_cert=null,
     $cacerts = default_cacerts();
   }
   $msg = smime_validate($data, $cacerts);
-  // XXX Error check smime_validate result here
-   
   if (is_null($msg)) {
     /* Message failed to verify. Return authentication failure. */
     $result = generate_response(RESPONSE_ERROR::AUTHENTICATION,
@@ -96,7 +122,14 @@ function handle_message($prefix, $cacerts=null, $receiver_cert=null,
                                 "Message verification failed.");
   } else {
     $funcargs = parse_message($msg);
-    $result = call_user_func($funcargs[0], $funcargs[1]);
+    $func = $funcargs[0];
+    if (is_callable($func)) {
+      $result = call_user_func($func, $funcargs[1]);
+    } else {
+      $result = generate_response(RESPONSE_ERROR::ARGS,
+                                  NULL,
+                                  "Unknown operation \"$func\".");
+    }
   }
 
   //  error_log("RESULT = " . $result);
