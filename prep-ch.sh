@@ -50,7 +50,7 @@ SFA_TMP_FILES="/tmp/sfa.log /tmp/sfa_import.log"
 /usr/bin/sudo /usr/bin/touch ${SFA_TMP_FILES}
 /usr/bin/sudo /bin/chmod 777 ${SFA_TMP_FILES}
 
-/usr/bin/sudo /bin/cp -R gcf.d ${SHARE_DIR}
+/usr/bin/sudo /bin/cp -R portal/gcf.d ${SHARE_DIR}
 
 
 #
