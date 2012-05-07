@@ -42,6 +42,7 @@ import optparse
 import os
 import geni
 from geni.config import read_config
+from geni.pgch import PGClearinghouse
 
 config = None
 
@@ -68,7 +69,7 @@ class CommandHandler(object):
         """Run the clearinghouse server."""
         # XXX Verify that opts.keyfile exists
         # XXX Verify that opts.directory exists
-        ch = geni.PGClearinghouse()
+        ch = PGClearinghouse()
         # address is a tuple in python socket servers
         addr = (opts.host, int(opts.port))
         # rootcafile is turned into a concatenated file for Python SSL use inside ch.py

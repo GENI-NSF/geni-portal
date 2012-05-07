@@ -185,6 +185,13 @@ function create_slice($args)
   // Return the standard info about the slice.
   $slice_info = lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
 
+  // slice_info is a response triple
+  // Check for errors. If any, return slice_info as is
+  if ($slice_info[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("create_slice got error from lookup_slice " . $slice_id . ": " . $slice_info[RESPONSE_ARGUMENT::OUTPUT]);
+    return $slice_info;
+  }
+
   // Create an assertion that this owner is the 'lead' of the project (and has associated privileges)
   global $cs_url;
   $signer = null; // *** FIX ME
@@ -204,7 +211,8 @@ function create_slice($args)
   log_event($log_url, "Created slice " . $slice_name, array($project_context, $slice_context), $owner_id);
 
 
-  return generate_response(RESPONSE_ERROR::NONE, $slice_info, '');
+  //  slice_info is already a response_triple from the lookup_slice call above
+  return $slice_info;
 }
 
 function lookup_slice_ids($args)

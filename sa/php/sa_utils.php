@@ -68,6 +68,7 @@ function create_slice_credential($slice_cert, $experimenter_cert, $expiration,
 {
   global $sa_mkcred_prog;
   global $sa_gcf_include_path;
+  global $sa_trusted_roots;
 
   /* Write the slice and experimenter cert to a temp files. */
   $slice_cert_file = writeDataToTempFile($slice_cert, "sa-");
@@ -83,6 +84,11 @@ function create_slice_credential($slice_cert, $experimenter_cert, $expiration,
                      $slice_cert_file,
                      $experimenter_cert_file,
                      date("c", $expiration));
+  foreach ($sa_trusted_roots as $root) {
+    $cmd_array[] = '-r';
+    $cmd_array[] = "$root";
+  }
+
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
 
@@ -108,6 +114,7 @@ function create_user_credential($experimenter_cert, $expiration,
 {
   global $sa_mkcred_prog;
   global $sa_gcf_include_path;
+  global $sa_trusted_roots;
 
   /* Write the slice and experimenter cert to a temp files. */
   $experimenter_cert_file = writeDataToTempFile($experimenter_cert, "sa-");
@@ -122,6 +129,11 @@ function create_user_credential($experimenter_cert, $expiration,
                      $experimenter_cert_file,
                      $experimenter_cert_file,
                      date("c", $expiration));
+  foreach ($sa_trusted_roots as $root) {
+    $cmd_array[] = '-r';
+    $cmd_array[] = "$root";
+  }
+
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
 
