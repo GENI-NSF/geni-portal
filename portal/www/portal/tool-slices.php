@@ -77,6 +77,7 @@ if (count($slices) > 0) {
     }
     $args['slice_id'] = $slice_id;
     $query = http_build_query($args);
+    $query = "?".$query;
     $slicecred_url = $base_url . $query;
     $slice_url = $slice_base_url . $query;
     $sliceresource_url = $resource_base_url . $query;
