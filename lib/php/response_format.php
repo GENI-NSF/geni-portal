@@ -49,6 +49,7 @@ class RESPONSE_ERROR {
   const DATABASE = 1;
   const AUTHENTICATION = 2;
   const AUTHORIZATION = 3;
+  const ARGS = 4;
 }
 
 ?>

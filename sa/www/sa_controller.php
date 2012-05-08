@@ -266,9 +266,15 @@ function lookup_slice_ids($args)
     return $result;
 }
 
-function lookup_slices($args)
+function lookup_slices($args, $message)
 {
   global $SA_SLICE_TABLENAME;
+
+  error_log("SA.loookup_slices: \$message->signer = "
+            . print_r($message->signer(), true));
+  $signer_urn = $message->signerUrn();
+  error_log("SA.lookup_slices signer urn = $signer_urn");
+
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
   $project_id_clause = '';
   if ($project_id <> null) {
