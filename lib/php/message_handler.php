@@ -114,7 +114,9 @@ function handle_message($prefix, $cacerts=null, $receiver_cert = null,
   if (is_null($cacerts)) {
     $cacerts = default_cacerts();
   }
-  $msg = smime_validate($data, $cacerts);
+  $msg = smime_validate($data, $cacerts, $signer_pem);
+  $geni_message = new GeniMessage($msg);
+  $geni_message->setSignerPem($signer_pem);
   if (is_null($msg)) {
     /* Message failed to verify. Return authentication failure. */
     $result = generate_response(RESPONSE_ERROR::AUTHENTICATION,
@@ -124,7 +126,20 @@ function handle_message($prefix, $cacerts=null, $receiver_cert = null,
     $funcargs = parse_message($msg);
     $func = $funcargs[0];
     if (is_callable($func)) {
-      $result = call_user_func($func, $funcargs[1]);
+      $refFunc = new ReflectionFunction($func);
+      $paramCount = $refFunc->getNumberOfParameters();
+      if ($paramCount === 1) {
+        $result = call_user_func($func, $funcargs[1]);
+      } else if ($paramCount === 2) {
+        $result = call_user_func($func, $funcargs[1], $geni_message);
+      } else {
+        error_log("Unknown method signature for invoked method \"$func\"."
+                  . " Expected 1 or 2 parameters, but $func expects"
+                  . " $paramCount");
+        generate_response(RESPONSE_ERROR::ARGS,
+                          NULL,
+                          "Bad callback signature for \"$func\".");
+      }
     } else {
       $result = generate_response(RESPONSE_ERROR::ARGS,
                                   NULL,
@@ -215,6 +230,11 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
     error_log("put_message error: Page $url Not Found");
     return null;
   }
+
+  /* Responses are signed messages. Verify the signature on return. */
+  $cacerts = default_cacerts();
+  $result = smime_validate($result, $cacerts, $signer_pem);
+
   $result = decode_result($result);
   //  error_log("Decoded raw result : " . $result);
 
@@ -233,6 +253,68 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
   //     error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
 
   return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
+Class GeniMessage {
+  private $extensions_key = 'extensions';
+  private $subjectAltName_key = 'subjectAltName';
+  private $email_regex = "/^email:(.*)$/";
+  private $urn_regex = "/^URI:(urn:publicid:.*)$/";
+  private $uuid_regex = "/^URI:(urn:uuid:.*)$/";
+
+  function __construct($raw_message) {
+    $this->raw_message = $raw_message;
+    $this->signer_pem = NULL;
+    $this->signer = NULL;
+  }
+  function setSignerPem($signer_pem) {
+    $this->signer_pem = $signer_pem;
+    /* Clear a cached x509 cert */
+    $this->signer = NULL;
+    $this->signer_urn = NULL;
+  }
+  function signerPem() {
+    return $this->signer_pem;
+  }
+  function signer() {
+    if (is_null($this->signer) && ! is_null($this->signer_pem)) {
+      $this->signer = openssl_x509_parse($this->signer_pem);
+    }
+    return $this->signer;
+  }
+  private function parseSubjectAltName() {
+    $signer = $this->signer();
+    if (! is_null($signer)
+        && array_key_exists($this->extensions_key, $signer)) {
+      $extensions = $signer[$this->extensions_key];
+      if (array_key_exists($this->subjectAltName_key, $extensions)) {
+        $subjectAltName = $extensions[$this->subjectAltName_key];
+        $names = explode(",", $subjectAltName);
+        foreach ($names as $name) {
+          error_log("Untrimmed SAN: \"$name\"");
+          $name = trim($name);
+          error_log("Trimmed SAN: \"$name\"");
+          if (preg_match($this->email_regex, $name, $matches) === 1) {
+            $this->signer_email = $matches[1];
+            error_log("signer email = " . $this->signer_email);
+          } else if (preg_match($this->urn_regex, $name, $matches) === 1) {
+            $this->signer_urn = $matches[1];
+            error_log("signer urn = " . $this->signer_urn);
+          } else if (preg_match($this->uuid_regex, $name, $matches) === 1) {
+            $this->signer_uuid = $matches[1];
+            error_log("signer uuid = " . $this->signer_uuid);
+          } else {
+          }
+        }
+      }
+    }
+  }
+  function signerUrn() {
+    if (is_null($this->signer_urn) && ! is_null($this->signer_pem)) {
+      $this->parseSubjectAltName();
+    }
+    return $this->signer_urn;
+  }
 }
 
 ?>
