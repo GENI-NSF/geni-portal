@@ -29,8 +29,9 @@ function smime_decrypt($message)
   return $message;
 }
 
-function smime_validate($message, $cacerts)
+function smime_validate($message, $cacerts, &$signer_pem)
 {
+  $signer_pem = NULL;
   $decoded = json_decode($message, true);
   if (! is_null($decoded)) {
     /* Decoding succeeded, so not smime encoded. */
@@ -68,7 +69,7 @@ function smime_validate($message, $cacerts)
   } else if ($result) {
     error_log("smime_validate: successful verification.");
     $message = file_get_contents($content_file);
-    $signer_cert = openssl_x509_parse(file_get_contents($signer_cert_file));
+    $signer_pem = file_get_contents($signer_cert_file);
   } else {
     /* Verification failed. */
     error_log("The message failed to verify.");
