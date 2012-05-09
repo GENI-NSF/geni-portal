@@ -105,12 +105,15 @@ function lookup_slices_by_project_and_name($sa_url, $project_id, $slice_name)
 }
 
 /* lookup a set of slices by name, project_id, owner */
-function lookup_slices($sa_url, $project_id, $owner_id)
+function lookup_slices($sa_url, $signer, $project_id, $owner_id)
 {
+  $signer_cert = $signer->certificate();
+  $signer_key = $signer->privateKey();
   $lookup_slices_message['operation'] = 'lookup_slices';
   $lookup_slices_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
   $lookup_slices_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
-  $slices = put_message($sa_url, $lookup_slices_message);
+  $slices = put_message($sa_url, $lookup_slices_message, $signer_cert,
+                        $signer_key);
   return $slices;
 }
 
