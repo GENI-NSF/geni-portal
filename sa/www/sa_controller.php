@@ -212,6 +212,7 @@ function create_slice($args)
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
+  error_log("SA.create_slice final return is " . print_r($slice_info, true));
   return $slice_info;
 }
 
@@ -271,12 +272,15 @@ function lookup_slices($args, $message)
   global $SA_SLICE_TABLENAME;
 
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
-  $owner_id = $message->signerUuid();
+  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
 
-  if (is_null($owner_id)) {
-    return generate_response(RESPONSE_ERROR::ARGS,
-                             NULL,
-                             "No message signer UUID available.");
+  /* FIXME: This is where an authorization guard should go. */
+  if (is_null($message->signer())) {
+    error_log("No signer on SA.lookup_slices."
+              . " Proceeding without authorization.");
+    /* return generate_response(RESPONSE_ERROR::ARGS, */
+    /*                          NULL, */
+    /*                          "No message signer UUID available."); */
   }
 
   $conn = db_conn();
