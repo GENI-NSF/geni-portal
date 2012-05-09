@@ -55,11 +55,10 @@ function dump_slice($row)
 	    . " SLICE_URN " . $row[SA_SLICE_TABLE_FIELDNAME::SLICE_URN]);
 }
 
-function dump_slices($project)
+function dump_slices($user, $project)
 {
   global $sa_url;
-  global $owner;
-  $slices = lookup_slices($sa_url, $project, $owner);
+  $slices = lookup_slices($sa_url, $user, $project, $user->account_id);
   error_log("DSS.rows = " . print_r($slices, true));
   foreach($slices as $slice) {
     dump_slice($slice);
@@ -72,15 +71,15 @@ $slice_info = create_slice($sa_url, $project, $project_name, 'SSS', $owner);
 error_log("SLICE_INFO " . print_r($slice_info, true));
 $slice_id = $slice_info['slice_id'];
 error_log("SLICE_ID = " . $slice_id);
-dump_slices($project);
+dump_slices($user, $project);
 $slice_info2 = create_slice($sa_url, $project, $project_name, 'TTT', $owner);
 $slice_id2 = $slice_info2['slice_id'];
 error_log("SLICE_ID2 = " . $slice_id2);
-dump_slices($project);
+dump_slices($user, $project);
 $now = new DateTime();
 $expire = db_date_format($now);
 renew_slice($sa_url, $slice_id2, $expire, $owner);
-dump_slices($project);
+dump_slices($user, $project);
 
 $slice_urn = $slice_info[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
 $slice_info2 = lookup_slice_by_urn($sa_url, $slice_urn);
