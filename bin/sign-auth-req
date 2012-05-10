@@ -14,14 +14,17 @@ AUTHORITY=$3
 SHORT_HOST=`/bin/hostname -s`
 
 URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${AUTHORITY}"
-
+UUID=`openssl req -in ${REQ} -text -noout | grep 'Subject:' | sed -e 's/.*CN=\([^/$]*\).*/\1/g'`
+echo "first uuid = ${UUID}"
+UUID="URI:uuid:${UUID}"
+echo "second uuid = ${UUID}"
 EXT_FILE=`/bin/mktemp`
 EXT_NAME='v3_auth'
 cat > "${EXT_FILE}" <<EOF
 [$EXT_NAME]
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid:always,issuer:always
-subjectAltName=email:copy,${URN}
+subjectAltName=email:copy,${URN},${UUID}
 EOF
 
 if [ -z "$4" -o "$4" != "CA" ]; then
