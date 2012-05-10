@@ -168,11 +168,15 @@ function fetch_slice_by_id($slice_id)
           . $conn->quote($slice_id, 'text'));
   $row = db_fetch_row($sql);
   if (isset($row) && is_array($row)) {
-    if (array_key_exists(RESPONSE_ARGUMENT::CODE, $row) && ($row[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) && array_key_exists(RESPONSE_ARGUMENT::VALUE, $row)) {
+    if (array_key_exists(RESPONSE_ARGUMENT::CODE, $row)
+        && ($row[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE)
+        && array_key_exists(RESPONSE_ARGUMENT::VALUE, $row)) {
       $slice = $row[RESPONSE_ARGUMENT::VALUE];
       return $slice;
     } else if (array_key_exists(RESPONSE_ARGUMENT::CODE, $row)) {
-      error_log("fetch_slice_by_id got result code " . $row[RESPONSE_ARGUMENT::CODE] . ", output: " . $row[RESPONSE_ARGUMENT::OUTPUT]);
+      error_log("fetch_slice_by_id got result code "
+                . $row[RESPONSE_ARGUMENT::CODE]
+                . ", output: " . $row[RESPONSE_ARGUMENT::OUTPUT]);
     } else {
       error_log("fetch_Slice_by_id got malformed return");
     }
