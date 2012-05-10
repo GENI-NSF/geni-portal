@@ -61,6 +61,7 @@ if (count($slices) > 0) {
 
   $base_url = relative_url("slicecred.php?");
   $slice_base_url = relative_url("slice.php?");
+  $listres_base_url = relative_url("listresources.php?");
   $resource_base_url = relative_url("slice-add-resources.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
@@ -77,14 +78,14 @@ if (count($slices) > 0) {
     }
     $args['slice_id'] = $slice_id;
     $query = http_build_query($args);
-    $query = "?".$query;
+    $query = $query;
     $slicecred_url = $base_url . $query;
     $slice_url = $slice_base_url . $query;
     $sliceresource_url = $resource_base_url . $query;
     $delete_sliver_url = $delete_sliver_base_url . $query;
     $sliver_status_url = $sliver_status_base_url . $query;
     $sliceabac_url = $abac_url . $query;
-    $listres_url = 'listresources.php' . $query;
+    $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
     $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
