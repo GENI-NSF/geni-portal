@@ -58,6 +58,8 @@ class GeniUser
 
 
   function __construct() {
+    $this->certificate = NULL;
+    $this->private_key = NULL;
   }
 
   // If we haven't re-read the permissions in this many seconds, re-read
@@ -179,6 +181,27 @@ class GeniUser
     $allowed = $this->isAllowed('administer_members', CS_CONTEXT_TYPE::MEMBER, null);
     return $allowed;
   }
+
+  private function getInsideKeyPair() {
+    $row = db_fetch_inside_private_key_cert($this->account_id);
+    $this->certificate = $row['certificate'];
+    $this->private_key = $row['private_key'];
+  }
+
+  function certificate() {
+    if (is_null($this->certificate)) {
+      $this->getInsideKeyPair();
+    }
+    return $this->certificate;
+  }
+
+  function privateKey() {
+    if (is_null($this->private_key)) {
+      $this->getInsideKeyPair();
+    }
+    return $this->private_key;
+  }
+
 } // End of class GeniUser
 
 

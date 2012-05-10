@@ -106,7 +106,7 @@ print("<br>\n");
 print("<b>Slice Roles</b>");
 print("\n<table border=\"1\">\n");
 print ("<tr><th>Slice</th><th>Role</th></tr>");
-$slices = lookup_slices($sa_url, $project_id, null);
+$slices = lookup_slices($sa_url, $user, $project_id, null);
 //error_log("SLICES = " . print_r($slices, true));
 //error_log("ATTRIBS = " . print_r($slice_attribs, true));
 foreach($slice_attribs as $attrib) {

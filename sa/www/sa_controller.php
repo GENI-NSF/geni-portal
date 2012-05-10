@@ -212,6 +212,7 @@ function create_slice($args)
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
+  error_log("SA.create_slice final return is " . print_r($slice_info, true));
   return $slice_info;
 }
 
@@ -270,21 +271,30 @@ function lookup_slices($args, $message)
 {
   global $SA_SLICE_TABLENAME;
 
-  error_log("SA.loookup_slices: \$message->signer = "
-            . print_r($message->signer(), true));
-  $signer_urn = $message->signerUrn();
-  error_log("SA.lookup_slices signer urn = $signer_urn");
-
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
-  $project_id_clause = '';
-  if ($project_id <> null) {
-    $project_id_clause = SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'";
+  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+
+  /* FIXME: This is where an authorization guard should go. */
+  if (is_null($message->signer())) {
+    error_log("No signer on SA.lookup_slices."
+              . " Proceeding without authorization.");
+    /* return generate_response(RESPONSE_ERROR::ARGS, */
+    /*                          NULL, */
+    /*                          "No message signer UUID available."); */
   }
 
-  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+  $conn = db_conn();
+
+  $project_id_clause = '';
+  if ($project_id <> null) {
+    $project_id_clause = SA_SLICE_TABLE_FIELDNAME::PROJECT_ID
+      . " = " . $conn->quote($project_id, 'text');
+  }
+
   $owner_id_clause = '';
   if ($owner_id <> null) {
-    $owner_id_clause = SA_SLICE_TABLE_FIELDNAME::OWNER_ID . " = '" . $owner_id . "'";
+    $owner_id_clause = SA_SLICE_TABLE_FIELDNAME::OWNER_ID
+      . " = " . $conn->quote($owner_id, 'text');
   }
 
   $where_clause = "";

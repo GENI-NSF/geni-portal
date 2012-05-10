@@ -147,7 +147,7 @@ function handle_message($prefix, $cacerts=null, $receiver_cert = null,
     }
   }
 
-  //  error_log("RESULT = " . $result);
+  //   error_log("RESULT = " . print_r($result, true));
   $output = encode_result($result);
   //   error_log("RESULT(enc) = " . $output);
   //   error_log("RESULT(dec) = " . decode_result($output));
@@ -260,18 +260,23 @@ Class GeniMessage {
   private $subjectAltName_key = 'subjectAltName';
   private $email_regex = "/^email:(.*)$/";
   private $urn_regex = "/^URI:(urn:publicid:.*)$/";
-  private $uuid_regex = "/^URI:(urn:uuid:.*)$/";
+  private $uuid_regex = "/^URI:urn:uuid:(.*)$/";
 
   function __construct($raw_message) {
     $this->raw_message = $raw_message;
     $this->signer_pem = NULL;
     $this->signer = NULL;
+    $this->signer_email = NULL;
+    $this->signer_urn = NULL;
+    $this->signer_uuid = NULL;
   }
   function setSignerPem($signer_pem) {
     $this->signer_pem = $signer_pem;
-    /* Clear a cached x509 cert */
+    /* Clear a cached x509 info */
     $this->signer = NULL;
+    $this->signer_email = NULL;
     $this->signer_urn = NULL;
+    $this->signer_uuid = NULL;
   }
   function signerPem() {
     return $this->signer_pem;
@@ -282,6 +287,29 @@ Class GeniMessage {
     }
     return $this->signer;
   }
+  function signerUrn() {
+    if (is_null($this->signer_urn) && ! is_null($this->signer_pem)) {
+      $this->parseSubjectAltName();
+    }
+    return $this->signer_urn;
+  }
+  function signerUuid() {
+    if (is_null($this->signer_uuid) && ! is_null($this->signer_pem)) {
+      $this->parseSubjectAltName();
+    }
+    return $this->signer_uuid;
+  }
+  function signerEmail() {
+    if (is_null($this->signer_email) && ! is_null($this->signer_pem)) {
+      $this->parseSubjectAltName();
+    }
+    return $this->signer_email;
+  }
+
+  /*
+   * Extract email, URN, and UUID from the subjectAltName of the
+   * signer's certificate.
+   */
   private function parseSubjectAltName() {
     $signer = $this->signer();
     if (! is_null($signer)
@@ -291,29 +319,21 @@ Class GeniMessage {
         $subjectAltName = $extensions[$this->subjectAltName_key];
         $names = explode(",", $subjectAltName);
         foreach ($names as $name) {
-          error_log("Untrimmed SAN: \"$name\"");
           $name = trim($name);
-          error_log("Trimmed SAN: \"$name\"");
           if (preg_match($this->email_regex, $name, $matches) === 1) {
             $this->signer_email = $matches[1];
-            error_log("signer email = " . $this->signer_email);
           } else if (preg_match($this->urn_regex, $name, $matches) === 1) {
             $this->signer_urn = $matches[1];
-            error_log("signer urn = " . $this->signer_urn);
           } else if (preg_match($this->uuid_regex, $name, $matches) === 1) {
             $this->signer_uuid = $matches[1];
-            error_log("signer uuid = " . $this->signer_uuid);
           } else {
+            /* Else what? Unknown item in subjectAltName? Maybe that's
+             * ok? Do we care?
+             */
           }
         }
       }
     }
-  }
-  function signerUrn() {
-    if (is_null($this->signer_urn) && ! is_null($this->signer_pem)) {
-      $this->parseSubjectAltName();
-    }
-    return $this->signer_urn;
   }
 }
 

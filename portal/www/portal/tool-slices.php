@@ -38,9 +38,9 @@ if (! isset($pa_url)) {
 
 // FIXME: This looks up slices OWNED by this user
 if (isset($project_id) && uuid_is_valid($project_id)) {
-  $slices = lookup_slices($sa_url, $project_id, $user->account_id);
+  $slices = lookup_slices($sa_url, $user, $project_id, $user->account_id);
 } else {
-  $slices = lookup_slices($sa_url, null, $user->account_id);
+  $slices = lookup_slices($sa_url, $user, null, $user->account_id);
 }
 if (count($slices) > 0) {
   print "\n<table border=\"1\">\n";

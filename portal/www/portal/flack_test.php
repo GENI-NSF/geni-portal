@@ -9,7 +9,7 @@ require_once('user.php');
 $sr_url = get_sr_url();
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 $user = geni_loadUser();
-$slices = lookup_slices($sa_url, null, $user->account_id);
+$slices = lookup_slices($sa_url, $user, null, $user->account_id);
 $slice = $slices[0];
 $slice_urn = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
 
