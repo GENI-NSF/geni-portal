@@ -92,7 +92,9 @@ function create_slice_credential($slice_cert, $experimenter_cert, $expiration,
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
   if ($status) {
-    error_log( "create_slice_credential(): mkcred failed with status (".$status.") and output: ".print_r($output) );
+    error_log("create_slice_credential():"
+              . " mkcred failed with status ($status)"
+              . " and output: " . print_r($output, true));
   }
 
   /* Clean up temp files */
@@ -140,7 +142,9 @@ function create_user_credential($experimenter_cert, $expiration,
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
   if ($status) {
-    error_log( "create_user_credential(): mkcred failed with status (".$status.") and output: ".print_r($output) );
+    error_log("create_user_credential():"
+              . " mkcred failed with status ($status)"
+              . " and output: " . print_r($output, true));
   }
   /* Clean up temp files */
   unlink($experimenter_cert_file);
