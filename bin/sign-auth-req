@@ -25,7 +25,7 @@ cat > "${EXT_FILE}" <<EOF
 [$EXT_NAME]
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid:always,issuer:always
-authorityInfoAccess = caIssuers;URI:https://${FQDN}/ca.html
+authorityInfoAccess = 2.25.305821105408246119474742976030998643995;URI:https://${FQDN}/ca.html
 subjectAltName=email:copy,${URN},${UUID}
 EOF
 
