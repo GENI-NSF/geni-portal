@@ -12,6 +12,7 @@ AUTHORITY=$3
 
 
 SHORT_HOST=`/bin/hostname -s`
+FQDN=`/bin/hostname -f`
 
 URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${AUTHORITY}"
 UUID=`openssl req -in ${REQ} -text -noout | grep 'Subject:' | sed -e 's/.*CN=\([^/$]*\).*/\1/g'`
@@ -24,6 +25,7 @@ cat > "${EXT_FILE}" <<EOF
 [$EXT_NAME]
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid:always,issuer:always
+authorityInfoAccess = caIssuers;URI:https://${FQDN}/ca.html
 subjectAltName=email:copy,${URN},${UUID}
 EOF
 
