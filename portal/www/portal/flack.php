@@ -33,18 +33,61 @@ require_once('db-util.php');
 const FLACK_1_FILENAME = "flackportal-1.html";
 const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
-const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
+
+const FLACK_A_FILENAME = "flackportal-A.html";
+const FLACK_B_FILENAME = "flackportal-B.html";
+
+const FLACK_ORIG_FILENAME = "flack_orig.html";
+
+const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&debug=1&usejs=1&";
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
 $http_host = $_SERVER['HTTP_HOST'];
 $sa_ch_port = 8443;
-$SA_URL = "https://$http_host:$sa_ch_port";
-$CH_URL = "https://$http_host:$sa_ch_port";
+$SA_URL = "https://$http_host:$sa_ch_port/";
+$CH_URL = "https://$http_host:$sa_ch_port/";
+
+
+function generate_flack_page_internal($slice_urn, $ch_url, $sa_url, 
+				      $user_cert, $user_key, $am_root_cert_bundle)
+{
+
+  $content_A = file_get_contents(FLACK_A_FILENAME);
+  $content_B = file_get_contents(FLACK_B_FILENAME);
+
+  $set_commands = 'setServerCert("' . $am_root_cert_bundle . '");' . "\n" 
+    . 'setClientKey("' . $user_key . '");' . "\n"
+    . 'setClientCert("' . $user_cert . '");' . "\n";
+
+  // URL encode the URN's
+  $sa_urn = urlencode(SA_URN);
+  $slice_urn = urlencode($slice_urn);
+  //  $sa_url = urlencode($sa_url);
+  //  $ch_url = urlencode($ch_url);
+
+  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=$sa_urn&churl=$ch_url";
+  $url_params = "usejs=1&sliceurn=$slice_urn&saurl=$sa_url&sa_url=$sa_url&ch_url=$ch_url&saurn=$sa_urn&churl=$ch_url";
+
+
+  $content = $content_A . $set_commands . 
+    "swfobject.embedSWF(" . 
+    '"' . 
+    URL_PREAMBLE . $url_params . $content_B;
+
+
+  // *** MSB TESTING
+  $content = $content_A . $set_commands . 
+    "swfobject.embedSWF(" . '"' . "flack.swf?securitypreset=1&loadallmanagers=1&mode=public&debug=1&usejs=1" . 
+    "&sliceurn=$slice_urn&saurl=$sa_url&saurn=$sa_urn&churl=$ch_url" .
+    $content_B;
+
+  return $content;
+}
 
 
 // Generate flack pages given all parameters
 // and return contents of generated page
-function generate_flack_page_internal($slice_urn, $ch_url, $sa_url, 
+function generate_flack_page_internal_orig($slice_urn, $ch_url, $sa_url, 
 				      $user_cert, $user_key, $am_root_cert_bundle)
 {
 
@@ -57,7 +100,15 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
     . 'setClientKey("' . $user_key . '");' . "\n"
     . 'setClientCert("' . $user_cert . '");' . "\n";
 
-  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=" . SA_URN. "&churl=$ch_url";
+  $sa_urn = urlencode(SA_URN);
+  $slice_urn = urlencode($slice_urn);
+  //  $sa_url = urlencode($sa_url);
+  //  $ch_url = urlencode($ch_url);
+
+  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=$sa_urn&churl=$ch_url";
+  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&sa_url=$sa_url&ch_url=$ch_url&saurn=$sa_urn&churl=$ch_url";
+
+  // URL encode 
 
   $content = $content_1 . $set_commands . $content_2 . '"' . URL_PREAMBLE . $url_params . $content_3;
   file_put_contents($filename, $content);
@@ -73,7 +124,7 @@ function prepare_cert_for_javascript($cert)
   $first = true;
   foreach($lines as $line) {
     if ($line == null or $line == "") continue;
-    if(!$first) { $new_cert = $new_cert . "\\\n"; } 
+    if(!$first) { $new_cert = $new_cert . "\\n"; } 
     $first = false; 
     $new_cert = $new_cert . $line;
     //    error_log("NC = " . $new_cert);
@@ -82,13 +133,12 @@ function prepare_cert_for_javascript($cert)
   return $new_cert;
 }
 
-function generate_flack_page($slice_urn)
+function generate_flack_page($slice_urn, $original)
 {
   $user = geni_loadUser();
   $sr_url = get_sr_url();
   $am_services = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $ca_services = get_services_of_type(SR_SERVICE_TYPE::CERTIFICATE_AUTHORITY);
-  $ca_service = $ca_services[0];
 
   //  error_log("AMs = " . print_r($am_services, true));
   //  error_log("CA = " . print_r($ca_service, true));
@@ -101,12 +151,15 @@ function generate_flack_page($slice_urn)
 
 
   // Compute bundle of AM and CA certs
-  $root_cert = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
-  $am_root_cert_bundle = $root_cert . "\n";
-  foreach($am_services as $am_service) {
-    $am_service_cert = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
-    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert;
+  $am_root_cert_bundle = "";
+  foreach($ca_services as $ca_service) {
+    $ca_cert = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
+    $am_root_cert_bundle = $am_root_cert_bundle . $ca_cert;
   }
+#  foreach($am_services as $am_service) {
+#    $am_service_cert = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
+#    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert;
+#  }
 
   $user_cert = prepare_cert_for_javascript($user_cert);
   $user_key = prepare_cert_for_javascript($user_key);
@@ -114,8 +167,14 @@ function generate_flack_page($slice_urn)
 
   global $SA_URL;
   global $CH_URL;
-  $content = generate_flack_page_internal($slice_urn, $CH_URL, $SA_URL, $user_cert, $user_key, 
-					  $am_root_cert_bundle);
+  if ($original) {
+    $content = file_get_contents(FLACK_ORIG_FILENAME);
+  } else {
+    $content = generate_flack_page_internal($slice_urn, 
+					    $CH_URL, $SA_URL, $user_cert, 
+					    $user_key, 
+					    $am_root_cert_bundle);
+  }
 
   return $content;
 }

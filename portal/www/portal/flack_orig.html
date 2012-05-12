@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
    <head>
@@ -25,6 +26,30 @@
       <!-- END Browser History required section -->
 
       <script type="text/javascript" src="swfobject.js"></script>
+      <script type="text/javascript">
+          // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
+          var swfVersionStr = "11.1.0";
+          // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
+          var xiSwfUrlStr = "playerProductInstall.swf";
+          var flashvars = {};
+          var params = {};
+          params.quality = "high";
+          params.bgcolor = "#d2e1f0";
+          params.allowscriptaccess = "always";
+          params.allowfullscreen = "true";
+		  params.fullScreenOnSelection = "true";
+          var attributes = {};
+          attributes.id = "flack";
+          attributes.name = "flack";
+          attributes.align = "middle";
+          swfobject.embedSWF(
+              "flack.swf?mode=public&debug=0&usejs=1", "flashContent",
+              "100%", "100%",
+              swfVersionStr, xiSwfUrlStr,
+              flashvars, params, attributes);
+          // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+          swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+      </script>
 
       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -50,15 +75,9 @@
   // logging category
   var cat = 'forge.tests.tls';
 
-  forge.log.info("Before embedding SP.swf");
-  forge.log.info("Document[SP]pre = " + document['socketPool']);
-
   swfobject.embedSWF(
      'forge/SocketPool.swf', 'socketPool', '0', '0', '9.0.0',
      false, {}, {allowscriptaccess: 'always'}, {});
-
-  forge.log.info("Document[SP]post = " + document['socketPool']);
-  forge.log.info("After embedding SP.swf");
 
   // CA certificate for test server
   var serverCerts = [];
@@ -84,26 +103,12 @@
   function init(new_flash_id)
   {
     try {
-    forge.log.info(cat, "In init " + new_flash_id);
     flash_id = new_flash_id;
-    forge.log.info(cat, "After setting flash_id " + flash_id); 
-    forge.log.info("NET = " + net); 
-    forge.log.info("DOCUMENT = " + document);    
-    forge.log.info("DOCUMENT[FID] = " + document[flash_id]);    
-    forge.log.info("DOCUMENT[SP] = " + document['socketPool']);
-    forge.log.info("DOCUMENT[NUTHIN] = " + document['nuthin']);
-    forge.log.info("DOCUMENT[SP].init = " + document['socketPool'].init);
-    forge.log.info("DOCUMENT[SP].location = " + document['socketPool'].location);
-    forge.log.info("DOCUMENT[SP].title = " + document['socketPool'].title);
-    forge.log.info("DOCUMENT[SP].body = " + document['socketPool'].body);
-
     sp = net.createSocketPool({
       flashId: 'socketPool',
       policyPort: 843,
       msie: false
     });
-
-    forge.log.info(cat, "After CSP " + sp);
     } catch(ex) {
        forge.log.error(cat, ex);
     }
@@ -277,4 +282,63 @@
      });
      return false;
   }
-  
+
+      //]]>
+      </script>
+   </head>
+   <body>
+
+      <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
+                         JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
+                         when JavaScript is disabled.
+                -->
+        <div id="flashContent">
+                <p>
+                        To view this page ensure that Adobe Flash Player version
+                                11.1.0 or greater is installed.
+                        </p>
+                        <script type="text/javascript">
+                                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
+                                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
+                                                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" );
+                        </script>
+      </div>
+
+      <div id="socketPool">
+         <p>Could not load the flash SocketPool.</p>
+      </div>
+
+          <noscript>
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+                        width="100%" height="100%" id="flack">
+                <param name="movie" value="flack.swf?mode=public&debug=0&usejs=1" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#d2e1f0" />
+                <param name="allowScriptAccess" value="always" />
+                <param name="allowFullScreen" value="true" />
+                <param name="fullScreenOnSelection" value="true" />
+                <!--[if !IE]>-->
+                <object type="application/x-shockwave-flash" data="flack.swf?mode=public&debug=0&usejs=1" width="100%" height="100%">
+                    <param name="quality" value="high" />
+                    <param name="bgcolor" value="#d2e1f0" />
+                    <param name="allowScriptAccess" value="always" />
+                    <param name="allowFullScreen" value="true" />
+					<param name="fullScreenOnSelection" value="true" />
+                <!--<![endif]-->
+                <!--[if gte IE 6]>-->
+                        <p>
+                                Either scripts and active content are not permitted to run or Adobe Flash Player version
+                                11.1.0 or greater is not installed.
+                        </p>
+                <!--<![endif]-->
+                    <a href="http://www.adobe.com/go/getflashplayer">
+                        <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+                    </a>
+                <!--[if !IE]>-->
+                </object>
+                <!--<![endif]-->
+            </object>
+            </noscript>
+
+   </body>
+</html>
