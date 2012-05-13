@@ -38,8 +38,8 @@ const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
 $http_host = $_SERVER['HTTP_HOST'];
 $sa_ch_port = 8443;
-$SA_URL = "https://$http_host:$sa_ch_port";
-$CH_URL = "https://$http_host:$sa_ch_port";
+$SA_URL = "https://$http_host:$sa_ch_port/";
+$CH_URL = "https://$http_host:$sa_ch_port/";
 
 
 // Generate flack pages given all parameters
