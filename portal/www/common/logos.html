@@ -1,0 +1,386 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+<title>InCommon Logos</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+@import url(inc/macfly_fluid.css);
+
+-->
+</style>
+<!--[if gte IE 5]>
+<link href="inc/iepcfixes_fluid.css" rel="stylesheet" type="text/css">
+<![endif]-->
+<link rel="icon" type="image/ico" href="http://www.incommon.org/images/favicon.ico"></link>
+<link rel="shortcut icon" href="http://www.incommon.org/images/favicon.ico"></link>
+</head>
+<body>
+
+<div id="header">  
+<img src="http://www.incommonfederation.org/images/h_header.jpg" alt="InCommon - Go to Home Page" width="740" height="85" border="0" align="left" usemap="#Map"> 
+  <map name="Map">
+    <area shape="rect" coords="20,20,234,63" href="http://www.incommon.org/index.html">
+  </map>
+  
+
+</div>  
+
+<div id="mainwrapper">  
+<div id="breadcrumb">  
+<a href="http://www.incommon.org">Home</a>
+<span>|</span>
+<a href="http://www.incommon.org/about.html">About InCommon</a>
+<span>|</span>
+<a href="http://www.incommon.org/join.html">Join InCommon</a>
+  
+</div>  
+
+<div id="sidebar">
+<!--Incommon navigation script designed and written by IAM at internet2 dot edu --> 
+
+
+
+
+<style type="text/css">
+/**********kludge *********/
+ul#sidebarmenu1 li#participants a {background-image:none;}
+ul#sidebarmenu1 li#participants ul {position:inherit; visibility:visible; height: auto; width: auto;}
+ul#sidebarmenu1 li#participants ul li { margin-left: 10px;	}
+ul#sidebarmenu1 li#participants ul li a {	background-color:#064468;}
+ul#sidebarmenu1 li#participants ul li a:hover {background-color:#006699;}
+ul#sidebarmenu1 li#participants ul li#badges a {background-color:#FFFFFF; color:#064468; border:0;	}
+
+</style>
+<noscript>
+<style type="text/css">
+ul#sidebarmenu1 li ul {	position:inherit;	visibility:visible;	height: auto;	width: auto;}
+ul#sidebarmenu1 li a {border-left: 10px solid #064468;}
+ul#sidebarmenu1 li ul li {  margin-left: 10px;}
+ul#sidebarmenu1 li ul li a { border-left:0;	background-color:#064468;}
+ul#sidebarmenu1 li ul li a:hover {	background-color:#006699; border-right: 10px solid #5ba3e0;}
+</style>
+</noscript>
+<script type="text/javascript">
+//originaly found at http://www.dynamicdrive.com/style/csslibrary/item/nested_side_bar_menu/
+//edited my IAM 
+
+var mainmen = "participants"; 
+var menuids=["sidebarmenu1"] //Enter id(s) of each Side Bar Menu's main UL, separated by commas
+
+function initsidebarmenu(){
+for (var i=0; i<menuids.length; i++){
+  var ultags=document.getElementById(menuids[i]).getElementsByTagName("ul")
+    for (var t=0; t<ultags.length; t++){
+      ultags[t].parentNode.getElementsByTagName("a")[0].className+=" subfolderstyle"
+	if (ultags[t].parentNode.id != mainmen) {
+	  if (ultags[t].parentNode.parentNode.id==menuids[i]) //if this is a first level submenu
+	   ultags[t].style.left=ultags[t].parentNode.offsetWidth+"px" //dynamically position first level submenus to be width of main menu item
+	  else //else if this is a sub level submenu (ul)
+		ultags[t].style.left=ultags[t-1].getElementsByTagName("a")[0].offsetWidth+"px" //position menu to the right of menu item that activated it
+			ultags[t].parentNode.onmouseover=function(){
+			this.getElementsByTagName("ul")[0].style.display="block"
+			}
+			ultags[t].parentNode.onmouseout=function(){
+			this.getElementsByTagName("ul")[0].style.display="none"
+			}
+	  }//if not mainmen 
+    }//for all ul
+  for (var t=ultags.length-1; t>-1; t--){ //loop through all sub menus again, and use "display:none" to hide menus (to prevent possible page scrollbars
+  	if (ultags[t].parentNode.id != mainmen) {
+  ultags[t].style.visibility="visible"
+  ultags[t].style.display="none"
+  	} //if not mainmen
+  	} //for all sub menus
+	
+  }//for all menus
+} //function
+
+if (window.addEventListener)
+window.addEventListener("load", initsidebarmenu, false)
+else if (window.attachEvent)
+window.attachEvent("onload", initsidebarmenu)
+
+</script>
+
+<div class="sidebarmenu">
+<ul id="sidebarmenu1">
+    <li id="home"><a href="http://www.incommon.org/">Home</a></li>
+
+	<li id="newto"><a href="new.html">New to InCommon?</a>    
+	  <ul>
+        <li id="fedbasics"><a href="http://www.incommon.org/fedbasics.html">Federation Basics</a></li>
+        <li id="basics"><a href="http://www.incommon.org/basics.html">InCommon Basics</a></li>
+        <li id="benefits"><a href="http://www.incommon.org/benefits.html">InCommon Benefits</a></li>
+        <li id="research"><a href="http://www.incommon.org/research_orgs.html">Research Organizations</a></li>
+        <li id="spresources"><a href="http://www.incommon.org/partners/">Sponsored Partners</a></li>
+        <li id="cases"><a href="http://www.incommon.org/cases.html">Case Studies</a></li>
+        <li id="ready"><a href="http://www.incommon.org/join.html">Join InCommon</a></li>
+        <li id="fees"><a href="http://www.incommon.org/fees.html">Fee Schedule</a></li>
+        <li id="policies"><a href="http://www.incommon.org/policies.html">Policies and Practices</a></li>
+	  </ul>
+      </li>
+
+	<li id="participants"><a href="http://www.incommon.org/participants/">Participants and Affiliates</a>
+      <ul>
+        <li id="list"><a href="http://www.incommon.org/participants/">Participants</a></li>
+        <li id="affiliate"><a href="http://www.incommon.org/affiliate/">Affiliates</a></li>
+        <li id="entities"><a href="http://www.incommon.org/federation/all-entities.html#SPs">List of Service Providers</a></li>
+        <li id="entities"><a href="http://www.incommon.org/federation/all-entities.html#IdPs">List of Identity Providers</a></li>
+        <li id="join"><a href="http://www.incommon.org/join.html">Join InCommon</a></li>
+        <li id="become"><a href="http://www.incommon.org/affiliate/benefits.html">Become an Affiliate</a></li>
+        <li id="badges"><a href="http://www.incommon.org/logos.html">Logos for Your Use</a></li>
+        <li id="policies"><a href="http://www.incommon.org/policies.html">Policies and Practices</a></li>        
+      </ul></li>
+      
+    <li id="techinfo"><a href="http://www.incommon.org/technical.html">Federation Site Administrator</a>
+      <ul>
+        <li id="site"><a href="https://service1.internet2.edu/siteadmin/login/login">Site Administrator Login</a></li>
+        <li id="siteadmininfo"><a href="http://www.incommon.org/admin_instructions.html">Site Administrator Info</a></li>
+        <li id="entities"><a href="http://www.incommon.org/federation/all-entities.html">List of Service Providers</a></li>
+        <li id="entities"><a href="http://www.incommon.org/federation/all-entities.html">List of Identity Providers</a></li>
+        <li id="roles"><a href="http://www.incommon.org/roles.html">Changing Administrator/Executive</a>
+        <li id="techrequire"><a href="http://www.incommon.org/technical.html">Technical Requirements</a></li>
+        <li id="softguide"><a href="http://www.incommon.org/ops/softguide.html">Software Guide</a></li>
+        <li id="metadata"><a href="http://www.incommon.org/federation/metadata.html">Metadata</a></li>
+        <li id="discovery"><a href="http://www.incommon.org/discovery.html">Discovery Service</a></li>
+        <li id="attributes"><a href="http://www.incommon.org/attributes.html">Attribute Overview</a></li>
+      </ul></li>
+
+      
+     <li id="assurance"><a href="http://www.incommon.org/assurance/">Assurance Program</a>
+       <ul>
+        <li id="assuranceoverview"><a href="http://www.incommon.org/assurance/index.html">Assurance Overview</a></li>    
+     	<li id="assurancejoin"><a href="http://www.incommon.org/assurance/join.html">Join the Program</a></li>
+        <li id="assurancepricing"><a href="http://www.incommon.org/assurance/fees.html">Fee Schedule</a></li>
+     	<li id="assuranceidp"><a href="http://www.incommon.org/assurance/idp.html">Identity Providers</a></li>
+        <li id="assurancesp"><a href="http://www.incommon.org/assurance/sp.html">Service Providers</a></li>
+        <li id="assuranceadvisory"><a href="http://www.incommon.org/assurance/aac.html">Assurance Advisory Committee</a></li>
+
+<!--      	<li id="assuranceaudit"><a href="http://www.incommon.org/assurance/auditor.html">Auditor Resources</a></li>
+  -->
+        <li id="assurancefaq"><a href="http://www.incommon.org/assurance/faq.html">Assurance FAQ</a></li>
+     	<li id="assuranceresources"><a href="https://spaces.internet2.edu/display/InCAssurance/InCommon+Assurance+Program">Community Resources</a></li>
+
+	</ul></li>
+
+        <li id="multifactor"><a href="http://www.incommon.org/multifactor/">Multifactor Authentication</a>
+       <ul>
+        <li id="duo"><a href="http://www.incommon.org/duo/index.html">Duo Security</a></li>    
+     	<li id="safenet"><a href="http://www.incommon.org/safenet/index.html">SafeNet</a></li>
+        </ul></li>
+ 
+    <li id="education"><a href="http://www.incommon.org/educate/">Education and Training</a>
+      <ul>
+        <li id="eduoverview"><a href="http://www.incommon.org/educate/">Overview</a></li>
+        <li id="edushib"><a href="http://www.incommon.org/educate/shibboleth/">Shibboleth Workshops</a></li>
+        <li id="iamonline"><a href="http://www.incommon.org/iamonline/">IAM Online</a></li>
+        <li id="camp"><a href="http://www.incommon.org/camp/">CAMP</a></li>
+        <li id="onlineforum"><a href="http://www.incommon.org/forum/">Online Forum</a></li>
+        <li id="cases"><a href="http://www.incommon.org/cases.html">Case Studies</a></li>
+
+       </ul></li>
+  
+    <li id="certsvc"><a href="http://www.incommon.org/cert/">Certificate Service</a>
+      <ul>
+        <li id="certoverview"><a href="https://www.incommon.org/cert/">Certificate Service Overview</a></li>
+        <li id="certsubscribe"><a href="https://www.incommon.org/cert/subscribe.html">Subscribe</a></li>
+        <li id="certdocs"><a href="https://www.incommon.org/cert/repository/">Official Documents</a></li>
+        <li id="certlogin"><a href="https://cert-manager.com/customer/InCommon">RAO Login</a>
+        <li id="certdemo"><a href="https://www.incommon.org/cert/demos/">Guides and Demos</a></li>
+        <li id="certapprove"><a href="https://www.incommon.org/cert/approval.html">Approval Process</a></li>
+        <li id="roles"><a href="https://www.incommon.org/roles.html">Change/Appoint RAO</a></li>
+        <li id="certfaq	"><a href="https://spaces.internet2.edu/display/InCCollaborate/InCommon+Cert+Service+FAQ">FAQ</a></li>
+        <li id="certfee"><a href="https://www.incommon.org/cert/cert_fee.html">Fee Schedule</a></li>
+        <li id="clientcerts"><a href="https://www.incommon.org/cert/clientcerts.html">Client Certificates</a></li>
+        <li id="evcerts"><a href="https://www.incommon.org/cert/evcerts.html">EV Certificates</a></li>
+        <li id="codesign"><a href="https://www.incommon.org/cert/code_signing.html">Code Signing Certificates</a></li>
+        <li id="certsupport"><a href="https://www.incommon.org/cert/support.html">Support</a></li>
+        <li id="subscribers"><a href="http://www.incommon.org/cert/subscribers.cfm">List of Subscribers</a></li>
+      </ul></li>    
+
+    <!--<li id="site"><a href="https://service1.internet2.edu/siteadmin/login/login">Site Admin Login</a></li> -->
+
+    <li id="faq"><a href="http://www.incommon.org/docs/guides/faq.html">Frequently Asked Questions</a>
+     <ul>
+        <li id="incfaq"><a href="http://www.incommon.org/docs/guides/faq.html">FAQ</a></li>
+        <li id="glossary"><a href="http://www.incommon.org/glossary.cfm">Glossary</a></li>
+       </ul></li>       
+
+    <li id="community"><a href="http://www.incommon.org/community.html">Community Collaboration</a>
+      <ul>
+        <li id="collab"><a href="http://www.incommon.org/community.html">InCommon Community</a></li>
+        <li id="collaboration"><a href="https://spaces.internet2.edu/display/InCCollaborate/">Collaboration Wiki</a></li>
+        <li id="nsf"><a href="http://www.incommon.org/nsf.html">NSF and Research.gov</a></li>
+        <li id="working"><a href="http://www.incommon.org/working_sp.html">Working with Sponsored Partners</a></li>
+        <li id="library"><a href="http://www.incommon.org/library/">Library Resources</a></li>
+<!--        <li id="links"><a href="links.html">Helpful Links</a></li>
+-->
+      </ul></li>
+      
+    <li id="getting"><a href="http://www.incommon.org/help.html">Getting Help</a>
+      <ul>
+        <li id="help"><a href="http://www.incommon.org/help.html">Help Overview</a></li>
+        <li id="lists"><a href="http://www.incommon.org/lists.html">Email Lists</a></li>
+        <li id="consulting"><a href="http://www.incommon.org/affiliate/">Affiliates</a></li>
+        <li id="troubleshooting"><a href="http://wiki.shibboleth.net">Shibboleth Documentation</a></li>
+      </ul></li>
+      
+    <li id="aboutcontact"><a href="http://www.incommon.org/about.html">About/Contact</a>
+      <ul>
+        <li id="about"><a href="http://www.incommon.org/about.html">InCommon Governance</a></li>
+        <li id="contact"><a href="http://www.incommon.org/contacts.html">InCommon Contacts</a></li>
+<!--        <li id="steering"><a href="about.html">InCommon Steering</a></li>
+        <li id="tac"><a href="tac.html">Technical Advisory Committee</a></li>
+-->
+        <li id="lists"><a href="http://www.incommon.org/lists.html">Email Lists</a></li>
+
+      </ul></li>
+  </ul>
+</div>
+<br>
+</div>
+  <!--  end of title, start of page body -->
+  <div id="maincontent">
+    <table width="100%" border="0" cellpadding="10">
+      <tr>
+        <td align="left" valign="top"> 
+         
+          <h1>InCommon Trademark and Logo Policy and Style Guide</h1>
+          <p class="content">The InCommon&reg; name and all InCommon logos are registered trademarks of InCommon, an LLC operated by Internet2&reg;. These policies and guidelines cover all InCommon logos and trademarks, including specific applications of  such as &ldquo;InCommon Certificate Service,&rdquo; &quot;InCommon Federation,&quot; and others. This page also provides guidelines and resources for using the InCommon logos and trademarks.</p>
+          <strong><font size="+1">InCommon Badge Logos</font></strong>
+          <ul>
+            <li class="content">
+              <table width="250" border="1" align="right" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" valign="top"><h2>&nbsp; Downloadable Badges</h2>
+                    <p><img src="images/InC_Participant_150.jpg" alt="InCommon Participant logo" width="150" height="150" hspace="10" vspace="10"></p>
+                    <p><a href="images/InC_Participant.eps">InCommon Participant EPS file</a></p>
+                    <p><a href="images/InC_Participant.gif">InCommon Participant GIF file</a></p>
+                    <p><a href="images/InC_Participant.png">InCommon Participant PNG file</a></p>
+                    <p><a href="images/InC_Participant.jpg">InCommon Participant JPG file</a></p>
+                    <p>&nbsp;</p></td>
+                </tr>
+                <tr>
+                  <td align="center" valign="top"><p><img src="images/InC_Affiliate_150.jpg" alt="InCommon Affiliate logo" width="150" height="150" hspace="10" vspace="10"></p>
+                    <p><a href="images/InC_Affiliate.eps">InCommon Affiliate EPS file</a></p>
+                    <p><a href="images/InC_Affiliate.gif">InCommon Affiliate GIF file</a></p>
+                    <p><a href="images/InC_Affiliate.jpg">InCommon Affiliate JPG file</a></p></td>
+                </tr>
+                <tr>
+                  <td align="center" valign="top"><p><img src="images/IC_Bronze.gif" width="150" alt="InCommon Bronze Badge" longdesc="http://assurance.incommon.org"></p>
+                  <p><a href="images/IC_Bronze.eps">InCommon Bronze EPS file</a></p>
+                  <p><a href="images/IC_Bronze.gif">InCommon Bronze GIF file</a></p>
+                  <p>InCommon Bronze JPG file</p></td>
+                </tr>
+                <tr>
+                  <td align="center" valign="top"><p><img src="images/IC_Silver.gif" width="150" alt="InCommon Silver Badge" longdesc="http://assurance.incommon.org"></p>
+                  <p><a href="images/IC_Silver.eps">InCommon Silver EPS file</a></p>
+                  <p><a href="images/IC_Silver.gif">InCommon Silver GIF file</a></p>
+                  <p>InCommon Silver JPG file</p></td>
+                </tr>
+              </table>
+            The InCommon Badge Logos are for use by current InCommon Participants and InCommon Affiliates. These are available for use without obtaining permission, but the style guide specifications should be followed.</li>
+            <li class="content">The Participant badge is for use by current InCommon Participants. The Affiliate badge is for use by current InCommon Affiliates. If a Participant or Affiliate discontinues its membership/affiliation, the logo use must cease.</li>
+            <li class="content"><img src="images/logo_usage.jpg" alt="Badge logo guideline" width="231" height="213" align="right">The badge logos consist of multiple elements: the logotype (InCommon), the modifier (Participant, Affiliate), the graphic (double M) and a circular rule. These elements should always appear together. </li>
+            <li class="content">The badge logos must be downloaded from the InCommon website (see next section) or obtained directly from InCommon. Logos should never be recreated. </li>
+            <li class="content">A minimum amount of clear space should be maintained around all four sides of the badge logos (as indicated by the magenta rule in the graphic below). This minimum space is defined as 1/4x (where X is the height of the logo). Illustrations, photography and typography should not enter the space as defined by the magenta rule in the graphic below. </li>
+            <li class="content">The minimum reproduction size of the badge logos is 0.5&rdquo; wide or 36 pixels wide. </li>
+            <li class="content">For printed publications, CMYK and RGB specifications are available in the complete <a href="docs/InCommon_Brand_Standards.pdf">Brand Standards Guidelines</a> [PDF]. </li>
+          </ul>
+          <p class="content"><strong>Badge use</strong> - Please read <a href="#usage">Usage Policy and Goals</a> below  regarding appropriate use of the badges.</p>
+          <p class="content"><strong>Printing the&nbsp;Logos</strong> - Please follow the <a href="docs/InCommon_Brand_Standards.pdf"><strong>InCommon Brand Standards</strong></a> when printing the participant or affiliate logo. The guidelines provide the color specifications for RGB and CMYK formats. </p>
+          <p class="content">The <strong>EPS file</strong></strong> is the source vector file and can be sized up without loss of resolution. Use the EPS file for printed materials (and for the web, if you wish to create a JPG or your own GIF file). </p>
+          <p class="content">The <strong>GIF file</strong> is pixel-based and resolution dependent. Sizing up will result in resolution loss and a fuzzy appearance. GIF files are appropriate for online use, but not for printed materials.</p>
+          <p class="content">The <strong>PNG file</strong> can be sized up without loss of resolution&nbsp;and is appropriate for online use.</p>
+          <strong><font size="+1">About InCommon</font>
+          </strong>
+          <p class="content">InCommon, an LLC owned and operated by Internet2, provides a secure and privacy-preserving trust fabric for research and higher education institutions, and their partners, in the United States. InCommon uses SAML-based authentication and authorization systems to enable scalable, trusted collaborations among its community of participants.</p>
+<a name="usage"></a><font size="+1"><strong>Usage Policy and Goals </strong></font>
+          <p class="content">The prime goals of this policy are to ensure the continued value and integrity of the InCommon trademark and to promote awareness and participation in InCommon by encouraging appropriate use of the trademark and logos.</p>
+          <p class="content">The InCommon logo, and those logos designated as InCommon service logos, cannot be used without the expressed written permission of InCommon. The logos designated as badges are available for use by participants and affiliates without obtaining prior permission. </p>
+          <p class="content">The InCommon logos and trademark must always be used in ways that are non-confusing, non-diluting, and non-disparaging. Non-confusing means that use should not imply inaccurate affiliation with or endorsement by InCommon or Internet2. Non-diluting means that use may not contribute to the marks becoming generic terms. Non-disparaging means that InCommon trademarks may not be used to defame or derogate.          </p>
+          <font size="+1">Contact</font>
+<p class="content">Please contact incommon-info@incommon.org for more information about, permission to use, or high-resolution copies of the InCommon logos and trademarks.</p>
+          <strong><font size="+1">Visual Style Guide</font>
+          </strong>
+          <p class="content">Please review the specifications below before using the InCommon logos or trademark. </p>
+          <font size="+1">Logos</font>
+          <p class="content">            InCommon has three categories of logos: the InCommon logo, InCommon service logos, and InCommon badge logos. Badge logos are available for use by InCommon Participants and InCommon Affiliates without obtaining permission. All other logos can be used only with the prior expressed written consent of InCommon.</p>
+<font size="+1">The InCommon Logo</font>
+<p>Downloadable InCommon logos are available here in PSD, TIF, and GIF formats. You must have permission to use the InCommon logo. Please email info AT incommon DOT org for permission and&nbsp;also read the guidelines below.</p>
+<table width="300" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="185"><img src="images/InCommon_Logo_R_185.jpg" alt="InCommon logo" width="185" height="37" align="left" longdesc="http://www.incommon.org"></td>
+    <td width="111"><p><a href="images/incommon+reg_2.jpg">JPG format</a><br>
+      <a href="images/incommon+reg_2.tif">TIF format</a><br>
+        <a href="images/incommon+reg_2.gif">GIF format </a></p></td>
+  </tr>
+</table>
+<p><img src="images/incommon_logo_guideline.jpg" width="535" height="199" alt="InCommon logo trademark guideline"></p>
+          <ul>
+            <li class="content">You must obtain written permission from InCommon to use the InCommon logo (email info AT incommon.org).</li>
+            <li class="content">The InCommon logo is to be displayed on a background that is white, a solid light color, or gradated light color. Avoid dark color and patterned backgrounds.</li>
+            <li class="content">The space around the logo must be preserved as in the specification above.</li>
+            <li class="content">The logo should not be displayed in parts, with color variations, or with other elements superimposed on top of the logo. </li>
+            <li class="content">The logo must include the registered trademark (&reg;) symbol. </li>
+          </ul>
+          <font size="+1">InCommon Service Logos</font>
+          <p class="content"><span class="content">InCommon has three service logos for  use on InCommon web pages and publications to differentiate these services and provide a quick visual cue to those scanning the web and printed materials for specific information.</span> These logos are intended for internal InCommon use, but consideration will be given to requests for&nbsp;their use for other purposes. Please email&nbsp;your request to info AT incommon.org.</p>
+          <table width="750" border="0" cellspacing="5" cellpadding="5">
+            <tr>
+              <td width="250" align="center" valign="top"><img src="images/InC_Fed_200.jpg" alt="InCommon Federation " width="175" vspace="20"></td>
+              <td width="250" align="center" valign="top"><img src="images/IC_Assurance_200.jpg" alt="InCommon Assurance Program" width="175" vspace="20"></td>
+              <td width="250" align="center" valign="top"><img src="cert/images/InC_Certificate_Logo_245.jpg" alt="InCommon Certificates" width="210" vspace="20"></td>
+            </tr>
+            <tr>
+              <td align="center" valign="top"><a href="images/IC_Federation.eps">EPS format</a><br>
+                <a href="images/IC_Federation.jpg">JPG format</a><br>
+              <a href="images/IC_Federation.gif">GIF format</a></td>
+              <td align="center" valign="top"><a href="images/IC_Assurance.eps">EPS format</a><br>
+                <a href="images/IC_Assurance.jpg">JPG format </a><br>
+              <a href="images/IC_Assurance.gif">GIF format</a></td>
+              <td align="center" valign="top"><a href="images/IC_Certificate.eps">EPS format</a><br>
+                <a href="images/IC_Certificate.jpg">JPG format</a><br>
+<a href="images/IC_Certificate.gif">GIF format</a></td>
+            </tr>
+          </table>
+          <ul>
+            <li class="content">You must obtain written permission from InCommon to use the InCommon service logos (info AT incommon.org).</li>
+            <li class="content">Services logos are currently available for the InCommon Certificate Service, the InCommon Federation, and the InCommon Assurance Program.</li>
+            <li class="content"><img src="images/service_logo_use.jpg" alt="Service Logo Use" width="258" height="164" align="right">The service logos are made up of multiple elements: the logotype (InCommon), the modifier (Federation, Assurance, Certificates), the graphic (stars, key, double M, etc.) and a straight rule. These elements should always appear together. </li>
+            <li class="content">A minimum amount of clear space should be maintained around all four sides of the service logos (as indicated by the magenta rule in the graphic below). This minimum space is defined as 1/2x (where X is the height of the logo). Illustrations, photography and typography should not enter the space as defined by the magenta rule in the graphic below. </li>
+            <li class="content">The minimum reproduction size of the service logos is 1&rdquo; wide or 72 pixels wide. </li>
+            <li class="content">For printed publications, CMYK and RGB specifications are available in the complete <a href="docs/InCommon_Brand_Standards.pdf">Brand Standards Guidelines</a> [PDF].            </li>
+          </ul></td>
+	  </tr>
+    </table>
+    <br>
+  </div>
+</div>
+</div>
+<div id="footer">
+<p>Email any questions to:
+
+info AT incommon DOT org <br>
+&copy; Copyright 2004-2012 InCommon, LLC. All Rights Reserved.<br />
+<img src="http://www.incommonfederation.org/images/internet2_logo_65.jpg" width="65" height="48" hspace="5" align="left" /> InCommon
+is operated by <a href="http://www.internet2.edu/">Internet2</a>.
+<br>
+Participation in InCommon is separate and distinct from membership in Internet2.
+</p>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-349565-6");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+
+</div>
+</body>
+</html>

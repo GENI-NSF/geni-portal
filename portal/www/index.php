@@ -22,14 +22,22 @@ function show_header($title)
   echo '<img src="/images/geni.png" alt="GENI"/>';
   echo '</td><td>';
   echo '<a href="index.php"><img src="/images/portal.png" alt="Portal"/></a>';
-  echo '</td><td>';
-  echo '<div id="loginButtons">';
-  echo '<button onClick="window.location.href=\'secure/home.php\'"><b>Login</b></button>';
-  echo '<br/>';
-  echo '<a href="login-help.php"><b>Get help logging in</b></a>';
   echo '</td>';
-  echo '</table>';
+  echo '<td>';
+  echo '<div id="loginDiv">';
+  echo '<div id="loginButtons">';
+  echo '<button id="loginButton" onClick="window.location.href=\'secure/home.php\'"><b>Use GENI</b></button>';
+  echo '<br/>';
+  echo '<a id ="loginHelp" href="login-help.php"><b><i>Get help</i></b></a>';
   echo '</div>';
+  echo '<img id="incommon-logo" src="common/InC_Participant.png"/>';
+  echo '</div>';
+
+  echo '</td>';
+  echo '</tr>';
+
+
+  echo '</table>';
   echo '</div>';
   echo '<hr/>';
   echo '<div id="content">';
@@ -44,7 +52,11 @@ show_header("Welcome to the GENI Portal")
 <p>
   The <b>GENI Portal</b> is the main interface to <a href="http://www.geni.net">GENI</a>, an <a href="http://www.nsf.gov/">NSF</a> funded virtual testbed supporting computer networking research and innovation.
 </p><p>
-  <b>Become a GENI Experimenter</b>: The GENI Portal supports single sign on through the <a href="http://www.incommonfederation.org">InCommon</a> federation. If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">request a GENI account</a> using your InCommon single sign on username and password.  If you are not affiliated with an InCommon federated institution, <a href="mailto:help@geni.net">request a single sign on login for the GENI Portal</a>.
+  <b>Become a GENI Experimenter</b>: The GENI Portal supports single sign on via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
+<ul>
+  <li>If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">login</a> using your InCommon single sign on username and password and register for a GENI account.
+  </li><li>If you are not affiliated with an InCommon federated institution, <a href="mailto:help@geni.net">request a single sign on login for the GENI Portal</a>.</li>
+</ul>
 </p>
 <p>
   <b>About GENI</b>: More Information about using GENI can be found on the <a href="http://groups.geni.net/geni">GENI wiki</a>.
