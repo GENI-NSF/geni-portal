@@ -15,9 +15,6 @@ $slice_urn = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
 
 error_log("SLICE_URN = " . $slice_urn);
 
-$original = $_GET["orig"] == "true";
-error_log("ORIGINAL = " . $original);
-
-$contents = generate_flack_page($slice_urn, $original);
+$contents = generate_flack_page($slice_urn);
 print $contents;
 ?>
