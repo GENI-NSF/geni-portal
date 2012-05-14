@@ -871,12 +871,28 @@ class PGClearinghouse(object):
             self.logger.warn("GetKeys couldnt get uuid for user from cert with urn %s" % user_urn)
         else:
             self.logger.info("GetKeys called for user with uuid %s" % user_uuid)
-        # FIXME
-        # I could add code here that invokes via a shell to log into the portaldb directly or something...
-        # FIXME: Given URN, can I get something out?
+        # Use new MA lookup_ssh_keys method
+        argsdict=dict(member_id=user_uuid);
+        keys_triple=invokeCH(self.ma_url, "lookup_ssh_keys", self.logger, argsdict);
+        self.logger.info("lookup_ssh_keys: " + str(keys_triple));
+        if not keys_triple['value']:
+            self.logger.error("No SSH key structure. Return the triple with error");
+            return keys_triple;
+        if keys_triple['code'] != 0:
+            self.logger.error("Error extracting SSH keys");
+            return keys_triple;
 
-        ret = list()
-#        ret.append(dict(type='ssh', key='some SSH public key'))
+        keys = keys_triple['value'];
+        if (len(keys) == 0):
+            self.logger.error("No SSH keys found");
+            return keys;
+
+        ssh_key = keys[0]['public_key'];
+        ret = list();
+        entry = dict();
+        entry['ssh'] = ssh_key
+        self.logger.info("KEYS = " + str(entry));
+        ret.append(entry);
         return ret
 
     def ListComponents(self, args):

@@ -48,6 +48,9 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
 				      $user_cert, $user_key, $am_root_cert_bundle)
 {
 
+  $slice_urn = urlencode($slice_urn);
+  $sa_urn = urlencode(SA_URN);
+
   $filename = "/tmp/" . make_uuid() . ".html";
   $content_1 = file_get_contents(FLACK_1_FILENAME);
   $content_2 = file_get_contents(FLACK_2_FILENAME);
@@ -57,7 +60,7 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
     . 'setClientKey("' . $user_key . '");' . "\n"
     . 'setClientCert("' . $user_cert . '");' . "\n";
 
-  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=" . SA_URN. "&churl=$ch_url";
+  $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=" . $sa_urn. "&churl=$ch_url";
 
   $content = $content_1 . $set_commands . $content_2 . '"' . URL_PREAMBLE . $url_params . $content_3;
   file_put_contents($filename, $content);
