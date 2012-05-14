@@ -32,10 +32,7 @@ $user = geni_loadUser();
 ?>
 <h2>FLACK</h2>
 <?php
-print "<a href=\"flack_test.php?orig=false\">Flack Test</a>\n";
-?>
-<?php
-print "<a href=\"flack_test.php?orig=true\">Flack Orig</a>\n";
+print "<a href=\"flack_test.php\">Flack Test</a>\n";
 ?>
 <h2>DB</h2>
 <?php
