@@ -33,6 +33,23 @@ error_log("MA TEST\n");
 $sr_url = get_sr_url();
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
+$member_ids = get_member_ids($ma_url);
+
+$member1 = $member_ids[0];
+register_ssh_key($ma_url, $member1, 'FILE', 'DESC', 'KEY');
+
+foreach($member_ids as $member_id) {
+  error_log("Member_ID " . $member_id);
+  $ssh_keys_for_member = lookup_ssh_keys($ma_url, $member_id);
+  foreach($ssh_keys_for_member as $ssh_key_for_member) {
+    //    error_log("   KEY : " . print_r($ssh_key_for_member, true));
+    $filename = $ssh_key_for_member[MA_SSH_KEY_TABLE_FIELDNAME::FILENAME];
+    $key = $ssh_key_for_member[MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY];
+    error_log("   " . $filename . " " . $key);
+  }
+}
+
+
 $user1 = '11111111111111111111111111111111';
 $user2 = '22222222222222222222222222222222';
 $slice = '33333333333333333333333333333333';

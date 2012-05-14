@@ -53,5 +53,35 @@ function lookup_attributes($ma_url, $member_id)
   return $attributes;
 }
 
+// Get list of all member_ids in repository
+function get_member_ids($ma_url)
+{
+  $get_member_ids_message['operation'] = 'get_member_ids';
+  $result = put_message($ma_url, $get_member_ids_message);
+  return $result;
+}
+
+// Associate SSH public key with user
+function register_ssh_key($ma_url, $member_id, $filename, $description, 
+			  $ssh_key)
+{
+  $register_ssh_key_message['operation'] = 'register_ssh_key';
+  $register_ssh_key_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $register_ssh_key_message[MA_ARGUMENT::SSH_FILENAME] = $filename;
+  $register_ssh_key_message[MA_ARGUMENT::SSH_DESCRIPTION] = $description;
+  $register_ssh_key_message[MA_ARGUMENT::SSH_KEY] = $ssh_key;
+  $result = put_message($ma_url, $register_ssh_key_message);
+  return $result;
+}
+
+// Lookup SSH keys associated with user
+function lookup_ssh_keys($ma_url, $member_id)
+{
+  $lookup_ssh_keys_message['operation'] = 'lookup_ssh_keys';
+  $lookup_ssh_keys_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message);
+  return $ssh_keys;
+}
+
 
 ?>

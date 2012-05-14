@@ -32,6 +32,9 @@ class MA_ARGUMENT {
   const ROLE_TYPE = "role_type";
   const CONTEXT_TYPE = "context_type";
   const CONTEXT_ID = "context_id";
+  const SSH_FILENAME = "ssh_filename";
+  const SSH_DESCRIPTION = "ssh_description";
+  const SSH_KEY = "ssh_key";
 }
 
 /* Defined sets of role types */
@@ -59,6 +62,17 @@ class MA_MEMBER_TABLE_FIELDNAME {
   const ROLE_TYPE = "role_type";
   const CONTEXT_TYPE = "context_type";
   const CONTEXT_ID = "context_id";
+}
+
+/* Name of table containing user SSH key info */
+$MA_SSH_KEY_TABLENAME = "ssh_key";
+
+/* Name of fields of SSH key table */
+class MA_SSH_KEY_TABLE_FIELDNAME {
+  const ACCOUNT_ID = "account_id";
+  const FILENAME = "filename";
+  const DESCRIPTION = "description";
+  const PUBLIC_KEY = "public_key";
 }
 
 ?>
