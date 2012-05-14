@@ -29,6 +29,7 @@
 
 // Notes:
 // $user should be bound to the current user
+
 ?>
 <center>
 Welcome, 
@@ -44,13 +45,9 @@ if ($user->privAdmin()) {
   include("tools-admin.php");
 }
 ?>
+
 <?php
 // List of my projects
-print "<h2>My Projects</h2>\n";
-if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
-  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button><br/>\n";
-  print "<br/>\n";
-}
 include("tool-projects.php");
 
 // List of my slices
