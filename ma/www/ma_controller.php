@@ -21,6 +21,9 @@ require_once('response_format.php');
  *   remove_attribute(ma_url, member_id, role_type, context_type, context_id);
  *   update_role(ma_url, member_id, role_type, context_type, context_id);
  *   lookup_attributes(ma_url, member_id);
+ *   get_member_ids(ma_url)
+ *   register_ssh_key(ma_url, member_id, filename, description, ssh_key);
+ *   lookup_ssh_keys(ma_url, member_id);
  */
 
 
@@ -151,6 +154,59 @@ function lookup_attributes($args)
   //  error_log("QUERY.attribs = " . print_r($attribs, true));
   return $result;
     
+}
+
+// *** Temporary part of moving member management into MA domain
+function get_member_ids($args)
+{
+  $sql = "Select account_id from account";
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $result;
+  }
+  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  $ids = array();
+  foreach($rows as $row) {
+    $id = $row['account_id'];
+    $ids[] = $id;
+  }
+  return generate_response(RESPONSE_ERROR::NONE, $ids, null);
+}
+
+function register_ssh_key($args)
+{
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
+  $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
+  $ssh_key = $args[MA_ARGUMENT::SSH_KEY];
+
+  global $MA_SSH_KEY_TABLENAME;
+  $sql = "insert into " . $MA_SSH_KEY_TABLENAME
+    . " ( "  
+    . MA_SSH_KEY_TABLE_FIELDNAME::ACCOUNT_ID . ", "
+    . MA_SSH_KEY_TABLE_FIELDNAME::FILENAME . ", "
+    . MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION . ", "
+    . MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY . ")  VALUES ("
+    . "'" . $member_id . "', "
+    . "'" . $ssh_filename . "', "
+    . "'" . $ssh_description . "', "
+    . "'" . $ssh_key . "')";
+  $result = db_execute_statement($sql);
+  return $result;
+
+}
+
+function lookup_ssh_keys($args)
+{
+  global $MA_SSH_KEY_TABLENAME;
+  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $sql = "select * from " . $MA_SSH_KEY_TABLENAME 
+    . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::ACCOUNT_ID . " = '" 
+    . $member_id . "'";
+  $rows = db_fetch_rows($sql);
+  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
+  return $rows;
 }
 
 handle_message("MA");
