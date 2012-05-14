@@ -1,11 +1,23 @@
-#header > #loginButtons {
+#loginDiv {
  display: block;
- float: right;
- padding: 1cm 1cm;
+ clear: both;
+ position: relative;
+ height: 1.5in;
+}
+#loginDiv > #loginButtons {
+ position: absolute;
+ left: 1in;
  text-align: center;
 }
+#incommon-logo {
+ position: absolute;
+ left: 1.35in;
+ width: .75in;
+ padding: 0.25in;
+ top: 0.5in;
+}
 
-#loginButtons button {
+#loginButton, #loginHelp {
  width: 17em;
  padding: .25cm .25cm;
 }
