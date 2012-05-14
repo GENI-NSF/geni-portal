@@ -844,13 +844,13 @@ class PGClearinghouse(Clearinghouse):
         if (len(keys) == 0):
             self.logger.error("No SSH keys found");
             return keys;
-
-        ssh_key = keys[0]['public_key'];
         ret = list();
-        entry = dict();
-        entry['ssh'] = ssh_key
-        self.logger.info("KEYS = " + str(entry));
-        ret.append(entry);
+        for key in keys:
+            ssh_key = key['public_key'];
+            entry = dict(type='ssh',
+                         key=ssh_key);
+            self.logger.info("KEYS = %r", entry);
+            ret.append(entry);
         return ret
 
     def ListComponents(self, args):
