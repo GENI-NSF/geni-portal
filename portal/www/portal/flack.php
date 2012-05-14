@@ -91,7 +91,6 @@ function generate_flack_page($slice_urn)
   $sr_url = get_sr_url();
   $am_services = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $ca_services = get_services_of_type(SR_SERVICE_TYPE::CERTIFICATE_AUTHORITY);
-  $ca_service = $ca_services[0];
 
   //  error_log("AMs = " . print_r($am_services, true));
   //  error_log("CA = " . print_r($ca_service, true));
@@ -104,11 +103,10 @@ function generate_flack_page($slice_urn)
 
 
   // Compute bundle of AM and CA certs
-  $root_cert = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
-  $am_root_cert_bundle = $root_cert . "\n";
-  foreach($am_services as $am_service) {
-    $am_service_cert = $am_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
-    $am_root_cert_bundle = $am_root_cert_bundle . $am_service_cert;
+  $am_root_cert_bundle = "";
+  foreach($ca_services as $ca_service) {
+    $ca_cert = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
+    $am_root_cert_bundle = $am_root_cert_bundle . $ca_cert;
   }
 
   $user_cert = prepare_cert_for_javascript($user_cert);
