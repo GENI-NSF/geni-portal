@@ -43,6 +43,25 @@ print $user->prettyName();
 if ($user->privAdmin()) {
   include("tools-admin.php");
 }
+?>
+<?php
+// List of my projects
+print "<h2>My Projects</h2>\n";
+if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
+  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button><br/>\n";
+  print "<br/>\n";
+}
+include("tool-projects.php");
+
+// List of my slices
+unset($project_id);
+unset($project);
+print "<h2>My Slices</h2>\n";
+include("tool-slices.php");
+
+
+
+
 
 // Table with GENI wide or per user messages, plus a GENI map
 // FIXME: We need a table of messages: account_id, datetime, message
@@ -50,6 +69,7 @@ if ($user->privAdmin()) {
 // Do messages timeout? Get deleted by being displayed once?
 // Or must the users explicitly delete each one?
 ?>
+
 <table width="50%">
 <tr><th width="25%"><h3>GENI Messages</h3></th>
 <!-- <th width="25%"><h3>GENI Map</h3></th> -->
@@ -96,18 +116,3 @@ if (is_array($entries) && count($entries) > 0) {
 -->
 </tr></table>
 
-<?php
-// List of my slices
-unset($project_id);
-unset($project);
-print "<h2>My Slices</h2>\n";
-include("tool-slices.php");
-
-// List of my projects
-print "<h2>My Projects</h2>\n";
-if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
-  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button><br/>\n";
-  print "<br/>\n";
-}
-include("tool-projects.php");
-?>
