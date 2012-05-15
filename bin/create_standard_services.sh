@@ -30,6 +30,8 @@ echo "insert into service_registry (service_type, service_url, service_cert) val
 ./mk-auth-req "${BASEDIR}/ma/ma-key.pem" "${BASEDIR}/ma/ma-req.pem" ma portal-dev-admin@gpolab.bbn.com
 ./sign-auth-req "${BASEDIR}/ma/ma-req.pem" "${BASEDIR}/ma/ma-cert.pem" ma CA
 echo "insert into service_registry (service_type, service_url, service_cert) values (3, 'https://${FQDN}/ma/ma_controller.php', '${BASEDIR}/ma/ma-cert.pem');" >> $FILENAME
+# Copy this over to be trusted by pgch
+/bin/ln -s ${BASEDIR}/ma-cert.pem ${BASEDIR}/portal/gcf.d/trusted_roots/ma-cert.pem
 
 
 # LOGGING
@@ -52,3 +54,6 @@ sudo -u $SUDO_USER psql -U portal -h localhost portal < $FILENAME
 
 # Delete the temp file
 rm $FILENAME
+
+echo ""
+echo " *** Remember to email Tom to ask him to install the new MA and CA certs on pgeni3 *** "

@@ -14,6 +14,7 @@ DB.DB = portal
 CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
 LIB.DIR = $(DESTDIR)/share/geni-ch/portal
 CA.DIR = $(DESTDIR)/share/geni-ch/CA
+MA.DIR = $(DESTDIR)/share/geni-ch/ma
 ABAC.DIR = $(LIB.DIR)/abac
 GCF.D = $(LIB.DIR)/gcf.d
 GCF.DIR = $(LIB.DIR)/gcf
@@ -53,8 +54,13 @@ $(GCF.D)/omni.ini: gcf.d/omni.ini
 $(GCF.D)/trusted_roots:
 	$(INSTALL.WWW) -d $@
 
+# pgch must trust the cacert
 $(GCF.D)/trusted_roots/cacert.pem:
 	/bin/ln -s $(CA.DIR)/cacert.pem $@
+
+# pgch must also trust the ma-cert
+$(GCF.D)/trusted_roots/ma-cert.pem:
+	/bin/ln -s $(MA.DIR)/ma-cert.pem $@
 
 $(GCF.DIR)/src/gcf-pgch.py: gcf.d/src/gcf-pgch.py
 	$(INSTALL.WWW) $^ $@
@@ -67,6 +73,7 @@ GCF_DEPS = 	$(GCF.D) \
 		$(GCF.D)/omni.ini \
 		$(GCF.D)/trusted_roots \
 		$(GCF.D)/trusted_roots/cacert.pem \
+		$(GCF.D)/trusted_roots/ma-cert.pem \
 		$(GCF.DIR)/src/gcf-pgch.py \
 		$(GCF.DIR)/src/geni/pgch.py
 

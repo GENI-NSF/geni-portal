@@ -659,7 +659,6 @@
        */
       client.send = function(options)
       {
-	  forge.log.info(cat, "In client.send");
          // add host header if not set
          if(options.request.getField('Host') === null)
          {
@@ -704,7 +703,6 @@
          // add cookies to request
          _writeCookies(client, opts.request);
          
-	  forge.log.info(cat, "After _writeCookies");
          // queue request options if there are no idle sockets
          if(client.idle.length === 0)
          {
@@ -734,7 +732,6 @@
                socket = client.idle.pop();
             }
             socket.options = opts;
-	    forge.log.info("Before _doRequest");
             _doRequest(client, socket);
          }
       };
