@@ -50,15 +50,9 @@
   // logging category
   var cat = 'forge.tests.tls';
 
-  forge.log.info("Before embedding SP.swf");
-  forge.log.info("Document[SP]pre = " + document['socketPool']);
-
   swfobject.embedSWF(
      'forge/SocketPool.swf', 'socketPool', '0', '0', '9.0.0',
      false, {}, {allowscriptaccess: 'always'}, {});
-
-  forge.log.info("Document[SP]post = " + document['socketPool']);
-  forge.log.info("After embedding SP.swf");
 
   // CA certificate for test server
   var serverCerts = [];
@@ -84,18 +78,8 @@
   function init(new_flash_id)
   {
     try {
-    forge.log.info(cat, "In init " + new_flash_id);
+//    forge.log.info(cat, "In init " + new_flash_id);
     flash_id = new_flash_id;
-    forge.log.info(cat, "After setting flash_id " + flash_id); 
-    forge.log.info("NET = " + net); 
-    forge.log.info("DOCUMENT = " + document);    
-    forge.log.info("DOCUMENT[FID] = " + document[flash_id]);    
-    forge.log.info("DOCUMENT[SP] = " + document['socketPool']);
-    forge.log.info("DOCUMENT[NUTHIN] = " + document['nuthin']);
-    forge.log.info("DOCUMENT[SP].init = " + document['socketPool'].init);
-    forge.log.info("DOCUMENT[SP].location = " + document['socketPool'].location);
-    forge.log.info("DOCUMENT[SP].title = " + document['socketPool'].title);
-    forge.log.info("DOCUMENT[SP].body = " + document['socketPool'].body);
 
     sp = net.createSocketPool({
       flashId: 'socketPool',
@@ -103,7 +87,6 @@
       msie: false
     });
 
-    forge.log.info(cat, "After CSP " + sp);
     } catch(ex) {
        forge.log.error(cat, ex);
     }

@@ -28,6 +28,7 @@ require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once("sa_client.php");
+require_once("cs_client.php");
 
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
@@ -37,6 +38,21 @@ if (! isset($sa_url)) {
 }
 
 $projects = lookup_projects($pa_url, $user->account_id);
+$num_projects = count($projects);
+
+
+
+print "<h2>My Projects</h2>\n";
+if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
+  if ($num_projects==0) {
+    print "<p class='instruction'>You are not a member of any projects.  You need to create or join a project.</p>";
+  }
+  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button><br/>\n";
+  print "<br/>\n";
+} elseif ($num_projects==0) {
+  print "<p class='instruction'>You are not a member of any projects. Please join an existing project.</p>";
+}
+
 
 if (count($projects) > 0) {
   print "Found " . count($projects) . " project(s) for you:<br/>\n";
