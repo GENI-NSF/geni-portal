@@ -34,6 +34,14 @@ require_once("smime.php");
 require_once('response_format.php');
 require_once('util.php');
 
+/**
+ * An easy way to turn message handler debugging on or off.
+ */
+function mh_debug($msg)
+{
+  //error_log($msg);
+}
+
 function default_cacerts()
 {
   return array('/usr/share/geni-ch/CA/cacert.pem');
@@ -83,6 +91,56 @@ function extract_message()
   return $data;
 }
 
+function find_context($prefix, $func, $args,
+                      &$context_type, &$context)
+{
+  $context_type = NULL;
+  $context = NULL;
+  $result = FALSE;
+  switch ($prefix) {
+  case 'SA':
+    $context_type = 'slice';
+    if (array_key_exists(SA_ARGUMENT::SLICE_ID, $args)) {
+      $context = $args[SA_ARGUMENT::SLICE_ID];
+      $context_type = 'slice';
+      $result = TRUE;
+    } else if (array_key_exists(SA_ARGUMENT::PROJECT_ID, $args)) {
+      $context = $args[SA_ARGUMENT::PROJECT_ID];
+      $context_type = 'project';
+      $result = TRUE;
+    } else {
+      error_log("MessageHandler: Unknown context for $prefix.$func");
+      // Leave $context and $context_type NULL
+      // Leave $result = FALSE
+    }
+    break;
+  default:
+    error_log("MessageHandler: Unknown prefix \"$prefix\"");
+    // Leave $context and $context_type NULL
+   // Leave $result = FALSE
+  }
+  return $result;
+}
+
+/**
+ * Return TRUE if the action is authorized, FALSE otherwise.
+ */
+function mh_authorize($cs_url, $principal, $action, $context_type,
+                               $context)
+{
+  mh_debug("MessageHandler requesting authorization:"
+            . " for principal=\"" . print_r($principal, TRUE) . "\""
+            . "; action=\"" . print_r($action, TRUE) . "\""
+            . "; context_type=\"" . print_r($context_type, TRUE) . "\""
+            . "; context=\"" . print_r($context, TRUE) . "\"");
+  return TRUE;
+}
+
+class GeniAuthorizationException extends Exception
+{
+}
+
+
 /*
  * Top level message handler for services. Processes an incoming
  * message, invokes the appropriate function, signs and encrypts the
@@ -104,7 +162,10 @@ function extract_message()
 function handle_message($prefix, $cacerts=null, $receiver_cert = null,
                         $receiver_key=null)
 {
-  // error_log($prefix . ": starting");
+  /* TODO: Still need to get this from SR, which requires $sr_url. */
+  $cs_url = NULL;
+
+  // mh_debug($prefix . ": starting");
   $data = extract_message();
 
   // Now process the data
@@ -115,45 +176,69 @@ function handle_message($prefix, $cacerts=null, $receiver_cert = null,
     $cacerts = default_cacerts();
   }
   $msg = smime_validate($data, $cacerts, $signer_pem);
-  $geni_message = new GeniMessage($msg);
-  $geni_message->setSignerPem($signer_pem);
+  mh_debug("msg = " . print_r($msg, TRUE));
   if (is_null($msg)) {
     /* Message failed to verify. Return authentication failure. */
     $result = generate_response(RESPONSE_ERROR::AUTHENTICATION,
                                 NULL,
                                 "Message verification failed.");
-  } else {
-    $funcargs = parse_message($msg);
-    $func = $funcargs[0];
-    if (is_callable($func)) {
-      $refFunc = new ReflectionFunction($func);
-      $paramCount = $refFunc->getNumberOfParameters();
-      if ($paramCount === 1) {
-        $result = call_user_func($func, $funcargs[1]);
-      } else if ($paramCount === 2) {
-        $result = call_user_func($func, $funcargs[1], $geni_message);
-      } else {
-        error_log("Unknown method signature for invoked method \"$func\"."
-                  . " Expected 1 or 2 parameters, but $func expects"
-                  . " $paramCount");
-        generate_response(RESPONSE_ERROR::ARGS,
-                          NULL,
-                          "Bad callback signature for \"$func\".");
-      }
-    } else {
-      $result = generate_response(RESPONSE_ERROR::ARGS,
-                                  NULL,
-                                  "Unknown operation \"$func\".");
-    }
+    goto done;
   }
 
-  //   error_log("RESULT = " . print_r($result, true));
+  $geni_message = new GeniMessage($msg, $signer_pem);
+  $funcargs = $geni_message->parse();
+  $func = $funcargs[0];
+  if (! is_callable($func)) {
+    $result = generate_response(RESPONSE_ERROR::ARGS,
+                                NULL,
+                                "Unknown operation \"$func\".");
+    goto done;
+  }
+
+  $principal = $geni_message->signerUuid();
+  if (is_null($principal)) {
+    mh_debug("No signer on $prefix.$func, auto-authorizing.");
+    $authz = True;
+  } else {
+    $action = $func;
+    $context = find_context($prefix, $action, $funcargs[1],
+                            $context_type, $context);
+    $authz = mh_authorize($cs_url, $principal, $action, $context_type,
+                          $context);
+  }
+  if (! $authz) {
+    $msg = "$principal is not authorized to $action.";
+    $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
+                                NULL,
+                                $msg);
+    goto done;
+  }
+
+  mh_debug("Action $func is authorized.");
+  $refFunc = new ReflectionFunction($func);
+  $paramCount = $refFunc->getNumberOfParameters();
+  if ($paramCount === 1) {
+    $result = call_user_func($func, $funcargs[1]);
+  } else if ($paramCount === 2) {
+    $result = call_user_func($func, $funcargs[1], $geni_message);
+  } else {
+    error_log("Unknown method signature for invoked method \"$func\"."
+              . " Expected 1 or 2 parameters, but $func expects"
+              . " $paramCount");
+    $result = generate_response(RESPONSE_ERROR::ARGS,
+                                NULL,
+                                "Bad callback signature for \"$func\".");
+  }
+
+  /* Sweet! I get to use GOTO! */
+done:
+  //   mh_debug("RESULT = " . print_r($result, true));
   $output = encode_result($result);
-  //   error_log("RESULT(enc) = " . $output);
-  //   error_log("RESULT(dec) = " . decode_result($output));
+  //   mh_debug("RESULT(enc) = " . $output);
+  //   mh_debug("RESULT(dec) = " . decode_result($output));
   $output = smime_sign_message($output);
   $output = smime_encrypt($output);
-  //   error_log("BEFORE PRINT:" . $output);
+  //   mh_debug("BEFORE PRINT:" . $output);
   print $output;
 }
 
@@ -262,13 +347,14 @@ Class GeniMessage {
   private $urn_regex = "/^URI:(urn:publicid:.*)$/";
   private $uuid_regex = "/^URI:urn:uuid:(.*)$/";
 
-  function __construct($raw_message) {
+  function __construct($raw_message, $signer_pem) {
     $this->raw_message = $raw_message;
     $this->signer_pem = NULL;
     $this->signer = NULL;
     $this->signer_email = NULL;
     $this->signer_urn = NULL;
     $this->signer_uuid = NULL;
+    $this->setSignerPem($signer_pem);
   }
   function setSignerPem($signer_pem) {
     $this->signer_pem = $signer_pem;
@@ -334,6 +420,9 @@ Class GeniMessage {
         }
       }
     }
+  }
+  function parse() {
+    return parse_message($this->raw_message);
   }
 }
 
