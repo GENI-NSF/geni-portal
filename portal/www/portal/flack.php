@@ -41,6 +41,30 @@ $sa_ch_port = 8443;
 $SA_URL = "https://$http_host:$sa_ch_port/";
 $CH_URL = "https://$http_host:$sa_ch_port/";
 
+// If have slice_urn then call generate_flack_page and print result
+// else if have slice_id then get slice_urn and call generate_flack_page
+// else error
+if (!isset($user)) {
+  $user = geni_loadUser();
+}
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+unset($slice);
+//unset($slice_urn);
+include("tool-lookupids.php");
+if (isset($slice)) {
+  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
+}
+
+if (! isset($slice_urn)) {
+  header('HTTP/1.1 404 Not Found');
+  print 'No slice id specified.';
+  exit();
+}
+
+print generate_flack_page($slice_urn);
+exit();
 
 // Generate flack pages given all parameters
 // and return contents of generated page
@@ -87,7 +111,9 @@ function prepare_cert_for_javascript($cert)
 
 function generate_flack_page($slice_urn)
 {
-  $user = geni_loadUser();
+  if (! isset($user)) {
+    $user = geni_loadUser();
+  }
   $sr_url = get_sr_url();
   $am_services = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $ca_services = get_services_of_type(SR_SERVICE_TYPE::CERTIFICATE_AUTHORITY);

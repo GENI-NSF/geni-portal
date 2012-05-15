@@ -66,6 +66,7 @@ if (count($slices) > 0) {
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
+  $flack_url = relative_url("flack.php?");
 
   $projects = lookup_projects($pa_url, $user->account_id);
 
@@ -85,6 +86,7 @@ if (count($slices) > 0) {
     $delete_sliver_url = $delete_sliver_base_url . $query;
     $sliver_status_url = $sliver_status_base_url . $query;
     $sliceabac_url = $abac_url . $query;
+    $sliceflack_url = $flack_url . $query;
     $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
@@ -115,7 +117,7 @@ if (count($slices) > 0) {
     print ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
     // FIXME: List Resources
     print ("<td><button onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>");
-  print "<td><button onClick=\"window.location='http://groups.geni.net/geni/wiki/ProtoGENIFlashClient'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+  print "<td><button onClick=\"window.location='$sliceflack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
     print ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";

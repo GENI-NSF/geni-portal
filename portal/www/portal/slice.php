@@ -68,6 +68,7 @@ $res_url = 'sliceresource.php?slice_id='.$slice_id;
 $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
 $slicecred_url = "slicecred.php?slice_id=".$slice_id;
+$flack_url = "flack.php?slice_id=".$slice_id;
 
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
@@ -92,7 +93,7 @@ if ($user->privSlice()) {
   print "value=\"$slice_expiration\"/>\n";
   print "</form></td>\n";
 
-  print "<td><button onClick=\"window.location='http://groups.geni.net/geni/wiki/ProtoGENIFlashClient'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+  print "<td><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
   print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Slivers for " . $slice_name. "</button></td>\n";
 
   print "<td><form method='GET' action=\"do-renew-slice.php\">";
