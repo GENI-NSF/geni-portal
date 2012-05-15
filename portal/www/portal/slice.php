@@ -131,7 +131,7 @@ print "<table border=\"1\">\n";
 print "<tr><td colspan='2'><b>Slice Name (public) </b></td><td>$slice_name</td></tr>\n";
 print "<tr><td colspan='2'><b>Member of Project (public) </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
 print "<tr><td rowspan='2'><b>Slice Identifier</b></td> <td><b>URN</b></td><td>$slice_urn</td></tr>\n";
-print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
+print "<tr><td class='deemphasize'><b>UUID</b></td><td class='deemphasize'>$slice_id</td></tr>\n";
 print ("<tr><td colspan='2'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>"
        . "$slice_email</a></td></tr>\n");
 print "<tr><td colspan='2'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
