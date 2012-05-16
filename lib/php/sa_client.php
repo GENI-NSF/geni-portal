@@ -124,12 +124,13 @@ function lookup_slices($sa_url, $signer, $project_id, $owner_id)
 
 /* lookup details of slice of given id */
 // Return array(id, name, project_id, expiration, owner_id, urn)
-function lookup_slice($sa_url, $slice_id)
+function lookup_slice($sa_url, $signer, $slice_id)
 {
   //  error_log("LS.start " . $slice_id . " " . time());
   $lookup_slice_message['operation'] = 'lookup_slice';
   $lookup_slice_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
-  $slice = put_message($sa_url, $lookup_slice_message);
+  $slice = put_message($sa_url, $lookup_slice_message,
+                       $signer->certificate(), $signer->privateKey());
   //  error_log("LS.end " . $slice_id . " " . time());
   return $slice;
 }
