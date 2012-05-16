@@ -68,8 +68,7 @@ if (! $key) {
 }
 
 // Get the slice credential from the SA
-$slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id, 
-					 $key['certificate']);
+$slice_credential = get_slice_credential($sa_url, $user, $slice_id);
 
 // FIXME: slice name only unique within project. Need slice URN?
 $cred_filename = $slice_name . "-cred.xml";
