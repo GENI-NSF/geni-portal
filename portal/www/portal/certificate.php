@@ -52,5 +52,5 @@ header("Content-Description: File Transfer");
 header("Content-Disposition: attachment; filename=$filename");
 header("Content-Type: application/pem");
 header("Content-Transfer-Encoding: binary");
-print $public_key['certificate'];
+print $public_key['public_key'] . "\n" . $public_key['certificate'] . "\n";
 ?>
