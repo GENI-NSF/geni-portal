@@ -56,24 +56,6 @@ function get_slice_credential($sa_url, $user, $slice_id, $cert=NULL)
   return $result['slice_credential'];
 }
 
-function get_slice_credential_old($sa_url, $slice_id, $user_id, $cert=null)
-{
-  if (is_null($cert)) {
-    $row = db_fetch_inside_private_key_cert($user_id);
-    $cert = $row['certificate'];
-  }
-  if (! isset($cert) || is_null($cert) || $cert == "") {
-    error_log("Cannot get_slice_cred without a user cert");
-    return null;
-  }
-  $message['operation'] = 'get_slice_credential';
-  $message[SA_ARGUMENT::SLICE_ID] = $slice_id;
-  $message[SA_ARGUMENT::EXP_CERT] = $cert;
-
-  $result = put_message($sa_url, $message);
-  return $result['slice_credential'];
-}
-
 /* Create a new slice record in database, return slice_id */
 function create_slice($sa_url, $signer, $project_id, $project_name, $slice_name,
                       $owner_id)
