@@ -71,11 +71,12 @@ function create_slice($sa_url, $signer, $project_id, $project_name, $slice_name,
 }
 
 /* Lookup slice ids for given project */
-function lookup_slice_ids($sa_url, $project_id)
+function lookup_slice_ids($sa_url, $signer, $project_id)
 {
   $lookup_slice_ids_message['operation'] = 'lookup_slice_ids';
   $lookup_slice_ids_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
-  $slice_ids = put_message($sa_url, $lookup_slice_ids_message);
+  $slice_ids = put_message($sa_url, $lookup_slice_ids_message,
+                           $signer->certificate(), $signer->privateKey());
   return $slice_ids;
 }
 
