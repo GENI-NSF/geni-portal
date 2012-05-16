@@ -100,8 +100,8 @@ function sa_create_slice($user, $slice_name, $project_id, $project_name)
 {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $owner_id = $user->account_id;
-  $result = create_slice($sa_url, $project_id, $project_name, $slice_name,
-                         $owner_id);
+  $result = create_slice($sa_url, $user, $project_id, $project_name,
+                         $slice_name, $owner_id);
   return $result;
 }
 

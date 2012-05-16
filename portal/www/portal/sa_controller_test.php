@@ -67,12 +67,14 @@ function dump_slices($user, $project)
 
 $project_name = make_uuid();
 $project = create_project($pa_url, $project_name, $owner, '');
-$slice_info = create_slice($sa_url, $project, $project_name, 'SSS', $owner);
+$slice_info = create_slice($sa_url, $user, $project, $project_name, 'SSS',
+                           $owner);
 error_log("SLICE_INFO " . print_r($slice_info, true));
 $slice_id = $slice_info['slice_id'];
 error_log("SLICE_ID = " . $slice_id);
 dump_slices($user, $project);
-$slice_info2 = create_slice($sa_url, $project, $project_name, 'TTT', $owner);
+$slice_info2 = create_slice($sa_url, $user, $project, $project_name, 'TTT',
+                            $owner);
 $slice_id2 = $slice_info2['slice_id'];
 error_log("SLICE_ID2 = " . $slice_id2);
 dump_slices($user, $project);
