@@ -79,7 +79,6 @@ $parents = array("profile.php" => "home.php",
 		 "do-renew-slice.php" => "slice.php",
 		 "sliverdelete.php" => "slice.php",
 		 "sliverstatus.php" => "slice.php",
-		 "uploadkey.php" => "profile.php",
 		 "downloadkeycert.php" => "profile.php",
 		 "uploadsshkey.php" => "profile.php");
 
@@ -114,8 +113,7 @@ $names = array("home.php" => $TAB_HOME,
 		 "sliverstatus.php" => "Sliver Status for %slice_name",
 		 "do-renew.php" => "Renew Sliver on %slice_name",
 		 "do-renew-slice.php" => "Renew Slice %slice_name",
-		 "uploadkey.php" => "Upload Key",
-	       "downloadkeycert.php" => "Download Certificate and Key",
+	         "downloadkeycert.php" => "Download Certificate and Key",
 		 "uploadsshkey.php" => "Upload SSH Key");
 
 // Look up in the 2 arrays above
