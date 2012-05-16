@@ -83,5 +83,13 @@ function lookup_ssh_keys($ma_url, $member_id)
   return $ssh_keys;
 }
 
+// Lookup inside keys/certs associated with a user UUID
+function lookup_keys_and_certs($ma_url, $member_uuid)
+{
+  $lookup_keys_and_certs_message['operation'] = 'lookup_keys_and_certs';
+  $lookup_keys_and_certs_message[MA_ARGUMENT::MEMBER_ID] = $member_uuid;
+  $keys_and_certs = put_message($ma_url, $lookup_keys_and_certs_message);
+}
+
 
 ?>
