@@ -87,12 +87,17 @@ foreach ($rows as $row) {
 }
 ?>
 
-<br/>
 <h2> Modify Account Page </h2>
-Request a modification to user supplied account properties.<br>
+Request a modification to user supplied account properties.<br/><br/>
+Please keep your telephone number current. <br/>
+If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.<br/><br/>
 <form method="POST" action="do-modify.php">
 <?php
-  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone');
+  //  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone');
+  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone',
+		       'reference' => 'Optional: Reference Contact (e.g. Advisor)',
+		       'reason' => 'Optional: Intended use of GENI, explanation of request, or other comments',
+		       'profile'=> 'Optional: URL of your profile page for more information (not GENI public)');
 foreach (array_keys($shib_fields) as $fieldkey) {
     $is_user = false;
     foreach ($attrs as $a) {
@@ -114,6 +119,7 @@ foreach (array_keys($shib_fields) as $fieldkey) {
 ?>
 <br/>
 <input type="submit" value="Modify Account"/>
+<input type="button" value="Cancel" onclick="history.back(-1)"/>
 </form>
 <?php
 include("footer.php");
