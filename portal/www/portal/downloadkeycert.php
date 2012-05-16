@@ -113,6 +113,13 @@ if (! make_cert_and_key($uuid, $email, $urn,
 
 /* Cert and key were successfully generated. Package them as a download. */
 
+/* TODO: Store these in the database so they can be used in
+   downloaded slice credentials. See db_add_public_key() in
+   db-util.php.
+*/
+db_add_public_key($user->account_id, $key, "", "");
+db_add_key_cert($user->account_id, $cert);
+
 /* This is the name of the file on the experimenter's machine. */
 $filename = "geni.pem";
 
@@ -122,4 +129,4 @@ header("Content-Description: File Transfer");
 header("Content-Disposition: attachment; filename=$filename");
 header("Content-Type: application/pem");
 header("Content-Transfer-Encoding: binary");
-print $cert . "\n" . $key;
+print $key . $cert;
