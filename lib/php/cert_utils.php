@@ -110,7 +110,7 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
     error_log("Unable to load signer cert from $signer_cert_file.\n");
     return FALSE;
   }
-  $cert = $cert_pem . "\n" . $signer_pem;
+  $cert = $cert_pem . $signer_pem;
 
   unlink($cert_file);
   unlink($ext_file);
