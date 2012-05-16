@@ -35,18 +35,22 @@
 require_once('sa_constants.php');
 
 /* Create a slice credential for given SLICE ID and user */
-function get_slice_credential($sa_url, $user, $slice_id)
+function get_slice_credential($sa_url, $user, $slice_id, $cert=NULL)
 {
   $signer_cert = $user->certificate();
   $signer_key = $user->privateKey();
 
-  if (! isset($signer_cert) || is_null($signer_cert) || $signer_cert == "") {
+  if (is_null($cert)) {
+    $cert = $signer_cert;
+  }
+
+  if (! isset($cert) || is_null($cert) || $cert == "") {
     error_log("Cannot get_slice_cred without a user cert");
     return null;
   }
   $message['operation'] = 'get_slice_credential';
   $message[SA_ARGUMENT::SLICE_ID] = $slice_id;
-  $message[SA_ARGUMENT::EXP_CERT] = $signer_cert;
+  $message[SA_ARGUMENT::EXP_CERT] = $cert;
 
   $result = put_message($sa_url, $message, $signer_cert, $signer_key);
   return $result['slice_credential'];
