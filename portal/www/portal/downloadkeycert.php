@@ -111,14 +111,10 @@ if (! make_cert_and_key($uuid, $email, $urn,
   exit;
 }
 
-/* Cert and key were successfully generated. Package them as a download. */
+/* Cert and key were successfully generated. Store them in the database. */
+db_add_outside_key_cert($user->account_id, $cert, $key);
 
-/* TODO: Store these in the database so they can be used in
-   downloaded slice credentials. See db_add_public_key() in
-   db-util.php.
-*/
-db_add_public_key($user->account_id, $key, "", "");
-db_add_key_cert($user->account_id, $cert);
+/* Now package the private key and cert for download. */
 
 /* This is the name of the file on the experimenter's machine. */
 $filename = "geni.pem";

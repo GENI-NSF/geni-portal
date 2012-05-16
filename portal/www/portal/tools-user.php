@@ -66,7 +66,7 @@ else
 print "<h2>Keys and Certificates for command line tools</h2>\n";
 print ("For <i>Advanced</i> users: download an SSL certificate and private key,"
        . "in order to use other GENI tools, such as Omni.<br/><br/>\n");
-$keyrow = db_fetch_public_key($user->account_id);
+$keyrow = db_fetch_outside_private_key_cert($user->account_id);
 if ($keyrow) {
   require_once("am_client.php");
   // must double backslash things in the omni_config here....

@@ -121,45 +121,6 @@ function fetch_slice_by_name($name)
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
-function db_add_public_key($account_id, $public_key, $filename, $description)
-{
-  $conn = portal_conn();
-  if (! isset($description) || is_null($description)) {
-    $description = '';
-  }
-  $sql = "INSERT INTO public_key "
-    . "(account_id, public_key, filename, description) VALUES ("
-    . $conn->quote($account_id, 'text')
-    . ', ' . $conn->quote($public_key, 'text')
-    . ', ' . $conn->quote($filename, 'text')
-    . ', ' . $conn->quote($description, 'text');
-  $sql = $sql . ")";
-  //  error_log("command = $sql");
-  $result = db_execute_statement($sql, "public key insert");
-  if ($result[RESPONSE_ARGUMENT::CODE] != 0) {
-    error_log("db_add_public_key got error: " . $result[RESPONSE_ARGUMENT::OUTPUT]);
-  }
-  //  error_log("res code = " . $result[RESPONSE_ARGUMENT::CODE]);
-  //  error_log("res output = " . $result[RESPONSE_ARGUMENT::OUTPUT]);
-  return $result[RESPONSE_ARGUMENT::VALUE];
-}
-
-function db_add_key_cert($account_id, $certificate)
-{
-  $conn = portal_conn();
-  $sql = "UPDATE public_key"
-    . " SET certificate = "
-    . $conn->quote($certificate, 'text')
-    . " WHERE account_id = "
-    . $conn->quote($account_id, 'text');
-  /* print "command = $sql<br/>"; */
-  $result = db_execute_statement($sql, "certificate insert");
-  if ($result[RESPONSE_ARGUMENT::CODE] != 0) {
-    error_log("db_add_key_cert got error: " . $result[RESPONSE_ARGUMENT::OUTPUT]);
-  }
-  return $result[RESPONSE_ARGUMENT::VALUE];
-}
-
 function db_add_inside_key_cert($account_id, $certificate, $key)
 {
   $conn = portal_conn();
@@ -175,14 +136,31 @@ function db_add_inside_key_cert($account_id, $certificate, $key)
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
-function db_fetch_public_key($account_id)
+function db_add_outside_key_cert($account_id, $certificate, $key)
 {
   $conn = portal_conn();
-  $sql = "SELECT *"
-    . " FROM public_key "
-    . " WHERE public_key.account_id = "
+  $sql = "INSERT INTO outside_key (certificate, private_key, account_id)"
+    . " values ("
+    . $conn->quote($certificate, 'text')
+    . ', '
+    . $conn->quote($key, 'text')
+    . ', '
+    . $conn->quote($account_id, 'text')
+    . ")";
+  /*  print "command = $sql<br/>";  */
+  $result = db_execute_statement($sql, "outside key/certificate");
+  return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
+function db_fetch_outside_private_key_cert($account_id)
+{
+  $conn = portal_conn();
+
+  $sql = "SELECT private_key, certificate"
+    . " FROM outside_key "
+    . " WHERE outside_key.account_id = "
     . $conn->quote($account_id, 'text');
-  $row = db_fetch_row($sql, "fetch public key");
+  $row = db_fetch_row($sql, "fetch outside private key");
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 

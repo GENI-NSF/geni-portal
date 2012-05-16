@@ -52,8 +52,8 @@ if (is_null($slice) || $slice == '') {
 // TODO: Pass expiration to slicecred.py
 
 
-$key = db_fetch_public_key($user->account_id);
-if (! $key) {
+$outside_key = db_fetch_outside_private_key_cert($user->account_id);
+if (! $outside_key) {
   include("header.php");
   show_header('GENI Portal: Slices', $TAB_SLICES);
   include("tool-breadcrumbs.php");
@@ -72,9 +72,12 @@ if (! $key) {
 
 // Get the slice credential from the SA using the outside certificate
 $slice_credential = get_slice_credential($sa_url, $user, $slice_id,
-                                         $key['certificate']);
+                                         $outside_key['certificate']);
 
 // FIXME: slice name only unique within project. Need slice URN?
+/* FIXME COMMENT: The URN would suck as part of a filename. Too many
+ *                special characters.
+ */
 $cred_filename = $slice_name . "-cred.xml";
 
 // Set headers for download
