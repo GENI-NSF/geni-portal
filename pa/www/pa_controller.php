@@ -150,6 +150,7 @@ function delete_project($args)
 
   return $result;
 }
+
 /* Return list of all project ID's, optionally limited by lead_id */
 function get_projects($args)
 {
