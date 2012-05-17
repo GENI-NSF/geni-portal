@@ -80,7 +80,7 @@ error_log("SLICE_ID2 = " . $slice_id2);
 dump_slices($user, $project);
 $now = new DateTime();
 $expire = db_date_format($now);
-renew_slice($sa_url, $slice_id2, $expire, $owner);
+renew_slice($sa_url, $user, $slice_id2, $expire);
 dump_slices($user, $project);
 
 $slice_urn = $slice_info[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];

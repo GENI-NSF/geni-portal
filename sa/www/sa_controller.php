@@ -383,12 +383,12 @@ function lookup_slice_by_urn($args)
   return $row;
 }
 
-function renew_slice($args)
+function renew_slice($args, $message)
 {
   global $SA_SLICE_TABLENAME;
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $requested = $args[SA_ARGUMENT::EXPIRATION];
-  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+
   // error_log("got req $requested");
   $req_dt = new DateTime($requested);
 
@@ -414,8 +414,9 @@ function renew_slice($args)
   global $log_url;
   $slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
   $slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
-  log_event($log_url, "Renewed slice " , array($slice_context), $owner_id);
 
+  log_event($log_url, "Renewed slice " , array($slice_context),
+            $message->signerUuid());
 
   $result = db_execute_statement($sql);
   // FIXME: If that succeeded, return the new slice expiration

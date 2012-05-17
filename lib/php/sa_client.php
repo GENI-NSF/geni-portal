@@ -148,13 +148,13 @@ function lookup_slice_by_urn($sa_url, $slice_urn)
 }
 
 /* Renew slice of given id */
-function renew_slice($sa_url, $slice_id, $expiration, $owner_id)
+function renew_slice($sa_url, $signer, $slice_id, $expiration)
 {
   $renew_slice_message['operation'] = 'renew_slice';
   $renew_slice_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $renew_slice_message[SA_ARGUMENT::EXPIRATION] = $expiration;
-  $renew_slice_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
-  $result = put_message($sa_url, $renew_slice_message);
+  $result = put_message($sa_url, $renew_slice_message,
+                       $signer->certificate(), $signer->privateKey());
   return $result;
 }
 
