@@ -423,6 +423,166 @@ function renew_slice($args)
 
 }
 
+// Add a member of given role to given slice
+function add_slice_member($args)
+{
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $member_id = $args[SA_ARGUMENT::MEMBER_ID];
+  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+
+  global $SA_SLICE_MEMBER_TABLENAME;
+
+  $sql = "INSERT INTO " . $SA_SLICE_MEMBER_TABLENAME . " ("
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . ") VALUES ("
+    . "'" . $slice_id . "', "
+    . "'" . $member_id . "', "
+    . $role . ")";
+  error_log("SA.add slice_member.sql = " . $sql);
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+// Remove a member from given slice 
+function remove_slice_member($args)
+{
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $member_id = $args[SA_ARGUMENT::MEMBER_ID];
+
+  global $SA_SLICE_MEMBER_TABLENAME;
+
+  $sql = "DELETE FROM " . $SA_SLICE_MEMBER_TABLENAME 
+    . " WHERE " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID  
+    . " = '" . $slice_id . "'"  . " AND "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    . "= '" . $member_id . "'";
+  error_log("SA.remove slice_member.sql = " . $sql);
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+// Change role of given member in given slice
+function change_slice_member_role($args)
+{
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $member_id = $args[SA_ARGUMENT::MEMBER_ID];
+  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+
+  global $SA_SLICE_MEMBER_TABLENAME;
+
+  $sql = "UPDATE " . $SA_SLICE_MEMBER_TABLENAME
+    . " SET " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role
+    . " WHERE " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
+    . " = '" . $slice_id . "'" 
+    . " AND " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    . " = '" . $member_id . "'"; 
+
+  error_log("SA.change_member_role.sql = " . $sql);
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+// Return list of member ID's and roles associated with given slice
+// If role is provided, filter to members of given role
+function get_slice_members($args)
+{
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+
+  global $SA_SLICE_MEMBER_TABLENAME;
+
+  $role_clause = "";
+  if ($role != null) {
+    $role_clause = 
+      " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role;
+  }
+  $sql = "SELECT " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE
+    . " FROM " . $SA_SLICE_MEMBER_TABLENAME
+    . " WHERE "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
+    . " = '" . $slice_id . "'" 
+    . $role_clause;
+
+  error_log("SA.get_slice_members.sql = " . $sql);
+  $result = db_fetch_rows($sql);
+  return $result;
+  
+}
+
+// Return list of slice ID's for given member_id
+// If is_member is true, return slices for which member is a member
+// If is_member is false, return slices for which member is NOT a member
+// If role is provided, filter on slices 
+//    for which member has given role (is_member = true)
+//    for which member does NOT have given role (is_member = false)
+function get_slices_for_member($args)
+{
+  $member_id = $args[SA_ARGUMENT::MEMBER_ID];
+  $is_member = $args[SA_ARGUMENT::IS_MEMBER];
+  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+
+  global $SA_SLICE_MEMBER_TABLENAME;
+
+  // select distinct slice_id from pa_slice_member 
+  // where member_id = $member_id
+
+  // select distinct slice_id from pa_slice_member 
+  // where member_id not in (select slice_id from pa_slice_member 
+  //                         where member_id = $member_id)
+
+  // select distinct slice_id from pa_slice_member 
+  // where member_id = $member_id and role = $role
+
+  // select distinct slice_id from pa_slice_member 
+  // where member_id not in (select slice_id from pa_slice_member 
+  //                         where member_id = $member_id and role = $role)
+
+  $role_clause = "";
+  if ($role != null) {
+    $role_clause = " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE 
+      . " = " . $role;
+  }
+  $member_clause = 
+    SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    . " = '" . $member_id . "' " . $role_clause;
+  if(!$is_member) {
+    $member_clause = 
+    SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+      . " NOT IN (SELECT " 
+      . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
+      . " FROM " . $SA_SLICE_MEMBER_TABLENAME 
+      . " WHERE " 
+      . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID
+      . " = '" . $member_id . "' " . $role_clause . ")";
+      
+  }
+
+  $sql = "SELECT DISTINCT " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID
+    . " FROM " . $SA_SLICE_MEMBER_TABLENAME
+    . " WHERE " 
+    . $member_clause;
+
+  error_log("SA.get_slices_for_member.sql = " . $sql);
+  $rows = db_fetch_rows($sql);
+  $result = $rows;
+  if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $ids = array();
+    foreach($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
+      $id = $row[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+      $ids[] = $id;
+    }
+    $result = generate_response(RESPONSE_ERROR::NONE, $ids, '');
+  }
+  return $result;
+}
+
 
 
 handle_message("SA");

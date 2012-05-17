@@ -31,6 +31,11 @@
 //   slice_details <= lookup_slice(slice_id);
 //   slice_details <= lookup_slice_by_urn(slice_urn);
 //   renew_slice(slice_id, expiration, owner_id);
+//   add_slice_member(sa_url, project_id, member_id, role)
+//   remove_slice_member(sa_url, slice_id, member_id)
+//   change_slice_member_role(sa_url, slice_id, member_id, role)
+//   get_slice_members(pa_url, slice_id, role=null) // null => Any
+//   get_slices_for_member(pa_url, member_id, is_member, role=null)
 
 require_once('sa_constants.php');
 
@@ -157,5 +162,66 @@ function renew_slice($sa_url, $slice_id, $expiration, $owner_id)
   $result = put_message($sa_url, $renew_slice_message);
   return $result;
 }
+
+// Add a member of given role to given slice
+function add_slice_member($sa_url, $slice_id, $member_id, $role)
+{
+  $add_slice_member_message['operation'] = 'add_slice_member';
+  $add_slice_member_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
+  $add_slice_member_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
+  $add_slice_member_message[SA_ARGUMENT::ROLE_TYPE] = $role;
+  $results = put_message($sa_url, $add_slice_member_message);
+  return $results;
+}
+
+// Remove a member from given slice 
+function remove_slice_member($sa_url, $slice_id, $member_id)
+{
+  $remove_slice_member_message['operation'] = 'remove_slice_member';
+  $remove_slice_member_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
+  $remove_slice_member_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
+  $results = put_message($sa_url, $remove_slice_member_message);
+  return $results;
+}
+
+// Change role of given member in given slice
+function change_slice_member_role($sa_url, $slice_id, $member_id, $role) 
+{
+  $change_member_role_message['operation'] = 'change_slice_member_role';
+  $change_member_role_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
+  $change_member_role_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
+  $change_member_role_message[SA_ARGUMENT::ROLE_TYPE] = $role;
+  $results = put_message($sa_url, $change_member_role_message);
+  return $results;
+}
+
+// Return list of member ID's and roles associated with given slice
+// If role is provided, filter to members of given role
+function get_slice_members($sa_url, $slice_id, $role=null) 
+{
+  $get_slice_members_message['operation'] = 'get_slice_members';
+  $get_slice_members_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
+  $get_slice_members_message[SA_ARGUMENT::ROLE_TYPE] = $role;
+  $results = put_message($sa_url, $get_slice_members_message);
+  return $results;
+}
+
+// Return list of slice ID's for given member_id
+// If is_member is true, return slices for which member is a member
+// If is_member is false, return slices for which member is NOT a member
+// If role is provided, filter on slices 
+//    for which member has given role (is_member = true)
+//    for which member does NOT have given role (is_member = false)
+function get_slices_for_member($sa_url, $member_id, $is_member, $role=null)
+{
+  $get_slices_message['operation'] = 'get_slices_for_member';
+  $get_slices_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
+  $get_slices_message[SA_ARGUMENT::IS_MEMBER] = $is_member;
+  $get_slices_message[SA_ARGUMENT::ROLE_TYPE] = $role;
+  $results = put_message($sa_url, $get_slices_message);
+  return $results;
+}
+
+
 
 ?>
