@@ -22,6 +22,17 @@ create TABLE sa_slice (
   PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS sa_slice_member CASCADE;
+CREATE TABLE sa_slice_member (
+  id SERIAL,
+  slice_id UUID,
+  member_id UUID,
+  role int,
+  PRIMARY KEY (id)
+);
+
+
+
 -- These match our common queries, but in my simple tests my DB doesn't use these
 -- CREATE INDEX sa_slice_index_name_project ON sa_slice (slice_name, project_id);
 -- CREATE INDEX sa_slice_index_slice_id ON sa_slice(slice_id);
