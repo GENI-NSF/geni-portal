@@ -74,7 +74,11 @@ function remove_attribute($args)
   global $MA_MEMBER_TABLENAME;
 
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
-  $role_type = $args[MA_ARGUMENT::ROLE_TYPE];
+  // Allow role_type to be left out, meaning all attributes are removed for the member/context
+  $roleclause = "";
+  if (array_key_exists(MA_ARGUMENT::ROLE_TYPE, $args) && isset($args[MA_ARGUMENT::ROLE_TYPE]) && ! is_null($args[MA_ARGUMENT::ROLE_TYPE]) && $args[MA_ARGUMENT::ROLE_TYPE] != '') {
+    $roleclause = MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . " = " . $args[MA_ARGUMENT::ROLE_TYPE] . " AND ";
+  }
   $context_type = $args[MA_ARGUMENT::CONTEXT_TYPE];
   $context_id = $args[MA_ARGUMENT::CONTEXT_ID];
 
@@ -83,14 +87,14 @@ function remove_attribute($args)
       . $MA_MEMBER_TABLENAME
       . " WHERE " 
       . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $member_id . "' AND "
-      . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . " = " . $role_type . " AND "
+      . $roleclause
       . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type;
   } else {
     $sql = "DELETE FROM " 
       . $MA_MEMBER_TABLENAME
       . " WHERE " 
       . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $member_id . "' AND "
-      . MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE . " = " . $role_type . " AND "
+      . $roleclause
       . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type . " AND "
       . MA_MEMBER_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
   }

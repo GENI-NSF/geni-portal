@@ -22,6 +22,8 @@ function add_attribute($ma_url, $member_id, $role_type, $context_type, $context_
 }
 
 // Remove an attribute for given member of given role_type, context_type, context_id
+// role_type may be null, in which case all attributes for this member on this context
+// will be removed
 function remove_attribute($ma_url, $member_id, $role_type, $context_type, $context_id)
 {
   $remove_attribute_message['operation'] = 'remove_attribute';
