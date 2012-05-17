@@ -18,6 +18,15 @@ CREATE TABLE pa_project (
   PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS pa_project_member CASCADE;
+CREATE TABLE pa_project_member (
+  id SERIAL,
+  project_id UUID,
+  member_id UUID,
+  role int,
+  PRIMARY KEY (id)
+);
+
 -- These are for common queries, but so far the DB doesn't use these. Tables too small?
 -- CREATE INDEX project_index_project_id ON pa_project (project_id);
 -- CREATE INDEX project_index_lead_project ON pa_project (lead_id, project_id);
