@@ -192,7 +192,7 @@ function create_slice($args)
     return $slice_info;
   }
 
-  // Create an assertion that this owner is the 'lead' of the project (and has associated privileges)
+  // Create an assertion that this owner is the 'lead' of the slice (and has associated privileges)
   global $cs_url;
   $signer = null; // *** FIX ME
   create_assertion($cs_url, $signer, $owner_id, CS_ATTRIBUTE_TYPE::LEAD,
