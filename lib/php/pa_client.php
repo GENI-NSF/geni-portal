@@ -1,4 +1,27 @@
 <?php
+//----------------------------------------------------------------------
+// Copyright (c) 2012 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
+
 // Client-side interface to GENI Clearinghouse Project Authority (PA)
 // Consists of these methods:
 //   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose)
@@ -42,6 +65,7 @@ function delete_project($pa_url, $project_id)
   return $result;
 }
 
+// return list of project ids
 function get_projects($pa_url)
 {
   $get_projects_message['operation'] = 'get_projects';
@@ -49,6 +73,7 @@ function get_projects($pa_url)
   return $project_ids;
 }
 
+// return list of project ids
 function get_projects_by_lead($pa_url, $lead_id)
 {
   //  error_log("GPBL.start " . $lead_id . " " . time());
@@ -59,6 +84,7 @@ function get_projects_by_lead($pa_url, $lead_id)
   return $project_ids;
 }
 
+// Return project details
 function lookup_projects($pa_url, $lead_id=null)
 {
   $lookup_projects['operation'] = 'lookup_projects';
@@ -69,6 +95,7 @@ function lookup_projects($pa_url, $lead_id=null)
   return $projects;
 }
 
+// Return project details
 function lookup_project($pa_url, $project_id)
 {
   //  error_log("LP.start " . $project_id . " " . time());
@@ -80,6 +107,7 @@ function lookup_project($pa_url, $project_id)
   return $details;
 }
 
+// Return project details
 function lookup_project_by_name($pa_url, $project_name)
 {
   //  error_log("LP.start " . $project_id . " " . time());
@@ -90,6 +118,9 @@ function lookup_project_by_name($pa_url, $project_name)
   // FIXME: Could be >1?
   return $details;
 }
+
+// FIXME: lookup_projects_member(pa_url, member_id, is_member, role)
+// FIXME: lookup_projects_ids(pa_url, project_ids_list)
 
 function update_project($pa_url, $project_id, $project_name, $project_purpose)
 {
