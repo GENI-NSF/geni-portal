@@ -131,19 +131,20 @@ CREATE TABLE account_slice (
 CREATE INDEX account_slice_index_account_id ON account_slice (account_id);
 CREATE INDEX account_slice_index_slice_id ON account_slice (slice_id);
 
--- ----------------------------------------------------------------------
--- Public keys
--- ----------------------------------------------------------------------
+-- "public_key" is an obsolete table. Remove it if it is there.
 DROP TABLE IF EXISTS public_key;
-CREATE TABLE public_key (
+
+-- ----------------------------------------------------------------------
+-- Outside keys
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS outside_key;
+CREATE TABLE outside_key (
   account_id UUID REFERENCES account UNIQUE,
-  public_key VARCHAR,
-  filename VARCHAR,
-  description VARCHAR,
+  private_key VARCHAR,
   certificate VARCHAR
 );
 
-CREATE INDEX public_key_index_account_id ON public_key (account_id);
+CREATE INDEX outside_key_index_account_id ON outside_key (account_id);
 
 -- ----------------------------------------------------------------------
 -- Inside keys

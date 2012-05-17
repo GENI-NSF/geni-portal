@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2012 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -31,8 +31,14 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 
+/*----------------------------------------------------------------------
+ *
+ * NOTE: $user must be set before including or requiring this file.
+ *
+ *----------------------------------------------------------------------
+ */
 
-// TODO: load slice_owner? project_lead? 
+// TODO: load slice_owner? project_lead?
 // We're loading members from geni_loadUser - should this be from an MA instead?
 
 // Name of actual script being used here
@@ -72,7 +78,7 @@ if (array_key_exists("project_id", $_REQUEST)) {
 if (array_key_exists("slice_id", $_REQUEST)) {
   $slice_id = $_REQUEST['slice_id'];
   if (uuid_is_valid($slice_id)) {
-    $slice = lookup_slice($sa_url, $slice_id);
+    $slice = lookup_slice($sa_url, $user, $slice_id);
     if (isset($slice) && is_array($slice) && array_key_exists(SA_SLICE_TABLE_FIELDNAME::SLICE_NAME, $slice)) {
       $slice_name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
     }

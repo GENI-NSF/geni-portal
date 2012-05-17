@@ -209,6 +209,22 @@ function lookup_ssh_keys($args)
   return $rows;
 }
 
+function lookup_keys_and_certs($args)
+{
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  global $MA_INSIDE_KEY_TABLENAME;
+  $sql = "select " 
+    . MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY . ", "
+    . MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE 
+    . " FROM " . $MA_INSIDE_KEY_TABLENAME
+    . " WHERE " 
+    . MA_INSIDE_KEY_TABLE_FIELDNAME::ACCOUNT_ID 
+    . "= '" . $member_id . "'";
+  error_log("LKAC.sql = " . $sql);
+  $row = db_fetch_row($sql);
+  return $row;
+}
+
 handle_message("MA");
 
 

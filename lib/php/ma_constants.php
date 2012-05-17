@@ -75,4 +75,14 @@ class MA_SSH_KEY_TABLE_FIELDNAME {
   const PUBLIC_KEY = "public_key";
 }
 
+/* Name of table containing inside key info */
+$MA_INSIDE_KEY_TABLENAME = "inside_key";
+
+/* Name of fields of INSIDE KEY table */
+class MA_INSIDE_KEY_TABLE_FIELDNAME {
+  const ACCOUNT_ID = "account_id";
+  const PRIVATE_KEY = "private_key";
+  const CERTIFICATE = "certificate";
+}
+
 ?>

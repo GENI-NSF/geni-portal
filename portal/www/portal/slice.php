@@ -122,17 +122,20 @@ print "</tr></table>\n";
 /* </form> */
 /* <br/> */
 /* <?php */
+
+
+
   print "<h2>Slice Details</h2>\n";
 print "<table border=\"1\">\n";
 // print "<tr><th>Name </th><th>Value</th></tr>\n";
-print "<tr><td><b>Slice Name (public) </b></td><td>$slice_name</td></tr>\n";
-print "<tr><td><b>Member of Project (public) </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
-print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
-print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
-print ("<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>"
+print "<tr><td colspan='2'><b>Slice Name (public) </b></td><td>$slice_name</td></tr>\n";
+print "<tr><td colspan='2'><b>Member of Project (public) </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><td rowspan='2'><b>Slice Identifier</b></td> <td><b>URN</b></td><td>$slice_urn</td></tr>\n";
+print "<tr><td class='deemphasize'><b>UUID</b></td><td class='deemphasize'>$slice_id</td></tr>\n";
+print ("<tr><td colspan='2'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>"
        . "$slice_email</a></td></tr>\n");
-print "<tr><td><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-print "<tr><td><b>Slice Expiration</b></td><td>\n";
+print "<tr><td colspan='2'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "<tr><td colspan='2'><b>Slice Expiration</b></td><td>\n";
 print "<form method='GET' action=\"do-renew-slice.php\">";
 print "<input type='text' name='slice_expiration'";
 print "value=\"$slice_expiration\"/>\n";
