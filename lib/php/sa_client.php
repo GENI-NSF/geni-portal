@@ -152,6 +152,9 @@ function lookup_slice_by_urn($sa_url, $slice_urn)
   return $slice;
 }
 
+// FIXME: lookup_slice_details_by_ids($sa_url, $slice_ids_list)
+// FIXME: lookup_slices_project_member($sa_url, $project_id=null, $member_id, $is_member, $role=null)
+
 /* Renew slice of given id */
 function renew_slice($sa_url, $signer, $slice_id, $expiration)
 {
@@ -212,6 +215,7 @@ function get_slice_members($sa_url, $slice_id, $role=null)
 // If role is provided, filter on slices 
 //    for which member has given role (is_member = true)
 //    for which member does NOT have given role (is_member = false)
+// FIXME: optional project_id to constrain to a given project?
 function get_slices_for_member($sa_url, $member_id, $is_member, $role=null)
 {
   $get_slices_message['operation'] = 'get_slices_for_member';
