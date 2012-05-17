@@ -179,11 +179,16 @@ function invoke_omni_function($am_url, $user, $args)
 
     /* Call OMNI */
     global $portal_gcf_dir;
-    $cmd_array = array($portal_gcf_dir . '/src/omni.py',
+
+    /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
+    $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
 		       $omni_file,
 		       '-a',
-		       $am_url, 
+		       $am_url,
+		       '-l',
+		       $portal_gcf_dir . '/src/logging.conf',
+		       '--logoutput /tmp/omni.log',
 		       '--api-version',
 		       '2');
     for($i = 0; $i < count($args); $i++) {
@@ -202,15 +207,22 @@ function invoke_omni_function($am_url, $user, $args)
      }
      pclose($handle);
   
-     //     error_log("OUTPUT:" . $output);
-
      unlink($cert_file);
      unlink($key_file);
      unlink($omni_file);
      foreach ($ssh_key_files as $tmpfile) {
        unlink($tmpfile);
      }
-     return $output;
+
+     print "<hr/>";
+     // error_log("OUTPUT:".print_r($output));
+     print $output;
+     $output2 = json_decode($output, True);
+     // error_log("OUTPUT2:".print_r($output2));
+     print "<hr/>";
+     print $output2;
+     return $output2;
+     // return $output;
 }
 
 // Get version of AM API at given AM

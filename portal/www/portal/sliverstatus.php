@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 ?>
 <?php
+require_once("header.php");
 require_once("settings.php");
 require_once("user.php");
 require_once("file_utils.php");
@@ -93,16 +94,74 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     }
  
     // Call sliver status at the AM
-    $sliver_output = sliver_status($am_url, $user, $slice_credential,
+    $retVal = sliver_status($am_url, $user, $slice_credential,
 				   $slice_urn);
-    error_log("SliverStatus output = " . $sliver_output);
-    $slivers_output = $slivers_output . $sliver_output . "\n";
+    // error_log( "SliverStatus output return = ".print_r($retVal) );
+    $msg = $retVal[0];
+    $obj = $retVal[1];
+    // error_log( "SliverStatus output msg = ".print_r($msg) );
+    // error_log( "SliverStatus output object = ".print_r($obj) );
   }
 }
 $header = "Status of Slivers on slice: $slice_name";
-$text = $slivers_output;
-include("print-text.php");
+// include("print-text.php");
 
-//relative_redirect('slices');
+?>
+
+<?php
+
+function print_sliver_status( $obj ) {
+  $args = array_keys( $obj );
+  foreach ($args as $arg){
+    $arg_obj = $obj[$arg];
+    $geni_urn = $arg_obj['geni_urn'];
+    $geni_status = $arg_obj['geni_status'];
+    $geni_resources = $arg_obj['geni_resources'];
+
+    //    print "Status of slice <b>$geni_urn</b>";      
+    print "<table>";
+    print "<tr class='aggregate'><th>Status</th><th colspan='2'>Aggregate</th></tr>";
+    print "<tr class='aggregate'><td class='$geni_status'>$geni_status</td><td colspan='2'>$arg</td></tr>";
+    $firstRow = True;
+    $num_rsc = count($geni_resources);
+    foreach ($geni_resources as $rsc){
+	$rsc_urn = $rsc['geni_urn'];
+	$rsc_status = $rsc['geni_status'];
+	$rsc_error = $rsc['geni_error'];
+	if ($firstRow) {
+	  $colspan = "colspan='$num_rsc'";
+	  $firstRow = False;
+	  print "<tr class='resource'><th class='deemphasize'></th><th>Status</th><th>Resource</th></tr>";
+	} else {
+	  $colspan = "";
+	}
+	
+	print "<tr  class='resource'>";
+	if ($rsc_status == "failed"){
+	  print "<td rowspan=$num_rsc>";
+	} else {
+	  print "<td rowspan=$num_rsc class='deemphasize'>";
+	}
+	print "</td><td class='$rsc_status'>$rsc_status</td><td>$rsc_urn</td></tr>";
+	if ($rsc_status == "failed"){
+	  print "<tr><td></td><td>$rsc_error</td></tr>";
+	}
+      }    
+    print "</table>";
+  }
+}
+
+show_header('GENI Portal: Slices',  $TAB_SLICES);
+include("tool-breadcrumbs.php");
+print "<h2>$header</h2>\n";
+
+print "<pre>$msg</pre>";
+
+print_sliver_status( $obj );
+
+print "<a href='slices.php'>Back to All slices</a>";
+print "<br/>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
+include("footer.php");
 
 ?>

@@ -33,6 +33,52 @@
 .deemphasize {
  color: gray;
 }
+
+.configuring, .unknown, .ready, .failed {
+ text-transform:uppercase;
+ padding: 2px;
+ margin: 2px;
+ color: black;
+ background-color: BlanchedAlmond;
+}
+
+.ready {
+ color: White;
+ border-color: green;
+ background-color: green;
+}
+
+.failed {
+ color: BlanchedAlmond;
+ border-color: red;
+ background-color: red;
+}
+
+table {
+ border: 1px;
+}
+
+td {
+ margin: 3px;
+ padding: 3px;
+}
+
+table {
+ background-color: #DCE2E8;
+}
+table .aggregate {
+ background-color: SkyBlue;
+}
+
+table .resource {
+ background-color: PowderBlue;
+}
+
+table .deemphasize {
+ background-color: #DCE2E8;
+}
+
+
 /* Navigation */
 .nav h2, .nav hr { display: none }
 .nav ul { font-size: 10px; list-style: none; margin: 0; text-align: right }
