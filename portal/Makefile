@@ -68,6 +68,9 @@ $(GCF.DIR)/src/gcf-pgch.py: gcf.d/src/gcf-pgch.py
 $(GCF.DIR)/src/geni/pgch.py: gcf.d/src/geni/pgch.py
 	$(INSTALL.WWW) -m 644 $^ $@
 
+$(GCF.DIR)/src/omni_php.py: gcf.d/src/omni_php.py
+	$(INSTALL.WWW) $^ $@
+
 GCF_DEPS = 	$(GCF.D) \
 		$(GCF.D)/gcf.ini \
 		$(GCF.D)/omni.ini \
@@ -75,7 +78,8 @@ GCF_DEPS = 	$(GCF.D) \
 		$(GCF.D)/trusted_roots/cacert.pem \
 		$(GCF.D)/trusted_roots/ma-cert.pem \
 		$(GCF.DIR)/src/gcf-pgch.py \
-		$(GCF.DIR)/src/geni/pgch.py
+		$(GCF.DIR)/src/geni/pgch.py \
+		$(GCF.DIR)/src/omni_php.py
 
 install-gcf: $(GCF_DEPS)
 
