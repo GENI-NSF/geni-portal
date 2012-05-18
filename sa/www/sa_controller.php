@@ -54,18 +54,18 @@ class SAGuardFactory implements GuardFactory
     = array(
             // Action => array(method_name, method_name, ...)
             'get_slice_credential' => array('slice_guard'),
-            'get_user_credential' => NULL,
+            'get_user_credential' => array(), // Unguarded
             'create_slice' => array('project_guard'),
             'lookup_slice_ids' => array('project_guard'),
             'lookup_slices' => array('lookup_slices_guard'),
             'lookup_slice' => array('slice_guard'),
-            'lookup_slice_by_urn' => NULL,
+            'lookup_slice_by_urn' => array(), // Unguarded
             'renew_slice' => array('slice_guard'),
             'add_slice_member' => array('slice_guard'),
             'remove_slice_member' => array('slice_guard'),
             'change_slice_member_role' => array('slice_guard'),
             'get_slice_members' => array('slice_guard'),
-            'get_slices_for_member'=> NULL,
+            'get_slices_for_member'=> array(), // Unguarded
             );
 
   public function __construct($cs_url) {
