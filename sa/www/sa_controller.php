@@ -41,7 +41,7 @@ $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 function sa_debug($msg)
 {
-  error_log('SA DEBUG: ' . $msg);
+  //  error_log('SA DEBUG: ' . $msg);
 }
 
 /*----------------------------------------------------------------------
