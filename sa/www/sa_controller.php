@@ -586,6 +586,6 @@ function get_slices_for_member($args)
 
 
 
-handle_message("SA");
+handle_message("SA", $cs_url);
 
 ?>
