@@ -39,7 +39,7 @@ require_once('util.php');
  */
 function mh_debug($msg)
 {
-  //error_log($msg);
+  //error_log('DEBUG: ' . $msg);
 }
 
 function default_cacerts()
@@ -99,17 +99,17 @@ function find_context($prefix, $func, $args,
   $result = FALSE;
   switch ($prefix) {
   case 'SA':
-    $context_type = 'slice';
     if (array_key_exists(SA_ARGUMENT::SLICE_ID, $args)) {
       $context = $args[SA_ARGUMENT::SLICE_ID];
-      $context_type = 'slice';
+      $context_type = CS_CONTEXT_TYPE::SLICE;
       $result = TRUE;
     } else if (array_key_exists(SA_ARGUMENT::PROJECT_ID, $args)) {
       $context = $args[SA_ARGUMENT::PROJECT_ID];
-      $context_type = 'project';
+      $context_type = CS_CONTEXT_TYPE::PROJECT;
       $result = TRUE;
     } else {
       error_log("MessageHandler: Unknown context for $prefix.$func");
+      error_log("MessageHandler: \$args = " . print_r($args, TRUE));
       // Leave $context and $context_type NULL
       // Leave $result = FALSE
     }
@@ -119,25 +119,70 @@ function find_context($prefix, $func, $args,
     // Leave $context and $context_type NULL
    // Leave $result = FALSE
   }
+  error_log("MessageHandler find_context returning"
+            . ": \$context_type = $context_type; \$context = $context");
   return $result;
 }
 
-/**
- * Return TRUE if the action is authorized, FALSE otherwise.
- */
-function mh_authorize($cs_url, $principal, $action, $context_type,
-                               $context)
-{
-  mh_debug("MessageHandler requesting authorization:"
-            . " for principal=\"" . print_r($principal, TRUE) . "\""
-            . "; action=\"" . print_r($action, TRUE) . "\""
-            . "; context_type=\"" . print_r($context_type, TRUE) . "\""
-            . "; context=\"" . print_r($context, TRUE) . "\"");
-  return TRUE;
-}
 
 class GeniAuthorizationException extends Exception
 {
+}
+
+
+class GuardFactory
+{
+  function __construct($prefix, $cs_url) {
+    $this->prefix = $prefix;
+    $this->cs_url = $cs_url;
+  }
+  function createGuards($message) {
+    $result = array();
+    $parsed_message = $message->parse();
+    $func = $parsed_message[0];
+    $funcargs = $parsed_message[1];
+    if (find_context($this->prefix, $func, $funcargs,
+                     $context_type, $context)) {
+      $result[] = new ContextGuard($this->cs_url, $message, $func,
+                                   $context_type, $context);
+    }
+    return $result;
+  }
+}
+
+
+class ContextGuard
+{
+  function __construct($cs_url, $message, $action, $context_type, $context) {
+    $this->cs_url = $cs_url;
+    $this->message = $message;
+    $this->action = $action;
+    $this->context_type = $context_type;
+    $this->context = $context;
+  }
+  /**
+   * Return TRUE if the action is authorized, FALSE otherwise.
+   */
+  function evaluate() {
+    if (! is_null($this->context_type) && is_null($this->context)) {
+      /* This is an edge case. Some of the calls allow for a null
+         context, like passing null for project_id to indicate
+         fetching all slices. The CS doesn't handle this, so skip
+         authorization and let it pass for now. */
+      /* FIXME: Figure out if the CS needs to handle this or if we
+         should change the calls to disallow null. */
+      return TRUE;
+    }
+    mh_debug("MessageHandler requesting authorization:"
+             . " for principal=\""
+             . print_r($this->message->signerUuid(), TRUE) . "\""
+             . "; action=\"" . print_r($this->action, TRUE) . "\""
+             . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
+             . "; context=\"" . print_r($this->context, TRUE) . "\"");
+    return request_authorization($this->cs_url, $this->message->signerUuid(),
+                                 $this->action, $this->context_type,
+                                 $this->context);
+  }
 }
 
 
@@ -159,11 +204,10 @@ class GeniAuthorizationException extends Exception
  *
  * Returns nothing.
  */
-function handle_message($prefix, $cacerts=null, $receiver_cert = null,
-                        $receiver_key=null)
+function handle_message($prefix, $cs_url=null, $cacerts=null,
+                        $receiver_cert = null, $receiver_key=null)
 {
-  /* TODO: Still need to get this from SR, which requires $sr_url. */
-  $cs_url = NULL;
+  $guard_factory = new GuardFactory($prefix, $cs_url);
 
   // mh_debug($prefix . ": starting");
   $data = extract_message();
@@ -201,17 +245,17 @@ function handle_message($prefix, $cacerts=null, $receiver_cert = null,
     $authz = True;
   } else {
     $action = $func;
-    $context = find_context($prefix, $action, $funcargs[1],
-                            $context_type, $context);
-    $authz = mh_authorize($cs_url, $principal, $action, $context_type,
-                          $context);
-  }
-  if (! $authz) {
-    $msg = "$principal is not authorized to $action.";
-    $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
-                                NULL,
-                                $msg);
-    goto done;
+    $guards = $guard_factory->createGuards($geni_message);
+
+    foreach ($guards as $guard) {
+      if (! $guard->evaluate()) {
+        $msg = "$principal is not authorized to $action.";
+        $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
+                                    NULL,
+                                    $msg);
+        goto done;
+      }
+    }
   }
 
   mh_debug("Action $func is authorized.");
