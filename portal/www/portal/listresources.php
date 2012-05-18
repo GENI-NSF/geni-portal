@@ -30,6 +30,7 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
+require_once("print-text-helpers.php");
 $user = geni_loadUser();
 if (! $user->privSlice() || ! $user->isActive()) {
   relative_redirect("home.php");
@@ -95,18 +96,32 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     }
 
     // Call list resources at the AM
-    $output = list_resources_on_slice($am_url, $user, $slice_credential,
+    $retVal = list_resources_on_slice($am_url, $user, $slice_credential,
 				      $slice_urn);
 
-    error_log("ListResources output = " . $output);
-    $slivers_output = $slivers_output . $output . "\n";
+    error_log("ListResources output = " . $retVal);
   }
 }
 
 $header = "Resources on slice: $slice_name";
-$text = $text . $slivers_output;
-include("print-text.php");
 
-//relative_redirect('slices');
+$msg = $retVal[0];
+$obj = $retVal[1];
+
+show_header('GENI Portal: Slices',  $TAB_SLICES);
+include("tool-breadcrumbs.php");
+print "<h2>$header</h2>\n";
+
+print "<div class='msg'>";
+print_r($msg);
+print "</div>";
+
+print_rspec( $obj );
+
+print "<hr/>";
+print "<a href='slices.php'>Back to All slices</a>";
+print "<br/>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
+include("footer.php");
 
 ?>
