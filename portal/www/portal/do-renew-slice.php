@@ -29,6 +29,7 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once('util.php');
+require_once("print-text-helpers.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
@@ -48,12 +49,15 @@ if (isset($slice)) {
   $old_slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
 }
 
-$res = renew_slice($sa_url, $slice_id, $req_exp, $user->account_id);
+$retVal = renew_slice($sa_url, $slice_id, $req_exp, $user->account_id);
 // call sa_client renew_slice($slice_id, $expiration, $owner)
 
 //error_log("Renew Slice output = " . $res);
 
-if ($res) {
+$msg = $retVal[0];
+$time = $retVal[1];
+
+if ($time!="") {
   // get the new slice expiration
   $res = "Renewed slice (requested $req_exp, was $old_slice_expiration)";
   unset($slice);
@@ -66,6 +70,32 @@ if ($res) {
 $res = $res . " - slice expiration is now: $slice_expiration\n";
 
 $header = "Renewed Slice $slice_name";
-$text = $res;
-include("print-text.php");
+
+show_header('GENI Portal: Slices',  $TAB_SLICES);
+include("tool-breadcrumbs.php");
+print "<h2>$header</h2>\n";
+
+print "<div class='msg'>";
+print_r($msg);
+print "</div>";
+
+
+print "<div>";
+print_r($res);
+print "</div>";
+
+
+
+print "<hr/>";
+print "<a href='slices.php'>Back to All slices</a>";
+print "<br/>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
+include("footer.php");
+
+
+
+
+
+
+
 ?>
