@@ -122,19 +122,18 @@ print "</tr></table>\n";
 
 
 
-print "<h2>Slice Information</h2>\n";
 print "<table>\n";
-print "<tr><th colspan='5'>Slice Identifiers (public)</th></tr>\n";
-print "<tr><td rowspan='3'><b>Identifier (public)</b></td><td><b>Name</b></td><td>$slice_name</td><td><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><th colspan='4'>Slice Identifiers (public)</th></tr>\n";
+print "<tr><td><b>Name</b></td><td>$slice_name</td><td><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
 print "<tr><td class='deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
-print "<tr><td><b>Creation</b></td><td colspan='4'>$slice_creation</td></tr>\n";
-print "<tr><td><b>Description (public) </b></td><td colspan='4'>$slice_desc</td></tr>\n";
+print "<tr><td><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
+print "<tr><td><b>Description (public) </b></td><td colspan='3'>$slice_desc</td></tr>\n";
 
 /* print "<tr><td rowspan='2'><b>Slice Identifier</b></td> <td><b>URN</b></td><td>$slice_urn</td></tr>\n"; */
 /* print "<tr><td class='deemphasize'><b>UUID</b></td><td class='deemphasize'>$slice_id</td></tr>\n"; */
-print "<tr><th colspan='5'>Contact Information</th></tr>\n";
-print ("<tr><td><b>e-mail</b></td><td colspan='4'><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
-print "<tr><td><b>Owner</b></td><td colspan='4'><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "<tr><th colspan='4'>Contact Information</th></tr>\n";
+print ("<tr><td><b>e-mail</b></td><td colspan='3'><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
+print "<tr><td><b>Owner</b></td><td colspan='3'><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "<tr><td><b>Expiration</b></td><td colspan='4'>\n";
 print "<form method='GET' action=\"do-renew-slice.php\">";
 print "<input type='text' name='slice_expiration'";
@@ -144,8 +143,12 @@ print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
 <input type='submit' name= 'Renew' value='Renew Slice'/>
 </form></td></tr>
 <?php
-print "</table>\n";
+  print "</table>\n";
 ?>
+
+
+
+
 
 <h2>Slice members</h2>
 <table>
