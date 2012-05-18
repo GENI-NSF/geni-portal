@@ -131,7 +131,7 @@ function print_sliver_status( $obj ) {
 	if ($firstRow) {
 	  $colspan = "colspan='$num_rsc'";
 	  $firstRow = False;
-	  print "<tr class='resource'><th class='deemphasize'></th><th>Status</th><th>Resource</th></tr>";
+	  print "<tr class='resource'><th class='notapply'></th><th>Status</th><th>Resource</th></tr>";
 	} else {
 	  $colspan = "";
 	}
@@ -140,7 +140,7 @@ function print_sliver_status( $obj ) {
 	if ($rsc_status == "failed"){
 	  print "<td rowspan=$num_rsc>";
 	} else {
-	  print "<td rowspan=$num_rsc class='deemphasize'>";
+	  print "<td rowspan=$num_rsc class='notapply'>";
 	}
 	print "</td><td class='$rsc_status'>$rsc_status</td><td>$rsc_urn</td></tr>";
 	if ($rsc_status == "failed"){

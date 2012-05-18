@@ -56,16 +56,21 @@
 
 table {
  border: 1px;
+ background-color: #DCE2E8;
 }
 
 td {
  margin: 3px;
  padding: 3px;
+ background-color: BlanchedAlmond;
 }
 
-table {
- background-color: #DCE2E8;
+th {
+ margin: 3px;
+ padding: 3px;
+ background-color: SkyBlue;
 }
+
 table .aggregate {
  background-color: SkyBlue;
 }
@@ -74,7 +79,7 @@ table .resource {
  background-color: PowderBlue;
 }
 
-table .deemphasize {
+table .notapply {
  background-color: #DCE2E8;
 }
 

@@ -30,6 +30,7 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
+require_once("print-text-helpers.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
   relative_redirect('home.php');
@@ -99,14 +100,37 @@ $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 $rspec_file = writeDataToTempFile($rspec);
 
 // Call create sliver at the AM
-$sliver_output = create_sliver($am_url, $user, $slice_credential,
+$retVal = create_sliver($am_url, $user, $slice_credential,
                                $slice_urn, $rspec_file);
 unlink($rspec_file);
-error_log("CreateSliver output = " . $sliver_output);
+error_log("CreateSliver output = " . $retVal);
 
 $header = "Created Sliver on slice: $slice_name";
-$text = $sliver_output;
-include("print-text.php");
+
+$msg = $retVal[0];
+$obj = $retVal[1];
+
+
+show_header('GENI Portal: Slices',  $TAB_SLICES);
+include("tool-breadcrumbs.php");
+print "<h2>$header</h2>\n";
+
+print "<div class='msg'>";
+print_r($msg);
+print "</div>";
+
+print "<div class='resources'>";
+print_xml( $obj );
+print "</div>\n";
+
+print "<hr/>";
+print "<a href='slices.php'>Back to All slices</a>";
+print "<br/>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
+include("footer.php");
+
+
+
 
 //relative_redirect('slice?slice_id='.$slice_id);
 

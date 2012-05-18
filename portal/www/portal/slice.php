@@ -126,7 +126,7 @@ print "</tr></table>\n";
 
 
   print "<h2>Slice Details</h2>\n";
-print "<table border=\"1\">\n";
+print "<table>\n";
 // print "<tr><th>Name </th><th>Value</th></tr>\n";
 print "<tr><td colspan='2'><b>Slice Name (public) </b></td><td>$slice_name</td></tr>\n";
 print "<tr><td colspan='2'><b>Member of Project (public) </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
@@ -150,7 +150,7 @@ print "<b id='warn'>Note: Slice and project names are public</b><br/>\n";
 ?>
 
 <h2>Slice members</h2>
-<table border="1">
+<table>
 <tr><th>Slice Member</th><th>Roles</th></tr>
 <?php
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
@@ -168,7 +168,7 @@ if ($user->privSlice()) {
 ?>
 
 <h2>Recent Slice Actions</h2>
-<table border="1">
+<table>
 <tr><th>Time</th><th>Message</th><th>Member</th>
 <?php
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);

@@ -214,15 +214,8 @@ function invoke_omni_function($am_url, $user, $args)
        unlink($tmpfile);
      }
 
-     print "<hr/>";
-     // error_log("OUTPUT:".print_r($output));
-     print $output;
      $output2 = json_decode($output, True);
-     // error_log("OUTPUT2:".print_r($output2));
-     print "<hr/>";
-     print $output2;
      return $output2;
-     // return $output;
 }
 
 // Get version of AM API at given AM
