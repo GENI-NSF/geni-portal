@@ -36,6 +36,7 @@ class PA_ARGUMENT
   const PROJECT_EMAIL = "project_email";
   const PROJECT_PURPOSE  = "project_purpose";
   const MEMBER_ID = "member_id";
+  const IS_MEMBER = "is_member";
   const ROLE_TYPE = "role_type";
 }
 
@@ -52,6 +53,15 @@ class PA_PROJECT_TABLE_FIELDNAME
   const PROJECT_PURPOSE = "project_purpose";
 }
 
+/* Name of table containing project membership info */
+$PA_PROJECT_MEMBER_TABLENAME = "pa_project_member";
+
+class PA_PROJECT_MEMBER_TABLE_FIELDNAME
+{
+  const PROJECT_ID = "project_id";
+  const MEMBER_ID = "member_id";
+  const ROLE = "role";
+}
 
 
 ?>

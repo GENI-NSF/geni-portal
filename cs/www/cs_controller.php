@@ -1,4 +1,26 @@
 <?php
+//----------------------------------------------------------------------
+// Copyright (c) 2012 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
 
 require_once('message_handler.php');
 require_once('db_utils.php');
@@ -169,6 +191,22 @@ function renew_assertion($args)
   $sql = "update " . $CS_ASSERTION_TABLENAME . " SET " 
     . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . " = '" 
     . db_date_format($expiration) . "'"
+    . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = '" . $id . "'";
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+/*
+ * Delete a given assertion with given ID
+ * Args:
+ *   ID - ID of assertion to be deleted
+ * Return : Success/failure
+ */
+function delete_assertion($args)
+{
+  global $CS_ASSERTION_TABLENAME;
+  $id = $args[CS_ARGUMENT::ID];
+  $sql = "delete from " . $CS_ASSERTION_TABLENAME 
     . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = '" . $id . "'";
   $result = db_execute_statement($sql);
   return $result;

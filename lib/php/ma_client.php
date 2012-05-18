@@ -22,6 +22,8 @@ function add_attribute($ma_url, $member_id, $role_type, $context_type, $context_
 }
 
 // Remove an attribute for given member of given role_type, context_type, context_id
+// role_type may be null, in which case all attributes for this member on this context
+// will be removed
 function remove_attribute($ma_url, $member_id, $role_type, $context_type, $context_id)
 {
   $remove_attribute_message['operation'] = 'remove_attribute';
@@ -81,6 +83,14 @@ function lookup_ssh_keys($ma_url, $member_id)
   $lookup_ssh_keys_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
   $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message);
   return $ssh_keys;
+}
+
+// Lookup inside keys/certs associated with a user UUID
+function lookup_keys_and_certs($ma_url, $member_uuid)
+{
+  $lookup_keys_and_certs_message['operation'] = 'lookup_keys_and_certs';
+  $lookup_keys_and_certs_message[MA_ARGUMENT::MEMBER_ID] = $member_uuid;
+  $keys_and_certs = put_message($ma_url, $lookup_keys_and_certs_message);
 }
 
 

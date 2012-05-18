@@ -49,8 +49,7 @@ if (isset($slice)) {
   $old_slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
 }
 
-$retVal = renew_slice($sa_url, $slice_id, $req_exp, $user->account_id);
-// call sa_client renew_slice($slice_id, $expiration, $owner)
+$retVal = renew_slice($sa_url, $user, $slice_id, $req_exp);
 
 //error_log("Renew Slice output = " . $res);
 
@@ -61,7 +60,7 @@ if ($time!="") {
   // get the new slice expiration
   $res = "Renewed slice (requested $req_exp, was $old_slice_expiration)";
   unset($slice);
-  $slice = lookup_slice($sa_url, $slice_id);
+  $slice = lookup_slice($sa_url, $user, $slice_id);
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
 } else {
   $res = "FAILed to renew slice (requested $req_exp, was $old_slice_expiration)";

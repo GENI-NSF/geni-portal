@@ -139,7 +139,7 @@ $identity_id = $rows[0]['identity_id'];
 //--------------------------------------------------
 // Add extra attributes
 //--------------------------------------------------
-$attrs = array('givenName','sn', 'mail','telephoneNumber');
+$attrs = array('givenName','sn', 'mail','telephoneNumber', 'reference', 'reason', 'profile');
 // FIXME: Use filters to sanitize these
 foreach ($attrs as $attr) {
   /* print "attr = $attr<br/>"; */

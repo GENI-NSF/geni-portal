@@ -24,6 +24,7 @@
 ?>
 <?php
 require_once("user.php");
+require_once("cert_utils.php");
 ?>
 <h1>User Tools</h1>
 <?php
@@ -63,8 +64,10 @@ else
  *----------------------------------------------------------------------
  */
 print "<h2>Keys and Certificates for command line tools</h2>\n";
-$key = db_fetch_public_key($user->account_id);
-if ($key) {
+print ("For <i>Advanced</i> users: download an SSL certificate and private key,"
+       . "in order to use other GENI tools, such as Omni.<br/><br/>\n");
+$keyrow = db_fetch_outside_private_key_cert($user->account_id);
+if ($keyrow) {
   require_once("am_client.php");
   // must double backslash things in the omni_config here....
   $omni_config = get_template_omni_config($user);
@@ -72,20 +75,18 @@ if ($key) {
   $configalert = "Here is a template Omni config file.\\nTo use this:\\n\\t1. Save it to a file named portal_omni_config.\\n\\t2. Download your certificate, noting the path.\\n\\t3. Edit the portal_omni_config to correct \\n\\t\\t(a) the certificate path, \\n\\t\\t(b) the path to the SSL private key used to generate your certificate, and \\n\\t\\t(c) the path to your SSH key to use for node logon.\\n\\t4. When running omni: \\n\\t\\ta) Do: omni -c portal_omni_config --slicecred <path to downloaded slice credential> ... to specify the path to this omni config and your downloaded slice credential\\n\\t\\tb) Use the full slice URN when naming your slice, not just the slice name\\n\\n$omni_config\\n";
 
   print "\n<table border=\"1\">\n";
-  print "<tr><th>Name</th> <th>Description</th> <th>Certificate</th><th>Owner URN</th><th>Omni Config</th></tr>\n";
+  print "<tr><th>Certificate</th><th>Owner URN</th><th>Omni Config</th></tr>\n";
   $download_url = relative_url("certificate.php");
+  $urn = urn_from_cert($keyrow['certificate']);
+
   print "<tr>"
-    . "<td>" . htmlentities($key['filename']) . "</td>"
-    . "<td>" . htmlentities($key['description']) . "</td>"
     . "<td><button onClick=\"window.location='" . $download_url . "'\">Download Certificate</button></td>"
-    . "<td>urn:publicid:IDN+geni:gpo:portal+user+" . $user->username . "</td>"
+    . "<td>$urn</td>"
     . "<td><button onClick=\"JavaScript:alert('$configalert')\">Get Omni Config</button></td>"
     . "</tr>\n";
   print "</table>\n";
   // FIXME: Way to delete a key?
 } else {
-  print "For <i>Advanced</i> users: download an SSL certificate and private key, in order to use other GENI tools, such as Omni.<br/><br/>\n";
-  //  print "<button onClick=\"window.location='uploadkey.php'\">Please upload a public key</button>\n";
   print "<button onClick=\"window.location='downloadkeycert.php'\">"
     . "Download certificate and key</button>\n";
 }

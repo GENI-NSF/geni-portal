@@ -88,7 +88,7 @@ $am_url = $am[SR_ARGUMENT::SERVICE_URL];
 // Get the slice URN via the SA
 
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-$slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+$slice_credential = get_slice_credential($sa_url, $user, $slice_id);
 $result = ready_to_login($am_url, $user, $slice_credential, $slice_urn);
 
 $header = "Ready to login on slice: $slice_name";

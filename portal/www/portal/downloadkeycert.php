@@ -111,7 +111,10 @@ if (! make_cert_and_key($uuid, $email, $urn,
   exit;
 }
 
-/* Cert and key were successfully generated. Package them as a download. */
+/* Cert and key were successfully generated. Store them in the database. */
+db_add_outside_key_cert($user->account_id, $cert, $key);
+
+/* Now package the private key and cert for download. */
 
 /* This is the name of the file on the experimenter's machine. */
 $filename = "geni.pem";
@@ -122,4 +125,4 @@ header("Content-Description: File Transfer");
 header("Content-Disposition: attachment; filename=$filename");
 header("Content-Type: application/pem");
 header("Content-Transfer-Encoding: binary");
-print $cert . "\n" . $key;
+print $key . $cert;

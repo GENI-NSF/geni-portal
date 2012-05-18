@@ -31,20 +31,13 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 // Look up the key...
-$public_key = db_fetch_public_key($user->account_id);
-if (! $public_key) {
+$outside_key = db_fetch_outside_private_key_cert($user->account_id);
+if (! $outside_key) {
   relative_redirect("home.php");
 }
 
-$filename = $public_key['filename'];
-if (! isset($filename) || is_null($filename) || trim($filename) == '') {
-  $pn = $user->prettyName();
-  $filename_base=str_replace(' ', '', $pn);
-} else {
-  $f_pi = pathinfo($filename);
-  $filename_base = $f_pi['filename'];
-}
-$filename = $filename_base . "-cert.pem";
+/* Construct a filename like "geni-TimWakefield.pem" */
+$filename = "geni-" . str_replace(' ', '', $user->prettyName()) . ".pem";
 
 // Set headers for download
 header("Cache-Control: public");
@@ -52,5 +45,5 @@ header("Content-Description: File Transfer");
 header("Content-Disposition: attachment; filename=$filename");
 header("Content-Type: application/pem");
 header("Content-Transfer-Encoding: binary");
-print $public_key['certificate'];
+print $outside_key['private_key'] . "\n" . $outside_key['certificate'] . "\n";
 ?>

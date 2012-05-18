@@ -40,6 +40,9 @@ class SA_ARGUMENT
   const SLICE_CREDENTIAL = "slice_credential";
   const USER_CREDENTIAL = "user_credential";
   const SLICE_EMAIL = "slice_email";
+  const MEMBER_ID = "member_id";
+  const IS_MEMBER = "is_member";
+  const ROLE_TYPE = "role_type";
 }
 
 /* Name of table containing slice info */
@@ -56,3 +59,14 @@ class SA_SLICE_TABLE_FIELDNAME {
   const SLICE_EMAIL = "slice_email";
   const CERTIFICATE = "certificate";
 }
+
+/* Name of table containing slice membership info */
+$SA_SLICE_MEMBER_TABLENAME = "sa_slice_member";
+
+class SA_SLICE_MEMBER_TABLE_FIELDNAME
+{
+  const SLICE_ID = "slice_id";
+  const MEMBER_ID = "member_id";
+  const ROLE = "role";
+}
+

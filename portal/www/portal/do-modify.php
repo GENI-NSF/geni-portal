@@ -35,7 +35,7 @@ if (! isset($user) || ! $user->isActive()) {
 // Diff the fields
 // Validate the inputs
 // Only allow editing certain fields
-// Do an update? Make the edit pending?
+// Submit this as a Request to the MA Admin
 // FIXME!
 
 include("header.php");

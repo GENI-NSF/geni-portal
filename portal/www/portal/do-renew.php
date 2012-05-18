@@ -88,7 +88,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
 } else {
   $slivers_output = "";
   // Get the slice credential from the SA
-  $slice_credential = get_slice_credential($sa_url, $slice_id, $user->account_id);
+  $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
   
   // Get the slice URN via the SA
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];

@@ -69,7 +69,7 @@ if (count($projects) > 0) {
     //    error_log("Before load user " . time());
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     //    error_log("After load user " . time());
-    $slice_ids = lookup_slice_ids($sa_url, $project_id);
+    $slice_ids = lookup_slice_ids($sa_url, $user, $project_id);
     //<button style="width:65;height:65" onClick="window.location='http://www.javascriptkit.com'"><b>Home</b></button>
     // http://www.javascriptkit.com/howto/button.shtml
     $create_slice_link = "<button style=\"\" onClick=\"window.location='" . "createslice.php?project_id=$project_id" . "'\"><b>Create Slice</b></button>";

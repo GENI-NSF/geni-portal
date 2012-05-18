@@ -44,6 +44,11 @@ require_once('logging_client.php');
  *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
  *   update_project(pa_url, project_id, project_email, project_purpose);
  *   change_lead(pa_url, project_id, previous_lead_id, new_lead_id); *
+ *   add_project_member(pa_url, project_id, member_id, role)
+ *   remove_project_member(pa_url, project_id, member_id)
+ *   change_member_role(pa_url, project_id, member_id, role)
+ *   get_project_members(pa_url, project_id, role=null) // null => Any
+ *   get_projects_for_member(pa_url, member_id, is_member, role=null)
  **/
 
 $sr_url = get_sr_url();
@@ -145,6 +150,7 @@ function delete_project($args)
 
   return $result;
 }
+
 /* Return list of all project ID's, optionally limited by lead_id */
 function get_projects($args)
 {
@@ -283,6 +289,166 @@ function change_lead($args)
 
   // *** FIX ME - Delete previous from MA and from CS
 
+  return $result;
+}
+
+// Add a member of given role to given project
+function add_project_member($args)
+{
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+
+  global $PA_PROJECT_MEMBER_TABLENAME;
+
+  $sql = "INSERT INTO " . $PA_PROJECT_MEMBER_TABLENAME . " ("
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . ") VALUES ("
+    . "'" . $project_id . "', "
+    . "'" . $member_id . "', "
+    . $role . ")";
+  error_log("PA.add project_member.sql = " . $sql);
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+// Remove a member from given project 
+function remove_project_member($args)
+{
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+
+  global $PA_PROJECT_MEMBER_TABLENAME;
+
+  $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME 
+    . " WHERE " 
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID  
+    . " = '" . $project_id . "'"  . " AND "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    . "= '" . $member_id . "'";
+  error_log("PA.remove project_member.sql = " . $sql);
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+// Change role of given member in given project
+function change_member_role($args)
+{
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+
+  global $PA_PROJECT_MEMBER_TABLENAME;
+
+  $sql = "UPDATE " . $PA_PROJECT_MEMBER_TABLENAME
+    . " SET " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role
+    . " WHERE " 
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
+    . " = '" . $project_id . "'" 
+    . " AND " 
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    . " = '" . $member_id . "'"; 
+
+  error_log("PA.change_member_role.sql = " . $sql);
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+// Return list of member ID's and roles associated with given project
+// If role is provided, filter to members of given role
+function get_project_members($args)
+{
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+
+  global $PA_PROJECT_MEMBER_TABLENAME;
+
+  $role_clause = "";
+  if ($role != null) {
+    $role_clause = 
+      " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role;
+  }
+  $sql = "SELECT " 
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE
+    . " FROM " . $PA_PROJECT_MEMBER_TABLENAME
+    . " WHERE "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
+    . " = '" . $project_id . "'" 
+    . $role_clause;
+
+  error_log("PA.get_project_members.sql = " . $sql);
+  $result = db_fetch_rows($sql);
+  return $result;
+  
+}
+
+// Return list of project ID's for given member_id
+// If is_member is true, return projects for which member is a member
+// If is_member is false, return projects for which member is NOT a member
+// If role is provided, filter on projects 
+//    for which member has given role (is_member = true)
+//    for which member does NOT have given role (is_member = false)
+function get_projects_for_member($args)
+{
+  $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+  $is_member = $args[PA_ARGUMENT::IS_MEMBER];
+  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+
+  global $PA_PROJECT_MEMBER_TABLENAME;
+
+  // select distinct project_id from pa_project_member 
+  // where member_id = $member_id
+
+  // select distinct project_id from pa_project_member 
+  // where member_id not in (select project_id from pa_project_member 
+  //                         where member_id = $member_id)
+
+  // select distinct project_id from pa_project_member 
+  // where member_id = $member_id and role = $role
+
+  // select distinct project_id from pa_project_member 
+  // where member_id not in (select project_id from pa_project_member 
+  //                         where member_id = $member_id and role = $role)
+
+  $role_clause = "";
+  if ($role != null) {
+    $role_clause = " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
+      . " = " . $role;
+  }
+  $member_clause = 
+    PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    . " = '" . $member_id . "' " . $role_clause;
+  if(!$is_member) {
+    $member_clause = 
+    PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+      . " NOT IN (SELECT " 
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
+      . " FROM " . $PA_PROJECT_MEMBER_TABLENAME 
+      . " WHERE " 
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
+      . " = '" . $member_id . "' " . $role_clause . ")";
+      
+  }
+
+  $sql = "SELECT DISTINCT " 
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
+    . " FROM " . $PA_PROJECT_MEMBER_TABLENAME
+    . " WHERE " 
+    . $member_clause;
+
+  error_log("PA.get_projects_for_member.sql = " . $sql);
+  $rows = db_fetch_rows($sql);
+  $result = $rows;
+  if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $ids = array();
+    foreach($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
+      $id = $row[PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID];
+      $ids[] = $id;
+    }
+    $result = generate_response(RESPONSE_ERROR::NONE, $ids, '');
+  }
   return $result;
 }
 

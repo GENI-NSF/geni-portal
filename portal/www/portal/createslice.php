@@ -53,55 +53,12 @@ if (is_null($project_id) || $project_id == '') {
   relative_redirect("home.php");
 }
 
-function omni_create_slice($user, $slice_id, $name)
-{
-    /* Write key and credential files */
-    $row = db_fetch_inside_private_key_cert($user->account_id);
-    $cert = $row['certificate'];
-    $private_key = $row['private_key'];
-    $cert_file = '/tmp/' . $user->username . "-cert.pem";
-    $key_file = '/tmp/' . $user->username . "-key.pem";	
-    $omni_file = '/tmp/' . $user->username . "-omni.ini";
-    file_put_contents($cert_file, $cert);
-    file_put_contents($key_file, $private_key);
-
-    /* Create OMNI config file */
-    $omni_config = "[omni]\n"
-    . "default_cf = my_gcf\n"
-    . "[my_gcf]\n"
-    . "type=gcf\n"
-    . "authority=geni:gpo:portal\n"
-    . "ch=https://localhost:8000\n"
-    . "cert=" . $cert_file . "\n"
-    . "key=" . $key_file;
-    file_put_contents($omni_file, $omni_config);
-
-    /* Call OMNI */
-    global $portal_gcf_dir;
-    $cmd_array = array($portal_gcf_dir . '/src/omni.py',
-                   '-c',
-		   $omni_file,
-		   'createslice',
-		   $name
-                   );
-     $command = implode(" ", $cmd_array);
-     $result = exec($command, $output, $status);
-//     print_r($output);  
-//     print_r($result);
-//     print "RESULT = " . $result . "\n";
-//     print "STATUS = " . $status . "\n";
-     unlink($cert_file);
-     unlink($key_file);
-     unlink($omni_file);
-
-}
-
 function sa_create_slice($user, $slice_name, $project_id, $project_name)
 {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $owner_id = $user->account_id;
-  $result = create_slice($sa_url, $project_id, $project_name, $slice_name,
-                         $owner_id);
+  $result = create_slice($sa_url, $user, $project_id, $project_name,
+                         $slice_name, $owner_id);
   return $result;
 }
 
