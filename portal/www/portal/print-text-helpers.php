@@ -25,11 +25,29 @@
 <?php
 require_once("header.php");
 
+function print_list( $list ){
+  $list2 = explode("\n",$list);
+  $num_items = count($list);
+  print "<ul class='list'>";
+  $i=0;
+  while ($i < $num_items) {
+    echo "<li>". $list[$i] . "</li>\n";
+    $i = $i+1;
+  }
+  if ($num_items == 0) {
+    echo "<li><i>No aggregates.</i></li>\n";    
+  }
+  print "</ul>\n";
+}
+
+
 function print_xml( $xml ){
   $xml2 = explode("\n",$xml);
+  print "<div class='xml'>";
   foreach ($xml2 as $line_num => $line) {
     echo htmlspecialchars($line) . "<br />\n";
   }
+  print "</div>\n";
 }
 
 function print_rspec( $obj ) {
@@ -39,12 +57,11 @@ function print_rspec( $obj ) {
     $arg_url = $arg[1];
     $xml = $obj[$arg];
     print "<div class='aggregate'>Aggregate <b>".$arg."'s</b> Resources:</div>";
-    print "<div class='resources'><div class='xml'>";
+    print "<div class='resources'>";
     print_xml($xml);
-    print "</div></div>\n";
+    print "</div>\n";
 
   }
-  print "</table>";
 }
 
 

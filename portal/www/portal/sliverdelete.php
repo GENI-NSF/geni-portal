@@ -30,6 +30,7 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
+require_once("print-text-helpers.php");
 $user = geni_loadUser();
 if (! $user->privSlice() || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -95,17 +96,43 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     error_log("SLIVER_DELETE AM_URL = " . $am_url);
 
     // Call delete sliver at the AM
-    $sliver_output = delete_sliver($am_url, $user, $slice_credential,
+    $retVal = delete_sliver($am_url, $user, $slice_credential,
 				   $slice_urn);
-    error_log("DeleteSliver output = " . $sliver_output);
-    $slivers_output = $slivers_output . $sliver_output . "\n";
+    error_log("DeleteSliver output = " . $retVal);
   }
 }
 
 $header = "Deleted Sliver on slice: $slice_name";
-$text = $slivers_output;
-include("print-text.php");
 
-// relative_redirect('slices');
+$msg = $retVal[0];
+$obj = $retVal[1];
+$success = $obj[0];
+$fail = $obj[1];
+
+show_header('GENI Portal: Slices',  $TAB_SLICES);
+include("tool-breadcrumbs.php");
+print "<h2>$header</h2>\n";
+
+print "<div class='msg'>";
+print_r($msg);
+print "</div>";
+
+
+
+print "<div>Deleted slivers at:</div>";
+print "<div>";
+print_list( $success );
+print "</div>";
+
+print "<div>Failed to delete slivers at:</div>";
+print "<div>";
+print_list( $fail );
+print "</div>";
+
+print "<hr/>";
+print "<a href='slices.php'>Back to All slices</a>";
+print "<br/>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
+include("footer.php");
 
 ?>
