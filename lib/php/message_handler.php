@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2012 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -130,20 +130,64 @@ class GeniAuthorizationException extends Exception
 }
 
 
-class GuardFactory
+interface Guard {
+  /**
+   * Evaluate the guard. The guard is intended to be a closure over a
+   * GeniMessage so no parameters are given.
+   *
+   * @return TRUE if the action is authorized, FALSE otherwise.
+   */
+  public function evaluate();
+}
+
+/**
+ * A guard that always returns TRUE.
+ */
+class TrueGuard implements Guard
+{
+  public function evaluate()
+  {
+    return TRUE;
+  }
+}
+
+/**
+ * A guard that always returns FALSE.
+ */
+class FalseGuard implements Guard
+{
+  public function evaluate()
+  {
+    return FALSE;
+  }
+}
+
+interface GuardFactory
+{
+  /**
+   * Create authorization guards for the given message.
+   *
+   * @param message a GeniMessage
+   * @return an (possibly empty) array of Guards
+   */
+  public function createGuards($message);
+}
+
+
+class DefaultGuardFactory
 {
   function __construct($prefix, $cs_url) {
     $this->prefix = $prefix;
     $this->cs_url = $cs_url;
   }
-  function createGuards($message) {
+  public function createGuards($message) {
     $result = array();
     $parsed_message = $message->parse();
     $func = $parsed_message[0];
     $funcargs = $parsed_message[1];
     if (find_context($this->prefix, $func, $funcargs,
                      $context_type, $context)) {
-      $result[] = new ContextGuard($this->cs_url, $message, $func,
+      $result[] = new MHContextGuard($this->cs_url, $message, $func,
                                    $context_type, $context);
     }
     return $result;
@@ -151,7 +195,7 @@ class GuardFactory
 }
 
 
-class ContextGuard
+class MHContextGuard
 {
   function __construct($cs_url, $message, $action, $context_type, $context) {
     $this->cs_url = $cs_url;
@@ -205,9 +249,12 @@ class ContextGuard
  * Returns nothing.
  */
 function handle_message($prefix, $cs_url=null, $cacerts=null,
-                        $receiver_cert = null, $receiver_key=null)
+                        $receiver_cert = null, $receiver_key=null,
+                        $guard_factory = null)
 {
-  $guard_factory = new GuardFactory($prefix, $cs_url);
+  if (is_null($guard_factory)) {
+    $guard_factory = new DefaultGuardFactory($prefix, $cs_url);
+  }
 
   // mh_debug($prefix . ": starting");
   $data = extract_message();
@@ -399,6 +446,10 @@ Class GeniMessage {
     $this->signer_urn = NULL;
     $this->signer_uuid = NULL;
     $this->setSignerPem($signer_pem);
+  }
+  public function __toString()
+  {
+    return "#<GeniMessage>";
   }
   function setSignerPem($signer_pem) {
     $this->signer_pem = $signer_pem;
