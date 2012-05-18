@@ -33,6 +33,7 @@
 require_once("smime.php");
 require_once('response_format.php');
 require_once('util.php');
+require_once('guard.php');
 
 /**
  * An easy way to turn message handler debugging on or off.
@@ -91,95 +92,35 @@ function extract_message()
   return $data;
 }
 
-function find_context($prefix, $func, $args,
-                      &$context_type, &$context)
-{
-  $context_type = NULL;
-  $context = NULL;
-  $result = FALSE;
-  switch ($prefix) {
-  case 'SA':
-    if (array_key_exists(SA_ARGUMENT::SLICE_ID, $args)) {
-      $context = $args[SA_ARGUMENT::SLICE_ID];
-      $context_type = CS_CONTEXT_TYPE::SLICE;
-      $result = TRUE;
-    } else if (array_key_exists(SA_ARGUMENT::PROJECT_ID, $args)) {
-      $context = $args[SA_ARGUMENT::PROJECT_ID];
-      $context_type = CS_CONTEXT_TYPE::PROJECT;
-      $result = TRUE;
-    } else {
-      error_log("MessageHandler: Unknown context for $prefix.$func");
-      error_log("MessageHandler: \$args = " . print_r($args, TRUE));
-      // Leave $context and $context_type NULL
-      // Leave $result = FALSE
-    }
-    break;
-  default:
-    error_log("MessageHandler: Unknown prefix \"$prefix\"");
-    // Leave $context and $context_type NULL
-   // Leave $result = FALSE
-  }
-  error_log("MessageHandler find_context returning"
-            . ": \$context_type = $context_type; \$context = $context");
-  return $result;
-}
-
-
-class GeniAuthorizationException extends Exception
-{
-}
-
-
-interface Guard {
-  /**
-   * Evaluate the guard. The guard is intended to be a closure over a
-   * GeniMessage so no parameters are given.
-   *
-   * @return TRUE if the action is authorized, FALSE otherwise.
-   */
-  public function evaluate();
-}
-
-/**
- * A guard that always returns TRUE.
- */
-class TrueGuard implements Guard
-{
-  public function evaluate()
-  {
-    return TRUE;
-  }
-}
-
-/**
- * A guard that always returns FALSE.
- */
-class FalseGuard implements Guard
-{
-  public function evaluate()
-  {
-    return FALSE;
-  }
-}
-
-interface GuardFactory
-{
-  /**
-   * Create authorization guards for the given message.
-   *
-   * @param message a GeniMessage
-   * @return an (possibly empty) array of Guards
-   */
-  public function createGuards($message);
-}
-
-
-class DefaultGuardFactory
+class DefaultGuardFactory implements GuardFactory
 {
   function __construct($prefix, $cs_url) {
     $this->prefix = $prefix;
     $this->cs_url = $cs_url;
   }
+  function find_context($prefix, $action, $params, &$context_type, &$context)
+  {
+    $context_type = NULL;
+    $context = NULL;
+    $result = FALSE;
+    switch ($prefix) {
+    case 'SA':
+      /* This is just an example. */
+      if (array_has_key(SA_ARGUMENT::SLICE_ID, $params)) {
+        $context_type = CS_CONTEXT_TYPE::SLICE;
+        $context = $params[SA_ARGUMENT::SLICE_ID];
+      }
+      break;
+    default:
+      error_log("MessageHandler: Unknown prefix \"$prefix\"");
+      // Leave $context and $context_type NULL
+      // Leave $result = FALSE
+    }
+    error_log("MessageHandler find_context returning"
+              . ": \$context_type = $context_type; \$context = $context");
+    return $result;
+  }
+
   public function createGuards($message) {
     $result = array();
     $parsed_message = $message->parse();
@@ -195,7 +136,7 @@ class DefaultGuardFactory
 }
 
 
-class MHContextGuard
+class MHContextGuard implements Guard
 {
   function __construct($cs_url, $message, $action, $context_type, $context) {
     $this->cs_url = $cs_url;
