@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 ?>
 <?php
+require_once("header.php");
 require_once("settings.php");
 require_once("user.php");
 require_once("file_utils.php");
@@ -30,31 +31,17 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
-require_once("print-text-helpers.php");
-$user = geni_loadUser();
-if (! $user->privSlice() || ! $user->isActive()) {
-  relative_redirect("home.php");
-}
-?>
-<?php
-function no_slice_error() {
-  header('HTTP/1.1 404 Not Found');
-  print 'No slice id specified.';
-  exit();
+
+function &sliver_status_one_am($am_urls, $user, $slice_credential,
+			      $slice_urn){ 
+  // Call sliver status at the AM
+  $retVal = sliver_status($am_urls, $user, $slice_credential,
+			  $slice_urn);
+  //  error_log( "SliverStatus output return = ".print_r($retVal) );
+  return $retVal;
 }
 
-if (! count($_GET)) {
-  // No parameters. Return an error result?
-  // For now, return nothing.
-  no_slice_error();
-}
-unset($slice);
-include("tool-lookupids.php");
-if (! isset($slice)) {
-  no_slice_error();
-}
 
-$text = "";
 // Takes an arg am_id which may have multiple values. Each is treated
 // as the ID from the DB of an AM which should be queried
 // If no such arg is given, then query the DB and query all registered AMs
@@ -75,18 +62,17 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   $slivers_output = "No AMs registered.";
 } else {
   $slivers_output = "";
-
   // Get the slice credential from the SA
   $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
   
   // Get the slice URN via the SA
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-
+  //$slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  $am_urls = array();
   foreach ($ams as $am) {
     if (is_array($am)) {
       if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
 	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-	//	error_log("Got am_url $am_url");
       } else {
 	error_log("Malformed array of AM URLs?");
 	continue;
@@ -94,30 +80,16 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     } else {
       $am_url = $am;
     }
-
-    // Call list resources at the AM
-    $retVal = list_resources_on_slice($am_url, $user, $slice_credential,
-				      $slice_urn);
-
-    error_log("ListResources output = " . $retVal);
   }
+  $am_urls[] = $am_url; 
+  //  error_log( "am_urls = ".print_r($am_urls) );
+  
+  $retVal =& sliver_status_one_am($am_urls, $user, $slice_credential,
+			 $slice_urn);
+  $msg = $retVal[0];
+  $obj = $retVal[1];
+  //  error_log( "SliverStatus output msg = ".print_r($msg) );
+  //  error_log( "SliverStatus output object = ".print_r($obj) );
 }
-
-$header = "Resources on slice: $slice_name";
-
-$msg = $retVal[0];
-$obj = $retVal[1];
-
-show_header('GENI Portal: Slices',  $TAB_SLICES);
-include("tool-breadcrumbs.php");
-print "<h2>$header</h2>\n";
-
-print_rspec( $obj );
-
-print "<hr/>";
-print "<a href='slices.php'>Back to All slices</a>";
-print "<br/>";
-print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
-include("footer.php");
 
 ?>

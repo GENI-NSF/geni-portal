@@ -54,9 +54,13 @@
  background-color: red;
 }
 
+input.date {
+ width: 14en;
+}
+
 table {
- border: 1px;
  background-color: #DCE2E8;
+ margin: 1em;
 }
 
 td {

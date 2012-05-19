@@ -36,6 +36,7 @@ if (! $user->privSlice() || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 ?>
+
 <?php
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
@@ -43,7 +44,7 @@ function no_slice_error() {
   exit();
 }
 
-if (! count($_GET)) {
+ if (! count($_GET)) {
   // No parameters. Return an error result?
   // For now, return nothing.
   no_slice_error();
@@ -54,55 +55,9 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
-// Takes an arg am_id which may have multiple values. Each is treated
-// as the ID from the DB of an AM which should be queried
-// If no such arg is given, then query the DB and query all registered AMs
 
-if (! isset($ams) || is_null($ams)) {
-  // Didnt get an array of AMs
-  if (! isset($am) || is_null($am)) {
-    // Nor a single am
-    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  } else {
-    $ams = array();
-    $ams[] = $am;
-  }
-}
+include("query-sliverstatus.php");
 
-if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
-  error_log("Found no AMs!");
-  $slivers_output = "No AMs registered.";
-} else {
-  $slivers_output = "";
-  // Get the slice credential from the SA
-  $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
-  
-  // Get the slice URN via the SA
-  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  //$slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-
-  foreach ($ams as $am) {
-    if (is_array($am)) {
-      if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
-	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-      } else {
-	error_log("Malformed array of AM URLs?");
-	continue;
-      }
-    } else {
-      $am_url = $am;
-    }
- 
-    // Call sliver status at the AM
-    $retVal = sliver_status($am_url, $user, $slice_credential,
-				   $slice_urn);
-    // error_log( "SliverStatus output return = ".print_r($retVal) );
-    $msg = $retVal[0];
-    $obj = $retVal[1];
-    // error_log( "SliverStatus output msg = ".print_r($msg) );
-    // error_log( "SliverStatus output object = ".print_r($obj) );
-  }
-}
 $header = "Status of Slivers on slice: $slice_name";
 // include("print-text.php");
 
@@ -111,15 +66,21 @@ $header = "Status of Slivers on slice: $slice_name";
 <?php
 
 function print_sliver_status( $obj ) {
+  print "<table>";
   $args = array_keys( $obj );
   foreach ($args as $arg){
     $arg_obj = $obj[$arg];
+    /* ignore aggregates which returned nothing */
+    if (!is_array($arg_obj)){
+      continue;
+    }
+
     $geni_urn = $arg_obj['geni_urn'];
     $geni_status = $arg_obj['geni_status'];
+    $geni_status = strtolower( $geni_status );
     $geni_resources = $arg_obj['geni_resources'];
 
-    //    print "Status of slice <b>$geni_urn</b>";      
-    print "<table>";
+
     print "<tr class='aggregate'><th>Status</th><th colspan='2'>Aggregate</th></tr>";
     print "<tr class='aggregate'><td class='$geni_status'>$geni_status</td><td colspan='2'>$arg</td></tr>";
     $firstRow = True;
@@ -147,17 +108,20 @@ function print_sliver_status( $obj ) {
 	  print "<tr><td></td><td>$rsc_error</td></tr>";
 	}
       }    
-    print "</table>";
   }
+  print "</table>";
 }
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
+if (isset($msg) and isset($obj)){
 print "<pre>$msg</pre>";
-
 print_sliver_status( $obj );
+} else {
+  print "<p><i>Failed to determine status of resources.</i></p>";
+}
 
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";

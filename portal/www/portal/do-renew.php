@@ -131,6 +131,8 @@ print "<div class='msg'>";
 print_r($msg);
 print "</div>";
 
+print "<p>Renewed slivers until: $slice_expiration</p>";
+
 print "<div>Renewed slivers at:</div>";
 print "<div>";
 print_list( $success );

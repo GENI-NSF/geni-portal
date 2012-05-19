@@ -77,50 +77,11 @@ $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
 
 print "<h1>GENI Slice: " . $slice_name ." </h1>\n";
-//print "<h2>Slice Actions</h2>\n";
-
-print "<table><tr>\n";
-if ($user->privSlice()) {
-  print "<td><button onClick=\"window.location='$add_url'\"><b>Add Resources</b></button></td>\n";
-}
-print "<td><button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button></td>\n";
-print "<td><button onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>\n";
-// -- not working yet";
-if ($user->privSlice()) {
-  print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Slivers for " . $slice_name. "</button></td>\n";
-
-  print "<td><form method='GET' action=\"do-renew.php\">";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew Slivers'/>\n";
-  print " until ";
-  print "<input type='text' name='slice_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
-  print "</form></td>\n";
-
-  print "<td><form method='GET' action=\"do-renew-slice.php\">";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew Slice'/>\n";
-  print " until ";
-  print "<input type='text' name='slice_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
-  print "</form></td>\n";
-
-  print "<td><button onClick=\"window.location='$edit_url'\">Edit Slice</button></td>\n";
-  print "<td><button onClick=\"window.location='$slicecred_url'\">Download Slice Cred</button></td>\n";
-  print "<td><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice " . $slice_name. "</button></td>\n";
-  print "<td><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice " . $slice_name. "</button></td>\n";
-  print "<td><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
-
-}
-print "</tr></table>\n";
-
 
 /*   print "<h2>Slice Operational Monitoring</h2>\n"; */
 /* print "<table>\n"; */
 /* print "<tr><td><b>Slice data</b></td><td><a href='https://gmoc-db.grnoc.iu.edu/protected-openid/index.pl?method=slice_details;slice=".$slice_urn."'>Slice $slice_name</a></td></tr>\n"; */
 /* print "</table>\n"; */
-
-
 
 print "<table>\n";
 print "<tr><th colspan='4'>Slice Identifiers (public)</th></tr>\n";
@@ -134,23 +95,102 @@ print "<tr><td><b>Description (public) </b></td><td colspan='3'>$slice_desc</td>
 print "<tr><th colspan='4'>Contact Information</th></tr>\n";
 print ("<tr><td><b>e-mail</b></td><td colspan='3'><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
 print "<tr><td><b>Owner</b></td><td colspan='3'><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-print "<tr><td><b>Expiration</b></td><td colspan='4'>\n";
-print "<form method='GET' action=\"do-renew-slice.php\">";
-print "<input type='text' name='slice_expiration'";
-print "value=\"$slice_expiration\"/>\n";
-print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
+
+if ($user->privSlice()) {
+  print "<tr><th colspan='4'>Manage Slice</th></tr>\n";
+  print "<tr>";
+  print "<td colspan='2'>To use a command line tool:<br/><button onClick=\"window.location='$slicecred_url'\">Download Slice Credential</button></td>\n";
+  print "<td colspan='2'><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+  print "</tr>";
+
+  print "<tr><th colspan='4'>Operator Management</th></tr>\n";
+  print "<tr>";
+
+  print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n";
+  print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n";
+  print "</tr>";
+}
+print "</table>\n";
+
+include("query-sliverstatus.php");
+
+if (!(isset($msg) and isset($obj))){
+  print "<p><i>Failed to determine status of resources.</i></p>";  
+} else {
+
+$slice_status='dummy';
+print "<table>\n";
+print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
+/* Slice Info */
+print "<tr><td class='$slice_status'>$slice_status</td><td colspan='2'>$slice_name</td><td>$slice_creation</td>";
+
+if ($user->privSlice()) {
+  print "<td><form method='GET' action=\"do-renew-slice.php\">";
+  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+  print "<input class='date' type='text' name='slice_expiration'";
+  print "value=\"$slice_expiration\"/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew'/>\n";
+  print "</form></td>\n";
+} else {
+  print "<td>$slice_expiration</td>";
+}
+
+print "<td>";
+if ($user->privSlice()) {
+  print "<button onClick=\"window.location='$add_url'\"><b>+</b></button>\n";
+}
+print "<button onClick=\"window.location='$status_url'\"><b>Status</b></button>\n";
+print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
+if ($user->privSlice()) {
+  print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">-</button>\n";
+}
+
+
+print "</td>";
+print "</tr>\n";
+/* Sliver Info */
+
+$first = True;
+$aggs = array_keys( $obj );
+foreach ($aggs as $agg){
+  $agg_obj = $obj[$agg];
+  /* ignore aggregates which returned nothing */
+  if (!is_array($agg_obj)){
+    continue;
+  }
+  if ($first){
+    print "<tr><th class='notapply'></th><th>Status</th><th>Aggregate</th><th>Creation</th><th>Expiration</th></tr>\n";
+    $first = False;
+  }
+  $sliver_status=$agg_obj['geni_status'];
+  $sliver_creation='1-2-1111';
+  $sliver_expiration='1-2-2222';
+  print "<tr><td class='notapply'></td><td class='$sliver_status'>$sliver_status</td><td>$agg</td><td>$sliver_creation</td>";
+
+if ($user->privSlice()) {
+  print "<td><form method='GET' action=\"do-renew.php\">";
+  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+  print "<input class='date' type='text' name='slice_expiration'";
+  print "value=\"$slice_expiration\"/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew'/>\n";
+  print "</form></td>\n";
+} else {
+  print "<td>$sliver_expiration</td>";
+}
+
+print "</tr>";
+
+}
+print "</table>\n";
+
+}
+
 ?>
-<input type='submit' name= 'Renew' value='Renew Slice'/>
-</form></td></tr>
-<?php
-  print "</table>\n";
-?>
-
-
-
-
 
 <h2>Slice members</h2>
+
+<button onClick="window.location='$edit_url'">Edit</button>
+
 <table>
 <tr><th>Slice Member</th><th>Roles</th></tr>
 <?php
@@ -158,15 +198,6 @@ print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
    print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td></tr>\n";
 ?>
 </table>
-
-<?php
-  //if ($user->privAdmin()) {
-  // FIXME: What is the right thing to check here?
-if ($user->privSlice()) {
-  print "Approve new slice members<br/>\n";
-  print "?Invite new slice member?<br/>\n";
-}
-?>
 
 <h2>Recent Slice Actions</h2>
 <table>
