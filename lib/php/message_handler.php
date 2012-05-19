@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2012 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -33,13 +33,14 @@
 require_once("smime.php");
 require_once('response_format.php');
 require_once('util.php');
+require_once('guard.php');
 
 /**
  * An easy way to turn message handler debugging on or off.
  */
 function mh_debug($msg)
 {
-  //error_log($msg);
+  //error_log('DEBUG: ' . $msg);
 }
 
 function default_cacerts()
@@ -91,53 +92,82 @@ function extract_message()
   return $data;
 }
 
-function find_context($prefix, $func, $args,
-                      &$context_type, &$context)
+class DefaultGuardFactory implements GuardFactory
 {
-  $context_type = NULL;
-  $context = NULL;
-  $result = FALSE;
-  switch ($prefix) {
-  case 'SA':
-    $context_type = 'slice';
-    if (array_key_exists(SA_ARGUMENT::SLICE_ID, $args)) {
-      $context = $args[SA_ARGUMENT::SLICE_ID];
-      $context_type = 'slice';
-      $result = TRUE;
-    } else if (array_key_exists(SA_ARGUMENT::PROJECT_ID, $args)) {
-      $context = $args[SA_ARGUMENT::PROJECT_ID];
-      $context_type = 'project';
-      $result = TRUE;
-    } else {
-      error_log("MessageHandler: Unknown context for $prefix.$func");
+  function __construct($prefix, $cs_url) {
+    $this->prefix = $prefix;
+    $this->cs_url = $cs_url;
+  }
+  function find_context($prefix, $action, $params, &$context_type, &$context)
+  {
+    $context_type = NULL;
+    $context = NULL;
+    $result = FALSE;
+    switch ($prefix) {
+    case 'SA':
+      /* This is just an example. */
+      if (array_has_key(SA_ARGUMENT::SLICE_ID, $params)) {
+        $context_type = CS_CONTEXT_TYPE::SLICE;
+        $context = $params[SA_ARGUMENT::SLICE_ID];
+      }
+      break;
+    default:
+      error_log("MessageHandler: Unknown prefix \"$prefix\"");
       // Leave $context and $context_type NULL
       // Leave $result = FALSE
     }
-    break;
-  default:
-    error_log("MessageHandler: Unknown prefix \"$prefix\"");
-    // Leave $context and $context_type NULL
-   // Leave $result = FALSE
+    error_log("MessageHandler find_context returning"
+              . ": \$context_type = $context_type; \$context = $context");
+    return $result;
   }
-  return $result;
+
+  public function createGuards($message) {
+    $result = array();
+    $parsed_message = $message->parse();
+    $func = $parsed_message[0];
+    $funcargs = $parsed_message[1];
+    if (find_context($this->prefix, $func, $funcargs,
+                     $context_type, $context)) {
+      $result[] = new MHContextGuard($this->cs_url, $message, $func,
+                                   $context_type, $context);
+    }
+    return $result;
+  }
 }
 
-/**
- * Return TRUE if the action is authorized, FALSE otherwise.
- */
-function mh_authorize($cs_url, $principal, $action, $context_type,
-                               $context)
-{
-  mh_debug("MessageHandler requesting authorization:"
-            . " for principal=\"" . print_r($principal, TRUE) . "\""
-            . "; action=\"" . print_r($action, TRUE) . "\""
-            . "; context_type=\"" . print_r($context_type, TRUE) . "\""
-            . "; context=\"" . print_r($context, TRUE) . "\"");
-  return TRUE;
-}
 
-class GeniAuthorizationException extends Exception
+class MHContextGuard implements Guard
 {
+  function __construct($cs_url, $message, $action, $context_type, $context) {
+    $this->cs_url = $cs_url;
+    $this->message = $message;
+    $this->action = $action;
+    $this->context_type = $context_type;
+    $this->context = $context;
+  }
+  /**
+   * Return TRUE if the action is authorized, FALSE otherwise.
+   */
+  function evaluate() {
+    if (! is_null($this->context_type) && is_null($this->context)) {
+      /* This is an edge case. Some of the calls allow for a null
+         context, like passing null for project_id to indicate
+         fetching all slices. The CS doesn't handle this, so skip
+         authorization and let it pass for now. */
+      /* FIXME: Figure out if the CS needs to handle this or if we
+         should change the calls to disallow null. */
+      return TRUE;
+    }
+    mh_debug("MessageHandler requesting authorization:"
+             . " for principal=\""
+             . print_r($this->message->signerUuid(), TRUE) . "\""
+             . "; action=\"" . print_r($this->action, TRUE) . "\""
+             . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
+             . "; context=\"" . print_r($this->context, TRUE) . "\"");
+    return request_authorization($this->cs_url, $this->message->signerUuid(),
+                                 $this->action, $this->context_type,
+                                 $this->context);
+  }
 }
 
 
@@ -159,11 +189,13 @@ class GeniAuthorizationException extends Exception
  *
  * Returns nothing.
  */
-function handle_message($prefix, $cacerts=null, $receiver_cert = null,
-                        $receiver_key=null)
+function handle_message($prefix, $cs_url=null, $cacerts=null,
+                        $receiver_cert = null, $receiver_key=null,
+                        $guard_factory = null)
 {
-  /* TODO: Still need to get this from SR, which requires $sr_url. */
-  $cs_url = NULL;
+  if (is_null($guard_factory)) {
+    $guard_factory = new DefaultGuardFactory($prefix, $cs_url);
+  }
 
   // mh_debug($prefix . ": starting");
   $data = extract_message();
@@ -201,17 +233,17 @@ function handle_message($prefix, $cacerts=null, $receiver_cert = null,
     $authz = True;
   } else {
     $action = $func;
-    $context = find_context($prefix, $action, $funcargs[1],
-                            $context_type, $context);
-    $authz = mh_authorize($cs_url, $principal, $action, $context_type,
-                          $context);
-  }
-  if (! $authz) {
-    $msg = "$principal is not authorized to $action.";
-    $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
-                                NULL,
-                                $msg);
-    goto done;
+    $guards = $guard_factory->createGuards($geni_message);
+
+    foreach ($guards as $guard) {
+      if (! $guard->evaluate()) {
+        $msg = "$principal is not authorized to $action.";
+        $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
+                                    NULL,
+                                    $msg);
+        goto done;
+      }
+    }
   }
 
   mh_debug("Action $func is authorized.");
@@ -355,6 +387,10 @@ Class GeniMessage {
     $this->signer_urn = NULL;
     $this->signer_uuid = NULL;
     $this->setSignerPem($signer_pem);
+  }
+  public function __toString()
+  {
+    return "#<GeniMessage>";
   }
   function setSignerPem($signer_pem) {
     $this->signer_pem = $signer_pem;

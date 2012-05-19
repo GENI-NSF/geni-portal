@@ -25,38 +25,48 @@ insert into cs_context_type (id, name) values (5, 'MEMBER');
 
 -- Define actions
 -- CS_CONTROLLER actions
-INSERT INTO cs_action (id, name, privilege, context_type) values (1, 'create_assertion', 3, 5);
-INSERT INTO cs_action (id, name, privilege, context_type) values (2, 'create_policy', 3, 5);
-INSERT INTO cs_action (id, name, privilege, context_type) values (3, 'renew_assertion', 3, 5);
-INSERT INTO cs_action (id, name, privilege, context_type) values (4, 'delete_policy', 3, 5);
-INSERT INTO cs_action (id, name, privilege, context_type) values (5, 'query_assertions', 2, 5);
-INSERT INTO cs_action (id, name, privilege, context_type) values (6, 'query_policies', 2, 5);
+INSERT INTO cs_action (name, privilege, context_type) values ('create_assertion', 3, 5);
+INSERT INTO cs_action (name, privilege, context_type) values ('create_policy', 3, 5);
+INSERT INTO cs_action (name, privilege, context_type) values ('renew_assertion', 3, 5);
+INSERT INTO cs_action (name, privilege, context_type) values ('delete_policy', 3, 5);
+INSERT INTO cs_action (name, privilege, context_type) values ('query_assertions', 2, 5);
+INSERT INTO cs_action (name, privilege, context_type) values ('query_policies', 2, 5);
 
 -- SA_CONTROLLER actions
-INSERT INTO cs_action (id, name, privilege, context_type) values (7, 'create_slice', 3, 1);
-INSERT INTO cs_action (id, name, privilege, context_type) values (8, 'delete_slice', 3, 2);
-INSERT INTO cs_action (id, name, privilege, context_type) values (9, 'lookup_slice', 2, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('create_slice', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('delete_slice', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slice', 2, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slices', 2, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slice_ids', 2, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_slice_credential', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('renew_slice', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('add_slice_member', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('remove_slice_member', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('change_slice_member_role', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_slice_members', 2, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_slices_for_member', 2, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slices_by_ids', 2, 2);
 
 -- SR_CONTROLLER actions
-INSERT INTO cs_action (id, name, privilege, context_type) values (10, 'get_services', 2, 4);
-INSERT INTO cs_action (id, name, privilege, context_type) values (11, 'get_services_of_type', 2, 4);
-INSERT INTO cs_action (id, name, privilege, context_type) values (12, 'register_service', 3, 4);
-INSERT INTO cs_action (id, name, privilege, context_type) values (13, 'remove_service', 3, 4);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_services', 2, 4);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_services_of_type', 2, 4);
+INSERT INTO cs_action (name, privilege, context_type) values ('register_service', 3, 4);
+INSERT INTO cs_action (name, privilege, context_type) values ('remove_service', 3, 4);
 
 -- PA_CONTROLLER ations
-INSERT INTO cs_action (id, name, privilege, context_type) values (14, 'create_project', 3, 3);
-INSERT INTO cs_action (id, name, privilege, context_type) values (15, 'delete_project', 3, 1);
-INSERT INTO cs_action (id, name, privilege, context_type) values (16, 'get_projects', 2, 3);
-INSERT INTO cs_action (id, name, privilege, context_type) values (17, 'get_project_by_lead', 2, 3);
-INSERT INTO cs_action (id, name, privilege, context_type) values (18, 'lookup_project', 2, 3);
-INSERT INTO cs_action (id, name, privilege, context_type) values (19, 'update_project', 3, 1);
-INSERT INTO cs_action (id, name, privilege, context_type) values (20, 'change_lead', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('create_project', 3, 3);
+INSERT INTO cs_action (name, privilege, context_type) values ('delete_project', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_projects', 2, 3);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_project_by_lead', 2, 3);
+INSERT INTO cs_action (name, privilege, context_type) values ('lookup_project', 2, 3);
+INSERT INTO cs_action (name, privilege, context_type) values ('update_project', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('change_lead', 3, 1);
 
 -- PORTAL 'admin' actions: These are catch-all privileges in a particular context
 -- and should go away when we refactor
-INSERT INTO cs_action(id, name, privilege, context_type) VALUES (21, 'administer_resources', 3, 3);
-INSERT INTO cs_action(id, name, privilege, context_type) VALUES (22, 'administer_services', 3, 4);
-INSERT INTO cs_action(id, name, privilege, context_type) VALUES (23, 'administer_members', 3, 5);
+INSERT INTO cs_action(name, privilege, context_type) VALUES ('administer_resources', 3, 3);
+INSERT INTO cs_action(name, privilege, context_type) VALUES ('administer_services', 3, 4);
+INSERT INTO cs_action(name, privilege, context_type) VALUES ('administer_members', 3, 5);
 
 -- Define initial set of policies
 -- A LEAD of a context_type has DELEGATE, READ AND WRITE PRIVILEGE in that context

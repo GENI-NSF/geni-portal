@@ -39,6 +39,116 @@ $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
+function sa_debug($msg)
+{
+  //  error_log('SA DEBUG: ' . $msg);
+}
+
+/*----------------------------------------------------------------------
+ * Authorization
+ *----------------------------------------------------------------------
+ */
+class SAGuardFactory implements GuardFactory
+{
+  private static $context_table
+    = array(
+            // Action => array(method_name, method_name, ...)
+            'get_slice_credential' => array('slice_guard'),
+            'get_user_credential' => array(), // Unguarded
+            'create_slice' => array('project_guard'),
+            'lookup_slice_ids' => array('project_guard'),
+            'lookup_slices' => array('lookup_slices_guard'),
+            'lookup_slice' => array('slice_guard'),
+            'lookup_slice_by_urn' => array(), // Unguarded
+            'renew_slice' => array('slice_guard'),
+            'add_slice_member' => array('slice_guard'),
+            'remove_slice_member' => array('slice_guard'),
+            'change_slice_member_role' => array('slice_guard'),
+            'get_slice_members' => array('slice_guard'),
+            'get_slices_for_member'=> array(), // Unguarded
+            );
+
+  public function __construct($cs_url) {
+    $this->cs_url = $cs_url;
+  }
+
+  private function slice_guard($message, $action, $params) {
+    sa_debug("slice_guard($message, $action, $params)");
+    return new SAContextGuard($this->cs_url, $message, $action,
+                              CS_CONTEXT_TYPE::SLICE,
+                              $params[SA_ARGUMENT::SLICE_ID]);
+  }
+
+  private function project_guard($message, $action, $params) {
+    sa_debug("project_guard($message, $action, $params)");
+    return new SAContextGuard($this->cs_url, $message, $action,
+                              CS_CONTEXT_TYPE::PROJECT,
+                              $params[SA_ARGUMENT::PROJECT_ID]);
+  }
+
+  /**
+   * Special function for 'lookup_slices' to handle the case where
+   * PROJECT_ID is null.
+   */
+  private function lookup_slices_guard($message, $action, $params) {
+    sa_debug("lookup_slices_guard($message, $action, $params)");
+    if (is_null($params[SA_ARGUMENT::PROJECT_ID])) {
+      return new TrueGuard();
+    } else {
+      return project_guard($message, $action, $params);
+    }
+  }
+
+  public function createGuards($message) {
+    $result = array();
+    $parsed_message = $message->parse();
+    $action = $parsed_message[0];
+    $params = $parsed_message[1];
+    if (array_key_exists($action, self::$context_table)) {
+      foreach (self::$context_table[$action] as $method_name) {
+        // How to call a method dynamically
+        $meth = array($this, $method_name);
+        $result[] = call_user_func($meth, $message, $action, $params);
+      }
+    } else {
+      error_log("SA: No guard producers for action \"$action\"");
+    }
+    return $result;
+  }
+}
+
+
+class SAContextGuard implements Guard
+{
+  function __construct($cs_url, $message, $action, $context_type, $context) {
+    $this->cs_url = $cs_url;
+    $this->message = $message;
+    $this->action = $action;
+    $this->context_type = $context_type;
+    $this->context = $context;
+  }
+  /**
+   * Return TRUE if the action is authorized, FALSE otherwise.
+   */
+  function evaluate() {
+    sa_debug("MessageHandler requesting authorization:"
+             . " for principal=\""
+             . print_r($this->message->signerUuid(), TRUE) . "\""
+             . "; action=\"" . print_r($this->action, TRUE) . "\""
+             . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
+             . "; context=\"" . print_r($this->context, TRUE) . "\"");
+    return request_authorization($this->cs_url, $this->message->signerUuid(),
+                                 $this->action, $this->context_type,
+                                 $this->context);
+  }
+}
+
+
+/*----------------------------------------------------------------------
+ * API Methods
+ *----------------------------------------------------------------------
+ */
+
 /* Create a slice credential and return it */
 function get_slice_credential($args)
 {
@@ -586,6 +696,7 @@ function get_slices_for_member($args)
 
 
 
-handle_message("SA");
+handle_message("SA", $cs_url, NULL, NULL, NULL,
+               new SAGuardFactory($cs_url));
 
 ?>

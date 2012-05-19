@@ -24,6 +24,11 @@
 
 require_once('file_utils.php');
 
+function smime_debug($msg)
+{
+  //  error_log('SMIME DEBUG: ' . $msg);
+}
+
 function smime_decrypt($message)
 {
   return $message;
@@ -35,10 +40,10 @@ function smime_validate($message, $cacerts, &$signer_pem)
   $decoded = json_decode($message, true);
   if (! is_null($decoded)) {
     /* Decoding succeeded, so not smime encoded. */
-    /* error_log("smime_validate: no smime detected."); */
+    /* smime_debug("smime_validate: no smime detected."); */
     return $message;
   } else {
-    error_log("smime_validate: smime detected.");
+    smime_debug("smime_validate: smime detected.");
   }
   $msg_file = writeDataToTempFile($message, "smime-msg-");
   $flags = 0;
@@ -67,7 +72,7 @@ function smime_validate($message, $cacerts, &$signer_pem)
     }
     $message = NULL;
   } else if ($result) {
-    error_log("smime_validate: successful verification.");
+    smime_debug("smime_validate: successful verification.");
     $message = file_get_contents($content_file);
     $signer_pem = file_get_contents($signer_cert_file);
   } else {
@@ -99,7 +104,7 @@ function smime_sign_message($message, $signer_cert=null, $signer_key=null)
     if (openssl_pkcs7_sign($msg_file, $out_file, $signer_cert, $signer_key,
                            $headers, $flags, $extracerts)) {
       /* SUCCESS */
-      error_log("smime_sign_message succeeded.");
+      smime_debug("smime_sign_message succeeded.");
       $message = file_get_contents($out_file);
     } else {
       /* FAILURE */
@@ -131,7 +136,7 @@ function parse_message($msg)
 {
   $map = json_decode($msg, true);
   //  $pretty_map = print_r($map, true);
-  //  error_log("json_decode returned $pretty_map");
+  //  smime_debug("json_decode returned $pretty_map");
   $funcargs[0] = $map['operation'];
   unset($map['operation']);
   $funcargs[1] = $map;

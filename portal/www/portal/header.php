@@ -132,8 +132,8 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '</head>';
   echo '<body>';
   echo '<div id="header">';
-  echo '<img src="/images/geni.png" alt="GENI"/>';
-  echo '<img src="/images/portal.png" alt="Portal"/>';
+  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
+  echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
   show_tab_bar($active_tab, $load_user);
   echo '</div>';
   echo '<div id="content">';
