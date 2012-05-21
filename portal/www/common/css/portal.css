@@ -5,16 +5,13 @@
  height: 1.5in;
 }
 #loginDiv > #loginButtons {
- position: absolute;
- left: 1in;
  text-align: center;
+ padding-left: 0.5in;
+ padding-top: 0.5in;
 }
 #incommon-logo {
- position: absolute;
- left: 1.35in;
  width: .75in;
  padding: 0.25in;
- top: 0.5in;
 }
 
 #loginButton, #loginHelp {
