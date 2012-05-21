@@ -42,9 +42,6 @@ unset($slice);
 include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 if (isset($slice)) {
-  //$pretty_result = print_r($slice, true);
-  //error_log("fetch_slice result: $pretty_result\n");
-
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   $slice_desc = "NOT IMPLEMENTED"; //$slice[SA_ARGUMENT::SLICE_DESCRIPTION];
   $slice_creation = "1-2-3456"; //$slice[SA_ARGUMENT::SLICE_CREATION];
@@ -128,11 +125,6 @@ if ($user->privSlice()) {
 }
 print "</td></tr>\n";
 
-
-
-
-
-
 if ($user->privSlice()) {
   print "<tr><th>Other Tools</th><th>Ops Mgmt</th></tr>\n";
   /* Other Tools */
@@ -159,19 +151,17 @@ print "</table>\n";
 /* print "</table>\n"; */
 
 print "<table>\n";
-print "<tr><th colspan='4'>Slice Identifiers (public)</th></tr>\n";
-print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
+print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
+print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
 print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
-print "<tr><td class='label'><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
-print "<tr><td class='label'><b>Description</b></td><td colspan='3'>$slice_desc ";
-echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
-print "</td></tr>\n";
-
-/* print "<tr><td rowspan='2'><b>Slice Identifier</b></td> <td><b>URN</b></td><td>$slice_urn</td></tr>\n"; */
-/* print "<tr><td class='deemphasize'><b>UUID</b></td><td class='deemphasize'>$slice_id</td></tr>\n"; */
-print "<tr><th colspan='4'>Contact Information</th></tr>\n";
-print ("<tr><td class='label'><b>e-mail</b></td><td colspan='3'><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
-print "<tr><td class='label'><b>Owner</b></td><td colspan='3'><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+/* print "<tr><td class='label'><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n"; */
+/* print "<tr><td class='label'><b>Description</b></td><td colspan='3'>$slice_desc "; */
+/* echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";*/
+/* print "</td></tr>\n"; */
+print "<tr><th colspan='2'>Contact Information</th></tr>\n";
+print ("<tr><td class='label'><b>e-mail</b></td><td><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
+print "<tr><td class='label'><b>Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 
 include("query-sliverstatus.php");
@@ -182,9 +172,11 @@ if (!(isset($msg) and isset($obj))){
 
 $slice_status='dummy';
 print "<table>\n";
-print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
+/* print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n"; */
+print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Expiration</th><th>Actions</th></tr>\n";
 /* Slice Info */
-print "<tr><td class='$slice_status'>$slice_status</td><td colspan='2'>$slice_name</td><td>$slice_creation</td>";
+print "<tr><td class='$slice_status'>$slice_status</td><td colspan='2'>$slice_name</td>";
+/* print "<td>$slice_creation</td>";*/
 
 if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew-slice.php\">";
@@ -227,7 +219,8 @@ foreach ($aggs as $agg){
   $sliver_status=$agg_obj['geni_status'];
   $sliver_creation='1-2-1111';
   $sliver_expiration='1-2-2222';
-  print "<tr><td class='notapply'></td><td class='$sliver_status'>$sliver_status</td><td>$agg</td><td>$sliver_creation</td>";
+  print "<tr><td class='notapply'></td><td class='$sliver_status'>$sliver_status</td><td>$agg</td>";
+  print "<td>$sliver_creation</td>";
 
 if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew.php\">";
@@ -251,8 +244,7 @@ print "</table>\n";
 
 
 
-print "<table>\n";
-
+/* print "<table>\n"; */
 /* if ($user->privSlice()) { */
 /*   print "<tr><th colspan='4'>Manage Slice</th></tr>\n"; */
 /*   print "<tr>"; */
