@@ -181,13 +181,12 @@ function invoke_omni_function($am_url, $user, $args)
 
     /* Create OMNI config file */
     $omni_config = "[omni]\n"
-      . "default_cf = portal\n"
+      . "default_cf = my_gcf\n"
       . "users = $username\n"
-      . "[portal]\n"
-      . "type=pg\n"
+      . "[my_gcf]\n"
+      . "type=gcf\n"
       . "authority=geni:gpo:portal\n"
-      . "ch=https://sergyar.gpolab.bbn.com:8443\n"
-      . "sa=https://sergyar.gpolab.bbn.com:8443\n"
+      . "ch=https://localhost:8000\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n"
       . "[$username]\n"
