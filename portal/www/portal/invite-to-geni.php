@@ -52,6 +52,7 @@ if (array_key_exists("to", $_REQUEST)) {
     $invitees[$i] = trim($invitees[$i]);
     // FIXME: validate each as an email
     $invitees[$i] = filter_var($invitees[$i], FILTER_SANITIZE_EMAIL);
+    // FIXME: See http://www.linuxjournal.com/article/9585
   }
   if (array_key_exists("message", $_REQUEST)) {
     $message = $_REQUEST["message"];
@@ -61,10 +62,11 @@ if (array_key_exists("to", $_REQUEST)) {
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email
   $to = implode(", ", $invitees);
-  error_log("Message is " . $message);
+  $email = $user->email();
   mail($to,
        "Join GENI!",
-       $message);
+       $message,
+       "Reply-To: $email" . "\r\n" . "From: $email");
 
   // Put up a page saying we invited them.
   print "<h2>Invite Someone to GENI</h2>\n";
