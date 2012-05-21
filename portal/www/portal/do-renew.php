@@ -94,6 +94,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   error_log("SLIVER_RENEW SLICE_URN = $slice_urn");
 
+  $am_urls = array();
   foreach ($ams as $am) {
     if (is_array($am)) {
       if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
@@ -105,14 +106,15 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     } else {
       $am_url = $am;
     }
+    $am_urls[] = $am_url; 
     error_log("SLIVER_RENEW AM_URL = " . $am_url);
-
-    // Call renew sliver at the AM
-    $retVal = renew_sliver($am_url, $user, $slice_credential,
-				  $slice_urn, $slice_expiration);
-
-    error_log("RenewSliver output = " . $retVal);
   }
+  // Call renew sliver at the AM
+  $retVal = renew_sliver($am_urls, $user, $slice_credential,
+			 $slice_urn, $slice_expiration);
+  
+  error_log("RenewSliver output = " . $retVal);
+  
 }
 
 

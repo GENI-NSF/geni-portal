@@ -80,8 +80,9 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     } else {
       $am_url = $am;
     }
+    $am_urls[] = $am_url; 
   }
-  $am_urls[] = $am_url; 
+
   //  error_log( "am_urls = ".print_r($am_urls) );
   
   $retVal =& sliver_status_one_am($am_urls, $user, $slice_credential,

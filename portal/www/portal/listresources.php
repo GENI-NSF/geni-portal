@@ -82,6 +82,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   // Get the slice URN via the SA
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
+  $am_urls = array();
   foreach ($ams as $am) {
     if (is_array($am)) {
       if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
@@ -94,13 +95,14 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     } else {
       $am_url = $am;
     }
-
-    // Call list resources at the AM
-    $retVal = list_resources_on_slice($am_url, $user, $slice_credential,
-				      $slice_urn);
-
-    error_log("ListResources output = " . $retVal);
+    $am_urls[] = $am_url; 
   }
+  // Call list resources at the AM
+  $retVal = list_resources_on_slice($am_urls, $user, $slice_credential,
+				    $slice_urn);
+  
+  error_log("ListResources output = " . $retVal);
+
 }
 
 $header = "Resources on slice: $slice_name";
