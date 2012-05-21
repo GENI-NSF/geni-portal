@@ -75,6 +75,11 @@ th {
  background-color: SkyBlue;
 }
 
+td.label {
+ background-color: #E6D4B8;
+}
+
+
 table .aggregate {
  background-color: SkyBlue;
 }

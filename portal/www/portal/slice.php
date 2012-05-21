@@ -76,7 +76,82 @@ $flack_url = "flack.php?slice_id=".$slice_id;
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
 
-print "<h1>GENI Slice: " . $slice_name ." </h1>\n";
+print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
+
+print "<table>\n";
+if ($user->privSlice()) {
+  $slice_col='4';
+} else {
+  $slice_col='2';
+}
+
+print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
+
+/* Slice Actions */
+print "<tr><td rowspan='2'>\n";
+if ($user->privSlice()) {
+  print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
+}
+print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
+print "<button onClick=\"window.location='$listres_url'\"><b>Get Manifest</b></button>\n";
+if ($user->privSlice()) {
+  print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
+}
+print "</td>\n";
+
+/* Renew */
+
+print "<td>\n";
+if ($user->privSlice()) {
+  print "<form method='GET' action=\"do-renew-slice.php\">";
+  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+  print "<input class='date' type='text' name='slice_expiration'";
+  print "value=\"$slice_expiration\"/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew Slice'/>\n";
+  print "</form>\n";
+} else {
+  print "$slice_expiration";
+}
+print "</td></tr>\n";
+
+
+print "<tr><td>\n";
+if ($user->privSlice()) {
+  print "<form method='GET' action=\"do-renew.php\">";
+  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+  print "<input class='date' type='text' name='slice_expiration'";
+  print "value=\"$slice_expiration\"/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew Slivers'/>\n";
+  print "</form>\n";
+} else {
+  print "$sliver_expiration";
+}
+print "</td></tr>\n";
+
+
+
+
+
+
+if ($user->privSlice()) {
+  print "<tr><th>Other Tools</th><th>Ops Mgmt</th></tr>\n";
+  /* Other Tools */
+  print "<tr><td>\n";
+  /* print "To use a command line tool:<br/>"; */
+  print "<button onClick=\"window.location='$slicecred_url'\"><b>Download Slice Credential</b></button>\n";
+  print "<button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b></button>\n";
+  print "</td>\n";
+
+  /* Ops Management */
+  print "<td>\n";
+  print "<button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\"><b>Disable Slice</b></button>\n";
+  print "<button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\"><b>Shutdown Slice</b></button>\n";
+  print "</td></tr>\n";
+}
+
+print "</table>\n";
+
+
 
 /*   print "<h2>Slice Operational Monitoring</h2>\n"; */
 /* print "<table>\n"; */
@@ -85,31 +160,18 @@ print "<h1>GENI Slice: " . $slice_name ." </h1>\n";
 
 print "<table>\n";
 print "<tr><th colspan='4'>Slice Identifiers (public)</th></tr>\n";
-print "<tr><td><b>Name</b></td><td>$slice_name</td><td><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
-print "<tr><td class='deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
-print "<tr><td><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
-print "<tr><td><b>Description (public) </b></td><td colspan='3'>$slice_desc</td></tr>\n";
+print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
+print "<tr><td class='label'><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
+print "<tr><td class='label'><b>Description</b></td><td colspan='3'>$slice_desc ";
+echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+print "</td></tr>\n";
 
 /* print "<tr><td rowspan='2'><b>Slice Identifier</b></td> <td><b>URN</b></td><td>$slice_urn</td></tr>\n"; */
 /* print "<tr><td class='deemphasize'><b>UUID</b></td><td class='deemphasize'>$slice_id</td></tr>\n"; */
 print "<tr><th colspan='4'>Contact Information</th></tr>\n";
-print ("<tr><td><b>e-mail</b></td><td colspan='3'><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
-print "<tr><td><b>Owner</b></td><td colspan='3'><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-
-if ($user->privSlice()) {
-  print "<tr><th colspan='4'>Manage Slice</th></tr>\n";
-  print "<tr>";
-  print "<td colspan='2'>To use a command line tool:<br/><button onClick=\"window.location='$slicecred_url'\">Download Slice Credential</button></td>\n";
-  print "<td colspan='2'><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
-  print "</tr>";
-
-  print "<tr><th colspan='4'>Operator Management</th></tr>\n";
-  print "<tr>";
-
-  print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n";
-  print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n";
-  print "</tr>";
-}
+print ("<tr><td class='label'><b>e-mail</b></td><td colspan='3'><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
+print "<tr><td class='label'><b>Owner</b></td><td colspan='3'><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 
 include("query-sliverstatus.php");
@@ -137,12 +199,12 @@ if ($user->privSlice()) {
 
 print "<td>";
 if ($user->privSlice()) {
-  print "<button onClick=\"window.location='$add_url'\"><b>+</b></button>\n";
+  print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
 }
-print "<button onClick=\"window.location='$status_url'\"><b>Status</b></button>\n";
-print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
+print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
+print "<button onClick=\"window.location='$listres_url'\"><b>Get Manifest</b></button>\n";
 if ($user->privSlice()) {
-  print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">-</button>\n";
+  print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
 }
 
 
@@ -185,11 +247,37 @@ print "</table>\n";
 
 }
 
+
+
+
+
+print "<table>\n";
+
+/* if ($user->privSlice()) { */
+/*   print "<tr><th colspan='4'>Manage Slice</th></tr>\n"; */
+/*   print "<tr>"; */
+/*   print "<td colspan='2'>To use a command line tool:<br/><button onClick=\"window.location='$slicecred_url'\">Download Slice Credential</button></td>\n"; */
+/*   print "<td colspan='2'><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n"; */
+/*   print "</tr>"; */
+
+  /* print "<tr><th colspan='4'>Operator Management</th></tr>\n"; */
+  /* print "<tr>"; */
+
+  /* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n"; */
+  /* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n"; */
+  /* print "</tr>"; */
+/* } */
+
+/* print "</table>\n"; */
+
+
+
+
+print "<h2>Slice members</h2>";
+
+echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+
 ?>
-
-<h2>Slice members</h2>
-
-<button onClick="window.location='$edit_url'">Edit</button>
 
 <table>
 <tr><th>Slice Member</th><th>Roles</th></tr>
