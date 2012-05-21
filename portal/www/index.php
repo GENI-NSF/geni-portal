@@ -63,6 +63,7 @@ show_header("Welcome to the GENI Portal")
 </p>
 
 
+<!-- 
 <h2>GENI News</h2>
 <ul>
 <li>
@@ -74,7 +75,8 @@ show_header("Welcome to the GENI Portal")
    New slice created at 2:05am
 </li></ul>
 </li>
-</ul>
+</ul> 
+-->
 
 <h2>Find out more about using GENI</h2>
 <ul><li>

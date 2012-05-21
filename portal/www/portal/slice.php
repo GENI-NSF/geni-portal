@@ -144,8 +144,8 @@ if ($user->privSlice()) {
 
   /* Ops Management */
   print "<td>\n";
-  print "<button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\"><b>Disable Slice</b></button>\n";
-  print "<button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\"><b>Shutdown Slice</b></button>\n";
+  print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\"><b>Disable Slice</b></button>\n";
+  print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\"><b>Shutdown Slice</b></button>\n";
   print "</td></tr>\n";
 }
 
