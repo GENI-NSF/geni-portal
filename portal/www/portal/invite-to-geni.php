@@ -99,7 +99,7 @@ GENI is an NSF funded virtual testbed supporting computer networking research an
 I use GENI, and you should too.
 
 For more info on GENI, see: http://www.geni.net
-To get started using GENI, go the GENI Portal: https://illyrica.gpolab.bbn.com
+To get started using GENI, go to the GENI Portal: https://illyrica.gpolab.bbn.com
 
 You log in with your home university or college username, or request a GENI-specific account.
 
