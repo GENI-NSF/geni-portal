@@ -175,7 +175,10 @@ print "<table>\n";
 /* print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n"; */
 print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Expiration</th><th>Actions</th></tr>\n";
 /* Slice Info */
-print "<tr><td class='$slice_status'>$slice_status</td><td colspan='2'>$slice_name</td>";
+print "<tr>";
+/* print "<td class='$slice_status'>$slice_status</td>"; */
+print "<td></td>";
+print "<td colspan='2'>$slice_name</td>";
 /* print "<td>$slice_creation</td>";*/
 
 if ($user->privSlice()) {
@@ -213,14 +216,20 @@ foreach ($aggs as $agg){
     continue;
   }
   if ($first){
-    print "<tr><th class='notapply'></th><th>Status</th><th>Aggregate</th><th>Creation</th><th>Expiration</th></tr>\n";
+    print "<tr>";
+    print "<th class='notapply'>";
+    print "</th><th>Status</th><th>Aggregate</th>";
+    /* print "<th>Creation</th>"; */
+    print "<th>Expiration</th></tr>\n";
     $first = False;
   }
   $sliver_status=$agg_obj['geni_status'];
   $sliver_creation='1-2-1111';
   $sliver_expiration='1-2-2222';
-  print "<tr><td class='notapply'></td><td class='$sliver_status'>$sliver_status</td><td>$agg</td>";
-  print "<td>$sliver_creation</td>";
+  print "<tr>";
+  print "<td class='notapply'></td>";
+  print "<td class='$sliver_status'>$sliver_status</td><td>$agg</td>";
+  /*   print "<td>$sliver_creation</td>"; */
 
 if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew.php\">";
