@@ -312,6 +312,14 @@ function create_slice($args)
   global $ma_url;
   add_attribute($ma_url, $owner_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::SLICE, $slice_id);
 
+  // Now add the lead as a member of the slice
+  $addres = add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id, SA_ARGUMENT::MEMBER_ID => $owner_id, SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD));
+  if (! isset($addres) || is_null($addres) || ! array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("create_slice failed to add lead as a slice member: " . $addres[RESPONSE_ARGUMENT::CODE] . ": " . $addres[RESPONSE_ARGUMENT::OUTPUT]);
+    // FIXME: ROLLBACK?
+    return $addres;
+  }
+
   // Log the creation
   global $log_url;
   $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
