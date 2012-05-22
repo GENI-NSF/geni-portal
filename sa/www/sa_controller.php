@@ -95,7 +95,7 @@ class SAGuardFactory implements GuardFactory
     if (is_null($params[SA_ARGUMENT::PROJECT_ID])) {
       return new TrueGuard();
     } else {
-      return project_guard($message, $action, $params);
+      return $this->project_guard($message, $action, $params);
     }
   }
 

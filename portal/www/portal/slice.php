@@ -46,6 +46,8 @@ if (isset($slice)) {
   //error_log("fetch_slice result: $pretty_result\n");
 
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  $slice_desc = "NOT IMPLEMENTED"; //$slice[SA_ARGUMENT::SLICE_DESCRIPTION];
+  $slice_creation = "1-2-3456"; //$slice[SA_ARGUMENT::SLICE_CREATION];
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
@@ -85,6 +87,8 @@ print "<td><button onClick=\"window.location='$status_url'\"><b>Sliver Status</b
 print "<td><button onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>\n";
 // -- not working yet";
 if ($user->privSlice()) {
+  print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Slivers for " . $slice_name. "</button></td>\n";
+
   print "<td><form method='GET' action=\"do-renew.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew Slivers'/>\n";
@@ -92,9 +96,6 @@ if ($user->privSlice()) {
   print "<input type='text' name='slice_expiration'";
   print "value=\"$slice_expiration\"/>\n";
   print "</form></td>\n";
-
-  print "<td><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
-  print "<td><button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\">Delete Slivers for " . $slice_name. "</button></td>\n";
 
   print "<td><form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
@@ -108,34 +109,32 @@ if ($user->privSlice()) {
   print "<td><button onClick=\"window.location='$slicecred_url'\">Download Slice Cred</button></td>\n";
   print "<td><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice " . $slice_name. "</button></td>\n";
   print "<td><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice " . $slice_name. "</button></td>\n";
+  print "<td><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+
 }
 print "</tr></table>\n";
 
-/* print "<h2>Renew Slice</h2>\n"; */
-/* print "Slice currently expires on $slice_expiration<br/>\n"; */
-/* print "<form method='GET' action=\"do-renew.php\">"; */
-/* print "<b>Date to renew until</b>: <input type='text' name='slice_expiration'"; */
-/* print "value=\"$slice_expiration\"/><br/>\n"; */
-/* print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/><br/>\n"; */
-/* ?> */
-/* <input type='submit' name= 'Renew' value='Renew'/> */
-/* </form> */
-/* <br/> */
-/* <?php */
+
+/*   print "<h2>Slice Operational Monitoring</h2>\n"; */
+/* print "<table>\n"; */
+/* print "<tr><td><b>Slice data</b></td><td><a href='https://gmoc-db.grnoc.iu.edu/protected-openid/index.pl?method=slice_details;slice=".$slice_urn."'>Slice $slice_name</a></td></tr>\n"; */
+/* print "</table>\n"; */
 
 
 
-  print "<h2>Slice Details</h2>\n";
 print "<table>\n";
-// print "<tr><th>Name </th><th>Value</th></tr>\n";
-print "<tr><td colspan='2'><b>Slice Name (public) </b></td><td>$slice_name</td></tr>\n";
-print "<tr><td colspan='2'><b>Member of Project (public) </b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
-print "<tr><td rowspan='2'><b>Slice Identifier</b></td> <td><b>URN</b></td><td>$slice_urn</td></tr>\n";
-print "<tr><td class='deemphasize'><b>UUID</b></td><td class='deemphasize'>$slice_id</td></tr>\n";
-print ("<tr><td colspan='2'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>"
-       . "$slice_email</a></td></tr>\n");
-print "<tr><td colspan='2'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-print "<tr><td colspan='2'><b>Slice Expiration</b></td><td>\n";
+print "<tr><th colspan='4'>Slice Identifiers (public)</th></tr>\n";
+print "<tr><td><b>Name</b></td><td>$slice_name</td><td><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><td class='deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
+print "<tr><td><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
+print "<tr><td><b>Description (public) </b></td><td colspan='3'>$slice_desc</td></tr>\n";
+
+/* print "<tr><td rowspan='2'><b>Slice Identifier</b></td> <td><b>URN</b></td><td>$slice_urn</td></tr>\n"; */
+/* print "<tr><td class='deemphasize'><b>UUID</b></td><td class='deemphasize'>$slice_id</td></tr>\n"; */
+print "<tr><th colspan='4'>Contact Information</th></tr>\n";
+print ("<tr><td><b>e-mail</b></td><td colspan='3'><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
+print "<tr><td><b>Owner</b></td><td colspan='3'><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "<tr><td><b>Expiration</b></td><td colspan='4'>\n";
 print "<form method='GET' action=\"do-renew-slice.php\">";
 print "<input type='text' name='slice_expiration'";
 print "value=\"$slice_expiration\"/>\n";
@@ -144,10 +143,12 @@ print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
 <input type='submit' name= 'Renew' value='Renew Slice'/>
 </form></td></tr>
 <?php
-print "</table>\n";
-
-print "<b id='warn'>Note: Slice and project names are public</b><br/>\n";
+  print "</table>\n";
 ?>
+
+
+
+
 
 <h2>Slice members</h2>
 <table>

@@ -28,8 +28,6 @@ function show_header($title)
   echo '<div id="loginDiv">';
   echo '<div id="loginButtons">';
   echo '<button id="loginButton" onClick="window.location.href=\'secure/home.php\'"><b>Use GENI</b></button>';
-  echo '<br/>';
-  echo '<a id ="loginHelp" href="login-help.php"><b><i>Get help</i></b></a>';
   echo '</div>';
   echo '<img id="incommon-logo" src="common/InC_Participant.png"/>';
   echo '</div>';
@@ -50,7 +48,7 @@ show_header("Troubleshooting logging into the GENI Portal")
 <h1> Logging into the GENI Portal </h1>
 
 <p> 
-The GENI Portal supports single sign on logins via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
+The GENI Portal supports single sign on login via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
 <ul>
   <li>If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">login</a> using your InCommon single sign on username and password and register for a GENI account.
   </li><li>If you are not affiliated with an InCommon federated institution, <a href="mailto:help@geni.net">request a single sign on login for the GENI Portal</a>.</li>
