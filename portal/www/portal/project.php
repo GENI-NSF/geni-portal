@@ -91,7 +91,7 @@ print "<td><button onClick=\"window.location='disable-project.php?project_id=$pr
 print "</tr></table>\n";
 
 print "<h2>Project Details</h2>\n";
-print "<table border=\"1\">\n";
+print "<table>\n";
 print "<tr><td><b>Name</b></td><td>$project_name</td></tr>\n";
 print "<tr><td><b>Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a></td></tr>\n";
 print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
@@ -106,7 +106,7 @@ include("tool-slices.php");
 ?>
 <br/>
 <h2>Project members</h2>
-<table border="1">
+<table>
 <tr><th>Project Member</th><th>Roles</th></tr>
 <?php
 
@@ -133,7 +133,7 @@ if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
 ?>
 
 <h2>Recent Project Actions</h2>
-<table border="1">
+<table>
 <tr><th>Time</th><th>Message</th><th>Member</th>
 <?php
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);

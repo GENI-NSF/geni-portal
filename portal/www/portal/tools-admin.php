@@ -50,7 +50,7 @@ function show_requested_accounts()
     print("<h2>No requested accounts.</h2>\n");
   } else {
     print("<h2>Requested Accounts</h2>\n");
-    print("<table border=1>");
+    print("<table>");
     print("<tr><th>Account ID</th><th>Attributes</th><th>Actions</th></tr>\n");
     foreach ($accts as $acct) {
       $account_id = $acct['account_id'];
@@ -63,7 +63,7 @@ function show_requested_accounts()
       $identity = $identities[0];
       $identity_id = $identity['identity_id'];
       // Nest a table for identity info
-      print("<table border=1>\n");
+      print("<table>\n");
       // surely there is a better way to do this:
       attribute_row("eppn", $identity['eppn'], False);
       attribute_row("affiliation", $identity['affiliation'], False);
