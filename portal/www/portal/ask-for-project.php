@@ -81,10 +81,11 @@ if (array_key_exists("to", $_REQUEST)) {
 if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($error))) {
   // Send the email
   $email = $user->email();
+  $name = $user->prettyName();
   mail($requestee,
        "Please create me a GENI Project",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $email");
+       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
 
   // Put up a page saying we invited them.
   print "<h2>Ask Someone to Create you a Project</h2>\n";
@@ -122,7 +123,9 @@ print "<textarea name='message' cols='60' rows='10'>Can you create a GENI projec
 I need to use GENI for my research, and I need someone to create a 'GENI project' to hold my research.
 I don't have the right permissions to create a GENI project, but I think you do or could.
 
-Would you be willing to create a GENI project for my research, and be the responsible Project Lead for my project?
+Would you be willing to create a GENI project for my research, and be the responsible Project Lead for my project? 
+
+Create my project here: https://illyrica.gpolab.bbn.com/secure/edit-project.php
 
 In case you are new to GENI:
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
@@ -133,7 +136,10 @@ You log in with your home university or college username, or request a GENI-spec
 Then you need to wait for your GENI account to be approved, if you don't have one yet.
 You'll get email when your GENI account is approved, and you can go back to the GENI portal to log in.
 
-Once you are logged in to the GENI portal, click 'Create Project' to create a new project. Please give it the project name I listed, so I can find it again (or something similar).
+Once you are logged in to the GENI portal, click 'Create Project' to create a new project. 
+(https://illyrica.gpolab.bbn.com/secure/edit-project.php)
+
+Please give it the project name I listed, so I can find it again (or something similar).
 
 On the following project page, you should see an 'Invite Project Member' button. Click that, and enter my email address (";
 print $user->email();
@@ -148,6 +154,6 @@ print $user->prettyName();
 print "\n</textarea><br/>\n";
 print "<button type=\"submit\" value=\"submit\"><b>Send Request</b></button>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
-
+print "</form>\n";
 include("footer.php");
 ?>

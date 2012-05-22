@@ -63,10 +63,11 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   // Send the email
   $to = implode(", ", $invitees);
   $email = $user->email();
+  $name = $user->prettyName();
   mail($to,
        "Join GENI!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $email");
+       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
 
   // Put up a page saying we invited them.
   print "<h2>Invite Someone to GENI</h2>\n";
@@ -108,6 +109,6 @@ print $user->prettyName();
 print "\n</textarea><br/>\n";
 print "<button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
-
+print "</form>\n";
 include("footer.php");
 ?>
