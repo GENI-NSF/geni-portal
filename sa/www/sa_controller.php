@@ -330,7 +330,7 @@ function create_slice($args)
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
-  error_log("SA.create_slice final return is " . print_r($slice_info, true));
+  //  error_log("SA.create_slice final return is " . print_r($slice_info, true));
   return $slice_info;
 }
 
@@ -558,7 +558,7 @@ function add_slice_member($args)
     . "'" . $slice_id . "', "
     . "'" . $member_id . "', "
     . $role . ")";
-  error_log("SA.add slice_member.sql = " . $sql);
+  //  error_log("SA.add slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
   return $result;
 }

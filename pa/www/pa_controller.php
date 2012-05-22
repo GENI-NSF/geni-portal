@@ -446,7 +446,7 @@ function get_projects_for_member($args)
     . " WHERE " 
     . $member_clause;
 
-  error_log("PA.get_projects_for_member.sql = " . $sql);
+  //  error_log("PA.get_projects_for_member.sql = " . $sql);
   $rows = db_fetch_rows($sql);
   $result = $rows;
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
