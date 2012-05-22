@@ -49,14 +49,11 @@ if (isset($slice)) {
   $old_slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
 }
 
-$retVal = renew_slice($sa_url, $user, $slice_id, $req_exp);
+$res = renew_slice($sa_url, $user, $slice_id, $req_exp);
 
-//error_log("Renew Slice output = " . $res);
+error_log("Renew Slice output = " . $res);
 
-$msg = $retVal[0];
-$time = $retVal[1];
-
-if ($time!="") {
+if ($res) {
   // get the new slice expiration
   $res = "Renewed slice (requested $req_exp, was $old_slice_expiration)";
   unset($slice);
@@ -64,9 +61,10 @@ if ($time!="") {
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
 } else {
   $res = "FAILed to renew slice (requested $req_exp, was $old_slice_expiration)";
+  $slice_expiration = $old_slice_expiration;
 }
 
-$res = $res . " - slice expiration is now: $slice_expiration\n";
+$res = $res . " - slice expiration is now: <b>$slice_expiration</b>\n";
 
 $header = "Renewed Slice $slice_name";
 
@@ -74,27 +72,14 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
-print "<div class='msg'>";
-print_r($msg);
-print "</div>";
-
-
 print "<div>";
 print_r($res);
 print "</div>";
-
-
 
 print "<hr/>";
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
 include("footer.php");
-
-
-
-
-
-
 
 ?>
