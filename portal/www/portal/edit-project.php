@@ -86,6 +86,7 @@ print "FIXME: Per project policy defaults go here.<br/>\n";
 print "Slice Membership policy: Project members get <b>User</b> rights on all project slices.<br/><br/>\n";
 
 if ($isnew) {
+  // FIXME: Either drop this or refactor invite-to-project.php
   print "<p style=\"color: grey\">\n";
   print "Provide a comma-separated list of email addresses of people to invite to your project:<br/>\n";
   print "<input type=\"textarea\" name=\"invites\" disabled=\"disabled\"/>\n";
@@ -98,6 +99,11 @@ if ($isnew) {
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
   print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><button onClick=\"window.location='do-delete-project-member.php?project_id=$project_id&member_id=$leadid'\"><b>Delete</b></button></td><td><a href=\"mailto:$leademail\">Email $leadname</a></td></tr>\n";
   print "</table>\n";
+
+  print "<button onClick=\"window.location='";
+  $inv_url= relative_url("invite-to-project.php?project_id=$project_id'");
+  print $inv_url;
+  print "\"><a href='" . $inv_url . "'><b>Invite New Project Members</b></a></button><br/>\n";
 }
 print "<br/>\n";
 

@@ -134,7 +134,10 @@ include("tool-slices.php");
   // FIXME: the right thing here is to check they are lead or admin on the project
   // look for update_project
 if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  print "<br/><div style=\"color:grey\">Approve/invite new project members</div><br/>\n";
+  print "<br/><h3>Approve/invite new project members</h3>\n";
+  print "<button onClick=\"window.location='";
+  print relative_url("invite-to-project.php?project_id=$project_id'");
+  print "\"><b>Invite New Project Members</b></button><br/>\n";
 }
 ?>
 

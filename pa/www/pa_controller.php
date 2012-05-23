@@ -122,6 +122,14 @@ function create_project($args)
   global $ma_url;
   add_attribute($ma_url, $lead_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
+  // Now add the lead as a member of the project
+  $addres = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id, PA_ARGUMENT::MEMBER_ID => $lead_id, PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD));
+  if (! isset($addres) || is_null($addres) || ! array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("create_project failed to add lead as a project member: " . $addres[RESPONSE_ARGUMENT::CODE] . ": " . $addres[RESPONSE_ARGUMENT::OUTPUT]);
+    // FIXME: ROLLBACK?
+    return $addres;
+  }
+
   // Log the creation
   global $log_url;
   $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
@@ -438,7 +446,7 @@ function get_projects_for_member($args)
     . " WHERE " 
     . $member_clause;
 
-  error_log("PA.get_projects_for_member.sql = " . $sql);
+  //  error_log("PA.get_projects_for_member.sql = " . $sql);
   $rows = db_fetch_rows($sql);
   $result = $rows;
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
