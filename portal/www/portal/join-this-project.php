@@ -123,9 +123,9 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
 
 print "All GENI actions must be taken in the context of a project.<br/>\n";
 print "On this page, you can request to join the project $project_name.<br/><br/> " 
-  . "The project leader ($leadname) will be sent an email, to approve or deny your request.\n";
-print "That email will have a link to a page where the leader can act on your request.\n";
-print "When the project leader ($leadname) acts on your request, you will get an email " .
+  . "The project lead ($leadname) will be sent an email, to approve or deny your request.\n";
+print "That email will have a link to a page where the project lead can act on your request.\n";
+print "When the project lead ($leadname) acts on your request, you will get an email " .
 "notifying you whether your request was approved.\n";
 print "Once approved, you can create a slice, or request to join an existing slice.<br/>\n";
 
@@ -134,7 +134,7 @@ print "<br/>\n";
 //- Show info on the project, lead
 print "<b>Project $project_name details</b>:<br/>\n";
 print "<table>\n";
-print "<tr><th>Project</th><th>Purpose</th><th>Lead</th></tr>\n";
+print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th></tr>\n";
 print "<tr><td>";
 print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 print "</td><td>";
