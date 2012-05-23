@@ -610,7 +610,10 @@ function change_slice_member_role($args)
 function get_slice_members($args)
 {
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
-  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(SA_ARGUMENT::ROLE_TYPE, $args) && isset($args[SA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $SA_SLICE_MEMBER_TABLENAME;
 
@@ -644,7 +647,10 @@ function get_slices_for_member($args)
 {
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
   $is_member = $args[SA_ARGUMENT::IS_MEMBER];
-  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(SA_ARGUMENT::ROLE_TYPE, $args) && isset($args[SA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $SA_SLICE_MEMBER_TABLENAME;
 
@@ -672,7 +678,7 @@ function get_slices_for_member($args)
     . " = '" . $member_id . "' " . $role_clause;
   if(!$is_member) {
     $member_clause = 
-    SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
       . " NOT IN (SELECT " 
       . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
       . " FROM " . $SA_SLICE_MEMBER_TABLENAME 

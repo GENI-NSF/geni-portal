@@ -368,7 +368,10 @@ function change_member_role($args)
 function get_project_members($args)
 {
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
-  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
 
@@ -402,7 +405,10 @@ function get_projects_for_member($args)
 {
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
   $is_member = $args[PA_ARGUMENT::IS_MEMBER];
-  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
 
@@ -425,19 +431,20 @@ function get_projects_for_member($args)
     $role_clause = " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
       . " = " . $role;
   }
-  $member_clause = 
-    PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . " = '" . $member_id . "' " . $role_clause;
-  if(!$is_member) {
+
+  if ($is_member) {
     $member_clause = 
-    PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+      PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+      . " = '" . $member_id . "' " . $role_clause;
+  } else {
+    $member_clause = 
+    PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
       . " NOT IN (SELECT " 
       . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
       . " FROM " . $PA_PROJECT_MEMBER_TABLENAME 
       . " WHERE " 
       . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
       . " = '" . $member_id . "' " . $role_clause . ")";
-      
   }
 
   $sql = "SELECT DISTINCT " 
