@@ -105,7 +105,7 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
   // Send the email
   $email = $user->email();
   mail($lead->prettyName() . "<" . $lead->email() . ">",
-       "Join GENI project $project_name",
+       "Join GENI project $project_name?",
        $message,
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
 
