@@ -89,6 +89,7 @@ if (count($projects) > 0) {
 	   "</a> </td><td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
 	   " </td><td align=\"center\"> " . count($slice_ids) . " </td><td> " .
 	   $create_slice_link . "</td></tr>\n");
+    // FIXME: Button to invite people to the project?
   }
   print "</table>\n";
 } else {
