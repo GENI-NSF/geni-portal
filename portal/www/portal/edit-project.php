@@ -96,20 +96,20 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Lead</td><td>All</td><td><button onClick=\"window.location='do-delete-project-member.php?project_id=$project_id&member_id=$leadid'\"><b>Delete</b></button></td><td><a href=\"mailto:$leademail\">Email $leadname</a></td></tr>\n";
+  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Project Lead</td><td>All</td><td><button onClick=\"window.location='do-delete-project-member.php?project_id=$project_id&member_id=$leadid'\"><b>Delete</b></button></td><td><a href=\"mailto:$leademail\">Email $leadname</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";
 
-print "<b>Project Leader</b><br/>\n";
-print "There is exactly one project leader for each project. Project leaders are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
+print "<b>Project Lead</b><br/>\n";
+print "There is exactly one project lead for each project. Project leads are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
 if ($isnew) {
-  print "You will be the leader of your new project.<br/>\n";
+  print "You will be the project lead on your new project.<br/>\n";
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
-  print "Project leader is: <b>$leadname</b><br/>\n";
+  print "Project lead is: <b>$leadname</b><br/>\n";
   print "<p style=\"color: grey\">\n";
-  print "To transfer project leaders, enter email of proposed new project leader to ask them to take over:<br/>\n";
+  print "To transfer project leads, enter email of proposed new project leads to ask them to take over:<br/>\n";
   print "<input type=\"text\" name=\"newlead\" disabled=\"disabled\"/></p><br/>\n";
 }
 print "<input type=\"submit\" value=\"";

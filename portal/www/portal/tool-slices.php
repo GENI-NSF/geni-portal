@@ -47,7 +47,7 @@ if (count($slices) > 0) {
   print ("<tr><th>Name</th>");
   print ("<th>Project</th>");
   print ("<th>Expiration</th>");
-  print ("<th>Owner</th>"
+  print ("<th>Slice Owner</th>"
          . "<th>Resources</th><th>Sliver Status</th>"
 	 . "<th>List Resources</th>"
 	 . "<th>Flack</th>"

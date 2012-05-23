@@ -160,8 +160,8 @@ print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'
 /* echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";*/
 /* print "</td></tr>\n"; */
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print ("<tr><td class='label'><b>e-mail</b></td><td><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
-print "<tr><td class='label'><b>Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print ("<tr><td class='label'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
+print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 
 include("query-sliverstatus.php");
@@ -284,7 +284,7 @@ echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 <tr><th>Slice Member</th><th>Roles</th></tr>
 <?php
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
-   print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td></tr>\n";
+   print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Slice Owner</td></tr>\n";
 ?>
 </table>
 

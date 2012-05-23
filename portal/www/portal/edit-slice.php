@@ -104,18 +104,18 @@ if ($isnew) {
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Slice Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Owner</td><td>All</td><td><button onclick=\"window.location='do-delete-slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id'\">Delete</button></td><td><a href=mailto:\"$owner_email\">Email $slice_owner_name</a></td></tr>\n";
+  print "<tr><td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Slice Owner</td><td>All</td><td><button onclick=\"window.location='do-delete-slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id'\">Delete</button></td><td><a href=mailto:\"$owner_email\">Email $slice_owner_name</a></td></tr>\n";
   print "</table>\n";
 }
 print "<br/>\n";
 print "<b>Slice Owner</b><br/>\n";
 print "There is exactly one slice owner for each slice. Slice owners are ultimately responsible for all activity in all slices in their slice, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
 if ($isnew) {
-  print "You will be the owner of your new slice.<br/>\n";
+  print "You will be the slice owner for your new slice.<br/>\n";
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
   print "Slice owner is: <b>$slice_owner_name</b><br/>\n";
-  print "To transfer slice leaders, enter email of proposed new slice leader to ask them to take over:<br/>\n";
+  print "To transfer slice owner, enter email of proposed new slice owner to ask them to take over:<br/>\n";
   print "<input type=\"text\" name=\"newlead\"/><br/>\n";
 }
 print "<input type=\"submit\" value=\"";

@@ -65,7 +65,7 @@ if (! is_null($project) && $project != "None") {
     $leademail = $lead->email();
     $leadname = $lead->prettyName();
   } else {
-    error_log("project.php: Invalid lead id from DB for project $project_name");
+    error_log("project.php: Invalid project lead id from DB for project $project_name");
   }
 }
 
@@ -102,8 +102,8 @@ print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
 print "<button onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button>\n";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print "<tr><td class='label'><b>e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
-print "<tr><td class='label'><b>Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
+print "<tr><td class='label'><b>Project e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
+print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table>\n";
 ?>
 <h2>Project slices:</h2>
@@ -125,13 +125,13 @@ include("tool-slices.php");
    print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td></tr>\n";
   }
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
-//   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Lead</td></tr>\n";
+//   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Project Lead</td></tr>\n";
 ?>
 </table>
 
 <?php
   //if ($user->privAdmin()) {
-  // FIXME: the right thing here is to check they are lead or admin on the project
+  // FIXME: the right thing here is to check they are project lead or admin on the project
   // look for update_project
 if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   print "<br/><div style=\"color:grey\">Approve/invite new project members</div><br/>\n";
