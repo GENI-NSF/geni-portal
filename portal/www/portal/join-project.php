@@ -47,9 +47,9 @@ print "<h2>Join a Project</h2>\n";
 
 print "All GENI actions must be taken in the context of a project.<br/>\n";
 print "On this page, you can request to join a project.<br/><br/> " 
-  . "The project leader will be sent an email, to approve or deny your request.\n";
-print "That email will have a link to a page where the leader can act on your request.\n";
-print "When the project leader acts on your request, you will get an email " .
+  . "The project lead will be sent an email, to approve or deny your request.\n";
+print "That email will have a link to a page where the lead can act on your request.\n";
+print "When the project lead acts on your request, you will get an email " .
 "notifying you whether your request was approved.\n";
 print "Once approved, you can create a slice, or request to join an existing slice.<br/>\n";
 
@@ -65,7 +65,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 
   print "<h3>Select a project to join</h3>\n";
   print "<table>\n";
-  print "<tr><th>Project</th><th>Purpose</th><th>Lead</th><th>Join</th></tr>\n";
+  print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
   foreach ($pids as $project_id) {
     $project = lookup_project($pa_url, $project_id);

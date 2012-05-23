@@ -95,9 +95,9 @@ if ($isnew) {
   if ($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] != $newlead) {
     $result2 = change_lead($pa_url, $project_id, $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID], $newlead);
     if ($result2 == '') {
-      $result = $result . "; Lead change failed? empty...?";
+      $result = $result . "; Project Lead change failed? empty...?";
     } else {
-      $result = $result . "; Leader change: $result2";
+      $result = $result . "; Project Lead change: $result2";
     }
   }
   //  print "Edited project $project, got result: $result.<br/>\n";
