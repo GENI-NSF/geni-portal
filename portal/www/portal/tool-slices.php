@@ -117,7 +117,7 @@ if (count($slices) > 0) {
     print ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
     // FIXME: List Resources
     print ("<td><button onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>");
-  print "<td><button onClick=\"window.location='$sliceflack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+  print "<td><button onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
     print ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
