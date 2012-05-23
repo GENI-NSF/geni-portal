@@ -69,7 +69,6 @@ include("tool-slices.php");
 
 <table width="50%">
 <tr><th width="25%"><h3>GENI Messages</h3></th>
-<!-- <th width="25%"><h3>GENI Map</h3></th> -->
 </tr>
 <tr><td>
 <table>
@@ -99,17 +98,7 @@ if (is_array($entries) && count($entries) > 0) {
 ?>
 </table>
 </td>
-<!--
-<ul>
-<li>Friday, 4/6/12: You have been added to Project: <a href="project.php?id=MyProject">MyProject</a></li><br/>
-<li>Tuesday, March 12, 2012: GENI is really rocking today!</li>
-</ul>
-</td>
--->
-<!-- 
-<td align="center">
-<a href="http://groups.geni.net/geni/wiki/ProtoGENIFlashClient"><image width="50%" src="http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw"/></a>
-</td>
--->
 </tr></table>
 
+<br/>
+<button style="" onClick="window.location='invite-to-geni.php'"><b>Invite Someone to GENI</b></button>

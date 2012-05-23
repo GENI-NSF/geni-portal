@@ -312,6 +312,14 @@ function create_slice($args)
   global $ma_url;
   add_attribute($ma_url, $owner_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::SLICE, $slice_id);
 
+  // Now add the lead as a member of the slice
+  $addres = add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id, SA_ARGUMENT::MEMBER_ID => $owner_id, SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD));
+  if (! isset($addres) || is_null($addres) || ! array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("create_slice failed to add lead as a slice member: " . $addres[RESPONSE_ARGUMENT::CODE] . ": " . $addres[RESPONSE_ARGUMENT::OUTPUT]);
+    // FIXME: ROLLBACK?
+    return $addres;
+  }
+
   // Log the creation
   global $log_url;
   $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
@@ -322,7 +330,7 @@ function create_slice($args)
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
-  error_log("SA.create_slice final return is " . print_r($slice_info, true));
+  //  error_log("SA.create_slice final return is " . print_r($slice_info, true));
   return $slice_info;
 }
 
@@ -550,7 +558,7 @@ function add_slice_member($args)
     . "'" . $slice_id . "', "
     . "'" . $member_id . "', "
     . $role . ")";
-  error_log("SA.add slice_member.sql = " . $sql);
+  //  error_log("SA.add slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
   return $result;
 }
@@ -602,7 +610,10 @@ function change_slice_member_role($args)
 function get_slice_members($args)
 {
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
-  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(SA_ARGUMENT::ROLE_TYPE, $args) && isset($args[SA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $SA_SLICE_MEMBER_TABLENAME;
 
@@ -636,7 +647,10 @@ function get_slices_for_member($args)
 {
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
   $is_member = $args[SA_ARGUMENT::IS_MEMBER];
-  $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(SA_ARGUMENT::ROLE_TYPE, $args) && isset($args[SA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $SA_SLICE_MEMBER_TABLENAME;
 
@@ -664,7 +678,7 @@ function get_slices_for_member($args)
     . " = '" . $member_id . "' " . $role_clause;
   if(!$is_member) {
     $member_clause = 
-    SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+    SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
       . " NOT IN (SELECT " 
       . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
       . " FROM " . $SA_SLICE_MEMBER_TABLENAME 

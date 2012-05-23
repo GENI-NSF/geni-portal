@@ -14,6 +14,18 @@ AUTHORITY=$3
 SHORT_HOST=`/bin/hostname -s`
 FQDN=`/bin/hostname -f`
 
+
+# Use a non-existent hostname for the authority URL. We were getting a
+# lot of "slice is busy errors from pgeni3.gpolab.bbn.com when using
+# the FQDN of internal lab VMs. My theory is that those connections
+# had to time out. With a non-existent hostname, the connection should
+# error immediately so we'll get fewer "busy" errors. It remains to be
+# seen whether this works in practices.
+
+#AUTH_URL=https://${FQDN}/ca.html
+AUTH_URL=https://example.geni.net/info.html
+
+
 URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${AUTHORITY}"
 UUID=`openssl req -in ${REQ} -text -noout | grep 'Subject:' | sed -e 's/.*CN=\([^/$]*\).*/\1/g'`
 echo "first uuid = ${UUID}"
@@ -25,7 +37,7 @@ cat > "${EXT_FILE}" <<EOF
 [$EXT_NAME]
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid:always,issuer:always
-authorityInfoAccess = 2.25.305821105408246119474742976030998643995;URI:https://${FQDN}/ca.html
+authorityInfoAccess = 2.25.305821105408246119474742976030998643995;URI:${AUTH_URL}
 subjectAltName=email:copy,${URN},${UUID}
 EOF
 

@@ -122,6 +122,14 @@ function create_project($args)
   global $ma_url;
   add_attribute($ma_url, $lead_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
+  // Now add the lead as a member of the project
+  $addres = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id, PA_ARGUMENT::MEMBER_ID => $lead_id, PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD));
+  if (! isset($addres) || is_null($addres) || ! array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("create_project failed to add lead as a project member: " . $addres[RESPONSE_ARGUMENT::CODE] . ": " . $addres[RESPONSE_ARGUMENT::OUTPUT]);
+    // FIXME: ROLLBACK?
+    return $addres;
+  }
+
   // Log the creation
   global $log_url;
   $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
@@ -360,7 +368,10 @@ function change_member_role($args)
 function get_project_members($args)
 {
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
-  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
 
@@ -394,7 +405,10 @@ function get_projects_for_member($args)
 {
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
   $is_member = $args[PA_ARGUMENT::IS_MEMBER];
-  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
 
@@ -417,19 +431,20 @@ function get_projects_for_member($args)
     $role_clause = " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
       . " = " . $role;
   }
-  $member_clause = 
-    PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . " = '" . $member_id . "' " . $role_clause;
-  if(!$is_member) {
+
+  if ($is_member) {
     $member_clause = 
-    PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+      PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+      . " = '" . $member_id . "' " . $role_clause;
+  } else {
+    $member_clause = 
+    PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
       . " NOT IN (SELECT " 
       . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
       . " FROM " . $PA_PROJECT_MEMBER_TABLENAME 
       . " WHERE " 
       . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
       . " = '" . $member_id . "' " . $role_clause . ")";
-      
   }
 
   $sql = "SELECT DISTINCT " 
@@ -438,7 +453,7 @@ function get_projects_for_member($args)
     . " WHERE " 
     . $member_clause;
 
-  error_log("PA.get_projects_for_member.sql = " . $sql);
+  //  error_log("PA.get_projects_for_member.sql = " . $sql);
   $rows = db_fetch_rows($sql);
   $result = $rows;
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {

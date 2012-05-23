@@ -80,6 +80,11 @@ $parents = array("profile.php" => "home.php",
 		 "sliverdelete.php" => "slice.php",
 		 "sliverstatus.php" => "slice.php",
 		 "downloadkeycert.php" => "profile.php",
+		 "invite-to-geni.php" => "home.php",
+		 "invite-to-project.php" => "project.php",
+		 "ask-for-project.php" => "home.php",
+		 "join-project.php" => "home.php",
+		 "join-this-project.php" => "join-project.php",
 		 "uploadsshkey.php" => "profile.php");
 
 // Array from script name to a pretty name
@@ -114,6 +119,11 @@ $names = array("home.php" => $TAB_HOME,
 		 "do-renew.php" => "Renew Sliver on %slice_name",
 		 "do-renew-slice.php" => "Renew Slice %slice_name",
 	         "downloadkeycert.php" => "Download Certificate and Key",
+		 "invite-to-geni.php" => "Invite People to GENI",
+		 "invite-to-project.php" => "Invite People to Project %project_name",
+		 "ask-for-project.php" => "Ask for a GENI Project",
+		 "join-project.php" => "Join a Project",
+		 "join-this-project.php" => "Join Project %project_name",
 		 "uploadsshkey.php" => "Upload SSH Key");
 
 // Look up in the 2 arrays above
