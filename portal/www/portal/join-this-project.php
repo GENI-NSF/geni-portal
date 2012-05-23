@@ -76,6 +76,7 @@ if (array_key_exists("message", $_REQUEST)) {
 
 if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error))) {
   // FIXME: Record the new request
+  //  $request_id = create_request(CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
   $request_id = '12345';
 
   // FIXME: sub handle-project-request.php with handle-project-request.php?project_id=$project_id&member_id=$user->account_id&request_id=$request_id
