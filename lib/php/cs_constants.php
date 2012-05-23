@@ -34,6 +34,7 @@ class CS_ATTRIBUTE_TYPE {
   const AUDITOR = 4;
 }
 
+$CS_ATTRIBUTE_TYPE_NAME = array(1=>"Lead", 2=>"Admin", 3=>"Member", 4=>"Auditor");
 
 /* Set of known context types for services within GENI CH credential store */
 /* We store/retrieve by index into this array, but print the strings */
