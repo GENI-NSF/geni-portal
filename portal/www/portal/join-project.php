@@ -59,7 +59,7 @@ print "<br/>\n";
 
 $pids = get_projects_for_member($pa_url, $user->account_id, false, null);
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
-  print "<i>There are no more project for you to join.</i><br/><br/>\n";
+  print "<i>There are no more projects for you to join.</i><br/><br/>\n";
 
 } else {
 
