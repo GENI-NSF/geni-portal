@@ -91,7 +91,7 @@ $slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, nul
 
 print("<br>\n");
 print("<b>Project Roles</b>");
-print("\n<table border=\"1\">\n");
+print("\n<table>\n");
 print ("<tr><th>Project</th><th>Role</th></tr>");
 foreach($project_attribs as $attrib) {
   $project_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
@@ -104,7 +104,7 @@ print("<br>\n");
 
 print("<br>\n");
 print("<b>Slice Roles</b>");
-print("\n<table border=\"1\">\n");
+print("\n<table>\n");
 print ("<tr><th>Slice</th><th>Role</th></tr>");
 $slices = lookup_slices($sa_url, $user, $project_id, null);
 //error_log("SLICES = " . print_r($slices, true));
@@ -141,7 +141,7 @@ print "<br/><br/>\n";
 
 // Handle slices
 print "<b>Slice Permissions</b><br/>\n";
-print "<table border=\"1\">\n";
+print "<table>\n";
 print "<tr><th>Slice</th><th>Role</th><th>Delegatable</th><th>Remove?</th></tr>\n";
 foreach ($slices as $slice) {
   print "<tr><td>" . $slice["Slice"] . "</td>";

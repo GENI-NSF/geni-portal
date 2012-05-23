@@ -19,9 +19,9 @@ function show_header($title)
   echo '<div id="header">';
   echo '<table>';
   echo '<tr><td>';
-  echo '<img src="/images/geni.png" alt="GENI"/>';
+  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
   echo '</td><td>';
-  echo '<a href="index.php"><img src="/images/portal.png" alt="Portal"/></a>';
+  echo '<a href="index.php"><img src="/images/portal.png" width="205" height="72" alt="Portal"/></a>';
   echo '</td>';
   echo '<td>';
   echo '<div id="loginDiv">';
@@ -30,8 +30,10 @@ function show_header($title)
   echo '<br/>';
   echo '<a id ="loginHelp" href="login-help.php"><b><i>Get help</i></b></a>';
   echo '</div>';
-  echo '<img id="incommon-logo" src="common/InC_Participant.png"/>';
   echo '</div>';
+  echo '</td>';
+  echo '<td>';
+  echo '<img id="incommon-logo" src="common/InC_Participant.png"/>';
 
   echo '</td>';
   echo '</tr>';
@@ -63,6 +65,7 @@ show_header("Welcome to the GENI Portal")
 </p>
 
 
+<!-- 
 <h2>GENI News</h2>
 <ul>
 <li>
@@ -74,7 +77,8 @@ show_header("Welcome to the GENI Portal")
    New slice created at 2:05am
 </li></ul>
 </li>
-</ul>
+</ul> 
+-->
 
 <h2>Find out more about using GENI</h2>
 <ul><li>

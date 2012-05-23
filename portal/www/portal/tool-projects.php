@@ -60,7 +60,7 @@ if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
 
 if (count($projects) > 0) {
   print "Found " . count($projects) . " project(s) for you:<br/>\n";
-  print "\n<table border=\"1\">\n";
+  print "\n<table>\n";
   print ("<tr><th>Name</th><th>Lead</th><th>Email</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
 
   // name, lead_id, email, purpose

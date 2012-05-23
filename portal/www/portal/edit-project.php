@@ -55,7 +55,7 @@ if (! isset($project)) {
 }
 ?>
 <form method="POST" action="do-edit-project.php">
-<table border="1">
+<table>
 <?php
   if (! $isnew) {
     print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
@@ -92,7 +92,7 @@ if ($isnew) {
   print "</p>\n";
 } else {
   print "<h3>Project members</h3>\n";
-  print "<table border=\"1\">\n";
+  print "<table>\n";
   // FIXME: loop over members retrieved from the DB
   // FIXME each of these is editable, an action, etc
   print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";

@@ -5,16 +5,13 @@
  height: 1.5in;
 }
 #loginDiv > #loginButtons {
- position: absolute;
- left: 1in;
  text-align: center;
+ padding-left: 0.5in;
+ padding-top: 0.5in;
 }
 #incommon-logo {
- position: absolute;
- left: 1.35in;
  width: .75in;
  padding: 0.25in;
- top: 0.5in;
 }
 
 #loginButton, #loginHelp {
@@ -54,9 +51,13 @@
  background-color: red;
 }
 
+input.date {
+ width: 14en;
+}
+
 table {
- border: 1px;
  background-color: #DCE2E8;
+ margin: 1em;
 }
 
 td {
@@ -65,11 +66,22 @@ td {
  background-color: BlanchedAlmond;
 }
 
+#header table, #header td {
+ background-color: white;
+}
+
+
+
 th {
  margin: 3px;
  padding: 3px;
  background-color: SkyBlue;
 }
+
+td.label {
+ background-color: #E6D4B8;
+}
+
 
 table .aggregate {
  background-color: SkyBlue;

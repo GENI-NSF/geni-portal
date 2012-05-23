@@ -142,8 +142,25 @@ function write_omni_config($user)
 function invoke_omni_function($am_url, $user, $args)
 {
     $username = $user->username;
-
-    if (! isset($am_url) || is_null($am_url) || $am_url == '') {
+    
+    
+    $aggregates = "aggregates=";
+    $first=True;
+    if (is_array($am_url)){
+      foreach ($am_url as $single){
+	if (! isset($single) || is_null($single) || $single == '') {
+	  error_log("am_client cannot invoke Omni with invalid AM URL");
+	  return("Invalid AM URL");
+	}
+	if ($first){
+	  $first=False;
+	} else {
+	  $aggregates = $aggregates.", ";	  
+	}
+	$aggregates = $aggregates.$single;
+      }
+      $aggregates = $aggregates."\n";
+    }elseif (! isset($am_url) || is_null($am_url) || $am_url == '') {
       error_log("am_client cannot invoke Omni without an AM URL");
       return("Missing AM URL");
     }
@@ -165,7 +182,11 @@ function invoke_omni_function($am_url, $user, $args)
     /* Create OMNI config file */
     $omni_config = "[omni]\n"
       . "default_cf = my_gcf\n"
-      . "users = $username\n"
+      . "users = $username\n";
+    if (is_array($am_url)){
+      $omni_config = $omni_config.$aggregates."\n";
+    }
+    $omni_config = $omni_config
       . "[my_gcf]\n"
       . "type=gcf\n"
       . "authority=geni:gpo:portal\n"
@@ -175,6 +196,8 @@ function invoke_omni_function($am_url, $user, $args)
       . "[$username]\n"
       . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
       . "keys=$all_key_files\n";
+
+
     file_put_contents($omni_file, $omni_config);
 
     /* Call OMNI */
@@ -184,13 +207,17 @@ function invoke_omni_function($am_url, $user, $args)
     $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
 		       $omni_file,
-		       '-a',
-		       $am_url,
 		       '-l',
 		       $portal_gcf_dir . '/src/logging.conf',
 		       '--logoutput /tmp/omni.log',
 		       '--api-version',
 		       '2');
+
+    if (!is_array($am_url)){
+      $cmd_array[]='-a';
+      $cmd_array[]=$am_url;
+    }
+
     for($i = 0; $i < count($args); $i++) {
       $cmd_array[] = $args[$i];
     }
@@ -221,9 +248,11 @@ function invoke_omni_function($am_url, $user, $args)
 // Get version of AM API at given AM
 function get_version($am_url, $user)
 {
-  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
-    error_log("am_client cannot invoke Omni without an AM URL");
-    return("Missing AM URL");
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
   }
 
   $args = array('getversion');
@@ -235,9 +264,11 @@ function get_version($am_url, $user)
 // List resources available at an aggregate
 function list_resources($am_url, $user)
 {
-  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
-    error_log("am_client cannot invoke Omni without an AM URL");
-    return("Missing AM URL");
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
   }
 
   $args = array('listresources');
@@ -248,9 +279,11 @@ function list_resources($am_url, $user)
 // list resources at an AM
 function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
 {
-  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
-    error_log("am_client cannot invoke Omni without an AM URL");
-    return("Missing AM URL");
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
   }
 
   if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
@@ -276,9 +309,11 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
 // renewsliver at an AM
 function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
 {
-  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
-    error_log("am_client cannot invoke Omni without an AM URL");
-    return("Missing AM URL");
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
   }
 
   if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
@@ -304,9 +339,11 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
 function create_sliver($am_url, $user, $slice_credential, $slice_urn,
                        $rspec_filename)
 {
-  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
-    error_log("am_client cannot invoke Omni without an AM URL");
-    return("Missing AM URL");
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
   }
 
   if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
@@ -330,9 +367,11 @@ function create_sliver($am_url, $user, $slice_credential, $slice_urn,
 // Get sliver status at an AM
 function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 {
-  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
-    error_log("am_client cannot invoke Omni without an AM URL");
-    return("Missing AM URL");
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
   }
 
   if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
@@ -354,9 +393,11 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 // Delete a sliver at an AM
 function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
 {
-  if (! isset($am_url) || is_null($am_url) || $am_url == '') {
-    error_log("am_client cannot invoke Omni without an AM URL");
-    return("Missing AM URL");
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
   }
 
   if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {

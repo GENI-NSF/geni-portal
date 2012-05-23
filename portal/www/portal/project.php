@@ -77,28 +77,34 @@ $members = get_members($cs_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
-print "<table><tr>\n";
-print "<td><button onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button></td>\n";
+print "<table>\n";
+print "<tr><th>Slice Action</th><th>Ops Mgmt</th></tr>\n";
+print "<tr>\n";
+/* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
 if ($user->privSlice()) {
   if (isset($project_id)) {
+    /* Create a new slice*/
     print "<td><button onClick=\"window.location='";
     print relative_url("createslice?project_id=$project_id'");
     print "\"><b>Create a new slice</b></button></td>\n";
   }
 }
+
+/* Disable project */
 print "<td><button onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
 print "</tr></table>\n";
 
-print "<h2>Project Details</h2>\n";
-print "<table border=\"1\">\n";
-print "<tr><td><b>Name</b></td><td>$project_name</td></tr>\n";
-print "<tr><td><b>Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a></td></tr>\n";
-print "<tr><td><b>Project purpose</b></td><td>$purpose</td></tr>\n";
-print "<tr><td><b>Project email</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
+print "<table>\n";
+print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
+print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
+print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
+print "<button onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button>\n";
+print "</td></tr>\n";
+print "<tr><th colspan='2'>Contact Information</th></tr>\n";
+print "<tr><td class='label'><b>e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
+print "<tr><td class='label'><b>Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table>\n";
-print "<br/>\n";
-print "&nbsp;<a href=\"mailto:$leademail\">Contact the project leader</a><br/>\n";
 ?>
 <h2>Project slices:</h2>
 <?php
@@ -106,7 +112,7 @@ include("tool-slices.php");
 ?>
 <br/>
 <h2>Project members</h2>
-<table border="1">
+<table>
 <tr><th>Project Member</th><th>Roles</th></tr>
 <?php
 
@@ -133,7 +139,7 @@ if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
 ?>
 
 <h2>Recent Project Actions</h2>
-<table border="1">
+<table>
 <tr><th>Time</th><th>Message</th><th>Member</th>
 <?php
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);

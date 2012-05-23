@@ -43,7 +43,7 @@ if (isset($project_id) && uuid_is_valid($project_id)) {
   $slices = lookup_slices($sa_url, $user, null, $user->account_id);
 }
 if (count($slices) > 0) {
-  print "\n<table border=\"1\">\n";
+  print "\n<table>\n";
   print ("<tr><th>Name</th>");
   print ("<th>Project</th>");
   print ("<th>Expiration</th>");

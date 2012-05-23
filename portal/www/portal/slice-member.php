@@ -59,7 +59,7 @@ $slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $sl
 //error_log("SLICE ATTRIBS = " . print_r($attributes, true));
 
 print("<b>Slice Roles</b>");
-print("\n<table border=\"1\">\n");
+print("\n<table>\n");
 print ("<tr><th>Slice</th><th>Role</th></tr>");
 foreach($slice_attribs as $attrib) {
   $slice_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];

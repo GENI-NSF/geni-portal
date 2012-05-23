@@ -111,14 +111,19 @@ $msg = $retVal[0];
 $obj = $retVal[1];
 
 
+unset($slice2);
+$slice2 = lookup_slice($sa_url, $user, $slice_id);
+$slice_expiration = $slice2[SA_ARGUMENT::EXPIRATION];
+
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
-print "<div class='msg'>";
-print_r($msg);
-print "</div>";
+/* print "<div class='msg'>"; */
+/* print_r($msg); */
+/* print "</div>"; */
 
+print "Reserved resources on AM (<b>$am_url</b>) until <b>$slice_expiration</b>:";
 print "<div class='resources'>";
 print_xml( $obj );
 print "</div>\n";
