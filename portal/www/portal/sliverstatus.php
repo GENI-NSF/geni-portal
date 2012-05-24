@@ -31,6 +31,8 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
+require_once("am_map.php");
+
 $user = geni_loadUser();
 if (! $user->privSlice() || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -82,7 +84,9 @@ function print_sliver_status( $obj ) {
 
 
     print "<tr class='aggregate'><th>Status</th><th colspan='2'>Aggregate</th></tr>";
-    print "<tr class='aggregate'><td class='$geni_status'>$geni_status</td><td colspan='2'>$arg</td></tr>";
+    print "<tr class='aggregate'><td class='$geni_status'>$geni_status</td>";
+    $arg_name = am_name($arg);
+    print "<td colspan='2'>$arg_name</td></tr>";
     $firstRow = True;
     $num_rsc = count($geni_resources);
     foreach ($geni_resources as $rsc){

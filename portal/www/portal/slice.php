@@ -32,6 +32,7 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once('logging_client.php');
+require_once('am_map.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -228,7 +229,9 @@ foreach ($aggs as $agg){
   $sliver_expiration='1-2-2222';
   print "<tr>";
   print "<td class='notapply'></td>";
-  print "<td class='$sliver_status'>$sliver_status</td><td>$agg</td>";
+  print "<td class='$sliver_status'>$sliver_status</td>";
+  $agg_name = am_name($agg); 
+  print "<td>$agg_name</td>";
   /*   print "<td>$sliver_creation</td>"; */
 
 if ($user->privSlice()) {
