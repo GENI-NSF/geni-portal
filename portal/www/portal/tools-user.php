@@ -25,6 +25,7 @@
 <?php
 require_once("user.php");
 require_once("cert_utils.php");
+require_once("request_constants.php");
 ?>
 <h1>User Tools</h1>
 <?php
@@ -106,3 +107,55 @@ if ($portal_enable_abac)
 
 <h2>Edit Account Details</h2>
 Modify user supplied account details <button onClick="window.location='modify.php'">here</button><br/>
+
+<h2>Outstanding Requests</h2>
+<?php
+// Show outstanding requests for this user
+//$reqs = get_requests_pending_for_user($user->account_id, null, null);
+$reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING, 'creation_timestamp'=>'1-1-1'));
+if (isset($reqs) && count($reqs) > 0) {
+  if (! isset($pa_url)) {
+    $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+    if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
+      error_log("Found no PA in SR!'");
+    }
+  }
+  
+  if (! isset($sa_url)) {
+    $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+    if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+      error_log("Found no SA in SR!'");
+    }
+  }
+
+  print "Found " . count($reqs) . " outstanding requests for you:<br/>\n";
+  print "<table>\n";
+  print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
+  foreach ($reqs as $request) {
+    $name = "";
+    $typestr = $REQ_TYPE_NAMES[$request['request_type']] . " " . $CS_CONTEXT_TYPE_NAMES[$request['context']-1];
+    if ($request['context'] == CS_CONTEXT_TYPE::PROJECT) {
+      error_log("looking up project " . $request['context_id']);
+      $project = lookup_project($pa_url, $request['context_id']);
+      $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $cancel_url="cancel-join-project.php?request_id=" . $request['id'];
+    } elseif ($request['context'] == CS_CONTEXT_TYPE::SLICE) {
+      $slice = lookup_slice($sa_url, $request['context_id']);
+      $name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+      $cancel_url="cancel-join-slice.php?request_id=" . $request['id'];
+    } else {
+      $name = "";
+      $cancel_url="cancel-account-mod.php?request_id=" . $request['id'];
+    }
+
+    $cancel_button = "<button style=\"\" onClick=\"window.location='" . $cancel_url . "'\"><b>Cancel Request</b></button>";
+    $reason = $request['request_text'];
+    $req_date = $request['creation_timestamp'];
+    print "<tr><td>$typestr</td><td>$name</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
+  }
+  print "</table>\n";
+  print "<br/>\n";
+} else {
+  print "No outstanding requests.<br/>\n";
+}
+
