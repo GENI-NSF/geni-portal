@@ -79,7 +79,8 @@ GCF_DEPS = 	$(GCF.D) \
 		$(GCF.D)/trusted_roots/ma-cert.pem \
 		$(GCF.DIR)/src/gcf-pgch.py \
 		$(GCF.DIR)/src/geni/pgch.py \
-		$(GCF.DIR)/src/omni_php.py
+		$(GCF.DIR)/src/omni_php.py \
+		$(GCF.DIR)/src/logging.conf
 
 install-gcf: $(GCF_DEPS)
 
