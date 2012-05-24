@@ -30,6 +30,7 @@ require_once('pa_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('logging_client.php');
+require_once("request_constants.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -138,6 +139,24 @@ if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   print "<button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
   print "\"><b>Invite New Project Members</b></button><br/>\n";
+  
+  print "<br/>\n";
+  //  $reqs = get_pending_requests(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  //  $reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING, 'creation_timestamp'=>'1-1-1'));
+  $reqs = array();
+  if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
+    print "<i>No outstanding project join requests.<br/>\n";
+  } else {
+    print "<table>\n";
+    print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
+    foreach ($reqs as $request) {
+      $requestor = geni_loadUser($request['requestor']);
+      $created = $request['creation_timestamp'];
+      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request['id'] . "'\"><b>Handle Request</b></button>";
+      print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
+    }
+    print "</table><br/>\n";
+  }
 }
 ?>
 
