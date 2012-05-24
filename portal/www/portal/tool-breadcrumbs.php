@@ -86,6 +86,13 @@ $parents = array("profile.php" => "home.php",
 		 "join-project.php" => "home.php",
 		 "handle-project-request.php" => "project.php",
 		 "join-this-project.php" => "join-project.php",
+		 "cancel-join-project.php" => "home.php",
+		 "invite-to-slice.php" => "slice.php",
+		 "ask-for-slice.php" => "project.php",
+		 "join-slice.php" => "project.php",
+		 "handle-slice-request.php" => "slice.php",
+		 "join-this-slice.php" => "join-slice.php",
+		 "cancel-join-slice.php" => "home.php",
 		 "uploadsshkey.php" => "profile.php");
 
 // Array from script name to a pretty name
@@ -126,6 +133,13 @@ $names = array("home.php" => $TAB_HOME,
 		 "join-project.php" => "Join a Project",
 		 "handle-project-request.php" => "Handle Project %project_name Join Request",
 		 "join-this-project.php" => "Join Project %project_name",
+		 "cancel-join-project.php" => "Cancel Join Project %project_name",
+		 "invite-to-slice.php" => "Invite People to Slice %slice_name",
+		 "ask-for-slice.php" => "Ask for a GENI Slice in Project %project_name",
+		 "join-slice.php" => "Join a Slice in Project %project_name",
+		 "handle-slice-request.php" => "Handle Slice %slice_name Join Request",
+		 "join-this-slice.php" => "Join Slice %slice_name",
+		 "cancel-join-slice.php" => "Cancel Join slice %slice_name",
 		 "uploadsshkey.php" => "Upload SSH Key");
 
 // Look up in the 2 arrays above

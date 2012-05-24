@@ -69,6 +69,7 @@ if (isset($reqs) && count($reqs) > 0) {
   foreach ($reqs as $request) {
     // Print it out
     $project = lookup_project($pa_url, $request['context_id']);
+    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     $reason = $request['request_text'];
