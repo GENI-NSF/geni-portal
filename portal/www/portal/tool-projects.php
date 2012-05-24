@@ -61,7 +61,8 @@ if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
 
 // Show outstanding project requests for this user
 //$reqs = get_requests_pending_for_user($user->account_id, CS_CONTEXT_TYPE::PROJECT, null);
-$reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING, 'creation_timestamp'=>'1-1-1'));
+//$reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441//179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING, 'creation_timestamp'=>'1-1-1'));
+$reqs = array();
 if (isset($reqs) && count($reqs) > 0) {
   print "Found " . count($reqs) . " outstanding project join requests for you:<br/>\n";
   print "<table>\n";
@@ -81,9 +82,9 @@ if (isset($reqs) && count($reqs) > 0) {
     print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$leadname</td><td>$purpose</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
   }
   print "</table>\n";
-  print "<br/>\n";
+  print "<br/><br/>\n";
 } else {
-  print "No outstanding project join requests.<br/>\n";
+  print "<i>No outstanding project join requests.</i><br/><br/>\n";
 }
 
 if (count($projects) > 0) {
