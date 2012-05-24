@@ -84,6 +84,7 @@ $parents = array("profile.php" => "home.php",
 		 "invite-to-project.php" => "project.php",
 		 "ask-for-project.php" => "home.php",
 		 "join-project.php" => "home.php",
+		 "handle-project-request.php" => "project.php",
 		 "join-this-project.php" => "join-project.php",
 		 "uploadsshkey.php" => "profile.php");
 
@@ -123,6 +124,7 @@ $names = array("home.php" => $TAB_HOME,
 		 "invite-to-project.php" => "Invite People to Project %project_name",
 		 "ask-for-project.php" => "Ask for a GENI Project",
 		 "join-project.php" => "Join a Project",
+		 "handle-project-request.php" => "Handle Project %project_name Join Request",
 		 "join-this-project.php" => "Join Project %project_name",
 		 "uploadsshkey.php" => "Upload SSH Key");
 

@@ -69,7 +69,7 @@ if (array_key_exists("project_id", $_REQUEST)) {
     }
   } else {
     if ($project_id != '') {
-      error_log($script . ": invalid project_id from REQUEST");
+      error_log($script . ": invalid project_id (not valid uuid) from REQUEST: $project_id");
       $project_id = "none";
     }
   }
