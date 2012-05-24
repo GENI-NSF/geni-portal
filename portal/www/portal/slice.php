@@ -131,7 +131,7 @@ if ($user->privSlice()) {
   print "<tr><td>\n";
   /* print "To use a command line tool:<br/>"; */
   print "<button onClick=\"window.location='$slicecred_url'\"><b>Download Slice Credential</b></button>\n";
-  print "<button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b></button>\n";
+  print "<button onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b></button>\n";
   print "</td>\n";
 
   /* Ops Management */
