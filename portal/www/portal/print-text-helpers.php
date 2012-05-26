@@ -50,6 +50,75 @@ function print_xml( $xml ){
   print "</div>\n";
 }
 
+function print_rspec_pretty( $xml ){
+  $rspec = new SimpleXMLElement($xml);
+  // if ($rspec == False) {
+  //  return; 
+  // }
+  print "<div class='xml'>";
+  print "<ul>\n";
+  foreach ($rspec as $node) {
+    if ($node->getName() == "node") {
+      echo "<li><b>Node: </b>",$node['client_id'],"</li>";
+      print "<ul>\n";
+      echo "<li>Exclusive: ",$node['exclusive'],"</li>";
+      echo "<li>Component ID: ",$node['component_id'],"</li>";
+      foreach ($node as $interface){
+	if ($interface->getName() == "interface") {
+	  echo "<li><b>Interface: </b></li>";
+	  print "<ul>\n";
+	  echo "<li><b>Client ID: </b>",$interface['client_id'],"</li>";
+	  echo "<li>Component ID: ",$interface['component_id'],"</li>";
+	  echo "<li>MAC Address: ",$interface['mac_address'],"</li>";
+	  foreach ($interface as $ip){
+	    if ($ip->getName() == "ip") {
+	      print "<ul>\n";
+	      echo "<li>Type: ",$ip['type'],"</li>";
+	      echo "<li>IP: ",$ip['address'],"</li>";
+	      print "</ul>\n";
+	    }
+	  }
+	  print "</ul>\n";
+	}
+      }
+      print "</ul>\n";
+      print "\n";
+    }
+  }
+
+  foreach ($rspec as $link) {
+    if ($link->getName() == "link") {
+      echo "<li><b>Link: </b>",$node['client_id'],"</li>";
+      print "\n";
+      print "<ul>\n";
+      foreach ($link as $interface_ref) {
+	if ($interface_ref->getName() == "interface_ref") {
+	  echo "<li><b>Interface Ref </b></li>";
+	  print "<ul>\n";
+	  echo "<li><b>Client ID: </b>",$interface_ref['client_id'],"</li>";
+	  echo "<li>Component ID: ",$interface_ref['component_id'],"</li>";
+	  print "</ul>\n";
+	}
+      }
+      foreach ($link as $property) {
+	if ($property->getName() == "property") {
+	  echo "<li><b>",$property['source_id']," --> ",$property['dest_id'],"</b></li>";
+	  //	  echo "<li><b>Source ID: </b>",$property['source_id'],"</li>";
+	  //	  echo "<li><b>Destination ID: </b>",$property['dest_id'],"</li>";
+	  print "<ul>\n";
+	  echo "<li>Capacity: ",$property['capacity'],"</li>";
+	  echo "<li>Latency: ",$property['latency'],"</li>";
+	  echo "<li>Packet Loss: ",$property['packet_loss'],"</li>";
+	  print "</ul>\n";
+	}
+      }
+      print "</ul>\n";
+    }
+  }
+  print "</ul>\n";
+  print "</div>\n";
+}
+
 function print_rspec( $obj ) {
   $args = array_keys( $obj );
   foreach ($args as $arg){
@@ -58,9 +127,9 @@ function print_rspec( $obj ) {
     $xml = $obj[$arg];
     print "<div class='aggregate'>Aggregate <b>".$arg."'s</b> Resources:</div>";
     print "<div class='resources'>";
-    print_xml($xml);
+    //    print_xml($xml);
+    print_rspec_pretty($xml);
     print "</div>\n";
-
   }
 }
 

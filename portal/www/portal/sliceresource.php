@@ -125,7 +125,7 @@ print "<h2>$header</h2>\n";
 
 print "Reserved resources on AM (<b>$am_url</b>) until <b>$slice_expiration</b>:";
 print "<div class='resources'>";
-print_xml( $obj );
+print_rspec_pretty( $obj );
 print "</div>\n";
 
 print "<hr/>";
