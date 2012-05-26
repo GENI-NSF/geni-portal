@@ -71,6 +71,9 @@ $(GCF.DIR)/src/geni/pgch.py: gcf.d/src/geni/pgch.py
 $(GCF.DIR)/src/omni_php.py: gcf.d/src/omni_php.py
 	$(INSTALL.WWW) $^ $@
 
+$(GCF.DIR)/src/logging.conf: gcf.d/src/logging.conf
+	$(INSTALL.WWW) $^ $@
+
 GCF_DEPS = 	$(GCF.D) \
 		$(GCF.D)/gcf.ini \
 		$(GCF.D)/omni.ini \
