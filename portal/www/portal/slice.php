@@ -156,10 +156,10 @@ print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
 print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
 print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
-/* print "<tr><td class='label'><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n"; */
-/* print "<tr><td class='label'><b>Description</b></td><td colspan='3'>$slice_desc "; */
-/* echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";*/
-/* print "</td></tr>\n"; */
+print "<tr><td class='label'><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
+print "<tr><td class='label'><b>Description</b></td><td colspan='3'>$slice_desc ";
+echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print ("<tr><td class='label'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
 print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
@@ -173,14 +173,12 @@ if (!(isset($msg) and isset($obj))){
 
 $slice_status='dummy';
 print "<table>\n";
-/* print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n"; */
-print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Expiration</th><th>Actions</th></tr>\n";
+print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
 /* Slice Info */
 print "<tr>";
-/* print "<td class='$slice_status'>$slice_status</td>"; */
-print "<td></td>";
+print "<td class='$slice_status'>$slice_status</td>";
 print "<td colspan='2'>$slice_name</td>";
-/* print "<td>$slice_creation</td>";*/
+print "<td>$slice_creation</td>";
 
 if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew-slice.php\">";
@@ -220,7 +218,7 @@ foreach ($aggs as $agg){
     print "<tr>";
     print "<th class='notapply'>";
     print "</th><th>Status</th><th>Aggregate</th>";
-    /* print "<th>Creation</th>"; */
+    print "<th>Creation</th>";
     print "<th>Expiration</th></tr>\n";
     $first = False;
   }
@@ -232,7 +230,7 @@ foreach ($aggs as $agg){
   print "<td class='$sliver_status'>$sliver_status</td>";
   $agg_name = am_name($agg); 
   print "<td>$agg_name</td>";
-  /*   print "<td>$sliver_creation</td>"; */
+    print "<td>$sliver_creation</td>";
 
 if ($user->privSlice()) {
   print "<td><form method='GET' action=\"do-renew.php\">";

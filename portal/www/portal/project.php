@@ -61,6 +61,7 @@ if (! is_null($project) && $project != "None") {
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+  $creation = "12-34-5678"; //$project[PA_PROJECT_TABLE_FIELDNAME::CREATION_TIME];
   if (uuid_is_valid($leadid)) {
     $lead = geni_loadUser($leadid);
     $leademail = $lead->email();
@@ -99,6 +100,7 @@ print "</tr></table>\n";
 print "<table>\n";
 print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
+print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
 print "<button onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button>\n";
 print "</td></tr>\n";
