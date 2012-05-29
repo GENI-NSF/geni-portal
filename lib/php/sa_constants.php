@@ -72,3 +72,5 @@ class SA_SLICE_MEMBER_TABLE_FIELDNAME
 
 /* Name of table containing pending slice membership requests */
 $SA_SLICE_MEMBER_REQUEST_TABLENAME = 'sa_slice_member_request';
+
+?>

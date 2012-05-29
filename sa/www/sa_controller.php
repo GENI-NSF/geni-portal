@@ -66,6 +66,13 @@ class SAGuardFactory implements GuardFactory
             'change_slice_member_role' => array('slice_guard'),
             'get_slice_members' => array('slice_guard'),
             'get_slices_for_member'=> array(), // Unguarded
+	    'create_request' => array(), // Unguarded
+	    'resolve_pending_request' => array(), // Unguarded
+	    'get_requests_for_context' => array(), // Unguarded
+	    'get_requests_by_user' => array(), // Unguarded
+	    'get_pending_requests_for_user' => array(), // Unguarded
+	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
+	    'get_request_by_id' => array() // Unguarded
             );
 
   public function __construct($cs_url) {

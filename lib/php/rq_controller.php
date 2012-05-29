@@ -42,7 +42,7 @@ function create_request($args)
     . "'" . $request_text . "', "
     . "'" . $request_details . "') ";
 
-  error_log("create_request.sql = " . $sql);
+  //  error_log("create_request.sql = " . $sql);
 
   $result = db_execute_statement($sql);
 
@@ -77,7 +77,7 @@ function resolve_pending_request($args)
     . " WHERE " 
     . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $request_id;
 
-  error_log("resolve_pending_request.sql = " . $sql);
+  //  error_log("resolve_pending_request.sql = " . $sql);
 
   $result = db_execute_statement($sql);
 
@@ -98,7 +98,7 @@ function get_requests_for_context($args)
     . " AND " 
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
 
-  error_log("get_requests_for_context.sql = " . $sql);
+  //  error_log("get_requests_for_context.sql = " . $sql);
   $result = db_fetch_rows($sql);
   return $result;
 }
@@ -121,7 +121,7 @@ function get_requests_by_user($args)
     . " AND " 
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
 
-  error_log("get_requests_by_user.sql = " . $sql);
+  //  error_log("get_requests_by_user.sql = " . $sql);
   $result = db_fetch_rows($sql);
   return $result;
 }
@@ -145,7 +145,7 @@ function get_pending_requests_for_user($args)
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" 
     . $user_for_context_query . ")";
 
-  error_log("get_pending_requests_for_user.sql = " . $sql);
+  //  error_log("get_pending_requests_for_user.sql = " . $sql);
   $result = db_fetch_rows($sql);
   return $result;
 }
@@ -168,7 +168,7 @@ function get_number_of_pending_requests_for_user($args)
     . " AND "
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" 
     . $user_for_context_query . ")";
-  error_log("get_number_requests_for_user.sql = " . $sql);
+  //  error_log("get_number_requests_for_user.sql = " . $sql);
   $result = db_fetch_row($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     $result = generate_response(RESPONSE_ERROR::NONE, $result[RESPONSE_ARGUMENT::VALUE]['count'], '');
@@ -186,7 +186,7 @@ function get_request_by_id($args)
   $sql = "SELECT * from " . $REQUEST_TABLENAME 
     . " WHERE "
     . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $request_id;
-  error_log("get_requests_by_id.sql = " . $sql);
+  //  error_log("get_requests_by_id.sql = " . $sql);
   $result = db_fetch_row($sql);
   return $result;
 

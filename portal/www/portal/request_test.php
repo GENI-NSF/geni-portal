@@ -41,7 +41,6 @@ function test_requests_for_url($url, $context_type, $context_id)
 				  'foobar', '');
   error_log("IR = " . print_r($insert_result, true));
   $request_id = $insert_result;
-  resolve_pending_request($url, $signer, $request_id, REQUEST_STATUS::APPROVED, 'resolved');
   $rows = get_requests_for_context($url, $signer, $context_type, $context_id);
   dump_rows($rows);
   $rows = get_requests_by_user($url, $signer, $signer->account_id, $context_type, $context_id);
@@ -50,10 +49,14 @@ function test_requests_for_url($url, $context_type, $context_id)
   dump_row($row);
   $num_pending = get_number_of_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
-  error_log("Num_pending = " . print_r($num_pending, true));
+  error_log("Num_pending(pre) = " . print_r($num_pending, true));
   $pending = get_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
   dump_rows($pending);
+  resolve_pending_request($url, $signer, $request_id, REQUEST_STATUS::APPROVED, 'resolved');
+  $num_pending = get_number_of_pending_requests_for_user($url, $signer, $signer->account_id, 
+						 $context_type, $context_id);
+  error_log("Num_pending(post) = " . print_r($num_pending, true));
 }
 
 $project_ids = lookup_projects($pa_url);
@@ -66,6 +69,7 @@ $slice_ids = lookup_slice_ids($sa_url, $signer, $project_id);
 $slice_id = $slice_ids[0];
 
 test_requests_for_url($sa_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
+test_requests_for_url($pa_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
 
 relative_redirect('debug');

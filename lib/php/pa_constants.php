@@ -63,5 +63,7 @@ class PA_PROJECT_MEMBER_TABLE_FIELDNAME
   const ROLE = "role";
 }
 
+/* Name of table containing pending project membership requests */
+$PA_PROJECT_MEMBER_REQUEST_TABLENAME = 'pa_project_member_request';
 
 ?>

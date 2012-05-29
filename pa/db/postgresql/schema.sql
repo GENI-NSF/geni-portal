@@ -30,3 +30,24 @@ CREATE TABLE pa_project_member (
 -- These are for common queries, but so far the DB doesn't use these. Tables too small?
 -- CREATE INDEX project_index_project_id ON pa_project (project_id);
 -- CREATE INDEX project_index_lead_project ON pa_project (lead_id, project_id);
+
+
+-- Create tables for requests relative to membership on projects
+drop TABLE IF EXISTS pa_project_member_request;
+create table pa_project_member_request (
+       id SERIAL,
+       context_type  INT, 
+       context_id UUID,
+       request_text VARCHAR, 
+        -- 0 = JOIN, 1 = UPDATE_ATTRIBUTES, 2 = .... [That's all for now]
+       request_type INT,
+       -- This is a JSON string with a dictionary of requested attributes 
+       -- for the case of a user wanting a change to his attributes
+       request_details VARCHAR, 
+       requestor UUID,
+       status INT, -- 0 = PENDING, 1 = APPROVED, 2 = CANCELED, 3 = REJECTED
+       creation_timestamp TIMESTAMP,
+       resolver UUID,
+       resolution_timestamp TIMESTAMP,
+       resolution_description VARCHAR
+);

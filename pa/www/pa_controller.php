@@ -56,6 +56,118 @@ $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
+function pa_debug($msg)
+{
+  //  error_log('PA DEBUG: ' . $msg);
+}
+
+/*----------------------------------------------------------------------
+ * Authorization
+ *----------------------------------------------------------------------
+ */
+class PAGuardFactory implements GuardFactory
+{
+  private static $context_table
+    = array(
+            // Action => array(method_name, method_name, ...)
+	    /*
+	     *** This is the original code from SA CONTROLLER ***
+            'get_slice_credential' => array('slice_guard'),
+            'get_user_credential' => array(), // Unguarded
+            'create_slice' => array('project_guard'),
+            'lookup_slice_ids' => array('project_guard'),
+            'lookup_slices' => array('lookup_slices_guard'),
+            'lookup_slice' => array('slice_guard'),
+            'lookup_slice_by_urn' => array(), // Unguarded
+            'renew_slice' => array('slice_guard'),
+            'add_slice_member' => array('slice_guard'),
+            'remove_slice_member' => array('slice_guard'),
+            'change_slice_member_role' => array('slice_guard'),
+            'get_slice_members' => array('slice_guard'),
+            'get_slices_for_member'=> array(), // Unguarded
+	    */
+	    'create_project' => array(), // Unguarded
+	    'delete_project' => array('project_guard'),
+	    'get_projects' => array(), // Unguarded
+	    'lookup_projects' => array(), // Unguarded
+	    'lookup_project' => array(), // Unguarded
+	    'update_project' => array('project_guard'), 
+	    'change_lead' => array('project_guard'),
+	    'add_project_member' => array('project_guard'),
+	    'remove_project_member' => array('project_guard'),
+	    'change_member_role' => array('project_guard'),
+	    'get_project_members' => array(), // Unguarded
+	    'get_projects_for_member' => array(), // Unguarded
+	    'create_request' => array(), // Unguarded
+	    'resolve_pending_request' => array(), // Unguarded
+	    'get_requests_for_context' => array(), // Unguarded
+	    'get_requests_by_user' => array(), // Unguarded
+	    'get_pending_requests_for_user' => array(), // Unguarded
+	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
+	    'get_request_by_id' => array() // Unguarded
+            );
+
+  public function __construct($cs_url) {
+    $this->cs_url = $cs_url;
+  }
+
+  private function project_guard($message, $action, $params) {
+    pa_debug("project_guard($message, $action, $params)");
+    return new PAContextGuard($this->cs_url, $message, $action,
+                              CS_CONTEXT_TYPE::PROJECT,
+                              $params[SA_ARGUMENT::PROJECT_ID]);
+  }
+
+  public function createGuards($message) {
+    $result = array();
+    $parsed_message = $message->parse();
+    $action = $parsed_message[0];
+    $params = $parsed_message[1];
+    if (array_key_exists($action, self::$context_table)) {
+      foreach (self::$context_table[$action] as $method_name) {
+        // How to call a method dynamically
+        $meth = array($this, $method_name);
+        $result[] = call_user_func($meth, $message, $action, $params);
+      }
+    } else {
+      error_log("PA: No guard producers for action \"$action\"");
+    }
+    return $result;
+  }
+}
+
+
+class PAContextGuard implements Guard
+{
+  function __construct($cs_url, $message, $action, $context_type, $context) {
+    $this->cs_url = $cs_url;
+    $this->message = $message;
+    $this->action = $action;
+    $this->context_type = $context_type;
+    $this->context = $context;
+  }
+  /**
+   * Return TRUE if the action is authorized, FALSE otherwise.
+   */
+  function evaluate() {
+    pa_debug("MessageHandler requesting authorization:"
+             . " for principal=\""
+             . print_r($this->message->signerUuid(), TRUE) . "\""
+             . "; action=\"" . print_r($this->action, TRUE) . "\""
+             . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
+             . "; context=\"" . print_r($this->context, TRUE) . "\"");
+    return request_authorization($this->cs_url, $this->message->signerUuid(),
+                                 $this->action, $this->context_type,
+                                 $this->context);
+  }
+}
+
+
+/*----------------------------------------------------------------------
+ * API Methods
+ *----------------------------------------------------------------------
+ */
+
 /**
  * Create project of given name, lead_id, email and purpose
  * Return project id of created project
@@ -467,7 +579,23 @@ function get_projects_for_member($args)
   return $result;
 }
 
+// Include the RQ interface routines
+$REQUEST_TABLENAME = $PA_PROJECT_MEMBER_REQUEST_TABLENAME;
 
-handle_message("PA");
+// Define the specific function to call to determine what slices are relevant to a given user
+// (That is, requests about that slice are for this user)
+function user_context_query($account_id)
+{
+  global $PA_PROJECT_MEMBER_TABLENAME;
+  return "select " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
+    . " FROM " . $PA_PROJECT_MEMBER_TABLENAME
+    . " WHERE " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
+    . " IN (" . CS_ATTRIBUTE_TYPE::LEAD . ", " . CS_ATTRIBUTE_TYPE::ADMIN . ")"
+    . " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $account_id . "'";
+  
+}
+require_once('rq_controller.php');
+
+handle_message("PA", $cs_url, NULL, NULL, NULL, new PAGuardFactory($cs_url));
 
 ?>
