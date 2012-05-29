@@ -38,3 +38,24 @@ CREATE TABLE sa_slice_member (
 -- CREATE INDEX sa_slice_index_slice_id ON sa_slice(slice_id);
 -- CREATE INDEX sa_slice_index_project_owner ON sa_slice(project_id, owner_id);
 -- CREATE INDEX sa_slice_index_owner ON sa_slice(owner_id);
+
+
+-- Create tables for requests relative to membership on slices
+drop TABLE IF EXISTS sa_slice_member_request;
+create table sa_slice_member_request (
+       id SERIAL,
+       context_type  INT, 
+       context_id UUID,
+       request_text VARCHAR, 
+        -- 0 = JOIN, 1 = UPDATE_ATTRIBUTES, 2 = .... [That's all for now]
+       request_type INT,
+       -- This is a JSON string with a dictionary of requested attributes 
+       -- for the case of a user wanting a change to his attributes
+       request_details VARCHAR, 
+       requestor UUID,
+       status INT, -- 0 = PENDING, 1 = APPROVED, 2 = CANCELED, 3 = REJECTED
+       creation_timestamp TIMESTAMP,
+       resolver UUID,
+       resolution_timestamp TIMESTAMP,
+       resolution_description VARCHAR
+);

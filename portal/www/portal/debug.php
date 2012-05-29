@@ -30,6 +30,10 @@ show_header('GENI Portal: Debug', $TAB_DEBUG);
 <?php
 $user = geni_loadUser();
 ?>
+<h2>RQ</h2>
+<?php
+print "<a href=\"request_test.php\">Request Test</a>\n";
+?>
 <h2>FLACK</h2>
 <?php
 print "<a href=\"flack_test.php\">Flack Test</a>\n";

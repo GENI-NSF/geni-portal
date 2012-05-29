@@ -708,6 +708,22 @@ function get_slices_for_member($args)
   return $result;
 }
 
+// Include the RQ interface routines
+$REQUEST_TABLENAME = $SA_SLICE_MEMBER_REQUEST_TABLENAME;
+
+// Define the specific function to call to determine what slices are relevant to a given user
+// (That is, requests about that slice are for this user)
+function user_context_query($account_id)
+{
+  global $SA_SLICE_MEMBER_TABLENAME;
+  return "select " . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
+    . " FROM " . $SA_SLICE_MEMBER_TABLENAME
+    . " WHERE " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE 
+    . " IN (" . CS_ATTRIBUTE_TYPE::LEAD . ", " . CS_ATTRIBUTE_TYPE::ADMIN . ")"
+    . " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $account_id . "'";
+  
+}
+require_once('rq_controller.php');
 
 
 handle_message("SA", $cs_url, NULL, NULL, NULL,
