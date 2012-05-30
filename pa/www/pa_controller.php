@@ -99,7 +99,7 @@ class PAGuardFactory implements GuardFactory
 	    'get_project_members' => array(), // Unguarded
 	    'get_projects_for_member' => array(), // Unguarded
 	    'create_request' => array(), // Unguarded
-	    'resolve_pending_request' => array(), // Unguarded
+	    'resolve_pending_request' => array('project_request_guard'), // Unguarded
 	    'get_requests_for_context' => array(), // Unguarded
 	    'get_requests_by_user' => array(), // Unguarded
 	    'get_pending_requests_for_user' => array(), // Unguarded
@@ -109,6 +109,13 @@ class PAGuardFactory implements GuardFactory
 
   public function __construct($cs_url) {
     $this->cs_url = $cs_url;
+  }
+
+  public function project_request_guard($message, $action, $params)
+  {
+    //    error_log("PA.project_request_guard " . print_r($message, true) . " " . 
+    //	      print_r($action, true) . " " . print_r($params, true));
+    return new PAProjectRequestGuard($this->cs_url, $message, $action, $params);
   }
 
   private function project_guard($message, $action, $params) {
@@ -135,6 +142,52 @@ class PAGuardFactory implements GuardFactory
     return $result;
   }
 }
+
+// A guard to check that the requester to resolve a request (accept, reject) has lead or admin
+// privileges on the project in question
+class PAProjectRequestGuard implements Guard
+{
+  public function __construct($cs_url, $message, $action, $params)
+  {
+    $this->cs_url = $cs_url;
+    $this->message = $message;
+    $this->action = $action;
+    $this->params = $params;
+  }
+
+  public function evaluate()
+  {
+    $signer = $this->message->signerUuid();
+    $request_id = $this->params[RQ_ARGUMENTS::REQUEST_ID];
+    //    error_log("PARAMS = " . print_r($this->params, true));
+    //    error_log("PAProjectRequestGuard.evaluate " . $signer . " " . print_r($request_id, true));
+    global $PA_PROJECT_MEMBER_TABLENAME;
+    global $REQUEST_TABLENAME;
+    $sql = "select count(*) from $PA_PROJECT_MEMBER_TABLENAME, $REQUEST_TABLENAME " 
+      . " WHERE "
+      . " $REQUEST_TABLENAME." . RQ_REQUEST_TABLE_FIELDNAME::ID . " = $request_id"
+      . " AND " 
+      . " $REQUEST_TABLENAME." . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = "
+      . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
+      . " AND " 
+      . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '$signer'"
+      . " AND "
+      . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
+      . " IN (" . CS_ATTRIBUTE_TYPE::LEAD . ", " . CS_ATTRIBUTE_TYPE::ADMIN . ")";
+    error_log("PAProjectRequestGuard.sql = $sql");
+    //    $result = db_fetch_row($sql);
+    error_log("Result = " . print_r($result, true));
+    $allowed = FALSE;
+    if($result['code'] == RESPONSE_ERROR::NONE) {
+      $result = $result['value']['count'];
+      $allowed = $result > 0;
+    }
+
+    //    error_log("Allowed = " . print_r($allowed, true));
+    return $allowed;
+  }
+}
+
 
 
 class PAContextGuard implements Guard
