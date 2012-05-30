@@ -701,7 +701,7 @@ function get_slices_for_member($args)
     . " WHERE " 
     . $member_clause;
 
-  error_log("SA.get_slices_for_member.sql = " . $sql);
+  //  error_log("SA.get_slices_for_member.sql = " . $sql);
   $rows = db_fetch_rows($sql);
   $result = $rows;
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
