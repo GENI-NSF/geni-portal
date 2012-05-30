@@ -27,6 +27,7 @@ require_once("header.php");
 require_once('util.php');
 require_once('pa_constants.php');
 require_once('pa_client.php');
+require_once('rq_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('logging_client.php');
@@ -35,6 +36,9 @@ require_once("request_constants.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
+}
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
@@ -71,10 +75,8 @@ if (! is_null($project) && $project != "None") {
   }
 }
 
-// *** This code should fill in the "Project members" table below, 
-// *** once we know how to link with identity_attribute
-$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
-$members = get_members($cs_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
+// Fill in members of project member table
+$members = get_project_members($pa_url, $project_id);
 //error_log("members = " . print_r($members, true));
 
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
@@ -121,10 +123,11 @@ include("tool-slices.php");
 <?php
 
   foreach($members as $member) {
-     $member_id = $member['principal'];
+     $member_id = $member['member_id'];
      $member_user = geni_loadUser($member_id);
      $member_name = $member_user->prettyName();
-     $member_role = $member['name'];
+     $member_role_index = $member['role'];
+     $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
      //     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
    print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td></tr>\n";
   }
@@ -144,9 +147,8 @@ if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   print "\"><b>Invite New Project Members</b></button><br/>\n";
   
   print "<br/>\n";
-  //  $reqs = get_pending_requests(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  //  $reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING, 'creation_timestamp'=>'1-1-1'));
-  $reqs = array();
+  $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
+					CS_CONTEXT_TYPE::PROJECT, $project_id);
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
     print "<i>No outstanding project join requests.<br/>\n";
   } else {

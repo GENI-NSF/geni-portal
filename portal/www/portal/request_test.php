@@ -37,7 +37,7 @@ function dump_row($row)
 function test_requests_for_url($url, $context_type, $context_id)
 {
   global $signer;
-  $insert_result = create_request($url, $signer, $context_type, $context_id, REQUEST_TYPE::JOIN,
+  $insert_result = create_request($url, $signer, $context_type, $context_id, RQ_REQUEST_TYPE::JOIN,
 				  'foobar', '');
   error_log("IR = " . print_r($insert_result, true));
   $request_id = $insert_result;
@@ -53,7 +53,7 @@ function test_requests_for_url($url, $context_type, $context_id)
   $pending = get_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
   dump_rows($pending);
-  resolve_pending_request($url, $signer, $request_id, REQUEST_STATUS::APPROVED, 'resolved');
+  resolve_pending_request($url, $signer, $request_id, RQ_REQUEST_STATUS::APPROVED, 'resolved');
   $num_pending = get_number_of_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
   error_log("Num_pending(post) = " . print_r($num_pending, true));

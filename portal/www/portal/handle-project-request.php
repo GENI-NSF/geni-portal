@@ -31,6 +31,7 @@ require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once("pa_client.php");
+require_once('rq_client.php');
 require_once("cs_constants.php");
 require_once("request_constants.php");
 $user = geni_loadUser();
@@ -51,20 +52,24 @@ include("tool-lookupids.php");
 
 // The email from the PI supplied project_id, member_id, request_id
 
+// Get the pa_url for accessing request information
+if (!isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+  if (!isset($pa_url) || is_null($pa_url) || $pa_url == '') {
+    error_log("Found no Project Authority Service");
+  }
+}
+
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  //  $request = get_request_by_id($_REQUEST["request_id"]);
-  //  $request = null;
-  $request = array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING);
+  $request = get_request_by_id($pa_url, $user, $request_id);
 } else {
   error_log("handle-project-request got no project_id");
 }
 if (! isset($request) || is_null($request)) {
   error_log("No request from request_id");
   if (isset($member_id) && isset($project_id)) {
-    //    $reqs = get_requests_pending_for_user($member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
-    //    $reqs = null;
-    $reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING));
+    $reqs = get_pending_requests_for_user($member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     if (isset($reqs) && count($reqs) > 0) {
       if (count($reqs) > 1) {
 	error_log("handle-p-reqs: Got " . count($reqs) . " pending requests on same project for same member");
@@ -144,12 +149,12 @@ if ($request['request_type'] != REQ_TYPE::JOIN) {
   exit();
 }
 
-if ($request['context'] != CS_CONTEXT_TYPE::PROJECT) {
-  error_log("handle-p-req: Not a project, but " . $request['context']);
+if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] != CS_CONTEXT_TYPE::PROJECT) {
+  error_log("handle-p-req: Not a project, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
   print "<h2>Error handling project request</h2>\n";
-  print "Request not a project request, but " . $request['context'] . "<br/>\n";
+  print "Request not a project request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] . "<br/>\n";
   // FIXME: Print other request details
   print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
   include("footer.php");
@@ -220,7 +225,9 @@ if (isset($submit)) {
     $addres = add_project_member($pa_url, $project_id, $member_id, $role);
     // FIXME: Check result
 
-//	$appres = approve_request($request_id, $reason);
+    
+
+    $appres = resolve_pending_request($pa_url, $user, $request_id, RQ_REQUEST_STATUS::APPROVED, $reason);
     // FIXME: Check result
 
     // log this
@@ -230,14 +237,14 @@ if (isset($submit)) {
     $context2[LOGGING_ARGUMENT::CONTEXT_ID] = $member_id;
     $rolestr = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-    log_event($log_url, "Added $member_name to project as $rolestr" . $project_name, array($context, $context2), $user->account_id);
+    log_event($log_url, "Added $member_name to project as $rolestr " . $project_name, array($context, $context2), $user->account_id);
     error_log("handle-p-req added $member_name to project $project_name with role $rolestr");
   
     // FIXME: Email the member
     $email = $user->email();
     $name = $user->prettyName();
     $message = "Your request to join GENI project $project_name was accepted!
-You have been added to the project with role $rolestr.<br/>
+You have been added to the project with role $rolestr.
 Log in to the GENI portal to start using this project.
 
 Reason:
@@ -254,7 +261,9 @@ $name\n";
     relative_redirect('project.php?project_id=' . $project_id);
 
   } else {
-//	$appres = reject_request($request_id, $reason);
+    $appres = resolve_pending_request($pa_url, $user, $request_id, RQ_REQUEST_STATUS::REJECTED, $reason);
+    // FIXME : check result
+
     error_log("handle-p-req denied $member_name membership in $project_name");
   // FIXME: Email the member
     $email = $user->email();

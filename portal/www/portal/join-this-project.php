@@ -29,6 +29,8 @@ require("logging_client.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
+require_once('rq_client.php');
+require_once('rq_constants.php');
 require_once("pa_constants.php");
 require_once("pa_client.php");
 $user = geni_loadUser();
@@ -74,10 +76,16 @@ if (array_key_exists("message", $_REQUEST)) {
   $message = $_REQUEST["message"];
 }
 
+// Get the pa_url for accessing request information
+if (!isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+  if (!isset($pa_url) || is_null($pa_url) || $pa_url == '') {
+    error_log("Found no Project Authority Service");
+  }
+}
+
 if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error))) {
-  // FIXME: Record the new request
-  //  $request_id = create_request(CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
-  $request_id = '12345';
+  $request_id = create_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
 
   // FIXME: sub handle-project-request.php with handle-project-request.php?project_id=$project_id&member_id=$user->account_id&request_id=$request_id
   $ind = strpos($message, "handle-project-request.php");
@@ -156,11 +164,12 @@ if (isset($error) && ! is_null($error)) {
 print "<form action=\"join-this-project.php?project_id=$project_id\">\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 print "<b>Project join request message</b>:<br/>\n";
+$hostname = $_SERVER['HTTP_HOST'];
 print "<textarea name='message' cols='60' rows='10'>Can I join project $project_name?
 I think I need to do GENI research in your project.
 I am a student in your lab.
 To handle my request, go to the GENI Portal here: 
-https://illyrica.gpolab.bbn.com/secure/handle-project-request.php
+https://$hostname/secure/handle-project-request.php
 
 Thank you,\n";
 print $user->prettyName();

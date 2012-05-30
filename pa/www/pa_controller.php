@@ -421,6 +421,20 @@ function add_project_member($args)
 
   global $PA_PROJECT_MEMBER_TABLENAME;
 
+  $already_member_sql = "select count(*) from " . $PA_PROJECT_MEMBER_TABLENAME
+    . " WHERE " 
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . " = '$project_id'"
+    . " AND " 
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '$member_id'";
+  $already_member = db_fetch_row($already_member_sql);
+  //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
+  $already_member = $already_member['value']['count'] > 0;
+  //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
+  if ($already_member) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Member $member_id is already a member of project $project_id");
+  }
+
+
   $sql = "INSERT INTO " . $PA_PROJECT_MEMBER_TABLENAME . " ("
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . ", "
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
@@ -501,7 +515,7 @@ function get_project_members($args)
     . " = '" . $project_id . "'" 
     . $role_clause;
 
-  error_log("PA.get_project_members.sql = " . $sql);
+  //  error_log("PA.get_project_members.sql = " . $sql);
   $result = db_fetch_rows($sql);
   return $result;
   

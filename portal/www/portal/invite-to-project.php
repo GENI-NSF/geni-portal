@@ -87,7 +87,7 @@ print "Invite your co-workers and friends to use your GENI project $project_name
 
 print "For your co-workers or students to collaborate on experiments in GENI (share GENI slices), ";
 print "they must be in your project $project_name. <br/>\nThis page lets you invite them to join your project.<br/><br/>\n";
-
+$hostname = $_SERVER['HTTP_HOST'];
 print "This form will send them an email with a link to a page to join your project $project_name<br/>\n";
 print "They will then request to join the project. You will get an email when they have done this.<br/>\n";
 print "Then, you must approve them to join the project, and specify what kind of role they should have on the project.<br/><br/>\n";
@@ -111,7 +111,7 @@ Since we work in the same lab, we should do our GENI research together.
 That means belonging to the same GENI project.
 
 To join my project, go here: 
-      https://illyrica.gpolab.bbn.com/secure/join-this-project.php?project_id=$project_id
+      https://$hostname/secure/join-this-project.php?project_id=$project_id
 
 Once you request to join, I'll get an email to come back to the GENI portal and approve you.
 Then you can work with slices in my project.
@@ -120,7 +120,7 @@ If you are new to GENI:
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
 I use GENI, and you should too.
 For more info on GENI, see: http://www.geni.net
-To get started using GENI, go to the GENI Portal: https://illyrica.gpolab.bbn.com
+To get started using GENI, go to the GENI Portal: https://$hostname
 You log in with your home university or college username, or request a GENI-specific account.
 
 Thank you,\n";

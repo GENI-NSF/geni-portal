@@ -27,8 +27,10 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
+require_once('rq_client.php');
 require_once("sa_client.php");
 require_once("cs_client.php");
+require_once('tool-projects.php');
 require_once("request_constants.php");
 
 if (! isset($pa_url)) {
@@ -38,7 +40,8 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
-$projects = lookup_projects($pa_url, $user->account_id);
+$projects = get_projects_for_member($pa_url, $user->account_id, true);
+// error_log("PROJECTS = " . print_r($projects, true));
 $num_projects = count($projects);
 
 
@@ -60,9 +63,7 @@ if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
 }
 
 // Show outstanding project requests for this user
-//$reqs = get_requests_pending_for_user($user->account_id, CS_CONTEXT_TYPE::PROJECT, null);
-//$reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441//179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING, 'creation_timestamp'=>'1-1-1'));
-$reqs = array();
+$reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null);
 if (isset($reqs) && count($reqs) > 0) {
   print "Found " . count($reqs) . " outstanding project join requests for you:<br/>\n";
   print "<table>\n";
@@ -93,18 +94,23 @@ if (count($projects) > 0) {
   print ("<tr><th>Name</th><th>Project Lead</th><th>Project E-mail</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
 
   // name, lead_id, email, purpose
-  foreach ($projects as $project) {
-    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+  foreach ($projects as $project_id) {
     if (! uuid_is_valid($project_id)) {
       error_log("tool-projects got invalid project_id from all get_projects_by_lead");
       continue;
     }
+    $project = lookup_project($pa_url, $project_id);
+    //    error_log("project = " . print_r($project, true));
 
     $handle_req_str = "";
     if (true || $user->isAllowed('add_project_member', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-      //$reqcnt = count_pending_requests(CS_CONTEXT_TYPE::PROJECT, $project_id);
-      $reqcnt = 1;
+      $reqcnt = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id, 
+							CS_CONTEXT_TYPE::PROJECT, $project_id);
+      //      error_log("REQCNT " . print_r($reqcnt, true) . " " . $project_id);
       $handle_req_str = "(<b>$reqcnt</b> Open Join Request(s)) ";
+      if ($reqcnt == 0) {
+	$handle_req_str = "";
+      }
     }
 
     //    error_log("Before load user " . time());

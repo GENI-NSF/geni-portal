@@ -33,7 +33,7 @@ function create_request($args)
     . RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TEXT . ", "
     . RQ_REQUEST_TABLE_FIELDNAME::REQUEST_DETAILS . ") "
     . "VALUES ("
-    . REQUEST_STATUS::PENDING . ", "
+    . RQ_REQUEST_STATUS::PENDING . ", "
     . "" . $context_type . ", "
     . "'" . $context_id . "', "
     . "'" . $requestor . "', "
@@ -140,7 +140,7 @@ function get_pending_requests_for_user($args)
 
   $sql = "SELECT * from " . $REQUEST_TABLENAME 
     . " WHERE "
-    . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . REQUEST_STATUS::PENDING
+    . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . RQ_REQUEST_STATUS::PENDING
     . " AND "
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" 
     . $user_for_context_query . ")";
@@ -160,14 +160,19 @@ function get_number_of_pending_requests_for_user($args)
 
   global $REQUEST_TABLENAME;
 
-  $user_for_context_query = user_context_query($account_id);
+  $user_for_context_query = 
+    RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
+    user_context_query($account_id) . ")";
+  if ($context_id != null) {
+    $user_for_context_query = 
+      RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = '$context_id'";
+  }
 
   $sql = "select count(*) from " . $REQUEST_TABLENAME
     . " WHERE "
-    . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . REQUEST_STATUS::PENDING
+    . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . RQ_REQUEST_STATUS::PENDING
     . " AND "
-    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" 
-    . $user_for_context_query . ")";
+    . $user_for_context_query;
   //  error_log("get_number_requests_for_user.sql = " . $sql);
   $result = db_fetch_row($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {

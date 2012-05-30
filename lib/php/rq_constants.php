@@ -30,14 +30,14 @@ class RQ_ARGUMENTS {
 }
 
 // Types of requests
-class REQUEST_TYPE
+class RQ_REQUEST_TYPE
 {
   const JOIN = 0;
   const UPDATE_ATTRIBUTES = 1;
 }
 
 // Statuses of requests
-class REQUEST_STATUS
+class RQ_REQUEST_STATUS
 {
   const PENDING = 0;
   const APPROVED = 1;
