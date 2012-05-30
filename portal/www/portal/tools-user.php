@@ -25,7 +25,6 @@
 <?php
 require_once("user.php");
 require_once("cert_utils.php");
-require_once("rq_constants.php");
 require_once("rq_client.php");
 ?>
 <h1>User Tools</h1>
