@@ -216,6 +216,7 @@ CREATE TABLE ssh_key (
   filename VARCHAR,
   description VARCHAR,
   public_key VARCHAR NOT NULL,
+  private_key VARCHAR,
   PRIMARY KEY (id)
 );
 CREATE INDEX ssh_key_account_id ON ssh_key (account_id);
