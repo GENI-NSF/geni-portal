@@ -40,7 +40,8 @@ if (count($keys) == 0)
     // No ssh keys are present.
     print "No ssh keys have been uploaded. ";
     print "SSH keys are used to log in to many reserved compute resources.<br/><br/>\n";
-    print "Please <button onClick=\"window.location='uploadsshkey.php'\">Upload an SSH key</button>.\n";
+    print "You can <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH key</button>";
+    print "or <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH key</button>.\n";
   }
 else
   {
