@@ -81,7 +81,7 @@ if (array_key_exists("description", $_POST)) {
   $description = $_POST["description"];
 }
 insertSshKey($user->account_id, $contents, $_FILES["file"]["name"],
-             $description);
+             $description, NULL);
 
 relative_redirect('profile');
 ?>

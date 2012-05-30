@@ -315,15 +315,16 @@ function fetchSshKeys($account_id) {
   return $rows[RESPONSE_ARGUMENT::VALUE];
 }
 
-function insertSshKey($account_id, $public_key, $filename, $description)
+function insertSshKey($account_id, $public_key, $filename, $description, $private_key)
 {
   $conn = portal_conn();
   $sql = "INSERT INTO ssh_key "
-    . "(account_id, public_key, filename, description) VALUES ("
+    . "(account_id, public_key, filename, description, private_key) VALUES ("
     . $conn->quote($account_id, 'text')
     . ', ' . $conn->quote($public_key, 'text')
     . ', ' . $conn->quote($filename, 'text')
     . ', ' . $conn->quote($description, 'text')
+    . ', ' . $conn->quote($private_key, 'text')
     . ');';
   /* print "command = $sql<br/>"; */
   $result = db_execute_statement($sql, "insertSshKey");
