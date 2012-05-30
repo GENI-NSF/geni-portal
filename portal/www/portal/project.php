@@ -31,7 +31,6 @@ require_once('rq_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('logging_client.php');
-require_once("request_constants.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {

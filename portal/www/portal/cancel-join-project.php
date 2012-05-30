@@ -31,7 +31,7 @@ require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once("pa_client.php");
-require_once("request_constants.php");
+require_once("rq_client.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
