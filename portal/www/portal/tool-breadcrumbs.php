@@ -93,7 +93,8 @@ $parents = array("profile.php" => "home.php",
 		 "handle-slice-request.php" => "slice.php",
 		 "join-this-slice.php" => "join-slice.php",
 		 "cancel-join-slice.php" => "home.php",
-		 "uploadsshkey.php" => "profile.php");
+		 "uploadsshkey.php" => "profile.php",
+		"generatesshkey.php" => "profile.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -140,7 +141,8 @@ $names = array("home.php" => $TAB_HOME,
 		 "handle-slice-request.php" => "Handle Slice %slice_name Join Request",
 		 "join-this-slice.php" => "Join Slice %slice_name",
 		 "cancel-join-slice.php" => "Cancel Join slice %slice_name",
-		 "uploadsshkey.php" => "Upload SSH Key");
+		 "uploadsshkey.php" => "Upload SSH Key",
+		"generatesshkey.php" => "Generate SSH Key");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
