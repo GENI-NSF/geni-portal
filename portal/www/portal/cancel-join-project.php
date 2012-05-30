@@ -42,18 +42,14 @@ include("tool-lookupids.php");
 
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  //  $request = get_request_by_id($_REQUEST["request_id"]);
-  //  $request = null;
-  $request = array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING);
+  $request = get_request_by_id($request_id);
 } else {
   error_log("cancel-project-request got no project_id");
 }
 if (! isset($request) || is_null($request)) {
   error_log("No request from request_id");
   if (isset($project_id)) {
-    //    $reqs = get_requests_pending_for_user($user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
-    //    $reqs = null;
-    $reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING));
+    $reqs = get_pending_requests_for_user($user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     if (isset($reqs) && count($reqs) > 0) {
       if (count($reqs) > 1) {
 	error_log("cancel-project-request: Got " . count($reqs) . " pending requests on same project for same member");

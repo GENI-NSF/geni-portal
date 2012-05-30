@@ -25,11 +25,11 @@ require_once('rq_constants.php');
 
  * // Get list of requests pending for given user
  * // Optionally, limit by given context
- * get_requests_pending_for_user(account_id, context_type=null, context_id=null)
+ * get_pending_requests_for_user(account_id, context_type=null, context_id=null)
 
  * // Get number of pending requests for a given user
  * // Optionally, limit by given context
- * get_number_of_requests_pending_for_user(account_id, context_type=null, context_id=null)
+ * get_number_of_pending_requests_for_user(account_id, context_type=null, context_id=null)
 
  * // Get request info for a single request id
  * get_request_by_id(request_id)

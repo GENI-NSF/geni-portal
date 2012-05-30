@@ -119,25 +119,26 @@ print "<input type='text' name='name'/><br/>\n";
 print "<b>Proposed project purpose</b>:<br/>\n";
 print "<textarea name='purpose' cols='60' rows='2'></textarea><br/>\n";
 print "<b>Project request message</b>:<br/>\n";
+$hostname = $_SERVER['HTTP_HOST'];
 print "<textarea name='message' cols='60' rows='10'>Can you create a GENI project for me?
 I need to use GENI for my research, and I need someone to create a 'GENI project' to hold my research.
 I don't have the right permissions to create a GENI project, but I think you do or could.
 
 Would you be willing to create a GENI project for my research, and be the responsible Project Lead for my project? 
 
-Create my project here: https://illyrica.gpolab.bbn.com/secure/edit-project.php
+Create my project here: https://$hostname/secure/edit-project.php
 
 In case you are new to GENI:
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
 For more info on GENI, see: http://www.geni.net
 
-To create a project for me in GENI, you first go to the GENI Portal: https://illyrica.gpolab.bbn.com
+To create a project for me in GENI, you first go to the GENI Portal: https://$hostname
 You log in with your home university or college username, or request a GENI-specific account.
 Then you need to wait for your GENI account to be approved, if you don't have one yet.
 You'll get email when your GENI account is approved, and you can go back to the GENI portal to log in.
 
 Once you are logged in to the GENI portal, click 'Create Project' to create a new project. 
-(https://illyrica.gpolab.bbn.com/secure/edit-project.php)
+(https://$hostname/secure/edit-project.php)
 
 Please give it the project name I listed, so I can find it again (or something similar).
 

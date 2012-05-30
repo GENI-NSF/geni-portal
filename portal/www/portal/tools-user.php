@@ -111,9 +111,7 @@ Modify user supplied account details <button onClick="window.location='modify.ph
 <h2>Outstanding Requests</h2>
 <?php
 // Show outstanding requests for this user
-//$reqs = get_requests_pending_for_user($user->account_id, null, null);
-//$reqs = array(array('id'=>12345, 'context'=>CS_CONTEXT_TYPE::PROJECT, 'context_id'=>'a83bdca8-8cce-4c03-8286-441179b4d4aa', 'request_text'=>'please?', 'request_type'=>REQ_TYPE::JOIN, 'request_details'=>null, 'requestor'=>'df1c5711-57f1-482d-aacd-e147ad8d526a', 'status'=>REQ_STATUS::PENDING, 'creation_timestamp'=>'1-1-1'));
-  $reqs = array();
+$reqs = get_pending_requests_for_user($user->account_id, null, null);
 if (isset($reqs) && count($reqs) > 0) {
   if (! isset($pa_url)) {
     $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
