@@ -118,12 +118,9 @@ if ($status != 0) {
 /* ssh keys (public and private) were successfully generated. Store them in the database. */
 $private_key = file_get_contents($privatekeyfile);
 $public_key = file_get_contents($publickeyfile);
-insertSshKey($user->account_id, $public_key, NULL, NULL, $private_key);
-
-/* Now package the private key and cert for download. */
-
 /* This is the name of the file on the experimenter's machine. */
 $filename = "genirsa";
+insertSshKey($user->account_id, $public_key, $filename, "Generated key", $private_key);
 
 // Set headers for download
 header("Cache-Control: public");
