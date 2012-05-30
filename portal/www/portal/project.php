@@ -84,13 +84,14 @@ print "<tr><th>Slice Action</th><th>Ops Mgmt</th></tr>\n";
 print "<tr>\n";
 /* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
-if ($user->privSlice()) {
-  if (isset($project_id)) {
-    /* Create a new slice*/
-    print "<td><button onClick=\"window.location='";
-    print relative_url("createslice?project_id=$project_id'");
-    print "\"><b>Create a new slice</b></button></td>\n";
-  }
+if ($user->privSlice() && isset($project_id)) {
+	/* Create a new slice*/
+	print "<td><button onClick=\"window.location='";
+	print relative_url("createslice?project_id=$project_id'");
+	print "\"><b>Create a new slice</b></button></td>\n";
+} else {
+	/* Put in an empty table cell if no slice privilege. */
+	print "<td>&nbsp</td>";
 }
 
 /* Disable project */
