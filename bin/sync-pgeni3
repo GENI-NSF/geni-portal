@@ -1,5 +1,18 @@
 #!/bin/sh
 
+TMPDIR=${HOME}/tmp/pgeni3-certs
+
+if [ -e $TMPDIR ]; then
+  echo "Temporary directory $TMPDIR already exists - bailing"
+  exit 1
+fi
+mkdir -p $TMPDIR
+if [ ! -d $TMPDIR ]; then
+  echo "Failed to create temporary directory $TMPDIR - bailing"
+  exit 1
+fi
+cd $TMPDIR
+
 for h in dagoola illyrica marilac sergyar; do
   echo "Pulling from ${h}"
   scp "${h}.gpolab.bbn.com:/usr/share/geni-ch/CA/cacert.pem" cacert-${h}.pem
@@ -9,13 +22,10 @@ done
 cat *.pem > extracerts.bundle
 scp extracerts.bundle boss.pgeni3.gpolab.bbn.com:
 
-# echo "Do the following:"
-# echo ""
-# echo "ssh boss.pgeni3.gpolab.bbn.com"
-# echo "sudo mv extracerts.bundle /usr/testbed/etc/extracerts.bundle"
-# echo "sudo /usr/testbed/sbin/protogeni/getcacerts"
-
 echo "Moving file into place on pgeni3"
 ssh boss.pgeni3.gpolab.bbn.com sudo mv extracerts.bundle /usr/testbed/etc/extracerts.bundle
 echo "Invoking getcacerts on pgeni3"
 ssh boss.pgeni3.gpolab.bbn.com sudo /usr/testbed/sbin/protogeni/getcacerts
+
+cd
+rm -rf $TMPDIR
