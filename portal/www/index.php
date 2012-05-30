@@ -48,6 +48,11 @@ function show_header($title)
 show_header("Welcome to the GENI Portal")
 ?>
 
+<div style="width:479px; font-size:80%; text-align:center; float:right; margin:5px 5px 5px 5px;">
+  <h2>GENI Resources</h2>
+  <img src="/images/staticmap.png" alt="MAP" width="479" height="265"
+       style="border:3px solid #000000" />
+</div>
 
 <h1> Welcome to the GENI Portal </h1>
 
