@@ -39,6 +39,15 @@ print $user->prettyName();
 ?>
 !
 </center>
+<!--
+<img src="/images/staticmap.png" width="359" height="199" alt="MAP"
+     style="float:right;margin:5px 5px 5px 5px;border-width:1px;border-color:Black;"/>
+-->
+<div style="width:479px; font-size:80%; text-align:center; float:right; margin:5px 5px 5px 5px;">
+  <h2>GENI Resources</h2>
+  <img src="/images/staticmap.png" alt="MAP" width="479" height="265"
+       style="border:3px solid #000000" />
+</div>
 <?php
   // Actions / approvals required 
 if ($user->privAdmin()) {
