@@ -225,7 +225,7 @@ class PAContextGuard implements Guard
  * Create project of given name, lead_id, email and purpose
  * Return project id of created project
  */
-function create_project($args)
+function create_project($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
   global $cs_url;
@@ -279,7 +279,7 @@ function create_project($args)
 
   // Create an assertion that this lead is the lead of the project (and has associated privileges)
   global $cs_url;
-  $signer = null; // *** FIX ME
+  $signer = $message->signerUuid();
   create_assertion($cs_url, $signer, $lead_id, CS_ATTRIBUTE_TYPE::LEAD,
 		   CS_CONTEXT_TYPE::PROJECT, $project_id);
 
@@ -466,7 +466,7 @@ function change_lead($args)
 }
 
 // Add a member of given role to given project
-function add_project_member($args)
+function add_project_member($args, $message)
 {
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
@@ -497,6 +497,13 @@ function add_project_member($args)
     . $role . ")";
   error_log("PA.add project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
+
+  // If successful, add an assertion to remove the role's privileges within the CS store
+  if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    global $cs_url;
+    $signer = $message->signerUuid();
+    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+  }
   return $result;
 }
 
@@ -516,6 +523,9 @@ function remove_project_member($args)
     . "= '" . $member_id . "'";
   error_log("PA.remove project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
+
+  // *** FIX ME - Delete previous from MA and from CS
+
   return $result;
 }
 
@@ -539,6 +549,9 @@ function change_member_role($args)
 
   error_log("PA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
+
+  // *** FIX ME - Delete previous from MA and from CS
+
   return $result;
 }
 

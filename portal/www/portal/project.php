@@ -85,7 +85,7 @@ print "<tr><th>Slice Action</th><th>Ops Mgmt</th></tr>\n";
 print "<tr>\n";
 /* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
-if ($user->privSlice() && isset($project_id)) {
+if(isset($project_id) && $user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
 	/* Create a new slice*/
 	print "<td><button onClick=\"window.location='";
 	print relative_url("createslice?project_id=$project_id'");
