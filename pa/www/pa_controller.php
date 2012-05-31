@@ -174,9 +174,9 @@ class PAProjectRequestGuard implements Guard
       . " AND "
       . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
       . " IN (" . CS_ATTRIBUTE_TYPE::LEAD . ", " . CS_ATTRIBUTE_TYPE::ADMIN . ")";
-    error_log("PAProjectRequestGuard.sql = $sql");
-    //    $result = db_fetch_row($sql);
-    error_log("Result = " . print_r($result, true));
+    //    error_log("PAProjectRequestGuard.sql = $sql");
+    $result = db_fetch_row($sql);
+    //    error_log("Result = " . print_r($result, true));
     $allowed = FALSE;
     if($result['code'] == RESPONSE_ERROR::NONE) {
       $result = $result['value']['count'];
