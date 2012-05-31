@@ -27,6 +27,7 @@ require_once('rq_client.php');
 require_once('ma_client.php');
 require_once('sa_client.php');
 require_once('pa_client.php');
+require_once('starter-status-bar.php');
 
 /*----------------------------------------------------------------------
  * Tab Bar
@@ -91,67 +92,6 @@ function show_tab_bar($active_tab = '', $load_user=true)
   echo '</div>';
 }
 
-function show_status_bar($load_user)
-{
-  if (!$load_user) {
-    return;
-  }
-  $user = geni_loadUser();
-  //  error_log("USER = " . print_r($user, true));
-  if (! isset($pa_url)) {
-    $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  }
-  if (! isset($sa_url)) {
-    $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-  }
-  if (! isset($ma_url)) {
-    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-  }
-
-  $activated = $user->isActive();
-  $projects = get_projects_for_member($pa_url, $user->account_id, true);
-  $project_requests = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id);
-  $slices = get_slices_for_member($sa_url, $user->account_id, true);
-  $ssh_keys = lookup_ssh_keys($ma_url, $user->account_id);
-
-  echo '<style type="text/css">';
-  echo "red_text {color:red;}";
-  echo "green_text {color:green;}";
-  echo "</style>";
-  //  echo "<p class='instruction'>";
- echo "<p class='mainnav'>";
-  if($activated) {
-    echo "<green_text>ACTIVE</green_text>";
-  } else {
-    echo "<red_text>ACTIVE</red_text>";
-  }
-  echo " ";
-  if(count($ssh_keys)> 0) {
-    echo "<green_text>SSH_KEYS</green_text>";
-  } else {
-    echo "<red_text>SSH_KEYS</red_text>";
-  }
-  echo " ";
-  if(count($project_requests)==0) {
-    echo "<green_text>REQUESTS</green_text>";
-  } else {
-    echo "<red_text>REQUESTS</red_text>";
-  }
-  echo " ";
-  if(count($projects)>0) {
-    echo "<green_text>PROJECTS</green_text>";
-  } else {
-    echo "<red_text>PROJECTS</red_text>";
-  }
-  echo " ";
-  if(count($slices)>0) {
-    echo "<green_text>SLICES</green_text>";
-  } else {
-    echo "<red_text>SLICES</red_text>";
-  }
-  echo "</p>";
-}
-
 /*----------------------------------------------------------------------
  * Default settings
  *----------------------------------------------------------------------
@@ -200,7 +140,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
   echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
   show_tab_bar($active_tab, $load_user);
-  show_status_bar($load_user);
+  show_starter_status_bar($load_user);
   echo '</div>';
   echo '<div id="content">';
 }
