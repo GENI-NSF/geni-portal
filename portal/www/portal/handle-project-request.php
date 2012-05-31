@@ -136,7 +136,7 @@ $member_id = $request['requestor'];
 $member = geni_loadUser($request['requestor']);
 $member_name = $member->prettyName();
 
-if ($request['request_type'] != REQ_TYPE::JOIN) {
+if ($request['request_type'] != RQ_REQUEST_TYPE::JOIN) {
   error_log("handle-p-req: Non join request in request " . $request['id'] . ": " . $request['request_type']);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
