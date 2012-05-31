@@ -50,7 +50,7 @@ function print_xml( $xml ){
   print "</div>\n";
 }
 
-function print_rspec_pretty( $xml ){
+function print_rspec_pretty_ORIG( $xml ){
   $rspec = new SimpleXMLElement($xml);
   // if ($rspec == False) {
   //  return; 
@@ -116,6 +116,130 @@ function print_rspec_pretty( $xml ){
     }
   }
   print "</ul>\n";
+  print "</div>\n";
+}
+
+
+function get_name_from_urn( $urn ){
+  $urn_pieces = explode( "+", $urn );
+  $name = end($urn_pieces);
+  return $name;
+}
+function print_rspec_pretty( $xml ){
+  $rspec = new SimpleXMLElement($xml);
+  $rspec->registerXPathNamespace("def", "http://www.geni.net/resources/rspec/3/manifest.xsd");
+  // FIX ME
+  // if (!$rspec) {
+  //  return; 
+  // }
+  print "<div class='xml'>";
+  $nodes = $rspec->node;
+  $links = $rspec->link;
+  $num_nodes = $nodes->count();
+  $num_links = $links->count();
+
+  $nodes_text = "<b>".$num_nodes."</b> node";
+  if ($num_nodes!=1) {
+    $nodes_text = $nodes_text."s";
+  }
+  $links_text = "<b>".$num_links."</b> link";
+  if ($num_links!=1) {
+    $links_text = $links_text."s";
+  }
+  echo "<p>There are ",$nodes_text," and ",$links_text," at this aggregate.</p>";
+  
+  $node_num = 1;
+  foreach ($nodes as $node) {
+
+    $num_ifs = $node->interface->count();
+    echo "<b>Node #",$node_num,"</b>";
+    $node_num = $node_num+1;
+    echo "<table><tr>\n";
+    echo "<th>Client ID</th>\n";
+    echo "<th>Component ID</th>\n";
+    echo "<th colspan='2'></th>\n";
+    echo "</tr>\n";
+    /* echo "<tr>\n"; */
+    /* echo "<th colspan='2'>Node</th>"; */
+    /* echo "<th>Exclusive</th>\n"; */
+    /* echo "</tr>\n"; */
+    /* echo "<tr>\n"; */
+    echo "<td>",$node['client_id'],"</td>\n";
+    $comp_id = $node['component_id'];
+    $comp_name = get_name_from_urn($comp_id);
+    echo "<td>",$comp_name,"</td>";
+    if (strtolower($node['exclusive'])=="true"){
+      $exclusive = "exclusive";
+    } else {
+      $exclusive = "not exclusive";
+    }
+    echo "<td>",$exclusive,"</td>";
+    echo "</tr>\n";
+
+    $interfaces = $node->interface;
+    /* Add interface header if relevant */
+    if ($interfaces->count() > 0) {
+      echo "<tr>\n";
+      echo "<th colspan='4'>Interfaces</th>";
+    /*   echo "<th>MAC</th>\n"; */
+    /*   echo "<th>IP</th>\n"; */
+      echo "</tr>\n";
+    }
+    foreach ($interfaces as $interface){
+      $comp_id = $interface['component_id'];
+      $comp_name = get_name_from_urn($comp_id);
+      echo "<tr>\n";
+      echo "<td>",$interface['client_id'],"</td>";
+      echo "<td>",$comp_name,"</td>";
+      echo "<td>MAC:",$interface['mac_address'],"</td>";
+      foreach ($interface as $ip){
+	if ($ip->getName() == "ip") {
+	  echo "<td>",$ip['type'],": ",$ip['address'],"</td>";
+	}
+      }
+      echo "</tr></table>\n";
+      print "\n";
+    }
+  }
+  
+  $link_num = 1;
+  foreach ($links as $link) {
+    echo "<b>Link #",$link_num,"</b>";
+    $link_num = $link_num+1;
+    echo "<table><tr>\n";
+    $num=0;
+    $num_endpts = $link->interface_ref->count();
+    echo "<th>Client ID</th>\n";
+    while ($num < $num_endpts) {
+      echo "<th>End ID #",$num,"</th>\n";
+      $num = $num + 1;
+    }
+    echo "</tr>\n";
+    echo "<tr>\n";
+    echo "<td>",$link['client_id'],"</td>\n";
+    $interface_refs = $link->interface_ref;
+    foreach ($interface_refs as $interface_ref) {
+      echo "<td>",$interface_ref['client_id'],"</td>";
+      /* $comp_id = $interface_ref['component_id']; */
+      /* $comp_name = get_name_from_urn($comp_id); */
+      /* echo "<td>Component ID: ",$comp_name,"</td>"; */
+    }
+    print "</tr></table>\n";
+    
+    /* foreach ($link as $property) { */
+    /* 	if ($property->getName() == "property") { */
+    /* 	  echo "<li><b>",$property['source_id']," --> ",$property['dest_id'],"</b></li>"; */
+    /* 	  //	  echo "<li><b>Source ID: </b>",$property['source_id'],"</li>"; */
+    /* 	  //	  echo "<li><b>Destination ID: </b>",$property['dest_id'],"</li>"; */
+    /* 	  print "<ul>\n"; */
+    /* 	  echo "<li>Capacity: ",$property['capacity'],"</li>"; */
+    /* 	  echo "<li>Latency: ",$property['latency'],"</li>"; */
+    /* 	  echo "<li>Packet Loss: ",$property['packet_loss'],"</li>"; */
+    /* 	  print "</ul>\n"; */
+    /* 	} */
+    /* } */
+    /* print "</ul>\n"; */
+  }
   print "</div>\n";
 }
 

@@ -76,6 +76,7 @@ th {
  margin: 3px;
  padding: 3px;
  background-color: SkyBlue;
+ text-align: left;
 }
 
 td.label {
@@ -95,6 +96,9 @@ table .notapply {
  background-color: #DCE2E8;
 }
 
+.aggregate, .resources {
+ padding: 8px;
+}
 .aggregate {
  background-color: SkyBlue;
 }
