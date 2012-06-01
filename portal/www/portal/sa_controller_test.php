@@ -116,11 +116,11 @@ error_log("LSBU " . $slice_urn);
 dump_slice($slice_info2);
 
 
-$slice_info3 = create_slice($sa_url, $user, $project, $project_name, "SSS3", $owner);
+$slice_info3 = create_slice($sa_url, $user, $project, $project_name, "SSS3", $user->account_id);
 $slice_id3 = $slice_info3[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-$slice_info4 = create_slice($sa_url, $user, $project, $project_name, "SSS4", $owner);
+$slice_info4 = create_slice($sa_url, $user, $project, $project_name, "SSS4", $user->account_id);
 $slice_id4 = $slice_info4[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-$slice_info5 = create_slice($sa_url, $user, $project, $project_name, "SSS5", $owner);
+$slice_info5 = create_slice($sa_url, $user, $project, $project_name, "SSS5", $user->account_id);
 $slice_id5 = $slice_info5[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
 
 
@@ -135,13 +135,13 @@ $rows = get_slice_members($sa_url, $user, $slice_id3);
 dump_rows($rows);
 $rows = get_slice_members($sa_url, $user, $slice_id3, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_rows($rows);
-$pids = get_slices_for_member($sa_url, $user, $member1, true);
+$pids = get_slices_for_member($sa_url, $user, $user->account_id, true);
 dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $user, $member1, false);
+$pids = get_slices_for_member($sa_url, $user, $user->account_id, false);
 dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $user, $member1, true, CS_ATTRIBUTE_TYPE::MEMBER);
+$pids = get_slices_for_member($sa_url, $user, $user->account_id, true, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $user, $member1, false, CS_ATTRIBUTE_TYPE::AUDITOR);
+$pids = get_slices_for_member($sa_url, $user, $user->account_id, false, CS_ATTRIBUTE_TYPE::AUDITOR);
 dump_pids($pids);
 
 delete_project($pa_url, $project);
