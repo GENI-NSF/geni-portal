@@ -65,7 +65,7 @@ class SAGuardFactory implements GuardFactory
             'remove_slice_member' => array('slice_guard'),
             'change_slice_member_role' => array('slice_guard'),
             'get_slice_members' => array('slice_guard'),
-            'get_slices_for_member'=> array(), // Unguarded
+            'get_slices_for_member'=> array('signer_member_guard'),
 	    'create_request' => array(), // Unguarded
 	    'resolve_pending_request' => array(), // Unguarded
 	    'get_requests_for_context' => array(), // Unguarded
@@ -91,6 +91,16 @@ class SAGuardFactory implements GuardFactory
     return new SAContextGuard($this->cs_url, $message, $action,
                               CS_CONTEXT_TYPE::PROJECT,
                               $params[SA_ARGUMENT::PROJECT_ID]);
+  }
+
+  /* Ensure that the signer matches the MEMBER parameter. */
+  private function signer_owner_guard($message, $action, $params) {
+      return new SASignerGuard($this->cs_url, $message, $action, $params, SA_ARGUMENT::OWNER_ID);
+  }
+
+  /* Ensure that the signer matches the MEMBER parameter. */
+  private function signer_member_guard($message, $action, $params) {
+      return new SASignerGuard($this->cs_url, $message, $action, $params, SA_ARGUMENT::MEMBER_ID);
   }
 
   /**
@@ -150,6 +160,25 @@ class SAContextGuard implements Guard
   }
 }
 
+class SASignerGuard implements Guard
+{
+  function __construct($cs_url, $message, $action, $params, $match_param)
+  {
+    $this->cs_url = $cs_url;
+    $this->message = $message;
+    $this->action = $action;
+    $this->params = $params;
+    $this->match_param = $match_param;
+  }
+  /**
+   * Return TRUE if the signer and the $match_param match, FALSE otherwise.
+   */
+  function evaluate() {
+    $match_param = $this->params[$this->match_param];
+    sa_debug("SASignerGuard matching signer against " . $match_param);
+    return $this->message->signerUuid() === $match_param;
+  }
+}
 
 /*----------------------------------------------------------------------
  * API Methods
@@ -701,7 +730,7 @@ function get_slices_for_member($args)
     . " WHERE " 
     . $member_clause;
 
-  error_log("SA.get_slices_for_member.sql = " . $sql);
+  //  error_log("SA.get_slices_for_member.sql = " . $sql);
   $rows = db_fetch_rows($sql);
   $result = $rows;
   if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {

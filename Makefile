@@ -41,6 +41,9 @@ syncs:
 syncp:
 	$(RSYNC) --exclude .git -aztv ../proto-ch panther.gpolab.bbn.com:
 
+syncc:
+	$(RSYNC) --exclude .git -aztv ../proto-ch cascade.gpolab.bbn.com:
+
 clean:
 
 distclean:

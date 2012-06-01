@@ -204,7 +204,22 @@ class GeniUser
 
 } // End of class GeniUser
 
-
+/* Insufficient attributes were released.
+ * Funnel this back through the incommon
+ * service to help the user understand.
+ * See https://spaces.internet2.edu/display/InCCollaborate/Error+Handling+Service
+ */
+function incommon_attribute_redirect()
+{
+	$error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+	$params['sp_entityID'] = "https://" . $_SERVER[HTTP_HOST] . "/shibboleth";
+	$params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+	$query = http_build_query($params);
+	$url = $error_service_url . $query;
+	error_log("Insufficient attributes. Redirecting to $url");
+	header("Location: $url");
+	exit;
+}
 
 // Loads an experimenter from the database.
 function geni_loadUser($id='')
@@ -217,7 +232,7 @@ function geni_loadUser($id='')
     // Short circuit if no eppn. We require eppn as the persistent db key.
     if (! array_key_exists('eppn', $_SERVER)) {
       // No eppn was found - redirect to a gentle error page
-      relative_redirect("error-eppn.php");
+      incommon_attribute_redirect();
     }
 
     $eppn = $_SERVER['eppn'];

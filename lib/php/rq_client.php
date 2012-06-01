@@ -91,7 +91,7 @@ function get_requests_by_user($url, $signer, $account_id, $context_type=null, $c
 // Get list of requests pending for given user
 // Optionally, limit by given context
 function get_pending_requests_for_user($url, $signer, $account_id, 
-				       $context_type=null, $context_id=bnull)
+				       $context_type=null, $context_id=null)
 {
   $request_message['operation'] = 'get_pending_requests_for_user';
   $request_message[RQ_ARGUMENTS::ACCOUNT_ID] = $account_id;

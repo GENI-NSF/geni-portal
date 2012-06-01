@@ -13,7 +13,7 @@ if [ ! -d $TMPDIR ]; then
 fi
 cd $TMPDIR
 
-for h in dagoola illyrica marilac sergyar; do
+for h in dagoola illyrica marilac sergyar cascade; do
   echo "Pulling from ${h}"
   scp "${h}.gpolab.bbn.com:/usr/share/geni-ch/CA/cacert.pem" cacert-${h}.pem
   scp "${h}.gpolab.bbn.com:/usr/share/geni-ch/ma/ma-cert.pem" ma-cert-${h}.pem

@@ -31,7 +31,6 @@ require_once('rq_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('logging_client.php');
-require_once("request_constants.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -86,7 +85,7 @@ print "<tr><th>Slice Action</th><th>Ops Mgmt</th></tr>\n";
 print "<tr>\n";
 /* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
-if ($user->privSlice() && isset($project_id)) {
+if(isset($project_id) && $user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
 	/* Create a new slice*/
 	print "<td><button onClick=\"window.location='";
 	print relative_url("createslice?project_id=$project_id'");
@@ -105,7 +104,7 @@ print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
-print "<button onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button>\n";
+print "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit Project</b></button>\n";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";

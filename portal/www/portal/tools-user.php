@@ -25,7 +25,7 @@
 <?php
 require_once("user.php");
 require_once("cert_utils.php");
-require_once("request_constants.php");
+require_once("rq_client.php");
 ?>
 <h1>User Tools</h1>
 <?php
@@ -112,22 +112,22 @@ Modify user supplied account details <button onClick="window.location='modify.ph
 <h2>Outstanding Requests</h2>
 <?php
 // Show outstanding requests for this user
-$reqs = get_pending_requests_for_user($user->account_id, null, null);
-if (isset($reqs) && count($reqs) > 0) {
-  if (! isset($pa_url)) {
-    $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-    if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-      error_log("Found no PA in SR!'");
-    }
-  }
-  
-  if (! isset($sa_url)) {
-    $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-    if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
-      error_log("Found no SA in SR!'");
-    }
-  }
+if (! isset($pa_url)) {
+	$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+	if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
+		error_log("Found no PA in SR!'");
+	}
+}
 
+if (! isset($sa_url)) {
+	$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+	if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+		error_log("Found no SA in SR!'");
+	}
+}
+
+$reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id);
+if (isset($reqs) && count($reqs) > 0) {
   print "Found " . count($reqs) . " outstanding requests for you:<br/>\n";
   print "<table>\n";
   print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";

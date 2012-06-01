@@ -44,8 +44,9 @@ include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 if (isset($slice)) {
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  error_log("SLICE  = " . print_r($slice, true));
   $slice_desc = "NOT IMPLEMENTED"; //$slice[SA_ARGUMENT::SLICE_DESCRIPTION];
-  $slice_creation = "1-2-3456"; //$slice[SA_ARGUMENT::SLICE_CREATION];
+  $slice_creation = "NOT IMPLEMENTED"; //$slice[SA_ARGUMENT::SLICE_CREATION];
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
@@ -158,7 +159,7 @@ print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_n
 print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
 print "<tr><td class='label'><b>Description</b></td><td colspan='3'>$slice_desc ";
-echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print ("<tr><td class='label'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");

@@ -44,7 +44,7 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 $members = get_member_ids($ma_url);
 if(count($members) < 3) {
-  error_log("Need 3 or more members to run pa_controller_test");
+  error_log("Need 3 or more members to run sa_controller_test");
   return;
 }
 
@@ -135,13 +135,13 @@ $rows = get_slice_members($sa_url, $slice_id3);
 dump_rows($rows);
 $rows = get_slice_members($sa_url, $slice_id3, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_rows($rows);
-$pids = get_slices_for_member($sa_url, $member1, true);
+$pids = get_slices_for_member($sa_url, $user, $member1, true);
 dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $member1, false);
+$pids = get_slices_for_member($sa_url, $user, $member1, false);
 dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $member1, true, CS_ATTRIBUTE_TYPE::MEMBER);
+$pids = get_slices_for_member($sa_url, $user, $member1, true, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $member1, false, CS_ATTRIBUTE_TYPE::AUDITOR);
+$pids = get_slices_for_member($sa_url, $user, $member1, false, CS_ATTRIBUTE_TYPE::AUDITOR);
 dump_pids($pids);
 
 delete_project($pa_url, $project);

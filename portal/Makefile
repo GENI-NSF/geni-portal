@@ -94,6 +94,7 @@ install: $(LIB.DIR) www install-gcf
 	sudo /bin/cp www/images/* /var/www/images
 	sudo /bin/cp -r www/common /var/www/
 	sudo /bin/cp www/*.php /var/www/
+	sudo /bin/cp www/favicon.ico /var/www/favicon.ico
 	sudo $(INSTALL.WWW) -m 755 -d /var/www/policy
 	sudo $(INSTALL.WWW) -m 644 www/policy/* /var/www/policy
 	sudo $(INSTALL.WWW) -m 644 apache2-http.conf $(LIB.DIR)

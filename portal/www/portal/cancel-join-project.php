@@ -31,7 +31,7 @@ require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once("pa_client.php");
-require_once("request_constants.php");
+require_once("rq_client.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -40,9 +40,13 @@ include("tool-lookupids.php");
 
 // Cancel request to join a project
 
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+}
+
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  $request = get_request_by_id($request_id);
+  $request = get_request_by_id($pa_url, $user, $request_id);
 } else {
   error_log("cancel-project-request got no project_id");
 }
@@ -118,7 +122,8 @@ $member_id = $request['requestor'];
 $member = $user;
 $member_name = $user->prettyName();
 
-if ($request['request_type'] != REQ_TYPE::JOIN) {
+error_log("REQ = " . print_r($request, true));
+if ($request['request_type'] != RQ_REQUEST_TYPE::JOIN) {
   error_log("cancel-p-req: Non join request in request " . $request['id'] . ": " . $request['request_type']);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
@@ -130,12 +135,12 @@ if ($request['request_type'] != REQ_TYPE::JOIN) {
   exit();
 }
 
-if ($request['context'] != CS_CONTEXT_TYPE::PROJECT) {
-  error_log("cancel-p-req: Not a project, but " . $request['context']);
+if ($request['context_type'] != CS_CONTEXT_TYPE::PROJECT) {
+  error_log("cancel-p-req: Not a project, but " . $request['context_type']);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
   print "<h2>Error canceling project request</h2>\n";
-  print "Request not a project request, but " . $request['context'] . "<br/>\n";
+  print "Request not a project request, but " . $request['context_type'] . "<br/>\n";
   // FIXME: Print other request details
   print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
   include("footer.php");
@@ -170,7 +175,7 @@ if (array_key_exists('submit', $_REQUEST)) {
 // Handle form submission
 if (isset($submit)) {
   // Cancel project join request
-  //  $cancelres = cancel_request($request_id, $reason);
+  $cancelres = resolve_pending_request($pa_url, $user, $request_id, RQ_REQUEST_STATUS::CANCELLED, $reason);
   // FIXME: Handle result
 
   error_log("cancel-p-req canceled add of $member_name to project $project_name");

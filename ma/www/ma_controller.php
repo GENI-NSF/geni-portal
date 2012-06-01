@@ -203,13 +203,13 @@ function register_ssh_key($args)
 function lookup_ssh_keys($args)
 {
   global $MA_SSH_KEY_TABLENAME;
-  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
+  //  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $sql = "select * from " . $MA_SSH_KEY_TABLENAME 
     . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::ACCOUNT_ID . " = '" 
     . $member_id . "'";
   $rows = db_fetch_rows($sql);
-  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
+  //  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
   return $rows;
 }
 

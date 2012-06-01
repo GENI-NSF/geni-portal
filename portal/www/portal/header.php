@@ -23,6 +23,11 @@
 //----------------------------------------------------------------------
 
 require_once("util.php");
+require_once('rq_client.php');
+require_once('ma_client.php');
+require_once('sa_client.php');
+require_once('pa_client.php');
+require_once('starter-status-bar.php');
 
 /*----------------------------------------------------------------------
  * Tab Bar
@@ -135,6 +140,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
   echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
   show_tab_bar($active_tab, $load_user);
+  show_starter_status_bar($load_user);
   echo '</div>';
   echo '<div id="content">';
 }

@@ -31,7 +31,6 @@ require_once('rq_client.php');
 require_once("sa_client.php");
 require_once("cs_client.php");
 require_once('tool-projects.php');
-require_once("request_constants.php");
 
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
@@ -67,7 +66,7 @@ $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, CS_CONT
 if (isset($reqs) && count($reqs) > 0) {
   print "Found " . count($reqs) . " outstanding project join requests for you:<br/>\n";
   print "<table>\n";
-  print "<tr><th>Project Name</th><th>Project Lead</th><th>Project Purpose</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
+  print "<tr><th>Project Name</th><th>Project Lead</th><th>Request Created</th><th>Requestor</th><th>Handle Request</th></tr>\n";
   foreach ($reqs as $request) {
     // Print it out
     $project = lookup_project($pa_url, $request['context_id']);
@@ -77,10 +76,12 @@ if (isset($reqs) && count($reqs) > 0) {
     $reason = $request['request_text'];
     $req_date = $request['creation_timestamp'];
     $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
-    $leadname = $lead->prettyName();
-    $cancel_url="cancel-join-project.php?request_id=" . $request['id'];
-    $cancel_button = "<button style=\"\" onClick=\"window.location='" . $cancel_url . "'\"><b>Cancel Request</b></button>";
-    print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$leadname</td><td>$purpose</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
+    $lead_name = $lead->prettyName();
+    $requestor = geni_loadUser($request[RQ_ARGUMENTS::REQUESTOR]);
+    $requestor_name = $requestor->prettyName();
+    $handle_url="handle-project-request.php?request_id=" . $request['id']; // ***
+    $handle_button = "<button style=\"\" onClick=\"window.location='" . $handle_url . "'\"><b>Handle Request</b></button>";
+    print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$lead_name</td><td>$req_date</td><td>$requestor_name</td><td>$handle_button</td></tr>\n";
   }
   print "</table>\n";
   print "<br/><br/>\n";

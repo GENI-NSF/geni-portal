@@ -216,13 +216,14 @@ function get_slice_members($sa_url, $slice_id, $role=null)
 //    for which member has given role (is_member = true)
 //    for which member does NOT have given role (is_member = false)
 // FIXME: optional project_id to constrain to a given project?
-function get_slices_for_member($sa_url, $member_id, $is_member, $role=null)
+function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=null)
 {
   $get_slices_message['operation'] = 'get_slices_for_member';
   $get_slices_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
   $get_slices_message[SA_ARGUMENT::IS_MEMBER] = $is_member;
   $get_slices_message[SA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $get_slices_message);
+  $results = put_message($sa_url, $get_slices_message,
+                       $signer->certificate(), $signer->privateKey());
   return $results;
 }
 
