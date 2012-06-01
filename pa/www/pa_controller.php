@@ -288,7 +288,10 @@ function create_project($args, $message)
   add_attribute($ma_url, $lead_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
   // Now add the lead as a member of the project
-  $addres = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id, PA_ARGUMENT::MEMBER_ID => $lead_id, PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD));
+  $addres = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+                                     PA_ARGUMENT::MEMBER_ID => $lead_id,
+                                     PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD),
+                               NULL);
   if (! isset($addres) || is_null($addres) || ! array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     error_log("create_project failed to add lead as a project member: " . $addres[RESPONSE_ARGUMENT::CODE] . ": " . $addres[RESPONSE_ARGUMENT::OUTPUT]);
     // FIXME: ROLLBACK?
@@ -501,8 +504,11 @@ function add_project_member($args, $message)
   // If successful, add an assertion to remove the role's privileges within the CS store
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
-    $signer = $message->signerUuid();
-    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    // $signer = $message->signerUuid();
+    /* FIXME - The signer needs to have a certificate and private key. Who sends this message (below)
+     * to the CS? Is the PA the signer?
+     */
+    create_assertion($cs_url, NULL, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
   }
   return $result;
 }
