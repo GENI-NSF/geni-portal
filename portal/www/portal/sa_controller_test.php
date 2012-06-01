@@ -111,7 +111,7 @@ renew_slice($sa_url, $user, $slice_id2, $expire);
 dump_slices($user, $project);
 
 $slice_urn = $slice_info[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
-$slice_info2 = lookup_slice_by_urn($sa_url, $slice_urn);
+$slice_info2 = lookup_slice_by_urn($sa_url, $user, $slice_urn);
 error_log("LSBU " . $slice_urn);
 dump_slice($slice_info2);
 
@@ -124,16 +124,16 @@ $slice_info5 = create_slice($sa_url, $user, $project, $project_name, "SSS5", $ow
 $slice_id5 = $slice_info5[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
 
 
-$result = add_slice_member($sa_url, $slice_id3, $member1, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_slice_member($sa_url, $slice_id3, $member2, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_slice_member($sa_url, $slice_id4, $member1, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_slice_member($sa_url, $slice_id5, $member1, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_slice_member($sa_url, $slice_id5, $member2, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = remove_slice_member($sa_url, $slice_id5, $member1);
-$result = change_slice_member_role($sa_url, $slice_id5, $member2, CS_ATTRIBUTE_TYPE::AUDITOR);
-$rows = get_slice_members($sa_url, $slice_id3);
+$result = add_slice_member($sa_url, $user, $slice_id3, $member1, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_slice_member($sa_url, $user, $slice_id3, $member2, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_slice_member($sa_url, $user, $slice_id4, $member1, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_slice_member($sa_url, $user, $slice_id5, $member1, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_slice_member($sa_url, $user, $slice_id5, $member2, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = remove_slice_member($sa_url, $user, $slice_id5, $member1);
+$result = change_slice_member_role($sa_url, $user, $slice_id5, $member2, CS_ATTRIBUTE_TYPE::AUDITOR);
+$rows = get_slice_members($sa_url, $user, $slice_id3);
 dump_rows($rows);
-$rows = get_slice_members($sa_url, $slice_id3, CS_ATTRIBUTE_TYPE::MEMBER);
+$rows = get_slice_members($sa_url, $user, $slice_id3, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_rows($rows);
 $pids = get_slices_for_member($sa_url, $user, $member1, true);
 dump_pids($pids);

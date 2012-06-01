@@ -142,12 +142,13 @@ function lookup_slice($sa_url, $signer, $slice_id)
 
 /* lookup details of slice of given slice URN */
 // Return array(id, name, project_id, expiration, owner_id, urn)
-function lookup_slice_by_urn($sa_url, $slice_urn)
+function lookup_slice_by_urn($sa_url, $signer, $slice_urn)
 {
   //  error_log("LS.start " . $slice_id . " " . time());
   $lookup_slice_message['operation'] = 'lookup_slice_by_urn';
   $lookup_slice_message[SA_ARGUMENT::SLICE_URN] = $slice_urn;
-  $slice = put_message($sa_url, $lookup_slice_message);
+  $slice = put_message($sa_url, $lookup_slice_message,
+                       $signer->certificate(), $signer->privateKey());
   //  error_log("LS.end " . $slice_id . " " . time());
   return $slice;
 }
@@ -167,45 +168,49 @@ function renew_slice($sa_url, $signer, $slice_id, $expiration)
 }
 
 // Add a member of given role to given slice
-function add_slice_member($sa_url, $slice_id, $member_id, $role)
+function add_slice_member($sa_url, $signer, $slice_id, $member_id, $role)
 {
   $add_slice_member_message['operation'] = 'add_slice_member';
   $add_slice_member_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $add_slice_member_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
   $add_slice_member_message[SA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $add_slice_member_message);
+  $results = put_message($sa_url, $add_slice_member_message,
+                         $signer->certificate(), $signer->privateKey());
   return $results;
 }
 
 // Remove a member from given slice 
-function remove_slice_member($sa_url, $slice_id, $member_id)
+function remove_slice_member($sa_url, $signer, $slice_id, $member_id)
 {
   $remove_slice_member_message['operation'] = 'remove_slice_member';
   $remove_slice_member_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $remove_slice_member_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
-  $results = put_message($sa_url, $remove_slice_member_message);
+  $results = put_message($sa_url, $remove_slice_member_message,
+                         $signer->certificate(), $signer->privateKey());
   return $results;
 }
 
 // Change role of given member in given slice
-function change_slice_member_role($sa_url, $slice_id, $member_id, $role) 
+function change_slice_member_role($sa_url, $signer, $slice_id, $member_id, $role)
 {
   $change_member_role_message['operation'] = 'change_slice_member_role';
   $change_member_role_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $change_member_role_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
   $change_member_role_message[SA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $change_member_role_message);
+  $results = put_message($sa_url, $change_member_role_message,
+                         $signer->certificate(), $signer->privateKey());
   return $results;
 }
 
 // Return list of member ID's and roles associated with given slice
 // If role is provided, filter to members of given role
-function get_slice_members($sa_url, $slice_id, $role=null) 
+function get_slice_members($sa_url, $signer, $slice_id, $role=null)
 {
   $get_slice_members_message['operation'] = 'get_slice_members';
   $get_slice_members_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
   $get_slice_members_message[SA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $get_slice_members_message);
+  $results = put_message($sa_url, $get_slice_members_message,
+                         $signer->certificate(), $signer->privateKey());
   return $results;
 }
 
