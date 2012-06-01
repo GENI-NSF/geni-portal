@@ -54,6 +54,17 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
+if (array_key_exists("pretty", $_REQUEST)){
+  $pretty = $_REQUEST['pretty'];
+  if (strtolower($pretty) == "false") {
+    $pretty = False;
+  } else {
+    $pretty = True;
+  }
+} else {
+  $pretty=True;
+}
+
 $text = "";
 // Takes an arg am_id which may have multiple values. Each is treated
 // as the ID from the DB of an AM which should be queried
@@ -114,7 +125,11 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
-print_rspec( $obj );
+if ($pretty) {
+  print "<a href='listresources.php?pretty=False&slice_id=".$slice_id."'>Raw RSpec</a>";
+}
+
+print_rspec( $obj, $pretty );
 
 print "<hr/>";
 print "<a href='slices.php'>Back to All slices</a>";

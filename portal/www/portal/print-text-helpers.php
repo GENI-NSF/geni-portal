@@ -157,7 +157,7 @@ function print_rspec_pretty( $xml ){
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";
     echo "<th>Component ID</th>\n";
-    echo "<th colspan='2'></th>\n";
+    echo "<th colspan='4'></th>\n";
     echo "</tr>\n";
     /* echo "<tr>\n"; */
     /* echo "<th colspan='2'>Node</th>"; */
@@ -174,13 +174,26 @@ function print_rspec_pretty( $xml ){
       $exclusive = "not exclusive";
     }
     echo "<td>",$exclusive,"</td>";
+    $sliver_type=$node->sliver_type;
+    $host=$node->host;
+    $services=$node->services;
+    $login=$services->login;
+    if ($sliver_type){
+      echo "<td>",$sliver_type['name'],"</td>\n";
+    }
+    if ($host){
+      echo "<td>",$host['name'],"</td>\n";
+    }
+    if ($login){
+      echo "<td>ssh ", $login['username'],"@",$login['hostname'],"</td>\n";
+    }
     echo "</tr>\n";
 
     $interfaces = $node->interface;
     /* Add interface header if relevant */
     if ($interfaces->count() > 0) {
       echo "<tr>\n";
-      echo "<th colspan='4'>Interfaces</th>";
+      echo "<th colspan='6'>Interfaces</th>";
     /*   echo "<th>MAC</th>\n"; */
     /*   echo "<th>IP</th>\n"; */
       echo "</tr>\n";
@@ -243,7 +256,7 @@ function print_rspec_pretty( $xml ){
   print "</div>\n";
 }
 
-function print_rspec( $obj ) {
+function print_rspec( $obj, $pretty ) {
   $args = array_keys( $obj );
   foreach ($args as $arg){
     $arg_urn = $arg[0];
@@ -251,13 +264,16 @@ function print_rspec( $obj ) {
     $xml = $obj[$arg];
     print "<div class='aggregate'>Aggregate <b>".$arg."'s</b> Resources:</div>";
     print "<div class='resources'>";
-    //    print_xml($xml);
-    print_rspec_pretty($xml);
+    if ($pretty){
+      /* Parsed into a table */
+      print_rspec_pretty($xml);
+    } else {
+      /* As plain XML */
+      print_xml($xml);
+    }
     print "</div>\n";
   }
 }
-
-
 
 function print_return( $obj, $topLevel ) {
   if (!$topLevel){
