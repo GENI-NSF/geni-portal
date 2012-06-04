@@ -231,7 +231,7 @@ function print_rspec_pretty( $xml ){
     $num_endpts = $link->interface_ref->count();
     echo "<th>Client ID</th>\n";
     while ($num < $num_endpts) {
-      echo "<th>End ID #",$num,"</th>\n";
+      echo "<th>Endpoint #",$num,"</th>\n";
       $num = $num + 1;
     }
     echo "</tr>\n";
