@@ -140,9 +140,9 @@ $names = array("home.php" => $TAB_HOME,
 		 "join-slice.php" => "Join a Slice in Project %project_name",
 		 "handle-slice-request.php" => "Handle Slice %slice_name Join Request",
 		 "join-this-slice.php" => "Join Slice %slice_name",
-		 "cancel-join-slice.php" => "Cancel Join slice %slice_name",
-		 "uploadsshkey.php" => "Upload SSH Key",
-		"generatesshkey.php" => "Generate SSH Key");
+		 "cancel-join-slice.php" => "Cancel Join Slice %slice_name",
+		 "uploadsshkey.php" => "Upload SSH Public Key",
+		"generatesshkey.php" => "Generate SSH Keypair");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
