@@ -125,11 +125,11 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
+print_rspec( $obj, $pretty );
+
 if ($pretty) {
   print "<a href='listresources.php?pretty=False&slice_id=".$slice_id."'>Raw RSpec</a>";
 }
-
-print_rspec( $obj, $pretty );
 
 print "<hr/>";
 print "<a href='slices.php'>Back to All slices</a>";
