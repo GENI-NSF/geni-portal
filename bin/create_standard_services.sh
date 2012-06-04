@@ -52,7 +52,7 @@ function add_service {
         ./sign-auth-req "${SVC_REQ}" "${SVC_CERT}" ${SVC_NAME} ${SVC_CA}
         NEW_CERTS=1
     else
-        echo "${SVC_NAME} certificate alread exists (use '-f' to overwrite)"
+        echo "${SVC_NAME} certificate already exists (use '-f' to overwrite)"
     fi
 
     if [ ! -z "$4" -a ! -z "$5" ]; then
