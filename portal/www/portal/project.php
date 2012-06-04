@@ -64,7 +64,7 @@ if (! is_null($project) && $project != "None") {
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-  $creation = "12-34-5678"; //$project[PA_PROJECT_TABLE_FIELDNAME::CREATION_TIME];
+  $creation = "12-20-2012"; //$project[PA_PROJECT_TABLE_FIELDNAME::CREATION_TIME];
   if (uuid_is_valid($leadid)) {
     $lead = geni_loadUser($leadid);
     $leademail = $lead->email();
@@ -98,6 +98,24 @@ if(isset($project_id) && $user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJE
 /* Disable project */
 print "<td><button onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
 print "</tr></table>\n";
+
+$reqs = null;
+if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
+					CS_CONTEXT_TYPE::PROJECT, $project_id);
+  if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
+    print "<h3>Approve new project members</h3>\n";
+    print "<table>\n";
+    print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
+    foreach ($reqs as $request) {
+      $requestor = geni_loadUser($request['requestor']);
+      $created = $request['creation_timestamp'];
+      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request['id'] . "'\"><b>Handle Request</b></button>";
+      print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
+    }
+    print "</table><br/>\n";
+  }
+}
 
 print "<table>\n";
 print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
@@ -140,26 +158,14 @@ include("tool-slices.php");
   // FIXME: the right thing here is to check they are project lead or admin on the project
   // look for update_project
 if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  print "<br/><h3>Approve/invite new project members</h3>\n";
+  print "<br/><h3>Invite new project members</h3>\n";
   print "<button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
   print "\"><b>Invite New Project Members</b></button><br/>\n";
   
   print "<br/>\n";
-  $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
-					CS_CONTEXT_TYPE::PROJECT, $project_id);
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
     print "<i>No outstanding project join requests.</i><br/>\n";
-  } else {
-    print "<table>\n";
-    print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
-    foreach ($reqs as $request) {
-      $requestor = geni_loadUser($request['requestor']);
-      $created = $request['creation_timestamp'];
-      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request['id'] . "'\"><b>Handle Request</b></button>";
-      print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
-    }
-    print "</table><br/>\n";
   }
 }
 ?>
