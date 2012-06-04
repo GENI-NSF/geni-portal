@@ -149,7 +149,7 @@ if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
 					CS_CONTEXT_TYPE::PROJECT, $project_id);
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
-    print "<i>No outstanding project join requests.<br/>\n";
+    print "<i>No outstanding project join requests.</i><br/>\n";
   } else {
     print "<table>\n";
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
