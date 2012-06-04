@@ -3,9 +3,6 @@
 require_once('util.php');
 require_once('sa_client.php');
 
-$ALERT_COLOR ='red';
-$NO_ALERT_COLOR ='green';
-
 $USER_STARTER_TASK_CACHE_TAG ='user_starter_task_cache';
 $IS_ACTIVATED_TAG ='is_activated';
 $HAS_SSH_KEYS_TAG ='has_ssh_keys';
@@ -13,12 +10,14 @@ $HAS_PROJECTS_TAG ='has_projects';
 $HAS_SLICES_TAG ='has_slices';
 
 // Plot starter status for given tag : Red for alert, green for no alert
-function put_starter_status($status, $tag)
+function put_starter_status($status, $tag, $page)
 {
-  global $ALERT_COLOR, $NO_ALERT_COLOR;
-  $color = $ALERT_COLOR;
-  if($status) { $color = $NO_ALERT_COLOR; }
-  echo "<$color>&gt;&gt; $tag    </$color>";
+  if($status) { 
+    $done = "done"; 
+  } else {
+    $done = "notdone";
+  }
+  echo "<span class='$done'>&gt;&gt; <a href='$page'>$tag</a>    </$color>";
 }
 
 // Check if we're already done with the starter tasks (at some time during session)
@@ -102,17 +101,13 @@ function show_starter_status_bar($load_user)
     return;
   }
 
-  echo '<style type="text/css">';
-  echo "red {color:red;}";
-  echo "green {color:green;}";
-  echo "</style>";
   echo "<p class='starter'>";
   echo "GENI START:   ";
-  put_starter_status($activated, "ACTIVE");
-  put_starter_status(count($ssh_keys)> 0, "SSH_KEYS");
+  put_starter_status($activated, "ACTIVE", "home.php");
+  put_starter_status(count($ssh_keys)> 0, "SSH_KEYS", "profile.php");
   //   put_starter_status(count($project_requests)> 0, "REQUESTS");
-  put_starter_status(count($projects)> 0, "PROJECTS");
-  put_starter_status(count($slices)> 0, "SLICES");
+  put_starter_status(count($projects)> 0, "PROJECTS", "projects.php");
+  put_starter_status(count($slices)> 0, "SLICES", "projects.php");
   echo "</p>";
 }
 

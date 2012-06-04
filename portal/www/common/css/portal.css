@@ -35,6 +35,13 @@
  padding: 10px;
 }
 
+.starter .done a{
+    color: green;
+}
+.starter .notdone a{
+    color: red;
+}
+
 .deemphasize {
  color: gray;
 }
