@@ -81,16 +81,12 @@ print "</table>\n";
 print "<b>Note: Project name is public</b><br/>\n";
 print "<br/>\n";
 
-print "<h2>Project Policy Defaults</h2>\n";
-print "FIXME: Per project policy defaults go here.<br/>\n";
-print "Slice Membership policy: Project members get <b>User</b> rights on all project slices.<br/><br/>\n";
-
 if ($isnew) {
   // FIXME: Either drop this or refactor invite-to-project.php
-  print "<p style=\"color: grey\">\n";
-  print "Provide a comma-separated list of email addresses of people to invite to your project:<br/>\n";
-  print "<input type=\"textarea\" name=\"invites\" disabled=\"disabled\"/>\n";
-  print "</p>\n";
+  //  print "<p style=\"color: grey\">\n";
+  //  print "Provide a comma-separated list of email addresses of people to invite to your project:<br/>\n";
+  //  print "<input type=\"textarea\" name=\"invites\" disabled=\"disabled\"/>\n";
+  //  print "</p>\n";
 } else {
   print "<h3>Project members</h3>\n";
   print "<table>\n";
