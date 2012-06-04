@@ -172,7 +172,7 @@ if (!(isset($msg) and isset($obj))){
   print "<p><i>Failed to determine status of resources.</i></p>";  
 } else {
 
-$slice_status='dummy';
+$slice_status='';
 print "<table>\n";
 print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
 /* Slice Info */
