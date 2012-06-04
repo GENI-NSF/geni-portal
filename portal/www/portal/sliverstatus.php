@@ -90,31 +90,41 @@ function print_sliver_status( $obj ) {
     $firstRow = True;
     $num_rsc = count($geni_resources);
     foreach ($geni_resources as $rsc){
+      if ( array_key_exists("pg_manifest", $rsc) ){
+	$pg_rsc = $rsc["pg_manifest"];
+	$pg_name = $pg_rsc["name"];
+	if ($pg_name == "rspec"){
+	  continue;
+	}
+	$pg_attr = $pg_rsc["attributes"];
+	$rsc_urn = $pg_attr["client_id"];
+      } else {
 	$rsc_urn = $rsc['geni_urn'];
-	$rsc_status = $rsc['geni_status'];
-	$rsc_error = $rsc['geni_error'];
-	if ($firstRow) {
-	  $colspan = "colspan='$num_rsc'";
-	  $firstRow = False;
-	  print "<tr class='resource'><th class='notapply'></th><th>Status</th><th>Resource</th></tr>";
-	  print "<tr  class='resource'>";
-	  print "<td rowspan=$num_rsc class='notapply'/>";
-	} else {
-	  $colspan = "";
-	  print "<tr  class='resource'>";
-	}
-	
+      }
+      $rsc_status = $rsc['geni_status'];
+      $rsc_error = $rsc['geni_error'];
+      if ($firstRow) {
+	$colspan = "colspan='$num_rsc'";
+	$firstRow = False;
+	print "<tr class='resource'><th class='notapply'></th><th>Status</th><th>Resource</th></tr>";
+	print "<tr  class='resource'>";
+	print "<td rowspan=$num_rsc class='notapply'/>";
+      } else {
+	$colspan = "";
+	print "<tr  class='resource'>";
+      }
+      
 
-	/* if ($rsc_status == "failed"){ */
-	/*   print "<td rowspan=$num_rsc>"; */
-	/* } else { */
-	/*   print "<td rowspan=$num_rsc class='notapply'>"; */
-	/* } */
-	print "<td class='$rsc_status'>$rsc_status</td><td>$rsc_urn</td></tr>";
-	if ($rsc_status == "failed"){
-	  print "<tr><td></td><td>$rsc_error</td></tr>";
-	}
-      }    
+      /* if ($rsc_status == "failed"){ */
+      /*   print "<td rowspan=$num_rsc>"; */
+      /* } else { */
+      /*   print "<td rowspan=$num_rsc class='notapply'>"; */
+      /* } */
+      print "<td class='$rsc_status'>$rsc_status</td><td>$rsc_urn</td></tr>";
+      if ($rsc_status == "failed"){
+	print "<tr><td></td><td>$rsc_error</td></tr>";
+      }
+    }    
   }
   print "</table>";
 }
@@ -125,6 +135,9 @@ print "<h2>$header</h2>\n";
 
 if (isset($msg) and isset($obj)){
 print "<pre>$msg</pre>";
+/* echo "<pre>"; */
+/* echo print_r($obj); */
+/* echo "</pre>"; */
 print_sliver_status( $obj );
 } else {
   print "<p><i>Failed to determine status of resources.</i></p>";

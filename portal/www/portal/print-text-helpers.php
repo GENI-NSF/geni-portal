@@ -163,7 +163,7 @@ function print_rspec_pretty( $xml ){
     /* echo "<th colspan='2'>Node</th>"; */
     /* echo "<th>Exclusive</th>\n"; */
     /* echo "</tr>\n"; */
-    /* echo "<tr>\n"; */
+    echo "<tr>\n"; 
     echo "<td>",$node['client_id'],"</td>\n";
     $comp_id = $node['component_id'];
     $comp_name = get_name_from_urn($comp_id);
@@ -210,9 +210,10 @@ function print_rspec_pretty( $xml ){
 	  echo "<td>",$ip['type'],": ",$ip['address'],"</td>";
 	}
       }
-      echo "</tr></table>\n";
-      print "\n";
+      echo "</tr>\n";
     }
+    echo "</table>\n";
+    print "\n";
   }
   
   $link_num = 1;

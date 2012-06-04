@@ -224,8 +224,8 @@ foreach ($aggs as $agg){
     $first = False;
   }
   $sliver_status=$agg_obj['geni_status'];
-  $sliver_creation='1-2-1111';
-  $sliver_expiration='1-2-2222';
+  $sliver_creation='NOT IMPLEMENTED YET';
+  $sliver_expiration='NOT IMPLEMENTED YET';
   print "<tr>";
   print "<td class='notapply'></td>";
   print "<td class='$sliver_status'>$sliver_status</td>";
