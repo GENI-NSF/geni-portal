@@ -81,7 +81,6 @@ print "</table>\n";
 print "<b>Note: Project name is public</b><br/>\n";
 print "<br/>\n";
 
-
 /* print "<h2>Project Policy Defaults</h2>\n"; */
 /* print "FIXME: Per project policy defaults go here.<br/>\n"; */
 /* print "Slice Membership policy: Project members get <b>User</b> rights on all project slices.<br/><br/>\n"; */
