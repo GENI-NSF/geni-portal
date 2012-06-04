@@ -17,7 +17,7 @@ function put_starter_status($status, $tag, $page)
   } else {
     $done = "notdone";
   }
-  echo "<span class='$done'>&gt;&gt; <a href='$page'>$tag</a>    </$color>";
+  echo "<span class='$done'>&gt;&gt; <a href='$page'>$tag</a>    </span>";
 }
 
 // Check if we're already done with the starter tasks (at some time during session)
