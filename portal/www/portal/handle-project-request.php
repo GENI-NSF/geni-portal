@@ -236,7 +236,7 @@ if (isset($submit)) {
     $context2[LOGGING_ARGUMENT::CONTEXT_ID] = $member_id;
     $rolestr = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-    log_event($log_url, "Added $member_name to project as $rolestr " . $project_name, array($context, $context2), $user->account_id);
+    log_event($log_url, "Added $member_name to project $project_name as $rolestr ", array($context, $context2), $user->account_id);
     error_log("handle-p-req added $member_name to project $project_name with role $rolestr");
   
     // FIXME: Email the member
@@ -302,14 +302,14 @@ print "<br/><br/>\n";
 
 print "<b>Requestor</b>: <br/>\n";
 // Show details on the requestor: name, email, institution
-print "<table><tr><td>" . $member->prettyName() . "</td><td>" . $member->email() . "</td><td>" . $member->affiliation . "</td></tr></table>\n";
+print "<table><tr><th>Requester</th><th>Email</th><th>Affiliation</th></tr><tr><td>" . $member->prettyName() . "</td><td>" . $member->email() . "</td><td>" . $member->affiliation . "</td></tr></table>\n";
 
 print "<b>Project</b>: <br/>\n";
 // Show details on the project: name, purpose, lead
-print "<table><tr><td>$project_name</td><td>" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . "</td><td>$leadname</td></tr></table>\n";
+print "<table><tr><th>Project</th><th>Purpose</th><th>Lead</th></tr><tr><td>$project_name</td><td>" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . "</td><td>$leadname</td></tr></table>\n";
 
 print "<b>Request Explanation</b>: <br/>\n";
-print "<textarea disabled='disabled'>" . $request['request_text'] . "</textarea>\n";
+print "<textarea disabled='disabled' cols='60'>" . $request['request_text'] . "</textarea>\n";
 
 print "<br/><br/>\n";
 
