@@ -76,10 +76,7 @@ include("tool-slices.php");
 // Or must the users explicitly delete each one?
 ?>
 
-<table width="50%">
-<tr><th width="25%"><h3>GENI Messages</h3></th>
-</tr>
-<tr><td>
+<h3>GENI Messages</h3>
 <table>
 <?php
    // FIXME: foreach project or slice where user is admin or lead, get log entries for that context
@@ -106,8 +103,6 @@ if (is_array($entries) && count($entries) > 0) {
 }
 ?>
 </table>
-</td>
-</tr></table>
 
 <br/>
 <button style="" onClick="window.location='invite-to-geni.php'"><b>Invite Someone to GENI</b></button>
