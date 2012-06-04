@@ -157,7 +157,9 @@ function print_rspec_pretty( $xml ){
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";
     echo "<th>Component ID</th>\n";
-    echo "<th colspan='4'></th>\n";
+    echo "<th>Exclusive</th>\n";
+    echo "<th>Type</th>\n";
+    echo "<th>Hostname</th>\n";
     echo "</tr>\n";
     /* echo "<tr>\n"; */
     /* echo "<th colspan='2'>Node</th>"; */
@@ -184,8 +186,11 @@ function print_rspec_pretty( $xml ){
     if ($host){
       echo "<td>",$host['name'],"</td>\n";
     }
+    echo "</tr>\n";
+    echo "<tr>\n";    
     if ($login){
-      echo "<td>ssh ", $login['username'],"@",$login['hostname'],"</td>\n";
+      echo "<th colspan='2'>Login</th>\n";
+      echo "<td colspan='3'>ssh ", $login['username'],"@",$login['hostname'],"</td>\n";
     }
     echo "</tr>\n";
 
@@ -193,9 +198,10 @@ function print_rspec_pretty( $xml ){
     /* Add interface header if relevant */
     if ($interfaces->count() > 0) {
       echo "<tr>\n";
-      echo "<th colspan='6'>Interfaces</th>";
-    /*   echo "<th>MAC</th>\n"; */
-    /*   echo "<th>IP</th>\n"; */
+      echo "<th colspan='2'>Interfaces</th>";
+      echo "<th colspan='2'>MAC</th>\n";
+      echo "<th>Layer 3</th>\n";
+      echo "<th></th>\n";
       echo "</tr>\n";
     }
     foreach ($interfaces as $interface){
@@ -204,7 +210,7 @@ function print_rspec_pretty( $xml ){
       echo "<tr>\n";
       echo "<td>",$interface['client_id'],"</td>";
       echo "<td>",$comp_name,"</td>";
-      echo "<td>MAC:",$interface['mac_address'],"</td>";
+      echo "<td colspan='2'>",$interface['mac_address'],"</td>";
       foreach ($interface as $ip){
 	if ($ip->getName() == "ip") {
 	  echo "<td>",$ip['type'],": ",$ip['address'],"</td>";
