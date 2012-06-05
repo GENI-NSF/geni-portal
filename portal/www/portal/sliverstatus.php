@@ -139,10 +139,6 @@ include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
 if (isset($msg) and isset($obj)){
-  print "<pre>$msg</pre>";
-  /* echo "<pre>"; */
-  /* echo print_r($obj); */
-  /* echo "</pre>"; */
   if (!$pretty) {
     echo "<div class='xml'>\n";
     echo print_r($obj);
@@ -151,7 +147,14 @@ if (isset($msg) and isset($obj)){
     print_sliver_status( $obj );
     print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id."'>Raw SliverStatus</a>";
     print "<br/>";
+    print "<br/>";
   }
+
+  print "<pre>$msg</pre>";
+  /* echo "<pre>"; */
+  /* echo print_r($obj); */
+  /* echo "</pre>"; */
+
 } else {
   print "<p><i>Failed to determine status of resources.</i></p>";
 }
