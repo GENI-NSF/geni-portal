@@ -311,7 +311,7 @@ function fetchSshKeys($account_id) {
   $sql = "SELECT * from ssh_key where account_id = "
     . $conn->quote($account_id, 'text');
   /* print "Query = $sql<br/>"; */
-  $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
+  $rows = db_fetch_rows($sql, "fetchSshKeys");
   return $rows[RESPONSE_ARGUMENT::VALUE];
 }
 
