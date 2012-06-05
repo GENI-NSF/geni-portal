@@ -65,6 +65,7 @@ class SAGuardFactory implements GuardFactory
             'remove_slice_member' => array('slice_guard'),
             'change_slice_member_role' => array('slice_guard'),
             'get_slice_members' => array('slice_guard'),
+            'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
 	    'create_request' => array(), // Unguarded
 	    'resolve_pending_request' => array(), // Unguarded
@@ -673,7 +674,44 @@ function get_slice_members($args)
   
 }
 
-// Return list of slice ID's for given member_id
+// Return list of member ID's and roles associated with slices of a given project
+// If role is provided, filter to members of given role
+function get_slice_members_for_project($args)
+{
+  $project_id = $args[SA_ARGUMENT::PROJECT_ID];
+  $role = null;
+  if (array_key_exists(SA_ARGUMENT::ROLE_TYPE, $args) && isset($args[SA_ARGUMENT::ROLE_TYPE])) {
+    $role = $args[SA_ARGUMENT::ROLE_TYPE];
+  }
+
+  global $SA_SLICE_MEMBER_TABLENAME;
+  global $SA_SLICE_TABLENAME;
+
+  $role_clause = "";
+  if ($role != null) {
+    $role_clause = 
+      " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role;
+  }
+  $sql = "SELECT " 
+    . $SA_SLICE_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE
+    . " FROM " . $SA_SLICE_MEMBER_TABLENAME
+    . ", " . $SA_SLICE_TABLENAME
+    . " WHERE "
+    . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
+    . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
+    . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID 
+    . " = '" . $project_id . "'" 
+    . $role_clause;
+
+  error_log("SA.get_slice_members_for_project.sql = " . $sql);
+  $result = db_fetch_rows($sql);
+  return $result;
+  
+}
+
+// Return list of slice ID's and roles for given member_id for slices to which member belongs
 // If is_member is true, return slices for which member is a member
 // If is_member is false, return slices for which member is NOT a member
 // If role is provided, filter on slices 
@@ -690,17 +728,17 @@ function get_slices_for_member($args)
 
   global $SA_SLICE_MEMBER_TABLENAME;
 
-  // select distinct slice_id from pa_slice_member 
+  // select slice_id, role from pa_slice_member
   // where member_id = $member_id
 
-  // select distinct slice_id from pa_slice_member 
+  // select slice_id, role from pa_slice_member 
   // where member_id not in (select slice_id from pa_slice_member 
   //                         where member_id = $member_id)
 
-  // select distinct slice_id from pa_slice_member 
+  // select slice_id, role from pa_slice_member 
   // where member_id = $member_id and role = $role
 
-  // select distinct slice_id from pa_slice_member 
+  // select slice_id, role from pa_slice_member 
   // where member_id not in (select slice_id from pa_slice_member 
   //                         where member_id = $member_id and role = $role)
 
@@ -724,23 +762,15 @@ function get_slices_for_member($args)
       
   }
 
-  $sql = "SELECT DISTINCT " 
-    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID
+  $sql = "SELECT  " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE
     . " FROM " . $SA_SLICE_MEMBER_TABLENAME
     . " WHERE " 
     . $member_clause;
 
   //  error_log("SA.get_slices_for_member.sql = " . $sql);
-  $rows = db_fetch_rows($sql);
-  $result = $rows;
-  if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
-    $ids = array();
-    foreach($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
-      $id = $row[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
-      $ids[] = $id;
-    }
-    $result = generate_response(RESPONSE_ERROR::NONE, $ids, '');
-  }
+  $result = db_fetch_rows($sql);
   return $result;
 }
 

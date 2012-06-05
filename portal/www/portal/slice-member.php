@@ -28,6 +28,8 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
+require_once("sa_client.php");
+require_once("sa_constants.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -55,16 +57,28 @@ print "<h1>GENI Slice: " . $slice_name . ", Member: " . $member_name . "</h1>\n"
 
 
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
-$slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+//$slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+$slices_for_member = get_slices_for_member($sa_url, $user, $member_id, true, null);
 //error_log("SLICE ATTRIBS = " . print_r($attributes, true));
 
 print("<b>Slice Roles</b>");
 print("\n<table>\n");
 print ("<tr><th>Slice</th><th>Role</th></tr>");
+/*
 foreach($slice_attribs as $attrib) {
   $slice_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
   $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
   $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
+}
+*/
+foreach($slices_for_member as $slice_for_member) {
+  $slice_member_id = $slice_for_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+  if($slice_member_id <> $slice_id) { continue; }
+  $slice_link = "<a href=\"slice.php?slice_id=$slice_member_id\">" . $slice_name . "</a>";
+  $role_index = $slice_for_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+  $role = $CS_ATTRIBUTE_TYPE_NAME[$role_index];
   print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
 }
 print("</table>\n\n");

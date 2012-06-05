@@ -46,6 +46,7 @@ INSERT INTO cs_action (name, privilege, context_type) values ('change_slice_memb
 INSERT INTO cs_action (name, privilege, context_type) values ('get_slice_members', 2, 2);
 INSERT INTO cs_action (name, privilege, context_type) values ('get_slices_for_member', 2, 2);
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slices_by_ids', 2, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_slice_members_for_project', 2, 1);
 
 -- SR_CONTROLLER actions
 INSERT INTO cs_action (name, privilege, context_type) values ('get_services', 2, 4);

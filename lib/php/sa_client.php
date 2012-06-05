@@ -214,7 +214,19 @@ function get_slice_members($sa_url, $signer, $slice_id, $role=null)
   return $results;
 }
 
-// Return list of slice ID's for given member_id
+// Return list of slice_id's, member ID's and roles associated with slice of a given project
+// If role is provided, filter to members of given role
+function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null)
+{
+  $get_slice_members_message['operation'] = 'get_slice_members_for_project';
+  $get_slice_members_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
+  $get_slice_members_message[SA_ARGUMENT::ROLE_TYPE] = $role;
+  $results = put_message($sa_url, $get_slice_members_message,
+                         $signer->certificate(), $signer->privateKey());
+  return $results;
+}
+
+// Return list of slice ID's and Roles for given member_id for slices to which member belongs
 // If is_member is true, return slices for which member is a member
 // If is_member is false, return slices for which member is NOT a member
 // If role is provided, filter on slices 
