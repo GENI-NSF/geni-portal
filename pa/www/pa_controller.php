@@ -70,22 +70,6 @@ class PAGuardFactory implements GuardFactory
   private static $context_table
     = array(
             // Action => array(method_name, method_name, ...)
-	    /*
-	     *** This is the original code from SA CONTROLLER ***
-            'get_slice_credential' => array('slice_guard'),
-            'get_user_credential' => array(), // Unguarded
-            'create_slice' => array('project_guard'),
-            'lookup_slice_ids' => array('project_guard'),
-            'lookup_slices' => array('lookup_slices_guard'),
-            'lookup_slice' => array('slice_guard'),
-            'lookup_slice_by_urn' => array(), // Unguarded
-            'renew_slice' => array('slice_guard'),
-            'add_slice_member' => array('slice_guard'),
-            'remove_slice_member' => array('slice_guard'),
-            'change_slice_member_role' => array('slice_guard'),
-            'get_slice_members' => array('slice_guard'),
-            'get_slices_for_member'=> array(), // Unguarded
-	    */
 	    'create_project' => array(), // Unguarded
 	    'delete_project' => array('project_guard'),
 	    'get_projects' => array(), // Unguarded

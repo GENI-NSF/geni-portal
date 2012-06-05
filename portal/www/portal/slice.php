@@ -44,7 +44,7 @@ include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 if (isset($slice)) {
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-  error_log("SLICE  = " . print_r($slice, true));
+  //  error_log("SLICE  = " . print_r($slice, true));
   $slice_desc = "NOT IMPLEMENTED"; //$slice[SA_ARGUMENT::SLICE_DESCRIPTION];
   $slice_creation = "NOT IMPLEMENTED"; //$slice[SA_ARGUMENT::SLICE_CREATION];
   $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];

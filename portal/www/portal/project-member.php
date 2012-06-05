@@ -28,6 +28,8 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
+require_once("sa_client.php");
+require_once("sa_constants.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -52,6 +54,8 @@ if ($member == "None") {
   exit();
 }
 print "<h1>GENI Project: " . $project_name . ", Member: " . $member_name . "</h1>\n";
+
+// error_log("PID = " . print_r($project_id, true));
 
 // FIXME: Retrieve info from DB
 print "<br/>\n";
@@ -83,20 +87,36 @@ print "</select>\n<br/>\n";
 */
 
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-$project_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+// $project_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
 //error_log("SA = " .  print_r($project_attributes, true));
-$slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, null);
+//error_log("PID = " . print_r($project_id, true));
+//error_log("PID = " . $project_id);
+$project_members = get_project_members($pa_url, $project_id, null);
+//$slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, null);
+$slice_members = get_slice_members_for_project($sa_url, $user, $project_id, null);
+// error_log("SLICE_MEMBERS = " . print_r($slice_members, true));
 //error_log("SA = " .  print_r($slice_attributes, true));
 
 print("<br>\n");
 print("<b>Project Roles</b>");
 print("\n<table>\n");
 print ("<tr><th>Project</th><th>Role</th></tr>");
+/*
 foreach($project_attribs as $attrib) {
   $project_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
   $project_link = "<a href=\"project.php?project_id=$project_id\">" . $project_name . "</a>";
   $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  print("<tr><td>$project_link</td><td>$role</td></tr>\n");
+}
+*/
+foreach($project_members as  $project_member) {
+  //  error_log("PM = " . print_r($project_member, true));
+  $project_link = "<a href=\"project.php?project_id=$project_id\">" . $project_name . "</a>";
+  $member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+  $role_index = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+  $role = $CS_ATTRIBUTE_TYPE_NAME[$role_index];
   print("<tr><td>$project_link</td><td>$role</td></tr>\n");
 }
 print("</table>\n\n");
@@ -104,14 +124,15 @@ print("<br>\n");
 
 print("<br>\n");
 print("<b>Slice Roles</b>");
-if (! is_null($slice_attribs) && count($slice_attribs) > 0) {
+if (! is_null($slice_members) && count($slice_members) > 0) {
   print("\n<table>\n");
   print ("<tr><th>Slice</th><th>Role</th></tr>");
   $slices = lookup_slices($sa_url, $user, $project_id, null);
   //error_log("SLICES = " . print_r($slices, true));
   //error_log("ATTRIBS = " . print_r($slice_attribs, true));
-  foreach($slice_attribs as $attrib) {
-    $slice_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
+  /*
+  foreach($slice_members as $slice_member) {
+    $slice_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
     $slice_name = null;
     foreach($slices as $slice) {
       if($slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID] == $slice_id) {
@@ -121,7 +142,27 @@ if (! is_null($slice_attribs) && count($slice_attribs) > 0) {
     }
     if ($slice_name == null) { continue; }
     $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
-    $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+    $role_index = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+    $role = $CS_ATTRIBUTE_TYPE_NAME[$role_index];
+    print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
+  }
+  */
+  foreach($slice_members as $slice_member) {
+    //    error_log("SM = " . print_r($slice_member, true));
+    $slice_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+    $slice_name = null;
+    foreach($slices as $slice) {
+      //      error_log("SL = " . print_r($slice, true));
+      if($slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID] == $slice_id) {
+	$slice_name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+	break;
+      }
+    }
+    if ($slice_name == null) { continue; }
+    $member_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $role_index = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+    $role = $CS_ATTRIBUTE_TYPE_NAME[$role_index];
+    $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
     print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
   }
   print("</table>\n\n");
