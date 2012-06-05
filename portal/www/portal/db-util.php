@@ -331,4 +331,15 @@ function insertSshKey($account_id, $public_key, $filename, $description, $privat
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
+function deleteSshKeys($account_id, $key_id) {
+  $conn = portal_conn();
+  $sql = "DELETE from ssh_key where account_id = "
+    . $conn->quote($account_id, 'text')
+    . " AND id = "
+    . $conn->quote($key_id, 'integer');
+  /* print "Query = $sql<br/>"; */
+  $rows = db_execute_statement($sql, "deleteSshKeys");
+  return $rows[RESPONSE_ARGUMENT::VALUE];
+}
+
 ?>
