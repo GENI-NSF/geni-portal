@@ -127,12 +127,21 @@ function get_name_from_urn( $urn ){
   return $name;
 }
 function print_rspec_pretty( $xml ){
-  $rspec = new SimpleXMLElement($xml);
+  $err_str = "<p><i>Rspec returned was not valid XML.</i></p>";
+  try {
+    $rspec = new SimpleXMLElement($xml);
+    if (!$rspec) {
+      error_log("Call to print_rspec_pretty() FAILED");
+      echo $err_str;
+      return ;
+    }
+  } catch (Exception $e) {
+      error_log("Call to print_rspec_pretty() FAILED");
+      echo $err_str;
+      return;
+  }
+
   $rspec->registerXPathNamespace("def", "http://www.geni.net/resources/rspec/3/manifest.xsd");
-  // FIX ME
-  // if (!$rspec) {
-  //  return; 
-  // }
   print "<div class='xml'>";
   $nodes = $rspec->node;
   $links = $rspec->link;
