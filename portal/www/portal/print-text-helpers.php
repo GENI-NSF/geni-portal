@@ -24,6 +24,7 @@
 ?>
 <?php
 require_once("header.php");
+require_once( "am_map.php");
 
 function print_list( $list ){
   $list2 = explode("\n",$list);
@@ -201,7 +202,6 @@ function print_rspec_pretty( $xml ){
       echo "<th colspan='2'>Interfaces</th>";
       echo "<th colspan='2'>MAC</th>\n";
       echo "<th>Layer 3</th>\n";
-      echo "<th></th>\n";
       echo "</tr>\n";
     }
     foreach ($interfaces as $interface){
@@ -266,10 +266,15 @@ function print_rspec_pretty( $xml ){
 function print_rspec( $obj, $pretty ) {
   $args = array_keys( $obj );
   foreach ($args as $arg){
-    $arg_urn = $arg[0];
-    $arg_url = $arg[1];
+
+    $pattern = "/[\'\"]([^,]*)[\'\"]/";
+    $matches = array();
+    preg_match($pattern, $arg, $matches);
+    $arg_urn = $matches[0];
+    $arg_url = $matches[1];
+    $arg_name = am_name($arg_url);
     $xml = $obj[$arg];
-    print "<div class='aggregate'>Aggregate <b>".$arg."'s</b> Resources:</div>";
+    print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
     print "<div class='resources'>";
     if ($pretty){
       /* Parsed into a table */
