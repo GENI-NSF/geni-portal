@@ -101,7 +101,8 @@ function get_log_entries_by_author($args)
     . " WHERE " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " > '" . db_date_format($since) . "'"
     . " AND " . $LOGGING_TABLENAME . "." . LOGGING_TABLE_FIELDNAME::ID . " = " 
     .           $LOGGING_CONTEXT_TABLENAME . "." . LOGGING_CONTEXT_TABLE_FIELDNAME::ID 
-    . " AND " . LOGGING_TABLE_FIELDNAME::USER_ID . " = '" . $user_id . "'";
+    . " AND " . LOGGING_TABLE_FIELDNAME::USER_ID . " = '" . $user_id . "'"
+    . " ORDER BY " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " DESC";
     
   //  error_log("LOG.SQL = " . $sql);
 
@@ -131,8 +132,8 @@ function get_log_entries_for_context($args)
     . " AND " . $LOGGING_TABLENAME . "." . LOGGING_TABLE_FIELDNAME::ID . " = " 
     .           $LOGGING_CONTEXT_TABLENAME . "." . LOGGING_CONTEXT_TABLE_FIELDNAME::ID 
     . " AND " . LOGGING_CONTEXT_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type
-    . " AND " . LOGGING_CONTEXT_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
-    
+    . " AND " . LOGGING_CONTEXT_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'"
+    . " ORDER BY " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " DESC";
   //  error_log("LOG.SQL = " . $sql);
 
   $rows = db_fetch_rows($sql);

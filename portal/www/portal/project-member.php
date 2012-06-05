@@ -104,27 +104,30 @@ print("<br>\n");
 
 print("<br>\n");
 print("<b>Slice Roles</b>");
-print("\n<table>\n");
-print ("<tr><th>Slice</th><th>Role</th></tr>");
-$slices = lookup_slices($sa_url, $user, $project_id, null);
-//error_log("SLICES = " . print_r($slices, true));
-//error_log("ATTRIBS = " . print_r($slice_attribs, true));
-foreach($slice_attribs as $attrib) {
-  $slice_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
-  $slice_name = null;
-  foreach($slices as $slice) {
-    if($slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID] == $slice_id) {
-      $slice_name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
-      break;
+if (! is_null($slice_attribs) && count($slice_attribs) > 0) {
+  print("\n<table>\n");
+  print ("<tr><th>Slice</th><th>Role</th></tr>");
+  $slices = lookup_slices($sa_url, $user, $project_id, null);
+  //error_log("SLICES = " . print_r($slices, true));
+  //error_log("ATTRIBS = " . print_r($slice_attribs, true));
+  foreach($slice_attribs as $attrib) {
+    $slice_id = $attrib[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
+    $slice_name = null;
+    foreach($slices as $slice) {
+      if($slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID] == $slice_id) {
+	$slice_name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+	break;
+      }
     }
+    if ($slice_name == null) { continue; }
+    $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
+    $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+    print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
   }
-  if ($slice_name == null) { continue; }
-  $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
-  $role = $attrib[CS_ATTRIBUTE_TABLE_FIELDNAME::NAME];
-  print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
+  print("</table>\n\n");
+} else {
+  print "<br/>\n<i>Not in any slices.</i><br/>\n";
 }
-print("</table>\n\n");
-
 /*
 
 print "<b>Permissions</b>:<br/>\n";

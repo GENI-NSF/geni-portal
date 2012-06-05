@@ -38,10 +38,10 @@ $keys = fetchSshKeys($user->account_id);
 if (count($keys) == 0)
   {
     // No ssh keys are present.
-    print "No ssh keys have been uploaded. ";
+    print "No SSH keys have been uploaded. ";
     print "SSH keys are used to log in to many reserved compute resources.<br/><br/>\n";
-    print "You can <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH key</button>";
-    print "or <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH key</button>.\n";
+    print "You can <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>";
+    print "or <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>.\n";
   }
 else
   {
@@ -57,7 +57,7 @@ else
       }
     print "</table>\n";
     print "<br/>\n";
-    print "<button onClick=\"window.location='uploadsshkey.php'\">Upload another SSH key</button>\n";
+    print "<button onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button>\n";
   }
 
 
@@ -67,14 +67,14 @@ else
  */
 print "<h2>Keys and Certificates for command line tools</h2>\n";
 print ("For <i>Advanced</i> users: download an SSL certificate and private key,"
-       . "in order to use other GENI tools, such as Omni.<br/><br/>\n");
+       . " in order to use other GENI tools, such as Omni.<br/><br/>\n");
 $keyrow = db_fetch_outside_private_key_cert($user->account_id);
 if ($keyrow) {
   require_once("am_client.php");
   // must double backslash things in the omni_config here....
   $omni_config = get_template_omni_config($user);
   $omni_config = str_replace("\n", "\\n", $omni_config);
-  $configalert = "Here is a template Omni config file.\\nTo use this:\\n\\t1. Save it to a file named portal_omni_config.\\n\\t2. Download your certificate, noting the path.\\n\\t3. Edit the portal_omni_config to correct \\n\\t\\t(a) the certificate path, \\n\\t\\t(b) the path to the SSL private key used to generate your certificate, and \\n\\t\\t(c) the path to your SSH key to use for node logon.\\n\\t4. When running omni: \\n\\t\\ta) Do: omni -c portal_omni_config --slicecred <path to downloaded slice credential> ... to specify the path to this omni config and your downloaded slice credential\\n\\t\\tb) Use the full slice URN when naming your slice, not just the slice name\\n\\n$omni_config\\n";
+  $configalert = "Here is a template Omni config file.\\nTo use this:\\n\\t1. Save it to a file named portal_omni_config.\\n\\t2. Download your certificate, noting the path.\\n\\t3. Edit the portal_omni_config to correct \\n\\t\\t(a) the certificate path, \\n\\t\\t(b) the path to the SSL private key used to generate your certificate, and \\n\\t\\t(c) the path to your SSH public key to use for node logon.\\n\\t4. When running omni: \\n\\t\\ta) Do: omni -c portal_omni_config --slicecred <path to downloaded slice credential> ... to specify the path to this omni config and your downloaded slice credential\\n\\t\\tb) Use the full slice URN when naming your slice, not just the slice name\\n\\n$omni_config\\n";
 
   print "\n<table>\n";
   print "<tr><th>Certificate</th><th>Owner URN</th><th>Omni Config</th></tr>\n";

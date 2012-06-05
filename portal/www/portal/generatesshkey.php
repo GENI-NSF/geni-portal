@@ -32,7 +32,7 @@ require_once("cert_utils.php");
 function show_form($error_msg)
 {
   print "<br/>\n";
-  print "<b>Download an ssh key</b><br/>\n";
+  print "<b>Download an SSH private key</b><br/>\n";
   if ($error_msg) {
     print "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n"
@@ -45,7 +45,7 @@ function show_form($error_msg)
   print "<label for=\"password2\">Confirm Password:</label>\n";
   print "<input type=\"password\" name=\"password2\"/>\n";
   print "<br/>\n";
-  print "<input type=\"submit\" name=\"submit\" value=\"Download private key\"/>\n";
+  print "<input type=\"submit\" name=\"submit\" value=\"Download SSH private key\"/>\n";
   print "</form>\n";
 }
 
@@ -85,7 +85,7 @@ if ($password != "" && validate_password($password, $error_msg)) {
 
 if ($show_form) {
   // Display the form and exit
-  $GENI_TITLE = "Generate ssh key";
+  $GENI_TITLE = "Generate SSH keypair";
   $load_user = TRUE;
   show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
   include("tool-breadcrumbs.php");
@@ -106,11 +106,11 @@ if ($status != 0) {
 	error_log("Error generating ssh key; command = $command");
 	error_log("Error generating ssh key; status = $status");
 	error_log("Error generating ssh key; output = " . print_r($output, TRUE));
-	$GENI_TITLE = "Generate ssh key";
+	$GENI_TITLE = "Generate SSH keypair";
 	$load_user = TRUE;
 	show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
 	include("tool-breadcrumbs.php");
-	print '<h1>An error occurred while generating your ssh key.</h1>';
+	print '<h1>An error occurred while generating your SSH keypair.</h1>';
 	include("footer.php");
 	exit();
 }
@@ -119,8 +119,8 @@ if ($status != 0) {
 $private_key = file_get_contents($privatekeyfile);
 $public_key = file_get_contents($publickeyfile);
 /* This is the name of the file on the experimenter's machine. */
-$filename = "genirsa";
-insertSshKey($user->account_id, $public_key, $filename, "Generated key", $private_key);
+$filename = "id_geni_ssh_rsa";
+insertSshKey($user->account_id, $public_key, $filename, "Generated SSH keypair", $private_key);
 
 // Set headers for download
 header("Cache-Control: public");
