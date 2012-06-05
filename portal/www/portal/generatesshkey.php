@@ -32,7 +32,7 @@ require_once("cert_utils.php");
 function show_form($error_msg)
 {
   print "<br/>\n";
-  print "<b>Download an SSH private key</b><br/>\n";
+  print "<b>Generate an SSH private key</b><br/>\n";
   if ($error_msg) {
     print "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n"
@@ -45,7 +45,7 @@ function show_form($error_msg)
   print "<label for=\"password2\">Confirm Password:</label>\n";
   print "<input type=\"password\" name=\"password2\"/>\n";
   print "<br/>\n";
-  print "<input type=\"submit\" name=\"submit\" value=\"Download SSH private key\"/>\n";
+  print "<input type=\"submit\" name=\"submit\" value=\"Generate SSH private key\"/>\n";
   print "</form>\n";
 }
 
@@ -122,10 +122,15 @@ $public_key = file_get_contents($publickeyfile);
 $filename = "id_geni_ssh_rsa";
 insertSshKey($user->account_id, $public_key, $filename, "Generated SSH keypair", $private_key);
 
-// Set headers for download
-header("Cache-Control: public");
-header("Content-Description: File Transfer");
-header("Content-Disposition: attachment; filename=$filename");
-header("Content-Type: application/pem");
-header("Content-Transfer-Encoding: binary");
-print $private_key;
+if (True) {
+  relative_redirect('profile.php');
+} else {
+  // Set headers for download
+  header("Cache-Control: public");
+  header("Content-Description: File Transfer");
+  header("Content-Disposition: attachment; filename=$filename");
+  header("Content-Type: application/pem");
+  header("Content-Transfer-Encoding: binary");
+  print $private_key;
+}
+?>
