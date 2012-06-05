@@ -92,7 +92,7 @@ if ($user->privSlice()) {
   print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
 }
 print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
-print "<button onClick=\"window.location='$listres_url'\"><b>Get Manifest</b></button>\n";
+print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
 if ($user->privSlice()) {
   print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
 }
@@ -197,7 +197,7 @@ if ($user->privSlice()) {
   print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
 }
 print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
-print "<button onClick=\"window.location='$listres_url'\"><b>Get Manifest</b></button>\n";
+print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
 if ($user->privSlice()) {
   print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
 }

@@ -49,7 +49,7 @@ if (count($slices) > 0) {
   print ("<th>Expiration</th>");
   print ("<th>Slice Owner</th>"
          . "<th>Resources</th><th>Sliver Status</th>"
-	 . "<th>List Resources</th>"
+	 . "<th>Manifest</th>"
 	 . "<th>Flack</th>"
          . "<th>Delete Sliver</th>");
   if ($portal_enable_abac) {
@@ -116,7 +116,7 @@ if (count($slices) > 0) {
     print ("<td><button onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button></td>");
     print ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
     // FIXME: List Resources
-    print ("<td><button onClick=\"window.location='$listres_url'\"><b>List Resources</b></button></td>");
+    print ("<td><button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button></td>");
   print "<td><button onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
     print ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
     if ($portal_enable_abac) {
