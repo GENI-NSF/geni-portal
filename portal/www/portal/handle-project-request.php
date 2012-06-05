@@ -320,7 +320,7 @@ print "<input type='hidden' name='request_id' value='$request_id'>\n";
 print "<b>Project Role</b>: <br/>\n";
 print "<input type='radio' name='role' value='" . CS_ATTRIBUTE_TYPE::ADMIN . "'> Admin (can add/remove members)<br/>\n";
 print "<input type='radio' name='role' value='" . CS_ATTRIBUTE_TYPE::MEMBER . "' checked> Member (default)<br/>\n";
-print "<input type='radio' name='role' value='" . CS_ATTRIBUTE_TYPE::AUDITOR . "'> Auditor (ready only)<br/>\n";
+print "<input type='radio' name='role' value='" . CS_ATTRIBUTE_TYPE::AUDITOR . "'> Auditor (read only)<br/>\n";
 print "<br/>\n";
 // Provide text box of reason
 print "<b>Response Explanation</b>: <br/>\n";
