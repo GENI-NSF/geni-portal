@@ -45,13 +45,24 @@ if (count($keys) == 0)
   }
 else
   {
+    $download_pkey_url = relative_url('downloadsshkey.php?');
     print "\n<table>\n";
-    print "<tr><th>Name</th><th>Description</th></tr>\n";
+    print "<tr><th>Name</th><th>Description</th><th>Private Key</th></tr>\n";
     foreach ($keys as $key)
       {
+        if (is_null($key['private_key'])) {
+          $pkey_cell = 'N/A';
+        } else {
+          $args['id'] = $key['id'];
+          $query = http_build_query($args);
+          $pkey_cell = ("<button onClick=\"window.location='"
+                  . $download_pkey_url . $query
+                  . "'\">Download Private Key</button>");
+        }
         print "<tr>"
           . "<td>" . htmlentities($key['filename']) . "</td>"
           . "<td>" . htmlentities($key['description']) . "</td>"
+          . '<td>' . $pkey_cell . '</td>'
           . "</tr>\n";
 	// FIXME: Way to delete a key?
       }
