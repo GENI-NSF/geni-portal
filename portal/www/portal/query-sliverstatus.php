@@ -32,14 +32,6 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
 
-function &sliver_status_one_am($am_urls, $user, $slice_credential,
-			      $slice_urn){ 
-  // Call sliver status at the AM
-  $retVal = sliver_status($am_urls, $user, $slice_credential,
-			  $slice_urn);
-  //  error_log( "SliverStatus output return = ".print_r($retVal) );
-  return $retVal;
-}
 
 
 // Takes an arg am_id which may have multiple values. Each is treated
@@ -85,12 +77,16 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
 
   //  error_log( "am_urls = ".print_r($am_urls) );
   
-  $retVal =& sliver_status_one_am($am_urls, $user, $slice_credential,
+  $retVal = sliver_status($am_urls, $user, $slice_credential,
 			 $slice_urn);
-  $msg = $retVal[0];
-  $obj = $retVal[1];
-  //  error_log( "SliverStatus output msg = ".print_r($msg) );
-  //  error_log( "SliverStatus output object = ".print_r($obj) );
+  if (!is_null($retVal)) {
+    $msg = $retVal[0];
+    $obj = $retVal[1];
+    //  error_log( "SliverStatus output msg = ".print_r($msg) );
+    //  error_log( "SliverStatus output object = ".print_r($obj) );
+  } else {
+    error_log( "Call to sliver_status() FAILed" );    
+  }
 }
 
 ?>

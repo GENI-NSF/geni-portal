@@ -57,15 +57,18 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
+if (array_key_exists("pretty", $_REQUEST)){
+  $pretty = $_REQUEST['pretty'];
+  if (strtolower($pretty) == "false") {
+    $pretty = False;
+  } else {
+    $pretty = True;
+  }
+} else {
+  $pretty=True;
+}
 
 include("query-sliverstatus.php");
-
-$header = "Status of Slivers on slice: $slice_name";
-// include("print-text.php");
-
-?>
-
-<?php
 
 function print_sliver_status( $obj ) {
   print "<table>";
@@ -129,16 +132,26 @@ function print_sliver_status( $obj ) {
   print "</table>";
 }
 
+$header = "Status of Slivers on slice: $slice_name";
+
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
 if (isset($msg) and isset($obj)){
-print "<pre>$msg</pre>";
-/* echo "<pre>"; */
-/* echo print_r($obj); */
-/* echo "</pre>"; */
-print_sliver_status( $obj );
+  print "<pre>$msg</pre>";
+  /* echo "<pre>"; */
+  /* echo print_r($obj); */
+  /* echo "</pre>"; */
+  if (!$pretty) {
+    echo "<div class='xml'>\n";
+    echo print_r($obj);
+    echo "\n</div>\n";
+  } else {
+    print_sliver_status( $obj );
+    print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id."'>Raw SliverStatus</a>";
+    print "<br/>";
+  }
 } else {
   print "<p><i>Failed to determine status of resources.</i></p>";
 }
