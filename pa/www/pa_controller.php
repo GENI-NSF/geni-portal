@@ -472,7 +472,7 @@ function add_project_member($args, $message)
     . "'" . $project_id . "', "
     . "'" . $member_id . "', "
     . $role . ")";
-  error_log("PA.add project_member.sql = " . $sql);
+  //  error_log("PA.add project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
   // If successful, add an assertion to remove the role's privileges within the CS store
