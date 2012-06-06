@@ -48,14 +48,14 @@ $num_projects = count($projects);
 print "<h2>My Projects</h2>\n";
 if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
   if ($num_projects==0) {
-    print "<p class='instruction'>You are not a member of any projects.  You need to create or join a project.</p>";
+    print "<p><span class='instruction'>You are not a member of any projects.  You need to create or join a project.</span></p>";
   }
   print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
   print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<br/>\n";
 } else {
   if ($num_projects==0) {
-    print "<p class='instruction'>You are not a member of any projects. Please join an existing project.</p>";
+    print "<p><span class='instruction'>You are not a member of any projects. Please join an existing project.</span></p>";
   }
   print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<button onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
