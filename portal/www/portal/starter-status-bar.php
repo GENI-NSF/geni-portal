@@ -55,8 +55,9 @@ function already_done_starter_tasks($user)
       $user_starter_tasks = $user_starter_task_cache[$user_id];
       $done = $user_starter_tasks[$IS_ACTIVATED_TAG] && 
 	$user_starter_tasks[$HAS_SSH_KEYS_TAG] &&
-	$user_starter_tasks[$HAS_PROJECTS_TAG] && 
-	$user_starter_tasks[$HAS_SLICES_TAG];
+	$user_starter_tasks[$HAS_PROJECTS_TAG];
+	// don't make slices a gating factor
+	//	$user_starter_tasks[$HAS_SLICES_TAG];
     }
   }
   return $done;
@@ -77,16 +78,18 @@ function register_starter_tasks($user, $activated, $ssh_keys, $projects, $slices
   if(array_key_exists($user_id, $user_starter_task_cache)) {
     $user_starter_tasks = $user_starter_task_cache[$user_id];
   } else {
+    // don't make slices a gating factor
     $user_starter_tasks = array($IS_ACTIVATED_TAG => false,
 				$HAS_SSH_KEYS_TAG => false,
-				$HAS_PROJECTS_TAG => false,
-				$HAS_SLICES_TAG => false);
+				$HAS_PROJECTS_TAG => false);
+    //				$HAS_SLICES_TAG => false);
   }
+  // don't make slices a gating factor
   $new_user_starter_tasks = 
     array($IS_ACTIVATED_TAG => $user_starter_tasks[$IS_ACTIVATED_TAG] || $activated,
 	  $HAS_SSH_KEYS_TAG => $user_starter_tasks[$HAS_SSH_KEYS_TAG] || count($ssh_keys)>0,
-	  $HAS_PROJECTS_TAG => $user_starter_tasks[$HAS_PROJECTS_TAG] || count($projects)>0,
-	  $HAS_SLICES_TAG => $user_starter_tasks[$HAS_SLICES_TAG] || count($slices)> 0);
+	  $HAS_PROJECTS_TAG => $user_starter_tasks[$HAS_PROJECTS_TAG] || count($projects)>0);
+  //	  $HAS_SLICES_TAG => $user_starter_tasks[$HAS_SLICES_TAG] || count($slices)> 0);
   $user_starter_task_cache[$user_id] = $new_user_starter_tasks;
   $_SESSION[$USER_STARTER_TASK_CACHE_TAG] = $user_starter_task_cache;
 }
@@ -115,10 +118,10 @@ function show_starter_status_bar($load_user)
   $activated = $user->isActive();
   $ssh_keys = lookup_ssh_keys($ma_url, $user->account_id);
   $projects = get_projects_for_member($pa_url, $user->account_id, true);
-  $slices = get_slices_for_member($sa_url, $user, $user->account_id, true);
+  //  $slices = get_slices_for_member($sa_url, $user, $user->account_id, true);
   //  $project_requests = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id);
 
-  register_starter_tasks($user, $activated, $ssh_keys, $projects, $slices);
+  register_starter_tasks($user, $activated, $ssh_keys, $projects, array());
   if(already_done_starter_tasks($user)) {
     return;
   }
@@ -129,7 +132,7 @@ function show_starter_status_bar($load_user)
   put_starter_status(count($projects)> 0, "Join Project", "projects.php");
   put_starter_status(count($ssh_keys)> 0, "Register SSH Keys", "profile.php");
   //   put_starter_status(count($project_requests)> 0, "REQUESTS");
-  put_starter_status(count($slices)> 0, "Join Slice", "projects.php");
+  //  put_starter_status(count($slices)> 0, "Join Slice", "projects.php");
   echo "</p>";
 }
 
