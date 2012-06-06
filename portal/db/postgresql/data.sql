@@ -230,5 +230,89 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
   </link>
 </rspec>'
 );
+-- The Click Router Example Experimentschema
+INSERT INTO rspec(name, schema, schema_version, description, rspec)
+  VALUES
+  ('Click Router Example Experiment', 'GENI', '3',
+   'The Click Router Example Experiment topology.',
+   '<?xml version="1.0" encoding="UTF-8"?>
+<rspec type="request" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/request.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3">
+  <node client_id="top" >
+    <services>
+      <execute command="/local/build-click.sh" shell="sh"/>
+      <install install_path="/local" url="http://www.gpolab.bbn.com/experiment-support/ClickExampleExperiment/click-example-build-scripts.tgz" file_type="tar.gz"/>
+    </services>
+    <interface client_id="top:if1"/>
+    <interface client_id="top:if2"/>
+    <interface client_id="top:if3"/>
+  </node>
+  <node client_id="left" >
+    <services>
+      <execute command="/local/build-click.sh" shell="sh"/>
+      <install install_path="/local" url="http://www.gpolab.bbn.com/experiment-support/ClickExampleExperiment/click-example-build-scripts.tgz" file_type="tar.gz"/>
+    </services>
+    <interface client_id="left:if1"/>
+    <interface client_id="left:if2"/>
+  </node>
+  <node client_id="right" >
+    <services>
+      <execute command="/local/build-click.sh" shell="sh"/>
+      <install install_path="/local" url="http://www.gpolab.bbn.com/experiment-support/ClickExampleExperiment/click-example-build-scripts.tgz" file_type="tar.gz"/>
+    </services>
+    <interface client_id="right:if1"/>
+    <interface client_id="right:if2"/>
+  </node>
+  <node client_id="bottom" >
+    <services>
+      <execute command="/local/build-click.sh" shell="sh"/>
+      <install install_path="/local" url="http://www.gpolab.bbn.com/experiment-support/ClickExampleExperiment/click-example-build-scripts.tgz" file_type="tar.gz"/>
+    </services>
+    <interface client_id="bottom:if1"/>
+    <interface client_id="bottom:if2"/>
+    <interface client_id="bottom:if3"/>
+  </node>
+  <node client_id="hostA" >
+    <interface client_id="hostA:if1"/>
+  </node>
+  <node client_id="hostB" >
+    <interface client_id="hostB:if1"/>
+  </node>
+  <link client_id="link-0">
+    <property source_id="top:if1" dest_id="left:if1" capacity="100000"/>
+    <property source_id="left:if1" dest_id="top:if1" capacity="100000"/>
+    <interface_ref client_id="top:if1"/>
+    <interface_ref client_id="left:if1"/>
+  </link>
+  <link client_id="link-1">
+    <property source_id="top:if2" dest_id="right:if1" capacity="100000"/>
+    <property source_id="right:if1" dest_id="top:if2" capacity="100000"/>
+    <interface_ref client_id="top:if2"/>
+    <interface_ref client_id="right:if1"/>
+  </link>
+  <link client_id="link-2">
+    <property source_id="left:if2" dest_id="bottom:if1" capacity="100000"/>
+    <property source_id="bottom:if1" dest_id="left:if2" capacity="100000"/>
+    <interface_ref client_id="left:if2"/>
+    <interface_ref client_id="bottom:if1"/>
+  </link>
+  <link client_id="link-3">
+    <property source_id="right:if2" dest_id="bottom:if2" capacity="100000"/>
+    <property source_id="bottom:if2" dest_id="right:if2" capacity="100000"/>
+    <interface_ref client_id="right:if2"/>
+    <interface_ref client_id="bottom:if2"/>
+  </link>
+  <link client_id="link-A">
+    <property source_id="hostA:if1" dest_id="top:if3" capacity="100000"/>
+    <property source_id="top:if3" dest_id="hostA:if1" capacity="100000"/>
+    <interface_ref client_id="hostA:if1"/>
+    <interface_ref client_id="top:if3"/>
+  </link>
+  <link client_id="link-B">
+    <property source_id="bottom:if3" dest_id="hostB:if1" capacity="100000"/>
+    <property source_id="hostB:if1" dest_id="bottom:if3" capacity="100000"/>
+    <interface_ref client_id="bottom:if3"/>
+    <interface_ref client_id="hostB:if1"/>
+  </link>
+</rspec>'
+);
 -- Need 3 nodes where middle is a delay node
--- Need the Click Router schema
