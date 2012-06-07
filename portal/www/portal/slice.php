@@ -135,8 +135,8 @@ if ($user->privSlice()) {
 print "</td></tr>\n";
 
 if ($user->privSlice()) {
-  print "<tr><th>Other Tools</th><th>Ops Mgmt</th></tr>\n";
-  /* Other Tools */
+  print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
+  /* Tools */
   print "<tr><td>\n";
   /* print "To use a command line tool:<br/>"; */
   print "<button onClick=\"window.location='$slicecred_url'\"><b>Download Credentials for Omni</b></button>\n";
