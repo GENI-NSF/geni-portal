@@ -124,12 +124,12 @@ print "<tr><td>\n";
 if ($user->privSlice()) {
   print "<form method='GET' action=\"do-renew.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input class='date' type='text' name='slice_expiration'";
+  print "<input class='date' type='text' name='sliver_expiration'";
   print "value=\"$slice_expiration\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew Slivers'/>\n";
   print "</form>\n";
 } else {
-  print "$sliver_expiration";
+  print "$slice_expiration";
   // FIXME: Print something that you don't get to renew?
 }
 print "</td></tr>\n";
