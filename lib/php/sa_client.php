@@ -63,13 +63,14 @@ function get_slice_credential($sa_url, $signer, $slice_id, $cert=NULL)
 
 /* Create a new slice record in database, return slice_id */
 function create_slice($sa_url, $signer, $project_id, $project_name, $slice_name,
-                      $owner_id)
+                      $owner_id, $description='')
 {
   $create_slice_message['operation'] = 'create_slice';
   $create_slice_message[SA_ARGUMENT::PROJECT_ID] = $project_id;
   $create_slice_message[SA_ARGUMENT::PROJECT_NAME] = $project_name;
   $create_slice_message[SA_ARGUMENT::SLICE_NAME] = $slice_name;
   $create_slice_message[SA_ARGUMENT::OWNER_ID] = $owner_id;
+  $create_slice_message[SA_ARGUMENT::SLICE_DESCRIPTION] = $description;
   $slice = put_message($sa_url, $create_slice_message,
                        $signer->certificate(), $signer->privateKey());
   return $slice;

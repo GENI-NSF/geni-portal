@@ -19,6 +19,8 @@ create TABLE sa_slice (
   slice_urn VARCHAR,
   slice_email VARCHAR,
   certificate VARCHAR,
+  creation TIMESTAMP,
+  slice_description VARCHAR,
   PRIMARY KEY (id)
 );
 

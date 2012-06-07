@@ -51,19 +51,21 @@ function dbconn()
 }
 
 function db_create_slice($member_id, $project_id, $slice_name, $expiration,
-                         $slice_id)
+                         $slice_id, $description='')
 {
   $conn = dbconn();
   //$expires = new DateTime();
   //$expires->add(new DateInterval('P30D'));
   //$urn = "urn:publicid:IDN+geni:gpo:portal+slice+" . $name;
-
+  $creation = newDateTime();
   $my_tx = $conn->beginTransaction();
-  $sql = "INSERT INTO sa_slice (name, project_id, expiration, slice_id) VALUES ("
+  $sql = "INSERT INTO sa_slice (name, project_id, expiration, slice_id, creation, description) VALUES ("
     . $conn->quote($slice_name, 'text')
     . ', ' . $conn->quote($project_id, 'text')
     . ', ' . $conn->quote($expiration->format('Y-m-d H:i:s'), 'timestamp')
     . ', ' . $conn->quote($slice_id, 'text')
+    . ', ' . $conn->quote($creation->format('Y-m-d H:i:s'), 'timestamp')
+    . ', ' . $conn->quote($description, 'text')
     . ');';
   /* print "command = $sql<br/>"; */
   $result = $conn->exec($sql);

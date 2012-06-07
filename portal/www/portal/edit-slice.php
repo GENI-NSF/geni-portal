@@ -52,6 +52,8 @@ if (isset($slice)) {
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   //  error_log("slice_urn result: $slice_urn\n");
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
+  $slice_creation = $slice[SA_ARGUMENT::CREATION];
+  $slice_description = $slice[SA_ARGUMENT::SLICE_DESCRIPTION];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
   $owner = geni_loadUser($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
@@ -77,6 +79,7 @@ print "<tr><td><b>Slice URN</b></td><td>$slice_urn</td></tr>\n";
 print "<tr><td><b>Slice UUID</b></td><td>$slice_id</td></tr>\n";
 print "<tr><td><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>e-mail</a></td></tr>\n";
 print "<tr><td><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "<tr><td><b>Slice Creation</b></td><td>$slice_creation</td></tr>\n";
 print "<tr><td><b>Slice Expiration</b></td><td>\n";
 print "<form method='GET' action=\"do-renew-slice.php\">";
 print "<input type='text' name='slice_expiration'";
@@ -86,6 +89,10 @@ print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
 <input type='submit' name= 'Renew' value='Renew Slice'/>
 </form></td></tr>
 <?php
+  print "<tr><td><b>Slice Description</b></td><td>";
+print "<form action=\"do-edit-slice.php\">";
+print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>  \n";
+print "<input type='text' name='slice_description' value=\"$slice_description\" disabled=\"disabled\"/></form></td></tr>\n";
 print "</table>\n";
 print "<b id='warn'>* Note: Slice and project names are public</b><br/>\n";
 

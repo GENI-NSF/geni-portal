@@ -35,7 +35,9 @@ class SA_ARGUMENT
   const SLICE_ID = "slice_id";
   const SLICE_URN = "slice_urn";
   const OWNER_ID = "owner_id";
+  const SLICE_DESCRIPTION = "slice_description";
   const EXPIRATION = "expiration";
+  const CREATION = "creation";
   const EXP_CERT = "experimenter_certificate";
   const SLICE_CREDENTIAL = "slice_credential";
   const USER_CREDENTIAL = "user_credential";
@@ -58,6 +60,8 @@ class SA_SLICE_TABLE_FIELDNAME {
   const SLICE_URN = "slice_urn";
   const SLICE_EMAIL = "slice_email";
   const CERTIFICATE = "certificate";
+  const CREATION = "creation";
+  const SLICE_DESCRIPTION = "slice_description";
 }
 
 /* Name of table containing slice membership info */

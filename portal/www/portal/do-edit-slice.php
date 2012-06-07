@@ -36,5 +36,7 @@ if (! isset($slice)) {
 
 relative_redirect('slice.php?slice_id='.$slice_id);
 
+// FIXME: Allow editing the slice descriptio
+
 include("footer.php");
 ?>

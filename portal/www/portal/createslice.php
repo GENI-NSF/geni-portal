@@ -47,18 +47,21 @@ include("tool-lookupids.php");
 if (array_key_exists("slice_name", $_REQUEST)) {
   $slice_name = $_REQUEST['slice_name'];
 }
+if (array_key_exists("slice_description", $_REQUEST)) {
+  $slice_description = $_REQUEST['slice_description'];
+}
 
 if (is_null($project_id) || $project_id == '') {
   error_log("createslice: invalid project_id from GET");
   relative_redirect("home.php");
 }
 
-function sa_create_slice($user, $slice_name, $project_id, $project_name)
+function sa_create_slice($user, $slice_name, $project_id, $project_name, $description='')
 {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $owner_id = $user->account_id;
   $result = create_slice($sa_url, $user, $project_id, $project_name,
-                         $slice_name, $owner_id);
+                         $slice_name, $owner_id, $description);
   return $result;
 }
 
@@ -66,7 +69,7 @@ function sa_create_slice($user, $slice_name, $project_id, $project_name)
 // Do we have all the required params?
 if ($slice_name) {
   // Create the slice...
-  $result = sa_create_slice($user, $slice_name, $project_id, $project_name);
+  $result = sa_create_slice($user, $slice_name, $project_id, $project_name, $slice_description);
   /* $pretty_result = print_r($result, true); */
   /* error_log("sa_create_slice result: $pretty_result\n"); */
  
@@ -92,6 +95,10 @@ print "\n";
 print 'Slice name: ';
 print "\n";
 print '<input type="text" name="slice_name"/><br/>';
+print "\n";
+print 'Slice description: ';
+print "\n";
+print '<input type="text" name="slice_description"/><br/>';
 print "\n";
 print '<input type="submit" value="Create slice"/>';
 print "\n";

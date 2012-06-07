@@ -74,6 +74,9 @@ function handleCreateSlice($data, $path)
   $member_id = $path[2];
   $project_id = $path[3];
   $slice_name = $path[4];
+  // FIXME: If there is a 5, use it
+  //  $description = $path[5];
+  $description = "";
 
   // Default expiration to 30 days
   $expires = new DateTime();
@@ -82,7 +85,7 @@ function handleCreateSlice($data, $path)
   $slice_id = make_uuid();
 
   $result = db_create_slice($member_id, $project_id, $slice_name, $expires,
-                            $slice_id);
+                            $slice_id, $description);
 }
 
 

@@ -251,6 +251,10 @@ function create_slice($args)
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
   $project_name = $args[SA_ARGUMENT::PROJECT_NAME];
   $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+  $description = "";
+  if (array_key_exists(SA_ARGUMENT::SLICE_DESCRIPTION, $args)) {
+    $description = $args[SA_ARGUMENT::SLICE_DESCRIPTION];
+  }
   $slice_id = make_uuid();
 
   if (! isset($project_id) || is_null($project_id) || $project_id == '') {
@@ -304,6 +308,7 @@ function create_slice($args)
 
   // FIXME: Parametrize
   $expiration = get_future_date(30); // 30 days increment
+  $creation = new DateTime();
 
   $conn = db_conn();
   $sql = "INSERT INTO " 
@@ -313,8 +318,10 @@ function create_slice($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
     . SA_SLICE_TABLE_FIELDNAME::CERTIFICATE . ") "
     . " VALUES (" 
@@ -322,8 +329,10 @@ function create_slice($args)
     . $conn->quote($slice_name, 'text') . ", "
     . $conn->quote($project_id, 'text') . ", "
     . $conn->quote($slice_urn, 'text') . ", "
+    . $conn->quote(db_date_format($creation), 'timestamp') . ", "
     . $conn->quote(db_date_format($expiration), 'timestamp') . ", "
     . $conn->quote($owner_id, 'text') . ", "
+    . $conn->quote($description, 'text') . ", "
     . $conn->quote($slice_email, 'text') . ", "
     . $conn->quote($slice_cert, 'text') . ") ";
  
@@ -471,7 +480,9 @@ function lookup_slices($args, $message)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME
@@ -499,7 +510,9 @@ function lookup_slice($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME
@@ -525,7 +538,9 @@ function lookup_slice_by_urn($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
     . SA_SLICE_TABLE_FIELDNAME::CERTIFICATE . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
