@@ -171,7 +171,7 @@ include("query-sliverstatus.php");
 if (!(isset($msg) and isset($obj))){
   print "<p><i>Failed to determine status of resources.</i></p>";
 } else {
-
+  print "<h2>Slice status</h2>\n";
   $slice_status='';
   print "<table>\n";
   print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
@@ -209,12 +209,14 @@ if (!(isset($msg) and isset($obj))){
 
   $first = True;
   $aggs = array_keys( $obj );
+  $displayed_aggs = 0;
   foreach ($aggs as $agg){
     $agg_obj = $obj[$agg];
     /* ignore aggregates which returned nothing */
     if (!is_array($agg_obj)){
       continue;
     }
+    $displayed_aggs++;
     if ($first){
       print "<tr>";
       print "<th class='notapply'>";
@@ -246,6 +248,10 @@ if (!(isset($msg) and isset($obj))){
 
     print "</tr>";
 
+  }
+  if ($displayed_aggs == 0) {
+    /* No resources detected. Say so. */
+    print "<tr><td class='notapply'/><td colspan='5'><i>No resources detected</i></td></tr>";
   }
   print "</table>\n";
 
