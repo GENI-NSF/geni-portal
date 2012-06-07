@@ -245,35 +245,39 @@ mail($portal_admin_email,
      "There is a new account request for $eppn. Please review this request"
      . " at $url");
 
-?>
 
-<?php
-include("header.php");
-show_header('GENI Portal Home', $TAB_HOME);
-?>
-<h2>Your account request has been submitted.</h2>
-Go to the <a href=
-<?php
-$url = relative_url("home.php");
-if ($portal_auto_approve) {
-  $args['id'] = $account_id;
-  $query = http_build_query($args);
-  $url = relative_url("approve.php?");
-  $url = $url . $query;
-}
-print $url
-?>
->portal home page</a>
+relative_redirect('home.php');
 
-<?php
-//$array = $_POST;
-//foreach ($array as $var => $value) {
-//    print "POST[$var] = $value<br/>";
-//    }
-?>
+/* <?php */
+/* include("header.php"); */
+/* show_header('GENI Portal Home', $TAB_HOME); */
+/* ?> */
+/* <h2>Your account request has been submitted.</h2> */
+/* Go to the <a href= */
+/* <?php */
+/* $url = relative_url("home.php"); */
+/* if ($portal_auto_approve) { */
+/*   $args['id'] = $account_id; */
+/*   $query = http_build_query($args); */
+/*   $url = relative_url("approve.php?"); */
+/*   $url = $url . $query; */
+/* } */
+/* print $url */
+/* ?> */
+/* >portal home page</a> */
 
-<hr/>
+/* <?php */
+/* //$array = $_POST; */
+/* //foreach ($array as $var => $value) { */
+/* //    print "POST[$var] = $value<br/>"; */
+/* //    } */
+/* ?> */
 
-<?php
-include("footer.php");
+/* <hr/> */
+
+/* <?php */
+/* include("footer.php"); */
+/* ?> */
+
+
 ?>
