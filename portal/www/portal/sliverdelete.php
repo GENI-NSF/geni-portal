@@ -31,6 +31,7 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
 require_once("print-text-helpers.php");
+require_once("logging_client.php");
 $user = geni_loadUser();
 if (! $user->privSlice() || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -70,6 +71,8 @@ if (! isset($ams) || is_null($ams)) {
   }
 }
 
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+
 if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs!");
   $slivers_output = "No AMs registered.";
@@ -104,6 +107,12 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("DeleteSliver output = " . $retVal);
 }
 
+$log_contexts = array(array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::PROJECT,
+        LOGGING_ARGUMENT::CONTEXT_ID => $slice['project_id']),
+        array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::SLICE,
+        LOGGING_ARGUMENT::CONTEXT_ID => $slice['slice_id']));
+log_event($log_url, "Deleted resources from slice " . $slice_name,
+        $log_contexts, $slice['owner_id']);
 $header = "Deleted Sliver on slice: $slice_name";
 
 $msg = $retVal[0];
@@ -126,11 +135,12 @@ print "<div>";
 print_list( $success );
 print "</div>";
 
-print "<div>Failed to delete slivers at:</div>";
-print "<div>";
-print_list( $fail );
-print "</div>";
-
+if (count($fail)) {
+  print "<div>Failed to delete slivers at:</div>";
+  print "<div>";
+  print_list( $fail );
+  print "</div>";
+}
 print "<hr/>";
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";
