@@ -38,6 +38,7 @@ class PA_ARGUMENT
   const MEMBER_ID = "member_id";
   const IS_MEMBER = "is_member";
   const ROLE_TYPE = "role_type";
+  const CREATION = "creation";
 }
 
 /* Name of table containing per-project info */
@@ -51,6 +52,7 @@ class PA_PROJECT_TABLE_FIELDNAME
   const LEAD_ID = "lead_id";
   const PROJECT_EMAIL = "project_email";
   const PROJECT_PURPOSE = "project_purpose";
+  const CREATION = "creation";
 }
 
 /* Name of table containing project membership info */

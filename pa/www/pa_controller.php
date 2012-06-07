@@ -242,18 +242,23 @@ function create_project($args, $message)
 
   $project_email = 'project-' . $project_name . '@example.com';
   
+  $creation = new DateTime();
+
+  $conn = db_conn();
   $sql = "INSERT INTO " . $PA_PROJECT_TABLENAME 
     . "(" 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", " 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", " 
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", " 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", " 
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ") " 
     . "VALUES ("
     . "'" . $project_id . "', " 
     . "'" . $project_name . "', " 
     . "'" . $lead_id . "', " 
     . "'" . $project_email . "', " 
+    . $conn->quote(db_date_format($creation), 'timestamp') . ", "
     . "'" . $project_purpose . "') ";
 
   //  error_log("SQL = " . $sql);
@@ -347,6 +352,7 @@ function lookup_projects($args)
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE 
     . " FROM " . $PA_PROJECT_TABLENAME 
     . $lead_clause;
@@ -388,6 +394,7 @@ function lookup_project($args)
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE 
     . " FROM " . $PA_PROJECT_TABLENAME
     . $where;

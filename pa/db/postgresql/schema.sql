@@ -15,6 +15,7 @@ CREATE TABLE pa_project (
   lead_id UUID,
   project_email VARCHAR,
   project_purpose VARCHAR,
+  creation TIMESTAMP,
   PRIMARY KEY (id)
 );
 

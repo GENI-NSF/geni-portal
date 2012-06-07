@@ -45,6 +45,7 @@ $project_id = "None";
 $project = null;
 $project_name = "None";
 $email = "";
+$creation = "";
 $purpose = "";
 $leademail = "";
 $leadname = "";
@@ -63,9 +64,8 @@ include("tool-breadcrumbs.php");
 if (! is_null($project) && $project != "None") {
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+  $creation = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-  // FIXME FIXME FIXME
-  $creation = "12-20-2012"; //$project[PA_PROJECT_TABLE_FIELDNAME::CREATION_TIME];
   if (uuid_is_valid($leadid)) {
     $lead = geni_loadUser($leadid);
     $leademail = $lead->email();
