@@ -169,85 +169,85 @@ print "</table>\n";
 include("query-sliverstatus.php");
 
 if (!(isset($msg) and isset($obj))){
-  print "<p><i>Failed to determine status of resources.</i></p>";  
+  print "<p><i>Failed to determine status of resources.</i></p>";
 } else {
 
-$slice_status='';
-print "<table>\n";
-print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
-/* Slice Info */
-print "<tr>";
-print "<td class='$slice_status'>$slice_status</td>";
-print "<td colspan='2'>$slice_name</td>";
-print "<td>$slice_creation</td>";
-
-if ($user->privSlice()) {
-  print "<td><form method='GET' action=\"do-renew-slice.php\">";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input class='date' type='text' name='slice_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew'/>\n";
-  print "</form></td>\n";
-} else {
-  print "<td>$slice_expiration</td>";
-}
-
-print "<td>";
-if ($user->privSlice()) {
-  print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
-}
-print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
-print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
-if ($user->privSlice()) {
-  print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
-}
-
-
-print "</td>";
-print "</tr>\n";
-/* Sliver Info */
-
-$first = True;
-$aggs = array_keys( $obj );
-foreach ($aggs as $agg){
-  $agg_obj = $obj[$agg];
-  /* ignore aggregates which returned nothing */
-  if (!is_array($agg_obj)){
-    continue;
-  }
-  if ($first){
-    print "<tr>";
-    print "<th class='notapply'>";
-    print "</th><th>Status</th><th>Aggregate</th>";
-    print "<th>Creation</th>";
-    print "<th>Expiration</th></tr>\n";
-    $first = False;
-  }
-  $sliver_status=$agg_obj['geni_status'];
-  $sliver_creation='NOT IMPLEMENTED YET';
-  $sliver_expiration='NOT IMPLEMENTED YET';
+  $slice_status='';
+  print "<table>\n";
+  print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
+  /* Slice Info */
   print "<tr>";
-  print "<td class='notapply'></td>";
-  print "<td class='$sliver_status'>$sliver_status</td>";
-  $agg_name = am_name($agg); 
-  print "<td>$agg_name</td>";
+  print "<td class='$slice_status'>$slice_status</td>";
+  print "<td colspan='2'>$slice_name</td>";
+  print "<td>$slice_creation</td>";
+
+  if ($user->privSlice()) {
+    print "<td><form method='GET' action=\"do-renew-slice.php\">";
+    print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+    print "<input class='date' type='text' name='slice_expiration'";
+    print "value=\"$slice_expiration\"/>\n";
+    print "<input type='submit' name= 'Renew' value='Renew'/>\n";
+    print "</form></td>\n";
+  } else {
+    print "<td>$slice_expiration</td>";
+  }
+
+  print "<td>";
+  if ($user->privSlice()) {
+    print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
+  }
+  print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
+  print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
+  if ($user->privSlice()) {
+    print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
+  }
+
+
+  print "</td>";
+  print "</tr>\n";
+  /* Sliver Info */
+
+  $first = True;
+  $aggs = array_keys( $obj );
+  foreach ($aggs as $agg){
+    $agg_obj = $obj[$agg];
+    /* ignore aggregates which returned nothing */
+    if (!is_array($agg_obj)){
+      continue;
+    }
+    if ($first){
+      print "<tr>";
+      print "<th class='notapply'>";
+      print "</th><th>Status</th><th>Aggregate</th>";
+      print "<th>Creation</th>";
+      print "<th>Expiration</th></tr>\n";
+      $first = False;
+    }
+    $sliver_status=$agg_obj['geni_status'];
+    $sliver_creation='NOT IMPLEMENTED YET';
+    $sliver_expiration='NOT IMPLEMENTED YET';
+    print "<tr>";
+    print "<td class='notapply'></td>";
+    print "<td class='$sliver_status'>$sliver_status</td>";
+    $agg_name = am_name($agg);
+    print "<td>$agg_name</td>";
     print "<td>$sliver_creation</td>";
 
-if ($user->privSlice()) {
-  print "<td><form method='GET' action=\"do-renew.php\">";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input class='date' type='text' name='slice_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew'/>\n";
-  print "</form></td>\n";
-} else {
-  print "<td>$sliver_expiration</td>";
-}
+    if ($user->privSlice()) {
+      print "<td><form method='GET' action=\"do-renew.php\">";
+      print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+      print "<input class='date' type='text' name='slice_expiration'";
+      print "value=\"$slice_expiration\"/>\n";
+      print "<input type='submit' name= 'Renew' value='Renew'/>\n";
+      print "</form></td>\n";
+    } else {
+      print "<td>$sliver_expiration</td>";
+    }
 
-print "</tr>";
+    print "</tr>";
 
-}
-print "</table>\n";
+  }
+  print "</table>\n";
 
 }
 
@@ -263,12 +263,12 @@ print "</table>\n";
 /*   print "<td colspan='2'><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n"; */
 /*   print "</tr>"; */
 
-  /* print "<tr><th colspan='4'>Operator Management</th></tr>\n"; */
-  /* print "<tr>"; */
+/* print "<tr><th colspan='4'>Operator Management</th></tr>\n"; */
+/* print "<tr>"; */
 
-  /* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n"; */
-  /* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n"; */
-  /* print "</tr>"; */
+/* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n"; */
+/* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n"; */
+/* print "</tr>"; */
 /* } */
 
 /* print "</table>\n"; */
@@ -283,31 +283,39 @@ echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 ?>
 
 <table>
-<tr><th>Slice Member</th><th>Roles</th></tr>
-<?php
-   // FIXME: See project-member.php. Replace all that with a table or 2 here?
-   print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Slice Owner</td></tr>\n";
-?>
+	<tr>
+		<th>Slice Member</th>
+		<th>Roles</th>
+	</tr>
+	<?php
+	// FIXME: See project-member.php. Replace all that with a table or 2 here?
+	print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Slice Owner</td></tr>\n";
+	?>
 </table>
 
 <h2>Recent Slice Actions</h2>
 <table>
-<tr><th>Time</th><th>Message</th><th>Member</th>
-<?php
-  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  $entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
-  foreach($entries as $entry) {
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
-    $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-    $member = geni_loadUser($member_id);
-    $member_name = $member->prettyName();
-    //    error_log("ENTRY = " . print_r($entry, true));
-    print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+	<tr>
+		<th>Time</th>
+		<th>Message</th>
+		<th>Member</th>
+		<?php
+		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+		$entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
+		foreach($entries as $entry) {
+		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+		  $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+		  $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
+		  $member = geni_loadUser($member_id);
+		  $member_name = $member->prettyName();
+		  //    error_log("ENTRY = " . print_r($entry, true));
+		  print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
   }
 ?>
+
 </table>
-<br/><br/>
+<br />
+<br />
 
 <?php
 include("footer.php");
