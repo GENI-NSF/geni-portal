@@ -42,6 +42,7 @@ function show_form($error_msg)
       . $error_msg
       . "</div>\n";
   }
+  print "Please enter a new password to protect your certificate's private key (minimum 5 characters).<br/>\n";
   print "<form action=\"downloadkeycert.php\" method=\"post\">\n";
   print "<label for=\"password\">Password:</label>\n";
   print "<input type=\"password\" name=\"password\"/><br/>\n";

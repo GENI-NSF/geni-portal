@@ -39,9 +39,11 @@ if (count($keys) == 0)
   {
     // No ssh keys are present.
     print "No SSH keys have been uploaded. ";
-    print "SSH keys are used to log in to many reserved compute resources.<br/><br/>\n";
+    print "SSH keys are required to log in to many reserved compute resources.<br/><br/>\n";
     print "You can <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>";
-    print "or <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>.\n";
+    print "or <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>, if you have one you want to use.<br/>\n";
+    print "If you're not sure what to do, choose 'Generate'.<br/>\n";
+
   }
 else
   {
@@ -71,6 +73,7 @@ else
       . "</tr>\n";
     }
     print "</table>\n";
+  print "<i>Note</i>: You will need your SSH private key on your local machine. <br/>\nIf you generated your SSH keypair on this portal and have not already done so, be sure to Download your SSH key. <br/>\nAfter you download your key, be sure to set local permissions on that file appropriately. On Linux and Mac, do \"chmod 0600 <i>[path-to-SSH-private-key]</i>\". <br/>\nWhen you invoke SSH to log in to reserved resources, you will need to remember the path to that file. <br/>Your SSH command will be something like: \"ssh -i <i>path-to-SSH-key-you-downloaded</i> <i>[username]@[hostname]</i>\".<br/>\n";
     print "<br/>\n";
     print "<button onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button>\n";
   }
