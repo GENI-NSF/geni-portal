@@ -141,6 +141,10 @@ print "<h2>$header</h2>\n";
 if (isset($msg) and isset($obj)){
   if (!$pretty) {
     echo "<div class='xml'>\n";
+    /* json_encode accepts JSON_PRETTY_PRINT in PHP 5.4, but
+     * we've got 5.3. Maybe when we go to Ubuntu 12.04 we
+     * can pretty up this output.
+     */
     echo print_r($obj);
     echo "\n</div>\n";
   } else {

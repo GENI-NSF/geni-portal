@@ -169,7 +169,6 @@ print "<h2>Slice Status</h2>\n";
 if (!(isset($msg) and isset($obj))) {
   print "<p><i>Failed to determine status of resources.</i></p>";  
 } else {
-
   $slice_status='';
   print "<table>\n";
   print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
@@ -211,12 +210,14 @@ if (!(isset($msg) and isset($obj))) {
   /* Sliver Info */
   $first = True;
   $aggs = array_keys( $obj );
+  $displayed_aggs = 0;
   foreach ($aggs as $agg){
     $agg_obj = $obj[$agg];
     /* ignore aggregates which returned nothing */
     if (!is_array($agg_obj)){
       continue;
     }
+    $displayed_aggs++;
     if ($first){
       print "<tr>";
       print "<th class='notapply'>";
@@ -231,7 +232,7 @@ if (!(isset($msg) and isset($obj))) {
     print "<tr>";
     print "<td class='notapply'></td>";
     print "<td class='$sliver_status'>$sliver_status</td>";
-    $agg_name = am_name($agg); 
+    $agg_name = am_name($agg);
     print "<td>$agg_name</td>";
     print "<td>$sliver_creation</td>";
     
@@ -250,9 +251,16 @@ if (!(isset($msg) and isset($obj))) {
     print "</tr>";
   }
 
+  if ($displayed_aggs == 0) {
+    /* No resources detected. Say so. */
+    print "<tr><td class='notapply'/><td colspan='5'><i>No resources detected.</i></td></tr>";
+  }
+
   print "</table>\n";
 }
 // --- End of Slice and Sliver Status table
+
+print "<br/>\n";
 
 // Slice Identifers table
 print "<table>\n";
@@ -278,12 +286,12 @@ print "</table>\n";
 /*   print "<td colspan='2'><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n"; */
 /*   print "</tr>"; */
 
-  /* print "<tr><th colspan='4'>Operator Management</th></tr>\n"; */
-  /* print "<tr>"; */
+/* print "<tr><th colspan='4'>Operator Management</th></tr>\n"; */
+/* print "<tr>"; */
 
-  /* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n"; */
-  /* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n"; */
-  /* print "</tr>"; */
+/* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n"; */
+/* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n"; */
+/* print "</tr>"; */
 /* } */
 
 /* print "</table>\n"; */
@@ -294,31 +302,39 @@ echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 ?>
 
 <table>
-<tr><th>Slice Member</th><th>Roles</th></tr>
-<?php
-   // FIXME: See project-member.php. Replace all that with a table or 2 here?
-   print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Slice Owner</td></tr>\n";
-?>
+	<tr>
+		<th>Slice Member</th>
+		<th>Roles</th>
+	</tr>
+	<?php
+	// FIXME: See project-member.php. Replace all that with a table or 2 here?
+	print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Slice Owner</td></tr>\n";
+	?>
 </table>
 
 <h2>Recent Slice Actions</h2>
 <table>
-<tr><th>Time</th><th>Message</th><th>Member</th>
-<?php
-  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  $entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
-  foreach($entries as $entry) {
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
-    $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-    $member = geni_loadUser($member_id);
-    $member_name = $member->prettyName();
-    //    error_log("ENTRY = " . print_r($entry, true));
-    print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+	<tr>
+		<th>Time</th>
+		<th>Message</th>
+		<th>Member</th>
+		<?php
+		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+		$entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
+		foreach($entries as $entry) {
+		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+		  $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+		  $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
+		  $member = geni_loadUser($member_id);
+		  $member_name = $member->prettyName();
+		  //    error_log("ENTRY = " . print_r($entry, true));
+		  print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
   }
 ?>
+
 </table>
-<br/><br/>
+<br />
+<br />
 
 <?php
 include("footer.php");
