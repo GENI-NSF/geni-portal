@@ -40,7 +40,7 @@ import geni.util.cert_util as cert_util
 import geni.util.urn_util as urn_util
 import sfa.trust.gid as gid
 import sfa.util.xrn
-from ch_interface import *
+from geni.util.ch_interface import *
 from ch import Clearinghouse
 
 
