@@ -32,6 +32,7 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
 require_once("am_map.php");
+require_once("json_util.php");
 
 $user = geni_loadUser();
 if (! $user->privSlice() || ! $user->isActive()) {
@@ -142,10 +143,10 @@ if (isset($msg) and isset($obj)){
   if (!$pretty) {
     echo "<div class='xml'>\n";
     /* json_encode accepts JSON_PRETTY_PRINT in PHP 5.4, but
-     * we've got 5.3. Maybe when we go to Ubuntu 12.04 we
-     * can pretty up this output.
+     * we've got 5.3. Use a third-party utility instead.
      */
-    echo print_r($obj);
+    echo "<pre>\n" . json_indent(json_encode($obj)) . "\n</pre>\n";
+//     print_r($obj);
     echo "\n</div>\n";
   } else {
     print_sliver_status( $obj );
