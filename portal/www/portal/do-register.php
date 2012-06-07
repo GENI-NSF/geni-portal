@@ -51,6 +51,11 @@ function derive_username() {
   $username = substr($email_addr, 0, $atindex);
   /* print "base username = $username<br/>\n"; */
 
+  // FIXME: Follow the rules here: http://groups.geni.net/geni/wiki/GeniApiIdentifiers#Name
+  // Max 8 characters
+  // Case insensitive internally
+  // Obey this regex: '^[a-zA-Z][\w]\{1,8\}$'
+
   // Sanitize the username so it can be used in ABAC
   $username = strtolower($username);
   $username = preg_replace("/[^a-z0-9_]/", "", $username);

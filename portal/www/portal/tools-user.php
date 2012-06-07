@@ -174,3 +174,18 @@ if (isset($reqs) && count($reqs) > 0) {
   print "<i>No outstanding requests to join projects or slices or change your profile.</i><br/>\n";
 }
 
+print "<br/>\n";
+print "<h2>Account Summary</h2>\n";
+// Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
+// Put this in a nice table
+print "<table>\n";
+print "<tr><th>Name</th><td>" . $user->prettyName() . "</td></tr>\n";
+print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
+print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
+print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
+print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
+print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
+// FIXME: Project count? Slice count?
+// FIXME: Other attributes?
+// FIXME: Permissions
+print "</table>\n";
