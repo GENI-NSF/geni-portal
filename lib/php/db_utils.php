@@ -155,10 +155,10 @@ function db_fetch_row($query, $msg = "")
 $DATE_FORMAT = 'Y-m-d H:i:s';
 
 // Get date N days in future from now
-function get_future_date($num_days)
+function get_future_date($num_days, $num_hours = 0)
 {
   $dt = new DateTime();
-  $dt->add(new DateInterval('P' . $num_days . 'D'));
+  $dt->add(new DateInterval('P' . $num_days . 'DT' . $num_hours . 'H'));
   return $dt;
 }
 
