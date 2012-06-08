@@ -190,9 +190,10 @@ if (is_array($entries)) {
 }
 ?>
 </table>
-<br/><br/>
-
 
 <?php
+$addnote_url = 'add-project-note.php?project_id='.$project_id;
+print "<button onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
+print "<br/>\n";
 include("footer.php");
 ?>
