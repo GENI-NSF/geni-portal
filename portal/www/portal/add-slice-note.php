@@ -50,11 +50,9 @@ if (array_key_exists("note", $_REQUEST)) {
     if (! isset($log_url)) {
       $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     }
-    $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
-    $project_context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
     $slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
     $slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
-    log_event($log_url, "Note on slice $slice_name: " . $note, array($project_context, $slice_context), $user->account_id);
+    log_event($log_url, "Note on slice $slice_name: " . $note, array($slice_context), $user->account_id);
 
     require_once("header.php");
     show_header('GENI Portal: Slices', '');
