@@ -33,6 +33,19 @@ require_once("rq_client.php");
  * SSH key management
  *----------------------------------------------------------------------
  */
+/*
+ * A javascript function to confirm the delete.
+ */
+echo <<< END
+<script type="text/javascript">
+function deleteSshKey(dest){
+  var r=confirm("Are you sure you want to delete this ssh key?");
+  if (r==true) {
+    window.location = dest;
+  }
+}
+</script>
+END;
 print "<h2>SSH Keys</h2>\n";
 $keys = fetchSshKeys($user->account_id);
 if (count($keys) == 0)
@@ -62,9 +75,9 @@ else
                 . $download_pkey_url . $query
                 . "'\">Download Private Key</button>");
       }
-      $delete_cell = ("<button onClick=\"window.location='"
+      $delete_cell = ("<button onClick=\"deleteSshKey('"
                 . $delete_sshkey_url . $query
-                . "'\">Delete</button>");
+                . "')\">Delete</button>");
       print "<tr>"
       . "<td>" . htmlentities($key['filename']) . "</td>"
       . "<td>" . htmlentities($key['description']) . "</td>"
