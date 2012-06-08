@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2012 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -27,16 +27,14 @@ require_once("header.php");
 require_once( "am_map.php");
 
 function print_list( $list ){
-  $list2 = explode("\n",$list);
   $num_items = count($list);
   print "<ul class='list'>";
-  $i=0;
-  while ($i < $num_items) {
-    echo "<li>". $list[$i] . "</li>\n";
-    $i = $i+1;
-  }
-  if ($num_items == 0) {
+  if (count($list) == 0) {
     echo "<li><i>No aggregates.</i></li>\n";    
+  } else {
+    foreach ($list as $item) {
+      echo "<li>$item</li>\n";
+    }
   }
   print "</ul>\n";
 }
