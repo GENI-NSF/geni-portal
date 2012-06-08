@@ -245,6 +245,7 @@ function create_slice($args)
   global $sa_slice_cert_life_days;
   global $sa_authority_cert;
   global $sa_authority_private_key;
+  global $sa_default_slice_expiration_hours;
   global $cs_url;
 
   $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
@@ -306,8 +307,7 @@ function create_slice($args)
 
   $slice_urn = urn_from_cert($slice_cert);
 
-  // FIXME: Parametrize
-  $expiration = get_future_date(30); // 30 days increment
+  $expiration = get_future_date(0, $sa_default_slice_expiration_hours);
   $creation = new DateTime();
 
   $conn = db_conn();
