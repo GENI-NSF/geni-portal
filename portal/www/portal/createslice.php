@@ -80,7 +80,7 @@ if ($slice_name) {
 
 // If here, present the form
 require_once("header.php");
-show_header('GENI Portal: Debug', '');
+show_header('GENI Portal: Slices', '');
 if ($message) {
   // It would be nice to put this in red...
   print "<i>" . $message . "</i>\n";
