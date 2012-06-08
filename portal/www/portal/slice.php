@@ -76,6 +76,7 @@ $flack_url = "flack.php?slice_id=".$slice_id;
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
+$addnote_url = 'add-slice-note.php?slice_id='.$slice_id;
 
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
 
@@ -97,10 +98,11 @@ if ($user->privSlice()) {
 }
 print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
 print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
+print "<button onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 if ($user->privSlice()) {
   print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
 } else {
-  // FIXME: PRint something
+  // FIXME: Print something
 }
 print "</td>\n";
 
@@ -198,6 +200,7 @@ if (!(isset($msg) and isset($obj))) {
   }
   print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
   print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
+  print "<button onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
   if ($user->privSlice()) {
     print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
   } else {
