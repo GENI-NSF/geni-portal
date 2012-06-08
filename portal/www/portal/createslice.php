@@ -87,19 +87,21 @@ if ($message) {
 }
 include("tool-breadcrumbs.php");
 print "<h2>Create New Slice</h2>\n";
-print "Project name: <b>$project_name</b><br/>\n";
+print "Create a new Slice. A GENI slice is a container for reserving GENI resources.<br/>\n";
 print '<form method="GET" action="createslice">';
 print "\n";
 print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
 print "\n";
-print 'Slice name: ';
+print "<table>";
+print "<tr><th>Project name</th><td><b>$project_name</b></td></tr>\n";
+print '<tr><th>Slice name</th>';
 print "\n";
-print '<input type="text" name="slice_name"/><br/>';
+print '<td><input type="text" name="slice_name"/></td>';
+print "</tr>\n";
+print '<tr><th>Slice description</th>';
 print "\n";
-print 'Slice description: ';
-print "\n";
-print '<input type="text" name="slice_description"/><br/>';
-print "\n";
+print '<td><input type="text" name="slice_description"/></td>';
+print "</tr></table>\n";
 print '<input type="submit" value="Create slice"/>';
 print "\n";
 print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/>\n";

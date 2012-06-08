@@ -68,8 +68,6 @@ if (count($slices) > 0) {
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
 
-  $projects = lookup_projects($pa_url, $user->account_id);
-
   foreach ($slices as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     // FIXME: Add PROJECT_ID, OWNER_ID
@@ -93,16 +91,8 @@ if (count($slices) > 0) {
     $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
 
-    //    error_log("PROJECTS = " . $slice_project_id . " " . print_r($projects, true));
-
     // Lookup the project for this project ID
-    $project = null;
-    foreach($projects as $candidate) {
-      if($candidate[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID] == $slice_project_id) {
-	$project = $candidate;
-	break;
-      }
-    }
+    $project = lookup_project($pa_url, $slice_project_id);
 
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
