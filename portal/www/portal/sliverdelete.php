@@ -107,12 +107,6 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("DeleteSliver output = " . $retVal);
 }
 
-$log_contexts = array(array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::PROJECT,
-        LOGGING_ARGUMENT::CONTEXT_ID => $slice['project_id']),
-        array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::SLICE,
-        LOGGING_ARGUMENT::CONTEXT_ID => $slice['slice_id']));
-log_event($log_url, "Deleted resources from slice " . $slice_name,
-        $log_contexts, $slice['owner_id']);
 $header = "Deleted Sliver on slice: $slice_name";
 
 $msg = $retVal[0];
@@ -129,11 +123,18 @@ print_r($msg);
 print "</div>";
 
 
-
-print "<div>Deleted slivers at:</div>";
-print "<div>";
-print_list( $success );
-print "</div>";
+if (count($success)) {
+  $log_contexts = array(array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::PROJECT,
+          LOGGING_ARGUMENT::CONTEXT_ID => $slice['project_id']),
+          array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::SLICE,
+                  LOGGING_ARGUMENT::CONTEXT_ID => $slice['slice_id']));
+  log_event($log_url, "Deleted resources from slice " . $slice_name,
+          $log_contexts, $slice['owner_id']);
+  print "<div>Deleted slivers at:</div>";
+  print "<div>";
+  print_list( $success );
+  print "</div>";
+}
 
 if (count($fail)) {
   print "<div>Failed to delete slivers at:</div>";
