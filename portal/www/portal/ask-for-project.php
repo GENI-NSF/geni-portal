@@ -74,6 +74,31 @@ if (array_key_exists("to", $_REQUEST)) {
   if (array_key_exists("purpose", $_REQUEST)) {
     $project_purpose = $_REQUEST["purpose"];
   }
+  $hostname = $_SERVER['HTTP_HOST'];
+  $message .= "\nCreate my project here: https://$hostname/secure/edit-project.php
+
+In case you are new to GENI:
+GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
+For more info on GENI, see: http://www.geni.net
+
+To create a project for me in GENI, you first go to the GENI Portal: https://$hostname
+You log in with your home university or college username, or request a GENI-specific account.
+Then you need to wait for your GENI account to be approved, if you don't have one yet.
+You'll get email when your GENI account is approved, and you can go back to the GENI portal to log in.
+
+Once you are logged in to the GENI portal, click 'Create Project' to create a new project. 
+(https://$hostname/secure/edit-project.php)
+
+Please give it the project name I listed, so I can find it again (or something similar).
+
+On the following project page, you should see an 'Invite Project Member' button. Click that, and enter my email address (" . $user->email() . "), to invite me to join the new project.
+
+I'll get an email telling me I've been invited, with a link in it. That link will take me to the 'Request to Join' the new project page in the GENI portal. 
+Once I request to join the project, you'll get another email, asking you to approve my membership in the new project. Click on the link 
+in that email to add me to the project.
+
+Thank you,\n" . $user->prettyName() . "\n";
+
   $message .= "\r\n----\r\nRequested Project Name: " . $project_name . "\r\n";
   $message .= "Requested Project Purpose: " . $project_purpose . "\r\n";
 }
@@ -97,9 +122,11 @@ if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($er
   print "<b>Sent</b> GENI project request to:<br/>\n" . "$requestee.<br/><br/>\n";
   $lines = explode("\r\n", $message);
   print "<b>Message</b>: <br/>\n";
+  print "<pre>";
   foreach ($lines as $line) {
-    print "$line<br/>\n";
+    print "$line\n";
   }
+  print "</pre>";
   include("footer.php");
   exit();
 }
@@ -125,39 +152,40 @@ print "<textarea name='purpose' cols='60' rows='2'></textarea><br/>\n";
 print "<b>Project request message</b>:<br/>\n";
 $hostname = $_SERVER['HTTP_HOST'];
 // FIXME: Ticket #66: Split this up. Much of this is canned text. Maybe starting with 'Create my...'? More?
-print "<textarea name='message' cols='60' rows='10'>Would you please create a GENI project for me?
+print "<textarea name='message' cols='60' rows='5'>Would you please create a GENI project for me?
 I need to use GENI for my research, and I need someone to create a 'GENI project' to hold my research.
 I don't have the right permissions to create a GENI project, but I think you do or could.
 
 Would you be willing to create a GENI project for my research, and be the responsible Project Lead for my project? 
-
-Create my project here: https://$hostname/secure/edit-project.php
-
-In case you are new to GENI:
-GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
-For more info on GENI, see: http://www.geni.net
-
-To create a project for me in GENI, you first go to the GENI Portal: https://$hostname
-You log in with your home university or college username, or request a GENI-specific account.
-Then you need to wait for your GENI account to be approved, if you don't have one yet.
-You'll get email when your GENI account is approved, and you can go back to the GENI portal to log in.
-
-Once you are logged in to the GENI portal, click 'Create Project' to create a new project. 
-(https://$hostname/secure/edit-project.php)
-
-Please give it the project name I listed, so I can find it again (or something similar).
-
+</textarea><br/>\n";
+print "<b>Message footer</b>: <br/>\n";
+print "Create my project here: https://$hostname/secure/edit-project.php<br/>
+<br/>
+In case you are new to GENI:<br/>
+GENI is an NSF funded virtual testbed supporting computer networking research and innovation. <br/>
+For more info on GENI, see: http://www.geni.net<br/>
+<br/>
+To create a project for me in GENI, you first go to the GENI Portal: https://$hostname<br/>
+You log in with your home university or college username, or request a GENI-specific account.<br/>
+Then you need to wait for your GENI account to be approved, if you don't have one yet.<br/>
+You'll get email when your GENI account is approved, and you can go back to the GENI portal to log in.<br/>
+<br/>
+Once you are logged in to the GENI portal, click 'Create Project' to create a new project. <br/>
+(https://$hostname/secure/edit-project.php)<br/>
+<br/>
+Please give it the project name I listed, so I can find it again (or something similar).<br/>
+<br/>
 On the following project page, you should see an 'Invite Project Member' button. Click that, and enter my email address (";
 print $user->email();
-print "), to invite me to join the new project.
-
-I'll get an email telling me I've been invited, with a link in it. That link will take me to the 'Request to Join' the new project page in the GENI portal. 
-Once I request to join the project, you'll get another email, asking you to approve my membership in the new project. Click on the link 
-in that email to add me to the project.
-
-Thank you,\n";
+print "), to invite me to join the new project.<br/>
+<br/>
+I'll get an email telling me I've been invited, with a link in it. That link will take me to the 'Request to Join' the new project page in the GENI portal. <br/>
+Once I request to join the project, you'll get another email, asking you to approve my membership in the new project. Click on the link <br/>
+in that email to add me to the project.<br/>
+<br/>
+Thank you,<br/>\n";
 print $user->prettyName();
-print "\n</textarea><br/>\n";
+print "<br/>\n<br/>\n";
 print "<button type=\"submit\" value=\"submit\"><b>Send Request</b></button>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print "</form>\n";

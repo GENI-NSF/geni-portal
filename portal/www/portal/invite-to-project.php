@@ -61,6 +61,22 @@ if (array_key_exists("to", $_REQUEST)) {
 
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email
+  $hostname = $_SERVER['HTTP_HOST'];
+  $message .= "To join my project, go here: 
+      https://$hostname/secure/join-this-project.php?project_id=$project_id
+
+Once you request to join, I'll get an email to come back to the GENI portal and approve you.
+Then you can work with slices in my project.
+
+If you are new to GENI:
+GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
+I use GENI, and you should too.
+For more info on GENI, see: http://www.geni.net
+To get started using GENI, go to the GENI Portal: https://$hostname
+You log in with your home university or college username, or request a GENI-specific account.
+
+Thank you,\n" . $user->prettyName() . "\n";
+
   $to = implode(", ", $invitees);
   $email = $user->email();
   $name = $user->prettyName();
@@ -74,10 +90,11 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   print "<br/>\n";
   print "<b>Sent</b> Project $project_name invitation to:<br/>\n" . "$to.<br/><br/>\n";
   $lines = explode("\r\n", $message);
-  print "<b>Message</b>: <br/>\n";
+  print "<b>Message</b>: <br/><pre>\n";
   foreach ($lines as $line) {
-    print "$line<br/>\n";
+    print "$line\n";
   }
+  print "</pre>";
   include("footer.php");
   exit();
 }
@@ -105,27 +122,28 @@ print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME:
 print "<b>Invitation message</b>:<br/>\n";
 
 // FIXME: ticket #66: Make this a template. Take from 'To join my' out of the editable bits.
-print "<textarea name='message' cols='60' rows='10'>Please work with me on GENI project $project_name!
+print "<textarea name='message' cols='60' rows='5'>Please work with me on GENI project $project_name!
 
 Since we work in the same lab, we should do our GENI research together. 
-That means belonging to the same GENI project.
-
-To join my project, go here: 
-      https://$hostname/secure/join-this-project.php?project_id=$project_id
-
+That means belonging to the same GENI project.\n</textarea><br/>\n";
+print "<b>Message footer</b>: <br/>\n";
+print "To join my project, go here: <br/>
+      https://$hostname/secure/join-this-project.php?project_id=$project_id<br/>
+<br/>
 Once you request to join, I'll get an email to come back to the GENI portal and approve you.
 Then you can work with slices in my project.
-
-If you are new to GENI:
+<br/>
+If you are new to GENI:<br/>
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
-I use GENI, and you should too.
-For more info on GENI, see: http://www.geni.net
-To get started using GENI, go to the GENI Portal: https://$hostname
-You log in with your home university or college username, or request a GENI-specific account.
-
-Thank you,\n";
+I use GENI, and you should too.<br/>
+For more info on GENI, see: http://www.geni.net<br/>
+To get started using GENI, go to the GENI Portal: https://$hostname<br/>
+You log in with your home university or college username, or request a GENI-specific account.<br/>
+<br/>
+Thank you,<br/>\n";
 print $user->prettyName();
-print "\n</textarea><br/>\n";
+print "<br/><br/>\n";
+
 print "<button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print "</form>\n";

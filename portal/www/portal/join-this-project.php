@@ -90,10 +90,10 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
   // FIXME: sub handle-project-request.php with handle-project-request.php?project_id=$project_id&member_id=$user->account_id&request_id=$request_id
   //  $ind = strpos($message, "handle-project-request.php");
   $hostname = $_SERVER['HTTP_HOST'];
-  $message .= "<br/><br/>To handle my request, go to the GENI Portal here:<br/> 
-https://$hostname/secure/handle-project-request.php?project_id=$project_id&member_id=" . $user->account_id . "&request_id=$request_id<br/>
-<br/>
-Thank you,<br/>\n" . $user->prettyName() . "<br/><br/>\n";
+  $message .= "To handle my request, go to the GENI Portal here:
+https://$hostname/secure/handle-project-request.php?project_id=$project_id&member_id=" . $user->account_id . "&request_id=$request_id
+
+Thank you,\n" . $user->prettyName() . "\n";
 
 //  $message = substr_replace($message, "handle-project-request.php?project_id=" . $project_id . "&member_id=" . $user->account_id . "&request_id=" . $request_id, $ind, strlen("handle-project-request.php"));
 
@@ -127,10 +127,11 @@ Thank you,<br/>\n" . $user->prettyName() . "<br/><br/>\n";
   print "<br/>\n";
   print "<b>Sent</b> request to join GENI project <b>$project_name</b> to <b>$leadname</b>.<br/><br/>\n";
   $lines = explode("\r\n", $message);
-  print "<b>Message</b>: <br/>\n";
+  print "<b>Message</b>: <br/><pre>\n";
   foreach ($lines as $line) {
-    print "$line<br/>\n";
+    print "$line\n";
   }
+  print "</pre>";
   include("footer.php");
   exit();
 }
@@ -174,7 +175,7 @@ print "<b>Project join request message</b>:<br/>\n";
 $hostname = $_SERVER['HTTP_HOST'];
 print "<textarea name='message' cols='60' rows='5'>May I join GENI project $project_name?
 I think I need to do GENI research in your project.
-I am a student in your lab.</textarea><br/>\n";
+I am a student in your lab.\n</textarea><br/>\n";
 print "<b>Message footer</b>: <br/>\n";
 print "To handle my request, go to the GENI Portal here: <br/>
 https://$hostname/secure/handle-project-request.php<br/>
