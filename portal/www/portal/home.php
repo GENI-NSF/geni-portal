@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 
 require_once("user.php");
+require_once('cs_constants.php');
 /* $GENI_TITLE = "GENI Portal Home"; */
 /* $ACTIVE_TAB = "Home"; */
 require_once("header.php");

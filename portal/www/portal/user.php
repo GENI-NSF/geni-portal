@@ -120,8 +120,8 @@ class GeniUser
     }
   }
 
-  // Is given permission (function/method/action) allowed in given contesxt_type/context_id
-  // for given user?
+  // Is given permission (function/method/action) allowed in given 
+  // context_type/context_id for given user?
   function isAllowed($permission, $context_type, $context_id)
   {
 
@@ -168,18 +168,6 @@ class GeniUser
     //    error_log("PM = " . print_r($permission_manager, true));
     $result = $permission_manager->is_allowed($permission, $context_type, $context_id);
     return $result;
-  }
-
-  // Does user have create slice privilege on given project?
-  function privSlice() {
-    $allowed = $this->isAllowed('administer_resources', CS_CONTEXT_TYPE::RESOURCE, null);
-    return $allowed;
-  }
-
-  // Does user have admin privileges?
-  function privAdmin() {
-    $allowed = $this->isAllowed('administer_members', CS_CONTEXT_TYPE::MEMBER, null);
-    return $allowed;
   }
 
   private function getInsideKeyPair() {

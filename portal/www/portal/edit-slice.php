@@ -33,7 +33,7 @@ require_once("sa_client.php");
 require_once("sa_constants.php");
 
 $user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Slices', $TAB_SLICES);
@@ -42,6 +42,11 @@ $slice_id = "None";
 $slice_name = "None";
 unset($slice);
 include("tool-lookupids.php");
+
+if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
+}
+
 include("tool-breadcrumbs.php");
 if (isset($slice)) {
   /* $pretty_result = print_r($slice, true); */

@@ -32,13 +32,18 @@ require_once('util.php');
 require_once("print-text-helpers.php");
 
 $user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 include("tool-lookupids.php");
 if (! isset($slice)) {
   relative_redirect("home.php");
 }
+
+if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
+}
+
 if (array_key_exists("slice_expiration", $_REQUEST)) {
   $req_exp = $_REQUEST["slice_expiration"];
 } else {

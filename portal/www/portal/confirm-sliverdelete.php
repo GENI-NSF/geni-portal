@@ -31,19 +31,23 @@ require_once("sa_constants.php");
 require_once("sa_client.php");
 
 $user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->privSlice()) {
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Slices', $TAB_SLICES);
 $slice = "None";
 $slice_name = "None";
 
 include("tool-lookupids.php");
 
+if (!$user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
+}
+
 if (isset($slice) && $slice != "None") {
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
 }
 
+show_header('GENI Portal: Slices', $TAB_SLICES);
 print "<h1>Delete Resources from GENI Slice: " . $slice_name . "</h1>\n";
 
 print "<p>Delete all reserved Resources?</p>\n";

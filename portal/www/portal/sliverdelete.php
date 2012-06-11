@@ -33,7 +33,7 @@ require_once("sa_client.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
 $user = geni_loadUser();
-if (! $user->privSlice() || ! $user->isActive()) {
+if (! $user->isActive()) {
   relative_redirect('home.php');
 }
 ?>
@@ -54,6 +54,10 @@ include("tool-lookupids.php");
 
 if (! isset($slice)) {
   no_slice_error();
+}
+
+if (!$user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
 }
 
 // Takes an arg am_id which may have multiple values. Each is treated

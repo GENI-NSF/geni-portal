@@ -26,7 +26,7 @@
 require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
-if (! $user->privSlice() || ! $user->isActive()) {
+if (! $user->isActive()) {
   relative_redirect("home.php");
 }
 ?>
@@ -48,7 +48,10 @@ if (is_null($slice) || $slice == '') {
   no_slice_error();
 }
 
-// TODO: Does the $user have permissions on this $slice?
+if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
+}
+
 // TODO: Pass expiration to slicecred.py
 
 

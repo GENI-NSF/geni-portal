@@ -24,6 +24,7 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('pa_constants.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -31,7 +32,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 // Check if the user has create project privilege and short circuit this
-if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
+if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
   relative_redirect('edit-project.php');
 }
 

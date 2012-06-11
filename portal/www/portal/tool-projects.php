@@ -46,7 +46,7 @@ $num_projects = count($projects);
 
 
 print "<h2>My Projects</h2>\n";
-if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
+if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
   if ($num_projects==0) {
     print "<p class='instruction'>";
     print "Congratulations! Your GENI Portal account is now active.<br/>";
@@ -113,7 +113,7 @@ if (count($projects) > 0) {
     //    error_log("project = " . print_r($project, true));
 
     $handle_req_str = "";
-    if (true || $user->isAllowed('add_project_member', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+    if (true || $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
       $reqcnt = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id, 
 							CS_CONTEXT_TYPE::PROJECT, $project_id);
       //      error_log("REQCNT " . print_r($reqcnt, true) . " " . $project_id);
@@ -130,7 +130,7 @@ if (count($projects) > 0) {
     //<button style="width:65;height:65" onClick="window.location='http://www.javascriptkit.com'"><b>Home</b></button>
     // http://www.javascriptkit.com/howto/button.shtml
     $create_slice_link = "<button style=\"\" onClick=\"window.location='" . "createslice.php?project_id=$project_id" . "'\"><b>Create Slice</b></button>";
-    if(!$user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+    if(!$user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
       $create_slice_link = "";
     }
     print ("<tr><td> <a href=\"project.php?project_id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 

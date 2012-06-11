@@ -35,7 +35,7 @@ require_once("am_map.php");
 require_once("json_util.php");
 
 $user = geni_loadUser();
-if (! $user->privSlice() || ! $user->isActive()) {
+if (! $user->isActive()) {
   relative_redirect('home.php');
 }
 ?>
@@ -56,6 +56,11 @@ unset($slice);
 include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();
+}
+
+
+if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
 }
 
 if (array_key_exists("pretty", $_REQUEST)){
