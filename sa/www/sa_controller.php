@@ -239,7 +239,7 @@ function get_user_credential($args)
 }
 
 /* Create a slice for given project, name, urn, owner_id */
-function create_slice($args)
+function create_slice($args, $message)
 {
   global $SA_SLICE_TABLENAME;
   global $sa_slice_cert_life_days;
@@ -359,7 +359,7 @@ function create_slice($args)
   add_attribute($ma_url, $owner_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::SLICE, $slice_id);
 
   // Now add the lead as a member of the slice
-  $addres = add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id, SA_ARGUMENT::MEMBER_ID => $owner_id, SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD));
+  $addres = add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id, SA_ARGUMENT::MEMBER_ID => $owner_id, SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD), $message);
   if (! isset($addres) || is_null($addres) || ! array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     error_log("create_slice failed to add lead as a slice member: " . $addres[RESPONSE_ARGUMENT::CODE] . ": " . $addres[RESPONSE_ARGUMENT::OUTPUT]);
     // FIXME: ROLLBACK?
@@ -595,13 +595,26 @@ function renew_slice($args, $message)
 }
 
 // Add a member of given role to given slice
-function add_slice_member($args)
+function add_slice_member($args, $message)
 {
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
   $role = $args[SA_ARGUMENT::ROLE_TYPE];
 
   global $SA_SLICE_MEMBER_TABLENAME;
+
+  $already_member_sql = "select count(*) from " . $SA_SLICE_MEMBER_TABLENAME
+    . " WHERE " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = '$slice_id'"
+    . " AND " 
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '$member_id'";
+  $already_member = db_fetch_row($already_member_sql);
+  //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
+  $already_member = $already_member['value']['count'] > 0;
+  //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
+  if ($already_member) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Member $member_id is already a member of slice $slice_id");
+  }
 
   $sql = "INSERT INTO " . $SA_SLICE_MEMBER_TABLENAME . " ("
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . ", "
@@ -612,11 +625,22 @@ function add_slice_member($args)
     . $role . ")";
   //  error_log("SA.add slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
+
+  // If successful, add an assertion to remove the role's privileges within the CS store
+  if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    global $cs_url;
+    /* FIXME - The signer needs to have a certificate and private key. Who sends this message (below)
+     * to the CS? Is the PA the signer?
+     */
+    $signer = $message->signerUuid();
+    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::SLICE, $slice_id);
+  }
+
   return $result;
 }
 
 // Remove a member from given slice 
-function remove_slice_member($args)
+function remove_slice_member($args, $message)
 {
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
@@ -631,11 +655,28 @@ function remove_slice_member($args)
     . "= '" . $member_id . "'";
   error_log("SA.remove slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
+
+  // Delete previous assertions from CS
+  if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    global $cs_url;
+    $signer = $message->signerUuid();
+
+    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+    //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
+    foreach($membership_assertions as $membership_assertion) {
+      //      error_log("ASSERTION = " . print_r($membership_assertion));
+      $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
+      //      error_log("ASSERTION_ID = " . print_r($assertion_id));
+      delete_assertion($cs_url, $assertion_id);
+      //      error_log("DELETING ASSERTION : " . $assertion_id);
+    }
+  }
+
   return $result;
 }
 
 // Change role of given member in given slice
-function change_slice_member_role($args)
+function change_slice_member_role($args, $message)
 {
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
@@ -654,6 +695,27 @@ function change_slice_member_role($args)
 
   error_log("SA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
+
+
+  if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    global $cs_url;
+    $signer = $message->signerUuid();
+
+    // Remove previous CS assertions about the member in this slice
+    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+    //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
+    foreach($membership_assertions as $membership_assertion) {
+      //      error_log("ASSERTION = " . print_r($membership_assertion));
+      $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
+      //      error_log("ASSERTION_ID = " . print_r($assertion_id));
+      delete_assertion($cs_url, $assertion_id);
+      //      error_log("DELETING ASSERTION : " . $assertion_id);
+    }
+
+    // Create new assertion for member in this role
+    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::SLICE, $slice_id);
+  }
+
   return $result;
 }
 

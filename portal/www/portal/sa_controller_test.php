@@ -62,11 +62,13 @@ function dump_rows($rows)
   }
 }
 
-function dump_pids($pids)
+// Dump a slice_id/role pair
+function dump_sids($sids)
 {
-  error_log("DUMP_PIDS:");
-  foreach($pids as $pid) {
-    error_log("   " . $pid);
+  error_log("DUMP_SIDS: ");
+  foreach($sids as $sid) {
+    error_log("   " . $sid[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID] . " " . 
+	      $sid[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE]);
   }
 }
 
@@ -135,14 +137,14 @@ $rows = get_slice_members($sa_url, $user, $slice_id3);
 dump_rows($rows);
 $rows = get_slice_members($sa_url, $user, $slice_id3, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_rows($rows);
-$pids = get_slices_for_member($sa_url, $user, $user->account_id, true);
-dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $user, $user->account_id, false);
-dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $user, $user->account_id, true, CS_ATTRIBUTE_TYPE::MEMBER);
-dump_pids($pids);
-$pids = get_slices_for_member($sa_url, $user, $user->account_id, false, CS_ATTRIBUTE_TYPE::AUDITOR);
-dump_pids($pids);
+$sids = get_slices_for_member($sa_url, $user, $user->account_id, true);
+dump_sids($sids);
+$sids = get_slices_for_member($sa_url, $user, $user->account_id, false);
+dump_sids($sids);
+$sids = get_slices_for_member($sa_url, $user, $user->account_id, true, CS_ATTRIBUTE_TYPE::MEMBER);
+dump_sids($sids);
+$sids = get_slices_for_member($sa_url, $user, $user->account_id, false, CS_ATTRIBUTE_TYPE::AUDITOR);
+dump_sids($sids);
 
 delete_project($pa_url, $project);
 
