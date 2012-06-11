@@ -88,8 +88,14 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
   $request_id = create_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
 
   // FIXME: sub handle-project-request.php with handle-project-request.php?project_id=$project_id&member_id=$user->account_id&request_id=$request_id
-  $ind = strpos($message, "handle-project-request.php");
-  $message = substr_replace($message, "handle-project-request.php?project_id=" . $project_id . "&member_id=" . $user->account_id . "&request_id=" . $request_id, $ind, strlen("handle-project-request.php"));
+  //  $ind = strpos($message, "handle-project-request.php");
+  $hostname = $_SERVER['HTTP_HOST'];
+  $message .= "<br/><br/>To handle my request, go to the GENI Portal here:<br/> 
+https://$hostname/secure/handle-project-request.php?project_id=$project_id&member_id=" . $user->account_id . "&request_id=$request_id<br/>
+<br/>
+Thank you,<br/>\n" . $user->prettyName() . "<br/><br/>\n";
+
+//  $message = substr_replace($message, "handle-project-request.php?project_id=" . $project_id . "&member_id=" . $user->account_id . "&request_id=" . $request_id, $ind, strlen("handle-project-request.php"));
 
   // Log the request
   // contexts include project and member
@@ -119,7 +125,7 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
 
   // Put up a page saying we sent the request
   print "<br/>\n";
-  print "<b>Sent</b> request to join GENI project $project_name to $leadname.<br/><br/>\n";
+  print "<b>Sent</b> request to join GENI project <b>$project_name</b> to <b>$leadname</b>.<br/><br/>\n";
   $lines = explode("\r\n", $message);
   print "<b>Message</b>: <br/>\n";
   foreach ($lines as $line) {
@@ -150,6 +156,7 @@ print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
 print "</td><td>";
 print $leadname;
 print "</td></tr>\n";
+// FIXME: Could add Project creation date?
 print "</table><br/>\n";
 
 // Start form
@@ -165,15 +172,16 @@ print "<form action=\"join-this-project.php?project_id=$project_id\">\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 print "<b>Project join request message</b>:<br/>\n";
 $hostname = $_SERVER['HTTP_HOST'];
-print "<textarea name='message' cols='60' rows='10'>Can I join project $project_name?
+print "<textarea name='message' cols='60' rows='5'>May I join GENI project $project_name?
 I think I need to do GENI research in your project.
-I am a student in your lab.
-To handle my request, go to the GENI Portal here: 
-https://$hostname/secure/handle-project-request.php
-
-Thank you,\n";
+I am a student in your lab.</textarea><br/>\n";
+print "<b>Message footer</b>: <br/>\n";
+print "To handle my request, go to the GENI Portal here: <br/>
+https://$hostname/secure/handle-project-request.php<br/>
+<br/>
+Thank you,<br/>\n";
 print $user->prettyName();
-print "</textarea><br/>\n";
+print "<br/><br/>\n";
 
 print "<button type=\"submit\" value=\"submit\"><b>Send Join Request</b></button>\n";
 
