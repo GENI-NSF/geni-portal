@@ -49,10 +49,10 @@ print "<h2>My Projects</h2>\n";
 if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
   if ($num_projects==0) {
     print "<p class='instruction'>";
-    print "Congratulations! Your GENI Portal account is now active.<br/>";
-    print "You have been made a 'Project Lead', meaning you can create GENI Projects.<br/>";
-//as well as create slices in projects and reservice resources.</span></p><br/>";
-    print "You are not a member of any projects.  You need to create or join a project.";
+    print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
+    print "You have been made a 'Project Lead', meaning you can create GENI Projects, 
+    as well as create slices in projects and reserve resources.<br/><br/>";
+    print "You are not a member of any projects.  You need to Create or Join a Project.";
     print "</p>";
   }
   print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
@@ -60,11 +60,11 @@ if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
   print "<br/>\n";
 } else {
   if ($num_projects==0) {
-    print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/>";
-    //    print "<p><span class='instruction'>Note that your account is not a 'Project Lead' account, 
-    // meaning you must join a project created by someone else, 
-    // before you can create slices or use GENI resources.</span></p><br/>";
-    print "You are not a member of any projects. Please join an existing project.</p>";
+    print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/><br/>";
+    print "Note that your account is not a 'Project Lead' account, 
+     meaning you must join a project created by someone else, 
+     before you can create slices or use GENI resources.<br/><br/>";
+    print "You are not a member of any projects. Please Join an existing Project.</p>";
   }
   print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<button onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
