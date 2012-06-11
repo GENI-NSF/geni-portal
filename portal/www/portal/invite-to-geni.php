@@ -43,7 +43,7 @@ include("tool-breadcrumbs.php");
 
 $invitees = null;
 $error = null;
-$message = null;
+$message = "";
 if (array_key_exists("to", $_REQUEST)) {
   $invitee_string = $_REQUEST["to"];
   // split on ,
@@ -57,6 +57,13 @@ if (array_key_exists("to", $_REQUEST)) {
   if (array_key_exists("message", $_REQUEST)) {
     $message = $_REQUEST["message"];
   }
+  $hostname = $_SERVER['HTTP_HOST'];
+  $message .= "\nFor more information on GENI, see: http://www.geni.net
+To get started using GENI, go to the GENI Portal: https://$hostname
+
+You log in with your home university or college username, or request a GENI-specific account.
+
+Thank you,\n" . $user->prettyName() . "\n";
 }
 
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
@@ -74,10 +81,11 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   print "<br/>\n";
   print "<b>Sent</b> GENI invitation to:<br/>\n" . "$to.<br/><br/>\n";
   $lines = explode("\r\n", $message);
-  print "<b>Message</b>: <br/>\n";
+  print "<b>Message</b>: <br/><pre>\n";
   foreach ($lines as $line) {
-    print "$line<br/>\n";
+    print "$line\n";
   }
+  print "</pre>";
   include("footer.php");
   exit();
 }
@@ -96,18 +104,21 @@ print "<b>Email address of people to invite</b>:<br/>\n";
 print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
 print "<b>Invitation message</b>:<br/>\n";
 $hostname = $_SERVER['HTTP_HOST'];
-print "<textarea name='message' cols='60' rows='10'>Come use GENI! 
+// FIXME: Ticket #66: Make this only partially editable. Maybe starting with 'For more info...'
+print "<textarea name='message' cols='60' rows='5'>Come use GENI! 
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
 I use GENI, and you should too.
+</textarea><br/>\n";
 
-For more info on GENI, see: http://www.geni.net
-To get started using GENI, go to the GENI Portal: https://$hostname
-
-You log in with your home university or college username, or request a GENI-specific account.
-
-Thank you,\n";
+print "<b>Message footer</b>: <br/>\n";
+print "For more information on GENI, see: http://www.geni.net<br/>
+To get started using GENI, go to the GENI Portal: https://$hostname<br/>
+<br/>
+You log in with your home university or college username, or request a GENI-specific account.<br/>
+<br/>
+Thank you,<br/>\n";
 print $user->prettyName();
-print "\n</textarea><br/>\n";
+print "<br/><br/>\n";
 print "<button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print "</form>\n";
