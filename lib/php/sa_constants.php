@@ -77,4 +77,28 @@ class SA_SLICE_MEMBER_TABLE_FIELDNAME
 /* Name of table containing pending slice membership requests */
 $SA_SLICE_MEMBER_REQUEST_TABLENAME = 'sa_slice_member_request';
 
+/* SA Actions on which privileges are enabled/disabled */
+/* Should match the set of privileges in the cs_action table */
+class SA_ACTION {
+  const CREATE_SLICE = 'create_slice';
+  const DELETE_SLICE = 'delete_slice';
+  const LOOKUP_SLICE = 'lookup_slice';
+  const LOOKUP_SLICES = 'lookup_slices';
+  const LOOKUP_SLICE_IDS = 'lookup_slice_ids';
+  const GET_SLICE_CREDENTIAL = 'get_slice_credential';
+  const ADD_SLIVERS = 'add_slivers';
+  const DELETE_SLIVERS = 'delete_slivers';
+  const RENEW_SLICE = 'renew_slice';
+  const ADD_SLICE_MEMBER = 'add_slice_member';
+  const REMOVE_SLICE_MEMBER = 'remove_slice_member';
+  const CHANGE_SLICE_MEMBER_ROLE = 'change_slice_member_role';
+  const GET_SLICE_MEMBERS = 'get_slice_members';
+  const GET_SLICES_FOR_MEMBER =  'get_slices_for_member';
+  const LOOKUP_SLICES_BY_IDS = 'lookup_slices_by_ids';
+  const GET_SLICE_MEMBERS_FOR_PROJECT = 'get_slice_members_for_project';
+
+  // These aren't SA functions but AM functions on a slice
+  const LIST_RESOURCES = 'list_resources';
+}
+
 ?>

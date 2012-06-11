@@ -32,7 +32,7 @@ require_once("am_client.php");
 require_once("sa_client.php");
 require_once("print-text-helpers.php");
 $user = geni_loadUser();
-if (! $user->privSlice() || ! $user->isActive()) {
+if (! $user->isActive()) {
   relative_redirect("home.php");
 }
 ?>
@@ -59,6 +59,10 @@ include("tool-lookupids.php");
 
 if (! isset($slice)) {
   no_slice_error();
+}
+
+if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
 }
 
 if (array_key_exists('slice_expiration', $_GET)) {

@@ -171,7 +171,7 @@ $lead = geni_loadUser($lead_id);
 $leadname = $lead->prettyName();
 
 // FIXME: Validate this user has authorization to change membership on this project
-if (false && ! $user->isAllowed('add_project_member', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+if (false && ! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   error_log("handle-p-req: User " . $user->prettyName() . " not authorized to add members to project $project_id");
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");

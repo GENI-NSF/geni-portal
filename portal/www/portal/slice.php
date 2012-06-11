@@ -78,37 +78,46 @@ $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
 $addnote_url = 'add-slice-note.php?slice_id='.$slice_id;
 
+// String to disable button or other active element
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
+
+$add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
+				    CS_CONTEXT_TYPE::SLICE, $slice_id);
+$add_slivers_disabled = "";
+if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
+
+$delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
+				    CS_CONTEXT_TYPE::SLICE, $slice_id);
+$delete_slivers_disabled = "";
+if(!$delete_slivers_privilege) { $delete_slivers_disabled = $disabled; }
+
+$renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE,
+				    CS_CONTEXT_TYPE::SLICE, $slice_id);
+$renew_disabled = "";
+if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
+
+$lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
+				    CS_CONTEXT_TYPE::SLICE, $slice_id);
+
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
 
 print "<table>\n";
-if ($user->privSlice()) {
-  $slice_col='4';
-} else {
-  $slice_col='2';
-}
-
 print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 
 /* Slice Actions */
 print "<tr><td rowspan='2'>\n";
-if ($user->privSlice()) {
-  print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
-} else {
-  // FIXME: Print something that shows what you can't do
-}
+print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled ><b>Add Slivers</b></button>\n";
+
 print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
 print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
-print "<button onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
-if ($user->privSlice()) {
-  print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
-} else {
-  // FIXME: Print something
-}
+print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
+
+print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled><b>Delete Slivers</b></button>\n";
 print "</td>\n";
 
 /* Renew */
-print "<td>\n";
-if ($user->privSlice()) {
+if($renew_slice_privilege) {
+  print "<td>\n";
   print "<form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='slice_expiration'";
@@ -117,13 +126,12 @@ if ($user->privSlice()) {
   print "</form>\n";
 } else {
   print "$slice_expiration";
-  // fIXME Say something about what you can't do
 }
 print "</td></tr>\n";
 
 
 print "<tr><td>\n";
-if ($user->privSlice()) {
+if ($renew_slice_privilege) {
   print "<form method='GET' action=\"do-renew.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration'";
@@ -132,32 +140,27 @@ if ($user->privSlice()) {
   print "</form>\n";
 } else {
   print "$slice_expiration";
-  // FIXME: Print something that you don't get to renew?
 }
 print "</td></tr>\n";
 
-if ($user->privSlice()) {
-  print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
-  /* Tools */
-  print "<tr><td>\n";
-  /* print "To use a command line tool:<br/>"; */
-  print "<button onClick=\"window.location='$slicecred_url'\"><b>Download Credentials for Omni</b></button>\n";
-  print "<button onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b></button>\n";
-  print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
-  print "</td>\n";
+print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
+/* Tools */
+print "<tr><td>\n";
+/* print "To use a command line tool:<br/>"; */
+print "<button onClick=\"window.location='$slicecred_url'\" $add_slivers_disabled><b>Download Credentials for Omni</b>  </button>\n";
+print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b> </button>\n";
+print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
+print "</td>\n";
 
-  /* Ops Management */
-  print "<td>\n";
-  print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\"><b>Disable Slice</b></button>\n";
-  print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\"><b>Shutdown Slice</b></button>\n";
-  print "</td></tr>\n";
-} else {
-  // FIXME: Print something that shows what you don't get here?
-}
+/* Ops Management */
+print "<td>\n";
+print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\"><b>Disable Slice</b></button>\n";
+print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\"><b>Shutdown Slice</b></button>\n";
+print "</td></tr>\n";
 
 print "</table>\n";
 
-/*   print "<h2>Slice Operational Monitoring</h2>\n"; */
+/* print "<h2>Slice Operational Monitoring</h2>\n"; */
 /* print "<table>\n"; */
 /* print "<tr><td><b>Slice data</b></td><td><a href='https://gmoc-db.grnoc.iu.edu/protected-openid/index.pl?method=slice_details;slice=".$slice_urn."'>Slice $slice_name</a></td></tr>\n"; */
 /* print "</table>\n"; */
@@ -180,7 +183,7 @@ if (!(isset($msg) and isset($obj))) {
   print "<td colspan='2'>$slice_name</td>";
   print "<td>$slice_creation</td>";
 
-  if ($user->privSlice()) {
+  if ($renew_slice_privilege) {
     print "<td><form method='GET' action=\"do-renew-slice.php\">";
     print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
     print "<input class='date' type='text' name='slice_expiration'";
@@ -189,23 +192,15 @@ if (!(isset($msg) and isset($obj))) {
     print "</form></td>\n";
   } else {
     print "<td>$slice_expiration</td>";
-    // FIXME: Print something about what you can't do
   }
 
   print "<td>";
-  if ($user->privSlice()) {
-    print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
-  } else {
-    // FIXME: Print something about what you can't do
-  }
+  print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b> $add_slivers_disabled</button>\n";
+
   print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
   print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
-  print "<button onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
-  if ($user->privSlice()) {
-    print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
-  } else {
-    // FIXME: Print something about what you can't do
-  }
+  print "<button onClick=\"window.location='$addnote_url'\"><b>Add Note</b> $add_slivers_disabled </button>\n";
+    print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b> $delete_slivers_disabled</button>\n";
 
   print "</td>";
   print "</tr>\n";
@@ -239,7 +234,7 @@ if (!(isset($msg) and isset($obj))) {
     print "<td>$agg_name</td>";
     print "<td>$sliver_creation</td>";
     
-    if ($user->privSlice()) {
+    if ($renew_slice_privilege) {
       print "<td><form method='GET' action=\"do-renew.php\">";
       print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
       print "<input class='date' type='text' name='slice_expiration'";
@@ -248,7 +243,6 @@ if (!(isset($msg) and isset($obj))) {
       print "</form></td>\n";
     } else {
       print "<td>$sliver_expiration</td>";
-      // FIXME: Print something about what you can't do
     }
 
     print "</tr>";
@@ -281,27 +275,12 @@ print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$
 print "</table>\n";
 // ---
 
-/* print "<table>\n"; */
-/* if ($user->privSlice()) { */
-/*   print "<tr><th colspan='4'>Manage Slice</th></tr>\n"; */
-/*   print "<tr>"; */
-/*   print "<td colspan='2'>To use a command line tool:<br/><button onClick=\"window.location='$slicecred_url'\">Download Slice Credential</button></td>\n"; */
-/*   print "<td colspan='2'><button onClick=\"window.location='$flack_url'\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n"; */
-/*   print "</tr>"; */
-
-/* print "<tr><th colspan='4'>Operator Management</th></tr>\n"; */
-/* print "<tr>"; */
-
-/* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\">Disable Slice</button></td>\n"; */
-/* print "<td colspan='2'><button title=\"not working yet\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\">Shutdown Slice</button></td>\n"; */
-/* print "</tr>"; */
-/* } */
-
-/* print "</table>\n"; */
-
-
 print "<h2>Slice members</h2>";
-echo "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+$edit_members_disabled = "";
+if ($user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id) {
+  $edit_members_disabled = $disabled;
+}
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 ?>
 
 <table>

@@ -50,7 +50,7 @@ print $user->prettyName();
 </div>
 <?php
   // Actions / approvals required 
-if ($user->privAdmin()) {
+   if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   include("tools-admin.php");
 }
 ?>

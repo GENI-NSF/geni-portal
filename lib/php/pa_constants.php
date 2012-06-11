@@ -68,4 +68,22 @@ class PA_PROJECT_MEMBER_TABLE_FIELDNAME
 /* Name of table containing pending project membership requests */
 $PA_PROJECT_MEMBER_REQUEST_TABLENAME = 'pa_project_member_request';
 
+
+/* PA Actions on which privileges are enabled/disabled */
+/* Should match the set of privileges in the cs_action table */
+class PA_ACTION {
+  const CREATE_PROJECT = 'create_project';
+  const DELETE_PROJECT = 'delete_project';
+  const GET_PROJECTS = 'get_projects';
+  const GET_PROJECT_BY_LEAD = 'get_project_by_lead';
+  const LOOKUP_PROJECT = 'lookup_project';
+  const UPDATE_PROJECT = 'update_project';
+  const CHANGE_LEAD = 'change_lead';
+  const ADD_PROJECT_MEMBER = 'add_project_member';
+  const REMOVE_PROJECT_MEMBER = 'remove_project_member';
+  const CHANGE_MEMBER_ROLE = 'change_member_role';
+  const GET_PROJECT_MEMBERS = 'get_project_members';
+  const GET_PROJECTS_FOR_MEMBER= 'get_projects_for_member';
+}
+
 ?>

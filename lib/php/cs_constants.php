@@ -111,4 +111,13 @@ class CS_POLICY_TABLE_FIELDNAME {
   const POLICY_CERT = "policy_cert";
 }
 
+/* CS Actions on which privileges are enabled/disabled */
+/* Should match the set of privileges in the cs action table */
+class CS_ACTION {
+  const ADMINISTER_RESOURCES = 'administer_resources';
+  const ADMINISTER_MEMBERS = 'administer_members';
+  const ADMINISTER_SERVICES = 'administer_services';
+}
+
+
 ?>
