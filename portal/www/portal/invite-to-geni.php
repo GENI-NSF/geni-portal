@@ -96,11 +96,12 @@ print "<b>Email address of people to invite</b>:<br/>\n";
 print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
 print "<b>Invitation message</b>:<br/>\n";
 $hostname = $_SERVER['HTTP_HOST'];
+// FIXME: Ticket #66: Make this only partially editable. Maybe starting with 'For more info...'
 print "<textarea name='message' cols='60' rows='10'>Come use GENI! 
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
 I use GENI, and you should too.
 
-For more info on GENI, see: http://www.geni.net
+For more information on GENI, see: http://www.geni.net
 To get started using GENI, go to the GENI Portal: https://$hostname
 
 You log in with your home university or college username, or request a GENI-specific account.

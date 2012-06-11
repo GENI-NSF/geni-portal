@@ -87,6 +87,10 @@ if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($er
        $message,
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
 
+  // FIXME: Ticket #65: Put this as a request. Include the request ID in the email?
+  // Then when the request is handled, can auto add the member who requested the project.
+  // And the request can store the project name and description
+
   // Put up a page saying we invited them.
   print "<h2>Ask Someone to Create you a Project</h2>\n";
   print "<br/>\n";
@@ -120,7 +124,8 @@ print "<b>Proposed project purpose</b>:<br/>\n";
 print "<textarea name='purpose' cols='60' rows='2'></textarea><br/>\n";
 print "<b>Project request message</b>:<br/>\n";
 $hostname = $_SERVER['HTTP_HOST'];
-print "<textarea name='message' cols='60' rows='10'>Can you create a GENI project for me?
+// FIXME: Ticket #66: Split this up. Much of this is canned text. Maybe starting with 'Create my...'? More?
+print "<textarea name='message' cols='60' rows='10'>Would you please create a GENI project for me?
 I need to use GENI for my research, and I need someone to create a 'GENI project' to hold my research.
 I don't have the right permissions to create a GENI project, but I think you do or could.
 

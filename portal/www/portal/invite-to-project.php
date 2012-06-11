@@ -104,7 +104,7 @@ print "<b>Email addresses of people to invite</b>:<br/>\n";
 print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
 print "<b>Invitation message</b>:<br/>\n";
 
-// FIXME: general portal URL
+// FIXME: ticket #66: Make this a template. Take from 'To join my' out of the editable bits.
 print "<textarea name='message' cols='60' rows='10'>Please work with me on GENI project $project_name!
 
 Since we work in the same lab, we should do our GENI research together. 
