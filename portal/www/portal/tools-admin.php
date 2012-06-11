@@ -23,7 +23,7 @@
 //----------------------------------------------------------------------
 
 require_once("user.php");
-if (! $user->privAdmin()) {
+if (! $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   exit();
 }
 ?>

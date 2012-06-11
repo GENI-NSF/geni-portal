@@ -67,9 +67,9 @@ function show_tab_bar($active_tab = '', $load_user=true)
     $user = geni_loadUser();
     
     if (isset($user) && ! is_null($user)) {
-      if ($user->privAdmin()) {
-      array_push($standard_tabs, array('name' => $TAB_ADMIN,
-				       'url' => 'admin.php'));
+      if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
+	array_push($standard_tabs, array('name' => $TAB_ADMIN,
+					 'url' => 'admin.php'));
       }
     }
   }

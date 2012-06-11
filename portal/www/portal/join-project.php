@@ -85,7 +85,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 
 print "If you didn't see a project in which you want to work, you can: \n";
 // If the user can create a project, show the Create Project Button
-if ($user->isAllowed('create_project', CS_CONTEXT_TYPE::RESOURCE, null)) {
+if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
   print "<button onClick=\"window.location='edit-project.php'\"><b>Create a New Project</b></button><br/>\n";
 } else {
 // Else, Show button to invite someone to create you a project

@@ -39,6 +39,8 @@ INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slice', 2,
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slices', 2, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slice_ids', 2, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('get_slice_credential', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('add_slivers', 3, 2);
+INSERT INTO cs_action (name, privilege, context_type) values ('delete_slivers', 3, 2);
 INSERT INTO cs_action (name, privilege, context_type) values ('renew_slice', 3, 2);
 INSERT INTO cs_action (name, privilege, context_type) values ('add_slice_member', 3, 2);
 INSERT INTO cs_action (name, privilege, context_type) values ('remove_slice_member', 3, 2);
@@ -47,6 +49,7 @@ INSERT INTO cs_action (name, privilege, context_type) values ('get_slice_members
 INSERT INTO cs_action (name, privilege, context_type) values ('get_slices_for_member', 2, 2);
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_slices_by_ids', 2, 2);
 INSERT INTO cs_action (name, privilege, context_type) values ('get_slice_members_for_project', 2, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('list_resources', 2, 2); -- Actually an AM call, not an SA call
 
 -- SR_CONTROLLER actions
 INSERT INTO cs_action (name, privilege, context_type) values ('get_services', 2, 4);
@@ -62,6 +65,11 @@ INSERT INTO cs_action (name, privilege, context_type) values ('get_project_by_le
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_project', 2, 3);
 INSERT INTO cs_action (name, privilege, context_type) values ('update_project', 3, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('change_lead', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('add_project_member', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('remove_project_member', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('change_member_role', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_project_members', 2, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_projects_for_member', 2, 1);
 
 -- PORTAL 'admin' actions: These are catch-all privileges in a particular context
 -- and should go away when we refactor

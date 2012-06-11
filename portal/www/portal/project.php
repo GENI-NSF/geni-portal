@@ -26,11 +26,15 @@ require_once("user.php");
 require_once("header.php");
 require_once('util.php');
 require_once('pa_constants.php');
+require_once('sa_constants.php');
 require_once('pa_client.php');
 require_once('rq_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('logging_client.php');
+
+// String to disable button or other active element
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -86,7 +90,7 @@ print "<tr><th>Slice Action</th><th>Ops Mgmt</th></tr>\n";
 print "<tr>\n";
 /* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
-if(isset($project_id) && $user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+if(isset($project_id) && $user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
 	/* Create a new slice*/
 	print "<td><button onClick=\"window.location='";
 	print relative_url("createslice?project_id=$project_id'");
@@ -97,11 +101,15 @@ if(isset($project_id) && $user->isAllowed('create_slice', CS_CONTEXT_TYPE::PROJE
 }
 
 /* Disable project */
-print "<td><button onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
+$disable_project = "";
+if (!$user->isAllowed(PA_ACTION::DELETE_PROJECT, CS_CONTExT_TYPE::PROJECT, $project_id)) {
+  $disable_project = $disabled;
+}
+print "<td><button $disable_project onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
 print "</tr></table>\n";
 
 $reqs = null;
-if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
 					CS_CONTEXT_TYPE::PROJECT, $project_id);
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
@@ -155,10 +163,7 @@ include("tool-slices.php");
 </table>
 
 <?php
-  //if ($user->privAdmin()) {
-  // FIXME: the right thing here is to check they are project lead or admin on the project
-  // look for update_project
-if ($user->isAllowed('update_project', CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   print "<br/><h3>Invite new project members</h3>\n";
   print "<button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");

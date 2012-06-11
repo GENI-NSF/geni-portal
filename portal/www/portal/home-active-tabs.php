@@ -53,7 +53,7 @@ print $user->prettyName();
 		<li><a href="#tabs-1">User</a></li>
 		<li><a href="#tabs-2">Slice</a></li>
 <?php
-if ($user->privAdmin()) {
+   if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   print '<li><a href="#tabs-3">Admin</a></li>';
 }
 ?>
@@ -70,7 +70,7 @@ include("tools-slice.php");
 	</div>
 	<div id="tabs-3">
 <?php
-if ($user->privAdmin()) {
+   if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   include("tools-admin.php");
 }
 ?>

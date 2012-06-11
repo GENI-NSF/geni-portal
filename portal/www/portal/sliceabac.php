@@ -26,7 +26,7 @@
 require_once("settings.php");
 require_once("user.php");
 $user = geni_loadUser();
-if (! $user->privSlice() || ! $user->isActive()) {
+if (! $user->isActive()) {
   relative_redirect("home.php");
 }
 ?>
@@ -47,6 +47,12 @@ include("tool-lookupids.php");
 if (is_null($slice) || $slice == '') {
   no_slice_error();
 }
+
+// *** Perhaps this should be GET_ABAC_CREDENTIAL eventuall
+if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL`, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
+}
+
 $abac_fingerprint = fetch_abac_fingerprint($user->account_id);
 /* print "abac_fingerprint = $abac_fingerprint<br/>\n"; */
 $tmpfile = tempnam(sys_get_temp_dir(), "portal");
