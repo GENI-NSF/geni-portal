@@ -75,6 +75,9 @@ if ($slice_name) {
  
   // Redirect to this slice's page now...
   $slice_id = $result[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+
+  $_SESSION['lastmessage'] = "Created slice $slice_name";
+
   relative_redirect('slice.php?slice_id='.$slice_id);
 }
 
