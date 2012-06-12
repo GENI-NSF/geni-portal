@@ -495,7 +495,7 @@ function add_project_member($args, $message)
 }
 
 // Remove a member from given project 
-function remove_project_member($args)
+function remove_project_member($args, $message)
 {
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
@@ -511,13 +511,27 @@ function remove_project_member($args)
   error_log("PA.remove project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
-  // *** FIX ME - Delete previous from MA and from CS
+  // Delete previous assertions from CS
+  if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    global $cs_url;
+    $signer = $message->signerUuid();
+
+    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
+    foreach($membership_assertions as $membership_assertion) {
+      //      error_log("ASSERTION = " . print_r($membership_assertion));
+      $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
+      //      error_log("ASSERTION_ID = " . print_r($assertion_id));
+      delete_assertion($cs_url, $assertion_id);
+      //      error_log("DELETING ASSERTION : " . $assertion_id);
+    }
+  }
 
   return $result;
 }
 
 // Change role of given member in given project
-function change_member_role($args)
+function change_member_role($args, $message)
 {
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
@@ -537,7 +551,24 @@ function change_member_role($args)
   error_log("PA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
 
-  // *** FIX ME - Delete previous from MA and from CS
+  if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    global $cs_url;
+    $signer = $message->signerUuid();
+
+    // Remove previous CS assertions about the member in this project
+    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
+    foreach($membership_assertions as $membership_assertion) {
+      //      error_log("ASSERTION = " . print_r($membership_assertion));
+      $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
+      //      error_log("ASSERTION_ID = " . print_r($assertion_id));
+      delete_assertion($cs_url, $assertion_id);
+      //      error_log("DELETING ASSERTION : " . $assertion_id);
+    }
+
+    // Create new assertion for member in this role
+    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+  }
 
   return $result;
 }

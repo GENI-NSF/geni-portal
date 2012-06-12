@@ -258,7 +258,7 @@ function query_assertions($args)
 	. "' AND " 
 	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = '" . $context_type
 	. "' AND "
-	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . " = '" . $context;
+	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . " = '" . $context . "'";
     }
   }
   $rows = db_fetch_rows($sql);

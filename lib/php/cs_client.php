@@ -30,6 +30,7 @@
  * id <= create_assertion(signer, principal, attribute, context_type, context)
  * id <= create_policy(signer, attribute, context_type, privilege)
  * renew_assertion(id)
+ * delete_assertion(assertion_id)
  * delete_policy(id);
  * 
  * Supports 3 'read' interfaces:
