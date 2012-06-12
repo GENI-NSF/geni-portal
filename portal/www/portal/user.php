@@ -235,7 +235,17 @@ function geni_loadUser($id='')
   if (strcmp($id, '') <> 0 || strcmp($eppn, '') <> 0) {
     $user_from_cache = geni_loadUser_cache($id, $eppn);
     if ($user_from_cache != null) {
-      return $user_from_cache;
+      $dbStatus = loadAccountStatus($user_from_cache->account_id);
+      if (is_null($dbStatus)) {
+	$dbStatus = "noaccount";
+      } elseif (is_array($dbStatus)) {
+	$dbStatus = $dbStatus['status'];
+      }
+      if ($dbStatus == $user_from_cache->status) {
+	return $user_from_cache;
+      } else {
+	error_log("Not using user from cache with different status: $dbStatus != " . $user_from_cache->status);
+      }
     }
   }
 

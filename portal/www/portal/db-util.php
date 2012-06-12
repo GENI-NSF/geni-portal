@@ -37,6 +37,17 @@ function loadAccount($account_id)
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
+// Get just the account status for this account id, to see if it has changed since the cached value
+function loadAccountStatus($account_id)
+{
+  /* print "in db-util loadAccount<br/>"; */
+  $conn = portal_conn();
+  $sql = "SELECT status FROM account WHERE account_id = "
+    . $conn->quote($account_id, 'text');
+  $row = db_fetch_row($sql);
+  return $row[RESPONSE_ARGUMENT::VALUE];
+}
+
 /*
 function loadAccountPrivileges($account_id) {
   // print "in db-util loadAccount<br/>"; 
