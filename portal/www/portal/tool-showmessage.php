@@ -22,38 +22,13 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once("user.php");
-require_once("header.php");
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('sa_constants.php');
-require_once('sa_client.php');
+// Display and then clear any lastmessage put in the session by a previous page
 
-$user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
+if (! isset($_SESSION)) {
+  require_once("user.php"); // restores the session after defining GeniUser class
 }
-show_header('GENI Portal: Slices', $TAB_SLICES);
 
-include("tool-lookupids.php");
-
-if (isset($slice) && ! is_null($slice)) {
-  // FIXME: Do anything to slices first? Members?
-  $result = "Disable Slice Not Implemented";
-  error_log("Disable Slice not implemented");
-  //  $result = delete_slice($sa_url, $slice_id);
-  //  if (! $result) {
-  //    error_log("Failed to Disable slice $slice_id: $result");
-  //  }
-} else {
-  error_log("Didnt find to disable slice $slice_id");
+if (isset($_SESSION['lastmessage'])) {
+  print "<p class='instruction'>" . $_SESSION['lastmessage'] . "</p><br/>\n";
+  unset($_SESSION['lastmessage']);
 }
-// FIXME: remove the slice from the DB
-// Invalidate credentials?
-// FIXME
-$_SESSION['lastmessage'] = "Asked to disable slice $slice_name - NOT IMPLEMENTED";
-
-relative_redirect('slices.php');
-
-include("footer.php");
-?>

@@ -83,6 +83,8 @@ if (array_key_exists("description", $_POST)) {
 insertSshKey($user->account_id, $contents, $_FILES["file"]["name"],
              $description, NULL);
 
+$_SESSION['lastmessage'] = "Uploaded SSH public key from " . $_FILES["file"]["name"];
+
 relative_redirect('profile');
 ?>
 Your key was uploaded.<br/>

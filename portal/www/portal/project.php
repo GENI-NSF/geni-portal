@@ -64,6 +64,7 @@ if (array_key_exists("result", $_GET)) {
 
 include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 if (! is_null($project) && $project != "None") {
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];

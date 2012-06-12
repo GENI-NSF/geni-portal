@@ -30,8 +30,6 @@ require_once 'sr_client.php';
 require_once 'permission_manager.php';
 require 'abac.php';
 
-if (!isset($_SESSION)) { session_start(); $_SESSION = array(); }
-
 const PERMISSION_MANAGER_TAG = 'permission_manager';
 const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
 const PERMISSION_MANAGER_ACCOUNT_ID_TAG = 'permission_manager_account_id';
@@ -324,6 +322,7 @@ function geni_loadUser_cache($account_id, $eppn)
     //    error_log("CACHE_AI = " . print_r($user_cache_account_id, true));
     if (array_key_exists($account_id, $user_cache_account_id)) {
       $user = $user_cache_account_id[$account_id];
+      //      error_log("pulled user from user_cache_account_id from session");
     }
   }
   if ($user == null && strcmp($eppn, '') <> 0) {
@@ -331,10 +330,12 @@ function geni_loadUser_cache($account_id, $eppn)
     //    error_log("CACHE_EPPN = " . print_r($user_cache_eppn, true));
     if (array_key_exists($eppn, $user_cache_eppn)) {
       $user = $user_cache_eppn[$eppn];
+      //      error_log("pulled user from user_cache_eppn from session");
     }
   }
 
-  // error_log('CACHE ACCT=' . $account_id . ' EPPN=' . $eppn . " USER=" . print_r($user, true));
+  /* error_log('CACHE ACCT=' . $account_id . ' EPPN=' . $eppn . " USER=" . print_r($user, true)); */
+  /* reset($user); */
   return $user;
 }
 
@@ -342,10 +343,17 @@ function ensure_user_cache()
 {
   if (!array_key_exists(USER_CACHE_ACCOUNT_ID_TAG, $_SESSION)) {
     $_SESSION[USER_CACHE_ACCOUNT_ID_TAG] = array();
+    error_log("cleared/set user cache acount id tag in session");
   }
   if (!array_key_exists(USER_CACHE_EPPN_TAG, $_SESSION)) {
     $_SESSION[USER_CACHE_EPPN_TAG] = array();
+    error_log("cleared/set user cache eppn tag in session");
   }
+}
+
+if (!isset($_SESSION)) {
+  session_start();
+  //  $_SESSION = array();
 }
 
 ?>

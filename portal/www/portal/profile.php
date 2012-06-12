@@ -21,7 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-
 require_once("user.php");
 require_once("header.php");
 require_once('util.php');
@@ -31,6 +30,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 include("tools-user.php");
 include("footer.php");
 ?>

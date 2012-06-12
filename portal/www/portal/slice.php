@@ -44,6 +44,7 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 unset($slice);
 include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 if (isset($slice)) {
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
@@ -277,7 +278,7 @@ print "</table>\n";
 
 print "<h2>Slice members</h2>";
 $edit_members_disabled = "";
-if ($user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id) {
+if ($user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   $edit_members_disabled = $disabled;
 }
 echo "<button $edit_members_disabled onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";

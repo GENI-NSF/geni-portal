@@ -31,6 +31,7 @@ show_header('GENI Portal Home', $TAB_HOME);
 ?>
 <div id="home-body">
 <?php
+  include("tool-showmessage.php");
 $user = geni_loadUser();
 if (is_null($user)) {
   // TODO: Handle unknown state

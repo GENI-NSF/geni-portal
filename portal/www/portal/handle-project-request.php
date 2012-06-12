@@ -256,6 +256,8 @@ $name\n";
        $message,
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
 
+    $_SESSION['lastmessage'] = "Added $member_name to project $project_name as $rolestr";
+
     // FIXME: Put up a page
     relative_redirect('project.php?project_id=' . $project_id);
 
@@ -278,6 +280,9 @@ $name\n";
        "Request to join GENI project $project_name denied",
        $message,
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+
+    $_SESSION['lastmessage'] = "Rejected $member_name from project $project_name";
+
   // FIXME: Put up a page
     relative_redirect('project.php?project_id=' . $project_id);
   }

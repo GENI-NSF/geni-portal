@@ -50,6 +50,9 @@ if (isset($project) && ! is_null($project)) {
 // Invalidate credentials?
 // Remove slices from the DB?
 // FIXME
+
+$_SESSION['lastmessage'] = "Asked to disable project $project_name - NOT IMPLEMENTED";
+
 relative_redirect('projects.php');
 
 include("footer.php");

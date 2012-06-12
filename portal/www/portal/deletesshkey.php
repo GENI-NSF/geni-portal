@@ -49,5 +49,8 @@ portal_log("deleteSshKeys: key id = $key_id");
 
 $result = deleteSshKeys($user->account_id, $key_id);
 portal_log("deleteSshKeys result = " . print_r($result, true));
+
+$_SESSION['lastmessage'] = "Deleted SSH Key $key_id: $result";
+
 relative_redirect('profile.php');
 ?>

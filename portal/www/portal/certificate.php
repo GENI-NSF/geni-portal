@@ -25,6 +25,7 @@
 <?php
 require_once("settings.php");
 require_once("user.php");
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -38,6 +39,8 @@ if (! $outside_key) {
 
 /* Construct a filename like "geni-TimWakefield.pem" */
 $filename = "geni-" . str_replace(' ', '', $user->prettyName()) . ".pem";
+
+$_SESSION['lastmessage'] = "Downloaded certificate to $filename";
 
 // Set headers for download
 header("Cache-Control: public");

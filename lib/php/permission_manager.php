@@ -1,4 +1,26 @@
 <?php
+//----------------------------------------------------------------------
+// Copyright (c) 2012 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
 
 /**
  * Classes to manage permissions of the current user
@@ -14,13 +36,21 @@ class PermissionManager {
   }
 
   public function __toString() {
-    return "[" . print_r($this->allowed_actions_no_context, true) . " " . 
+    $ret = "[" . print_r($this->allowed_actions_no_context, true) . " " . 
       print_r($this->allowed_actions_in_context, true) . "]";
+    reset($this->allowed_actions_no_context);
+    reset($this->allowed_actions_in_context);
+    return $ret;
   }
 
   // Add a new permission (in context) to permission manager
   function add($permission, $context_type, $context)
   {
+    if (is_null($permission)) {
+      error_log("Permission manager given null permission to add for context $context to perm_mgr $this");
+      return;
+    }
+
     if (is_context_type_specific($context_type)) {
       if(!array_key_exists($context, $this->allowed_actions_in_context)) {
 	$list_for_context = array();
@@ -32,6 +62,9 @@ class PermissionManager {
     } else {
       if(!in_array($permission, $this->allowed_actions_no_context)) {
 	$this->allowed_actions_no_context[] = $permission;
+	if (is_null($this->allowed_actions_no_context)) {
+	  error_log("allowed_action_no_context is null after setting to perm $permission");
+	}
       }
     }
   }

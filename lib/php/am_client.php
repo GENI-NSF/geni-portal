@@ -223,7 +223,7 @@ function invoke_omni_function($am_url, $user, $args)
     }
     $command = implode(" ", $cmd_array);
 
-     error_log("COMMAND = " . $command);
+     error_log("am_client invoke_omni_function COMMAND = " . $command);
      $handle = popen($command . " 2>&1", "r");
      $output= '';
      $read = fread($handle, 1024);

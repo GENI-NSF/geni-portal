@@ -120,6 +120,8 @@ db_add_outside_key_cert($user->account_id, $cert, $key);
 /* This is the name of the file on the experimenter's machine. */
 $filename = "geni.pem";
 
+$_SESSION['lastmessage'] = "Downloaded certificate to $filename";
+
 // Set headers for download
 header("Cache-Control: public");
 header("Content-Description: File Transfer");

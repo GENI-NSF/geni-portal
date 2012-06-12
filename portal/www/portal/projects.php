@@ -30,6 +30,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 print "<h1>GENI Projects</h1>\n";
 
 include("tool-projects.php");

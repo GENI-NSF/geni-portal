@@ -40,7 +40,7 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 
 relative_redirect('slice.php?slice_id='.$slice_id);
 
-// FIXME: Allow editing the slice descriptio
+// FIXME: Allow editing the slice description
 
 include("footer.php");
 ?>

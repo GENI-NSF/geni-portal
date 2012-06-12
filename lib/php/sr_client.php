@@ -1,4 +1,26 @@
 <?php
+//----------------------------------------------------------------------
+// Copyright (c) 2012 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
 
 // Routines to help clients of the service registry
 
@@ -9,13 +31,24 @@ const SERVICE_REGISTRY_CACHE_TAG = 'service_registry_cache';
 
 if (CACHED) {
   $services_cached = false;
-  if (!isset($_SESSION)) { session_start(); $_SESSION = array(); }
+  if (!isset($_SESSION)) {
+    // FIXME: Loading the session may mean deserializing users.
+    // So that would mean we need the GeniUser defined.
+    // But that means requiring user.php - which is not in the local dir
+    // And worse, user.php in turn requires cs_client,
+    // And since cs_controller includes this file, we have doubly defined methods.
+    //require_once("/var/www/secure/user.php"); /// starts the session after defining GeniUser class
+
+    // FIXME: This gives a permission denied error sometimes. Buy why? See ticket #118
+    session_start();
+    //$_SESSION = array();
+  }
   if (!array_key_exists(SERVICE_REGISTRY_CACHE_TAG, $_SESSION)) {
     $services = get_services();
-    //    error_log("Calling get services " . print_r($services, true));
+    //    error_log("Calling get services " . print_r($services, true)); reset($services);
     $_SESSION[SERVICE_REGISTRY_CACHE_TAG] = $services;
   }
-  //  error_log("Caching services: " . print_r($_SESSION[SERVICE_REGISTRY_CACHE_TAG], true));
+  //  error_log("Caching services: " . print_r($_SESSION[SERVICE_REGISTRY_CACHE_TAG], true)); reset($_SESSION[SERVICE_REGISTRY_CACHE_TAG]);
   $services_cached = true;
 }
 
