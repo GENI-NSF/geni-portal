@@ -326,6 +326,17 @@ function fetchSshKeys($account_id) {
   return $rows[RESPONSE_ARGUMENT::VALUE];
 }
 
+function fetchSshKey($account_id, $key_id) {
+  $conn = portal_conn();
+  $sql = ("SELECT * from ssh_key where account_id = "
+          . $conn->quote($account_id, 'text')
+          . " AND id = "
+          . $conn->quote($key_id, 'integer'));
+   /* print "Query = $sql<br/>"; */
+  $result = db_fetch_row($sql, "fetchSshKey");
+  return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
 function insertSshKey($account_id, $public_key, $filename, $description, $private_key)
 {
   $conn = portal_conn();
