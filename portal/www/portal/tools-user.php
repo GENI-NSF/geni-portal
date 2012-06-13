@@ -33,19 +33,6 @@ require_once("rq_client.php");
  * SSH key management
  *----------------------------------------------------------------------
  */
-/*
- * A javascript function to confirm the delete.
- */
-echo <<< END
-<script type="text/javascript">
-function deleteSshKey(dest){
-  var r=confirm("Are you sure you want to delete this ssh key?");
-  if (r==true) {
-    window.location = dest;
-  }
-}
-</script>
-END;
 print "<h2>SSH Keys</h2>\n";
 $keys = fetchSshKeys($user->account_id);
 if (count($keys) == 0)
@@ -61,10 +48,10 @@ if (count($keys) == 0)
 else
   {
     $download_pkey_url = relative_url('downloadsshkey.php?');
-    $delete_sshkey_url = relative_url('deletesshkey.php?');
+    $edit_sshkey_url = relative_url('sshkeyedit.php?');
     print "\n<table>\n";
     print "<tr><th>Name</th><th>Description</th><th>Private Key</th>"
-          . "<th>Delete</th></tr>\n";
+          . "<th>Edit</th></tr>\n";
     foreach ($keys as $key) {
       $args['id'] = $key['id'];
       $query = http_build_query($args);
@@ -75,14 +62,14 @@ else
                 . $download_pkey_url . $query
                 . "'\">Download Private Key</button>");
       }
-      $delete_cell = ("<button onClick=\"deleteSshKey('"
-                . $delete_sshkey_url . $query
-                . "')\">Delete</button>");
+      $edit_cell = ("<button onClick=\"window.location='"
+                . $edit_sshkey_url . $query
+                . "'\">Edit</button>");
       print "<tr>"
       . "<td>" . htmlentities($key['filename']) . "</td>"
       . "<td>" . htmlentities($key['description']) . "</td>"
       . '<td>' . $pkey_cell . '</td>'
-      . '<td>' . $delete_cell . '</td>'
+      . '<td>' . $edit_cell . '</td>'
       . "</tr>\n";
     }
     print "</table>\n";
