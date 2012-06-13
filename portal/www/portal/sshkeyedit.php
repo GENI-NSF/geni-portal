@@ -80,6 +80,9 @@ if (array_key_exists('id', $_REQUEST)
   print "Got the form";
   print "<br>Name = " . $_REQUEST['name'];
   print "<br>Description = " . $_REQUEST['description'];
+  $result = updateSshKey($user->account_id, $_REQUEST['id'], $_REQUEST['name'], $_REQUEST['description']);
+  $_SESSION['lastmessage'] = "Updated SSH keypair ($result)";
+  relative_redirect('profile.php');
 } else {
   // User has requested edit
   show_header('GENI Portal: Profile', $TAB_PROFILE);
