@@ -353,6 +353,18 @@ function insertSshKey($account_id, $public_key, $filename, $description, $privat
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
+function updateSshKey($account_id, $key_id, $filename, $description) {
+  $conn = portal_conn();
+  $sql = "update ssh_key set"
+    . " filename = " . $conn->quote($filename, 'text')
+    . ", description = " . $conn->quote($description, 'text')
+    . " where account_id = " . $conn->quote($account_id, 'text')
+    . " AND id = " . $conn->quote($key_id, 'integer');
+//   error_log("Query = $sql");
+  $rows = db_execute_statement($sql, "updateSshKey");
+  return $rows[RESPONSE_ARGUMENT::VALUE];
+}
+
 function deleteSshKeys($account_id, $key_id) {
   $conn = portal_conn();
   $sql = "DELETE from ssh_key where account_id = "
