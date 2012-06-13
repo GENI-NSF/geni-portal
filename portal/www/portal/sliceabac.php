@@ -49,7 +49,7 @@ if (is_null($slice) || $slice == '') {
 }
 
 // *** Perhaps this should be GET_ABAC_CREDENTIAL eventuall
-if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL`, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
 
