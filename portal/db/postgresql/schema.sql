@@ -66,7 +66,7 @@ DROP TABLE IF EXISTS identity CASCADE;
 CREATE TABLE identity (
   identity_id SERIAL,
   provider_url varchar,
-  eppn varchar,
+  eppn varchar UNIQUE,
   affiliation varchar,
   -- We may need to support other shib id fields
   -- like transient id, etc.
