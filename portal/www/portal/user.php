@@ -61,7 +61,10 @@ class GeniUser
   }
 
   // If we haven't re-read the permissions in this many seconds, re-read
-  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = 30; 
+  //  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = 30; 
+
+  // MSB : Disable the permission manager cache: it is ALWAYS stale
+  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = -1;
 
   function loadAccount() {
     /* print "in GeniUser->loadAccount<br/>"; */
