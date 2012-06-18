@@ -104,7 +104,7 @@ if ($isnew) {
   // Return on error?
 }
 
-$_SESSION['lastmessage'] = "Edited project $project_name: $result";
+$_SESSION['lastmessage'] = "Edited project $name: $result";
 relative_redirect('project.php?project_id='.$project_id . "&result=" . $result);
 
 include("footer.php");
