@@ -102,8 +102,13 @@ if(isset($project_id) && $user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TY
 }
 
 /* Disable project */
+
 $disable_project = "";
 if (!$user->isAllowed(PA_ACTION::DELETE_PROJECT, CS_CONTExT_TYPE::PROJECT, $project_id)) {
+  $disable_project = $disabled;
+}
+/* for now, always disable the project */
+else {
   $disable_project = $disabled;
 }
 print "<td><button $disable_project onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
