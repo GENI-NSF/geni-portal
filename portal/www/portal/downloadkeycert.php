@@ -49,7 +49,7 @@ function show_form($error_msg)
   print "<label for=\"password2\">Confirm Password:</label>\n";
   print "<input type=\"password\" name=\"password2\"/>\n";
   print "<br/>\n";
-  print "<input type=\"submit\" name=\"submit\" value=\"Download\"/>\n";
+  print "<input type=\"submit\" name=\"submit\" value=\"Generate\"/>\n";
   print "</form>\n";
 }
 
@@ -115,17 +115,5 @@ if (! make_cert_and_key($uuid, $email, $urn,
 /* Cert and key were successfully generated. Store them in the database. */
 db_add_outside_key_cert($user->account_id, $cert, $key);
 
-/* Now package the private key and cert for download. */
-
-/* This is the name of the file on the experimenter's machine. */
-$filename = "geni.pem";
-
-$_SESSION['lastmessage'] = "Downloaded certificate to $filename";
-
-// Set headers for download
-header("Cache-Control: public");
-header("Content-Description: File Transfer");
-header("Content-Disposition: attachment; filename=$filename");
-header("Content-Type: application/pem");
-header("Content-Transfer-Encoding: binary");
-print $key . $cert;
+$_SESSION['lastmessage'] = "Created certificate and key.";
+relative_redirect('profile.php');

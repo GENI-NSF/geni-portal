@@ -108,7 +108,7 @@ if ($keyrow) {
   // FIXME: Way to delete a key?
 } else {
   print "<button onClick=\"window.location='downloadkeycert.php'\">"
-    . "Download certificate and key</button>\n";
+    . "Generate certificate and key</button>\n";
 }
 
 
