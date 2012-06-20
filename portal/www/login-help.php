@@ -17,29 +17,30 @@ function show_header($title)
   /* Close the "head" */
   echo '</head>';
   echo '<body>';
+
   echo '<div id="header">';
-  echo '<table>';
-  echo '<tr><td>';
-  echo '<img src="/images/geni.png"  width="88" height="75" alt="GENI"/>';
-  echo '</td><td>';
-  echo '<a href="index.php"><img src="/images/portal.png"  width="205" height="72" alt="Portal"/></a>';
-  echo '</td>';
-  echo '<td>';
-  echo '<div id="loginDiv">';
-  echo '<div id="loginButtons">';
-  echo '<button id="loginButton" onClick="window.location.href=\'secure/home.php\'"><b>Use GENI</b></button>';
+
+  echo '<div id="geni">';
+  echo '<img src="/images/geni.png" alt="GENI"/>';
+  echo '</div>';
+
+  echo '<div id="welcome">';
+  echo '<h1> Welcome to the GENI Portal </h1>';
+  echo '<div id="desc">';
+  echo 'The GENI Portal is the main interface to <a href="http://www.geni.net">GENI</a>, an <a href="http://www.nsf.gov/">NSF</a> funded virtual testbed supporting computer networking research.';
   echo '</div>';
   echo '</div>';
-  echo '</td>';
-  echo '<td>';
-  echo '<img id="incommon-logo" src="common/InC_Participant.png"/>';
-  echo '</td>';
-  echo '</tr>';
 
+  echo '<div id="loginHelpdiv">';
+  echo '<a href="secure/home.php">';
+  echo '  <img id="usegeni" src="/images/UseGENI.png" alt="Use GENI"/>';
+  echo '</a>';
+  echo '</div>';
 
-  echo '</table>';
   echo '</div>';
   echo '<hr/>';
+
+
   echo '<div id="content">';
 }
 
