@@ -16,57 +16,54 @@ function show_header($title)
   /* Close the "head" */
   echo '</head>';
   echo '<body>';
+
   echo '<div id="header">';
-  echo '<table>';
-  echo '<tr><td>';
-  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
-  echo '</td><td>';
-  echo '<a href="index.php"><img src="/images/portal.png" width="205" height="72" alt="Portal"/></a>';
-  echo '</td>';
-  echo '<td>';
-  echo '<div id="loginDiv">';
-  echo '<div id="loginButtons">';
-  echo '<button id="loginButton" onClick="window.location.href=\'secure/home.php\'"><b>Use GENI</b></button>';
-  echo '<br/>';
-  echo '<a id ="loginHelp" href="login-help.php"><b><i>Get help</i></b></a>';
+
+  echo '<div id="geni">';
+  echo '<img src="/images/geni.png" alt="GENI"/>';
+  echo '</div>';
+
+  echo '<div id="welcome">';
+  echo '<h1> Welcome to the GENI Portal </h1>';
+  echo '<div id="desc">';
+  echo 'The GENI Portal is the main interface to <a href="http://www.geni.net">GENI</a>, an <a href="http://www.nsf.gov/">NSF</a> funded virtual testbed supporting computer networking research.';
   echo '</div>';
   echo '</div>';
-  echo '</td>';
-  echo '<td>';
-  echo '<img id="incommon-logo" src="common/InC_Participant.png"/>';
 
-  echo '</td>';
-  echo '</tr>';
-
-
-  echo '</table>';
+  echo '<div id="loginHelpdiv">';
+  echo '<a id ="loginHelp" href="login-help.php">Get Help</a>';
   echo '</div>';
+
+  echo '</div>';
+
   echo '<hr/>';
-  echo '<div id="content">';
+
+  echo '<div id="landingcontent">';
 }
 
 show_header("Welcome to the GENI Portal")
 ?>
+<div id='main'>
 
-<div style="width:479px; font-size:80%; text-align:center; float:right; margin:5px 5px 5px 5px;">
-  <h2>GENI Resources</h2>
-  <img src="/images/staticmap.png" alt="MAP" width="479" height="265"
-       style="border:3px solid #000000" />
-</div>
+  <a href='secure/home.php'>
+    <img id='usegeni' src="/images/UseGENI.png" alt="Use GENI"/>
+  </a>
 
-<h1> Welcome to the GENI Portal </h1>
+
+  <h1>InCommon Affiliation</h1>
+
+<img id="incommon-logo" src="common/InC_Participant.png"/>
 
 <p>
-  The <b>GENI Portal</b> is the main interface to <a href="http://www.geni.net">GENI</a>, an <a href="http://www.nsf.gov/">NSF</a> funded virtual testbed supporting computer networking research and innovation.
-</p><p>
-  <b>Become a GENI Experimenter</b>: The GENI Portal supports single sign on via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
+If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">login</a> using your InCommon Single Sign On username and password and register for a GENI account.
 </p>
-<ul>
-  <li>If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">login</a> using your InCommon single sign on username and password and register for a GENI account.
-  </li><li>If you are not affiliated with an InCommon federated institution, <a href="mailto:help@geni.net">request a single sign on login for the GENI Portal</a>.</li>
-</ul>
+
 <p>
-  <b>About GENI</b>: More Information about using GENI can be found on the <a href="http://groups.geni.net/geni">GENI wiki</a>.
+Not sure you're affiliated? <a href="http://www.incommon.org/federation/info/all-entities.html">Find Your Organization</a>
+</p>
+
+<p>
+Not affiliated? <a href="mailto:help@geni.net">Request a Single Sign On Login</a>
 </p>
 
 
@@ -91,7 +88,7 @@ show_header("Welcome to the GENI Portal")
 </li><li>
   <a href="http://groups.geni.net/geni/wiki/UnderstandingGENI">Understanding GENI</a> (includes a list of available resources)
 </li><li>
-  See where GENI resources are located using Flack, a graphical GENI resource reservation tool
+  See where GENI resources are located using <a href="http://protogeni.net/flack">Flack</a>, a graphical GENI resource reservation tool
 </li><li>
   Get <a href="mailto:help@geni.net">help</a> using GENI
 </li>
@@ -100,13 +97,23 @@ show_header("Welcome to the GENI Portal")
 
 <!-- THIS SHOULD BE IN A COMMON FOOTER FILE --> 
 </div>
+
+<div id='map'>
+  <img src="/images/staticmap.png" alt="MAP" width="479" height="265"
+       style="border:3px solid #000000" />
+  <div class='legend'>These are some of the many resources being used in GENI experiments across the country.</div>
+</div>
+</div>
+
+<hr/>
+
 <div id="footer">
-  <hr/>
-  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></i></small>
+  <small><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></small>
   <!-- put the copyright off to the right -->
   <div style="float:right;">
-  <small><i>GENI Portal Copyright 2012, BBN Technologies</i></small>
+  <small>GENI Portal Copyright 2012, BBN Technologies</small>
   </div>
 </div>
+
 </body>
 </html>

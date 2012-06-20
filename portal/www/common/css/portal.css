@@ -1,22 +1,168 @@
-#loginDiv {
- display: block;
- clear: both;
- position: relative;
- height: 1.5in;
-}
-#loginDiv > #loginButtons {
- text-align: center;
- padding-left: 0.5in;
- padding-top: 0.5in;
-}
-#incommon-logo {
- width: .75in;
- padding: 0.25in;
+html {
+ font: normal 14px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+/* margin: 0; 
+ padding: 0; */
 }
 
-#loginButton, #loginHelp {
- width: 17em;
- padding: .25cm .25cm;
+body {
+ width='8in';
+}
+
+h1, h2, h3, h4, h5, h6, h7 {
+ color: orange; /* get official GENI color */
+}
+
+hr {
+ color: orange;
+ background-color: orange;
+ height: 1px;
+ border: none;
+ margin-top: 1em;
+ margin-bottom: 1em;
+ clear: both;
+}
+
+
+div#header {
+ display: block;
+ width: 10in;
+ color:black;
+}
+
+#header div {
+ background-color: white;
+ margin: 0;
+ padding: 0;
+}
+
+div#header h1 {
+ color:black;
+}
+
+div#header div {
+ margin-bottom: .1in;
+}
+
+div#geni{
+ display: block;
+ float: left;
+ margin-left: .4in; 
+ margin-right: .1in;
+ margin-top: .2in;
+}
+
+div#geni img{
+ width: 1in;
+}
+
+div#welcome{
+ display: block;
+ width: 7in;
+ float: left;
+ border-top: solid 10px lightgray;
+ margin: 0;
+ padding: 0;
+ padding-top: .25in;
+}
+
+div#loginHelpdiv{
+ display: block;
+ width: 1in;
+ float: left;
+ margin-top: 0.25in;
+}
+
+
+
+#landingcontent :link, #landingcontent :visited, #header :link, #header :visited, #header :link:hover, #header :visited:hover {
+ color: black;
+}
+
+
+#footer :link, #footer :visited {
+ color: gray;
+ text-decoration: none;
+}
+
+
+#footer :link:hover, #footer :visited:hover {
+ font-weight: bold;
+ color: gray;
+ text-decoration: none;
+}
+
+div#footer {
+ color:gray;
+ clear:both;
+ width:10in;
+}
+
+
+div#landingcontent {
+ display: block;
+ margin-left: 1.5in;
+ width: 10in;
+}
+
+div#main{
+ display: block;
+ width: 4.5in;
+ float:left; 
+}
+
+div#map{
+ display: block;
+ width: 3in;
+ float:left; 
+ top: 1in;
+ padding-top: 2em;
+ font-size:80%; 
+ text-align:center; 
+ margin:5px 5px 5px 25px;
+}
+
+div#map img {
+ width: 3in;
+ height: 100%;
+}
+
+div#map .legend {
+ text-align: left;
+ color: gray;
+}
+
+/* #loginDiv { */
+/*  display: block; */
+/*  clear: both; */
+/*  position: relative; */
+/*  height: 1.5in; */
+/* } */
+/* #loginDiv > #loginButtons { */
+/*  text-align: center; */
+/*  padding-left: 0.5in; */
+/*  padding-top: 0.5in; */
+/* } */
+
+#incommon-logo {
+width: .75in;
+padding: 0.25in;
+left: 0.5in;
+top: 2.3in;
+position: absolute;
+}
+
+/* #loginButton, #loginHelp { */
+/*  width: 17em; */
+/*  padding: .25cm .25cm; */
+/* } */
+
+#usegeni {
+    width: 1.5in;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
 .instruction {
@@ -81,11 +227,6 @@ td {
  padding: 3px;
  background-color: BlanchedAlmond;
 }
-
-#header table, #header td {
- background-color: white;
-}
-
 
 
 th {
