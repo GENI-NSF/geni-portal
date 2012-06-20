@@ -196,12 +196,11 @@ if (!(isset($msg) and isset($obj))) {
   }
 
   print "<td>";
-  print "<button onClick=\"window.location='$add_url'\"><b>Add Slivers</b> $add_slivers_disabled</button>\n";
-
+  print "<button $add_slivers_disabled onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
   print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
   print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
-  print "<button onClick=\"window.location='$addnote_url'\"><b>Add Note</b> $add_slivers_disabled </button>\n";
-    print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b> $delete_slivers_disabled</button>\n";
+  print "<button $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
+    print "<button $delete_slivers_disabled onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
 
   print "</td>";
   print "</tr>\n";
