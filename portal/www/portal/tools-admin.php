@@ -47,9 +47,9 @@ function show_requested_accounts()
   $accts = requestedAccounts();
   $num_accts = count($accts);
   if ($num_accts < 1) {
-    print("<p>No requested accounts.</p>\n");
+    print("<div class='announce'>No requested accounts.</div>\n");
   } else {
-    print("<p>Requested Accounts</p>\n");
+    print("<div class='announce'>Requested Accounts</div>\n");
     print("<table>");
     print("<tr><th>Account ID</th><th>Attributes</th><th>Actions</th></tr>\n");
     foreach ($accts as $acct) {

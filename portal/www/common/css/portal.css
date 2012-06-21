@@ -169,6 +169,10 @@ position: absolute;
     padding-bottom: 1em;
 }
 
+.announce {
+  font-style:italic;
+}
+
 .instruction {
  color: red;
  font-weight: bold;

@@ -177,7 +177,7 @@ if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $proje
   
   print "<br/>\n";
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
-    print "<i>No outstanding project join requests.</i><br/>\n";
+    print "<div class='announce'>No outstanding project join requests.</div><br/>\n";
   }
 }
 ?>

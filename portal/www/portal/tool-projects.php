@@ -95,7 +95,7 @@ if (isset($reqs) && count($reqs) > 0) {
   print "</table>\n";
   print "<br/><br/>\n";
 } else {
-  print "<i>No outstanding project join requests.</i><br/><br/>\n";
+  print "<div class='announce'>No outstanding project join requests.</div><br/><br/>\n";
 }
 
 if (count($projects) > 0) {
