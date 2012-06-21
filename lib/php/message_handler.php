@@ -298,7 +298,7 @@ $ACCOUNT_ID = null;
 //--------------------------------------------------
 function put_message($url, $message, $signer_cert=null, $signer_key=null)
 {
-  //  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation']);
+  //  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation'] . " " . print_r($message, true));
 
   /* 
    * *** TEMP FIX
