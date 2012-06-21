@@ -101,9 +101,9 @@ if (isset($reqs) && count($reqs) > 0) {
 if (count($projects) > 0) {
   print "Found " . count($projects) . " project(s) for you:<br/>\n";
   print "\n<table>\n";
-  print ("<tr><th>Name</th><th>Project Lead</th><th>Project E-mail</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
+  print ("<tr><th>Name</th><th>Project Lead</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
 
-  // name, lead_id, email, purpose
+  // name, lead_id, purpose
   foreach ($projects as $project_id) {
     if (! uuid_is_valid($project_id)) {
       error_log("tool-projects got invalid project_id from all get_projects_by_lead");
@@ -136,10 +136,7 @@ if (count($projects) > 0) {
     print ("<tr><td> <a href=\"project.php?project_id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
 	   "</a> $handle_req_str</td><td> <a href=\"project-member.php?project_id=$project_id&member_id=" .
 	   $lead->account_id . "\">" . $lead->prettyName() . "</a> </td><td> " .
-	   "<a href=\"mailto:" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
-	   "\">" . 
-	   $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL] . 
-	   "</a> </td><td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
+	   "<td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
 	   " </td><td align=\"center\"> " . count($slice_ids) . " </td><td> " .
 	   $create_slice_link . "</td></tr>\n");
     // FIXME: Button to invite people to the project?
