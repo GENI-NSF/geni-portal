@@ -11,7 +11,6 @@ INSTALL.WWW = /usr/bin/install -o www-data -g www-data
 DB.USER = portal
 DB.HOST = localhost
 DB.DB = portal
-CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
 LIB.DIR = $(DESTDIR)/share/geni-ch/portal
 CA.DIR = $(DESTDIR)/share/geni-ch/CA
 MA.DIR = $(DESTDIR)/share/geni-ch/ma
@@ -21,6 +20,12 @@ GCF.DIR = $(LIB.DIR)/gcf
 FQDN = $(shell /bin/hostname -f)
 SHORT_HOST = $(shell /bin/hostname -s)
 SED = /bin/sed
+
+ifeq ($(SHORT_HOST),panther)
+CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/gec14-data.sql
+else
+CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
+endif
 
 default:
 	echo "try make install"
