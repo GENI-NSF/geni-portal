@@ -148,7 +148,7 @@ print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
 /* Tools */
 print "<tr><td>\n";
 /* print "To use a command line tool:<br/>"; */
-print "<button onClick=\"window.location='$slicecred_url'\" $add_slivers_disabled><b>Download Credentials for Omni</b>  </button>\n";
+print "<button onClick=\"window.location='$slicecred_url'\" $add_slivers_disabled><b>Download Slice Credential</b>  </button>\n";
 print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b> </button>\n";
 print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";

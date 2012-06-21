@@ -29,6 +29,9 @@ require_once("sa_client.php");
 require_once("pa_client.php");
 require_once("util.php");
 
+// String to disable button or other active element
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
+
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
@@ -44,19 +47,17 @@ if (isset($project_id) && uuid_is_valid($project_id)) {
 }
 if (count($slices) > 0) {
   print "\n<table>\n";
-  print ("<tr><th>Name</th>");
+  print ("<tr><th>Slice Name</th>");
   print ("<th>Project</th>");
-  print ("<th>Expiration</th>");
+  print ("<th>Slice Expiration</th>");
   print ("<th>Slice Owner</th>"
-         . "<th>Resources</th><th>Sliver Status</th>"
+         . "<th>Add Slivers</th><th>Sliver Status</th>"
 	 . "<th>Manifest</th>"
-	 . "<th>Flack</th>"
-         . "<th>Delete Sliver</th>");
+         . "<th>Delete Slivers</th>"
+	 . "<th>Flack</th>");
   if ($portal_enable_abac) {
     print "<th>ABAC Credential</th>";
   }
-  print ("<th>URN</th>");
-  print ("<th>Credential</th>");
   print "</tr>\n";
 
   $base_url = relative_url("slicecred.php?");
@@ -88,8 +89,30 @@ if (count($slices) > 0) {
     $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
     $expiration = $slice[SA_ARGUMENT::EXPIRATION];
-    $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
+
+    // Determine privileges to this slice for this user
+    $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
+					      CS_CONTEXT_TYPE::SLICE, 
+					      $slice_id);
+    $add_slivers_disabled = "";
+    if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
+    
+    $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
+						 CS_CONTEXT_TYPE::SLICE, 
+						 $slice_id);
+    $delete_slivers_disabled = "";
+    if(!$delete_slivers_privilege) { $delete_slivers_disabled = $disabled; }
+
+    $renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE,
+					      CS_CONTEXT_TYPE::SLICE, 
+					      $slice_id);
+    $renew_disabled = "";
+    if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
+
+    $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
+					       CS_CONTEXT_TYPE::SLICE, 
+					       $slice_id);
 
     // Lookup the project for this project ID
     $project = lookup_project($pa_url, $slice_project_id);
@@ -103,17 +126,15 @@ if (count($slices) > 0) {
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
     print "<td>" . htmlentities($expiration) . "</td>";
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
-    print ("<td><button onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button></td>");
+    print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Slivers</b></button></td>");
     print ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
     // FIXME: List Resources
     print ("<td><button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button></td>");
-  print "<td><button onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
-    print ("<td><button onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
+    print ("<td><button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
+  print "<td><button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
     }
-    print "<td>" . htmlentities($slice_urn) . "</td>";
-    print ("<td><button onClick=\"window.location='$slicecred_url'\"><b>Get Credential</b></button></td>");
     print "</tr>\n";
   }
   print "</table>\n";
