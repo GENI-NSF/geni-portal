@@ -57,5 +57,19 @@ $result = remove_service(SR_SERVICE_TYPE::LOGGING_SERVICE, 'http://foo.bar');
 $rows = get_services();
 dump_rows($rows);
 
+error_log("About to start get_services loop");
+$rows = get_services();
+error_log("NUM_ROWS = " . count($rows));
+$rows = get_services();
+error_log("NUM_ROWS = " . count($rows));
+$rows = get_services();
+error_log("NUM_ROWS = " . count($rows));
+$rows = get_services();
+error_log("NUM_ROWS = " . count($rows));
+$rows = get_services();
+error_log("NUM_ROWS = " . count($rows));
+
+error_log("End of get_services loop");
+
 relative_redirect('debug');
 ?>

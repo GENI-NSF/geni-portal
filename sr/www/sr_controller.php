@@ -1,5 +1,7 @@
 <?php
 
+$prev_name = session_id('SR-SESSION');
+
 require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('sr_constants.php');

@@ -1,4 +1,7 @@
 <?php
+
+$prev_name = session_id('MA-SESSION');
+
 require_once('message_handler.php');
 require_once('db_utils.php');
 require_once('file_utils.php');
