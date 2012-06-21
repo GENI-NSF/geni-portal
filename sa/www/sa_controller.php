@@ -22,6 +22,8 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+$prev_name = session_id('SA-SESSION');
+
 require_once("message_handler.php");
 require_once('file_utils.php');
 require_once('db_utils.php');
