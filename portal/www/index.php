@@ -17,7 +17,7 @@ function show_header($title)
   echo '</head>';
   echo '<body>';
 
-  echo '<div id="header">';
+  echo '<div id="header" class="landingpage">';
 
   echo '<div id="geni">';
   echo '<img src="/images/geni.png" alt="GENI"/>';

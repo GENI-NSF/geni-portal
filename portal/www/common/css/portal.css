@@ -5,7 +5,7 @@ html {
 }
 
 body {
- width='8in';
+/* width='8in'; */
 }
 
 h1, h2, h3, h4, h5, h6, h7 {
@@ -25,8 +25,11 @@ hr {
 
 div#header {
  display: block;
- width: 10in;
+/* width: 10in; */
  color:black;
+}
+div#header.landingpage {
+ width: 10in; 
 }
 
 #header div {
