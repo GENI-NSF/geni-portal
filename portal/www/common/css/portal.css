@@ -8,13 +8,14 @@ body {
 /* width='8in'; */
 }
 
+/* GENI Orange: #EE8100 */
 h1, h2, h3, h4, h5, h6, h7 {
- color: orange; /* get official GENI color */
+ color: #EE8100; /* get official GENI color */
 }
 
 hr {
- color: orange;
- background-color: orange;
+ color: #EE8100;
+ background-color: #EE8100;
  height: 1px;
  border: none;
  margin-top: 1em;
