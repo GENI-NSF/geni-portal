@@ -135,7 +135,7 @@ if (count($projects) > 0) {
     }
     print ("<tr><td> <a href=\"project.php?project_id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
 	   "</a> $handle_req_str</td><td> <a href=\"project-member.php?project_id=$project_id&member_id=" .
-	   $lead->account_id . "\">" . $lead->prettyName() . "</a> </td><td> " .
+	   $lead->account_id . "\">" . $lead->prettyName() . "</a> </td> " .
 	   "<td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
 	   " </td><td align=\"center\"> " . count($slice_ids) . " </td><td> " .
 	   $create_slice_link . "</td></tr>\n");
