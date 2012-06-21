@@ -87,7 +87,7 @@ $members = get_project_members($pa_url, $project_id);
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 print "<table>\n";
-print "<tr><th>Slice Action</th><th>Ops Mgmt</th></tr>\n";
+print "<tr><th>Project Action</th><th>Ops Mgmt</th></tr>\n";
 print "<tr>\n";
 /* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
@@ -95,7 +95,7 @@ if(isset($project_id) && $user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TY
 	/* Create a new slice*/
 	print "<td><button onClick=\"window.location='";
 	print relative_url("createslice?project_id=$project_id'");
-	print "\"><b>Create a new slice</b></button></td>\n";
+	print "\"><b>Create Slice</b></button></td>\n";
 } else {
 	/* Put in an empty table cell if no slice privilege. */
 	print "<td>&nbsp</td>";
