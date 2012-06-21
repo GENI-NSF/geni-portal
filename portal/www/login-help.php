@@ -41,7 +41,7 @@ function show_header($title)
   echo '<hr/>';
 
 
-  echo '<div id="content">';
+  echo '<div id="content"  class="landingpage">';
 }
 
 show_header("Troubleshooting logging into the GENI Portal")
@@ -94,8 +94,8 @@ The GENI Portal supports single sign on login via our partnership in the <a href
 
 <!-- THIS SHOULD BE IN A COMMON FOOTER FILE --> 
 </div>
-<div id="footer">
-  <hr/>
+<hr/>
+<div id="footer"  class="landingpage">
   <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></i></small>
   <!-- put the copyright off to the right -->
   <div style="float:right;">

@@ -25,8 +25,8 @@
 
 <!-- close the "content" div. -->
 </div>
+<hr/>
 <div id="footer">
-  <hr/>
   <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></i></small>
   <!-- put the copyright off to the right -->
   <div style="float:right;">

@@ -38,7 +38,7 @@ function show_header($title)
 
   echo '<hr/>';
 
-  echo '<div id="landingcontent">';
+  echo '<div id="landingcontent" class="landingpage">';
 }
 
 show_header("Welcome to the GENI Portal")
@@ -107,7 +107,7 @@ Not affiliated? <a href="mailto:help@geni.net">Request a Single Sign On Login</a
 
 <hr/>
 
-<div id="footer">
+<div id="footer" class="landingpage">
   <small><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></small>
   <!-- put the copyright off to the right -->
   <div style="float:right;">

@@ -10,12 +10,12 @@ body {
 
 /* GENI Orange: #EE8100 */
 h1, h2, h3, h4, h5, h6, h7 {
- color: #EE8100; /* get official GENI color */
+ color: #EE8100; /* official GENI orange */
 }
 
 hr {
- color: #EE8100;
- background-color: #EE8100;
+ color: #EE8100; /* official GENI orange */
+ background-color: #EE8100; /* official GENI orange */
  height: 1px;
  border: none;
  margin-top: 1em;
@@ -28,9 +28,6 @@ div#header {
  display: block;
 /* width: 10in; */
  color:black;
-}
-div#header.landingpage {
- width: 10in; 
 }
 
 #header div {
@@ -45,6 +42,10 @@ div#header h1 {
 
 div#header div {
  margin-bottom: .1in;
+}
+
+.landingpage {
+ width:10in;
 }
 
 div#geni{
@@ -98,14 +99,15 @@ div#loginHelpdiv{
 div#footer {
  color:gray;
  clear:both;
- width:10in;
 }
 
-
-div#landingcontent {
+div#landingcontent, div#content.landingpage {
  display: block;
  margin-left: 1.5in;
- width: 10in;
+}
+
+div#content.landingpage {
+ width: 7in;
 }
 
 div#main{
