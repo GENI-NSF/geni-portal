@@ -42,8 +42,8 @@ function show_rspec_chooser() {
     $rdesc = $rmd['description'];
     print "<option value=\"$rid\" title=\"$rdesc\">$rname</option>\n";
   }
-  print "<option value=\"paste\" title=\"Paste your own RSpec\">Paste</option>\n";
-  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
+  //  print "<option value=\"paste\" title=\"Paste your own RSpec\">Paste</option>\n";
+  //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
   // RSpec entry area
