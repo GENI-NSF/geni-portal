@@ -76,6 +76,54 @@ if (array_key_exists("pretty", $_REQUEST)){
 
 include("query-sliverstatus.php");
 
+function print_sliver_status_err( $msg ) {
+  /* Sample input */
+  /*  Slice urn:publicid:IDN+sergyar:AMtest+slice+test1 expires on 2012-07-07 18:21:41 UTC
+Failed to get SliverStatus on urn:publicid:IDN+sergyar:AMtest+slice+test1 at AM https://localhost:8001/: [Errno 111] Connection refused
+
+Failed to get SliverStatus on urn:publicid:IDN+sergyar:AMtest+slice+test1 at AM https://www.pgeni3.gpolab.bbn.com:12369/protogeni/xmlrpc/am/2.0: No slice or aggregate here
+Returned status of slivers on 0 of 2 possible aggregates.
+*/
+
+  $succ=array();
+  $fail=array();
+  $lines = preg_split ('/$\R?^/m', $msg);
+  $num_errs = 0;
+  $err_array = array();
+  foreach ($lines as $line){  
+    if (preg_match("/^Returned status of slivers on (\d+) of (\d+) possible aggregates.$/",$line, $succ)){
+      $n = (int) $succ[1];
+      $m = (int) $succ[2];
+    } elseif (preg_match("/^Failed to get SliverStatus on urn\:publicid\:IDN\+(\w+)\:(\w+)\+slice\+(\w+) at AM (.*): (.*)$/",$line,$fail)) {
+      $num_errs = $num_errs+1;
+      $agg = $fail[4];
+      $err = $fail[5];
+      $err_array[ $agg ] = $err;
+    }
+  }
+
+  if ($num_errs>0){
+    /* print "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
+    print "<div>Errors seen by ";
+    print($m-$n);
+    print " aggregate";
+    if ($num_errs>1){
+      print "s";
+    }
+    print ":</div>"; 
+    print "<table>";
+    print "<tr><th>Aggregate</th><th>Error Message</th></tr>";
+    foreach ($err_array as $agg => $err_item){
+      $agg_name = am_name($agg);
+      print "<tr>";
+      print "<td>$agg_name</td>";
+      print "<td>$err_item</td>";
+      print "</tr>";
+    }
+    print "</table>";
+  }
+}
+
 function print_sliver_status( $obj ) {
   print "<table>";
   $args = array_keys( $obj );
@@ -155,15 +203,19 @@ if (isset($msg) and isset($obj)){
     echo "\n</div>\n";
   } else {
     print_sliver_status( $obj );
-    print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id."'>Raw SliverStatus</a>";
-    print "<br/>";
-    print "<br/>";
   }
 
-  print "<pre>$msg</pre>";
+  /*  print "<pre>$msg</pre>"; */
+
+  print_sliver_status_err( $msg );
   /* echo "<pre>"; */
   /* echo print_r($obj); */
   /* echo "</pre>"; */
+
+    print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id."'>Raw SliverStatus</a>";
+    print "<br/>";
+    print "<br/>";
+
 
 } else {
   print "<p><i>Failed to determine status of resources.</i></p>";
