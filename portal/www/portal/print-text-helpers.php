@@ -26,14 +26,24 @@
 require_once("header.php");
 require_once( "am_map.php");
 
-function print_list( $list ){
+function print_agg_list( $list ){
+  print_list( $list, $use_nickname=True );
+}
+
+
+function print_list( $list, $use_nickname=False ){
   $num_items = count($list);
   print "<ul class='list'>";
   if (count($list) == 0) {
     echo "<li><i>No aggregates.</i></li>\n";    
   } else {
     foreach ($list as $item) {
-      echo "<li>$item</li>\n";
+      if ($use_nickname) {
+	$name=am_name($item);
+      } else {
+	$name = $item;
+      }
+      echo "<li>$name</li>\n";
     }
   }
   print "</ul>\n";

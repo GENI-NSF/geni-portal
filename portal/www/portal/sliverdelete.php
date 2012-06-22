@@ -136,14 +136,14 @@ if (count($success)) {
           $log_contexts, $slice['owner_id']);
   print "<div>Deleted slivers at:</div>";
   print "<div>";
-  print_list( $success );
+  print_agg_list( $success );
   print "</div>";
 }
 
 if (count($fail)) {
   print "<div>Failed to delete slivers at:</div>";
   print "<div>";
-  print_list( $fail );
+  print_agg_list( $fail );
   print "</div>";
 }
 print "<hr/>";
