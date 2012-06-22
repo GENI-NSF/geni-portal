@@ -24,6 +24,13 @@
 
 require_once('response_format.php');
 
+/*
+ * Include local host settings.
+ *
+ * FIXME: parameterize file location
+ */
+include_once('/etc/geni-ch/settings.php');
+
 /**
  * Set of functions to help server side message handles to access (read/write) database
  */
@@ -52,7 +59,13 @@ function portal_conn()
 function db_conn()
 {
   global $portal_db;
-  $db_dsn = 'pgsql://portal:portal@localhost/portal';
+  global $db_dsn;
+  if (! isset($db_dsn)) {
+    error_log("db_dsn not set, using default");
+    $db_dsn = 'pgsql://portal:portal@localhost/portal';
+  } else {
+    error_log("db_dsn already set: $db_dsn");
+  }
   $db_options = array('debug' => 5,
                       'result_buffering' => false,
                       );
