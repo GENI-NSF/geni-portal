@@ -86,16 +86,8 @@ div#loginHelpdiv{
 }
 
 
-#footer :link, #footer :visited {
+#footer :link, #footer :visited, #footer :link:hover, #footer :visited:hover {
  color: gray;
- text-decoration: none;
-}
-
-
-#footer :link:hover, #footer :visited:hover {
- font-weight: bold;
- color: gray;
- text-decoration: none;
 }
 
 div#footer {
