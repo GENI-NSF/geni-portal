@@ -46,6 +46,8 @@ div#header div {
 
 .landingpage {
  width:10in;
+ margin-left: auto;
+ margin-right: auto;
 }
 
 div#geni{
@@ -103,7 +105,12 @@ div#footer {
 
 div#landingcontent, div#content.landingpage {
  display: block;
- margin-left: 1.5in;
+}
+
+div#blank {
+ display: block;
+ width: 1.5in;
+ float: left;
 }
 
 div#content.landingpage {
@@ -153,8 +160,10 @@ div#map .legend {
 width: .75in;
 padding: 0.25in;
 left: 0.5in;
-top: 2.3in;
-position: absolute;
+margin-top: .75in;
+top: 3in;
+float: left;
+margin-left: .4in;
 }
 
 /* #loginButton, #loginHelp { */

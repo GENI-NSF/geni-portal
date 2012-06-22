@@ -43,6 +43,12 @@ function show_header($title)
 
 show_header("Welcome to the GENI Portal")
 ?>
+<div id='blank'>
+
+<img id="incommon-logo" src="common/InC_Participant.png"/>
+
+
+</div>
 <div id='main'>
 
   <a href='secure/home.php'>
@@ -51,9 +57,6 @@ show_header("Welcome to the GENI Portal")
 
 
   <h1>InCommon Affiliation</h1>
-
-<img id="incommon-logo" src="common/InC_Participant.png"/>
-
 <p>
 If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">login</a> using your InCommon Single Sign On username and password and register for a GENI account.
 </p>
