@@ -29,6 +29,7 @@ require_once("file_utils.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("am_client.php");
+require_once("am_map.php");
 require_once("sa_client.php");
 require_once("print-text-helpers.php");
 $user = geni_loadUser();
@@ -90,6 +91,7 @@ if (! isset($am) || is_null($am)) {
 
 // Get an AM
 $am_url = $am[SR_ARGUMENT::SERVICE_URL];
+$AM_name = am_name($am_url);
 // error_log("AM_URL = " . $am_url);
 
 //$result = get_version($am_url, $user);
@@ -128,7 +130,9 @@ print "<h2>$header</h2>\n";
 /* print_r($msg); */
 /* print "</div>"; */
 
-print "Reserved resources on AM (<b>$am_url</b>) until <b>$slice_expiration</b>:";
+
+
+print "Reserved resources on AM (<b>$AM_name</b>) until <b>$slice_expiration</b>:";
 print "<div class='resources'>";
 print_rspec_pretty( $obj );
 print "</div>\n";
