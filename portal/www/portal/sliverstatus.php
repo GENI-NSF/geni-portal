@@ -103,16 +103,16 @@ Returned status of slivers on 0 of 2 possible aggregates.
   }
 
   if ($num_errs>0){
-    /* print "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
-    print "<div>Errors seen by ";
-    print($m-$n);
-    print " aggregate";
-    if ($num_errs>1){
-      print "s";
+    if ($n === 0) {
+      /* No aggregates responded succesfully */
+      $hdr = "Checked $m aggregate" . ($m > 1 ? "s" : "") . ", no resources found:";
+    } else {
+      $hdr = "Checked $num_errs other aggregate" . ($num_errs > 1 ? "s" : "") . ":";
     }
-    print ":</div>"; 
+    /* print "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
+    print "<div>$hdr</div>";
     print "<table>";
-    print "<tr><th>Aggregate</th><th>Error Message</th></tr>";
+    print "<tr><th>Aggregate</th><th>Message</th></tr>";
     foreach ($err_array as $agg => $err_item){
       $agg_name = am_name($agg);
       print "<tr>";
