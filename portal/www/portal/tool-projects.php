@@ -99,9 +99,8 @@ if (isset($reqs) && count($reqs) > 0) {
 }
 
 if (count($projects) > 0) {
-  print "Found " . count($projects) . " project(s) for you:<br/>\n";
   print "\n<table>\n";
-  print ("<tr><th>Name</th><th>Project Lead</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
+  print ("<tr><th>Project Name</th><th>Project Lead</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
 
   // name, lead_id, purpose
   foreach ($projects as $project_id) {
