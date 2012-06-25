@@ -137,8 +137,17 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '</head>';
   echo '<body>';
   echo '<div id="header">';
+  echo '<a href="http://www.geni.net" target="_blank">';
   echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
+  echo '</a>';
   echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
+  if ($load_user) {
+    global $user;
+    $user = geni_loadUser();
+    echo '<div id="metanav" class="nav">';
+    echo '<ul><li style="border-right: none">Logged in as ' . $user->prettyName() . '</li></ul>';
+    echo '</div>';
+  }
   show_tab_bar($active_tab, $load_user);
   echo '</div>';
   echo '<div id="content">';

@@ -32,6 +32,7 @@ require_once("am_client.php");
 require_once("am_map.php");
 require_once("sa_client.php");
 require_once("print-text-helpers.php");
+require_once("logging_client.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -111,6 +112,15 @@ $retVal = create_sliver($am_url, $user, $slice_credential,
                                $slice_urn, $rspec_file);
 unlink($rspec_file);
 error_log("CreateSliver output = " . $retVal);
+
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+$log_contexts = array(array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::PROJECT,
+                            LOGGING_ARGUMENT::CONTEXT_ID => $slice['project_id']),
+                      array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::SLICE,
+                            LOGGING_ARGUMENT::CONTEXT_ID => $slice['slice_id']));
+log_event($log_url, "Added resources to slice " . $slice_name,
+          $log_contexts, $slice['owner_id']);
+
 
 $header = "Created Sliver on slice: $slice_name";
 

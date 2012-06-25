@@ -61,10 +61,7 @@ function db_conn()
   global $portal_db;
   global $db_dsn;
   if (! isset($db_dsn)) {
-    error_log("db_dsn not set, using default");
     $db_dsn = 'pgsql://portal:portal@localhost/portal';
-  } else {
-    error_log("db_dsn already set: $db_dsn");
   }
   $db_options = array('debug' => 5,
                       'result_buffering' => false,
