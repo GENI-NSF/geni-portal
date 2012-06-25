@@ -140,9 +140,10 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
   echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
   show_tab_bar($active_tab, $load_user);
-  show_starter_status_bar($load_user);
   echo '</div>';
   echo '<div id="content">';
+  show_starter_status_bar($load_user);
+
 }
 
 ?>
