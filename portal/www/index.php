@@ -112,10 +112,6 @@ Not affiliated? <a href="mailto:help@geni.net">Request a Single Sign On Login</a
 
 <div id="footer" class="landingpage">
   <small><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></small>
-  <!-- put the copyright off to the right -->
-  <div style="float:right;">
-  <small>GENI Portal Copyright 2012, BBN Technologies</small>
-  </div>
 </div>
 
 </body>

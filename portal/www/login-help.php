@@ -96,11 +96,7 @@ The GENI Portal supports single sign on login via our partnership in the <a href
 </div>
 <hr/>
 <div id="footer"  class="landingpage">
-  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></i></small>
-  <!-- put the copyright off to the right -->
-  <div style="float:right;">
-  <small><i>GENI Portal Copyright 2012, BBN Technologies</i></small>
-  </div>
+  <small><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></small>
 </div>
 </body>
 </html>
