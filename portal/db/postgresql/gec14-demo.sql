@@ -2,6 +2,19 @@
 -- PostgreSQL database dump
 --
 
+-- ----------------------------------------------------------------------
+-- Dump of the GEC 14 demo database
+--
+-- Created with:
+--
+--     $ pg_dump -c -f gec14-demo.sql portal -h localhost -U portal
+--
+-- Restore with:
+--
+--     $ psql -U portal -h localhost portal < gec14-demo.sql
+-- ----------------------------------------------------------------------
+
+
 SET statement_timeout = 0;
 SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
