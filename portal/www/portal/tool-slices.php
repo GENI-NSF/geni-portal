@@ -139,5 +139,5 @@ if (count($slices) > 0) {
   }
   print "</table>\n";
 } else {
-  print "<i>No slices.</i><br/>\n";
+  print "<i>You are not a member of any slices.</i><br/>\n";
 }

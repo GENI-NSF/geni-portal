@@ -47,7 +47,6 @@ function shib_input($shib_name, $pretty_name)
   <li><a href="">GENI Code of Ethics</a>: Be nice!</li>
   <li><a href="">GENI Privacy Policy</a>: We may use and share your InCommon attributes among GENI operators...</li>
   <li><a href="">GENI Citation Policy</a>: In particular, cite the GENI paper in all research that uses GENI.</li>
-<li>Wash Mark Berman&#39s car!</li>
 <!-- FIXME: Get the right list here! -->
 </ul>
 <br/>

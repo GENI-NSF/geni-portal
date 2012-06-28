@@ -111,7 +111,7 @@ $rspec_file = writeDataToTempFile($rspec);
 $retVal = create_sliver($am_url, $user, $slice_credential,
                                $slice_urn, $rspec_file);
 unlink($rspec_file);
-error_log("CreateSliver output = " . $retVal);
+error_log("CreateSliver output = " . print_r($retVal, TRUE));
 
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 $log_contexts = array(array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::PROJECT,

@@ -131,7 +131,7 @@ $filename = "id_geni_ssh_rsa";
 insertSshKey($user->account_id, $public_key, $filename, "Generated SSH keypair", $private_key);
 
 if (True) {
-  $_SESSION['lastmessage'] = "Generated SSH keypair - now download the public key";
+  $_SESSION['lastmessage'] = "Generated SSH keypair - now download the private key";
   relative_redirect('profile.php');
 } else {
   // Set headers for download

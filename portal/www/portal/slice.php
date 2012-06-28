@@ -220,12 +220,12 @@ if (!(isset($msg) and isset($obj))) {
       print "<tr>";
       print "<th class='notapply'>";
       print "</th><th>Status</th><th>Aggregate</th>";
-      print "<th>Creation</th>";
+      print "<th>&nbsp;</th>";
       print "<th>Expiration</th></tr>\n";
       $first = False;
     }
     $sliver_status=$agg_obj['geni_status'];
-    $sliver_creation='NOT IMPLEMENTED YET';
+    $sliver_creation='&nbsp;';
     $sliver_expiration='NOT IMPLEMENTED YET';
     print "<tr>";
     print "<td class='notapply'></td>";
