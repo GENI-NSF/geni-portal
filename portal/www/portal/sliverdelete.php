@@ -141,7 +141,7 @@ if (count($success)) {
 }
 
 if (count($fail)) {
-  print "<div>Failed to delete slivers at:</div>";
+  print "<div>No slivers deleted at:</div>";
   print "<div>";
   print_agg_list( $fail );
   print "</div>";
