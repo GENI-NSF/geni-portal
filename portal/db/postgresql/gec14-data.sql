@@ -367,10 +367,11 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     </interface>
   </node>
   <node client_id="delay">
+    <hardware_type name="pc600"/>
     <sliver_type name="delay">
       <delay:sliver_type_shaping>
-        <delay:pipe source="delay:if0" dest="delay:if1" capacity="1000000" packet_loss="0" latency="1"/>
-        <delay:pipe source="delay:if1" dest="delay:if0" capacity="1000000" packet_loss="0" latency="1"/>
+        <delay:pipe source="delay:if0" dest="delay:if1" capacity="1000" packet_loss="0" latency="1"/>
+        <delay:pipe source="delay:if1" dest="delay:if0" capacity="1000" packet_loss="0" latency="1"/>
       </delay:sliver_type_shaping>
     </sliver_type>
     <interface client_id="delay:if0"/>
