@@ -22,12 +22,6 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-$prev_name = session_id('LOGGING-SESSION');
-
-require_once('message_handler.php');
-require_once('logging_constants.php');
-require_once('db_utils.php');
-require_once('response_format.php');
 
 /**
  * The GENI Clearinginghouse Logging api allows clients

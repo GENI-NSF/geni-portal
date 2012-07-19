@@ -22,18 +22,6 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-$prev_name = session_id('PA-SESSION');
-
-require_once('message_handler.php');
-require_once('db_utils.php');
-require_once('file_utils.php');
-require_once('response_format.php');
-require_once('pa_constants.php');
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('ma_client.php');
-require_once('cs_client.php');
-require_once('logging_client.php');
 
 /**
  * GENI Clearinghouse Project Authority (PA) controller interface

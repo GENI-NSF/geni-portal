@@ -1,12 +1,5 @@
 <?php
 
-$prev_name = session_id('MA-SESSION');
-
-require_once('message_handler.php');
-require_once('db_utils.php');
-require_once('file_utils.php');
-require_once('ma_constants.php');
-require_once('response_format.php');
 
 /**
  * GENI Clearinghouse Member Authority (MA) controller interface

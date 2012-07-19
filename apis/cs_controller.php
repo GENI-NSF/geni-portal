@@ -22,17 +22,6 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-$prev_name = session_id('CS-SESSION');
-
-require_once('message_handler.php');
-require_once('db_utils.php');
-require_once('cs_constants.php');
-require_once('response_format.php');
-require_once('permission_manager.php');
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('logging_client.php');
-
 /**
  * GENI Clearinghouse Credential Store (CS) controller interface
  * The Credential Store allows for storing of two kinds of credentials
@@ -55,8 +44,6 @@ require_once('logging_client.php');
  * permissions <= get_permissions(principal)
  **/
 
-$sr_url = get_sr_url();
-$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 /* Create an assertion and store in CS
  * Args: Dictionary containing name/value pairs:
