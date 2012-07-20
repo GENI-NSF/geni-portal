@@ -30,15 +30,19 @@ namespace Logging_Service;
  * The GENI Clearinginghouse Logging api allows clients
  * to log events with particular tagging (dictionaries of name/value pairs)
  * and query for logged events matching those name/value pairs
- *
+ * <br><br>
  * There is one write interface:
- *   log_event($event_time, $user_id, $contexts, $message)
- * 
+<ul>
+<li>   log_event($event_time, $user_id, $contexts, $message) </li>
+</ul>
+ * <br><br>
  * There are two read interface:
- *   get_log_entries_by_author($event_time, $user_id)
- *   get_log_entries_by_attributes($event_time, $user_id, $attribute_sets)
- *   
+<ul>
+<li>   get_log_entries_by_author($event_time, $user_id) </li>
+<li>   get_log_entries_by_attributes($event_time, $user_id, $attribute_sets) </li>
+</ul>
  */
+class Logging_Service {
 
 /**
  * Log an event and store it in the logging service archive for future query
@@ -91,6 +95,8 @@ function get_log_entries_by_author($args_dict)
  */
 function get_log_entries_by_attributes($args_dict)
 {
+}
+
 }
 
 ?>

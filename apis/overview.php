@@ -3,10 +3,12 @@
 namespace Overview;
 
 /**
- * This file contains documentation of the GENI Clearinghouse API
+ * This documents the GENI Clearinghouse API
  * essentials: how methods are invoked, the return values and the
  * authorization and validation of the calls.
  */
+class Overview
+{
 
  /**
  * All invocations of GENI CH API calls are sent by
@@ -52,6 +54,7 @@ function Return_Structure()
 {
 }
 
+}
 
 
 ?>

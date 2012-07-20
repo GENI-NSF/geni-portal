@@ -30,19 +30,22 @@ namespace Project_Authority;
  * GENI Clearinghouse Project Authority (PA) controller interface
  * The PA maintains a list of projects, their details and members and provides access
  * to creating, looking up, updating, deleting projects.
- * 
+ * <br><br>
  * Supports these methods:
- *   project_id <= create_project(project_name, lead_id, lead_email, purpose)
- *   delete_project(project_id);
- *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
- *   update_project(project_id, project_email, project_purpose);
- *   change_lead(project_id, previous_lead_id, new_lead_id); 
- *   add_project_member(project_id, member_id, role)
- *   remove_project_member(project_id, member_id)
- *   change_member_role(project_id, member_id, role)
- *   get_project_members(project_id, role=null) // null => Any
- *   get_projects_for_member(member_id, is_member, role=null)
+<ul>
+<li>   project_id <= create_project(project_name, lead_id, lead_email, purpose) </li>
+<li>   delete_project(project_id); </li>
+<li>   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id); </li>
+<li>   update_project(project_id, project_email, project_purpose); </li>
+<li>   change_lead(project_id, previous_lead_id, new_lead_id);  </li>
+<li>   add_project_member(project_id, member_id, role) </li>
+<li>   remove_project_member(project_id, member_id) </li>
+<li>   change_member_role(project_id, member_id, role) </li>
+<li>   get_project_members(project_id, role=null) // null => Any </li>
+<li>   get_projects_for_member(member_id, is_member, role=null) </li>
+</ul>
  **/
+class Project_Authority {
 
 /**
  * Create and register new project within clearinghouse
@@ -259,6 +262,8 @@ function get_project_members($args_dict)
  */
 function get_projects_for_member($args_dict)
 {
+}
+
 }
 
 ?>

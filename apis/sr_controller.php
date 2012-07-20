@@ -6,14 +6,16 @@ namespace Service_Registry;
  * GENI Clearinghouse Service Registry (SR) controller interface
  * The Service Registry maintains a list of services registered
  * with the clearinghouse, and their type, URL and certificate (signed
- * by the SR itself.
- * 
+ * by the SR itself).
+ * <br><br>
  * Supports these query interfaces:
- * get_services
- * get_services_of_type
- * get_service_by_id
- *
+ <ul>
+ <li>services <= get_services()</li>
+ <li>services <= get_services_of_type(service_type)</li>
+ <li>services <= get_service_by_id(service_id)</li>
+</ul>
  **/
+class Service_Registry {
 
 /**
  * Get all services currently registered with SR 
@@ -60,6 +62,8 @@ function get_services_of_type($args_dict)
  */
 function get_service_by_id($args_dict)
 {
+}
+
 }
 
 ?>

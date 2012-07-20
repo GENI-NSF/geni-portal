@@ -31,24 +31,26 @@ namespace Slice_Authority;
  * and provides access to creating, looking up, updating and renewing slices.
  * In addition, provides access to slice and user credentials for interacting
  * with slices within the AM API.
- *
+ * <br><br>
  * Supports these methods:
- *   slice_credental <= get_slice_credential(slice_id, experimenter_cert)
- *   user_credential <= get_user_credential(experimenter_cert)
- *   slice_id <= create_slice(slice_name, project_id, project_name, owner_id, description)
- *   [ids] <= lookup_slice_ids(project_id, [owner_id])
- *   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slices(project_id, owner_id)
- *   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice(slice_id)
- *   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice_by_urn(slice_urn)
- *   success <= renew_slice(slice_id, expiration)
- *   success <= add_slice_member(slice_id, member_id, role_type)
- *   success <= remove_slice_member(slice_id, member_id, role_type)
- *   success <= change_slice_member_role(slice_id, member_id, role_type)
- *   [member_id, role} <= get_slice_members(slice_id, role_type=null) // null => Any
- *   [slice_id, member_id, role] <= get_slice_members_for_project(project_id, role_type=null) // null => Any
- *   [id] <=get_slices_for_member(member_id, is_member, role=null)
- *
+<ul>
+<li>   slice_credental <= get_slice_credential(slice_id, experimenter_cert) </li>
+<li>   user_credential <= get_user_credential(experimenter_cert) </li>
+<li>   slice_id <= create_slice(slice_name, project_id, project_name, owner_id, description) </li>
+<li>   [ids] <= lookup_slice_ids(project_id, [owner_id]) </li>
+<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slices(project_id, owner_id) </li>
+<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice(slice_id) </li>
+<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice_by_urn(slice_urn) </li>
+<li>   success <= renew_slice(slice_id, expiration) </li>
+<li>   success <= add_slice_member(slice_id, member_id, role_type) </li>
+<li>   success <= remove_slice_member(slice_id, member_id, role_type) </li>
+<li>   success <= change_slice_member_role(slice_id, member_id, role_type) </li>
+<li>   [member_id, role} <= get_slice_members(slice_id, role_type=null) // null => Any </li>
+<li>   [slice_id, member_id, role] <= get_slice_members_for_project(project_id, role_type=null) // null => Any </li>
+<li>   [id] <=get_slices_for_member(member_id, is_member, role=null) </li>
+</ul>
  */
+class Slice_Authority {
 
 /**
  * Create a slice credential and return it 
@@ -291,5 +293,6 @@ function get_slices_for_member($args_dict)
 {
 }
 
+}
 
 ?>

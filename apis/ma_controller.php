@@ -12,17 +12,18 @@ namespace Member_Authority;
  *      project
  * Alternatively, the person (member) can have a role with respect to a cotnext type that has no
  *     specific context id, such as being the admin of membership records or the auditor of logs
- *
- * 
+ * <br><br>
  * Supports these methods:
- *   add_attribute(ma_url, member_id, role_type, context_type, context_id);
- *   remove_attribute(ma_url, member_id, role_type, context_type, context_id);
- *   update_role(ma_url, member_id, role_type, context_type, context_id);
- *   lookup_attributes(ma_url, member_id);
- *   register_ssh_key(ma_url, member_id, filename, description, ssh_key);
- *   lookup_ssh_keys(ma_url, member_id);
- *
+<ul>
+<li>   add_attribute(ma_url, member_id, role_type, context_type, context_id); </li>
+<li>   remove_attribute(ma_url, member_id, role_type, context_type, context_id); </li>
+<li>   update_role(ma_url, member_id, role_type, context_type, context_id); </li>
+<li>   lookup_attributes(ma_url, member_id); </li>
+<li>   register_ssh_key(ma_url, member_id, filename, description, ssh_key); </li>
+<li>   lookup_ssh_keys(ma_url, member_id); </li>
+</ul>
  */
+class Member_Authority {
 
 /**
  * Add attribute to a given principal (member) as having given role in given context.
@@ -122,6 +123,8 @@ function register_ssh_key($args_dict)
  */
 function lookup_ssh_keys($args_dict)
 {
+}
+
 }
 
 ?>

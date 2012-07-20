@@ -32,21 +32,24 @@ namespace Credential_Store;
  *         attribute A, possibly in context C)
  *    Policies (signed statements that principals with attribute A possibly in 
  *         context X have a given privilege)
- * 
+ * <br><br>
  * Supports 4 'write' interfaces:
- * id <= create_assertion(principal, attribute, context_type, context)
- * id <= create_policy(attribute, context_type, privilege)
- * renew_assertion(id)
- * delete_policy(id);
- * 
+<ul>
+<li> id <= create_assertion(principal, attribute, context_type, context) </li>
+<li> id <= create_policy(attribute, context_type, privilege) </li>
+<li> renew_assertion(id) </li>
+<li> delete_policy(id); </li>
+</ul>
+ * <br><br>
  * Supports 4 'read' interfaces:
- * assertions <= query_assertions(principal, context_type, context)
- * policies <= query_policies();
- * success/failure => request_authorization(principal, action, 
- *      context_type, context)
- * permissions <= get_permissions(principal)
+<ul>
+<li> assertions <= query_assertions(principal, context_type, context) </li>
+<li> policies <= query_policies(); </li>
+<li> success/failure => request_authorization(principal, action,  context_type, context) </li>
+<li> permissions <= get_permissions(principal) </li>
+</ul>
  **/
-
+class Credential_Store {
 
 /** Create an assertion and store in CS
  * @param dict $args_dict Dictionary containing name/value pairs:
@@ -181,6 +184,8 @@ function request_authorization($args_dict)
  */
 function get_permissions($args)
 {
+}
+
 }
 
 
