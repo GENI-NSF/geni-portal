@@ -1,4 +1,7 @@
 <?php
+
+namespace Logging_Service;
+
 //----------------------------------------------------------------------
 // Copyright (c) 2012 Raytheon BBN Technologies
 //
@@ -39,15 +42,16 @@
 
 /**
  * Log an event and store it in the logging service archive for future query
- * Args: Dictionary containing name/value pairs:
- *   "operation" name of this method ("log_event");
- *   "signer" : UUID of signer (asserter) of method/argument set
- *   "event_time" : time of logged event
- *   "user_id" : ID of user logging event
- *   "attributes" : dictionary of name/value pairs to be associated with event
- *  " message" : text message of logged event
- * Return:
- *   Success/Failure
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" name of this method ("log_event")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"event_time" : time of logged event</li>
+   <li>"user_id" : ID of user logging event</li>
+   <li>"attributes" : dictionary of name/value pairs to be associated with event</li>
+  "<li> message" : text message of logged event</li>
+</ul>
+ * @return boolean Success/Failure
  *   
  */
 function log_event($args_dict)
@@ -56,14 +60,14 @@ function log_event($args_dict)
 
 /**
  * Return list of logged events written by given user
- * Args: Dictionary containing name/value pairs:
- *   "operation" name of this method ("get_log_entries_by_author")
- *   "signer" : UUID of signer (asserter) of method/argument set
- *   "event_time" : time of logged event
- *   "user_id" : ID of user logging event
- * Return:
- *   List of log events (time, user_id, context_type, context_id, message)
- *     written by given user
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" name of this method ("get_log_entries_by_author")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"event_time" : time of logged event</li>
+   <li>"user_id" : ID of user logging event</li>
+</ul>
+ * @return array List of log events (time, user_id, context_type, context_id, message) written by given user
  *   
  */
 function get_log_entries_by_author($args_dict)
@@ -74,15 +78,15 @@ function get_log_entries_by_author($args_dict)
  * Return list of logged events matching any of a list of attribute sets
  *   (that is, it is an "OR" of "ANDS" of a dictionary of name/value pairs).
  * 
- * Args: Dictionary containing name/value pairs:
- *   "operation" name of this method ("get_log_entries_by_attributes")
- *   "signer" : UUID of signer (asserter) of method/argument set
- *   "event_time" : time of logged event
- *   "attribute_sets" : List of dictionaries (name/value pairs) for which
- *      if any one is completely matched, the entry is returned. 
- * Return:
- *   List of log events (time, user_id, context_type, context_id, message)
- *     matching given list of attribute dictionaries
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" name of this method ("get_log_entries_by_attributes")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"event_time" : time of logged event</li>
+   <li>"attribute_sets" : List of dictionaries (name/value pairs) for which<
+*      if any one is completely matched, the entry is returned. </li>
+</ul>
+ * @return array List of log events (time, user_id, context_type, context_id, message) matching given list of attribute dictionaries
  *   
  */
 function get_log_entries_by_attributes($args_dict)

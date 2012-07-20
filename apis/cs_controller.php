@@ -1,4 +1,7 @@
 <?php
+
+namespace Credential_Store;
+
 //----------------------------------------------------------------------
 // Copyright (c) 2012 Raytheon BBN Technologies
 //
@@ -45,110 +48,122 @@
  **/
 
 
-/* Create an assertion and store in CS
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("create_assertion")
- *   "signer" : UUID of signer (asserter) of assertion
- *   "principal" : UUID of principal about whom assertion is made
- *   "attribute" : id/index of attribute type
- *   "context_type" :  type of context in which assertion holds
- *   "context" : UUID of context (if any) for which assertion holds
- * Return: ID of assertion
+/** Create an assertion and store in CS
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("create_assertion")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"principal" : UUID of principal about whom assertion is made</li>
+   <li>"attribute" : id/index of attribute type</li>
+   <li>"context_type" :  type of context in which assertion holds</li>
+   <li>"context" : UUID of context (if any) for which assertion holds</li>
+</ul>
+ * @return string ID of assertion
  */
 function create_assertion($args_dict)
 {
 }
 
-/* Create a policy and store in CS
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("create_policy")
- *    "signer" : UUID of signer (asserter) of policy
- *    "attribute" : id/index of attribute type
- *    "context_type" : type of context in which attribute holds
- *    "privilege" " id/index of privilege type
- * Return: ID of policy
+/**
+ * Create a policy and store in CS
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("create_policy")</li>
+    <li>"signer" : UUID of signer (asserter) of policy</li>
+    <li>"attribute" : id/index of attribute type</li>
+    <li>"context_type" : type of context in which attribute holds</li>
+    <li>"privilege" " id/index of privilege type</li>
+</ul>
+ * @return string ID of policy
  */
 function create_policy($args_dict)
 {
 }
 
-/*
+/**
  * Renew a given assertion with given ID
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("renew_assertion")
- *   "signer" : UUID of signer (asserter) of assertion
- *   "id" : ID of assertion to be renewed
- * Return : Success/failure
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("renew_assertion")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"id" : ID of assertion to be renewed</li>
+</ul>
+ * @return boolean Success / Failure
  */
 function renew_assertion($args_dict)
 {
 }
 
-/*
+/**
  * Delete a given assertion with given ID
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("delete_assertion")
- *   "signer" : UUID of signer (asserter) of assertion
- *   "id" - ID of assertion to be deleted
- * Return : Success/failure
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("delete_assertion")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"id" - ID of assertion to be deleted</li>
+</ul>
+ * @return boolean Success / Failure
  */
 function delete_assertion($args_dict)
 {
 }
 
-/*
+/**
  * Delete a given policy of given ID
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("delete_policy")
- *   "signer" : UUID of signer (asserter) of assertion
- *   "id" : ID of assertion to be renewed
- * Return : Success/failure
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("delete_policy")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"id" : ID of assertion to be renewed</li>
+</ul>
+ * @return boolean Success / Failure
  */
 function delete_policy($args_dict)
 {
 }
 
-/*
+/**
  * Return a list of assertions for a given principal 
  *   possibly in a given context
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("query_assertions")
- *   "signer" : UUID of signer (asserter) of assertion
- *   "principal" : UUID of principal
- *   "context_type" : type of context 
- *   "context" : UUID of context (if any)n
- * Return : List of assertions matching given query
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("query_assertions")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"principal" : UUID of principal</li>
+   <li>"context_type" : type of context </li>
+   <li>"context" : UUID of context (if any)n</li>
+</ul>
+ * @return array List of assertions matching given query
  */
 function query_assertions($args_dict)
 {
 }
 
-/*
+/**
  * Return a list of all policies in credential store
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("query_policies")
- *   "signer" : UUID of signer (asserter) of assertion
- * Return : List of all policies in credential store
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("query_policies")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+</ul>
+ * @return array List of all policies in credential store
  */
 function query_policies($args_dict)
 {
-  // TODO - Should there be arguments? Do I know what subset I want
-  global $CS_POLICY_TABLENAME;
-  $sql = "select * from " . $CS_POLICY_TABLENAME;
-  $rows = db_fetch_rows($sql);
-  return $rows;
 }
 
-/*
+/**
  * Return whether a given principal is allowed to take a given 
  * action in a given context.
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("query_policies")
- *   "signer" : UUID of signer (asserter) of assertion
- *   "principal" : UUID of principal about whom authorization is requested
- *   "action" : name of action for which authorization is requested
- *   "context_type" : context type about which authorization is requested
- *   "context" " context_id about  which authorization is requested [optional]
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("query_policies")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"principal" : UUID of principal about whom authorization is requested</li>
+   <li>"action" : name of action for which authorization is requested</li>
+   <li>"context_type" : context type about which authorization is requested</li>
+   <li>"context" " context_id about  which authorization is requested [optional]</li>
+</ul>
  */
 function request_authorization($args_dict)
 {
@@ -156,13 +171,13 @@ function request_authorization($args_dict)
 
 /**
  * Get the permissions (allowed actions) for a given principal
- * Args: Dictionary containing name/value pairs:
- *   "operation" : name of this method ("query_policies")
- *   "signer" : UUID of signer (asserter) of assertion
- *   "principal" : UUID of principal about which actions are being requested
- * Return:
- *   list of action, context_type, context_id tuples for which principal has
- *     authorization
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("query_policies")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"principal" : UUID of principal about which actions are being requested</li>
+</ul>
+ * @return array List of action, context_type, context_id tuples for which principal has authorization
  */
 function get_permissions($args)
 {
