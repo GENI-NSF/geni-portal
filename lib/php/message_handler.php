@@ -225,6 +225,9 @@ function handle_message($prefix, $cs_url, $cacerts,
                                 "Message verification failed.");
     goto done;
   }
+  if (is_null($signer_pem)) {
+    // error_log("$prefix received unsigned message: " . print_r($msg, true));
+  }
 
   $geni_message = new GeniMessage($msg, $signer_pem);
   $funcargs = $geni_message->parse();
