@@ -126,8 +126,8 @@ class DefaultGuardFactory implements GuardFactory
     $parsed_message = $message->parse();
     $func = $parsed_message[0];
     $funcargs = $parsed_message[1];
-    if (find_context($this->prefix, $func, $funcargs,
-                     $context_type, $context)) {
+    if ($this->find_context($this->prefix, $func, $funcargs,
+            $context_type, $context)) {
       $result[] = new MHContextGuard($this->cs_url, $message, $func,
                                    $context_type, $context);
     }
