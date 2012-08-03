@@ -154,7 +154,7 @@ if (isset($reqs) && count($reqs) > 0) {
     $typestr = $REQ_TYPE_NAMES[$request['request_type']] . " " . $CS_CONTEXT_TYPE_NAMES[$request['context']-1];
     if ($request['context'] == CS_CONTEXT_TYPE::PROJECT) {
       error_log("looking up project " . $request['context_id']);
-      $project = lookup_project($pa_url, $request['context_id']);
+      $project = lookup_project($pa_url, $user, $request['context_id']);
       $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $cancel_url="cancel-join-project.php?request_id=" . $request['id'];
     } elseif ($request['context'] == CS_CONTEXT_TYPE::SLICE) {

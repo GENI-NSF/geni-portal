@@ -151,7 +151,7 @@ if (isset($project_id) && $request['context_id'] != $project_id) {
   error_log("cancel-p-req: Request project != given project: " . $request['context_id'] . " != " . $project_id);
 }
 $project_id = $request['context_id'];
-$project = lookup_project($pa_url, $project_id);
+$project = lookup_project($pa_url, $user, $project_id);
 $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = geni_loadUser($lead_id);

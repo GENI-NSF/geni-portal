@@ -43,7 +43,7 @@ function dump_projects()
   //  error_log("PROJECT_IDS = " . $project_ids . " " . print_r($project_ids, true));
   foreach($project_ids as $project_id) {
     //    error_log("PROJECT_ID = " . $project_id . " " . print_r($project_id, true));
-    $details = lookup_project($pa_url, $project_id);
+    $details = lookup_project($pa_url, $user, $project_id);
     error_log("   PROJECT " . $project_id . " " 
 	      . $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " " 
 	      . $details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . " " 

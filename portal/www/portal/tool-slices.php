@@ -115,7 +115,7 @@ if (count($slices) > 0) {
 					       $slice_id);
 
     // Lookup the project for this project ID
-    $project = lookup_project($pa_url, $slice_project_id);
+    $project = lookup_project($pa_url, $user, $slice_project_id);
 
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
