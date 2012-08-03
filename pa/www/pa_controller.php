@@ -696,6 +696,10 @@ function user_context_query($account_id)
 }
 require_once('rq_controller.php');
 
-handle_message("PA", $cs_url, NULL, NULL, NULL, new PAGuardFactory($cs_url));
+$mycert = file_get_contents('/usr/share/geni-ch/pa/pa-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/pa/pa-key.pem');
+$guard_factory = new PAGuardFactory($cs_url);
+handle_message("PA", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 
 ?>

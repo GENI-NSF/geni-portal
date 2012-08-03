@@ -29,6 +29,11 @@ require_once('db_utils.php');
 require_once('file_utils.php');
 require_once('ma_constants.php');
 require_once('response_format.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
+
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
 /**
  * GENI Clearinghouse Member Authority (MA) controller interface
@@ -254,7 +259,9 @@ function lookup_keys_and_certs($args)
   return $row;
 }
 
-handle_message("MA");
-
-
+$mycert = file_get_contents('/usr/share/geni-ch/ma/ma-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/ma/ma-key.pem');
+$guard_factory = NULL;
+handle_message("MA", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 ?>

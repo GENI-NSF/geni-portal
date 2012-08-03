@@ -884,7 +884,10 @@ function user_context_query($account_id)
 require_once('rq_controller.php');
 
 
-handle_message("SA", $cs_url, NULL, NULL, NULL,
-               new SAGuardFactory($cs_url));
+$mycert = file_get_contents('/usr/share/geni-ch/sa/sa-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/sa/sa-key.pem');
+$guard_factory = new SAGuardFactory($cs_url);
+handle_message("SA", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 
 ?>

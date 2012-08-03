@@ -423,7 +423,14 @@ function create_policy_cert($signer,
   return null;
 }
 
-handle_message("CS");
-
+/*
+ * I am the CS. I should be authorizing my own calls, no?
+ */
+$cs_url = NULL;
+$mycert = file_get_contents('/usr/share/geni-ch/cs/cs-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/cs/cs-key.pem');
+$guard_factory = NULL;
+handle_message("CS", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 ?>
 

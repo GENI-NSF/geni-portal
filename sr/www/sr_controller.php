@@ -179,7 +179,16 @@ function remove_service($args)
   return $result;
 }
 
-handle_message("SR");
+/* Note: when the time comes and we need the CS here,
+ * this is a call to self to locate the CS, since
+ * this is the service registry.
+ */
+$cs_url = NULL;
+$mycert = file_get_contents('/usr/share/geni-ch/sr/sr-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/sr/sr-key.pem');
+$guard_factory = NULL;
+handle_message("SR", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 
 ?>
 
