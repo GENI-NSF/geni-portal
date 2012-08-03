@@ -361,7 +361,9 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
   $cacerts = default_cacerts();
   $result = smime_validate($result, $cacerts, $signer_pem);
   if (is_null($signer_pem)) {
-    error_log("No signer on response from $url");
+      /* Require signed responses. */
+      error_log("No signer on response from $url");
+      throw new Exception("Unsigned response from $url");
   }
 
   $result = decode_result($result);
