@@ -73,7 +73,7 @@ add_service pa ${ADMIN_EMAIL} NO 2 "https://${FQDN}/pa/pa_controller.php"
 add_service ma ${ADMIN_EMAIL} CA 3 "https://${FQDN}/ma/ma_controller.php"
 add_service logging ${ADMIN_EMAIL} NO 5 "https://${FQDN}/logging/logging_controller.php"
 add_service cs ${ADMIN_EMAIL} NO 6 "https://${FQDN}/cs/cs_controller.php"
-
+add_service portal ${ADMIN_EMAIL} NO
 
 # Link the MA cert to the trusted_roots for pgch
 TRUSTED_MA="${BASEDIR}/portal/gcf.d/trusted_roots/ma-cert.pem"
