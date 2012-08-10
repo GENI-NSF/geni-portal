@@ -193,12 +193,6 @@ function lookup_attributes($args)
 // *** Temporary part of moving member management into MA domain
 function get_member_ids($args, $message)
 {
-  error_log('get_member_ids got message from ' . $message->signerUrn());
-  if (strpos($message->signerUrn(), '+authority+') === FALSE) {
-    // NOT ALLOWED
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            'Not Authorized.');
-  }
   $sql = "Select account_id from account";
   $result = db_fetch_rows($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
@@ -265,9 +259,49 @@ function lookup_keys_and_certs($args)
   return $row;
 }
 
+
+/**
+ * This is more of a demonstration guard than anything else.
+ * It really isn't an appropriate test, but gets the point
+ * across that a user can't call certain methods, but an
+ * authority could.
+ */
+class SignerAuthorityGuard implements Guard
+{
+  public function __construct($message) {
+    $this->message = $message;
+  }
+
+  public function evaluate() {
+    return (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+  }
+}
+
+
+class MAGuardFactory implements GuardFactory
+{
+  public function __construct() {
+  }
+
+  public function createGuards($message) {
+    $parsed_message = $message->parse();
+    $action = $parsed_message[0];
+    $params = $parsed_message[1];
+    $result = array();
+    // As more guards accumulate, make this table-driven.
+    if ($action === 'lookup_ssh_keys') {
+      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+    } elseif ($action === 'get_member_ids') {
+      $result[] = new SignerAuthorityGuard($message);
+    }
+    return $result;
+  }
+}
+
+
 $mycert = file_get_contents('/usr/share/geni-ch/ma/ma-cert.pem');
 $mykey = file_get_contents('/usr/share/geni-ch/ma/ma-key.pem');
-$guard_factory = NULL;
+$guard_factory = new MAGuardFactory();
 handle_message("MA", $cs_url, default_cacerts(),
         $mycert, $mykey, $guard_factory);
 ?>
