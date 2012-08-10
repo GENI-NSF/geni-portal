@@ -242,8 +242,7 @@ function handle_message($prefix, $cs_url, $cacerts,
     goto done;
   }
 
-  $principal = $geni_message->signerUuid();
-  if (is_null($principal)) {
+  if (is_null($geni_message->signer())) {
     mh_debug("No signer on $prefix.$func, auto-authorizing.");
     $authz = True;
   } else {
@@ -252,6 +251,7 @@ function handle_message($prefix, $cs_url, $cacerts,
 
     foreach ($guards as $guard) {
       if (! $guard->evaluate()) {
+        $principal = $geni_message->signerUrn();
         $msg = "$principal is not authorized to $action.";
         $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
                                     NULL,
