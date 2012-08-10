@@ -24,8 +24,6 @@
 
 require_once 'settings.php';
 
-error_log("portal_cert_file = $portal_cert_file");
-
 class Portal
 {
   function __construct($cert_file, $private_key_file) {
