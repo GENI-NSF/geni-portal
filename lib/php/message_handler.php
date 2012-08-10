@@ -111,6 +111,9 @@ class DefaultGuardFactory implements GuardFactory
         $context = $params[SA_ARGUMENT::SLICE_ID];
       }
       break;
+    case 'MA':
+      /* Stub out MA context. */
+      break;
     default:
       error_log("MessageHandler: Unknown prefix \"$prefix\"");
       // Leave $context and $context_type NULL
