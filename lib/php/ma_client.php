@@ -79,10 +79,11 @@ function lookup_attributes($ma_url, $member_id)
 }
 
 // Get list of all member_ids in repository
-function get_member_ids($ma_url)
+function get_member_ids($ma_url, $signer)
 {
   $get_member_ids_message['operation'] = 'get_member_ids';
-  $result = put_message($ma_url, $get_member_ids_message);
+  $result = put_message($ma_url, $get_member_ids_message,
+          $signer->certificate(), $signer->privateKey());
   return $result;
 }
 
@@ -100,11 +101,12 @@ function register_ssh_key($ma_url, $member_id, $filename, $description,
 }
 
 // Lookup SSH keys associated with user
-function lookup_ssh_keys($ma_url, $member_id)
+function lookup_ssh_keys($ma_url, $signer, $member_id)
 {
   $lookup_ssh_keys_message['operation'] = 'lookup_ssh_keys';
   $lookup_ssh_keys_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
-  $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message);
+  $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message,
+          $signer->certificate(), $signer->privateKey());
   return $ssh_keys;
 }
 

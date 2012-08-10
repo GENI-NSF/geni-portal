@@ -116,7 +116,7 @@ function show_starter_status_bar($load_user)
   }
 
   $activated = $user->isActive();
-  $ssh_keys = lookup_ssh_keys($ma_url, $user->account_id);
+  $ssh_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
   $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
   //  $slices = get_slices_for_member($sa_url, $user, $user->account_id, true);
   //  $project_requests = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id);

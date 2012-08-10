@@ -191,8 +191,14 @@ function lookup_attributes($args)
 }
 
 // *** Temporary part of moving member management into MA domain
-function get_member_ids($args)
+function get_member_ids($args, $message)
 {
+  error_log('get_member_ids got message from ' . $message->signerUrn());
+  if (strpos($message->signerUrn(), '+authority+') === FALSE) {
+    // NOT ALLOWED
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
+            'Not Authorized.');
+  }
   $sql = "Select account_id from account";
   $result = db_fetch_rows($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
@@ -230,7 +236,7 @@ function register_ssh_key($args)
 
 }
 
-function lookup_ssh_keys($args)
+function lookup_ssh_keys($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
   //  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
