@@ -48,9 +48,10 @@ class Portal
     }
     return $this->private_key;
   }
+
+  static function getInstance() {
+    global $portal_cert_file, $portal_private_key_file;
+    return new Portal($portal_cert_file, $portal_private_key_file);
+  }
 }
-
-// Set a "global" variable
-$the_portal = new Portal($portal_cert_file, $portal_private_key_file);
-
 ?>
