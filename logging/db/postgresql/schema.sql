@@ -5,6 +5,7 @@ set client_min_messages='WARNING';
 -- Drop table to recreate
 DROP TABLE IF EXISTS logging_entry;
 DROP TABLE IF EXISTS logging_entry_context;
+DROP TABLE IF EXISTS logging_entry_attribute;
 
 -- Now create the table
 CREATE TABLE logging_entry (
@@ -15,8 +16,8 @@ CREATE TABLE logging_entry (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE logging_entry_context (
-  id SERIAL,
-  context_type INT,
-  context_id UUID
+CREATE TABLE logging_entry_attribute (
+  event_id INT,
+  attribute_name VARCHAR,
+  attribute_value VARCHAR
 );

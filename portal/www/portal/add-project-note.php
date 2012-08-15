@@ -50,9 +50,10 @@ if (array_key_exists("note", $_REQUEST)) {
     if (! isset($log_url)) {
       $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     }
-    $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
-    $project_context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
-    log_event($log_url, "Note on project $project_name: " . $note, array($project_context), $user->account_id);
+    $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+					    $project_id);
+    log_event($log_url, "Note on project $project_name: " . $note, 
+	      $attributes, $user->account_id);
 
     require_once("header.php");
     show_header('GENI Portal: Projects', '');

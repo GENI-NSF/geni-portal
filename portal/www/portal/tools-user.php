@@ -151,7 +151,7 @@ if (isset($reqs) && count($reqs) > 0) {
   print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
   foreach ($reqs as $request) {
     $name = "";
-    $typestr = $REQ_TYPE_NAMES[$request['request_type']] . " " . $CS_CONTEXT_TYPE_NAMES[$request['context']-1];
+    $typestr = $REQ_TYPE_NAMES[$request['request_type']] . " " . $CS_CONTEXT_TYPE_NAME[$request['context']];
     if ($request['context'] == CS_CONTEXT_TYPE::PROJECT) {
       error_log("looking up project " . $request['context_id']);
       $project = lookup_project($pa_url, $user, $request['context_id']);

@@ -33,13 +33,14 @@ namespace Logging_Service;
  * <br><br>
  * There is one write interface:
 <ul>
-<li>   log_event($event_time, $user_id, $contexts, $message) </li>
+<li>   log_event($event_time, $user_id, $attributes, $message) </li>
 </ul>
  * <br><br>
- * There are two read interface:
+ * There are these read interface:
 <ul>
-<li>   get_log_entries_by_author($event_time, $user_id) </li>
-<li>   get_log_entries_by_attributes($event_time, $user_id, $attribute_sets) </li>
+<li>   get_log_entries_by_author($user_id, $num_hours=24) </li>
+<li>   get_log_entries_by_attributes($user_id, $attribute_sets, $num_hours=24) </li>
+<li>   get_attributes_for_log_entry($entry_id) </li>
 </ul>
  */
 class Logging_Service {
@@ -68,10 +69,10 @@ function log_event($args_dict)
 <ul>
    <li>"operation" name of this method ("get_log_entries_by_author")</li>
    <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"event_time" : time of logged event</li>
+   <li>"earliest_time" : earliest event time to be returned </li>
    <li>"user_id" : ID of user logging event</li>
 </ul>
- * @return array List of log events (time, user_id, attributes, message) written by given user
+ * @return array List of log events (ID, event_time, user_id, message) written by given user
  *   
  */
 function get_log_entries_by_author($args_dict)
@@ -79,7 +80,6 @@ function get_log_entries_by_author($args_dict)
 }
 
 /**
- * *** NOT IMPLEMENTED! ***
  * Return list of logged events matching any of a list of attribute sets
  *   (that is, it is an "OR" of "ANDS" of a dictionary of name/value pairs).
  * 
@@ -87,14 +87,28 @@ function get_log_entries_by_author($args_dict)
 <ul>
    <li>"operation" name of this method ("get_log_entries_by_attributes")</li>
    <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"event_time" : time of logged event</li>
+   <li>"earliest_time" : earliest event time to be returned </li>
    <li>"attribute_sets" : List of dictionaries (name/value pairs) for which<
 *      if any one is completely matched, the entry is returned. </li>
 </ul>
- * @return array List of log events (time, user_id, attributes, message) matching given list of attribute dictionaries
+ * @return array List of log events (ID, event_time, user_id, message) matching given list of attribute dictionaries
  *   
  */
 function get_log_entries_by_attributes($args_dict)
+{
+}
+
+/**
+ * Return the set of name/value pair attributes associated with given log entry
+ @ @param dict $args_dict Dictionary containing name/value pairs:
+ <ul>
+ <li>"operation" name of this method ("get_attributes_for-log_entry")</li>
+ <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+ <li>"entry_id" : ID of log entry for which to lookup attributes</li>
+ </ul>
+ * @return dictionary Dictionary of name/value pairs associated with given log entry
+ */
+function get_attributes_for_log_entry($args_dict)
 {
 }
 

@@ -99,10 +99,11 @@ Thank you,\n" . $user->prettyName() . "\n";
 
   // Log the request
   // contexts include project and member
-  $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
-  $context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
-  $context2[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::MEMBER;
-  $context2[LOGGING_ARGUMENT::CONTEXT_ID] = $user->account_id;
+  $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
+						  $project_id);
+  $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
+						  $user->account_id);
+  $attributes = array_merge($project_attributes, $member_attributes);
 
   if (! isset($log_url)) {
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -113,7 +114,7 @@ Thank you,\n" . $user->prettyName() . "\n";
 
   $name = $user->prettyName();
   if (isset($log_url)) {
-    log_event($log_url, "$name requested to join project $project_name", array($context, $context2), $user->account_id);
+    log_event($log_url, "$name requested to join project $project_name", $attributes, $user->account_id);
   }
 
   // Send the email

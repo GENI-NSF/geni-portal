@@ -114,12 +114,13 @@ unlink($rspec_file);
 error_log("CreateSliver output = " . print_r($retVal, TRUE));
 
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$log_contexts = array(array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::PROJECT,
-                            LOGGING_ARGUMENT::CONTEXT_ID => $slice['project_id']),
-                      array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::SLICE,
-                            LOGGING_ARGUMENT::CONTEXT_ID => $slice['slice_id']));
+$project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+						$slice['project_id']);
+$slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
+					$slice['slice_id']);
+$log_attributes = array_merge($project_attributes, $slice_attributes);
 log_event($log_url, "Added resources to slice " . $slice_name,
-          $log_contexts, $slice['owner_id']);
+          $log_attributes, $slice['owner_id']);
 
 
 $header = "Created Sliver on slice: $slice_name";

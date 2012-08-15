@@ -34,16 +34,12 @@ class CS_ATTRIBUTE_TYPE {
   const AUDITOR = 4;
 }
 
-$CS_ATTRIBUTE_TYPE_NAME = array(1=>"Lead", 2=>"Admin", 3=>"Member", 4=>"Auditor");
-
-/* Set of known context types for services within GENI CH credential store */
-/* We store/retrieve by index into this array, but print the strings */
-$CS_CONTEXT_TYPE_NAMES = array(
-			       "PROJECT",
-			       "SLICE",
-			       "RESOURCE",
-			       "SERVICE", 
-			       "MEMBER");
+// Names of attribute / role types
+$CS_ATTRIBUTE_TYPE_NAME = array(
+				CS_ATTRIBUTE_TYPE::LEAD => "Lead", 
+				CS_ATTRIBUTE_TYPE::ADMIN =>"Admin", 
+				CS_ATTRIBUTE_TYPE::MEMBER =>"Member", 
+				CS_ATTRIBUTE_TYPE::AUDITOR =>"Auditor");
 
 class CS_CONTEXT_TYPE
 {
@@ -55,6 +51,15 @@ class CS_CONTEXT_TYPE
   const SERVICE = 4; // Manage service properties using the Service Registory
   const MEMBER = 5; // Manage member privileges using the Member Authority
 }
+
+/* Set of known context types for services within GENI CH credential store */
+/* We store/retrieve by index into this array, but print the strings */
+$CS_CONTEXT_TYPE_NAME = array(
+			      CS_CONTEXT_TYPE::PROJECT => "PROJECT",
+			      CS_CONTEXT_TYPE::SLICE =>  "SLICE",
+			      CS_CONTEXT_TYPE::RESOURCE =>  "RESOURCE",
+			      CS_CONTEXT_TYPE::SERVICE => "SERVICE", 
+			      CS_CONTEXT_TYPE::MEMBER => "MEMBER");
 
 // Is the context type one for a specific object (true) or general to a class of operations (false)?
 function is_context_type_specific($context_type) 

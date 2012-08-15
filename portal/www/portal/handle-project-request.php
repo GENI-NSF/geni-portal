@@ -230,13 +230,14 @@ if (isset($submit)) {
     // FIXME: Check result
 
     // log this
-    $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
-    $context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
-    $context2[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::MEMBER;
-    $context2[LOGGING_ARGUMENT::CONTEXT_ID] = $member_id;
+    $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+						    $project_id);
+    $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
+						    $member_id);
+    $attributes = array_merge($project_attributes, $member_attributes);
     $rolestr = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-    log_event($log_url, "Added $member_name to project $project_name as $rolestr ", array($context, $context2), $user->account_id);
+    log_event($log_url, "Added $member_name to project $project_name as $rolestr ", $attributes), $user->account_id);
     error_log("handle-p-req added $member_name to project $project_name with role $rolestr");
   
     // FIXME: Email the member

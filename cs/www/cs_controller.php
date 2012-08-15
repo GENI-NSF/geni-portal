@@ -123,11 +123,11 @@ function create_assertion($args)
   // Log the creation
   if ($signer != null) {
     global $log_url;
-    $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = $context_type;
-    $context[LOGGING_ARGUMENT::CONTEXT_ID] = $context;
-    log_event($log_url, "Created assertion ATTRIB=" . $attribute . 
+    $attributes = get_attribute_for_context($context_type, $context);
+    log_event($log_url, "Created assertion ATTRIB=" . 
+	      $attribute .
 	      " PRINC=" . $principal,
-	      array($context), $signer);
+	      $attributes, $signer);
   }
 
   //  error_log("CS.create.result = " . print_r($result, true));
@@ -168,11 +168,10 @@ function create_policy($args)
   // Log the creation
   if ($signer != null) {
     global $log_url;
-    $context[LOGGING_ARGUMENT::CONTEXT_TYPE] = $context_type;
-    $context[LOGGING_ARGUMENT::CONTEXT_ID] = null;
+    $attributes = get_attribute_for_context($context_type, null);
     log_event($log_url, "Created policy ATTRIB=" . $attribute . 
 	      " PRIV=" . $privilege, 
-	      array($context), $signer);
+	      $attributes, $signer);
   }
 
 

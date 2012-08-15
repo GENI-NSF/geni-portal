@@ -383,11 +383,12 @@ function create_slice($args, $message)
 
   // Log the creation
   global $log_url;
-  $project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
-  $project_context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
-  $slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
-  $slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
-  log_event($log_url, "Created slice " . $slice_name, array($project_context, $slice_context), $owner_id);
+  $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+						  $project_id);
+  $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
+						  $slice_id);
+  $attributes = array_merge($project_attributes, $slice_attributes);
+  log_event($log_url, "Created slice " . $slice_name, $attributes, $owner_id);
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
@@ -597,10 +598,8 @@ function renew_slice($args, $message)
 
   // Log the renewal
   global $log_url;
-  $slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
-  $slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
-
-  log_event($log_url, "Renewed slice " , array($slice_context),
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
+  log_event($log_url, "Renewed slice " , $attributes, 
             $message->signerUuid());
 
   $result = db_execute_statement($sql);

@@ -132,8 +132,14 @@ if (count($success)) {
           LOGGING_ARGUMENT::CONTEXT_ID => $slice['project_id']),
           array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::SLICE,
                   LOGGING_ARGUMENT::CONTEXT_ID => $slice['slice_id']));
+
+  $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+						  $slice['project_id']);
+  $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
+						$slice['slice_id']);
+  $log_attributes = array_merge($project_attributes, $slice_attributes);
   log_event($log_url, "Deleted resources from slice " . $slice_name,
-          $log_contexts, $slice['owner_id']);
+          $log_attributes, $slice['owner_id']);
   print "<div>Deleted slivers at:</div>";
   print "<div>";
   print_agg_list( $success );

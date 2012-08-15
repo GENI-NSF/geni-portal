@@ -25,16 +25,17 @@
 // Constants for defining client and server side of logging service API
 
 class LOGGING_ARGUMENT {
+  const EVENT_ID = "event_id";
   const EVENT_TIME = 'event_time';
+  const EARLIEST_TIME = 'earliest_time';
   const USER_ID = 'user_id';
-  const CONTEXTS = 'contexts';
-  const CONTEXT_TYPE = 'context_type';
-  const CONTEXT_ID = 'context_id';
+  const ATTRIBUTES = 'attributes';
+  const ATTRIBUTE_SETS = 'attribute_sets';
   const MESSAGE = 'message';
 }
 
 $LOGGING_TABLENAME = 'logging_entry';
-$LOGGING_CONTEXT_TABLENAME = "logging_entry_context";
+$LOGGING_ATTRIBUTE_TABLENAME = "logging_entry_attribute";
 
 class LOGGING_TABLE_FIELDNAME {
   const ID = "id";
@@ -43,10 +44,10 @@ class LOGGING_TABLE_FIELDNAME {
   const MESSAGE = 'message';
 }
 
-class LOGGING_CONTEXT_TABLE_FIELDNAME {
-  const ID = "id";
-  const CONTEXT_TYPE = 'context_type';
-  const CONTEXT_ID = 'context_id';
+class LOGGING_ATTRIBUTE_TABLE_FIELDNAME {
+  const EVENT_ID = "event_id";
+  const ATTRIBUTE_NAME = 'attribute_name';
+  const ATTRIBUTE_VALUE = 'attribute_value';
 }
 
 ?>

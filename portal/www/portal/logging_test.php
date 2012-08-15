@@ -43,24 +43,17 @@ error_log("LOG_URL " . $log_url);
 $slice_id = '11111111111111111111111111111111';
 $project_id = '22222222222222222222222222222222';
 
-$project_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::PROJECT;
-$project_context[LOGGING_ARGUMENT::CONTEXT_ID] = $project_id;
-$slice_context[LOGGING_ARGUMENT::CONTEXT_TYPE] = CS_CONTEXT_TYPE::SLICE;
-$slice_context[LOGGING_ARGUMENT::CONTEXT_ID] = $slice_id;
+$project_attributes['PROJECT'] = $project_id;
 
-$project_contexts = array();
-$project_contexts[] = $project_context;
-
-$slice_contexts = array();
-$slice_contexts[] = $project_context;
-$slice_contexts[] = $slice_context;
+$slice_attributes['PROJECT'] = $project_id;
+$slice_attributes['SLICE'] = $slice_id;
 
 $me = geni_loadUser()->account_id;
 
-log_event($log_url, 'Project Created', $project_contexts, $me);
-log_event($log_url, 'Slice Created', $slice_contexts, $me);
+log_event($log_url, 'Project Created', $project_attributes, $me);
+log_event($log_url, 'Slice Created', $slice_attributes, $me);
 
-error_log("By ALL");
+error_log("By AUTHOR");
 $rows = get_log_entries_by_author($log_url, $me);
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
@@ -77,6 +70,27 @@ $rows = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id)
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
+
+error_log("By ATTRIBUTE-P");
+$attribs1['FOO'] = 'BAR';
+$attribs1['BAZ'] = 'BAZ2';
+$attribs2['PROJECT'] = $project_id;
+$attribute_sets = array($attribs1, $attribs2);
+$rows = get_log_entries_by_attributes($log_url, $attribute_sets);
+foreach($rows as $row) {
+  error_log("LOG: " . print_r($row, true));
+}
+
+error_log("By ATTRIBUTE-S");
+$attribs1['FOO'] = 'BAR';
+$attribs1['BAZ'] = 'BAZ2';
+$attribs2['SLICE'] = $slice_id;
+$attribute_sets = array($attribs1, $attribs2);
+$rows = get_log_entries_by_attributes($log_url, $attribute_sets);
+foreach($rows as $row) {
+  error_log("LOG: " . print_r($row, true));
+}
+
 
 
 
