@@ -104,6 +104,92 @@ function create_slice($args_dict)
 }
 
 /**
+ * *** NOT IMPLEMENTED! ***
+ * Make slice 'disabled' (that is, one can no longer allocate resources to it)
+ * Whether this actually deletes the slice is implementation and poicy dependent.
+ * <br><br>
+ * Will return an error if this call is made when there are active slivers
+ * on the given slice.
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("renew_slice")</li>
+   <li>"signer" : UUID of signer (asserter) of method</li>
+   <li>"slice_id" : ID of slice</li>
+</ul>
+ * @return boolean Success/Failure
+ */
+function disable_slice($args_dict)
+{
+}
+
+/**
+ * Renew slice of given ID with given new expiration time
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("renew_slice")</li>
+   <li>"signer" : UUID of signer (asserter) of method</li>
+   <li>"slice_id" : ID of slice</li>
+   <li>"expiration : new expiration time of slice</li>
+</ul>
+ * @return boolean Success/Failure
+ */
+function renew_slice($args_dict)
+{
+}
+
+/**
+ * Add a member of given role to given slice
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("add_slice_member")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"slice_id" : ID of slice to be modified</li>
+   <li>"member_id : ID of member to be associated with given slice</li>
+   <li>"role_type" : role of member within slice</li>
+</ul>
+ * @return boolean Success/Failure
+ */
+function add_slice_member($args_dict)
+{
+}
+
+/**
+ * Remove a member from given slice
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("remove_slice_member")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"slice_id" : ID of slice to be modified</li>
+   <li>"member_id : ID of member to be disassociated with given slice</li>
+</ul>
+ * @return boolean Success/Failure
+ */
+function remove_slice_member($args_dict)
+{
+}
+
+/**
+ * Change role of given member in given slice
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("change_member_role")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"slice_id" : ID of slice to be modified</li>
+   <li>"member_id : ID of member whose role within slice is to be modified</li>
+   <li>"role_type" : role to be associated with given member</li>
+</ul>
+ * @return dict ["code" => error_code, "value" => result, "output" =>error_info]
+ */
+function change_slice_member_role($args_dict)
+{
+}
+
+/**
  * Lookup slice id's by project_id, owner_id and/or slice_name
  *
  * @param dict $args_dict Dictionary containing name/value pairs:
@@ -167,73 +253,6 @@ function lookup_slice_by_urn($args_dict)
 }
 
 /**
- * Renew slice of given ID with given new expiration time
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("renew_slice")</li>
-   <li>"signer" : UUID of signer (asserter) of method</li>
-   <li>"slice_id" : ID of slice</li>
-   <li>"expiration : new expiration time of slice</li>
-</ul>
- * @return boolean Success/Failure
- */
-function renew_slice($args_dict)
-{
-
-}
-
-/**
- * Add a member of given role to given slice
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("add_slice_member")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"slice_id" : ID of slice to be modified</li>
-   <li>"member_id : ID of member to be associated with given slice</li>
-   <li>"role_type" : role of member within slice</li>
-</ul>
- * @return boolean Success/Failure
- */
-function add_slice_member($args_dict)
-{
-}
-
-/**
- * Remove a member from given slice
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("remove_slice_member")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"slice_id" : ID of slice to be modified</li>
-   <li>"member_id : ID of member to be disassociated with given slice</li>
-</ul>
- * @return boolean Success/Failure
- */
-function remove_slice_member($args_dict)
-{
-}
-
-/**
- * Change role of given member in given slice
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("change_member_role")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"slice_id" : ID of slice to be modified</li>
-   <li>"member_id : ID of member whose role within slice is to be modified</li>
-   <li>"role_type" : role to be associated with given member</li>
-</ul>
- * @return dict ["code" => error_code, "value" => result, "output" =>error_info]
- */
-function change_slice_member_role($args_dict)
-{
-}
-
-/**
  * Return list of member ID's and roles associated with given slice
  * If role is provided, filter to members of given role
  *
@@ -290,6 +309,15 @@ function get_slice_members_for_project($args_dict)
  * @return array List of ID's of given slices
  */
 function get_slices_for_member($args_dict)
+{
+}
+
+/**
+ * Get the version of the API of this particular service provider
+ * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @return number Version of API of this particular service provider
+ */
+function get_version($args_dict)
 {
 }
 

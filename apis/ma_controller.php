@@ -125,6 +125,40 @@ function lookup_ssh_keys($args_dict)
 {
 }
 
+/**
+ * Get the version of the API of this particular service provider
+ * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @return number Version of API of this particular service provider
+ */
+function get_version($args_dict)
+{
+}
+
+
+/** New methods 
+lookup_account
+request_account
+modify_acocunt
+delete_account
+approve_account
+deny_account
+get_certificate
+get_private_key
+get_private_ssh_key
+
+download inside SSL key pair
+upload SSL key pair
+download SSL key pair
+
+upload public SSH key
+download private SSH key
+download public SSH key
+
+Perhaps CS sits behind MA and has different API?
+Only used by SA and MA?
+submit_CSR (certificate signing request)
+*/
+
 }
 
 ?>

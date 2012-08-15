@@ -71,7 +71,7 @@ function log_event($args_dict)
    <li>"event_time" : time of logged event</li>
    <li>"user_id" : ID of user logging event</li>
 </ul>
- * @return array List of log events (time, user_id, context_type, context_id, message) written by given user
+ * @return array List of log events (time, user_id, attributes, message) written by given user
  *   
  */
 function get_log_entries_by_author($args_dict)
@@ -79,6 +79,7 @@ function get_log_entries_by_author($args_dict)
 }
 
 /**
+ * *** NOT IMPLEMENTED! ***
  * Return list of logged events matching any of a list of attribute sets
  *   (that is, it is an "OR" of "ANDS" of a dictionary of name/value pairs).
  * 
@@ -90,12 +91,22 @@ function get_log_entries_by_author($args_dict)
    <li>"attribute_sets" : List of dictionaries (name/value pairs) for which<
 *      if any one is completely matched, the entry is returned. </li>
 </ul>
- * @return array List of log events (time, user_id, context_type, context_id, message) matching given list of attribute dictionaries
+ * @return array List of log events (time, user_id, attributes, message) matching given list of attribute dictionaries
  *   
  */
 function get_log_entries_by_attributes($args_dict)
 {
 }
+
+/**
+ * Get the version of the API of this particular service provider
+ * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @return number Version of API of this particular service provider
+ */
+function get_version($args_dict)
+{
+}
+
 
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Credential_Store;
+namespace Authorization_Service;
 
 //----------------------------------------------------------------------
 // Copyright (c) 2012 Raytheon BBN Technologies
@@ -26,8 +26,8 @@ namespace Credential_Store;
 //----------------------------------------------------------------------
 
 /**
- * GENI Clearinghouse Credential Store (CS) controller interface
- * The Credential Store allows for storing of two kinds of credentials
+ * GENI Clearinghouse Authorization Service (AZ) controller interface
+ * The Authorization Service allows for storing of two kinds of credentials
  *    Attributes (signed assertions that principal P has 
  *         attribute A, possibly in context C)
  *    Policies (signed statements that principals with attribute A possibly in 
@@ -49,12 +49,12 @@ namespace Credential_Store;
 <li> permissions <= get_permissions(principal) </li>
 </ul>
  **/
-class Credential_Store {
+class Authorization_Service {
 
-/** Create an assertion and store in CS
- * @param dict $args_dict Dictionary containing name/value pairs:
+  /**
+   * Create an assertion of a given principal having a given attribute (role) with respect to a given context.
+   * @param dict $args_dict Dictionary containing name/value pairs:               
 <ul>
-   <li>"operation" : name of this method ("create_assertion")</li>
    <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"principal" : UUID of principal about whom assertion is made</li>
    <li>"attribute" : id/index of attribute type</li>
@@ -68,7 +68,7 @@ function create_assertion($args_dict)
 }
 
 /**
- * Create a policy and store in CS
+ * Create a policy and store in AZ
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("create_policy")</li>
@@ -80,20 +80,6 @@ function create_assertion($args_dict)
  * @return string ID of policy
  */
 function create_policy($args_dict)
-{
-}
-
-/**
- * Renew a given assertion with given ID
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("renew_assertion")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
-   <li>"id" : ID of assertion to be renewed</li>
-</ul>
- * @return boolean Success / Failure
- */
-function renew_assertion($args_dict)
 {
 }
 
@@ -126,6 +112,35 @@ function delete_policy($args_dict)
 }
 
 /**
+ * Renew a given assertion with given ID
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("renew_assertion")</li>
+   <li>"signer" : UUID of signer (asserter) of assertion</li>
+   <li>"id" : ID of assertion to be renewed</li>
+</ul>
+ * @return boolean Success / Failure
+ */
+function renew_assertion($args_dict)
+{
+}
+
+  /**
+   * *** NOT IMPLEMENTED! ***
+   * Renew a given policy with given ID                                        
+   * @param dict $args_dict Dictionary containing name/value pairs:               
+<ul>                                                                            
+   <li>"operation" : name of this method ("renew_assertion")</li>               
+   <li>"signer" : UUID of signer (asserter) of assertion</li>                   
+   <li>"id" : ID of policy to be renewed</li>                                
+</ul>                                                                           
+  * @return boolean Success / Failure                                            
+  */
+  function renew_policy($args_dict)
+  {
+  }
+
+/**
  * Return a list of assertions for a given principal 
  *   possibly in a given context
  * @param dict $args_dict Dictionary containing name/value pairs:
@@ -143,13 +158,13 @@ function query_assertions($args_dict)
 }
 
 /**
- * Return a list of all policies in credential store
+ * Return a list of all policies in authorization service's credential store
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("query_policies")</li>
    <li>"signer" : UUID of signer (asserter) of assertion</li>
 </ul>
- * @return array List of all policies in credential store
+ * @return array List of all policies in AZ's credential store
  */
 function query_policies($args_dict)
 {
@@ -167,6 +182,7 @@ function query_policies($args_dict)
    <li>"context_type" : context type about which authorization is requested</li>
    <li>"context" " context_id about  which authorization is requested [optional]</li>
 </ul>
+ * @return boolean Success / Failure of authorization request
  */
 function request_authorization($args_dict)
 {
@@ -182,7 +198,16 @@ function request_authorization($args_dict)
 </ul>
  * @return array List of action, context_type, context_id tuples for which principal has authorization
  */
-function get_permissions($args)
+function get_permissions($args_dict)
+{
+}
+
+/**
+ * Get the version of the API of this particular service provider
+ * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @return number Version of API of this particular service provider
+ */
+function get_version($args_dict)
 {
 }
 

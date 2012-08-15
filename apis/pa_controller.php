@@ -82,61 +82,6 @@ function delete_project($args_dict)
 }
 
 /**
- * Return list of all project ID's, optionally limited by lead_id 
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("get_projects")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"lead_id" : ID of lead of projects to be provided [optional]</li>
-</ul>
- * @return array List of project IDs associated with given lead ID (if provided)
- *   
- */
-function get_projects($args_dict)
-{
-}
-
-/**
- * Return list of all projects and data. 
- * Optionally, filtered by lead_id if provided
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("lookup_projects")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"lead_id" : ID of lead of projects to be provided [optional]</li>
-</ul>
- * @return array List of project ID, project name, lead_id, project_email, creation time and project purpose for projects of given lead ID (if provided)
- *   
- */
-function lookup_projects($args_dict)
-{
-}
-
-
-/**
- * Return information about project with given ID or name
- * Optionally, filtered by lead_id if provided
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("lookup_project")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"lead_id" : ID of lead of project [optional]</li>
-   <li>"project_id" : ID of project to be provided [</li>
-   <li>"project_name" : name of project to be provided </li>
-   <li> NOTE: At least one of preceding two tags is required </li>
-</ul>
- * @return dict Project ID, project name, lead_id, project_email, creation time 
- *     and project purpose for projects of given lead ID (if provided)
- *   
- */
-function lookup_project($args_dict)
-{
-}
-
-/**
  * Update details of given project 
  *
  * @param dict $args_dict Dictionary containing name/value pairs:
@@ -221,6 +166,61 @@ function change_member_role($args_dict)
 }
 
 /**
+ * Return list of all project ID's, optionally limited by lead_id 
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("get_projects")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"lead_id" : ID of lead of projects to be provided [optional]</li>
+</ul>
+ * @return array List of project IDs associated with given lead ID (if provided)
+ *   
+ */
+function get_projects($args_dict)
+{
+}
+
+/**
+ * Return list of all projects and data. 
+ * Optionally, filtered by lead_id if provided
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("lookup_projects")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"lead_id" : ID of lead of projects to be provided [optional]</li>
+</ul>
+ * @return array List of project ID, project name, lead_id, project_email, creation time and project purpose for projects of given lead ID (if provided)
+ *   
+ */
+function lookup_projects($args_dict)
+{
+}
+
+
+/**
+ * Return information about project with given ID or name
+ * Optionally, filtered by lead_id if provided
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("lookup_project")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"lead_id" : ID of lead of project [optional]</li>
+   <li>"project_id" : ID of project to be provided [</li>
+   <li>"project_name" : name of project to be provided </li>
+   <li> NOTE: At least one of preceding two tags is required </li>
+</ul>
+ * @return dict Project ID, project name, lead_id, project_email, creation time 
+ *     and project purpose for projects of given lead ID (if provided)
+ *   
+ */
+function lookup_project($args_dict)
+{
+}
+
+/**
  * Return list of member ID's and roles associated with given project
  * If role is provided, filter to members of given role
  *
@@ -261,6 +261,15 @@ function get_project_members($args_dict)
  * @return arrary List of ID's of given projects
  */
 function get_projects_for_member($args_dict)
+{
+}
+
+/**
+ * Get the version of the API of this particular service provider
+ * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @return number Version of API of this particular service provider
+ */
+function get_version($args_dict)
 {
 }
 

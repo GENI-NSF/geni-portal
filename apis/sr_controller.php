@@ -64,6 +64,48 @@ function get_service_by_id($args_dict)
 {
 }
 
+/**
+ * Get the service with the given id.
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("get_service_by_id")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"service_id" : ID of given service</li>
+</ul>
+ * @return array List of service info tuples (id, service_type, service_url, service_cert, service_cert_contents, service_name, service_description) of given ID
+ *   
+ */
+function get_service_by_id($args_dict)
+{
+}
+
+/**
+ * *** NOT IMPLEMENTED! ***
+ * Get the service with the given id.
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("get_service_by_id")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"attributes" : Dictionary of name/value pairs, all of which must match a given service to be returned</li>
+</ul>
+ * @return array List of service info tuples (id, service_type, service_url, service_cert, service_cert_contents, service_name, service_description) matching all of given set of attributes
+ *   
+ */
+function get_service_by_attributes($args_dict)
+{
+}
+
+/**
+ * Get the version of the API of this particular service provider
+ * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @return number Version of API of this particular service provider
+ */
+function get_version($args_dict)
+{
+}
+
 }
 
 ?>
