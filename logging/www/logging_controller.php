@@ -28,6 +28,11 @@ require_once('message_handler.php');
 require_once('logging_constants.php');
 require_once('db_utils.php');
 require_once('response_format.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
+
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
 function log_event($args)
 {
@@ -144,6 +149,9 @@ function get_log_entries_for_context($args)
     
 }
 
-handle_message("LOG");
-
+$mycert = file_get_contents('/usr/share/geni-ch/logging/logging-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/logging/logging-key.pem');
+$guard_factory = NULL;
+handle_message("LOG", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 ?>

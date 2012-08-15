@@ -63,7 +63,7 @@ if (! isset($sa_url)) {
 if (array_key_exists("project_id", $_REQUEST)) {
   $project_id = $_REQUEST['project_id'];
   if (uuid_is_valid($project_id)) {
-    $project = lookup_project($pa_url, $project_id);
+    $project = lookup_project($pa_url, $user, $project_id);
     if (isset($project) && is_array($project) && array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $project)) {
       $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     }
@@ -92,7 +92,7 @@ if (array_key_exists("slice_id", $_REQUEST)) {
 	if (! isset($pa_url)) {
 	  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 	}
-	$project = lookup_project($pa_url, $project_id);
+	$project = lookup_project($pa_url, $user, $project_id);
 	if (isset($project) && is_array($project) && array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $project)) {
 	  $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	}

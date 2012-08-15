@@ -22,31 +22,34 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// Constants for defining client and server side of logging service API
+require_once 'settings.php';
 
-class LOGGING_ARGUMENT {
-  const EVENT_TIME = 'event_time';
-  const USER_ID = 'user_id';
-  const CONTEXTS = 'contexts';
-  const CONTEXT_TYPE = 'context_type';
-  const CONTEXT_ID = 'context_id';
-  const MESSAGE = 'message';
+class Portal
+{
+  function __construct($cert_file, $private_key_file) {
+    $this->cert_file = $cert_file;
+    $this->private_key_file = $private_key_file;
+    $this->certificate = NULL;
+    $this->private_key = NULL;
+  }
+
+  function certificate() {
+    if (is_null($this->certificate)) {
+      $this->certificate = file_get_contents($this->cert_file);
+    }
+    return $this->certificate;
+  }
+
+  function privateKey() {
+    if (is_null($this->private_key)) {
+      $this->private_key = file_get_contents($this->private_key_file);
+    }
+    return $this->private_key;
+  }
+
+  static function getInstance() {
+    global $portal_cert_file, $portal_private_key_file;
+    return new Portal($portal_cert_file, $portal_private_key_file);
+  }
 }
-
-$LOGGING_TABLENAME = 'logging_entry';
-$LOGGING_CONTEXT_TABLENAME = "logging_entry_context";
-
-class LOGGING_TABLE_FIELDNAME {
-  const ID = "id";
-  const EVENT_TIME = 'event_time';
-  const USER_ID = 'user_id';
-  const MESSAGE = 'message';
-}
-
-class LOGGING_CONTEXT_TABLE_FIELDNAME {
-  const ID = "id";
-  const CONTEXT_TYPE = 'context_type';
-  const CONTEXT_ID = 'context_id';
-}
-
 ?>

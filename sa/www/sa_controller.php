@@ -240,7 +240,20 @@ function get_user_credential($args)
   return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
 
-/* Create a slice for given project, name, urn, owner_id */
+/**
+ * Create a slice for given project, name, urn, owner_id.
+ *
+ * @param array $args array of key/value pairs
+ *  <ul>
+ *   <li><b>slice_name</b>: The name of the slice</li>
+ *   <li><b>project_id</b>: The id of the parent project</li>
+ *   <li><b>project_name</b>: The name of the parent project</li>
+ *   <li><b>owner_id</b>: The id of owner (creator) of the slice</li>
+ *   <li><b>slice_description</b> (optional): Text description of slice
+ *  </ul>
+ * @param opaque $message A message abstraction
+ * @return string a block describing the slice
+ */
 function create_slice($args, $message)
 {
   global $SA_SLICE_TABLENAME;
@@ -871,7 +884,10 @@ function user_context_query($account_id)
 require_once('rq_controller.php');
 
 
-handle_message("SA", $cs_url, NULL, NULL, NULL,
-               new SAGuardFactory($cs_url));
+$mycert = file_get_contents('/usr/share/geni-ch/sa/sa-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/sa/sa-key.pem');
+$guard_factory = new SAGuardFactory($cs_url);
+handle_message("SA", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 
 ?>

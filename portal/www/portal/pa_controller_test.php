@@ -29,6 +29,7 @@ require_once('ma_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('cs_constants.php');
+require_once('portal.php');
 
 error_log("PA TEST\n");
 
@@ -43,7 +44,7 @@ function dump_projects()
   //  error_log("PROJECT_IDS = " . $project_ids . " " . print_r($project_ids, true));
   foreach($project_ids as $project_id) {
     //    error_log("PROJECT_ID = " . $project_id . " " . print_r($project_id, true));
-    $details = lookup_project($pa_url, $project_id);
+    $details = lookup_project($pa_url, $user, $project_id);
     error_log("   PROJECT " . $project_id . " " 
 	      . $details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " " 
 	      . $details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . " " 
@@ -69,7 +70,7 @@ function dump_pids($pids)
   }
 }
 
-$members = get_member_ids($ma_url);
+$members = get_member_ids($ma_url, Portal::getInstance());
 if(count($members) < 3) {
   error_log("Need 3 or more members to run pa_controller_test");
   return;

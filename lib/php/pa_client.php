@@ -96,24 +96,36 @@ function lookup_projects($pa_url, $lead_id=null)
 }
 
 // Return project details
-function lookup_project($pa_url, $project_id)
+function lookup_project($pa_url, $signer, $project_id)
 {
+  if (! is_object($signer)) {
+    throw new InvalidArgumentException('Null signer');
+  }
+  $cert = $signer->certificate();
+  $key = $signer->privateKey();
   //  error_log("LP.start " . $project_id . " " . time());
   $lookup_project_message['operation'] = 'lookup_project';
   $lookup_project_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $details = put_message($pa_url, $lookup_project_message);
+  $details = put_message($pa_url, $lookup_project_message,
+          $cert, $key);
   //  error_log("LP.end " . $project_id . " " . time());
   // FIXME: Could be >1?
   return $details;
 }
 
 // Return project details
-function lookup_project_by_name($pa_url, $project_name)
+function lookup_project_by_name($pa_url, $signer, $project_name)
 {
-  //  error_log("LP.start " . $project_id . " " . time());
+  if (! is_object($signer)) {
+    throw new InvalidArgumentException('Null signer');
+  }
+  $cert = $signer->certificate();
+  $key = $signer->privateKey();
+  //  error_log("LP.start " . $project_name . " " . time());
   $lookup_project_message['operation'] = 'lookup_project';
   $lookup_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
-  $details = put_message($pa_url, $lookup_project_message);
+  $details = put_message($pa_url, $lookup_project_message,
+          $cert, $key);
   //  error_log("LP.end " . $project_id . " " . time());
   // FIXME: Could be >1?
   return $details;
@@ -191,13 +203,19 @@ function get_project_members($pa_url, $project_id, $role=null)
 // If role is provided, filter on projects 
 //    for which member has given role (is_member = true)
 //    for which member does NOT have given role (is_member = false)
-function get_projects_for_member($pa_url, $member_id, $is_member, $role=null)
+function get_projects_for_member($pa_url, $signer, $member_id, $is_member, $role=null)
 {
+  if (! is_object($signer)) {
+    throw new InvalidArgumentException('Null signer');
+  }
+  $cert = $signer->certificate();
+  $key = $signer->privateKey();
   $get_projects_message['operation'] = 'get_projects_for_member';
   $get_projects_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
   $get_projects_message[PA_ARGUMENT::IS_MEMBER] = $is_member;
   $get_projects_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($pa_url, $get_projects_message);
+  $results = put_message($pa_url, $get_projects_message,
+          $cert, $key);
   return $results;
 }
 

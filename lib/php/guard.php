@@ -32,6 +32,23 @@ interface Guard {
   public function evaluate();
 }
 
+
+interface GuardFactory
+{
+  /**
+   * Create authorization guards for the given message.
+   *
+   * @param message a GeniMessage
+   * @return an (possibly empty) array of Guards
+   */
+  public function createGuards($message);
+}
+
+
+//----------------------------------------------------------------------
+// Guard classes
+//----------------------------------------------------------------------
+
 /**
  * A guard that always returns TRUE.
  */
@@ -54,16 +71,28 @@ class FalseGuard implements Guard
   }
 }
 
-interface GuardFactory
+/**
+ * SignerUuidParameterGuard
+ *
+ * Check that the signer's UUID is the same as the
+ * given message parameter's value.
+ *
+ */
+class SignerUuidParameterGuard implements Guard
 {
+  function __construct($message, $match_param)
+  {
+    $this->message = $message;
+    $this->match_param = $match_param;
+  }
   /**
-   * Create authorization guards for the given message.
-   *
-   * @param message a GeniMessage
-   * @return an (possibly empty) array of Guards
+   * Return TRUE if the signer and the $match_param match, FALSE otherwise.
    */
-  public function createGuards($message);
+  function evaluate() {
+    $parsed_message = $this->message->parse();
+    $params = $parsed_message[1];
+    $match_param = $params[$this->match_param];
+    return $this->message->signerUuid() === $match_param;
+  }
 }
-
-
 ?>

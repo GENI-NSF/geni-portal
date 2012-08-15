@@ -57,7 +57,7 @@ print "<br/>\n";
 
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
-$pids = get_projects_for_member($pa_url, $user->account_id, false, null);
+$pids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<i>There are no more projects for you to join.</i><br/><br/>\n";
 
@@ -68,7 +68,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
   foreach ($pids as $project_id) {
-    $project = lookup_project($pa_url, $project_id);
+    $project = lookup_project($pa_url, $user, $project_id);
     print "<tr><td>";
     print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     print "</td><td>";

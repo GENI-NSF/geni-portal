@@ -39,7 +39,7 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
-$projects = get_projects_for_member($pa_url, $user->account_id, true);
+$projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
 // error_log("PROJECTS = " . print_r($projects, true));
 $num_projects = count($projects);
 
@@ -78,7 +78,7 @@ if (isset($reqs) && count($reqs) > 0) {
   print "<tr><th>Project Name</th><th>Project Lead</th><th>Request Created</th><th>Requestor</th><th>Handle Request</th></tr>\n";
   foreach ($reqs as $request) {
     // Print it out
-    $project = lookup_project($pa_url, $request['context_id']);
+    $project = lookup_project($pa_url, $user, $request['context_id']);
     $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
@@ -108,7 +108,7 @@ if (count($projects) > 0) {
       error_log("tool-projects got invalid project_id from all get_projects_by_lead");
       continue;
     }
-    $project = lookup_project($pa_url, $project_id);
+    $project = lookup_project($pa_url, $user, $project_id);
     //    error_log("project = " . print_r($project, true));
 
     $handle_req_str = "";

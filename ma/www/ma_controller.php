@@ -1,4 +1,26 @@
 <?php
+//----------------------------------------------------------------------
+// Copyright (c) 2012 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
 
 $prev_name = session_id('MA-SESSION');
 
@@ -7,6 +29,11 @@ require_once('db_utils.php');
 require_once('file_utils.php');
 require_once('ma_constants.php');
 require_once('response_format.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
+
+$sr_url = get_sr_url();
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
 /**
  * GENI Clearinghouse Member Authority (MA) controller interface
@@ -164,7 +191,7 @@ function lookup_attributes($args)
 }
 
 // *** Temporary part of moving member management into MA domain
-function get_member_ids($args)
+function get_member_ids($args, $message)
 {
   $sql = "Select account_id from account";
   $result = db_fetch_rows($sql);
@@ -203,7 +230,7 @@ function register_ssh_key($args)
 
 }
 
-function lookup_ssh_keys($args)
+function lookup_ssh_keys($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
   //  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
@@ -232,7 +259,49 @@ function lookup_keys_and_certs($args)
   return $row;
 }
 
-handle_message("MA");
+
+/**
+ * This is more of a demonstration guard than anything else.
+ * It really isn't an appropriate test, but gets the point
+ * across that a user can't call certain methods, but an
+ * authority could.
+ */
+class SignerAuthorityGuard implements Guard
+{
+  public function __construct($message) {
+    $this->message = $message;
+  }
+
+  public function evaluate() {
+    return (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+  }
+}
 
 
+class MAGuardFactory implements GuardFactory
+{
+  public function __construct() {
+  }
+
+  public function createGuards($message) {
+    $parsed_message = $message->parse();
+    $action = $parsed_message[0];
+    $params = $parsed_message[1];
+    $result = array();
+    // As more guards accumulate, make this table-driven.
+    if ($action === 'lookup_ssh_keys') {
+      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+    } elseif ($action === 'get_member_ids') {
+      $result[] = new SignerAuthorityGuard($message);
+    }
+    return $result;
+  }
+}
+
+
+$mycert = file_get_contents('/usr/share/geni-ch/ma/ma-cert.pem');
+$mykey = file_get_contents('/usr/share/geni-ch/ma/ma-key.pem');
+$guard_factory = new MAGuardFactory();
+handle_message("MA", $cs_url, default_cacerts(),
+        $mycert, $mykey, $guard_factory);
 ?>

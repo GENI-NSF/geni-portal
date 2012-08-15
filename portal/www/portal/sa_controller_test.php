@@ -33,6 +33,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('ma_client.php');
 require_once('user.php');
+require_once('portal.php');
 
 
 error_log("SA TEST\n");
@@ -42,7 +43,7 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
-$members = get_member_ids($ma_url);
+$members = get_member_ids($ma_url, Portal::getInstance());
 if(count($members) < 3) {
   error_log("Need 3 or more members to run sa_controller_test");
   return;

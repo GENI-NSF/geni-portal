@@ -111,6 +111,9 @@ class DefaultGuardFactory implements GuardFactory
         $context = $params[SA_ARGUMENT::SLICE_ID];
       }
       break;
+    case 'MA':
+      /* Stub out MA context. */
+      break;
     default:
       error_log("MessageHandler: Unknown prefix \"$prefix\"");
       // Leave $context and $context_type NULL
@@ -126,8 +129,8 @@ class DefaultGuardFactory implements GuardFactory
     $parsed_message = $message->parse();
     $func = $parsed_message[0];
     $funcargs = $parsed_message[1];
-    if (find_context($this->prefix, $func, $funcargs,
-                     $context_type, $context)) {
+    if ($this->find_context($this->prefix, $func, $funcargs,
+            $context_type, $context)) {
       $result[] = new MHContextGuard($this->cs_url, $message, $func,
                                    $context_type, $context);
     }
@@ -183,16 +186,25 @@ class MHContextGuard implements Guard
  *            on the format of directories.
  *
  * $receiver_cert - the certificate for signing responses.
+ *                  this is the contents of the cert file,
+ *                  not the file name.
  *
  * $receiver_key - the key for decrypting incoming messages and
- *                 signing outgoing responses.
+ *                 signing outgoing responses. this is the contents
+ *                 of the key file, not the file name.
  *
  * Returns nothing.
  */
-function handle_message($prefix, $cs_url=null, $cacerts=null,
-                        $receiver_cert = null, $receiver_key=null,
-                        $guard_factory = null)
+function handle_message($prefix, $cs_url, $cacerts,
+                        $receiver_cert, $receiver_key,
+                        $guard_factory)
 {
+  if (is_null($receiver_cert)) {
+    throw new Exception('No receiver certificate in handle_message call.');
+  }
+  if (is_null($receiver_key)) {
+    throw new Exception('No receiver key in handle_message call.');
+  }
   if (is_null($guard_factory)) {
     $guard_factory = new DefaultGuardFactory($prefix, $cs_url);
   }
@@ -216,6 +228,9 @@ function handle_message($prefix, $cs_url=null, $cacerts=null,
                                 "Message verification failed.");
     goto done;
   }
+  if (is_null($signer_pem)) {
+    // error_log("$prefix received unsigned message: " . print_r($msg, true));
+  }
 
   $geni_message = new GeniMessage($msg, $signer_pem);
   $funcargs = $geni_message->parse();
@@ -227,8 +242,7 @@ function handle_message($prefix, $cs_url=null, $cacerts=null,
     goto done;
   }
 
-  $principal = $geni_message->signerUuid();
-  if (is_null($principal)) {
+  if (is_null($geni_message->signer())) {
     mh_debug("No signer on $prefix.$func, auto-authorizing.");
     $authz = True;
   } else {
@@ -237,6 +251,7 @@ function handle_message($prefix, $cs_url=null, $cacerts=null,
 
     foreach ($guards as $guard) {
       if (! $guard->evaluate()) {
+        $principal = $geni_message->signerUrn();
         $msg = "$principal is not authorized to $action.";
         $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
                                     NULL,
@@ -268,7 +283,7 @@ done:
   $output = encode_result($result);
   //   mh_debug("RESULT(enc) = " . $output);
   //   mh_debug("RESULT(dec) = " . decode_result($output));
-  $output = smime_sign_message($output);
+  $output = smime_sign_message($output, $receiver_cert, $receiver_key);
   $output = smime_encrypt($output);
   //   mh_debug("BEFORE PRINT:" . $output);
   print $output;
@@ -351,6 +366,11 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
   /* Responses are signed messages. Verify the signature on return. */
   $cacerts = default_cacerts();
   $result = smime_validate($result, $cacerts, $signer_pem);
+  if (is_null($signer_pem)) {
+      /* Require signed responses. */
+      error_log("No signer on response from $url");
+      throw new Exception("Unsigned response from $url");
+  }
 
   $result = decode_result($result);
   //  error_log("Decoded raw result : " . $result);
