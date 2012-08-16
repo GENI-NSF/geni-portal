@@ -51,7 +51,7 @@ $slice_attributes['SLICE'] = $slice_id;
 $me = geni_loadUser()->account_id;
 
 log_event($log_url, 'Project Created', $project_attributes, $me);
-log_event($log_url, 'Slice Created', $slice_attributes, $me);
+$event_id = log_event($log_url, 'Slice Created', $slice_attributes, $me);
 
 error_log("By AUTHOR");
 $rows = get_log_entries_by_author($log_url, $me);
@@ -91,7 +91,8 @@ foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
 
-
+$attributes = get_attributes_for_log_entry($log_url, $event_id);
+error_log("ATTRS = " . print_r($attributes, true));
 
 
 relative_redirect('debug');

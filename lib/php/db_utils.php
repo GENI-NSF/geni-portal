@@ -199,5 +199,67 @@ function generate_database_response($code, $value, $output)
     }
 }
 
+// For selecting key values (ID's) from a table of name/value pairs
+// matching each value pair in a given dictionary
+//
+ // Compute statement:
+// select event_id from 
+//  $attribute_tablename lea1, .... // For each entry
+// where lea1.$key_fieldname = lea2.$key_fieldname ... // For each post-first entry
+// and leai.$attribute_name_field = $attribute_name_field 
+// and lea1.$attribute_value_field = $attribute_value_field
+function compute_attributes_sql($attributes, 
+				$attribute_tablename, 
+				$key_fieldname,
+				$attribute_name_field,
+				$attribute_value_field)
+{
+  $from_clause = "";
+  for($i = 1; $i <= count($attributes); $i = $i + 1) {
+    if ($i > 1) { $from_clause = $from_clause . ", "; }
+    $from_clause = $from_clause . " " . 
+      $attribute_tablename . " lea" . $i;
+  }
+
+  $link_event_ids_clause = "";
+  if(count($attributes) > 1) {
+    for($i = 2; $i <= count($attributes); $i = $i + 1) {
+      if ($i > 2) {
+	$link_event_ids_clause = $link_event_ids_clause . " AND ";
+      }
+      $link_event_ids_clause = $link_event_ids_clause . " " . 
+	"lea1." . $key_fieldname . " = " .
+	"lea" . $i . "." . $key_fieldname;
+    }
+    $link_event_ids_clause = $link_event_ids_clause . " AND " ;
+  }
+
+  $match_clause = "";
+  $match_count = 1;
+  foreach($attributes as $key => $value) {
+    //    error_log("ATT : " . print_r($attributes, true));
+    if ($match_clause != "") {
+      $match_clause = $match_clause . " AND ";
+    }
+    $match_clause = $match_clause . 
+      "lea" . $match_count . "." . 
+      $attribute_name_field . 
+      " = '" . $key . "'" .
+      " AND " .
+      "lea" . $match_count . "." . 
+      $attribute_value_field . 
+      " = '" . $value . "'";
+    $match_count = $match_count + 1;
+  }
+
+  $sql = "select " . "lea1." . $key_fieldname .
+    " from " . $from_clause . 
+    " where " . $link_event_ids_clause . " " . 
+    $match_clause;
+
+  return $sql;
+    
+}
+
 
 ?>

@@ -34,6 +34,8 @@ require_once('sr_client.php');
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
+// Register log event
+// Return ID of event or error code
 function log_event($args, $message)
 {
 
@@ -68,8 +70,8 @@ function log_event($args, $message)
   if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     //    error_log("INSERT RESULT = " . print_r($result, true));
     $lastval_sql = "select lastval()";
-    $result = db_fetch_row($lastval_sql);
-    $lastval = $result[RESPONSE_ARGUMENT::VALUE]['lastval'];
+    $lastval_result = db_fetch_row($lastval_sql);
+    $lastval = $lastval_result[RESPONSE_ARGUMENT::VALUE]['lastval'];
     //    error_log("LASTVAL = " . print_r($result, true));
     foreach ($attributes as $attribute_name => $attribute_value) {
       $insert_sql = "insert into " . $LOGGING_ATTRIBUTE_TABLENAME 
@@ -83,8 +85,9 @@ function log_event($args, $message)
 	. "'" . $attribute_value . "')";
       //      error_log("INSERT.SQL = " . $insert_sql);
       $insert_result = db_execute_statement($insert_sql);
-	
     }
+
+    $result = generate_response(RESPONSE_ARGUMENT::CODE, $lastval, '');
   }
 
   return $result;
@@ -117,63 +120,6 @@ function get_log_entries_by_author($args)
     
 }
 
-// Compute statement:
-// select event_id from 
-//  logging_entry_attribute lea1, .... // For each entry
-// where lea1.event_id = lea2.event_id ... // For each post-first entry
-// and leai.attribute_name = $attribute_name 
-// and lea1.attribute_value = $value_name
-
-function compute_attributes_sql($attributes)
-{
-  global $LOGGING_ATTRIBUTE_TABLENAME;
-  $from_clause = "";
-  for($i = 1; $i <= count($attributes); $i = $i + 1) {
-    if ($i > 1) { $from_clause = $from_clause . ", "; }
-    $from_clause = $from_clause . " " . 
-      $LOGGING_ATTRIBUTE_TABLENAME . " lea" . $i;
-  }
-
-  $link_event_ids_clause = "";
-  if(count($attributes) > 1) {
-    for($i = 2; $i <= count($attributes); $i = $i + 1) {
-      if ($i > 2) {
-	$link_event_ids_clause = $link_event_ids_clause . " AND ";
-      }
-      $link_event_ids_clause = $link_event_ids_clause . " " . 
-	"lea1." . LOGGING_ATTRIBUTE_TABLE_FIELDNAME::EVENT_ID . " = " .
-	"lea" . $i . "." . LOGGING_ATTRIBUTE_TABLE_FIELDNAME::EVENT_ID;
-    }
-    $link_event_ids_clause = $link_event_ids_clause . " AND " ;
-  }
-
-  $match_clause = "";
-  $match_count = 1;
-  foreach($attributes as $key => $value) {
-    //    error_log("ATT : " . print_r($attributes, true));
-    if ($match_clause != "") {
-      $match_clause = $match_clause . " AND ";
-    }
-    $match_clause = $match_clause . 
-      "lea" . $match_count . "." . 
-      LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_NAME . 
-      " = '" . $key . "'" .
-      " AND " .
-      "lea" . $match_count . "." . 
-      LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_VALUE . 
-      " = '" . $value . "'";
-    $match_count = $match_count + 1;
-  }
-
-  $sql = "select " . "lea1." . LOGGING_ATTRIBUTE_TABLE_FIELDNAME::EVENT_ID . 
-    " from " . $from_clause . 
-    " where " . $link_event_ids_clause . " " . 
-    $match_clause;
-
-  return $sql;
-    
-}
-
 function get_log_entries_by_attributes($args)
 {
 
@@ -185,7 +131,12 @@ function get_log_entries_by_attributes($args)
 
   $attribute_set_sql = "";
   foreach($attribute_sets as $attributes) {
-    $attributes_sql = compute_attributes_sql($attributes);
+    $attributes_sql = 
+      compute_attributes_sql($attributes, 
+			     $LOGGING_ATTRIBUTE_TABLENAME, 
+			     LOGGING_ATTRIBUTE_TABLE_FIELDNAME::EVENT_ID,
+			     LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_NAME,
+			     LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_VALUE);
     if($attribute_set_sql != "") {
       $attribute_set_sql = $attribute_set_sql . " UNION ";
     }
@@ -224,7 +175,19 @@ function get_attributes_for_log_entry($args)
 
   $rows = db_fetch_rows($sql);
 
-  return $rows;
+  $result = $rows;
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $attributes = array();
+    foreach($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
+      //      error_log("ROW = " . print_r($row, true));
+      $key = $row[LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_NAME];
+      $value = $row[LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_VALUE];
+      $attributes[$key] = $value;
+    }
+    $result = generate_response(RESPONSE_ERROR::NONE, $attributes, '');
+  }
+
+  return $result;
 
 }
 

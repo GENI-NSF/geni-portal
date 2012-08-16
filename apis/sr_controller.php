@@ -30,11 +30,19 @@ namespace Service_Registry;
  * with the clearinghouse, and their type, URL and certificate (signed
  * by the SR itself).
  * <br><br>
+ * Supports these modification interfaces:
+ <ul>
+ <li>success <= register_service(service_type, service_url, attributes)</li>
+ <li>success <= remove_service(service_id)
+ </ul>
+ * <br><br>
  * Supports these query interfaces:
  <ul>
  <li>services <= get_services()</li>
  <li>services <= get_services_of_type(service_type)</li>
  <li>services <= get_service_by_id(service_id)</li>
+ <li>services <= get_services_by_attributes(attribute_sets)</li>
+ <li>attributes <= get_attributes_for_service(service_id)</li>
 </ul>
  **/
 class Service_Registry {
@@ -103,19 +111,52 @@ function get_service_by_id($args_dict)
 }
 
 /**
- * *** NOT IMPLEMENTED! ***
- * Get the service with the given id.
+ * Get the service that match one of a list of name/value attribute sets
  *
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("get_service_by_id")</li>
    <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"attributes" : Dictionary of name/value pairs, all of which must match a given service to be returned</li>
+   <li>"attribute_sets" : List of dDictionaries of name/value pairs, for one of which all  must match a given service to be returned. ("OR" OF "ANDS")</li>
 </ul>
  * @return array List of service info tuples (id, service_type, service_url, service_cert, service_cert_contents, service_name, service_description) matching all of given set of attributes
  *   
  */
 function get_service_by_attributes($args_dict)
+{
+}
+
+/**
+ * Register a new service with the Service Registry
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("register_service")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"service_type" : type of service (e.g. AM, PA, SA, etc.) </li>
+   <li>"service_name" : name of service</li>
+   <li>"service_url" : URL associated with service</li>
+   <li>"service_cert" : name of file containing service certificate</li>
+   <li>"service_description" : description of service </li>
+   <li>"attributes" : Dictionary of name/value pairs associated with service (for querying) </li>
+ </ul>
+ * @return int ID of service registered or error code
+ */
+function register_service($args_dict)
+{
+}
+
+/**
+ * Remove a given service from the Service Registry
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("remove_service")</li>
+   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
+   <li>"service_id" : ID of service to be removed</li>
+</ul>
+* @return boolean Success/Failure
+ */
+function remove_service($args_dict)
 {
 }
 

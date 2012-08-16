@@ -56,7 +56,7 @@ class Logging_Service {
    <li>"attributes" : dictionary of name/value pairs to be associated with event</li>
   "<li> message" : text message of logged event</li>
 </ul>
- * @return boolean Success/Failure
+ * @return int ID of logged event or error code
  *   
  */
 function log_event($args_dict)

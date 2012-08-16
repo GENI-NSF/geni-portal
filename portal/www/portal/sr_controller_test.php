@@ -32,9 +32,18 @@ function dump_rows($rows)
   $count = count($rows);
   $index = 0;
   foreach ($rows as $row) {  
-    $service_type_index = $row[SR_ARGUMENT::SERVICE_TYPE];
+    error_log("ROW = " . print_r($row, true));
+    $service_id = $row[SR_TABLE_FIELDNAME::SERVICE_ID];
+    $service_type_index = $row[SR_TABLE_FIELDNAME::SERVICE_TYPE];
     $service_type_name = $SR_SERVICE_TYPE_NAMES[$service_type_index];
-    $row_image =  $service_type_name . ' ' . $row[SR_ARGUMENT::SERVICE_URL];
+    $row_image =  $service_id . " " . $service_type_name . ' ' . 
+      $row[SR_TABLE_FIELDNAME::SERVICE_URL] . " " .
+      $row[SR_TABLE_FIELDNAME::SERVICE_NAME] . " " .
+      $row[SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION];
+    $attributes = get_attributes_for_service($service_id);
+    foreach($attributes as $key => $value) {
+      error_log("   $key => $value");
+    }
     error_log("row[" . $index . "] = " . $row_image);
     $index = $index + 1;
   }
@@ -42,34 +51,35 @@ function dump_rows($rows)
 
 error_log("SR TEST\n");
 
-$sr_url = get_sr_url();
 $rows = get_services();
 dump_rows($rows);
 
 $rows = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 dump_rows($rows);
 
-$result = register_service(SR_SERVICE_TYPE::LOGGING_SERVICE, 'http://foo.bar');
+// type, url, cert, name, description, attributes
+
+$test_log_attributes['FOO'] = 'BAR';
+$test_log_attributes['FOO2'] = 'BAR2';
+
+$service_id = register_service(
+			   SR_SERVICE_TYPE::LOGGING_SERVICE, 
+			   'http://foo.bar', 'test_log_cert', 
+			   'test_log_service', 
+			   'test_log_description', 
+			   $test_log_attributes
+			   );
 $rows = get_services();
 dump_rows($rows);
 
-$result = remove_service(SR_SERVICE_TYPE::LOGGING_SERVICE, 'http://foo.bar');
+$result = remove_service($service_id);
 $rows = get_services();
 dump_rows($rows);
 
-error_log("About to start get_services loop");
-$rows = get_services();
-error_log("NUM_ROWS = " . count($rows));
-$rows = get_services();
-error_log("NUM_ROWS = " . count($rows));
-$rows = get_services();
-error_log("NUM_ROWS = " . count($rows));
-$rows = get_services();
-error_log("NUM_ROWS = " . count($rows));
-$rows = get_services();
-error_log("NUM_ROWS = " . count($rows));
+$attributes = get_attributes_for_service($service_id);
+error_log("ATTRS = " . print_r($attributes, true));
 
-error_log("End of get_services loop");
+
 
 relative_redirect('debug');
 ?>

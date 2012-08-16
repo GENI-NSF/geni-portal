@@ -52,9 +52,14 @@ class SR_SERVICE_TYPE
 /* Set of arguments in calls to the SR interface */
 class SR_ARGUMENT
 {
+  const SERVICE_ID = "service_id";
   const SERVICE_URL = "service_url";
   const SERVICE_TYPE = "service_type";
-  const SERVICE_ID = "service_id";
+  const SERVICE_NAME = "service_name";
+  const SERVICE_DESCRIPTION = "service_description";
+  const SERVICE_CERT = "service_cert";
+  const SERVICE_ATTRIBUTES = "service_attributes";
+  const SERVICE_ATTRIBUTE_SETS = "service_attribute_sets";
 }
 
 /* Name of table to which the SR persists/retrieves model state */
@@ -69,6 +74,16 @@ class SR_TABLE_FIELDNAME {
   const SERVICE_CERT_CONTENTS = "service_cert_contents";
   const SERVICE_NAME = "service_name";
   const SERVICE_DESCRIPTION = "service_description";
+}
+
+/* Name of table which holds SR name/value attributes */
+$SR_ATTRIBUTE_TABLENAME = "service_registry_attribute";
+
+/* SR attribute table has the following fields */
+class SR_ATTRIBUTE_TABLE_FIELDNAME {
+  const SERVICE_ID = "service_id";
+  const ATTRIBUTE_NAME = "attribute_name";
+  const ATTRIBUTE_VALUE = "attribute_value";
 }
 
 /* Get name of singleton service registry (SR) instance */

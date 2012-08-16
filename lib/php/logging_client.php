@@ -86,7 +86,7 @@ function get_log_entries_by_attributes($log_url, $attribute_sets, $num_hours=24)
 function get_attributes_for_log_entry($log_url, $event_id)
 {
   $get_attributes_message['operation'] = 'get_attributes_for_log_entry';
-  $get_attributes_message[LOGGING_ARGUMWENT::EVENT_ID] = $event_id;
+  $get_attributes_message[LOGGING_ARGUMENT::EVENT_ID] = $event_id;
   $result = put_message($log_url, $get_attributes_message);
   return $result;
 }

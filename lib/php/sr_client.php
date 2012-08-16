@@ -77,14 +77,39 @@ function get_service_by_id($service_id)
   return null;
 }
 
+// Lookup services by sets of attributes ("OR OF ANDS"): Any one set must
+// match entirely
+function get_services_by_attributes($attribute_sets)
+{
+  $sr_url = get_sr_url();
+  $message['operation'] = 'get_services_by_attributes';
+  $message[SR_ARGUMENT::SERVICE_ATTRIBUTE_SETS] = $attribute_sets;
+  $result = put_message($sr_url, $message);
+  return $result;
+}
 
-// Regisgter service of given type and URL with registry
-function register_service($service_type, $service_url)
+function get_attributes_for_service($service_id)
+{
+  $sr_url = get_sr_url();
+  $message['operation'] = 'get_attributes_for_service';
+  $message[SR_ARGUMENT::SERVICE_ID] = $service_id;
+  $result = put_message($sr_url, $message);
+  return $result;
+}
+
+// Register service of given type and URL with registry
+function register_service($service_type, $service_url, $service_cert, 
+			  $service_name, $service_description, 
+			  $service_attributes)
 {
   $sr_url = get_sr_url();
   $message['operation'] = 'register_service';
   $message[SR_ARGUMENT::SERVICE_TYPE] = $service_type;
   $message[SR_ARGUMENT::SERVICE_URL] = $service_url;
+  $message[SR_ARGUMENT::SERVICE_CERT] = $service_cert;
+  $message[SR_ARGUMENT::SERVICE_NAME] = $service_name;
+  $message[SR_ARGUMENT::SERVICE_DESCRIPTION] = $service_description;
+  $message[SR_ARGUMENT::SERVICE_ATTRIBUTES] = $service_attributes;
   $result = put_message($sr_url, $message);
 
   // Refresh cache
@@ -93,13 +118,12 @@ function register_service($service_type, $service_url)
   return $result;
 }
 
-// Remove given service of type and url from registry
-function remove_service($service_type, $service_url)
+// Remove given service of given ID from registry
+function remove_service($service_id)
 {
   $sr_url = get_sr_url();
   $message['operation'] = 'remove_service';
-  $message[SR_ARGUMENT::SERVICE_TYPE] = $service_type;
-  $message[SR_ARGUMENT::SERVICE_URL] = $service_url;
+  $message[SR_ARGUMENT::SERVICE_ID] = $service_id;
   $result = put_message($sr_url, $message);
 
   // Refresh cache
