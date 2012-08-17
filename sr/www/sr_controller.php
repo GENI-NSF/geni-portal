@@ -150,7 +150,23 @@ function get_services_by_attributes($args)
 {
   global $SR_TABLENAME;
   global $SR_ATTRIBUTE_TABLENAME;
-  $attribute_sets = $args[SR_ARGUMENT::ATTRIBUTE_SETS];
+  $attribute_sets = $args[SR_ARGUMENT::SERVICE_ATTRIBUTE_SETS];
+
+  // Two questions:
+  // What if the list of attribute sets is empty?
+  // What if any given attribute set is empty?
+  // 
+  // The point is that neither case generates good SQL
+  // 
+  // This is an "OR" of "AND"s.
+  // So an empty attribute set should match everything
+  // But an empty list of attribute sets should match nothing
+
+  // If it is an empty list of attribute sets, we don't match anything
+  // This is an "OR" of "ANDs".
+  if (count($attribute_sets) == 0) {
+    return generate_response(RESPONSE_ERROR::NONE, array(), '');
+  }
 
   $attribute_set_sql = "";
   foreach($attribute_sets as $attributes) {
@@ -166,10 +182,11 @@ function get_services_by_attributes($args)
     $attribute_set_sql = $attribute_set_sql . $attributes_sql;
   }
 
+  //  error_log("AS = " . print_r($attribute_sets, true));
   //  error_log("AS_SQL = " . print_r($attribute_set_sql, true));
 
   $sql = "select " 
-    . SR_TABLE_FIELDNAME::ID . ", "
+    . SR_TABLE_FIELDNAME::SERVICE_ID . ", "
     . SR_TABLE_FIELDNAME::SERVICE_TYPE . ", "
     . SR_TABLE_FIELDNAME::SERVICE_URL . ", "
     . SR_TABLE_FIELDNAME::SERVICE_CERT . ", "

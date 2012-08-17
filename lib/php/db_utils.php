@@ -208,12 +208,20 @@ function generate_database_response($code, $value, $output)
 // where lea1.$key_fieldname = lea2.$key_fieldname ... // For each post-first entry
 // and leai.$attribute_name_field = $attribute_name_field 
 // and lea1.$attribute_value_field = $attribute_value_field
+// If the length of the attributes is null, we match anything with attributes
 function compute_attributes_sql($attributes, 
 				$attribute_tablename, 
 				$key_fieldname,
 				$attribute_name_field,
 				$attribute_value_field)
 {
+
+  // If the match attributes is empty, match anything with ANY attributes
+  // But not anything with NO attributes
+  if (count($attributes) == 0) {
+    return "select $key_fieldname from $attribute_tablename";
+  }
+
   $from_clause = "";
   for($i = 1; $i <= count($attributes); $i = $i + 1) {
     if ($i > 1) { $from_clause = $from_clause . ", "; }
