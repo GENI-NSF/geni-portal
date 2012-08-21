@@ -239,7 +239,7 @@ if (isset($submit)) {
     $rolestr = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     log_event($log_url, Portal::getInstance(),
-	      "Added $member_name to project $project_name as $rolestr ", $attributes), 
+	      "Added $member_name to project $project_name as $rolestr ", $attributes,
       $user->account_id);
     error_log("handle-p-req added $member_name to project $project_name with role $rolestr");
   
