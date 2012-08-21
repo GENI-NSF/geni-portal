@@ -144,32 +144,38 @@ $identity_id = $rows[0]['identity_id'];
 //--------------------------------------------------
 // Add extra attributes
 //--------------------------------------------------
-$attrs = array('givenName','sn', 'mail','telephoneNumber', 'reference', 'reason', 'profile');
-// FIXME: Use filters to sanitize these
-foreach ($attrs as $attr) {
-  /* print "attr = $attr<br/>"; */
+function attrValue($attr, &$value, &$self_asserted) {
+  $value = null;
+  $self_asserted = null;
+  $result = false;
   if (array_key_exists($attr, $_SERVER)) {
     $value = $_SERVER[$attr];
     $self_asserted = false;
-  } else {
-    if (array_key_exists($attr, $_POST)) {
+    $result = true;
+  } else if (array_key_exists($attr, $_POST)) {
       $value = $_POST[$attr];
-    } else {
-      $value = null;
-    }
-    $self_asserted = true;
+      $self_asserted = true;
+      $result = true;
   }
-  $sql = "INSERT INTO identity_attribute "
-    . "(identity_id, name, value, self_asserted) VALUES ("
-    . $conn->quote($identity_id, 'integer')
-    . ", " . $conn->quote($attr, 'text')
-    . ", " . $conn->quote($value, 'text')
-    . ", " . $conn->quote($self_asserted)
-    . ");";
-  /* print "attr insert: $sql<br/>"; */
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    die("error on attr $attr insert: " . $result->getMessage());
+  return $result;
+}
+
+$attrs = array('givenName','sn', 'mail','telephoneNumber', 'reference', 'reason', 'profile');
+// FIXME: Use filters to sanitize these
+foreach ($attrs as $attr) {
+  if (attrValue($attr, $value, $self_asserted)) {
+    $sql = "INSERT INTO identity_attribute "
+      . "(identity_id, name, value, self_asserted) VALUES ("
+      . $conn->quote($identity_id, 'integer')
+      . ", " . $conn->quote($attr, 'text')
+      . ", " . $conn->quote($value, 'text')
+      . ", " . $conn->quote($self_asserted)
+      . ");";
+    /* print "attr insert: $sql<br/>"; */
+    $result = $conn->exec($sql);
+    if (PEAR::isError($result)) {
+      die("error on attr $attr insert: " . $result->getMessage());
+    }
   }
 }
 
@@ -239,12 +245,35 @@ if ($result) {
 // --------------------------------------------------
 // Send mail about the new account request
 // --------------------------------------------------
-$url = relative_url("env.php");
+$server_host = $_SERVER['SERVER_NAME'];
+$body = "There is a new portal account request on $server_host:\n";
+$mail_attrs = array('givenName' => 'First Name',
+        'sn' => 'Last Name',
+        'mail' => 'Email Address',
+        'telephoneNumber' => 'Phone Number',
+        'affiliation' => 'Affiliation',
+        'eppn' => 'EPPN',
+        'reference' => 'Reference',
+        'reason' => 'Reason',
+        'profile' => 'Profile');
+foreach (array_keys($mail_attrs) as $attr) {
+  $pretty = $mail_attrs[$attr];
+  if (attrValue($attr, $value, $self_asserted)) {
+    $body .= "\n$pretty: $value";
+    if ($self_asserted) {
+      $body .= "   (self asserted)";
+    } else {
+      $body .= "   (from IdP)";
+    }
+  } else {
+    /* The attribute is not present. */
+    $body .= "\n$pretty: no value available";
+  }
+}
+
 mail($portal_admin_email,
      "New portal account request",
-     "There is a new account request for $eppn. Please review this request"
-     . " at $url");
-
+     $body);
 
 relative_redirect('home.php');
 
