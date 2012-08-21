@@ -54,52 +54,6 @@ foreach($member_ids as $member_id) {
   }
 }
 
-
-$user1 = '11111111111111111111111111111111';
-$user2 = '22222222222222222222222222222222';
-$slice = '33333333333333333333333333333333';
-$project = '44444444444444444444444444444444';
-
-function dump_attributes_for_user($lbl, $user)
-{
-  global $ma_url;
-  error_log('Attributes for user: ' . $lbl);
-  $attributes = lookup_attributes($ma_url, $user);
-
-  foreach($attributes as $attribute) {
-    error_log("    " 
-	      . " ROLE: " . $attribute[MA_MEMBER_TABLE_FIELDNAME::ROLE_TYPE] 
-	      . " CONTEXT_TYPE: " . $attribute[MA_MEMBER_TABLE_FIELDNAME::CONTEXT_TYPE] 
-	      . " CONTEXT_ID: " . $attribute[MA_MEMBER_TABLE_FIELDNAME::CONTEXT_ID]);
-  }
-}
-
-function dump_all_attributes()
-{
-  global $user1;
-  global $user2;
-  dump_attributes_for_user('USER1', $user1);
-  dump_attributes_for_user('USER2', $user2);
-}
-
-add_attribute($ma_url, $user1, ROLE_TYPE::OWNER, CONTEXT_TYPE::PROJECT, $project);
-add_attribute($ma_url, $user1, ROLE_TYPE::ADMIN, CONTEXT_TYPE::SLICE, $slice);
-dump_all_attributes();
-add_attribute($ma_url, $user2, ROLE_TYPE::ADMIN, CONTEXT_TYPE::SLICE, $slice);
-dump_all_attributes();
-add_attribute($ma_url, $user1, ROLE_TYPE::AUDITOR, CONTEXT_TYPE::SERVICE, null);
-dump_all_attributes();
-add_attribute($ma_url, $user2, ROLE_TYPE::USER, CONTEXT_TYPE::MEMBER, null);
-dump_all_attributes();
-add_attribute($ma_url, $user2, ROLE_TYPE::USER, CONTEXT_TYPE::SERVICE, null);
-dump_all_attributes();
-remove_attribute($ma_url, $user2, ROLE_TYPE::USER, CONTEXT_TYPE::MEMBER, null);
-remove_attribute($ma_url, $user1, ROLE_TYPE::ADMIN, CONTEXT_TYPE::SLICE, $slice);
-dump_all_attributes();
-update_role($ma_url, $user2, ROLE_TYPE::OWNER, CONTEXT_TYPE::SERVICE, null);
-update_role($ma_url, $user1, ROLE_TYPE::ADMIN, CONTEXT_TYPE::PROJECT, $project);
-dump_all_attributes();
-
 relative_redirect('debug');
 
 ?>

@@ -39,7 +39,6 @@ require_once('logging_client.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
-$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 function sa_debug($msg)
@@ -374,10 +373,6 @@ function create_slice($args, $message)
   $signer = $message->signerUuid();
   create_assertion($cs_url, $mysigner, $signer, $owner_id, CS_ATTRIBUTE_TYPE::LEAD,
 		   CS_CONTEXT_TYPE::SLICE, $slice_id);
-
-  // Associate the lead with the slice with role 'lead'
-  global $ma_url;
-  add_attribute($ma_url, $owner_id, CS_ATTRIBUTE_TYPE::LEAD, CS_CONTEXT_TYPE::SLICE, $slice_id);
 
   // Now add the lead as a member of the slice
   $addres = add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id, SA_ARGUMENT::MEMBER_ID => $owner_id, SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD), $message);

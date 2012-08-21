@@ -37,80 +37,12 @@ namespace Member_Authority;
  * <br><br>
  * Supports these methods:
 <ul>
-<li>   add_attribute(ma_url, member_id, role_type, context_type, context_id); </li>
-<li>   remove_attribute(ma_url, member_id, role_type, context_type, context_id); </li>
-<li>   update_role(ma_url, member_id, role_type, context_type, context_id); </li>
-<li>   lookup_attributes(ma_url, member_id); </li>
 <li>   register_ssh_key(ma_url, member_id, filename, description, ssh_key); </li>
 <li>   lookup_ssh_keys(ma_url, member_id); </li>
+<li>   lookup_keys_and_certs(ma_url, member_id); </li>
 </ul>
  */
 class Member_Authority {
-
-/**
- * Add attribute to a given principal (member) as having given role in given context.
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("add_attribute")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"member_id" : ID of member about whom assertion is made</li>
-   <li>"role_type" : type of role asserted about member in context</li>
-   <li>"context_type" : type of context in which role is asserted for member</li>
-   <li>"context_id" : ID of context in which role is asserted for member</li>
-</ul>
- * @return boolean Success/Failure
- */
-function add_attribute($args_dict)
-{
-}
-
-/**
- * Remove attribute from a given principal (member) as having given role in given context.
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("remove_attribute")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"member_id" : ID of member about whom assertion is made</li>
-   <li>"role_type" : type of role asserted about member in context</li>
-   <li>"context_type" : type of context in which role is asserted for member</li>
-   <li>"context_id" : ID of context in which role is asserted for member</li>
-</ul>
- * @return boolean Success/Failure
- */
-function remove_attribute($args_dict)
-{
-}
-
-/**
- * Update assertion of role of member in given context
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("update_role")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"member_id" : ID of member about whom assertion is made</li>
-   <li>"role_type" : type of role asserted about member in context</li>
-   <li>"context_type" : type of context in which role is asserted for member</li>
-   <li>"context_id" : ID of context in which role is asserted for member</li>
-</ul>
- * @return boolean Success/Failure
- */
-function update_role($args_dict)
-{
-}
-
-/**
- * Query all attributes (role, context_type, context) for given member
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("lookup_attributes")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
-   <li>"member_id" : ID of member about whom query is made</li>
-</ul>
- * @return array List of (role, context_type, context) of all attributes of member
- */
-function lookup_attributes($args_dict)
-{
-}
 
 /**
  * Register SSH public key with given user
@@ -144,6 +76,20 @@ function register_ssh_key($args_dict)
  *   
  */
 function lookup_ssh_keys($args_dict)
+{
+}
+
+/**
+ * Lookup inside keys/certs associated with a user UUID.
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("lookup_keys_and_certs")</li>
+   <li>"member_id" : ID of member about whom inside keys and certs are desired</li>
+</ul>
+ * @return Dictionary containing a private key and certificate for given member
+ */
+function lookup_keys_and_certs($args_dict)
 {
 }
 
