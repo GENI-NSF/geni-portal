@@ -46,7 +46,7 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $members = get_member_ids($ma_url, Portal::getInstance());
 if(count($members) < 3) {
   error_log("Need 3 or more members to run sa_controller_test");
-  return;
+  relative_redirect('debug');
 }
 
 $user = geni_loadUser();

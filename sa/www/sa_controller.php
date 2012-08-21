@@ -152,13 +152,16 @@ class SAContextGuard implements Guard
    * Return TRUE if the action is authorized, FALSE otherwise.
    */
   function evaluate() {
+    global $mysigner;
     sa_debug("MessageHandler requesting authorization:"
              . " for principal=\""
              . print_r($this->message->signerUuid(), TRUE) . "\""
              . "; action=\"" . print_r($this->action, TRUE) . "\""
              . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
              . "; context=\"" . print_r($this->context, TRUE) . "\"");
-    return request_authorization($this->cs_url, $this->message->signerUuid(),
+    return request_authorization($this->cs_url, 
+				 $mysigner, 
+				 $this->message->signerUuid(),
                                  $this->action, $this->context_type,
                                  $this->context);
   }
@@ -263,6 +266,7 @@ function create_slice($args, $message)
   global $sa_authority_private_key;
   global $sa_default_slice_expiration_hours;
   global $cs_url;
+  global $mysigner;
 
   $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
@@ -305,7 +309,7 @@ function create_slice($args, $message)
 
 
 
-  $permitted = request_authorization($cs_url, $owner_id, 'create_slice', 
+  $permitted = request_authorization($cs_url, $mysigner, $owner_id, 'create_slice', 
 				     CS_CONTEXT_TYPE::PROJECT, $project_id);
   if ($permitted < 1) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
@@ -366,8 +370,9 @@ function create_slice($args, $message)
 
   // Create an assertion that this owner is the 'lead' of the slice (and has associated privileges)
   global $cs_url;
-  $signer = null; // *** FIX ME
-  create_assertion($cs_url, $signer, $owner_id, CS_ATTRIBUTE_TYPE::LEAD,
+  global $mysigner;
+  $signer = $message->signerUuid();
+  create_assertion($cs_url, $mysigner, $signer, $owner_id, CS_ATTRIBUTE_TYPE::LEAD,
 		   CS_CONTEXT_TYPE::SLICE, $slice_id);
 
   // Associate the lead with the slice with role 'lead'
@@ -618,6 +623,7 @@ function add_slice_member($args, $message)
   $role = $args[SA_ARGUMENT::ROLE_TYPE];
 
   global $SA_SLICE_MEMBER_TABLENAME;
+  global $mysigner;
 
   $already_member_sql = "select count(*) from " . $SA_SLICE_MEMBER_TABLENAME
     . " WHERE " 
@@ -649,7 +655,7 @@ function add_slice_member($args, $message)
      * to the CS? Is the PA the signer?
      */
     $signer = $message->signerUuid();
-    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::SLICE, $slice_id);
+    create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::SLICE, $slice_id);
   }
 
   return $result;
@@ -662,6 +668,7 @@ function remove_slice_member($args, $message)
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
 
   global $SA_SLICE_MEMBER_TABLENAME;
+  global $mysigner;
 
   $sql = "DELETE FROM " . $SA_SLICE_MEMBER_TABLENAME 
     . " WHERE " 
@@ -677,13 +684,13 @@ function remove_slice_member($args, $message)
     global $cs_url;
     $signer = $message->signerUuid();
 
-    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+    $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $assertion_id);
+      delete_assertion($cs_url, $mysigner, $assertion_id);
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
   }
@@ -699,6 +706,7 @@ function change_slice_member_role($args, $message)
   $role = $args[SA_ARGUMENT::ROLE_TYPE];
 
   global $SA_SLICE_MEMBER_TABLENAME;
+  global $mysigner;
 
   $sql = "UPDATE " . $SA_SLICE_MEMBER_TABLENAME
     . " SET " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role
@@ -718,18 +726,18 @@ function change_slice_member_role($args, $message)
     $signer = $message->signerUuid();
 
     // Remove previous CS assertions about the member in this slice
-    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+    $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $assertion_id);
+      delete_assertion($cs_url, $mysigner, $assertion_id);
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
 
     // Create new assertion for member in this role
-    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::SLICE, $slice_id);
+    create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::SLICE, $slice_id);
   }
 
   return $result;

@@ -27,6 +27,7 @@ require_once('cs_constants.php');
 require_once('cs_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('user.php');
 
 error_log("DB TEST\n");
 
@@ -34,10 +35,12 @@ error_log("DB TEST\n");
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 
+$user = geni_loadUser();
 $signer = null;
 $principal_id = '3';
 
 $result = create_assertion($cs_url, 
+			   $user, 
 			   $signer,
 			   $principal_id, 
 			   CS_ATTRIBUTE_TYPE::ADMIN,

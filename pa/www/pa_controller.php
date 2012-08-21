@@ -190,13 +190,15 @@ class PAContextGuard implements Guard
    * Return TRUE if the action is authorized, FALSE otherwise.
    */
   function evaluate() {
+    global $mysigner;
     pa_debug("MessageHandler requesting authorization:"
              . " for principal=\""
              . print_r($this->message->signerUuid(), TRUE) . "\""
              . "; action=\"" . print_r($this->action, TRUE) . "\""
              . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
              . "; context=\"" . print_r($this->context, TRUE) . "\"");
-    return request_authorization($this->cs_url, $this->message->signerUuid(),
+    return request_authorization($this->cs_url, $my_signer, 
+				 $this->message->signerUuid(),
                                  $this->action, $this->context_type,
                                  $this->context);
   }
@@ -216,6 +218,7 @@ function create_project($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
   global $cs_url;
+  global $mysigner;
 
   //  error_log("ARGS = " . print_r($args, true));
 
@@ -235,7 +238,7 @@ function create_project($args, $message)
   }
 
 
-  $permitted = request_authorization($cs_url, $lead_id, 'create_project', 
+  $permitted = request_authorization($cs_url, $mysigner, $lead_id, 'create_project', 
 				     CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
   if ($permitted < 1) {
@@ -461,6 +464,7 @@ function add_project_member($args, $message)
   $role = $args[PA_ARGUMENT::ROLE_TYPE];
 
   global $PA_PROJECT_MEMBER_TABLENAME;
+  global $mysigner;
 
   $already_member_sql = "select count(*) from " . $PA_PROJECT_MEMBER_TABLENAME
     . " WHERE " 
@@ -493,7 +497,7 @@ function add_project_member($args, $message)
      * to the CS? Is the PA the signer?
      */
     $signer = $message->signerUuid();
-    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
   }
   return $result;
 }
@@ -505,6 +509,7 @@ function remove_project_member($args, $message)
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
 
   global $PA_PROJECT_MEMBER_TABLENAME;
+  global $mysigner;
 
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME 
     . " WHERE " 
@@ -520,13 +525,14 @@ function remove_project_member($args, $message)
     global $cs_url;
     $signer = $message->signerUuid();
 
-    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $membership_assertions = query_assertions($cs_url, $mysigner, 
+					      $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $assertion_id);
+      delete_assertion($cs_url, $mysigner, $assertion_id);
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
   }
@@ -542,6 +548,7 @@ function change_member_role($args, $message)
   $role = $args[PA_ARGUMENT::ROLE_TYPE];
 
   global $PA_PROJECT_MEMBER_TABLENAME;
+  global $mysigner;
 
   $sql = "UPDATE " . $PA_PROJECT_MEMBER_TABLENAME
     . " SET " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role
@@ -560,18 +567,18 @@ function change_member_role($args, $message)
     $signer = $message->signerUuid();
 
     // Remove previous CS assertions about the member in this project
-    $membership_assertions = query_assertions($cs_url, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $assertion_id);
+      delete_assertion($cs_url, $mysigner, $assertion_id);
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
 
     // Create new assertion for member in this role
-    create_assertion($cs_url, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
   }
 
   return $result;

@@ -425,14 +425,24 @@ function create_policy_cert($signer,
   return null;
 }
 
+
+class CSGuardFactory implements GuardFactory
+{
+
+  public function createGuards($message) {
+    return array(new TrueGuard());
+  }
+  
+}
+
 /*
  * I am the CS. I should be authorizing my own calls, no?
  */
-$cs_url = NULL;
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $mycertfile = '/usr/share/geni-ch/cs/cs-cert.pem';
 $mykeyfile = '/usr/share/geni-ch/cs/cs-key.pem';
 $mysigner = new Signer($mycertfile, $mykeyfile);
-$guard_factory = NULL;
+$guard_factory = new CSGuardFactory();
 handle_message("CS", $cs_url, default_cacerts(),
 	       $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
 ?>

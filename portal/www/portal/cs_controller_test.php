@@ -27,17 +27,20 @@ require_once('cs_constants.php');
 require_once('cs_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('user.php');
 
 error_log("CS TEST\n");
 
 // Get URL of Credential Store
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$user = geni_loadUser();
 
 function dump_all_assertions_and_policies()
 {
   global $cs_url;
-  $assertion_rows = query_assertions($cs_url, '-1', CS_CONTEXT_TYPE::RESOURCE, null);
+  global $user;
+  $assertion_rows = query_assertions($cs_url, $user, '-1', CS_CONTEXT_TYPE::RESOURCE, null);
   foreach($assertion_rows as $assertion) {
     error_log("ASSERT " . 
 	      $assertion[CS_ASSERTION_TABLE_FIELDNAME::ID] . " " . 
@@ -49,7 +52,7 @@ function dump_all_assertions_and_policies()
 	      $assertion[CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION] . " " . 
 	      $assertion[CS_ASSERTION_TABLE_FIELDNAME::ASSERTION_CERT]);
   }
-  $policy_rows = query_policies($cs_url);
+  $policy_rows = query_policies($cs_url, $user);
   foreach($policy_rows as $policy) {
     error_log("POLICY " . 
 	      $policy[CS_POLICY_TABLE_FIELDNAME::ID] . " " . 
@@ -66,7 +69,8 @@ $signer =       '22222222222222222222222222222222';
 $principal_id = '33333333333333333333333333333333';
 $project_id =   '44444444444444444444444444444444';
 
-$result = create_assertion($cs_url, 
+$result = create_assertion($cs_url,
+			   $user, 
 			   $signer,
 			   $principal_id, 
 			   CS_ATTRIBUTE_TYPE::ADMIN,
@@ -76,6 +80,7 @@ error_log("RES(1) = " . $result);
 dump_all_assertions_and_policies($result);
 
 $result = create_assertion($cs_url, 
+			   $user, 
 			   $signer,
 			   $principal_id,
 			   CS_ATTRIBUTE_TYPE::LEAD,
@@ -86,6 +91,7 @@ error_log("RES(2) = " . $result);
 dump_all_assertions_and_policies();
 
 $result = create_policy($cs_url, 
+			$user, 
 			$signer,
 			CS_ATTRIBUTE_TYPE::ADMIN,
 			CS_CONTEXT_TYPE::MEMBER, 
@@ -94,6 +100,7 @@ error_log("RES(3) = " . $result);
 dump_all_assertions_and_policies();
 
 $result = create_policy($cs_url, 
+			$user, 
 			$signer,
 			CS_ATTRIBUTE_TYPE::LEAD,
 			CS_CONTEXT_TYPE::PROJECT,
@@ -102,6 +109,7 @@ error_log("RES(4) = " . $result);
 dump_all_assertions_and_policies();
 
 $result = create_policy($cs_url, 
+			$user, 
 			$signer,
 			CS_ATTRIBUTE_TYPE::LEAD,
 			CS_CONTEXT_TYPE::PROJECT,
@@ -110,35 +118,39 @@ error_log("RES(5) = " . $result);
 dump_all_assertions_and_policies();
 
 $result = request_authorization($cs_url, 
+				$user, 
 				$principal_id,
 				'create_assertion', 
 				CS_CONTEXT_TYPE::MEMBER, null);
 error_log("Auth(1) = " . $result);
 
 $result = request_authorization($cs_url,
+				$user, 
 				$principal_id,
 				'create_assertion',
 				CS_CONTEXT_TYPE::SERVICE, null);
 error_log("Auth(2) = " . $result);
 
 $result = request_authorization($cs_url, 
+				$user, 
 				$principal_id,
 				'create_slice',
 				CS_CONTEXT_TYPE::PROJECT,
 				$project_id);
 error_log("Auth(3) = " . $result);
 
-$result = request_authorization($cs_url, 
+$result = request_authorization($cs_url,
+				$user, 
 				$principal_id,
 				'create_slice',
 				CS_CONTEXT_TYPE::PROJECT,
 				$project_id);
 error_log("Auth(4) = " . $result);
 
-$result = renew_assertion($cs_url, '1');
+$result = renew_assertion($cs_url, $user, '1');
 dump_all_assertions_and_policies();
 
-$result = delete_policy($cs_url, '2');
+$result = delete_policy($cs_url, $user, '2');
 dump_all_assertions_and_policies();
 
 

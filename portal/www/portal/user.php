@@ -156,7 +156,7 @@ class GeniUser
 	if ($cs_url == null) {
 	  $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 	}
-	$permission_manager = get_permissions($cs_url, $this->account_id);
+	$permission_manager = get_permissions($cs_url, $this, $this->account_id);
 	$permission_manager_timestamp = $now;
 	$permission_manager_account_id = $this->account_id;
 	//	error_log("Refreshing permission manager " . $permission_manager_timestamp . " " 

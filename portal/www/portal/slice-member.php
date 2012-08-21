@@ -58,7 +58,7 @@ print "<h1>GENI Slice: " . $slice_name . ", Member: " . $member_name . "</h1>\n"
 
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-//$slice_attribs = get_attributes($cs_url, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
+//$slice_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
 $slices_for_member = get_slices_for_member($sa_url, $user, $member_id, true, null);
 //error_log("SLICE ATTRIBS = " . print_r($attributes, true));
 
