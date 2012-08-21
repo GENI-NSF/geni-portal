@@ -25,6 +25,7 @@
 $prev_name = session_id('SA-SESSION');
 
 require_once("message_handler.php");
+require_once('signer.php');
 require_once('file_utils.php');
 require_once('db_utils.php');
 require_once('sa_utils.php');
@@ -383,12 +384,13 @@ function create_slice($args, $message)
 
   // Log the creation
   global $log_url;
+  global $mysigner;
   $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
 						  $project_id);
   $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
 						  $slice_id);
   $attributes = array_merge($project_attributes, $slice_attributes);
-  log_event($log_url, "Created slice " . $slice_name, $attributes, $owner_id);
+  log_event($log_url, $mysigner, "Created slice " . $slice_name, $attributes, $owner_id);
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
@@ -883,10 +885,11 @@ function user_context_query($account_id)
 require_once('rq_controller.php');
 
 
-$mycert = file_get_contents('/usr/share/geni-ch/sa/sa-cert.pem');
-$mykey = file_get_contents('/usr/share/geni-ch/sa/sa-key.pem');
+$mycertfile = '/usr/share/geni-ch/sa/sa-cert.pem';
+$mykeyfile = '/usr/share/geni-ch/sa/sa-key.pem';
+$mysigner = new Signer($mycertfile, $mykeyfile);
 $guard_factory = new SAGuardFactory($cs_url);
 handle_message("SA", $cs_url, default_cacerts(),
-        $mycert, $mykey, $guard_factory);
+	       $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
 
 ?>

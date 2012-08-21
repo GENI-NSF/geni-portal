@@ -64,7 +64,7 @@ function session_cache_lookup($key, $refresh_timeout, $refresh_url, $refresh_met
       $response = put_message($refresh_url, $refresh_message);
       $_SESSION[$key] = $response;
       $_SESSION[$timeout_key] = $now;
-      error_log("Refreshing cache for key $key : message = " . print_r($refresh_message, true) . " " . $key . " " . $_SESSION[$key] . " " . $timeout_key . " " . $_SESSION[$timeout_key] . " " . $now . " " . $refresh_timeout);
+      //      error_log("Refreshing cache for key $key : message = " . print_r($refresh_message, true) . " " . $key . " " . $_SESSION[$key] . " " . $timeout_key . " " . $_SESSION[$timeout_key] . " " . $now . " " . $refresh_timeout);
   }
 
   $value = $_SESSION[$key];

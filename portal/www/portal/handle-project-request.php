@@ -24,6 +24,7 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('portal.php');
 require("logging_constants.php");
 require("logging_client.php");
 require_once("sr_client.php");
@@ -237,7 +238,9 @@ if (isset($submit)) {
     $attributes = array_merge($project_attributes, $member_attributes);
     $rolestr = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-    log_event($log_url, "Added $member_name to project $project_name as $rolestr ", $attributes), $user->account_id);
+    log_event($log_url, Portal::getInstance(),
+	      "Added $member_name to project $project_name as $rolestr ", $attributes), 
+      $user->account_id);
     error_log("handle-p-req added $member_name to project $project_name with role $rolestr");
   
     // FIXME: Email the member

@@ -24,6 +24,7 @@
 ?>
 <?php
 require_once("settings.php");
+require_once('portal.php');
 require_once("user.php");
 require_once("file_utils.php");
 require_once("sr_client.php");
@@ -119,7 +120,8 @@ $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
 $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
 					$slice['slice_id']);
 $log_attributes = array_merge($project_attributes, $slice_attributes);
-log_event($log_url, "Added resources to slice " . $slice_name,
+log_event($log_url, Portal:getInstance(), 
+	  "Added resources to slice " . $slice_name,
           $log_attributes, $slice['owner_id']);
 
 

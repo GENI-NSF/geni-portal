@@ -25,6 +25,7 @@
 $prev_name = session_id('LOGGING-SESSION');
 
 require_once('message_handler.php');
+require_once('signer.php');
 require_once('logging_constants.php');
 require_once('db_utils.php');
 require_once('response_format.php');
@@ -196,9 +197,19 @@ function get_version($args)
   return generate_response(RESPONSE_ERROR::NONE, "1.0", "");
 }
 
-$mycert = file_get_contents('/usr/share/geni-ch/logging/logging-cert.pem');
-$mykey = file_get_contents('/usr/share/geni-ch/logging/logging-key.pem');
-$guard_factory = NULL;
+class LoggingGuardFactory implements GuardFactory
+{
+
+  public function createGuards($message) {
+    return array(new TrueGuard());
+  }
+  
+}
+
+$mycertfile = '/usr/share/geni-ch/logging/logging-cert.pem';
+$mykeyfile = '/usr/share/geni-ch/logging/logging-key.pem';
+$mysigner = new Signer($mycertfile, $mykeyfile);
+$guard_factory = new LoggingGuardFactory("LOG", $cs_url);
 handle_message("LOG", $cs_url, default_cacerts(),
-        $mycert, $mykey, $guard_factory);
+	       $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
 ?>

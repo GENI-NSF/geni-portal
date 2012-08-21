@@ -26,6 +26,7 @@ $prev_name = session_id('CS-SESSION');
 
 require_once('message_handler.php');
 require_once('db_utils.php');
+require_once('signer.php');
 require_once('cs_constants.php');
 require_once('response_format.php');
 require_once('permission_manager.php');
@@ -123,8 +124,9 @@ function create_assertion($args)
   // Log the creation
   if ($signer != null) {
     global $log_url;
+    global $mysigner;
     $attributes = get_attribute_for_context($context_type, $context);
-    log_event($log_url, "Created assertion ATTRIB=" . 
+    log_event($log_url, $mysigner, "Created assertion ATTRIB=" . 
 	      $attribute .
 	      " PRINC=" . $principal,
 	      $attributes, $signer);
@@ -168,8 +170,9 @@ function create_policy($args)
   // Log the creation
   if ($signer != null) {
     global $log_url;
+    global $mysigner;
     $attributes = get_attribute_for_context($context_type, null);
-    log_event($log_url, "Created policy ATTRIB=" . $attribute . 
+    log_event($log_url, $mysigner, "Created policy ATTRIB=" . $attribute . 
 	      " PRIV=" . $privilege, 
 	      $attributes, $signer);
   }
@@ -426,10 +429,11 @@ function create_policy_cert($signer,
  * I am the CS. I should be authorizing my own calls, no?
  */
 $cs_url = NULL;
-$mycert = file_get_contents('/usr/share/geni-ch/cs/cs-cert.pem');
-$mykey = file_get_contents('/usr/share/geni-ch/cs/cs-key.pem');
+$mycertfile = '/usr/share/geni-ch/cs/cs-cert.pem';
+$mykeyfile = '/usr/share/geni-ch/cs/cs-key.pem';
+$mysigner = new Signer($mycertfile, $mykeyfile);
 $guard_factory = NULL;
 handle_message("CS", $cs_url, default_cacerts(),
-        $mycert, $mykey, $guard_factory);
+	       $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
 ?>
 

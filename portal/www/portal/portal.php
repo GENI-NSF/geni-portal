@@ -23,30 +23,10 @@
 //----------------------------------------------------------------------
 
 require_once 'settings.php';
+require_once 'signer.php';
 
-class Portal
+class Portal extends Signer
 {
-  function __construct($cert_file, $private_key_file) {
-    $this->cert_file = $cert_file;
-    $this->private_key_file = $private_key_file;
-    $this->certificate = NULL;
-    $this->private_key = NULL;
-  }
-
-  function certificate() {
-    if (is_null($this->certificate)) {
-      $this->certificate = file_get_contents($this->cert_file);
-    }
-    return $this->certificate;
-  }
-
-  function privateKey() {
-    if (is_null($this->private_key)) {
-      $this->private_key = file_get_contents($this->private_key_file);
-    }
-    return $this->private_key;
-  }
-
   static function getInstance() {
     global $portal_cert_file, $portal_private_key_file;
     return new Portal($portal_cert_file, $portal_private_key_file);

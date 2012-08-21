@@ -24,6 +24,7 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once('portal.php');
 require_once('util.php');
 require_once('pa_constants.php');
 require_once('sa_constants.php');
@@ -187,7 +188,8 @@ if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $proje
 <tr><th>Time</th><th>Message</th><th>Member</th>
 <?php
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
+$entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+				       CS_CONTEXT_TYPE::PROJECT, $project_id);
 if (is_array($entries)) {
   foreach($entries as $entry) {
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];

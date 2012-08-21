@@ -22,38 +22,31 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once("user.php");
-require_once('portal.php');
-require_once('cs_constants.php');
-/* $GENI_TITLE = "GENI Portal Home"; */
-/* $ACTIVE_TAB = "Home"; */
-require_once("header.php");
-show_header('GENI Portal Home', $TAB_HOME);
-?>
-<div id="home-body">
-<?php
-  include("tool-showmessage.php");
-$user = geni_loadUser();
-if (is_null($user)) {
-  // TODO: Handle unknown state
-  print "Unable to load user record.<br/>";
-} else {
-  if ($user->isRequested()) {
-    include("home-requested.php");
-  } else if ($user->isDisabled()) {
-    print "User $user->eppn has been disabled.";
-  } else if ($user->isActive()) {
-    include("home-active.php");
-    // Uncomment below if you want jquery tabs example
-    //include("home-active-tabs.php");
-  } else {
-    // TODO: Handle unknown state
-    print "Unknown account state: $user->status<br/>";
+// base class representing a signer object which presents a cert and private key
+// for an object that can sign messages for packaging and sending to another service
+
+class Signer
+{
+  function __construct($cert_file, $private_key_file) {
+    $this->cert_file = $cert_file;
+    $this->private_key_file = $private_key_file;
+    $this->certificate = NULL;
+    $this->private_key = NULL;
   }
+
+  function certificate() {
+    if (is_null($this->certificate)) {
+      $this->certificate = file_get_contents($this->cert_file);
+    }
+    return $this->certificate;
+  }
+
+  function privateKey() {
+    if (is_null($this->private_key)) {
+      $this->private_key = file_get_contents($this->private_key_file);
+    }
+    return $this->private_key;
+  }
+
 }
-?>
-</div>
-<br/>
-<?php
-include("footer.php");
 ?>

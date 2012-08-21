@@ -26,6 +26,7 @@ $prev_name = session_id('PA-SESSION');
 
 require_once('message_handler.php');
 require_once('db_utils.php');
+require_once('signer.php');
 require_once('file_utils.php');
 require_once('response_format.php');
 require_once('pa_constants.php');
@@ -281,8 +282,10 @@ function create_project($args, $message)
 
   // Log the creation
   global $log_url;
+  global $mysigner;
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  log_event($log_url, "Created project: " . $project_name, $attributes, $lead_id);
+  log_event($log_url, $mysigner, 
+	    "Created project: " . $project_name, $attributes, $lead_id);
 
   return generate_response(RESPONSE_ERROR::NONE, $project_id, '');
 }
@@ -695,10 +698,11 @@ function user_context_query($account_id)
 }
 require_once('rq_controller.php');
 
-$mycert = file_get_contents('/usr/share/geni-ch/pa/pa-cert.pem');
-$mykey = file_get_contents('/usr/share/geni-ch/pa/pa-key.pem');
+$mycertfile = '/usr/share/geni-ch/pa/pa-cert.pem';
+$mykeyfile = '/usr/share/geni-ch/pa/pa-key.pem';
+$mysigner = new Signer($mycertfile, $mykeyfile);
 $guard_factory = new PAGuardFactory($cs_url);
 handle_message("PA", $cs_url, default_cacerts(),
-        $mycert, $mykey, $guard_factory);
+	       $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
 
 ?>

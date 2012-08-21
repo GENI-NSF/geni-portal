@@ -26,6 +26,7 @@
 
 require_once("user.php");
 require_once("header.php");
+require_once("portal.php");
 require_once('util.php');
 require_once('pa_constants.php');
 require_once('pa_client.php');
@@ -302,7 +303,8 @@ echo "<button $edit_members_disabled onClick=\"window.location='$edit_url'\"><b>
 		<th>Member</th>
 		<?php
 		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-		$entries = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
+                $entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+						       CS_CONTEXT_TYPE::SLICE, $slice_id);
 		foreach($entries as $entry) {
 		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
 		  $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];

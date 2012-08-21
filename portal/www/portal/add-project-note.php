@@ -25,6 +25,7 @@
 // Form for adding a note on a project. Submit to self.
 
 require_once("settings.php");
+require_once('portal.php');
 require_once("util.php");
 require_once("user.php");
 require_once("sr_constants.php");
@@ -52,7 +53,7 @@ if (array_key_exists("note", $_REQUEST)) {
     }
     $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
 					    $project_id);
-    log_event($log_url, "Note on project $project_name: " . $note, 
+    log_event($log_url, Portal::getInstance(), "Note on project $project_name: " . $note, 
 	      $attributes, $user->account_id);
 
     require_once("header.php");

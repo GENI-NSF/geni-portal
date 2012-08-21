@@ -121,6 +121,54 @@ function get_version($args_dict)
 {
 }
 
+/*----------------------------------------------------------------------
+ * Authorization
+ *----------------------------------------------------------------------
+ */
+class LoggingGuardFactory implements GuardFactory
+{
+  private static $context_table
+    = array(
+            // Action => array(method_name, method_name, ...)
+	    'get_version' => array(), // unguarded
+            );
+
+  public function __construct($cs_url) {
+    $this->cs_url = $cs_url;
+  }
+
+  public function project_request_guard($message, $action, $params)
+  {
+    //    error_log("PA.project_request_guard " . print_r($message, true) . " " . 
+    //	      print_r($action, true) . " " . print_r($params, true));
+    return new PAProjectRequestGuard($this->cs_url, $message, $action, $params);
+  }
+
+  private function project_guard($message, $action, $params) {
+    pa_debug("project_guard($message, $action, $params)");
+    return new PAContextGuard($this->cs_url, $message, $action,
+                              CS_CONTEXT_TYPE::PROJECT,
+                              $params[SA_ARGUMENT::PROJECT_ID]);
+  }
+
+  public function createGuards($message) {
+    $result = array();
+    $parsed_message = $message->parse();
+    $action = $parsed_message[0];
+    $params = $parsed_message[1];
+    if (array_key_exists($action, self::$context_table)) {
+      foreach (self::$context_table[$action] as $method_name) {
+        // How to call a method dynamically
+        $meth = array($this, $method_name);
+        $result[] = call_user_func($meth, $message, $action, $params);
+      }
+    } else {
+      error_log("LOG: No guard producers for action \"$action\"");
+    }
+    return $result;
+  }
+}
+
 
 }
 

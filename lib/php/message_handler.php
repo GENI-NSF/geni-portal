@@ -315,20 +315,6 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
 {
   //  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation'] . " " . print_r($message, true));
 
-  /* 
-   * *** TEMP FIX
-  // *** TEMP FIX - Stick the account id as 'signer' field in message
-  global $ACCOUNT_ID;
-  if ($ACCOUNT_ID == null) { // First time through
-    $ACCOUNT_ID = get_account_id();
-  }
-  $signer = $ACCOUNT_ID;
-  $message['signer'] = $signer;
-  //  error_log("MSG (SEND) = " . print_r($message, true));
-  //  error_log("Sent : SIGNER = " . $signer);
-  // *** END OF TEMP FIX
-  */
-
   if (! isset($url) || is_null($url) || trim($url) == '') {
     error_log("put_message error: empty URL");
     return null;

@@ -32,28 +32,32 @@ require_once('cs_constants.php');
 //    message - Text of log message
 //    attributes - Dictionaary of name/value pairs by which to tag and retrieve mmessage
 //    user_id (the writer of the log entry)
-function log_event($log_url, $message, $attributes, $user_id )
+function log_event($log_url, $signer, $message, $attributes, $user_id )
 {
   $log_event_message['operation'] = 'log_event';
   $log_event_message[LOGGING_ARGUMENT::EVENT_TIME] = time();
   $log_event_message[LOGGING_ARGUMENT::MESSAGE] = $message;
   $log_event_message[LOGGING_ARGUMENT::ATTRIBUTES] = $attributes;
   $log_event_message[LOGGING_ARGUMENT::USER_ID] = $user_id;
-  //   error_log("LOG_EVENT : " . print_r($log_event_message, true));
-  $result = put_message($log_url, $log_event_message);
+  //  error_log("LOG_EVENT : " . print_r($log_event_message, true));
+  //  error_log("LOG_URL : " . print_r($log_url, true));
+  $result = put_message($log_url, $log_event_message, 
+			$signer->certificate(), $signer->privateKey());
   return $result;
 }
 
-function get_log_entries_by_author($log_url, $user_id, $num_hours=24)
+function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours=24)
 {
   $get_log_entries_message['operation'] = 'get_log_entries_by_author';
   $get_log_entries_message[LOGGING_ARGUMENT::EARLIEST_TIME] = time() - 3600*$num_hours;
   $get_log_entries_message[LOGGING_ARGUMENT::USER_ID] = $user_id;
   //  error_log("GET_LOG_ENTRIES : " . print_r($get_log_entries_message, true));
-  $result = put_message($log_url, $get_log_entries_message);
+  $result = put_message($log_url, $get_log_entries_message, 
+			$signer->certificate(), $signer->privateKey());
   return $result;
 }
 
+// Helper function to turn context/context_id into attribute dictionary
 function get_attribute_for_context($context_type, $context_id)
 {
   global $CS_CONTEXT_TYPE_NAME;
@@ -62,32 +66,34 @@ function get_attribute_for_context($context_type, $context_id)
   return $attribute;
 }
 
-function get_log_entries_for_context($log_url, $context_type, $context_id, $num_hours=24)
+function get_log_entries_for_context($log_url, $signer, $context_type, $context_id, $num_hours=24)
 {
   $attribute_sets = 
     array(get_attribute_for_context($context_type, $context_id));
 
   //  error_log("GLEFC.AS = " . print_r($attribute_sets, true));
 
-  $result = get_log_entries_by_attributes($log_url, $attribute_sets, $num_hours);
+  $result = get_log_entries_by_attributes($log_url, $signer, $attribute_sets, $num_hours);
   return $result;
 }
 
-function get_log_entries_by_attributes($log_url, $attribute_sets, $num_hours=24)
+function get_log_entries_by_attributes($log_url, $signer, $attribute_sets, $num_hours=24)
 {
 
   $get_log_entries_message['operation'] = 'get_log_entries_by_attributes';
   $get_log_entries_message[LOGGING_ARGUMENT::EARLIEST_TIME] = time() - 3600*$num_hours;
   $get_log_entries_message[LOGGING_ARGUMENT::ATTRIBUTE_SETS] = $attribute_sets;
-  $result = put_message($log_url, $get_log_entries_message);
+  $result = put_message($log_url, $get_log_entries_message, 
+			$signer->certificate(), $signer->privateKey());
   return $result;
 }
 
-function get_attributes_for_log_entry($log_url, $event_id)
+function get_attributes_for_log_entry($log_url, $signer, $event_id)
 {
   $get_attributes_message['operation'] = 'get_attributes_for_log_entry';
   $get_attributes_message[LOGGING_ARGUMENT::EVENT_ID] = $event_id;
-  $result = put_message($log_url, $get_attributes_message);
+  $result = put_message($log_url, $get_attributes_message, 
+			$signer->certificate(), $signer->privateKey());
   return $result;
 }
 

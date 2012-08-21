@@ -29,6 +29,7 @@ require_once('sr_client.php');
 require_once('logging_constants.php');
 require_once('logging_client.php');
 require_once('user.php');
+require_once('portal.php');
 
 // Services for logging CH events within the GENI Clearinghouse
 
@@ -50,23 +51,25 @@ $slice_attributes['SLICE'] = $slice_id;
 
 $me = geni_loadUser()->account_id;
 
-log_event($log_url, 'Project Created', $project_attributes, $me);
-$event_id = log_event($log_url, 'Slice Created', $slice_attributes, $me);
+$portal = Portal::getInstance();
+
+log_event($log_url, $portal, 'Project Created', $project_attributes, $me);
+$event_id = log_event($log_url, $portal, 'Slice Created', $slice_attributes, $me);
 
 error_log("By AUTHOR");
-$rows = get_log_entries_by_author($log_url, $me);
+$rows = get_log_entries_by_author($log_url, $portal, $me);
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
 
 error_log("By PROJECT");
-$rows = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
+$rows = get_log_entries_for_context($log_url, $portal, CS_CONTEXT_TYPE::PROJECT, $project_id);
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
 
 error_log("By SLICE");
-$rows = get_log_entries_for_context($log_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
+$rows = get_log_entries_for_context($log_url, $portal, CS_CONTEXT_TYPE::SLICE, $slice_id);
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
@@ -76,7 +79,7 @@ $attribs1['FOO'] = 'BAR';
 $attribs1['BAZ'] = 'BAZ2';
 $attribs2['PROJECT'] = $project_id;
 $attribute_sets = array($attribs1, $attribs2);
-$rows = get_log_entries_by_attributes($log_url, $attribute_sets);
+$rows = get_log_entries_by_attributes($log_url, $portal, $attribute_sets);
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
@@ -86,12 +89,12 @@ $attribs1['FOO'] = 'BAR';
 $attribs1['BAZ'] = 'BAZ2';
 $attribs2['SLICE'] = $slice_id;
 $attribute_sets = array($attribs1, $attribs2);
-$rows = get_log_entries_by_attributes($log_url, $attribute_sets);
+$rows = get_log_entries_by_attributes($log_url, $portal, $attribute_sets);
 foreach($rows as $row) {
   error_log("LOG: " . print_r($row, true));
 }
 
-$attributes = get_attributes_for_log_entry($log_url, $event_id);
+$attributes = get_attributes_for_log_entry($log_url, $portal, $event_id);
 error_log("ATTRS = " . print_r($attributes, true));
 
 

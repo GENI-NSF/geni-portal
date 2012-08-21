@@ -25,6 +25,7 @@
 // Form for adding a note on a slice. Submit to self.
 
 require_once("settings.php");
+require_once('portal.php');
 require_once("util.php");
 require_once("user.php");
 require_once("sr_constants.php");
@@ -51,7 +52,7 @@ if (array_key_exists("note", $_REQUEST)) {
       $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     }
     $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
-    log_event($log_url, "Note on slice $slice_name: " . $note, 
+    log_event($log_url, Portal::getInstance(), "Note on slice $slice_name: " . $note, 
 	      $attributes, $user->account_id);
 
     require_once("header.php");
