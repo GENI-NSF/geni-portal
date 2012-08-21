@@ -96,7 +96,7 @@ function dump_slices($user, $project)
 }
 
 $project_name = make_uuid();
-$project = create_project($pa_url, $project_name, $owner, '');
+$project = create_project($pa_url, $user, $project_name, $owner, '');
 $slice_info = create_slice($sa_url, $user, $project, $project_name, 'SSS',
                            $owner);
 error_log("SLICE_INFO " . print_r($slice_info, true));
@@ -147,7 +147,7 @@ dump_sids($sids);
 $sids = get_slices_for_member($sa_url, $user, $user->account_id, false, CS_ATTRIBUTE_TYPE::AUDITOR);
 dump_sids($sids);
 
-delete_project($pa_url, $project);
+delete_project($pa_url, $user, $project);
 
 relative_redirect('debug');
 

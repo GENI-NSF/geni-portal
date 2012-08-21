@@ -39,7 +39,7 @@ include("tool-lookupids.php");
 
 if (isset($project) && ! is_null($project)) {
   // FIXME: Do anything to slices first? Members?
-  $result = delete_project($pa_url, $project_id);
+  $result = delete_project($pa_url, $user, $project_id);
   if (! $result) {
     error_log("Failed to Disable project $project_id: $result");
   }

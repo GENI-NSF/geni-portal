@@ -29,6 +29,7 @@ require_once('ma_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('cs_constants.php');
+require_once('user.php');
 require_once('portal.php');
 
 error_log("PA TEST\n");
@@ -36,11 +37,12 @@ error_log("PA TEST\n");
 $sr_url = get_sr_url();
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$user = geni_loadUser();
 
 function dump_projects()
 {
   global $pa_url;
-  $project_ids = get_projects($pa_url);
+  $project_ids = get_projects($pa_url, $user);
   //  error_log("PROJECT_IDS = " . $project_ids . " " . print_r($project_ids, true));
   foreach($project_ids as $project_id) {
     //    error_log("PROJECT_ID = " . $project_id . " " . print_r($project_id, true));
@@ -73,57 +75,64 @@ function dump_pids($pids)
 $members = get_member_ids($ma_url, Portal::getInstance());
 if(count($members) < 3) {
   error_log("Need 3 or more members to run pa_controller_test");
-  return;
+  relative_redirect('debug');
 }
 
 $lead1 = $members[0];
 $lead2 = $members[1];
 $lead3 = $members[2];
 
-$project_id1 = create_project($pa_url, "PROJ1", $lead1, "example@foo.com", "Save the world");
+$project_id1 = create_project($pa_url, $user, "PROJ1", $lead1, 
+			      "example@foo.com", "Save the world");
 error_log("PID = " . $project_id1);
 dump_projects();
 
-$result = update_project($pa_url, $project_id1, "PROJ1-A", "foo@example.com", "More saving");
-$result = change_lead($pa_url, $project_id1, $lead1, $lead2);
+$result = update_project($pa_url, $user, $project_id1, "PROJ1-A", 
+			 "foo@example.com", "More saving");
+$result = change_lead($pa_url, $user, $project_id1, $lead1, $lead2);
 //error_log("UPDATE.result = " . $result);
 dump_projects();
 
-$project_id2 = create_project($pa_url, "PROJ2", $lead3, "foo@bar.net", "Waste of time");
+$project_id2 = create_project($pa_url, $user, 
+			      "PROJ2", $lead3, "foo@bar.net", "Waste of time");
 //error_log("PID = " . $project_id);
 dump_projects();
 
 dump_projects();
 
-$project_id3 = create_project($pa_url, "PROJ3", $lead1, "foo@bar.net", "Waste of time");
-$project_id4 = create_project($pa_url, "PROJ4", $lead1, "foo@bar.net", "Waste of time");
-$project_id5 = create_project($pa_url, "PROJ5", $lead1, "foo@bar.net", "Waste of time");
+$project_id3 = create_project($pa_url, $user, 
+			      "PROJ3", $lead1, "foo@bar.net", "Waste of time");
+$project_id4 = create_project($pa_url, $user, 
+			      "PROJ4", $lead1, "foo@bar.net", "Waste of time");
+$project_id5 = create_project($pa_url, $user,
+			      "PROJ5", $lead1, "foo@bar.net", "Waste of time");
 
-$result = add_project_member($pa_url, $project_id3, $lead2, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_project_member($pa_url, $project_id3, $lead3, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_project_member($pa_url, $project_id4, $lead2, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_project_member($pa_url, $project_id5, $lead2, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = add_project_member($pa_url, $project_id5, $lead3, CS_ATTRIBUTE_TYPE::MEMBER);
-$result = remove_project_member($pa_url, $project_id5, $lead2);
-$result = change_member_role($pa_url, $project_id5, $lead3, CS_ATTRIBUTE_TYPE::AUDITOR);
-$rows = get_project_members($pa_url, $project_id3);
+$result = add_project_member($pa_url, $user, $project_id3, $lead2, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_project_member($pa_url, $user, $project_id3, $lead3, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_project_member($pa_url, $user, $project_id4, $lead2, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_project_member($pa_url, $user, $project_id5, $lead2, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = add_project_member($pa_url, $user, $project_id5, $lead3, CS_ATTRIBUTE_TYPE::MEMBER);
+$result = remove_project_member($pa_url, $user, $project_id5, $lead2);
+$result = change_member_role($pa_url, $user, $project_id5, 
+			     $lead3, CS_ATTRIBUTE_TYPE::AUDITOR);
+$rows = get_project_members($pa_url, $user, $project_id3);
 dump_rows($rows);
-$rows = get_project_members($pa_url, $project_id3, CS_ATTRIBUTE_TYPE::MEMBER);
+$rows = get_project_members($pa_url, $user, $project_id3, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_rows($rows);
-$pids = get_projects_for_member($pa_url, $lead2, true);
+$pids = get_projects_for_member($pa_url, $user, $lead2, true);
 dump_pids($pids);
-$pids = get_projects_for_member($pa_url, $lead2, false);
+$pids = get_projects_for_member($pa_url, $user, $lead2, false);
 dump_pids($pids);
-$pids = get_projects_for_member($pa_url, $lead2, true, CS_ATTRIBUTE_TYPE::MEMBER);
+$pids = get_projects_for_member($pa_url, $user, $lead2, true, CS_ATTRIBUTE_TYPE::MEMBER);
 dump_pids($pids);
-$pids = get_projects_for_member($pa_url, $lead2, false, CS_ATTRIBUTE_TYPE::AUDITOR);
+$pids = get_projects_for_member($pa_url, $user, $lead2, false, CS_ATTRIBUTE_TYPE::AUDITOR);
 dump_pids($pids);
 
-delete_project($pa_url, $project_id1);
-delete_project($pa_url, $project_id2);
-delete_project($pa_url, $project_id3);
-delete_project($pa_url, $project_id4);
-delete_project($pa_url, $project_id5);
+delete_project($pa_url, $user, $project_id1);
+delete_project($pa_url, $user, $project_id2);
+delete_project($pa_url, $user, $project_id3);
+delete_project($pa_url, $user, $project_id4);
+delete_project($pa_url, $user, $project_id5);
 
 relative_redirect('debug');
 

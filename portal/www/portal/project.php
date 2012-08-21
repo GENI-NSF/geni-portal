@@ -82,7 +82,7 @@ if (! is_null($project) && $project != "None") {
 }
 
 // Fill in members of project member table
-$members = get_project_members($pa_url, $project_id);
+$members = get_project_members($pa_url, $user, $project_id);
 //error_log("members = " . print_r($members, true));
 
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";

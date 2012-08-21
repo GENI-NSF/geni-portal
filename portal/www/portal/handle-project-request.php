@@ -222,7 +222,7 @@ if (array_key_exists('submit', $_REQUEST)) {
 if (isset($submit)) {
   if ($submit == 'approve') {
     // call pa add member
-    $addres = add_project_member($pa_url, $project_id, $member_id, $role);
+    $addres = add_project_member($pa_url, $user, $project_id, $member_id, $role);
     // FIXME: Check result
 
     

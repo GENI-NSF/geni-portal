@@ -29,6 +29,7 @@ require_once('pa_constants.php');
 require_once('pa_client.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -71,7 +72,7 @@ if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
-  $project_id = create_project($pa_url, $name, $lead_id, $purpose);
+  $project_id = create_project($pa_url, $user, $name, $lead_id, $purpose);
   if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("do-edit-project create_project got project_id $project_id");
     $result = "Error";
@@ -85,7 +86,7 @@ if ($isnew) {
 
   // FIXME: Diff new vals from old?
 
-  $result = update_project($pa_url, $project_id, $name, $purpose);
+  $result = update_project($pa_url, $user, $project_id, $name, $purpose);
   if ($result == '') {
     error_log("update_project failed? empty...");
   } else {
@@ -93,7 +94,7 @@ if ($isnew) {
   }
 
   if ($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] != $newlead) {
-    $result2 = change_lead($pa_url, $project_id, $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID], $newlead);
+    $result2 = change_lead($pa_url, $user, $project_id, $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID], $newlead);
     if ($result2 == '') {
       $result = $result . "; Project Lead change failed? empty...?";
     } else {

@@ -81,7 +81,7 @@ function test_requests_for_url($url, $context_type, $context_id)
   error_log("Num_pending(post) = " . print_r($num_pending, true));
 }
 
-$project_ids = lookup_projects($pa_url);
+$project_ids = lookup_projects($pa_url, $signer);
 // error_log("PIDS = " . print_r($project_ids, true));
 $project_id = $project_ids[0]['project_id'];
 // error_log("PID = " . print_r($project_id, true));
