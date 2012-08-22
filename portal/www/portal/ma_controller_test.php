@@ -41,7 +41,7 @@ $user = geni_loadUser();
 $member_ids = get_member_ids($ma_url, Portal::getInstance());
 
 $member1 = $member_ids[0];
-register_ssh_key($ma_url, $member1, 'FILE', 'DESC', 'KEY');
+register_ssh_key($ma_url, $user, $member1, 'FILE', 'DESC', 'KEY');
 
 foreach($member_ids as $member_id) {
   error_log("Member_ID " . $member_id);

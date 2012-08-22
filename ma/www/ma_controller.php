@@ -71,7 +71,7 @@ function get_member_ids($args, $message)
   return generate_response(RESPONSE_ERROR::NONE, $ids, null);
 }
 
-function register_ssh_key($args)
+function register_ssh_key($args, $message)
 {
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
@@ -107,7 +107,7 @@ function lookup_ssh_keys($args, $message)
   return $rows;
 }
 
-function lookup_keys_and_certs($args)
+function lookup_keys_and_certs($args, $message)
 {
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   global $MA_INSIDE_KEY_TABLENAME;
@@ -155,7 +155,11 @@ class MAGuardFactory implements GuardFactory
     // As more guards accumulate, make this table-driven.
     if ($action === 'lookup_ssh_keys') {
       $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+    } elseif ($action === 'register_ssh_key') {
+      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
     } elseif ($action === 'get_member_ids') {
+      $result[] = new SignerAuthorityGuard($message);
+    } elseif ($action === 'lookup_keys_and_certs') {
       $result[] = new SignerAuthorityGuard($message);
     }
     return $result;

@@ -37,8 +37,8 @@ function get_member_ids($ma_url, $signer)
 }
 
 // Associate SSH public key with user
-function register_ssh_key($ma_url, $member_id, $filename, $description, 
-			  $ssh_key)
+function register_ssh_key($ma_url, $signer, $member_id, $filename,
+        $description, $ssh_key)
 {
   $register_ssh_key_message['operation'] = 'register_ssh_key';
   $register_ssh_key_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
@@ -60,7 +60,7 @@ function lookup_ssh_keys($ma_url, $signer, $member_id)
 }
 
 // Lookup inside keys/certs associated with a user UUID
-function lookup_keys_and_certs($ma_url, $member_uuid)
+function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
 {
   $lookup_keys_and_certs_message['operation'] = 'lookup_keys_and_certs';
   $lookup_keys_and_certs_message[MA_ARGUMENT::MEMBER_ID] = $member_uuid;
