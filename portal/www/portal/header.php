@@ -28,6 +28,8 @@ require_once('ma_client.php');
 require_once('sa_client.php');
 require_once('pa_client.php');
 require_once('starter-status-bar.php');
+require_once('session_cache.php');
+require_once('geni_syslog.php');
 
 /*----------------------------------------------------------------------
  * Tab Bar
@@ -90,6 +92,24 @@ function show_tab_bar($active_tab = '', $load_user=true)
   }
   echo '</ul>';
   echo '</div>';
+}
+
+/*
+ * We want to syslog whenever we have a new shib session ID
+ */
+$CURRENT_SHIB_ID_TAG = "CURRENT_SHIB_ID";
+$current_shib_id = $_SERVER["Shib-Session-ID"];
+if(!isset($_SESSION)) { session_start(); }
+$shib_id_changed = false;
+if(!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
+   $_SESSION[$CURRENT_SHIB_ID_TAG] != $current_shib_id) {
+  $shib_id_changed = true;
+}
+// error_log("NEW SHIB_ID = " . $current_shib_id);
+if ($shib_id_changed) {
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . 
+	      geni_loadUser()->PrettyName());
+  $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
 }
 
 /*----------------------------------------------------------------------

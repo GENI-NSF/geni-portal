@@ -366,7 +366,6 @@ function ensure_user_cache()
 
 if (!isset($_SESSION)) {
   session_start();
-  //  $_SESSION = array();
 }
 
 ?>
