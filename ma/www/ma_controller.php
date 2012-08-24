@@ -125,6 +125,91 @@ function lookup_keys_and_certs($args, $message)
 
 
 /**
+ * Verify that all keys in $keys exist in $search.
+ *
+ * @param unknown_type $search
+ * @param unknown_type $keys
+ * @param unknown_type $missing
+ * @return TRUE if all keys are in $search, FALSE otherwise.
+ */
+function verify_keys($search, $keys, &$missing)
+{
+  $missing = array();
+  foreach ($keys as $key) {
+    if (! array_key_exists($key, $search)) {
+      $missing[] = $key;
+    }
+  }
+  return $missing ? FALSE : TRUE;
+}
+
+
+/**
+ * Return new member id? Return full member record?
+ *
+ * @param unknown_type $args
+ * @param unknown_type $message
+ * @return NULL|unknown
+ */
+function create_account($args, $message)
+{
+  // Is this a valid signer?
+
+  // Are all the required keys present?
+  $required_keys = array(MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
+          MA_ATTRIBUTE_NAME::FIRST_NAME,
+          MA_ATTRIBUTE_NAME::LAST_NAME,
+          MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER);
+  if (! verify_keys($args, $required_keys, $missing)) {
+    // Error: some required keys are missing.
+    // FIXME: Signal an error.
+    // return NULL;
+  }
+
+  global $MA_MEMBER_TABLENAME;
+  global $MA_MEMBER_ATTRIBUTE_TABLENAME;
+  $conn = db_conn();
+  $member_id = make_uuid();
+  $sql = "insert into " . $MA_MEMBER_TABLENAME
+    . " ( " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
+    . ")  VALUES ("
+    . $conn->quote($member_id, 'text')
+    . ")";
+  $result = db_execute_statement($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    // An error occurred. Return the error result.
+    return $result;
+  }
+  foreach ($args[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+    $attr_value = $attr[MA_ATTRIBUTE::VALUE];
+    // Note: Use empty() instead of is_null() because it catches
+    // values that the DB Conn will convert to NULL.
+    if (empty($attr_value)) {
+      continue;
+    }
+    $sql = "insert into " . $MA_MEMBER_ATTRIBUTE_TABLENAME
+    . " ( " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
+    . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME
+    . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
+    . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED
+    . ")  VALUES ("
+    . $conn->quote($member_id, 'text')
+    . ", " . $conn->quote($attr[MA_ATTRIBUTE::NAME], 'text')
+    . ", " . $conn->quote($attr_value, 'text')
+    . ", " . $conn->quote($attr[MA_ATTRIBUTE::SELF_ASSERTED], 'boolean')
+    . ")";
+    $result = db_execute_statement($sql);
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      // An error occurred. Return the error result.
+      return $result;
+    }
+  }
+  $result = generate_response(RESPONSE_ERROR::NONE, $member_id, "");
+  return $result;
+}
+
+
+/**
  * This is more of a demonstration guard than anything else.
  * It really isn't an appropriate test, but gets the point
  * across that a user can't call certain methods, but an

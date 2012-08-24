@@ -29,6 +29,66 @@ require_once("file_utils.php");
 require_once("cert_utils.php");
 require_once("util.php");
 require_once("user.php");
+require_once("sr_constants.php");
+require_once("sr_client.php");
+require_once("ma_constants.php");
+require_once("ma_client.php");
+require_once("portal.php");
+
+
+/**
+ * Find an attribute value either in the ENV or in the POST.
+ *
+ * @param unknown_type $attr
+ * @param unknown_type $value
+ * @param unknown_type $self_asserted
+ * @return boolean
+ */
+function attrValue($attr, &$value, &$self_asserted) {
+  $value = null;
+  $self_asserted = null;
+  $result = false;
+  if (array_key_exists($attr, $_SERVER)) {
+    $value = $_SERVER[$attr];
+    $self_asserted = false;
+    $result = true;
+  } else if (array_key_exists($attr, $_POST)) {
+      $value = $_POST[$attr];
+      $self_asserted = true;
+      $result = true;
+  }
+  return $result;
+}
+
+
+$sr_url = get_sr_url();
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+
+attrValue('givenName', $first_name, $first_name_self_asserted);
+attrValue('sn', $last_name, $larst_name_self_asserted);
+attrValue('mail', $email_address, $email_address_self_asserted);
+attrValue('telephoneNumber', $telephone_number, $telephone_number_self_asserted);
+$attrs = array();
+$sa_attrs = array();
+$all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
+        'sn' => MA_ATTRIBUTE_NAME::LAST_NAME,
+        'mail' => MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
+        'telephoneNumber' => MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER,
+        'affiliation' => 'affiliation',
+        'eppn' => 'eppn',
+        'reference' => 'reference',
+        'reason' => 'reason',
+        'profile' => 'profile');
+foreach (array_keys($all_attrs) as $attr_name) {
+  if (attrValue($attr_name, $value, $self_asserted)) {
+    if ($self_asserted) {
+      $sa_attrs[$all_attrs[$attr_name]] = $value;
+    } else {
+      $attrs[$all_attrs[$attr_name]] = $value;
+    }
+  }
+}
+ma_create_account($ma_url, Portal::getInstance(), $attrs, $sa_attrs);
 
 function derive_username() {
   // See http://www.linuxjournal.com/article/9585
@@ -144,21 +204,6 @@ $identity_id = $rows[0]['identity_id'];
 //--------------------------------------------------
 // Add extra attributes
 //--------------------------------------------------
-function attrValue($attr, &$value, &$self_asserted) {
-  $value = null;
-  $self_asserted = null;
-  $result = false;
-  if (array_key_exists($attr, $_SERVER)) {
-    $value = $_SERVER[$attr];
-    $self_asserted = false;
-    $result = true;
-  } else if (array_key_exists($attr, $_POST)) {
-      $value = $_POST[$attr];
-      $self_asserted = true;
-      $result = true;
-  }
-  return $result;
-}
 
 $attrs = array('givenName','sn', 'mail','telephoneNumber', 'reference', 'reason', 'profile');
 // FIXME: Use filters to sanitize these

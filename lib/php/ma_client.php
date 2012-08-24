@@ -67,5 +67,24 @@ function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
   $keys_and_certs = put_message($ma_url, $lookup_keys_and_certs_message);
 }
 
-
+function ma_create_account($ma_url, $signer, $attrs,
+        $self_asserted_attrs)
+{
+  $all_attrs = array();
+  foreach (array_keys($attrs) as $attr_name) {
+    $all_attrs[] = array(MA_ATTRIBUTE::NAME => $attr_name,
+            MA_ATTRIBUTE::VALUE => $attrs[$attr_name],
+            MA_ATTRIBUTE::SELF_ASSERTED => FALSE);
+  }
+  foreach (array_keys($self_asserted_attrs) as $attr_name) {
+    $all_attrs[] = array(MA_ATTRIBUTE::NAME => $attr_name,
+            MA_ATTRIBUTE::VALUE => $self_asserted_attrs[$attr_name],
+            MA_ATTRIBUTE::SELF_ASSERTED => TRUE);
+  }
+  $msg['operation'] = 'create_account';
+  $msg[MA_ARGUMENT::ATTRIBUTES] = $all_attrs;
+  $result = put_message($ma_url, $msg,
+          $signer->certificate(), $signer->privateKey());
+  return $result;
+}
 ?>

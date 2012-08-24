@@ -29,40 +29,49 @@
 /* Set of arguments in calls to MA interface */
 class MA_ARGUMENT {
   const MEMBER_ID = "member_id";
-  const ROLE_TYPE = "role_type";
-  const CONTEXT_TYPE = "context_type";
-  const CONTEXT_ID = "context_id";
   const SSH_FILENAME = "ssh_filename";
   const SSH_DESCRIPTION = "ssh_description";
   const SSH_KEY = "ssh_key";
+  const ATTRIBUTES = "attributes";
 }
 
-/* Defined sets of role types */
-class ROLE_TYPE {
-  const OWNER = 0; // Has all privileges to entity, and is single POC
-  const ADMIN = 1; // Has all privileges to entity
-  const USER = 2; // Has read-write privileges to entity
-  const AUDITOR = 3; // Has read-only privileges to entity
+
+class MA_ATTRIBUTE {
+  const NAME = "name";
+  const VALUE = "value";
+  const SELF_ASSERTED = "self_asserted";
 }
 
-/* Defined sets of context types */
-class CONTEXT_TYPE {
-  const PROJECT = 0; // Context is a project, context_id is a project_id
-  const SLICE = 1;   // Context is a slice, context_id is a slice_idp
-  const SERVICE = 2; // This is a context-free type : no context_id supplied
-  const MEMBER = 3;  // This is a context-free type: no context_id supplied
+
+class MA_ATTRIBUTE_NAME {
+  const EMAIL_ADDRESS = "email_address";
+  const FIRST_NAME = "first_name";
+  const LAST_NAME = "last_name";
+  const TELEPHONE_NUMBER = "telephone_number";
 }
+
 
 /* Name of table containing per member attribute info */
 $MA_MEMBER_TABLENAME = "ma_member";
 
 /* Name of fields for member table */
 class MA_MEMBER_TABLE_FIELDNAME {
-  const MEMBER_ID = "member_id";
-  const ROLE_TYPE = "role_type";
-  const CONTEXT_TYPE = "context_type";
-  const CONTEXT_ID = "context_id";
+  const ID = "id";
+  const MEMBER_ID = MA_ARGUMENT::MEMBER_ID;
 }
+
+
+$MA_MEMBER_ATTRIBUTE_TABLENAME = "ma_member_attribute";
+
+/* Name of fields for member table */
+class MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME {
+  const ID = "id";
+  const MEMBER_ID = MA_ARGUMENT::MEMBER_ID;
+  const NAME = "name";
+  const VALUE = "value";
+  const SELF_ASSERTED = "self_asserted";
+}
+
 
 /* Name of table containing user SSH key info */
 $MA_SSH_KEY_TABLENAME = "ssh_key";
