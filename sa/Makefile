@@ -14,7 +14,8 @@ PSQL = /usr/bin/psql
 DB.USER = portal
 DB.HOST = localhost
 DB.DB = portal
-CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
+SCHEMA.SQL = db/postgresql/schema.sql
+DATA.SQL = db/postgresql/data.sql
 
 # Programs
 RSYNC = /usr/bin/rsync
@@ -42,7 +43,8 @@ install:
 	$(WWWINSTALL) -m 0644 apache2.conf $(DESTDIR)
 
 cleandb:
-	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
+	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(SCHEMA.SQL) $(DB.DB)
+	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(DATA.SQL) $(DB.DB)
 
 syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)

@@ -21,11 +21,8 @@ FQDN = $(shell /bin/hostname -f)
 SHORT_HOST = $(shell /bin/hostname -s)
 SED = /bin/sed
 
-ifeq ($(SHORT_HOST),panther)
-CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/gec14-data.sql
-else
-CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
-endif
+SCHEMA.SQL = db/postgresql/schema.sql
+DATA.SQL = db/postgresql/data.sql
 
 default:
 	echo "try make install"
@@ -108,7 +105,8 @@ install: $(LIB.DIR) www install-gcf
 	@echo
 
 cleandb:
-	cat $(CLEANDB.SQL) | $(PSQL) -U $(DB.USER) -h $(DB.HOST) $(DB.DB)
+	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(SCHEMA.SQL) $(DB.DB)
+	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(DATA.SQL) $(DB.DB)
 
 syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)

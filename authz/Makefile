@@ -9,13 +9,6 @@ LIBDIR=$(DESTDIR)/php
 DBDIR=$(DESTDIR)/db
 PGDIR=$(DBDIR)/postgresql
 
-PSQL = /usr/bin/psql
-DB.USER = portal
-DB.HOST = localhost
-DB.DB = portal
-CLEANDB.SQL = db/postgresql/schema.sql db/postgresql/data.sql
-
-
 # Programs
 RSYNC = /usr/bin/rsync
 INSTALL ?= /usr/bin/install
