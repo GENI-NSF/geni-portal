@@ -28,7 +28,6 @@ require_once('ma_client.php');
 require_once('sa_client.php');
 require_once('pa_client.php');
 require_once('starter-status-bar.php');
-require_once('session_cache.php');
 require_once('geni_syslog.php');
 
 /*----------------------------------------------------------------------
@@ -107,8 +106,11 @@ if(!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
 }
 // error_log("NEW SHIB_ID = " . $current_shib_id);
 if ($shib_id_changed) {
-  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . 
-	      geni_loadUser()->PrettyName());
+  $eppn = "No EPPN Found";
+  if (array_key_exists("eppn", $_SERVER)) {
+    $eppn = $_SERVER["eppn"];
+  }
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . eppn);
   $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
 }
 
