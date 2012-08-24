@@ -2,6 +2,9 @@
 -- avoid innocuous NOTICEs about automatic sequence creation
 set client_min_messages='WARNING';
 
+-- Tell psql to stop on an error. Default behavior is to proceed.
+\set ON_ERROR_STOP 1
+
 -- Drop table to recreate
 DROP TABLE IF EXISTS logging_entry;
 DROP TABLE IF EXISTS logging_entry_context;

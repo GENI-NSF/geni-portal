@@ -1,6 +1,9 @@
 -- avoid innocuous NOTICEs about automatic sequence creation
 set client_min_messages='WARNING';
 
+-- Tell psql to stop on an error. Default behavior is to proceed.
+\set ON_ERROR_STOP 1
+
 -- Tables for the PA (Project Authority)
 -- ----------------------------------------------------------------------
 --
