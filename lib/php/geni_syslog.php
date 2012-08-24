@@ -39,9 +39,21 @@ class GENI_SYSLOG_PREFIX
   const SR = "GENI-SR";
 }
 
+// Uses 'User' by default.
+class Syslog_State {
+  public static $openlog_called = false;
+}
+
+$DEFAULT_SYSLOG_FACILITY = LOG_USER;
 function geni_syslog($prefix, $message, $priority = LOG_INFO)
 {
-  syslog(LOG_USER, $prefix . " " . $message);
+  global $DEFAULT_SYSLOG_FACILITY;
+  if (Syslog_State::$openlog_called == false) {
+    openlog("", 0, $DEFAULT_SYSLOG_FACILITY);
+    Syslog_State::$openlog_called = true;
+    error_log("Called openlog");
+  }
+  syslog($priority, $prefix . " " . $message);
 }
 
 ?>
