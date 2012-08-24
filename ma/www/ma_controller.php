@@ -31,6 +31,7 @@ require_once('ma_constants.php');
 require_once('response_format.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('geni_syslog.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
@@ -124,6 +125,17 @@ function lookup_keys_and_certs($args, $message)
 }
 
 
+function attr_key_exists($key, $attrs) {
+  foreach ($attrs as $attr) {
+    if ($attr[MA_ATTRIBUTE::NAME] === $key
+            && (! empty($attr[MA_ATTRIBUTE::VALUE]))) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+
 /**
  * Verify that all keys in $keys exist in $search.
  *
@@ -136,7 +148,7 @@ function verify_keys($search, $keys, &$missing)
 {
   $missing = array();
   foreach ($keys as $key) {
-    if (! array_key_exists($key, $search)) {
+    if (! attr_key_exists($key, $search)) {
       $missing[] = $key;
     }
   }
@@ -156,16 +168,35 @@ function create_account($args, $message)
   // Is this a valid signer?
 
   // Are all the required keys present?
+  if (! array_key_exists(MA_ARGUMENT::ATTRIBUTES, $args)) {
+    $msg = ("Required parameter " . MA_ARGUMENT::ATTRIBUTES
+            . " does not exist.");
+    return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
+  }
   $required_keys = array(MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
           MA_ATTRIBUTE_NAME::FIRST_NAME,
           MA_ATTRIBUTE_NAME::LAST_NAME,
           MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER);
-  if (! verify_keys($args, $required_keys, $missing)) {
+  if (! verify_keys($args[MA_ARGUMENT::ATTRIBUTES], $required_keys, $missing)) {
     // Error: some required keys are missing.
     // FIXME: Signal an error.
     // return NULL;
+    $msg = "Some required attributes are missing:";
+    foreach ($missing as $req) {
+      $msg .= " " . $req;
+    }
+    return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
   }
 
+  $email_address = "<no email address found>";
+  foreach ($args[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+    if ($attr[MA_ATTRIBUTE::NAME] === MA_ATTRIBUTE_NAME::EMAIL_ADDRESS) {
+      $email_address = $attr[MA_ATTRIBUTE::VALUE];
+      break;
+    }
+  }
+  geni_syslog(GENI_SYSLOG_PREFIX::MA,
+          "Creating new account for email " . $email_address, LOG_INFO);
   global $MA_MEMBER_TABLENAME;
   global $MA_MEMBER_ATTRIBUTE_TABLENAME;
   $conn = db_conn();
