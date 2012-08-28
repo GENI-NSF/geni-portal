@@ -2,16 +2,15 @@
 # -*- mode:sh -*-
 
 if [ -z "$1" -o -z "$2" ]; then
-    echo "Usage: sign-auth-req <req file> <cert output file> <authority> [CA]" 1>&2
+    echo "Usage: sign-auth-req <req file> <cert output file> <urn> [CA]" 1>&2
     exit 1
 fi
 
 REQ=$1
 OUT=$2
-AUTHORITY=$3
+URN=$3
 
 
-SHORT_HOST=`/bin/hostname -s`
 FQDN=`/bin/hostname -f`
 
 
@@ -26,7 +25,6 @@ FQDN=`/bin/hostname -f`
 AUTH_URL=https://example.geni.net/info.html
 
 
-URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${AUTHORITY}"
 UUID=`openssl req -in ${REQ} -text -noout | grep 'Subject:' | sed -e 's/.*CN=\([^/$]*\).*/\1/g'`
 echo "first uuid = ${UUID}"
 UUID="URI:uuid:${UUID}"

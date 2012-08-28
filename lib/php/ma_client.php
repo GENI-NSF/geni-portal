@@ -118,4 +118,57 @@ function ma_lookup_members($ma_url, $signer, $lookup_attrs)
   }
   return $result;
 }
+
+function ma_list_clients($ma_url, $signer)
+{
+  $list_clients_message['operation'] = "ma_list_clients";
+  $result = put_message($ma_url, 
+			 $list_clients_message, 
+			 $signer->certificate(), 
+			 $signer->privateKey());
+  return $result;
+}
+
+function ma_list_authorized_clients($ma_url, $signer, $member_id)
+{
+  $list_authorized_clients_message['operation'] = "ma_list_authorized_clients";
+  $list_authorized_clients_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $result = put_message($ma_url, 
+			 $list_authorized_clients_message, 
+			 $signer->certificate(), 
+			 $signer->privateKey());
+  return $result;
+}
+
+function ma_authorize_client($ma_url, $signer, $member_id, $client_urn,
+			     $authorize_sense)
+{
+  //  error_log("MAAC = " . print_r($authorize_sense, true));
+
+  $authorize_client_message['operation'] = "ma_authorize_client";
+  $authorize_client_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $authorize_client_message[MA_ARGUMENT::CLIENT_URN] = $client_urn;
+  $authorize_client_message[MA_ARGUMENT::AUTHORIZE_SENSE] = $authorize_sense;
+  $result = put_message($ma_url, 
+			 $authorize_client_message, 
+			 $signer->certificate(), 
+			 $signer->privateKey());
+
+  //  error_log("MAAC.result = " . print_r($result, true));
+
+  return $result;
+}
+
+// Use ma_lookup_members interface
+function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
+{
+
+  $lookup_attrs[$member_id_key] = $member_id_value;
+  $result = ma_lookup_members($ma_url, $signer, $lookup_attrs);
+
+  //  error_log("MALI.RES = " . print_r($result, true));
+  return $result;
+}
+
+
 ?>

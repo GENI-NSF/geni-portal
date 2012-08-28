@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS ma_client CASCADE;
 
 CREATE TABLE ma_client (
   id SERIAL PRIMARY KEY,
+  client_name VARCHAR UNIQUE NOT NULL,
   client_urn VARCHAR UNIQUE NOT NULL
 );
 

@@ -1,0 +1,13 @@
+default:
+	echo "try make install"
+
+www:
+	echo "No www directory present. Exiting."
+	/bin/false
+
+/var/www/secure:
+	sudo /bin/mkdir /var/www/secure
+
+install: www
+	sudo /bin/cp www/kmtool/* /var/www/secure
+	sudo /bin/cp -r www/common /var/www

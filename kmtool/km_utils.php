@@ -36,4 +36,14 @@ function get_authorized_tools_for_user($user)
   return $temp_user_approved_tools;
 }
 
+// Authorize a given tool for given user
+function authorize_tool_for_user($user, $tool_urn)
+{
+}
+
+// Authorize a given tool for given user
+function deauthorize_tool_for_user($user, $tool_urn)
+{
+}
+
 ?>

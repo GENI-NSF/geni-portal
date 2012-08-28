@@ -29,10 +29,14 @@
 /* Set of arguments in calls to MA interface */
 class MA_ARGUMENT {
   const MEMBER_ID = "member_id";
+  const MEMBER_ID_KEY = "member_id_key";
+  const MEMBER_ID_VALUE = "member_id_value";
   const SSH_FILENAME = "ssh_filename";
   const SSH_DESCRIPTION = "ssh_description";
   const SSH_KEY = "ssh_key";
   const ATTRIBUTES = "attributes";
+  const CLIENT_URN = "client_urn";
+  const AUTHORIZE_SENSE = "authorize_sense";
 }
 
 
@@ -84,12 +88,24 @@ class MA_SSH_KEY_TABLE_FIELDNAME {
   const PUBLIC_KEY = "public_key";
 }
 
+/* Name of table containing registered MA clients (tools) */
+$MA_CLIENT_TABLENAME = "ma_client";
+
+/* Name of fields in MA_TABLE table */
+class MA_CLIENT_TABLE_FIELDNAME {
+  const ID = "id";
+  const CLIENT_NAME = "client_name";
+  const CLIENT_URN = "client_urn";
+}
+
 /* Name of table containing inside key info */
-$MA_INSIDE_KEY_TABLENAME = "inside_key";
+$MA_INSIDE_KEY_TABLENAME = "ma_inside_key";
 
 /* Name of fields of INSIDE KEY table */
 class MA_INSIDE_KEY_TABLE_FIELDNAME {
-  const ACCOUNT_ID = "account_id";
+  const ID = "id";
+  const CLIENT_URN = "client_urn";
+  const MEMBER_ID = "member_id";
   const PRIVATE_KEY = "private_key";
   const CERTIFICATE = "certificate";
 }

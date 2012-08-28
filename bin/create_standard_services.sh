@@ -6,6 +6,7 @@ FILENAME="/tmp/standard_services.$USER"
 
 BASEDIR=/usr/share/geni-ch
 
+SHORT_HOST=`/bin/hostname -s`
 FQDN=`hostname -f`
 
 ADMIN_EMAIL=portal-dev-admin@gpolab.bbn.com
@@ -43,6 +44,9 @@ function add_service {
     SVC_EMAIL=$2
     SVC_CA=$3
 
+    SVC_URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${SVC_NAME}"
+
+
     mkdir -p ${BASEDIR}/${SVC_NAME}
     SVC_CERT="${BASEDIR}/${SVC_NAME}/${SVC_NAME}-cert.pem"
     if [ ! -f "${SVC_CERT}" -o $FORCE == 1 ]; then
@@ -50,7 +54,7 @@ function add_service {
         SVC_KEY="${BASEDIR}/${SVC_NAME}/${SVC_NAME}-key.pem"
         SVC_REQ="${BASEDIR}/${SVC_NAME}/${SVC_NAME}-req.pem"
         ./mk-auth-req "${SVC_KEY}" "${SVC_REQ}" ${SVC_NAME} ${SVC_EMAIL}
-        ./sign-auth-req "${SVC_REQ}" "${SVC_CERT}" ${SVC_NAME} ${SVC_CA}
+        ./sign-auth-req "${SVC_REQ}" "${SVC_CERT}" ${SVC_URN} ${SVC_CA}
         NEW_CERTS=1
     else
         echo "${SVC_NAME} certificate already exists (use '-f' to overwrite)"
@@ -62,6 +66,13 @@ function add_service {
         SVC_URL=$5
         echo "${SVC_INSERT} (${SVC_TYPE}, '$SVC_URL', '${SVC_CERT}');" >> $FILENAME
     fi
+}
+
+function add_client_tool {
+    TOOL_NAME=$1
+    TOOL_URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${TOOL_NAME}"
+    echo "Creating tool $1 at URN $TOOL_URN" 
+    echo "insert into ma_client (client_name, client_urn) values ('$TOOL_NAME', '$TOOL_URN');" >> $FILENAME;
 }
 
 # Add the root cert location
@@ -76,6 +87,7 @@ add_service logging ${ADMIN_EMAIL} NO 5 "https://${FQDN}/logging/logging_control
 add_service cs ${ADMIN_EMAIL} NO 6 "https://${FQDN}/cs/cs_controller.php"
 add_service km ${ADMIN_EMAIL} NO 
 add_service portal ${ADMIN_EMAIL} NO
+add_client_tool portal
 
 # Link the MA cert to the trusted_roots for pgch
 TRUSTED_MA="${BASEDIR}/portal/gcf.d/trusted_roots/ma-cert.pem"
@@ -104,7 +116,7 @@ echo "insert into service_registry (service_type, service_url, service_name, ser
 sudo -u $SUDO_USER psql -U portal -h localhost portal < $FILENAME
 
 # Delete the temp file
-rm $FILENAME
+#rm $FILENAME
 
 if [ $NEW_CERTS == 1 ]; then
     echo ""

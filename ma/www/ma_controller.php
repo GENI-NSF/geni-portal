@@ -119,7 +119,7 @@ function lookup_keys_and_certs($args, $message)
     . " WHERE " 
     . MA_INSIDE_KEY_TABLE_FIELDNAME::ACCOUNT_ID 
     . "= '" . $member_id . "'";
-  error_log("LKAC.sql = " . $sql);
+  //  error_log("LKAC.sql = " . $sql);
   $row = db_fetch_row($sql);
   return $row;
 }
@@ -239,6 +239,105 @@ function create_account($args, $message)
   return $result;
 }
 
+/**
+ * Return list of all clients registered with MA as (name => URN) dictionary
+ */
+function ma_list_clients($args, $message)
+{
+  global $MA_CLIENT_TABLENAME;
+  $sql = "select " . MA_CLIENT_TABLE_FIELDNAME::CLIENT_NAME . ", " . 
+    MA_CLIENT_TABLE_FIELDNAME::CLIENT_URN . 
+    " from " . $MA_CLIENT_TABLENAME;
+
+  $rows = db_fetch_rows($sql);
+  $result = $rows;
+  //  error_log("ROWS = " . print_r($rows, true));
+  if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $result = array();
+    $rows = $rows[RESPONSE_ARGUMENT::VALUE];
+    foreach($rows as $row) {
+      $client_name = $row[MA_CLIENT_TABLE_FIELDNAME::CLIENT_NAME];
+      $client_urn = $row[MA_CLIENT_TABLE_FIELDNAME::CLIENT_URN];
+      $result[$client_name] = $client_urn;
+    }
+  }
+
+  //  error_log("MLC.RESULT= " . print_r($result, true));
+
+  return generate_response(RESPONSE_ERROR::NONE, $result, '');
+       
+}
+
+/**
+ * Return array of URNs of all tools 
+ * for which a given user (by ID) has authorized use
+ * and has generated inside keys
+ */
+function ma_list_authorized_clients($args, $message)
+{
+
+  global $MA_INSIDE_KEY_TABLENAME;
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+
+  //  error_log("MLAC.ARGS = " . print_r($args, true));
+
+  global $MA_INSIDE_KEY_TABlENAME;
+  $sql = "select " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN .
+    " from " . $MA_INSIDE_KEY_TABLENAME . 
+    " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . " = '$member_id'";
+
+  $rows = db_fetch_rows($sql);
+  $result = $rows;
+  //  error_log("ROWS = " . print_r($rows, true));
+  if ($rows[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $result = array();
+    $rows = $rows[RESPONSE_ARGUMENT::VALUE];
+    foreach($rows as $row) {
+      $client_urn = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN];
+      $result[] = $client_urn;
+    }
+  }
+
+  //  error_log("MLAC.RESULT= " . print_r($result, true));
+
+  return generate_response(RESPONSE_ERROR::NONE, $result, '');
+}
+
+/**
+ * Authorize (or deauthorize) a given tool for a given user
+ * if 'authorize_sense' is true, authorize (add line to ma_inside_key table)
+ * Otherwise, deauthorize (remove line from ma_inside_key table).
+ */
+function ma_authorize_client($args, $message)
+{
+
+  global $MA_INSIDE_KEY_TABLENAME;
+
+  //  error_log("MAC.ARGS = " . print_r($args, true));
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $client_urn = $args[MA_ARGUMENT::CLIENT_URN];
+  $authorize_sense = $args[MA_ARGUMENT::AUTHORIZE_SENSE];
+  $authorize_sense = ($authorize_sense != "false");
+
+  if ($authorize_sense) {
+    // Add member to ma_inside_key table
+    $sql = "insert into " . $MA_INSIDE_KEY_TABLENAME . 
+      " (" . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . ", " . 
+      MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . 
+      ") values ('$member_id', '$client_urn')";
+    $result = db_execute_statement($sql);
+  } else {
+    // Remove member from ma_inside_key table
+    $sql = "delete from " . $MA_INSIDE_KEY_TABLENAME . 
+      " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . "= '$member_id'" .
+      " and " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . " = '$client_urn'";
+    $result = db_execute_statement($sql);
+  }
+
+  return $result;
+}
 
 /* NOTE: This is an internal function and not part of the MA API function. */
 function get_member_info($member_id)
