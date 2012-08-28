@@ -240,6 +240,83 @@ function create_account($args, $message)
 }
 
 
+/* NOTE: This is an internal function and not part of the MA API function. */
+function get_member_info($member_id)
+{
+  global $MA_MEMBER_ATTRIBUTE_TABLENAME;
+  $conn = db_conn();
+  $sql = "select " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME
+  . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
+  . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED
+  . " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME
+  . " where " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
+  . " = " . $conn->quote($member_id, 'text');
+  $rows = db_fetch_rows($sql);
+  // Convert $rows to an array of member_ids
+  $attrs = array();
+  foreach ($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
+    $aname = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+    $avalue = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE];
+    $aself = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED];
+    // There must be a better way to convert to Boolean
+    $aself = ($aself !== "f");
+    $attr = array(MA_ATTRIBUTE::NAME => $aname,
+            MA_ATTRIBUTE::VALUE => $avalue,
+            MA_ATTRIBUTE::SELF_ASSERTED => $aself);
+    $attrs[] = $attr;
+  }
+  $result = array(MA_ARGUMENT::MEMBER_ID => $member_id,
+          MA_ARGUMENT::ATTRIBUTES => $attrs);
+  return $result;
+}
+
+
+function lookup_members($args, $message)
+{
+  global $MA_MEMBER_ATTRIBUTE_TABLENAME;
+  // Is this a valid signer?
+
+  // Are all the required keys present?
+  if (! array_key_exists(MA_ARGUMENT::ATTRIBUTES, $args)) {
+    $msg = ("Required parameter " . MA_ARGUMENT::ATTRIBUTES
+            . " does not exist.");
+    return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
+  }
+
+  $lookup_attrs = $args[MA_ARGUMENT::ATTRIBUTES];
+  $member_ids = NULL;
+  $conn = db_conn();
+  // TODO: Use a prepared statement
+  foreach ($lookup_attrs as $attr) {
+    // FIXME: validate the attr name against client attributes
+    $sql = "select " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
+    . " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME
+    . " where " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME
+    . " = " . $conn->quote($attr[MA_ATTRIBUTE::NAME], 'text')
+    . " and " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
+    . " = " . $conn->quote($attr[MA_ATTRIBUTE::VALUE], 'text');
+    $rows = db_fetch_rows($sql);
+    // Convert $rows to an array of member_ids
+    $ids = array();
+    foreach ($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
+      $ids[] = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
+    }
+    // intersect it with the existing member_ids
+    if (is_null($member_ids)) {
+      $member_ids = $ids;
+    } else {
+      $member_ids = array_intersect($member_ids, $ids);
+    }
+  }
+  geni_syslog(GENI_SYSLOG_PREFIX::MA,
+          "lookup_member found member ids: " . implode(", ", $member_ids));
+  $result = array();
+  foreach ($member_ids as $member_id) {
+    $result[] = get_member_info($member_id);
+  }
+  return generate_response(RESPONSE_ERROR::NONE, $result, "");
+}
+
 /**
  * This is more of a demonstration guard than anything else.
  * It really isn't an appropriate test, but gets the point

@@ -29,6 +29,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('user.php');
 require_once('portal.php');
+require_once('geni_syslog.php');
 
 error_log("MA TEST\n");
 
@@ -37,7 +38,31 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 $user = geni_loadUser();
 
+// CREATE ACCOUNT
+$attrs = array("eppn" => "phony@geni.net",
+        MA_ATTRIBUTE_NAME::EMAIL_ADDRESS => "phony@mail.geni.net",
+        MA_ATTRIBUTE_NAME::FIRST_NAME => "Charlie",
+        MA_ATTRIBUTE_NAME::LAST_NAME => "Brown",
+        MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER => "555-1212"
+  );
+$self_asserted_attrs = array("reason" => "testing");
+$member_id = ma_create_account($ma_url, Portal::getInstance(),
+         $attrs, $self_asserted_attrs);
+geni_syslog("MA-TEST", "ma_create_account got member_id = " . $member_id);
 
+// LOOKUP MEMBER
+$lookup_attrs = array("eppn" => "phony@geni.net");
+$result = ma_lookup_members($ma_url, Portal::getInstance(),
+        $lookup_attrs);
+foreach ($result as $member) {
+  geni_syslog("MA-TEST", "ma_lookup_member got " . $member->member_id
+          . " with eppn = " . $member->eppn);
+}
+
+// END TESTS
+relative_redirect('debug');
+
+// OLD TESTS BELOW HERE
 $member_ids = get_member_ids($ma_url, Portal::getInstance());
 
 $member1 = $member_ids[0];

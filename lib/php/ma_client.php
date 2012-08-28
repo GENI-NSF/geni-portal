@@ -87,4 +87,35 @@ function ma_create_account($ma_url, $signer, $attrs,
           $signer->certificate(), $signer->privateKey());
   return $result;
 }
+
+class Member {
+  function __construct() {
+  }
+}
+
+function ma_lookup_members($ma_url, $signer, $lookup_attrs)
+{
+  $attrs = array();
+  foreach (array_keys($lookup_attrs) as $attr_name) {
+    $attrs[] = array(MA_ATTRIBUTE::NAME => $attr_name,
+            MA_ATTRIBUTE::VALUE => $lookup_attrs[$attr_name]);
+  }
+  $msg['operation'] = 'lookup_members';
+  $msg[MA_ARGUMENT::ATTRIBUTES] = $attrs;
+  $members = put_message($ma_url, $msg,
+          $signer->certificate(), $signer->privateKey());
+  $result = array();
+  foreach ($members as $member_info) {
+    $member = new Member();
+    $member->member_id = $member_info[MA_ARGUMENT::MEMBER_ID];
+    $attrs = $member_info[MA_ARGUMENT::ATTRIBUTES];
+    foreach ($attrs as $attr) {
+      $aname = $attr[MA_ATTRIBUTE::NAME];
+      $aval = $attr[MA_ATTRIBUTE::VALUE];
+      $member->{$aname} = $aval;
+    }
+    $result[] = $member;
+  }
+  return $result;
+}
 ?>
