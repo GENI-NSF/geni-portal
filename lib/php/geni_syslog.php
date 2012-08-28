@@ -40,20 +40,25 @@ class GENI_SYSLOG_PREFIX
 }
 
 // Uses 'User' by default.
-class Syslog_State {
-  public static $openlog_called = false;
-}
+// class Syslog_State {
+//   public static $openlog_called = false;
+// }
 
-$DEFAULT_SYSLOG_FACILITY = LOG_USER;
+// $DEFAULT_SYSLOG_FACILITY = LOG_USER;
+// function geni_syslog($prefix, $message, $priority = LOG_INFO)
+// {
+//   global $DEFAULT_SYSLOG_FACILITY;
+//   if (Syslog_State::$openlog_called == false) {
+//     openlog("", 0, $DEFAULT_SYSLOG_FACILITY);
+//     Syslog_State::$openlog_called = true;
+//     error_log("Called openlog");
+//   }
+//   syslog($priority, $prefix . " " . $message);
+//   // syslog(LOG_USER | $priority, $prefix . " " . $message);
+// }
+
 function geni_syslog($prefix, $message, $priority = LOG_INFO)
 {
-  global $DEFAULT_SYSLOG_FACILITY;
-  if (Syslog_State::$openlog_called == false) {
-    openlog("", 0, $DEFAULT_SYSLOG_FACILITY);
-    Syslog_State::$openlog_called = true;
-    error_log("Called openlog");
-  }
-  syslog($priority, $prefix . " " . $message);
+  syslog(LOG_USER | $priority, $prefix . " " . $message);
 }
-
 ?>
