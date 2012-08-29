@@ -29,6 +29,9 @@ require_once 'sr_constants.php';
 require_once 'sr_client.php';
 require_once 'permission_manager.php';
 require 'abac.php';
+require_once 'ma_constants.php';
+require_once 'ma_client.php';
+require_once 'geni_syslog.php';
 
 const PERMISSION_MANAGER_TAG = 'permission_manager';
 const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
@@ -36,8 +39,6 @@ const PERMISSION_MANAGER_ACCOUNT_ID_TAG = 'permission_manager_account_id';
 
 const USER_CACHE_ACCOUNT_ID_TAG = 'user_cache_account_id';
 const USER_CACHE_EPPN_TAG = 'user_cache_eppn';
-
-$cs_url = null;
 
 //----------------------------------------------------------------------
 // A class representing an experimenter who has logged in
@@ -211,7 +212,7 @@ function incommon_attribute_redirect()
 }
 
 // Loads an experimenter from the database.
-function geni_loadUser($id='')
+function geni_loadUser_legacy($id='')
 {
   $conn = portal_conn();
   $conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
@@ -323,6 +324,67 @@ function geni_loadUser($id='')
   }
 
 }
+
+
+function geni_load_user_by_eppn($eppn)
+{
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  $attrs = array('eppn' => $eppn);
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
+  $ma_members = ma_lookup_members($ma_url, PORTAL::getInstance(), $attrs);
+  $count = count($ma_members);
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found " . $count . " members.");
+  if ($count == 0) {
+    // No user by that eppn. Pass to registration page.
+  } else if ($count > 1) {
+    // ERROR: multiple users under unique key
+  }
+  $member = $ma_members[0];
+  $user = new GeniUser();
+//  $user->identity_id = $row['identity_id'];
+//  $user->idp_url = $row['provider_url'];
+//  $user->affiliation = $row['affiliation'];
+  $user->eppn = $eppn;
+  $user->account_id = $member->member_id;
+  $user->attributes['mail'] = $member->email_address;
+  $user->attributes['givenName'] = $member->first_name;
+  $user->attributes['sn'] = $member->last_name;
+
+  // FIXME: MA should maintain a member status
+  $user->status = 'active';
+  return $user;
+}
+
+
+/**
+ * Dispatch function to support migration to MA.
+ * @param unknown_type $account_id
+ */
+function geni_loadUser($account_id = NULL)
+{
+  $use_ma = FALSE;
+  if (! $use_ma) {
+    return geni_loadUser_legacy(is_null($account_id) ? '' : $account_id);
+  }
+
+  $user = NULL;
+  // TODO: Look up in cache here
+  if (is_null($account_id)) {
+    if (! array_key_exists('eppn', $_SERVER)) {
+      // No eppn was found - redirect to a gentle error page
+      incommon_attribute_redirect();
+    }
+    // Load current user based on Shibboleth environment
+    $eppn = $_SERVER['eppn'];
+    $user = geni_load_user_by_eppn($eppn);
+  } else {
+    // Load user by account id
+    $user = geni_load_user_by_account_id($account_id);
+  }
+  // TODO: Insert user in cache here
+  return $user;
+}
+
 
 // Loads an exerimenter from the cache if there
 function geni_loadUser_cache($account_id, $eppn)
