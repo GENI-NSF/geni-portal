@@ -32,9 +32,17 @@ require_once('response_format.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('geni_syslog.php');
+require_once('signer.php');
+require_once('cs_constants.php');
+require_once('cs_client.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+
+$ma_cert_file = '/usr/share/geni-ch/ma/ma-cert.pem';
+$ma_key_file = '/usr/share/geni-ch/ma/ma-key.pem';
+$ma_signer = new Signer($ma_cert_file, $ma_key_file);
+
 
 /**
  * GENI Clearinghouse Member Authority (MA) controller interface
@@ -155,6 +163,21 @@ function verify_keys($search, $keys, &$missing)
   return $missing ? FALSE : TRUE;
 }
 
+function assert_project_lead($member_id)
+{
+  global $cs_url;
+  global $ma_signer;
+  $signer = NULL; /* this feels wrong */
+  $attribute = CS_ATTRIBUTE_TYPE::LEAD;
+  $context_type = CS_CONTEXT_TYPE::RESOURCE;
+  $context = NULL;
+  $result = create_assertion($cs_url, $ma_signer, $signer, $member_id,
+          $attribute, $context_type, $context);
+  geni_syslog(GENI_SYSLOG_PREFIX::MA,
+          "assert_project_lead got result " . print_r($result, TRUE));
+  return TRUE;
+}
+
 
 /**
  * Return new member id? Return full member record?
@@ -235,6 +258,8 @@ function create_account($args, $message)
       return $result;
     }
   }
+  // FIXME: Temporarily make all members project leads.
+  assert_project_lead($member_id);
   $result = generate_response(RESPONSE_ERROR::NONE, $member_id, "");
   return $result;
 }
@@ -459,9 +484,7 @@ class MAGuardFactory implements GuardFactory
 }
 
 
-$mycert = file_get_contents('/usr/share/geni-ch/ma/ma-cert.pem');
-$mykey = file_get_contents('/usr/share/geni-ch/ma/ma-key.pem');
 $guard_factory = new MAGuardFactory();
 handle_message("MA", $cs_url, default_cacerts(),
-        $mycert, $mykey, $guard_factory);
+        $ma_signer->certificate(), $ma_signer->privateKey(), $guard_factory);
 ?>
