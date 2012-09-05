@@ -11,3 +11,6 @@ www:
 install: www
 	sudo /bin/cp www/kmtool/* /var/www/secure
 	sudo /bin/cp -r www/common /var/www
+
+# empty target for compatibility
+cleandb:
