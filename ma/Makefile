@@ -35,7 +35,7 @@ install:
 	$(WWWINSTALL) -d $(DBDIR)
 	$(WWWINSTALL) -d $(PGDIR)
 	$(WWWINSTALL) -m 0644 www/* $(WWWDIR)
-#	$(WWWINSTALL) -m 0644 php/* $(LIBDIR)
+	$(WWWINSTALL) -m 0644 php/* $(LIBDIR)
 	$(WWWINSTALL) -m 0644 db/postgresql/* $(PGDIR)
 	$(WWWINSTALL) -m 0644 apache2.conf $(DESTDIR)
 
