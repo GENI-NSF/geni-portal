@@ -317,6 +317,7 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
 
   if (! isset($url) || is_null($url) || trim($url) == '') {
     error_log("put_message error: empty URL");
+    throw new ErrorException("put_message: cannot send message to empty URL");
     return null;
   }
 
