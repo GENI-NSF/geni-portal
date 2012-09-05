@@ -32,6 +32,7 @@ require 'abac.php';
 require_once 'ma_constants.php';
 require_once 'ma_client.php';
 require_once 'geni_syslog.php';
+require_once 'portal.php';
 
 const PERMISSION_MANAGER_TAG = 'permission_manager';
 const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
@@ -331,11 +332,12 @@ function geni_load_user_by_eppn($eppn)
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   $attrs = array('eppn' => $eppn);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
-  $ma_members = ma_lookup_members($ma_url, PORTAL::getInstance(), $attrs);
+  $ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
   $count = count($ma_members);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found " . $count . " members.");
   if ($count == 0) {
-    // No user by that eppn. Pass to registration page.
+    // New identity, go to registration page
+    relative_redirect("register.php");
   } else if ($count > 1) {
     // ERROR: multiple users under unique key
   }
@@ -349,6 +351,7 @@ function geni_load_user_by_eppn($eppn)
   $user->attributes['mail'] = $member->email_address;
   $user->attributes['givenName'] = $member->first_name;
   $user->attributes['sn'] = $member->last_name;
+  $user->username = $member->username;
 
   // FIXME: MA should maintain a member status
   $user->status = 'active';

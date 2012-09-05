@@ -52,6 +52,7 @@ class MA_ATTRIBUTE_NAME {
   const FIRST_NAME = "first_name";
   const LAST_NAME = "last_name";
   const TELEPHONE_NUMBER = "telephone_number";
+  const USERNAME = "username";
 }
 
 
