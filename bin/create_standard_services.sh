@@ -70,7 +70,7 @@ function add_service {
 
 function add_client_tool {
     TOOL_NAME=$1
-    TOOL_URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${TOOL_NAME}"
+    TOOL_URN="urn:publicid:IDN+${SHORT_HOST}+authority+${TOOL_NAME}"
     echo "Creating tool $1 at URN $TOOL_URN" 
     echo "insert into ma_client (client_name, client_urn) values ('$TOOL_NAME', '$TOOL_URN');" >> $FILENAME;
 }
