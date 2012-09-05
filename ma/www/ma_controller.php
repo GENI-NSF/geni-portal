@@ -120,20 +120,23 @@ function lookup_ssh_keys($args, $message)
 
 function lookup_keys_and_certs($args, $message)
 {
-  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   global $MA_INSIDE_KEY_TABLENAME;
+  $client_urn = $message->signerUrn();
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $conn = db_conn();
   $sql = "select " 
     . MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY . ", "
     . MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE 
     . " FROM " . $MA_INSIDE_KEY_TABLENAME
     . " WHERE " 
-    . MA_INSIDE_KEY_TABLE_FIELDNAME::ACCOUNT_ID 
-    . "= '" . $member_id . "'";
+    . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID
+    . " = " . $conn->quote($member_id, 'text')
+    . " and " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN
+    . " = " . $conn->quote($client_urn, 'text');
   //  error_log("LKAC.sql = " . $sql);
   $row = db_fetch_row($sql);
   return $row;
 }
-
 
 
 /**
