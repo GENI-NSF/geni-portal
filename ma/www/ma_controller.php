@@ -35,6 +35,7 @@ require_once('geni_syslog.php');
 require_once('signer.php');
 require_once('cs_constants.php');
 require_once('cs_client.php');
+require_once('cert_utils.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
@@ -239,6 +240,21 @@ function derive_username($email_address) {
   throw new Exception("Unable to find a username based on $username");
 }
 
+function make_member_urn($username)
+{
+  global $ma_signer;
+  $ma_urn = urn_from_cert($ma_signer->certificate());
+  parse_urn($ma_urn, $ma_authority, $ma_type, $ma_name);
+  return make_urn($ma_authority, 'user', $username);
+}
+
+function make_member_urn_attribute($username)
+{
+  $urn = make_member_urn($username);
+  return array(MA_ATTRIBUTE::NAME => MA_ATTRIBUTE_NAME::URN,
+          MA_ATTRIBUTE::VALUE => $urn,
+          MA_ATTRIBUTE::SELF_ASSERTED => false);
+}
 
 /**
  * Return new member id? Return full member record?
@@ -287,6 +303,7 @@ function create_account($args, $message)
           MA_ATTRIBUTE::VALUE => $username,
           MA_ATTRIBUTE::SELF_ASSERTED => FALSE);
   $attributes[] = $username_attr;
+  $attributes[] = make_member_urn_attribute($username);
   global $MA_MEMBER_TABLENAME;
   global $MA_MEMBER_ATTRIBUTE_TABLENAME;
   $conn = db_conn();
@@ -396,6 +413,28 @@ function ma_list_authorized_clients($args, $message)
   return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
 
+function make_inside_cert_key($member_id, $client_urn, &$cert, &$key) {
+  // Not using client urn yet
+  global $ma_cert_file, $ma_key_file;
+  $cert = NULL;
+  $key = NULL;
+  $email = NULL;
+  $urn = NULL;
+  $info = get_member_info($member_id);
+  foreach ($info[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+    if ($attr[MA_ATTRIBUTE::NAME] === MA_ATTRIBUTE_NAME::EMAIL_ADDRESS) {
+      $email = $attr[MA_ATTRIBUTE::VALUE];
+    } elseif ($attr[MA_ATTRIBUTE::NAME] === MA_ATTRIBUTE_NAME::URN) {
+      $urn = $attr[MA_ATTRIBUTE::VALUE];
+    }
+  }
+  make_cert_and_key($member_id, $email, $urn,
+          $ma_cert_file, $ma_key_file,
+          &$cert, &$key);
+  return true;
+}
+
+
 /**
  * Authorize (or deauthorize) a given tool for a given user
  * if 'authorize_sense' is true, authorize (add line to ma_inside_key table)
@@ -413,12 +452,21 @@ function ma_authorize_client($args, $message)
   $authorize_sense = $args[MA_ARGUMENT::AUTHORIZE_SENSE];
   $authorize_sense = ($authorize_sense != "false");
 
+  $conn = db_conn();
   if ($authorize_sense) {
     // Add member to ma_inside_key table
-    $sql = "insert into " . $MA_INSIDE_KEY_TABLENAME . 
-      " (" . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . ", " . 
-      MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . 
-      ") values ('$member_id', '$client_urn')";
+    make_inside_cert_key($member_id, $client_urn, $cert, $key);
+    $sql = ("insert into " . $MA_INSIDE_KEY_TABLENAME
+            . " (" . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID
+            . ", " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN
+            . ", " . MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE
+            . ", " . MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY
+            . ") values ("
+            . $conn->quote($member_id, 'text')
+            . ", " . $conn->quote($client_urn, 'text')
+            . ", " . $conn->quote($cert, 'text')
+            . ", " . $conn->quote($key, 'text')
+            . ")");
     $result = db_execute_statement($sql);
   } else {
     // Remove member from ma_inside_key table
