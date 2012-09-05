@@ -64,7 +64,9 @@ function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
 {
   $lookup_keys_and_certs_message['operation'] = 'lookup_keys_and_certs';
   $lookup_keys_and_certs_message[MA_ARGUMENT::MEMBER_ID] = $member_uuid;
-  $keys_and_certs = put_message($ma_url, $lookup_keys_and_certs_message);
+  $keys_and_certs = put_message($ma_url, $lookup_keys_and_certs_message,
+          $signer->certificate(), $signer->privateKey());
+  return $keys_and_certs;
 }
 
 function ma_create_account($ma_url, $signer, $attrs,
