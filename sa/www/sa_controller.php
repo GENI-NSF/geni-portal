@@ -293,6 +293,16 @@ function create_slice($args, $message)
     return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid owner ID");
   }
 
+  if((!isset($slice_name)) || 
+     (is_null($slice_name)) || 
+     ($slice_name == '') ||
+     (!is_valid_slice_name($slice_name)))
+    {
+      error_log("Illegal slice name $slice_name");
+      return generate_response(RESPONSE_ERROR::DATABASE, null, 
+			       "Cannot create slice with invalid slice name $slice_name");
+    }
+
   $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME 
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = '" . $slice_name . "'" 
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'";

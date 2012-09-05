@@ -101,4 +101,17 @@ class SA_ACTION {
   const LIST_RESOURCES = 'list_resources';
 }
 
+// Per the AM API V3:
+// A slice name must
+// Have length < 19
+// Consist of only alphanumerics and hyphens
+// Not begin with a hyphen
+function is_valid_slice_name($slice_name)
+{
+  $pattern = '/^[a-zA-Z0-9][-a-zA-Z0-9]{0,18}$/';
+  return preg_match($pattern, $slice_name);
+}
+
+
+
 ?>

@@ -34,6 +34,7 @@ require_once('pa_client.php');
 require_once("sr_constants.php");
 require_once("sr_client.php");
 require_once("sa_client.php");
+require_once('sa_constants.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -62,16 +63,6 @@ if (!is_null($slice_name) && ($slice_name != '') && !is_valid_slice_name($slice_
   error_log("createslice: invalid slice name from GET: " . $slice_name);
   $_SESSION['lastmessage'] = "Invalid slice name $slice_name";
   relative_redirect("home.php");
-}
-
-// A slice name must
-// Have length < 19
-// Consist of only alphanumerics and hyphens
-// Not begin with a hyphen
-function is_valid_slice_name($slice_name)
-{
-  $pattern = '/^[a-zA-Z0-9][-a-zA-Z0-9]{0,18}$/';
-  return preg_match($pattern, $slice_name);
 }
 
 function sa_create_slice($user, $slice_name, $project_id, $project_name, $description='')
