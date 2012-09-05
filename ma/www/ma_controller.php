@@ -508,6 +508,32 @@ function lookup_members($args, $message)
   return generate_response(RESPONSE_ERROR::NONE, $result, "");
 }
 
+function lookup_member_by_id($args, $message)
+{
+  global $MA_MEMBER_TABLENAME;
+  // Is this a valid signer?
+
+  // Are all the required keys present?
+  if (! array_key_exists(MA_ARGUMENT::MEMBER_ID, $args)) {
+    $msg = ("Required parameter " . MA_ARGUMENT::MEMBER_ID
+            . " does not exist.");
+    return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
+  }
+  $conn = db_conn();
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $sql = ("select " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
+          . " from " . $MA_MEMBER_TABLENAME
+          . " where " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text'));
+  $response = db_fetch_row($sql);
+  if ($response[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $response;
+  } else {
+    return generate_response(RESPONSE_ERROR::NONE,
+            get_member_info($member_id), "");
+  }
+}
+
 /**
  * This is more of a demonstration guard than anything else.
  * It really isn't an appropriate test, but gets the point

@@ -91,6 +91,15 @@ function ma_create_account($ma_url, $signer, $attrs,
 class Member {
   function __construct() {
   }
+  function init_from_record($record) {
+    $this->member_id = $record[MA_ARGUMENT::MEMBER_ID];
+    $attrs = $record[MA_ARGUMENT::ATTRIBUTES];
+    foreach ($attrs as $attr) {
+      $aname = $attr[MA_ATTRIBUTE::NAME];
+      $aval = $attr[MA_ATTRIBUTE::VALUE];
+      $this->{$aname} = $aval;
+    }
+  }
 }
 
 function ma_lookup_members($ma_url, $signer, $lookup_attrs)
@@ -107,13 +116,7 @@ function ma_lookup_members($ma_url, $signer, $lookup_attrs)
   $result = array();
   foreach ($members as $member_info) {
     $member = new Member();
-    $member->member_id = $member_info[MA_ARGUMENT::MEMBER_ID];
-    $attrs = $member_info[MA_ARGUMENT::ATTRIBUTES];
-    foreach ($attrs as $attr) {
-      $aname = $attr[MA_ATTRIBUTE::NAME];
-      $aval = $attr[MA_ATTRIBUTE::VALUE];
-      $member->{$aname} = $aval;
-    }
+    $member->init_from_record($member_info);
     $result[] = $member;
   }
   return $result;
@@ -170,5 +173,14 @@ function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
   return $result;
 }
 
-
+function ma_lookup_member_by_id($ma_url, $signer, $member_id)
+{
+  $msg['operation'] = 'lookup_member_by_id';
+  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $result = put_message($ma_url, $msg,
+          $signer->certificate(), $signer->privateKey());
+  $member = new Member();
+  $member->init_from_record($result);
+  return $member;
+}
 ?>

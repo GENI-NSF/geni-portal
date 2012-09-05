@@ -62,6 +62,20 @@ class GeniUser
     $this->private_key = NULL;
   }
 
+  function init_from_member($member) {
+    //  $this->identity_id = $row['identity_id'];
+    //  $this->idp_url = $row['provider_url'];
+    //  $this->affiliation = $row['affiliation'];
+    $this->eppn = $member->eppn;
+    $this->account_id = $member->member_id;
+    $this->attributes['mail'] = $member->email_address;
+    $this->attributes['givenName'] = $member->first_name;
+    $this->attributes['sn'] = $member->last_name;
+    $this->username = $member->username;
+    // FIXME: MA should maintain a member status
+    $this->status = 'active';
+  }
+
   // If we haven't re-read the permissions in this many seconds, re-read
   //  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = 30; 
 
@@ -343,18 +357,16 @@ function geni_load_user_by_eppn($eppn)
   }
   $member = $ma_members[0];
   $user = new GeniUser();
-//  $user->identity_id = $row['identity_id'];
-//  $user->idp_url = $row['provider_url'];
-//  $user->affiliation = $row['affiliation'];
-  $user->eppn = $eppn;
-  $user->account_id = $member->member_id;
-  $user->attributes['mail'] = $member->email_address;
-  $user->attributes['givenName'] = $member->first_name;
-  $user->attributes['sn'] = $member->last_name;
-  $user->username = $member->username;
+  $user->init_from_member($member);
+  return $user;
+}
 
-  // FIXME: MA should maintain a member status
-  $user->status = 'active';
+function geni_load_user_by_member_id($member_id)
+{
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  $member = ma_lookup_member_by_id($ma_url, Portal::getInstance(), $member_id);
+  $user = new GeniUser();
+  $user->init_from_member($member);
   return $user;
 }
 
@@ -382,7 +394,7 @@ function geni_loadUser($account_id = NULL)
     $user = geni_load_user_by_eppn($eppn);
   } else {
     // Load user by account id
-    $user = geni_load_user_by_account_id($account_id);
+    $user = geni_load_user_by_member_id($account_id);
   }
   // TODO: Insert user in cache here
   return $user;
