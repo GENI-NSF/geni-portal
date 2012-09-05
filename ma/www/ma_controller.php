@@ -36,6 +36,7 @@ require_once('signer.php');
 require_once('cs_constants.php');
 require_once('cs_client.php');
 require_once('cert_utils.php');
+require_once('ma_utils.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
@@ -164,10 +165,8 @@ function verify_keys($search, $keys, &$missing)
   return $missing ? FALSE : TRUE;
 }
 
-function assert_project_lead($member_id)
+function assert_project_lead($cs_url, $ma_signer, $member_id)
 {
-  global $cs_url;
-  global $ma_signer;
   $signer = NULL; /* this feels wrong */
   $attribute = CS_ATTRIBUTE_TYPE::LEAD;
   $context_type = CS_CONTEXT_TYPE::RESOURCE;
@@ -240,17 +239,16 @@ function derive_username($email_address) {
   throw new Exception("Unable to find a username based on $username");
 }
 
-function make_member_urn($username)
+function make_member_urn($ma_signer, $username)
 {
-  global $ma_signer;
   $ma_urn = urn_from_cert($ma_signer->certificate());
   parse_urn($ma_urn, $ma_authority, $ma_type, $ma_name);
   return make_urn($ma_authority, 'user', $username);
 }
 
-function make_member_urn_attribute($username)
+function make_member_urn_attribute($ma_signer, $username)
 {
-  $urn = make_member_urn($username);
+  $urn = make_member_urn($ma_signer, $username);
   return array(MA_ATTRIBUTE::NAME => MA_ATTRIBUTE_NAME::URN,
           MA_ATTRIBUTE::VALUE => $urn,
           MA_ATTRIBUTE::SELF_ASSERTED => false);
@@ -265,6 +263,8 @@ function make_member_urn_attribute($username)
  */
 function create_account($args, $message)
 {
+  global $cs_url;
+  global $ma_signer;
   // Is this a valid signer?
 
   // Are all the required keys present?
@@ -303,7 +303,7 @@ function create_account($args, $message)
           MA_ATTRIBUTE::VALUE => $username,
           MA_ATTRIBUTE::SELF_ASSERTED => FALSE);
   $attributes[] = $username_attr;
-  $attributes[] = make_member_urn_attribute($username);
+  $attributes[] = make_member_urn_attribute($ma_signer, $username);
   global $MA_MEMBER_TABLENAME;
   global $MA_MEMBER_ATTRIBUTE_TABLENAME;
   $conn = db_conn();
@@ -343,7 +343,7 @@ function create_account($args, $message)
     }
   }
   // FIXME: Temporarily make all members project leads.
-  assert_project_lead($member_id);
+  assert_project_lead($cs_url, $ma_signer, $member_id);
   $result = generate_response(RESPONSE_ERROR::NONE, $member_id, "");
   return $result;
 }
@@ -413,9 +413,9 @@ function ma_list_authorized_clients($args, $message)
   return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
 
-function make_inside_cert_key($member_id, $client_urn, &$cert, &$key) {
+function make_inside_cert_key($member_id, $client_urn, $signer_cert_file,
+        $signer_key_file, &$cert, &$key) {
   // Not using client urn yet
-  global $ma_cert_file, $ma_key_file;
   $cert = NULL;
   $key = NULL;
   $email = NULL;
@@ -429,7 +429,7 @@ function make_inside_cert_key($member_id, $client_urn, &$cert, &$key) {
     }
   }
   make_cert_and_key($member_id, $email, $urn,
-          $ma_cert_file, $ma_key_file,
+          $signer_cert_file, $signer_key_file,
           &$cert, &$key);
   return true;
 }
@@ -442,7 +442,8 @@ function make_inside_cert_key($member_id, $client_urn, &$cert, &$key) {
  */
 function ma_authorize_client($args, $message)
 {
-
+  global $ma_cert_file;
+  global $ma_key_file;
   global $MA_INSIDE_KEY_TABLENAME;
 
   //  error_log("MAC.ARGS = " . print_r($args, true));
@@ -455,7 +456,8 @@ function ma_authorize_client($args, $message)
   $conn = db_conn();
   if ($authorize_sense) {
     // Add member to ma_inside_key table
-    make_inside_cert_key($member_id, $client_urn, $cert, $key);
+    make_inside_cert_key($member_id, $client_urn, $ma_cert_file,
+            $ma_key_file, $cert, $key);
     $sql = ("insert into " . $MA_INSIDE_KEY_TABLENAME
             . " (" . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID
             . ", " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN
