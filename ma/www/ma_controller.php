@@ -279,12 +279,14 @@ function create_account($args, $message)
       break;
     }
   }
+  $attributes = $args[MA_ARGUMENT::ATTRIBUTES];
   geni_syslog(GENI_SYSLOG_PREFIX::MA,
           "Creating new account for email " . $email_address, LOG_INFO);
   $username = derive_username($email_address);
-  $attributes = $args[MA_ARGUMENT::ATTRIBUTES];
-  // Note: this overwrites an entry provided by the client.
-  $attributes[MA_ATTRIBUTE_NAME::USERNAME] = $username;
+  $username_attr = array(MA_ATTRIBUTE::NAME => MA_ATTRIBUTE_NAME::USERNAME,
+          MA_ATTRIBUTE::VALUE => $username,
+          MA_ATTRIBUTE::SELF_ASSERTED => FALSE);
+  $attributes[] = $username_attr;
   global $MA_MEMBER_TABLENAME;
   global $MA_MEMBER_ATTRIBUTE_TABLENAME;
   $conn = db_conn();
@@ -299,7 +301,7 @@ function create_account($args, $message)
     // An error occurred. Return the error result.
     return $result;
   }
-  foreach ($args[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+  foreach ($attributes as $attr) {
     $attr_value = $attr[MA_ATTRIBUTE::VALUE];
     // Note: Use empty() instead of is_null() because it catches
     // values that the DB Conn will convert to NULL.
