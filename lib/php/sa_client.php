@@ -51,7 +51,7 @@ function get_slice_credential($sa_url, $signer, $slice_id, $cert=NULL)
 
   if (! isset($cert) || is_null($cert) || $cert == "") {
     error_log("Cannot get_slice_cred without a user cert");
-    return null;
+    throw new Exception("Cannot get_slice_cred without a user cert");
   }
   $message['operation'] = 'get_slice_credential';
   $message[SA_ARGUMENT::SLICE_ID] = $slice_id;
