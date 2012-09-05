@@ -188,9 +188,11 @@ class GeniUser
   }
 
   private function getInsideKeyPair() {
-    $row = db_fetch_inside_private_key_cert($this->account_id);
-    $this->certificate = $row['certificate'];
-    $this->private_key = $row['private_key'];
+    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+    $row = lookup_keys_and_certs($ma_url, Portal::getInstance(),
+            $this->account_id);
+    $this->certificate = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE];
+    $this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
   }
 
   function certificate() {
