@@ -76,12 +76,14 @@ if ($error != NULL || count($_POST) == 0) {
 
 // The public key is in $_FILES["file"]["tmp_name"]
 $contents = file_get_contents($_FILES["file"]["tmp_name"]);
+$filename = $_FILES["file"]["name"];
 $description = NULL;
 if (array_key_exists("description", $_POST)) {
   $description = $_POST["description"];
 }
-insertSshKey($user->account_id, $contents, $_FILES["file"]["name"],
-             $description, NULL);
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+register_ssh_key($ma_url, $user, $user->account_id, $filename, $description,
+        $contents);
 
 $_SESSION['lastmessage'] = "Uploaded SSH public key from " . $_FILES["file"]["name"];
 
