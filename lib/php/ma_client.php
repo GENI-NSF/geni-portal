@@ -38,13 +38,16 @@ function get_member_ids($ma_url, $signer)
 
 // Associate SSH public key with user
 function register_ssh_key($ma_url, $signer, $member_id, $filename,
-        $description, $ssh_key)
+        $description, $ssh_public_key, $ssh_private_key = NULL)
 {
   $register_ssh_key_message['operation'] = 'register_ssh_key';
   $register_ssh_key_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
   $register_ssh_key_message[MA_ARGUMENT::SSH_FILENAME] = $filename;
   $register_ssh_key_message[MA_ARGUMENT::SSH_DESCRIPTION] = $description;
-  $register_ssh_key_message[MA_ARGUMENT::SSH_KEY] = $ssh_key;
+  $register_ssh_key_message[MA_ARGUMENT::SSH_PUBLIC_KEY] = $ssh_public_key;
+  if (! is_null($ssh_private_key)) {
+    $register_ssh_key_message[MA_ARGUMENT::SSH_PRIVATE_KEY] = $ssh_private_key;
+  }
   $result = put_message($ma_url, $register_ssh_key_message);
   return $result;
 }
@@ -57,6 +60,36 @@ function lookup_ssh_keys($ma_url, $signer, $member_id)
   $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message,
           $signer->certificate(), $signer->privateKey());
   return $ssh_keys;
+}
+
+// Lookup a single SSH key by id
+function lookup_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
+{
+  $keys = lookup_ssh_keys($ma_url, $signer, $member_id);
+  foreach ($keys as $key) {
+    if ($key[MA_SSH_KEY_TABLE_FIELDNAME::ID] === $ssh_key_id) {
+      return $key;
+    }
+  }
+  // No key found, return NULL
+  return NULL;
+}
+
+function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
+        $filename, $description)
+{
+  geni_syslog(GENI_SYSLOG_PREFIX::MA,
+          "update_ssh_key is not yet implemented.");
+  // For now, return the key id.
+  // FIXME: return the updated ssh key as from lookup_ssh_key
+  return $ssh_key_id;
+}
+
+function delete_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
+{
+  geni_syslog(GENI_SYSLOG_PREFIX::MA,
+          "delete_ssh_key is not yet implemented.");
+  return true;
 }
 
 // Lookup inside keys/certs associated with a user UUID
