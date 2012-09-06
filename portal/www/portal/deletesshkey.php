@@ -42,13 +42,14 @@ if (array_key_exists('id', $_GET)) {
 }
 
 if (is_null($key_id)) {
-  portal_log("deleteSshKeys: No key id available");
+  portal_log("delete ssh key: No key id available");
   relative_redirect('home.php');
 }
-portal_log("deleteSshKeys: key id = $key_id");
+portal_log("delete ssh key: key id = $key_id");
 
-$result = deleteSshKeys($user->account_id, $key_id);
-portal_log("deleteSshKeys result = " . print_r($result, true));
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$result = delete_ssh_key($ma_url, $user, $user->account_id, $key_id);
+portal_log("delete ssh key result = " . print_r($result, true));
 
 $_SESSION['lastmessage'] = "Deleted SSH Key $key_id: $result";
 

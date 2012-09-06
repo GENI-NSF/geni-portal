@@ -26,6 +26,8 @@ require_once("settings.php");
 require_once("user.php");
 require_once("header.php");
 require_once("cert_utils.php");
+require_once("ma_client.php");
+require_once("sr_client.php");
 
 // FIXME: JS to validate PW at client
 
@@ -128,7 +130,10 @@ $private_key = file_get_contents($privatekeyfile);
 $public_key = file_get_contents($publickeyfile);
 /* This is the name of the file on the experimenter's machine. */
 $filename = "id_geni_ssh_rsa";
-insertSshKey($user->account_id, $public_key, $filename, "Generated SSH keypair", $private_key);
+$description = "Generated SSH keypair";
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+register_ssh_key($ma_url, $user, $user->account_id, $filename, $description,
+        $public_key, $private_key);
 
 if (True) {
   $_SESSION['lastmessage'] = "Generated SSH keypair - now download the private key";

@@ -80,7 +80,9 @@ if (array_key_exists('id', $_REQUEST)
   print "Got the form";
   print "<br>Name = " . $_REQUEST['name'];
   print "<br>Description = " . $_REQUEST['description'];
-  $result = updateSshKey($user->account_id, $_REQUEST['id'], $_REQUEST['name'], $_REQUEST['description']);
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  $result = update_ssh_key($ma_url, $user, $user->account_id,
+            $_REQUEST['id'], $_REQUEST['name'], $_REQUEST['description']);
   $_SESSION['lastmessage'] = "Updated SSH keypair ($result)";
   relative_redirect('profile.php');
 } else {
@@ -88,7 +90,9 @@ if (array_key_exists('id', $_REQUEST)
   show_header('GENI Portal: Profile', $TAB_PROFILE);
   print "<h1>Edit SSH Key</h1>";
   if (array_key_exists('id', $_REQUEST)) {
-    $ssh_key = fetchSshKey($user->account_id, $_REQUEST['id']);
+    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+    $ssh_key = lookup_ssh_key($ma_url, $user, $user->account_id,
+            $_REQUEST['id']);
     show_ssh_edit_form($ssh_key, $_SERVER['HTTP_REFERER']);
     js_delete_ssh_key();
     $delete_sshkey_url = relative_url('deletesshkey.php?');
