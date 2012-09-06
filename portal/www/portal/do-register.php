@@ -272,22 +272,6 @@ if (PEAR::isError($result)) {
 }
 
 // --------------------------------------------------
-// Create new private key and certificate ("inside keys")
-// --------------------------------------------------
-$user = geni_loadUser();
-$email_addr = $user->email();
-$urn = $user->urn();
-$signer_cert_file = "/usr/share/geni-ch/ma/ma-cert.pem";
-$signer_key_file = "/usr/share/geni-ch/ma/ma-key.pem";
-$result = make_cert_and_key($account_id, $email_addr, $urn,
-                            $signer_cert_file, $signer_key_file,
-                            $cert, $key);
-if ($result) {
-  db_add_inside_key_cert($account_id, $cert, $key);
-}
-
-
-// --------------------------------------------------
 // Send mail about the new account request
 // --------------------------------------------------
 $server_host = $_SERVER['SERVER_NAME'];
