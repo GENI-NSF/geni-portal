@@ -84,25 +84,32 @@ function get_member_ids($args, $message)
 
 function register_ssh_key($args, $message)
 {
+  global $MA_SSH_KEY_TABLENAME;
+  $conn = db_conn();
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
   $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
-  $ssh_key = $args[MA_ARGUMENT::SSH_KEY];
-
-  global $MA_SSH_KEY_TABLENAME;
-  $sql = "insert into " . $MA_SSH_KEY_TABLENAME
-    . " ( "  
-    . MA_SSH_KEY_TABLE_FIELDNAME::ACCOUNT_ID . ", "
-    . MA_SSH_KEY_TABLE_FIELDNAME::FILENAME . ", "
-    . MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION . ", "
-    . MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY . ")  VALUES ("
-    . "'" . $member_id . "', "
-    . "'" . $ssh_filename . "', "
-    . "'" . $ssh_description . "', "
-    . "'" . $ssh_key . "')";
+  $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
+  if (array_key_exists(MA_ARGUMENT::SSH_PRIVATE_KEY, $args)) {
+    $ssh_private_key = $args[MA_ARGUMENT::SSH_PRIVATE_KEY];
+    $private_key_field = ", " . MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY;
+    $private_key_value = ", " . $conn->quote($ssh_private_key, 'text');
+  }
+  $sql = ("insert into " . $MA_SSH_KEY_TABLENAME
+          . " ( " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
+          . ", " . MA_SSH_KEY_TABLE_FIELDNAME::FILENAME
+          . ", " . MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION
+          . ", " . MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY
+          . $private_key_field
+          . ")  VALUES ("
+          . $conn->quote($member_id, 'text')
+          . ", " . $conn->quote($ssh_filename, 'text')
+          . ", " . $conn->quote($ssh_description, 'text')
+          . ", " . $conn->quote($ssh_public_key, 'text')
+          . $private_key_value
+          . ")");
   $result = db_execute_statement($sql);
   return $result;
-
 }
 
 function lookup_ssh_keys($args, $message)
@@ -110,9 +117,10 @@ function lookup_ssh_keys($args, $message)
   global $MA_SSH_KEY_TABLENAME;
   //  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
-  $sql = "select * from " . $MA_SSH_KEY_TABLENAME 
-    . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::ACCOUNT_ID . " = '" 
-    . $member_id . "'";
+  $conn = db_conn();
+  $sql = ("select * from " . $MA_SSH_KEY_TABLENAME
+          . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text'));
   $rows = db_fetch_rows($sql);
   //  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
   return $rows;
