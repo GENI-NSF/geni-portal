@@ -151,15 +151,11 @@ CREATE INDEX outside_key_index_account_id ON outside_key (account_id);
 
 -- ----------------------------------------------------------------------
 -- Inside keys
+--
+-- Inside keys moved to MA. Drop the table if it exists to clean up
+-- older databases.
 -- ----------------------------------------------------------------------
 DROP TABLE IF EXISTS inside_key;
-CREATE TABLE inside_key (
-  account_id UUID REFERENCES account UNIQUE,
-  private_key VARCHAR,
-  certificate VARCHAR
-);
-
-CREATE INDEX inside_key_index_account_id ON inside_key (account_id);
 
 -- ----------------------------------------------------------------------
 -- ABAC identities

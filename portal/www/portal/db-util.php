@@ -132,21 +132,6 @@ function fetch_slice_by_name($name)
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
-function db_add_inside_key_cert($account_id, $certificate, $key)
-{
-  $conn = portal_conn();
-  $sql = "INSERT into inside_key (CERTIFICATE, PRIVATE_KEY, ACCOUNT_ID) values ("
-    . $conn->quote($certificate, 'text')
-    . ', '
-    . $conn->quote($key, 'text')
-    . ', '
-    . $conn->quote($account_id, 'text')
-    . ")";
-  /*  print "command = $sql<br/>";  */
-  $result = db_execute_statement($sql, "inside key/certificaste");
-  return $result[RESPONSE_ARGUMENT::VALUE];
-}
-
 function db_add_outside_key_cert($account_id, $certificate, $key)
 {
   $conn = portal_conn();
@@ -172,18 +157,6 @@ function db_fetch_outside_private_key_cert($account_id)
     . " WHERE outside_key.account_id = "
     . $conn->quote($account_id, 'text');
   $row = db_fetch_row($sql, "fetch outside private key");
-  return $row[RESPONSE_ARGUMENT::VALUE];
-}
-
-function db_fetch_inside_private_key_cert($account_id)
-{
-  $conn = portal_conn();
-
-  $sql = "SELECT private_key, certificate"
-    . " FROM inside_key "
-    . " WHERE inside_key.account_id = "
-    . $conn->quote($account_id, 'text');
-  $row = db_fetch_row($sql, "fetch inside private key");
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
