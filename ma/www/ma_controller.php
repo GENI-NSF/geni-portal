@@ -158,7 +158,7 @@ function update_ssh_key($args, $message)
   $sql = ($sql . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
           . " = " . $conn->quote($member_id, 'text')
           . " AND " . MA_SSH_KEY_TABLE_FIELDNAME::ID
-          . " = " . $conn->quote($ssh_key_id));
+          . " = " . $conn->quote($ssh_key_id, 'integer'));
   $rows = db_execute_statement($sql);
   if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     return $rows;
@@ -169,7 +169,7 @@ function update_ssh_key($args, $message)
           . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
           . " = " . $conn->quote($member_id, 'text')
           . " AND " . MA_SSH_KEY_TABLE_FIELDNAME::ID
-          . " = " . $conn->quote($ssh_key_id));
+          . " = " . $conn->quote($ssh_key_id, 'integer'));
   $rows = db_fetch_rows($sql);
   //  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
   return $rows;
@@ -177,6 +177,21 @@ function update_ssh_key($args, $message)
 
 function delete_ssh_key($args, $message)
 {
+  global $MA_SSH_KEY_TABLENAME;
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $ssh_key_id = $args[MA_ARGUMENT::SSH_KEY_ID];
+  $conn = db_conn();
+  $sql = ("delete from " . $MA_SSH_KEY_TABLENAME
+          . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text')
+          . " AND " . MA_SSH_KEY_TABLE_FIELDNAME::ID
+          . " = " . $conn->quote($ssh_key_id, 'integer'));
+  $rows = db_execute_statement($sql);
+  if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $rows;
+  } else {
+    return generate_response(RESPONSE_ERROR::NONE, true, "");
+  }
 }
 
 

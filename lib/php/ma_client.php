@@ -94,9 +94,12 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
 
 function delete_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
 {
-  geni_syslog(GENI_SYSLOG_PREFIX::MA,
-          "delete_ssh_key is not yet implemented.");
-  return true;
+  $msg['operation'] = 'delete_ssh_key';
+  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $msg[MA_ARGUMENT::SSH_KEY_ID] = $ssh_key_id;
+  $result = put_message($ma_url, $msg,
+          $signer->certificate(), $signer->privateKey());
+  return $result;
 }
 
 // Lookup inside keys/certs associated with a user UUID
