@@ -101,10 +101,9 @@ function write_omni_config($user)
     $username = $user->username;
 
     /* Write key and credential files. */
-    $row = db_fetch_inside_private_key_cert($user->account_id);
-    $cert = $row['certificate'];
+    $cert = $user->certificate();
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
-    $private_key = $row['private_key'];
+    $private_key = $user->privateKey();
     $key_file = writeDataToTempFile($private_key, "$username-key-");
 
     /* Write ssh keys to tmp files. */
@@ -166,9 +165,8 @@ function invoke_omni_function($am_url, $user, $args)
     }
 
     /* Write key and credential files */
-    $row = db_fetch_inside_private_key_cert($user->account_id);
-    $cert = $row['certificate'];
-    $private_key = $row['private_key'];
+    $cert = $user->certificate();
+    $private_key = $user->privateKey();
     $cert_file = '/tmp/' . $username . "-cert.pem";
     $key_file = '/tmp/' . $username . "-key.pem";
     $omni_file = '/tmp/' . $username . "-omni.ini";

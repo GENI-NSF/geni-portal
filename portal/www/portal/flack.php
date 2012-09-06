@@ -122,11 +122,8 @@ function generate_flack_page($slice_urn)
   //  error_log("CA = " . print_r($ca_service, true));
 
   // Get user private inside key and cert
-  $user_id = $user->account_id;
-  $user_cert_key = db_fetch_inside_private_key_cert($user_id);
-  $user_cert = $user_cert_key['certificate'];
-  $user_key = $user_cert_key['private_key'];
-
+  $user_cert = $user->certificate();
+  $user_key = $user->privateKey();
 
   // Compute bundle of AM and CA certs
   $am_root_cert_bundle = "";
