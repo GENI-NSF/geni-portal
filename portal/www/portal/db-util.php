@@ -316,13 +316,4 @@ function fetchRSpecMetaData() {
   $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
   return $rows[RESPONSE_ARGUMENT::VALUE];
 }
-
-function fetchSshKeys($account_id) {
-  $conn = portal_conn();
-  $sql = "SELECT * from ssh_key where account_id = "
-    . $conn->quote($account_id, 'text');
-  /* print "Query = $sql<br/>"; */
-  $rows = db_fetch_rows($sql, "fetchSshKeys");
-  return $rows[RESPONSE_ARGUMENT::VALUE];
-}
 ?>
