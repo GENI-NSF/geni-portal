@@ -31,6 +31,7 @@ class MA_ARGUMENT {
   const MEMBER_ID = "member_id";
   const MEMBER_ID_KEY = "member_id_key";
   const MEMBER_ID_VALUE = "member_id_value";
+  const SSH_KEY_ID = "ssh_key_id";
   const SSH_FILENAME = "ssh_filename";
   const SSH_DESCRIPTION = "ssh_description";
   const SSH_PUBLIC_KEY = "ssh_public_key";

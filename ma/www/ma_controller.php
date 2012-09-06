@@ -126,6 +126,60 @@ function lookup_ssh_keys($args, $message)
   return $rows;
 }
 
+function update_ssh_key($args, $message)
+{
+  global $MA_SSH_KEY_TABLENAME;
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $ssh_key_id = $args[MA_ARGUMENT::SSH_KEY_ID];
+  $filename = NULL;
+  $description = NULL;
+  if (array_key_exists(MA_ARGUMENT::SSH_FILENAME, $args)) {
+    $filename = $args[MA_ARGUMENT::SSH_FILENAME];
+  }
+  if (array_key_exists(MA_ARGUMENT::SSH_DESCRIPTION, $args)) {
+    $description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
+  }
+  if (! ($filename || $description)) {
+    return generate_response(RESPONSE_ERROR::NONE, false, "");
+  }
+  $conn = db_conn();
+  $sql = "update " . $MA_SSH_KEY_TABLENAME . " SET ";
+  if ($filename) {
+    $sql = ($sql . MA_SSH_KEY_TABLE_FIELDNAME::FILENAME
+            . " = " . $conn->quote($filename, 'text'));
+  }
+  if ($filename && $description) {
+    $sql = $sql . ", ";
+  }
+  if ($description) {
+    $sql = ($sql . MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION
+            . " = " . $conn->quote($description, 'text'));
+  }
+  $sql = ($sql . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text')
+          . " AND " . MA_SSH_KEY_TABLE_FIELDNAME::ID
+          . " = " . $conn->quote($ssh_key_id));
+  $rows = db_execute_statement($sql);
+  if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $rows;
+  }
+
+  // Return the updated ssh key
+  $sql = ("select * from " . $MA_SSH_KEY_TABLENAME
+          . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text')
+          . " AND " . MA_SSH_KEY_TABLE_FIELDNAME::ID
+          . " = " . $conn->quote($ssh_key_id));
+  $rows = db_fetch_rows($sql);
+  //  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
+  return $rows;
+}
+
+function delete_ssh_key($args, $message)
+{
+}
+
+
 function lookup_keys_and_certs($args, $message)
 {
   global $MA_INSIDE_KEY_TABLENAME;

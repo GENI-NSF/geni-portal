@@ -78,11 +78,18 @@ function lookup_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
 function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
         $filename, $description)
 {
-  geni_syslog(GENI_SYSLOG_PREFIX::MA,
-          "update_ssh_key is not yet implemented.");
-  // For now, return the key id.
-  // FIXME: return the updated ssh key as from lookup_ssh_key
-  return $ssh_key_id;
+  $msg['operation'] = 'update_ssh_key';
+  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $msg[MA_ARGUMENT::SSH_KEY_ID] = $ssh_key_id;
+  if ($filename) {
+    $msg[MA_ARGUMENT::SSH_FILENAME] = $filename;
+  }
+  if ($description) {
+    $msg[MA_ARGUMENT::SSH_DESCRIPTION] = $description;
+  }
+  $ssh_key = put_message($ma_url, $msg,
+          $signer->certificate(), $signer->privateKey());
+  return $ssh_key;
 }
 
 function delete_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
