@@ -7,6 +7,13 @@ set client_min_messages='WARNING';
 -- Tables for the MA (Member Authority)
 
 -- ----------------------------------------------------------------------
+-- TO DO
+-- ----------------------------------------------------------------------
+
+-- Outside keys
+
+
+-- ----------------------------------------------------------------------
 -- Member table. Store the member ids. Attribute are in
 -- ma_member_attribute.
 -- ----------------------------------------------------------------------
@@ -64,10 +71,16 @@ CREATE TABLE ma_inside_key (
 CREATE INDEX ma_inside_key_index_member_id ON ma_inside_key (member_id);
 
 -- ----------------------------------------------------------------------
---
+-- ssh keys
 -- ----------------------------------------------------------------------
-
--- Approved clients (member_id, client_id)
--- client + id -> member_id
--- Outside keys
--- SSH keys
+DROP TABLE IF EXISTS ma_ssh_key;
+CREATE TABLE ma_ssh_key (
+  id SERIAL,
+  member_id UUID NOT NULL REFERENCES ma_member (member_id),
+  filename VARCHAR,
+  description VARCHAR,
+  public_key VARCHAR NOT NULL,
+  private_key VARCHAR,
+  PRIMARY KEY (id)
+);
+CREATE INDEX ma_ssh_key_member_id ON ma_ssh_key (member_id);

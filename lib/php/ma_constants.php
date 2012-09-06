@@ -33,7 +33,8 @@ class MA_ARGUMENT {
   const MEMBER_ID_VALUE = "member_id_value";
   const SSH_FILENAME = "ssh_filename";
   const SSH_DESCRIPTION = "ssh_description";
-  const SSH_KEY = "ssh_key";
+  const SSH_PUBLIC_KEY = "ssh_public_key";
+  const SSH_PRIVATE_KEY = "ssh_private_key";
   const ATTRIBUTES = "attributes";
   const CLIENT_URN = "client_urn";
   const AUTHORIZE_SENSE = "authorize_sense";
@@ -80,14 +81,16 @@ class MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME {
 
 
 /* Name of table containing user SSH key info */
-$MA_SSH_KEY_TABLENAME = "ssh_key";
+$MA_SSH_KEY_TABLENAME = "ma_ssh_key";
 
 /* Name of fields of SSH key table */
 class MA_SSH_KEY_TABLE_FIELDNAME {
-  const ACCOUNT_ID = "account_id";
+  const ID = "id";
+  const MEMBER_ID = "member_id";
   const FILENAME = "filename";
   const DESCRIPTION = "description";
   const PUBLIC_KEY = "public_key";
+  const PRIVATE_KEY = "private_key";
 }
 
 /* Name of table containing registered MA clients (tools) */
