@@ -388,7 +388,7 @@ function geni_load_user_by_member_id($member_id)
  */
 function geni_loadUser($account_id = NULL)
 {
-  $use_ma = FALSE;
+  $use_ma = TRUE;
   if (! $use_ma) {
     return geni_loadUser_legacy(is_null($account_id) ? '' : $account_id);
   }
