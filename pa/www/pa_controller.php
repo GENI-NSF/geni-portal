@@ -109,7 +109,7 @@ class PAGuardFactory implements GuardFactory
     pa_debug("project_guard($message, $action, $params)");
     return new PAContextGuard($this->cs_url, $message, $action,
                               CS_CONTEXT_TYPE::PROJECT,
-                              $params[SA_ARGUMENT::PROJECT_ID]);
+                              $params[PA_ARGUMENT::PROJECT_ID]);
   }
 
   public function createGuards($message) {
@@ -197,7 +197,7 @@ class PAContextGuard implements Guard
              . "; action=\"" . print_r($this->action, TRUE) . "\""
              . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
              . "; context=\"" . print_r($this->context, TRUE) . "\"");
-    return request_authorization($this->cs_url, $my_signer, 
+    return request_authorization($this->cs_url, $mysigner, 
 				 $this->message->signerUuid(),
                                  $this->action, $this->context_type,
                                  $this->context);

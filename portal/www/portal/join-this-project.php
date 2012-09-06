@@ -115,7 +115,9 @@ Thank you,\n" . $user->prettyName() . "\n";
 
   $name = $user->prettyName();
   if (isset($log_url)) {
-    log_event($log_url, "$name requested to join project $project_name", $attributes, $user->account_id);
+    log_event($log_url, Portal::getInstance(),
+	      "$name requested to join project $project_name", 
+	      $attributes, $user->account_id);
   }
 
   // Send the email
