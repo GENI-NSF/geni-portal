@@ -98,7 +98,7 @@ include("tool-breadcrumbs.php");
 print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
 
 // Put up a warning to upload SSH keys, if not done yet.
-$keys = fetchSshKeys($user->account_id);
+$keys = $user->sshKeys();
 if (count($keys) == 0) {
   // No ssh keys are present.
   print "No ssh keys have been uploaded. ";

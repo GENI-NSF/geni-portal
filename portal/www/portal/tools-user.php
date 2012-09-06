@@ -26,8 +26,6 @@
 require_once("user.php");
 require_once("cert_utils.php");
 require_once("rq_client.php");
-require_once 'ma_client.php';
-require_once 'sr_client.php';
 ?>
 <h1>User Tools</h1>
 <?php
@@ -36,8 +34,7 @@ require_once 'sr_client.php';
  *----------------------------------------------------------------------
  */
 print "<h2>SSH Keys</h2>\n";
-$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
+$keys = $user->sshKeys();
 if (count($keys) == 0)
   {
     // No ssh keys are present.

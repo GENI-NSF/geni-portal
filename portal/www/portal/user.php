@@ -209,6 +209,15 @@ class GeniUser
     return $this->private_key;
   }
 
+  /**
+   * Fetch the user's ssh keys.
+   */
+  function sshKeys() {
+    // NOTE: This is a candidate for caching on the HTTP session
+    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+    $keys = lookup_ssh_keys($ma_url, $this, $this->account_id);
+    return $keys;
+  }
 } // End of class GeniUser
 
 /* Insufficient attributes were released.

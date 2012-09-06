@@ -39,8 +39,7 @@ if (is_null($key_id)) {
   relative_redirect('home.php');
 }
 
-$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
+$keys = $user->sshKeys();
 $private_key = NULL;
 $filename = NULL;
 foreach ($keys as $key) {

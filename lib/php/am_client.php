@@ -35,7 +35,7 @@ require_once('file_utils.php');
 function write_ssh_keys($user)
 {
   $result = array();
-  $ssh_keys = fetchSshKeys($user->account_id);
+  $ssh_keys = $user->sshKeys();
   foreach ($ssh_keys as $key_info)
     {
       $key = $key_info['public_key'];
