@@ -73,7 +73,7 @@ if (! is_null($project) && $project != "None") {
   $creation = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
   if (uuid_is_valid($leadid)) {
-    $lead = geni_loadUser($leadid);
+    $lead = $user->fetchMember($leadid);
     $leademail = $lead->email();
     $leadname = $lead->prettyName();
   } else {
@@ -124,7 +124,7 @@ if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $proje
     print "<table>\n";
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
     foreach ($reqs as $request) {
-      $requestor = geni_loadUser($request['requestor']);
+      $requestor = $user->fetchMember($request['requestor']);
       $created = $request['creation_timestamp'];
       $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request['id'] . "'\"><b>Handle Request</b></button>";
       print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
@@ -157,7 +157,7 @@ include("tool-slices.php");
 
   foreach($members as $member) {
      $member_id = $member['member_id'];
-     $member_user = geni_loadUser($member_id);
+     $member_user = $user->fetchMember($member_id);
      $member_name = $member_user->prettyName();
      $member_role_index = $member['role'];
      $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
@@ -195,7 +195,7 @@ if (is_array($entries)) {
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
     $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-    $member = geni_loadUser($member_id);
+    $member = $user->fetchMember($member_id);
     $member_name = $member->prettyName();
     //    error_log("ENTRY = " . print_r($entry, true));
     print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";

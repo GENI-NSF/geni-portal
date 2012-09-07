@@ -134,7 +134,7 @@ if (isset($member)) {
   }
 }
 $member_id = $request['requestor'];
-$member = geni_loadUser($request['requestor']);
+$member = $user->fetchMember($request['requestor']);
 $member_name = $member->prettyName();
 
 if ($request['request_type'] != RQ_REQUEST_TYPE::JOIN) {
@@ -168,7 +168,7 @@ $project_id = $request['context_id'];
 $project = lookup_project($pa_url, $user, $project_id);
 $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-$lead = geni_loadUser($lead_id);
+$lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
 // FIXME: Validate this user has authorization to change membership on this project

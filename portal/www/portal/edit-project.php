@@ -48,7 +48,7 @@ if (! isset($project)) {
     error_log("edit-project: invalid leadid from DB for project $project_id");
     exit();
   }
-  $lead = geni_loadUser($leadid);
+  $lead = $user->fetchMember($leadid);
   $leadname = $lead->prettyName();
   $leademail = $lead->email();
   print "<h1>EDIT GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</h1>\n";

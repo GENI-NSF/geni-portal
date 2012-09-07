@@ -75,7 +75,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     print "</td><td>";
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-    $lead = geni_loadUser($lead_id);
+    $lead = $user->fetchMember($lead_id);
     $leadname = $lead->prettyName();
     print $leadname;
     print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";

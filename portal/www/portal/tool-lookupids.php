@@ -113,7 +113,7 @@ if (array_key_exists("slice_id", $_REQUEST)) {
 if (array_key_exists("member_id", $_REQUEST)) {
   $member_id = $_REQUEST['member_id'];
   if (uuid_is_valid($member_id)) {
-    $member = geni_loadUser($member_id);
+    $member = $user->fetchMember($member_id);
     $member_name = $member->prettyName();
   } else {
     if ($member_id != '') {

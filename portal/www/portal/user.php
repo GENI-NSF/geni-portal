@@ -218,6 +218,15 @@ class GeniUser
     $keys = lookup_ssh_keys($ma_url, $this, $this->account_id);
     return $keys;
   }
+
+  function fetchMember($member_id)
+  {
+    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+    $member = ma_lookup_member_by_id($ma_url, $this, $member_id);
+    $user = new GeniUser();
+    $user->init_from_member($member);
+    return $user;
+  }
 } // End of class GeniUser
 
 /* Insufficient attributes were released.
@@ -386,27 +395,16 @@ function geni_load_user_by_member_id($member_id)
  * Dispatch function to support migration to MA.
  * @param unknown_type $account_id
  */
-function geni_loadUser($account_id = NULL)
+function geni_loadUser()
 {
-  $use_ma = TRUE;
-  if (! $use_ma) {
-    return geni_loadUser_legacy(is_null($account_id) ? '' : $account_id);
-  }
-
-  $user = NULL;
   // TODO: Look up in cache here
-  if (is_null($account_id)) {
-    if (! array_key_exists('eppn', $_SERVER)) {
-      // No eppn was found - redirect to a gentle error page
-      incommon_attribute_redirect();
-    }
-    // Load current user based on Shibboleth environment
-    $eppn = $_SERVER['eppn'];
-    $user = geni_load_user_by_eppn($eppn);
-  } else {
-    // Load user by account id
-    $user = geni_load_user_by_member_id($account_id);
+  if (! array_key_exists('eppn', $_SERVER)) {
+    // No eppn was found - redirect to a gentle error page
+    incommon_attribute_redirect();
   }
+  // Load current user based on Shibboleth environment
+  $eppn = $_SERVER['eppn'];
+  $user = geni_load_user_by_eppn($eppn);
   // TODO: Insert user in cache here
   return $user;
 }

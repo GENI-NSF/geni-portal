@@ -84,9 +84,9 @@ if (isset($reqs) && count($reqs) > 0) {
     $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     $reason = $request['request_text'];
     $req_date = $request['creation_timestamp'];
-    $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
+    $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     $lead_name = $lead->prettyName();
-    $requestor = geni_loadUser($request[RQ_ARGUMENTS::REQUESTOR]);
+    $requestor = $user->fetchMember($request[RQ_ARGUMENTS::REQUESTOR]);
     $requestor_name = $requestor->prettyName();
     $handle_url="handle-project-request.php?request_id=" . $request['id']; // ***
     $handle_button = "<button style=\"\" onClick=\"window.location='" . $handle_url . "'\"><b>Handle Request</b></button>";
@@ -123,7 +123,7 @@ if (count($projects) > 0) {
     }
 
     //    error_log("Before load user " . time());
-    $lead = geni_loadUser($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
+    $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     //    error_log("After load user " . time());
     $slice_ids = lookup_slice_ids($sa_url, $user, $project_id);
     //<button style="width:65;height:65" onClick="window.location='http://www.javascriptkit.com'"><b>Home</b></button>

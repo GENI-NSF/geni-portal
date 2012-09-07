@@ -119,7 +119,7 @@ if (count($slices) > 0) {
 
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
-    $slice_owner_name = geni_loadUser($slice_owner_id)->prettyName();
+    $slice_owner_name = $user->fetchMember($slice_owner_id)->prettyName();
     print "<tr>"
       . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
          . "</a></td>");

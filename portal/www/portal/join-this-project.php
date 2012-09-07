@@ -67,7 +67,7 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-$lead = geni_loadUser($lead_id);
+$lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
 print "<h2>Join Project $project_name</h2>\n";

@@ -60,7 +60,7 @@ if (isset($slice)) {
   $slice_creation = $slice[SA_ARGUMENT::CREATION];
   $slice_description = $slice[SA_ARGUMENT::SLICE_DESCRIPTION];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
-  $owner = geni_loadUser($slice_owner_id);
+  $owner = $user->fetchMember($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
   $owner_email = $owner->email();
 

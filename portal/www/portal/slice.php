@@ -56,7 +56,7 @@ if (isset($slice)) {
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
-  $owner = geni_loadUser($slice_owner_id);
+  $owner = $user->fetchMember($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
   $owner_email = $owner->email();
 
@@ -309,7 +309,7 @@ echo "<button $edit_members_disabled onClick=\"window.location='$edit_url'\"><b>
 		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
 		  $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
 		  $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-		  $member = geni_loadUser($member_id);
+		  $member = $user->fetchMember($member_id);
 		  $member_name = $member->prettyName();
 		  //    error_log("ENTRY = " . print_r($entry, true));
 		  print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";

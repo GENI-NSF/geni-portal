@@ -154,7 +154,7 @@ $project_id = $request['context_id'];
 $project = lookup_project($pa_url, $user, $project_id);
 $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-$lead = geni_loadUser($lead_id);
+$lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
 // Now: was this a form submission (e.g. trying to handle the request?)
