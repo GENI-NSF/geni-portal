@@ -85,7 +85,7 @@ add_service pa ${ADMIN_EMAIL} NO 2 "https://${FQDN}/pa/pa_controller.php"
 add_service ma ${ADMIN_EMAIL} CA 3 "https://${FQDN}/ma/ma_controller.php"
 add_service logging ${ADMIN_EMAIL} NO 5 "https://${FQDN}/logging/logging_controller.php"
 add_service cs ${ADMIN_EMAIL} NO 6 "https://${FQDN}/cs/cs_controller.php"
-add_service km ${ADMIN_EMAIL} NO 
+add_service km ${ADMIN_EMAIL} NO 8 "https://${FQDN}/secure/kmhome.php"
 add_service portal ${ADMIN_EMAIL} NO
 add_client_tool portal
 
