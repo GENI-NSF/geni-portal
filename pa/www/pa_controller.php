@@ -499,6 +499,28 @@ function add_project_member($args, $message)
     $signer = $message->signerUuid();
     create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
   }
+
+  // Log adding the member
+  global $ma_url;
+  $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+  $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
+  $project_data = lookup_project($lookup_project_message);
+  if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+      (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, 
+			$project_data[RESPONSE_ARGUMENT::VALUE]))) 
+    {
+      global $CS_ATTRIBUTE_TYPE_NAME;
+      global $log_url;
+  //  error_log("MD = " . print_r($member_data, true));
+  //  error_log("PD = " . print_r($project_data, true));
+      $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
+      $member_name = $member_data->first_name . " " . $member_data->last_name;
+      $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
+      $message = "Added $member_name to Project $project_name in role $role_name";
+      $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+      log_event($log_url, $mysigner, $message, $attributes, $signer);
+    }
   return $result;
 }
 

@@ -41,7 +41,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-error_log("REQ = " . print_r($_REQUEST, true));
+// error_log("REQ = " . print_r($_REQUEST, true));
 
 $slice_name = NULL;
 $project_id = NULL;

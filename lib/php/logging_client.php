@@ -97,4 +97,18 @@ function get_attributes_for_log_entry($log_url, $signer, $event_id)
   return $result;
 }
 
+// This is a helper function to allow sorting lists of 
+// log entries by event_time
+function compare_log_entries($ent1, $ent2)
+{
+  $t1 = $ent1[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+  $t2 = $ent2[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+  if ($t1 == $t2)
+    return 0;
+  else if ($t1 < $t2)
+    return -1;
+  else
+    return 1;
+}
+
 ?>

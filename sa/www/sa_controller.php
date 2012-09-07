@@ -43,6 +43,7 @@ $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 function sa_debug($msg)
 {
@@ -414,7 +415,7 @@ function create_slice($args, $message)
   // If not, 
   if ($project_lead_id != $owner_id) {
 
-    error_log("PL $project_lead_id is not OWNER $owner_id");
+    //    error_log("PL $project_lead_id is not OWNER $owner_id");
     // Create assertion of lead membership
     create_assertion($cs_url, $mysigner, $signer, $project_lead_id, 
 		     CS_ATTRIBUTE_TYPE::ADMIN, 
@@ -716,6 +717,31 @@ function add_slice_member($args, $message)
     create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::SLICE, $slice_id);
   }
 
+  // Log adding the member
+  global $ma_url;
+  $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+  $lookup_slice_message = array(SA_ARGUMENT::SLICE_ID => $slice_id);
+  $slice_data = lookup_slice($lookup_slice_message);
+  if(($slice_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+     (array_key_exists(SA_SLICE_TABLE_FIELDNAME::SLICE_NAME,
+		       $slice_data[RESPONSE_ARGUMENT::VALUE]))) 
+    {
+      global $CS_ATTRIBUTE_TYPE_NAME;
+      global $log_url;
+      $slice_data = $slice_data[RESPONSE_ARGUMENT::VALUE];
+      $member_name = $member_data->first_name . " " . $member_data->last_name;
+      $slice_name = $slice_data[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+      $project_id = $slice_data[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+      $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
+      $message = "Added $member_name to Slice $slice_name in role $role_name";
+      $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
+						      $project_id);
+      $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE,
+						    $slice_id);
+      $attributes = array_merge($project_attributes, $slice_attributes);
+      log_event($log_url, $mysigner, $message, $attributes, $signer);
+    }
+
   return $result;
 }
 
@@ -827,7 +853,7 @@ function get_slice_members($args)
     . " = '" . $slice_id . "'" 
     . $role_clause;
 
-  error_log("SA.get_slice_members.sql = " . $sql);
+  //  error_log("SA.get_slice_members.sql = " . $sql);
   $result = db_fetch_rows($sql);
   return $result;
   

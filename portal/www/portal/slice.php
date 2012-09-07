@@ -320,6 +320,7 @@ foreach($members as $member) {
 		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
                 $entries = get_log_entries_for_context($log_url, Portal::getInstance(),
 						       CS_CONTEXT_TYPE::SLICE, $slice_id);
+                usort($entries, 'compare_log_entries');
 		foreach($entries as $entry) {
 		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
 		  $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];

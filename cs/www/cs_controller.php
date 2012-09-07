@@ -121,6 +121,7 @@ function create_assertion($args)
 
   $result = db_execute_statement($sql);
 
+  /*
   // Log the creation
   if ($signer != null) {
     global $log_url;
@@ -131,6 +132,7 @@ function create_assertion($args)
 	      " PRINC=" . $principal,
 	      $attributes, $signer);
   }
+  */
 
   //  error_log("CS.create.result = " . print_r($result, true));
   return $result;
