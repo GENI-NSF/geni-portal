@@ -47,6 +47,10 @@ include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+}
+
 if (isset($slice)) {
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   //  error_log("SLICE  = " . print_r($slice, true));
@@ -100,6 +104,9 @@ if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
 
 $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
+
+// Fill in members of slice member table
+$members = get_slice_members($sa_url, $user, $slice_id);
 
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
 
@@ -290,8 +297,16 @@ echo "<button $edit_members_disabled onClick=\"window.location='$edit_url'\"><b>
 		<th>Roles</th>
 	</tr>
 	<?php
-	// FIXME: See project-member.php. Replace all that with a table or 2 here?
-	print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$slice_owner_id\">$slice_owner_name</a></td><td>Slice Owner</td></tr>\n";
+foreach($members as $member) {
+  $member_id = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+  $member_user = geni_loadUser($member_id);
+  $member_name = $member_user->prettyName();
+  $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+  $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
+  print "<tr><td><a href=\"slide-member.php?slice_id=" . $slice_id . 
+    "&member_id=$member_id\">$member_name</a></td>" . 
+    "<td>$member_role</td></tr>\n";
+}
 	?>
 </table>
 

@@ -39,7 +39,7 @@ if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
 
-// FIXME: This looks up slices OWNED by this user
+// This gets all projects of which the user is a member
 if (isset($project_id) && uuid_is_valid($project_id)) {
   $slices = lookup_slices($sa_url, $user, $project_id, $user->account_id);
 } else {
