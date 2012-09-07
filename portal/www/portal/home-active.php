@@ -44,6 +44,17 @@
 ?>
 
 <?php
+
+if (! $user->portalIsAuthorized()) {
+  $km_url = get_first_service_of_type(SR_SERVICE_TYPE::KEY_MANAGER);
+  print "<h2>Portal authorization</h2>\n";
+  print "The GENI Portal is not authorized by you as a client tool. If you would like";
+  print " the GENI Portal to help you manage your projects and slices, you can";
+  print " <a href=\"$km_url\">authorize the portal</a> to do so.";
+  print "<br/>";
+  return 0;
+}
+
 // List of my projects
 include("tool-projects.php");
 

@@ -93,6 +93,17 @@ function show_tab_bar($active_tab = '', $load_user=true)
   echo '</div>';
 }
 
+function check_km_authorization($user)
+{
+  if (! $user->portalIsAuthorized()) {
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $home = "home.php";
+    if (substr_compare($request_uri, $home, -strlen($home), strlen($home)) !== 0) {
+      relative_redirect($home);
+    }
+  }
+}
+
 /*
  * We want to syslog whenever we have a new shib session ID
  */
@@ -136,6 +147,11 @@ function show_header($title, $active_tab = '', $load_user=1)
 {
   global $extra_js;
 
+  if ($load_user) {
+    global $user;
+    $user = geni_loadUser();
+    check_km_authorization($user);
+  }
   echo '<!DOCTYPE HTML>';
   echo '<html>';
   echo '<head>';
@@ -164,8 +180,6 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '</a>';
   echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
   if ($load_user) {
-    global $user;
-    $user = geni_loadUser();
     echo '<div id="metanav" class="nav">';
     echo '<ul><li style="border-right: none">Logged in as ' . $user->prettyName() . '</li></ul>';
     echo '</div>';
@@ -174,7 +188,6 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '</div>';
   echo '<div id="content">';
   show_starter_status_bar($load_user);
-
 }
 
 ?>

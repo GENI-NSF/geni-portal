@@ -227,6 +227,13 @@ class GeniUser
     $user->init_from_member($member);
     return $user;
   }
+
+  function portalIsAuthorized()
+  {
+    // If an inside cert is present, the portal
+    // is authorized.
+    return ! is_null($this->certificate());
+  }
 } // End of class GeniUser
 
 /* Insufficient attributes were released.
