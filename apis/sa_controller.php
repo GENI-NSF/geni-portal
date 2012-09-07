@@ -38,7 +38,7 @@ namespace Slice_Authority;
 <li>   user_credential <= get_user_credential(experimenter_cert) </li>
 <li>   slice_id <= create_slice(slice_name, project_id, project_name, owner_id, description) </li>
 <li>   [ids] <= lookup_slice_ids(project_id, [owner_id]) </li>
-<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slices(project_id, owner_id) </li>
+<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slices(project_id, member_id) </li>
 <li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice(slice_id) </li>
 <li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice_by_urn(slice_urn) </li>
 <li>   success <= renew_slice(slice_id, expiration) </li>
@@ -207,14 +207,14 @@ function lookup_slice_ids($args_dict)
 }
 
 /**
- * Lookup slice id's by project_id, owner_id and/or slice_name
+ * Lookup slice id's by project_id, member_id and/or slice_name
  *
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("lookup_slices")</li>
    <li>"signer" : UUID of signer (asserter) of method</li>
    <li>"project_id" : ID of project to which to associate slice [optional]</li>
-   <li>"owner_id" : ID of owner of slice [optional]</li>
+   <li>"owner_id" : ID of member of slice [optional]</li>
 </ul>
  * @return array List of slice info tuples (id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) matching given criteria
  */

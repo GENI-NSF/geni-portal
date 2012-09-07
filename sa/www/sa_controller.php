@@ -30,9 +30,11 @@ require_once('file_utils.php');
 require_once('db_utils.php');
 require_once('sa_utils.php');
 require_once("sa_settings.php");
+require_once('pa_constants.php');
 require_once('sa_constants.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
+require_once('pa_client.php');
 require_once('cs_client.php');
 require_once('ma_client.php');
 require_once('logging_client.php');
@@ -40,6 +42,7 @@ require_once('logging_client.php');
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 
 function sa_debug($msg)
 {
@@ -392,6 +395,51 @@ function create_slice($args, $message)
     return $addres;
   }
 
+  // If the user is not the project lead, make the project lead
+  // a member of the project with 'ADMIN' priviileges
+
+  // Check if project lead is same as member
+  global $pa_url;
+  $project_details = lookup_project($pa_url, $mysigner, $project_id);
+  if (!isset($project_details) ||
+      is_null($project_details) ||
+      !array_key_exists(PA_PROJECT_TABLE_FIELDNAME::LEAD_ID, $project_details))
+    {
+      error_log("Error looking up details for project_id $project_id");
+      return $project_details;
+    }
+  error_log("PROJECT_DETAILS = " . print_r($project_details, true));
+  $project_lead_id = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+    
+  // If not, 
+  if ($project_lead_id != $owner_id) {
+
+    error_log("PL $project_lead_id is not OWNER $owner_id");
+    // Create assertion of lead membership
+    create_assertion($cs_url, $mysigner, $signer, $project_lead_id, 
+		     CS_ATTRIBUTE_TYPE::ADMIN, 
+		     CS_CONTEXT_TYPE::SLICE, $slice_id);
+
+    // add project lead as 'ADMIN' slice member 
+    $addres = 
+      add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id,
+			     SA_ARGUMENT::MEMBER_ID => $project_lead_id, 
+			     SA_ARGUMENT::ROLE_TYPE => 
+			     CS_ATTRIBUTE_TYPE::ADMIN), 
+		       $message);
+    if (!isset($addres) || 
+	is_null($addres) || 
+	!array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || 
+	$addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
+      {
+	error_log("Create slice failed ot add project lead as slice member: " .
+		  $addres[RESPONSE_ARGUMENT::CODE] . ": " . 
+		  $addres[RESPONSE_ARGUMENT::OUTPUT]);
+	return $addres;
+    }
+    
+  }
+
   // Log the creation
   global $log_url;
   global $mysigner;
@@ -462,9 +510,10 @@ function lookup_slice_ids($args)
 function lookup_slices($args, $message)
 {
   global $SA_SLICE_TABLENAME;
+  global $SA_SLICE_MEMBER_TABLENAME;
 
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
-  $owner_id = $args[SA_ARGUMENT::OWNER_ID];
+  $member_id = $args[SA_ARGUMENT::MEMBER_ID];
 
   /* FIXME: This is where an authorization guard should go. */
   if (is_null($message->signer())) {
@@ -483,23 +532,26 @@ function lookup_slices($args, $message)
       . " = " . $conn->quote($project_id, 'text');
   }
 
-  $owner_id_clause = '';
-  if ($owner_id <> null) {
-    $owner_id_clause = SA_SLICE_TABLE_FIELDNAME::OWNER_ID
-      . " = " . $conn->quote($owner_id, 'text');
+  $member_id_clause = '';
+  if ($member_id <> null) {
+    $member_id_clause = " " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID ." IN " . 
+      "(SELECT " . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . 
+      " FROM " . $SA_SLICE_MEMBER_TABLENAME . 
+      " WHERE " . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " .
+      $conn->quote($member_id, 'text') . ")";
   }
 
   $where_clause = "";
-  if ($owner_id <> null || $project_id <> null) {
+  if ($member_id <> null || $project_id <> null) {
     $where_clause = " WHERE ";
     if ($project_id <> null)  {
       $where_clause = $where_clause . $project_id_clause;
     }
-    if ($owner_id <> null)  {
+    if ($member_id <> null)  {
       if ($project_id <> null) {
 	$where_clause = $where_clause . " AND ";
       }
-      $where_clause = $where_clause . $owner_id_clause;
+      $where_clause = $where_clause . $member_id_clause;
     }
   }
 
@@ -516,7 +568,7 @@ function lookup_slices($args, $message)
     . " FROM " . $SA_SLICE_TABLENAME
     . $where_clause;
 
-  //  error_log("lookup_slices.sql = " . $sql);
+  //. error_log("lookup_slices.sql = " . $sql);
 
   $rows = db_fetch_rows($sql);
 
