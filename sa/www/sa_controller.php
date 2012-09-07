@@ -610,8 +610,9 @@ function renew_slice($args, $message)
 
   // Log the renewal
   global $log_url;
+  global $mysigner;
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
-  log_event($log_url, "Renewed slice " , $attributes, 
+  log_event($log_url, $mysigner, "Renewed slice " , $attributes,
             $message->signerUuid());
 
   $result = db_execute_statement($sql);
