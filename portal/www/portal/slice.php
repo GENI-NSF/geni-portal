@@ -298,8 +298,12 @@ echo "<button $edit_members_disabled onClick=\"window.location='$edit_url'\"><b>
 	</tr>
 	<?php
 foreach($members as $member) {
+
+
+
   $member_id = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
-  $member_user = geni_loadUser($member_id);
+  $member_user = $user->fetchMember($member_id);
+  //  error_log("MEMBER = " . print_r($member_user, true));
   $member_name = $member_user->prettyName();
   $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
   $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
