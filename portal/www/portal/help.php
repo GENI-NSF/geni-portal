@@ -29,6 +29,7 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
+skip_km_authorization();
 show_header('GENI Portal: Help', $TAB_HELP);
 include("tool-breadcrumbs.php");
 // Links to wiki, help, tutorials
