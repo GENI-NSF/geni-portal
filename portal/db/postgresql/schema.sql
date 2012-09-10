@@ -212,3 +212,12 @@ CREATE INDEX rspec_schema ON rspec (schema);
 -- older databases.
 -- ----------------------------------------------------------------------
 DROP TABLE IF EXISTS ssh_key;
+
+-- ----------------------------------------------------------------------
+-- projects
+--
+-- Projects have moved to PA. Drop legacy tables.
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS project_member;
+DROP TABLE IF EXISTS project_privilege;
+DROP TABLE IF EXISTS project;
