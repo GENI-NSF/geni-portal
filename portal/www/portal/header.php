@@ -93,8 +93,17 @@ function show_tab_bar($active_tab = '', $load_user=true)
   echo '</div>';
 }
 
+function skip_km_authorization() {
+  global $NO_AUTHZ_REDIRECT;
+  $NO_AUTHZ_REDIRECT = true;
+}
+
 function check_km_authorization($user)
 {
+  global $NO_AUTHZ_REDIRECT;
+  if (isset($NO_AUTHZ_REDIRECT) && $NO_AUTHZ_REDIRECT) {
+    return;
+  }
   if (! $user->portalIsAuthorized()) {
     $request_uri = $_SERVER['REQUEST_URI'];
     $home = "home.php";
