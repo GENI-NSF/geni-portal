@@ -30,6 +30,7 @@
 // Notes:
 // $user should be bound to the current user
 
+require_once("util.php");
 ?>
 <div style="width:479px; font-size:80%; text-align:center; float:right; margin:5px 5px 5px 5px;">
   <h2>GENI Resources</h2>
@@ -44,9 +45,11 @@
 ?>
 
 <?php
-
 if (! $user->portalIsAuthorized()) {
   $km_url = get_first_service_of_type(SR_SERVICE_TYPE::KEY_MANAGER);
+  $params['redirect'] = selfURL();
+  $query = http_build_query($params);
+  $km_url = $km_url . "?" . $query;
   print "<h2>Portal authorization</h2>\n";
   print "The GENI Portal is not authorized by you as a client tool. If you would like";
   print " the GENI Portal to help you manage your projects and slices, you can";

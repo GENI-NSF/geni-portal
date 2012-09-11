@@ -57,4 +57,18 @@ function uuid_is_valid($uuid) {
   return (boolean) preg_match('/^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$/', $uuid);
 }
 
+function selfURL() {
+  $protocol = "http";
+  $port = "80";
+  if (array_key_exists('HTTPS', $_SERVER)) {
+    $protocol = "https";
+    $port = "443";
+  }
+  if ($_SERVER["SERVER_PORT"] !== $port) {
+    $port = ":" . $_SERVER["SERVER_PORT"];
+  } else {
+    $port = "";
+  }
+  return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
+}
 ?>
