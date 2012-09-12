@@ -271,39 +271,6 @@ if (PEAR::isError($result)) {
   die("error on abac insert: " . $result->getMessage());
 }
 
-// --------------------------------------------------
-// Send mail about the new account request
-// --------------------------------------------------
-$server_host = $_SERVER['SERVER_NAME'];
-$body = "There is a new portal account request on $server_host:\n";
-$mail_attrs = array('givenName' => 'First Name',
-        'sn' => 'Last Name',
-        'mail' => 'Email Address',
-        'telephoneNumber' => 'Phone Number',
-        'affiliation' => 'Affiliation',
-        'eppn' => 'EPPN',
-        'reference' => 'Reference',
-        'reason' => 'Reason',
-        'profile' => 'Profile');
-foreach (array_keys($mail_attrs) as $attr) {
-  $pretty = $mail_attrs[$attr];
-  if (attrValue($attr, $value, $self_asserted)) {
-    $body .= "\n$pretty: $value";
-    if ($self_asserted) {
-      $body .= "   (self asserted)";
-    } else {
-      $body .= "   (from IdP)";
-    }
-  } else {
-    /* The attribute is not present. */
-    $body .= "\n$pretty: no value available";
-  }
-}
-
-mail($portal_admin_email,
-     "New portal account request",
-     $body);
-
 relative_redirect('home.php');
 
 /* <?php */
