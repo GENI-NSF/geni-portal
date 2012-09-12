@@ -1,0 +1,16 @@
+#!/bin/bash
+
+FILENAME="/tmp/addexoams.$USER"
+
+echo "-- Create the entry for ExoGENI BBN Rack:" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (0, 'https://bbn-hn.exogeni.net:11443/orca/xmlrpc', NULL, 'ExoGENI BBN', 'ExoGENI BBN Rack');" >> $FILENAME
+
+echo "-- Create the entry for ExoGENI RENCI Rack:" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (0, 'https://rci-hn.exogeni.net:11443/orca/xmlrpc', NULL, 'ExoGENI RENCI', 'ExoGENI RENCI Rack');" >> $FILENAME
+
+echo "-- Create the entry for ExoGENI ExoSM:" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (0, 'https://geni.renci.org:11443/orca/xmlrpc', NULL, 'ExoGENI ExoSM', 'ExoGENI ExoSM');" >> $FILENAME
+
+psql -U portal -h localhost portal < $FILENAME
+
+rm $FILENAME
