@@ -193,4 +193,23 @@ function get_member_info($member_id)
   return $result;
 }
 
+function mail_account_request($member_id)
+{
+  $portal_admin_email = 'portal-dev-admin@gpolab.bbn.com';
+  $member_info = get_member_info($member_id);
+  $member_attrs = $member_info[MA_ARGUMENT::ATTRIBUTES];
+  $server_host = $_SERVER['SERVER_NAME'];
+  $body = "There is a new portal account request on $server_host:\n";
+  $body .= "\nmember_id: $member_id";
+  foreach ($member_attrs as $attr) {
+    $body .= "\n" . $attr[MA_ATTRIBUTE::NAME];
+    $body .= ": " . $attr[MA_ATTRIBUTE::VALUE];
+    if ($attr[MA_ATTRIBUTE::SELF_ASSERTED]) {
+      $body .= "   (self asserted)";
+    }
+  }
+  mail($portal_admin_email,
+          "New portal account request",
+          $body);
+}
 ?>

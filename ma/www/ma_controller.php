@@ -300,6 +300,7 @@ function create_account($args, $message)
       return $result;
     }
   }
+  mail_account_request($member_id);
   // FIXME: Temporarily make all members project leads.
   assert_project_lead($cs_url, $ma_signer, $member_id);
   $result = generate_response(RESPONSE_ERROR::NONE, $member_id, "");
