@@ -72,23 +72,21 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
 
     $result = list_resources($am_url, $user);
     // error_log("VERSION = " . $result);
-    
-    
+
     error_log("ListResources output = " . $result);
-    $slivers_output = $slivers_output . $result . "\n";
+    $slivers_output .= "<h2>$am_url</h2>\n";
+    $slivers_output .= "<pre>\n";
+    $slivers_output .= print_r($result, true);
+    $slivers_output .= "</pre>\n";
   }
 }
 
 $header = "ListResources";
-$text = $slivers_output;
 
 require_once("header.php");
 show_header('GENI Portal: Debug',  $TAB_DEBUG);
 print "<h2>$header</h2>\n";
-$text2 = explode("\n",$text);
-foreach ($text2 as $line_num => $line) {
-    echo htmlspecialchars($line) . "<br />\n";
-}
+print $slivers_output;
 
 print "\n";
 include("footer.php");
