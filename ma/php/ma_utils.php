@@ -21,7 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-require_once 'ma_utils.php';
+
+/*
+ * Include local host settings.
+ *
+ * FIXME: parameterize file location
+ */
+include_once('/etc/geni-ch/settings.php');
 
 function attr_key_exists($key, $attrs) {
   foreach ($attrs as $attr) {
@@ -195,7 +201,8 @@ function get_member_info($member_id)
 
 function mail_account_request($member_id)
 {
-  $portal_admin_email = 'portal-dev-admin@gpolab.bbn.com';
+  // From /etc/geni-ch/settings.php
+  global $portal_admin_email;
   $member_info = get_member_info($member_id);
   $member_attrs = $member_info[MA_ARGUMENT::ATTRIBUTES];
   $server_host = $_SERVER['SERVER_NAME'];
