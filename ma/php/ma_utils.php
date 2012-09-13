@@ -219,4 +219,22 @@ function mail_account_request($member_id)
           "New portal account request",
           $body);
 }
+function mail_new_project_lead($member_id)
+{
+  // From /etc/geni-ch/settings.php
+  global $portal_admin_email;
+  $member_info = get_member_info($member_id);
+  foreach ($member_info[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+    $member_attrs[$attr[MA_ATTRIBUTE::NAME]] = $attr[MA_ATTRIBUTE::VALUE];
+  }
+  $body = "Dear " . $member_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME] . ",\n\n";
+  $body .= "Congratulations, you have been made a 'Project Lead', meaning";
+  $body .= " you can create GENI Projects, as well as create slices in";
+  $body .= " projects and reserve resources.\n\n";
+  $body .= "Please visit https://" . $_SERVER['SERVER_NAME'];
+  $body .= "/secure/home.php to get started.\n";
+  mail($member_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS],
+          "GENI Project Lead",
+          $body);
+}
 ?>

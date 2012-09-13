@@ -509,7 +509,7 @@ function add_member_privilege($args, $message)
   $result = db_execute_statement($sql);
   if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
     assert_project_lead($cs_url, $ma_signer, $member_id);
-    // TODO: Send email informing experimenter
+    mail_new_project_lead($member_id);
   }
   return $result;
 }
