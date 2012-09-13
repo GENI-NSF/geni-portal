@@ -22,7 +22,6 @@ openssl smime -sign -signer $signer_cert -inkey $signer_key \
 
 curl -i -X PUT --data-binary @$signed_file -o $result_file $url
 
-cat $result_file
 rm $plain_file
 rm $signed_file
 rm $result_file
