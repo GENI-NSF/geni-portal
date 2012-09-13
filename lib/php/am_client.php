@@ -269,7 +269,7 @@ function list_resources($am_url, $user)
     }
   }
 
-  $args = array('listresources');
+  $args = array('-t', 'GENI', '3', 'listresources');
   $output = invoke_omni_function($am_url, $user, $args);
   return $output;
 }
