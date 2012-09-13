@@ -491,6 +491,44 @@ function lookup_member_by_id($args, $message)
   }
 }
 
+function add_member_privilege($args, $message)
+{
+  global $MA_MEMBER_PRIVILEGE_TABLENAME;
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $privilege_id = $args[MA_ARGUMENT::PRIVILEGE_ID];
+
+  $conn = db_conn();
+  $sql = ("insert into " . $MA_MEMBER_PRIVILEGE_TABLENAME
+          . " ( " . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::MEMBER_ID
+          . ", " . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::PRIVILEGE_ID
+          . ")  VALUES ("
+          . $conn->quote($member_id, 'text')
+          . ", " . $conn->quote($privilege_id, 'integer')
+          . ")");
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
+function revoke_member_privilege($args, $message)
+{
+  global $MA_PRIVILEGE_TABLENAME;
+
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $privilege_id = $args[MA_ARGUMENT::PRIVILEGE_ID];
+
+  $conn = db_conn();
+  $sql = ("delete from " . $MA_PRIVILEGE_TABLENAME
+          . " where "
+          . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text')
+          . " and "
+          . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::PRIVILEGE_ID
+          . " = " . $conn->quote($privilege_id, 'int'));
+  $result = db_execute_statement($sql);
+  return $result;
+}
+
 /**
  * This is more of a demonstration guard than anything else.
  * It really isn't an appropriate test, but gets the point
