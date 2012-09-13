@@ -512,19 +512,19 @@ function add_member_privilege($args, $message)
 
 function revoke_member_privilege($args, $message)
 {
-  global $MA_PRIVILEGE_TABLENAME;
+  global $MA_MEMBER_PRIVILEGE_TABLENAME;
 
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $privilege_id = $args[MA_ARGUMENT::PRIVILEGE_ID];
 
   $conn = db_conn();
-  $sql = ("delete from " . $MA_PRIVILEGE_TABLENAME
+  $sql = ("delete from " . $MA_MEMBER_PRIVILEGE_TABLENAME
           . " where "
           . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::MEMBER_ID
           . " = " . $conn->quote($member_id, 'text')
           . " and "
           . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::PRIVILEGE_ID
-          . " = " . $conn->quote($privilege_id, 'int'));
+          . " = " . $conn->quote($privilege_id, 'integer'));
   $result = db_execute_statement($sql);
   return $result;
 }
