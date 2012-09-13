@@ -301,8 +301,6 @@ function create_account($args, $message)
     }
   }
   mail_account_request($member_id);
-  // FIXME: Temporarily make all members project leads.
-  assert_project_lead($cs_url, $ma_signer, $member_id);
   $result = generate_response(RESPONSE_ERROR::NONE, $member_id, "");
   return $result;
 }
@@ -493,6 +491,8 @@ function lookup_member_by_id($args, $message)
 
 function add_member_privilege($args, $message)
 {
+  global $cs_url;
+  global $ma_signer;
   global $MA_MEMBER_PRIVILEGE_TABLENAME;
 
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
@@ -507,6 +507,10 @@ function add_member_privilege($args, $message)
           . ", " . $conn->quote($privilege_id, 'integer')
           . ")");
   $result = db_execute_statement($sql);
+  if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
+    assert_project_lead($cs_url, $ma_signer, $member_id);
+    // TODO: Send email informing experimenter
+  }
   return $result;
 }
 
