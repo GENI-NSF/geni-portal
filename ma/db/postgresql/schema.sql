@@ -46,7 +46,7 @@ CREATE INDEX ma_member_attribute_index_member_id
 -- ----------------------------------------------------------------------
 -- Privilege table. List all available privileges.
 -- ----------------------------------------------------------------------
-DROP TABLE IF EXISTS ma_privilege;
+DROP TABLE IF EXISTS ma_privilege CASCADE;
 
 CREATE TABLE ma_privilege (
   id INT PRIMARY KEY,
