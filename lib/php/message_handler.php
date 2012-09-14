@@ -34,6 +34,7 @@ require_once("smime.php");
 require_once('response_format.php');
 require_once('util.php');
 require_once('guard.php');
+require_once 'geni_syslog.php';
 
 /**
  * An easy way to turn message handler debugging on or off.
@@ -115,12 +116,13 @@ class DefaultGuardFactory implements GuardFactory
       /* Stub out MA context. */
       break;
     default:
-      error_log("MessageHandler: Unknown prefix \"$prefix\"");
+//       error_log("MessageHandler: Unknown prefix \"$prefix\"");
       // Leave $context and $context_type NULL
       // Leave $result = FALSE
+      break;
     }
-    error_log("MessageHandler find_context returning"
-              . ": \$context_type = $context_type; \$context = $context");
+//     error_log("MessageHandler find_context returning"
+//               . ": \$context_type = $context_type; \$context = $context");
     return $result;
   }
 
@@ -243,21 +245,19 @@ function handle_message($prefix, $cs_url, $cacerts,
   }
 
   if (is_null($geni_message->signer())) {
-    mh_debug("No signer on $prefix.$func, auto-authorizing.");
-    $authz = True;
-  } else {
-    $action = $func;
-    $guards = $guard_factory->createGuards($geni_message);
+    geni_syslog("MessageHandler", "No signer on $prefix.$func");
+  }
+  $action = $func;
+  $guards = $guard_factory->createGuards($geni_message);
 
-    foreach ($guards as $guard) {
-      if (! $guard->evaluate()) {
-        $principal = $geni_message->signerUrn();
-        $msg = "$principal is not authorized to $action.";
-        $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
-                                    NULL,
-                                    $msg);
-        goto done;
-      }
+  foreach ($guards as $guard) {
+    if (! $guard->evaluate()) {
+      $principal = $geni_message->signerUrn();
+      $msg = "$principal is not authorized to $action.";
+      $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
+              NULL,
+              $msg);
+      goto done;
     }
   }
 
