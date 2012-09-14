@@ -214,6 +214,11 @@ class GeniUser
    */
   function sshKeys() {
     // NOTE: This is a candidate for caching on the HTTP session
+    /* If I don't have an inside cert/key, I can't sign the call.
+     * Return no keys. */
+    if (! $this->certificate()) {
+      return array();
+    }
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     $keys = lookup_ssh_keys($ma_url, $this, $this->account_id);
     return $keys;
