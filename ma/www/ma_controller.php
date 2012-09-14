@@ -316,9 +316,9 @@ function create_account($args, $message)
       // An error occurred. Return the error result.
       return $result;
     }
-    $log_msg = "new user $member_id has ";
-    $log_msg .= ($attr_self_asserted ? "self-asserted" : "");
-    $log_msg .= " attrubute $attr_name = \"$attr_value\"";
+    $log_msg = "new user $member_id has";
+    $log_msg .= ($attr_self_asserted ? " self-asserted" : "");
+    $log_msg .= " attribute $attr_name = \"$attr_value\"";
     geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   }
   mail_account_request($member_id);
