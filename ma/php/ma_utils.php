@@ -109,20 +109,38 @@ function derive_username($email_address) {
   $username = substr($email_addr, 0, $atindex);
   /* print "base username = $username<br/>\n"; */
 
-  // FIXME: Follow the rules here: http://groups.geni.net/geni/wiki/GeniApiIdentifiers#Name
-  // Max 8 characters
-  // Case insensitive internally
-  // Obey this regex: '^[a-zA-Z][\w]\{1,8\}$'
+  // Follow the rules here:
+  //         http://groups.geni.net/geni/wiki/GeniApiIdentifiers#Name
+  //  * Max 8 characters
+  //  * Case insensitive internally
+  //  * Obey this regex: '^[a-zA-Z][\w]\{0,7\}$'
+  // Additionally, sanitize the username so it can be used in ABAC
 
-  // Sanitize the username so it can be used in ABAC
+  // lowercase the username
   $username = strtolower($username);
+  // trim the username to 8 chars
+  $username = substr($username, 0, 8);
+  // remove unacceptable characters
   $username = preg_replace("/[^a-z0-9_]/", "", $username);
+  // remove leading non-alphabetic leading chars
+  while (preg_match("/^[^a-z].*/", $username) === 1) {
+    $username = substr($username, 1);
+  }
+  if (! $username) {
+    $username = "geni1";
+  }
   if (! username_exists($username)) {
     /* print "no conflict with $username<br/>\n"; */
     return $username;
   } else {
+    // shorten the name and append a two-digit number
+    $username = substr($username, 0, 6);
     for ($i = 1; $i <= 99; $i++) {
-      $tmpname = $username . $i;
+      if ($i < 10) {
+        $tmpname = $username . "0" . $i;
+      } else {
+        $tmpname = $username . $i;
+      }
       /* print "trying $tmpname<br/>\n"; */
       if (! username_exists($tmpname)) {
         /* print "no conflict with $tmpname<br/>\n"; */
@@ -130,7 +148,7 @@ function derive_username($email_address) {
       }
     }
   }
-  throw new Exception("Unable to find a username based on $username");
+  throw new Exception("Unable to find a username based on $email_address");
 }
 
 function make_member_urn($ma_signer, $username)
