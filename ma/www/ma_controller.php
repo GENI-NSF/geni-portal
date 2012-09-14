@@ -68,7 +68,11 @@ $ma_signer = new Signer($ma_cert_file, $ma_key_file);
 // *** Temporary part of moving member management into MA domain
 function get_member_ids($args, $message)
 {
-  $sql = "Select account_id from account";
+  global $MA_MEMBER_TABLENAME;
+  $log_msg = "get_member_ids()";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  $sql = "select " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID;
+  $sql .= " from $MA_MEMBER_TABLENAME";
   $result = db_fetch_rows($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     return $result;
@@ -76,7 +80,7 @@ function get_member_ids($args, $message)
   $rows = $result[RESPONSE_ARGUMENT::VALUE];
   $ids = array();
   foreach($rows as $row) {
-    $id = $row['account_id'];
+    $id = $row[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
     $ids[] = $id;
   }
   return generate_response(RESPONSE_ERROR::NONE, $ids, null);
@@ -90,11 +94,14 @@ function register_ssh_key($args, $message)
   $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
   $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
   $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
+  $log_msg = "registering ssh key \"$ssh_description\" for $member_id";
   if (array_key_exists(MA_ARGUMENT::SSH_PRIVATE_KEY, $args)) {
     $ssh_private_key = $args[MA_ARGUMENT::SSH_PRIVATE_KEY];
     $private_key_field = ", " . MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY;
     $private_key_value = ", " . $conn->quote($ssh_private_key, 'text');
+    $log_msg .= " with private key";
   }
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $sql = ("insert into " . $MA_SSH_KEY_TABLENAME
           . " ( " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
           . ", " . MA_SSH_KEY_TABLE_FIELDNAME::FILENAME
@@ -117,6 +124,8 @@ function lookup_ssh_keys($args, $message)
   global $MA_SSH_KEY_TABLENAME;
   //  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $log_msg = "looking up ssh keys for $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = ("select * from " . $MA_SSH_KEY_TABLENAME
           . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
@@ -142,6 +151,8 @@ function update_ssh_key($args, $message)
   if (! ($filename || $description)) {
     return generate_response(RESPONSE_ERROR::NONE, false, "");
   }
+  $log_msg = "updating ssh key $ssh_key_id for $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = "update " . $MA_SSH_KEY_TABLENAME . " SET ";
   if ($filename) {
@@ -180,6 +191,8 @@ function delete_ssh_key($args, $message)
   global $MA_SSH_KEY_TABLENAME;
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $ssh_key_id = $args[MA_ARGUMENT::SSH_KEY_ID];
+  $log_msg = "deleting ssh key $ssh_key_id for $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = ("delete from " . $MA_SSH_KEY_TABLENAME
           . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
@@ -200,6 +213,8 @@ function lookup_keys_and_certs($args, $message)
   global $MA_INSIDE_KEY_TABLENAME;
   $client_urn = $message->signerUrn();
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $log_msg = "looking up inside cert/key for $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = "select " 
     . MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY . ", "
@@ -254,8 +269,6 @@ function create_account($args, $message)
     }
   }
   $attributes = $args[MA_ARGUMENT::ATTRIBUTES];
-  geni_syslog(GENI_SYSLOG_PREFIX::MA,
-          "Creating new account for email " . $email_address, LOG_INFO);
   $username = derive_username($email_address);
   $username_attr = array(MA_ATTRIBUTE::NAME => MA_ATTRIBUTE_NAME::USERNAME,
           MA_ATTRIBUTE::VALUE => $username,
@@ -276,6 +289,8 @@ function create_account($args, $message)
     // An error occurred. Return the error result.
     return $result;
   }
+  $log_msg = "creating new user $member_id for email $email_address";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   foreach ($attributes as $attr) {
     $attr_value = $attr[MA_ATTRIBUTE::VALUE];
     // Note: Use empty() instead of is_null() because it catches
@@ -283,6 +298,8 @@ function create_account($args, $message)
     if (empty($attr_value)) {
       continue;
     }
+    $attr_name = $attr[MA_ATTRIBUTE::NAME];
+    $attr_self_asserted = $attr[MA_ATTRIBUTE::SELF_ASSERTED];
     $sql = "insert into " . $MA_MEMBER_ATTRIBUTE_TABLENAME
     . " ( " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
     . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME
@@ -290,15 +307,19 @@ function create_account($args, $message)
     . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED
     . ")  VALUES ("
     . $conn->quote($member_id, 'text')
-    . ", " . $conn->quote($attr[MA_ATTRIBUTE::NAME], 'text')
+    . ", " . $conn->quote($attr_name, 'text')
     . ", " . $conn->quote($attr_value, 'text')
-    . ", " . $conn->quote($attr[MA_ATTRIBUTE::SELF_ASSERTED], 'boolean')
+    . ", " . $conn->quote($attr_self_asserted, 'boolean')
     . ")";
     $result = db_execute_statement($sql);
     if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
       // An error occurred. Return the error result.
       return $result;
     }
+    $log_msg = "new user $member_id has ";
+    $log_msg .= ($attr_self_asserted ? "self-asserted" : "");
+    $log_msg .= " attrubute $attr_name = \"$attr_value\"";
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   }
   mail_account_request($member_id);
   $result = generate_response(RESPONSE_ERROR::NONE, $member_id, "");
@@ -314,7 +335,8 @@ function ma_list_clients($args, $message)
   $sql = "select " . MA_CLIENT_TABLE_FIELDNAME::CLIENT_NAME . ", " . 
     MA_CLIENT_TABLE_FIELDNAME::CLIENT_URN . 
     " from " . $MA_CLIENT_TABLENAME;
-
+  $log_msg = "listing all clients";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $rows = db_fetch_rows($sql);
   $result = $rows;
   //  error_log("ROWS = " . print_r($rows, true));
@@ -352,7 +374,8 @@ function ma_list_authorized_clients($args, $message)
   $sql = "select " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN .
     " from " . $MA_INSIDE_KEY_TABLENAME . 
     " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . " = '$member_id'";
-
+  $log_msg = "listing authorized clients for $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $rows = db_fetch_rows($sql);
   $result = $rows;
   //  error_log("ROWS = " . print_r($rows, true));
@@ -404,12 +427,16 @@ function ma_authorize_client($args, $message)
             . ", " . $conn->quote($cert, 'text')
             . ", " . $conn->quote($key, 'text')
             . ")");
+    $log_msg = "authorizing client $client_urn for $member_id";
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     $result = db_execute_statement($sql);
   } else {
     // Remove member from ma_inside_key table
     $sql = "delete from " . $MA_INSIDE_KEY_TABLENAME . 
       " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . "= '$member_id'" .
       " and " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . " = '$client_urn'";
+    $log_msg = "deauthorizing client $client_urn for $member_id";
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     $result = db_execute_statement($sql);
   }
 
@@ -435,12 +462,16 @@ function lookup_members($args, $message)
   // TODO: Use a prepared statement
   foreach ($lookup_attrs as $attr) {
     // FIXME: validate the attr name against client attributes
+    $attr_name = $attr[MA_ATTRIBUTE::NAME];
+    $attr_value = $attr[MA_ATTRIBUTE::VALUE];
+    $log_msg = "lookup_members with $attr_name = \"$attr_value\"";
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     $sql = "select " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
     . " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME
     . " where " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME
-    . " = " . $conn->quote($attr[MA_ATTRIBUTE::NAME], 'text')
+    . " = " . $conn->quote($attr_name, 'text')
     . " and " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
-    . " = " . $conn->quote($attr[MA_ATTRIBUTE::VALUE], 'text');
+    . " = " . $conn->quote($attr_value, 'text');
     $rows = db_fetch_rows($sql);
     // Convert $rows to an array of member_ids
     $ids = array();
@@ -455,7 +486,7 @@ function lookup_members($args, $message)
     }
   }
   geni_syslog(GENI_SYSLOG_PREFIX::MA,
-          "lookup_member found member ids: " . implode(", ", $member_ids));
+          "lookup_members found member ids: " . implode(", ", $member_ids));
   $result = array();
   foreach ($member_ids as $member_id) {
     $result[] = get_member_info($member_id);
@@ -476,6 +507,8 @@ function lookup_member_by_id($args, $message)
   }
   $conn = db_conn();
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $log_msg = "looking up member by id $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $sql = ("select " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
           . " from " . $MA_MEMBER_TABLENAME
           . " where " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
@@ -498,6 +531,8 @@ function add_member_privilege($args, $message)
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $privilege_id = $args[MA_ARGUMENT::PRIVILEGE_ID];
 
+  $log_msg = "adding privilege \"$privilege_id\" to member $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = ("insert into " . $MA_MEMBER_PRIVILEGE_TABLENAME
           . " ( " . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::MEMBER_ID
@@ -521,6 +556,8 @@ function revoke_member_privilege($args, $message)
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $privilege_id = $args[MA_ARGUMENT::PRIVILEGE_ID];
 
+  $log_msg = "revoking privilege \"$privilege_id\" from member $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = ("delete from " . $MA_MEMBER_PRIVILEGE_TABLENAME
           . " where "
