@@ -30,7 +30,7 @@ list of aggregates read from a config file, and create a new Slice Credential.
 
 import datetime
 import traceback
-import uuid
+import uuid as uuidModule
 import os
 
 import dateutil.parser
@@ -441,7 +441,7 @@ class PGClearinghouse(Clearinghouse):
         if uuid:
             # Check a valid UUID
             try:
-                uuidO = uuid.UUID(uuid)
+                uuidO = uuidModule.UUID(uuid)
             except:
                 self.logger.error("Invalid uuid in GetCredential: %s", uuid)
                 if not self.gcf and urn:
@@ -568,7 +568,7 @@ class PGClearinghouse(Clearinghouse):
                 if uuid:
                     self.logger.error("Got a UUID instead? %s" % uuid)
                     try:
-                        uuidO = uuid.UUID(uuid)
+                        uuidO = uuidModule.UUID(uuid)
                     except:
                         self.logger.error("Resolve(slice): Invalid UUID %s", uuid)
                         raise Exception("Resolve(slice): No valid URN (even using hrn) and no valid UUID")
@@ -584,10 +584,18 @@ class PGClearinghouse(Clearinghouse):
                 if self.slices.has_key(urn):
                     slice_cred = self.slices[urn]
                     slice_cert = slice_cred.get_gid_object()
-                    slice_uuid = str(uuid.UUID(int=slice_cert.get_uuid()))
+                    slice_uuid = ""
+                    try:
+                        slice_uuid = str(uuidModule.UUID(int=slice_cert.get_uuid()))
+                    except Exception, e:
+                        self.logger.error("Failed to get a UUID from slice cert: %s", e)
                     owner_cert = slice_cred.get_gid_caller()
                     owner_urn = owner_cert.get_urn()
-                    owner_uuid = str(uuid.UUID(int=owner_cert.get_uuid()))
+                    owner_uuid = ""
+                    try:
+                        owner_uuid = str(uuidModule.UUID(int=owner_cert.get_uuid()))
+                    except Exception, e:
+                        self.logger.error("Failed to get a UUID from user cert: %s", e)
                     return dict(urn=urn, uuid=slice_uuid, creator_uuid=owner_uuid, creator_urn=owner_urn, gid=slice_cred.get_gid_object().save_to_string(), component_managers=list())
 #{
 #  "urn"  : "URN of the slice",
@@ -650,7 +658,7 @@ class PGClearinghouse(Clearinghouse):
                 if uuid:
                     self.logger.error("Got a UUID instead? %s" % uuid)
                     try:
-                        uuidO = uuid.UUID(uuid)
+                        uuidO = uuidModule.UUID(uuid)
                     except:
                         self.logger.error("Resolve(user): Invalid UUID %s", uuid)
                         raise Exception("Resolve(user): No valid URN (even using hrn) and no valid UUID")
@@ -732,7 +740,11 @@ class PGClearinghouse(Clearinghouse):
             # Infer owner_id from current user's cert and uuid in there
             # pull out slice name from urn
             # but what about project_id? look for something after authority before +authority+?
-            owner_id = str(uuid.UUID(int=user_gid.get_uuid()))
+            try:
+                owner_id = str(uuidModule.UUID(int=user_gid.get_uuid()))
+            except Exception, e:
+                self.logger.error("Register(urn=%s): Failed to find owner account ID from UUID in user cert: %s", urn, e)
+                raise
             sUrn = urn_util.URN(urn=urn)
             slice_name = sUrn.getName()
             slice_auth = sUrn.getAuthority()
@@ -822,7 +834,11 @@ class PGClearinghouse(Clearinghouse):
         # With the real CH, the SSH keys are held by the portal, not the CH
         # see db-util.php#fetchSshKeys which queries the ssh_key table in the portal DB
         # it takes an account_id
-        user_uuid = str(uuid.UUID(int=user_gid.get_uuid()))
+        try:
+            user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
+        except:
+            self.logger.error("GetKeys Failed to find user account ID from cert")
+            raise
         user_urn = user_gid.get_urn()
         if not user_uuid:
             self.logger.warn("GetKeys couldnt get uuid for user from cert with urn %s" % user_urn)
