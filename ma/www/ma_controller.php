@@ -561,6 +561,7 @@ class MAGuardFactory implements GuardFactory
     $action = $parsed_message[0];
     $params = $parsed_message[1];
     $result = array();
+    $result[] = new SignedMessageGuard($message);
     // As more guards accumulate, make this table-driven.
     if ($action === 'lookup_ssh_keys') {
       $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
