@@ -39,6 +39,7 @@ class MA_ARGUMENT {
   const ATTRIBUTES = "attributes";
   const CLIENT_URN = "client_urn";
   const AUTHORIZE_SENSE = "authorize_sense";
+  const PRIVILEGE_ID = "privilege_id";
 }
 
 
@@ -56,6 +57,10 @@ class MA_ATTRIBUTE_NAME {
   const TELEPHONE_NUMBER = "telephone_number";
   const USERNAME = "username";
   const URN = "urn";
+}
+
+class MA_PRIVILEGE {
+  const PROJECT_LEAD = 1;
 }
 
 
@@ -78,6 +83,25 @@ class MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME {
   const NAME = "name";
   const VALUE = "value";
   const SELF_ASSERTED = "self_asserted";
+}
+
+
+$MA_PRIVILEGE_TABLENAME = "ma_privilege";
+
+/* Name of fields for member table */
+class MA_PRIVILEGE_TABLE_FIELDNAME {
+  const ID = "id";
+  const PRIVILEGE = "privilege";
+}
+
+
+$MA_MEMBER_PRIVILEGE_TABLENAME = "ma_member_privilege";
+
+/* Name of fields for member table */
+class MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME {
+  const ID = "id";
+  const MEMBER_ID = MA_ARGUMENT::MEMBER_ID;
+  const PRIVILEGE_ID = "privilege_id";
 }
 
 

@@ -27,10 +27,6 @@
 // Site settings for GENI Identity Portal
 //--------------------------------------------------
 
-// Administrative email address. Used for new account registration,
-// for instance.
-$portal_admin_email = 'portal-dev-admin@gpolab.bbn.com';
-
 // Where to find the gcf installation. This is necessary for
 // generation of slice credentials.
 $portal_gcf_dir = '/usr/share/geni-ch/portal/gcf';

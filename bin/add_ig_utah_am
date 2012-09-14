@@ -1,0 +1,10 @@
+#!/bin/bash
+
+FILENAME="/tmp/addigutaham.$USER"
+
+echo "-- Create the entry for IG Utah AM:" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (0, 'https://www.utah.geniracks.net:12369/protogeni/xmlrpc/am/2.0', '/usr/share/geni-ch/sr/certs/ig-utah-am.pem', 'InstaGENI Utah', 'InstaGENI Utah AM');" >> $FILENAME
+
+psql -U portal -h localhost portal < $FILENAME
+
+rm $FILENAME

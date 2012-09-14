@@ -22,6 +22,24 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once 'sr_constants.php';
+require_once 'sr_client.php';
+require_once 'ma_client.php';
+require_once 'portal.php';
+
+// Avoid double registration by checking if this is a valid
+// user before displaying the page. If this user is already
+// registered, redirect to the home page.
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$eppn = $_SERVER['eppn'];
+$attrs = array('eppn' => $eppn);
+$ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
+$count = count($ma_members);
+if ($count !== 0) {
+  // New identity, go to registration page
+    relative_redirect("home.php");
+}
+
 include("header.php");
 show_header('GENI Portal Home', $TAB_HOME, 0); // 0=Don't load user to show header
 ?>

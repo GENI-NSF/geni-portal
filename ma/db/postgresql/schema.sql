@@ -40,6 +40,34 @@ CREATE TABLE ma_member_attribute (
   self_asserted BOOLEAN NOT NULL
 );
 
+CREATE INDEX ma_member_attribute_index_member_id
+  ON ma_member_attribute (member_id);
+
+-- ----------------------------------------------------------------------
+-- Privilege table. List all available privileges.
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS ma_privilege CASCADE;
+
+CREATE TABLE ma_privilege (
+  id INT PRIMARY KEY,
+  privilege VARCHAR NOT NULL
+);
+
+-- ----------------------------------------------------------------------
+-- Member privilege table. Store all privileges based on their CS types.
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS ma_member_privilege;
+
+CREATE TABLE ma_member_privilege (
+  id SERIAL PRIMARY KEY,
+  member_id UUID NOT NULL REFERENCES ma_member (member_id),
+  privilege_id INT NOT NULL REFERENCES ma_privilege (id),
+  expiration TIMESTAMP
+);
+
+CREATE INDEX ma_member_privilege_index_member_id
+  ON ma_member_privilege (member_id);
+
 -- ----------------------------------------------------------------------
 -- Client table. Each client has a certificate and is "approved" in
 -- some way.

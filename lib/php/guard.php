@@ -22,6 +22,8 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once 'geni_syslog.php';
+
 interface Guard {
   /**
    * Evaluate the guard. The guard is intended to be a closure over a
@@ -93,6 +95,24 @@ class SignerUuidParameterGuard implements Guard
     $params = $parsed_message[1];
     $match_param = $params[$this->match_param];
     return $this->message->signerUuid() === $match_param;
+  }
+}
+
+class SignedMessageGuard implements Guard
+{
+  function __construct(GeniMessage $message)
+  {
+    $this->message = $message;
+  }
+
+  function evaluate() {
+    $result = (bool) $this->message->signerPem();
+    if (! $result) {
+      $pm = $this->message->parse();
+      $op = $pm[0];
+      geni_syslog("SignedMessageGuard", "blocking $op: unsigned message.");
+    }
+    return $result;
   }
 }
 ?>

@@ -21,7 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-require_once 'ma_utils.php';
+
+/*
+ * Include local host settings.
+ *
+ * FIXME: parameterize file location
+ */
+include_once('/etc/geni-ch/settings.php');
 
 function attr_key_exists($key, $attrs) {
   foreach ($attrs as $attr) {
@@ -193,4 +199,42 @@ function get_member_info($member_id)
   return $result;
 }
 
+function mail_account_request($member_id)
+{
+  // From /etc/geni-ch/settings.php
+  global $portal_admin_email;
+  $member_info = get_member_info($member_id);
+  $member_attrs = $member_info[MA_ARGUMENT::ATTRIBUTES];
+  $server_host = $_SERVER['SERVER_NAME'];
+  $body = "There is a new portal account request on $server_host:\n";
+  $body .= "\nmember_id: $member_id";
+  foreach ($member_attrs as $attr) {
+    $body .= "\n" . $attr[MA_ATTRIBUTE::NAME];
+    $body .= ": " . $attr[MA_ATTRIBUTE::VALUE];
+    if ($attr[MA_ATTRIBUTE::SELF_ASSERTED]) {
+      $body .= "   (self asserted)";
+    }
+  }
+  mail($portal_admin_email,
+          "New portal account request",
+          $body);
+}
+function mail_new_project_lead($member_id)
+{
+  // From /etc/geni-ch/settings.php
+  global $portal_admin_email;
+  $member_info = get_member_info($member_id);
+  foreach ($member_info[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+    $member_attrs[$attr[MA_ATTRIBUTE::NAME]] = $attr[MA_ATTRIBUTE::VALUE];
+  }
+  $body = "Dear " . $member_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME] . ",\n\n";
+  $body .= "Congratulations, you have been made a 'Project Lead', meaning";
+  $body .= " you can create GENI Projects, as well as create slices in";
+  $body .= " projects and reserve resources.\n\n";
+  $body .= "Please visit https://" . $_SERVER['SERVER_NAME'];
+  $body .= "/secure/home.php to get started.\n";
+  mail($member_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS],
+          "GENI Project Lead",
+          $body);
+}
 ?>

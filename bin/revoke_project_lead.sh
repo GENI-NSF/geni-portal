@@ -1,7 +1,5 @@
 #!/bin/bash
-# Activate account of given user as a potential proejct lead
-#
-# Usage: activate_project_lead.sh username
+# Revoke project lead privilege
 
 if [ $# -ne 1 ]; then
     echo "Usage: activate_project_lead.sh member_id"
@@ -16,7 +14,7 @@ plain_file=`mktemp`
 signed_file=`mktemp`
 result_file=`mktemp`
 
-msg="{\"operation\":\"add_member_privilege\",\"member_id\":\"$1\",\"privilege_id\":1}"
+msg="{\"operation\":\"revoke_member_privilege\",\"member_id\":\"$1\",\"privilege_id\":1}"
 echo $msg > $plain_file
 
 openssl smime -sign -signer $signer_cert -inkey $signer_key \

@@ -362,3 +362,20 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
   </link>
 </rspec>'
 );
+
+-- 1 VM
+INSERT INTO rspec(name, schema, schema_version, description, rspec)
+  VALUES
+  ('One virtual machine', 'GENI', '3',
+   'Any one virtual machine.',
+   '<?xml version="1.0" encoding="UTF-8"?>
+<rspec xmlns="http://www.geni.net/resources/rspec/3"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/request.xsd"
+       type="request">
+  <node client_id="my-node"
+        exclusive="false">
+    <sliver_type name="emulab-openvz" />
+  </node>
+</rspec>'
+);

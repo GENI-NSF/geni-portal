@@ -24,4 +24,6 @@
 
 $db_dsn = 'pgsql://portal:portal@localhost/portal';
 
+$portal_admin_email = 'portal-dev-admin@gpolab.bbn.com';
+
 ?>
