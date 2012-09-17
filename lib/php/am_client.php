@@ -25,6 +25,34 @@
 // Routines for clients speaking to an aggregate maanger
 
 require_once('file_utils.php');
+require_once 'geni_syslog.php';
+require_once 'logging_client.php';
+require_once 'sr_client.php';
+require_once 'portal.php';
+
+
+function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
+{
+  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+  $user_id = $user->account_id;
+  if (! is_array($agg)) {
+    $aggs[] = $agg;
+  } else {
+    $aggs = $agg;
+  }
+  foreach ($aggs as $am) {
+    $attributes['aggregate'] = $am;
+    $msg = "$op at $am";
+    if ($slice) {
+      $msg .= " on $slice";
+      $attributes['slice'] = $slice;
+    }
+    if ($rspec) {
+      $attributes['rspec'] = $rspec;
+    }
+    $result = log_event($log_url, Portal::getInstance(), $msg, $attributes, $user_id);
+  }
+}
 
 /*
  * Writes the user's ssh keys to files for use in the omni config file.
@@ -253,6 +281,10 @@ function get_version($am_url, $user)
     }
   }
 
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling GetVersion at $am_url";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  log_action("GetVersion", $user, $am_url);
   $args = array('getversion');
   $output = invoke_omni_function($am_url, $user, $args);
   return $output;
@@ -269,6 +301,10 @@ function list_resources($am_url, $user)
     }
   }
 
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling ListResources at $am_url";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  log_action("ListResources", $user, $am_url);
   $args = array('-t', 'GENI', '3', 'listresources');
   $output = invoke_omni_function($am_url, $user, $args);
   return $output;
@@ -289,6 +325,10 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
     return("Missing slice credential");
   }
 
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling ListResources at $am_url on $slice_urn";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  log_action("ListResources", $user, $am_url, $slice_urn);
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
@@ -319,6 +359,10 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
     return("Missing slice credential");
   }
 
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling RenewSliver at $am_url on $slice_urn";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  log_action("RenewSliver", $user, $am_url, $slice_urn);
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
@@ -349,6 +393,11 @@ function create_sliver($am_url, $user, $slice_credential, $slice_urn,
     return("Missing slice credential");
   }
 
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling CreateSliver at $am_url on $slice_urn";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  $rspec = file_get_contents($rspec_filename);
+  log_action("CreateSliver", $user, $am_url, $slice_urn, $rspec);
   $slice_credential_filename = writeDataToTempFile($slice_credential);
   $args = array("--slicecredfile", 
 		$slice_credential_filename, 
@@ -377,6 +426,10 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
     return("Missing slice credential");
   }
 
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling SliverStatus at $am_url on $slice_urn";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  log_action("SliverStatus", $user, $am_url, $slice_urn);
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
@@ -403,6 +456,10 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
     return("Missing slice credential");
   }
 
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling DeleteSliver at $am_url on $slice_urn";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  log_action("DeleteSliver", $user, $am_url, $slice_urn);
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
