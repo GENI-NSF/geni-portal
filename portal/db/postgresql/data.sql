@@ -1,7 +1,7 @@
 INSERT INTO schema_version(key, extra) values ('003', 'schema version');
 
 -- Add a request rspec for a single node.
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('One compute node', 'GENI', '3',
    'Any one compute node.',
@@ -11,9 +11,10 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
        xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/request.xsd"
        type="request">
   <node client_id="foo"/>
-</rspec>'
+</rspec>',
+   'public'
 );
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Two compute nodes', 'GENI', '3',
    'Any two compute nodes.',
@@ -24,9 +25,10 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
        type="request">
   <node client_id="foo"/>
   <node client_id="bar"/>
-</rspec>'
+</rspec>',
+   'public'
 );
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Two nodes, one link', 'GENI', '3',
    'Two nodes with a link between them.',
@@ -48,9 +50,10 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     <property source_id="VM-2:if0" dest_id="VM-1:if0"/>
     <link_type name="lan"/>
   </link>
-</rspec>'
+</rspec>',
+   'public'
 );
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Three nodes, triangle topology', 'GENI', '3',
    'Three nodes in a triangle topology.',
@@ -92,9 +95,10 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     <property source_id="VM-3:if0" dest_id="VM-1:if1"/>
     <link_type name="lan"/>
   </link>
-</rspec>'
+</rspec>',
+   'public'
 );
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Four nodes, diamond topology', 'GENI', '3',
    'Four nodes in a diamond topology.',
@@ -147,9 +151,10 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     <property source_id="VM-4:if0" dest_id="VM-1:if1"/>
     <link_type name="lan"/>
   </link>
-</rspec>'
+</rspec>',
+   'public'
 );
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Three nodes, linear topology', 'GENI', '3',
    'Three nodes in a linear topology.',
@@ -182,9 +187,10 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     <property source_id="VM-3:if0" dest_id="VM-2:if1"/>
     <link_type name="lan"/>
   </link>
-</rspec>'
+</rspec>',
+   'public'
 );
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Four nodes, star topology', 'GENI', '3',
    'Four nodes in a star topology.',
@@ -228,10 +234,11 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     <property source_id="VM-4:if0" dest_id="VM-2:if2"/>
     <link_type name="lan"/>
   </link>
-</rspec>'
+</rspec>',
+   'public'
 );
 -- The Click Router Example Experimentschema
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Click Router Example Experiment', 'GENI', '3',
    'The Click Router Example Experiment topology.',
@@ -313,10 +320,11 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     <interface_ref client_id="bottom:if3"/>
     <interface_ref client_id="hostB:if1"/>
   </link>
-</rspec>'
+</rspec>',
+   'public'
 );
 -- 3 nodes where middle is a delay node
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('Two nodes with one delay node', 'GENI', '3',
    'Linear topology with delay node in the middle.',
@@ -360,11 +368,12 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
     <property source_id="PC2:if0" dest_id="delay:if1"/>
     <link_type name="lan"/>
   </link>
-</rspec>'
+</rspec>',
+   'public'
 );
 
 -- 1 VM
-INSERT INTO rspec(name, schema, schema_version, description, rspec)
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
   ('One virtual machine', 'GENI', '3',
    'Any one virtual machine.',
@@ -377,5 +386,6 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec)
         exclusive="false">
     <sliver_type name="emulab-openvz" />
   </node>
-</rspec>'
+</rspec>',
+   'public'
 );

@@ -191,6 +191,9 @@ CREATE INDEX abac_assertion_subject ON abac_assertion (subject);
 -- ----------------------------------------------------------------------
 -- RSpecs
 -- ----------------------------------------------------------------------
+DROP TYPE rspec_visibility IF EXISTS CASCADE;
+CREATE TYPE rspec_visibility AS ENUM ('public', 'private');
+
 DROP TABLE IF EXISTS rspec;
 CREATE TABLE rspec (
   id SERIAL,
@@ -199,11 +202,15 @@ CREATE TABLE rspec (
   schema_version VARCHAR NOT NULL, -- 2, 3, etc.
   description VARCHAR NOT NULL,
   rspec VARCHAR NOT NULL,
+  owner_id UUID,
+  visibility rspec_visibility NOT NULL,
   PRIMARY KEY (id)
 );
-
 CREATE INDEX rspec_name ON rspec (name);
 CREATE INDEX rspec_schema ON rspec (schema);
+CREATE INDEX rspec_owner_id ON rspec(owner_id);
+CREATE INDEX rspec_visibility ON rspec(visibility);
+
 
 -- ----------------------------------------------------------------------
 -- ssh keys

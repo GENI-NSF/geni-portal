@@ -282,11 +282,50 @@ function fetchRSpecById($id) {
   return $row['rspec'];
 }
 
-function fetchRSpecMetaData() {
+/**
+ * Get RSpec metadata for all public RSpecs
+ * and all private RSpecs owned by the current user.
+ */
+function fetchRSpecMetaData($user) {
   $conn = portal_conn();
-  $sql = "SELECT rspec.id, rspec.name, rspec.description FROM rspec;";
+  $sql = "SELECT id, name, description FROM rspec";
+  $sql .= " where visibility = 'public'";
   /* print "Query = $sql<br/>"; */
   $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
-  return $rows[RESPONSE_ARGUMENT::VALUE];
+  $public_rspecs = $rows[RESPONSE_ARGUMENT::VALUE];
+  $sql = "SELECT id, name, description FROM rspec";
+  $sql .= " where owner_id = ";
+  $sql .= $conn->quote($user->account_id, 'text');
+  $sql .= " AND visibility = 'private'";
+  $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
+  $private_rspecs = $rows[RESPONSE_ARGUMENT::VALUE];
+  // List private RSpecs first.
+  return array_merge($private_rspecs, $public_rspecs);
+}
+
+function db_add_rspec($user, $name, $description, $rspec, $schema,
+        $schema_version, $visibility)
+{
+  $conn = portal_conn();
+  $sql = "INSERT INTO rspec";
+  $sql .= " (name, description, rspec, schema, schema_version";
+  $sql .= ", owner_id, visibility)";
+  $sql .= " VALUES (";
+  $sql .= $conn->quote($name, 'text');
+  $sql .= ", " . $conn->quote($description, 'text');
+  $sql .= ", " . $conn->quote($rspec, 'text');
+  $sql .= ", " . $conn->quote($schema, 'text');
+  $sql .= ", " . $conn->quote($schema_version, 'text');
+  $sql .= ", " . $conn->quote($user->account_id, 'text');
+  $sql .= ", " . $conn->quote($visibility, 'text');
+  $sql .= ")";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  $result = db_execute_statement($sql, "db_add_rspec");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "db_add_rspec: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    return false;
+  }
+  return $result[RESPONSE_ARGUMENT::VALUE];
 }
 ?>

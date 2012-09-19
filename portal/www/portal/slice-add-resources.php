@@ -30,8 +30,8 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 
-function show_rspec_chooser() {
-  $all_rmd = fetchRSpecMetaData();
+function show_rspec_chooser($user) {
+  $all_rmd = fetchRSpecMetaData($user);
   print "Choose Resources:\n";
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
@@ -46,6 +46,9 @@ function show_rspec_chooser() {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
+  print " or <a href=\"rspecupload.php\">upload your own RSpec</a>.";
+//  print " or <button onClick=\"window.location='rspecupload.php'\">";
+//  print "upload your own RSpec</button>.";
   // RSpec entry area
   print '<span id="paste_rspec" style="display:none;vertical-align:top;">'
     . PHP_EOL;
@@ -108,7 +111,7 @@ if (count($keys) == 0) {
 }
 
 print '<form id="f1" action="sliceresource.php" method="post">';
-show_rspec_chooser();
+show_rspec_chooser($user);
 print '<br/><br/>';
 show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
