@@ -191,7 +191,7 @@ CREATE INDEX abac_assertion_subject ON abac_assertion (subject);
 -- ----------------------------------------------------------------------
 -- RSpecs
 -- ----------------------------------------------------------------------
-DROP TYPE rspec_visibility IF EXISTS CASCADE;
+DROP TYPE IF EXISTS rspec_visibility CASCADE;
 CREATE TYPE rspec_visibility AS ENUM ('public', 'private');
 
 DROP TABLE IF EXISTS rspec;
