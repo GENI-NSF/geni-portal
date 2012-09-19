@@ -48,20 +48,29 @@ $ma_signer = new Signer($ma_cert_file, $ma_key_file);
 
 /**
  * GENI Clearinghouse Member Authority (MA) controller interface
- * The MA maintains a list of role relationships between members and other entities (projects, slices)
- * or general contexts 
- * That is, a person (member) can have a role with respect to a particular slice or project
- *   in which case the context_type is project or slice and the context_id is the UUID of that slice or
- *      project
- * Alternatively, the person (member) can have a role with respect to a cotnext type that has no
- *     specific context id, such as being the admin of membership records or the auditor of logs
-
+ *
+ * The MA maintains a set of members and their UUIDs and their attributes and associated query mechanisms.
+ * The MA maintains a set of SSL keys and certs, both 'inside' (created) and 'outside' (uploaded) for given users.
+ * Additionally, the MA maintains a mapping of members to the client tools (e.g. the GENI Portal) that the member has authorized to speak on his/her behalf.
+ * Finally, the MA maintains a set of SSH keys for a given member for passing to resources as needed.
  * 
  * Supports these methods:
- *   get_member_ids(ma_url)
- *   register_ssh_key(ma_url, member_id, filename, description, ssh_key);
- *   lookup_ssh_keys(ma_url, member_id);
- *   lookup_keys_and_certs(ma_url, member_id);
+ *   register_ssh_key(member_id, filename, description, ssh_key);
+ *   lookup_ssh_keys(member_id);
+ *   update_ssh_key(member_id, ssh_key_id, ssh_filename, ssh_description)
+ *   delete_ssh_key(member_id, ssh_key_id)
+ *   lookup_keys_and_certs(member_id);
+ *   create_account(attributes)
+ *          email_address, first_name, last_name, telephone_number
+ *   ma_list_clients()
+ *          (name => URN) dictionary
+ *   ma_list_authorized_clients(member_id)
+ *          (name => URN) dictionary
+ *   ma_authorize_client(member_id, client_urn, authorize_sense)
+ *   lookup_members(attributes) 
+ *   lookup_member_by_id(member_id)
+ *   add_member_privilege(member_id, privilege_id)
+ *   revoke_member_privilege(member_id, privilege_id)
  */
 
 
