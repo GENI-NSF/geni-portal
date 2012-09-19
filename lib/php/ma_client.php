@@ -48,7 +48,8 @@ function register_ssh_key($ma_url, $signer, $member_id, $filename,
   if (! is_null($ssh_private_key)) {
     $register_ssh_key_message[MA_ARGUMENT::SSH_PRIVATE_KEY] = $ssh_private_key;
   }
-  $result = put_message($ma_url, $register_ssh_key_message);
+  $result = put_message($ma_url, $register_ssh_key_message,
+          $signer->certificate(), $signer->privateKey());
   return $result;
 }
 
