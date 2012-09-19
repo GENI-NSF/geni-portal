@@ -80,6 +80,7 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input type="text" name="description"/>';
   echo '  <br/><br/>';
   echo '  <input type="submit" name="submit" value="Upload"/>';
+  echo '  <input type="hidden" name="referer" value="' . $_SERVER['HTTP_REFERER'] . '"/>';
   echo '</form>';
   echo '<br/>';
   include("footer.php");
@@ -106,6 +107,11 @@ geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "db_add_rspec: " . print_r($result, true
 
 $_SESSION['lastmessage'] = "Uploaded RSpec " . $name;
 
-// redirect to referer?
-relative_redirect('profile');
+// redirect to referer if available.
+if (array_key_exists('referer', $_POST)) {
+  header("Location: " . $_POST['referer']);
+  exit;
+} else {
+  relative_redirect('profile');
+}
 ?>
