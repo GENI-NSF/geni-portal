@@ -1,25 +1,326 @@
-<style type=\"text/css\">
-  table.gridtable {
-  font-family: verdana,arial,sans-serif;
-  font-size:11px;
-color:#333333;
-  border-width: 1px;
-  border-color: #666666;
-  border-collapse: collapse;
+html {
+ font: normal 14px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+/* margin: 0; 
+ padding: 0; */
 }
-table.gridtable th {
-  border-width: 1px;
-padding: 8px;
-  border-style: solid;
-  border-color: #666666;
-  background-color: #dedede;
-}
-table.gridtable td {
-  border-width: 1px;
-padding: 8px;
-  border-style: solid;
-  border-color: #666666;
-  background-color: #ffffff;
-}
-</style>
 
+body {
+/* width='8in'; */
+}
+
+/* GENI Orange: #E17000 */
+h1, h2, h3, h4, h5, h6, h7 {
+ color: #E17000; /* official GENI orange */
+}
+
+hr {
+ color: #E17000; /* official GENI orange */
+ background-color: #E17000; /* official GENI orange */
+ height: 1px;
+ border: none;
+ margin-top: 1em;
+ margin-bottom: 1em;
+ clear: both;
+}
+
+
+div#header {
+ display: block;
+/* width: 10in; */
+ color:black;
+}
+
+#header div {
+ background-color: white;
+ margin: 0;
+ padding: 0;
+}
+
+div#header h1 {
+ color:black;
+}
+
+div#header div {
+ margin-bottom: .1in;
+}
+
+.landingpage {
+ width:10in;
+ margin-left: auto;
+ margin-right: auto;
+}
+
+div#geni{
+ display: block;
+ float: left;
+ margin-left: .4in; 
+ margin-right: .1in;
+ margin-top: .2in;
+}
+
+div#geni img{
+ width: 1in;
+}
+
+div#welcome{
+ display: block;
+ width: 7in;
+ float: left;
+ border-top: solid 10px lightgray;
+ margin: 0;
+ padding: 0;
+ padding-top: .25in;
+}
+
+div#loginHelpdiv{
+ display: block;
+ width: 1in;
+ float: left;
+ margin-top: 0.25in;
+}
+
+
+
+#landingcontent :link, #landingcontent :visited, #header :link, #header :visited, #header :link:hover, #header :visited:hover {
+ color: black;
+}
+
+
+#footer :link, #footer :visited, #footer :link:hover, #footer :visited:hover {
+ color: gray;
+}
+
+div#footer {
+ color:gray;
+ clear:both;
+}
+
+div#landingcontent, div#content.landingpage {
+ display: block;
+}
+
+div#blank {
+ display: block;
+ width: 1.5in;
+ float: left;
+}
+
+div#content.landingpage {
+ width: 7in;
+}
+
+div#main{
+ display: block;
+ width: 4.5in;
+ float:left; 
+}
+
+div#map{
+ display: block;
+ width: 3in;
+ float:left; 
+ top: 1in;
+ padding-top: 2em;
+ font-size:80%; 
+ text-align:center; 
+ margin:5px 5px 5px 25px;
+}
+
+div#map img {
+ width: 3in;
+ height: 2in;
+}
+
+div#map .legend {
+ text-align: left;
+ color: gray;
+}
+
+/* #loginDiv { */
+/*  display: block; */
+/*  clear: both; */
+/*  position: relative; */
+/*  height: 1.5in; */
+/* } */
+/* #loginDiv > #loginButtons { */
+/*  text-align: center; */
+/*  padding-left: 0.5in; */
+/*  padding-top: 0.5in; */
+/* } */
+
+#incommon-logo {
+width: .75in;
+padding: 0.25in;
+left: 0.5in;
+margin-top: .75in;
+top: 3in;
+float: left;
+margin-left: .4in;
+}
+
+/* #loginButton, #loginHelp { */
+/*  width: 17em; */
+/*  padding: .25cm .25cm; */
+/* } */
+
+#usegeni {
+    width: 1.5in;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.announce {
+  font-style:italic;
+}
+
+.instruction {
+ color: red;
+ font-weight: bold;
+ border: 1px solid red;
+ margin: 10px;
+ padding: 10px;
+ width: 50%;
+}
+
+.starter {
+ color: black;
+ font-weight: bold;
+ border: 1px solid black;
+ margin: 10px;
+ padding: 10px;
+}
+
+.starter .done a{
+    color: green;
+}
+.starter .notdone a{
+    color: red;
+}
+
+.deemphasize {
+ color: gray;
+}
+
+.configuring, .unknown, .ready, .failed {
+ text-transform:uppercase;
+ padding: 2px;
+ margin: 2px;
+ color: black;
+ background-color: BlanchedAlmond;
+}
+
+.ready {
+ color: White;
+ border-color: green;
+ background-color: green;
+}
+
+.failed {
+ color: BlanchedAlmond;
+ border-color: red;
+ background-color: red;
+}
+
+input.date {
+ width: 14en;
+}
+
+table {
+ background-color: #DCE2E8;
+ margin: 1em;
+}
+
+td {
+ margin: 3px;
+ padding: 3px;
+ background-color: BlanchedAlmond;
+}
+
+
+th {
+ margin: 3px;
+ padding: 3px;
+ background-color: SkyBlue;
+ text-align: left;
+}
+
+td.label {
+ background-color: #E6D4B8;
+}
+
+
+table .aggregate {
+ background-color: SkyBlue;
+}
+
+table .resource {
+ background-color: PowderBlue;
+}
+
+table .notapply {
+ background-color: #DCE2E8;
+}
+
+.aggregate, .resources {
+ padding: 8px;
+}
+.aggregate {
+ background-color: SkyBlue;
+}
+
+.resources {
+ margin-bottom: 1em;
+ background-color: PowderBlue;
+}
+
+.xml, .msg {
+ white-space: pre;
+ font-family: monospace;
+}
+/* Navigation */
+.nav h2, .nav hr { display: none }
+.nav ul { font-size: 10px; list-style: none; margin: 0; text-align: right }
+.nav li {
+ border-right: 1px solid #d7d7d7;
+ display: inline;
+ padding: 0 .75em;
+ white-space: nowrap;
+}
+.nav li.last { border-right: none }
+
+/* Main navigation bar */
+#mainnav {
+ background: #f7f7f7 url(../topbar_gradient.png) 0 0;
+ border: 1px solid #000;
+ font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+ margin: .66em 0 .33em;
+ padding: .2em 0;
+}
+#mainnav li { border-right: none; padding: .25em 0 }
+#mainnav :link, #mainnav :visited {
+ background: url(../dots.gif) 0 0 no-repeat;
+ text-decoration: none;
+ border-right: 1px solid #fff;
+ border-bottom: none;
+ border-left: 1px solid #555;
+ color: #000;
+ padding: .2em 20px;
+}
+* html #mainnav :link, * html #mainnav :visited { background-position: 1px 0 }
+#mainnav :link:hover, #mainnav :visited:hover {
+ background-color: #ccc;
+ border-right: 1px solid #ddd;
+}
+#mainnav .active :link, #mainnav .active :visited {
+ background: #333 url(../topbar_gradient2.png) 0 0 repeat-x;
+ border-top: none;
+ border-right: 1px solid #000;
+ color: #eee;
+ font-weight: bold;
+}
+#mainnav .active :link:hover, #mainnav .active :visited:hover {
+ border-right: 1px solid #000;
+}

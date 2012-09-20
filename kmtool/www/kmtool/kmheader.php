@@ -22,22 +22,25 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('signer.php');
+  echo '<!DOCTYPE HTML>';
+  echo '<html>';
+  echo '<head>';
+  echo '<title>';
+echo "GENI Key Management Tool"; // FIXME: Make title configurable?
+  echo '</title>';
 
-$sr_url = get_sr_url();
-$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  /* Stylesheet(s) */
+  echo '<link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>';
+//print '<link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>';
 
-// error_log("MA = " . print_r($ma_url, true));
-
-$km_certfile = "/usr/share/geni-ch/km/km-cert.pem";
-$km_keyfile = "/usr/share/geni-ch/km/km-key.pem";
-$km_signer = new Signer($km_certfile, $km_keyfile);
-
-// $mycert = file_get_contents($mycertfile);
-// $mykey = file_get_contents($mykeyfile);
-// error_log("CERT = $mycert");
-// error_log("KEY = $mykey");
+  /* Close the "head" */
+  echo '</head>';
+  echo '<body>';
+  echo '<div id="header">';
+  echo '<a href="http://www.geni.net" target="_blank">';
+  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
+  echo '</a>';
+// FIXME: Need a Key Management Tool .png
+//  echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
 
 ?>
