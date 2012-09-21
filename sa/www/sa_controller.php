@@ -38,6 +38,7 @@ require_once('pa_client.php');
 require_once('cs_client.php');
 require_once('ma_client.php');
 require_once('logging_client.php');
+require_once('geni_syslog.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
@@ -203,6 +204,8 @@ function get_slice_credential($args)
   global $sa_authority_private_key;
   global $sa_gcf_include_path;
 
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "get_slice_credential()");
+
   /* Extract method arguments. */
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $experimenter_cert = $args[SA_ARGUMENT::EXP_CERT];
@@ -218,6 +221,7 @@ function get_slice_credential($args)
                                         $sa_authority_cert,
                                         $sa_authority_private_key);
 
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "get_slice_credential() returning $slice_cred");
   $result = array(SA_ARGUMENT::SLICE_CREDENTIAL => $slice_cred);
   return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
