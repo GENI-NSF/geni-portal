@@ -224,17 +224,20 @@ if (!(isset($msg) and isset($obj))) {
       continue;
     }
     $displayed_aggs++;
+
     if ($first){
       print "<tr>";
       print "<th class='notapply'>";
       print "</th><th>Status</th><th>Aggregate</th>";
       print "<th>&nbsp;</th>";
-      print "<th>Expiration</th></tr>\n";
+      print "<th>Expiration</th>";
+      print "<th>Actions</th></tr>\n";
       $first = False;
     }
     $sliver_status=$agg_obj['geni_status'];
     $sliver_creation='&nbsp;';
     $sliver_expiration='NOT IMPLEMENTED YET';
+
     print "<tr>";
     print "<td class='notapply'></td>";
     print "<td class='$sliver_status'>$sliver_status</td>";
@@ -252,6 +255,16 @@ if (!(isset($msg) and isset($obj))) {
     } else {
       print "<td>$sliver_expiration</td>";
     }
+
+
+/* Sliver Actions */
+print "<td>\n";
+print "<button onClick=\"window.location='$status_url"."&am_id=".am_id($agg)."'\"><b>Sliver Status</b></button>\n";
+print "<button onClick=\"window.location='$listres_url"."&am_id=".am_id($agg)."'\"><b>Manifest</b></button>\n";
+print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "&am_id=".am_id($agg)."'\" $delete_slivers_disabled><b>Delete Slivers</b></button>\n";
+print "</td>\n";
+
+
 
     print "</tr>";
   }
