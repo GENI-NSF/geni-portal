@@ -198,6 +198,8 @@ function invoke_omni_function($am_url, $user, $args)
     $cert_file = '/tmp/' . $username . "-cert.pem";
     $key_file = '/tmp/' . $username . "-key.pem";
     $omni_file = '/tmp/' . $username . "-omni.ini";
+    $tmp_version_cache = tempnam(sys_get_temp_dir(),
+            'omniVersionCache');
 
     file_put_contents($cert_file, $cert);
     file_put_contents($key_file, $private_key);
@@ -237,7 +239,9 @@ function invoke_omni_function($am_url, $user, $args)
 		       $portal_gcf_dir . '/src/logging.conf',
 		       '--logoutput /tmp/omni.log',
 		       '--api-version',
-		       '2');
+		       '2',
+            "--GetVersionCacheName",
+            $tmp_version_cache);
 
     if (!is_array($am_url)){
       $cmd_array[]='-a';
@@ -263,11 +267,16 @@ function invoke_omni_function($am_url, $user, $args)
      unlink($cert_file);
      unlink($key_file);
      unlink($omni_file);
+     unlink($tmp_version_cache);
      foreach ($ssh_key_files as $tmpfile) {
        unlink($tmpfile);
      }
 
      $output2 = json_decode($output, True);
+     if (is_null($output2)) {
+       error_log("am_client invoke_omni_function:"
+               . "JSON result is not parseable: \"$output\"");
+     }
      return $output2;
 }
 
