@@ -280,6 +280,8 @@ class PGClearinghouse(Clearinghouse):
         Clearinghouse.__init__(self)
         self.logger = cred_util.logging.getLogger('gcf-pgch')
         self.gcf=gcf
+        # Cache inside keys for users.
+        self.inside_keys = dict()
 
     def loadURLs(self):
         for (key, val) in self.config['clearinghouse'].items():
@@ -362,6 +364,50 @@ class PGClearinghouse(Clearinghouse):
         self._server.register_instance(PGSAnCHServer(self, self.logger))
         self.logger.info('GENI PGCH Listening on port %d...' % (addr[1]))
         self._server.serve_forever()
+
+    def readfile(self, path):
+        f = open(path)
+        x = f.read()
+        f.close()
+        return x
+
+    def split_chain(self, chain):
+        x = chain.split('\n')
+        sep = '-----END CERTIFICATE-----'
+        out = list()
+        while x.count(sep):
+            pos = x.index(sep)
+            out.append("\n".join(x[0:pos+1]))
+            x = x[pos+1:]
+        return out
+
+    def getInsideKeys(self, uuid):
+        self.inside_keys = dict()
+        if self.inside_keys.has_key(uuid):
+            return self.inside_keys[uuid]
+        # Fetch the inside keys...
+        self.logger.info("get inside keys for %r", uuid);
+        argsdict = dict(member_id=uuid)
+        portalKey = self.readfile('/usr/share/geni-ch/portal/portal-key.pem')
+        portalCert = self.readfile('/usr/share/geni-ch/portal/portal-cert.pem')
+        triple = invokeCH(self.ma_url, "lookup_keys_and_certs", self.logger,
+                          argsdict,
+                          # Temporarily hardcode authority keys to get
+                          # the user's inside keys
+                          [portalCert], portalKey)
+        if triple['code'] != 0:
+            self.logger.error("Failed to get inside keys for %s: %s",
+                              uuid,
+                              triple['output'])
+            return None
+        keysdict = triple['value']
+        inside_key = keysdict['private_key']
+        inside_certs = self.split_chain(keysdict['certificate'])
+        result = (inside_key, inside_certs)
+        # Put it in the cache
+        self.logger.info("caching inside keys for %s", uuid);
+        self.inside_keys[uuid] = result
+        return result
 
     def GetCredential(self, args=None):
         #args: credential, type, uuid, urn
@@ -490,7 +536,10 @@ class PGClearinghouse(Clearinghouse):
         argsdict = dict(experimenter_certificate=user_certstr, slice_id=slice_id)
         res = None
         try:
-            res = invokeCH(self.sa_url, 'get_slice_credential', self.logger, argsdict)
+            user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
+            inside_key, inside_certs = self.getInsideKeys(user_uuid)
+            res = invokeCH(self.sa_url, 'get_slice_credential', self.logger,
+                           argsdict, inside_certs, inside_key)
         except Exception, e:
             self.logger.error("Exception doing get_slice_cred: %s" % e)
             raise
@@ -845,8 +894,10 @@ class PGClearinghouse(Clearinghouse):
         else:
             self.logger.info("GetKeys called for user with uuid %s" % user_uuid)
         # Use new MA lookup_ssh_keys method
+        inside_key, inside_certs = self.getInsideKeys(user_uuid)
         argsdict=dict(member_id=user_uuid);
-        keys_triple=invokeCH(self.ma_url, "lookup_ssh_keys", self.logger, argsdict);
+        keys_triple=invokeCH(self.ma_url, "lookup_ssh_keys", self.logger,
+                             argsdict, inside_certs, inside_key)
         self.logger.info("lookup_ssh_keys: " + str(keys_triple));
         if not keys_triple['value']:
             self.logger.error("No SSH key structure. Return the triple with error");
