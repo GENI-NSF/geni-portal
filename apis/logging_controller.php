@@ -27,7 +27,9 @@ namespace Logging_Service;
 
 
 /**
- * The GENI Clearinginghouse Logging api allows clients
+ * GENI Clearinghouse Logging Service controller interface
+ *<br><br>
+ * The GENI Clearinginghouse Logging API allows clients
  * to log events with particular tagging (dictionaries of name/value pairs)
  * and query for logged events matching those name/value pairs
  * <br><br>
@@ -38,9 +40,9 @@ namespace Logging_Service;
  * <br><br>
  * There are these read interface:
 <ul>
-<li>   get_log_entries_by_author($user_id, $num_hours=24) </li>
-<li>   get_log_entries_by_attributes($user_id, $attribute_sets, $num_hours=24) </li>
-<li>   get_attributes_for_log_entry($entry_id) </li>
+<li>   [id, event_time, user_id, message]* <= get_log_entries_by_author($user_id, $num_hours=24) </li>
+<li>   [id, event_time, user_id, message]* <= get_log_entries_by_attributes($user_id, $attribute_sets, $num_hours=24) </li>
+<li>   [attribute_name, attribute_value]* <= get_attributes_for_log_entry($entry_id) </li>
 </ul>
  */
 class Logging_Service {
@@ -50,7 +52,6 @@ class Logging_Service {
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" name of this method ("log_event")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"event_time" : time of logged event</li>
    <li>"user_id" : ID of user logging event</li>
    <li>"attributes" : dictionary of name/value pairs to be associated with event</li>
@@ -68,7 +69,6 @@ function log_event($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" name of this method ("get_log_entries_by_author")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"earliest_time" : earliest event time to be returned </li>
    <li>"user_id" : ID of user logging event</li>
 </ul>
@@ -86,7 +86,6 @@ function get_log_entries_by_author($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" name of this method ("get_log_entries_by_attributes")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"earliest_time" : earliest event time to be returned </li>
    <li>"attribute_sets" : List of dictionaries (name/value pairs) for which<
 *      if any one is completely matched, the entry is returned. </li>
@@ -100,10 +99,9 @@ function get_log_entries_by_attributes($args_dict)
 
 /**
  * Return the set of name/value pair attributes associated with given log entry
- @ @param dict $args_dict Dictionary containing name/value pairs:
+ * @param dict $args_dict Dictionary containing name/value pairs:
  <ul>
  <li>"operation" name of this method ("get_attributes_for-log_entry")</li>
- <li>"signer" : UUID of signer (asserter) of method/argument set</li>
  <li>"entry_id" : ID of log entry for which to lookup attributes</li>
  </ul>
  * @return dictionary Dictionary of name/value pairs associated with given log entry
@@ -114,7 +112,7 @@ function get_attributes_for_log_entry($args_dict)
 
 /**
  * Get the version of the API of this particular service provider
- * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @param dict $args_dict Dictionary containing 'operation'argument
  * @return number Version of API of this particular service provider
  */
 function get_version($args_dict)
