@@ -27,26 +27,33 @@ namespace Member_Authority;
 
 /**
  * GENI Clearinghouse Member Authority (MA) controller interface
+ * <br><br>
  * The MA maintains a set of members and their UUIDs and their attributes and associated query mechanisms.
- * The MA maintains a set of SSL keys and certs, both 'inside' (created) and 'outside' (uploaded) for given users.
+ * The MA maintains a set of SSL keys and certs, both 'inside' and 'outside' for given users.
  * Additionally, the MA maintains a mapping of members to the client tools (e.g. the GENI Portal) that the member has authorized to speak on his/her behalf.
  * Finally, the MA maintains a set of SSH keys for a given member for passing to resources as needed.
  * <br><br>
  * Supports these methods:
 <ul>
-<li>register_ssh_key(member_id, ssh_filename, ssh_description, ssh_public_key, [ssh_private_key]);</li>
-<li>lookup_ssh_keys(member_id);</li>
-<li>update_ssh_key(member_id, ssh_key_id, ssh_filename, ssh_description)</li>
-<li>delete_ssh_key(member_id, ssh_key_id)</li>
-<li>lookup_keys_and_certs(member_id);</li>
-<li>create_account(attributes)</li>
-<li>ma_list_clients()</li>
-<li>ma_list_authorized_clients(member_id)</li>
-<li>ma_authorize_client(member_id, client_urn, authorize_sense)</li>
-<li>lookup_members(attributes) </li>
-<li>lookup_member_by_id(member_id)</li>
-<li>add_member_privilege(member_id, privilege_id)</li>
-<li>revoke_member_privilege(member_id, privilege_id)</li>
+<li>success <= register_ssh_key(member_id, ssh_filename, ssh_description, ssh_public_key, [ssh_private_key])</li>
+<li>[id, member_id, filename, description, public_key, private_key]* <= lookup_ssh_keys(member_id)</li>
+<li>success <= update_ssh_key(member_id, ssh_key_id, ssh_filename, ssh_description)</li>
+<li>success <= delete_ssh_key(member_id, ssh_key_id)</li>
+<li>[private_key, certificate]* <= lookup_keys_and_certs(member_id)</li>
+<li>member_id <= create_account(attributes)</li>
+<li>[client_name, client_urn]* <= ma_list_clients()</li>
+<li>[client_name, client_urn]* <= ma_list_authorized_clients(member_id)</li>
+<li>success <= ma_authorize_client(member_id, client_urn, authorize_sense)</li>
+<li>[member_id]* <= lookup_members(attributes) </li>
+<li>[member_id, [name value self_asserted]*] <= lookup_member_by_id(member_id)</li>
+<li>success <= add_member_privilege(member_id, privilege_id)</li>
+<li>success <= revoke_member_privilege(member_id, privilege_id)</li>
+</ul>
+<br><br>
+Future (i.e. not yet available) methods include:
+<ul>
+<li>upload_ssl_keys </li>
+<li>revoke_certificate</li>
 </ul>
  */
 class Member_Authority {
@@ -57,7 +64,6 @@ class Member_Authority {
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("register_ssh_key")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"member_id" : ID of member about whom SSH key is to be registered</li>
    <li>"ssh_filename" : filename containing public SSH key (upload case)</li>
    <li>"ssh_description" : Description of given SSH key </li>
@@ -77,7 +83,6 @@ function register_ssh_key($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("lookup_ssh_keys")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"member_id" : ID of member about whom SSH key is to be registered</li>
 </ul>
  * @return array List of SSH key info (member_id, filename, description, public_key, private_key) for given member
@@ -214,7 +219,7 @@ function lookup_member_by_id($args_dict)
 }
 
 /**
- * Return Add new privilege to given member
+ * Add new privilege to given member
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("add_member_privilege")</li>
@@ -228,7 +233,7 @@ function add_member_privilege($args_dict)
 }
 
 /**
- * Return Revoke privilege to given member
+ * Revoke privilege to given member
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("revoke_member_privilege")</li>
@@ -243,7 +248,7 @@ function revoke_member_privilege($args_dict)
 
 /**
  * Get the version of the API of this particular service provider
- * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @param dict $args_dict Dictionary containing 'operation' argument
  * @return number Version of API of this particular service provider
  */
 function get_version($args_dict)
