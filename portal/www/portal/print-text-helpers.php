@@ -208,7 +208,11 @@ function print_rspec_pretty( $xml ){
     echo "<tr>\n";    
     if ($login){
       echo "<th colspan='2'>Login</th>\n";
-      echo "<td colspan='3'>ssh ", $login['username'],"@",$login['hostname'],"</td>\n";
+      echo "<td colspan='3'>ssh ", $login['username'],"@",$login['hostname'];
+      if ($login['port'] and !$login['port']==22 and !$login['port']=="22"){
+	echo " -p ", $login['port'];
+      }
+      echo "</td>\n";
     }
     echo "</tr>\n";
 
