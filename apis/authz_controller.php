@@ -27,25 +27,33 @@ namespace Authorization_Service;
 
 /**
  * GENI Clearinghouse Authorization Service (AZ) controller interface
- * The Authorization Service allows for storing of two kinds of credentials
- *    Attributes (signed assertions that principal P has 
- *         attribute A, possibly in context C)
- *    Policies (signed statements that principals with attribute A possibly in 
- *         context X have a given privilege)
+ *<br><br>
+ * The Authorization Service allows for storing of two kinds of credentials:
+ * <ul>
+ * <li>  Attributes (signed assertions that principal P has  attribute A, 
+ *       possibly in context C) </li>
+ * <li>  Policies (signed statements that principals with attribute A 
+ *       possibly in context X have a given privilege) </li>
+ * </ul>
+ * <br><br>
+ * Note that the current clearinghouse implementation refers to this service as the 
+ * "Credential Store', offered by 'cs_controller.php'. This is intended to change
+ * to the authorization Service and 'authz_controller.php' in upcoming releases. But the
+ * client interface will be unaffected by this name change.
  * <br><br>
  * Supports 4 'write' interfaces:
 <ul>
 <li> id <= create_assertion(principal, attribute, context_type, context) </li>
 <li> id <= create_policy(attribute, context_type, privilege) </li>
-<li> renew_assertion(id) </li>
-<li> delete_policy(id); </li>
+<li> success/failure <= renew_assertion(id) </li>
+<li> success/failure <= delete_policy(id); </li>
 </ul>
  * <br><br>
  * Supports 4 'read' interfaces:
 <ul>
 <li> assertions <= query_assertions(principal, context_type, context) </li>
 <li> policies <= query_policies(); </li>
-<li> success/failure => request_authorization(principal, action,  context_type, context) </li>
+<li> success/failure <= request_authorization(principal, action,  context_type, context) </li>
 <li> permissions <= get_permissions(principal) </li>
 </ul>
  **/
@@ -55,7 +63,6 @@ class Authorization_Service {
    * Create an assertion of a given principal having a given attribute (role) with respect to a given context.
    * @param dict $args_dict Dictionary containing name/value pairs:               
 <ul>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"principal" : UUID of principal about whom assertion is made</li>
    <li>"attribute" : id/index of attribute type</li>
    <li>"context_type" :  type of context in which assertion holds</li>
@@ -72,7 +79,6 @@ function create_assertion($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("create_policy")</li>
-    <li>"signer" : UUID of signer (asserter) of policy</li>
     <li>"attribute" : id/index of attribute type</li>
     <li>"context_type" : type of context in which attribute holds</li>
     <li>"privilege" " id/index of privilege type</li>
@@ -88,7 +94,6 @@ function create_policy($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("delete_assertion")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"id" - ID of assertion to be deleted</li>
 </ul>
  * @return boolean Success / Failure
@@ -102,7 +107,6 @@ function delete_assertion($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("delete_policy")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"id" : ID of assertion to be renewed</li>
 </ul>
  * @return boolean Success / Failure
@@ -116,7 +120,6 @@ function delete_policy($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("renew_assertion")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"id" : ID of assertion to be renewed</li>
 </ul>
  * @return boolean Success / Failure
@@ -131,7 +134,6 @@ function renew_assertion($args_dict)
    * @param dict $args_dict Dictionary containing name/value pairs:               
 <ul>                                                                            
    <li>"operation" : name of this method ("renew_assertion")</li>               
-   <li>"signer" : UUID of signer (asserter) of assertion</li>                   
    <li>"id" : ID of policy to be renewed</li>                                
 </ul>                                                                           
   * @return boolean Success / Failure                                            
@@ -146,7 +148,6 @@ function renew_assertion($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("query_assertions")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"principal" : UUID of principal</li>
    <li>"context_type" : type of context </li>
    <li>"context" : UUID of context (if any)n</li>
@@ -162,7 +163,6 @@ function query_assertions($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("query_policies")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
 </ul>
  * @return array List of all policies in AZ's credential store
  */
@@ -176,7 +176,6 @@ function query_policies($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("query_policies")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"principal" : UUID of principal about whom authorization is requested</li>
    <li>"action" : name of action for which authorization is requested</li>
    <li>"context_type" : context type about which authorization is requested</li>
@@ -193,7 +192,6 @@ function request_authorization($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("query_policies")</li>
-   <li>"signer" : UUID of signer (asserter) of assertion</li>
    <li>"principal" : UUID of principal about which actions are being requested</li>
 </ul>
  * @return array List of action, context_type, context_id tuples for which principal has authorization
@@ -204,7 +202,7 @@ function get_permissions($args_dict)
 
 /**
  * Get the version of the API of this particular service provider
- * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @param dict $args_dict Dictionary containing 'operation' argument
  * @return number Version of API of this particular service provider
  */
 function get_version($args_dict)
