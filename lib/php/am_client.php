@@ -435,10 +435,11 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
     return("Missing slice credential");
   }
 
-  $member_id = $user->account_id;
-  $msg = "User $member_id calling SliverStatus at $am_url on $slice_urn";
-  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  log_action("SliverStatus", $user, $am_url, $slice_urn);
+  // Skip the log message, it's too detailed
+  // $member_id = $user->account_id;
+  // $msg = "User $member_id calling SliverStatus at $am_url on $slice_urn";
+  // geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  // log_action("SliverStatus", $user, $am_url, $slice_urn);
   $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
   file_put_contents($slice_credential_filename, $slice_credential);
   $args = array("--slicecredfile",
