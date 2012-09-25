@@ -670,23 +670,23 @@ function renew_slice($args, $message)
     . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = '"
     . db_date_format($expiration) . "'"
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = '" . $slice_id  . "'";
-
   //  error_log("RENEW.sql = " . $sql);
+  $result = db_execute_statement($sql);
 
   // Log the renewal
   global $log_url;
   global $mysigner;
+  $slice_info = lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
+  $slice_name = $slice_info[RESPONSE_ARGUMENT::VALUE][SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+  $new_expiration = $slice_info[RESPONSE_ARGUMENT::VALUE][SA_SLICE_TABLE_FIELDNAME::EXPIRATION];
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
-  log_event($log_url, $mysigner, "Renewed slice " , $attributes,
-            $message->signerUuid());
-
-  $result = db_execute_statement($sql);
-  $pretty_expiration = db_date_format($expiration);
-  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Renewed slice $slice_id until $pretty_expiration");
-
-  // FIXME: If that succeeded, return the new slice expiration
-  return $result;
-
+  log_event($log_url, $mysigner,
+          "Renewed slice $slice_name until $new_expiration",
+          $attributes,
+          $message->signerUuid());
+  geni_syslog(GENI_SYSLOG_PREFIX::SA,
+          "Renewed slice $slice_id until $new_expiration");
+  return $slice_info;
 }
 
 // Add a member of given role to given slice
