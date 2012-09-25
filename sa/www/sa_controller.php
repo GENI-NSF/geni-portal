@@ -287,17 +287,20 @@ function create_slice($args, $message)
 
   if (! isset($project_id) || is_null($project_id) || $project_id == '') {
     error_log("Empty project id to create_slice " . $slice_name);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: no project id");
     return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid project ID");
   }
 
   if (! isset($project_name) || is_null($project_name) || $project_name == '') {
     error_log("Empty project name to create_slice " . $slice_name);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: no project name");
     return generate_response(RESPONSE_ERROR::DATABASE, null,
                              "Cannot create slice without a valid project name");
   }
 
   if (! isset($owner_id) || is_null($owner_id) || $owner_id == '') {
     error_log("Empty owner id to create_slice " . $slice_name);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: no owner id");
     return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid owner ID");
   }
 
@@ -307,6 +310,7 @@ function create_slice($args, $message)
      (!is_valid_slice_name($slice_name)))
     {
       error_log("Illegal slice name $slice_name");
+      geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: invalid slice name \"$slice_name\"");
       return generate_response(RESPONSE_ERROR::DATABASE, null, 
 			       "Cannot create slice with invalid slice name $slice_name");
     }
@@ -320,6 +324,7 @@ function create_slice($args, $message)
   $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
   $exists = $exists['count'];
   if ($exists > 0) {
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: slice name \"$slice_name\" already exists in project.");
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
 			     "Slice of name " . $slice_name . " already exists in project.");
   }
@@ -329,6 +334,7 @@ function create_slice($args, $message)
   $permitted = request_authorization($cs_url, $mysigner, $owner_id, 'create_slice', 
 				     CS_CONTEXT_TYPE::PROJECT, $project_id);
   if ($permitted < 1) {
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: insufficient privileges for owner \"$owner_id\" in project \"$project_id\"");
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
 			    "Principal " . $owner_id . " may not create slice in project " . $project_id);
   }
@@ -454,6 +460,8 @@ function create_slice($args, $message)
 						  $slice_id);
   $attributes = array_merge($project_attributes, $slice_attributes);
   log_event($log_url, $mysigner, "Created slice " . $slice_name, $attributes, $owner_id);
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Created slice $slice_name for owner $owner_id in project $project_id");
+
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
@@ -673,6 +681,9 @@ function renew_slice($args, $message)
             $message->signerUuid());
 
   $result = db_execute_statement($sql);
+  $pretty_expiration = db_date_format($expiration);
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Renewed slice $slice_id until $pretty_expiration");
+
   // FIXME: If that succeeded, return the new slice expiration
   return $result;
 
