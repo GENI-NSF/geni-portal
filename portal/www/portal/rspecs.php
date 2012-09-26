@@ -69,7 +69,7 @@ exit();
 function rspec_table_header() {
   print "<table>\n";
   $columns = array("Name", "Description", "Visibility", "Edit", "View",
-          "Download");
+          "Download", "Delete");
   print "<tr>";
   foreach ($columns as $c) {
     print "<th>$c</th>";
@@ -84,12 +84,15 @@ function display_rspec($rspec) {
   $view_btn = ("<button onClick=\"window.location='$view_url'\">View</button>");
   $download_url = "rspecdownload.php?id=$id";
   $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
+  $delete_url = "rspecdelete.php?id=$id";
+  $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
   $columns = array($rspec['name'],
           $rspec['description'],
           $rspec['visibility'],
           $edit_btn,
           $view_btn,
-          $download_btn);
+          $download_btn,
+          $delete_btn);
   print "<tr>";
   foreach ($columns as $c) {
     print "<td>$c</td>";
