@@ -68,7 +68,8 @@ exit();
 /* ---------- */
 function rspec_table_header() {
   print "<table>\n";
-  $columns = array("Name", "Visibility", "Edit", "Download");
+  $columns = array("Name", "Description", "Visibility", "Edit", "View",
+          "Download");
   print "<tr>";
   foreach ($columns as $c) {
     print "<th>$c</th>";
@@ -77,11 +78,16 @@ function rspec_table_header() {
 }
 function display_rspec($rspec) {
   // Customize these with the RSpec id.
+  $id = $rspec['id'];
   $edit_btn = '<button disabled="disabled">Edit</button>';
+  $view_url = "rspecview.php?id=$id";
+  $view_btn = ("<button onClick=\"window.location='$view_url'\">View</button>");
   $download_btn = '<button disabled="disabled">Download</button>';
   $columns = array($rspec['name'],
+          $rspec['description'],
           $rspec['visibility'],
           $edit_btn,
+          $view_btn,
           $download_btn);
   print "<tr>";
   foreach ($columns as $c) {
