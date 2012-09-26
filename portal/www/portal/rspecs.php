@@ -82,7 +82,8 @@ function display_rspec($rspec) {
   $edit_btn = '<button disabled="disabled">Edit</button>';
   $view_url = "rspecview.php?id=$id";
   $view_btn = ("<button onClick=\"window.location='$view_url'\">View</button>");
-  $download_btn = '<button disabled="disabled">Download</button>';
+  $download_url = "rspecdownload.php?id=$id";
+  $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
   $columns = array($rspec['name'],
           $rspec['description'],
           $rspec['visibility'],
