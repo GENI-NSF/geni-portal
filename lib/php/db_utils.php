@@ -269,5 +269,26 @@ function compute_attributes_sql($attributes,
     
 }
 
-
+/**
+ * Convert a db boolean into a PHP boolean.
+ */
+function convert_boolean($db_value) {
+  /* A boolean column is returned from PostgreSQL as a single
+   * character. There is a way to push the datatype interpretation into
+   * MDB2, but it's not particularly well documented. Even a source dive
+   * doesn't reveal the format of the setResultType array.
+   *
+   * For now, do a brute force convert. But note: try to catch
+   * a different database implementation by watching for values that
+   * are not either "f" or "t".
+   */
+  if ($db_value === "f") {
+    return false;
+  } else if ($db_value === "t") {
+    return true;
+  } else {
+    throw new Exception("Unknown value for DB boolean: "
+            . print_r($db_value));
+  }
+}
 ?>
