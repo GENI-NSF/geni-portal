@@ -282,7 +282,8 @@ function get_slice_credential($args)
 
   /* Locate relevant info about the slice. */
   $slice_row = fetch_slice_by_id($slice_id);
-  if ($slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRED]) {
+  $slice_is_expired = convert_boolean($slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRED]);
+  if ($slice_is_expired) {
     $msg = "Slice $slice_id is expired.";
     return generate_response(RESPONSE_ERROR::ARGS, '', $msg);
   }
