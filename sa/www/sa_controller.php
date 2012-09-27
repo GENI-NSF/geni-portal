@@ -52,6 +52,75 @@ function sa_debug($msg)
 }
 
 /*----------------------------------------------------------------------
+ * Expiration
+ *----------------------------------------------------------------------
+ */
+/**
+ * A poor man's expiration. Call this at the start of an API method
+ * to expire slices in advance of the call. Eventually we will need
+ * a daemon for this.
+ *
+ * N.B. This is not sufficient for warning emails that a slice is
+ * going to expire soon. For that, a daemon is necessary.
+ */
+function sa_expire_slices()
+{
+  /*
+   * Select slice ids that should expire.
+   * For each id:
+   *   Update the DB
+   *   Log expire to Logger
+   *   Log expiration to geni_syslog
+   */
+  global $log_url;
+  global $mysigner;
+  global $SA_SLICE_TABLENAME;
+  $sql = "SELECT "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID
+    . " FROM " . $SA_SLICE_TABLENAME
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " < now()"
+    . " AND NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] !== RESPONSE_ERROR::NONE) {
+    $msg = "sa_expire_slices error: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, $msg);
+    return;
+  }
+  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  $conn = db_conn();
+  foreach ($rows as $row) {
+    $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    $slice_name = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+    $project_id = $row[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+    $owner_id = $row[SA_SLICE_TABLE_FIELDNAME::OWNER_ID];
+    $sql = "UPDATE $SA_SLICE_TABLENAME"
+      . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRED . " = TRUE"
+      . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = "
+      . $conn->quote($slice_id, 'text');
+    $result = db_execute_statement($sql);
+    if ($result[RESPONSE_ARGUMENT::CODE] !== RESPONSE_ERROR::NONE) {
+      $msg = "Failed to expire slice $slice_id: "
+        . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::SA, $msg);
+      continue;
+    }
+    $project_attribute = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
+            $project_id);
+    $slice_attribute = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE,
+            $slice_id);
+    $attributes = array_merge($project_attributes, $slice_attributes);
+    $log_msg = "Expired slice " . $slice_name;
+    log_event($log_url, $mysigner, $log_msg, $attributes, $owner_id);
+    $syslog_msg = "Expired slice $slice_id";
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, $syslog_msg);
+  }
+}
+
+/*----------------------------------------------------------------------
  * Authorization
  *----------------------------------------------------------------------
  */
@@ -204,6 +273,7 @@ function get_slice_credential($args)
   global $sa_authority_private_key;
   global $sa_gcf_include_path;
 
+  sa_expire_slices();
   geni_syslog(GENI_SYSLOG_PREFIX::SA, "get_slice_credential()");
 
   /* Extract method arguments. */
@@ -212,6 +282,10 @@ function get_slice_credential($args)
 
   /* Locate relevant info about the slice. */
   $slice_row = fetch_slice_by_id($slice_id);
+  if ($slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRED]) {
+    $msg = "Slice $slice_id is expired.";
+    return generate_response(RESPONSE_ERROR::ARGS, '', $msg);
+  }
   $slice_cert = $slice_row[SA_SLICE_TABLE_FIELDNAME::CERTIFICATE];
   $expiration = strtotime($slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRATION]);
 
@@ -234,6 +308,7 @@ function get_user_credential($args)
   global $sa_authority_private_key;
   global $sa_gcf_include_path;
 
+  sa_expire_slices();
   /* Extract method arguments. */
   $experimenter_cert = $args[SA_ARGUMENT::EXP_CERT];
 
@@ -275,6 +350,9 @@ function create_slice($args, $message)
   global $cs_url;
   global $mysigner;
 
+  /* Expire slices */
+  sa_expire_slices();
+
   $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
   $project_name = $args[SA_ARGUMENT::PROJECT_NAME];
@@ -287,17 +365,20 @@ function create_slice($args, $message)
 
   if (! isset($project_id) || is_null($project_id) || $project_id == '') {
     error_log("Empty project id to create_slice " . $slice_name);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: no project id");
     return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid project ID");
   }
 
   if (! isset($project_name) || is_null($project_name) || $project_name == '') {
     error_log("Empty project name to create_slice " . $slice_name);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: no project name");
     return generate_response(RESPONSE_ERROR::DATABASE, null,
                              "Cannot create slice without a valid project name");
   }
 
   if (! isset($owner_id) || is_null($owner_id) || $owner_id == '') {
     error_log("Empty owner id to create_slice " . $slice_name);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: no owner id");
     return generate_response(RESPONSE_ERROR::DATABASE, null, "Cannot create slice without a valid owner ID");
   }
 
@@ -307,19 +388,22 @@ function create_slice($args, $message)
      (!is_valid_slice_name($slice_name)))
     {
       error_log("Illegal slice name $slice_name");
+      geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: invalid slice name \"$slice_name\"");
       return generate_response(RESPONSE_ERROR::DATABASE, null, 
 			       "Cannot create slice with invalid slice name $slice_name");
     }
 
   $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME 
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = '" . $slice_name . "'" 
-    . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'";
+    . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'"
+    . " AND NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
   //  error_log("SQL = " . $exists_sql);
   $exists_response = db_fetch_row($exists_sql);
   //  error_log("Exists " . print_r($exists_response, true));
   $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
   $exists = $exists['count'];
   if ($exists > 0) {
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: slice name \"$slice_name\" already exists in project.");
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
 			     "Slice of name " . $slice_name . " already exists in project.");
   }
@@ -329,6 +413,7 @@ function create_slice($args, $message)
   $permitted = request_authorization($cs_url, $mysigner, $owner_id, 'create_slice', 
 				     CS_CONTEXT_TYPE::PROJECT, $project_id);
   if ($permitted < 1) {
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: insufficient privileges for owner \"$owner_id\" in project \"$project_id\"");
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
 			    "Principal " . $owner_id . " may not create slice in project " . $project_id);
   }
@@ -454,6 +539,8 @@ function create_slice($args, $message)
 						  $slice_id);
   $attributes = array_merge($project_attributes, $slice_attributes);
   log_event($log_url, $mysigner, "Created slice " . $slice_name, $attributes, $owner_id);
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Created slice $slice_name for owner $owner_id in project $project_id");
+
 
 
   //  slice_info is already a response_triple from the lookup_slice call above
@@ -464,6 +551,7 @@ function create_slice($args, $message)
 function lookup_slice_ids($args)
 {
   global $SA_SLICE_TABLENAME;
+  sa_expire_slices();
   if (array_key_exists(SA_ARGUMENT::PROJECT_ID, $args)) {
     $project_id = $args[SA_ARGUMENT::PROJECT_ID];
     //    error_log("Got pid $project_id\n");
@@ -479,7 +567,7 @@ function lookup_slice_ids($args)
   $sql = "SELECT " 
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
     . " FROM " . $SA_SLICE_TABLENAME
-    . " WHERE true=true ";
+    . " WHERE NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
   if (isset($project_id)) {
     $sql = $sql . " and " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID .
       " = '" . $project_id . "'";
@@ -517,6 +605,7 @@ function lookup_slices($args, $message)
   global $SA_SLICE_TABLENAME;
   global $SA_SLICE_MEMBER_TABLENAME;
 
+  sa_expire_slices();
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
 
@@ -546,18 +635,12 @@ function lookup_slices($args, $message)
       $conn->quote($member_id, 'text') . ")";
   }
 
-  $where_clause = "";
-  if ($member_id <> null || $project_id <> null) {
-    $where_clause = " WHERE ";
-    if ($project_id <> null)  {
-      $where_clause = $where_clause . $project_id_clause;
-    }
-    if ($member_id <> null)  {
-      if ($project_id <> null) {
-	$where_clause = $where_clause . " AND ";
-      }
-      $where_clause = $where_clause . $member_id_clause;
-    }
+  $where_clause = " WHERE NOT EXPIRED";
+  if ($project_id <> null)  {
+    $where_clause .= " AND $project_id_clause";
+  }
+  if ($member_id <> null)  {
+    $where_clause .= " AND $member_id_clause";
   }
 
   $sql = "SELECT " 
@@ -573,7 +656,7 @@ function lookup_slices($args, $message)
     . " FROM " . $SA_SLICE_TABLENAME
     . $where_clause;
 
-  //. error_log("lookup_slices.sql = " . $sql);
+  error_log("lookup_slices.sql = " . $sql);
 
   $rows = db_fetch_rows($sql);
 
@@ -588,6 +671,7 @@ function lookup_slice($args)
 
   global $SA_SLICE_TABLENAME;
 
+  sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
 
   $sql = "SELECT " 
@@ -616,6 +700,7 @@ function lookup_slice_by_urn($args)
 
   global $SA_SLICE_TABLENAME;
 
+  sa_expire_slices();
   $slice_urn = $args[SA_ARGUMENT::SLICE_URN];
 
   $sql = "SELECT " 
@@ -641,6 +726,7 @@ function lookup_slice_by_urn($args)
 function renew_slice($args, $message)
 {
   global $SA_SLICE_TABLENAME;
+  sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $requested = $args[SA_ARGUMENT::EXPIRATION];
 
@@ -662,25 +748,29 @@ function renew_slice($args, $message)
     . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = '"
     . db_date_format($expiration) . "'"
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = '" . $slice_id  . "'";
-
   //  error_log("RENEW.sql = " . $sql);
+  $result = db_execute_statement($sql);
 
   // Log the renewal
   global $log_url;
   global $mysigner;
+  $slice_info = lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
+  $slice_name = $slice_info[RESPONSE_ARGUMENT::VALUE][SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+  $new_expiration = $slice_info[RESPONSE_ARGUMENT::VALUE][SA_SLICE_TABLE_FIELDNAME::EXPIRATION];
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
-  log_event($log_url, $mysigner, "Renewed slice " , $attributes,
-            $message->signerUuid());
-
-  $result = db_execute_statement($sql);
-  // FIXME: If that succeeded, return the new slice expiration
-  return $result;
-
+  log_event($log_url, $mysigner,
+          "Renewed slice $slice_name until $new_expiration",
+          $attributes,
+          $message->signerUuid());
+  geni_syslog(GENI_SYSLOG_PREFIX::SA,
+          "Renewed slice $slice_id until $new_expiration");
+  return $slice_info;
 }
 
 // Add a member of given role to given slice
 function add_slice_member($args, $message)
 {
+  sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
   $role = $args[SA_ARGUMENT::ROLE_TYPE];
@@ -752,6 +842,7 @@ function add_slice_member($args, $message)
 // Remove a member from given slice 
 function remove_slice_member($args, $message)
 {
+  sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
 
@@ -789,6 +880,7 @@ function remove_slice_member($args, $message)
 // Change role of given member in given slice
 function change_slice_member_role($args, $message)
 {
+  sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
   $role = $args[SA_ARGUMENT::ROLE_TYPE];
@@ -835,6 +927,7 @@ function change_slice_member_role($args, $message)
 // If role is provided, filter to members of given role
 function get_slice_members($args)
 {
+  sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $role = null;
   if (array_key_exists(SA_ARGUMENT::ROLE_TYPE, $args) && isset($args[SA_ARGUMENT::ROLE_TYPE])) {
@@ -867,6 +960,7 @@ function get_slice_members($args)
 // If role is provided, filter to members of given role
 function get_slice_members_for_project($args)
 {
+  sa_expire_slices();
   $project_id = $args[SA_ARGUMENT::PROJECT_ID];
   $role = null;
   if (array_key_exists(SA_ARGUMENT::ROLE_TYPE, $args) && isset($args[SA_ARGUMENT::ROLE_TYPE])) {
@@ -888,6 +982,7 @@ function get_slice_members_for_project($args)
     . " FROM " . $SA_SLICE_MEMBER_TABLENAME
     . ", " . $SA_SLICE_TABLENAME
     . " WHERE "
+    . "NOT " . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::EXPIRED
     . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
     . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID 
@@ -908,6 +1003,7 @@ function get_slice_members_for_project($args)
 //    for which member does NOT have given role (is_member = false)
 function get_slices_for_member($args)
 {
+  sa_expire_slices();
   $member_id = $args[SA_ARGUMENT::MEMBER_ID];
   $is_member = $args[SA_ARGUMENT::IS_MEMBER];
   $role = null;

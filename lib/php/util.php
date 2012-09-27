@@ -49,6 +49,19 @@ function relative_redirect($relpath) {
   exit;
 }
 
+/**
+ * Redirect to the referer. If no referer,
+ * redirect to $fallback.
+ */
+function redirect_referer($fallback) {
+  $referer_key = 'HTTP_REFERER';
+  if (key_exists($referer_key, $_SERVER)) {
+    header("Location: " . $_SERVER[$referer_key]);
+  } else if (! is_null($fallback)) {
+    relative_redirect($fallback);
+  }
+}
+
 // Determine if a uuid is valid
 function uuid_is_valid($uuid) {
   if (! isset($uuid) || is_null($uuid)) {

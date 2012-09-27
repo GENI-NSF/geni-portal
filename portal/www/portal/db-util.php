@@ -287,13 +287,14 @@ function fetchRSpecById($id) {
  * and all private RSpecs owned by the current user.
  */
 function fetchRSpecMetaData($user) {
+  $metadata_columns = "id, name, description, visibility, owner_id";
   $conn = portal_conn();
-  $sql = "SELECT id, name, description FROM rspec";
+  $sql = "SELECT $metadata_columns FROM rspec";
   $sql .= " where visibility = 'public'";
   /* print "Query = $sql<br/>"; */
   $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
   $public_rspecs = $rows[RESPONSE_ARGUMENT::VALUE];
-  $sql = "SELECT id, name, description FROM rspec";
+  $sql = "SELECT $metadata_columns FROM rspec";
   $sql .= " where owner_id = ";
   $sql .= $conn->quote($user->account_id, 'text');
   $sql .= " AND visibility = 'private'";
@@ -327,5 +328,20 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
     return false;
   }
   return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
+function deleteRSpecById($id)
+{
+  $conn = portal_conn();
+  $sql = "DELETE FROM rspec WHERE id = ";
+  $sql .= $conn->quote($id, 'integer');
+  $result = db_execute_statement($sql, "deleteRSpecById");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "deleteRSpecById: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    return false;
+  } else {
+    return true;
+  }
 }
 ?>

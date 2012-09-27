@@ -14,17 +14,20 @@ DROP TABLE IF EXISTS sa_slice CASCADE;
 create TABLE sa_slice (
   id SERIAL,
   slice_id UUID, 
-  slice_name VARCHAR,
-  project_id UUID,
-  expiration TIMESTAMP,
   owner_id UUID,
+  project_id UUID,
+  creation TIMESTAMP,
+  expiration TIMESTAMP,
+  expired BOOLEAN NOT NULL DEFAULT 'FALSE',
+  slice_name VARCHAR,
   slice_urn VARCHAR,
   slice_email VARCHAR,
   certificate VARCHAR,
-  creation TIMESTAMP,
   slice_description VARCHAR,
   PRIMARY KEY (id)
 );
+
+CREATE INDEX sa_slice_expired ON sa_slice (expired);
 
 DROP TABLE IF EXISTS sa_slice_member CASCADE;
 CREATE TABLE sa_slice_member (

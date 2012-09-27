@@ -62,6 +62,7 @@ class SA_SLICE_TABLE_FIELDNAME {
   const CERTIFICATE = "certificate";
   const CREATION = "creation";
   const SLICE_DESCRIPTION = "slice_description";
+  const EXPIRED = "expired";
 }
 
 /* Name of table containing slice membership info */
