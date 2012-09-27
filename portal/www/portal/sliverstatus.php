@@ -94,7 +94,7 @@ Returned status of slivers on 0 of 2 possible aggregates.
     if (preg_match("/^Returned status of slivers on (\d+) of (\d+) possible aggregates.$/",$line, $succ)){
       $n = (int) $succ[1];
       $m = (int) $succ[2];
-    } elseif (preg_match("/^Failed to get SliverStatus on urn\:publicid\:IDN\+(\w+)\:(\w+)\+slice\+(\w+) at AM (.*): (.*)$/",$line,$fail)) {
+    } elseif (preg_match("/^Failed to get SliverStatus on urn\:publicid\:IDN\+(\w+)\:(\w+)\+slice\+(\w+) at AM ([^[:space:]]*): (.*)$/",$line,$fail)) {
       $num_errs = $num_errs+1;
       $agg = $fail[4];
       $err = $fail[5];
@@ -205,7 +205,7 @@ if (isset($msg) and isset($obj)){
     print_sliver_status( $obj );
   }
 
-  /*  print "<pre>$msg</pre>"; */
+  /* print "<pre>$msg</pre>"; */
 
   print_sliver_status_err( $msg );
   /* echo "<pre>"; */
