@@ -4,10 +4,10 @@
 #  only delete  CS, PA, SA and LOGGING data but not MA data
 # Otherwise, delete MA data as well
 #
-# Usage: disable_member.sh member_id [data_only=1]
+# Usage: delete_member.sh member_id [data_only=1]
 
 if [ $# -lt 1 ]; then
-    echo "Usage: disable_member.sh member_id [data_only=1]"
+    echo "Usage: delete_member.sh member_id [data_only=1]"
     exit
 else
     MEMBER_ID=$1
