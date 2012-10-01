@@ -1,5 +1,22 @@
 INSERT INTO schema_version(key, extra) values ('003', 'schema version');
 
+-- 1 VM
+INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
+  VALUES
+  ('One virtual machine', 'GENI', '3',
+   'Any one virtual machine.',
+   '<?xml version="1.0" encoding="UTF-8"?>
+<rspec xmlns="http://www.geni.net/resources/rspec/3"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/request.xsd"
+       type="request">
+  <node client_id="my-node"
+        exclusive="false">
+    <sliver_type name="emulab-openvz" />
+  </node>
+</rspec>',
+   'public'
+);
 -- Add a request rspec for a single node.
 INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
   VALUES
@@ -368,24 +385,6 @@ INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
     <property source_id="PC2:if0" dest_id="delay:if1"/>
     <link_type name="lan"/>
   </link>
-</rspec>',
-   'public'
-);
-
--- 1 VM
-INSERT INTO rspec(name, schema, schema_version, description, rspec, visibility)
-  VALUES
-  ('One virtual machine', 'GENI', '3',
-   'Any one virtual machine.',
-   '<?xml version="1.0" encoding="UTF-8"?>
-<rspec xmlns="http://www.geni.net/resources/rspec/3"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/request.xsd"
-       type="request">
-  <node client_id="my-node"
-        exclusive="false">
-    <sliver_type name="emulab-openvz" />
-  </node>
 </rspec>',
    'public'
 );
