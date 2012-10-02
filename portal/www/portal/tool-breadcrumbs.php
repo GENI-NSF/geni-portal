@@ -97,7 +97,8 @@ $parents = array("profile.php" => "home.php",
 		 "cancel-join-slice.php" => "home.php",
 		 "uploadsshkey.php" => "profile.php",
 		"generatesshkey.php" => "profile.php",
-        "rspecupload.php" => "profile.php");
+        "rspecupload.php" => "profile.php",
+        "rspecs.php" => "profile.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -148,7 +149,8 @@ $names = array("home.php" => $TAB_HOME,
 		 "cancel-join-slice.php" => "Cancel Join Slice %slice_name",
 		 "uploadsshkey.php" => "Upload SSH Public Key",
 		"generatesshkey.php" => "Generate SSH Keypair",
-        "rspecupload.php" => "Upload RSpec");
+        "rspecupload.php" => "Upload RSpec",
+        "rspecs.php" => "Manage RSpecs");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant

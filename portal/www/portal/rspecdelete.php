@@ -22,48 +22,31 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once("settings.php");
 require_once("user.php");
-require_once("header.php");
-require_once('util.php');
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once("sa_constants.php");
-require_once("sa_client.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-$slice = "None";
-$slice_name = "None";
 
-include("tool-lookupids.php");
-
-if (!$user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-  relative_redirect('home.php');
+$rspec_id = NULL;
+if (array_key_exists('id', $_GET)) {
+  $rspec_id = $_GET['id'];
 }
 
-if (isset($slice) && $slice != "None") {
-  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+if (is_null($rspec_id)) {
+  $_SESSION['lastmessage'] = "RSpec delete failed: no id specified.";
+  redirect_referer('profile.php');
 }
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
-print "<h1>Delete Resources from GENI Slice: " . $slice_name . "</h1>\n";
 
-print "<p>Delete all reserved Resources?</p>\n";
-print "<p>Otherwise click 'Cancel'.</p>\n";
-print "<br/>\n";
-
-$cancel_url = "slice.php?slice_id=$slice_id";
-if ($am_id) {
-  $edit_url = "sliverdelete.php?slice_id=$slice_id"."&am_id=$am_id";
+$result = deleteRSpecById($rspec_id);
+if ($result) {
+  $_SESSION['lastmessage'] = "Deleted RSpec.";
 } else {
-  $edit_url = "sliverdelete.php?slice_id=$slice_id";
+  $_SESSION['lastmessage'] = "RSpec delete failed.";
 }
-print "<button onclick=\"window.location='$edit_url'\"><b>Delete Slivers</b></button>\n";
-//print "<button onclick=\"window.location='$cancel_url'\">Cancel</button>\n";
-print "<button onclick=\"history.back(-1)\">Cancel</button>\n";
 
-
-include("footer.php");
+redirect_referer('profile.php');
 ?>

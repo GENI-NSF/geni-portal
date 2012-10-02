@@ -132,7 +132,15 @@ print "<h2>$header</h2>\n";
 print_rspec( $obj, $pretty );
 
 if ($pretty) {
-  print "<a href='listresources.php?pretty=False&slice_id=".$slice_id."'>Raw RSpec</a>";
+
+
+  if ($am_id ){
+    $am_id_str = "&am_id=$am_id";
+  } else {
+    $am_id_str = "";
+  }
+
+  print "<a href='listresources.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw RSpec</a>";
 }
 
 print "<hr/>";

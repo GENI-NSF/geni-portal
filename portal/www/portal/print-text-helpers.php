@@ -208,7 +208,11 @@ function print_rspec_pretty( $xml ){
     echo "<tr>\n";    
     if ($login){
       echo "<th colspan='2'>Login</th>\n";
-      echo "<td colspan='3'>ssh ", $login['username'],"@",$login['hostname'],"</td>\n";
+      echo "<td colspan='3'>ssh ", $login['username'],"@",$login['hostname'];
+      if ($login['port'] and !$login['port']==22 and !$login['port']=="22"){
+	echo " -p ", $login['port'];
+      }
+      echo "</td>\n";
     }
     echo "</tr>\n";
 
@@ -283,24 +287,30 @@ function print_rspec_pretty( $xml ){
 function print_rspec( $obj, $pretty ) {
   $args = array_keys( $obj );
   foreach ($args as $arg){
-
-    $pattern = "/[\'\"]([^,]*)[\'\"]/";
-    $matches = array();
-    preg_match($pattern, $arg, $matches);
-    $arg_urn = $matches[0];
-    $arg_url = $matches[1];
+    $arg_url = $arg;
     $arg_name = am_name($arg_url);
-    $xml = $obj[$arg];
-    print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
-    print "<div class='resources'>";
-    if ($pretty){
-      /* Parsed into a table */
-      print_rspec_pretty($xml);
-    } else {
-      /* As plain XML */
-      print_xml($xml);
+    $xml = $obj[$arg]['value'];
+    $code = $obj[$arg]['code']['geni_code'];
+    $output = $obj[$arg]['output'];
+    /* If pretty, keep output clean by only printing RSpec for
+       aggregates which have a slice (ie code!=12)*/
+    if (!($code == 12 and $pretty)){
+      print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
+      print "<div class='resources'>";
+      if ($code == 0){
+	if ($pretty){
+	  /* Parsed into a table */
+	  print_rspec_pretty($xml);
+	} else {
+	  /* As plain XML */
+	  print_xml($xml);
+	}
+      } else {
+	echo "<p>Returned: <i>$output</i></p>";
+      }
+
+      print "</div>\n";
     }
-    print "</div>\n";
   }
 }
 

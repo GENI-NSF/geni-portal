@@ -27,6 +27,7 @@ namespace Slice_Authority;
 
 /**
  * GENI Clearinghouse Slice Authority (SA) controller interface
+ * <br><br>
  * The SA maintains a list of slices, their details and members
  * and provides access to creating, looking up, updating and renewing slices.
  * In addition, provides access to slice and user credentials for interacting
@@ -37,17 +38,17 @@ namespace Slice_Authority;
 <li>   slice_credental <= get_slice_credential(slice_id, experimenter_cert) </li>
 <li>   user_credential <= get_user_credential(experimenter_cert) </li>
 <li>   slice_id <= create_slice(slice_name, project_id, project_name, owner_id, description) </li>
-<li>   [ids] <= lookup_slice_ids(project_id, [owner_id]) </li>
-<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slices(project_id, member_id) </li>
-<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice(slice_id) </li>
-<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) <= lookup_slice_by_urn(slice_urn) </li>
+<li>   [slice_id]* <= lookup_slice_ids(project_id, [owner_id]) </li>
+<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn]* <= lookup_slices(project_id, member_id) </li>
+<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn] <= lookup_slice(slice_id) </li>
+<li>   [id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn] <= lookup_slice_by_urn(slice_urn) </li>
 <li>   success <= renew_slice(slice_id, expiration) </li>
 <li>   success <= add_slice_member(slice_id, member_id, role_type) </li>
-<li>   success <= remove_slice_member(slice_id, member_id, role_type) </li>
+<li>   success <= remove_slice_member(slice_id, member_id) </li>
 <li>   success <= change_slice_member_role(slice_id, member_id, role_type) </li>
-<li>   [member_id, role} <= get_slice_members(slice_id, role_type=null) // null => Any </li>
-<li>   [slice_id, member_id, role] <= get_slice_members_for_project(project_id, role_type=null) // null => Any </li>
-<li>   [id] <=get_slices_for_member(member_id, is_member, role=null) </li>
+<li>   [member_id, role]* <= get_slice_members(slice_id, role_type=null)  </li>
+<li>   [slice_id, member_id, role]* <= get_slice_members_for_project(project_id, role_type=null) </li>
+<li>   [slice_id]* <= get_slices_for_member(member_id, is_member, role_type=null) </li>
 </ul>
  */
 class Slice_Authority {
@@ -59,7 +60,6 @@ class Slice_Authority {
  Dictionary containing name/value pairs:
 <ul>
     <li>"operation" : name of this method ("get_slice_credential")</li>
-    <li>"signer" : UUID of signer (asserter) of method/argument set</li>
     <li>"slice_id" : ID of slice for which to return credential</li>
     <li>"experimenter_cert" : Certificate of experimenter for whom to generate slice credential</li>
 </ul>
@@ -75,7 +75,6 @@ function get_slice_credential($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
  <ul>
   <li>"operation" : name of this method ("get_user_credential")</li></li>
-    <li>"signer" : UUID of signer (asserter) of method/argument set</li>
     <li>"experimenter_cert" : Certificate of experimenter for whom to generate slice credential</li>
  </ul>
  * @return user_credential User credential for given experimenter 
@@ -90,7 +89,6 @@ function get_user_credential($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("create_slice")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument </li>
    <li>"slice_name" : name of slice to be created</li>
    <li>"project_id" : ID of project to which to associate slice</li>
    <li>"project_name" : name of project to which to associate slice</li>
@@ -114,7 +112,6 @@ function create_slice($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("renew_slice")</li>
-   <li>"signer" : UUID of signer (asserter) of method</li>
    <li>"slice_id" : ID of slice</li>
 </ul>
  * @return boolean Success/Failure
@@ -129,7 +126,6 @@ function disable_slice($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("renew_slice")</li>
-   <li>"signer" : UUID of signer (asserter) of method</li>
    <li>"slice_id" : ID of slice</li>
    <li>"expiration : new expiration time of slice</li>
 </ul>
@@ -145,7 +141,6 @@ function renew_slice($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("add_slice_member")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"slice_id" : ID of slice to be modified</li>
    <li>"member_id : ID of member to be associated with given slice</li>
    <li>"role_type" : role of member within slice</li>
@@ -162,7 +157,6 @@ function add_slice_member($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("remove_slice_member")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"slice_id" : ID of slice to be modified</li>
    <li>"member_id : ID of member to be disassociated with given slice</li>
 </ul>
@@ -178,7 +172,6 @@ function remove_slice_member($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("change_member_role")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"slice_id" : ID of slice to be modified</li>
    <li>"member_id : ID of member whose role within slice is to be modified</li>
    <li>"role_type" : role to be associated with given member</li>
@@ -195,7 +188,6 @@ function change_slice_member_role($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("lookup_slice_ids")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument </li>
    <li>"slice_name" : name of slice to be created [optional]</li>
    <li>"project_id" : ID of project to which to associate slice [optional]</li>
    <li>"owner_id" : ID of owner of slice [optional]</li>
@@ -212,7 +204,6 @@ function lookup_slice_ids($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("lookup_slices")</li>
-   <li>"signer" : UUID of signer (asserter) of method</li>
    <li>"project_id" : ID of project to which to associate slice [optional]</li>
    <li>"owner_id" : ID of member of slice [optional]</li>
 </ul>
@@ -228,7 +219,6 @@ function lookup_slices($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("lookup_slice")</li>
-   <li>"signer" : UUID of signer (asserter) of method</li>
    <li>"slice_id" : ID of slice</li>
 </ul>
  * @return dict Slice info tuple (id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) for given slice
@@ -243,7 +233,6 @@ function lookup_slice($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("lookup_slice_by_urn")</li>
-   <li>"signer" : UUID of signer (asserter) of method</li>
    <li>"slice_urn" : URN of slice</li>
 </ul>
  * @return dict Slice info tuple (id, slice_name, project_id, expiration, creation, owner_id, slice_description, slice_email, slice_urn) for given slice
@@ -259,7 +248,6 @@ function lookup_slice_by_urn($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("get_slice_members")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"slice_id" : ID of slice to be modifiedb</li>
    <li>"role_type" : role to be associated with given member [optional]</li>
 </ul>
@@ -276,7 +264,6 @@ function get_slice_members($args)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("get_slice_members")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"project_id" : ID of project of slices to be queried</li>
    <li>"role_type" : role to be associated with given member [optional]</li>
 </ul>
@@ -301,7 +288,6 @@ function get_slice_members_for_project($args_dict)
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
    <li>"operation" : name of this method ("get_slices_for_member")</li>
-   <li>"signer" : UUID of signer (asserter) of method/argument set</li>
    <li>"member_id" : ID of member about which slices are being queried </li>
    <li>"is_member" : determines sense of 'member_id' query match [optional]</li>
    <li>"role_type" : role associated with given member [optional]</li>
@@ -314,7 +300,7 @@ function get_slices_for_member($args_dict)
 
 /**
  * Get the version of the API of this particular service provider
- * @param dict $args_dict Dictionary containing 'operation' and 'signer' arguments'
+ * @param dict $args_dict Dictionary containing 'operation' argument
  * @return number Version of API of this particular service provider
  */
 function get_version($args_dict)

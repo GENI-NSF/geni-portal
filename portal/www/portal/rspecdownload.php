@@ -22,48 +22,40 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once("settings.php");
 require_once("user.php");
-require_once("header.php");
-require_once('util.php');
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once("sa_constants.php");
-require_once("sa_client.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-$slice = "None";
-$slice_name = "None";
 
-include("tool-lookupids.php");
+$rspec_id = NULL;
+if (array_key_exists('id', $_GET)) {
+  $rspec_id = $_GET['id'];
+}
 
-if (!$user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+if (is_null($rspec_id)) {
   relative_redirect('home.php');
 }
 
-if (isset($slice) && $slice != "None") {
-  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-}
+/* $rspec is the XML */
+$rspec = fetchRSpecById($rspec_id);
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
-print "<h1>Delete Resources from GENI Slice: " . $slice_name . "</h1>\n";
+/* How to improve this?
+ *  - store the filename when uploaded
+ *  - convert name to filename (space --> hyphen, append ".xml"
+ */
+$filename = "rspec.xml";
 
-print "<p>Delete all reserved Resources?</p>\n";
-print "<p>Otherwise click 'Cancel'.</p>\n";
-print "<br/>\n";
-
-$cancel_url = "slice.php?slice_id=$slice_id";
-if ($am_id) {
-  $edit_url = "sliverdelete.php?slice_id=$slice_id"."&am_id=$am_id";
+if (is_null($rspec)) {
+  relative_redirect('home.php');
 } else {
-  $edit_url = "sliverdelete.php?slice_id=$slice_id";
+// Set headers for download
+  header("Cache-Control: public");
+  header("Content-Description: File Transfer");
+  header("Content-Disposition: attachment; filename=$filename");
+  header("Content-Type: text/xml");
+  print $rspec;
 }
-print "<button onclick=\"window.location='$edit_url'\"><b>Delete Slivers</b></button>\n";
-//print "<button onclick=\"window.location='$cancel_url'\">Cancel</button>\n";
-print "<button onclick=\"history.back(-1)\">Cancel</button>\n";
-
-
-include("footer.php");
 ?>

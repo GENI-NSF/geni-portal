@@ -127,11 +127,6 @@ print "</div>";
 
 
 if (count($success)) {
-  $log_contexts = array(array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::PROJECT,
-          LOGGING_ARGUMENT::CONTEXT_ID => $slice['project_id']),
-          array(LOGGING_ARGUMENT::CONTEXT_TYPE => CS_CONTEXT_TYPE::SLICE,
-                  LOGGING_ARGUMENT::CONTEXT_ID => $slice['slice_id']));
-
   $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
 						  $slice['project_id']);
   $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
