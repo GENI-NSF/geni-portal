@@ -38,8 +38,7 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-?>
-<?php
+
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No slice id specified.';
@@ -155,9 +154,6 @@ print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
 include("footer.php");
-
-
-
 
 //relative_redirect('slice?slice_id='.$slice_id);
 

@@ -29,8 +29,7 @@ $user = geni_loadUser();
 if (! $user->isActive()) {
   relative_redirect("home.php");
 }
-?>
-<?php
+
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No slice id specified.';
@@ -48,7 +47,7 @@ if (is_null($slice) || $slice == '') {
   no_slice_error();
 }
 
-// *** Perhaps this should be GET_ABAC_CREDENTIAL eventuall
+// *** Perhaps this should be GET_ABAC_CREDENTIAL eventually
 if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }

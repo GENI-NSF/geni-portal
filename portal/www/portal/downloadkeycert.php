@@ -113,7 +113,7 @@ if (! make_cert_and_key($uuid, $email, $urn,
 }
 
 /* Cert and key were successfully generated. Store them in the database. */
-db_add_outside_key_cert($user->account_id, $cert, $key);
+db_add_outside_key_cert($user->account_id, $cert, $key); // FIXME: Check for errors
 
 $_SESSION['lastmessage'] = "Created certificate and key.";
 relative_redirect('profile.php');

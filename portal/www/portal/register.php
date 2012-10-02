@@ -42,9 +42,7 @@ if ($count !== 0) {
 
 include("header.php");
 show_header('GENI Portal Home', $TAB_HOME, 0); // 0=Don't load user to show header
-?>
 
-<?php
 // Local functions
 function shib_input($shib_name, $pretty_name)
 {

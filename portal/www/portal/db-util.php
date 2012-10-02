@@ -109,6 +109,7 @@ function fetch_slices($account_id)
     . " AND slice.slice_id = account_slice.slice_id";
   // print "Query = $sql<br/>";
   $value = db_fetch_rows($sql);
+  // FIXME: Check for errors
   return $value[RESPONSE_ARGUMENT::VALUE];
 }
 
@@ -119,6 +120,7 @@ function fetch_slice($slice_id)
     . " WHERE slice.slice_id = "
     . $conn->quote($slice_id, 'text');
   $row = db_fetch_row($sql);
+  // FIXME: Check for errors
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
@@ -129,6 +131,7 @@ function fetch_slice_by_name($name)
     . " WHERE slice.name = "
     . $conn->quote($name, 'text');
   $row = db_fetch_row($sql, "fetch_slice_by_name");
+  // FIXME: Check for errors
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
@@ -145,6 +148,7 @@ function db_add_outside_key_cert($account_id, $certificate, $key)
     . ")";
   /*  print "command = $sql<br/>";  */
   $result = db_execute_statement($sql, "outside key/certificate");
+  // FIXME: Check for errors
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
@@ -157,6 +161,7 @@ function db_fetch_outside_private_key_cert($account_id)
     . " WHERE outside_key.account_id = "
     . $conn->quote($account_id, 'text');
   $row = db_fetch_row($sql, "fetch outside private key");
+  // FIXME: Check for errors
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
@@ -169,6 +174,7 @@ function db_fetch_user_by_username($username)
     . " WHERE username = "
     . $conn->quote($username, 'text');
   $row = db_fetch_row($sql, "fetch user by username");
+  // FIXME: Check for errors
   return $row[RESPONSE_ARGUMENT::VALUE];
 }
 
@@ -181,6 +187,7 @@ function fetch_abac_fingerprint($account_id)
     . " WHERE account_id = "
     . $conn->quote($account_id, 'text');
   $result = db_fetch_row($sql, "fetch abac fingerprint");
+  // FIXME: Check for errors
   $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row["abac_fingerprint"];
 }
@@ -194,6 +201,7 @@ function fetch_abac_id($account_id)
     . " WHERE account_id = "
     . $conn->quote($account_id, 'text');
   $result = db_fetch_row($sql, "fetch abac id");
+  // FIXME: Check for errors
   $row = $result[RESPONSE_ARGUMENT::VALUE];
   return $row["abac_id"];
 }
@@ -207,7 +215,7 @@ function fetch_abac_key($account_id)
     . " WHERE account_id = "
     . $conn->quote($account_id, 'text');
   $result = db_fetch_row($sql, "fetch abac key");
-  $row = $result[RESPONSE_ARGUMENT::VALUE];
+  $row = $result[RESPONSE_ARGUMENT::VALUE];  // FIXME: Check for errors
   return $row["abac_key"];
 }
 
@@ -229,7 +237,7 @@ function approve_account($account_id)
   /*   . ')'; */
   /* /\* print "command = $sql<br/>"; *\/ */
   /* $result = db_fetch_row($sql, "approve account"); */
-  $row = $result[RESPONSE_ARGUMENT::VALUE];
+  $row = $result[RESPONSE_ARGUMENT::VALUE];  // FIXME: Check for errors
   return $row["abac_key"];
 }
 
@@ -239,7 +247,7 @@ function requestedAccounts() {
   $sql = "SELECT * FROM requested_account";
   /* print "Query = $sql<br/>"; */
   $value = db_fetch_rows($sql, "loadAccount select");
-  return $value[RESPONSE_ARGUMENT::VALUE];
+  return $value[RESPONSE_ARGUMENT::VALUE];  // FIXME: Check for errors
 }
 
 function loadIdentitiesByAccountId($account_id) {

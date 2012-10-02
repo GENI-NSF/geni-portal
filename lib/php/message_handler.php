@@ -73,7 +73,7 @@ function extract_message()
       fclose($putdata);
       break;
     case 'postXXX':
-      /* This case is incomplete. */
+      /* FIXME: This case is incomplete. */
       if (array_key_exists('file', $_FILES)) {
 	$errorcode = $_FILES['file']['error'];
 	if ($errorcode != 0) {

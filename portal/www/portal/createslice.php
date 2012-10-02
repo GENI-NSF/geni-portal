@@ -79,6 +79,7 @@ function sa_create_slice($user, $slice_name, $project_id, $project_name, $descri
 if ($slice_name) {
   // Create the slice...
   $result = sa_create_slice($user, $slice_name, $project_id, $project_name, $slice_description);
+  // FIXME: Check return!?
   /* $pretty_result = print_r($result, true); */
   /* error_log("sa_create_slice result: $pretty_result\n"); */
  
