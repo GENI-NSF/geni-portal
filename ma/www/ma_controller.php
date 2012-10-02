@@ -104,6 +104,8 @@ function register_ssh_key($args, $message)
   $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
   $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
   $log_msg = "registering ssh key \"$ssh_description\" for $member_id";
+  $private_key_field = '';
+  $private_key_value = '';
   if (array_key_exists(MA_ARGUMENT::SSH_PRIVATE_KEY, $args)) {
     $ssh_private_key = $args[MA_ARGUMENT::SSH_PRIVATE_KEY];
     $private_key_field = ", " . MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY;
