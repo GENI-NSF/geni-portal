@@ -297,7 +297,8 @@ done:
 function get_account_id()
 {
   $eppn = $_SERVER['eppn'];
-  $query = "SELECT account_id from identity where eppn = '" . $eppn . "'";
+  $conn = db_conn();
+  $query = "SELECT account_id from identity where eppn = " . $conn->quote($eppn, 'text');
   $row = db_fetch_row($query);
   error_log("GAI QUERY = " . $query . " ROW = " . print_r($row, true));
   $account_id = $row['account_id'];

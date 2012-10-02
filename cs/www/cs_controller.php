@@ -89,12 +89,12 @@ function create_assertion($args)
 					  $expiration);
   $context_field_clause = "";
   $context_value_clause = "";
+  $conn = db_conn();
   if (is_context_type_specific($context_type)) {
     $context_field_clause = CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . ", ";
-    $context_value_clause = "'" . $context . "', ";
+    $context_value_clause = $conn->quote($context, 'text') . ", ";
   }
 
-  $conn = db_conn();
   // *** TEMP TESTING
   $signer_value = $conn->quote($signer, 'text');
   if ($signer == null) {
