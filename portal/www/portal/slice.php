@@ -160,8 +160,8 @@ print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
 /* Tools */
 print "<tr><td>\n";
 /* print "To use a command line tool:<br/>"; */
-print "<button onClick=\"window.location='$slicecred_url'\" $add_slivers_disabled><b>Download Slice Credential</b>  </button>\n";
 print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b> </button>\n";
+print "<button disabled='disabled' onClick=\"window.location='$slicecred_url'\" $add_slivers_disabled><b>Download Slice Credential</b>  </button>\n";
 print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";
 
@@ -189,32 +189,35 @@ if (!(isset($msg) and isset($obj))) {
 } else {
   $slice_status='';
   print "<table>\n";
-  print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
+  //  print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
+  print "<tr><th>Status</th><th colspan='4'>Slice</th></tr>\n";
+
+
   /* Slice Info */
   print "<tr>";
   print "<td class='$slice_status'>$slice_status</td>";
-  print "<td colspan='2'>$slice_name</td>";
-  print "<td>$slice_creation</td>";
+  print "<td colspan='4'>$slice_name</td>";
+  // print "<td>$slice_creation</td>";
 
-  if ($renew_slice_privilege) {
-    print "<td><form method='GET' action=\"do-renew-slice.php\">";
-    print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-    print "<input class='date' type='text' name='slice_expiration'";
-    print "value=\"$slice_expiration\"/>\n";
-    print "<input type='submit' name= 'Renew' value='Renew'/>\n";
-    print "</form></td>\n";
-  } else {
-    print "<td>$slice_expiration</td>";
-  }
+  // if ($renew_slice_privilege) {
+  //   print "<td><form method='GET' action=\"do-renew-slice.php\">";
+  //   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+  //   print "<input class='date' type='text' name='slice_expiration'";
+  //   print "value=\"$slice_expiration\"/>\n";
+  //   print "<input type='submit' name= 'Renew' value='Renew'/>\n";
+  //   print "</form></td>\n";
+  // } else {
+  //   print "<td>$slice_expiration</td>";
+  //  }
 
-  print "<td>";
-  print "<button $add_slivers_disabled onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
-  print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
-  print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
-  print "<button $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
-    print "<button $delete_slivers_disabled onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
+  // print "<td>";
+  // print "<button $add_slivers_disabled onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
+  // print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
+  // print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
+  // print "<button $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
+  //   print "<button $delete_slivers_disabled onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
 
-  print "</td>";
+  // print "</td>";
   print "</tr>\n";
 
   /* Sliver Info */
@@ -233,7 +236,7 @@ if (!(isset($msg) and isset($obj))) {
       print "<tr>";
       print "<th class='notapply'>";
       print "</th><th>Status</th><th>Aggregate</th>";
-      print "<th>&nbsp;</th>";
+      //      print "<th>&nbsp;</th>";
       print "<th>Expiration</th>";
       print "<th>Actions</th></tr>\n";
       $first = False;
@@ -247,7 +250,7 @@ if (!(isset($msg) and isset($obj))) {
     print "<td class='$sliver_status'>$sliver_status</td>";
     $agg_name = am_name($agg);
     print "<td>$agg_name</td>";
-    print "<td>$sliver_creation</td>";
+    //print "<td>$sliver_creation</td>";
     
     if ($renew_slice_privilege) {
       print "<td><form method='GET' action=\"do-renew.php\">";
