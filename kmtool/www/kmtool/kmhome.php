@@ -94,11 +94,6 @@ if (array_key_exists("authorize_toolurn", $_GET)) {
   $toolurn_auth  = $_GET["authorize_toolurn"];
 }
 
-if (isset($member_id)) {
-  $authorized_tools_for_user = 
-    ma_list_authorized_clients($ma_url, $km_signer, $member_id);
-  error_log("auth list: " . print_r($authorized_tools_for_user, true));
-}
 // error_log("REDIRECT = " . $redirect_address);
 
 $auth_success = false;
@@ -106,13 +101,19 @@ $auth_error = "";
 
 if (array_key_exists("authorize_toolname", $_GET)) {
   $result = ma_authorize_client($ma_url, $km_signer, $member_id, $toolurn_auth, $sense);
-  error_log("auth res = " . print_r($result, true));
+  //  error_log("auth res = " . print_r($result, true));
   if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     $auth_success = true;
   } else {
     $auth_error = $result[RESPONSE_ARGUMENT::OUTPUT];
     error_log("KM: Error changing authorization for $toolname_auth for $username to $sense: " . $result[RESPONSE_ARGUMENT::OUTPUT]);
   }
+}
+
+if (isset($member_id)) {
+  $authorized_tools_for_user = 
+    ma_list_authorized_clients($ma_url, $km_signer, $member_id);
+  //error_log("auth list: " . print_r($authorized_tools_for_user, true));
 }
 
 include('kmheader.php');
