@@ -67,7 +67,10 @@ if (array_key_exists("newlead", $_REQUEST)) {
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
 
 $result = null;
-if ($isnew) {
+if (! is_set($name) or is_null($name) or $name == '') {
+  error_log("do-edit-project create_project got project_id $project_id");
+  $result = "Error";
+} else if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
