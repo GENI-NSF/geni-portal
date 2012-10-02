@@ -250,11 +250,13 @@ function mail_new_project_lead($member_id)
   $body .= " you can create GENI Projects, as well as create slices in";
   $body .= " projects and reserve resources.\n\n";
   $body .= "Please visit https://" . $_SERVER['SERVER_NAME'];
-  $body .= "/secure/home.php to get started.\n";
+  $body .= "/secure/home.php for more information, or to get started.\n\n";
+  $body .= "Sincerely,\n";
+  $body .= "GENI Clearinghouse operations\n"
   // The example in the PHP docs uses \r\n
   $headers = "Cc: $portal_admin_email\r\n";
   mail($member_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS],
-          "GENI Project Lead",
+          "You are now a GENI Project Lead",
           $body, $headers);
 }
 ?>
