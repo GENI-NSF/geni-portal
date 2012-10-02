@@ -863,7 +863,7 @@ function remove_slice_member($args, $message)
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID  
     . " = " . $conn->quote($slice_id, 'text') . " AND "
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . "= " . $conn->quote($member_id, 'text');
+    . " = " . $conn->quote($member_id, 'text');
   error_log("SA.remove slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
@@ -995,7 +995,7 @@ function get_slice_members_for_project($args)
     . ", " . $SA_SLICE_TABLENAME
     . " WHERE "
     . "NOT " . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::EXPIRED
-    . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
+    . "AND" . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
     . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID 
     . " = " . $conn->quote($project_id, 'text')
@@ -1047,7 +1047,7 @@ function get_slices_for_member($args)
   }
   $member_clause = 
     SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . " = " . $conn->quote($member_id, 'text') . " " . $role_clause;
+    . " = " . $conn->quote($member_id, 'text') . $role_clause;
   if(!$is_member) {
     $member_clause = 
     SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
@@ -1056,7 +1056,7 @@ function get_slices_for_member($args)
       . " FROM " . $SA_SLICE_MEMBER_TABLENAME 
       . " WHERE " 
       . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID
-      . " = " . $conn->quote($member_id, 'text') . " " . $role_clause . ")";
+      . " = " . $conn->quote($member_id, 'text') . $role_clause . ")";
       
   }
 
