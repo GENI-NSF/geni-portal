@@ -315,6 +315,18 @@ function fetchRSpecMetaData($user) {
 function db_add_rspec($user, $name, $description, $rspec, $schema,
         $schema_version, $visibility)
 {
+  if (! isset($description) or is_null($description) or $description == '') {
+    $msg = "Description missing for RSpec $name";
+    error_log($msg);
+    relative_redirect('error-text.php' . "?error=" . urlencode($msg));
+    return false;
+  }
+  if (! isset($name) or is_null($name) or $name == '') {
+    $msg = "Name missing for RSpec with description $description";
+    error_log($msg);
+    relative_redirect('error-text.php' . "?error=" . urlencode($msg));
+    return false;
+  }
   $conn = portal_conn();
   $sql = "INSERT INTO rspec";
   $sql .= " (name, description, rspec, schema, schema_version";
@@ -329,10 +341,12 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   $sql .= ", " . $conn->quote($visibility, 'text');
   $sql .= ")";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  //  error_log($sql);
   $result = db_execute_statement($sql, "db_add_rspec");
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     $msg = "db_add_rspec: " . $result[RESPONSE_ARGUMENT::OUTPUT];
     geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
     return false;
   }
   return $result[RESPONSE_ARGUMENT::VALUE];
