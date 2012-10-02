@@ -995,13 +995,13 @@ function get_slice_members_for_project($args)
     . ", " . $SA_SLICE_TABLENAME
     . " WHERE "
     . "NOT " . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::EXPIRED
-    . "AND" . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
+    . " AND " . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
     . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID 
     . " = " . $conn->quote($project_id, 'text')
     . $role_clause;
 
-  error_log("SA.get_slice_members_for_project.sql = " . $sql);
+  //error_log("SA.get_slice_members_for_project.sql = " . $sql);
   $result = db_fetch_rows($sql);
   return $result;
   
