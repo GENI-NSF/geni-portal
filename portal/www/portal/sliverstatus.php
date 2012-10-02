@@ -208,15 +208,14 @@ if (isset($msg) and isset($obj)){
   /* echo print_r($obj); */
   /* echo "</pre>"; */
 
-  if ($am_id ){
+  if (isset($am_id) && $am_id ) {
     $am_id_str = "&am_id=$am_id";
-      } else {
+  } else {
     $am_id_str = "";
-      }
-    print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
-    print "<br/>";
-    print "<br/>";
-
+  }
+  print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
+  print "<br/>";
+  print "<br/>";
 
 } else {
   print "<p><i>Failed to determine status of resources.</i></p>";
