@@ -376,13 +376,14 @@ function ma_list_authorized_clients($args, $message)
   global $MA_INSIDE_KEY_TABLENAME;
 
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $conn = db_conn();
 
   //  error_log("MLAC.ARGS = " . print_r($args, true));
 
   global $MA_INSIDE_KEY_TABlENAME;
   $sql = "select " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN .
     " from " . $MA_INSIDE_KEY_TABLENAME . 
-    " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . " = '$member_id'";
+    " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($member_id, 'text');
   $log_msg = "listing authorized clients for $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $rows = db_fetch_rows($sql);
@@ -442,8 +443,8 @@ function ma_authorize_client($args, $message)
   } else {
     // Remove member from ma_inside_key table
     $sql = "delete from " . $MA_INSIDE_KEY_TABLENAME . 
-      " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . "= '$member_id'" .
-      " and " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . " = '$client_urn'";
+      " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . "= " . $conn->quote($member_id, 'text') .
+      " and " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . " = " . $conn->quote($client_urn, 'text');
     $log_msg = "deauthorizing client $client_urn for $member_id";
     geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     $result = db_execute_statement($sql);

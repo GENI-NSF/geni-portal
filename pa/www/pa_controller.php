@@ -150,17 +150,18 @@ class PAProjectRequestGuard implements Guard
     //    error_log("PAProjectRequestGuard.evaluate " . $signer . " " . print_r($request_id, true));
     global $PA_PROJECT_MEMBER_TABLENAME;
     global $REQUEST_TABLENAME;
+    $conn = db_conn();
     $sql = "select count(*) from $PA_PROJECT_MEMBER_TABLENAME, $REQUEST_TABLENAME " 
       . " WHERE "
-      . " $REQUEST_TABLENAME." . RQ_REQUEST_TABLE_FIELDNAME::ID . " = $request_id"
+      . " $REQUEST_TABLENAME." . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $conn->quote($request_id, 'text')
       . " AND " 
       . " $REQUEST_TABLENAME." . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = "
       . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
       . " AND " 
-      . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '$signer'"
+      . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($signer, 'text')
       . " AND "
       . " $PA_PROJECT_MEMBER_TABLENAME." . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
-      . " IN (" . CS_ATTRIBUTE_TYPE::LEAD . ", " . CS_ATTRIBUTE_TYPE::ADMIN . ")";
+      . " IN (" . $conn->quote(CS_ATTRIBUTE_TYPE::LEAD, 'integer') . ", " . $conn->quote(CS_ATTRIBUTE_TYPE::ADMIN, 'integer') . ")";
     //    error_log("PAProjectRequestGuard.sql = $sql");
     $result = db_fetch_row($sql);
     //    error_log("Result = " . print_r($result, true));
@@ -226,9 +227,10 @@ function create_project($args, $message)
   $lead_id = $args[PA_ARGUMENT::LEAD_ID];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   $project_id = make_uuid();
+  $conn = db_conn();
 
   $exists_sql = "select count(*) from " . $PA_PROJECT_TABLENAME 
-    . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = '" . $project_name . "'";
+    . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = " . $conn->quote($project_name, 'text');
   $exists_response = db_fetch_row($exists_sql);
   $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
   $exists = $exists['count'];
@@ -250,7 +252,6 @@ function create_project($args, $message)
   
   $creation = new DateTime();
 
-  $conn = db_conn();
   $sql = "INSERT INTO " . $PA_PROJECT_TABLENAME 
     . "(" 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", " 
@@ -260,12 +261,12 @@ function create_project($args, $message)
     . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ") " 
     . "VALUES ("
-    . "'" . $project_id . "', " 
-    . "'" . $project_name . "', " 
-    . "'" . $lead_id . "', " 
-    . "'" . $project_email . "', " 
+    . $conn->quote($project_id, 'text') . ", " 
+    . $conn->quote($project_name, 'text') .", "
+    . $conn->quote($lead_id, 'text') . ", " 
+    . $conn->quote($project_email, 'text') . ", " 
     . $conn->quote(db_date_format($creation), 'timestamp') . ", "
-    . "'" . $project_purpose . "') ";
+    . $conn->quote($project_purpose, 'text') . ") ";
 
   //  error_log("SQL = " . $sql);
   $result = db_execute_statement($sql);
@@ -301,10 +302,11 @@ function delete_project($args)
   global $PA_PROJECT_TABLENAME;
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
 
+  $conn = db_conn();
   $sql = "DELETE FROM " . $PA_PROJECT_TABLENAME 
     . " WHERE " 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
-    . " = '" . $project_id . "'";
+    . " = " . $conn->quote($project_id, 'text');
 
   //  error_log("DELETE.sql = " . $sql);
 
@@ -317,12 +319,13 @@ function delete_project($args)
 function get_projects($args)
 {
   global $PA_PROJECT_TABLENAME;
+  $conn = db_conn();
   $sql = "select " 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
     . " FROM " . $PA_PROJECT_TABLENAME;
   if (array_key_exists(PA_ARGUMENT::LEAD_ID, $args)) {
     $sql = $sql . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . 
-      " = '" . $args[PA_ARGUMENT::LEAD_ID] . "'";
+      " = " . $conn->quote($args[PA_ARGUMENT::LEAD_ID], 'text');
   }
 
   $project_ids = array();
@@ -348,10 +351,11 @@ function lookup_projects($args)
 
   $lead_id = null;
   $lead_clause = "";
+  $conn = db_conn();
   //  error_log("LP.args = " . print_r($args, true));
   if(array_key_exists(PA_ARGUMENT::LEAD_ID, $args)) {
     $lead_id = $args[PA_ARGUMENT::LEAD_ID];
-    $lead_clause = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = '" . $lead_id . "'";
+    $lead_clause = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = " . $conn->quote($lead_id, 'text');
   }
 
   $sql = "select "  
@@ -388,12 +392,13 @@ function lookup_project($args)
     return null;
   }
 
+  $conn = db_conn();
   if (isset($project_id) && ! is_null($project_id) && $project_id != '') {
     $where = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
-      . " = '" . $project_id . "'";
+      . " = " . $conn->quote($project_id, 'text');
   } else {
     $where = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME 
-      . " = '" . $project_name . "'";
+      . " = " . $conn->quote($project_name, 'text');
   }
 
   $sql = "select "  
@@ -421,12 +426,13 @@ function update_project($args)
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
 
+  $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME 
     . " SET " 
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = '" . $project_name . "', "
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . " = '" . $project_purpose . "' "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = " . $conn->quote($project_name, 'text') . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . " = " . $conn->quote($project_purpose, 'text') . " "
     . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
-    . " = '" . $project_id . "'";
+    . " = " . $conn->quote($project_id, 'text');
 
   //  error_log("UPDATE.sql = " . $sql);
 
@@ -443,11 +449,12 @@ function change_lead($args)
   $previous_lead_id = $args[PA_ARGUMENT::PREVIOUS_LEAD_ID];
   $new_lead_id = $args[PA_ARGUMENT::LEAD_ID];
 
+  $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME
     . " SET " 
-    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = '" . $new_lead_id . "'"
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = " . $conn->quote($new_lead_id, 'text')
     . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
-    . " = '" . $project_id . "'";
+    . " = " . $conn->quote($project_id, 'text');
   //  error_log("CHANGE_LEAD.sql = " . $sql);
   $result = db_execute_statement($sql);
 
@@ -466,11 +473,12 @@ function add_project_member($args, $message)
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
 
+  $conn = db_conn();
   $already_member_sql = "select count(*) from " . $PA_PROJECT_MEMBER_TABLENAME
     . " WHERE " 
-    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . " = '$project_id'"
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . " = " . $conn->quote($project_id, 'text')
     . " AND " 
-    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '$member_id'";
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($member_id, 'text');
   $already_member = db_fetch_row($already_member_sql);
   //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
   $already_member = $already_member['value']['count'] > 0;
@@ -484,9 +492,9 @@ function add_project_member($args, $message)
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . ", "
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . ") VALUES ("
-    . "'" . $project_id . "', "
-    . "'" . $member_id . "', "
-    . $role . ")";
+    . $conn->quote($project_id, 'text') . ", "
+    . $conn->quote($member_id, 'text') . ", "
+    . $conn->quote($role, 'integer') . ")";
   //  error_log("PA.add project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
@@ -533,12 +541,13 @@ function remove_project_member($args, $message)
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
 
+  $conn = db_conn();
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME 
     . " WHERE " 
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID  
-    . " = '" . $project_id . "'"  . " AND "
+    . " = " . $conn->quote($project_id, 'text') . " AND "
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . "= '" . $member_id . "'";
+    . "= " . $conn->quote($member_id, 'text');
   error_log("PA.remove project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
@@ -572,14 +581,15 @@ function change_member_role($args, $message)
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
 
+  $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_MEMBER_TABLENAME
-    . " SET " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role
+    . " SET " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $conn->quote($role, 'integer')
     . " WHERE " 
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
-    . " = '" . $project_id . "'" 
+    . " = " . $conn->quote($project_id, 'text')
     . " AND " 
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . " = '" . $member_id . "'"; 
+    . " = " . $conn->quote($member_id, 'text'); 
 
   error_log("PA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
@@ -618,10 +628,11 @@ function get_project_members($args)
 
   global $PA_PROJECT_MEMBER_TABLENAME;
 
+  $conn = db_conn();
   $role_clause = "";
   if ($role != null) {
     $role_clause = 
-      " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role;
+      " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $conn->quote($role, 'integer');
   }
   $sql = "SELECT " 
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
@@ -629,7 +640,7 @@ function get_project_members($args)
     . " FROM " . $PA_PROJECT_MEMBER_TABLENAME
     . " WHERE "
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
-    . " = '" . $project_id . "'" 
+    . " = " . $conn->quote($project_id, 'text')
     . $role_clause;
 
   //  error_log("PA.get_project_members.sql = " . $sql);
@@ -669,16 +680,17 @@ function get_projects_for_member($args)
   // where member_id not in (select project_id from pa_project_member 
   //                         where member_id = $member_id and role = $role)
 
+  $conn = db_conn();
   $role_clause = "";
   if ($role != null) {
     $role_clause = " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
-      . " = " . $role;
+      . " = " . $conn->quote($role, 'text');
   }
 
   if ($is_member) {
     $member_clause = 
       PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-      . " = '" . $member_id . "' " . $role_clause;
+      . " = " . $conn->quote($member_id, 'text') . " " . $role_clause;
   } else {
     $member_clause = 
     PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
@@ -687,7 +699,7 @@ function get_projects_for_member($args)
       . " FROM " . $PA_PROJECT_MEMBER_TABLENAME 
       . " WHERE " 
       . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
-      . " = '" . $member_id . "' " . $role_clause . ")";
+      . " = " . $conn->quote($member_id, 'text') . " " . $role_clause . ")";
   }
 
   $sql = "SELECT DISTINCT " 
@@ -718,11 +730,12 @@ $REQUEST_TABLENAME = $PA_PROJECT_MEMBER_REQUEST_TABLENAME;
 function user_context_query($account_id)
 {
   global $PA_PROJECT_MEMBER_TABLENAME;
+  $conn = db_conn();
   return "select " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID 
     . " FROM " . $PA_PROJECT_MEMBER_TABLENAME
     . " WHERE " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE 
-    . " IN (" . CS_ATTRIBUTE_TYPE::LEAD . ", " . CS_ATTRIBUTE_TYPE::ADMIN . ")"
-    . " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $account_id . "'";
+    . " IN (" . $conn->quote(CS_ATTRIBUTE_TYPE::LEAD, 'integer') . ", " . $conn->quote(CS_ATTRIBUTE_TYPE::ADMIN, 'integer') . ")"
+    . " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($account_id, 'text');
   
 }
 require_once('rq_controller.php');

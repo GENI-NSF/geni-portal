@@ -244,6 +244,7 @@ function compute_attributes_sql($attributes,
 
   $match_clause = "";
   $match_count = 1;
+  $conn = db_conn();
   foreach($attributes as $key => $value) {
     //    error_log("ATT : " . print_r($attributes, true));
     if ($match_clause != "") {
@@ -252,11 +253,11 @@ function compute_attributes_sql($attributes,
     $match_clause = $match_clause . 
       "lea" . $match_count . "." . 
       $attribute_name_field . 
-      " = '" . $key . "'" .
+      " = " . $conn->quote($key, 'text') .
       " AND " .
       "lea" . $match_count . "." . 
       $attribute_value_field . 
-      " = '" . $value . "'";
+      " = " . $conn->quote($value, 'text');
     $match_count = $match_count + 1;
   }
 

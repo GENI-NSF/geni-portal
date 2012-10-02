@@ -108,12 +108,13 @@ function get_services($args)
 function get_services_of_type($args)
 {
   global $SR_TABLENAME;
-  $service_type = $args[SR_ARGUMENT::SERVICE_TYPE]; 
+  $service_type = $args[SR_ARGUMENT::SERVICE_TYPE];
+  $conn = db_conn();
   // error_log("listing services of type " . $service_type);
 
   $query = "SELECT * FROM " . $SR_TABLENAME . " WHERE " . 
     SR_TABLE_FIELDNAME::SERVICE_TYPE . 
-    " = '" . $service_type . "'";
+    " = " . $conn->quote($service_type, 'integer');
   //   error_log("SR.GSOT QUERY = " . $query);
   $result = db_fetch_rows($query, "SR.get_services_of_type");
   //  $rows = $result[RESPONSE_ARGUMENT::VALUE];
@@ -212,6 +213,7 @@ function get_attributes_for_service($args)
 {
   //  error_log("ARGS = " . print_r($args, true));
   $service_id = $args[SR_ARGUMENT::SERVICE_ID];
+  $conn = db_conn();
 
   global $SR_ATTRIBUTE_TABLENAME;
   $sql = "select " .
@@ -219,7 +221,7 @@ function get_attributes_for_service($args)
     SR_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_VALUE . 
     " FROM " . $SR_ATTRIBUTE_TABLENAME .
     " WHERE " . SR_ATTRIBUTE_TABLE_FIELDNAME::SERVICE_ID . 
-    " = " . $service_id;
+    " = " . $conn->quote($service_id, 'integer');
 
   $rows = db_fetch_rows($sql);
   $result = $rows;
@@ -245,6 +247,7 @@ function register_service($args)
 {
   global $SR_TABLENAME;
   global $SR_ATTRIBUTE_TABLENAME;
+  $conn = db_conn();
 
   $service_type = $args[SR_ARGUMENT::SERVICE_TYPE];
   $service_url = $args[SR_ARGUMENT::SERVICE_URL];
@@ -260,15 +263,15 @@ function register_service($args)
     SR_TABLE_FIELDNAME::SERVICE_NAME . ", " . 
     SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION .
     ") VALUES (" . 
-    "'" . $service_type . "'" . 
+    $conn->quote($service_type, 'integer') . 
     ", ". 
-    "'" . $service_url . "'" . 
+    $conn->quote($service_url, 'text') . 
     ", ". 
-    "'" . $service_cert . "'" . 
+    $conn->quote($service_cert, 'text') . 
     ", ". 
-    "'" . $service_name . "'" . 
+    $conn->quote($service_name, 'text') . 
     ", ". 
-    "'" . $service_description . "'" . 
+    $conn->quote($service_description, 'text') . 
     ")";
   // error_log("SR.RegisterService STMT = " . $stmt);
   $result = db_execute_statement($stmt, "SR.register_service");
@@ -284,9 +287,9 @@ function register_service($args)
 	. SR_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_NAME . ", "
 	. SR_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_VALUE . ") "
 	. " VALUES ("
-	. $lastval . ", "
-	. "'" . $attribute_name . "', "
-	. "'" . $attribute_value . "'"
+	. $conn->quote($lastval, 'integer') . ", "
+	. $conn->quote($attribute_name, 'text') . ", "
+	. $conn->quote($attribute_value, 'text')
 	. ")";
       $insert_result = db_execute_statement($insert_sql);
     }
@@ -305,18 +308,19 @@ function remove_service($args)
 {
   global $SR_TABLENAME;
   global $SR_ATTRIBUTE_TABLENAME;
+  $conn = db_conn();
 
   $service_id = $args[SR_ARGUMENT::SERVICE_ID];
   // error_log("remove service $service_id");
   $stmt = "DELETE FROM " . $SR_TABLENAME . " WHERE " . 
-    SR_TABLE_FIELDNAME::SERVICE_ID . " = " . $service_id;
+    SR_TABLE_FIELDNAME::SERVICE_ID . " = " . $conn->quote($service_id, 'integer');
   // error_log("SR.RemoveService STMT = " . $stmt);
   $result = db_execute_statement($stmt, "SR.remove_service");
 
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     $delete_attribute_sql = "DELETE FROM " . $SR_ATTRIBUTE_TABLENAME . 
       " WHERE " . 
-      SR_ATTRIBUTE_TABLE_FIELDNAME::SERVICE_ID . " = " . $service_id;
+      SR_ATTRIBUTE_TABLE_FIELDNAME::SERVICE_ID . " = " . $conn->quote($service_id, 'integer');
     // error_log("remove service attribute : $delete_attribute_sql");
     $delete_attribute_result = 
       db_execute_statement($delete_attribute_sql, 
