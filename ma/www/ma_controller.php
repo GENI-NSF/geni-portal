@@ -447,6 +447,7 @@ function ma_authorize_client($args, $message)
       " and " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . " = " . $conn->quote($client_urn, 'text');
     $log_msg = "deauthorizing client $client_urn for $member_id";
     geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+    error_log($log_msg);
     $result = db_execute_statement($sql);
   }
 
