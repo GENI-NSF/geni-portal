@@ -44,7 +44,6 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 $project_id = "None";
 $project = null;
@@ -64,8 +63,6 @@ if (array_key_exists("result", $_GET)) {
 }
 
 include("tool-lookupids.php");
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
 
 if (! is_null($project) && $project != "None") {
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
@@ -84,6 +81,21 @@ if (! is_null($project) && $project != "None") {
 // Fill in members of project member table
 $members = get_project_members($pa_url, $user, $project_id);
 //error_log("members = " . print_r($members, true));
+
+$reqs = null;
+if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
+					CS_CONTEXT_TYPE::PROJECT, $project_id);
+}
+
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+$entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+				       CS_CONTEXT_TYPE::PROJECT, $project_id);
+
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
@@ -117,8 +129,6 @@ print "</tr></table>\n";
 
 $reqs = null;
 if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
-					CS_CONTEXT_TYPE::PROJECT, $project_id);
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
     print "<h3>Approve new project members</h3>\n";
     print "<table>\n";
@@ -187,9 +197,6 @@ if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $proje
 <table>
 <tr><th>Time</th><th>Message</th><th>Member</th>
 <?php
-$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, Portal::getInstance(),
-				       CS_CONTEXT_TYPE::PROJECT, $project_id);
 
 if (is_array($entries)) {
   usort($entries, 'compare_log_entries');

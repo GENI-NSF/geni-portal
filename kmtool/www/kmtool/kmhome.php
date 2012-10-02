@@ -28,7 +28,6 @@
 
 require_once('km_utils.php');
 require_once('ma_client.php');
-include('kmheader.php');
 
 $member_id_key = 'eppn';
 $member_id_value = null;
@@ -67,26 +66,6 @@ $candidate_tools = ma_list_clients($ma_url, $km_signer);
 // error_log("CT = " . print_r($candidate_tools, true));
 // error_log("AT4U = " . print_r($authorized_tools_for_user, true));
 
-print "<h2>GENI Key Management Tool</h2><br>\n";
-
-print "This tool manages what clients can act on your behalf when " .
-"working with the GENI Clearinghouse. If you authorize a tool, you " .
-"are responsible for what it does on your behalf.<br><br>";
-
-if (! isset($member_id)) {
-  print "You must first request a GENI account <a href=\"home.php\">here</a>.<br\>\n";
-  include("footer.php");
-  return;
-}
-
-print "Click the \"Authorize\" button  " . 
-      "to allow the given tool to sign statements " . 
-"on your behalf in interactions with the GENI Clearinghouse.<br><br>";
-
-print "Click \"Deauthorize\" in the table below " . 
-      "to remove permission for the given tool to sign statements " . 
-      "on your behalf when working with the GENI Clearinghouse. <br><br>";
-
 // If invoked with a ?redirect=url argument, grab that 
 // argument and go there from the 'continue' button
 $redirect_key = "redirect";
@@ -115,23 +94,55 @@ if (array_key_exists("authorize_toolurn", $_GET)) {
   $toolurn_auth  = $_GET["authorize_toolurn"];
 }
 
-if (array_key_exists("authorize_toolname", $_GET)) {
-  $result = ma_authorize_client($ma_url, $km_signer, $member_id, $toolurn_auth, $sense);
-  error_log("auth res = " . print_r($result, true));
-  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
-    print "<h3>Tool '$toolname_auth' has been <b>$sense_text</b> for user $username.</h3><br>\n";
-  } else {
-    error_log("KM: Error changing authorization for $toolname_auth for $username to $sense: " . $result[RESPONSE_ARGUMENT::OUTPUT]);
-    print "<h4>Error changing authorization for $toolname_auth.</h4>\n";
-  }
-}
-
 if (isset($member_id)) {
   $authorized_tools_for_user = 
     ma_list_authorized_clients($ma_url, $km_signer, $member_id);
   error_log("auth list: " . print_r($authorized_tools_for_user, true));
 }
 // error_log("REDIRECT = " . $redirect_address);
+
+$auth_success = false;
+$auth_error = "";
+
+if (array_key_exists("authorize_toolname", $_GET)) {
+  $result = ma_authorize_client($ma_url, $km_signer, $member_id, $toolurn_auth, $sense);
+  error_log("auth res = " . print_r($result, true));
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    $auth_success = true;
+  } else {
+    $auth_error = $result[RESPONSE_ARGUMENT::OUTPUT];
+    error_log("KM: Error changing authorization for $toolname_auth for $username to $sense: " . $result[RESPONSE_ARGUMENT::OUTPUT]);
+  }
+}
+
+include('kmheader.php');
+print "<h2>GENI Key Management Tool</h2><br>\n";
+
+print "This tool manages what clients can act on your behalf when " .
+"working with the GENI Clearinghouse. If you authorize a tool, you " .
+"are responsible for what it does on your behalf.<br><br>";
+
+if (! isset($member_id)) {
+  print "You must first request a GENI account <a href=\"home.php\">here</a>.<br\>\n";
+  include("footer.php");
+  return;
+}
+
+print "Click the \"Authorize\" button  " . 
+      "to allow the given tool to sign statements " . 
+"on your behalf in interactions with the GENI Clearinghouse.<br><br>";
+
+print "Click \"Deauthorize\" in the table below " . 
+      "to remove permission for the given tool to sign statements " . 
+      "on your behalf when working with the GENI Clearinghouse. <br><br>";
+
+if (array_key_exists("authorize_toolname", $_GET)) {
+  if ($auth_success) {
+    print "<h3>Tool '$toolname_auth' has been <b>$sense_text</b> for user $username.</h3><br>\n";
+  } else {
+    print "<h4>Error changing authorization for $toolname_auth.</h4>\n";
+  }
+}
 
 // Create table with entry for each tool
 print("<table class=\"gridtable\">\n");

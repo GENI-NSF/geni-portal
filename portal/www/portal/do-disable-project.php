@@ -33,8 +33,6 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
-
 include("tool-lookupids.php");
 
 if (isset($project) && ! is_null($project)) {
@@ -52,6 +50,8 @@ if (isset($project) && ! is_null($project)) {
 // FIXME
 
 $_SESSION['lastmessage'] = "Asked to disable project $project_name - NOT IMPLEMENTED";
+
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 relative_redirect('projects.php');
 

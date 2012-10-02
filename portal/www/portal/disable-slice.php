@@ -29,7 +29,6 @@ require_once('sr_client.php');
 require_once('sa_constants.php');
 require_once('sa_client.php');
 
-show_header('GENI Portal: slices', $TAB_SLICES);
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -38,6 +37,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 $slice_id = "None";
 $slice_name = "None";
 include("tool-lookupids.php");
+show_header('GENI Portal: slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 
 print "<h1>DISABLE GENI Slice: " . $slice_name . "</h1>\n";

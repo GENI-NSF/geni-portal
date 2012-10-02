@@ -41,11 +41,8 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Slices', $TAB_SLICES);
 unset($slice);
 include("tool-lookupids.php");
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
 
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -66,7 +63,16 @@ if (isset($slice)) {
 
   $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   //error_log("slice project_name result: $project_name\n");
-} else {
+  // Fill in members of slice member table
+  $members = get_slice_members($sa_url, $user, $slice_id);
+}
+
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
+
+
+if (! isset($slice)) {
   print "Unable to load slice<br/>\n";
   include("footer.php");
   exit();
@@ -105,8 +111,6 @@ if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
 $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 
-// Fill in members of slice member table
-$members = get_slice_members($sa_url, $user, $slice_id);
 
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
 

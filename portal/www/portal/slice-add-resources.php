@@ -86,7 +86,6 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 $mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
 add_js_script($mydir . '/slice-add-resources.js');
-show_header('GENI Portal: Slices', $TAB_SLICES);
 
 $slice_id = "None";
 $slice_name = "None";
@@ -95,13 +94,14 @@ include("tool-lookupids.php");
 if (!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
+$keys = $user->sshKeys();
 
+show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 
 print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
 
 // Put up a warning to upload SSH keys, if not done yet.
-$keys = $user->sshKeys();
 if (count($keys) == 0) {
   // No ssh keys are present.
   print "No ssh keys have been uploaded. ";

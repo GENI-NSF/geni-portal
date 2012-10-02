@@ -34,7 +34,6 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 $isnew = true;
 $name = "";
@@ -106,6 +105,7 @@ if ($isnew) {
 }
 
 $_SESSION['lastmessage'] = "Edited project $name: $result";
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 relative_redirect('project.php?project_id='.$project_id . "&result=" . $result);
 
 include("footer.php");

@@ -35,24 +35,50 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
-
 $project = "None";
 $project_name = "None";
 $member = "None";
 $member_name = "None";
+$slices = null;
 include("tool-lookupids.php");
-include("tool-breadcrumbs.php");
+
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+
 if ($project == "None") {
+  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+
+  include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find project</h2>";
   include("footer.php");
   exit();
 }
 if ($member == "None") {
+  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+
+  include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find member</h2>";
   include("footer.php");
   exit();
 }
+
+// $project_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+//error_log("SA = " .  print_r($project_attributes, true));
+//error_log("PID = " . print_r($project_id, true));
+//error_log("PID = " . $project_id);
+$project_members = get_project_members($pa_url, $user, $project_id, null);
+//$slice_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::SLICE, null);
+$slice_members = get_slice_members_for_project($sa_url, $user, $project_id, null);
+if (! is_null($slice_members) && count($slice_members) > 0) {
+  $slices = lookup_slices($sa_url, $user, $project_id, null);
+}
+// error_log("SLICE_MEMBERS = " . print_r($slice_members, true));
+//error_log("SA = " .  print_r($slice_attributes, true));
+
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+
+include("tool-breadcrumbs.php");
 print "<h1>GENI Project: " . $project_name . ", Member: " . $member_name . "</h1>\n";
 
 // error_log("PID = " . print_r($project_id, true));
@@ -86,18 +112,6 @@ foreach ($rolevals as $role) {
 print "</select>\n<br/>\n";
 */
 
-$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-// $project_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
-//error_log("SA = " .  print_r($project_attributes, true));
-//error_log("PID = " . print_r($project_id, true));
-//error_log("PID = " . $project_id);
-$project_members = get_project_members($pa_url, $user, $project_id, null);
-//$slice_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::SLICE, null);
-$slice_members = get_slice_members_for_project($sa_url, $user, $project_id, null);
-// error_log("SLICE_MEMBERS = " . print_r($slice_members, true));
-//error_log("SA = " .  print_r($slice_attributes, true));
 
 print("<br>\n");
 print("<b>Project Roles</b>");
@@ -127,7 +141,6 @@ print("<b>Slice Roles</b>");
 if (! is_null($slice_members) && count($slice_members) > 0) {
   print("\n<table>\n");
   print ("<tr><th>Slice</th><th>Role</th></tr>");
-  $slices = lookup_slices($sa_url, $user, $project_id, null);
   //error_log("SLICES = " . print_r($slices, true));
   //error_log("ATTRIBS = " . print_r($slice_attribs, true));
   /*

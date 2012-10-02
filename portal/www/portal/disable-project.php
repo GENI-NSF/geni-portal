@@ -29,7 +29,6 @@ require_once('sr_client.php');
 require_once('pa_constants.php');
 require_once('pa_client.php');
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -38,6 +37,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 $project_id = "None";
 $project_name = "None";
 include("tool-lookupids.php");
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 
 print "<h1>DISABLE GENI Project: " . $project_name . "</h1>\n";

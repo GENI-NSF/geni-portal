@@ -33,9 +33,11 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
+include("tool-lookupids.php");
+
+$pids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
-include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 
 // Join a project
@@ -57,7 +59,6 @@ print "<br/>\n";
 
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
-$pids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<i>There are no more projects for you to join.</i><br/><br/>\n";
 

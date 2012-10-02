@@ -29,11 +29,11 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
-
 include("tool-lookupids.php");
 
 // FIXME do real stuff here!
+
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 relative_redirect('project-member.php?project_id='.$project_id . "&member_id=" . $member_id);
 

@@ -24,12 +24,10 @@
 
 require_once("user.php");
 require_once("header.php");
+$user = geni_loadUser();
 show_header('GENI Portal: Debug', $TAB_DEBUG);
 ?>
 <div id="debug-body">
-<?php
-$user = geni_loadUser();
-?>
 <h2>RQ</h2>
 <?php
 print "<a href=\"request_test.php\">Request Test</a>\n";
