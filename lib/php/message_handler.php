@@ -371,7 +371,7 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
     error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));
     error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
 
-    relative_redirect('error-text.php' . "?" . $result[RESPONSE_ARGUMENT::OUTPUT]);
+    relative_redirect('error-text.php' . "?" . urlencode($result[RESPONSE_ARGUMENT::OUTPUT]));
   }
 
 
