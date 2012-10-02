@@ -62,15 +62,10 @@ if (! isset($project) || is_null($project)) {
   }
 }
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
-
-include("tool-breadcrumbs.php");
-
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
-print "<h2>Join Project $project_name</h2>\n";
 $error = null;
 $message = null;
 if (array_key_exists("message", $_REQUEST)) {
@@ -128,6 +123,10 @@ Thank you,\n" . $user->prettyName() . "\n";
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
 
   // Put up a page saying we sent the request
+  show_header('GENI Portal: Projects', $TAB_PROJECTS);
+  include("tool-breadcrumbs.php");
+  print "<h2>Join Project $project_name</h2>\n";
+
   print "<br/>\n";
   print "<b>Sent</b> request to join GENI project <b>$project_name</b> to <b>$leadname</b>.<br/><br/>\n";
   $lines = explode("\r\n", $message);
@@ -139,6 +138,10 @@ Thank you,\n" . $user->prettyName() . "\n";
   include("footer.php");
   exit();
 }
+
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+include("tool-breadcrumbs.php");
+print "<h2>Join Project $project_name</h2>\n";
 
 print "All GENI actions must be taken in the context of a project.<br/>\n";
 print "On this page, you can request to join the project $project_name.<br/><br/> " 

@@ -33,7 +33,6 @@ require_once("am_client.php");
 require_once("sa_client.php");
 
 
-
 // Takes an arg am_id which may have multiple values. Each is treated
 // as the ID from the DB of an AM which should be queried
 // If no such arg is given, then query the DB and query all registered AMs

@@ -34,8 +34,6 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() ) {
   relative_redirect('home.php');
 }
-?>
-<?php
 
 // Takes an arg am_id which may have multiple values. Each is treated
 // as the ID from the DB of an AM which should be queried

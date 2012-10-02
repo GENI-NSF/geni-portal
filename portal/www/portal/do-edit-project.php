@@ -34,7 +34,6 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 $isnew = true;
 $name = "";
@@ -68,7 +67,11 @@ if (array_key_exists("newlead", $_REQUEST)) {
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
 
 $result = null;
-if ($isnew) {
+if (! isset($name) or is_null($name) or $name == '') {
+  error_log("do-edit-project missing a project name");
+  relative_redirect('error-text.php?error=' . urlencode("Project Name is required"));
+
+} else if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
@@ -106,6 +109,7 @@ if ($isnew) {
 }
 
 $_SESSION['lastmessage'] = "Edited project $name: $result";
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 relative_redirect('project.php?project_id='.$project_id . "&result=" . $result);
 
 include("footer.php");

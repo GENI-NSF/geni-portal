@@ -29,11 +29,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 include("header.php");
-show_header('GENI Portal: Profile', $TAB_PROFILE);
-include("tool-breadcrumbs.php");
-?>
 
-<?php
 // Local functions
 function shib_input($shib_name, $pretty_name, $value)
 {
@@ -85,6 +81,10 @@ foreach ($rows as $row) {
     //    print "Found NOT self asserted " . $row['name'] . " = " . $row['value'] . "<br/>\n";
   }
 }
+
+show_header('GENI Portal: Profile', $TAB_PROFILE);
+include("tool-breadcrumbs.php");
+
 ?>
 
 <h2> Modify Account Page </h2>

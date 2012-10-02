@@ -59,6 +59,7 @@ if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
+  include("tool-showmessage.php");
   print("<h2>Upload experiment RSpec</h2>\n");
   if ($error != NULL) {
     echo "<div id=\"error-message\""
@@ -71,13 +72,13 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input type="file" name="file" id="file" />';
   echo '  <br/><br/>';
   echo '  <label for="file">Short Name:</label>';
-  echo '  <input type="text" name="name"/>';
+  echo '  <input type="text" name="name"/> - Required';
   echo '  <br/><br/>';
   echo '  <input type="radio" name="group1" value="public" checked> public';
   echo '  <input type="radio" name="group1" value="private"> private';
   echo '  <br/><br/>';
-  echo '  <label for="file">Description (optional):</label>';
-  echo '  <input type="text" name="description"/>';
+  echo '  <label for="file">Description:</label>';
+  echo '  <input type="text" name="description"/> - Required';
   echo '  <br/><br/>';
   echo '  <input type="submit" name="submit" value="Upload"/>';
   echo '  <input type="hidden" name="referer" value="' . $_SERVER['HTTP_REFERER'] . '"/>';
@@ -87,7 +88,7 @@ if ($error != NULL || count($_POST) == 0) {
   exit;
 }
 
-// The public key is in $_FILES["file"]["tmp_name"]
+// The rspec is in $_FILES["file"]["tmp_name"]
 $contents = file_get_contents($_FILES["file"]["tmp_name"]);
 $filename = $_FILES["file"]["name"];
 $description = NULL;
@@ -104,8 +105,13 @@ geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Calling db_add_rspec");
 $result = db_add_rspec($user, $name, $description, $contents,
         $schema, $schema_version, $visibility);
 geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "db_add_rspec: " . print_r($result, true));
-
-$_SESSION['lastmessage'] = "Uploaded RSpec " . $name;
+//error_log("db_add_rspec: " . print_r($result, true));
+// FIXME: check result
+if (! $result) {
+  $_SESSION['lastmessage'] = "ERROR. Failed to upload RSpec " . $name;
+} else {
+  $_SESSION['lastmessage'] = "Uploaded RSpec " . $name;
+}
 
 // redirect to referer if available.
 if (array_key_exists('referer', $_POST)) {

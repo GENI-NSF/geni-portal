@@ -50,6 +50,7 @@ foreach ($all_rspecs as $rspec) {
 /* Display starts here. */
 show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 print("<h2>Manage RSpecs</h2>\n");
 print "You can ";
 print "<button onClick=\"window.location='rspecupload.php'\">"

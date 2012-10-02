@@ -33,7 +33,6 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Slices', $TAB_SLICES);
 
 include("tool-lookupids.php");
 
@@ -53,6 +52,7 @@ if (isset($slice) && ! is_null($slice)) {
 // FIXME
 $_SESSION['lastmessage'] = "Asked to disable slice $slice_name - NOT IMPLEMENTED";
 
+show_header('GENI Portal: Slices', $TAB_SLICES);
 relative_redirect('slices.php');
 
 include("footer.php");

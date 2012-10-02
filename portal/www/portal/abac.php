@@ -57,7 +57,7 @@ function abac_store_idp_attrs($user) {
 
 function abac_assert($role, $subject_id) {
   $tmpfile = tempnam(sys_get_temp_dir(), "portal");
-
+  // FIXME: Hard coded stuff
   // Run creddy to generate an owner credential
   $cmd_array = array("/usr/local/bin/creddy",
                      "--attribute",

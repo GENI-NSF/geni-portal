@@ -55,7 +55,7 @@ print "<p>Otherwise click 'Cancel'.</p>\n";
 print "<br/>\n";
 
 $cancel_url = "slice.php?slice_id=$slice_id";
-if ($am_id) {
+if (isset($am_id) && $am_id) {
   $edit_url = "sliverdelete.php?slice_id=$slice_id"."&am_id=$am_id";
 } else {
   $edit_url = "sliverdelete.php?slice_id=$slice_id";

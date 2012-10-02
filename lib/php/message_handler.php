@@ -73,7 +73,7 @@ function extract_message()
       fclose($putdata);
       break;
     case 'postXXX':
-      /* This case is incomplete. */
+      /* FIXME: This case is incomplete. */
       if (array_key_exists('file', $_FILES)) {
 	$errorcode = $_FILES['file']['error'];
 	if ($errorcode != 0) {
@@ -297,7 +297,8 @@ done:
 function get_account_id()
 {
   $eppn = $_SERVER['eppn'];
-  $query = "SELECT account_id from identity where eppn = '" . $eppn . "'";
+  $conn = db_conn();
+  $query = "SELECT account_id from identity where eppn = " . $conn->quote($eppn, 'text');
   $row = db_fetch_row($query);
   error_log("GAI QUERY = " . $query . " ROW = " . print_r($row, true));
   $account_id = $row['account_id'];
@@ -370,7 +371,7 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
     error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));
     error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
 
-    relative_redirect('error-text.php' . "?" . $result[RESPONSE_ARGUMENT::OUTPUT]);
+    relative_redirect('error-text.php' . "?error=" . urlencode($result[RESPONSE_ARGUMENT::OUTPUT]));
   }
 
 

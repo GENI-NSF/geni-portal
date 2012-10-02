@@ -89,13 +89,14 @@ function create_assertion($args)
 					  $expiration);
   $context_field_clause = "";
   $context_value_clause = "";
+  $conn = db_conn();
   if (is_context_type_specific($context_type)) {
     $context_field_clause = CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . ", ";
-    $context_value_clause = "'" . $context . "', ";
+    $context_value_clause = $conn->quote($context, 'text') . ", ";
   }
 
   // *** TEMP TESTING
-  $signer_value = "'" . $signer . "'";
+  $signer_value = $conn->quote($signer, 'text');
   if ($signer == null) {
     $signer_value = "null";
   }
@@ -110,12 +111,12 @@ function create_assertion($args)
     . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . ", "
     . CS_ASSERTION_TABLE_FIELDNAME::ASSERTION_CERT . ") VALUES ( "
     . $signer_value . ", "
-    . "'" . $principal . "', "
-    . "'" . $attribute . "', "
-    . "'" . $context_type . "', "
+    . $conn->quote($principal, 'text') . ", "
+    . $conn->quote($attribute, 'integer') . ", "
+    . $conn->quote($context_type, 'integer') . ", "
     . $context_value_clause 
-    . "'" . db_date_format($expiration) . "', "
-    . "'" . $assertion_cert . "') ";
+    . $conn->quote(db_date_format($expiration), 'timestamp') . ", "
+    . $conn->quote($assertion_cert, 'text') . ") ";
 
   //  error_log("CS.create sql = " . $sql);
 
@@ -156,17 +157,18 @@ function create_policy($args)
 
   $policy_cert = create_policy_cert($signer,  
 				    $attribute, $context_type, $privilege);
+  $conn = db_conn();
   $sql = "INSERT INTO " . $CS_POLICY_TABLENAME . "(" 
     . CS_POLICY_TABLE_FIELDNAME::SIGNER . ", "
     . CS_POLICY_TABLE_FIELDNAME::ATTRIBUTE . ", "
     . CS_POLICY_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
     . CS_POLICY_TABLE_FIELDNAME::PRIVILEGE . ", "
     . CS_POLICY_TABLE_FIELDNAME::POLICY_CERT . ") VALUES ( "
-    . "'" . $signer . "', "
-    . "" . $attribute . ", "
-    . "" . $context_type . ", "
-    . "" . $privilege . ", "    
-    . "'" . $policy_cert . "') ";
+    . $conn->quote($signer, 'text') . ", "
+    . $conn->quote($attribute, 'integer') . ", "
+    . $conn->quote($context_type, 'integer') . ", "
+    . $conn->quote($privilege, 'integer') . ", "
+    . $conn->quote($policy_cert, 'text') . ") ";
   $result = db_execute_statement($sql);
 
   // Log the creation
@@ -178,7 +180,6 @@ function create_policy($args)
 	      " PRIV=" . $privilege, 
 	      $attributes, $signer);
   }
-
 
   return $result;
 }
@@ -194,10 +195,11 @@ function renew_assertion($args)
   global $CS_ASSERTION_TABLENAME;
   $id = $args[CS_ARGUMENT::ID];
   $expiration = get_future_date(20);
+  $conn = db_conn();
   $sql = "update " . $CS_ASSERTION_TABLENAME . " SET " 
-    . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . " = '" 
-    . db_date_format($expiration) . "'"
-    . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = '" . $id . "'";
+    . CS_ASSERTION_TABLE_FIELDNAME::EXPIRATION . " = "
+    . $conn->quote(db_date_format($expiration), 'timestamp')
+    . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = " . $conn->quote($id, 'integer');
   $result = db_execute_statement($sql);
   return $result;
 }
@@ -212,8 +214,9 @@ function delete_assertion($args)
 {
   global $CS_ASSERTION_TABLENAME;
   $id = $args[CS_ARGUMENT::ID];
+  $conn = db_conn();
   $sql = "delete from " . $CS_ASSERTION_TABLENAME 
-    . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = '" . $id . "'";
+    . " WHERE " . CS_ASSERTION_TABLE_FIELDNAME::ID . " = " . $conn->quote($id, 'integer');
   $result = db_execute_statement($sql);
   return $result;
 }
@@ -228,8 +231,9 @@ function delete_policy($args)
 {
   global $CS_POLICY_TABLENAME;
   $id = $args[CS_ARGUMENT::ID];
+  $conn = db_conn();
   $sql = "delete from " . $CS_POLICY_TABLENAME 
-    . " WHERE " . CS_POLICY_TABLE_FIELDNAME::ID . " = '" . $id . "'";
+    . " WHERE " . CS_POLICY_TABLE_FIELDNAME::ID . " = " . $conn->quote($id, 'integer');
   $result = db_execute_statement($sql);
   return $result;
 }
@@ -255,16 +259,17 @@ function query_assertions($args)
     if (!is_context_type_specific($context_type)) {
       $context = $args[CS_ARGUMENT::CONTEXT];
     }
+    $conn = db_conn();
     if (is_context_type_specific($context_type)) {
       $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
-	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = '" . $principal . "'";
+	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = " . $conn->quote($principal, 'text');
     } else {
       $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
-	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = '" . $principal 
-	. "' AND " 
-	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = '" . $context_type
-	. "' AND "
-	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . " = '" . $context . "'";
+	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = " . $conn->quote($principal, 'text')
+	. " AND " 
+	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $conn->quote($context_type, 'integer')
+	. " AND "
+	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . " = " . $conn->quote($context, 'text');
     }
   }
   $rows = db_fetch_rows($sql);
@@ -294,22 +299,23 @@ function request_authorization($args)
   $principal = $args[CS_ARGUMENT::PRINCIPAL];
   $action = $args[CS_ARGUMENT::ACTION];
   $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+  $conn = db_conn();
   if(!is_context_type_specific($context_type)) {
     $context_clause = "";
     $context = "";
   } else {
     $context = $args[CS_ARGUMENT::CONTEXT];
-    $context_clause = "cs_assertion.context = '" . $context . "' and ";
+    $context_clause = "cs_assertion.context = " . $conn->quote($context, 'text') . " and ";
   }
   $sql = "select * from cs_action, cs_policy, cs_assertion where "
-    . "cs_assertion.principal = '" .  $principal . "' and "
+    . "cs_assertion.principal = " .  $conn->quote($principal, 'text') . " and "
     . "cs_assertion.context_type = cs_action.context_type and "
     . "cs_policy.context_type = cs_action.context_type and "
-    . "cs_action.context_type = " . $context_type . " and "
+    . "cs_action.context_type = " . $conn->quote($context_type, 'integer') . " and "
     . $context_clause
     . "cs_assertion.attribute = cs_policy.attribute and "
     . "cs_action.privilege = cs_policy.privilege and "
-    . "cs_action.name = '" . $action . "'";
+    . "cs_action.name = " . $conn->quote($action, 'text');
 
   //  error_log("CS.Request_authorization.sql = " . $sql);
 
@@ -338,11 +344,12 @@ function get_permissions($args)
   // cs_assertion : id, signer, principal, attribute, context_type, context, expiration
   // cs_policy    : id, signer, attribute, context_type, privilege, policy_cert
   // cs_action : id, name, privilege, context_type
+  $conn = db_conn();
   $sql = "select " 
     . "cs_action.name, cs_assertion.context_type, cs_assertion.context"
     . " from cs_assertion, cs_policy, cs_action"
     . " where "
-    . " cs_assertion.principal = '" . $principal . "'"
+    . " cs_assertion.principal = " . $conn->quote($principal, 'text')
     . " and cs_assertion.attribute = cs_policy.attribute"
     . " and cs_assertion.context_type = cs_policy.context_type"
     . " and cs_action.privilege = cs_policy.privilege"
@@ -365,12 +372,12 @@ function get_members($args)
 {
   $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
   $context_id = $args[CS_ARGUMENT::CONTEXT];
-
+  $conn = db_conn();
   $sql = "select cs_assertion.principal, cs_attribute.name" 
     . " from cs_attribute, cs_assertion " 
     . " where "
-    . " cs_assertion.context_type = '" . $context_type . "'" 
-    . " and cs_assertion.context = '" . $context_id . "'"
+    . " cs_assertion.context_type = " . $conn->quote($context_type, 'integer')
+    . " and cs_assertion.context = " . $conn->quote($context_id, 'text')
     . " and cs_assertion.attribute = cs_attribute.id";
   //  error_log("get_members.sql = " . $sql);
   $rows = db_fetch_rows($sql);
@@ -384,11 +391,11 @@ function get_attributes($args)
   $principal = $args[CS_ARGUMENT::PRINCIPAL];
   $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
   $context_id = $args[CS_ARGUMENT::CONTEXT];
-
+  $conn = db_conn();
   $context_clause = "";
   if($context_id <> null) {
     $context_clause = " AND " . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT
-    . " = '" . $context_id . "'";
+      . " = " . $conn->quote($context_id, 'text');
   }
 
   //  error_log("ARGS = " . print_r($args, true));
@@ -400,9 +407,9 @@ function get_attributes($args)
     . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE .  " = " 
     . $CS_ATTRIBUTE_TABLENAME . "." . CS_ATTRIBUTE_TABLE_FIELDNAME::ID
     . " AND " . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL 
-    . " = '" . $principal . "'"
+    . " = " . $conn->quote($principal, 'text')
     . " AND " . $CS_ASSERTION_TABLENAME . "." . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE
-    . " = " . $context_type
+    . " = " . $conn->quote($context_type, 'integer')
     . $context_clause;
 
   //  error_log("GA.sql = " . $sql);

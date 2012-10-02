@@ -21,8 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-?>
-<?php
+
 require_once("header.php");
 require_once("settings.php");
 require_once("user.php");
@@ -38,9 +37,7 @@ $user = geni_loadUser();
 if (! $user->isActive()) {
   relative_redirect('home.php');
 }
-?>
 
-<?php
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No slice id specified.';
@@ -57,7 +54,6 @@ include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();
 }
-
 
 if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
@@ -212,15 +208,14 @@ if (isset($msg) and isset($obj)){
   /* echo print_r($obj); */
   /* echo "</pre>"; */
 
-  if ($am_id ){
+  if (isset($am_id) && $am_id ) {
     $am_id_str = "&am_id=$am_id";
-      } else {
+  } else {
     $am_id_str = "";
-      }
-    print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
-    print "<br/>";
-    print "<br/>";
-
+  }
+  print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
+  print "<br/>";
+  print "<br/>";
 
 } else {
   print "<p><i>Failed to determine status of resources.</i></p>";

@@ -23,28 +23,40 @@
 //----------------------------------------------------------------------
 ?>
 <?php
-require_once("header.php");
-show_header('GENI Portal: Home',  $TAB_SLICES);
+ require_once("header.php");
+
+// If referer is ?register? then include the 0 to not load the user
+$referer_key = 'HTTP_REFERER';
+$referer = "";
+if (key_exists($referer_key, $_SERVER)) {
+  $referer = $_SERVER[$referer_key];
+}
+if (strpos($referer, 'register') !== false) {
+  show_header('GENI Portal: Home',  $TAB_SLICES, 0);
+} else {
+  show_header('GENI Portal: Home',  $TAB_SLICES);
+}
 $header = "Error";
 print "<h2>$header</h2>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";
 
 // error_log('$_GET = ' . print_r($_GET, true));
 
-// error_log('$_SERVER = ' . print_r($_SERVER, true));
-
-foreach ($_GET as $line_num => $line) {
-  //  error_log("LINE_NUM " . $line_num);
-  //  error_log("LINE " . $line);
-  $text = str_replace('_', ' ', htmlspecialchars($line_num));
-  echo $text . "<br />\n";
+if (key_exists("error", $_GET)) {
+  echo "Error message:<br/>\n" . urldecode($_GET["error"]) . "<br/>\n";
+} else {
+  // error_log('$_SERVER = ' . print_r($_SERVER, true));
+  
+  foreach ($_GET as $line_num => $line) {
+    //  error_log("LINE_NUM " . $line_num);
+    $text = str_replace('_', ' ', htmlspecialchars(urldecode($line_num)));
+    echo $text . "<br />\n";
+  }
 }
 
+print "<br/>\n";
+print "<form method=\"GET\" action=\"back\">";
 print "\n";
-print "<form method=\"GET\" action-\"back\">";
-print "\n";
-$http_referer = $_SERVER['HTTP_REFERER'];
-//error_log("HTTP_REFERER = " . $http_referer);
 print "<input type=\"button\" value=\"Back\" onClick=\"history.back(-1)\"/>\n";
 print "\n";
 print "</form>";

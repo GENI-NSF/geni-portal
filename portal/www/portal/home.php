@@ -28,12 +28,12 @@ require_once('cs_constants.php');
 /* $GENI_TITLE = "GENI Portal Home"; */
 /* $ACTIVE_TAB = "Home"; */
 require_once("header.php");
+$user = geni_loadUser();
 show_header('GENI Portal Home', $TAB_HOME);
 ?>
 <div id="home-body">
 <?php
   include("tool-showmessage.php");
-$user = geni_loadUser();
 if (is_null($user)) {
   // TODO: Handle unknown state
   print "Unable to load user record.<br/>";

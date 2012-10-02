@@ -28,9 +28,8 @@ $user = geni_loadUser();
 if (! isset($user) || ! $user->isActive()) {
   relative_redirect("home.php");
 }
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
-
 include("tool-lookupids.php");
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 // FIXME do real stuff here!
 

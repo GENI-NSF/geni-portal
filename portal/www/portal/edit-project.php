@@ -33,9 +33,9 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
+include("tool-lookupids.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
-include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 if (! isset($project)) {
   $project = "new";
@@ -75,7 +75,11 @@ foreach ($fields as $field) {
   if ($field_labels[$ind] == "Email") {
     print "disabled=\"disabled\"";
   }
-  print "/></td></tr>\n";
+  print "/>";
+  if ($isnew && $field_labels[$ind] == "Project Name") {
+    print " - Required";
+  }
+  print "</td></tr>\n";
 }
 print "</table>\n";
 print "<b>Note: Project name is public</b><br/>\n";

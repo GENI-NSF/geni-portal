@@ -35,32 +35,37 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Slices', $TAB_SLICES);
 
 $slice = "None";
 $slice_name = "None";
 $member = "None";
 $member_name = "None";
 include("tool-lookupids.php");
-include("tool-breadcrumbs.php");
+$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+
 if ($slice == "None") {
+  show_header('GENI Portal: Slices', $TAB_SLICES);
+  include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find slice</h2>";
   include("footer.php");
   exit();
 }
 if ($member == "None") {
+  show_header('GENI Portal: Slices', $TAB_SLICES);
+  include("tool-breadcrumbs.php");
   print "<h2>Error: Couldn't find member</h2>";
   include("footer.php");
   exit();
 }
-print "<h1>GENI Slice: " . $slice_name . ", Member: " . $member_name . "</h1>\n";
 
-
-$cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
-$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 //$slice_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
 $slices_for_member = get_slices_for_member($sa_url, $user, $member_id, true, null);
 //error_log("SLICE ATTRIBS = " . print_r($attributes, true));
+
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
+print "<h1>GENI Slice: " . $slice_name . ", Member: " . $member_name . "</h1>\n";
 
 print("<b>Slice Roles</b>");
 print("\n<table>\n");
@@ -82,9 +87,6 @@ foreach($slices_for_member as $slice_for_member) {
   print("<tr><td>$slice_link</td><td>$role</td></tr>\n");
 }
 print("</table>\n\n");
-
-
-
 
 // FIXME: Retrieve info from DB
 print "<br/>\n";

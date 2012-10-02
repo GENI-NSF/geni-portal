@@ -30,10 +30,7 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Home', $TAB_HOME);
-
 include("tool-lookupids.php");
-include("tool-breadcrumbs.php");
 
 //Invite to Join GENI
 //Generic page to email a bunch of folks with a link to the unsecured
@@ -65,6 +62,10 @@ You log in with your home university or college username, or request a GENI-spec
 
 Thank you,\n" . $user->prettyName() . "\n";
 }
+
+show_header('GENI Portal: Home', $TAB_HOME);
+
+include("tool-breadcrumbs.php");
 
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email

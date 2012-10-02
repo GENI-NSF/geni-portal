@@ -43,8 +43,6 @@ $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
 // error_log("PROJECTS = " . print_r($projects, true));
 $num_projects = count($projects);
 
-
-
 print "<h2>My Projects</h2>\n";
 if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
   if ($num_projects==0) {

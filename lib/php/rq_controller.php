@@ -44,6 +44,7 @@ function create_request($args)
 
   global $REQUEST_TABLENAME;
 
+  $conn = db_conn();
   $sql = "INSERT INTO " . $REQUEST_TABLENAME
     . "(" 
     . RQ_REQUEST_TABLE_FIELDNAME::STATUS . ", "
@@ -56,13 +57,13 @@ function create_request($args)
     . RQ_REQUEST_TABLE_FIELDNAME::REQUEST_DETAILS . ") "
     . "VALUES ("
     . RQ_REQUEST_STATUS::PENDING . ", "
-    . "" . $context_type . ", "
-    . "'" . $context_id . "', "
-    . "'" . $requestor . "', "
-    . "'" . db_date_format($now) . "', "
-    . "" . $request_type . ", "
-    . "'" . $request_text . "', "
-    . "'" . $request_details . "') ";
+    . $conn->quote($context_type, 'integer') . ", "
+    . $conn->quote($context_id, 'text') . ", "
+    . $conn->quote($requestor, 'text') . ", "
+    . $conn->quote(db_date_format($now), 'timestamp') . ", "
+    . $conn->quote($request_type, 'integer') . ", "
+    . $conn->quote($request_text, 'text') . ", "
+    . $conn->quote($request_details, 'text') . ") ";
 
   //  error_log("create_request.sql = " . $sql);
 
@@ -89,15 +90,16 @@ function resolve_pending_request($args)
   $now = new DateTime();
 
   global $REQUEST_TABLENAME;
+  $conn = db_conn();
 
   $sql = "UPDATE " . $REQUEST_TABLENAME
     . " SET " 
-    . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . $resolution_status . ", "
-    . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_DESCRIPTION . " = '" . $resolution_description . "', "
-    . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_TIMESTAMP . " = '" . db_date_format($now) . "', "
-    . RQ_REQUEST_TABLE_FIELDNAME::RESOLVER . " = '" . $resolver . "'"
+    . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . $conn->quote($resolution_status, 'integer') . ", "
+    . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_DESCRIPTION . " = " . $conn-quote($resolution_description, 'text') . ", "
+    . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_TIMESTAMP . " = " . $conn->quote(db_date_format($now), 'timestamp') . ", "
+    . RQ_REQUEST_TABLE_FIELDNAME::RESOLVER . " = " . $conn->quote($resolver , 'text')
     . " WHERE " 
-    . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $request_id;
+    . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $conn->quote($request_id, 'integer');
 
   //  error_log("resolve_pending_request.sql = " . $sql);
 
@@ -113,12 +115,12 @@ function get_requests_for_context($args)
   $context_id = $args[RQ_ARGUMENTS::CONTEXT_ID];
 
   global $REQUEST_TABLENAME;
-
+  $conn = db_conn();
   $sql = "SELECT * from " . $REQUEST_TABLENAME 
     . " WHERE "
-    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type
+    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $conn->quote($context_type, 'integer')
     . " AND " 
-    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
+    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = " . $conn->quote($context_id, 'text');
 
   //  error_log("get_requests_for_context.sql = " . $sql);
   $result = db_fetch_rows($sql);
@@ -134,14 +136,15 @@ function get_requests_by_user($args)
   $context_id = $args[RQ_ARGUMENTS::CONTEXT_ID];
 
   global $REQUEST_TABLENAME;
+  $conn = db_conn();
 
   $sql = "SELECT * from " . $REQUEST_TABLENAME 
     . " WHERE "
-    . RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR . " = '" . $account_id . "'"
+    . RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR . " = " . $conn->quote($account_id, 'text')
     . " AND " 
-    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $context_type
+    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $conn->quote($context_type, 'integer')
     . " AND " 
-    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = '" . $context_id . "'";
+    . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = " . $conn->quote($context_id, 'text');
 
   //  error_log("get_requests_by_user.sql = " . $sql);
   $result = db_fetch_rows($sql);
@@ -181,13 +184,14 @@ function get_number_of_pending_requests_for_user($args)
   $context_id = $args[RQ_ARGUMENTS::CONTEXT_ID];
 
   global $REQUEST_TABLENAME;
+  $conn = db_conn();
 
   $user_for_context_query = 
     RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
     user_context_query($account_id) . ")";
   if ($context_id != null) {
     $user_for_context_query = 
-      RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = '$context_id'";
+      RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = " . $conn->quote($context_id, 'text');
   }
 
   $sql = "select count(*) from " . $REQUEST_TABLENAME
@@ -209,10 +213,11 @@ function get_request_by_id($args)
 {
   $request_id = $args[RQ_ARGUMENTS::REQUEST_ID];
   global $REQUEST_TABLENAME;
+  $conn = db_conn();
 
   $sql = "SELECT * from " . $REQUEST_TABLENAME 
     . " WHERE "
-    . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $request_id;
+    . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $conn->quote($request_id, 'integer');
   //  error_log("get_requests_by_id.sql = " . $sql);
   $result = db_fetch_row($sql);
   return $result;

@@ -88,7 +88,11 @@ foreach (array_keys($all_attrs) as $attr_name) {
     }
   }
 }
-ma_create_account($ma_url, Portal::getInstance(), $attrs, $sa_attrs);
+$result = ma_create_account($ma_url, Portal::getInstance(), $attrs, $sa_attrs);
+if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+  error_log("Failed to create account for $attrs: $result");
+  relative_redirect('error-text.php' . "?error=" . urlencode($result[RESPONSE_ARGUMENT::OUTPUT]));
+}
 
 function derive_username() {
   // See http://www.linuxjournal.com/article/9585
@@ -214,7 +218,7 @@ foreach ($attrs as $attr) {
       . $conn->quote($identity_id, 'integer')
       . ", " . $conn->quote($attr, 'text')
       . ", " . $conn->quote($value, 'text')
-      . ", " . $conn->quote($self_asserted)
+      . ", " . $conn->quote($self_asserted, 'boolean')
       . ");";
     /* print "attr insert: $sql<br/>"; */
     $result = $conn->exec($sql);

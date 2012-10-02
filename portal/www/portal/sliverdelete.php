@@ -21,8 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-?>
-<?php
+
 require_once("settings.php");
 require_once('portal.php');
 require_once("user.php");
@@ -37,8 +36,7 @@ $user = geni_loadUser();
 if (! $user->isActive()) {
   relative_redirect('home.php');
 }
-?>
-<?php
+
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No slice id specified.';

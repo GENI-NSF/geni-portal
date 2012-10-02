@@ -50,6 +50,7 @@ function log_event($args, $message)
   $user_id = $args[LOGGING_ARGUMENT::USER_ID];
   $message = $args[LOGGING_ARGUMENT::MESSAGE];
   $attributes = $args[LOGGING_ARGUMENT::ATTRIBUTES];
+  $conn = db_conn();
 
   //  error_log("ET = " . print_r($event_time, true));
 
@@ -60,9 +61,9 @@ function log_event($args, $message)
     . LOGGING_TABLE_FIELDNAME::MESSAGE 
     . " ) VALUES " 
     . "("
-    . "'" . db_date_format($event_time) . "', "
-    . "'" . $user_id . "', "
-    . "'" . $message . "')";
+    . $conn->quote(db_date_format($event_time), 'timestamp') . ", "
+    . $conn->quote($user_id, 'text') . ", "
+    . $conn->quote($message, 'text') . ")";
 
   //  error_log("LOG.SQL = " . $sql);
 
@@ -81,9 +82,9 @@ function log_event($args, $message)
 	. LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_NAME . ", "
 	. LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_VALUE . ") "
 	. " VALUES ("
-	. $lastval . ", "
-	. "'" . $attribute_name  . "', "
-	. "'" . $attribute_value . "')";
+	. $conn->quote($lastval, 'integer') . ", "
+	. $conn->quote($attribute_name, 'text') . ", "
+	. $conn->quote($attribute_value, 'text') . ")";
       //      error_log("INSERT.SQL = " . $insert_sql);
       $insert_result = db_execute_statement($insert_sql);
     }
@@ -100,6 +101,7 @@ function get_log_entries_by_author($args)
   $since = new DateTime();
   $since->setTimestamp($args[LOGGING_ARGUMENT::EARLIEST_TIME]);
   $user_id = $args[LOGGING_ARGUMENT::USER_ID];
+  $conn = db_conn();
 
   //  error_log("GLEBA : " . print_r($args, true));
 
@@ -109,8 +111,8 @@ function get_log_entries_by_author($args)
     . LOGGING_TABLE_FIELDNAME::USER_ID . ", "
     . LOGGING_TABLE_FIELDNAME::MESSAGE 
     . " FROM " . $LOGGING_TABLENAME 
-    . " WHERE " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " > '" . db_date_format($since) . "'"
-    . " AND " . LOGGING_TABLE_FIELDNAME::USER_ID . " = '" . $user_id . "'"
+    . " WHERE " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " > " . $conn->quote(db_date_format($since), 'timestamp')
+    . " AND " . LOGGING_TABLE_FIELDNAME::USER_ID . " = " . $conn->quote($user_id, 'text')
     . " ORDER BY " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " DESC";
     
   //  error_log("LOG.SQL = " . $sql);
@@ -167,12 +169,13 @@ function get_attributes_for_log_entry($args)
   $event_id = $args[LOGGING_ARGUMENT::EVENT_ID];
 
   global $LOGGING_ATTRIBUTE_TABLENAME;
+  $conn = db_conn();
   $sql = "select " .
     LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_NAME . ", " .
     LOGGING_ATTRIBUTE_TABLE_FIELDNAME::ATTRIBUTE_VALUE . 
     " FROM " . $LOGGING_ATTRIBUTE_TABLENAME .
     " WHERE " . LOGGING_ATTRIBUTE_TABLE_FIELDNAME::EVENT_ID . 
-    " = " . $event_id;
+    " = " . $conn->quote($event_id, 'integer');
 
   $rows = db_fetch_rows($sql);
 
@@ -206,6 +209,7 @@ class LoggingGuardFactory implements GuardFactory
   
 }
 
+// FIXME: These should be in settings.php, no?
 $mycertfile = '/usr/share/geni-ch/logging/logging-cert.pem';
 $mykeyfile = '/usr/share/geni-ch/logging/logging-key.pem';
 $mysigner = new Signer($mycertfile, $mykeyfile);

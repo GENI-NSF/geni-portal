@@ -132,9 +132,13 @@ $public_key = file_get_contents($publickeyfile);
 $filename = "id_geni_ssh_rsa";
 $description = "Generated SSH keypair";
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-register_ssh_key($ma_url, $user, $user->account_id, $filename, $description,
+$result = register_ssh_key($ma_url, $user, $user->account_id, $filename, $description,
         $public_key, $private_key);
-
+if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+  error_log("Failed to register SSH key for account " . $user->account_id . " from file $filename: " . $result);
+  $_SESSION['lastmessage'] = "ERROR Generating SSH keypair";
+  relative_redirect('profile.php');
+}
 if (True) {
   $_SESSION['lastmessage'] = "Generated SSH keypair - now download the private key";
   relative_redirect('profile.php');

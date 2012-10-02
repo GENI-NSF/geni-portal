@@ -36,7 +36,6 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Slices', $TAB_SLICES);
 $isnew = false;
 $slice_id = "None";
 $slice_name = "None";
@@ -47,7 +46,6 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-include("tool-breadcrumbs.php");
 if (isset($slice)) {
   /* $pretty_result = print_r($slice, true); */
   /* error_log("fetch_slice result: $pretty_result\n"); */
@@ -74,6 +72,9 @@ if (isset($slice)) {
   error_log("No slice to edit");
   relative_redirect("home.php");
 }
+
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
 
 print "<h1>EDIT GENI Slice: " . $slice_name ."</h1>\n";
 print "<table border=\"1\">\n";

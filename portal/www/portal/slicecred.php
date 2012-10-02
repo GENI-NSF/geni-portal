@@ -29,8 +29,7 @@ $user = geni_loadUser();
 if (! $user->isActive()) {
   relative_redirect("home.php");
 }
-?>
-<?php
+
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No slice id specified.';
@@ -53,7 +52,6 @@ if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $
 }
 
 // TODO: Pass expiration to slicecred.py
-
 
 $outside_key = db_fetch_outside_private_key_cert($user->account_id);
 if (! $outside_key) {

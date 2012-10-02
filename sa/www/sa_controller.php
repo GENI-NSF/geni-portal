@@ -394,9 +394,10 @@ function create_slice($args, $message)
 			       "Cannot create slice with invalid slice name $slice_name");
     }
 
+  $conn = db_conn();
   $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME 
-    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = '" . $slice_name . "'" 
-    . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = '" . $project_id . "'"
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = " . $conn->quote($slice_name, 'text')
+    . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = " . $conn->quote($project_id, 'text')
     . " AND NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
   //  error_log("SQL = " . $exists_sql);
   $exists_response = db_fetch_row($exists_sql);
@@ -433,7 +434,6 @@ function create_slice($args, $message)
   $expiration = get_future_date(0, $sa_default_slice_expiration_hours);
   $creation = new DateTime();
 
-  $conn = db_conn();
   $sql = "INSERT INTO " 
     . $SA_SLICE_TABLENAME 
     . " ( "
@@ -565,21 +565,22 @@ function lookup_slice_ids($args)
     $slice_name = $args[SA_ARGUMENT::SLICE_NAME];
   }
 
+  $conn = db_conn();
   $sql = "SELECT " 
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
     . " FROM " . $SA_SLICE_TABLENAME
     . " WHERE NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
   if (isset($project_id)) {
     $sql = $sql . " and " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID .
-      " = '" . $project_id . "'";
+      " = " . $conn->quote($project_id, 'text');
   }
   if (isset($owner_id)) {
     $sql = $sql . " and " . SA_SLICE_TABLE_FIELDNAME::OWNER_ID .
-      " = '" . $owner_id . "'";
+      " = " . $conn->quote($owner_id, 'text');
   }
   if (isset($slice_name)) {
     $sql = $sql . " and " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME .
-      " = '" . $slice_name . "'";
+      " = " . $conn->quote($slice_name, 'text');
   }
   $sql = $sql . " ORDER BY " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . 
     ", " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID;
@@ -657,7 +658,7 @@ function lookup_slices($args, $message)
     . " FROM " . $SA_SLICE_TABLENAME
     . $where_clause;
 
-  error_log("lookup_slices.sql = " . $sql);
+  //  error_log("lookup_slices.sql = " . $sql);
 
   $rows = db_fetch_rows($sql);
 
@@ -674,6 +675,7 @@ function lookup_slice($args)
 
   sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $conn = db_conn();
 
   $sql = "SELECT " 
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
@@ -687,7 +689,7 @@ function lookup_slice($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
-    . " = '" . $slice_id . "'";
+    . " = " . $conn->quote($slice_id, 'text');
   //  error_log("LOOKUP_SLICE.SQL = " . $sql);
   $row = db_fetch_row($sql);
   // error_log("LOOKUP_SLICE.ROW = " . print_r($row, true));
@@ -703,6 +705,7 @@ function lookup_slice_by_urn($args)
 
   sa_expire_slices();
   $slice_urn = $args[SA_ARGUMENT::SLICE_URN];
+  $conn = db_conn();
 
   $sql = "SELECT " 
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
@@ -717,7 +720,7 @@ function lookup_slice_by_urn($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_URN
-    . " = '" . $slice_urn . "'";
+    . " = " . $conn->quote($slice_urn, 'text');
   //  error_log("LOOKUP_SLICE.SQL = " . $sql);
   $row = db_fetch_row($sql);
   // error_log("LOOKUP_SLICE.ROW = " . print_r($row, true));
@@ -745,10 +748,13 @@ function renew_slice($args, $message)
     //    error_log("max is bigger: " . date_diff($req_dt, $max_expiration)->format('%R%a days'));
   }
 
+  $conn = db_conn();
+
   $sql = "UPDATE " . $SA_SLICE_TABLENAME 
-    . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = '"
-    . db_date_format($expiration) . "'"
-    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = '" . $slice_id  . "'";
+    . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = "
+    . $conn->quote(db_date_format($expiration), 'timestamp')
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = " . $conn->quote($slice_id, 'text');
+
   //  error_log("RENEW.sql = " . $sql);
   $result = db_execute_statement($sql);
 
@@ -778,12 +784,13 @@ function add_slice_member($args, $message)
 
   global $SA_SLICE_MEMBER_TABLENAME;
   global $mysigner;
+  $conn = db_conn();
 
   $already_member_sql = "select count(*) from " . $SA_SLICE_MEMBER_TABLENAME
     . " WHERE " 
-    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = '$slice_id'"
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " . $conn->quote($slice_id, 'text')
     . " AND " 
-    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '$member_id'";
+    . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($member_id, 'text');
   $already_member = db_fetch_row($already_member_sql);
   //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
   $already_member = $already_member['value']['count'] > 0;
@@ -796,9 +803,9 @@ function add_slice_member($args, $message)
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . ") VALUES ("
-    . "'" . $slice_id . "', "
-    . "'" . $member_id . "', "
-    . $role . ")";
+    . $conn->quote($slice_id, 'text') . ", "
+    . $conn->quote($member_id, 'text') . ", "
+    . $conn->quote($role, 'integer') . ")";
   //  error_log("SA.add slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
@@ -849,13 +856,14 @@ function remove_slice_member($args, $message)
 
   global $SA_SLICE_MEMBER_TABLENAME;
   global $mysigner;
+  $conn = db_conn();
 
   $sql = "DELETE FROM " . $SA_SLICE_MEMBER_TABLENAME 
     . " WHERE " 
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID  
-    . " = '" . $slice_id . "'"  . " AND "
+    . " = " . $conn->quote($slice_id, 'text') . " AND "
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . "= '" . $member_id . "'";
+    . " = " . $conn->quote($member_id, 'text');
   error_log("SA.remove slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
@@ -888,15 +896,16 @@ function change_slice_member_role($args, $message)
 
   global $SA_SLICE_MEMBER_TABLENAME;
   global $mysigner;
+  $conn = db_conn();
 
   $sql = "UPDATE " . $SA_SLICE_MEMBER_TABLENAME
-    . " SET " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role
+    . " SET " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $conn->quote($role, 'integer')
     . " WHERE " 
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
-    . " = '" . $slice_id . "'" 
+    . " = " . $conn->quote($slice_id, 'text')
     . " AND " 
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . " = '" . $member_id . "'"; 
+    . " = " . $conn->quote($member_id, 'text'); 
 
   error_log("SA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
@@ -936,11 +945,12 @@ function get_slice_members($args)
   }
 
   global $SA_SLICE_MEMBER_TABLENAME;
+  $conn = db_conn();
 
   $role_clause = "";
   if ($role != null) {
     $role_clause = 
-      " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role;
+      " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $conn->quote($role, 'integer');
   }
   $sql = "SELECT " 
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
@@ -948,7 +958,7 @@ function get_slice_members($args)
     . " FROM " . $SA_SLICE_MEMBER_TABLENAME
     . " WHERE "
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
-    . " = '" . $slice_id . "'" 
+    . " = " . $conn->quote($slice_id, 'text')
     . $role_clause;
 
   //  error_log("SA.get_slice_members.sql = " . $sql);
@@ -970,11 +980,12 @@ function get_slice_members_for_project($args)
 
   global $SA_SLICE_MEMBER_TABLENAME;
   global $SA_SLICE_TABLENAME;
+  $conn = db_conn();
 
   $role_clause = "";
   if ($role != null) {
     $role_clause = 
-      " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $role;
+      " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $conn->quote($role, 'integer');
   }
   $sql = "SELECT " 
     . $SA_SLICE_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . ", "
@@ -984,13 +995,13 @@ function get_slice_members_for_project($args)
     . ", " . $SA_SLICE_TABLENAME
     . " WHERE "
     . "NOT " . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::EXPIRED
-    . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
+    . " AND " . $SA_SLICE_MEMBER_TABLENAME . "." . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID . " = " 
     . $SA_SLICE_TABLENAME . "." . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID 
-    . " = '" . $project_id . "'" 
+    . " = " . $conn->quote($project_id, 'text')
     . $role_clause;
 
-  error_log("SA.get_slice_members_for_project.sql = " . $sql);
+  //error_log("SA.get_slice_members_for_project.sql = " . $sql);
   $result = db_fetch_rows($sql);
   return $result;
   
@@ -1013,6 +1024,7 @@ function get_slices_for_member($args)
   }
 
   global $SA_SLICE_MEMBER_TABLENAME;
+  $conn = db_conn();
 
   // select slice_id, role from pa_slice_member
   // where member_id = $member_id
@@ -1031,11 +1043,11 @@ function get_slices_for_member($args)
   $role_clause = "";
   if ($role != null) {
     $role_clause = " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE 
-      . " = " . $role;
+      . " = " . $conn->quote($role, 'integer');
   }
   $member_clause = 
     SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
-    . " = '" . $member_id . "' " . $role_clause;
+    . " = " . $conn->quote($member_id, 'text') . $role_clause;
   if(!$is_member) {
     $member_clause = 
     SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
@@ -1044,7 +1056,7 @@ function get_slices_for_member($args)
       . " FROM " . $SA_SLICE_MEMBER_TABLENAME 
       . " WHERE " 
       . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID
-      . " = '" . $member_id . "' " . $role_clause . ")";
+      . " = " . $conn->quote($member_id, 'text') . $role_clause . ")";
       
   }
 
@@ -1071,8 +1083,8 @@ function user_context_query($account_id)
   return "select " . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID 
     . " FROM " . $SA_SLICE_MEMBER_TABLENAME
     . " WHERE " . SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE 
-    . " IN (" . CS_ATTRIBUTE_TYPE::LEAD . ", " . CS_ATTRIBUTE_TYPE::ADMIN . ")"
-    . " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = '" . $account_id . "'";
+    . " IN (" . $conn->quote(CS_ATTRIBUTE_TYPE::LEAD, 'integer') . ", " . $conn->quote(CS_ATTRIBUTE_TYPE::ADMIN, 'integer') . ")"
+    . " AND " . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($account_id, 'text');
   
 }
 require_once('rq_controller.php');

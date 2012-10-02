@@ -44,8 +44,9 @@ function no_slice_error() {
 }
 
 function no_time_error() {
-  header('HTTP/1.1 404 Not Found');
-  print 'No expiration time specified.';
+  relative_redirect("error-text.php?error=" . urlencode("No new sliver expiration time specified."));
+  //  header('HTTP/1.1 404 Not Found');
+//  print 'No expiration time specified.';
   exit();
 }
 
@@ -65,8 +66,8 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
-if (array_key_exists('slice_expiration', $_GET)) {
-  $slice_expiration = $_GET['slice_expiration'];
+if (array_key_exists('sliver_expiration', $_GET)) {
+  $slice_expiration = $_GET['sliver_expiration'];
 } else {
   no_time_error();
 }
