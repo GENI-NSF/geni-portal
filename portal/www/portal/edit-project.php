@@ -75,11 +75,11 @@ foreach ($fields as $field) {
   if ($field_labels[$ind] == "Email") {
     print "disabled=\"disabled\"";
   }
-  print "/></td>";
+  print "/>";
   if ($isnew && $field_labels[$ind] == "Project Name") {
     print " - Required";
   }
-  print "</tr>\n";
+  print "</td></tr>\n";
 }
 print "</table>\n";
 print "<b>Note: Project name is public</b><br/>\n";
