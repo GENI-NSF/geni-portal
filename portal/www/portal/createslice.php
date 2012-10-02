@@ -74,22 +74,26 @@ function sa_create_slice($user, $slice_name, $project_id, $project_name, $descri
   return $result;
 }
 
-
 // Do we have all the required params?
 if ($slice_name) {
   // Create the slice...
   $result = sa_create_slice($user, $slice_name, $project_id, $project_name, $slice_description);
-  // FIXME: Check return!?
-  /* $pretty_result = print_r($result, true); */
-  /* error_log("sa_create_slice result: $pretty_result\n"); */
+  if (! $result) {
+    error_log("Create Slice failed for slice $slice_name");
+    $_SESSION['lastmessage'] = "Slice creation failed for slice $slice_name";
+    relative_redirecto('home.php');
+  } else {
+    /* $pretty_result = print_r($result, true); */
+    /* error_log("sa_create_slice result: $pretty_result\n"); */
  
-  // Redirect to this slice's page now...
-  $slice_id = $result[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-
-  $_SESSION['lastmessage'] = "Created slice $slice_name";
-
-  relative_redirect('slice.php?slice_id='.$slice_id);
-}
+    // Redirect to this slice's page now...
+    $slice_id = $result[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    
+    $_SESSION['lastmessage'] = "Created slice $slice_name";
+    
+    relative_redirect('slice.php?slice_id='.$slice_id);
+  }
+} // else if came from the createslice page then print an error or something
 
 // If here, present the form
 require_once("header.php");
@@ -109,12 +113,13 @@ print "<table>";
 print "<tr><th>Project name</th><td><b>$project_name</b></td></tr>\n";
 print '<tr><th>Slice name</th>';
 print "\n";
-print '<td><input type="text" name="slice_name"/></td>';
+print '<td><input type="text" name="slice_name"/> -- Required</td>';
 print "</tr>\n";
 print '<tr><th>Slice description</th>';
 print "\n";
 print '<td><input type="text" name="slice_description"/></td>';
 print "</tr></table>\n";
+print "<b>Note: Slice name is public</b><br/>\n";
 print '<input type="submit" value="Create slice"/>';
 print "\n";
 print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/>\n";
