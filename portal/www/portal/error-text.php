@@ -41,7 +41,7 @@ foreach ($_GET as $line_num => $line) {
 }
 
 print "\n";
-print "<form method=\"GET\" action-\"back\">";
+print "<form method=\"GET\" action=\"back\">";
 print "\n";
 $http_referer = $_SERVER['HTTP_REFERER'];
 //error_log("HTTP_REFERER = " . $http_referer);
