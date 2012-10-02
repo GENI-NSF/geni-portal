@@ -861,7 +861,7 @@ function remove_slice_member($args, $message)
   $sql = "DELETE FROM " . $SA_SLICE_MEMBER_TABLENAME 
     . " WHERE " 
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID  
-    . " = " . $conn->quote($slice_id, 'text') " AND "
+    . " = " . $conn->quote($slice_id, 'text') . " AND "
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
     . "= " . $conn->quote($member_id, 'text');
   error_log("SA.remove slice_member.sql = " . $sql);
