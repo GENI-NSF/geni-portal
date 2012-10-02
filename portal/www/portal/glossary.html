@@ -1,0 +1,23 @@
+<h1> GENI Glossary</h1>
+<br><br>
+<ul>
+<li><b><a name="Aggregate"/>Aggregate:</b> An aggregate is a software server that provides resources to clients based on the GENI aggregate manager API. Through that API an aggregate may advertise resources of different types (computation, storage, network) and accept requests for allocating these resources for a period of time. The aggregate may provide virtual 'sliced' or non-virtual 'whole' resources to customers. An aggregate generates custom private internal network topologies per request, and participates in a process for generating cross-aggregate custom private network topologies known as stitching.</li>
+
+<li><b><a name="Project"/>Project:</b> A project organizes research in GENI, containing both people and their experiments. A project is lead by a single responsible individual: the project lead. Many GENI experimenters may be members of a given project, and may be members of multiple projects. Experimenters can create slices and perform experiments in the context of a project. A GENI slice belongs to a single project.</li>
+
+<li><b><a name="Project_Lead"/>Project Lead:</b> A principal investigator, professor or lead researcher that manages a set of experiments and associated research staff. The project lead is ultimately accountable for any operations taken on resources associated with slices of the given project.</li>
+
+<li><b><a name="Renewal"/>Renewal:</b> Slices and slivers are created with a particular expiration time, which is aggregate-specific. An experimenter may request that the expiration time be extended by a renewal request. Once the expiration time of a given slice or sliver has passed, however, these elements can no longer be renewed and may be reclaimed by GENI.</li>
+
+<li><b><a name="Slice"/>Slice:</b> A slice is the context for a particular set of experiments, and contains reserved resources and the set of GENI users ('members') who are entitled to act on those resources. A slice belongs to a single project, and can have multiple members. Experimenters can add and delete resources from a slice.</li>
+
+<li><b><a name="Slice_Credential"/>Slice Credential:</b> A signed statement from a GENI federation slice authority indicating that a given experimenter has particular rights to operate on a given slice. Such credentials have a specified expiration date. Aggregates receiving the credential will authorize operations only as permitted by the  credential and only for the life of the credential.</li>
+
+<li><b><a name="Slice_Member"/>Slice Member:</b> Many experimenters may view or act on a slice. Each experimenter with such privileges is said to be a 'member' of the slice. Experimenters must be a member of the project containing the slice before they can be a member of the slice. Within the slice, experimenters may have varying permissions, including having read-only access to the slice.</li>
+
+<li><b><a name="Sliver"/>Sliver:</b> A Sliver is one or more resources provided by an aggregate, whether virtual or whole ('bare metal'). Slivers are created and added to Slices through calls to the Aggregate Manager API at aggregates. Slivers are isolated from other slivers on the same resources.</li>
+
+<li><b><a name="SSH_Keys"/>SSH Keys:</b> These are PKI (Public Key Infrastructure) public/private key pairs that represent a user's identity for logging into a remote computer. Typically, the public key is stored on the remote computer and the private key is held by the user trying to 'ssh' (secure remote login). See en.wikipedia.org/wiki/Secure_Shell. When slivers are created for compute resources, tools (such as the GENI portal) can provide the aggregate with a set of public SSH keys, enabling experimenters to securely log in to the reserved compute resources.</li>
+
+<li><b><a name="SSL_Key_and_Certificate"/>SSL Key and Certificate:</b> These are PKI (Public Key Infrastructure) materials representing a user's identity for SSL (secure sockets layer) communications such as HTTPS sessions. Specifically the AM API requires authentication by means of SSL client certificates signed by a trusted GENI root.</li>
+
