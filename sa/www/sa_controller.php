@@ -658,7 +658,7 @@ function lookup_slices($args, $message)
     . " FROM " . $SA_SLICE_TABLENAME
     . $where_clause;
 
-  error_log("lookup_slices.sql = " . $sql);
+  //  error_log("lookup_slices.sql = " . $sql);
 
   $rows = db_fetch_rows($sql);
 
