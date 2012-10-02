@@ -84,7 +84,7 @@ if (! isset($ams) || is_null($ams)) {
     $ams[] = $am;
   }
 }
-
+$slivers_output = '';
 if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs!");
   $slivers_output = "No AMs registered.";
@@ -129,12 +129,24 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
-print_rspec( $obj, $pretty );
+if (isset($obj) && $obj && $obj != '') {
+  print_rspec( $obj, $pretty );
+} else {
+  print "<i>No resources found.</i><br/>\n";
+}
+
+if (isset($msg) && $msg && $msg != '') {
+  error_log($msg);
+}
+
+if ($slivers_output) {
+  print "$slivers_output<br/>\n";
+}
 
 if ($pretty) {
 
 
-  if ($am_id ){
+  if (isset($am_id) && $am_id ){
     $am_id_str = "&am_id=$am_id";
   } else {
     $am_id_str = "";
