@@ -51,9 +51,9 @@ if (count($slices) > 0) {
   print ("<th>Project</th>");
   print ("<th>Slice Expiration</th>");
   print ("<th>Slice Owner</th>"
-         . "<th>Add Slivers</th><th>Sliver Status</th>"
+         . "<th>Add Resources</th><th>Resource Status</th>"
 	 . "<th>Manifest</th>"
-         . "<th>Delete Slivers</th>"
+         . "<th>Delete Resources</th>"
 	 . "<th>Flack</th>");
   if ($portal_enable_abac) {
     print "<th>ABAC Credential</th>";
@@ -126,11 +126,11 @@ if (count($slices) > 0) {
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
     print "<td>" . htmlentities($expiration) . "</td>";
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
-    print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Slivers</b></button></td>");
-    print ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Sliver Status</b></button></td>");
+    print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button></td>");
+    print ("<td><button onClick=\"window.location='$sliver_status_url'\"><b>Resource Status</b></button></td>");
     // FIXME: List Resources
     print ("<td><button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button></td>");
-    print ("<td><button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Slivers</b></button></td>");
+    print ("<td><button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button></td>");
   print "<td><button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
@@ -139,5 +139,9 @@ if (count($slices) > 0) {
   }
   print "</table>\n";
 } else {
-  print "<i>You are not a member of any slices.</i><br/>\n";
+  if (isset($project_id) && uuid_is_valid($project_id)) {
+    print "<i>You do not have access to any slices in this project.</i><br/>\n";
+  } else {
+    print "<i>You do not have access to any slices.</i><br/>\n";
+  }
 }
