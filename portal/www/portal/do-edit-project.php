@@ -65,12 +65,13 @@ if (array_key_exists("newlead", $_REQUEST)) {
 //print "ID=$project_id, Name=$name, Purpose=$purpose, newlead=$newlead.<br/>\n";
 
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
-
 $result = null;
 if (! isset($name) or is_null($name) or $name == '') {
   error_log("do-edit-project missing a project name");
-  relative_redirect('error-text.php?error=' . urlencode("Project Name is required"));
-
+  relative_redirect('error-text.php?error=' . urlencode("Project Name is required."));
+} else if (strpos($name, ' ') !== false) {
+  error_log("do-edit-project: project name '$name' contains spaces");
+  relative_redirect('error-text.php?error=' . urlencode("Project Name may not contain spaces."));
 } else if ($isnew) {
   // Re-check authorization?
   // Auto?

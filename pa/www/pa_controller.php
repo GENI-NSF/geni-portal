@@ -224,6 +224,15 @@ function create_project($args, $message)
   //  error_log("ARGS = " . print_r($args, true));
 
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
+  if (! isset($project_name) or is_null($project_name) or $project_name == '') {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Project name missing");
+  }
+  if (strpos($project_name, ' ') !== false) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Project name '$project_name' invalid: no spaces allowed.");
+  }
+
   $lead_id = $args[PA_ARGUMENT::LEAD_ID];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   $project_id = make_uuid();
