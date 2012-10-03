@@ -119,13 +119,13 @@ print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 
 /* Slice Actions */
 print "<tr><td rowspan='2'>\n";
-print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled ><b>Add Slivers</b></button>\n";
+print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled ><b>Add Resources</b></button>\n";
 
-print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
+print "<button onClick=\"window.location='$status_url'\"><b>Resource Status</b></button>\n";
 print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
 print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
-print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled><b>Delete Slivers</b></button>\n";
+print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled><b>Delete Resources</b></button>\n";
 print "</td>\n";
 
 /* Renew */
@@ -149,7 +149,7 @@ if ($renew_slice_privilege) {
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration'";
   print "value=\"$slice_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew Slivers'/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew Resource Reservations'/>\n";
   print "</form>\n";
 } else {
   print "$slice_expiration";
@@ -211,11 +211,11 @@ if (!(isset($msg) and isset($obj))) {
   //  }
 
   // print "<td>";
-  // print "<button $add_slivers_disabled onClick=\"window.location='$add_url'\"><b>Add Slivers</b></button>\n";
-  // print "<button onClick=\"window.location='$status_url'\"><b>Sliver Status</b></button>\n";
+  // print "<button $add_slivers_disabled onClick=\"window.location='$add_url'\"><b>Add Resources</b></button>\n";
+  // print "<button onClick=\"window.location='$status_url'\"><b>Resource Status</b></button>\n";
   // print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
   // print "<button $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
-  //   print "<button $delete_slivers_disabled onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Slivers</b></button>\n";
+  //   print "<button $delete_slivers_disabled onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Resources</b></button>\n";
 
   // print "</td>";
   print "</tr>\n";
@@ -266,9 +266,9 @@ if (!(isset($msg) and isset($obj))) {
 
 /* Sliver Actions */
 print "<td>\n";
-print "<button onClick=\"window.location='$status_url"."&am_id=".am_id($agg)."'\"><b>Sliver Status</b></button>\n";
+print "<button onClick=\"window.location='$status_url"."&am_id=".am_id($agg)."'\"><b>Resource Status</b></button>\n";
 print "<button onClick=\"window.location='$listres_url"."&am_id=".am_id($agg)."'\"><b>Manifest</b></button>\n";
-print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "&am_id=".am_id($agg)."'\" $delete_slivers_disabled><b>Delete Slivers</b></button>\n";
+print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "&am_id=".am_id($agg)."'\" $delete_slivers_disabled><b>Delete Resources</b></button>\n";
 print "</td>\n";
 
 
