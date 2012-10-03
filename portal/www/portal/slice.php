@@ -178,6 +178,9 @@ print "</table>\n";
 /* print "<tr><td><b>Slice data</b></td><td><a href='https://gmoc-db.grnoc.iu.edu/protected-openid/index.pl?method=slice_details;slice=".$slice_urn."'>Slice $slice_name</a></td></tr>\n"; */
 /* print "</table>\n"; */
 
+
+print "<br/>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='glossary.html'>GENI Glossary</a>.<br/>";
+
 // ----
 // Now show slice / sliver status
 
@@ -292,9 +295,9 @@ print "<table>\n";
 print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
 print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
-print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize' colspan='4'>$slice_urn</td></tr>\n";
-print "<tr><td class='label'><b>Creation</b></td><td colspan='3'>$slice_creation</td></tr>\n";
-print "<tr><td class='label'><b>Description</b></td><td colspan='3'>$slice_desc ";
+print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
+print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
+print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
 echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
