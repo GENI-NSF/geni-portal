@@ -54,6 +54,17 @@ function doAuth($info, $trusted=null, $fail_cancels=false,
         $response =& $info->answer(true, null, $req_url);
 
         // Answer with some sample Simple Registration data.
+        $sreg_data = array();
+        if (array_key_exists('eppn', $_SERVER)) {
+          $sreg_data['nickname'] = $_SERVER['eppn'];
+        }
+        if (array_key_exists('mail', $_SERVER)) {
+          $sreg_data['email'] = $_SERVER['mail'];
+        }
+        if (empty($sreg_data)) {
+          error_log("OpenID: Unable to access user information.");
+        }
+        /*
         $sreg_data = array(
                            'fullname' => 'Example User',
                            'nickname' => 'example',
@@ -64,7 +75,7 @@ function doAuth($info, $trusted=null, $fail_cancels=false,
                            'country' => 'ES',
                            'language' => 'eu',
                            'timezone' => 'America/New_York');
-
+        */
         // Add the simple registration response values to the OpenID
         // response message.
         $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest(
