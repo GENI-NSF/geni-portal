@@ -224,7 +224,7 @@ function mail_account_request($member_id)
   $member_info = get_member_info($member_id);
   $member_attrs = $member_info[MA_ARGUMENT::ATTRIBUTES];
   $server_host = $_SERVER['SERVER_NAME'];
-  $body = "There is a new portal account request on $server_host:\n";
+  $body = "There is a new account registered on $server_host:\n";
   $body .= "\nmember_id: $member_id";
   foreach ($member_attrs as $attr) {
     $body .= "\n" . $attr[MA_ATTRIBUTE::NAME];
@@ -234,7 +234,7 @@ function mail_account_request($member_id)
     }
   }
   mail($portal_admin_email,
-          "New portal account request",
+          "New GENI CH account registered",
           $body);
 }
 function mail_new_project_lead($member_id)
