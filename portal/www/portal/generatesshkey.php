@@ -137,11 +137,11 @@ $result = register_ssh_key($ma_url, $user, $user->account_id, $filename, $descri
         $public_key, $private_key);
 if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
   error_log("Failed to register SSH key for account " . $user->account_id . " from file $filename: " . $result);
-  $_SESSION['lastmessage'] = "ERROR Generating SSH keypair";
+  $_SESSION['lasterror'] = "ERROR Generating SSH keypair";
   relative_redirect('profile.php');
 }
 if (True) {
-  $_SESSION['lastmessage'] = "Generated SSH keypair - now download the private key";
+  $_SESSION['lasterror'] = "Generated SSH keypair - now download the private key";
   relative_redirect('profile.php');
 } else {
   // Set headers for download
