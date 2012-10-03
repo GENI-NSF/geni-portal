@@ -46,6 +46,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 $slice_name = NULL;
 $project_id = NULL;
 $message = NULL;
+$slice_description = '';
 include("tool-lookupids.php");
 if (array_key_exists("slice_name", $_REQUEST)) {
   $slice_name = $_REQUEST['slice_name'];
@@ -61,8 +62,9 @@ if (is_null($project_id) || $project_id == '') {
 
 if (!is_null($slice_name) && ($slice_name != '') && !is_valid_slice_name($slice_name)) {
   error_log("createslice: invalid slice name from GET: " . $slice_name);
-  $_SESSION['lastmessage'] = "Invalid slice name $slice_name";
-  relative_redirect("home.php");
+  $_SESSION['lasterror'] = "Invalid slice name '$slice_name'";
+  $slice_name = NULL;
+  //  relative_redirect("home.php");
 }
 
 function sa_create_slice($user, $slice_name, $project_id, $project_name, $description='')
@@ -80,7 +82,7 @@ if ($slice_name) {
   $result = sa_create_slice($user, $slice_name, $project_id, $project_name, $slice_description);
   if (! $result) {
     error_log("Create Slice failed for slice $slice_name");
-    $_SESSION['lastmessage'] = "Slice creation failed for slice $slice_name";
+    $_SESSION['lasterror'] = "Slice creation failed for slice $slice_name";
     relative_redirecto('home.php');
   } else {
     /* $pretty_result = print_r($result, true); */
@@ -103,6 +105,7 @@ if ($message) {
   print "<i>" . $message . "</i>\n";
 }
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 print "<h2>Create New Slice</h2>\n";
 print "Create a new Slice. A GENI slice is a container for reserving GENI resources.<br/>\n";
 print '<form method="GET" action="createslice">';
@@ -117,7 +120,7 @@ print '<td><input type="text" name="slice_name"/> -- Required</td>';
 print "</tr>\n";
 print '<tr><th>Slice description</th>';
 print "\n";
-print '<td><input type="text" name="slice_description"/></td>';
+print "<td><input type='text' name='slice_description' value='$slice_description'/></td>";
 print "</tr></table>\n";
 print "<b>Note: Slice name is public</b><br/>\n";
 print '<input type="submit" value="Create slice"/>';
