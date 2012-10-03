@@ -36,7 +36,7 @@ if (array_key_exists('id', $_GET)) {
 }
 
 if (is_null($rspec_id)) {
-  $_SESSION['lastmessage'] = "RSpec delete failed: no id specified.";
+  $_SESSION['lasterror'] = "RSpec delete failed: no id specified.";
   redirect_referer('profile.php');
 }
 
@@ -45,7 +45,7 @@ $result = deleteRSpecById($rspec_id);
 if ($result) {
   $_SESSION['lastmessage'] = "Deleted RSpec.";
 } else {
-  $_SESSION['lastmessage'] = "RSpec delete failed.";
+  $_SESSION['lasterror'] = "RSpec delete failed.";
 }
 
 redirect_referer('profile.php');
