@@ -84,7 +84,7 @@ else
 Modify user supplied account details <button
 onClick="window.location='modify.php'">here</button> (e.g. to become
 a Project Lead).<br/>
-
+<a href="kmhome.php">Authorize or De-authorize</a> tools to act on your behalf.<br/>
 <h2>Outstanding Requests</h2>
 <?php
 // Show outstanding requests for this user
