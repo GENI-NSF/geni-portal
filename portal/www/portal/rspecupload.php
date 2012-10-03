@@ -108,7 +108,7 @@ geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "db_add_rspec: " . print_r($result, true
 //error_log("db_add_rspec: " . print_r($result, true));
 // FIXME: check result
 if (! $result) {
-  $_SESSION['lastmessage'] = "ERROR. Failed to upload RSpec " . $name;
+  $_SESSION['lasterror'] = "ERROR. Failed to upload RSpec " . $name;
 } else {
   $_SESSION['lastmessage'] = "Uploaded RSpec " . $name;
 }
