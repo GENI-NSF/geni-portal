@@ -1,5 +1,22 @@
-<h1> GENI Glossary</h1>
-<br><br>
+<!DOCTYPE HTML><html><head><title>GENI Portal: Help</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<link type="text/css"
+      href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css"
+      rel="Stylesheet" />
+<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>
+</head>
+
+<body>
+<div id="header"><a href="http://www.geni.net"
+		    target="_blank"><img src="/images/geni.png"
+					 width="88" height="75"
+					 alt="GENI"/></a><img src="/images/portal.png"
+							      width="205"
+							      height="72"
+							      alt="Portal"/>
+<div id="metanav" class="nav"><ul></ul></div><div id="mainnav" class="nav"><ul><li><a href="home.php">Home</a></li><li><a href="projects.php">Projects</a></li><li><a href="slices.php">Slices</a></li><li><a href="profile.php">Profile</a></li><li class="active first"><a href="help.php">Help</a></li></ul></div></div><div id="content"><a href="home.php">Home</a> -> Help<br/>
+<h2>GENI Glossary</h2>
 <ul>
 <li><b><a name="Aggregate"/>Aggregate:</b> An aggregate is a software server that provides resources to clients based on the GENI aggregate manager API. Through that API an aggregate may advertise resources of different types (computation, storage, network) and accept requests for allocating these resources for a period of time. The aggregate may provide virtual 'sliced' or non-virtual 'whole' resources to customers. An aggregate generates custom private internal network topologies per request, and participates in a process for generating cross-aggregate custom private network topologies known as stitching.</li>
 
@@ -21,3 +38,10 @@
 
 <li><b><a name="SSL_Key_and_Certificate"/>SSL Key and Certificate:</b> These are PKI (Public Key Infrastructure) materials representing a user's identity for SSL (secure sockets layer) communications such as HTTPS sessions. Specifically the AM API requires authentication by means of SSL client certificates signed by a trusted GENI root.</li>
 
+</div>
+<hr/>
+<div id="footer">
+  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="http://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo" height="25" width="25"> National Science Foundation</a></i></small>
+</div>
+</body>
+</html>
