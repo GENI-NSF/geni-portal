@@ -32,3 +32,7 @@ if (isset($_SESSION['lastmessage'])) {
   print "<p class='instruction'>" . $_SESSION['lastmessage'] . "</p><br/>\n";
   unset($_SESSION['lastmessage']);
 }
+if (isset($_SESSION['lasterror'])) {
+  print "<p class='warn'>" . $_SESSION['lasterror'] . "</p><br/>\n";
+  unset($_SESSION['lasterror']);
+}
