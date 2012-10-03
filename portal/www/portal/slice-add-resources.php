@@ -104,9 +104,9 @@ print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
 // Put up a warning to upload SSH keys, if not done yet.
 if (count($keys) == 0) {
   // No ssh keys are present.
-  print "No ssh keys have been uploaded. ";
+  print "<p class='warn'>No ssh keys have been uploaded. ";
   print ("Please <button onClick=\"window.location='uploadsshkey.php'\">"
-         . "Upload an SSH key</button> to enable logon to nodes.\n");
+         . "Upload an SSH key</button> to enable logon to nodes.</p>\n");
   print "<br/>\n";
 }
 
@@ -121,7 +121,12 @@ print '</form>';
 //print "<p>Otherwise click 'Cancel'.</p>";
 print '<br/>';
 
-print ("<button onClick=\"document.getElementById('f1').submit();\">"
+print "<p class='instruction'>This page will contact each requested
+aggregate and wait for the aggregate to begin standing up your
+resources. You may have to wait a while.</p>";
+
+print ("<button onClick=\"document.write('<p class=\"warn\">Contacting
+       aggregates. Please be patient!</p>'); document.getElementById('f1').submit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '<br/><br/>';
