@@ -88,7 +88,9 @@ include("tool-breadcrumbs.php");
 ?>
 
 <h2> Modify Account Page </h2>
-Request a modification to user supplied account properties.<br/><br/>
+Request a modification to user supplied account properties. For
+example, use this page to request to be a Project Lead (get Project
+Creation permissions).<br/><br/>
 Please keep your telephone number current. <br/>
 If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.<br/><br/>
 <form method="POST" action="do-modify.php">
