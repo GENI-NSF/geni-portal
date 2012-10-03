@@ -43,7 +43,7 @@ print "<h2>$header</h2>\n";
 // error_log('$_GET = ' . print_r($_GET, true));
 
 if (key_exists("error", $_GET)) {
-  echo "Error message:<br/>\n" . urldecode($_GET["error"]) . "<br/>\n";
+  echo "Error message:<br/>\n<p class='warn'>" . urldecode($_GET["error"]) . "</p><br/>\n";
 } else {
   // error_log('$_SERVER = ' . print_r($_SERVER, true));
   
