@@ -35,11 +35,8 @@ function show_form($error_msg)
 {
   print "<br/>\n";
   print "<b>Generate an SSH private key</b><br/>\n";
-  print "SSH keys are required to log in to many reserved compute resources.<br/><br/>\n";
-  print "On this page, you can generate a new SSH key pair. <br/>If you already have an SSH key pair ";
-  print "that you want to use, you can instead <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>.<br/>\n";
-  print "If you're not sure what to do, use this page to generate a new key pair.<br/>\n";
-  print "<br/>\n";
+  print "SSH keys are required to log in to reserved compute resources.<br/><br/>\n";
+  print "On this page, you can generate a new SSH key pair. <br/>\n";
 
   if ($error_msg) {
     print "<div id=\"error-message\""
@@ -48,22 +45,26 @@ function show_form($error_msg)
       . "</div>\n";
   }
   print "<form action=\"generatesshkey.php\" method=\"post\">\n";
-  print "Please supply a new password to protect your SSH private key (minimum 5 characters).<br/>\n";
-  print "<label for=\"password\">Password:</label>\n";
+  print "Please supply a new passphrase to protect your SSH private key (minimum 5 characters).<br/>\n";
+  print "<label for=\"password\">Passphrase:</label>\n";
   print "<input type=\"password\" name=\"password\"/><br/>\n";
-  print "<label for=\"password2\">Confirm Password:</label>\n";
+  print "<label for=\"password2\">Confirm Passphrase:</label>\n";
   print "<input type=\"password\" name=\"password2\"/>\n";
   print "<br/>\n";
   print "<input type=\"submit\" name=\"submit\" value=\"Generate SSH private key\"/>\n";
   print "</form><br/>\n";
-  print "<i>Note</i>: You will need your SSH private key on your local machine. <br/>\nAfter generating your SSH keypair, be sure to Download your SSH key. <br/>\nAfter you download your key, be sure to set local permissions on that file appropriately. On Linux and Mac, do \"chmod 0600 <i>[path-to-SSH-private-key-you-downloaded]</i>\". <br/>\nWhen you invoke SSH to log in to reserved resources, you will need to remember the path to that file. <br/>Your SSH command will be something like: \"ssh -i <i>path-to-SSH-key-you-downloaded</i> <i>[username]@[hostname]</i>\".<br/>\n";
+  print "If you already have an SSH key pair ";
+  print "that you want to use, you can instead <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>.<br/>\n";
+  print "If you're not sure what to do, use this page to generate a new key pair.<br/>\n";
+  print "<br/>\n";
+  //  print "<i>Note</i>: You will need your SSH private key on your local machine. <br/>\nAfter generating your SSH keypair, be sure to Download your SSH key. <br/>\nAfter you download your key, be sure to set local permissions on that file appropriately. On Linux and Mac, do \"chmod 0600 <i>[path-to-SSH-private-key-you-downloaded]</i>\". <br/>\nWhen you invoke SSH to log in to reserved resources, you will need to remember the path to that file. <br/>Your SSH command will be something like: \"ssh -i <i>path-to-SSH-key-you-downloaded</i> <i>[username]@[hostname]</i>\".<br/>\n";
 }
 
 function validate_password($password, &$error_msg)
 {
   $min_length = 5;
   if (strlen($password) < $min_length) {
-    $error_msg = "Invalid password: must be at least $min_length characters.";
+    $error_msg = "Invalid passphrase: must be at least $min_length characters.";
     return False;
   }
   return True;
@@ -89,7 +90,7 @@ if ($password != "" && validate_password($password, $error_msg)) {
   if ($password == $password2) {
     $show_form = False;
   } else {
-    $error_msg = "Password entries don't match.";
+    $error_msg = "Passphrase entries don't match.";
   }
 }
 
