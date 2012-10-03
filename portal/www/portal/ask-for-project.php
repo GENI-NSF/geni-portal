@@ -84,8 +84,9 @@ For more info on GENI, see: http://www.geni.net
 
 To create a project for me in GENI, you first go to the GENI Portal: https://$hostname
 You log in with your home university or college username, or request a GENI-specific account.
-Then you need to wait for your GENI account to be approved, if you don't have one yet.
-You'll get email when your GENI account is approved, and you can go back to the GENI portal to log in.
+Then you need to wait for your GENI account to be approved to create
+projects, if you don't have that permission yet.
+You'll get email when your GENI account is approved to create projects, and you can go back to the GENI portal to log in.
 
 Once you are logged in to the GENI portal, click 'Create Project' to create a new project. 
 (https://$hostname/secure/edit-project.php)
@@ -168,8 +169,9 @@ For more info on GENI, see: http://www.geni.net<br/>
 <br/>
 To create a project for me in GENI, you first go to the GENI Portal: https://$hostname<br/>
 You log in with your home university or college username, or request a GENI-specific account.<br/>
-Then you need to wait for your GENI account to be approved, if you don't have one yet.<br/>
-You'll get email when your GENI account is approved, and you can go back to the GENI portal to log in.<br/>
+Then you need to wait for your GENI account to be approved to create
+projects, if you don't have that permission yet.<br/>
+You'll get email when your GENI account is approved to create projects, and you can go back to the GENI portal to log in.<br/>
 <br/>
 Once you are logged in to the GENI portal, click 'Create Project' to create a new project. <br/>
 (https://$hostname/secure/edit-project.php)<br/>
