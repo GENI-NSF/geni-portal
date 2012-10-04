@@ -73,16 +73,19 @@ show_header("Troubleshooting logging into GENI")
 <h1> Logging into GENI </h1>
 
 <p> 
-GENI supports single sign on login via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
+GENI is freely available for research and educational purposes. To get
+started, simply log in and activate your account.<br/>
+
+GENI allows users to log in using their existing accounts via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
 <ul>
   <li>If you are affiliated with a US college or university that is a
   <a
   href="http://www.incommon.org/federation/info/all-entities.html">member
-  of the InCommon federation</a>, <a href="secure/home.php">login</a>
-  using your InCommon single sign on username and password to activate
+  of the InCommon federation</a>, simply login
+  using your usual username and password to activate
   your GENI account.
   </li><li>If you are not affiliated with an InCommon federated
-  institution, <a href="mailto:help@geni.net">request a GENI-only login</a>.</li>
+  institution, you may <a href="mailto:help@geni.net">request a GENI-only login</a>.</li>
 </ul>
 </p>
 
@@ -98,12 +101,12 @@ GENI supports single sign on login via our partnership in the <a href="http://ww
 <h2 id='requestGENIAccount''>If you are a member of an InCommon federated institution...</h2>
 <ul>
 <li>
-<b>... and you don't have a Single Sign On login through InCommon</b>, contact your local IT department or computer help desk to inquire about getting a login.
-</li><li>
-<b>... and you have a Single Sign On login through InCommon, but can't log in</b>. Your login and password are managed at your local instition.  Contact your local IT department or computer help desk for assistance.
+<b>... and you don't have an account at your home institution</b>, contact your local IT department or computer help desk to inquire about getting a login.
+</li>
+<li>
+<b>... and you have an account, but can't log in</b>. Your login and password are managed at your local instition.  Contact your local IT department or computer help desk for assistance.
 </li>
 </ul>
-
 
 
 <h2>If you are NOT a member of an InCommon federated institution...</h2>
