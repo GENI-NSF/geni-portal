@@ -47,15 +47,16 @@ function show_header($title)
   echo '</div>';
 
   echo '<div id="welcome">';
-  echo '<h1> Welcome to the GENI Portal </h1>';
+  echo '<h1> Welcome to GENI </h1>';
   echo '<div id="desc">';
-  echo 'The GENI Portal is the main interface to <a href="http://www.geni.net">GENI</a>, an <a href="http://www.nsf.gov/">NSF</a> funded virtual testbed supporting computer networking research.';
+  echo '<a href="http://www.geni.net">GENI</a> is a <a
+  href="http://www.nsf.gov/">National Science Foundation</a> funded freely available virtual testbed supporting computer networking and science research and education.';
   echo '</div>';
   echo '</div>';
 
-  echo '<div id="loginHelpdiv">';
-  echo '<a id ="loginHelp" href="login-help.php">Get Help</a>';
-  echo '</div>';
+  //  echo '<div id="loginHelpdiv">';
+  //  echo '<a id ="loginHelp" href="login-help.php">Get Help</a>';
+  //  echo '</div>';
 
   echo '</div>';
 
@@ -64,7 +65,7 @@ function show_header($title)
   echo '<div id="landingcontent" class="landingpage">';
 }
 
-show_header("Welcome to the GENI Portal")
+show_header("Welcome to GENI")
 ?>
 <div id='blank'>
 
@@ -77,20 +78,6 @@ show_header("Welcome to the GENI Portal")
   <a href='secure/home.php'>
     <img id='usegeni' src="/images/UseGENI.png" alt="Use GENI"/>
   </a>
-
-
-  <h1>InCommon Affiliation</h1>
-<p>
-If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">login</a> using your InCommon Single Sign On username and password and register for a GENI account.
-</p>
-
-<p>
-Not sure you're affiliated? <a href="http://www.incommon.org/federation/info/all-entities.html">Find Your Organization</a>
-</p>
-
-<p>
-Not affiliated? <a href="mailto:help@geni.net">Request a Single Sign On Login</a>
-</p>
 
 
 <!-- 
@@ -134,7 +121,10 @@ Not affiliated? <a href="mailto:help@geni.net">Request a Single Sign On Login</a
 <hr/>
 
 <div id="footer" class="landingpage">
-  <small><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></small>
+  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the
+  <a href="http://www.nsf.gov/"><img
+  src="http://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo"
+  height="25" width="25"> National Science Foundation</a></i></small>
 </div>
 
 </body>
