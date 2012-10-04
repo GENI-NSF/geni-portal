@@ -47,9 +47,10 @@ function show_header($title)
   echo '</div>';
 
   echo '<div id="welcome">';
-  echo '<h1> Welcome to the GENI Portal </h1>';
+  echo '<h1> Welcome to GENI </h1>';
   echo '<div id="desc">';
-  echo 'The GENI Portal is the main interface to <a href="http://www.geni.net">GENI</a>, an <a href="http://www.nsf.gov/">NSF</a> funded virtual testbed supporting computer networking research.';
+  echo '<a href="http://www.geni.net">GENI</a> is a <a
+  href="http://www.nsf.gov/">National Science Foundation</a> funded freely available virtual testbed supporting computer networking and science research and education.';
   echo '</div>';
   echo '</div>';
 
@@ -66,20 +67,26 @@ function show_header($title)
   echo '<div id="content"  class="landingpage">';
 }
 
-show_header("Troubleshooting logging into the GENI Portal")
+show_header("Troubleshooting logging into GENI")
 ?>
 
-<h1> Logging into the GENI Portal </h1>
+<h1> Logging into GENI </h1>
 
 <p> 
-The GENI Portal supports single sign on login via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
+GENI supports single sign on login via our partnership in the <a href="http://www.incommonfederation.org">InCommon</a> federation. 
 <ul>
-  <li>If you are affiliated with a US college or university that is a <a href="http://www.incommon.org/federation/info/all-entities.html">member of the InCommon federation</a>, <a href="secure/home.php">login</a> using your InCommon single sign on username and password and register for a GENI account.
-  </li><li>If you are not affiliated with an InCommon federated institution, <a href="mailto:help@geni.net">request a single sign on login for the GENI Portal</a>.</li>
+  <li>If you are affiliated with a US college or university that is a
+  <a
+  href="http://www.incommon.org/federation/info/all-entities.html">member
+  of the InCommon federation</a>, <a href="secure/home.php">login</a>
+  using your InCommon single sign on username and password to activate
+  your GENI account.
+  </li><li>If you are not affiliated with an InCommon federated
+  institution, <a href="mailto:help@geni.net">request a GENI-only login</a>.</li>
 </ul>
 </p>
 
-<h1> Troubleshooting logging into the GENI Portal </h1>
+<h1> Troubleshooting logging into GENI </h1>
 <h2>If you don't know if you are a member of an InCommon federated institution...</h2>
 <ul>
 <li>
@@ -103,7 +110,8 @@ The GENI Portal supports single sign on login via our partnership in the <a href
 
 <ul>
 <li>
-<b>... and don't have a login or can't login</b>, contact <a href="mailto:help@geni.net">GENI help</a> and request a  Single Sign On login to the GENI portal. 
+<b>... and don't have a login or can't login</b>, contact <a
+href="mailto:help@geni.net">GENI help</a> and request a GENI-only login. 
 </li>
 </ul>
 
@@ -118,7 +126,10 @@ The GENI Portal supports single sign on login via our partnership in the <a href
 </div>
 <hr/>
 <div id="footer"  class="landingpage">
-  <small><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/">NSF</a></small>
+  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the
+  <a href="http://www.nsf.gov/"><img
+  src="http://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo"
+  height="25" width="25"> National Science Foundation</a></i></small>
 </div>
 </body>
 </html>
