@@ -106,7 +106,9 @@ if (count($keys) == 0) {
   // No ssh keys are present.
   print "<p class='warn'>No ssh keys have been uploaded. ";
   print ("Please <button onClick=\"window.location='uploadsshkey.php'\">"
-         . "Upload an SSH key</button> to enable logon to nodes.</p>\n");
+         . "Upload an SSH key</button> or <button " .
+	 "onClick=\"window.location='generatesshkey.php'\">Generate and "
+	 . "Download an SSH keypair</button> to enable logon to nodes.</p>\n");
   print "<br/>\n";
 }
 
