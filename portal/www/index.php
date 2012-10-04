@@ -67,12 +67,6 @@ function show_header($title)
 
 show_header("Welcome to GENI")
 ?>
-<div id='blank'>
-
-<img id="incommon-logo" src="common/InC_Participant.png"/>
-
-
-</div>
 <div id='main'>
 
   <a href='secure/home.php'>
