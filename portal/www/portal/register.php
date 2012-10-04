@@ -60,10 +60,15 @@ function shib_input($shib_name, $pretty_name)
 <br/>
 <b>Note</b>: By registering on this page, you agree to:<br/>
 <ul>
+  <li><a href="http://groups.geni.net/geni/attachment/wiki/RUP/RUP.pdf">GENI resource Recommended Use Policy</a>: GENI participants must follow these guidelines in using resources.</li>
+   <li>Ethics: Be respectful of other GENI experimenters - these are shared resources.</li>
+   <li>Privacy: Some personal information, including that provided from InCommon, may be shared among GENI operators.</li>
+   <li>Citations: Please cite GENI in all research that uses GENI.</li>
+<!-- FIXME: Get the right list here!
   <li><a href="">GENI Code of Ethics</a>: Be nice!</li>
   <li><a href="">GENI Privacy Policy</a>: We may use and share your InCommon attributes among GENI operators...</li>
   <li><a href="">GENI Citation Policy</a>: In particular, cite the GENI paper in all research that uses GENI.</li>
-<!-- FIXME: Get the right list here! -->
+-->
 </ul>
 <br/>
 
