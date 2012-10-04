@@ -196,7 +196,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   show_tab_bar($active_tab, $load_user);
   echo '</div>';
   echo '<div id="content">';
-  show_starter_status_bar($load_user);
+  //  show_starter_status_bar($load_user);
 }
 
 ?>
