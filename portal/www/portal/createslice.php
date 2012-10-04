@@ -107,7 +107,8 @@ if ($message) {
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 print "<h2>Create New Slice</h2>\n";
-print "Create a new Slice. A GENI slice is a container for reserving GENI resources.<br/>\n";
+print "Create a new Slice. A GENI slice is a container for reserving
+and managing a set of GENI resources.<br/>\n";
 print '<form method="GET" action="createslice">';
 print "\n";
 print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
