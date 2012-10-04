@@ -100,6 +100,7 @@ if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $
   error_log("Failed to create account for $attrs: $result");
   relative_redirect('error-text.php' . "?error=" . urlencode($result[RESPONSE_ARGUMENT::OUTPUT]));
 }
+$member_id = $result;
 
 function derive_username() {
   // See http://www.linuxjournal.com/article/9585
@@ -285,7 +286,33 @@ if (PEAR::isError($result)) {
 
 // if portal=portal:
 if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
-  relative_redirect('home.php');
+  require_once("km_utils.php");
+  // get portal tool URN
+  $portal_urn = ''; // FIXMEFIXME
+  $candidate_tools = ma_list_clients($ma_url, $km_signer);
+  foreach($candidate_tools as $toolname => $toolurn) {
+    if ($toolname == 'portal') {
+      $portal_urn = $toolurn;
+      break;
+    }
+  }
+  if ($portal_urn == '') {
+    error_log("KM: Error authorizing portal for $username: Couldn't find portal in list of KM clients");
+    $_SESSION['lastmessage'] = 'Your GENI account is active.';
+    $_SESSION['lasterror'] = 'GENI Portal not authorized: Could not find portal in list of available clients';
+    relative_redirect('kmhome.php');
+  }
+  $result = ma_authorize_client($ma_url, $km_signer, $member_id, $portal_urn, 'true');
+  //  error_log("auth res = " . print_r($result, true));
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
+    relative_redirect('home.php');
+  } else {
+    $auth_error = $result[RESPONSE_ARGUMENT::OUTPUT];
+    error_log("KM: Error authorizing portal for $username: " . $auth_error);
+    $_SESSION['lastmessage'] = 'Your GENI account is active.';
+    $_SESSION['lasterror'] = 'GENI Portal not authorized: error authorizing: $auth_error';
+    relative_redirect('kmhome.php');
+  }
 } else {
   // portal not authorized
   $_SESSION['lastmessage'] = 'Your GENI account is active.';
