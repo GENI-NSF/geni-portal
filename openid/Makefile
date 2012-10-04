@@ -17,8 +17,7 @@ default:
 
 install:
 	$(INSTALL) -d $(SHARE) $(ETC)
-	cp -a server-direct $(SHARE)
-	cp -a server-indirect $(SHARE)
+	cp -a src $(SHARE)
 	cp -a Auth $(SHARE)
 	cp -a doc/* $(SHARE)
 	cp -a etc/* $(ETC)
