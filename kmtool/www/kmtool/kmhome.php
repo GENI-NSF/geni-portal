@@ -118,13 +118,14 @@ if (isset($member_id)) {
 
 include('kmheader.php');
 print "<h2>GENI Key Management Tool</h2><br>\n";
+include("tool-showmessage.php");
 
 print "This tool manages what clients can act on your behalf when " .
 "working with the GENI Clearinghouse. If you authorize a tool, you " .
 "are responsible for what it does on your behalf.<br><br>";
 
 if (! isset($member_id)) {
-  print "You must first request a GENI account <a href=\"home.php\">here</a>.<br\>\n";
+  print "You must first activate your GENI account <a href=\"kmactivate.php\">here</a>.<br\>\n";
   include("footer.php");
   return;
 }
