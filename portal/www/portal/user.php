@@ -313,8 +313,8 @@ function geni_loadUser_legacy($id='')
 
   $rownum = -1;
   if ($row_count == 0) {
-    // New identity, go to registration page
-    relative_redirect("register.php");
+    // New identity, go to activation page
+    relative_redirect("kmactivate.php");
   } else if ($row_count > 1) {
     if ($id != '') {
       // An account ID was selected. Which identity do we use?
@@ -382,8 +382,8 @@ function geni_load_user_by_eppn($eppn)
   $count = count($ma_members);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found " . $count . " members.");
   if ($count == 0) {
-    // New identity, go to registration page
-    relative_redirect("register.php");
+    // New identity, go to activation page
+    relative_redirect("kmactivate.php");
   } else if ($count > 1) {
     // ERROR: multiple users under unique key
   }

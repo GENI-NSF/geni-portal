@@ -27,6 +27,11 @@ require_once 'sr_client.php';
 require_once 'ma_client.php';
 require_once 'portal.php';
 
+$redirect_address = "";
+
+if(array_key_exists('HTTP_REFERER', $_SERVER)) {
+  $redirect_address = $_SERVER['HTTP_REFERER'];
+}
 // Avoid double registration by checking if this is a valid
 // user before displaying the page. If this user is already
 // registered, redirect to the home page.
@@ -36,29 +41,22 @@ $attrs = array('eppn' => $eppn);
 $ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
 $count = count($ma_members);
 if ($count !== 0) {
-  // New identity, go to registration page
-    relative_redirect("home.php");
-}
-
-include("header.php");
-show_header('GENI Portal Home', $TAB_HOME, 0); // 0=Don't load user to show header
-
-// Local functions
-function shib_input($shib_name, $pretty_name)
-{
-  print $pretty_name . ": ";
-  print "<input type=\"text\" name=\"$shib_name\"";
-  if (array_key_exists($shib_name, $_SERVER)) {
-    $value = $_SERVER[$shib_name];
-    echo "value=\"$value\" disabled=\"yes\"";
+  // Existing account, go to home page or to referer
+  if ($redirect_address != '') {
+    relative_redirect($redirect_address);
+  } else {
+    relative_redirect("kmhome.php");
   }
-  print "/><br/>\n";
 }
+
+include("kmheader.php");
+print "<h2> GENI Account Activation Page </h2>\n";
+include("tool-showmessage.php");
 ?>
 
-<h2> Registration Page </h2>
 <br/>
-<b>Note</b>: By registering on this page, you agree to:<br/>
+In order to activate your GENI account, you must first agree to GENI
+policies:<br/>
 <ul>
   <li><a href="http://groups.geni.net/geni/attachment/wiki/RUP/RUP.pdf">GENI resource Recommended Use Policy</a>: GENI participants must follow these guidelines in using resources.</li>
    <li>Ethics: Be respectful of other GENI experimenters - these are shared resources.</li>
@@ -71,22 +69,16 @@ function shib_input($shib_name, $pretty_name)
 -->
 </ul>
 <br/>
-
-Please provide your current telephone number, for use in emergencies. <br/>
-Other optional attributes are used by GENI operations staff to identify you and determine what GENI permissions you will be granted.<br/>
-
 <form method="POST" action="do-register.php">
-<?php
-  shib_input('givenName', 'First name');
-  shib_input('sn', 'Last name');
-  shib_input('mail', 'EMail');
-  shib_input('telephoneNumber', 'Telephone');
-  shib_input('reference', 'Optional: Reference Contact (e.g. Advisor)');
-  shib_input('reason', 'Optional: Intended use of GENI, explanation of request, or other comments');
-  shib_input('profile', 'Optional: URL of your profile page for more information (not GENI public)');
-?>
+<input type="checkbox" name="agree" value="agree">I agree to the GENI policies.<br/>
+<br>
+GENI tools can ease interaction with the GENI Clearinghouse and
+   resource providers. The GENI Portal is one such tool, and
+   recommended for most GENI users. <br/>
+If you authorize a tool, you are responsible for what it does on your behalf.<br/><br/>
+<input type="checkbox" name="portal" value="portal" checked="checked">I authorize the GENI Portal to act on my behalf in GENI.<br/>
 <br/>
-<input type="submit" value="Register"/>
+<input type="submit" value="Activate"/>
 </form>
 <?php
 include("footer.php");

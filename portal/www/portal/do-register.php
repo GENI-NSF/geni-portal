@@ -64,21 +64,28 @@ function attrValue($attr, &$value, &$self_asserted) {
 $sr_url = get_sr_url();
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
+// If not agree=agree, do nothing
+if (! array_key_exists('agree', $_POST) or $_POST['agree'] !== 'agree') {
+  $_SESSION['lasterror'] = "You must agree to GENI policies in order to use GENI.";
+  relative_redirect('kmactivate.php');
+}
+
 attrValue('givenName', $first_name, $first_name_self_asserted);
 attrValue('sn', $last_name, $larst_name_self_asserted);
 attrValue('mail', $email_address, $email_address_self_asserted);
-attrValue('telephoneNumber', $telephone_number, $telephone_number_self_asserted);
+//attrValue('telephoneNumber', $telephone_number, $telephone_number_self_asserted);
 $attrs = array();
 $sa_attrs = array();
 $all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
         'sn' => MA_ATTRIBUTE_NAME::LAST_NAME,
         'mail' => MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
-        'telephoneNumber' => MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER,
+		   //        'telephoneNumber' => MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER,
         'affiliation' => 'affiliation',
-        'eppn' => 'eppn',
-        'reference' => 'reference',
-        'reason' => 'reason',
-        'profile' => 'profile');
+        'eppn' => 'eppn'
+		   //        'reference' => 'reference',
+		   //        'reason' => 'reason',
+		   //        'profile' => 'profile'
+		   );
 foreach (array_keys($all_attrs) as $attr_name) {
   if (attrValue($attr_name, $value, $self_asserted)) {
     if ($self_asserted) {
@@ -209,7 +216,8 @@ $identity_id = $rows[0]['identity_id'];
 // Add extra attributes
 //--------------------------------------------------
 
-$attrs = array('givenName','sn', 'mail','telephoneNumber', 'reference', 'reason', 'profile');
+//$attrs = array('givenName','sn', 'mail','telephoneNumber', 'reference', 'reason', 'profile');
+$attrs = array('givenName','sn', 'mail');
 // FIXME: Use filters to sanitize these
 foreach ($attrs as $attr) {
   if (attrValue($attr, $value, $self_asserted)) {
@@ -275,7 +283,15 @@ if (PEAR::isError($result)) {
   die("error on abac insert: " . $result->getMessage());
 }
 
-relative_redirect('home.php');
+// if portal=portal:
+if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
+  relative_redirect('home.php');
+} else {
+  // portal not authorized
+  $_SESSION['lastmessage'] = 'Your GENI account is active.';
+  $_SESSION['lasterror'] = 'GENI Portal not authorized.';
+  relative_redirect('kmhome.php');
+}
 
 /* <?php */
 /* include("header.php"); */
