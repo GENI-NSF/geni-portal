@@ -2,7 +2,7 @@
 /**
  * Set any extra include paths needed to use the library
  */
-set_include_path(get_include_path() . PATH_SEPARATOR . "/home/tmitchel/openid/php-openid/");
+//set_include_path(get_include_path() . PATH_SEPARATOR . "/extra/include/path/");
 
 /**
  * The URL for the server.
@@ -13,7 +13,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . "/home/tmitchel/openid/ph
  *
  * This must be a full URL.
  */
-$server_url = "http://dagoola.gpolab.bbn.com:443/server/server.php";
+$server_url = "https://dagoola.gpolab.bbn.com/server/server.php";
 
 /**
  * Initialize an OpenID store

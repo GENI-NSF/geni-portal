@@ -40,8 +40,11 @@ function action_default()
 
     if (in_array($request->mode,
                  array('checkid_immediate', 'checkid_setup'))) {
-	header('Location: https://dagoola.gpolab.bbn.com/secure/openid/server.php',
-               true, 307);
+      // Redirect to indirect server here with a 307 code to redirect
+      // the POST to the new location. Normal redirect (without 307)
+      // causes a GET instead of a POST
+      global $indirect_server_url;
+      header('Location: ' . $indirect_server_url, true, 307);
 	exit;
         if ($request->idSelect()) {
             // Perform IDP-driven identifier selection

@@ -13,7 +13,10 @@
  *
  * This must be a full URL.
  */
-$server_url = "http://dagoola.gpolab.bbn.com:443/server/server.php";
+$server_url = "https://dagoola.gpolab.bbn.com/server/server.php";
+
+$indirect_server_url = "https://dagoola.gpolab.bbn.com/secure/openid/server.php";
+
 
 /**
  * Initialize an OpenID store

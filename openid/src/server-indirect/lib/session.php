@@ -82,9 +82,12 @@ function getServer()
 {
     static $server = null;
     if (!isset($server)) {
-        $server =& new Auth_OpenID_Server(getOpenIDStore(),
-"https://dagoola.gpolab.bbn.com/server/server.php");
-                                          //buildURL());
+      //$server =& new Auth_OpenID_Server(getOpenIDStore(),
+      //                                  buildURL());
+      global $server_url;
+      error_log("getServer server_url = $server_url");
+      $server =& new Auth_OpenID_Server(getOpenIDStore(),
+                                        $server_url);
     }
     return $server;
 }
@@ -158,7 +161,9 @@ function getSreg($identity)
 function idURL($identity)
 {
     //return buildURL('idpage') . "?user=" . $identity;
-    return 'https://dagoola.gpolab.bbn.com/server/server.php/idpage?user=' . $identity;
+  global $server_url;
+  error_log("idURL server_url = $server_url");
+  return $server_url . "/idpage" . "?user=" . $identity;
 }
 
 function idFromURL($url)
