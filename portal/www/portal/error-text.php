@@ -31,7 +31,7 @@ $referer = "";
 if (key_exists($referer_key, $_SERVER)) {
   $referer = $_SERVER[$referer_key];
 }
-if (strpos($referer, 'register') !== false) {
+if (strpos($referer, 'register') !== false or strpos($referer, 'activate') !== false) {
   show_header('GENI Portal: Home',  $TAB_SLICES, 0);
 } else {
   show_header('GENI Portal: Home',  $TAB_SLICES);
