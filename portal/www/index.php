@@ -101,6 +101,8 @@ show_header("Welcome to GENI")
 </li><li>
   <a href="http://groups.geni.net/geni/wiki/UnderstandingGENI">Understanding GENI</a> (includes a list of available resources)
 </li><li>
+  <a href="http://groups.geni.net/geni/wiki/GENIBibliography">GENI based research</a>
+</li><li>
   See where GENI resources are located using <a href="http://protogeni.net/flack">Flack</a>, a graphical GENI resource reservation tool
 </li><li>
   Get <a href="mailto:help@geni.net">help</a> using GENI
