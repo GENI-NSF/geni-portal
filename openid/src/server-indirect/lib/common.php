@@ -54,12 +54,16 @@ function doAuth($info, $trusted=null, $fail_cancels=false,
         $response =& $info->answer(true, null, $req_url);
 
         // Answer with some sample Simple Registration data.
+        global $portal_cert_file;
+        global $portal_private_key_file;
+        require_once "settings.php";
+        error_log("openid-indirect: portal cert file is $portal_cert_file");
+        require_once "user.php";
+        $geni_user = geni_loadUser();
         $sreg_data = array();
-        if (array_key_exists('eppn', $_SERVER)) {
-          $sreg_data['nickname'] = $_SERVER['eppn'];
-        }
-        if (array_key_exists('mail', $_SERVER)) {
-          $sreg_data['email'] = $_SERVER['mail'];
+        if ($geni_user) {
+          $sreg_data['nickname'] = $geni_user->username;
+          $sreg_data['email'] = $geni_user->email();
         }
         if (empty($sreg_data)) {
           error_log("OpenID: Unable to access user information.");
