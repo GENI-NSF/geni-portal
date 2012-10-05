@@ -49,8 +49,10 @@ function show_header($title)
   echo '<div id="welcome">';
   echo '<h1> Welcome to GENI </h1>';
   echo '<div id="desc">';
-  echo '<a href="http://www.geni.net">GENI</a> is a <a
-  href="http://www.nsf.gov/">National Science Foundation</a> funded freely available virtual testbed supporting computer networking and science research and education.';
+  echo '<a href="http://www.geni.net">GENI</a> is a new, nationwide suite of infrastructure supporting ';
+  echo '"at scale" research in networking, distributed systems, security, and novel applications. ';
+  echo 'It is supported by the <a href="http://www.nsf.gov/">National Science Foundation</a>, ';
+  echo 'and available without charge for research and classroom use.';
   echo '</div>';
   echo '</div>';
 
@@ -67,6 +69,8 @@ function show_header($title)
 
 show_header("Welcome to GENI")
 ?>
+<div id='blank'>&nbsp;
+</div>
 <div id='main'>
 
   <a href='secure/home.php'>
@@ -91,13 +95,10 @@ show_header("Welcome to GENI")
 
 <h2>Find out more about using GENI</h2>
 <ul><li>
-   <a href="http://groups.geni.net/geni/wiki/GENIExperimenterWelcome">Information for GENI experimenters</a>
+   <a href="http://www.geni.net/experiment">Information for GENI experimenters</a>
 </li><li>
-  <a href="http://groups.geni.net/geni/wiki/UnderstandingGENI">Understanding GENI</a> (includes a list of available resources)
-</li><li>
-  <a href="http://groups.geni.net/geni/wiki/GENIBibliography">GENI based research</a>
-</li><li>
-  See where GENI resources are located using <a href="http://protogeni.net/flack">Flack</a>, a graphical GENI resource reservation tool
+  <a
+  href="http://groups.geni.net/geni/wiki/GENIBibliography">Published research that used GENI resources</a>
 </li><li>
   Get <a href="mailto:help@geni.net">help</a> using GENI
 </li>
