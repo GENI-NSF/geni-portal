@@ -30,7 +30,6 @@ require_once("pa_constants.php");
 require_once('rq_client.php');
 require_once("sa_client.php");
 require_once("cs_client.php");
-require_once('tool-projects.php');
 
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
