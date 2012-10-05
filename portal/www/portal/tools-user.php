@@ -135,7 +135,6 @@ if (isset($reqs) && count($reqs) > 0) {
   print "<i>No outstanding requests to join projects or slices or change your profile.</i><br/>\n";
 }
 
-print "<br/>\n";
 print "<h2>Account Summary</h2>\n";
 // Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
 // Put this in a nice table
