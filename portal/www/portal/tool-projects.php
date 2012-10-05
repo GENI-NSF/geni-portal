@@ -62,13 +62,16 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
 } else {
   if ($num_projects==0) {
     print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/><br/>";
+    print "You can now participate in GENI research, by joining a 'Project'.<br/>";
     print "Note that your account is not a 'Project Lead' account, 
      meaning you must join a project created by someone else, 
      before you can create slices or use GENI resources.<br/><br/>";
     print "A project is a group of people and their research, led by a
     single responsible individual - the project lead. See the <a href=\"glossary.html\">Glossary</a>.</p>\n";
     print "<p class='warn'>";
-    print "You are not a member of any projects. Please Join an existing Project.</p>";
+    print "You are not a member of any projects. Please join an
+       existing Project, ask someone to create a Project for you, or request
+       to be a Project Lead.</p>";
   }
   print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<button onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
