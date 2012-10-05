@@ -72,10 +72,8 @@ policies:<br/>
 <form method="POST" action="do-register.php">
 <input type="checkbox" name="agree" value="agree">I agree to the GENI policies.<br/>
 <br>
-GENI tools can ease interaction with the GENI Clearinghouse and
-   resource providers. The GENI Portal is one such tool, and
-   recommended for most GENI users. <br/>
-If you authorize a tool, you are responsible for what it does on your behalf.<br/><br/>
+If authorized to do so, the GENI portal can help you reserve and
+manage GENI resources, and is recommended for most GENI users.<br/><br/>
 <input type="checkbox" name="portal" value="portal" checked="checked">I authorize the GENI Portal to act on my behalf in GENI.<br/>
 <br/>
 <input type="submit" value="Activate"/>
