@@ -179,6 +179,9 @@ foreach($candidate_tools as $toolname => $toolurn) {
 print("</table>");
 print("<br>\n");
 
+if (count($authorized_tools_for_user) == 0) {
+  print "No tools are authorized. You must authorize a tool to use your GENI account.<br/><br/>\n";
+}
 
 // Include this only if the redirect address is a web address
 if (! empty($redirect_address)) {
