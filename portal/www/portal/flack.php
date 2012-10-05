@@ -67,7 +67,7 @@ if (count($keys) == 0) {
   relative_redirect("error-text.php?error=" . urlencode("No SSH keys " .
 	"have been uploaded. Please <a href='uploadsshkey.php'>" .
         "Upload an SSH key</a> or <a href='generatesshkey.php'>Generate and Download an " .
-        "SSH keypair</a> to enable logon to nodes."));
+        "SSH keypair</a> to enable access to nodes."));
 }
 
 print generate_flack_page($slice_urn);
