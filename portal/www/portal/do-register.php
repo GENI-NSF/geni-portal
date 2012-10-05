@@ -284,7 +284,9 @@ if (PEAR::isError($result)) {
   die("error on abac insert: " . $result->getMessage());
 }
 
-// if portal=portal:
+// if portal=portal, then authorize the portal.
+// FIXME: Really this should be in a util in the km area for code
+// cleanliness. Minor point though.
 if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
   require_once("km_utils.php");
   // get portal tool URN
