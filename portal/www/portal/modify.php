@@ -82,8 +82,14 @@ foreach ($rows as $row) {
   }
 }
 
+$is_pi = false;
+if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
+  $is_pi = true;
+}
+
 show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 ?>
 
@@ -91,7 +97,8 @@ include("tool-breadcrumbs.php");
 Request a modification to user supplied account properties. For
 example, use this page to request to be a Project Lead (get Project
 Creation permissions).<br/><br/>
-Please keep your telephone number current. <br/>
+Please provide a current telephone number. GENI operations staff will
+use it only in an emergency, such as if a resource owned by you is severely mis-behaving.. <br/>
 If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.<br/><br/>
 <form method="POST" action="do-modify.php">
 <?php
@@ -119,6 +126,16 @@ foreach (array_keys($shib_fields) as $fieldkey) {
     }
   }
 ?>
+<br/>
+<input type="checkbox" name="projectlead" value="projectlead"
+<?php
+    if ($is_pi) {
+      print "checked='checked'>I want to remain ";
+    } else {
+      print ">Make me ";
+    }
+?>
+a 'Project Lead' who can create projects.<br/>
 <br/>
 <input type="submit" value="Modify Account"/>
 <input type="button" value="Cancel" onclick="history.back(-1)"/>
