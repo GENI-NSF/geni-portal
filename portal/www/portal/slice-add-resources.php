@@ -123,12 +123,12 @@ print '</form>';
 //print "<p>Otherwise click 'Cancel'.</p>";
 print '<br/>';
 
-print "<p class='instruction'>This page will contact each requested
-aggregate and wait for the aggregate to begin standing up your
-resources. You may have to wait a while.</p>\n";
+print "<p class='instruction'>This page will contact the requested
+aggregate and wait for the aggregate to respond. This may take
+awhile. Please be patient.</p>\n";
 
 print ("<button onClick=\"");
-print ("alert('Please be patient!'); ");
+//print ("alert('Please be patient!'); ");
 //print ("document.write('<p class=");
 //print ('\"warn\"');
 //print (">Contacting aggregates. Please be patient!</p>'); ");
