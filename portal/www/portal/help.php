@@ -39,6 +39,7 @@ include("tool-breadcrumbs.php");
 <li><a href="http://groups.geni.net/geni/wiki">GENI Wiki</a> -- GENI documentation</li>
 <li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Meta-Operations Center (GMOC)</a> -- Create and search trouble tickets.  Calendar of planned and unplanned outages.</li>
 <li><a href="glossary.html">GENI Glossary</li>
+<li><a href="mailto:portal-help@geni.net">Email Portal Help</a></li>
 </ul>
 <?php
 include("footer.php");
