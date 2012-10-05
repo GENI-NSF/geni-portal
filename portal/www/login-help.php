@@ -49,8 +49,10 @@ function show_header($title)
   echo '<div id="welcome">';
   echo '<h1> Welcome to GENI </h1>';
   echo '<div id="desc">';
-  echo '<a href="http://www.geni.net">GENI</a> is a <a
-  href="http://www.nsf.gov/">National Science Foundation</a> funded freely available virtual testbed supporting computer networking and science research and education.';
+  echo '<a href="http://www.geni.net">GENI</a> is a new, nationwide suite of infrastructure supporting ';
+  echo '"at scale" research in networking, distributed systems, security, and novel applications. ';
+  echo 'It is supported by the <a href="http://www.nsf.gov/">National Science Foundation</a>, ';
+  echo 'and available without charge for research and classroom use.';
   echo '</div>';
   echo '</div>';
 
@@ -85,7 +87,7 @@ GENI allows users to log in using their existing accounts via our partnership in
   using your usual username and password to activate
   your GENI account.
   </li><li>If you are not affiliated with an InCommon federated
-  institution, you may <a href="mailto:help@geni.net">request a GENI-only login</a>.</li>
+  institution, you may <a href="mailto:portal-help@geni.net">request a GENI-only login</a>.</li>
 </ul>
 </p>
 
@@ -114,7 +116,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 <ul>
 <li>
 <b>... and don't have a login or can't login</b>, contact <a
-href="mailto:help@geni.net">GENI help</a> and request a GENI-only login. 
+href="mailto:portal-help@geni.net">GENI help</a> and request a GENI-only login. 
 </li>
 </ul>
 
