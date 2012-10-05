@@ -80,8 +80,7 @@ else
 ?>
 
 <h2>Edit Account Details</h2>
-Modify user supplied account details <button
-onClick="window.location='modify.php'">here</button> (e.g. to become
+<button onClick="window.location='modify.php'">Modify user supplied account details </button> (e.g. to become
 a Project Lead).<br/>
 <br/>
 <button onClick="window.location='kmhome.php'">Authorize or De-authorize tools</button> to act on your behalf.<br/>
