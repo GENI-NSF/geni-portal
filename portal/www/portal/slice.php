@@ -188,7 +188,7 @@ include("query-sliverstatus.php");
 
 print "<h2>Slice Status</h2>\n";
 if (!(isset($msg) and isset($obj))) {
-  print "<p><i>Failed to determine status of resources.</i></p>";  
+  print "<p><i>No reserved resources found.</i></p>";  
 } else {
   $slice_status='';
   print "<table>\n";
