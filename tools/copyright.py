@@ -60,9 +60,24 @@ def find_grep():
             return candidate
 
 def report_file(path, exceptions):
-    # Only report if the file is not empty?
-    if not path in exceptions and os.path.getsize(path):
-        print('No copyright in %r' % (path))
+    print('No copyright in %r' % (path))
+
+def excluded(root, path, exceptions):
+    """Determines whether the given path should be excluded from the search."""
+    # Exclude empty files (false positives)
+    if os.path.getsize(path) == 0:
+        return True
+    # Exclude files explicitly excepted by a "-e" argument
+    if path in exceptions:
+        return True
+    # Exclude files who are rooted in an excepted directory
+    #   ie. recursive exclusion
+    parent = os.path.dirname(path)
+    while parent and parent != root:
+        if parent in exceptions:
+            return True
+        parent = os.path.dirname(parent)
+    return False
 
 def report_dir(dir, grep, exceptions):
     logger.debug('Reporting from %s', dir)
@@ -71,6 +86,9 @@ def report_dir(dir, grep, exceptions):
             if (filename.endswith('.py')
                 or filename.endswith('.php')):
                 path = os.path.join(dirpath, filename)
+                # Skip excluded files
+                if excluded(dir, path, exceptions):
+                    continue
                 # Need to send the output somewhere...
                 cmd = '%s -q -L -i copyright %s' % (grep, path)
                 logger.debug('Checking %s', cmd)
