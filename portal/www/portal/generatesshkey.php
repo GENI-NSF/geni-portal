@@ -34,7 +34,7 @@ require_once("sr_client.php");
 function show_form($error_msg)
 {
   print "<br/>\n";
-  print "<b>Generate an SSH private key</b><br/>\n";
+  print "<h2>Generate an SSH private key</h2>\n";
   print "SSH keys are required to log in to reserved compute resources.<br/><br/>\n";
   print "On this page, you can generate a new SSH key pair. <br/>\n";
 
