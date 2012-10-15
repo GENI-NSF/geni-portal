@@ -24,7 +24,6 @@ else
     fi
     echo "delete from pa_project_member where member_id = '$MEMBER_ID'" | psql -U portal -h localhost portal
     echo "delete from sa_slice_member where member_id = '$MEMBER_ID'" | psql -U portal -h localhost portal
-    echo "delete from sa_slice_member_credential where member_id = '$MEMBER_ID'" | psql -U portal -h localhost portal
     echo "delete from logging_entry_attribute where event_id in (select id from logging_entry where user_id = '$MEMBER_ID')" | psql -U portal -h localhost portal
     echo "delete from logging_entry where user_id = '$MEMBER_ID'" | psql -U portal -h localhost portal
     echo "delete from cs_assertion where principal = '$MEMBER_ID'" | psql -U portal -h localhost portal
