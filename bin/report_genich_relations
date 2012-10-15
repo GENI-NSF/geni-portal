@@ -36,10 +36,8 @@ import sys
 
 PASSWD_FILE = '/usr/local/etc/monitoring_passwd'
 CONFIG_FILE = '/usr/local/etc/gmoc_monitoring.conf'
-#CONTACT_GATHER_SCRIPT = '/usr/sysadmin/bin/parse_protogeni_relations'
-#SLICE_GATHER_SCRIPT = '/usr/sysadmin/bin/parse_protogeni_relations'
-CONTACT_GATHER_SCRIPT = '/home/sedwards/proto-ch/bin/gmoc_list_contacts'
-SLICE_GATHER_SCRIPT = '/home/sedwards/proto-ch/bin/gmoc_list_slices'
+CONTACT_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_contacts'
+SLICE_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_slices'
 
 MANDATORY_CONFIG_VARS = ['GMOC_REL_URL', 'SITENAME', 'ORGNAME', 'POPNAME', 'SA_URN', 'SA_VERSION', 'SA_TYPE']
 

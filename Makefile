@@ -51,7 +51,7 @@ distclean:
 
 
 # Thanks to http://highlandsun.com/hyc/GNUYou.htm
-SUBDIRS = lib portal kmtool sa sr authz cs ma pa logging ca openid
+SUBDIRS = lib portal kmtool sa sr authz cs ma pa logging ca openid bin
 install cleandb:
 	@$(MAKE) $(SUBDIRS) TARG=$@
 $(SUBDIRS)::
