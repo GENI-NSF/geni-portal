@@ -51,7 +51,7 @@ function abac_store_idp_attrs($user) {
                        $issuer_fingerprint,
                        $role,
                        $subject_id,
-                       new DateTime());
+                       new DateTime(null, new DateTimeZone('UTC')));
   }
 }
 

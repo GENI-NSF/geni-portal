@@ -54,10 +54,10 @@ function db_create_slice($member_id, $project_id, $slice_name, $expiration,
                          $slice_id, $description='')
 {
   $conn = dbconn();
-  //$expires = new DateTime();
+  //$expires = new DateTime(new DateTimeZone('UTC'));
   //$expires->add(new DateInterval('P30D'));
   //$urn = "urn:publicid:IDN+geni:gpo:portal+slice+" . $name;
-  $creation = newDateTime();
+  $creation = new DateTime(null, new DateTimeZone('UTC'));
   $my_tx = $conn->beginTransaction();
   $sql = "INSERT INTO sa_slice (name, project_id, expiration, slice_id, creation, description) VALUES ("
     . $conn->quote($slice_name, 'text')

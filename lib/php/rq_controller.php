@@ -40,7 +40,7 @@ function create_request($args)
   $request_type = $args[RQ_ARGUMENTS::REQUEST_TYPE];
   $request_text = $args[RQ_ARGUMENTS::REQUEST_TEXT];
   $request_details = $args[RQ_ARGUMENTS::REQUEST_DETAILS];
-  $now = new DateTime();
+  $now = new DateTime(null, new DateTimeZone('UTC')); 
 
   global $REQUEST_TABLENAME;
 
@@ -87,7 +87,7 @@ function resolve_pending_request($args)
   $resolution_status = $args[RQ_ARGUMENTS::RESOLUTION_STATUS];
   $resolver = $args[RQ_ARGUMENTS::RESOLVER];
   $resolution_description = $args[RQ_ARGUMENTS::RESOLUTION_DESCRIPTION];
-  $now = new DateTime();
+  $now = new DateTime(null, new DateTimeZone('UTC'));
 
   global $REQUEST_TABLENAME;
   $conn = db_conn();
