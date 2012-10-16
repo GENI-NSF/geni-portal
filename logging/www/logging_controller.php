@@ -45,7 +45,7 @@ function log_event($args, $message)
   global $LOGGING_TABLENAME;
   global $LOGGING_ATTRIBUTE_TABLENAME;
 
-  $event_time = new DateTime();
+  $event_time = new DateTime(null, new DateTimeZone('UTC'));
   $event_time->setTimestamp($args[LOGGING_ARGUMENT::EVENT_TIME]);
   $user_id = $args[LOGGING_ARGUMENT::USER_ID];
   $message = $args[LOGGING_ARGUMENT::MESSAGE];
@@ -98,7 +98,7 @@ function log_event($args, $message)
 function get_log_entries_by_author($args)
 {
   global $LOGGING_TABLENAME;
-  $since = new DateTime();
+  $since = new DateTime(null, new DateTimeZone('UTC'));
   $since->setTimestamp($args[LOGGING_ARGUMENT::EARLIEST_TIME]);
   $user_id = $args[LOGGING_ARGUMENT::USER_ID];
   $conn = db_conn();
@@ -129,7 +129,7 @@ function get_log_entries_by_attributes($args)
   global $LOGGING_TABLENAME;
   global $LOGGING_ATTRIBUTE_TABLENAME;
   $attribute_sets = $args[LOGGING_ARGUMENT::ATTRIBUTE_SETS];
-  $since = new DateTime();
+  $since = new DateTime(null, new DateTimeZone('UTC'));
   $since->setTimestamp($args[LOGGING_ARGUMENT::EARLIEST_TIME]);
 
   $attribute_set_sql = "";

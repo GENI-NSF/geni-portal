@@ -51,11 +51,13 @@ if (isset($slice)) {
   /* error_log("fetch_slice result: $pretty_result\n"); */
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   //  error_log("slice_name result: $slice_name\n");
-  $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+  $slice_expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
+  $slice_expiration = dateUIFormat($slice_expiration_db);
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   //  error_log("slice_urn result: $slice_urn\n");
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
-  $slice_creation = $slice[SA_ARGUMENT::CREATION];
+  $slice_creation_db = $slice[SA_ARGUMENT::CREATION];
+  $slice_creation = dateUIFormat($slice_creation_db);
   $slice_description = $slice[SA_ARGUMENT::SLICE_DESCRIPTION];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
   $owner = $user->fetchMember($slice_owner_id);

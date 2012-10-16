@@ -45,13 +45,13 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 if (array_key_exists("slice_expiration", $_REQUEST)) {
-  $req_exp = $_REQUEST["slice_expiration"];
+  $req_exp = dateUIFormat($_REQUEST["slice_expiration"]);
 } else {
   relative_redirect('slice.php?slice_id='.$slice_id);
 }
 
 if (isset($slice)) {
-  $old_slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+  $old_slice_expiration = dateUIFormat($slice[SA_ARGUMENT::EXPIRATION]);
 }
 
 $res = renew_slice($sa_url, $user, $slice_id, $req_exp);
@@ -63,7 +63,7 @@ if ($res) {
   $res = "Renewed slice (requested $req_exp, was $old_slice_expiration)";
   unset($slice);
   $slice = lookup_slice($sa_url, $user, $slice_id);
-  $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+  $slice_expiration = dateUIFormat($slice[SA_ARGUMENT::EXPIRATION]);
 } else {
   $res = "FAILed to renew slice (requested $req_exp, was $old_slice_expiration)";
   $slice_expiration = $old_slice_expiration;

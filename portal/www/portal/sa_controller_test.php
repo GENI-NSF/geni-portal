@@ -108,7 +108,7 @@ $slice_info2 = create_slice($sa_url, $user, $project, $project_name, 'TTT',
 $slice_id2 = $slice_info2['slice_id'];
 error_log("SLICE_ID2 = " . $slice_id2);
 dump_slices($user, $project);
-$now = new DateTime();
+$now = new DateTime(null, new DateTimeZone('UTC'));
 $expire = db_date_format($now);
 renew_slice($sa_url, $user, $slice_id2, $expire);
 dump_slices($user, $project);

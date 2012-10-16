@@ -67,7 +67,8 @@ include("tool-lookupids.php");
 if (! is_null($project) && $project != "None") {
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-  $creation = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
+  $creation_db = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
+  $creation = dateUIFormat($creation_db);
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
   if (uuid_is_valid($leadid)) {
     $lead = $user->fetchMember($leadid);
@@ -135,7 +136,8 @@ if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $proje
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
     foreach ($reqs as $request) {
       $requestor = $user->fetchMember($request['requestor']);
-      $created = $request['creation_timestamp'];
+      $created_db = $request['creation_timestamp'];
+      $created = dateUIFormat($created_db);
       $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request['id'] . "'\"><b>Handle Request</b></button>";
       print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
     }
@@ -202,7 +204,7 @@ if (is_array($entries)) {
   usort($entries, 'compare_log_entries');
   foreach($entries as $entry) {
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+    $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
     $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
     $member = $user->fetchMember($member_id);
     $member_name = $member->prettyName();

@@ -67,7 +67,7 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 if (array_key_exists('sliver_expiration', $_GET)) {
-  $slice_expiration = $_GET['sliver_expiration'];
+  $slice_expiration = dateUIFormat($_GET['sliver_expiration']);
 } else {
   no_time_error();
 }

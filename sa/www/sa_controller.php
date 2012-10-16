@@ -432,7 +432,7 @@ function create_slice($args, $message)
   $slice_urn = urn_from_cert($slice_cert);
 
   $expiration = get_future_date(0, $sa_default_slice_expiration_hours);
-  $creation = new DateTime();
+  $creation = new DateTime(null, new DateTimeZone('UTC'));
 
   $sql = "INSERT INTO " 
     . $SA_SLICE_TABLENAME 
@@ -736,6 +736,7 @@ function renew_slice($args, $message)
 
   // error_log("got req $requested");
   $req_dt = new DateTime($requested);
+  $req_dt.setTimeZone(new DateTimeZone('UTC'));
 
   // FIXME: Shouldn't this depend on the current expiration?
   $max_expiration = get_future_date(20);// 20 days increment

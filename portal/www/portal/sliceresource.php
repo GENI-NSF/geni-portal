@@ -132,7 +132,8 @@ $obj = $retVal[1];
 
 unset($slice2);
 $slice2 = lookup_slice($sa_url, $user, $slice_id);
-$slice_expiration = $slice2[SA_ARGUMENT::EXPIRATION];
+$slice_expiration_db = $slice2[SA_ARGUMENT::EXPIRATION];
+$slice_expiration = dateUIFormat($slice_expiration_db);
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");

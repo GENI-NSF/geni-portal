@@ -85,7 +85,8 @@ if (count($slices) > 0) {
     $sliceflack_url = $flack_url . $query;
     $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-    $expiration = $slice[SA_ARGUMENT::EXPIRATION];
+    $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
+    $expiration = dateUIFormat($expiration_db);
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
 
     // Determine privileges to this slice for this user
