@@ -3,7 +3,7 @@
 --
 
 -- ----------------------------------------------------------------------
--- Dump of the GEC 14 demo database
+-- Dump of the GEC 15 demo database
 --
 -- Created with:
 --

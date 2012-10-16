@@ -112,7 +112,7 @@ function sa_expire_slices()
             $project_id);
     $slice_attribute = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE,
             $slice_id);
-    $attributes = array_merge($project_attributes, $slice_attributes);
+    $attributes = array_merge($project_attribute, $slice_attribute);
     $log_msg = "Expired slice " . $slice_name;
     log_event($log_url, $mysigner, $log_msg, $attributes, $owner_id);
     $syslog_msg = "Expired slice $slice_id";
