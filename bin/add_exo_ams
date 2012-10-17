@@ -11,8 +11,10 @@ echo "insert into service_registry (service_type, service_url, service_cert, ser
 echo "-- Create the entry for ExoGENI ExoSM:" >> $FILENAME
 echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (0, 'https://geni.renci.org:11443/orca/xmlrpc', '/usr/share/geni-ch/sr/certs/exosm-am.pem', 'ExoGENI ExoSM', 'ExoGENI ExoSM');" >> $FILENAME
 
-echo "-- Create the entry for ExoGENI AM signer (self, same for BBN and RENCI and ExoSM):" >> $FILENAME
-echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/exosm-am.pem', '', 'For Flack: Signer of ExoGENI ExoSM and RENCI rack and BBN rack AM cert (self)');" >> $FILENAME
+# The signer has expired, so it causes network connectivity issues with Flack.
+# Remove it until ExoGENI updates.
+#echo "-- Create the entry for ExoGENI AM signer (self, same for BBN and RENCI and ExoSM):" >> $FILENAME
+#echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/exosm-am.pem', '', 'For Flack: Signer of ExoGENI ExoSM and RENCI rack and BBN rack AM cert (self)');" >> $FILENAME
 
 psql -U portal -h localhost portal < $FILENAME
 
