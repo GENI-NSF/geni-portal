@@ -95,7 +95,7 @@ function resolve_pending_request($args)
   $sql = "UPDATE " . $REQUEST_TABLENAME
     . " SET " 
     . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . $conn->quote($resolution_status, 'integer') . ", "
-    . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_DESCRIPTION . " = " . $conn-quote($resolution_description, 'text') . ", "
+    . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_DESCRIPTION . " = " . $conn->quote($resolution_description, 'text') . ", "
     . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_TIMESTAMP . " = " . $conn->quote(db_date_format($now), 'timestamp') . ", "
     . RQ_REQUEST_TABLE_FIELDNAME::RESOLVER . " = " . $conn->quote($resolver , 'text')
     . " WHERE " 
