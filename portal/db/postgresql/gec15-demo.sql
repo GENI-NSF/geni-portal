@@ -1361,7 +1361,7 @@ ALTER SEQUENCE service_registry_id_seq OWNED BY service_registry.id;
 -- Name: service_registry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: portal
 --
 
-SELECT pg_catalog.setval('service_registry_id_seq', 16, true);
+SELECT pg_catalog.setval('service_registry_id_seq', 13, true);
 
 
 --
@@ -1915,7 +1915,7 @@ COPY sa_slice_member_request (id, context_type, context_id, request_text, reques
 --
 
 COPY schema_version (key, installed, extra) FROM stdin;
-003	2012-10-15 15:27:14.561099	schema version
+003	2012-10-17 16:21:03.569898	schema version
 \.
 
 
@@ -1931,15 +1931,12 @@ COPY service_registry (id, service_type, service_url, service_cert, service_name
 5	5	https://panther.gpolab.bbn.com/logging/logging_controller.php	/usr/share/geni-ch/logging/logging-cert.pem	\N	\N
 6	6	https://panther.gpolab.bbn.com/cs/cs_controller.php	/usr/share/geni-ch/cs/cs-cert.pem	\N	\N
 7	8	https://panther.gpolab.bbn.com/secure/kmhome.php	/usr/share/geni-ch/km/km-cert.pem	\N	\N
-9	100	https://www.emulab.net:12369/protogeni/xmlrpc/am/2.0	/usr/share/geni-ch/sr/certs/utah-am.pem	ProtoGENI Utah	ProtoGENI Utah AM
-10	7		/usr/share/geni-ch/sr/certs/Thawte_Premium_Server_CA.pem		For flack: signer of Utah web server cert
-13	100	https://geni.renci.org:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI ExoSM	ExoGENI ExoSM
-14	107		/usr/share/geni-ch/sr/certs/exosm-am.pem		For Flack: Signer of ExoGENI ExoSM and RENCI rack and BBN rack AM cert (self)
-15	0	https://www.utah.geniracks.net:12369/protogeni/xmlrpc/am/2.0	/usr/share/geni-ch/sr/certs/ig-utah-am.pem	InstaGENI Utah	InstaGENI Utah AM
-16	7		/usr/share/geni-ch/sr/certs/ig-utah-am.pem		InstaGENI Utah CA (self-signed)
+10	0	https://rci-hn.exogeni.net:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI RENCI	ExoGENI RENCI Rack
+12	0	https://www.utah.geniracks.net:12369/protogeni/xmlrpc/am/2.0	/usr/share/geni-ch/sr/certs/ig-utah-cm.pem	InstaGENI Utah	InstaGENI Utah AM
+13	7		/usr/share/geni-ch/sr/certs/ig-utah-boss.pem		InstaGENI Utah CA (self-signed)
 8	100	https://localhost:8001/	/usr/share/geni-ch/portal/gcf.d/am-cert.pem	Local gcf AM	Empty AM
-11	100	https://bbn-hn.exogeni.net:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI BBN	ExoGENI BBN Rack
-12	0	https://rci-hn.exogeni.net:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI RENCI	ExoGENI RENCI Rack
+9	100	https://bbn-hn.exogeni.net:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI BBN	ExoGENI BBN Rack
+11	100	https://geni.renci.org:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI ExoSM	ExoGENI ExoSM
 \.
 
 
