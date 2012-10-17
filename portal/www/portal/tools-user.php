@@ -125,7 +125,8 @@ if (isset($reqs) && count($reqs) > 0) {
 
     $cancel_button = "<button style=\"\" onClick=\"window.location='" . $cancel_url . "'\"><b>Cancel Request</b></button>";
     $reason = $request['request_text'];
-    $req_date = $request['creation_timestamp'];
+    $req_date_db = $request['creation_timestamp'];
+    $req_date = dateUIFormat($req_date_db);
     print "<tr><td>$typestr</td><td>$name</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
   }
   print "</table>\n";

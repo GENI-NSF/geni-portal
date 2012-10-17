@@ -259,7 +259,7 @@ function create_project($args, $message)
 
   $project_email = 'project-' . $project_name . '@example.com';
   
-  $creation = new DateTime();
+  $creation = new DateTime(null, new DateTimeZone('UTC'));
 
   $sql = "INSERT INTO " . $PA_PROJECT_TABLENAME 
     . "(" 

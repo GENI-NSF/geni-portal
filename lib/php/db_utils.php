@@ -163,20 +163,25 @@ function db_fetch_row($query, $msg = "")
 }
 
 $DATE_FORMAT = 'Y-m-d H:i:s';
+date_default_timezone_set('UTC');
+$UTC = new DateTimeZone('UTC');
 
-// Get date N days in future from now
+// Get date N days in future from now - in UTC
 function get_future_date($num_days, $num_hours = 0)
 {
-  $dt = new DateTime();
+  $dt = new DateTime(null, new DateTimeZone('UTC'));
   $dt->add(new DateInterval('P' . $num_days . 'DT' . $num_hours . 'H'));
   return $dt;
 }
 
-// Get format for date for inserting into database 
+// Get format for date for inserting into database:
+// Convert to UTC first
 function db_date_format($date)
 {
   global $DATE_FORMAT;
-  return $date->format($DATE_FORMAT);
+  $utcdate = $date;
+  $utcdate = $utcdate->setTimezone(new DateTimeZone('UTC'));
+  return $utcdate->format($DATE_FORMAT);
 }
 
 // Add a quote to an argument in database-specific manner

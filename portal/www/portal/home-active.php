@@ -98,9 +98,9 @@ if (is_array($entries) && count($entries) > 0) {
     if (!in_array($msg, $messages)) {
       $messages[] = $msg;
       $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-      $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+      $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
       //    error_log("ENTRY = " . print_r($entry, true));
-      print "<tr><td>$time:</td><td>&nbsp;$message</td></tr>\n";
+      print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
     }
   }
 } else {

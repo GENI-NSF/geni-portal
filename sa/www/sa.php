@@ -79,7 +79,7 @@ function handleCreateSlice($data, $path)
   $description = "";
 
   // Default expiration to 30 days
-  $expires = new DateTime();
+  $expires = new DateTime(null, new DateTimeZone('UTC'));
   $expires->add(new DateInterval('P30D'));
 
   $slice_id = make_uuid();

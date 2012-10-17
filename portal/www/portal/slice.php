@@ -52,8 +52,10 @@ if (isset($slice)) {
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   //  error_log("SLICE  = " . print_r($slice, true));
   $slice_desc = $slice[SA_ARGUMENT::SLICE_DESCRIPTION];
-  $slice_creation = $slice[SA_ARGUMENT::CREATION];
-  $slice_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+  $slice_creation_db = $slice[SA_ARGUMENT::CREATION];
+  $slice_creation = dateUIFormat($slice_creation_db);
+  $slice_expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
+  $slice_expiration = dateUIFormat($slice_expiration_db);
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
@@ -350,7 +352,7 @@ foreach($members as $member) {
                 usort($entries, 'compare_log_entries');
 		foreach($entries as $entry) {
 		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-		  $time = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+		  $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
 		  $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
 		  $member = $user->fetchMember($member_id);
 		  $member_name = $member->prettyName();

@@ -90,7 +90,8 @@ if (isset($reqs) && count($reqs) > 0) {
     $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     $reason = $request['request_text'];
-    $req_date = $request['creation_timestamp'];
+    $req_date_db = $request['creation_timestamp'];
+    $req_date = dateUIFormat($req_date_db);
     $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     $lead_name = $lead->prettyName();
     $requestor = $user->fetchMember($request[RQ_ARGUMENTS::REQUESTOR]);

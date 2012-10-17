@@ -84,4 +84,18 @@ function selfURL() {
   }
   return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
 }
+
+function dateUIFormat($dateString) {
+  // Note this leaves the TZ alone, which we hope is UTC
+  // Note also that if you don't supply a dateString, you'll get the current date-time.
+  $date_dt = new DateTime($dateString); 
+  // See http://www.w3.org/QA/Tips/iso-date which argues for ISO8601 date formats
+  // ISO8601
+  //  $prettyDateString = $date_dt->format('c');
+  // Mostly ISO8601, but spell out the time zone
+  $prettyDateString = $date_dt->format('Y-m-d H:i:s e');
+  // Spell out the month name
+  //    $prettyDateString = $date_dt->format('j-M-Y H:i:s e');
+  return $prettyDateString;
+}
 ?>
