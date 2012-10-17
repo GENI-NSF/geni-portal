@@ -35,6 +35,7 @@ import subprocess
 import sys
 
 PASSWD_FILE = '/usr/local/etc/monitoring_passwd'
+VERSION_FILE = '/usr/local/etc/geni-ch-githash'
 CONFIG_FILE = '/usr/local/etc/gmoc_monitoring.conf'
 CONTACT_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_contacts'
 SLICE_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_slices'
@@ -79,6 +80,11 @@ f = open(PASSWD_FILE)
 gmoc_passwd = f.readline().strip()
 f.close()
 
+## Read the git hash for version info
+f = open(VERSION_FILE)
+geni_ch_version = f.readline().strip()
+f.close()
+
 # Collect all information into a dict called %info
 
 info = {
@@ -105,7 +111,7 @@ pop = gmoc.POP(
 sa = gmoc.SliceAuthority(
        config['SA_URN'],
        type = config['SA_TYPE'],
-       version = config['SA_VERSION'],
+       version = geni_ch_version,
        pop = pop,
        operator = organization,
      )
