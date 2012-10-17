@@ -91,9 +91,9 @@ function dateUIFormat($dateString) {
   $date_dt = new DateTime($dateString); 
   // See http://www.w3.org/QA/Tips/iso-date which argues for ISO8601 date formats
   // ISO8601
-  $prettyDateString = $date_dt->format('c');
+  //  $prettyDateString = $date_dt->format('c');
   // Mostly ISO8601, but spell out the time zone
-  //    $prettyDateString = $date_dt->format('Y-m-d H:i:s e');
+  $prettyDateString = $date_dt->format('Y-m-d H:i:s e');
   // Spell out the month name
   //    $prettyDateString = $date_dt->format('j-M-Y H:i:s e');
   return $prettyDateString;
