@@ -100,7 +100,7 @@ if (is_array($entries) && count($entries) > 0) {
       $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
       $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
       //    error_log("ENTRY = " . print_r($entry, true));
-      print "<tr><td>$time:</td><td>&nbsp;$message</td></tr>\n";
+      print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
     }
   }
 } else {
