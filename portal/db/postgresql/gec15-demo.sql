@@ -1931,15 +1931,15 @@ COPY service_registry (id, service_type, service_url, service_cert, service_name
 5	5	https://panther.gpolab.bbn.com/logging/logging_controller.php	/usr/share/geni-ch/logging/logging-cert.pem	\N	\N
 6	6	https://panther.gpolab.bbn.com/cs/cs_controller.php	/usr/share/geni-ch/cs/cs-cert.pem	\N	\N
 7	8	https://panther.gpolab.bbn.com/secure/kmhome.php	/usr/share/geni-ch/km/km-cert.pem	\N	\N
-9	0	https://www.emulab.net:12369/protogeni/xmlrpc/am/2.0	/usr/share/geni-ch/sr/certs/utah-am.pem	ProtoGENI Utah	ProtoGENI Utah AM
+9	100	https://www.emulab.net:12369/protogeni/xmlrpc/am/2.0	/usr/share/geni-ch/sr/certs/utah-am.pem	ProtoGENI Utah	ProtoGENI Utah AM
 10	7		/usr/share/geni-ch/sr/certs/Thawte_Premium_Server_CA.pem		For flack: signer of Utah web server cert
-13	0	https://geni.renci.org:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI ExoSM	ExoGENI ExoSM
-14	7		/usr/share/geni-ch/sr/certs/exosm-am.pem		For Flack: Signer of ExoGENI ExoSM and RENCI rack and BBN rack AM cert (self)
+13	100	https://geni.renci.org:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI ExoSM	ExoGENI ExoSM
+14	107		/usr/share/geni-ch/sr/certs/exosm-am.pem		For Flack: Signer of ExoGENI ExoSM and RENCI rack and BBN rack AM cert (self)
 15	0	https://www.utah.geniracks.net:12369/protogeni/xmlrpc/am/2.0	/usr/share/geni-ch/sr/certs/ig-utah-am.pem	InstaGENI Utah	InstaGENI Utah AM
 16	7		/usr/share/geni-ch/sr/certs/ig-utah-am.pem		InstaGENI Utah CA (self-signed)
 8	100	https://localhost:8001/	/usr/share/geni-ch/portal/gcf.d/am-cert.pem	Local gcf AM	Empty AM
 11	100	https://bbn-hn.exogeni.net:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI BBN	ExoGENI BBN Rack
-12	100	https://rci-hn.exogeni.net:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI RENCI	ExoGENI RENCI Rack
+12	0	https://rci-hn.exogeni.net:11443/orca/xmlrpc	/usr/share/geni-ch/sr/certs/exosm-am.pem	ExoGENI RENCI	ExoGENI RENCI Rack
 \.
 
 
