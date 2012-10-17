@@ -291,7 +291,12 @@ function print_rspec( $obj, $pretty ) {
     $arg_name = am_name($arg_url);
     $xml = $obj[$arg]['value'];
     $code = $obj[$arg]['code']['geni_code'];
-    $output = $obj[$arg]['output'];
+    if (array_key_exists('output', $obj[$arg])) {
+      $output = $obj[$arg]['output'];
+    } else {
+      $output = "";
+    }
+
     /* If pretty, keep output clean by only printing RSpec for
        aggregates which have a slice (ie code!=12)*/
     if (!($code == 12 and $pretty)){
