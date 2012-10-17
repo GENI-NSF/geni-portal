@@ -26,30 +26,25 @@ default:
 #	  (cd "$${d}" && $(MAKE) $@) \
 #	done
 
-githash:
+bin/geni-ch-githash: .git
 	git rev-parse HEAD > bin/geni-ch-githash
 
-syncd:
-	@$(MAKE) githash TARG=$@
+syncd: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch dagoola.gpolab.bbn.com:
 
-syncm:
-	@$(MAKE) githash TARG=$@
+syncm: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch marilac.gpolab.bbn.com:
 
-synci:
-	@$(MAKE) githash TARG=$@
+synci: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch illyrica.gpolab.bbn.com:
 
-syncs:
-	@$(MAKE) githash TARG=$@
+syncs: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch sergyar.gpolab.bbn.com:
 
-syncp:
-	@$(MAKE) githash TARG=$@
+syncp: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch panther.gpolab.bbn.com:
 
-syncc:
+syncc: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch cascade.gpolab.bbn.com:
 
 clean:
