@@ -66,6 +66,7 @@ if (array_key_exists("request_id", $_REQUEST)) {
 } else {
   error_log("handle-project-request got no project_id");
 }
+
 if (! isset($request) || is_null($request)) {
   error_log("No request from request_id");
   if (isset($member_id) && isset($project_id)) {
