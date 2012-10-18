@@ -17,10 +17,12 @@ default:
 	@echo "Try make install"
 
 install:
-	sudo /bin/cp geni-ch-githash $(ETC)/geni-ch-githash
-#	sudo /bin/cp gmoc_list_contacts $(DEST)
-#	sudo /bin/cp gmoc_list_slices $(DEST)
-#	sudo /bin/cp report_genich_relations $(DEST)
+	$(INSTALL) geni-ch-githash $(ETC)
+# NOTE: the three scripts in the bin directory are NOT installed with
+# this script anymore.  Instead they are managed by Puppet.
+#	/bin/cp gmoc_list_contacts $(DEST)
+#	/bin/cp gmoc_list_slices $(DEST)
+#	/bin/cp report_genich_relations $(DEST)
 
 syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)

@@ -1,9 +1,6 @@
 #!/usr/bin/python
-##### submit FOAM relational data to GMOC
+# NOTE: This script is NOT installed via the Makefile.  It is managed by Puppet.
 #
-# This file is part of the tango-monitor distribution:
-#    git source: trac.gpolab.bbn.com:/srv/git/tango-monitor.git
-
 #----------------------------------------------------------------------
 # Copyright (c) 2012 Raytheon BBN Technologies
 #
