@@ -37,7 +37,7 @@ CONFIG_FILE = '/usr/local/etc/gmoc_monitoring.conf'
 CONTACT_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_contacts'
 SLICE_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_slices'
 
-MANDATORY_CONFIG_VARS = ['GMOC_REL_URL', 'SITENAME', 'ORGNAME', 'POPNAME', 'SA_URN', 'SA_VERSION', 'SA_TYPE']
+MANDATORY_CONFIG_VARS = ['GMOC_REL_URL', 'SITENAME', 'ORGNAME', 'POPNAME', 'SA_URN', 'SA_TYPE']
 
 # Variables for things we expect to find in data gathering script output
 MANDATORY_KEYS = ['name', 'urn', 'version', 'type']
