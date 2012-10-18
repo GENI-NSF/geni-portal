@@ -186,12 +186,13 @@ function get_number_of_pending_requests_for_user($args)
   global $REQUEST_TABLENAME;
   $conn = db_conn();
 
-  $user_for_context_query = 
-    RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
-    user_context_query($account_id) . ")";
   if ($context_id != null) {
     $user_for_context_query = 
       RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = " . $conn->quote($context_id, 'text');
+  } else {
+    $user_for_context_query = 
+      RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
+      user_context_query($account_id) . ")";
   }
 
   $sql = "select count(*) from " . $REQUEST_TABLENAME
