@@ -44,6 +44,9 @@ $TAB_HELP = "Help";
 $TAB_PROFILE = "Profile";
 require_once("user.php");
 
+// Should the Debug tab be shown?
+$show_debug = false;
+
 $standard_tabs = array(array('name' => $TAB_HOME,
                              'url' => 'home.php'),
                        array('name' => $TAB_PROJECTS,
@@ -53,10 +56,12 @@ $standard_tabs = array(array('name' => $TAB_HOME,
                        array('name' => $TAB_PROFILE,
                              'url' => 'profile.php'),
                        array('name' => $TAB_HELP,
-                             'url' => 'help.php'),
-                       array('name' => $TAB_DEBUG,
-                             'url' => 'debug.php')
-                       );
+                             'url' => 'help.php')
+		       );
+if ($show_debug) {
+  $standard_tabs[] = array('name' => $TAB_DEBUG,
+			   'url' => 'debug.php');
+}
 
 function show_tab_bar($active_tab = '', $load_user=true)
 {
