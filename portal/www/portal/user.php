@@ -129,7 +129,9 @@ class GeniUser
 
   function prettyName() {
     if (array_key_exists('givenName', $this->attributes)
-        && array_key_exists('sn', $this->attributes)) {
+        && $this->attributes['givenName']
+        && array_key_exists('sn', $this->attributes)
+        && $this->attributes['sn']) {
       return $this->attributes['givenName']
         . " " . $this->attributes['sn'];
     } else {
