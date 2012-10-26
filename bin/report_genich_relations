@@ -52,6 +52,40 @@ import gmoc
 ## as a default if so.
 
 config = {}
+verbose_output = True
+debug_output = False
+while len(sys.argv) > 1:
+  nextarg = sys.argv.pop(1)
+  if nextarg == '-h':
+    print """Report GENI CH SA data to GMOC
+usage: {0} [-h]
+       {0} [-q] [-d] [GMOC_URL]
+
+       -h: print this help output
+       -q: be quiet - only syslog failed submissions, don't print them on STDERR
+       -d: debug - show full GMOC data structures and submission details
+       GMOC_URL: set a default GMOC URL to use if none is found in
+                 {1}
+""".format(sys.argv[0], CONFIG_FILE)
+    sys.exit(0)
+  elif nextarg == '-q':
+    verbose_output = False
+  elif nextarg == '-d':
+    debug_output = True
+  else:
+    config['GMOC_REL_URL'] = nextarg
+
+# Utility function for failing on errors.
+# Note: don't use this for configuration errors; those should always be
+# printed on STDERR
+def fail_on_error(message):
+  import syslog
+  syslog.openlog("report_to_gmoc", syslog.LOG_PID, syslog.LOG_USER)
+  syslog.syslog(syslog.LOG_ERR, message)
+  if verbose_output:
+    sys.stderr.write("%s\n" % message)
+  sys.exit(1)
+
 if len(sys.argv) > 1:
   config['GMOC_REL_URL'] = sys.argv[1]
 
@@ -190,13 +224,20 @@ data = gmoc.GMOCClient(
          username = config['SITENAME'],
          password = gmoc_passwd,
        )
-if len(sys.argv) > 1 and sys.argv[1] == '-d':
+if debug_output:
   data.debugLevel = gmoc.GMOC_DEBUG_VERBOSE
 
 # Now register everything at this POP
-result = data.store(pop)
+try:
+  result = data.store(pop)
+except Exception, e:
+  fail_on_error(
+    "Received exception (%s) while storing relations to GMOC: %s" % \
+      (str(e), traceback.format_exc())
+  )
 if result != 0:
-  print "Attempted to submit relational data, but received: %s" % result
-  sys.exit(1)
+  fail_on_error(
+    "Attempted to submit relational data, but received: %s" % result
+  )
 
 sys.exit(0)
