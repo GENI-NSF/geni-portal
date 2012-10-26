@@ -257,14 +257,9 @@ function create_account($args, $message)
             . " does not exist.");
     return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
   }
-  $required_keys = array(MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
-			 MA_ATTRIBUTE_NAME::FIRST_NAME,
-			 MA_ATTRIBUTE_NAME::LAST_NAME);
-			 //          MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER);
+  $required_keys = array(MA_ATTRIBUTE_NAME::EMAIL_ADDRESS);
   if (! verify_keys($args[MA_ARGUMENT::ATTRIBUTES], $required_keys, $missing)) {
     // Error: some required keys are missing.
-    // FIXME: Signal an error.
-    // return NULL;
     $msg = "Some required attributes are missing:";
     foreach ($missing as $req) {
       $msg .= " " . $req;
