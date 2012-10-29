@@ -30,6 +30,7 @@ import dateutil.parser
 import re
 import subprocess
 import sys
+import traceback
 
 PASSWD_FILE = '/usr/local/etc/monitoring_passwd'
 VERSION_FILE = '/usr/local/etc/geni-ch-githash'
