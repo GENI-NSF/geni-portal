@@ -125,7 +125,7 @@ print '<br/>';
 
 print "<p class='instruction'>This page will contact the requested
 aggregate and wait for the aggregate to respond. This may take
-awhile. Please be patient.</p>\n";
+a while. Please be patient.</p>\n";
 
 print ("<button onClick=\"");
 //print ("alert('Please be patient!'); ");
