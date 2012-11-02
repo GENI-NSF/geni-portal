@@ -69,7 +69,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
     single responsible individual - the project lead. See the <a href=\"glossary.html\">Glossary</a>.</p>\n";
     print "<p class='warn'>";
     print "You are not a member of any projects. Please join an
-       existing Project, ask someone to create a Project for you, or request
+       existing Project, ask someone to create a Project for you, or ask
        to be a Project Lead.</p>";
   }
   print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
