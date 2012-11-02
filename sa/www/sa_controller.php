@@ -832,7 +832,7 @@ function add_slice_member($args, $message)
       global $CS_ATTRIBUTE_TYPE_NAME;
       global $log_url;
       $slice_data = $slice_data[RESPONSE_ARGUMENT::VALUE];
-      $member_name = $member_data->first_name . " " . $member_data->last_name;
+      $member_name = $member_data->prettyName();
       $slice_name = $slice_data[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
       $project_id = $slice_data[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
       $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];

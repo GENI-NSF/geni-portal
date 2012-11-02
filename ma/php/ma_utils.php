@@ -245,7 +245,13 @@ function mail_new_project_lead($member_id)
   foreach ($member_info[MA_ARGUMENT::ATTRIBUTES] as $attr) {
     $member_attrs[$attr[MA_ATTRIBUTE::NAME]] = $attr[MA_ATTRIBUTE::VALUE];
   }
-  $body = "Dear " . $member_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME] . ",\n\n";
+  if (isset($member_attrs['displayName'])) {
+    $pretty_name = $member_attrs['displayName'];
+  } else if (isset($member_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME])) {
+    $pretty_name = $member_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME];
+  }
+  $email_addr = $member_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
+  $body = "Dear " . $pretty_name . ",\n\n";
   $body .= "Congratulations, you have been made a 'Project Lead', meaning";
   $body .= " you can create GENI Projects, as well as create slices in";
   $body .= " projects and reserve resources.\n\n";
@@ -255,7 +261,7 @@ function mail_new_project_lead($member_id)
   $body .= "GENI Clearinghouse operations\n";
   // The example in the PHP docs uses \r\n
   $headers = "Cc: $portal_admin_email\r\n";
-  mail($member_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS],
+  mail($email_addr,
           "You are now a GENI Project Lead",
           $body, $headers);
 }
