@@ -48,9 +48,9 @@ if (isset($slice) && $slice != "None") {
 }
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
-print "<h1>Delete Resources from GENI Slice: " . $slice_name . "</h1>\n";
+print "<h1>Delete resources from GENI Slice: " . $slice_name . "</h1>\n";
 
-print "<p>Delete all reserved Resources?</p>\n";
+print "<p>Delete all reserved resources?</p>\n";
 print "<p>Otherwise click 'Cancel'.</p>\n";
 print "<br/>\n";
 
@@ -60,7 +60,7 @@ if (isset($am_id) && $am_id) {
 } else {
   $edit_url = "sliverdelete.php?slice_id=$slice_id";
 }
-print "<button onclick=\"window.location='$edit_url'\"><b>Delete Slivers</b></button>\n";
+print "<button onclick=\"window.location='$edit_url'\"><b>Delete Resources</b></button>\n";
 //print "<button onclick=\"window.location='$cancel_url'\">Cancel</button>\n";
 print "<button onclick=\"history.back(-1)\">Cancel</button>\n";
 

@@ -110,7 +110,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("DeleteSliver output = " . $retVal);
 }
 
-$header = "Deleted Sliver on slice: $slice_name";
+$header = "Deleted resources on slice: $slice_name";
 
 $msg = $retVal[0];
 $obj = $retVal[1];
@@ -135,14 +135,14 @@ if (count($success)) {
   log_event($log_url, Portal::getInstance(),
 	    "Deleted resources from slice " . $slice_name,
           $log_attributes, $slice['owner_id']);
-  print "<div>Deleted slivers at:</div>";
+  print "<div>Deleted resources at:</div>";
   print "<div>";
   print_agg_list( $success );
   print "</div>";
 }
 
 if (count($fail)) {
-  print "<div>No slivers deleted at:</div>";
+  print "<div>No resources deleted at:</div>";
   print "<div>";
   print_agg_list( $fail );
   print "</div>";
