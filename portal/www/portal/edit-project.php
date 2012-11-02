@@ -124,7 +124,7 @@ if ($isnew) {
 }
 print "<input type=\"submit\" value=\"";
 if ($isnew) {
-  print "Register\"/>\n";
+  print "Create Project\"/>\n";
 } else {
   print "Edit\"/>\n";
 }
