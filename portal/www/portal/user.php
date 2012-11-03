@@ -69,6 +69,7 @@ class GeniUser
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->attributes['mail'] = $member->email_address;
+    $this->attributes['displayName'] = $member->displayName;
     $this->attributes['givenName'] = $member->first_name;
     $this->attributes['sn'] = $member->last_name;
     $this->username = $member->username;
@@ -128,8 +129,13 @@ class GeniUser
   }
 
   function prettyName() {
-    if (array_key_exists('givenName', $this->attributes)
-        && array_key_exists('sn', $this->attributes)) {
+    if (array_key_exists('displayName', $this->attributes)
+        && $this->attributes['displayName']) {
+      return $this->attributes['displayName'];
+    } elseif (array_key_exists('givenName', $this->attributes)
+        && $this->attributes['givenName']
+        && array_key_exists('sn', $this->attributes)
+        && $this->attributes['sn']) {
       return $this->attributes['givenName']
         . " " . $this->attributes['sn'];
     } else {

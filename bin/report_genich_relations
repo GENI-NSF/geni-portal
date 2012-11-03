@@ -206,6 +206,9 @@ for slice in slice_list:
       print "%s output for slice %s missing mandatory key: %s" % \
             (SLICE_GATHER_SCRIPT, slice['slice_urn'], slice_key)
   slice_urn = slice['slice_urn']
+  if not users.has_key(slice['slice_creator']):
+    fail_on_error("Slice %s has creator %s who was not found in contact list" \
+                  % (slice_urn, slice['slice_creator']))
   slices[slice_urn] = gmoc.Slice(
     slice_urn,
     uuid = slice['slice_uuid'],

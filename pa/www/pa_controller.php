@@ -531,7 +531,7 @@ function add_project_member($args, $message)
   //  error_log("MD = " . print_r($member_data, true));
   //  error_log("PD = " . print_r($project_data, true));
       $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
-      $member_name = $member_data->first_name . " " . $member_data->last_name;
+      $member_name = $member_data->prettyName();
       $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
       $message = "Added $member_name to Project $project_name in role $role_name";
