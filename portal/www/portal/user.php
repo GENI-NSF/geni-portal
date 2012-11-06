@@ -69,10 +69,16 @@ class GeniUser
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->attributes['mail'] = $member->email_address;
-    $this->attributes['displayName'] = $member->displayName;
-    $this->attributes['givenName'] = $member->first_name;
-    $this->attributes['sn'] = $member->last_name;
     $this->username = $member->username;
+    if (isset($member->displayName)) {
+      $this->attributes['displayName'] = $member->displayName;
+    }
+    if (isset($member->first_name)) {
+      $this->attributes['givenName'] = $member->first_name;
+    }
+    if (isset($member->last_name)) {
+      $this->attributes['sn'] = $member->last_name;
+    }
     // FIXME: MA should maintain a member status
     $this->status = 'active';
   }
