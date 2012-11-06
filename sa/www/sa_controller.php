@@ -736,7 +736,7 @@ function renew_slice($args, $message)
 
   // error_log("got req $requested");
   $req_dt = new DateTime($requested);
-  $req_dt.setTimeZone(new DateTimeZone('UTC'));
+  $req_dt->setTimezone(new DateTimeZone('UTC'));
 
   // FIXME: Shouldn't this depend on the current expiration?
   $max_expiration = get_future_date(20);// 20 days increment

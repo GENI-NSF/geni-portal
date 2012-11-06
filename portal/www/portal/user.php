@@ -69,10 +69,16 @@ class GeniUser
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->attributes['mail'] = $member->email_address;
-    $this->attributes['displayName'] = $member->displayName;
-    $this->attributes['givenName'] = $member->first_name;
-    $this->attributes['sn'] = $member->last_name;
     $this->username = $member->username;
+    if (isset($member->displayName)) {
+      $this->attributes['displayName'] = $member->displayName;
+    }
+    if (isset($member->first_name)) {
+      $this->attributes['givenName'] = $member->first_name;
+    }
+    if (isset($member->last_name)) {
+      $this->attributes['sn'] = $member->last_name;
+    }
     // FIXME: MA should maintain a member status
     $this->status = 'active';
   }
@@ -264,6 +270,32 @@ function incommon_attribute_redirect()
 	exit;
 }
 
+/**
+ * Send email to operators declaring a failed attempt
+ * to access the portal due to insufficient attributes.
+ * Include the entire HTTP environment in case their is
+ * useful info for debugging or contacting the institution
+ * or experimenter.
+ */
+function send_attribute_fail_email()
+{
+  // From /etc/geni-ch/settings.php
+  global $portal_admin_email;
+  $server_host = $_SERVER['SERVER_NAME'];
+  $body = "An access attempt on $server_host failed";
+  $body .= " due to insufficient attributes.";
+  $body .= "\n\nServer environment:\n";
+  // Put the entire HTTP environement in the email
+  // for debugging.
+  $array = $_SERVER;
+  foreach ($array as $var => $value) {
+    $body .= "$var = $value\n";
+  }
+  mail($portal_admin_email,
+          "Portal access failure on $server_host",
+          $body);
+}
+
 // Loads an experimenter from the database.
 function geni_loadUser_legacy($id='')
 {
@@ -416,8 +448,10 @@ function geni_load_user_by_member_id($member_id)
 function geni_loadUser()
 {
   // TODO: Look up in cache here
-  if (! array_key_exists('eppn', $_SERVER)) {
-    // No eppn was found - redirect to a gentle error page
+  if (! (array_key_exists('eppn', $_SERVER)
+           && array_key_exists('mail', $_SERVER))) {
+    // Requird attributes were not found - redirect to a gentle error page
+    send_attribute_fail_email();
     incommon_attribute_redirect();
   }
   // Load current user based on Shibboleth environment
