@@ -144,7 +144,6 @@ class Member {
       $aname = $attr[MA_ATTRIBUTE::NAME];
       $aval = $attr[MA_ATTRIBUTE::VALUE];
       $this->{$aname} = $aval;
-      error_log("member " . $this->member_id . " has $aname = $avalue");
     }
   }
   function prettyName() {
