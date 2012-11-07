@@ -617,7 +617,7 @@ class PGClearinghouse(Clearinghouse):
             if hrn and (not urn or not urn_util.is_valid_urn(urn)):
                 # Convert hrn to urn
                 urn = sfa.util.xrn.hrn_to_urn(hrn, "slice")
-                self.loger.debug("Made slice urn %s from hrn %s", urn, hrn)
+                self.logger.debug("Made slice urn %s from hrn %s", urn, hrn)
                 #raise Exception("We don't handle hrn inputs")
 
             if not urn or not urn_util.is_valid_urn(urn):
@@ -713,7 +713,7 @@ class PGClearinghouse(Clearinghouse):
             # This should be an hrn. Maybe handle others?
             if hrn and (not urn or not urn_util.is_valid_urn(urn)):
                 urn = sfa.util.xrn.hrn_to_urn(hrn, "user")
-                self.loger.debug("Made user urn %s from hrn %s", urn, hrn)
+                self.logger.debug("Made user urn %s from hrn %s", urn, hrn)
             if not urn or not urn_util.is_valid_urn(urn):
                 self.logger.error("Didnt get a valid URN for user in resolve: %s", urn)
                 if uuid:

@@ -81,10 +81,11 @@ $all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
         'mail' => MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
 		   //        'telephoneNumber' => MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER,
         'affiliation' => 'affiliation',
-        'eppn' => 'eppn'
+        'eppn' => 'eppn',
 		   //        'reference' => 'reference',
 		   //        'reason' => 'reason',
 		   //        'profile' => 'profile'
+        'displayName' => 'displayName'
 		   );
 foreach (array_keys($all_attrs) as $attr_name) {
   if (attrValue($attr_name, $value, $self_asserted)) {

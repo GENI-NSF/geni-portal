@@ -146,6 +146,15 @@ class Member {
       $this->{$aname} = $aval;
     }
   }
+  function prettyName() {
+    if (isset($this->displayName)) {
+      return $this->displayName;
+    } elseif (isset($this->first_name, $this->last_name)) {
+      return $this->first_name . " " . $this->last_name;
+    } else {
+      return $this->eppn;
+    }
+  }
 }
 
 function ma_lookup_members($ma_url, $signer, $lookup_attrs)
