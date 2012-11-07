@@ -609,7 +609,7 @@ function remove_project_member($args, $message)
 			  $project_data[RESPONSE_ARGUMENT::VALUE]))) 
       {
 	$project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
-	$member_name = $member_data->first_name . " " . $member_data->last_name;
+	$member_name = $member_data->prettyName();
 	$project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	$message = "Removed $member_name from Project $project_name";
 	$pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
