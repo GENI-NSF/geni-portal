@@ -86,7 +86,7 @@ class PAGuardFactory implements GuardFactory
 	    'get_project_members' => array(), // Unguarded
 	    'get_projects_for_member' => array(), // Unguarded
 	    'create_request' => array(), // Unguarded
-	    'resolve_pending_request' => array('project_request_guard'), // Unguarded
+	    'resolve_pending_request' => array('project_request_guard'),
 	    'get_requests_for_context' => array(), // Unguarded
 	    'get_requests_by_user' => array(), // Unguarded
 	    'get_pending_requests_for_user' => array(), // Unguarded
@@ -257,6 +257,7 @@ function create_project($args, $message)
 			     "Principal " . $lead_id  . " may not create project");
   } 
 
+  // FIXME: Real project email address: ticket #313
   $project_email = 'project-' . $project_name . '@example.com';
   
   $creation = new DateTime(null, new DateTimeZone('UTC'));
@@ -320,6 +321,10 @@ function delete_project($args)
   //  error_log("DELETE.sql = " . $sql);
 
   $result = db_execute_statement($sql);
+
+  //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  //  log_event($log_url, $mysigner, 
+  //	    "Deleted project: " . $project_name, $attributes, $lead_id);
 
   return $result;
 }
@@ -446,6 +451,12 @@ function update_project($args)
   //  error_log("UPDATE.sql = " . $sql);
 
   $result = db_execute_statement($sql);
+
+  // FIXME
+  //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  //  log_event($log_url, $mysigner, 
+  //	    "Deleted project: " . $project_name, $attributes, $lead_id);
+
   return $result;
 }
 
@@ -467,17 +478,26 @@ function change_lead($args)
   //  error_log("CHANGE_LEAD.sql = " . $sql);
   $result = db_execute_statement($sql);
 
-  // *** FIX ME - Delete previous from MA and from CS
+  // *** FIXME - Delete previous from MA and from CS
+
+  // FIXME
+  //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  //  log_event($log_url, $mysigner, 
+  //	    "Deleted project: " . $project_name, $attributes, $lead_id);
 
   return $result;
 }
 
 // Add a member of given role to given project
+// Return code/value/output triple
 function add_project_member($args, $message)
 {
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
-  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  $role = null;
+  if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args)) {
+    $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
@@ -490,6 +510,9 @@ function add_project_member($args, $message)
     . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($member_id, 'text');
   $already_member = db_fetch_row($already_member_sql);
   //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
+  if (! array_key_exists('value', $already_member) or ! array_key_exists('count', $already_member['value'])) {
+    return $already_member;
+  }
   $already_member = $already_member['value']['count'] > 0;
   //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
   if ($already_member) {
@@ -507,7 +530,7 @@ function add_project_member($args, $message)
   //  error_log("PA.add project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
-  // If successful, add an assertion to remove the role's privileges within the CS store
+  // If successful, add an assertion of the role's privileges within the CS store
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
     /* FIXME - The signer needs to have a certificate and private key. Who sends this message (below)
@@ -535,7 +558,9 @@ function add_project_member($args, $message)
       $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
       $message = "Added $member_name to Project $project_name in role $role_name";
-      $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+      $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+      $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+      $attributes = array_merge($pattributes, $mattributes);
       log_event($log_url, $mysigner, $message, $attributes, $signer);
     }
   return $result;
@@ -575,6 +600,24 @@ function remove_project_member($args, $message)
       delete_assertion($cs_url, $mysigner, $assertion_id);
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
+    global $ma_url;
+    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+    $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
+    $project_data = lookup_project($lookup_project_message);
+    if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+	(array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, 
+			  $project_data[RESPONSE_ARGUMENT::VALUE]))) 
+      {
+	$project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
+	$member_name = $member_data->first_name . " " . $member_data->last_name;
+	$project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+	$message = "Removed $member_name from Project $project_name";
+	$pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+	$mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+	$attributes = array_merge($pattributes, $mattributes);
+	log_event($log_url, $mysigner, $message, $attributes, $signer);
+      }
+
   }
 
   return $result;
@@ -620,6 +663,12 @@ function change_member_role($args, $message)
 
     // Create new assertion for member in this role
     create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+
+    // FIXME
+    //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+    //  log_event($log_url, $mysigner, 
+    //	    "Deleted project: " . $project_name, $attributes, $lead_id);
+
   }
 
   return $result;
@@ -667,7 +716,10 @@ function get_project_members($args)
 function get_projects_for_member($args)
 {
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
-  $is_member = $args[PA_ARGUMENT::IS_MEMBER];
+  $is_member = true;
+  if (array_key_exists(PA_ARGUMENT::IS_MEMBER, $args) && isset($args[PA_ARGUMENT:IS_MEMBER])) {
+    $is_member = $args[PA_ARGUMENT::IS_MEMBER];
+  }
   $role = null;
   if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
     $role = $args[PA_ARGUMENT::ROLE_TYPE];
@@ -734,8 +786,8 @@ function get_projects_for_member($args)
 // Include the RQ interface routines
 $REQUEST_TABLENAME = $PA_PROJECT_MEMBER_REQUEST_TABLENAME;
 
-// Define the specific function to call to determine what slices are relevant to a given user
-// (That is, requests about that slice are for this user)
+// Define the specific function to call to determine what projects a given user can act on.
+// (That is, requests about these projects can be handled by this user.)
 function user_context_query($account_id)
 {
   global $PA_PROJECT_MEMBER_TABLENAME;
@@ -749,6 +801,7 @@ function user_context_query($account_id)
 }
 require_once('rq_controller.php');
 
+// FIXME: Should not be hardcorded
 $mycertfile = '/usr/share/geni-ch/pa/pa-cert.pem';
 $mykeyfile = '/usr/share/geni-ch/pa/pa-key.pem';
 $mysigner = new Signer($mycertfile, $mykeyfile);

@@ -86,25 +86,29 @@ a Project Lead).<br/>
 <button onClick="window.location='kmhome.php'">Authorize or De-authorize tools</button> to act on your behalf.<br/>
 <h2>Outstanding Requests</h2>
 <?php
-// Show outstanding requests for this user
+// Show outstanding requests BY this user
 if (! isset($pa_url)) {
-	$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-	if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-		error_log("Found no PA in SR!'");
-	}
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+  if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
+    error_log("Found no PA in SR!'");
+  }
 }
 
 if (! isset($sa_url)) {
-	$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-	if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
-		error_log("Found no SA in SR!'");
-	}
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no SA in SR!'");
+  }
 }
 
-$reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id);
+// FIXME: Also show rejected requests?
+$preqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
+$reqs = array_merge($preqs, $sreqs);
 if (isset($reqs) && count($reqs) > 0) {
-  print "Found " . count($reqs) . " outstanding requests for you:<br/>\n";
+  print "Found " . count($reqs) . " outstanding requests by you:<br/>\n";
   print "<table>\n";
+  // Could add the lead and purpose?
   print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
   foreach ($reqs as $request) {
     $name = "";

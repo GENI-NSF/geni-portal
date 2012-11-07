@@ -35,13 +35,17 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 include("tool-lookupids.php");
 
-$pids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
+$mpids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
+
+// Filter out projects for which this user has not already requested to join (nothing pending)
+$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$pids = array_diff$mpids, $rpids);
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
 
 // Join a project
-// Get list of all projects you are not in
+// Get list of all projects you are not in or already requested to join
 // Produce a table of projects you could join
 // project name, project lead, project description, Button to Join
 

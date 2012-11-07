@@ -77,33 +77,35 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
   print "<button onClick=\"window.location='modify.php'\"><b>Ask to be a Project Lead</b></button><br/>\n";
 }
 
-// Show outstanding project requests for this user
-$reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null);
-if (isset($reqs) && count($reqs) > 0) {
-  print "Found " . count($reqs) . " outstanding project join requests for you:<br/>\n";
-  print "<table>\n";
-  print "<tr><th>Project Name</th><th>Project Lead</th><th>Request Created</th><th>Requestor</th><th>Handle Request</th></tr>\n";
-  foreach ($reqs as $request) {
-    // Print it out
-    $project = lookup_project($pa_url, $user, $request['context_id']);
-    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-    $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-    $reason = $request['request_text'];
-    $req_date_db = $request['creation_timestamp'];
-    $req_date = dateUIFormat($req_date_db);
-    $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
-    $lead_name = $lead->prettyName();
-    $requestor = $user->fetchMember($request[RQ_ARGUMENTS::REQUESTOR]);
-    $requestor_name = $requestor->prettyName();
-    $handle_url="handle-project-request.php?request_id=" . $request['id']; // ***
-    $handle_button = "<button style=\"\" onClick=\"window.location='" . $handle_url . "'\"><b>Handle Request</b></button>";
-    print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$lead_name</td><td>$req_date</td><td>$requestor_name</td><td>$handle_button</td></tr>\n";
+if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, null)) {
+  // Show outstanding project requests for this user to handle
+  $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null);
+  if (isset($reqs) && count($reqs) > 0) {
+    print "Found " . count($reqs) . " outstanding project join requests for you to handle:<br/>\n";
+    print "<table>\n";
+    print "<tr><th>Project Name</th><th>Project Lead</th><th>Request Created</th><th>Requestor</th><th>Handle Request</th></tr>\n";
+    foreach ($reqs as $request) {
+      // Print it out
+      $project = lookup_project($pa_url, $user, $request['context_id']);
+      $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+      $reason = $request['request_text'];
+      $req_date_db = $request['creation_timestamp'];
+      $req_date = dateUIFormat($req_date_db);
+      $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
+      $lead_name = $lead->prettyName();
+      $requestor = $user->fetchMember($request[RQ_ARGUMENTS::REQUESTOR]);
+      $requestor_name = $requestor->prettyName();
+      $handle_url="handle-project-request.php?request_id=" . $request['id']; // ***
+      $handle_button = "<button style=\"\" onClick=\"window.location='" . $handle_url . "'\"><b>Handle Request</b></button>";
+      print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$lead_name</td><td>$req_date</td><td>$requestor_name</td><td>$handle_button</td></tr>\n";
+    }
+    print "</table>\n";
+    print "<br/><br/>\n";
+  } else {
+    print "<div class='announce'>No outstanding project join requests to handle.</div><br/><br/>\n";
   }
-  print "</table>\n";
-  print "<br/><br/>\n";
-} else {
-  print "<div class='announce'>No outstanding project join requests.</div><br/><br/>\n";
 }
 
 if (count($projects) > 0) {
@@ -120,7 +122,7 @@ if (count($projects) > 0) {
     //    error_log("project = " . print_r($project, true));
 
     $handle_req_str = "";
-    if (true || $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+    if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
       $reqcnt = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id, 
 							CS_CONTEXT_TYPE::PROJECT, $project_id);
       //      error_log("REQCNT " . print_r($reqcnt, true) . " " . $project_id);
@@ -152,5 +154,31 @@ if (count($projects) > 0) {
 } else {
   print "<i> No projects.</i><br/>\n";
 }
+
+// Show outstanding project requests BY this user - projects you asked to join
+$reqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+if (isset($reqs) && count($reqs) > 0) {
+  print "Found " . count($reqs) . " outstanding project join requests by you:<br/>\n";
+  print "<table>\n";
+  print "<tr><th>Project Name</th><th>Project Lead</th><th>Project Purpose</th><th>Request Created</th><th>Request Reason</th></tr>\n";
+  foreach ($reqs as $request) {
+    // Print it out
+    $project = lookup_project($pa_url, $user, $request['context_id']);
+    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+    $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+    $reason = $request['request_text'];
+    $req_date_db = $request['creation_timestamp'];
+    $req_date = dateUIFormat($req_date_db);
+    $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
+    $lead_name = $lead->prettyName();
+    print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$lead_name</td><td>$purpose</td><td>$req_date</td><td>$reason</td></tr>\n";
+  }
+  print "</table>\n";
+  print "<br/><br/>\n";
+} else {
+  print "<div class='announce'>No outstanding project join requests by you.</div><br/><br/>\n";
+}
+
 print "<br/>\n";
 

@@ -164,6 +164,7 @@ function change_lead($pa_url, $signer, $project_id, $prev_lead_id, $new_lead_id)
 }
 
 // Add a member of given role to given project
+// return code/value/output triple
 function add_project_member($pa_url, $signer, $project_id, $member_id, $role)
 {
   $add_project_member_message['operation'] = 'add_project_member';
