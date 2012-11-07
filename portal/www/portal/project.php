@@ -128,17 +128,16 @@ else {
 print "<td><button $disable_project onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
 print "</tr></table>\n";
 
-$reqs = null;
 if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
     print "<h3>Approve new project members</h3>\n";
     print "<table>\n";
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
     foreach ($reqs as $request) {
-      $requestor = $user->fetchMember($request['requestor']);
-      $created_db = $request['creation_timestamp'];
+      $requestor = $user->fetchMember($request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]);
+      $created_db = $request[RQ_REQUEST_TABLE_FIELDNAME::CREATION_TIMESTAMP];
       $created = dateUIFormat($created_db);
-      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request['id'] . "'\"><b>Handle Request</b></button>";
+      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . "'\"><b>Handle Request</b></button>";
       print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
     }
     print "</table><br/>\n";
