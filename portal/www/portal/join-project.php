@@ -29,6 +29,7 @@ require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once("pa_client.php");
+require_once("cs_constants.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -38,8 +39,8 @@ include("tool-lookupids.php");
 $mpids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
 
 // Filter out projects for which this user has not already requested to join (nothing pending)
-$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
-$pids = array_diff$mpids, $rpids);
+$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$pids = array_diff($mpids, $rpids);
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
