@@ -89,7 +89,7 @@ if (isset($pids) && ! is_null($pids) && in_array($project_id, $pids)) {
 }
 
 // confirm member has not already requested to join this project
-$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
+$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
 if (in_array($project_id, $rpids)) {
   error_log($user->prettyName() . " already requested to join project " . $project_id);
   $_SESSION['lasterror'] = "You already requested to join that project.";
