@@ -36,6 +36,8 @@ require_once('ma_client.php');
 require_once('cs_client.php');
 require_once('logging_client.php');
 
+include_once('/etc/geni-ch/settings.php');
+
 /**
  * GENI Clearinghouse Project Authority (PA) controller interface
  * The PA maintains a list of projects, their details and members and provides access
@@ -562,6 +564,10 @@ function add_project_member($args, $message)
       $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
       $attributes = array_merge($pattributes, $mattributes);
       log_event($log_url, $mysigner, $message, $attributes, $signer);
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, $message);
+      mail($portal_admin_email,
+	   "New GENI CH project member added",
+          $message);
     }
   return $result;
 }
@@ -717,7 +723,7 @@ function get_projects_for_member($args)
 {
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
   $is_member = true;
-  if (array_key_exists(PA_ARGUMENT::IS_MEMBER, $args) && isset($args[PA_ARGUMENT:IS_MEMBER])) {
+  if (array_key_exists(PA_ARGUMENT::IS_MEMBER, $args) && isset($args[PA_ARGUMENT::IS_MEMBER])) {
     $is_member = $args[PA_ARGUMENT::IS_MEMBER];
   }
   $role = null;
