@@ -41,6 +41,10 @@ configuring the database (PostgreSQL).
     /var/log/apache2/error.log for error messages that might indicate
     what the problem is.
 
- 8. Log in to the portal. Navigate to:
+ 8. Copy the settings.php file (which contains the DB password) into place:
+
+      sudo cp proto-ch/etc/settings.php /etc/geni-ch/.
+
+ 9. Log in to the portal. Navigate to:
 
       https://host.example.com/secure/home.php
