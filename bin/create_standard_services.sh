@@ -99,6 +99,7 @@ fi
 # A local aggregate manager
 #----------------------------------------------------------------------
 SVC_NAME="am"
+SVC_URN="URI:urn:publicid:IDN+${SHORT_HOST}+authority+${SVC_NAME}"
 SVC_EMAIL="${ADMIN_EMAIL}"
 SVC_KEY="${BASEDIR}/portal/gcf.d/${SVC_NAME}-key.pem"
 SVC_REQ="${BASEDIR}/portal/gcf.d/${SVC_NAME}-req.pem"
@@ -106,7 +107,7 @@ SVC_CERT="${BASEDIR}/portal/gcf.d/${SVC_NAME}-cert.pem"
 SVC_CA=NO
 if [ ! -f "${SVC_CERT}" -o $FORCE == 1 ]; then
     ./mk-auth-req "${SVC_KEY}" "${SVC_REQ}" ${SVC_NAME} ${SVC_EMAIL}
-    ./sign-auth-req "${SVC_REQ}" "${SVC_CERT}" ${SVC_NAME} ${SVC_CA}
+    ./sign-auth-req "${SVC_REQ}" "${SVC_CERT}" ${SVC_URN} ${SVC_CA}
 fi
 echo "insert into service_registry (service_type, service_url, service_name, service_description, service_cert) values (0, 'https://localhost:8001/', 'Local gcf AM', 'Empty AM', '${SVC_CERT}');" >> $FILENAME
 
