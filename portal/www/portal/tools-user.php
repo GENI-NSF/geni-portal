@@ -106,30 +106,34 @@ $preqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE
 $sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
 $reqs = array_merge($preqs, $sreqs);
 if (isset($reqs) && count($reqs) > 0) {
-  print "Found " . count($reqs) . " outstanding requests by you:<br/>\n";
+  print "Found " . count($reqs) . " outstanding request(s) by you:<br/>\n";
   print "<table>\n";
   // Could add the lead and purpose?
   print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
+  $REQ_TYPE_NAMES = array();
+  $REQ_TYPE_NAMES[] = 'Join';
+  $REQ_TYPE_NAMES[] = 'Update Attributes';
   foreach ($reqs as $request) {
     $name = "";
-    $typestr = $REQ_TYPE_NAMES[$request['request_type']] . " " . $CS_CONTEXT_TYPE_NAME[$request['context']];
-    if ($request['context'] == CS_CONTEXT_TYPE::PROJECT) {
-      error_log("looking up project " . $request['context_id']);
-      $project = lookup_project($pa_url, $user, $request['context_id']);
+    error_log(print_r($request, true));
+    $typestr = $REQ_TYPE_NAMES[$request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]] . " " . $CS_CONTEXT_TYPE_NAME[$request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]];
+    if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::PROJECT) {
+      error_log("looking up project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      $project = lookup_project($pa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-      $cancel_url="cancel-join-project.php?request_id=" . $request['id'];
-    } elseif ($request['context'] == CS_CONTEXT_TYPE::SLICE) {
-      $slice = lookup_slice($sa_url, $request['context_id']);
+      $cancel_url="cancel-join-project.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+    } elseif ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::SLICE) {
+      $slice = lookup_slice($sa_url, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
-      $cancel_url="cancel-join-slice.php?request_id=" . $request['id'];
+      $cancel_url="cancel-join-slice.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
     } else {
       $name = "";
-      $cancel_url="cancel-account-mod.php?request_id=" . $request['id'];
+      $cancel_url="cancel-account-mod.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
     }
 
     $cancel_button = "<button style=\"\" onClick=\"window.location='" . $cancel_url . "'\"><b>Cancel Request</b></button>";
-    $reason = $request['request_text'];
-    $req_date_db = $request['creation_timestamp'];
+    $reason = $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TEXT];
+    $req_date_db = $request[RQ_REQUEST_TABLE_FIELDNAME::CREATION_TIMESTAMP];
     $req_date = dateUIFormat($req_date_db);
     print "<tr><td>$typestr</td><td>$name</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
   }
