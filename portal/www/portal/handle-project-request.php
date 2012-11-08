@@ -67,11 +67,12 @@ if (array_key_exists("request_id", $_REQUEST)) {
   error_log("handle-project-request got no request_id");
 }
 
-// Confirm this user is a project/lead admin
-if (! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, null)) {
-  error_log("User not allowed to handle project requests");
-  relative_redirect("home.php");
-}
+// Confirm this user is a project/lead admin in general. The problem is that you can't be a lead without 
+// a specific project
+// if (! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, null)) {
+//   error_log("User not allowed to handle project requests");
+//   relative_redirect("home.php");
+// }
 
 if (! isset($request) || is_null($request)) {
   error_log("No request from request_id");
@@ -261,16 +262,16 @@ if (isset($submit)) {
     // FIXME: Check result
 
     // log this
-    $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
-						    $project_id);
-    $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
-						    $member_id);
-    $attributes = array_merge($project_attributes, $member_attributes);
+    /* $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,  */
+    /* 						    $project_id); */
+    /* $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, */
+    /* 						    $member_id); */
+    /* $attributes = array_merge($project_attributes, $member_attributes); */
     $rolestr = $CS_ATTRIBUTE_TYPE_NAME[$role];
-    $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-    log_event($log_url, Portal::getInstance(),
-	      "Added $member_name to project $project_name as $rolestr ", $attributes,
-      $user->account_id);
+    /* $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE); */
+    /* log_event($log_url, Portal::getInstance(), */
+    /* 	      "Added $member_name to project $project_name as $rolestr ", $attributes, */
+    /*   $user->account_id); */
     error_log("handle-p-req added $member_name to project $project_name with role $rolestr");
   
     // Email the member
