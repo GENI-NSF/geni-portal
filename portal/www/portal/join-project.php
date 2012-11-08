@@ -39,7 +39,12 @@ include("tool-lookupids.php");
 $mpids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
 
 // Filter out projects for which this user has not already requested to join (nothing pending)
-$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$rs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$rpids = array();
+foreach ($rs as $request) {
+  $rpids[] = $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
+}
+
 $pids = array_diff($mpids, $rpids);
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
