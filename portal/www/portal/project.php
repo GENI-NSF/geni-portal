@@ -63,7 +63,6 @@ if (array_key_exists("result", $_GET)) {
 }
 
 include("tool-lookupids.php");
-
 if (! is_null($project) && $project != "None") {
   $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
@@ -77,6 +76,9 @@ if (! is_null($project) && $project != "None") {
   } else {
     error_log("project.php: Invalid project lead id from DB for project $project_name");
   }
+} else {
+  $_SESSION['lasterror'] = "No project specified for project page";
+  relative_redirect('projects.php');
 }
 
 // Fill in members of project member table
@@ -118,7 +120,7 @@ if(isset($project_id) && $user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TY
 /* Disable project */
 
 $disable_project = "";
-if (!$user->isAllowed(PA_ACTION::DELETE_PROJECT, CS_CONTExT_TYPE::PROJECT, $project_id)) {
+if (!$user->isAllowed(PA_ACTION::DELETE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $disable_project = $disabled;
 }
 /* for now, always disable the project */
@@ -155,6 +157,10 @@ print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table>\n";
+
+// FIXME: If user is not a member of the project, don't show the tool-slices stuff - it will get
+// a permission error on lookup_slices
+
 ?>
 <h2>Project slices:</h2>
 <?php
