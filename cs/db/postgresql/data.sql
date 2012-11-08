@@ -109,37 +109,6 @@ INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) 
        (null, 1, 5, 2, null);
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 1, 5, 3, null);
--- An ADMIN of a context_type has DELEGATE, READ AND WRITE PRIVILEGE in that context
-INSERT INTO cs_policy (signer,  attribute, context_type, privilege, policy_cert) values
-       (null, 2, 1, 1, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 1, 2, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 1, 3, null);
-INSERT INTO cs_policy (signer,  attribute, context_type, privilege, policy_cert) values
-       (null, 2, 2, 1, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 2, 2, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 2, 3, null);
-INSERT INTO cs_policy (signer,  attribute, context_type, privilege, policy_cert) values
-       (null, 2, 3, 1, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 3, 2, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 3, 3, null);
-INSERT INTO cs_policy (signer,  attribute, context_type, privilege, policy_cert) values
-       (null, 2, 4, 1, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 4, 2, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 4, 3, null);
-INSERT INTO cs_policy (signer,  attribute, context_type, privilege, policy_cert) values
-       (null, 2, 5, 1, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 5, 2, null);
-INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
-       (null, 2, 5, 3, null);
 
 -- An ADMIN of a context_type has DELEGATE, READ AND WRITE PRIVILEGE in that context
 INSERT INTO cs_policy (signer,  attribute, context_type, privilege, policy_cert) values
@@ -172,6 +141,7 @@ INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) 
        (null, 2, 5, 2, null);
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 2, 5, 3, null);
+
 -- A MEMBER of a context_type has READ AND WRITE PRIVILEGE in that context
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 3, 1, 2, null);
@@ -193,6 +163,7 @@ INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) 
        (null, 3, 5, 2, null);
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 3, 5, 3, null);
+
 -- An AUDITOR of a context_type has READ PRIVILEGE in that context
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 4, 1, 2, null);
