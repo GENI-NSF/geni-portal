@@ -274,7 +274,7 @@ function get_pending_requests_for_user($args)
   global $REQUEST_TABLENAME;
   $conn = db_conn();
 
-  $user_for_context_query = ''
+  $user_for_context_query = '';
   if ($context_id != null) {
     // Limit to given context
     $user_for_context_query = 
@@ -327,7 +327,7 @@ function get_number_of_pending_requests_for_user($args)
   global $REQUEST_TABLENAME;
   $conn = db_conn();
 
-  $user_for_context_query = ''
+  $user_for_context_query = '';
   if ($context_id != null) {
     // Limit to given context
     $user_for_context_query = 
