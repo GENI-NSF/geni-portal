@@ -553,6 +553,8 @@ function add_project_member($args, $message)
     {
       global $CS_ATTRIBUTE_TYPE_NAME;
       global $log_url;
+      // From /etc/geni-ch/settings.php
+      global $portal_admin_email;
   //  error_log("MD = " . print_r($member_data, true));
   //  error_log("PD = " . print_r($project_data, true));
       $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
