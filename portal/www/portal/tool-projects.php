@@ -102,7 +102,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
 /*       $requestor_name = $requestor->prettyName(); */
 /*       $handle_url="handle-project-request.php?request_id=" . $request['id']; // *** */
 /*       $handle_button = "<button style=\"\" onClick=\"window.location='" . $handle_url . "'\"><b>Handle Request</b></button>"; */
-/*       print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$lead_name</td><td>$req_date</td><td>$requestor_name</td><td>$handle_button</td></tr>\n"; */
+/*       print "<tr><td><a href=\"project.php?project_id=$project_id\">$project_name</a></td><td>$lead_name</td><td>$req_date</td><td>$requestor_name</td><td>$handle_button</td></tr>\n"; */
 /*     } */
 /*     print "</table>\n"; */
 /*     print "<br/><br/>\n"; */
@@ -169,7 +169,6 @@ if (isset($reqs) && count($reqs) > 0) {
   foreach ($reqs as $request) {
     // Print it out
     $project = lookup_project($pa_url, $user, $request['context_id']);
-    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     $reason = $request['request_text'];
@@ -177,7 +176,7 @@ if (isset($reqs) && count($reqs) > 0) {
     $req_date = dateUIFormat($req_date_db);
     $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
     $lead_name = $lead->prettyName();
-    print "<tr><td><a href=\"project.php?$project_id\">$project_name</a></td><td>$lead_name</td><td>$purpose</td><td>$req_date</td><td>$reason</td></tr>\n";
+    print "<tr><td>$project_name</td><td>$lead_name</td><td>$purpose</td><td>$req_date</td><td>$reason</td></tr>\n";
   }
   print "</table>\n";
   print "<br/><br/>\n";
