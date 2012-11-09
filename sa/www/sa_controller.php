@@ -391,7 +391,7 @@ function create_slice($args, $message)
       error_log("Illegal slice name $slice_name");
       geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: invalid slice name \"$slice_name\"");
       return generate_response(RESPONSE_ERROR::DATABASE, null, 
-			       "Cannot create slice with invalid slice name $slice_name");
+			       "Cannot create slice with invalid slice name $slice_name. Use only alphanumeric plus hyphen (no leading hyphen), and at most 19 characters.");
     }
 
   $conn = db_conn();
@@ -730,6 +730,7 @@ function lookup_slice_by_urn($args)
 function renew_slice($args, $message)
 {
   global $SA_SLICE_TABLENAME;
+  global $sa_max_slice_renewal_days;
   sa_expire_slices();
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $requested = $args[SA_ARGUMENT::EXPIRATION];
@@ -739,7 +740,7 @@ function renew_slice($args, $message)
   $req_dt->setTimezone(new DateTimeZone('UTC'));
 
   // FIXME: Shouldn't this depend on the current expiration?
-  $max_expiration = get_future_date(20);// 20 days increment
+  $max_expiration = get_future_date($sa_max_slice_renewal_days);// 20 days increment
 
   if ($req_dt > $max_expiration) {
     //    error_log("req is bigger: " . date_diff($max_expiration, $req_dt)->format('%R%a days'));
