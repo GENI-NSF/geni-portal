@@ -256,6 +256,10 @@ function create_project($args, $message)
 			     "Project name '$project_name' invalid: no spaces allowed.");
   }
 
+  if (!is_valid_project_name($project_name)) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Project name '$project_name' invalid: Avoid /:+;'?#% ");
+  }
   $lead_id = $args[PA_ARGUMENT::LEAD_ID];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   $project_id = make_uuid();
