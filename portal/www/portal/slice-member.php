@@ -62,7 +62,7 @@ if ($member == "None") {
 // FIXME: Currently, get_slices_for_member requires that this user _BE_ the member
 if ($user->account_id != $member_id) {
   error_log("attempt to do slice-member for different member");
-  $_SESSION['lasterror'] = "You can't see someon else's slices.";
+  $_SESSION['lasterror'] = "You can't see someone else's slices.";
   relative_redirect('home.php');
 }
 
