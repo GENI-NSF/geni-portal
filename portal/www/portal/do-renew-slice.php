@@ -56,7 +56,7 @@ if (isset($slice)) {
 
 $res = renew_slice($sa_url, $user, $slice_id, $req_exp);
 
-error_log("Renew Slice output = " . $res);
+//error_log("Renew Slice output = " . $res);
 
 if ($res) {
   // get the new slice expiration
