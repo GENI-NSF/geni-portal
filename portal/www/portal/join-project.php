@@ -70,7 +70,11 @@ print "<br/>\n";
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
-  print "<i>There are no more projects for you to join.</i><br/><br/>\n";
+  print "<i>There are no more projects for you to join.</i><br/>\n";
+  if (count($rpids) > 0) {
+    print "You have " . count($rpids) . " open <a href='projects.php'>request(s) to join a project</a>.<br/>";
+  }
+  print "<br/>\n";
 
 } else {
 
