@@ -59,6 +59,13 @@ if ($member == "None") {
   exit();
 }
 
+// FIXME: Currently, get_slices_for_member requires that this user _BE_ the member
+if ($user->account_id != $member_id) {
+  error_log("attempt to do slice-member for different member");
+  $_SESSION['lasterror'] = "You can't see someon else's slices.";
+  relative_redirect('home.php');
+}
+
 //$slice_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
 $slices_for_member = get_slices_for_member($sa_url, $user, $member_id, true, null);
 //error_log("SLICE ATTRIBS = " . print_r($attributes, true));
