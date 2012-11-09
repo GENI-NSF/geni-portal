@@ -182,12 +182,33 @@ if (isset($submit)) {
     if ($cancelres['code'] == RESPONSE_ERROR::NONE) {
       error_log("cancel-p-req canceled add of $member_name to project $project_name");
       $_SESSION['lastmessage'] = "Canceled add of $member_name to project $project_name";
+
+      // log this
+      $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
+						      $project_id);
+      $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
+					     $member_id);
+      $attributes = array_merge($project_attributes, $member_attributes);
+      $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+      log_event($log_url, Portal::getInstance(),
+		"Canceled join request: $member_name in project $project_name", $attributes,
+		$user->account_id);
     } else {
       $_SESSION['lasterror'] = "Failed to cancel request: " . $cancelres['output'];
     }
   } else if ($cancelres == 1) {
     error_log("cancel-p-req canceled add of $member_name to project $project_name");
     $_SESSION['lastmessage'] = "Canceled add of $member_name to project $project_name";
+    // log this
+    $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
+						    $project_id);
+    $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
+						   $member_id);
+    $attributes = array_merge($project_attributes, $member_attributes);
+    $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+    log_event($log_url, Portal::getInstance(),
+	      "Canceled join request: $member_name in project $project_name", $attributes,
+	      $user->account_id);
   } else {
     error_log("cancel-p-req: malformed result from resolve_req: " . print_r($request));
     $_SESSION['lasterror'] = "Error cancelling request";
