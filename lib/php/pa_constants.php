@@ -86,4 +86,17 @@ class PA_ACTION {
   const GET_PROJECTS_FOR_MEMBER= 'get_projects_for_member';
 }
 
+// Per the AM API V3:
+// We want the project name to go without change into the authority part of the URN
+// so do not use characters that get translated between URN and publicid. So:
+// not empty
+// no whitespace
+// no / : + ; ' ? # %
+// no leading/trailing whitespace
+// collapse consecutive whitespace
+function is_valid_project_name($project_name)
+{
+  $pattern = '/^[^\/\:\+\;\'\?\#\% ]+$/';
+  return preg_match($pattern, $project_name);
+}
 ?>
