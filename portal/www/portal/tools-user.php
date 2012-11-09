@@ -115,10 +115,10 @@ if (isset($reqs) && count($reqs) > 0) {
   $REQ_TYPE_NAMES[] = 'Update Attributes';
   foreach ($reqs as $request) {
     $name = "";
-    error_log(print_r($request, true));
+    //error_log(print_r($request, true));
     $typestr = $REQ_TYPE_NAMES[$request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]] . " " . $CS_CONTEXT_TYPE_NAME[$request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]];
     if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::PROJECT) {
-      error_log("looking up project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      //error_log("looking up project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $project = lookup_project($pa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $cancel_url="cancel-join-project.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
