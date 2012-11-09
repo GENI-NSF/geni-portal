@@ -112,8 +112,6 @@ foreach ($rolevals as $role) {
 print "</select>\n<br/>\n";
 */
 
-
-print("<br>\n");
 print("<b>Project Roles</b>");
 print("\n<table>\n");
 print ("<tr><th>Project</th><th>Role</th></tr>");
@@ -125,16 +123,17 @@ foreach($project_attribs as $attrib) {
   print("<tr><td>$project_link</td><td>$role</td></tr>\n");
 }
 */
-foreach($project_members as  $project_member) {
+$project_link = "<a href=\"project.php?project_id=$project_id\">" . $project_name . "</a>";
+foreach($project_members as $project_member) {
   //  error_log("PM = " . print_r($project_member, true));
-  $project_link = "<a href=\"project.php?project_id=$project_id\">" . $project_name . "</a>";
-  $member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+  if ($member_id != $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]) {
+    continue;
+  }
   $role_index = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
   $role = $CS_ATTRIBUTE_TYPE_NAME[$role_index];
   print("<tr><td>$project_link</td><td>$role</td></tr>\n");
 }
 print("</table>\n\n");
-print("<br>\n");
 
 print("<br>\n");
 print("<b>Slice Roles</b>");
@@ -172,7 +171,7 @@ if (! is_null($slice_members) && count($slice_members) > 0) {
       }
     }
     if ($slice_name == null) { continue; }
-    $member_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    if ($member_id != $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID]) { continue; }
     $role_index = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
     $role = $CS_ATTRIBUTE_TYPE_NAME[$role_index];
     $slice_link = "<a href=\"slice.php?slice_id=$slice_id\">" . $slice_name . "</a>";
