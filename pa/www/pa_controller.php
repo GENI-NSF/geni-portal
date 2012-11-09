@@ -173,7 +173,26 @@ class PAProjectRequestGuard implements Guard
       $allowed = $result > 0;
     }
 
-    // FIXME: If not allowed but requestor is signer and request status is cancelled, then allow it
+    // If not allowed but requestor is signer and request status is cancelled, then allow it
+    if (! $allowed) {
+      $resolution_status = null;
+      if (array_key_exists(RQ_ARGUMENTS::RESOLUTION_STATUS, $this->params)) {
+	$resolution_status = $this->params[RQ_ARGUMENTS::RESOLUTION_STATUS];
+	//error_log("not allowed but res_status= $resolution_status");
+	if ($resolution_status == RQ_REQUEST_STATUS::CANCELLED) {
+
+	  $sql = "select " . RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR . " FROM $REQUEST_TABLENAME WHERE "
+	    . " $REQUEST_TABLENAME." . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $conn->quote($request_id, 'text');
+	  //error_log("doing sql $sql");
+	  $result = db_fetch_row($sql);
+	  if ($result['code'] == RESPONSE_ERROR::NONE and $result['value'][RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] == $signer) {
+	    $allowed = true;
+	    //} else {
+	    //  error_log(print_r($result));
+	  }
+	}
+      }
+    }
 
     //    error_log("Allowed = " . print_r($allowed, true));
     return $allowed;
