@@ -89,6 +89,28 @@ class GeniUser
     $this->status = 'active';
   }
 
+  // Fill in attributes from this identity on this user. Lets us get affiliation and idp_url
+  function init_from_identity($identity) {
+    if (! isset($identity) or is_null($identity)) {
+      return;
+    }
+    // loop over keys. set the values
+    foreach (array_keys($identity) as $attr_name) {
+      if ($attr_name == 'account_id') {
+	continue;
+      }
+      if (! isset($this->{$attr_name})) {
+	$this->{$attr_name} = $identity[$attr_name];
+      } else if (isset($this->{$attr_name}) && $this->{$attr_name} != $identity[$attr_name]) {
+	error_log("User " . $this->eppn . ": Changing member-set $attr_name to identity-set " . $identity[$attr_name]);
+	$this->{$attr_name} = $identity[$attr_name];
+      }
+    }
+    if (isset($this->provider_url) && ! isset($this->idp_url)) {
+      $this->idp_url = $this->provider_url;
+    }
+  }
+
   // If we haven't re-read the permissions in this many seconds, re-read
   //  const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = 30; 
 
@@ -255,6 +277,10 @@ class GeniUser
     $member = ma_lookup_member_by_id($ma_url, $this, $member_id);
     $user = new GeniUser();
     $user->init_from_member($member);
+    // add in identity attributes
+    //    error_log("In user " . $this->eppn . " looking up identity of eppn " . $user->eppn);
+    $identity = geni_load_identity_by_eppn($user->eppn);
+    $user->init_from_identity($identity);
     return $user;
   }
 
@@ -453,6 +479,52 @@ function geni_load_user_by_member_id($member_id)
   return $user;
 }
 
+// Load the identity attributes from the DB, looking up by eppn
+function geni_load_identity_by_eppn($eppn)
+{
+  if (! isset($eppn) || is_null($eppn)) {
+    return array();
+  }
+  $identity = array();
+  $conn = db_conn();
+  $sql = "select * from identity where eppn = " . $conn->quote($eppn, 'text');
+  $row = db_fetch_row($sql);
+  if ($row['code'] == RESPONSE_ERROR::NONE) {
+    $identity = $row['value'];
+  } else {
+    error_log("Failed to get identity info for eppn $eppn: " . $row['output']);
+    return $identity;
+  }
+
+  //  error_log("Got identity for $eppn: " . print_r($identity, true));
+
+  // FIXME: If affiliation has changed, log it / update it
+  $sql = "select * from identity_attribute where identity_id = " . $conn->quote($identity['identity_id'], 'text');
+  $res = db_fetch_rows($sql);
+  if ($res['code'] != RESPONSE_ERROR::NONE) {
+    error_log("Failed to get identity attributes for eppn $eppn: " . $res['output']);
+    return $identity;
+  }
+  $rows = $res['value'];
+  $cureppn = null;
+  if (array_key_exists('eppn', $_SERVER)) {
+    $cureppn = $_SERVER['eppn'];
+  }
+  foreach($rows as $row) {
+    $identity[$row['name']] = $row['value'];
+    if (! is_null($cureppn) && $cureppn == $identity['eppn'] && array_key_exists($row['name'], $_SERVER)) {
+      if ($row['value'] != $_SERVER[$row['name']]) {
+	error_log("IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
+	geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
+	// FIXME: Update the identity_attribute table!
+      }
+    }
+  }
+
+  //  error_log("Added attributes, now ID is " . print_r($identity, true));
+
+  return $identity;
+}
 
 /**
  * Dispatch function to support migration to MA.
@@ -470,6 +542,10 @@ function geni_loadUser()
   // Load current user based on Shibboleth environment
   $eppn = $_SERVER['eppn'];
   $user = geni_load_user_by_eppn($eppn);
+  $identity = geni_load_identity_by_eppn($eppn);
+  $user->init_from_identity($identity);
+  // FIXME: Confirm that attributes we have in DB match attributes in the environment
+
   // TODO: Insert user in cache here
   return $user;
 }
