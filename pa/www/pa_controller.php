@@ -173,6 +173,8 @@ class PAProjectRequestGuard implements Guard
       $allowed = $result > 0;
     }
 
+    // FIXME: If not allowed but requestor is signer and request status is cancelled, then allow it
+
     //    error_log("Allowed = " . print_r($allowed, true));
     return $allowed;
   }
