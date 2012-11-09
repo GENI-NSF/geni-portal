@@ -122,7 +122,7 @@ $member_id = $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR];
 $member = $user;
 $member_name = $user->prettyName();
 
-error_log("REQ = " . print_r($request, true));
+//error_log("REQ = " . print_r($request, true));
 if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN) {
   error_log("cancel-p-req: Non join request in request " . $request['id'] . ": " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
@@ -178,8 +178,21 @@ if (isset($submit)) {
   $cancelres = resolve_pending_request($pa_url, $user, $request_id, RQ_REQUEST_STATUS::CANCELLED, $reason);
   // FIXME: Handle result
 
-  error_log("cancel-p-req canceled add of $member_name to project $project_name");
-  // FIXME: Put up a page
+  if (isset($cancelres) && is_array($cancelres) && array_key_exists('code', $cancelres)) {
+    if ($cancelres['code'] == RESPONSE_ERROR::NONE) {
+      error_log("cancel-p-req canceled add of $member_name to project $project_name");
+      $_SESSION['lastmessage'] = "Canceled add of $member_name to project $project_name";
+    } else {
+      $_SESSION['lasterror'] = "Failed to cancel request: " . $cancelres['output'];
+    }
+  } else if ($cancelres == 1) {
+    error_log("cancel-p-req canceled add of $member_name to project $project_name");
+    $_SESSION['lastmessage'] = "Canceled add of $member_name to project $project_name";
+  } else {
+    error_log("cancel-p-req: malformed result from resolve_req: " . print_r($request));
+    $_SESSION['lasterror'] = "Error cancelling request";
+  }
+    
     relative_redirect('home.php');
 }
 
