@@ -53,7 +53,7 @@ if (array_key_exists("request_id", $_REQUEST)) {
 if (! isset($request) || is_null($request)) {
   error_log("No request from request_id");
   if (isset($project_id)) {
-    $reqs = get_pending_requests_for_user($user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     if (isset($reqs) && count($reqs) > 0) {
       if (count($reqs) > 1) {
 	error_log("cancel-project-request: Got " . count($reqs) . " pending requests on same project for same member");
@@ -107,40 +107,40 @@ if (! isset($request) || is_null($request)) {
 	/* resolution_timestamp DATETIME, */
 	/* resolution_description VARCHAR */
 
-if (false && $user->account_id != $request['requestor']) {
-  error_log("cancel-p-reg got member_id != request's requestor. Member " . $user->account_id . " != " . $request['requestor'] . " for request " . $request['id']);
+if ($user->account_id != $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]) {
+  error_log("cancel-p-reg got member_id != request's requestor. Member " . $user->account_id . " != " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " for request " . $request['id']);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
   print "<h2>Error canceling project request</h2>\n";
-  print "Request " . $request['id'] . " is not for you!<br/><br/>\n";
+  print "Request " . $request['id'] . " is not from you!<br/><br/>\n";
   // FIXME: Print other request details
   print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
   include("footer.php");
   exit();
 }
-$member_id = $request['requestor'];
+$member_id = $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR];
 $member = $user;
 $member_name = $user->prettyName();
 
 error_log("REQ = " . print_r($request, true));
-if ($request['request_type'] != RQ_REQUEST_TYPE::JOIN) {
-  error_log("cancel-p-req: Non join request in request " . $request['id'] . ": " . $request['request_type']);
+if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN) {
+  error_log("cancel-p-req: Non join request in request " . $request['id'] . ": " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
   print "<h2>Error canceling project request</h2>\n";
-  print "Request " . $request['id'] . " is not a join request, but a " . $request['request_type'] . "<br/>\n";
+  print "Request " . $request['id'] . " is not a join request, but a " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] . "<br/>\n";
   // FIXME: Print other request details
   print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
   include("footer.php");
   exit();
 }
 
-if ($request['context_type'] != CS_CONTEXT_TYPE::PROJECT) {
-  error_log("cancel-p-req: Not a project, but " . $request['context_type']);
+if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] != CS_CONTEXT_TYPE::PROJECT) {
+  error_log("cancel-p-req: Not a project, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
   print "<h2>Error canceling project request</h2>\n";
-  print "Request not a project request, but " . $request['context_type'] . "<br/>\n";
+  print "Request not a project request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] . "<br/>\n";
   // FIXME: Print other request details
   print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
   include("footer.php");
@@ -148,9 +148,9 @@ if ($request['context_type'] != CS_CONTEXT_TYPE::PROJECT) {
 }
 
 if (isset($project_id) && $request['context_id'] != $project_id) {
-  error_log("cancel-p-req: Request project != given project: " . $request['context_id'] . " != " . $project_id);
+  error_log("cancel-p-req: Request project != given project: " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] . " != " . $project_id);
 }
-$project_id = $request['context_id'];
+$project_id = $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
 $project = lookup_project($pa_url, $user, $project_id);
 $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
@@ -188,12 +188,11 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 
 print "<h2>Cancel Project Join Request</h2>\n";
-print "Cancel Request to join project $project_name:<br/>\n";
+print "Cancel Request to join project <b>$project_name</b>:<br/>\n";
 print "<br/>\n";
-print "You may cancel your request to join project $project_name.<br/><br/>\n";
 print "<b>Project</b>: <br/>\n";
 // Show details on the project: name, purpose, lead
-print "<table><tr><td>$project_name</td><td>" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . "</td><td>$leadname</td></tr></table>\n";
+print "<table><tr><th>Name</th><th>Purpose</th><th>Lead</th></tr><tr><td>$project_name</td><td>" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . "</td><td>$leadname</td></tr></table>\n";
 
 print "<br/><br/>\n";
 
