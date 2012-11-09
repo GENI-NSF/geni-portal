@@ -62,7 +62,7 @@ if (is_null($project_id) || $project_id == '') {
 
 if (!is_null($slice_name) && ($slice_name != '') && !is_valid_slice_name($slice_name)) {
   error_log("createslice: invalid slice name from GET: " . $slice_name);
-  $_SESSION['lasterror'] = "Invalid slice name '$slice_name'";
+  $_SESSION['lasterror'] = "Invalid slice name '$slice_name': Use only alphanumeric plus hyphen (no leading hyphen), and at most 19 characters.";
   $slice_name = NULL;
   //  relative_redirect("home.php");
 }
@@ -116,7 +116,7 @@ print "<table>";
 print "<tr><th>Project name</th><td><b>$project_name</b></td></tr>\n";
 print '<tr><th>Slice name</th>';
 print "\n";
-print '<td><input type="text" name="slice_name"/> -- Required</td>';
+print '<td><input type="text" name="slice_name"/> -- Required</td>'; // FIXME: Note legal characters, length?
 print "</tr>\n";
 print '<tr><th>Slice description</th>';
 print "\n";
