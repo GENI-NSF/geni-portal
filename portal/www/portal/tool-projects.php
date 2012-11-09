@@ -163,8 +163,10 @@ if (count($projects) > 0) {
 // Show outstanding project requests BY this user - projects you asked to join
 $reqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
 if (isset($reqs) && count($reqs) > 0) {
-  print "Found " . count($reqs) . " outstanding project join requests by you:<br/>\n";
+  print "<br/>\n";
+  print "Found " . count($reqs) . " outstanding project join request(s) by you:<br/>\n";
   print "<table>\n";
+  // Could add a cancel button?
   print "<tr><th>Project Name</th><th>Project Lead</th><th>Project Purpose</th><th>Request Created</th><th>Request Reason</th></tr>\n";
   foreach ($reqs as $request) {
     // Print it out
