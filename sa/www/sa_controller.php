@@ -170,7 +170,7 @@ class SAGuardFactory implements GuardFactory
                               $params[SA_ARGUMENT::PROJECT_ID]);
   }
 
-  /* Ensure that the signer matches the MEMBER parameter. */
+  /* Ensure that the signer matches the OWNER parameter. */
   private function signer_owner_guard($message, $action, $params) {
       return new SASignerGuard($this->cs_url, $message, $action, $params, SA_ARGUMENT::OWNER_ID);
   }
