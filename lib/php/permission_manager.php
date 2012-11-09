@@ -54,9 +54,9 @@ class PermissionManager {
     if (is_context_type_specific($context_type)) {
       if(!array_key_exists($context, $this->allowed_actions_in_context)) {
 	$list_for_context = array();
-	} else {
-	  $list_for_context = $this->allowed_actions_in_context[$context];
-	}
+      } else {
+	$list_for_context = $this->allowed_actions_in_context[$context];
+      }
       $list_for_context[] = $permission;
       $this->allowed_actions_in_context[$context] = $list_for_context;
     } else {
