@@ -517,6 +517,7 @@ function lookup_member_by_id($args, $message)
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $log_msg = "looking up member by id $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  // Make sure this is a valid member ID
   $sql = ("select " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
           . " from " . $MA_MEMBER_TABLENAME
           . " where " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
