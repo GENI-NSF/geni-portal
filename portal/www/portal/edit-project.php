@@ -63,6 +63,7 @@ if (! isset($project)) {
 $fields = array(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL, PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE);
 $field_labels = array("Project Name", "Email", "Purpose");
 $ind = -1;
+// FIXME: Note the project name character restrictions if $isnew?
 foreach ($fields as $field) {
   $ind = $ind + 1;
   if ($isnew && $field_labels[$ind] == "Email") {
