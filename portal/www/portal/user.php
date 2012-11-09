@@ -79,6 +79,12 @@ class GeniUser
     if (isset($member->last_name)) {
       $this->attributes['sn'] = $member->last_name;
     }
+    if (isset($member->provider_url)) {
+      $this->idp_url = $member->provider_url;
+    }
+    if (isset($member->affiliation)) {
+      $this->affiliation = $member->affiliation;
+    }
     // FIXME: MA should maintain a member status
     $this->status = 'active';
   }
@@ -103,6 +109,13 @@ class GeniUser
     $this->raw_attrs = $attrs;
     foreach ($attrs as $attr) {
       $this->attributes[$attr['name']] = $attr['value'];
+    }
+    // identity table has this - but where else?
+    if (isset($this->attributes['provider_url']) && ! isset($this->idp_url)) {
+      $this->idp_url = $this->attributes['provider_url'];
+    }
+    if (isset($this->attributes['affiliation']) && ! isset($this->affiliation)) {
+      $this->affiliation = $this->attributes['affiliation'];
     }
   }
 
