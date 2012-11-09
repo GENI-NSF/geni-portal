@@ -332,7 +332,7 @@ foreach($members as $member) {
   $member_name = $member_user->prettyName();
   $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
   $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
-  print "<tr><td><a href=\"slide-member.php?slice_id=" . $slice_id . 
+  print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
     "&member_id=$member_id\">$member_name</a></td>" . 
     "<td>$member_role</td></tr>\n";
 }
