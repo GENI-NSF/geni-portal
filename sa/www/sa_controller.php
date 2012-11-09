@@ -722,7 +722,7 @@ function lookup_slice_by_urn($args)
     . " FROM " . $SA_SLICE_TABLENAME
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_URN
     . " = " . $conn->quote($slice_urn, 'text')
-    . " AND NOT expired";
+    . " AND NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
   $result = db_fetch_rows($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] !== RESPONSE_ERROR::NONE) {
     $msg = "SA.lookup_slice_by_urn error: " . $result[RESPONSE_ARGUMENT::OUTPUT];
