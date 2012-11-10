@@ -39,6 +39,7 @@ import geni.util.cred_util as cred_util
 import geni.util.cert_util as cert_util
 import geni.util.urn_util as urn_util
 import sfa.trust.gid as gid
+import sfa.trust.credential
 import sfa.util.xrn
 from geni.util.ch_interface import *
 from ch import Clearinghouse
@@ -166,6 +167,43 @@ class PGSAnCHServer(object):
         try:
             self.logger.debug("Calling register in delegate")
             value = self._delegate.Register(args)
+        except Exception, e:
+            output = str(e)
+            code = 1 # FIXME: Better codes
+            value = ''
+            
+        # If the underlying thing is a triple, return it as is
+        if isinstance(value, dict) and value.has_key('value'):
+            if value.has_key('code'):
+                code = value['code']
+            if value.has_key('output'):
+                output = value['output']
+            value = value['value']
+
+        if value is None:
+            value = ""
+            if code is None or code == 0:
+                code = 1
+            if output is None:
+                output = "User not found or couldn't create slice"
+        if output is None:
+            output = ""
+        if code is None:
+            code = 0
+
+        return dict(code=code, value=value, output=output)
+
+    def RenewSlice(self, args):
+        # Omni uses this, Flack should not for our purposes
+        # args are credential, hrn, urn, type
+        # cred is user cred, type must be Slice
+        # returns slice cred
+        code = None
+        output = None
+        value = None
+        try:
+            self.logger.debug("Calling register in delegate")
+            value = self._delegate.RenewSlice(args)
         except Exception, e:
             output = str(e)
             code = 1 # FIXME: Better codes
@@ -641,7 +679,6 @@ class PGClearinghouse(Clearinghouse):
                 if self.slices.has_key(urn):
                     slice_cred = self.slices[urn]
                     slice_cert = slice_cred.get_gid_object()
-                    slice_uuid = ""
                     try:
                         slice_uuid = str(uuidModule.UUID(int=slice_cert.get_uuid()))
                     except Exception, e:
@@ -855,6 +892,97 @@ class PGClearinghouse(Clearinghouse):
 
             # OK, this gives us the info about the slice.
             # Now though we need the slice credential
+            argsdict = dict(experimenter_certificate=user_certstr, slice_id=sliceval['slice_id'])
+            res = None
+            try:
+                # CAUTION: untested use of inside cert/key
+                user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
+                inside_key, inside_certs = self.getInsideKeys(user_uuid)
+                res = invokeCH(self.sa_url, 'get_slice_credential', self.logger,
+                               argsdict, inside_certs, inside_key)
+            except Exception, e:
+                self.logger.error("Exception doing get_slice_cred after create_slice: %s" % e)
+                raise
+            getValueFromTriple(res, self.logger, "get_slice_credential after create_slice")
+            if not res['value']:
+                return res
+            if not isinstance(res['value'], dict) and res['value'].has_key('slice_credential'):
+                return res
+            return res['value']['slice_credential']
+
+    def RenewSlice(self, args):
+        # args are credential, expiration
+        # cred is user cred
+        # returns renewed slice credential
+
+        user_certstr = addMACert(self._server.pem_cert, self.logger, self.macert)
+        try:
+            user_gid = gid.GID(string=user_certstr)
+        except Exception, exc:
+            self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
+            raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+
+        try:
+            user_gid.verify_chain(self.trusted_roots)
+        except Exception, exc:
+            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            raise
+
+        expiration = None
+        if args and args.has_key('expiration'):
+            expiration = args['expiration']
+
+        credential = None
+        if args and args.has_key('credential'):
+            credential = args['credential']
+
+        if credential is None:
+            self.logger.error("RenewSlice has no slice credential in its arguments")
+            raise Exception("RenewSlice has no slice credential in its arguments")
+
+        # Validate slice credential
+        creds = list()
+        creds.append(credential)
+        privs = ()
+        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+
+        # get Slice UUID (aka slice_id)
+        slice_cert = sfa.trust.credential.Credential(string=credential).get_gid_object()
+        try:
+            slice_uuid = str(uuidModule.UUID(int=slice_cert.get_uuid()))
+            self.logger.error("Got UUID from slice cert: %s", slice_uuid)
+        except Exception, e:
+            self.logger.error("Failed to get a UUID from slice cert: %s", e)
+
+        if self.gcf:
+            # Pull urn from slice credential
+            urn = sfa.trust.credential.Credential(string=credential).get_gid_object().get_urn()            
+            return self.RenewSlice(urn)
+        else:
+            argsdict = dict(slice_id=slice_uuid,expiration=expiration)#HEREHERE
+            slicetriple = None
+            try:
+                # CAUTION: untested use of inside cert/key
+                user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
+                inside_key, inside_certs = self.getInsideKeys(user_uuid)
+                slicetriple = invokeCH(self.sa_url, "renew_slice", self.logger,
+                                       argsdict, inside_certs, inside_key)
+            except Exception, e:
+                self.logger.error("Exception renewing slice %s: %s" % (urn, e))
+                raise
+
+            # Will raise an exception if triple malformed
+            slicetriple = getValueFromTriple(slicetriple, self.logger, "renew_slice")
+            if not slicetriple['value']:
+                self.logger.error("No slice renewed. Return the triple with the error")
+                return slicetriple
+            if slicetriple['code'] != 0:
+                self.logger.error("Return code != 0. Return the triple")
+                return slicetriple
+            sliceval = getValueFromTriple(slicetriple, self.logger, "renew_slice", unwrap=True)
+
+            # OK, this gives us the info about the slice.
+            # Now though we need the _updated_ slice credential
             argsdict = dict(experimenter_certificate=user_certstr, slice_id=sliceval['slice_id'])
             res = None
             try:
