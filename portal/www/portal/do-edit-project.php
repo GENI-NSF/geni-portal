@@ -72,6 +72,9 @@ if (! isset($name) or is_null($name) or $name == '') {
 } else if (strpos($name, ' ') !== false) {
   error_log("do-edit-project: project name '$name' contains spaces");
   relative_redirect('error-text.php?error=' . urlencode("Project Name may not contain spaces."));
+} else if (! is_valid_project_name($name)) {
+  error_log("do-edit-project: project name '$name' invalid");
+  relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' invalid: Avoid /:+;'?#% "));
 } else if ($isnew) {
   // Re-check authorization?
   // Auto?

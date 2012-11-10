@@ -92,16 +92,20 @@ $new_entries = get_log_entries_by_author($log_url, Portal::getInstance(), $user-
 $entries = array_merge($entries, $new_entries);
 
 $messages = array();
+$logs = array();
 if (is_array($entries) && count($entries) > 0) {
   foreach($entries as $entry) {
     $msg = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE] . $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
     if (!in_array($msg, $messages)) {
       $messages[] = $msg;
-      $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-      $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
-      //    error_log("ENTRY = " . print_r($entry, true));
-      print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
+      $logs[$entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]] = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     }
+  }
+  krsort($logs);
+  foreach ($logs as $rawtime => $message) {
+    $time = dateUIFormat($rawtime);
+    //    error_log("ENTRY = " . print_r($entry, true));
+    print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
   }
 } else {
   print "<tr><td><i>No messages.</i></td></tr>\n";
