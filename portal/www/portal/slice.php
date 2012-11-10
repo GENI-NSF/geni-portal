@@ -124,7 +124,7 @@ print "<tr><td rowspan='2'>\n";
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled ><b>Add Resources</b></button>\n";
 
 print "<button onClick=\"window.location='$status_url'\"><b>Resource Status</b></button>\n";
-print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
+print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\"><b>Details</b></button>\n";
 print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled><b>Delete Resources</b></button>\n";
@@ -272,7 +272,7 @@ if (!(isset($msg) and isset($obj))) {
 /* Sliver Actions */
 print "<td>\n";
 print "<button onClick=\"window.location='$status_url"."&am_id=".am_id($agg)."'\"><b>Resource Status</b></button>\n";
-print "<button onClick=\"window.location='$listres_url"."&am_id=".am_id($agg)."'\"><b>Manifest</b></button>\n";
+print "<button title='Login info, etc' onClick=\"window.location='$listres_url"."&am_id=".am_id($agg)."'\"><b>Details</b></button>\n";
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "&am_id=".am_id($agg)."'\" $delete_slivers_disabled><b>Delete Resources</b></button>\n";
 print "</td>\n";
 
