@@ -86,28 +86,41 @@ function get_template_omni_config($user)
     $nicknames = "";
     foreach ($ams as $am) {
       $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+      $url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
       if (! isset($name) || is_null($name) || trim($name) == '') {
 	continue;
       }
+      // skip AMs running on localhost as they aren't accessible anywhere else
+      if (strpos($url, '://localhost')!==false ) {
+	continue;
+      }
+
       $name = str_replace(' ', '-', $name);
       $name = str_replace(',', '', $name);
       $name = str_replace('=', '', $name);
-      $nicknames = $nicknames . $name . "=," . $am[SR_TABLE_FIELDNAME::SERVICE_URL] . "\n";
+      $nicknames = $nicknames . $name . "=," . $url . "\n";
     }
+
+    $http_host = $_SERVER['HTTP_HOST'];
+    $tmpAuth = explode(".", $http_host, 2);
+    $authority = $tmpAuth[0];
+    $sa_ch_port = 8443;
+    $SA_URL = "$http_host:$sa_ch_port";
+    $CH_URL = "$http_host:$sa_ch_port";
 
     $omni_config = "[omni]\n"
       . "default_cf = portal\n"
       . "users = $username\n"
       . "\n"
       . "[portal]\n"
-      . "type=gcf\n"
-      . "authority=geni:gpo:portal\n"
-      . "ch=https://notused.example.com\n"
+      . "type=pg\n"
+      . "ch=https://$CH_URL\n"
+      . "sa=https://$SA_URL\n"
       . "cert=/PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
       . "key=/PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
       . "\n"
       . "[$username]\n"
-      . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+      . "urn=urn:publicid:IDN+$authority+user+$username\n"
       . "keys=/PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
