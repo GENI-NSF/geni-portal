@@ -69,6 +69,9 @@ policies:<br/>
 -->
 </ul>
 <br/>
+   You must also acknowledge that the GENI Clearinghouse and experimenter portal are currently in an alpha release stage. There are bugs and missing features. Let us know, and we will try to address the issues.
+<br/>
+<br/>
 <form method="POST" action="do-register.php">
 <input type="checkbox" name="agree" value="agree">I agree to the GENI policies.<br/>
 <br>

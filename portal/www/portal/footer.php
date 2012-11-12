@@ -28,6 +28,7 @@
 <hr/>
 <div id="footer">
   <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="http://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo" height="25" width="25"> National Science Foundation</a></i></small>
+   &nbsp;&nbsp;<small><i>The portal is in alpha release. <a href="mailto:portal-help@geni.net">Report</a> any issues.</i></small>
 </div>
 </body>
 </html>
