@@ -120,7 +120,7 @@ show_header("Welcome to GENI")
 <div id="footer" class="landingpage">
   <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the
   <a href="http://www.nsf.gov/"><img
-  src="http://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo"
+  src="https://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo"
   height="25" width="25"> National Science Foundation</a></i></small>
 </div>
 
