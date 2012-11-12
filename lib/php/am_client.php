@@ -77,6 +77,7 @@ function get_template_omni_config($user)
 {
     /* Create OMNI config file */
     $username = $user->username;
+    $urn = $user->urn();
 
     // Add shortcuts for all known AMs?
     // Note this makes the config long in the extreme case....
@@ -120,7 +121,7 @@ function get_template_omni_config($user)
       . "key=/PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
       . "\n"
       . "[$username]\n"
-      . "urn=urn:publicid:IDN+$authority+user+$username\n"
+      . "urn=$urn\n"
       . "keys=/PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
