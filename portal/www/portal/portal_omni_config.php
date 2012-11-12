@@ -34,7 +34,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 /* Filename to download omni_config into*/
 $filename = "portal_omni_config";
 
-$_SESSION['lastmessage'] = "Downloaded omni_config to $filename";
+$_SESSION['lastmessage'] = "Downloaded '$filename'";
 
 require_once("am_client.php"); 
 // must double backslash things in the omni_config here....

@@ -97,6 +97,7 @@ $parents = array("profile.php" => "home.php",
 		 "cancel-join-slice.php" => "home.php",
 		 "uploadsshkey.php" => "profile.php",
 		"generatesshkey.php" => "profile.php",
+		"tool-omniconfig.php" => "profile.php",
         "rspecupload.php" => "profile.php",
         "rspecs.php" => "profile.php");
 
@@ -149,6 +150,7 @@ $names = array("home.php" => $TAB_HOME,
 		 "cancel-join-slice.php" => "Cancel Join Slice %slice_name",
 		 "uploadsshkey.php" => "Upload SSH Public Key",
 		"generatesshkey.php" => "Generate SSH Keypair",
+		"tool-omniconfig.php" => "Omni command line tool",
         "rspecupload.php" => "Upload RSpec",
         "rspecs.php" => "Manage RSpecs");
 
