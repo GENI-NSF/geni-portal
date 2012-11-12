@@ -176,18 +176,13 @@ print "<button onClick=\"window.location='rspecs.php'\">"
 print "<h2>Command line tools</h2>\n";
 print ("For <i>Advanced</i> users: download an SSL certificate and private key,"
        . " in order to use other GENI tools.<br/><br/>\n");
-require_once("am_client.php"); 
-// must double backslash things in the omni_config here....
-$omni_config = get_template_omni_config($user);
-$omni_config = str_replace("\n", "\\n", $omni_config);
-$configalert = "Here is a template Omni config file.\\nTo use this:\\n\\t1. Save it to a file named portal_omni_config.\\n\\t2. Download your certificate, noting the path.\\n\\t3. Edit the portal_omni_config to correct \\n\\t\\t(a) the certificate path, \\n\\t\\t(b) the path to the SSL private key used to generate your certificate, and \\n\\t\\t(c) the path to your SSH public key to use for node logon.\\n\\t4. When running omni: \\n\\t\\ta) Do: omni -c portal_omni_config --slicecred <path to downloaded slice credential> ... to specify the path to this omni config and your downloaded slice credential\\n\\t\\tb) Use the full slice URN when naming your slice, not just the slice name\\n\\n$omni_config\\n";
 
 print "\n<table>\n";
 print "<tr><th>Tool</th><th>Description</th><th>Configuration File</th></tr>\n";
 print "<tr>"
     . "<td><a href='http://trac.gpolab.bbn.com/gcf/wiki'>Omni</a></td>"
     . "<td>command line resource allocation tool</td>"
-    . "<td><button onClick=\"JavaScript:alert('$configalert')\">Get omni_config</button></td>"
+    . "<td><a href='tool-omniconfig.php'>Get omni_config</a></td>"
     . "</tr>\n";
 print "</table>\n";
 // FIXME: Way to delete a key?
