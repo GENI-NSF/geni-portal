@@ -174,9 +174,8 @@ print "<button onClick=\"window.location='rspecs.php'\">"
  *----------------------------------------------------------------------
  */
 print "<h2>Command line tools</h2>\n";
-print ("For <i>Advanced</i> users: download an <a href=''>SSL certificate and private key</a>,"
+print ("For <i>Advanced</i> users: download an SSL certificate and private key,"
        . " in order to use other GENI tools.<br/><br/>\n");
-$keyrow = db_fetch_outside_private_key_cert($user->account_id);
 require_once("am_client.php"); 
 // must double backslash things in the omni_config here....
 $omni_config = get_template_omni_config($user);
