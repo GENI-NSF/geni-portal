@@ -113,6 +113,8 @@ function get_template_omni_config($user)
 
     $omni_config = "[omni]\n"
       . "default_cf = portal\n"
+      . "# 'users' is a comma seperated list of users which should be added to a slice.\n"
+      . "# Each user is defined in a seperate section below.\n"
       . "users = $username\n"
       . "\n"
       . "[portal]\n"
@@ -122,8 +124,10 @@ function get_template_omni_config($user)
       . "cert=/PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
       . "key=/PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
       . "\n"
+
       . "[$username]\n"
       . "urn=$urn\n"
+      . "# 'keys' is a comma seperated list of ssh public keys which should be added to this user's account.\n"
       . "keys=/PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
