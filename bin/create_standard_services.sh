@@ -49,7 +49,10 @@ function add_service {
 
     mkdir -p ${BASEDIR}/${SVC_NAME}
     SVC_CERT="${BASEDIR}/${SVC_NAME}/${SVC_NAME}-cert.pem"
-    if [ ! -f "${SVC_CERT}" -o $FORCE == 1 ]; then
+    if [ "${SVC_CA}" == "none" ]; then
+	SVC_CERT=""
+        echo "${SVC_NAME} - not generating a certificate for this service"
+    elif [ ! -f "${SVC_CERT}" -o $FORCE == 1 ]; then
         echo "Creating ${SVC_NAME} certificate at ${SVC_CERT}"
         SVC_KEY="${BASEDIR}/${SVC_NAME}/${SVC_NAME}-key.pem"
         SVC_REQ="${BASEDIR}/${SVC_NAME}/${SVC_NAME}-req.pem"
@@ -87,6 +90,7 @@ add_service logging ${ADMIN_EMAIL} NO 5 "https://${FQDN}/logging/logging_control
 add_service cs ${ADMIN_EMAIL} NO 6 "https://${FQDN}/cs/cs_controller.php"
 add_service km ${ADMIN_EMAIL} NO 8 "https://${FQDN}/secure/kmhome.php"
 add_service portal ${ADMIN_EMAIL} NO
+add_service pgch ${ADMIN_EMAIL} none 9 "https://${FQDN}:8443"
 add_client_tool portal
 
 # Link the MA cert to the trusted_roots for pgch

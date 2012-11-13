@@ -102,12 +102,14 @@ function get_template_omni_config($user)
       $nicknames = $nicknames . $name . "=," . $url . "\n";
     }
 
-    $http_host = $_SERVER['HTTP_HOST'];
-    $tmpAuth = explode(".", $http_host, 2);
-    $authority = $tmpAuth[0];
-    $sa_ch_port = 8443;
-    $SA_URL = "$http_host:$sa_ch_port";
-    $CH_URL = "$http_host:$sa_ch_port";
+    $pgchs = get_services_of_type(SR_SERVICE_TYPE::PGCH);
+    if (count( $pgchs ) != 1) {
+          error_log("am_client must have exactly one PGCH service defined to generate an omni_config");
+	  return("Should be exactly one PGCH url.");
+    } else {
+        $pgch = $pgchs[0];
+      	$PGCH_URL = $pgch[SR_TABLE_FIELDNAME::SERVICE_URL];	
+    }
 
     $omni_config = "[omni]\n"
       . "default_cf = portal\n"
@@ -115,8 +117,8 @@ function get_template_omni_config($user)
       . "\n"
       . "[portal]\n"
       . "type=pg\n"
-      . "ch=https://$CH_URL\n"
-      . "sa=https://$SA_URL\n"
+      . "ch=https://$PGCH_URL\n"
+      . "sa=https://$PGCH_URL\n"
       . "cert=/PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
       . "key=/PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
       . "\n"

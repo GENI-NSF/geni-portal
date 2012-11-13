@@ -36,7 +36,8 @@ $SR_SERVICE_TYPE_NAMES = array("AGGREGATE_MANAGER",
 			       "LOGGING_SERVICE",
 			       "CREDENTIAL_STORE", 
 			       "CERTIFICATE_AUTHORITY",
-			       "KEY_MANAGER"
+			       "KEY_MANAGER",
+			       "PGCH"
 			       );
 
 class SR_SERVICE_TYPE
@@ -50,6 +51,7 @@ class SR_SERVICE_TYPE
   const CREDENTIAL_STORE = 6;
   const CERTIFICATE_AUTHORITY = 7;
   const KEY_MANAGER = 8;
+  const PGCH = 9;
 }
 
 /* Set of arguments in calls to the SR interface */
