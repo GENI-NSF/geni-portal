@@ -34,8 +34,10 @@ const FLACK_1_FILENAME = "flackportal-1.html";
 const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
 const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
+// FIXME: Should not be hard-coded
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
+// FIXME: Allow pgch to run on diff host from portal, configurable port
 $http_host = $_SERVER['HTTP_HOST'];
 $sa_ch_port = 8443;
 $SA_URL = "https://$http_host:$sa_ch_port/";
