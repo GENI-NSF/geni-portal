@@ -277,15 +277,24 @@ if (isset($submit)) {
     // Email the member
     $email = $user->email();
     $name = $user->prettyName();
+    $hostname = $_SERVER['HTTP_HOST'];
     $message = "Your request to join GENI project $project_name was accepted!
 You have been added to the project with role $rolestr.
-Log in to the GENI portal to start using this project.
 
-Reason:
+To start using this project at the GENI portal, visit this page: 
+https://$hostname/secure/project.php?project_id=$project_id
+
+";
+    if (isset($reason) && $reason != '') {
+    $message = $message . "Reason:
 $reason
 
-Thank you,
+";
+    }
+
+    $message = $message . "Thank you,
 $name\n";
+
     mail($member_name . "<" . $member->email() . ">",
        "Added to GENI project $project_name",
        $message,
