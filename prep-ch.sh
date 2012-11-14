@@ -37,7 +37,7 @@ SHARE_DIR=/usr/share/geni-ch/portal
 
 # Make a directory for gcf to live in
 if [ ! -d "${SHARE_DIR}" ]; then
-  /usr/bin/sudo /bin/mkdir "${SHARE_DIR}"
+  /usr/bin/sudo /bin/mkdir -p "${SHARE_DIR}"
 fi
 
 GCF=gcf-1.6.1
