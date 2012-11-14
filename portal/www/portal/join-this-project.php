@@ -196,7 +196,7 @@ print "<form action=\"join-this-project.php?project_id=$project_id\">\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 print "<b>Project join request message</b>:<br/>\n";
 $hostname = $_SERVER['HTTP_HOST'];
-print "<textarea name='message' cols='60' rows='5'>May I join GENI project $project_name?
+print "<textarea name='message' cols='60' rows='5'>May I join GENI project '$project_name'?
 I think I need to do GENI research in your project.
 I am a student in your lab.\n</textarea><br/>\n";
 print "<b>Message footer</b>: <br/>\n";

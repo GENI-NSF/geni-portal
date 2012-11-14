@@ -278,7 +278,7 @@ if (isset($submit)) {
     $email = $user->email();
     $name = $user->prettyName();
     $hostname = $_SERVER['HTTP_HOST'];
-    $message = "Your request to join GENI project $project_name was accepted!
+    $message = "Your request to join GENI project '$project_name' was accepted!
 You have been added to the project with role $rolestr.
 
 To start using this project at the GENI portal, visit this page: 
@@ -351,6 +351,7 @@ print "<br/><br/>\n";
 
 print "<b>Requestor</b>: <br/>\n";
 // Show details on the requestor: name, email, institution
+// FIXME: Add $member->idp_url as Identity Provider?
 print "<table><tr><th>Requester</th><th>Email</th><th>Affiliation</th></tr><tr><td>" . $member->prettyName() . "</td><td>" . $member->email() . "</td><td>" . $member->affiliation . "</td></tr></table>\n";
 
 print "<b>Project</b>: <br/>\n";
