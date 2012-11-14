@@ -37,9 +37,11 @@ require_once('cs_constants.php');
 require_once('cs_client.php');
 require_once('cert_utils.php');
 require_once('ma_utils.php');
+require_once('logging_client.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 $ma_cert_file = '/usr/share/geni-ch/ma/ma-cert.pem';
 $ma_key_file = '/usr/share/geni-ch/ma/ma-key.pem';
@@ -98,12 +100,19 @@ function get_member_ids($args, $message)
 function register_ssh_key($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
+  global $ma_signer;
+  global $log_url;
   $conn = db_conn();
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $signer_id = $message->signerUuid(); // FIXME: get name. For now, use URN
+  $client_urn = $message->signerUrn();
   $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
   $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
   $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
-  $log_msg = "registering ssh key \"$ssh_description\" for $member_id";
+  if (parse_urn($client_urn, $auth, $type, $name)) {
+    $client_urn = $auth . "." . $name;
+  }
+  $log_msg = "$client_urn Registering SSH key \"$ssh_description\" for $member_id";
   $private_key_field = '';
   $private_key_value = '';
   if (array_key_exists(MA_ARGUMENT::SSH_PRIVATE_KEY, $args)) {
@@ -113,6 +122,9 @@ function register_ssh_key($args, $message)
     $log_msg .= " with private key";
   }
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+  $log_msg = "$client_urn Registering SSH key \"$ssh_description\"";
+  log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   $sql = ("insert into " . $MA_SSH_KEY_TABLENAME
           . " ( " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
           . ", " . MA_SSH_KEY_TABLE_FIELDNAME::FILENAME
@@ -135,7 +147,7 @@ function lookup_ssh_keys($args, $message)
   global $MA_SSH_KEY_TABLENAME;
   //  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
-  $log_msg = "looking up ssh keys for $member_id";
+  $log_msg = "Looking up SSH keys for $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = ("select * from " . $MA_SSH_KEY_TABLENAME
@@ -150,6 +162,8 @@ function update_ssh_key($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $signer_id = $message->signerUuid();
+  $client_urn = $message->signerUrn();
   $ssh_key_id = $args[MA_ARGUMENT::SSH_KEY_ID];
   $filename = NULL;
   $description = NULL;
@@ -162,7 +176,10 @@ function update_ssh_key($args, $message)
   if (! ($filename || $description)) {
     return generate_response(RESPONSE_ERROR::NONE, false, "");
   }
-  $log_msg = "updating ssh key $ssh_key_id for $member_id";
+  if (parse_urn($client_urn, $auth, $type, $name)) {
+    $client_urn = $auth . "." . $name;
+  }
+  $log_msg = "$client_urn Updating SSH key $ssh_key_id for $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = "update " . $MA_SSH_KEY_TABLENAME . " SET ";
@@ -200,10 +217,20 @@ function update_ssh_key($args, $message)
 function delete_ssh_key($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
+  global $ma_signer;
+  global $log_url;
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $signer_id = $message->signerUuid();
+  $client_urn = $message->signerUrn();
   $ssh_key_id = $args[MA_ARGUMENT::SSH_KEY_ID];
-  $log_msg = "deleting ssh key $ssh_key_id for $member_id";
+  if (parse_urn($client_urn, $auth, $type, $name)) {
+    $client_urn = $auth . "." . $name;
+  }
+  $log_msg = "$client_urn Deleting SSH key $ssh_key_id for $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+  $log_msg = "$client_urn Deleting SSH key $ssh_key_id";
+  log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   $conn = db_conn();
   $sql = ("delete from " . $MA_SSH_KEY_TABLENAME
           . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
@@ -224,7 +251,7 @@ function lookup_keys_and_certs($args, $message)
   global $MA_INSIDE_KEY_TABLENAME;
   $client_urn = $message->signerUrn();
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
-  $log_msg = "looking up inside cert/key for $member_id";
+  $log_msg = "$client_urn looking up inside cert/key for $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = "select " 
@@ -248,6 +275,7 @@ function lookup_keys_and_certs($args, $message)
 function create_account($args, $message)
 {
   global $cs_url;
+  global $log_url;
   global $ma_signer;
   // Is this a valid signer?
 
@@ -269,6 +297,7 @@ function create_account($args, $message)
 
   $email_address = "<no email address found>";
   foreach ($args[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+    //    error_log("Create_account has attr " . $attr[MA_ATTRIBUTE::NAME] . " = " . $attr[MA_ATTRIBUTE::VALUE]);
     if ($attr[MA_ATTRIBUTE::NAME] === MA_ATTRIBUTE_NAME::EMAIL_ADDRESS) {
       $email_address = $attr[MA_ATTRIBUTE::VALUE];
       break;
@@ -276,6 +305,7 @@ function create_account($args, $message)
   }
   $attributes = $args[MA_ARGUMENT::ATTRIBUTES];
   $username = derive_username($email_address);
+  //  error_log("derived username $username");
   $username_attr = array(MA_ATTRIBUTE::NAME => MA_ATTRIBUTE_NAME::USERNAME,
           MA_ATTRIBUTE::VALUE => $username,
           MA_ATTRIBUTE::SELF_ASSERTED => FALSE);
@@ -295,8 +325,11 @@ function create_account($args, $message)
     // An error occurred. Return the error result.
     return $result;
   }
-  $log_msg = "creating new user $member_id for email $email_address";
+  $log_msg = "Creating new user $member_id for email $email_address";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  $log_msg = "Activated GENI account for $email_address";
+  $logattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+  log_event($log_url, $ma_signer, $log_msg, $logattributes, $message->signerUuid());
   foreach ($attributes as $attr) {
     $attr_value = $attr[MA_ATTRIBUTE::VALUE];
     // Note: Use empty() instead of is_null() because it catches
@@ -410,9 +443,14 @@ function ma_authorize_client($args, $message)
   global $ma_cert_file;
   global $ma_key_file;
   global $MA_INSIDE_KEY_TABLENAME;
+  global $ma_signer;
+  global $log_url;
 
   //  error_log("MAC.ARGS = " . print_r($args, true));
 
+  $signer_id = $message->signerUuid();
+  $signer_urn = $message->signerUrn();
+  // FIXME: I'd like the prettyName, but that code is in ma_client. For now, use URN
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $client_urn = $args[MA_ARGUMENT::CLIENT_URN];
   $authorize_sense = $args[MA_ARGUMENT::AUTHORIZE_SENSE];
@@ -434,16 +472,36 @@ function ma_authorize_client($args, $message)
             . ", " . $conn->quote($cert, 'text')
             . ", " . $conn->quote($key, 'text')
             . ")");
-    $log_msg = "authorizing client $client_urn for $member_id";
+    if (parse_urn($signer_urn, $auth, $type, $name)) {
+      $signer_urn = $auth . "." . $name;
+    }
+    if (parse_urn($client_urn, $auth, $type, $name)) {
+      $client_urn = $auth . "." . $name;
+    }
+    $log_msg = "$signer_urn authorizing client $client_urn for $member_id";
     geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+    // FIXME: Email portal_dev_admin?
+    $log_msg = "$signer_urn authorizing client $client_urn";
+    $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+    log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
     $result = db_execute_statement($sql);
   } else {
     // Remove member from ma_inside_key table
     $sql = "delete from " . $MA_INSIDE_KEY_TABLENAME . 
       " where " . MA_INSIDE_KEY_TABLE_FIELDNAME::MEMBER_ID . "= " . $conn->quote($member_id, 'text') .
       " and " . MA_INSIDE_KEY_TABLE_FIELDNAME::CLIENT_URN . " = " . $conn->quote($client_urn, 'text');
-    $log_msg = "deauthorizing client $client_urn for $member_id";
+    if (parse_urn($signer_urn, $auth, $type, $name)) {
+      $signer_urn = $auth . "." . $name;
+    }
+    if (parse_urn($client_urn, $auth, $type, $name)) {
+      $client_urn = $auth . "." . $name;
+    }
+    $log_msg = "$signer_urn deauthorizing client $client_urn for $member_id";
     geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+    // FIXME: Email portal_dev_admin?
+    $log_msg = "$signer_urn deauthorizing client $client_urn";
+    $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+    log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
     error_log($log_msg);
     $result = db_execute_statement($sql);
   }
@@ -461,6 +519,7 @@ function lookup_members($args, $message)
   if (! array_key_exists(MA_ARGUMENT::ATTRIBUTES, $args)) {
     $msg = ("Required parameter " . MA_ARGUMENT::ATTRIBUTES
             . " does not exist.");
+    error_log($msg);
     return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
   }
 
@@ -473,6 +532,7 @@ function lookup_members($args, $message)
     $attr_name = $attr[MA_ATTRIBUTE::NAME];
     $attr_value = $attr[MA_ATTRIBUTE::VALUE];
     $log_msg = "lookup_members with $attr_name = \"$attr_value\"";
+    error_log($log_msg);
     geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     $sql = "select " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
     . " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME
@@ -481,10 +541,14 @@ function lookup_members($args, $message)
     . " and " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
     . " = " . $conn->quote($attr_value, 'text');
     $rows = db_fetch_rows($sql);
+    if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      error_log("Error querying for members: " . $rows[RESPONSE_ARGUMENT::OUTPUT]);
+    }
     // Convert $rows to an array of member_ids
     $ids = array();
     foreach ($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
       $ids[] = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
+      //      error_log("Added to ids");
     }
     // intersect it with the existing member_ids
     if (is_null($member_ids)) {
@@ -493,8 +557,9 @@ function lookup_members($args, $message)
       $member_ids = array_intersect($member_ids, $ids);
     }
   }
-  geni_syslog(GENI_SYSLOG_PREFIX::MA,
-          "lookup_members found member ids: " . implode(", ", $member_ids));
+  $msg = "lookup_members found member ids: " . implode(", ", $member_ids);
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $msg);
+  error_log($msg);
   $result = array();
   foreach ($member_ids as $member_id) {
     $result[] = get_member_info($member_id);
@@ -516,7 +581,9 @@ function lookup_member_by_id($args, $message)
   $conn = db_conn();
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $log_msg = "looking up member by id $member_id";
+  error_log($log_msg);
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+
   // Make sure this is a valid member ID
   $sql = ("select " . MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID
           . " from " . $MA_MEMBER_TABLENAME
@@ -524,8 +591,10 @@ function lookup_member_by_id($args, $message)
           . " = " . $conn->quote($member_id, 'text'));
   $response = db_fetch_row($sql);
   if ($response[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    //    error_log("got result error");
     return $response;
   } else {
+    //    error_log("returning member data");
     return generate_response(RESPONSE_ERROR::NONE,
             get_member_info($member_id), "");
   }
@@ -534,13 +603,27 @@ function lookup_member_by_id($args, $message)
 function add_member_privilege($args, $message)
 {
   global $cs_url;
+  global $log_url;
   global $ma_signer;
   global $MA_MEMBER_PRIVILEGE_TABLENAME;
 
+  $signer_id = $message->signerUuid();
+  $signer_urn = $message->signerUrn();
+  // FIXME: I'd like the prettyName, but that code is in ma_client. For now, URN
+
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $privilege_id = $args[MA_ARGUMENT::PRIVILEGE_ID];
-
-  $log_msg = "adding privilege \"$privilege_id\" to member $member_id";
+  $priv_name = "<other>";
+  if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
+    $priv_name = "Project Lead";
+  }
+  if (parse_urn($signer_urn, $auth, $type, $name)) {
+    $signer_urn = $auth . "." . $name;
+  }
+  $log_msg = "$signer_urn adding privilege \"$priv_name\" to member $member_id";
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+  $log_msg = "$signer_urn adding privilege \"$priv_name\"";
+  log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
   $sql = ("insert into " . $MA_MEMBER_PRIVILEGE_TABLENAME
@@ -561,12 +644,28 @@ function add_member_privilege($args, $message)
 function revoke_member_privilege($args, $message)
 {
   global $MA_MEMBER_PRIVILEGE_TABLENAME;
+  global $ma_signer;
+  global $log_url;
 
+  $signer_id = $message->signerUuid();
+  $signer_urn = $message->signerUrn();
+  // FIXME: I'd like the prettyName, but that code is in ma_client. For now, URN
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $privilege_id = $args[MA_ARGUMENT::PRIVILEGE_ID];
+  $priv_name = "<other>";
+  if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
+    $priv_name = "Project Lead";
+  }
 
-  $log_msg = "revoking privilege \"$privilege_id\" from member $member_id";
+  if (parse_urn($signer_urn, $auth, $type, $name)) {
+    $signer_urn = $auth . "." . $name;
+  }
+  $log_msg = "$signer_urn revoking privilege \"$priv_name\" from member $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+  $log_msg = "$signer_urn revoking privilege \"$priv_name\"";
+  log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
+  // FIXME: Email portal_dev_admin?
   $conn = db_conn();
   $sql = ("delete from " . $MA_MEMBER_PRIVILEGE_TABLENAME
           . " where "
@@ -602,6 +701,8 @@ class MAGuardFactory implements GuardFactory
   public function __construct() {
   }
 
+  // FIXME: Key functions are unguarded. 
+
   public function createGuards($message) {
     $parsed_message = $message->parse();
     $action = $parsed_message[0];
@@ -612,6 +713,10 @@ class MAGuardFactory implements GuardFactory
     if ($action === 'lookup_ssh_keys') {
       $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
     } elseif ($action === 'register_ssh_key') {
+      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+    } elseif ($action === 'delete_ssh_key') {
+      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+    } elseif ($action === 'update_ssh_key') {
       $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
     } elseif ($action === 'get_member_ids') {
       $result[] = new SignerAuthorityGuard($message);
