@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2011 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,12 +22,28 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 ?>
+<?php
+require_once("settings.php");
+require_once("user.php");
 
-<!-- close the "content" div. -->
-</div>
-<hr/>
-<div id="footer">
-  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="https://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo" height="25" width="25"> National Science Foundation</a></i></small>
-</div>
-</body>
-</html>
+$user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+
+/* Filename to download omni_config into*/
+$filename = "portal_omni_config";
+
+$_SESSION['lastmessage'] = "Downloaded '$filename'";
+
+require_once("am_client.php"); 
+// must double backslash things in the omni_config here....
+$omni_config = get_template_omni_config($user);
+
+// Set headers for download
+header("Cache-Control: public");
+header("Content-Description: File Transfer");
+header("Content-Disposition: attachment; filename=$filename");
+header("Content-Type: text/plain");
+print $omni_config . "\n";
+?>

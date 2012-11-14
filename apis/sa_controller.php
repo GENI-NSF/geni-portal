@@ -183,7 +183,7 @@ function change_slice_member_role($args_dict)
 }
 
 /**
- * Lookup slice id's by project_id, owner_id and/or slice_name
+ * Lookup slice id's by project_id, owner_id and/or slice_name for active slices (not expired slices).
  *
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
@@ -199,7 +199,7 @@ function lookup_slice_ids($args_dict)
 }
 
 /**
- * Lookup slice id's by project_id, member_id and/or slice_name
+ * Lookup slice id's by project_id, member_id and/or slice_name for active slices (not expired slices).
  *
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>
@@ -228,7 +228,7 @@ function lookup_slice($args_dict)
 }
 
 /**
- * Lookup slice info by slice URN
+ * Lookup slice info by slice URN for active slices (not expired slices).
  *
  * @param dict $args_dict Dictionary containing name/value pairs:
 <ul>

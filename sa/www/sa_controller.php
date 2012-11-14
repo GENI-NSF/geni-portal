@@ -39,6 +39,7 @@ require_once('cs_client.php');
 require_once('ma_client.php');
 require_once('logging_client.php');
 require_once('geni_syslog.php');
+require_once('response_format.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
@@ -720,11 +721,33 @@ function lookup_slice_by_urn($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_URN
-    . " = " . $conn->quote($slice_urn, 'text');
-  //  error_log("LOOKUP_SLICE.SQL = " . $sql);
-  $row = db_fetch_row($sql);
-  // error_log("LOOKUP_SLICE.ROW = " . print_r($row, true));
-  return $row;
+    . " = " . $conn->quote($slice_urn, 'text')
+    . " AND NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] !== RESPONSE_ERROR::NONE) {
+    $msg = "SA.lookup_slice_by_urn error: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, $msg);
+    return $result;
+  }
+  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  $numrows = count($rows);
+  switch ($numrows) {
+    case 0:
+      // Mimic db_fetch_row, return success, but no results.
+      return generate_response(RESPONSE_ERROR::NONE, null, null);
+      break;
+    case 1:
+      return generate_response(RESPONSE_ERROR::NONE, $rows[0], null);
+      break;
+    default:
+      // This is a sanity check case. We should never have more than one active slice
+      // for a given URN. If we do, something is amiss. Log the condition and
+      // return an error to the client.
+      $msg = "SA.lookup_slice_by_urn error: multiple slices found for URN $slice_urn";
+      geni_syslog(GENI_SYSLOG_PREFIX::SA, $msg);
+      return generate_response(RESPONSE_ERROR::DATABASE, null, "Too many slices found.");
+      break;
+  }
 }
 
 function renew_slice($args, $message)

@@ -77,6 +77,7 @@ function get_template_omni_config($user)
 {
     /* Create OMNI config file */
     $username = $user->username;
+    $urn = $user->urn();
 
     // Add shortcuts for all known AMs?
     // Note this makes the config long in the extreme case....
@@ -86,28 +87,47 @@ function get_template_omni_config($user)
     $nicknames = "";
     foreach ($ams as $am) {
       $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+      $url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
       if (! isset($name) || is_null($name) || trim($name) == '') {
 	continue;
       }
+      // skip AMs running on localhost as they aren't accessible anywhere else
+      if (strpos($url, '://localhost')!==false ) {
+	continue;
+      }
+
       $name = str_replace(' ', '-', $name);
       $name = str_replace(',', '', $name);
       $name = str_replace('=', '', $name);
-      $nicknames = $nicknames . $name . "=," . $am[SR_TABLE_FIELDNAME::SERVICE_URL] . "\n";
+      $nicknames = $nicknames . $name . "=," . $url . "\n";
+    }
+
+    $pgchs = get_services_of_type(SR_SERVICE_TYPE::PGCH);
+    if (count( $pgchs ) != 1) {
+          error_log("am_client must have exactly one PGCH service defined to generate an omni_config");
+	  return("Should be exactly one PGCH url.");
+    } else {
+        $pgch = $pgchs[0];
+      	$PGCH_URL = $pgch[SR_TABLE_FIELDNAME::SERVICE_URL];	
     }
 
     $omni_config = "[omni]\n"
       . "default_cf = portal\n"
+      . "# 'users' is a comma seperated list of users which should be added to a slice.\n"
+      . "# Each user is defined in a seperate section below.\n"
       . "users = $username\n"
       . "\n"
       . "[portal]\n"
-      . "type=gcf\n"
-      . "authority=geni:gpo:portal\n"
-      . "ch=https://notused.example.com\n"
+      . "type=pg\n"
+      . "ch=https://$PGCH_URL\n"
+      . "sa=https://$PGCH_URL\n"
       . "cert=/PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
       . "key=/PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
       . "\n"
+
       . "[$username]\n"
-      . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+      . "urn=$urn\n"
+      . "# 'keys' is a comma seperated list of ssh public keys which should be added to this user's account.\n"
       . "keys=/PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
