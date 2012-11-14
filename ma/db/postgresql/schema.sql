@@ -112,3 +112,16 @@ CREATE TABLE ma_ssh_key (
   PRIMARY KEY (id)
 );
 CREATE INDEX ma_ssh_key_member_id ON ma_ssh_key (member_id);
+
+-- ----------------------------------------------------------------------
+-- Member cert/key for outside tools (for use "outside" the portal).
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS ma_outside_cert;
+CREATE TABLE ma_outside_cert (
+  id SERIAL PRIMARY KEY,
+  member_id UUID REFERENCES ma_member (member_id) NOT NULL,
+  certificate VARCHAR NOT NULL,
+  private_key VARCHAR
+);
+
+CREATE INDEX ma_outside_cert_index_member_id ON ma_outside_cert (member_id);

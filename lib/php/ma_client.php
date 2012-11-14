@@ -238,4 +238,18 @@ function ma_lookup_member_by_id($ma_url, $signer, $member_id)
   $member->init_from_record($result);
   return $member;
 }
+
+function ma_create_certificate($ma_url, $signer, $member_id, $csr=NULL)
+{
+  $cert = NULL;
+  $private_key = NULL;
+  $msg['operation'] = 'ma_create_certificate';
+  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  if (isset($csr) && (! is_null($csr))) {
+    $msg[MA_ARGUMENT::CSR] = $csr;
+  }
+  $result = put_message($ma_url, $msg,
+          $signer->certificate(), $signer->privateKey());
+  return $result;
+}
 ?>

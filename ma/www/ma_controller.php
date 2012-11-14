@@ -679,6 +679,48 @@ function revoke_member_privilege($args, $message)
 }
 
 /**
+ * Create a certificate for use with GENI tools outside the
+ * GENI portal.
+ */
+function ma_create_certificate($args, $message)
+{
+  global $ma_cert_file;
+  global $ma_key_file;
+  // Need member_id
+  // Optional CSR
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  if (key_exists(MA_ARGUMENT::CSR, $args)) {
+    $csr = $args[MA_ARGUMENT::CSR];
+    $csr_file = writeDataToTempFile($csr);
+    $private_key = NULL;
+  } else {
+    make_csr($member_id, $csr_file, $private_key_file);
+    $private_key = file_get_contents($private_key_file);
+  }
+  // Sign the CSR
+  $info = get_member_info($member_id);
+  $email = get_member_attribute($info, MA_ATTRIBUTE_NAME::EMAIL_ADDRESS);
+  $urn = get_member_attribute($info, MA_ATTRIBUTE_NAME::URN);
+  sign_csr($csr_file, $member_id, $email, $urn, $ma_cert_file, $ma_key_file,
+          $cert_chain);
+  // Store the certificate and private_key in the database
+  $result = ma_store_outside_cert($member_id, $cert_chain, $private_key);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $result;
+  }
+  // Return the cert_chain and the private key if one was generated
+  $value = array(MA_ARGUMENT::CERTIFICATE => $cert_chain);
+  if (! is_null($private_key)) {
+    $value[MA_ARGUMENT::PRIVATE_KEY] = $private_key;
+  }
+  return generate_response(RESPONSE_ERROR::NONE, $value, "");
+}
+
+function ma_lookup_certificate($args, $message)
+{
+}
+
+/**
  * This is more of a demonstration guard than anything else.
  * It really isn't an appropriate test, but gets the point
  * across that a user can't call certain methods, but an

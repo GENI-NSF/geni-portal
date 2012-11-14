@@ -174,17 +174,22 @@ function make_inside_cert_key($member_id, $client_urn, $signer_cert_file,
   $email = NULL;
   $urn = NULL;
   $info = get_member_info($member_id);
-  foreach ($info[MA_ARGUMENT::ATTRIBUTES] as $attr) {
-    if ($attr[MA_ATTRIBUTE::NAME] === MA_ATTRIBUTE_NAME::EMAIL_ADDRESS) {
-      $email = $attr[MA_ATTRIBUTE::VALUE];
-    } elseif ($attr[MA_ATTRIBUTE::NAME] === MA_ATTRIBUTE_NAME::URN) {
-      $urn = $attr[MA_ATTRIBUTE::VALUE];
-    }
-  }
+  $email = get_member_attribute($info, MA_ATTRIBUTE_NAME::EMAIL_ADDRESS);
+  $urn = get_member_attribute($info, MA_ATTRIBUTE_NAME::URN);
   make_cert_and_key($member_id, $email, $urn,
           $signer_cert_file, $signer_key_file,
           &$cert, &$key);
   return true;
+}
+
+function get_member_attribute($member_info, $attribute_name) {
+  // brute force -- iterate through the list of attributes
+  foreach ($member_info[MA_ARGUMENT::ATTRIBUTES] as $attr) {
+    if ($attr[MA_ATTRIBUTE::NAME] === $attribute_name) {
+      return $attr[MA_ATTRIBUTE::VALUE];
+    }
+  }
+  return NULL;
 }
 
 /* NOTE: This is an internal function and not part of the MA API function. */
@@ -264,5 +269,28 @@ function mail_new_project_lead($member_id)
   mail($email_addr,
           "You are now a GENI Project Lead",
           $body, $headers);
+}
+
+function ma_store_outside_cert($member_id, $cert_chain, $private_key)
+{
+  global $MA_OUTSIDE_CERT_TABLENAME;
+  $conn = db_conn();
+  $private_key_field = "";
+  $private_key_value = "";
+  if (isset($private_key) && (! is_null($private_key))) {
+    $private_key_field = ", " . MA_OUTSIDE_CERT_TABLE_FIELDNAME::PRIVATE_KEY;
+    $private_key_value = ", " . $conn->quote($private_key, 'text');
+  }
+  $sql = ("insert into " . $MA_OUTSIDE_CERT_TABLENAME
+          . " ( " . MA_OUTSIDE_CERT_TABLE_FIELDNAME::MEMBER_ID
+          . ", " . MA_OUTSIDE_CERT_TABLE_FIELDNAME::CERTIFICATE
+          . $private_key_field
+          . ")  VALUES ("
+          . $conn->quote($member_id, 'text')
+          . ", " . $conn->quote($cert_chain, 'text')
+          . $private_key_value
+          . ")");
+  $result = db_execute_statement($sql);
+  return $result;
 }
 ?>
