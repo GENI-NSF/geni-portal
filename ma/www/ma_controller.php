@@ -737,6 +737,17 @@ class SignerAuthorityGuard implements Guard
   }
 }
 
+class SignerKmGuard implements Guard
+{
+  public function __construct($message) {
+    $this->message = $message;
+  }
+
+  public function evaluate() {
+    return (strpos($this->message->signerUrn(), '+authority+km') !== FALSE);
+  }
+}
+
 
 class MAGuardFactory implements GuardFactory
 {
@@ -764,6 +775,12 @@ class MAGuardFactory implements GuardFactory
       $result[] = new SignerAuthorityGuard($message);
     } elseif ($action === 'lookup_keys_and_certs') {
       $result[] = new SignerAuthorityGuard($message);
+    } elseif ($action === 'ma_create_certificate') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'ma_lookup_certificate') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
     }
     return $result;
   }
