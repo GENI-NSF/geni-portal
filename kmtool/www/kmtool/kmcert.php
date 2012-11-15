@@ -105,18 +105,31 @@ if (! isset($member_id)) {
   return;
 }
 
-print "You can either create your own private key or download a" .
-        "certificate and private key.<br/><br/>";
-print "<h2>Generate a certificate signing request with an existing private key:</h2>\n";
-print "<verbatim>openssl req -out CSR.csr -key privateKey.key -new</verbatim><br/>\n";
-print "<h2>Generate a certificate signing request and new private key:</h2>\n";
-print "<verbatim>openssl req -out CSR.csr -new -newkey rsa:2048 -nodes -keyout privateKey.key</verbatim><br/>\n";
+print "Need some instructions here.<br/>\n";
 
-// Generate button
+// Generate
+print "<h2>Generate a private key and certificate</h2>\n";
 print "<form name=\"generate\" action=\"kmcert.php\" method=\"post\">\n";
 print "<input type=\"hidden\" name=\"generate\" value=\"y\"/>";
 print "<input type=\"submit\" name=\"submit\" value=\"Generate Certificate and Key\"/>";
 print "</form>\n";
+
+print "<hr/>\n";
+
+// CSR
+print "<h2>Upload a certificate signing request</h2>\n";
+print "<h4>Generate a certificate signing request with an existing private key:</h2>\n";
+print "<verbatim>openssl req -out CSR.csr -key privateKey.key -new</verbatim><br/>\n";
+print "<h4>Generate a certificate signing request and new private key:</h2>\n";
+print "<verbatim>openssl req -out CSR.csr -new -newkey rsa:2048 -nodes -keyout privateKey.key</verbatim><br/>\n";
+
+print "<form name=\"upload\" action=\"kmcert.php\" method=\"post\" enctype=\"multipart/form-data\">\n";
+print "<label for=\"csrfile\">Certificate Signing Request File:</label>\n";
+print "<input type=\"file\" name=\"csrfile\" id=\"csrfile\" />\n";
+print "<input type=\"submit\" name=\"submit\" value=\"Create Certificate\"/>\n";
+print "</form>\n";
+
+
 
 // Include this only if the redirect address is a web address
 if (! empty($redirect_address)) {
