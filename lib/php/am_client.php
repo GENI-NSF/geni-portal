@@ -29,7 +29,8 @@ require_once 'geni_syslog.php';
 require_once 'logging_client.php';
 require_once 'sr_client.php';
 require_once 'portal.php';
-
+require_once("pa_client.php");
+require_once("pa_constants.php");
 
 function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
 {
@@ -115,20 +116,53 @@ function get_template_omni_config($user)
       . "default_cf = portal\n"
       . "# 'users' is a comma seperated list of users which should be added to a slice.\n"
       . "# Each user is defined in a seperate section below.\n"
-      . "users = $username\n"
-      . "\n"
-      . "[portal]\n"
-      . "type=pg\n"
-      . "ch=https://$PGCH_URL\n"
-      . "sa=https://$PGCH_URL\n"
-      . "cert=/PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
-      . "key=/PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
-      . "\n"
+      . "users = $username\n";
 
+/* THIS CODE SHOULD BE ENABLED ONCE Omni 2.2 IS AVAILABLE
+     $omni_config = $omni_config		
+      . "# 'default_project' is the name of the project that will be assumed\n"
+      . "# unless '--project' is specified on the command line.\n"
+      . "# Uncomment only one of the following lines if you want to use this feature\n";
+
+    if (! isset($pa_url)) {
+       $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);	
+    }
+    $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);	
+    $first = True;
+    foreach ($projects as $project_id) {		 
+    	  $project = lookup_project($pa_url, $user, $project_id);    
+    	  $proj_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+	  if ($first) {
+	     $omni_config = $omni_config	
+	       . "default_project = $proj_name\n";
+	     $first = False;
+	  } else {	  
+	     $omni_config = $omni_config
+	       . "# default_project = $proj_name\n";
+         }
+    }
+*/
+	  	     
+    $omni_config = $omni_config
+      . "\n"
+      . "[portal]\n";
+
+    $omni_config = $omni_config
+      . "type = pg\n";
+/* THIS CODE SHOULD BE ENABLED ONCE Omni 2.2 IS AVAILABLE
+    $omni_config = $omni_config
+      . "type = pgch\n";
+*/
+    $omni_config = $omni_config
+      . "ch = https://$PGCH_URL\n"
+      . "sa = https://$PGCH_URL\n"
+      . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
+      . "key = /PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
+      . "\n"
       . "[$username]\n"
-      . "urn=$urn\n"
+      . "urn = $urn\n"
       . "# 'keys' is a comma seperated list of ssh public keys which should be added to this user's account.\n"
-      . "keys=/PATH/TO/SSH/PUBLIC/KEY.pub\n";
+      . "keys = /PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
       . "\n"
@@ -284,8 +318,8 @@ function invoke_omni_function($am_url, $user, $args)
      }
      pclose($handle);
   
-     unlink($cert_file);
-     unlink($key_file);
+//     unlink($cert_file);
+//     unlink($key_file);
      unlink($omni_file);
      unlink($tmp_version_cache);
      foreach ($ssh_key_files as $tmpfile) {
