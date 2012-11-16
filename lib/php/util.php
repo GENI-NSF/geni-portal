@@ -49,6 +49,19 @@ function relative_redirect($relpath) {
   exit;
 }
 
+/*
+ * Generate the URL for the InCommon federated error handling service
+ * for redirection.
+ */
+function incommon_feh_url() {
+  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+  $params['sp_entityID'] = "https://" . $_SERVER['HTTP_HOST'] . "/shibboleth";
+  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+  $query = http_build_query($params);
+  $url = $error_service_url . $query;
+  return $url;
+}
+
 /**
  * Redirect to the referer. If no referer,
  * redirect to $fallback.
