@@ -41,6 +41,9 @@ synci: bin/geni-ch-githash
 syncs: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch sergyar.gpolab.bbn.com:
 
+synct: bin/geni-ch-githash
+	$(RSYNC) --exclude .git -aztv ../proto-ch tau-ceti.gpolab.bbn.com:
+
 syncp: bin/geni-ch-githash
 	$(RSYNC) --exclude .git -aztv ../proto-ch panther.gpolab.bbn.com:
 

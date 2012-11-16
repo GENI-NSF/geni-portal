@@ -35,6 +35,7 @@ require_once('sr_client.php');
 require_once('ma_client.php');
 require_once('cs_client.php');
 require_once('logging_client.php');
+require_once('cert_utils.php');
 
 include_once('/etc/geni-ch/settings.php');
 
@@ -324,9 +325,23 @@ function create_project($args, $message)
   // Log the creation
   global $log_url;
   global $mysigner;
+  global $ma_url;
+  global $portal_admin_email;
+  $signer_id = $message->signerUuid();
+  $signer_urn = $message->signerUrn();
+  $lead_data = ma_lookup_member_by_id($ma_url, $mysigner, $lead_id);
+  $lead_name = $lead_data->prettyName();
+
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  log_event($log_url, $mysigner, 
-	    "Created project: " . $project_name, $attributes, $lead_id);
+  $msg = "Created project: $project_name with lead $lead_name";
+  if ($lead_id != $signer_id) {
+    $msg = $signer_urn . " " . $msg;
+  }
+  log_event($log_url, $mysigner, $msg, $attributes, $lead_id);
+  if (parse_urn($message->signer_urn, $chname, $t, $n)) {
+    $msg = $msg . " on CH $chname";
+  }
+  mail($portal_admin_email, "New GENI CH project created", $msg);
 
   return generate_response(RESPONSE_ERROR::NONE, $project_id, '');
 }
@@ -334,7 +349,7 @@ function create_project($args, $message)
 /**
  * Delete given project of given ID
  */
-function delete_project($args)
+function delete_project($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
@@ -349,9 +364,22 @@ function delete_project($args)
 
   $result = db_execute_statement($sql);
 
-  //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  //  log_event($log_url, $mysigner, 
-  //	    "Deleted project: " . $project_name, $attributes, $lead_id);
+  // FIXME: Delete relevant assertions
+  // FIXME: What about relevant slices? resources
+
+  // Log the deletion
+  global $log_url;
+  global $mysigner;
+  global $ma_url;
+  global $portal_admin_email;
+  $signer_id = $message->signerUuid();
+  $signer_data = ma_lookup_user_by_id($ma_url, $mysigner, $signer_id);
+  $signer_name = $signer_data->prettyName();
+
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  $msg = "$signer_name Deleted project: $project_name";
+  log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+  mail($portal_admin_email, "GENI CH project deleted", $msg);
 
   return $result;
 }
@@ -459,13 +487,29 @@ function lookup_project($args)
 }
 
 /* Update details of given project */
-function update_project($args)
+function update_project($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
+  if (! isset($project_name) or is_null($project_name) or $project_name == '') {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Project name missing");
+  }
+  if (strpos($project_name, ' ') !== false) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Project name '$project_name' invalid: no spaces allowed.");
+  }
+
+  if (!is_valid_project_name($project_name)) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
+			     "Project name '$project_name' invalid: Avoid /:+;'?#% ");
+  }
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
+
+  // FIXME: If you change the project name, and there are existing slices, things get weird. 
+  // You may no longer be able to get a slice credential with the old slice URN.
 
   $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME 
@@ -479,22 +523,37 @@ function update_project($args)
 
   $result = db_execute_statement($sql);
 
-  // FIXME
-  //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  //  log_event($log_url, $mysigner, 
-  //	    "Deleted project: " . $project_name, $attributes, $lead_id);
+  global $log_url;
+  global $mysigner;
+  global $ma_url;
+  global $portal_admin_email;
+  $signer_id = $message->signerUuid();
+  $signer_data = ma_lookup_user_by_id($ma_url, $mysigner, $signer_id);
+  $signer_name = $signer_data->prettyName();
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  $msg = "$signer_name Updated project $project_id: $project_name with purpose $project_purpose";
+  log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
 
   return $result;
 }
 
 /* update lead of given project */
-function change_lead($args)
+function change_lead($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $previous_lead_id = $args[PA_ARGUMENT::PREVIOUS_LEAD_ID];
   $new_lead_id = $args[PA_ARGUMENT::LEAD_ID];
+
+  // Check that new person is allowed to be a lead
+  $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, 'create_project', 
+				     CS_CONTEXT_TYPE::RESOURCE, null);
+  //  error_log("PERMITTED = " . $permitted);
+  if ($permitted < 1) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, 
+			     "Principal " . $new_lead_id  . " may not lead projects");
+  } 
 
   $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME
@@ -505,12 +564,46 @@ function change_lead($args)
   //  error_log("CHANGE_LEAD.sql = " . $sql);
   $result = db_execute_statement($sql);
 
-  // *** FIXME - Delete previous from MA and from CS
+  // Now add the lead as a member of the project
+  $addres = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+                                     PA_ARGUMENT::MEMBER_ID => $new_lead_id,
+                                     PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD),
+                               $message);
+  if (! isset($addres) || is_null($addres) || ! array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    // Lets assume they are already in the project, so we need to change their role only
+    $chngres = change_member_role(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+                                     PA_ARGUMENT::MEMBER_ID => $new_lead_id,
+                                     PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD),
+                               $message);
 
-  // FIXME
-  //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  //  log_event($log_url, $mysigner, 
-  //	    "Deleted project: " . $project_name, $attributes, $lead_id);
+    // FIXME: Check for chngres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE
+  }
+
+  // Make the old lead an admin
+  $chngres = change_member_role(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+                                     PA_ARGUMENT::MEMBER_ID => $lead_id,
+                                     PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
+                               $message);
+
+  // FIXME: Check for chngres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE
+
+  global $log_url;
+  global $mysigner;
+  global $ma_url;
+  global $portal_admin_email;
+  $signer_id = $message->signerUuid();
+  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+  $signer_name = $signer_data->prettyName();
+  $new_lead_data = ma_lookup_member_by_id($ma_url, $mysigner, $new_lead_id);
+  $new_lead_name = $new_lead_data->prettyName();
+
+  $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  // FIXME: We'd like to add as a context the old lead, but only 1 member context allowed
+  $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $new_lead_id);
+  $attributes = array_merge($pattributes, $mattributes);
+  $msg = "$signer_name changed project lead for $project_name to $new_lead_name";
+  log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+  mail($portal_admin_email, "Changed GENI CH project lead", $msg);
 
   return $result;
 }
@@ -557,19 +650,22 @@ function add_project_member($args, $message)
   //  error_log("PA.add project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
+  /* FIXME - The signer needs to have a certificate and private key. Who sends this message (below)
+   * to the CS? Is the PA the signer?
+   */
+  $signer_id = $message->signerUuid();
+
   // If successful, add an assertion of the role's privileges within the CS store
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
-    /* FIXME - The signer needs to have a certificate and private key. Who sends this message (below)
-     * to the CS? Is the PA the signer?
-     */
-    $signer = $message->signerUuid();
-    create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
   }
 
   // Log adding the member
   global $ma_url;
   $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+
   $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
   $project_data = lookup_project($lookup_project_message);
   if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
@@ -584,17 +680,24 @@ function add_project_member($args, $message)
   //  error_log("PD = " . print_r($project_data, true));
       $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
       $member_name = $member_data->prettyName();
+      $signer_name = $signer_data->prettyName();
       $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
-      $message = "Added $member_name to Project $project_name in role $role_name";
+      $msg = "$signer_name Added $member_name to Project $project_name in role $role_name";
+      if ($signer_name == $member_name) {
+	$msg = "$signer_name Added self to Project $project_name in role $role_name";
+      }
       $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
       $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
       $attributes = array_merge($pattributes, $mattributes);
-      log_event($log_url, $mysigner, $message, $attributes, $signer);
-      geni_syslog(GENI_SYSLOG_PREFIX::PA, $message);
+      log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+      if (parse_urn($message->signer_urn, $chname, $t, $n)) {
+	$msg = $msg . " on CH $chname";
+      }
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
       mail($portal_admin_email,
 	   "New GENI CH project member added",
-          $message);
+          $msg);
     }
   return $result;
 }
@@ -621,7 +724,7 @@ function remove_project_member($args, $message)
   // Delete previous assertions from CS
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
-    $signer = $message->signerUuid();
+    $signer_id = $message->signerUuid();
 
     $membership_assertions = query_assertions($cs_url, $mysigner, 
 					      $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
@@ -635,6 +738,7 @@ function remove_project_member($args, $message)
     }
     global $ma_url;
     $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+    $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
     $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
     $project_data = lookup_project($lookup_project_message);
     if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
@@ -643,12 +747,13 @@ function remove_project_member($args, $message)
       {
 	$project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
 	$member_name = $member_data->prettyName();
+	$signer_name = $member_data->prettyName();
 	$project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-	$message = "Removed $member_name from Project $project_name";
+	$message = "$signer_name Removed $member_name from Project $project_name";
 	$pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
 	$mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
 	$attributes = array_merge($pattributes, $mattributes);
-	log_event($log_url, $mysigner, $message, $attributes, $signer);
+	log_event($log_url, $mysigner, $message, $attributes, $signer_id);
       }
 
   }
@@ -681,7 +786,7 @@ function change_member_role($args, $message)
 
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
-    $signer = $message->signerUuid();
+    $signer_id = $message->signerUuid();
 
     // Remove previous CS assertions about the member in this project
     $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
@@ -695,12 +800,33 @@ function change_member_role($args, $message)
     }
 
     // Create new assertion for member in this role
-    create_assertion($cs_url, $mysigner, $signer, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
     // FIXME
-    //  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-    //  log_event($log_url, $mysigner, 
-    //	    "Deleted project: " . $project_name, $attributes, $lead_id);
+    $project_name = $project_id;
+    $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
+    $project_data = lookup_project($lookup_project_message);
+    if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+	(array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, 
+			  $project_data[RESPONSE_ARGUMENT::VALUE]))) 
+      {
+	$project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
+	$project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      }
+
+    $signer_id = $message->signerUuid();
+    global $ma_url;
+    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+    $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+    $member_name = $member_data->prettyName();
+    $signer_name = $signer_data->prettyName();
+    $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
+    $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+    $attributes = array_merge($pattributes, $mattributes);
+    $msg = "$signer_name changed role of $member_name in project $project_name to $role_name";
+    log_event($log_url, $mysigner, 
+	      $msg, $attributes, $signer_id);
 
   }
 

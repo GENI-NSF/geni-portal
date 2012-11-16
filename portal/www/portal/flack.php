@@ -34,8 +34,8 @@ const FLACK_1_FILENAME = "flackportal-1.html";
 const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
 const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
+// FIXME: Should not be hard-coded
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
-
 
 $pgchs = get_services_of_type(SR_SERVICE_TYPE::PGCH);
 if (count( $pgchs ) != 1) {
