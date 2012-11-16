@@ -36,10 +36,18 @@ const FLACK_3_FILENAME = "flackportal-3.html";
 const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
-$http_host = $_SERVER['HTTP_HOST'];
-$sa_ch_port = 8443;
-$SA_URL = "https://$http_host:$sa_ch_port/";
-$CH_URL = "https://$http_host:$sa_ch_port/";
+
+$pgchs = get_services_of_type(SR_SERVICE_TYPE::PGCH);
+if (count( $pgchs ) != 1) {
+    error_log("flack must have exactly one PGCH service defined");
+    return("Should be exactly one PGCH url.");
+} else {
+    $pgch = $pgchs[0];
+    $PGCH_URL = $pgch[SR_TABLE_FIELDNAME::SERVICE_URL];	
+}
+
+$SA_URL = $PGCH_URL;
+$CH_URL = $PGCH_URL;
 
 // If have slice_urn then call generate_flack_page and print result
 // else if have slice_id then get slice_urn and call generate_flack_page
