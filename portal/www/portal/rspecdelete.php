@@ -41,7 +41,7 @@ if (is_null($rspec_id)) {
 }
 
 
-$result = deleteRSpecById($rspec_id);
+$result = deleteRSpecById($rspec_id, $user);
 if ($result) {
   $_SESSION['lastmessage'] = "Deleted RSpec.";
 } else {

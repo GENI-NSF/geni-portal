@@ -352,9 +352,28 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
-function deleteRSpecById($id)
+function deleteRSpecById($id, $user)
 {
   $conn = portal_conn();
+  // check that you are the owner before deleting
+
+  $conn = portal_conn();
+  $sql = "SELECT id FROM rspec WHERE id =";
+  $sql .= $conn->quote($id, 'integer');
+  $sql .= " AND owner_id =";
+  $sql .= $conn->quote($user->account_id, 'text');
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  //  error_log($sql);
+  $result = db_fetch_rows($sql, "deleteRSpecById");
+  $owned_rspec = $result[RESPONSE_ARGUMENT::VALUE];
+  if (count($owned_rspec) == 0) {
+    $msg = "deleteRSpecById: Can not delete rspec. User didn't create rspec.";
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
+    return false;
+  }
+
+  // now delete rspec
   $sql = "DELETE FROM rspec WHERE id = ";
   $sql .= $conn->quote($id, 'integer');
   $result = db_execute_statement($sql, "deleteRSpecById");
