@@ -62,10 +62,8 @@ if (array_key_exists('displayName', $_SERVER)) {
   $username = $_REQUEST["username"];
 }
 
-$generate_key = "generate";
-if (key_exists($generate_key, $_REQUEST)) {
-  // User has asked to generate a cert/key.
-  $result = ma_create_certificate($ma_url, $km_signer, $member_id);
+function generate_cert($ma_url, $km_signer, $member_id, $csr=NULL) {
+  $result = ma_create_certificate($ma_url, $km_signer, $member_id, $csr);
   $cert_filename = "geni.pem";
   // Set headers for download
   header("Cache-Control: public");
@@ -77,7 +75,67 @@ if (key_exists($generate_key, $_REQUEST)) {
     print $result[MA_ARGUMENT::PRIVATE_KEY];
   }
   print $result[MA_ARGUMENT::CERTIFICATE];
+}
+
+function handle_upload($ma_url, $km_signer, $member_id, &$error) {
+  // Get the uploaded CSR
+  if (array_key_exists('csrfile', $_FILES)) {
+    $errorcode = $_FILES['csrfile']['error'];
+    if ($errorcode != 0) {
+      // An error occurred with the upload.
+      if ($errorcode == UPLOAD_ERR_NO_FILE) {
+        $error = "No file was uploaded.";
+      } else {
+        $error = "Unknown upload error (code = $errorcode).";
+      }
+      return false;
+    } else {
+      /* A file was uploaded. Do a rudimentary test to see if it is
+       * a CSR. If not, explain.
+       */
+      $cmd_array = array('/usr/bin/openssl',
+              'req',
+              '-noout',
+              '-in',
+              $_FILES["csrfile"]["tmp_name"],
+      );
+      $command = implode(" ", $cmd_array);
+      $result = exec($command, $output, $status);
+      if ($status != 0) {
+        $fname = $_FILES['file']['name'];
+        $error = "File $fname is not a valid certificate signing request.";
+        return false;
+      } else {
+        // HERE EVERYTHING LOOKS GOOD, SO PROCESS THE CSR
+        // LOAD THE CONTENTS OF THE FILE AND PASS ALONG TO generate_cert()
+        $csr = file_get_contents($_FILES["csrfile"]["tmp_name"]);
+        if ($csr === false) {
+          // Something went wrong loading the uploaded csr
+          $error = "Unable to read uploaded file contents.";
+          return false;
+        }
+        generate_cert($ma_url, $km_signer, $member_id, $csr);
+        return true;
+      }
+    }
+  } else {
+    $error = "No file uploaded.";
+    return false;
+  }
+}
+
+$generate_key = "generate";
+$upload_key = "upload";
+if (key_exists($generate_key, $_REQUEST)) {
+  // User has asked to generate a cert/key.
+  generate_cert($ma_url, $km_signer, $member_id);
   return;
+}
+if (key_exists($upload_key, $_REQUEST)) {
+  $status = handle_upload($ma_url, $km_signer, $member_id, $error);
+  if ($status === true) {
+    return;
+  }
 }
 
 // If invoked with a ?redirect=url argument, grab that
@@ -91,8 +149,10 @@ if(array_key_exists($redirect_key, $_GET)) {
   $redirect_address = $_GET[$redirect_key];
 }
 
-
-if (isset($member_id)) {
+// Set up the error display
+if (isset($error)) {
+  $_SESSION['lasterror'] = $error;
+  unset($error);
 }
 
 include('kmheader.php');
@@ -110,7 +170,7 @@ print "Need some instructions here.<br/>\n";
 // Generate
 print "<h2>Generate a private key and certificate</h2>\n";
 print "<form name=\"generate\" action=\"kmcert.php\" method=\"post\">\n";
-print "<input type=\"hidden\" name=\"generate\" value=\"y\"/>";
+print "<input type=\"hidden\" name=\"$generate_key\" value=\"y\"/>";
 print "<input type=\"submit\" name=\"submit\" value=\"Generate Certificate and Key\"/>";
 print "</form>\n";
 
@@ -118,14 +178,18 @@ print "<hr/>\n";
 
 // CSR
 print "<h2>Upload a certificate signing request</h2>\n";
-print "<h4>Generate a certificate signing request with an existing private key:</h2>\n";
-print "<verbatim>openssl req -out CSR.csr -key privateKey.key -new</verbatim><br/>\n";
-print "<h4>Generate a certificate signing request and new private key:</h2>\n";
-print "<verbatim>openssl req -out CSR.csr -new -newkey rsa:2048 -nodes -keyout privateKey.key</verbatim><br/>\n";
-
+print "<h4>Option 1: Generate a certificate signing request with an existing private key:</h4>\n";
+print "<pre>openssl req -out CSR.csr -key privateKey.key -new -batch</pre>\n";
+print "<h4>Option 2: Generate a certificate signing request and new private key:</h4>\n";
+print "<pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout privateKey.key -batch</pre>\n";
+//print "<br/>\n";
+print "<h4>Now upload the file <verbatim>CSR.csr</verbatim> below:</h4>\n";
+//print "<br/>\n";
 print "<form name=\"upload\" action=\"kmcert.php\" method=\"post\" enctype=\"multipart/form-data\">\n";
 print "<label for=\"csrfile\">Certificate Signing Request File:</label>\n";
 print "<input type=\"file\" name=\"csrfile\" id=\"csrfile\" />\n";
+print "<br/>\n";
+print "<input type=\"hidden\" name=\"$upload_key\" value=\"y\"/>";
 print "<input type=\"submit\" name=\"submit\" value=\"Create Certificate\"/>\n";
 print "</form>\n";
 
