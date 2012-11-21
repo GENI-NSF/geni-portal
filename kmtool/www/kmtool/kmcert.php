@@ -41,14 +41,14 @@ if (array_key_exists($member_id_key, $_SERVER)) {
 } else if (array_key_exists("member_id", $_REQUEST)) {
   $member_id = $_REQUEST["member_id"];
 } else {
-  error_log("No member_id_key $member_id_key given to kmhome");
+  error_log("No member_id_key $member_id_key given to kmcert");
 }
 
 if (count($members) > 0 && ! isset($member_id)) {
   $member = $members[0];
   $member_id = $member->member_id;
 } else if (! isset($member_id)) {
-  error_log("kmhome: No members found for member_id $member_id_value");
+  error_log("kmcert: No members found for member_id $member_id_value");
 }
 
 $username = '*** Undefined ***';
@@ -62,8 +62,8 @@ if (array_key_exists('displayName', $_SERVER)) {
   $username = $_REQUEST["username"];
 }
 
-function generate_cert($ma_url, $km_signer, $member_id, $csr=NULL) {
-  $result = ma_create_certificate($ma_url, $km_signer, $member_id, $csr);
+function download_cert($ma_url, $km_signer, $member_id) {
+  $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
   $cert_filename = "geni.pem";
   // Set headers for download
   header("Cache-Control: public");
@@ -75,6 +75,10 @@ function generate_cert($ma_url, $km_signer, $member_id, $csr=NULL) {
     print $result[MA_ARGUMENT::PRIVATE_KEY];
   }
   print $result[MA_ARGUMENT::CERTIFICATE];
+}
+
+function generate_cert($ma_url, $km_signer, $member_id, $csr=NULL) {
+  $result = ma_create_certificate($ma_url, $km_signer, $member_id, $csr);
 }
 
 function handle_upload($ma_url, $km_signer, $member_id, &$error) {
@@ -126,16 +130,16 @@ function handle_upload($ma_url, $km_signer, $member_id, &$error) {
 
 $generate_key = "generate";
 $upload_key = "upload";
+$download_key = "download";
 if (key_exists($generate_key, $_REQUEST)) {
   // User has asked to generate a cert/key.
   generate_cert($ma_url, $km_signer, $member_id);
-  return;
 }
 if (key_exists($upload_key, $_REQUEST)) {
   $status = handle_upload($ma_url, $km_signer, $member_id, $error);
-  if ($status === true) {
-    return;
-  }
+}
+if (key_exists($download_key, $_REQUEST)) {
+  download_cert($ma_url, $km_signer, $member_id);
 }
 
 // If invoked with a ?redirect=url argument, grab that
@@ -156,7 +160,7 @@ if (isset($error)) {
 }
 
 include('kmheader.php');
-print "<h2>GENI Certificate Generation Tool</h2><br>\n";
+print "<h2>GENI Certificate Management</h2>\n";
 include("tool-showmessage.php");
 
 if (! isset($member_id)) {
@@ -164,6 +168,28 @@ if (! isset($member_id)) {
   include("footer.php");
   return;
 }
+
+$result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
+if (! is_null($result)) {
+  // User has an outside cert. Show the download screen.
+  if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)
+          && $result[MA_ARGUMENT::PRIVATE_KEY]) {
+    $key_msg = " and Private Key";
+  } else {
+    $key_msg = "";
+  }
+?>
+<h4>Download Your Certificate<?php print $key_msg;?>:</h4>
+<form name="download" action="kmcert.php" method="post">
+<input type="hidden" name="<?php print $download_key ?>" value="y"/>
+<input type="submit" name="submit" value="Download Certificate<?php print $key_msg;?>"/>
+</form>
+<?php
+  return;
+}
+
+
+
 
 print "Need some instructions here.<br/>\n";
 
