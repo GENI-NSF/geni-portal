@@ -1,10 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+<?php
+require_once("header.php");
+require_once("settings.php");
+require_once("user.php");
+require_once("file_utils.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
+require_once("am_client.php");
+require_once("sa_client.php");
+require_once("am_map.php");
+require_once("json_util.php");
+
+$user = geni_loadUser();
+if (! $user->isActive()) {
+  relative_redirect('home.php');
+}
+
+function no_slice_error() {
+  header('HTTP/1.1 404 Not Found');
+  print 'No slice id specified.';
+  exit();
+}
+
+ if (! count($_GET)) {
+  // No parameters. Return an error result?
+  // For now, return nothing.
+  no_slice_error();
+}
+unset($slice);
+include("tool-lookupids.php");
+if (! isset($slice)) {
+  no_slice_error();
+}
+?>
+
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script>
 
-var slice="b18cb314-c4dd-4f28-a6fd-b355190e1b61"; // <?php echo $slice_id ?>;
+var slice= "<?php echo $slice_id ?>";
 function build_agg_table() 
 {
    $("#div1").load("aggregates.php",function(responseTxt,statusTxt,xhr){
@@ -19,7 +55,7 @@ function build_agg_table()
 	    agg = json_agg[am_id];                    
 	    name = agg.name;
             output += "<tr id='"+am_id+"'><td>";
-	    output += "<button id='hello' type='button' onclick='update_agg_row("+am_id+")'>Reload(\"Hello!\")</button>";
+	    output += "<button id='hello' type='button' onclick='update_agg_row("+am_id+")'>Reload</button>";
 	    output += "</td><td>";	
 	    output += slice;
 	    output += name;
@@ -107,40 +143,6 @@ $(document).ready(build_agg_table);
 </head>
 <body>
 
-<?php
-require_once("header.php");
-require_once("settings.php");
-require_once("user.php");
-require_once("file_utils.php");
-require_once("sr_client.php");
-require_once("sr_constants.php");
-require_once("am_client.php");
-require_once("sa_client.php");
-require_once("am_map.php");
-require_once("json_util.php");
-
-$user = geni_loadUser();
-if (! $user->isActive()) {
-  relative_redirect('home.php');
-}
-
-function no_slice_error() {
-  header('HTTP/1.1 404 Not Found');
-  print 'No slice id specified.';
-  exit();
-}
-
- if (! count($_GET)) {
-  // No parameters. Return an error result?
-  // For now, return nothing.
-  no_slice_error();
-}
-unset($slice);
-include("tool-lookupids.php");
-if (! isset($slice)) {
-  no_slice_error();
-}
-?>
 
 
 <div id="div1"><h2>Let jQuery AJAX Change This Text</h2>
