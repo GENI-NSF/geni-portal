@@ -793,8 +793,10 @@ class MAGuardFactory implements GuardFactory
       // Only accept from the KM
       $result[] = new SignerKmGuard($message);
     } elseif ($action === 'ma_lookup_certificate') {
-      // Only accept from the KM
-      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+      $guards[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+      $guards[] = new SignerKmGuard($message);
+      // Accept from the KM or the user
+      $result[] = new OrGuard($guards);
     }
     return $result;
   }
