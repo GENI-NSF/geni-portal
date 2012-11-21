@@ -43,31 +43,33 @@ if (! isset($slice)) {
 var slice= "<?php echo $slice_id ?>";
 function build_agg_table() 
 {
-   $("#div1").load("aggregates.php",function(responseTxt,statusTxt,xhr){
+   // (1) query the server for all a list of aggregates
+   $.getJSON("aggregates.php",function(responseTxt,statusTxt,xhr){
    if(statusTxt=="success") 
    {
      var json_agg;
      var name;
      var output; 
-     json_agg = JSON.parse(responseTxt);
+     // (2) create an HTML table with one row for each aggregate
+     json_agg = responseTxt;
      output = "<table id='status_table'>";
      for (am_id in json_agg ) {
 	    agg = json_agg[am_id];                    
 	    name = agg.name;
             output += "<tr id='"+am_id+"'><td>";
 	    output += "<button id='hello' type='button' onclick='update_agg_row("+am_id+")'>Reload</button>";
-	    output += "</td><td>";	
-	    output += slice;
-	    output += name;
 	    output += "</td><td id='status_"+am_id+"' class='updating'>";	
 	    output += "...updating...";
 	    output += "</td><td>";	
-	    output += agg.url;
+	    output += name;
+//	    output += "</td><td>";	
+//	    output += agg.url;
 	    output += "</td></tr>";
+            // (3) Get the status for this slice at this aggregate
 	    update_agg_row( am_id );
      }	
      output += "</table>";
-     $("#div1").html(output);
+     $("#status_table_div").html(output);
    }
    if(statusTxt=="error")
      alert("Error: "+xhr.status+": "+xhr.statusText);
@@ -76,7 +78,9 @@ function build_agg_table()
 
 
 function update_agg_row(am_id) {
-  $.getJSON("amstatus.php?am_id="+am_id+"&slice_id="+slice+"",function(responseTxt,statusTxt,xhr){
+  // This queries for the json file at (for example):
+  // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
+  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
      if(statusTxt=="success") 
      {
         var json_am;
@@ -96,62 +100,16 @@ function update_agg_row(am_id) {
         alert("Error: "+xhr.status+": "+xhr.statusText);
   });  
 }
- 
-function update_agg_row2(am_id) {
-  $("#div1").load("amstatus.php?am_id="+am_id+"&slice_id="+slice,function(responseTxt,statusTxt,xhr){
-     if(statusTxt=="success") 
-     {
-        var json_am;
-        var am;
-        var geni_status;
-        var output=""; 
-        json_am = JSON.parse(responseTxt);
-
-        for (new_id in json_am ) {	
-           am = json_am[new_id];	   
-           geni_status = am['geni_status'];
-           output += new_id;
-    	   output += json_am[new_id];
-    	   output += json_am[new_id]['geni_status'];
-    	   output += geni_status;
-        }
-        var output2;
-//        output2 = $("#status_"+am_id).html();
-        alert("#status_"+am_id);
-//        alert( output );
-//        $("#status_"+am_id).html( output );
-
-
-        $("#status_"+am_id).style.color="blue";
-
-     }
-     if(statusTxt=="error")
-        alert("Error: "+xhr.status+": "+xhr.statusText);
-  });  
-}
- 
-
 
 $(document).ready(build_agg_table);
-/*$("#hello").click( function(){
-  var id = $("<tr>").attr(id);
-  update_agg_row(id);
-});*/
-//$("#hello").click( function() {alert(slice);});
 
 </script>
 </head>
 <body>
 
-
-
-<div id="div1"><h2>Let jQuery AJAX Change This Text</h2>
-
+<div id="div1"><h2>Sample Slice Status Table</h2>
+<div id="status_table_div"/>
 </div>
-<p><?php echo $slice_id ?></p>
-<!-- <button type='button' onclick="build_agg_table('<?php echo $slice_id ?>')">Change Content</button> -->
-
-
 
 </body>
 </html>
