@@ -718,6 +718,20 @@ function ma_create_certificate($args, $message)
 
 function ma_lookup_certificate($args, $message)
 {
+  if (! key_exists(MA_ARGUMENT::MEMBER_ID, $args)) {
+    $msg = "Required argument " . MA_ARGUMENT::MEMBER_ID . " missing.";
+    return generate_response(RESPONSE_ERROR::ARGS, null, $msg);
+  }
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $result = ma_fetch_outside_cert($member_id);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    // An error occurred. The error was logged by ma_fetch_outside_cert
+    // Return an error
+    $msg = "A database error occurred. See the logs for details.";
+    return generate_response(RESPONSE_ERROR::DATABASE, null, $msg);
+  } else {
+    return $result;
+  }
 }
 
 /**
@@ -780,7 +794,7 @@ class MAGuardFactory implements GuardFactory
       $result[] = new SignerKmGuard($message);
     } elseif ($action === 'ma_lookup_certificate') {
       // Only accept from the KM
-      $result[] = new SignerKmGuard($message);
+      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
     }
     return $result;
   }

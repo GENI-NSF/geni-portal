@@ -293,4 +293,23 @@ function ma_store_outside_cert($member_id, $cert_chain, $private_key)
   $result = db_execute_statement($sql);
   return $result;
 }
+
+function ma_fetch_outside_cert($member_id) {
+  global $MA_OUTSIDE_CERT_TABLENAME;
+  $conn = db_conn();
+  $sql = ("SELECT "
+          . MA_OUTSIDE_CERT_TABLE_FIELDNAME::CERTIFICATE
+          . ", " . MA_OUTSIDE_CERT_TABLE_FIELDNAME::PRIVATE_KEY
+          . " FROM " . $MA_OUTSIDE_CERT_TABLENAME
+          . " WHERE " . MA_OUTSIDE_CERT_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text'));
+  $result = db_fetch_row($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $db_error = $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::MA,
+            ("Database error: $db_error"));
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, "Query was: " . $sql);
+  }
+  return $result;
+}
 ?>

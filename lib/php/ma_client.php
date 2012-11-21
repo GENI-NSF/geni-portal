@@ -252,4 +252,13 @@ function ma_create_certificate($ma_url, $signer, $member_id, $csr=NULL)
           $signer->certificate(), $signer->privateKey());
   return $result;
 }
+
+function ma_lookup_certificate($ma_url, $signer, $member_id)
+{
+  $msg['operation'] = 'ma_lookup_certificate';
+  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $result = put_message($ma_url, $msg,
+          $signer->certificate(), $signer->privateKey());
+  return $result;
+}
 ?>
