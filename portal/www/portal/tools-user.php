@@ -100,6 +100,12 @@ if (! isset($sa_url)) {
     error_log("Found no SA in SR!'");
   }
 }
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
+    error_log("Found no MA in SR!'");
+  }
+}
 
 // FIXME: Also show rejected requests?
 $preqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
@@ -168,26 +174,41 @@ print "<h2>Manage RSpecs</h2>\n";
 
 print "<button onClick=\"window.location='rspecs.php'\">"
   . "Manage RSpecs</button>\n";
+?>
 
+<?php
 /*----------------------------------------------------------------------
  * SSL key management
  *----------------------------------------------------------------------
  */
-print "<h2>Command line tools</h2>\n";
-print ("For <i>Advanced</i> users: download an SSL certificate and private key,"
-       . " in order to use other GENI tools.<br/><br/>\n");
 
-print "\n<table>\n";
-print "<tr><th>Tool</th><th>Description</th><th>Configuration File</th></tr>\n";
-print "<tr>"
-    . "<td><a href='http://trac.gpolab.bbn.com/gcf/wiki'>Omni</a></td>"
-    . "<td>command line resource allocation tool</td>"
-    . "<td><a href='tool-omniconfig.php'>Get omni_config</a></td>"
-    . "</tr>\n";
-print "</table>\n";
-// FIXME: Way to delete a key?
+// Does the user have an outside certificate?
+$result = ma_lookup_certificate($ma_url, $user, $user->account_id);
+$has_certificate = ! is_null($result);
+// FIXME: hardcoded paths
+$create_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php";
+$download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php";
+?>
 
+<h2>Command line tools</h2>
+For <i>Advanced</i> users:
+<?php if ($has_certificate): ?>
+<a href="<?php print $download_url?>">download your SSL certificate</a>
+<?php else: ?>
+<a href="<?php print $create_url?>">create an SSL certificate</a>
+<?php endif; ?>
+in order to use other GENI tools.<br/><br/>
 
+<table>
+<tr><th>Tool</th><th>Description</th><th>Configuration File</th></tr>
+<tr>
+  <td><a href='http://trac.gpolab.bbn.com/gcf/wiki'>Omni</a></td>
+  <td>command line resource allocation tool</td>
+  <td><a href='tool-omniconfig.php'>Get omni_config</a></td>
+</tr>
+</table>
+
+<?php
 /*----------------------------------------------------------------------
  * ABAC (if enabled)
  *----------------------------------------------------------------------
@@ -199,4 +220,3 @@ if ($portal_enable_abac)
     print "<button onClick=\"window.location='abac-key.php'\">Download your ABAC private key</button>\n";
   }
 ?>
-
