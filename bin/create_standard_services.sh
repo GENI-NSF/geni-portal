@@ -90,7 +90,7 @@ add_service logging ${ADMIN_EMAIL} NO 5 "https://${FQDN}/logging/logging_control
 add_service cs ${ADMIN_EMAIL} NO 6 "https://${FQDN}/cs/cs_controller.php"
 add_service km ${ADMIN_EMAIL} NO 8 "https://${FQDN}/secure/kmhome.php"
 add_service portal ${ADMIN_EMAIL} NO
-add_service pgch ${ADMIN_EMAIL} none 9 "https://${FQDN}:8443"
+add_service pgch ${ADMIN_EMAIL} none 9 "https://${FQDN}:8443/"
 add_client_tool portal
 
 # Link the MA cert to the trusted_roots for pgch

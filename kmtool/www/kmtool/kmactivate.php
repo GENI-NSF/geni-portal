@@ -26,17 +26,38 @@ require_once 'sr_constants.php';
 require_once 'sr_client.php';
 require_once 'ma_client.php';
 require_once 'portal.php';
+require_once 'util.php';
+require_once 'km_utils.php';
 
 $redirect_address = "";
 
 if(array_key_exists('HTTP_REFERER', $_SERVER)) {
   $redirect_address = $_SERVER['HTTP_REFERER'];
 }
+
+// If no eppn, go directly to InCommon error page
+if (! key_exists('eppn', $_SERVER)) {
+  $feh_url = incommon_feh_url();
+  header("Location: $feh_url");
+  exit;
+}
+
+// Get the EPPN now that we know it's there.
+$eppn = $_SERVER['eppn'];
+
+// If no email address and no preasserted email
+//    Then redirect to kmnoemail.php
+if (! key_exists('mail', $_SERVER)) {
+  $asserted_attrs = get_asserted_attributes($eppn);
+  if (! key_exists('mail', $asserted_attrs)) {
+    relative_redirect('kmnoemail.php');
+  }
+}
+
 // Avoid double registration by checking if this is a valid
 // user before displaying the page. If this user is already
 // registered, redirect to the home page.
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$eppn = $_SERVER['eppn'];
 $attrs = array('eppn' => $eppn);
 $ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
 $count = count($ma_members);

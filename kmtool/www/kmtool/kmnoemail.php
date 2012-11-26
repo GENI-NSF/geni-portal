@@ -22,31 +22,49 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once("settings.php");
-require_once("user.php");
+include("kmheader.php");
+include("util.php");
+$eppn = $_SERVER['eppn'];
+?>
 
-$user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
-}
+<h2>No email address</h2>
+Your identity provider is not sharing your email address with us.
+<a href="http://www.geni.net">GENI</a> requires an email address
+so that you can be contacted if necessary about your reserved
+resources.
+<br/>
+<br/>
+If you would like to register for a GENI account, please self-assert
+your <em>institutional email address</em> by
+<a href="mailto:portal-help@geni.net?subject=Self-asserted email address for EPPN
+<?php
+print " $eppn";
+?>
+&body=I would like to register for a GENI account. This email was sent from my institutional email address.">
+sending an email
+</a>
+to portal-help@geni.net from your institutional email address. Make sure the
+email you send includes your
+<a href="http://www.incommon.org/federation/attributesummary.html#eduPersonPrincipal">EPPN</a>, which is:
+<br/><br/>
 
-$rspec_id = NULL;
-if (array_key_exists('id', $_GET)) {
-  $rspec_id = $_GET['id'];
-}
-
-if (is_null($rspec_id)) {
-  $_SESSION['lasterror'] = "RSpec delete failed: no id specified.";
-  redirect_referer('profile.php');
-}
-
-
-$result = deleteRSpecById($rspec_id, $user);
-if ($result) {
-  $_SESSION['lastmessage'] = "Deleted RSpec.";
-} else {
-  $_SESSION['lasterror'] = "RSpec delete failed.";
-}
-
-redirect_referer('profile.php');
+<b>
+<?php
+print $eppn;
+?>
+</b>
+<br/>
+<br/>
+Your email will be reviewed and you will receive a response from a GENI
+administrator about how to proceed.
+<br/>
+<br/>
+<a href="
+<?php
+// Link to InCommon federated error handling service.
+print incommon_feh_url();
+?>
+">Technical Information</a>
+<?php
+include("footer.php");
 ?>

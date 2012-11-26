@@ -139,15 +139,11 @@ DROP TABLE IF EXISTS public_key;
 
 -- ----------------------------------------------------------------------
 -- Outside keys
+--
+-- Outside keys moved to MA. Drop the table if it exists to clean up
+-- older database.
 -- ----------------------------------------------------------------------
 DROP TABLE IF EXISTS outside_key;
-CREATE TABLE outside_key (
-  account_id UUID REFERENCES account UNIQUE,
-  private_key VARCHAR,
-  certificate VARCHAR
-);
-
-CREATE INDEX outside_key_index_account_id ON outside_key (account_id);
 
 -- ----------------------------------------------------------------------
 -- Inside keys

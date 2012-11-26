@@ -1,3 +1,9 @@
+PSQL = /usr/bin/psql
+DB.USER = portal
+DB.HOST = localhost
+DB.DB = portal
+SCHEMA.SQL = db/postgresql/schema.sql
+
 default:
 	echo "try make install"
 
@@ -14,3 +20,4 @@ install: www
 
 # empty target for compatibility
 cleandb:
+	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(SCHEMA.SQL) $(DB.DB)

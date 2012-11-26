@@ -34,6 +34,7 @@ require_once("sr_client.php");
 require_once("ma_constants.php");
 require_once("ma_client.php");
 require_once("portal.php");
+require_once("km_utils.php");
 
 
 /**
@@ -70,21 +71,30 @@ if (! array_key_exists('agree', $_POST) or $_POST['agree'] !== 'agree') {
   relative_redirect('kmactivate.php');
 }
 
+$eppn = $_SERVER['eppn'];
+
 attrValue('givenName', $first_name, $first_name_self_asserted);
 attrValue('sn', $last_name, $larst_name_self_asserted);
 attrValue('mail', $email_address, $email_address_self_asserted);
 //attrValue('telephoneNumber', $telephone_number, $telephone_number_self_asserted);
+
+if (! isset($email_address)) {
+  $asserted_attrs = get_asserted_attributes($eppn);
+  if (key_exists('mail', $asserted_attrs)) {
+    $email_address = $asserted_attrs['mail'];
+    $email_address_self_asserted = false;
+  } else {
+    error_log("No email, redirecting to kmnoemail.php");
+    relative_redirect('kmnoemail.php');
+  }
+}
+
 $attrs = array();
 $sa_attrs = array();
 $all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
         'sn' => MA_ATTRIBUTE_NAME::LAST_NAME,
-        'mail' => MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
-		   //        'telephoneNumber' => MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER,
         'affiliation' => 'affiliation',
         'eppn' => 'eppn',
-		   //        'reference' => 'reference',
-		   //        'reason' => 'reason',
-		   //        'profile' => 'profile'
         'displayName' => 'displayName'
 		   );
 foreach (array_keys($all_attrs) as $attr_name) {
@@ -96,6 +106,15 @@ foreach (array_keys($all_attrs) as $attr_name) {
     }
   }
 }
+
+// Special case for email because it may not be available
+// via "attrValue".
+if ($email_address_self_asserted) {
+  $sa_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
+} else {
+  $attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
+}
+
 $result = ma_create_account($ma_url, Portal::getInstance(), $attrs, $sa_attrs);
 if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
   error_log("Failed to create account for $attrs: $result");

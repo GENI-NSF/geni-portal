@@ -29,13 +29,12 @@ require_once('file_utils.php');
  */
 
 
-function make_csr($uuid, $email, &$csrfile, &$keyfile, $temp_prefix="geni-")
+function make_csr($uuid, &$csrfile, &$keyfile, $temp_prefix="geni-")
 {
   $csrfile = null;
   $keyfile = null;
   $keytmpfile = tempnam(sys_get_temp_dir(), $temp_prefix);
   $csrtmpfile = tempnam(sys_get_temp_dir(), $temp_prefix);
-  $subject = "/CN=$uuid/emailAddress=$email";
   $cmd_array = array('/usr/bin/openssl',
                      'req',
                      '-new',
@@ -43,7 +42,6 @@ function make_csr($uuid, $email, &$csrfile, &$keyfile, $temp_prefix="geni-")
                      '-nodes',
                      '-keyout', $keytmpfile,
                      '-out', $csrtmpfile,
-                     '-subj', $subject,
                      '-batch',
                      '2>&1');
   $command = implode(" ", $cmd_array);
@@ -59,7 +57,7 @@ function make_csr($uuid, $email, &$csrfile, &$keyfile, $temp_prefix="geni-")
   }
 }
 
-function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
+function sign_csr($csr_file, $uuid, $email, $urn, $signer_cert_file, $signer_key_file,
                   &$cert, $temp_prefix="geni-")
 {
   $cert_file = tempnam(sys_get_temp_dir(), $temp_prefix);
@@ -73,7 +71,7 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
     //    . "authorityInfoAccess = caIssuers;URI:https://ma.example.com/ma_controller.php\n"
     . "subjectAltName=email:copy,URI:$urn,URI:urn:uuid:$uuid\n";
   $ext_file = writeDataToTempFile($extdata, $temp_prefix);
-
+  $subject = "/CN=$uuid/emailAddress=$email";
   $cmd_array = array('/usr/bin/openssl',
                      'ca',
                      // FIXME: this should be an MA-specific openssl conf file.
@@ -87,6 +85,7 @@ function sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
                      '-notext',
                      '-cert', $signer_cert_file,
                      '-keyfile', $signer_key_file,
+                     '-subj', $subject,
                      '2>&1');
   $command = implode(" ", $cmd_array);
   $result = exec($command, $output, $status);
@@ -124,11 +123,11 @@ function make_cert_and_key($uuid, $email, $urn,
   $cert = null;
   $key = null;
 
-  if (! make_csr($uuid, $email, $csr_file, $key_file, $temp_prefix)) {
+  if (! make_csr($uuid, $csr_file, $key_file, $temp_prefix)) {
     return FALSE;
   }
 
-  if (! sign_csr($csr_file, $uuid, $urn, $signer_cert_file, $signer_key_file,
+  if (! sign_csr($csr_file, $uuid, $email, $urn, $signer_cert_file, $signer_key_file,
                  $cert, $temp_prefix)) {
     return FALSE;
   }

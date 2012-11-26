@@ -73,6 +73,25 @@ class FalseGuard implements Guard
   }
 }
 
+class OrGuard implements Guard
+{
+  function __construct($guards)
+  {
+    $this->guards = $guards;
+  }
+  /**
+   * Return TRUE if any of the child guards returns TRUE
+   */
+  function evaluate() {
+    foreach ($this->guards as $guard) {
+      if ($guard->evaluate()) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 /**
  * SignerUuidParameterGuard
  *

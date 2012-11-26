@@ -25,6 +25,7 @@
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('signer.php');
+require_once('db_utils.php');
 
 $sr_url = get_sr_url();
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -41,4 +42,30 @@ $km_signer = new Signer($km_certfile, $km_keyfile);
 // error_log("CERT = $mycert");
 // error_log("KEY = $mykey");
 
+/**
+ * Return a dictionary of attribute->value pairs
+ * that were pre-asserted about the given eppn.
+ */
+function get_asserted_attributes($eppn) {
+  $table_name = "km_asserted_attribute";
+  $conn = db_conn();
+  $sql = ("select * from " . $table_name
+          . " where eppn "
+          . " = " . $conn->quote($eppn, 'text'));
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $db_error = $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::MA,
+            ("Database error: $db_error"));
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, "Query was: " . $sql);
+    // return an empty array because we couldn't load any attributes.
+    return array();
+  }
+  // SUCCESS -- create the return value from the db results
+  $value = array();
+  foreach ($result[RESPONSE_ARGUMENT::VALUE] as $row) {
+    $value[$row['name']] = $row['value'];
+  }
+  return $value;
+}
 ?>

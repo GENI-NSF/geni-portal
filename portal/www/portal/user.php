@@ -68,8 +68,10 @@ class GeniUser
     //  $this->affiliation = $row['affiliation'];
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
-    $this->attributes['mail'] = $member->email_address;
     $this->username = $member->username;
+    if (isset($member->email_address)) {
+      $this->attributes['mail'] = $member->email_address;
+    }
     if (isset($member->displayName)) {
       $this->attributes['displayName'] = $member->displayName;
     }
@@ -533,8 +535,7 @@ function geni_load_identity_by_eppn($eppn)
 function geni_loadUser()
 {
   // TODO: Look up in cache here
-  if (! (array_key_exists('eppn', $_SERVER)
-           && array_key_exists('mail', $_SERVER))) {
+  if (! array_key_exists('eppn', $_SERVER)) {
     // Requird attributes were not found - redirect to a gentle error page
     send_attribute_fail_email();
     incommon_attribute_redirect();

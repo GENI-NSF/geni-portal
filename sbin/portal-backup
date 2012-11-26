@@ -1,0 +1,37 @@
+#!/bin/sh
+
+#---------------------------------------------------------------------
+# A backup script for the protal database. Run this via cron.
+#
+# NOTE: this script requires that the database password is stored in a
+# .pgpass file in the user's account (the user that the cron job runs
+# as).
+#
+# Sample crontab entry:
+#
+#  0 * * * * /path/to/portal-backup
+#---------------------------------------------------------------------
+
+#DESTDIR=/var/backups
+DESTDIR=$HOME/portal-backups
+FILE=`/bin/date +"portal-%Y%m%d-%H%M%S.sql"`
+OUTFILE="${DESTDIR}/${FILE}"
+
+DBNAME=portal
+DBHOST=localhost
+DBUSER=portal
+
+if [ ! -d "${DESTDIR}" ]; then
+  /bin/mkdir "${DESTDIR}"
+fi
+
+# Delete all backups older than 1 day (tune this)
+/usr/bin/find "${DESTDIR}" -type f -mtime +0 -exec rm {} \;
+
+# See http://www.postgresql.org/docs/8.4/static/app-pgdump.html for
+# info on pg_dump options.
+#
+#   -c gives a clean dump, including commands to drop and create
+#      tables.
+#
+/usr/bin/pg_dump -F c -f "${OUTFILE}" "${DBNAME}" -h "${DBHOST}" -U "${DBUSER}"
