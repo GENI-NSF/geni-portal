@@ -80,6 +80,17 @@ if (! isset($slice)) {
   exit();
 }
 
+?>
+
+<!-- This belongs in the header, probably -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script>
+var slice= "<?php echo $slice_id ?>";
+</script>
+<script src="ajax.js"></script>
+
+<?php
+
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
 $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
@@ -99,6 +110,9 @@ $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 $add_slivers_disabled = "";
 if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
+
+// String to disable button or other active element
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
 
 $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
@@ -186,13 +200,15 @@ print "<br/>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href=
 // ----
 // Now show slice / sliver status
 
-include("query-sliverstatus.php");
+//include("query-sliverstatus.php");
 
 print "<h2>Slice Status</h2>\n";
-if (!(isset($msg) and isset($obj))) {
+//if (!(isset($msg) and isset($obj))) {
   print "<p><i>No reserved resources found.</i></p>";  
-} else {
+//} else {
   $slice_status='';
+
+  print "<div id='status_table_div'/>\n";
   print "<table>\n";
   //  print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
   print "<tr><th>Status</th><th colspan='4'>Slice</th></tr>\n";
@@ -224,6 +240,9 @@ if (!(isset($msg) and isset($obj))) {
 
   // print "</td>";
   print "</tr>\n";
+
+
+  
 
   /* Sliver Info */
   $first = True;
@@ -287,8 +306,17 @@ print "</td>\n";
   }
 
   print "</table>\n";
-}
+//}
+  print "</div>\n";
 // --- End of Slice and Sliver Status table
+
+
+
+
+
+
+
+
 
 print "<br/>\n";
 
