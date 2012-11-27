@@ -120,12 +120,11 @@ function update_agg_row(am_id) {
         for (new_id in json_am ) {	
            am = json_am[new_id];	   
            geni_status = am['geni_status'];
-           output += "<td class='"+geni_status+"'>";
+           output += "<td id='status_"+am_id+"' class='"+geni_status+"'>";
     	   output += geni_status;
            output += "</td>";
         }
-        $("td#status_"+am_id).html( output );
-//        $("td#status_"+am_id).text( output );
+        $("td#status_"+am_id).replaceWith( output );
      }
      if(statusTxt=="error")
         alert("Error: "+xhr.status+": "+xhr.statusText);
