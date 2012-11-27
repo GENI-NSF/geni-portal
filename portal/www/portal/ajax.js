@@ -7,29 +7,11 @@ function build_agg_table_on_slicepg()
      var json_agg;
      var name;
      var output; 
-       var status_url, listres_url, disabled;
-       var delete_slivers_privilege, delete_slivers_disabled;
-       var renew_slice_privilege, renew_sliver_disabled;
-       var slice_status="UNDEFINED", slice_name="UNDEFINED";
+     var status_url, listres_url;
 
      status_url = 'sliverstatus.php?slice_id='+slice;
      listres_url = 'listresources.php?slice_id='+slice;
-     // String to disable button or other active element
-     disabled = "disabled = " + '"' + "disabled" + '"'; 
-// FIX ME     delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
-//				    CS_CONTEXT_TYPE::SLICE, slice);
-     delete_slivers_privilege = true;
-     delete_slivers_disabled = "";
-     if(!delete_slivers_privilege) { delete_slivers_disabled = disabled; }
 
-// FIX ME     renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE,
-//				    CS_CONTEXT_TYPE::SLICE, slice);
-     renew_slice_privilege = true;
-     renew_sliver_disabled = "";
-     if(!renew_slice_privilege) { renew_sliver_disabled = disabled; }
-//     slice_expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
-//FIX ME     slice_expiration = dateUIFormat($slice_expiration_db);
-       slice_expiration = "1234";
      // (2) create an HTML table with one row for each aggregate
      json_agg = responseTxt;
      output = "<table id='status_table'>";
@@ -62,12 +44,12 @@ function build_agg_table_on_slicepg()
 	    if (renew_slice_privilege) {
                 output += "<td><form method='GET' action=\"do-renew.php\">";
 		output += "<input type=\"hidden\" name=\"slice_id\" value=\""+slice+"\"/>\n";
-		output += "<input class='date' type='text' name='sliver_expiration'";
+		output += "<input class='date' type='text' name='slice_expiration'";
 		output += "value=\""+slice_expiration+"\"/>\n";
 		output += "<input type='submit' name= 'Renew' value='Renew'/>\n";
 		output += "</form></td>\n";
 	    } else {
-		output += "<td>"+sliver_expiration+"</td>";
+		output += "<td>"+sliver_expiration+"</td>"; 
 	    }
 	    // sliver actions
 	    output += "<td>";
