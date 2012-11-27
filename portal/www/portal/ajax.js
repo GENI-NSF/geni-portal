@@ -131,4 +131,4 @@ function update_agg_row(am_id) {
   });  
 }
 
-$(document).ready(build_agg_table_on_slicepg);
+

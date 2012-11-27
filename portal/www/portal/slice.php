@@ -133,9 +133,13 @@ var sliver_expiration= "NOT IMPLEMENTED YET";
 var delete_slivers_disabled= "<?php echo $delete_slivers_disabled ?>";
 var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
+
+
 </script>
 <script src="ajax.js"></script>
-
+<script>
+$(document).ready(build_agg_table_on_slicepg);
+</script>
 <?php 
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
 
