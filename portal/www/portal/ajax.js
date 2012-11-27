@@ -1,3 +1,5 @@
+var updating_text = "...updating...";
+
 function build_agg_table_on_slicepg() 
 {
    // (1) query the server for all a list of aggregates
@@ -34,9 +36,9 @@ function build_agg_table_on_slicepg()
 	    name = agg.name;
             output += "<tr id='"+am_id+"'>";
 	    output += "<td class='notapply'></td>";
-	    output += "<td><button id='hello' type='button' onclick='update_agg_row("+am_id+")'>Reload</button>";
+	    output += "<td><button id='hello' type='button' onclick='refresh_agg_row("+am_id+")'>Reload</button>";
 	    output += "</td><td id='status_"+am_id+"' class='updating'>";	
-	    output += "...updating...";
+	    output += updating_text;
 	    output += "</td><td>";	
 	    output += name;
 	    output += "</td>";	
@@ -106,6 +108,14 @@ function build_agg_table()
 }
 
 
+function refresh_agg_row(am_id) {
+
+    geni_status = "updating"
+    $("td#status_"+am_id).text( updating_text);
+    $("td#status_"+am_id).attr( "class", geni_status );
+    update_agg_row(am_id);
+}
+
 function update_agg_row(am_id) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
@@ -120,15 +130,15 @@ function update_agg_row(am_id) {
         for (new_id in json_am ) {	
            am = json_am[new_id];	   
            geni_status = am['geni_status'];
-           output += "<td id='status_"+am_id+"' class='"+geni_status+"'>";
     	   output += geni_status;
-           output += "</td>";
         }
-        $("td#status_"+am_id).replaceWith( output );
+        $("td#status_"+am_id).text( output );
+        $("td#status_"+am_id).attr( "class", geni_status );
      }
      if(statusTxt=="error")
         alert("Error: "+xhr.status+": "+xhr.statusText);
   });  
 }
+
 
 
