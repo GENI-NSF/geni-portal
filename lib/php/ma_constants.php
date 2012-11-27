@@ -40,6 +40,9 @@ class MA_ARGUMENT {
   const CLIENT_URN = "client_urn";
   const AUTHORIZE_SENSE = "authorize_sense";
   const PRIVILEGE_ID = "privilege_id";
+  const CSR = "csr";
+  const CERTIFICATE = "certificate";
+  const PRIVATE_KEY = "private_key";
 }
 
 
@@ -138,6 +141,17 @@ class MA_INSIDE_KEY_TABLE_FIELDNAME {
   const MEMBER_ID = "member_id";
   const PRIVATE_KEY = "private_key";
   const CERTIFICATE = "certificate";
+}
+
+/* Name of table containing outside cert info */
+$MA_OUTSIDE_CERT_TABLENAME = "ma_outside_cert";
+
+/* Name of fields of MA_OUTSIDE_CERT table */
+class MA_OUTSIDE_CERT_TABLE_FIELDNAME {
+  const ID = "id";
+  const MEMBER_ID = "member_id";
+  const CERTIFICATE = "certificate";
+  const PRIVATE_KEY = "private_key";
 }
 
 ?>

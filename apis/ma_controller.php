@@ -255,5 +255,38 @@ function get_version($args_dict)
 {
 }
 
+/**
+ * Create a certificate for use in offline tools (omni, gush, etc.)
+ *
+ * If a certificate signing request is included, the certificate
+ * is generated from it. If no certificate signing request is present
+ * a certificate and private key are created and returned.
+ *
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("revoke_member_privilege")</li>
+   <li>"member_id" : UUID of member about whom to remove privilege</li>
+   <li>"csr" : Optional argument containing a certificate signing request</li>
+</ul>
+ * @return the created certificate and optionally a private key if the
+ * csr argument was not included.
+ */
+function ma_create_certificate($args, $message)
+{
+}
+
+/**
+ * Lookup a member's certificate and private key (if present).
+ * @param dict $args_dict Dictionary containing name/value pairs:
+<ul>
+   <li>"operation" : name of this method ("revoke_member_privilege")</li>
+   <li>"member_id" : UUID of member about whom to remove privilege</li>
+</ul>
+ * @return A structure containing the certificate and optionally a
+ * private key if one is present in the database.
+ */
+function ma_lookup_certificate($args, $message)
+{
+}
 
 ?>
