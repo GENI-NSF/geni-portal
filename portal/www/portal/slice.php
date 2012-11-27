@@ -124,7 +124,6 @@ $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE,
 ?>
 
 <!-- This belongs in the header, probably -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script>
 var slice= "<?php echo $slice_id ?>";
 var renew_slice_privilege= "<?php echo $renew_slice_privilege?>";
