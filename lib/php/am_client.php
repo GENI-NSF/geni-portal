@@ -114,8 +114,8 @@ function get_template_omni_config($user)
 
     $omni_config = "[omni]\n"
       . "default_cf = portal\n"
-      . "# 'users' is a comma seperated list of users which should be added to a slice.\n"
-      . "# Each user is defined in a seperate section below.\n"
+      . "# 'users' is a comma separated list of users which should be added to a slice.\n"
+      . "# Each user is defined in a separate section below.\n"
       . "users = $username\n";
 
 /* THIS CODE SHOULD BE ENABLED ONCE Omni 2.2 IS AVAILABLE
@@ -161,7 +161,7 @@ function get_template_omni_config($user)
       . "\n"
       . "[$username]\n"
       . "urn = $urn\n"
-      . "# 'keys' is a comma seperated list of ssh public keys which should be added to this user's account.\n"
+      . "# 'keys' is a comma separated list of ssh public keys which should be added to this user's account.\n"
       . "keys = /PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
