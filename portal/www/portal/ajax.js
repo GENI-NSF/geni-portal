@@ -44,11 +44,11 @@ function build_agg_table_on_slicepg()
 	    output += "</td>";	
 	    // sliver expiration
 	    if (renew_slice_privilege) {
-                output += "<td><form method='GET' action=\"do-renew.php\">";
+                output += "<td><form  method='GET' action=\"do-renew.php\">";
 		output += "<input type=\"hidden\" name=\"slice_id\" value=\""+slice+"\"/>\n";
-		output += "<input class='date' type='text' name='slice_expiration'";
+		output += "<input id='renew_field_"+am_id+"' disabled='' class='date' type='text' name='slice_expiration'";
 		output += "value=\""+slice_expiration+"\"/>\n";
-		output += "<input type='submit' name= 'Renew' value='Renew'/>\n";
+		output += "<input id='renew_button_"+am_id+"' disabled='' type='submit' name= 'Renew' value='Renew'/>\n";
 		output += "</form></td>\n";
 	    } else {
 		output += "<td>"+sliver_expiration+"</td>"; 
@@ -140,10 +140,14 @@ function update_agg_row(am_id) {
 	    $("button#status_button_"+am_id).prop( "disabled", true ); 
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
 	    $("button#delete_button_"+am_id).prop( "disabled", true ); 
+	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
+	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
 	    $("button#status_button_"+am_id).removeProp( "disabled"); 
 	    $("button#details_button_"+am_id).removeProp( "disabled"); 
-	    $("button#delete_button_"+am_id).removeProp( "disabled"); 
+	    $("button#delete_button_"+am_id).removeProp( "disabled");
+	    $("input#renew_button_"+am_id).removeProp( "disabled");
+	    $("input#renew_field_"+am_id).removeProp( "disabled");
 	}
      }
      if(statusTxt=="error")
