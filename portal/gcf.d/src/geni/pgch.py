@@ -541,7 +541,6 @@ class PGClearinghouse(Clearinghouse):
 
         if self.gcf:
             # For now, do this as a createslice
-            # FIXME: Strip out any project name from the authority?
             return self.CreateSlice(urn)
 
         # Validate user credential
@@ -816,10 +815,11 @@ class PGClearinghouse(Clearinghouse):
                 # that returns 
                 # code/value/output triple
                 # value is a list of arrays: 'slice_id', 'slice_name', 'project_id', 'expiration', ....
-                argsdict = dict(project_id=None,member_id=uuidO)
+                argsdict = dict(project_id=None,member_id=str(uuidO))
+                self.logger.debug("Doing lookup_slices on project_id=None, member_id=%s", str(uuidO))
                 try:
                     # CAUTION: untested use of inside cert/key
-                    inside_key, inside_certs = self.getInsideKeys(uuidO)
+                    inside_key, inside_certs = self.getInsideKeys(str(uuidO))
                     slicestriple = invokeCH(self.sa_url, "lookup_slices",
                                             self.logger, argsdict, inside_certs,
                                             inside_key)
@@ -832,19 +832,20 @@ class PGClearinghouse(Clearinghouse):
                 if slicestriple["code"] != 0:
                     self.logger.error("Resolve got error getting from lookup_slices. Code: %d, Msg: %s", slicestriple["code"], slicestriple["output"])
                     return slicestriple
-            
+
                 # otherwise, create a list of the slice_name fields, and return that
                 slices = getValueFromTriple(slicestriple, self.logger, "lookup_slices", unwrap=True)
                 slicenames = list()
-                if slices and isinstance(slices, list):
-                    for slice in slices:
-                        if isinstance(slice, dict) and slice.has_key('slice_name'):
-                            slicenames.append(slice['slice_name'])
-                        else:
-                            self.logger.error("Malformed entry in list of slices from lookup_slices: %r", slice)
-                else:
-                    self.logger.error("Malformed value (not a list) from lookup_slices: %r", slices)
-                return slicenames
+                if slices:
+                    if isinstance(slices, list):
+                        for slice in slices:
+                            if isinstance(slice, dict) and slice.has_key('slice_name'):
+                                slicenames.append(slice['slice_name'])
+                            else:
+                                self.logger.error("Malformed entry in list of slices from lookup_slices: %r", slice)
+                    else:
+                        self.logger.error("Malformed value (not a list) from lookup_slices: %r", slices)
+                return dict(slices=slicenames)
 
         else:
             self.logger.error("Unknown type %s" % type)
