@@ -40,7 +40,7 @@ if (! isset($slice)) {
 <script>
 var slice= "<?php echo $slice_id ?>";
 </script>
-<script src="ajax.js"></script>
+<script src="amstatus.js"></script>
 </head>
 <body>
 

@@ -135,7 +135,7 @@ var slice_name= "<?php echo $slice_name?>";
 
 
 </script>
-<script src="ajax.js"></script>
+<script src="amstatus.js"></script>
 <script>
 $(document).ready(build_agg_table_on_slicepg);
 </script>

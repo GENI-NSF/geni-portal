@@ -77,18 +77,9 @@ foreach ($obj as $am_url => $am_status) {
  $status_array[am_id( $am_url )] = $status_item ; //append this to the end of the list
 }
 
-//$status_array = $obj;
-
-
-
-//if (is_null($agg_array)) {
-//  relative_redirect('home.php');
-//} else {
-//  error_log("AGG_ARRAY: " . print_r($agg_array));
-  // Set headers for xml
-  header("Cache-Control: public");
-  header("Content-Type: application/json");
-  print json_encode($status_array);
-//}
+// Set headers for xml
+header("Cache-Control: public");
+header("Content-Type: application/json");
+print json_encode($status_array);
 
 ?>
