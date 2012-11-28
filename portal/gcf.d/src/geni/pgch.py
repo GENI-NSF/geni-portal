@@ -208,7 +208,7 @@ class PGSAnCHServer(object):
             output = str(e)
             code = 1 # FIXME: Better codes
             value = ''
-            
+
         # If the underlying thing is a triple, return it as is
         if isinstance(value, dict) and value.has_key('value'):
             if value.has_key('code'):
@@ -679,6 +679,7 @@ class PGClearinghouse(Clearinghouse):
                 if self.slices.has_key(urn):
                     slice_cred = self.slices[urn]
                     slice_cert = slice_cred.get_gid_object()
+                    slice_uuid = ""
                     try:
                         slice_uuid = str(uuidModule.UUID(int=slice_cert.get_uuid()))
                     except Exception, e:
@@ -996,13 +997,13 @@ class PGClearinghouse(Clearinghouse):
         try:
             user_gid = gid.GID(string=user_certstr)
         except Exception, exc:
-            self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
-            raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+            self.logger.error("RenewSlice failed to create user_gid from SSL client cert: %s", traceback.format_exc())
+            raise Exception("Failed to RenewSlice. Cant get user GID from SSL client certificate." % exc)
 
         try:
             user_gid.verify_chain(self.trusted_roots)
         except Exception, exc:
-            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            self.logger.error("RenewSlice got unverifiable experimenter cert: %s", exc)
             raise
 
         expiration = None
@@ -1034,7 +1035,12 @@ class PGClearinghouse(Clearinghouse):
         if self.gcf:
             # Pull urn from slice credential
             urn = sfa.trust.credential.Credential(string=credential).get_gid_object().get_urn()            
-            return self.RenewSlice(urn)
+            if self.RenewSlice(urn, expiration):
+                # return the new slice credential
+                return self.slices[urn]
+            else:
+                # error
+                raise "Failed to renew slice %s until %s" % (urn, expiration)
         else:
             argsdict = dict(slice_id=slice_uuid,expiration=expiration)#HEREHERE
             slicetriple = None
