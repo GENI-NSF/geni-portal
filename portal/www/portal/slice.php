@@ -80,6 +80,11 @@ if (! isset($slice)) {
   exit();
 }
 
+?>
+
+
+<?php
+
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
 $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
@@ -100,6 +105,9 @@ $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
 $add_slivers_disabled = "";
 if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
 
+// String to disable button or other active element
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
+
 $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 $delete_slivers_disabled = "";
@@ -113,7 +121,25 @@ if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
 $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 
+?>
 
+<!-- This belongs in the header, probably -->
+<script>
+var slice= "<?php echo $slice_id ?>";
+var renew_slice_privilege= "<?php echo $renew_slice_privilege?>";
+var slice_expiration= "<?php echo $slice_expiration?>";
+var sliver_expiration= "NOT IMPLEMENTED YET";
+var delete_slivers_disabled= "<?php echo $delete_slivers_disabled ?>";
+var slice_status= "";
+var slice_name= "<?php echo $slice_name?>";
+
+
+</script>
+<script src="amstatus.js"></script>
+<script>
+$(document).ready(build_agg_table_on_slicepg);
+</script>
+<?php 
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
 
 print "<table>\n";
@@ -186,13 +212,13 @@ print "<br/>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href=
 // ----
 // Now show slice / sliver status
 
-include("query-sliverstatus.php");
+//include("query-sliverstatus.php");
 
 print "<h2>Slice Status</h2>\n";
-if (!(isset($msg) and isset($obj))) {
-  print "<p><i>No reserved resources found.</i></p>";  
-} else {
+
   $slice_status='';
+
+  print "<div id='status_table_div'/>\n";
   print "<table>\n";
   //  print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
   print "<tr><th>Status</th><th colspan='4'>Slice</th></tr>\n";
@@ -202,92 +228,10 @@ if (!(isset($msg) and isset($obj))) {
   print "<tr>";
   print "<td class='$slice_status'>$slice_status</td>";
   print "<td colspan='4'>$slice_name</td>";
-  // print "<td>$slice_creation</td>";
-
-  // if ($renew_slice_privilege) {
-  //   print "<td><form method='GET' action=\"do-renew-slice.php\">";
-  //   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  //   print "<input class='date' type='text' name='slice_expiration'";
-  //   print "value=\"$slice_expiration\"/>\n";
-  //   print "<input type='submit' name= 'Renew' value='Renew'/>\n";
-  //   print "</form></td>\n";
-  // } else {
-  //   print "<td>$slice_expiration</td>";
-  //  }
-
-  // print "<td>";
-  // print "<button $add_slivers_disabled onClick=\"window.location='$add_url'\"><b>Add Resources</b></button>\n";
-  // print "<button onClick=\"window.location='$status_url'\"><b>Resource Status</b></button>\n";
-  // print "<button onClick=\"window.location='$listres_url'\"><b>Manifest</b></button>\n";
-  // print "<button $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
-  //   print "<button $delete_slivers_disabled onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\"><b>Delete Resources</b></button>\n";
-
-  // print "</td>";
   print "</tr>\n";
 
-  /* Sliver Info */
-  $first = True;
-  $aggs = array_keys( $obj );
-  $displayed_aggs = 0;
-  foreach ($aggs as $agg){
-    $agg_obj = $obj[$agg];
-    /* ignore aggregates which returned nothing */
-    if (!is_array($agg_obj)){
-      continue;
-    }
-    $displayed_aggs++;
-
-    if ($first){
-      print "<tr>";
-      print "<th class='notapply'>";
-      print "</th><th>Status</th><th>Aggregate</th>";
-      //      print "<th>&nbsp;</th>";
-      print "<th>Expiration</th>";
-      print "<th>Actions</th></tr>\n";
-      $first = False;
-    }
-    $sliver_status=$agg_obj['geni_status'];
-    $sliver_creation='&nbsp;';
-    $sliver_expiration='NOT IMPLEMENTED YET';
-
-    print "<tr>";
-    print "<td class='notapply'></td>";
-    print "<td class='$sliver_status'>$sliver_status</td>";
-    $agg_name = am_name($agg);
-    print "<td>$agg_name</td>";
-    //print "<td>$sliver_creation</td>";
-    
-    if ($renew_slice_privilege) {
-      print "<td><form method='GET' action=\"do-renew.php\">";
-      print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-      print "<input class='date' type='text' name='slice_expiration'";
-      print "value=\"$slice_expiration\"/>\n";
-      print "<input type='submit' name= 'Renew' value='Renew'/>\n";
-      print "</form></td>\n";
-    } else {
-      print "<td>$sliver_expiration</td>";
-    }
-
-
-/* Sliver Actions */
-print "<td>\n";
-print "<button onClick=\"window.location='$status_url"."&am_id=".am_id($agg)."'\"><b>Resource Status</b></button>\n";
-print "<button title='Login info, etc' onClick=\"window.location='$listres_url"."&am_id=".am_id($agg)."'\"><b>Details</b></button>\n";
-print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "&am_id=".am_id($agg)."'\" $delete_slivers_disabled><b>Delete Resources</b></button>\n";
-print "</td>\n";
-
-
-
-    print "</tr>";
-  }
-
-  if ($displayed_aggs == 0) {
-    /* No resources detected. Say so. */
-    print "<tr><td class='notapply'/><td colspan='5'><i>No resources detected.</i></td></tr>";
-  }
-
   print "</table>\n";
-}
+  print "</div>\n";
 // --- End of Slice and Sliver Status table
 
 print "<br/>\n";
