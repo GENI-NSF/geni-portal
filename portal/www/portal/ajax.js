@@ -128,21 +128,20 @@ function update_agg_row(am_id) {
         var geni_status;
         var output=""; 
         json_am = responseTxt;
-        for (new_id in json_am ) {	
-           am = json_am[new_id];	   
-           geni_status = am['geni_status'];
-    	   output += geni_status;
-        }
+        am = json_am[am_id];	   
+        geni_status = am['geni_status'];
+    	output += geni_status;
         $("td#status_"+am_id).text( output );
-        $("td#status_"+am_id).attr( "class", geni_status );
 
-	if (geni_status == undefined){
+	if (geni_status == "no resources"){
+            $("td#status_"+am_id).attr( "class", "noresources" );
 	    $("button#status_button_"+am_id).prop( "disabled", true ); 
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
 	    $("button#delete_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
+            $("td#status_"+am_id).attr( "class", geni_status );
 	    $("button#status_button_"+am_id).removeProp( "disabled"); 
 	    $("button#details_button_"+am_id).removeProp( "disabled"); 
 	    $("button#delete_button_"+am_id).removeProp( "disabled");

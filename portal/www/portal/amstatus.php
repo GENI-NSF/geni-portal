@@ -61,7 +61,25 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 
 include("query-sliverstatus.php");
 
-$status_array = $obj;
+$status_array = Array();
+
+$no_resource_msg = "no resources";
+
+foreach ($obj as $am_url => $am_status) {
+ $status_item = Array();
+ $status_item['url'] = $am_url;
+ if ($am_status) {
+    $status_item['geni_status'] = $am_status['geni_status'];
+//    $status_item['geni_error] = $am_status['geni_error'];
+  } else {
+    $status_item['geni_status'] = $no_resource_msg;
+ }
+ $status_array[am_id( $am_url )] = $status_item ; //append this to the end of the list
+}
+
+//$status_array = $obj;
+
+
 
 //if (is_null($agg_array)) {
 //  relative_redirect('home.php');
@@ -70,10 +88,7 @@ $status_array = $obj;
   // Set headers for xml
   header("Cache-Control: public");
   header("Content-Type: application/json");
-  //print $rspec;
-//  print "START\n";
   print json_encode($status_array);
-//  print "END\n";
 //}
 
 ?>
