@@ -187,6 +187,7 @@ if (! is_null($result)) {
 <input type="submit" name="submit" value="Download Certificate<?php print $key_msg;?>"/>
 </form>
 <?php
+  include("footer.php");
   return;
 }
 
