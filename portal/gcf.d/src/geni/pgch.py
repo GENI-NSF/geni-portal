@@ -208,7 +208,7 @@ class PGSAnCHServer(object):
             output = str(e)
             code = 1 # FIXME: Better codes
             value = ''
-            
+
         # If the underlying thing is a triple, return it as is
         if isinstance(value, dict) and value.has_key('value'):
             if value.has_key('code'):
@@ -679,6 +679,7 @@ class PGClearinghouse(Clearinghouse):
                 if self.slices.has_key(urn):
                     slice_cred = self.slices[urn]
                     slice_cert = slice_cred.get_gid_object()
+                    slice_uuid = ""
                     try:
                         slice_uuid = str(uuidModule.UUID(int=slice_cert.get_uuid()))
                     except Exception, e:
@@ -747,29 +748,106 @@ class PGClearinghouse(Clearinghouse):
 
         elif type.lower() == 'user':
             # type is user
+            # To date, this is only used for ListMySlices - given an hrn, return slice names. But the PG API
+            # returns other stuff as well
+
+            uuidO = None
             # This should be an hrn. Maybe handle others?
+
+            # turn an hrn into a urn
             if hrn and (not urn or not urn_util.is_valid_urn(urn)):
                 urn = sfa.util.xrn.hrn_to_urn(hrn, "user")
                 self.logger.debug("Made user urn %s from hrn %s", urn, hrn)
             if not urn or not urn_util.is_valid_urn(urn):
                 self.logger.error("Didnt get a valid URN for user in resolve: %s", urn)
-                if uuid:
-                    self.logger.error("Got a UUID instead? %s" % uuid)
-                    try:
-                        uuidO = uuidModule.UUID(uuid)
-                    except:
-                        self.logger.error("Resolve(user): Invalid UUID %s", uuid)
-                        raise Exception("Resolve(user): No valid URN (even using hrn) and no valid UUID")
-                else:
-                    raise Exception("Resolve(user): No valid URN (even using hrn) and no valid UUID")
-                        # FIXME: then what?
-            # Now I need an owner uuid from the urn
-            # FIXME: We don't have this yet!
-            # return a list of slices
-            #
-            # FIXME
-            self.logger.warn("Resolve(user) unimplemented. Was asked about user with hrn=%s (or urn=%s, uuid=%s)" % (hrn, urn, uuid))
-            return dict(slices=list())
+
+            # Validate uuid
+            if uuid:
+                self.logger.error("Got a UUID instead? %s" % uuid)
+                try:
+                    uuidO = uuidModule.UUID(uuid)
+                except:
+                    self.logger.error("Resolve(user): Invalid UUID %s", uuid)
+
+            # If no urn and no valid UUID, give up
+            if (not urn or not urn_util.is_valid_urn(urn)) and not uuidO:
+                raise Exception("Resolve(user): No valid URN (even using hrn) and no valid UUID")
+
+            # Handle GCF mode: input is a URN, output is a list of URNs that we'll convert
+            if self.gcf:
+                if uuidO and (not urn or not urn_util.is_valid_urn(urn)):
+                    # If uuid matches the caller uuid, then pull out the URN from the caller cert
+                    client_uuidO = uuidModule.UUID(int=user_gid.get_uuid())
+                    if uuidO.int == client_uuidO.int:
+                        urn = user_gid.get_urn()
+                # If we still have no URN, bail
+                if not urn or not urn_util.is_valid_urn(urn):
+                    self.logger.warn("Resolve(user) on gcf implemented only when given a urn or can construct on. Was asked about user with hrn=%s (or urn=%s, uuid=%s)" % (hrn, urn, uuid))
+                    return dict(slices=list())
+
+                # OK, we have a URN
+                slices = self.ListMySlices(urn)
+                # This is a list of URNs. I want names, and keyed by slices=
+                slicenames = list()
+                for slice in slices:
+                    slicenames.append(urn_util.nameFromURN(slice))
+                return dict(slices=slicenames)
+
+            else:
+                # Talking to the real CH. Need a uuid, from which we can get a lot of data about slices
+                # for which that uuid is a member.
+
+                # If we have a uuid, we can look up the user with that
+                # Else, try to match the urn with the subjectAltName in the client cert,
+                # and get the UUID from there
+                if not uuidO and urn and urn_util.is_valid_urn(urn):
+                    client_uuidO = uuidModule.UUID(int=user_gid.get_uuid())
+                    client_urn = user_gid.get_urn()
+                    if urn == client_urn:
+                        self.logger.debug("Client urn matches query URN. Get UUID that way")
+                        uuidO = client_uuidO
+
+                if not uuidO:
+                    self.logger.warn("Resolve(user) implemented only when given a uuid or the hrn/urn of the client making the query. Was asked about user with hrn=%s (or urn=%s, uuid=%s)" % (hrn, urn, uuid))
+                    return dict(slices=list())
+
+                # Query the SA for a list of slices that this UUID is a member of
+                # call is lookup_slices(sa_url, signer, None, uuidO)
+                # that returns 
+                # code/value/output triple
+                # value is a list of arrays: 'slice_id', 'slice_name', 'project_id', 'expiration', ....
+                argsdict = dict(project_id=None,member_id=str(uuidO))
+                self.logger.debug("Doing lookup_slices on project_id=None, member_id=%s", str(uuidO))
+                try:
+                    # CAUTION: untested use of inside cert/key
+                    inside_key, inside_certs = self.getInsideKeys(str(uuidO))
+                    slicestriple = invokeCH(self.sa_url, "lookup_slices",
+                                            self.logger, argsdict, inside_certs,
+                                            inside_key)
+                except Exception, e:
+                    self.logger.error("Exception getting slices for member %s: %s", str(uuidO), e)
+                    raise
+
+                # If there was an error, return it
+                getValueFromTriple(slicestriple, self.logger, "lookup_slices")
+                if slicestriple["code"] != 0:
+                    self.logger.error("Resolve got error getting from lookup_slices. Code: %d, Msg: %s", slicestriple["code"], slicestriple["output"])
+                    return slicestriple
+
+                # otherwise, create a list of the slice_name fields, and return that
+                slices = getValueFromTriple(slicestriple, self.logger, "lookup_slices", unwrap=True)
+                slicenames = list()
+                if slices:
+                    if isinstance(slices, list):
+                        for slice in slices:
+                            if isinstance(slice, dict) and slice.has_key('slice_name'):
+                                slicenames.append(slice['slice_name'])
+                            else:
+                                self.logger.error("Malformed entry in list of slices from lookup_slices: %r", slice)
+                    else:
+                        self.logger.error("Malformed value (not a list) from lookup_slices: %r", slices)
+                return dict(slices=slicenames)
+
         else:
             self.logger.error("Unknown type %s" % type)
             raise Exception("Unknown type %s" % type)
@@ -919,13 +997,13 @@ class PGClearinghouse(Clearinghouse):
         try:
             user_gid = gid.GID(string=user_certstr)
         except Exception, exc:
-            self.logger.error("GetCredential failed to create user_gid from SSL client cert: %s", traceback.format_exc())
-            raise Exception("Failed to GetCredential. Cant get user GID from SSL client certificate." % exc)
+            self.logger.error("RenewSlice failed to create user_gid from SSL client cert: %s", traceback.format_exc())
+            raise Exception("Failed to RenewSlice. Cant get user GID from SSL client certificate." % exc)
 
         try:
             user_gid.verify_chain(self.trusted_roots)
         except Exception, exc:
-            self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
+            self.logger.error("RenewSlice got unverifiable experimenter cert: %s", exc)
             raise
 
         expiration = None
@@ -957,7 +1035,12 @@ class PGClearinghouse(Clearinghouse):
         if self.gcf:
             # Pull urn from slice credential
             urn = sfa.trust.credential.Credential(string=credential).get_gid_object().get_urn()            
-            return self.RenewSlice(urn)
+            if self.RenewSlice(urn, expiration):
+                # return the new slice credential
+                return self.slices[urn]
+            else:
+                # error
+                raise "Failed to renew slice %s until %s" % (urn, expiration)
         else:
             argsdict = dict(slice_id=slice_uuid,expiration=expiration)#HEREHERE
             slicetriple = None

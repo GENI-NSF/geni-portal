@@ -73,6 +73,7 @@ function download_cert($ma_url, $km_signer, $member_id) {
   header("Content-Transfer-Encoding: binary");
   if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
     print $result[MA_ARGUMENT::PRIVATE_KEY];
+    print "\n";
   }
   print $result[MA_ARGUMENT::CERTIFICATE];
 }
@@ -140,6 +141,7 @@ if (key_exists($upload_key, $_REQUEST)) {
 }
 if (key_exists($download_key, $_REQUEST)) {
   download_cert($ma_url, $km_signer, $member_id);
+  return;
 }
 
 // If invoked with a ?redirect=url argument, grab that

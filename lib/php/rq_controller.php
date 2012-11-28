@@ -283,7 +283,7 @@ function get_pending_requests_for_user($args)
 
   // Limit to contexts where this account has privileges to make changes
   // Note that this is in ADDITION to limiting to a specific context if provided.
-  $user_for_context_query = 
+  $user_for_context_query =  $user_for_context_query . 
     RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
     user_context_query($account_id) . ")";
 
@@ -336,7 +336,7 @@ function get_number_of_pending_requests_for_user($args)
 
   // Limit to contexts where this account has privileges to make changes
   // Note that this is in ADDITION to limiting to a specific context if provided.
-  $user_for_context_query = 
+  $user_for_context_query = $user_for_context_query . 
     RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
     user_context_query($account_id) . ")";
 

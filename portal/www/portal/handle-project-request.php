@@ -110,7 +110,7 @@ if (! isset($request) || is_null($request)) {
       } else {
 	print $member_id;
       }
-      print " and project ";
+      print " to join project ";
       if (isset($project_name)) {
 	print $project_name;
       } else {

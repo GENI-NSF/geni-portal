@@ -634,6 +634,10 @@ function add_member_privilege($args, $message)
           . ", " . $conn->quote($privilege_id, 'integer')
           . ")");
   $result = db_execute_statement($sql);
+
+  // FIXME: At some point there will be other privileges here and we'll want to send
+  // mail in more cases. Also, we are not including who took the action, which is key.
+
   if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
     assert_project_lead($cs_url, $ma_signer, $member_id);
     mail_new_project_lead($member_id);
