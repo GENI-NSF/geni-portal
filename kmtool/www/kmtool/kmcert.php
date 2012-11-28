@@ -62,9 +62,11 @@ if (array_key_exists('displayName', $_SERVER)) {
   $username = $_REQUEST["username"];
 }
 
-function download_cert($ma_url, $km_signer, $member_id) {
+function download_cert($ma_url, $km_signer, $member) {
+  $member_id = $member_id;
+  $username = $member->username;
   $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
-  $cert_filename = "geni.pem";
+  $cert_filename = "geni-$username.pem";
   // Set headers for download
   header("Cache-Control: public");
   header("Content-Description: File Transfer");
@@ -140,7 +142,7 @@ if (key_exists($upload_key, $_REQUEST)) {
   $status = handle_upload($ma_url, $km_signer, $member_id, $error);
 }
 if (key_exists($download_key, $_REQUEST)) {
-  download_cert($ma_url, $km_signer, $member_id);
+  download_cert($ma_url, $km_signer, $member);
   return;
 }
 
