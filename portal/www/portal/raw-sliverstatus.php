@@ -21,6 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
+?>
+<?php
+require_once("settings.php");
+require_once("user.php");
 
 require_once("header.php");
 require_once("settings.php");
@@ -32,10 +36,11 @@ require_once("am_client.php");
 require_once("sa_client.php");
 require_once("am_map.php");
 require_once("json_util.php");
-require_once('status_constants.php');
+require_once("status_constants.php");
+
 
 $user = geni_loadUser();
-if (! $user->isActive()) {
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
@@ -60,46 +65,28 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-$header = "Status of Slivers on slice: $slice_name";
 
-show_header('GENI Portal: Slices',  $TAB_SLICES);
-include("tool-breadcrumbs.php");
-?>
+// Look up the sliverstatus...
+include("query-sliverstatus.php");
 
-<script src="amstatus.js"></script>
-
-<script>
-var slice= "<?php echo $slice_id ?>";
-
-<?php include('status_constants_import.php'); ?>
-
-$(document).ready(build_agg_table_on_sliverstatuspg);
-</script>
-
-<?php
-print "<h2>$header</h2>\n";
-        
-
-echo "<div id='header'>Querying status of resources at all aggregates...</div>";
-echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
-
-
-print "<div id='slivererror'></div>";
-print "<table id='slivererror'></table></div>";
-
-if (isset($am_id) && $am_id ) {
-  $am_id_str = "&am_id=$am_id";
-} else {
-  $am_id_str = "";
+if (! $obj) {
+  relative_redirect("home.php");
 }
 
-print "<a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
-print "<br/>";
-print "<br/>";
+/* Construct a filename like "raw-sliverstatus.json" */
+//$filename = "geni-" . str_replace(' ', '', $user->prettyName()) . ".pem";
+$filename = "raw-sliverstatus.json";
 
-print "<a href='slices.php'>Back to All slices</a>";
-print "<br/>";
-print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
-include("footer.php");
+$_SESSION['lastmessage'] = "Downloaded SliverStatus to $filename";
 
+// Set headers for download
+header("Cache-Control: public");
+//header("Content-Description: File Transfer");
+//header("Content-Disposition: attachment; filename=$filename");
+header("Content-Type: application/json");
+
+/* json_encode accepts JSON_PRETTY_PRINT in PHP 5.4, but
+ * we've got 5.3. Use a third-party utility instead.
+ */
+print json_indent(json_encode($obj)) . "\n";
 ?>
