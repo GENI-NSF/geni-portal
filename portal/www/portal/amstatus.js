@@ -187,10 +187,11 @@ function add_agg_row_on_sliverstatuspg(am_id) {
          am = json_am[am_id];	   
          geni_urn = am['geni_status'];
          geni_status = am['geni_status'];
+         status_code = am['status_code'];
 	 agg_name= am['am_name'];
 	 geni_resources = am['resources'];
 
-	 if (geni_status != "no resources"){
+	 if ((status_code != GENI_NO_RESOURCES) && (status_code != GENI_BUSY)){
 	     output += "<tr class='aggregate'><th>Status</th><th colspan='2'>Aggregate</th></tr>";
 	     output += "<tr class='aggregate'><td class='"+geni_status+"'>"+geni_status+"</td>";
 	     output += "<td colspan='2'>"+agg_name+"</td></tr>";
@@ -218,7 +219,6 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 		     }
 		 });
 	     });
-
              $("table#sliverstatus").append( output );
 	     output = ""
 	 } else {
