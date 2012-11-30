@@ -62,6 +62,13 @@ if (array_key_exists('displayName', $_SERVER)) {
   $username = $_REQUEST["username"];
 }
 
+function show_close_button() {
+  if (key_exists("close", $_REQUEST)) {
+    print "<br/>\n";
+    print "<button onclick=\"window.close();return false;\"><b>Close</b></button>\n";
+  }
+}
+
 function download_cert($ma_url, $km_signer, $member) {
   $member_id = $member->member_id;
   $username = $member->username;
@@ -134,6 +141,8 @@ function handle_upload($ma_url, $km_signer, $member_id, &$error) {
 $generate_key = "generate";
 $upload_key = "upload";
 $download_key = "download";
+$close_key = key_exists("close", $_REQUEST) ? "close" : "noclose";
+
 if (key_exists($generate_key, $_REQUEST)) {
   // User has asked to generate a cert/key.
   generate_cert($ma_url, $km_signer, $member_id);
@@ -189,6 +198,7 @@ if (! is_null($result)) {
 <input type="submit" name="submit" value="Download Certificate<?php print $key_msg;?>"/>
 </form>
 <?php
+  show_close_button();
   include("footer.php");
   return;
 }
@@ -211,12 +221,13 @@ Store <code>privateKey.key</code> where you'll remember it ($HOME/.ssl, $HOME/.s
 Upload <code>CSR.csr</code> in the form below.
 <br/>
 <pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout privateKey.key -batch</pre>
-<h4>Now upload the file <verbatim>CSR.csr</verbatim> below:</h4>
+<h4>Now upload the file CSR.csr below:</h4>
 <form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
 <label for="csrfile">Certificate Signing Request File:</label>
 <input type="file" name="csrfile" id="csrfile"/>
 <br/>
 <input type="hidden" name="<?php print $upload_key; ?>" value="y"/>
+<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Create Certificate"/>
 </form>
 <hr>
@@ -225,22 +236,25 @@ Run the following command in a terminal window on a Mac or Linux host.
 This will generate a file named <code>CSR.csr</code>.
 Upload <code>CSR.csr</code> in the form below.
 <pre>openssl req -out CSR.csr -new -key &lt;YourPrivateKey&gt; -batch</pre>
-<h4>Now upload the file <verbatim>CSR.csr</verbatim> below:</h4>
+<h4>Now upload the file CSR.csr below:</h4>
 <form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
 <label for="csrfile">Certificate Signing Request File:</label>
 <input type="file" name="csrfile" id="csrfile"/>
 <br/>
 <input type="hidden" name="<?php print $upload_key; ?>" value="y"/>
+<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Create Certificate"/>
 </form>
 <hr>
 <h2>Option 3: Generate a private key and certificate</h2>
 <form name="generate" action="kmcert.php" method="post">
 <input type="hidden" name="<?php print $generate_key;?>" value="y"/>
+<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Generate Certificate and Key"/>
 </form>
 
 <?php
+show_close_button();
 
 // Include this only if the redirect address is a web address
 if (! empty($redirect_address)) {

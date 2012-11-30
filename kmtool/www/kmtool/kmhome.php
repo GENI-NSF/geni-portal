@@ -143,7 +143,7 @@ print "Click \"Deauthorize\" in the table below " .
 If you would rather use an offline tool like
 <a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>
 you can
-<a href="kmcert.php" target="_blank">Create and download a GENI certificate</a>.
+<a href="kmcert.php?close=1" target="_blank">Create and download a GENI certificate</a>.
 <br/><br/>
 <?php
 if (array_key_exists("authorize_toolname", $_GET)) {

@@ -186,16 +186,16 @@ print "<button onClick=\"window.location='rspecs.php'\">"
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
 $has_certificate = ! is_null($result);
 // FIXME: hardcoded paths
-$create_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php";
-$download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php";
+$create_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
+$download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
 ?>
 
 <h2>Command line tools</h2>
 For <i>Advanced</i> users:
 <?php if ($has_certificate): ?>
-<a href="<?php print $download_url?>">download your SSL certificate</a>
+<a href="<?php print $download_url?>" target="_blank">download your SSL certificate</a>
 <?php else: ?>
-<a href="<?php print $create_url?>">create an SSL certificate</a>
+<a href="<?php print $create_url?>" target="_blank">create an SSL certificate</a>
 <?php endif; ?>
 in order to use other GENI tools.<br/><br/>
 
