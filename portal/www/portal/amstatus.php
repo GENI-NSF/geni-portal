@@ -59,7 +59,53 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-include("query-sliverstatus.php");
+function get_sliver_status( $obj,  $status_array ) {
+    $no_resource_msg = "no resources";
+
+    foreach ($obj as $am_url => $am_status) {
+    $status_item = Array();
+    // AM url
+    $status_item['url'] = $am_url;
+    // AM name	     
+    $status_item['am_name'] = am_name($am_url);
+    if ($am_status) {
+       // AM status
+       $geni_status = $am_status['geni_status'];
+       $geni_status = strtolower( $geni_status );
+       $status_item['geni_status'] = $geni_status;
+       // slice URN
+       $status_item['slice_urn'] = $am_status['geni_urn'];
+       // Resources
+       $geni_resources = $am_status['geni_resources'];
+       foreach ($geni_resources as $rsc){
+           $resource_item = Array();
+      	   if ( array_key_exists("pg_manifest", $rsc) ){
+	       $pg_rsc = $rsc["pg_manifest"];
+	       $pg_name = $pg_rsc["name"];
+	       if ($pg_name == "rspec"){
+	           continue;
+	       }
+	       $pg_attr = $pg_rsc["attributes"];
+	       $rsc_urn = $pg_attr["client_id"];
+	       $resource_item['geni_urn'] = $rsc_urn;
+      	   } else {
+	       $resource_item['geni_urn'] = $rsc['geni_urn'];
+      	   }
+      	   $resource_item['geni_status'] = $rsc['geni_status'];
+      	   $resource_item['geni_error'] = $rsc['geni_error'];
+      
+	   if (!array_key_exists("resources", $status_item )) {
+           $status_item['resources'] = Array();
+      	   }
+      	   $status_item['resources'][] = $resource_item;
+       }
+    } else {
+       $status_item['geni_status'] = $no_resource_msg;
+    }
+    $status_array[am_id( $am_url )] = $status_item ; //append this to the end of the list
+    }
+    return $status_array;
+}
 
 function get_sliver_status_err( $msg,  $status_array ) {
   /* Sample input */
@@ -100,61 +146,15 @@ Returned status of slivers on 0 of 2 possible aggregates.
 }
 
 
-
+// querying the AMs for sliver status info
+include("query-sliverstatus.php");
 $status_array = Array();
-
-$no_resource_msg = "no resources";
-
-foreach ($obj as $am_url => $am_status) {
- $status_item = Array();
- // AM url
- $status_item['url'] = $am_url;
- // AM name	     
- $status_item['am_name'] = am_name($am_url);
- if ($am_status) {
-    // AM status
-    $geni_status = $am_status['geni_status'];
-    $geni_status = strtolower( $geni_status );
-    $status_item['geni_status'] = $geni_status;
-    // slice URN
-    $status_item['slice_urn'] = $am_status['geni_urn'];
-    // Resources
-    $geni_resources = $am_status['geni_resources'];
-    foreach ($geni_resources as $rsc){
-      $resource_item = Array();
-      if ( array_key_exists("pg_manifest", $rsc) ){
-	$pg_rsc = $rsc["pg_manifest"];
-	$pg_name = $pg_rsc["name"];
-	if ($pg_name == "rspec"){
-	  continue;
-	}
-	$pg_attr = $pg_rsc["attributes"];
-	$rsc_urn = $pg_attr["client_id"];
-	$resource_item['geni_urn'] = $rsc_urn;
-      } else {
-	$resource_item['geni_urn'] = $rsc['geni_urn'];
-      }
-      $resource_item['geni_status'] = $rsc['geni_status'];
-      $resource_item['geni_error'] = $rsc['geni_error'];
-      
-      if (!array_key_exists("resources", $status_item )) {
-         $status_item['resources'] = Array();
-      }
-
-      $status_item['resources'][] = $resource_item;
-  }
-
-  } else {
-    $status_item['geni_status'] = $no_resource_msg;
- }
- $status_array[am_id( $am_url )] = $status_item ; //append this to the end of the list
-}
-
-
+// fill in sliver status info for each agg
+$status_array = get_sliver_status( $obj, $status_array );
+// fill in sliver status errors for each agg
 $retVal = get_sliver_status_err( $msg, $status_array );
 $status_array = $retVal[0];
 $max_ams = $retVal[1];
-
 
 // Set headers for xml
 header("Cache-Control: public");
