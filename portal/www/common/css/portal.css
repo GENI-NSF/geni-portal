@@ -213,7 +213,7 @@ margin-left: .4in;
  color: gray;
 }
 
-.configuring, .unknown, .ready, .failed {
+.configuring, .unknown, .busy, .ready, .failed {
  text-transform:uppercase;
  padding: 2px;
  margin: 2px;
@@ -231,6 +231,12 @@ margin-left: .4in;
  color: BlanchedAlmond;
  border-color: red;
  background-color: red;
+}
+
+.busy {
+ color: Black;
+ border-color: yellow;
+ background-color: yellow;
 }
 
 input.date {

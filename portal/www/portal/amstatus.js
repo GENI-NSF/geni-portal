@@ -116,6 +116,8 @@ function refresh_agg_row(am_id) {
     update_agg_row(am_id);
 }
 
+
+
 function update_agg_row(am_id) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
@@ -130,18 +132,18 @@ function update_agg_row(am_id) {
         json_am = responseTxt;
         am = json_am[am_id];	   
         geni_status = am['geni_status'];
+        status_code = am['status_code'];
     	output += geni_status;
         $("td#status_"+am_id).text( output );
+        $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
 
-	if (geni_status == "no resources"){
-            $("td#status_"+am_id).attr( "class", "noresources" );
+	if (status_code == GENI_NO_RESOURCES){
 	    $("button#status_button_"+am_id).prop( "disabled", true ); 
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
 	    $("button#delete_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
-            $("td#status_"+am_id).attr( "class", geni_status );
 	    $("button#status_button_"+am_id).removeProp( "disabled"); 
 	    $("button#details_button_"+am_id).removeProp( "disabled"); 
 	    $("button#delete_button_"+am_id).removeProp( "disabled");

@@ -32,6 +32,9 @@ require_once("am_client.php");
 require_once("sa_client.php");
 require_once("am_map.php");
 require_once("json_util.php");
+require_once("status_constants.php");
+
+
 
 $user = geni_loadUser();
 if (! $user->isActive()) {
@@ -60,8 +63,6 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 }
 
 function get_sliver_status( $obj,  $status_array ) {
-    $no_resource_msg = "no resources";
-
     foreach ($obj as $am_url => $am_status) {
     $status_item = Array();
     // AM url
@@ -73,6 +74,7 @@ function get_sliver_status( $obj,  $status_array ) {
        $geni_status = $am_status['geni_status'];
        $geni_status = strtolower( $geni_status );
        $status_item['geni_status'] = $geni_status;
+       $status_item['status_code'] = STATUS_INDEX::GENI_READY; //FIXME
        // slice URN
        $status_item['slice_urn'] = $am_status['geni_urn'];
        // Resources
@@ -100,7 +102,8 @@ function get_sliver_status( $obj,  $status_array ) {
       	   $status_item['resources'][] = $resource_item;
        }
     } else {
-       $status_item['geni_status'] = $no_resource_msg;
+       $status_item['geni_status'] = STATUS_MSG::GENI_NO_RESOURCES; 
+       $status_item['status_code'] = STATUS_INDEX::GENI_NO_RESOURCES; 
     }
     $status_array[am_id( $am_url )] = $status_item ; //append this to the end of the list
     }
@@ -115,7 +118,7 @@ Failed to get SliverStatus on urn:publicid:IDN+sergyar:AMtest+slice+test1 at AM 
 Failed to get SliverStatus on urn:publicid:IDN+sergyar:AMtest+slice+test1 at AM https://www.pgeni3.gpolab.bbn.com:12369/protogeni/xmlrpc/am/2.0: No slice or aggregate here
 Returned status of slivers on 0 of 2 possible aggregates.
 */
-
+  $busy_resource_msg = "<<<busy>>>";
   $succ=array();
   $fail=array();
   $lines = preg_split ('/$\R?^/m', $msg);
@@ -129,11 +132,18 @@ Returned status of slivers on 0 of 2 possible aggregates.
       $agg = $fail[4];
       $err = $fail[5];
       $am_url = $agg; // FIXME is this always return a URL
-      if ( $status_array[ am_id( $am_url ) ] ) {
-      	$status_array[ am_id( $am_url ) ]['geni_error'] = $err;
+      $id = am_id( $am_url );
+      if ( $status_array[ $id ] ) {
+      	$status_array[ $id ]['geni_error'] = $err;
       } else {       
-      	$status_array[ am_id( $am_url ) ] = Array();
-      	$status_array[ am_id( $am_url ) ]['url'] = $am_url;
+      	$status_array[ $id ] = Array();
+      	$status_array[ $id ]['url'] = $am_url;
+      }
+
+      // if geni_error indicates that the AM is busy
+      if (($status_array[ $id ]['status_code'] == STATUS_INDEX::GENI_NO_RESOURCES) && (strpos($err,'busy') !== false)) {
+        $status_array[ $id ]['geni_status'] = $busy_resource_msg;		      
+        $status_array[ $id ]['status_code'] = STATUS_INDEX::GENI_BUSY; 
       }
     }
   }
