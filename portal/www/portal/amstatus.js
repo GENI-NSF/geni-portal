@@ -224,7 +224,7 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 	 } else {
 	     am_error = am['geni_error'];
 	     /* output += "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
-             if ( $("table#slivererror").length == 1 ) { //FIXME
+             if ( $("table#slivererror").children().length == 0 ) {
 		 $("table#slivererror").before( "<div>Received errors from the following aggregates:</div>" );
 		 output += "<tr><th>Aggregate</th><th>Message</th></tr>";
 	     }
