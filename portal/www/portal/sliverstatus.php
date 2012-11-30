@@ -67,10 +67,8 @@ include("tool-breadcrumbs.php");
 ?>
 
 <script src="amstatus.js"></script>
-
 <script>
 var slice= "<?php echo $slice_id ?>";
-
 <?php include('status_constants_import.php'); ?>
 
 $(document).ready(build_agg_table_on_sliverstatuspg);
@@ -79,10 +77,8 @@ $(document).ready(build_agg_table_on_sliverstatuspg);
 <?php
 print "<h2>$header</h2>\n";
         
-
 echo "<div id='header'>Querying status of resources at all aggregates...</div>";
 echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
-
 
 print "<div id='slivererror'></div>";
 print "<table id='slivererror'></table></div>";
@@ -94,12 +90,10 @@ if (isset($am_id) && $am_id ) {
 }
 
 print "<a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
-print "<br/>";
-print "<br/>";
+print "<br/><br/>";
 
-print "<a href='slices.php'>Back to All slices</a>";
-print "<br/>";
+print "<a href='slices.php'>Back to All slices</a><br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
-include("footer.php");
 
+include("footer.php");
 ?>
