@@ -70,33 +70,6 @@ if (array_key_exists("pretty", $_REQUEST)){
   $pretty=True;
 }
 
-function print_sliver_status_err( $err_array, $m ) {
-  $num_errs = count( $err_array );
-  if ($num_errs>0){
-    if ($n === 0) {
-      /* No aggregates responded succesfully */
-      $hdr = "Checked $m aggregate" . ($m > 1 ? "s" : "") . ", no resources found:";
-    } else {
-      $hdr = "Checked $num_errs other aggregate" . ($num_errs > 1 ? "s" : "") . ":";
-    }
-    /* print "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
-    print "<div>$hdr</div>";
-    print "<table>";
-    print "<tr><th>Aggregate</th><th>Message</th></tr>";
-    foreach ($err_array as $agg => $err_item){
-      $agg_name = am_name($agg);
-      print "<tr>";
-      print "<td>$agg_name</td>";
-      print "<td>$err_item</td>";
-      print "</tr>";
-    }
-    print "</table>";
-  }
-}
-
-
-
-
 $header = "Status of Slivers on slice: $slice_name";
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
@@ -112,23 +85,21 @@ $(document).ready(build_agg_table_on_sliverstatuspg);
 </script>
 
 <?php
-
-
 print "<h2>$header</h2>\n";
-
-//if (isset($msg) and isset($obj)){
-  if ($pretty) {
-    echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
-  } else {
-    echo "<div class='xml'>\n";
-    /* json_encode accepts JSON_PRETTY_PRINT in PHP 5.4, but
-     * we've got 5.3. Use a third-party utility instead.
-     */
+        
+if ($pretty) {
+  echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
+} else {
+  echo "<div class='xml'>\n";
+  /* json_encode accepts JSON_PRETTY_PRINT in PHP 5.4, but
+   * we've got 5.3. Use a third-party utility instead.
+   */
 //FIXME add back    echo "<pre>\n" . json_indent(json_encode($obj)) . "\n</pre>\n";
-    echo "\n</div>\n";
-  }
+  echo "\n</div>\n";
+}
 
-//FIXME add back  print_sliver_status_err( $msg );
+print "<div id='slivererror'></div>";
+print "<table id='slivererror'></table></div>";
 
   if (isset($am_id) && $am_id ) {
     $am_id_str = "&am_id=$am_id";
