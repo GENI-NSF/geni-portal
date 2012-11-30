@@ -155,4 +155,98 @@ function update_agg_row(am_id) {
 }
 
 
+function build_agg_table_on_sliverstatuspg() 
+{
+   // (1) query the server for all a list of aggregates
+   $.getJSON("aggregates.php",function(responseTxt,statusTxt,xhr){
+     var json_agg;
+     json_agg = responseTxt;
+     for (am_id in json_agg ) {
+       add_agg_row_on_sliverstatuspg(am_id);
+     }
+   });
+}
+
+
+
+function add_agg_row_on_sliverstatuspg(am_id) {
+  // This queries for the json file at (for example):
+  // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
+  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+      var json_am, am;
+      var geni_urn, geni_status, arg_name, geni_resources, colspan;
+      var resource, firstrow, num_rsc, rsc_urn, rsc_status, rsc_error;
+      var output=""; 
+      
+     if(statusTxt=="success") 
+     {
+         json_am = responseTxt;
+         am = json_am[am_id];	   
+         geni_urn = am['geni_status'];
+         geni_status = am['geni_status'];
+	 arg_name= am['am_name'];
+	 geni_resources = am['resources'];
+
+	 if (geni_status == "no resources"){
+	     return;
+	 }
+	 output += "<tr class='aggregate'><th>Status</th><th colspan='2'>Aggregate</th></tr>";
+	 output += "<tr class='aggregate'><td class='"+geni_status+"'>"+geni_status+"</td>";
+	 output += "<td colspan='2'>"+arg_name+"</td></tr>";
+	 firstrow = true;
+	 num_rsc = geni_resources.length;
+	 $.each(geni_resources, function(item, val){
+	     $.each(geni_resources, function(item, resource){
+	     rsc_urn = resource['geni_urn'];
+	     rsc_status = resource['geni_status'];
+	     rsc_error = resource['geni_error'];
+             if (firstrow) {
+		 firstrow = false;		 
+		 // put headers on the first row
+		 colspan = "colspan='"+num_rsc+"'";
+		 output +=  "<tr class='resource'><th class='notapply'></th><th>Status</th><th>Resource</th></tr>";
+		 output +=  "<tr  class='resource'>";
+		 output +=  "<td rowspan="+num_rsc+" class='notapply'/>";
+	     } else {
+		 colspan = "";
+		 output +=  "<tr  class='resource'>";
+	     }
+	     output +=  "<td class='"+rsc_status+"'>"+rsc_status+"</td><td>"+resource.geni_error+rsc_urn+"</td></tr>";
+	     if (rsc_status == "failed"){
+		 output +=  "<tr><td></td><td>"+rsc_error+"</td></tr>";
+	     }
+	 });
+	 });
+
+
+
+//         $("table#sliverstatus").append( output );
+//         $("table#sliverstatus").replaceWith( output );
+//         $("table#sliverstatus").append( "<table>"+output+"</table>" );
+         $("table#sliverstatus").append( output );
+
+/*	if (geni_status == "no resources"){
+            $("td#status_"+am_id).attr( "class", "noresources" );
+	    $("button#status_button_"+am_id).prop( "disabled", true ); 
+	    $("button#details_button_"+am_id).prop( "disabled", true ); 
+	    $("button#delete_button_"+am_id).prop( "disabled", true ); 
+	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
+	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
+	} else {
+            $("td#status_"+am_id).attr( "class", geni_status );
+	    $("button#status_button_"+am_id).removeProp( "disabled"); 
+	    $("button#details_button_"+am_id).removeProp( "disabled"); 
+	    $("button#delete_button_"+am_id).removeProp( "disabled");
+	    $("input#renew_button_"+am_id).removeProp( "disabled");
+	    $("input#renew_field_"+am_id).removeProp( "disabled");
+	}
+*/
+     }
+
+     if(statusTxt=="error")
+        alert("Error: "+xhr.status+": "+xhr.statusText);
+  });  
+}
+
+
 
