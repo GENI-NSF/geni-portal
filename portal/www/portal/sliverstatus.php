@@ -88,6 +88,7 @@ $(document).ready(build_agg_table_on_sliverstatuspg);
 print "<h2>$header</h2>\n";
         
 if ($pretty) {
+  echo "<div id='header'>Querying status of resources at all aggregates...</div>";
   echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
 } else {
   echo "<div class='xml'>\n";
@@ -101,14 +102,14 @@ if ($pretty) {
 print "<div id='slivererror'></div>";
 print "<table id='slivererror'></table></div>";
 
-  if (isset($am_id) && $am_id ) {
-    $am_id_str = "&am_id=$am_id";
-  } else {
-    $am_id_str = "";
-  }
-  print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
-  print "<br/>";
-  print "<br/>";
+if (isset($am_id) && $am_id ) {
+  $am_id_str = "&am_id=$am_id";
+} else {
+  $am_id_str = "";
+}
+print "<a href='sliverstatus.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
+print "<br/>";
+print "<br/>";
 
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";

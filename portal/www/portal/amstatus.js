@@ -161,9 +161,10 @@ function build_agg_table_on_sliverstatuspg()
    $.getJSON("aggregates.php",function(responseTxt,statusTxt,xhr){
      var json_agg;
      json_agg = responseTxt;
-     for (am_id in json_agg ) {
-       add_agg_row_on_sliverstatuspg(am_id);
+     for (tmp_am_id in json_agg ) {
+       add_agg_row_on_sliverstatuspg(tmp_am_id);
      }
+//FIXME When done hide the querying message       $("div#header").hide;
    });
 }
 
@@ -222,6 +223,7 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 	     am_error = am['geni_error'];
 	     /* output += "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
              if ( $("table#slivererror").length == 1 ) { //FIXME
+		 $("table#slivererror").before( "<div>Received errors from the following aggregates:</div>" );
 		 output += "<tr><th>Aggregate</th><th>Message</th></tr>";
 	     }
 	     output += "<tr>";
