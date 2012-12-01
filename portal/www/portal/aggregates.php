@@ -25,9 +25,11 @@
 require_once("settings.php");
 require_once("user.php");
 
-function get_am_array() {
+function get_am_array( $all_aggs ) {
   $am_array = Array();
-  $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  
+//      $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id']; 
     $aggname = $agg['service_name'];
@@ -39,19 +41,49 @@ function get_am_array() {
   return $am_array;
 }
 
-$agg_array = get_am_array();
 
-//if (is_null($agg_array)) {
-//  relative_redirect('home.php');
-//} else {
-//  error_log("AGG_ARRAY: " . print_r($agg_array));
-  // Set headers for xml
-  header("Cache-Control: public");
-  header("Content-Type: application/json");
-  //print $rspec;
-//  print "START\n";
-  print json_encode($agg_array);
-//  print "END\n";
-//}
+// May be 1 or more am_id arguments. Instantiate them all, if many given
+// To give many, name the arg am_id[]
+
+if (array_key_exists("am_id", $_REQUEST)) {
+  $am_id = $_REQUEST['am_id'];
+  if (is_array($am_id)) {
+    $am_ids = $am_id;
+    foreach ($am_ids as $am_id) {
+      $tmp_am = get_service_by_id($am_id);
+      if ($tmp_am && $tmp_am['url']) {
+         error_log(": tmp_am['url']" . $tmp_am['url']);
+         $ams[] = $tmp_am;
+      }	 
+    }
+    $am_id = $am_ids[0];
+    $am = $ams[0];
+  } elseif (!$am_id) {
+    error_log(": null am_id from REQUEST");
+    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);	
+    $am = $ams[0];
+  } else {
+    $am = get_service_by_id($am_id);
+    $ams[] = $am;
+  }
+
+  if (is_null($am)) {
+    if ($am_id != '') {
+      error_log(": invalid am_id $am_id from REQUEST");
+      $am_id = null;
+      $ams = Array();
+    }
+  }
+  $all_aggs = $ams;
+} else {
+  $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+}
+
+$agg_array = get_am_array($ams);
+
+// Set headers for json
+header("Cache-Control: public");
+header("Content-Type: application/json");
+print json_encode($agg_array);
 
 ?>

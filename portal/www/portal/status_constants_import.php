@@ -27,3 +27,5 @@ GENI_CLASSES[ GENI_NO_RESOURCES ] = GENI_NO_RESOURCES_CLASS;
 GENI_CLASSES[ GENI_BOOTING ] = GENI_BOOTING_CLASS;
 GENI_CLASSES[ GENI_BUSY ] = GENI_BUSY_CLASS;
 
+var slice= "<?php echo $slice_id ?>";
+var am_id= "<?php echo $am_id ?>";

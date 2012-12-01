@@ -138,6 +138,7 @@ function update_agg_row(am_id) {
         $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
 
 	if (status_code == GENI_NO_RESOURCES){
+// could hide rows for AMs with no resources	    $("tr#"+am_id).hide(); 
 	    $("button#status_button_"+am_id).prop( "disabled", true ); 
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
 	    $("button#delete_button_"+am_id).prop( "disabled", true ); 
@@ -160,10 +161,10 @@ function update_agg_row(am_id) {
 function build_agg_table_on_sliverstatuspg() 
 {
    // (1) query the server for all a list of aggregates
-   $.getJSON("aggregates.php",function(responseTxt,statusTxt,xhr){
+    $.getJSON("aggregates.php", { am_id:am_id }, function(responseTxt,statusTxt,xhr){
      var json_agg;
      json_agg = responseTxt;
-     for (tmp_am_id in json_agg ) {
+     for (var tmp_am_id in json_agg ) {
        add_agg_row_on_sliverstatuspg(tmp_am_id);
      }
 //FIXME When done hide the querying message       $("div#header").hide;
@@ -185,7 +186,7 @@ function add_agg_row_on_sliverstatuspg(am_id) {
      {
          json_am = responseTxt;
          am = json_am[am_id];	   
-         geni_urn = am['geni_status'];
+         geni_urn = am['slice_urn'];
          geni_status = am['geni_status'];
          status_code = am['status_code'];
 	 agg_name= am['am_name'];
