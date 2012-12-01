@@ -25,42 +25,96 @@
 
 class STATUS_INDEX
 {
-  const GENI_READY=1;
-  const GENI_NO_RESOURCES=2; 
-  const GENI_BOOTING=3;
-  const GENI_BUSY=4;
+  // the four official values of geni_status returned by AM API v2
+  const GENI_CONFIGURING=1;
+  const GENI_READY=2;
+  const GENI_FAILED=3;
+  const GENI_UNKNOWN=4;
+  // some other things we determine by hand
+  const GENI_NO_RESOURCES=5; 
+  const GENI_BUSY=6;
 }
-
 
 class STATUS_MSG
 {
+  // the four official values of geni_status returned by AM API v2
+  const GENI_CONFIGURING = "configuring";
   const GENI_READY = "ready";
+  const GENI_FAILED = "failed";
+  const GENI_UNKNOWN = "unknown";
+  // some other things we determine by hand
   const GENI_NO_RESOURCES = "no resources"; 
-  const GENI_BOOTING = "booting";
   const GENI_BUSY = "busy";
 }
 
 class STATUS_CLASS
 {
+  // the four official values of geni_status returned by AM API v2
+  const GENI_CONFIGURING = "configuring";
   const GENI_READY = "ready";
+  const GENI_FAILED = "failed";
+  const GENI_UNKNOWN = "unknown";
+  // some other things we determine by hand
   const GENI_NO_RESOURCES = "noresources"; 
-  const GENI_BOOTING = "booting";
   const GENI_BUSY = "busy";
 }
 
 
 $GENI_MESSAGES = array( 
-	       STATUS_MSG::GENI_READY,
-	       STATUS_MSG::GENI_NO_RESOURCES,
-	       STATUS_MSG::GENI_BOOTING,
-	       STATUS_MSG::GENI_BUSY);
+  STATUS_MSG::GENI_CONFIGURING,
+  STATUS_MSG::GENI_READY,
+  STATUS_MSG::GENI_FAILED,
+  STATUS_MSG::GENI_UNKNOWN,
+  STATUS_MSG::GENI_NO_RESOURCES,
+  STATUS_MSG::GENI_BUSY);
+
+$GENI_MESSAGES_REV = array( 
+  STATUS_MSG::GENI_CONFIGURING => STATUS_INDEX::GENI_CONFIGURING,
+  STATUS_MSG::GENI_READY => STATUS_INDEX::GENI_READY,
+  STATUS_MSG::GENI_FAILED => STATUS_INDEX::GENI_FAILED,
+  STATUS_MSG::GENI_UNKNOWN => STATUS_INDEX::GENI_UNKNOWN,
+  STATUS_MSG::GENI_NO_RESOURCES => STATUS_INDEX::GENI_NO_RESOURCES,
+  STATUS_MSG::GENI_BUSY => STATUS_INDEX::GENI_BUSY);
 
 $GENI_CLASSES = array( 
-	       STATUS_CLASS::GENI_READY,
-	       STATUS_CLASS::GENI_NO_RESOURCES,
-	       STATUS_CLASS::GENI_BOOTING,
-	       STATUS_CLASS::GENI_BUSY);
+  STATUS_CLASS::GENI_CONFIGURING,
+  STATUS_CLASS::GENI_READY,
+  STATUS_CLASS::GENI_FAILED,
+  STATUS_CLASS::GENI_UNKNOWN,
+  STATUS_CLASS::GENI_NO_RESOURCES,
+  STATUS_CLASS::GENI_BUSY);
 
 
+/*
+Valid AM API v2 SliverStatus Error Codes:
+BADARGS 	One of the required arguments is badly formed or missing
+SEARCHFAILED 	Slice does not exist at this AM
+FORBIDDEN 	Credential does not grant permission to the slice
+BUSY 	Slice is temporarily locked, try again later
+ERROR 	Internal error
+SERVERERROR 	Server error
+UNAVAILABLE 	Unavailable (eg server in lockdown)
+EXPIRED 	Slivers expired 
+*/
 
+/*
+class ERROR_INDEX
+{
+  // some other things we determine by hand
+  const NO_RESOURCES=1; 
+  const BUSY=2;
+}
+
+
+class ERROR_MSG
+{
+  // some other things we determine by hand
+  const NO_RESOURCES = "no resources"; 
+  const BUSY = "busy";
+}
+
+$ERROR_MESSAGES = array( 
+  ERROR_MSG::NO_RESOURCES,
+  ERROR_MSG::BUSY);
+*/
 ?>

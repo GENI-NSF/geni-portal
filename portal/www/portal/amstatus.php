@@ -32,7 +32,7 @@ require_once("am_client.php");
 require_once("sa_client.php");
 require_once("am_map.php");
 require_once("json_util.php");
-require_once("status_constants.php");
+include("status_constants.php");
 
 
 
@@ -63,6 +63,15 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 }
 
 function get_sliver_status( $obj,  $status_array ) {
+
+    $GENI_MESSAGES_REV = array( 
+    		       STATUS_MSG::GENI_CONFIGURING => STATUS_INDEX::GENI_CONFIGURING,
+		       STATUS_MSG::GENI_READY => STATUS_INDEX::GENI_READY,
+		       STATUS_MSG::GENI_FAILED => STATUS_INDEX::GENI_FAILED,
+  		       STATUS_MSG::GENI_UNKNOWN => STATUS_INDEX::GENI_UNKNOWN,
+  		       STATUS_MSG::GENI_NO_RESOURCES => STATUS_INDEX::GENI_NO_RESOURCES,
+		       STATUS_MSG::GENI_BUSY => STATUS_INDEX::GENI_BUSY);
+
     foreach ($obj as $am_url => $am_status) {
     $status_item = Array();
     // AM url
@@ -74,7 +83,7 @@ function get_sliver_status( $obj,  $status_array ) {
        $geni_status = $am_status['geni_status'];
        $geni_status = strtolower( $geni_status );
        $status_item['geni_status'] = $geni_status;
-       $status_item['status_code'] = STATUS_INDEX::GENI_READY; //FIXME
+       $status_item['status_code'] = $GENI_MESSAGES_REV[ $geni_status ]; //STATUS_INDEX::GENI_READY; //FIXME
        // slice URN
        $status_item['slice_urn'] = $am_status['geni_urn'];
        // Resources
