@@ -77,8 +77,6 @@ if (! $obj) {
 //$filename = "geni-" . str_replace(' ', '', $user->prettyName()) . ".pem";
 $filename = "raw-sliverstatus.json";
 
-$_SESSION['lastmessage'] = "Downloaded SliverStatus to $filename";
-
 // Set headers for download
 header("Cache-Control: public");
 //header("Content-Description: File Transfer");
