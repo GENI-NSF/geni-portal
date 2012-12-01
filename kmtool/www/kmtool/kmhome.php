@@ -139,7 +139,13 @@ print "Click the \"Authorize\" button  " .
 print "Click \"Deauthorize\" in the table below " . 
       "to remove permission for the given tool to sign statements " . 
       "on your behalf when working with the GENI Clearinghouse. <br><br>";
-
+?>
+If you would rather use an offline tool like
+<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>
+you can
+<a href="kmcert.php?close=1" target="_blank">Create and download a GENI certificate</a>.
+<br/><br/>
+<?php
 if (array_key_exists("authorize_toolname", $_GET)) {
   if ($auth_success) {
     print "<h3>Tool '$toolname_auth' has been <b>$sense_text</b> for user $username.</h3><br>\n";

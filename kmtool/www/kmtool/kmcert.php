@@ -62,9 +62,18 @@ if (array_key_exists('displayName', $_SERVER)) {
   $username = $_REQUEST["username"];
 }
 
-function download_cert($ma_url, $km_signer, $member_id) {
+function show_close_button() {
+  if (key_exists("close", $_REQUEST)) {
+    print "<br/>\n";
+    print "<button onclick=\"window.close();return false;\"><b>Close</b></button>\n";
+  }
+}
+
+function download_cert($ma_url, $km_signer, $member) {
+  $member_id = $member->member_id;
+  $username = $member->username;
   $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
-  $cert_filename = "geni.pem";
+  $cert_filename = "geni-$username.pem";
   // Set headers for download
   header("Cache-Control: public");
   header("Content-Description: File Transfer");
@@ -132,6 +141,8 @@ function handle_upload($ma_url, $km_signer, $member_id, &$error) {
 $generate_key = "generate";
 $upload_key = "upload";
 $download_key = "download";
+$close_key = key_exists("close", $_REQUEST) ? "close" : "noclose";
+
 if (key_exists($generate_key, $_REQUEST)) {
   // User has asked to generate a cert/key.
   generate_cert($ma_url, $km_signer, $member_id);
@@ -140,7 +151,7 @@ if (key_exists($upload_key, $_REQUEST)) {
   $status = handle_upload($ma_url, $km_signer, $member_id, $error);
 }
 if (key_exists($download_key, $_REQUEST)) {
-  download_cert($ma_url, $km_signer, $member_id);
+  download_cert($ma_url, $km_signer, $member);
   return;
 }
 
@@ -187,41 +198,63 @@ if (! is_null($result)) {
 <input type="submit" name="submit" value="Download Certificate<?php print $key_msg;?>"/>
 </form>
 <?php
+  show_close_button();
+  include("footer.php");
   return;
 }
 
+?>
 
+In order to use some geni tools (like
+<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>
+) you need a certificate and private key. There are three options for
+creating these:
+<ol>
+<li>Create and upload a certificate signing request (recommended: harder, most secure)
+<li>Create and upload a certificate signing request from an existing private key (hardest, secure)
+<li>Generate and download a private key and certificate (easiest, least secure)
+</ol>
+<h2>Option 1. Create and upload a certificate signing request</h2>
+Run the following command in a terminal window on a Mac or Linux host.
+This will generate two files: <code>CSR.csr</code> and <code>privateKey.key</code>.
+Store <code>privateKey.key</code> where you'll remember it ($HOME/.ssl, $HOME/.ssh).
+Upload <code>CSR.csr</code> in the form below.
+<br/>
+<pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout privateKey.key -batch</pre>
+<h4>Now upload the file CSR.csr below:</h4>
+<form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
+<label for="csrfile">Certificate Signing Request File:</label>
+<input type="file" name="csrfile" id="csrfile"/>
+<br/>
+<input type="hidden" name="<?php print $upload_key; ?>" value="y"/>
+<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
+<input type="submit" name="submit" value="Create Certificate"/>
+</form>
+<hr>
+<h2>Option 2: Create and upload a certificate signing request from an existing private key:</h2>
+Run the following command in a terminal window on a Mac or Linux host.
+This will generate a file named <code>CSR.csr</code>.
+Upload <code>CSR.csr</code> in the form below.
+<pre>openssl req -out CSR.csr -new -key &lt;YourPrivateKey&gt; -batch</pre>
+<h4>Now upload the file CSR.csr below:</h4>
+<form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
+<label for="csrfile">Certificate Signing Request File:</label>
+<input type="file" name="csrfile" id="csrfile"/>
+<br/>
+<input type="hidden" name="<?php print $upload_key; ?>" value="y"/>
+<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
+<input type="submit" name="submit" value="Create Certificate"/>
+</form>
+<hr>
+<h2>Option 3: Generate a private key and certificate</h2>
+<form name="generate" action="kmcert.php" method="post">
+<input type="hidden" name="<?php print $generate_key;?>" value="y"/>
+<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
+<input type="submit" name="submit" value="Generate Certificate and Key"/>
+</form>
 
-
-print "Need some instructions here.<br/>\n";
-
-// Generate
-print "<h2>Generate a private key and certificate</h2>\n";
-print "<form name=\"generate\" action=\"kmcert.php\" method=\"post\">\n";
-print "<input type=\"hidden\" name=\"$generate_key\" value=\"y\"/>";
-print "<input type=\"submit\" name=\"submit\" value=\"Generate Certificate and Key\"/>";
-print "</form>\n";
-
-print "<hr/>\n";
-
-// CSR
-print "<h2>Upload a certificate signing request</h2>\n";
-print "<h4>Option 1: Generate a certificate signing request with an existing private key:</h4>\n";
-print "<pre>openssl req -out CSR.csr -key privateKey.key -new -batch</pre>\n";
-print "<h4>Option 2: Generate a certificate signing request and new private key:</h4>\n";
-print "<pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout privateKey.key -batch</pre>\n";
-//print "<br/>\n";
-print "<h4>Now upload the file <verbatim>CSR.csr</verbatim> below:</h4>\n";
-//print "<br/>\n";
-print "<form name=\"upload\" action=\"kmcert.php\" method=\"post\" enctype=\"multipart/form-data\">\n";
-print "<label for=\"csrfile\">Certificate Signing Request File:</label>\n";
-print "<input type=\"file\" name=\"csrfile\" id=\"csrfile\" />\n";
-print "<br/>\n";
-print "<input type=\"hidden\" name=\"$upload_key\" value=\"y\"/>";
-print "<input type=\"submit\" name=\"submit\" value=\"Create Certificate\"/>\n";
-print "</form>\n";
-
-
+<?php
+show_close_button();
 
 // Include this only if the redirect address is a web address
 if (! empty($redirect_address)) {
