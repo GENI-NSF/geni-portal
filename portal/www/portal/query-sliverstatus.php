@@ -58,7 +58,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   
   // Get the slice URN via the SA
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  //$slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+
   $am_urls = array();
   foreach ($ams as $am) {
     if (is_array($am)) {

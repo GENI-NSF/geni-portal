@@ -27,9 +27,6 @@ require_once("user.php");
 
 function get_am_array( $all_aggs ) {
   $am_array = Array();
-  
-//      $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id']; 
     $aggname = $agg['service_name'];
