@@ -156,8 +156,8 @@ function get_template_omni_config($user)
     $omni_config = $omni_config
       . "ch = $PGCH_URL\n"
       . "sa = $PGCH_URL\n"
-      . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL-cert.pem\n"
-      . "key = /PATH/TO/YOUR/PRIVATE/SSL/KEY.pem\n"
+      . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
+      . "key = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
       . "\n"
       . "[$username]\n"
       . "urn = $urn\n"
