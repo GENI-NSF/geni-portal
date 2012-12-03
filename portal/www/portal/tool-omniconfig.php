@@ -35,37 +35,57 @@ show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
+// Does the user have an outside certificate?
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$result = ma_lookup_certificate($ma_url, $user, $user->account_id);
+$has_certificate = ! is_null($result);
+// FIXME: hardcoded paths
+$create_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
+$download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
 
-/*----------------------------------------------------------------------
- * SSL key management
- *----------------------------------------------------------------------
- */
+?>
 
-print "<h1>Omni command line resource reservation tool</h1>\n";
 
-print "<p>";
-$configalert = "Download and use a template omni_config file for use with the <a href='http://trac.gpolab.bbn.com/gcf/wiki'>Omni</a> command line resource reservation tool.\n"
-	     . "<br/>\n" 
-	     . "<ol>\n"
-	     . "<li>Download this <a href='portal_omni_config.php'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>\n" 
-	     . "<li> Download your certificate, noting the path.</li>\n" 
-	     . "<li> Edit the <code>portal_omni_config</code> to correct: </li>\n" 
-	     . "<ol>\n" 
-	     . "<li>the certificate path,</li>\n" 
-	     . "<li>the path to the SSL private key used to generate your certificate, and </li> \n" 
-	     . "<li> the path to your SSH public key to use for node logon.</li>\n" 
-	     . "</ol>\n" 
-	     . "<li> When running omni: </li>\n" 
-	     . "<ol>\n" 
-	     . "<li> Specify the path to the <code>omni_config</code>, specify the project name, and the full slice URN.  For example: </li>\n"
-	     . "<ul><li><code>omni -c portal_omni_config --project <project name> sliverstatus <slice URN></code></li></ul>\n" 
-	     . "<li> Use the full slice URN when naming your slice, not just the slice name.</li>\n" 
-	     . "</ol>\n" 
-	     . "</ol>\n" 
-	     . "\n"; 
+<h1>Omni command line resource reservation tool</h1>
+<p>
+Download and use a template omni_config file for use with the
+<a href="http://trac.gpolab.bbn.com/gcf/wiki">Omni</a> command line resource
+reservation tool.
+<br/>
+<ol>
+  <li>Download this <a href='portal_omni_config.php'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>
 
-print "$configalert\n";
-print "</p>";
+
+<?php
+if ($has_certificate) {
+?>
+  <li> <a href="<?php print $download_url; ?>" target="_blank">Download your certificate</a>, noting the path.</li>
+<?php
+} else {
+?>
+  <li> <a href="<?php print $download_url; ?>" target="_blank">Create and download your certificate</a>, noting the path.</li>
+<?php
+}
+?>
+
+
+  <li> Edit the <code>portal_omni_config</code> to correct:
+    <ol>
+      <li>the certificate path,</li>
+      <li>the path to the SSL private key used to generate your certificate, and </li>
+      <li> the path to your SSH public key to use for node logon.</li>
+    </ol>
+  </li>
+  <li> When running omni:
+    <ol>
+      <li> Specify the path to the <code>omni_config</code>, specify the project name, and the full slice URN.  For example:
+        <ul><li><code>omni -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice URN&gt;</code></li></ul>
+      </li>
+      <li> Use the full slice URN when naming your slice, not just the slice name.</li>
+    </ol>
+  </li>
+</ol>
+<p/>
+<?php
 include("footer.php");
-
 ?>
