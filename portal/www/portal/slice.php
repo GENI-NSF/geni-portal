@@ -91,7 +91,7 @@ $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
 $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
-$slicecred_url = "slicecred.php?slice_id=".$slice_id;
+$omni_url = "tool-omniconfig.php";
 $flack_url = "flack.php?slice_id=".$slice_id;
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
@@ -190,8 +190,8 @@ print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
 print "<tr><td>\n";
 /* print "To use a command line tool:<br/>"; */
 print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b> </button>\n";
-print "<button disabled='disabled' onClick=\"window.location='$slicecred_url'\" $add_slivers_disabled><b>Download Slice Credential</b>  </button>\n";
-print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
+print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled><b>Use omni</b></button>\n";
+//print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";
 
 /* Ops Management */
