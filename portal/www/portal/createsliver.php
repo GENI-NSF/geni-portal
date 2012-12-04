@@ -126,9 +126,13 @@ log_event($log_url, Portal::getInstance(),
 
 $header = "Created Sliver on slice: $slice_name";
 
-$msg = $retVal[0];
-$obj = $retVal[1];
-
+if ( count($retVal) == 2 ) {
+   $msg = $retVal[0];
+   $obj = $retVal[1];
+} else {
+   $msg = $retVal;
+   $obj = "";
+}
 
 unset($slice2);
 $slice2 = lookup_slice($sa_url, $user, $slice_id);
@@ -140,7 +144,13 @@ $slice_expiration = dateUIFormat($slice_expiration_db);
 header("Cache-Control: public");
 header("Content-Type: text/xml");
 //$obj2 = trim($obj);
-$obj2 = print_rspec_pretty($obj);
-print $obj2;
+if ($obj != "" ) {
+   $obj2 = print_rspec_pretty($obj);
+   print $obj2; 
+} else {
+   print "<i>";
+   print $msg;
+   print "</i>"; 
+}
 
 ?>
