@@ -119,8 +119,7 @@ show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
 
-//print "<p>Click to reserve a default set of resources at an available AM.</p>";
-//print "<p>Otherwise click 'Cancel'.</p>";
+
 print '<br/>';
 
 print "<p class='instruction'>This page will contact the requested
@@ -128,10 +127,6 @@ aggregate and wait for the aggregate to respond. This may take
 a while. Please be patient.</p>\n";
 
 print ("<button onClick=\"");
-//print ("alert('Please be patient!'); ");
-//print ("document.write('<p class=");
-//print ('\"warn\"');
-//print (">Contacting aggregates. Please be patient!</p>'); ");
 print ("document.getElementById('f1').submit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";

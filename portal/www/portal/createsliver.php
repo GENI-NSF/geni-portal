@@ -82,40 +82,65 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
+if (! isset($rspec) || is_null($rspec)) {
+  //  no_rspec_error();
+  $rspec = fetchRSpecById(1);
+}
 if (! isset($am) || is_null($am)) {
   no_am_error();
 }
 
-$header = "Creating Sliver on slice: $slice_name";
+// Get an AM
+$am_url = $am[SR_ARGUMENT::SERVICE_URL];
+$AM_name = am_name($am_url);
+// error_log("AM_URL = " . $am_url);
 
-show_header('GENI Portal: Slices',  $TAB_SLICES);
-include("tool-breadcrumbs.php");
-?>
+//$result = get_version($am_url, $user);
+// error_log("VERSION = " . $result);
 
-<script>
-var slice= "<?php echo $slice_id ?>";
-var am_id= "<?php echo $am_id ?>";
-var rspec_id= "<?php echo $rspec_id ?>";
-function build_pretty_xml() 
-{
-    $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, am_id:am_id } );
-}
-</script>
-<script>
-$(document).ready(build_pretty_xml);
-</script>
+// Get the slice credential from the SA
+$slice_credential = get_slice_credential($sa_url, $user, $slice_id);
 
-<?php
-print "<h2>$header</h2>\n";
+// Get the slice URN via the SA
+$slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
-//print "Reserved resources on AM (<b>$AM_name</b>) until <b>$slice_expiration</b>:";
-print "<div class='resources' id='prettyxml'>";
-//print_rspec_pretty( $obj );
-print "</div>\n";
+// Retrieve a canned RSpec
+$rspec_file = writeDataToTempFile($rspec);
 
-print "<hr/>";
-print "<a href='slices.php'>Back to All slices</a>";
-print "<br/>";
-print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
-include("footer.php");
+// Call create sliver at the AM
+$retVal = create_sliver($am_url, $user, $slice_credential,
+                               $slice_urn, $rspec_file);
+unlink($rspec_file);
+error_log("CreateSliver output = " . print_r($retVal, TRUE));
+
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+$project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+						$slice['project_id']);
+$slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
+					$slice['slice_id']);
+$log_attributes = array_merge($project_attributes, $slice_attributes);
+log_event($log_url, Portal::getInstance(),
+	  "Added resources to slice " . $slice_name,
+          $log_attributes, $slice['owner_id']);
+
+
+$header = "Created Sliver on slice: $slice_name";
+
+$msg = $retVal[0];
+$obj = $retVal[1];
+
+
+unset($slice2);
+$slice2 = lookup_slice($sa_url, $user, $slice_id);
+$slice_expiration_db = $slice2[SA_ARGUMENT::EXPIRATION];
+$slice_expiration = dateUIFormat($slice_expiration_db);
+
+
+// Set headers for xml
+header("Cache-Control: public");
+header("Content-Type: text/xml");
+//$obj2 = trim($obj);
+$obj2 = print_rspec_pretty($obj);
+print $obj2;
+
 ?>
