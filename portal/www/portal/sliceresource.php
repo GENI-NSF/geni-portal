@@ -86,6 +86,10 @@ if (! isset($am) || is_null($am)) {
   no_am_error();
 }
 
+// Get an AM
+$am_url = $am[SR_ARGUMENT::SERVICE_URL];
+$AM_name = am_name($am_url);
+
 $header = "Creating Sliver on slice: $slice_name";
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
@@ -109,8 +113,9 @@ $(document).ready(build_pretty_xml);
 print "<h2>$header</h2>\n";
 
 //print "Reserved resources on AM (<b>$AM_name</b>) until <b>$slice_expiration</b>:";
+print "<p>Resources on AM (<b>$AM_name</b>):</p>";
 print "<div class='resources' id='prettyxml'>";
-//print_rspec_pretty( $obj );
+print "<p><i>Adding resources...</i></p>";
 print "</div>\n";
 
 print "<hr/>";
