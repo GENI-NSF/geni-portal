@@ -122,10 +122,6 @@ print '</form>';
 
 print '<br/>';
 
-print "<p class='instruction'>This page will contact the requested
-aggregate and wait for the aggregate to respond. This may take
-a while. Please be patient.</p>\n";
-
 print ("<button onClick=\"");
 print ("document.getElementById('f1').submit();\">"
        . "<b>Reserve Resources</b></button>\n");
