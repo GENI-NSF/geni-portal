@@ -100,6 +100,7 @@ function get_template_omni_config($user)
       $name = str_replace(' ', '-', $name);
       $name = str_replace(',', '', $name);
       $name = str_replace('=', '', $name);
+      $name = strtolower($name);
       $nicknames = $nicknames . $name . "=," . $url . "\n";
     }
 
