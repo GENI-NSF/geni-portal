@@ -213,8 +213,6 @@ print "<br/>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href=
 // ----
 // Now show slice / sliver status
 
-//include("query-sliverstatus.php");
-
 print "<h2>Slice Status</h2>\n";
 
   $slice_status='';

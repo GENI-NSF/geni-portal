@@ -168,12 +168,15 @@ Returned status of slivers on 0 of 2 possible aggregates.
 // querying the AMs for sliver status info
 include("query-sliverstatus.php");
 $status_array = Array();
-// fill in sliver status info for each agg
-$status_array = get_sliver_status( $obj, $status_array );
-// fill in sliver status errors for each agg
-$retVal = get_sliver_status_err( $msg, $status_array );
-$status_array = $retVal[0];
-$max_ams = $retVal[1];
+
+if (count($obj)>0) {
+   // fill in sliver status info for each agg
+   $status_array = get_sliver_status( $obj, $status_array );
+   // fill in sliver status errors for each agg
+   $retVal = get_sliver_status_err( $msg, $status_array );
+   $status_array = $retVal[0];
+   $max_ams = $retVal[1];
+} 
 
 // Set headers for xml
 header("Cache-Control: public");

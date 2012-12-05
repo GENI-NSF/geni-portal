@@ -130,14 +130,20 @@ function update_agg_row(am_id) {
         var geni_status;
         var output=""; 
         json_am = responseTxt;
-        am = json_am[am_id];	   
-        geni_status = am['geni_status'];
-        status_code = am['status_code'];
-    	output += geni_status;
+
+	if (Object.keys(json_am).length > 0) {
+            am = json_am[am_id];	   
+            geni_status = am['geni_status'];
+            status_code = am['status_code'];
+    	    output += geni_status;
+	} else {
+	    status_code = GENI_NO_STATUS;
+	    output += GENI_NO_STATUS_STR;
+	}
         $("td#status_"+am_id).text( output );
         $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
 
-	if (status_code == GENI_NO_RESOURCES){
+	if ((status_code == GENI_NO_RESOURCES) || (status_code == GENI_NO_STATUS)){
 // could hide rows for AMs with no resources	    $("tr#"+am_id).hide(); 
 	    $("button#status_button_"+am_id).prop( "disabled", true ); 
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
@@ -185,6 +191,9 @@ function add_agg_row_on_sliverstatuspg(am_id) {
      if(statusTxt=="success") 
      {
          json_am = responseTxt;
+	 if (Object.keys(json_am).length == 0) {
+	     return;
+	 }
          am = json_am[am_id];	   
          geni_urn = am['slice_urn'];
          geni_status = am['geni_status'];

@@ -78,12 +78,15 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   
   $retVal = sliver_status($am_urls, $user, $slice_credential,
 			 $slice_urn);
-  if (!is_null($retVal)) {
+  if ( !is_null($retVal) && (count($retVal)==2) ) {
     $msg = $retVal[0];
     $obj = $retVal[1];
-    //  error_log( "SliverStatus output msg = ".print_r($msg) );
-    //  error_log( "SliverStatus output object = ".print_r($obj) );
+  } elseif (count($retVal)==1) {
+    $msg = $retVal;
+    $obj = Array();
   } else {
+    $msg = "Call to sliver_status() FAILed";
+    $obj = Array();
     error_log( "Call to sliver_status() FAILed" );    
   }
 }
