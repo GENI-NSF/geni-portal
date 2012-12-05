@@ -79,7 +79,7 @@ if ($has_certificate) {
   <li> When running omni:
     <ol>
       <li> Specify the path to the <code>omni_config</code>, specify the project name, and the full slice URN.  For example:
-        <ul><li><code>omni -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice URN&gt;</code></li></ul>
+        <ul><li><code>omni.py -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice URN&gt;</code></li></ul>
       </li>
       <li> Use the full slice URN when naming your slice, not just the slice name.</li>
     </ol>
