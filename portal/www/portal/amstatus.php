@@ -164,6 +164,11 @@ Returned status of slivers on 0 of 2 possible aggregates.
   return $retVal;
 }
 
+// Close the session here to allow multiple AJAX requests to run
+// concurrently. If the session is left open, it holds the session
+// lock, causing AJAX requests to run serially.
+// DO NOT DO ANY SESSION MANIPULATION AFTER THIS POINT!
+session_write_close();
 
 // querying the AMs for sliver status info
 include("query-sliverstatus.php");

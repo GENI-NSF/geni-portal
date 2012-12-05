@@ -68,7 +68,7 @@ function write_ssh_keys($user)
   foreach ($ssh_keys as $key_info)
     {
       $key = $key_info['public_key'];
-      $tmp_file = writeDataToTempFile($key);
+      $tmp_file = writeDataToTempFile($key, $user->username . "-ssh-key-");
       $result[] = $tmp_file;
     }
   return $result;
@@ -249,14 +249,11 @@ function invoke_omni_function($am_url, $user, $args)
     /* Write key and credential files */
     $cert = $user->certificate();
     $private_key = $user->privateKey();
-    $cert_file = '/tmp/' . $username . "-cert.pem";
-    $key_file = '/tmp/' . $username . "-key.pem";
-    $omni_file = '/tmp/' . $username . "-omni.ini";
     $tmp_version_cache = tempnam(sys_get_temp_dir(),
             'omniVersionCache');
 
-    file_put_contents($cert_file, $cert);
-    file_put_contents($key_file, $private_key);
+    $cert_file = writeDataToTempFile($cert, "$username-cert-");
+    $key_file = writeDataToTempFile($private_key, "$username-key-");
 
     $ssh_key_files = write_ssh_keys($user);
     $all_key_files = implode(',', $ssh_key_files);
@@ -279,19 +276,19 @@ function invoke_omni_function($am_url, $user, $args)
       . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
       . "keys=$all_key_files\n";
 
-
-    file_put_contents($omni_file, $omni_config);
+    $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
 
     /* Call OMNI */
     global $portal_gcf_dir;
 
+    $omni_log_file = tempnam(sys_get_temp_dir(), $username . "-omni-log-");
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
 		       $omni_file,
 		       '-l',
 		       $portal_gcf_dir . '/src/logging.conf',
-		       '--logoutput /tmp/omni.log',
+		       '--logoutput', $omni_log_file,
 		       '--api-version',
 		       '2',
             "--GetVersionCacheName",
@@ -392,8 +389,7 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
   $msg = "User $member_id calling ListResources at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("ListResources", $user, $am_url, $slice_urn);
-  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
-  file_put_contents($slice_credential_filename, $slice_credential);
+  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
 		'-t',
@@ -426,8 +422,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
   $msg = "User $member_id calling RenewSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("RenewSliver", $user, $am_url, $slice_urn);
-  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
-  file_put_contents($slice_credential_filename, $slice_credential);
+  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
 		'renewsliver',
@@ -461,7 +456,7 @@ function create_sliver($am_url, $user, $slice_credential, $slice_urn,
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   $rspec = file_get_contents($rspec_filename);
   log_action("CreateSliver", $user, $am_url, $slice_urn, $rspec);
-  $slice_credential_filename = writeDataToTempFile($slice_credential);
+  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile", 
 		$slice_credential_filename, 
 		'createsliver',
@@ -494,8 +489,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
   // $msg = "User $member_id calling SliverStatus at $am_url on $slice_urn";
   // geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   // log_action("SliverStatus", $user, $am_url, $slice_urn);
-  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
-  file_put_contents($slice_credential_filename, $slice_credential);
+  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
 		'sliverstatus',
@@ -524,8 +518,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
   $msg = "User $member_id calling DeleteSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("DeleteSliver", $user, $am_url, $slice_urn);
-  $slice_credential_filename = '/tmp/' . $user->username . ".slicecredential";
-  file_put_contents($slice_credential_filename, $slice_credential);
+  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
 		'deletesliver',
@@ -543,7 +536,7 @@ function ready_to_login($am_url, $user, $slice_cred, $slice_urn)
   $tmp_files = write_omni_config($user);
   $omni_config = $tmp_files[0];
 
-  $slice_cred_file = writeDataToTempFile($slice_cred);
+  $slice_cred_file = writeDataToTempFile($slice_cred, $user->username . "-cred-");
   $tmp_files[] = $slice_cred_file;
 
   $cmd_array = array($portal_gcf_dir . '/examples/readyToLogin.py',
