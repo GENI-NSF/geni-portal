@@ -33,7 +33,7 @@ class STATUS_INDEX
   // some other things we determine by hand
   const GENI_NO_RESOURCES=5; 
   const GENI_BUSY=6;
-  const GENI_NO_STATUS=6;
+  const GENI_NO_STATUS=7;
 }
 
 class STATUS_MSG

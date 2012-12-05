@@ -133,7 +133,8 @@ var sliver_expiration= "NOT IMPLEMENTED YET";
 var delete_slivers_disabled= "<?php echo $delete_slivers_disabled ?>";
 var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
-
+var slice= "<?php echo $slice_id ?>";
+var am_id= "<?php echo $am_id ?>";
 <?php include('status_constants_import.php'); ?>
 </script>
 <script src="amstatus.js"></script>

@@ -147,7 +147,7 @@ if (array_key_exists("am_id", $_REQUEST)) {
     $am = $ams[0];
   } else {
     $am = get_service_by_id($am_id);
-    $ams = Array();
+    $ams = array();
     $ams[] = $am;
   }
   if (is_null($am)) {

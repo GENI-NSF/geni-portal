@@ -37,7 +37,7 @@ require_once("sa_client.php");
 require_once("am_map.php");
 require_once("json_util.php");
 require_once("status_constants.php");
-
+require_once("query-sliverstatus.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -67,7 +67,9 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 
 
 // Look up the sliverstatus...
-include("query-sliverstatus.php");
+$statRet = query_sliverstatus( $user, $ams, $sa_url, $slice, $slice_id );
+$msg = $statRet[0];
+$obj = $statRet[1];
 
 if (! $obj) {
   relative_redirect("home.php");

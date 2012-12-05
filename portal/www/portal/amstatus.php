@@ -32,6 +32,7 @@ require_once("am_client.php");
 require_once("sa_client.php");
 require_once("am_map.php");
 require_once("json_util.php");
+require_once("query-sliverstatus.php");
 include("status_constants.php");
 
 
@@ -171,7 +172,9 @@ Returned status of slivers on 0 of 2 possible aggregates.
 session_write_close();
 
 // querying the AMs for sliver status info
-include("query-sliverstatus.php");
+$statRet = query_sliverstatus( $user, $ams, $sa_url, $slice, $slice_id );
+$msg = $statRet[0];
+$obj = $statRet[1];
 $status_array = Array();
 
 if (count($obj)>0) {

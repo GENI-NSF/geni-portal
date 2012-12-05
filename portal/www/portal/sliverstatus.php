@@ -69,6 +69,8 @@ include("tool-breadcrumbs.php");
 <script src="amstatus.js"></script>
 <script>
 var slice= "<?php echo $slice_id ?>";
+var am_id= "<?php echo $am_id ?>";
+
 <?php include('status_constants_import.php'); ?>
 
 $(document).ready(build_agg_table_on_sliverstatuspg);

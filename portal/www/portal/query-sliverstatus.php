@@ -33,6 +33,8 @@ require_once("am_client.php");
 require_once("sa_client.php");
 
 
+function query_sliverstatus( $user, $ams, $sa_url, $slice, $slice_id ) {
+
 // Takes an arg am_id which may have multiple values. Each is treated
 // as the ID from the DB of an AM which should be queried
 // If no such arg is given, then query the DB and query all registered AMs
@@ -51,7 +53,8 @@ if (! isset($ams) || is_null($ams)) {
 if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs!");
   $slivers_output = "No AMs registered.";
-} else {
+}
+
   $slivers_output = "";
   // Get the slice credential from the SA
   $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
@@ -89,6 +92,12 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     $obj = Array();
     error_log( "Call to sliver_status() FAILed" );    
   }
-}
 
+
+$retVal2 = Array();
+$retVal2[] = $msg;
+$retVal2[] = $obj;
+return $retVal2;
+
+}
 ?>
