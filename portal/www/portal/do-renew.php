@@ -67,7 +67,12 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 if (array_key_exists('sliver_expiration', $_GET)) {
-  $slice_expiration = dateUIFormat($_GET['sliver_expiration']);
+  // what we got asked for
+  $desired_expiration = $_GET['sliver_expiration'];
+  // what to send to the AM(s)
+  $rfc3339_expiration = rfc3339Format($desired_expiration);
+  // what to display to the user
+  $ui_expiration = dateUIFormat($desired_expiration);
 } else {
   no_time_error();
 }
@@ -116,7 +121,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   }
   // Call renew sliver at the AM
   $retVal = renew_sliver($am_urls, $user, $slice_credential,
-			 $slice_urn, $slice_expiration);
+			 $slice_urn, $rfc3339_expiration);
   
   error_log("RenewSliver output = " . $retVal);
   
@@ -138,7 +143,7 @@ print "<div class='msg'>";
 print_r($msg);
 print "</div>";
 
-print "<p>Renewed slivers until: $slice_expiration</p>";
+print "<p>Renewed slivers until: $ui_expiration</p>";
 
 print "<div>Renewed slivers at:</div>";
 print "<div>";
