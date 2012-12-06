@@ -207,27 +207,25 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 	     output += "<td colspan='2'>"+agg_name+"</td></tr>";
 	     firstrow = true;
 	     num_rsc = geni_resources.length;
-	     $.each(geni_resources, function(item, val){
-		 $.each(geni_resources, function(item, resource){
-		     rsc_urn = resource['geni_urn'];
-		     rsc_status = resource['geni_status'];
-		     rsc_error = resource['geni_error'];
-		     if (firstrow) {
-			 firstrow = false;		 
-			 // put headers on the first row
-			 colspan = "colspan='"+num_rsc+"'";
-			 output +=  "<tr class='resource'><th class='notapply'></th><th>Status</th><th>Resource</th></tr>";
-			 output +=  "<tr  class='resource'>";
-			 output +=  "<td rowspan="+num_rsc+" class='notapply'/>";
-		     } else {
-			 colspan = "";
-			 output +=  "<tr  class='resource'>";
-		     }
-		     output +=  "<td class='"+rsc_status+"'>"+rsc_status+"</td><td>"+resource.geni_error+rsc_urn+"</td></tr>";
-		     if (rsc_status == "failed"){
-			 output +=  "<tr><td></td><td>"+rsc_error+"</td></tr>";
-		     }
-		 });
+	     $.each(geni_resources, function(item, resource){
+		 rsc_urn = resource['geni_urn'];
+		 rsc_status = resource['geni_status'];
+		 rsc_error = resource['geni_error'];
+		 if (firstrow) {
+		     firstrow = false;		 
+		     // put headers on the first row
+		     colspan = "colspan='"+num_rsc+"'";
+		     output +=  "<tr class='resource'><th class='notapply'></th><th>Status</th><th>Resource</th></tr>";
+		     output +=  "<tr  class='resource'>";
+		     output +=  "<td rowspan="+num_rsc+" class='notapply'/>";
+		 } else {
+		     colspan = "";
+		     output +=  "<tr  class='resource'>";
+		 }
+		 output +=  "<td class='"+rsc_status+"'>"+rsc_status+"</td><td>"+resource.geni_error+rsc_urn+"</td></tr>";
+		 if (rsc_status == "failed"){
+		     output +=  "<tr><td></td><td>"+rsc_error+"</td></tr>";
+		 }
 	     });
              $("table#sliverstatus").append( output );
 	     output = ""
