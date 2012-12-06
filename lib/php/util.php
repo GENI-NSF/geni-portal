@@ -111,4 +111,11 @@ function dateUIFormat($dateString) {
   //    $prettyDateString = $date_dt->format('j-M-Y H:i:s e');
   return $prettyDateString;
 }
+
+function rfc3339Format($date_string)
+{
+  $date_dt = new DateTime($date_string);
+  $rfc3339 = $date_dt->format(DateTime::RFC3339);
+  return $rfc3339;
+}
 ?>
