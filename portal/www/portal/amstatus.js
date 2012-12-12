@@ -29,7 +29,7 @@ function build_agg_table_on_slicepg()
      output += "</th><th>";
      output += "</th><th>Status</th><th>Aggregate</th>";
      //      output += "<th>&nbsp;</th>";
-     output += "<th>Expiration</th>";
+     output += "<th>Renew</th>";
      output += "<th>Actions</th></tr>\n";
      for (am_id in json_agg ) {
 	    agg = json_agg[am_id];                    
@@ -46,7 +46,8 @@ function build_agg_table_on_slicepg()
 	    if (renew_slice_privilege) {
                 output += "<td><form  method='GET' action=\"do-renew.php\">";
 		output += "<input type=\"hidden\" name=\"slice_id\" value=\""+slice+"\"/>\n";
-		output += "<input id='renew_field_"+am_id+"' disabled='' class='date' type='text' name='slice_expiration'";
+		output += "<input type=\"hidden\" name=\"am_id\" value=\""+am_id+"\"/>\n";
+		output += "<input id='renew_field_"+am_id+"' disabled='' class='date' type='text' name='sliver_expiration'";
 		output += "value=\""+slice_expiration+"\"/>\n";
 		output += "<input id='renew_button_"+am_id+"' disabled='' type='submit' name= 'Renew' value='Renew'/>\n";
 		output += "</form></td>\n";
