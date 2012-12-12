@@ -234,7 +234,11 @@ function print_rspec_pretty( $xml ){
       echo "<td colspan='2'>",$interface['mac_address'],"</td>";
       foreach ($interface as $ip){
 	if ($ip->getName() == "ip") {
-	  echo "<td>",$ip['type'],": ",$ip['address'],"</td>";
+	  echo "<td>";
+	  if ($ip['type'] ){
+	     echo $ip['type'],": ";
+	  }	  
+	  echo $ip['address'],"</td>";
 	}
       }
       echo "</tr>\n";
