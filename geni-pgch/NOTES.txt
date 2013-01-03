@@ -1,0 +1,14 @@
+
+To sync to the development host (a euca vm):
+
+  rsync -aztv ../geni-pgch/ ubuntu@192.1.243.19:geni-pgch-0.1
+
+
+To build the package on the development host:
+
+  debuild -us -uc
+
+
+Resources:
+
+  http://www.debian-administration.org/articles/336
