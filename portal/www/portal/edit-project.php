@@ -53,38 +53,68 @@ if (! isset($project)) {
   $leademail = $lead->email();
   print "<h1>EDIT GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</h1>\n";
 }
+
+class ProjectField
+{
+   function __construct($field, $pretty_name, $enabled, $required) {
+     $this->field = $field;
+     $this->pretty_name = $pretty_name;
+     $this->enabled = $enabled;
+     $this->required = $required;
+   }
+   public function show($project)
+   {
+     $txt = "<tr>";
+     $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
+     $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
+     if (array_key_exists($this->field, $project)) {
+       $txt .= " value=\"" . $project[$this->field] . "\"";
+     }
+     if (! $this->enabled) {
+       $txt .= " disabled=\"disabled\"";
+     }
+     $txt .= "/>";
+     if ($this->required) {
+       $txt .= " - Required";
+     }
+     $txt .= "</td></tr>\n";
+     return $txt;
+   }
+}
+
+$fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+        "Project Name", ($isnew?true:false), ($isnew?true:false));
+if (! $isnew) {
+  $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL,
+          "Email", false, false);
+}
+$fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE,
+        "Purpose", true, false);
+
 ?>
 <form method="POST" action="do-edit-project.php">
 <table>
 <?php
-  if (! $isnew) {
-    print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
-  }
-$fields = array(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL, PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE);
-$field_labels = array("Project Name", "Email", "Purpose");
-$ind = -1;
-// FIXME: Note the project name character restrictions if $isnew?
-foreach ($fields as $field) {
-  $ind = $ind + 1;
-  if ($isnew && $field_labels[$ind] == "Email") {
-    continue;
-  }
-  print "<tr><td><b>" . $field_labels[$ind] . "</b></td><td><input type=\"text\" name=\"$field\" ";
-  if (! $isnew) {
-    print "value=\"" . $project[$field] . "\"";
-  }
-  if ($field_labels[$ind] == "Email") {
-    print "disabled=\"disabled\"";
-  }
-  print "/>";
-  if ($isnew && $field_labels[$ind] == "Project Name") {
-    print " - Required";
-  }
-  print "</td></tr>\n";
+if (! $isnew) {
+  print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 }
-print "</table>\n";
+foreach ($fields as $field) {
+  print $field->show($project);
+}
+// FIXME: Note the project name character restrictions if $isnew?
+$submit_label = $isnew ? "Create Project" : "Update";
+?>
+
+</table>
+<?php
 print "<b>Note: Project name is public</b><br/>\n";
 print "<br/>\n";
+print "<input type=\"submit\" value=\"$submit_label\"/>\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+?>
+</form>
+<?php
+
 
 /* print "<h2>Project Policy Defaults</h2>\n"; */
 /* print "FIXME: Per project policy defaults go here.<br/>\n"; */
@@ -112,25 +142,17 @@ if ($isnew) {
 }
 print "<br/>\n";
 
-print "<b>Project Lead</b><br/>\n";
-print "There is exactly one project lead for each project. Project leads are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
 if ($isnew) {
+  print "<b>Project Lead</b><br/>\n";
+  print "There is exactly one project lead for each project. Project leads are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
   print "You will be the project lead on your new project.<br/>\n";
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
-  print "Project lead is: <b>$leadname</b><br/>\n";
-  print "<p style=\"color: grey\">\n";
-  print "To transfer project leads, enter email of proposed new project leads to ask them to take over:<br/>\n";
-  print "<input type=\"text\" name=\"newlead\" disabled=\"disabled\"/></p><br/>\n";
+//   print "Project lead is: <b>$leadname</b><br/>\n";
+//   print "<p style=\"color: grey\">\n";
+//   print "To transfer project leads, enter email of proposed new project leads to ask them to take over:<br/>\n";
+//   print "<input type=\"text\" name=\"newlead\" disabled=\"disabled\"/></p><br/>\n";
 }
-print "<input type=\"submit\" value=\"";
-if ($isnew) {
-  print "Create Project\"/>\n";
-} else {
-  print "Edit\"/>\n";
-}
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
-print "</form>\n";
 
 include("footer.php");
 ?>
