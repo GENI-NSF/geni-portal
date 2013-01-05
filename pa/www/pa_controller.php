@@ -492,29 +492,11 @@ function update_project($args, $message)
   global $PA_PROJECT_TABLENAME;
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
-  $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
-  if (! isset($project_name) or is_null($project_name) or $project_name == '') {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
-			     "Project name missing");
-  }
-  if (strpos($project_name, ' ') !== false) {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
-			     "Project name '$project_name' invalid: no spaces allowed.");
-  }
-
-  if (!is_valid_project_name($project_name)) {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
-			     "Project name '$project_name' invalid: Avoid /:+;'?#% ");
-  }
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
-
-  // FIXME: If you change the project name, and there are existing slices, things get weird. 
-  // You may no longer be able to get a slice credential with the old slice URN.
 
   $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME 
     . " SET " 
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = " . $conn->quote($project_name, 'text') . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . " = " . $conn->quote($project_purpose, 'text') . " "
     . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
     . " = " . $conn->quote($project_id, 'text');
@@ -528,10 +510,10 @@ function update_project($args, $message)
   global $ma_url;
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
-  $signer_data = ma_lookup_user_by_id($ma_url, $mysigner, $signer_id);
+  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
   $signer_name = $signer_data->prettyName();
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  $msg = "$signer_name Updated project $project_id: $project_name with purpose $project_purpose";
+  $msg = "$signer_name Updated project $project_id with purpose $project_purpose";
   log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
 
   return $result;
