@@ -66,16 +66,19 @@ if (array_key_exists("newlead", $_REQUEST)) {
 
 // FIXME: If got a newlead diff from in DB, then send a message to them to accept it
 $result = null;
-if (! isset($name) or is_null($name) or $name == '') {
-  error_log("do-edit-project missing a project name");
-  relative_redirect('error-text.php?error=' . urlencode("Project Name is required."));
-} else if (strpos($name, ' ') !== false) {
-  error_log("do-edit-project: project name '$name' contains spaces");
-  relative_redirect('error-text.php?error=' . urlencode("Project Name may not contain spaces."));
-} else if (! is_valid_project_name($name)) {
-  error_log("do-edit-project: project name '$name' invalid");
-  relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' invalid: Avoid /:+;'?#% "));
-} else if ($isnew) {
+
+if ($isnew) {
+  // Validate the project name...
+  if (! isset($name) or is_null($name) or $name == '') {
+    error_log("do-edit-project missing a project name");
+    relative_redirect('error-text.php?error=' . urlencode("Project Name is required."));
+  } else if (strpos($name, ' ') !== false) {
+    error_log("do-edit-project: project name '$name' contains spaces");
+    relative_redirect('error-text.php?error=' . urlencode("Project Name may not contain spaces."));
+  } else if (! is_valid_project_name($name)) {
+    error_log("do-edit-project: project name '$name' invalid");
+    relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' invalid: Avoid /:+;'?#% "));
+  }
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
