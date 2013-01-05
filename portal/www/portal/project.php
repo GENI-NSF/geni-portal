@@ -151,7 +151,7 @@ print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
-print "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>\n";
+print "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>\n";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
