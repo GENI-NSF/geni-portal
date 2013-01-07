@@ -68,6 +68,12 @@ if (! is_null($project) && $project != "None") {
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $creation_db = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $creation = dateUIFormat($creation_db);
+  $expiration_db = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  if ($expiration_db) {
+    $expiration = dateUIFormat($expiration_db);
+  } else {
+    $expiration = "<i>None</i>";
+  }
   $leadid = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
   if (uuid_is_valid($leadid)) {
     $lead = $user->fetchMember($leadid);
@@ -103,7 +109,7 @@ include("tool-showmessage.php");
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 print "<table>\n";
-print "<tr><th>Project Action</th><th>Ops Mgmt</th></tr>\n";
+print "<tr><th>Project Actions</th></tr>\n";
 print "<tr>\n";
 /* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
@@ -111,23 +117,13 @@ if(isset($project_id) && $user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TY
 	/* Create a new slice*/
 	print "<td><button onClick=\"window.location='";
 	print relative_url("createslice?project_id=$project_id'");
-	print "\"><b>Create Slice</b></button></td>\n";
+	print "\"><b>Create Slice</b></button>";
+	print "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+	print "</td>\n";
 } else {
 	/* Put in an empty table cell if no slice privilege. */
-	print "<td>&nbsp</td>";
+	print "<td><i>None: no privileges.</i></td>";
 }
-
-/* Disable project */
-
-$disable_project = "";
-if (!$user->isAllowed(PA_ACTION::DELETE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  $disable_project = $disabled;
-}
-/* for now, always disable the project */
-else {
-  $disable_project = $disabled;
-}
-print "<td><button $disable_project onClick=\"window.location='disable-project.php?project_id=$project_id'\"><b>Disable Project</b></button></td>\n";
 print "</tr></table>\n";
 
 if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
@@ -149,10 +145,11 @@ if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $proje
 print "<table>\n";
 print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
-print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
-print "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>\n";
+print "\n";
 print "</td></tr>\n";
+print "<tr><td class='label'><b>Expiration</b></td><td>$expiration</td></tr>\n";
+print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";

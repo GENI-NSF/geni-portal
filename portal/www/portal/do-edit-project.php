@@ -38,6 +38,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 $isnew = true;
 $name = "";
 $purpose = "";
+$expiration = "";
 $lead_id = $user->account_id;
 $newlead = $lead_id;
 unset($project);
@@ -53,6 +54,9 @@ if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $_REQUEST)) {
 if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE, $_REQUEST)) {
   // FIXME validate inputs
   $purpose = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+}
+if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::EXPIRATION, $_REQUEST)) {
+  $expiration = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
 }
 
 if (array_key_exists("newlead", $_REQUEST)) {
@@ -96,7 +100,8 @@ if ($isnew) {
 
   // FIXME: Diff new vals from old?
 
-  $result = update_project($pa_url, $user, $project_id, $name, $purpose);
+  $result = update_project($pa_url, $user, $project_id, $name, $purpose,
+          $expiration);
   if ($result == '') {
     error_log("update_project failed? empty...");
   } else {

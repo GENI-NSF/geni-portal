@@ -48,7 +48,7 @@ include_once('/etc/geni-ch/settings.php');
  *   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose)
  *   delete_project(pa_url, project_id);
  *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
- *   update_project(pa_url, project_id, project_email, project_purpose);
+ *   update_project(pa_url, project_id, project_email, project_purpose, expiration);
  *   change_lead(pa_url, project_id, previous_lead_id, new_lead_id); *
  *   add_project_member(pa_url, project_id, member_id, role)
  *   remove_project_member(pa_url, project_id, member_id)
@@ -433,7 +433,8 @@ function lookup_projects($args)
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
     . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE 
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
     . " FROM " . $PA_PROJECT_TABLENAME 
     . $lead_clause;
 
@@ -476,7 +477,8 @@ function lookup_project($args)
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
     . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE 
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
     . " FROM " . $PA_PROJECT_TABLENAME
     . $where;
 
@@ -493,11 +495,18 @@ function update_project($args, $message)
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
+  $expiration = $args[PA_ARGUMENT::EXPIRATION];
 
   $conn = db_conn();
+  if ($expiration) {
+    $db_expiration = $conn->quote($expiration, 'text');
+  } else {
+    $db_expiration = "NULL";
+  }
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME 
     . " SET " 
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . " = " . $conn->quote($project_purpose, 'text') . " "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . " = " . $conn->quote($project_purpose, 'text')
+    . ", " . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . " = " . $db_expiration
     . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID 
     . " = " . $conn->quote($project_id, 'text');
 

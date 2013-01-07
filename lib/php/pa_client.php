@@ -28,7 +28,7 @@
 //   delete_project(pa_url, project_id);
 //   project_ids <= get_projects(pa_url);
 //   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
-//   update_project(pa_url, project_name, project_id, project_email, project_purpose);
+//   update_project(pa_url, project_name, project_id, project_email, project_purpose, expiration);
 //   change_lead(pa_url, project_id, previous_lead_id, new_lead_id);
 //   add_project_member(pa_url, project_id, member_id, role)
 //   remove_project_member(pa_url, project_id, member_id)
@@ -141,12 +141,14 @@ function lookup_project_by_name($pa_url, $signer, $project_name)
 // FIXME: lookup_projects_member(pa_url, member_id, is_member, role)
 // FIXME: lookup_projects_ids(pa_url, project_ids_list)
 
-function update_project($pa_url, $signer, $project_id, $project_name, $project_purpose)
+function update_project($pa_url, $signer, $project_id, $project_name,
+        $project_purpose, $expiration)
 {
   $update_project_message['operation'] = 'update_project';
   $update_project_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $update_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
   $update_project_message[PA_ARGUMENT::PROJECT_PURPOSE] = $project_purpose;
+  $update_project_message[PA_ARGUMENT::EXPIRATION] = $expiration;
   $results = put_message($pa_url, $update_project_message, 
 			 $signer->certificate(), $signer->privateKey());
   return $results;

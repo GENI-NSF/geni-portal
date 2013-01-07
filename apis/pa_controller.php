@@ -37,7 +37,7 @@ namespace Project_Authority;
 <li>   project_id <= create_project(project_name, lead_id, lead_email, purpose) </li>
 <li>   success <= delete_project(project_id); </li>
 <li>   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id); </li>
-<li>   success <= update_project(project_id, project_email, project_purpose); </li>
+<li>   success <= update_project(project_id, project_email, project_purpose, expiration); </li>
 <li>   success <= change_lead(project_id, previous_lead_id, new_lead_id);  </li>
 <li>   success <= add_project_member(project_id, member_id, role) </li>
 <li>   success <= remove_project_member(project_id, member_id) </li>
@@ -89,6 +89,8 @@ function delete_project($args_dict)
    <li>"project_id" : ID of project to be modified</li>
    <li>"project_name" : new name of project</li>
    <li>"project_purpose" : new purpose of project</li>
+   <li>"expiration" : a date of expiration or an empty string of project
+                      does not expire</li>
 </ul>
  * @return boolean Success/Failure
  */

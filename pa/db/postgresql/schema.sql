@@ -19,6 +19,7 @@ CREATE TABLE pa_project (
   project_email VARCHAR,
   project_purpose VARCHAR,
   creation TIMESTAMP,
+  expiration TIMESTAMP,
   PRIMARY KEY (id)
 );
 

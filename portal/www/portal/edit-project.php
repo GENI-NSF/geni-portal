@@ -56,30 +56,56 @@ if (! isset($project)) {
 
 class ProjectField
 {
-   function __construct($field, $pretty_name, $enabled, $required) {
-     $this->field = $field;
-     $this->pretty_name = $pretty_name;
-     $this->enabled = $enabled;
-     $this->required = $required;
-   }
-   public function show($project)
-   {
-     $txt = "<tr>";
-     $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
-     $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
-     if (array_key_exists($this->field, $project)) {
-       $txt .= " value=\"" . $project[$this->field] . "\"";
-     }
-     if (! $this->enabled) {
-       $txt .= " disabled=\"disabled\"";
-     }
-     $txt .= "/>";
-     if ($this->required) {
-       $txt .= " - Required";
-     }
-     $txt .= "</td></tr>\n";
-     return $txt;
-   }
+  function __construct($field, $pretty_name, $enabled, $required) {
+    $this->field = $field;
+    $this->pretty_name = $pretty_name;
+    $this->enabled = $enabled;
+    $this->required = $required;
+  }
+  public function show($project)
+  {
+    $txt = "<tr>";
+    $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
+    $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
+    if (array_key_exists($this->field, $project)) {
+      $txt .= " value=\"" . $project[$this->field] . "\"";
+    }
+    if (! $this->enabled) {
+      $txt .= " disabled=\"disabled\"";
+    }
+    $txt .= "/>";
+    if ($this->required) {
+      $txt .= " - Required";
+    }
+    $txt .= "</td></tr>\n";
+    return $txt;
+  }
+}
+
+class DateField extends ProjectField
+{
+  /*
+   * NOTE: Update this to use a jQuery DatePicker widget
+   */
+  public function show($project)
+  {
+    $txt = "<tr>";
+    $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
+    $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
+    $txt .= " id=\"datepicker\"";
+    if (array_key_exists($this->field, $project)) {
+      $txt .= " value=\"" . $project[$this->field] . "\"";
+    }
+    if (! $this->enabled) {
+      $txt .= " disabled=\"disabled\"";
+    }
+    $txt .= "/>";
+    if ($this->required) {
+      $txt .= " - Required";
+    }
+    $txt .= "</td></tr>\n";
+    return $txt;
+  }
 }
 
 $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
@@ -90,6 +116,8 @@ if (! $isnew) {
 }
 $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE,
         "Purpose", true, false);
+$fields[] = new DateField(PA_PROJECT_TABLE_FIELDNAME::EXPIRATION,
+        "Expiration", true, false);
 
 ?>
 <form method="POST" action="do-edit-project.php">
@@ -113,6 +141,12 @@ print "<input type=\"submit\" value=\"$submit_label\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 ?>
 </form>
+<script>
+  $(function() {
+    $( "#datepicker" ).datepicker();
+  });
+</script>
+
 <?php
 
 

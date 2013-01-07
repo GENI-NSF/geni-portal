@@ -88,7 +88,7 @@ error_log("PID = " . $project_id1);
 dump_projects();
 
 $result = update_project($pa_url, $user, $project_id1, "PROJ1-A", 
-			 "foo@example.com", "More saving");
+			 "foo@example.com", "More saving", "");
 $result = change_lead($pa_url, $user, $project_id1, $lead1, $lead2);
 //error_log("UPDATE.result = " . $result);
 dump_projects();

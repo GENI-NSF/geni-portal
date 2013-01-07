@@ -39,6 +39,7 @@ class PA_ARGUMENT
   const IS_MEMBER = "is_member";
   const ROLE_TYPE = "role_type";
   const CREATION = "creation";
+  const EXPIRATION = "expiration";
 }
 
 /* Name of table containing per-project info */
@@ -53,6 +54,7 @@ class PA_PROJECT_TABLE_FIELDNAME
   const PROJECT_EMAIL = "project_email";
   const PROJECT_PURPOSE = "project_purpose";
   const CREATION = "creation";
+  const EXPIRATION = "expiration";
 }
 
 /* Name of table containing project membership info */
