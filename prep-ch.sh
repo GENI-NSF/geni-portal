@@ -30,6 +30,18 @@ check_errs $? "apt-get failed to dist-upgrade"
 /usr/bin/sudo /usr/bin/apt-get install -y ${PKGS}
 check_errs $? "apt-get failed to install packages"
 
+
+# GENI Portal/Clearinghouse packages
+#
+# Note: this requires the proto-ch repository:
+#
+#       http://www.gpolab.bbn.com/internal/projects/proto-ch/apt
+#
+PKGS="geni-pgch"
+/usr/bin/sudo /usr/bin/apt-get install -y ${PKGS}
+check_errs $? "apt-get failed to install portal/ch packages"
+
+
 #
 # gcf installation
 #
