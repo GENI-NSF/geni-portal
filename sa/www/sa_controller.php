@@ -432,7 +432,21 @@ function create_slice($args, $message)
 
   $slice_urn = urn_from_cert($slice_cert);
 
+  global $pa_url;
+  $project_details = lookup_project($pa_url, $mysigner, $project_id);
   $expiration = get_future_date(0, $sa_default_slice_expiration_hours);
+  $project_expiration = new DateTime($project_details[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION]);
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Default slice expiration is " . $expiration->format(DateTime::RFC3339));
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Project expiration is " . $project_expiration->format(DateTime::RFC3339));
+  $now = new DateTime();
+  if ($project_expiration < $now) {
+    // Project is expired, do not create...
+    return generate_response(RESPONSE_ERROR::ARGS, "", "Project $project_name has expired.");
+  } else if ($expiration > $project_expiration) {
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Adjusting slice expiration to " . $project_expiration->format(DateTime::RFC3339));
+    $expiration = $project_expiration;
+  }
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Slice expiration is " . $expiration->format(DateTime::RFC3339));
   $creation = new DateTime(null, new DateTimeZone('UTC'));
 
   $sql = "INSERT INTO " 
@@ -491,8 +505,6 @@ function create_slice($args, $message)
   // a member of the project with 'ADMIN' priviileges
 
   // Check if project lead is same as member
-  global $pa_url;
-  $project_details = lookup_project($pa_url, $mysigner, $project_id);
   if (!isset($project_details) ||
       is_null($project_details) ||
       !array_key_exists(PA_PROJECT_TABLE_FIELDNAME::LEAD_ID, $project_details))
