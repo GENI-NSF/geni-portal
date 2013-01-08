@@ -96,7 +96,7 @@ function dump_slices($user, $project)
 }
 
 $project_name = make_uuid();
-$project = create_project($pa_url, $user, $project_name, $owner, '');
+$project = create_project($pa_url, $user, $project_name, $owner, '', null);
 $slice_info = create_slice($sa_url, $user, $project, $project_name, 'SSS',
                            $owner);
 error_log("SLICE_INFO " . print_r($slice_info, true));

@@ -34,7 +34,7 @@ namespace Project_Authority;
  * <br><br>
  * Supports these methods:
 <ul>
-<li>   project_id <= create_project(project_name, lead_id, lead_email, purpose) </li>
+<li>   project_id <= create_project(project_name, lead_id, lead_email, purpose, expiration) </li>
 <li>   success <= delete_project(project_id); </li>
 <li>   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id); </li>
 <li>   success <= update_project(project_id, project_email, project_purpose, expiration); </li>
@@ -57,6 +57,8 @@ class Project_Authority {
    <li>"project_name" : name of project being created</li>
    <li>"lead_id" : UUID of project lead</li>
    <li>"project_purpose" : description of project purpose</li>
+   <li>"expiration" : a date of expiration or an empty string of project
+                      does not expire</li>
 </ul>
  * @return boolean Success/Failure
  *   

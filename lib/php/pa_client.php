@@ -24,7 +24,7 @@
 
 // Client-side interface to GENI Clearinghouse Project Authority (PA)
 // Consists of these methods:
-//   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose)
+//   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose, expiration);
 //   delete_project(pa_url, project_id);
 //   project_ids <= get_projects(pa_url);
 //   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
@@ -41,12 +41,18 @@ require_once('message_handler.php');
 
 // Create a project with given name, lead_id (UUID of lead member), email to contact on all 
 // matters related to project, and documentation purpose of project
-function create_project($pa_url, $signer, $project_name, $lead_id, $project_purpose)
+function create_project($pa_url, $signer, $project_name, $lead_id, $project_purpose, $expiration)
 {
   $create_project_message['operation'] = 'create_project';
   $create_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
   $create_project_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
   $create_project_message[PA_ARGUMENT::PROJECT_PURPOSE] = $project_purpose;
+  // Normalize expiration to an empty string, allowing the arg
+  // to be NULL, 0, etc.
+  if (! $expiration) {
+    $expiration = "";
+  }
+  $create_project_message[PA_ARGUMENT::EXPIRATION] = $expiration;
 
   // error_log("CP.args = " . print_r($create_project_message, true) . " " . $create_project_message);
 

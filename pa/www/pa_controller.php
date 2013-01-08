@@ -45,7 +45,7 @@ include_once('/etc/geni-ch/settings.php');
  * to creating, looking up, updating, deleting projects.
  * 
  * Supports these methods:
- *   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose)
+ *   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose, expiration)
  *   delete_project(pa_url, project_id);
  *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
  *   update_project(pa_url, project_id, project_email, project_purpose, expiration);
@@ -263,6 +263,11 @@ function create_project($args, $message)
   }
   $lead_id = $args[PA_ARGUMENT::LEAD_ID];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
+  if (array_key_exists(PA_ARGUMENT::EXPIRATION, $args)) {
+    $expiration = $args[PA_ARGUMENT::EXPIRATION];
+  } else {
+    $expiration = NULL;
+  }
   $project_id = make_uuid();
   $conn = db_conn();
 
@@ -289,6 +294,11 @@ function create_project($args, $message)
   $project_email = 'project-' . $project_name . '@example.com';
   
   $creation = new DateTime(null, new DateTimeZone('UTC'));
+  if ($expiration) {
+    $db_expiration = $conn->quote($expiration, 'text');
+  } else {
+    $db_expiration = "NULL";
+  }
 
   $sql = "INSERT INTO " . $PA_PROJECT_TABLENAME 
     . "(" 
@@ -297,14 +307,16 @@ function create_project($args, $message)
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", " 
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", " 
     . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ") " 
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ") "
     . "VALUES ("
     . $conn->quote($project_id, 'text') . ", " 
     . $conn->quote($project_name, 'text') .", "
     . $conn->quote($lead_id, 'text') . ", " 
     . $conn->quote($project_email, 'text') . ", " 
     . $conn->quote(db_date_format($creation), 'timestamp') . ", "
-    . $conn->quote($project_purpose, 'text') . ") ";
+    . $conn->quote($project_purpose, 'text') . ", "
+    . $db_expiration. ") ";
 
   //  error_log("SQL = " . $sql);
   $result = db_execute_statement($sql);

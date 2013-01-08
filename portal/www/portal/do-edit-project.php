@@ -86,7 +86,8 @@ if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
-  $project_id = create_project($pa_url, $user, $name, $lead_id, $purpose);
+  $project_id = create_project($pa_url, $user, $name, $lead_id, $purpose,
+          $expiration);
   if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("do-edit-project create_project got project_id $project_id");
     $result = "Error";

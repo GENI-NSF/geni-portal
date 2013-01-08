@@ -83,7 +83,7 @@ $lead2 = $members[1];
 $lead3 = $members[2];
 
 $project_id1 = create_project($pa_url, $user, "PROJ1", $lead1, 
-			      "example@foo.com", "Save the world");
+			      "example@foo.com", "Save the world", null);
 error_log("PID = " . $project_id1);
 dump_projects();
 
@@ -94,18 +94,18 @@ $result = change_lead($pa_url, $user, $project_id1, $lead1, $lead2);
 dump_projects();
 
 $project_id2 = create_project($pa_url, $user, 
-			      "PROJ2", $lead3, "foo@bar.net", "Waste of time");
+			      "PROJ2", $lead3, "foo@bar.net", "Waste of time", null);
 //error_log("PID = " . $project_id);
 dump_projects();
 
 dump_projects();
 
 $project_id3 = create_project($pa_url, $user, 
-			      "PROJ3", $lead1, "foo@bar.net", "Waste of time");
+			      "PROJ3", $lead1, "foo@bar.net", "Waste of time", null);
 $project_id4 = create_project($pa_url, $user, 
-			      "PROJ4", $lead1, "foo@bar.net", "Waste of time");
+			      "PROJ4", $lead1, "foo@bar.net", "Waste of time", null);
 $project_id5 = create_project($pa_url, $user,
-			      "PROJ5", $lead1, "foo@bar.net", "Waste of time");
+			      "PROJ5", $lead1, "foo@bar.net", "Waste of time", null);
 
 $result = add_project_member($pa_url, $user, $project_id3, $lead2, CS_ATTRIBUTE_TYPE::MEMBER);
 $result = add_project_member($pa_url, $user, $project_id3, $lead3, CS_ATTRIBUTE_TYPE::MEMBER);
