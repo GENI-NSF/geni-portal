@@ -143,7 +143,8 @@ print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n"
 </form>
 <script>
   $(function() {
-    $( "#datepicker" ).datepicker();
+    // minDate = 1 will not allow today or earlier, only future dates.
+    $( "#datepicker" ).datepicker({ minDate: 1 });
   });
 </script>
 
