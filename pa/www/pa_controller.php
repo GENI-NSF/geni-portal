@@ -229,6 +229,12 @@ class PAContextGuard implements Guard
   }
 }
 
+function valid_expiration($expiration)
+{
+  $exp_timestamp = strtotime($expiration);
+  // Any valid (ie. parseable) date is fine
+  return $exp_timestamp !== false;
+}
 
 /*----------------------------------------------------------------------
  * API Methods
@@ -295,6 +301,9 @@ function create_project($args, $message)
   
   $creation = new DateTime(null, new DateTimeZone('UTC'));
   if ($expiration) {
+    if (! valid_expiration($expiration)) {
+      return generate_response(RESPONSE_ERROR::ARGS, "", "Invalid date: \"$expiration\"");
+    }
     $db_expiration = $conn->quote($expiration, 'text');
   } else {
     $db_expiration = "NULL";
@@ -511,6 +520,9 @@ function update_project($args, $message)
 
   $conn = db_conn();
   if ($expiration) {
+    if (! valid_expiration($expiration)) {
+      return generate_response(RESPONSE_ERROR::ARGS, "", "Invalid date: \"$expiration\"");
+    }
     $db_expiration = $conn->quote($expiration, 'text');
   } else {
     $db_expiration = "NULL";
