@@ -766,38 +766,80 @@ function renew_slice($args, $message)
 {
   global $SA_SLICE_TABLENAME;
   global $sa_max_slice_renewal_days;
+  global $pa_url;
+  global $log_url;
+  global $mysigner;
   sa_expire_slices();
+
+  if (! key_exists(SA_ARGUMENT::SLICE_ID, $args)) {
+    $msg = "Required argument " . SA_ARGUMENT::SLICE_ID . " is missing.";
+    return generate_response(RESPONSE_ERROR::ARGS, '', $msg);
+  }
+  if (! key_exists(SA_ARGUMENT::EXPIRATION, $args)) {
+    $msg = "Required argument " . SA_ARGUMENT::EXPIRATION . " is missing.";
+    return generate_response(RESPONSE_ERROR::ARGS, '', $msg);
+  }
+
   $slice_id = $args[SA_ARGUMENT::SLICE_ID];
   $requested = $args[SA_ARGUMENT::EXPIRATION];
 
-  // error_log("got req $requested");
-  $req_dt = new DateTime($requested);
-  $req_dt->setTimezone(new DateTimeZone('UTC'));
-
-  // FIXME: Shouldn't this depend on the current expiration?
-  $max_expiration = get_future_date($sa_max_slice_renewal_days);// 20 days increment
-
-  if ($req_dt > $max_expiration) {
-    //    error_log("req is bigger: " . date_diff($max_expiration, $req_dt)->format('%R%a days'));
-    $expiration = $max_expiration;
-  } else {
-    $expiration = $req_dt;
-    //    error_log("max is bigger: " . date_diff($req_dt, $max_expiration)->format('%R%a days'));
+  // Is slice expired?
+  $slice_row = fetch_slice_by_id($slice_id);
+  $slice_is_expired = convert_boolean($slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRED]);
+  if ($slice_is_expired) {
+    $msg = "Slice $slice_id is expired.";
+    return generate_response(RESPONSE_ERROR::ARGS, '', $msg);
   }
 
-  $conn = db_conn();
+  // error_log("got req $requested");
+  try {
+    $req_dt = new DateTime($requested);
+  } catch (Exception $e) {
+    $msg = "Requested expiration time not recognized: $requested";
+    return generate_response(RESPONSE_ERROR::ARGS, '', $msg);
+  }
+  $tz_utc = new DateTimeZone('UTC');
+  $req_dt->setTimezone($tz_utc);
 
+  // Is requested expiration >= current expiration?
+  $slice_expiration = $slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRATION];
+  $slice_expiration_dt = new DateTime($slice_expiration, $tz_utc);
+  if ($req_dt < $slice_expiration_dt) {
+    $msg = "Invalid expiration time \"$requested\". Cannot shorten slice expiration.";
+    return generate_response(RESPONSE_ERROR::ARGS, '', $msg);
+  }
+
+  // Limit to project expiration
+  $project_id = $slice_row[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+  $project_details = lookup_project($pa_url, $mysigner, $project_id);
+  $project_expiration = $project_details[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  $project_expiration_dt = new DateTime($project_expiration);
+  if ($req_dt > $project_expiration_dt) {
+    $msg = "Requested expiration \"$requested\" exceeds project expiration \"$project_expiration\"";
+    return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
+  }
+
+  // Limit to max expiration window (next N days)
+  $max_expiration_dt = get_future_date($sa_max_slice_renewal_days);// 20 days increment
+  if ($req_dt > $max_expiration_dt) {
+    $max_expiration = $max_expiration_dt->format(DateTime::RFC3339);
+    $msg = "Requested expiration \"$requested\" exceeds maximum limit of \"$max_expiration\"";
+    return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
+  }
+
+  // Requested expiration has passed all tests. Update the slice.
+  $expiration = $req_dt->format(DateTime::RFC3339);
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Renewing slice $slice_id to $expiration");
+  $conn = db_conn();
   $sql = "UPDATE " . $SA_SLICE_TABLENAME 
     . " SET " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " = "
-    . $conn->quote(db_date_format($expiration), 'timestamp')
+    . $conn->quote(db_date_format($req_dt), 'timestamp')
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " = " . $conn->quote($slice_id, 'text');
 
   //  error_log("RENEW.sql = " . $sql);
   $result = db_execute_statement($sql);
 
   // Log the renewal
-  global $log_url;
-  global $mysigner;
   $slice_info = lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
   $slice_name = $slice_info[RESPONSE_ARGUMENT::VALUE][SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
   $new_expiration = $slice_info[RESPONSE_ARGUMENT::VALUE][SA_SLICE_TABLE_FIELDNAME::EXPIRATION];
