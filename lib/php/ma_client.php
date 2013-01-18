@@ -176,7 +176,7 @@ function ma_lookup_members($ma_url, $signer, $lookup_attrs)
     $attr_value = $lookup_attrs[$attr_key];
     $cache_key = $attr_key . "." . $attr_value;
       if (array_key_exists($cache_key, $member_by_attribute_cache)) {
-	error_log("CACHE HIT lookup_members : " . $cache_key);
+	//	error_log("CACHE HIT lookup_members : " . $cache_key);
 	return $member_by_attribute_cache[$cache_key];
       }
   }
@@ -258,11 +258,10 @@ function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
 function ma_lookup_member_by_id($ma_url, $signer, $member_id)
 {
   global $member_cache;
-  error_log("MLMID : " . " " .  $member_cache);
   $msg['operation'] = 'lookup_member_by_id';
   $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
   if (array_key_exists($member_id, $member_cache)) {
-    error_log("CACHE HIT lookup_member_by_id: " . $member_id);
+    //    error_log("CACHE HIT lookup_member_by_id: " . $member_id);
     return $member_cache[$member_id];
   }
   $result = put_message($ma_url, $msg,

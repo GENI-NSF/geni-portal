@@ -39,6 +39,12 @@
 require_once('pa_constants.php');
 require_once('message_handler.php');
 
+// A cache of a user's detailed info indexed by member_id
+if(!isset($project_cache)) {
+  //  error_log("SETTING PROJECT_CACHE");
+  $project_cache = array();
+}
+
 // Create a project with given name, lead_id (UUID of lead member), email to contact on all 
 // matters related to project, and documentation purpose of project
 function create_project($pa_url, $signer, $project_name, $lead_id, $project_purpose, $expiration)
@@ -109,8 +115,14 @@ function lookup_projects($pa_url, $signer, $lead_id=null)
 // Return project details
 function lookup_project($pa_url, $signer, $project_id)
 {
+  global $project_cache;
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
+  }
+
+  if (array_key_exists($project_id, $project_cache)) {
+    //    error_log("CACHE HIT lookup_project " . $project_id);
+    return $project_cache[$project_id];
   }
   $cert = $signer->certificate();
   $key = $signer->privateKey();
@@ -122,6 +134,8 @@ function lookup_project($pa_url, $signer, $project_id)
 			 $signer->certificate(), $signer->privateKey());
   //  error_log("LP.end " . $project_id . " " . time());
   // FIXME: Could be >1?
+  $project_cache[$project_id] = $details;
+  
   return $details;
 }
 

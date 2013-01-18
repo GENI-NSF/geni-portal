@@ -314,16 +314,14 @@ $ACCOUNT_ID = null;
 //--------------------------------------------------
 function put_message($url, $message, $signer_cert=null, $signer_key=null)
 {
-  // *** MSB TESTING
-  $start_time = time();
-  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation'] . " " . print_r($message, true));
-  // *** END MSB TESTING
-
   if (! isset($url) || is_null($url) || trim($url) == '') {
     error_log("put_message error: empty URL");
     throw new ErrorException("put_message: cannot send message to empty URL");
     return null;
   }
+
+  // Debug output
+  //  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation'] . " " . print_r($message, true));
 
   $message_orig = $message;
   $message = json_encode($message);
@@ -354,9 +352,9 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
     $result = NULL;
   }
 
-  // *** MSB TESTING 
-  error_log("Received raw result : " . $url . " " . $message_orig['operation'] . " " . " " . (time() - $start_time));
-  // ** END MSB TESTING 
+  // Debug outptu
+  //  error_log("Received raw result : " . $url . " " . $message_orig['operation'] . " " . " " . (time() - $start_time));
+
 
   $result = trim($result); // Remove trailing newlines
   if (strpos($result, "404 Not Found")) {

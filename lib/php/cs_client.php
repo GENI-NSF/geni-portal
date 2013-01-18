@@ -45,6 +45,15 @@ require_once('cs_constants.php');
 require_once('message_handler.php');
 require_once('permission_manager.php');
 
+// A cache of a principal's permissions indexed by ID
+if(!isset($permission_cache)) {
+  //  error_log("SETTING PERMISSION_CACHE");
+  $permission_cache = array();
+
+}
+
+
+
 function create_assertion($cs_url, $msg_signer, $signer, $principal, $attribute, $context_type, $context)
 {
   $create_assertion_message['operation'] = 'create_assertion';
@@ -142,6 +151,13 @@ function get_attributes($cs_url, $signer, $principal, $context_type, $context)
 
 function get_permissions($cs_url, $signer, $principal)
 {
+  global $permission_cache;
+
+  if (array_key_exists($principal, $permission_cache)) {
+    //    error_log("CACHE HIT get_permissions : " . $principal);
+    return $permission_cache[$principal];
+}
+
   $get_permissions_message['operation'] = 'get_permissions';
   $get_permissions_message[CS_ARGUMENT::PRINCIPAL] = $principal;
   $result = put_message($cs_url, $get_permissions_message,
@@ -152,6 +168,7 @@ function get_permissions($cs_url, $signer, $principal)
   $pm->allowed_actions_no_context = $result['allowed_actions_no_context'];
   $pm->allowed_actions_in_context = $result['allowed_actions_in_context'];
   //  error_log("GP.pm = " . $pm);
+  $permission_cache[$principal] = $pm;
   return $pm;
 }
 
