@@ -314,7 +314,10 @@ $ACCOUNT_ID = null;
 //--------------------------------------------------
 function put_message($url, $message, $signer_cert=null, $signer_key=null)
 {
-  //  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation'] . " " . print_r($message, true));
+  // *** MSB TESTING
+  $start_time = time();
+  error_log("PUT_MESSAGE " . $url . " " . $_SERVER['PHP_SELF'] . " " . $message['operation'] . " " . print_r($message, true));
+  // *** END MSB TESTING
 
   if (! isset($url) || is_null($url) || trim($url) == '') {
     error_log("put_message error: empty URL");
@@ -322,6 +325,7 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
     return null;
   }
 
+  $message_orig = $message;
   $message = json_encode($message);
   //  error_log("PUT_MESSAGE(enc) " . $message);
   $message = smime_sign_message($message, $signer_cert, $signer_key);
@@ -349,7 +353,11 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
     error_log("put_message error: $error");
     $result = NULL;
   }
-  // error_log("Received raw result : " . $result);
+
+  // *** MSB TESTING 
+  error_log("Received raw result : " . $url . " " . $message_orig['operation'] . " " . " " . (time() - $start_time));
+  // ** END MSB TESTING 
+
   $result = trim($result); // Remove trailing newlines
   if (strpos($result, "404 Not Found")) {
     error_log("put_message error: Page $url Not Found");

@@ -27,6 +27,13 @@
 require_once('ma_constants.php');
 require_once('message_handler.php');
 
+// A cache of a user's detailed info indexed by member_id
+if(!isset($member_cache)) {
+  //  error_log("SETTING MEMBER_CACHE");
+  $member_cache = array();
+  $member_by_attribute_cache = array(); // Only for single attribute lookups
+}
+
 // Get list of all member_ids in repository
 function get_member_ids($ma_url, $signer)
 {
@@ -159,6 +166,20 @@ class Member {
 
 function ma_lookup_members($ma_url, $signer, $lookup_attrs)
 {
+  global $member_cache;
+  global $member_by_attribute_cache;
+
+  $cache_key = '';
+  if (count($lookup_attrs) == 1) {
+    $keys = array_keys($lookup_attrs);
+    $attr_key = $keys[0];
+    $attr_value = $lookup_attrs[$attr_key];
+    $cache_key = $attr_key . "." . $attr_value;
+      if (array_key_exists($cache_key, $member_by_attribute_cache)) {
+	error_log("CACHE HIT lookup_members : " . $cache_key);
+	return $member_by_attribute_cache[$cache_key];
+      }
+  }
   $attrs = array();
   foreach (array_keys($lookup_attrs) as $attr_name) {
     $attrs[] = array(MA_ATTRIBUTE::NAME => $attr_name,
@@ -172,7 +193,13 @@ function ma_lookup_members($ma_url, $signer, $lookup_attrs)
   foreach ($members as $member_info) {
     $member = new Member();
     $member->init_from_record($member_info);
+    $member_id = $member_info[MA_ARGUMENT::MEMBER_ID];
+    $member_cache[$member_id] = $member;
     $result[] = $member;
+  }
+
+  if (count($lookup_attrs) == 1) {
+    $member_by_attribute_cache[$cache_key] = $result;
   }
   return $result;
 }
@@ -230,12 +257,19 @@ function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
 
 function ma_lookup_member_by_id($ma_url, $signer, $member_id)
 {
+  global $member_cache;
+  error_log("MLMID : " . " " .  $member_cache);
   $msg['operation'] = 'lookup_member_by_id';
   $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  if (array_key_exists($member_id, $member_cache)) {
+    error_log("CACHE HIT lookup_member_by_id: " . $member_id);
+    return $member_cache[$member_id];
+  }
   $result = put_message($ma_url, $msg,
           $signer->certificate(), $signer->privateKey());
   $member = new Member();
   $member->init_from_record($result);
+  $member_cache[$member_id]=$member;
   return $member;
 }
 
