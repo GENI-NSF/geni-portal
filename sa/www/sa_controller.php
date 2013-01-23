@@ -435,18 +435,22 @@ function create_slice($args, $message)
   global $pa_url;
   $project_details = lookup_project($pa_url, $mysigner, $project_id);
   $expiration = get_future_date(0, $sa_default_slice_expiration_hours);
-  $project_expiration = new DateTime($project_details[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION]);
-  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Default slice expiration is " . $expiration->format(DateTime::RFC3339));
-  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Project expiration is " . $project_expiration->format(DateTime::RFC3339));
-  $now = new DateTime();
-  if ($project_expiration < $now) {
-    // Project is expired, do not create...
-    return generate_response(RESPONSE_ERROR::ARGS, "", "Project $project_name has expired.");
-  } else if ($expiration > $project_expiration) {
-    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Adjusting slice expiration to " . $project_expiration->format(DateTime::RFC3339));
-    $expiration = $project_expiration;
+  $project_expiration = $project_details[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  if ($project_expiration) {
+    // If there is a project expiration, check slice expiration against it.
+    $project_expiration = new DateTime($project_details[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION]);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Default slice expiration is " . $expiration->format(DateTime::RFC3339));
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Project expiration is " . $project_expiration->format(DateTime::RFC3339));
+    $now = new DateTime();
+    if ($project_expiration < $now) {
+      // Project is expired, do not create...
+      return generate_response(RESPONSE_ERROR::ARGS, "", "Project $project_name has expired.");
+    } else if ($expiration > $project_expiration) {
+      geni_syslog(GENI_SYSLOG_PREFIX::SA, "Adjusting slice expiration to " . $project_expiration->format(DateTime::RFC3339));
+      $expiration = $project_expiration;
+    }
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Slice expiration is " . $expiration->format(DateTime::RFC3339));
   }
-  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Slice expiration is " . $expiration->format(DateTime::RFC3339));
   $creation = new DateTime(null, new DateTimeZone('UTC'));
 
   $sql = "INSERT INTO " 
