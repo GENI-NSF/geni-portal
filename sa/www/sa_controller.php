@@ -76,6 +76,8 @@ function sa_expire_slices()
   global $log_url;
   global $mysigner;
   global $SA_SLICE_TABLENAME;
+  $conn = db_conn();
+  $now_utc = new DateTime(null, new DateTimeZone('UTC'));
   $sql = "SELECT "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
@@ -83,7 +85,8 @@ function sa_expire_slices()
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID
     . " FROM " . $SA_SLICE_TABLENAME
-    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . " < now()"
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::EXPIRATION
+    . " < " . $conn->quote(db_date_format($now_utc), 'timestamp')
     . " AND NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
   $result = db_fetch_rows($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] !== RESPONSE_ERROR::NONE) {
@@ -92,7 +95,6 @@ function sa_expire_slices()
     return;
   }
   $rows = $result[RESPONSE_ARGUMENT::VALUE];
-  $conn = db_conn();
   foreach ($rows as $row) {
     $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     $slice_name = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
