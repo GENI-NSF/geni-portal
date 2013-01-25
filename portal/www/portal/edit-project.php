@@ -164,16 +164,28 @@ if ($isnew) {
 } else {
   print "<h3>Project members</h3>\n";
   print "<table>\n";
-  // FIXME: loop over members retrieved from the DB
-  // FIXME each of these is editable, an action, etc
-  print "<tr><th>Project Member</th><th>Roles</th><th>Permissions</th><th>Delete?</th><th>Send Message</th></tr>\n";
-  print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Project Lead</td><td>All</td><td><button onClick=\"window.location='do-delete-project-member.php?project_id=$project_id&member_id=$leadid'\"><b>Delete</b></button></td><td><a href=\"mailto:$leademail\">Email $leadname</a></td></tr>\n";
+  $members = get_project_members($pa_url, $user, $project_id);
+  print "<tr><th>Project Member</th><th>Roles</th><th>Send Message</th></tr>\n";
+  //print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Project Lead</td><td>All</td><td><button onClick=\"window.location='do-delete-project-member.php?project_id=$project_id&member_id=$leadid'\"><b>Delete</b></button></td><td><a href=\"mailto:$leademail\">Email $leadname</a></td></tr>\n";
+  foreach ($members as $member) {
+     $member_id = $member['member_id'];
+     $member_user = $user->fetchMember($member_id);
+     $member_name = $member_user->prettyName();
+     $member_email = $member_user->email();
+     $member_role_index = $member['role'];
+     $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
+     $row = "<tr>";
+     $row .= "<td><a href=\"project-member.php?project_id=$project_id&member_id=$member_id\">$member_name</a></td>";
+     $row .= "<td>$member_role</td>";
+     $row .= "<td><a href=\"mailto:$member_email\">$member_email</a></td>";
+     $row .= "</tr>";
+     print $row;
+  }
   print "</table>\n";
 
-  print "<button onClick=\"window.location='";
-  $inv_url= relative_url("invite-to-project.php?project_id=$project_id'");
-  print $inv_url;
-  print "\"><a href='" . $inv_url . "'><b>Invite New Project Members</b></a></button><br/>\n";
+  $inv_url= relative_url("invite-to-project.php?project_id=$project_id");
+  print "<button onClick=\"window.location='$inv_url'\">";
+  print "<b>Invite New Project Members</b></button><br/>\n";
 }
 print "<br/>\n";
 
