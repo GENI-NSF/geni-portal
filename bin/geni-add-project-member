@@ -61,9 +61,14 @@ def parse_args(argv):
     parser.add_option("-u", "--url", help="authority URL")
     parser.add_option("-p", "--project", help="project id")
     parser.add_option("-m", "--member", help="authority URL")
+    parser.add_option("--role", type="choice",
+                      choices=["lead", "admin", "member", "auditor",
+                               "operator"],
+                      default="auditor",
+                      help="role within project")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
-            and options.project and options.member):
+            and options.project and options.member and options.role):
         parser.print_usage()
         raise Exception("Missing some required arguments")
     return options,args
@@ -105,7 +110,7 @@ def load_project_id(project, url, cert, pkey):
         logger = logging.getLogger()
         args = dict(project_name=project)
         result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
-        print "Result = %r" % (result)
+        print "lookup_project = %r" % (result)
         result_code = result['code']
         result_value = result['value']
         if result_code == 0 and result_value:
@@ -122,6 +127,11 @@ def load_member_id(member):
     except ValueError:
         raise Exception("Invalid member id %r, must be a UUID" % (member))
 
+def convert_role(role):
+    """Convert a role string to a numerical equivalent."""
+    mapping = dict(lead=1, admin=2, member=3, auditor=4, operator=5)
+    return mapping[role.lower()]
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -133,12 +143,14 @@ def main(argv=None):
         pkey = load_private_key(options.keyfile)
         project_id = load_project_id(options.project, url, cert, pkey)
         member_id = load_member_id(options.member)
+        role = convert_role(options.role)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
     operation = "add_project_member"
     logger = logging.getLogger()
-    args = dict(project_id=project_id, member_id=member_id)
+    args = dict(project_id=project_id, member_id=member_id,
+                role_type=role)
     result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
     # print "%r" % (result)
     if not 'code' in result:
