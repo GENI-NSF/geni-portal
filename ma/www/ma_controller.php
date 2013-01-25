@@ -616,6 +616,8 @@ function add_member_privilege($args, $message)
   $priv_name = "<other>";
   if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
     $priv_name = "Project Lead";
+  } else if ($privilege_id === MA_PRIVILEGE::OPERATOR) {
+    $priv_name = "Operator";
   }
   if (parse_urn($signer_urn, $auth, $type, $name)) {
     $signer_urn = $auth . "." . $name;
@@ -641,6 +643,8 @@ function add_member_privilege($args, $message)
   if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
     assert_project_lead($cs_url, $ma_signer, $member_id);
     mail_new_project_lead($member_id);
+  } else if ($privilege_id === MA_PRIVILEGE::OPERATOR) {
+    assert_operator($cs_url, $ma_signer, $member_id);
   }
   return $result;
 }
@@ -755,6 +759,26 @@ class SignerAuthorityGuard implements Guard
   }
 }
 
+class SignerIsOperatorGuard implements Guard
+{
+  public function __construct($message, $cs_url, $signer) {
+    $this->message = $message;
+    $this->cs_url = $cs_url;
+    $this->signer = $signer;
+  }
+
+  public function evaluate() {
+    $assertions = query_assertions($this->cs_url, $this->signer, $this->message->signerUuid(),
+            CS_CONTEXT_TYPE::MEMBER, NULL);
+    foreach ($assertions as $assertion) {
+      if ($assertion[CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE] == CS_ATTRIBUTE_TYPE::OPERATOR) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 class SignerKmGuard implements Guard
 {
   public function __construct($message) {
@@ -800,6 +824,13 @@ class MAGuardFactory implements GuardFactory
       $guards[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
       $guards[] = new SignerKmGuard($message);
       // Accept from the KM or the user
+      $result[] = new OrGuard($guards);
+    } elseif ($action === 'add_member_privilege') {
+      global $cs_url;
+      global $ma_signer;
+      // Allow operator or signed by an authority
+      $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
+      $guards[] = new SignerAuthorityGuard($message);
       $result[] = new OrGuard($guards);
     }
     return $result;
