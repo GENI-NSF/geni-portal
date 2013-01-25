@@ -125,7 +125,8 @@ function query_policies($cs_url, $signer)
   return $result;
 }
 
-function request_authorization($cs_url, $signer, $principal, $action, $context_type, $context)
+function request_authorization($cs_url, $signer, $principal, $action,
+                               $context_type, $context)
 {
   $request_authorization_message['operation'] = 'request_authorization';
   $request_authorization_message[CS_ARGUMENT::PRINCIPAL] = $principal;
@@ -133,7 +134,7 @@ function request_authorization($cs_url, $signer, $principal, $action, $context_t
   $request_authorization_message[CS_ARGUMENT::CONTEXT_TYPE] = $context_type;
   $request_authorization_message[CS_ARGUMENT::CONTEXT] = $context;
   $result = put_message($cs_url, $request_authorization_message,
-			$signer->certificate(), $signer->privateKey());
+          $signer->certificate(), $signer->privateKey());
   return $result;
 }
 
