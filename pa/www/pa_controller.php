@@ -222,10 +222,16 @@ class PAContextGuard implements Guard
              . "; action=\"" . print_r($this->action, TRUE) . "\""
              . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
              . "; context=\"" . print_r($this->context, TRUE) . "\"");
-    return request_authorization($this->cs_url, $mysigner, 
-				 $this->message->signerUuid(),
-                                 $this->action, $this->context_type,
-                                 $this->context);
+    $result = request_authorization($this->cs_url, $mysigner,
+            $this->message->signerUuid(),
+            $this->action, $this->context_type,
+            $this->context);
+    $result_type = gettype($result);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, "PAContextGuard got result of type $result_type");
+    geni_syslog(GENI_SYSLOG_PREFIX::PA,
+                "PAContextGuard on action " . $this->action
+                . " returning " . print_r($result, true));
+    return $result;
   }
 }
 
@@ -291,7 +297,7 @@ function create_project($args, $message)
   $permitted = request_authorization($cs_url, $mysigner, $lead_id, 'create_project', 
 				     CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
-  if ($permitted < 1) {
+  if (! $permitted) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, 
 			     "Principal " . $lead_id  . " may not create project");
   } 
@@ -565,7 +571,7 @@ function change_lead($args, $message)
   $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, 'create_project', 
 				     CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
-  if ($permitted < 1) {
+  if (! $permitted) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, 
 			     "Principal " . $new_lead_id  . " may not lead projects");
   } 
