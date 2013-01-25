@@ -63,7 +63,7 @@ def parse_args(argv):
                       help="add operator privilege")
     parser.add_option("-l", "--lead",  action="store_true", default=False,
                       help="add lead privilege")
-    parser.add_option("-m", "--member", help="authority URL")
+    parser.add_option("-m", "--member", help="member id (a UUID)")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
             and options.member and (options.operator or options.lead)):
