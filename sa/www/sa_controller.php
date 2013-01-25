@@ -819,10 +819,12 @@ function renew_slice($args, $message)
   $project_id = $slice_row[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
   $project_details = lookup_project($pa_url, $mysigner, $project_id);
   $project_expiration = $project_details[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
-  $project_expiration_dt = new DateTime($project_expiration);
-  if ($req_dt > $project_expiration_dt) {
-    $msg = "Requested expiration \"$requested\" exceeds project expiration \"$project_expiration\"";
-    return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
+  if ($project_expiration) {
+    $project_expiration_dt = new DateTime($project_expiration);
+    if ($req_dt > $project_expiration_dt) {
+      $msg = "Requested expiration \"$requested\" exceeds project expiration \"$project_expiration\"";
+      return generate_response(RESPONSE_ERROR::ARGS, "", $msg);
+    }
   }
 
   // Limit to max expiration window (next N days)
