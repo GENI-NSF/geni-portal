@@ -72,6 +72,27 @@ function assert_project_lead($cs_url, $ma_signer, $member_id)
   return TRUE;
 }
 
+function assert_operator($cs_url, $ma_signer, $member_id)
+{
+  $signer = NULL; /* this feels wrong */
+  $attribute = CS_ATTRIBUTE_TYPE::OPERATOR;
+  $context_types = array(CS_CONTEXT_TYPE::PROJECT,
+                         CS_CONTEXT_TYPE::SLICE,
+                         CS_CONTEXT_TYPE::RESOURCE,
+                         CS_CONTEXT_TYPE::SERVICE,
+                         CS_CONTEXT_TYPE::MEMBER);
+  $context = NULL;
+  foreach ($context_types as $context_type) {
+    $result = create_assertion($cs_url, $ma_signer, $signer, $member_id,
+                               $attribute, $context_type, $context);
+    geni_syslog(GENI_SYSLOG_PREFIX::MA,
+                "assert_operator($context_type) got result "
+                . print_r($result, TRUE));
+  }
+  // Should combine results from the individual calls?
+  return TRUE;
+}
+
 /**
  * Determine if a username already exists.
  * @param unknown_type $username
