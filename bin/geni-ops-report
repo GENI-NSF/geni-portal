@@ -1,0 +1,158 @@
+#!/usr/bin/env python
+# -*- mode:python -*-
+
+import sys
+import logging
+import optparse
+import csv
+import psycopg2
+import psycopg2.extras
+
+class Member(object):
+    members = dict()
+    attrs = []
+
+    @classmethod
+    def find(cls, id):
+        if not id in cls.members:
+            m = cls(id)
+            cls.members[id] = m
+        return cls.members[id]
+
+    @classmethod
+    def all_members(cls):
+        return cls.members.values()
+
+    @classmethod
+    def sorted_members(cls):
+        return [cls.members[id] for id in sorted(cls.members.keys())]
+
+    def __init__(self, id):
+        self.id = id
+        for attr in self.attrs:
+            setattr(self, attr, '')
+        self.project_lead = False
+
+
+def load_members(conn):
+    query = "select * from ma_member_attribute order by member_id"
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(query)
+    fetchsize = 5
+    rows = cur.fetchmany(fetchsize)
+    while rows:
+        for r in rows:
+            m = Member.find(r['member_id'])
+            setattr(m, r['name'], r['value'])
+        rows = cur.fetchmany(fetchsize)
+    cur.close()
+
+def all_member_attrs(conn):
+    query = "select distinct name from ma_member_attribute"
+    cur = conn.cursor()
+    cur.execute(query)
+    rows = cur.fetchall()
+    cur.close()
+    return [r[0] for r in rows]
+
+def mark_project_leads(conn):
+    query = ("select member_id, privilege"
+             + " from ma_member_privilege m, ma_privilege p"
+             + " where m.privilege_id = p.id"
+             + " and privilege = 'PROJECT_LEAD'"
+             + " order by member_id")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(query)
+    fetchsize = 5
+    rows = cur.fetchmany(fetchsize)
+    while rows:
+        for r in rows:
+            m = Member.find(r['member_id'])
+            m.project_lead = True
+        rows = cur.fetchmany(fetchsize)
+    cur.close()
+
+def print_members_csv(members):
+    def ident(x): return x
+    def xform_bool(x): return 'Y' if x else ''
+    m_attrs = (('id', ident), ('eppn', ident), ('first_name', ident),
+               ('last_name', ident), ('project_lead', xform_bool))
+    csvout = csv.writer(sys.stdout)
+    csvout.writerow([x for (x, y) in m_attrs])
+    for m in Member.sorted_members():
+        vals = [fn(getattr(m, k)) for (k, fn) in m_attrs]
+        csvout.writerow(vals)
+
+def load_projects(conn):
+    query = ("select project_id, project_name, value, creation"
+             + " from pa_project p, ma_member_attribute m"
+             + " where p.lead_id = m.member_id"
+             + " and m.name = 'eppn'"
+             + " order by creation")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(query)
+    fetchsize = 5
+    result = []
+    hdr = ["project id", "project name", "eppn", "creation"]
+    result.append(hdr)
+    rows = cur.fetchmany(fetchsize)
+    while rows:
+        for r in rows:
+            result.append(r)
+        rows = cur.fetchmany(fetchsize)
+    cur.close()
+    return result
+
+def init_logging(options):
+    level = logging.INFO
+    if options.debug:
+        level = logging.DEBUG
+    logging.basicConfig(level=level)
+
+def parse_args(argv):
+    parser = optparse.OptionParser()
+    parser.add_option("--debug", action="store_true", default=False,
+                       help="enable debugging output")
+    parser.add_option("-d", "--database", default='portal',
+                      help="database name")
+    parser.add_option("--host", default='localhost',
+                      help="database host")
+    parser.add_option("-u", "--user", default='portal',
+                      help="database user")
+    parser.add_option("-p", "--password",
+                      help="database password")
+    options,args = parser.parse_args()
+    if not (options.password):
+        parser.print_usage()
+        raise Exception("Missing some required arguments")
+    return options,args
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    try:
+        options,args = parse_args(argv)
+        init_logging(options)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
+        return 1
+    # Member dict, id -> Member
+    members = dict()
+    conn = psycopg2.connect(database=options.database,
+                            user=options.user,
+                            password=options.password,
+                            host=options.host)
+    attrs = all_member_attrs(conn)
+    Member.attrs = attrs
+    load_members(conn)
+    mark_project_leads(conn)
+    print_members_csv(Member.sorted_members)
+
+    projects = load_projects(conn)
+    csvout = csv.writer(sys.stdout)
+    csvout.writerows(projects)
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
