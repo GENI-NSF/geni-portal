@@ -91,7 +91,6 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 $mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
 add_js_script($mydir . '/slice-add-resources.js');
-add_js_script($mydir . '/enable_agg_chooser.js');
 
 $slice_id = "None";
 $slice_name = "None";
