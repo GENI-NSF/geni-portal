@@ -29,6 +29,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
+require_once 'geni_syslog.php';
 
 function show_rspec_chooser($user) {
   $all_rmd = fetchRSpecMetaData($user);
@@ -40,7 +41,11 @@ function show_rspec_chooser($user) {
     $rid = $rmd['id'];
     $rname = $rmd['name'];
     $rdesc = $rmd['description'];
-    print "<option value=\"$rid\" title=\"$rdesc\">$rname</option>\n";
+    //    error_log("BOUND = " . $rmd['bound']);
+    $enable_agg_chooser=1;
+    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+    //    error_log("BOUND = " . $enable_agg_chooser);
+    print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
   }
   //  print "<option value=\"paste\" title=\"Paste your own RSpec\">Paste</option>\n";
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
@@ -69,7 +74,7 @@ function show_rspec_chooser($user) {
 function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   print "Choose Aggregate:\n";
-  print '<select name="am_id">\n';
+  print '<select name="am_id" id="agg_chooser">\n';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
     $aggname = $agg['service_name'];
@@ -86,6 +91,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 $mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
 add_js_script($mydir . '/slice-add-resources.js');
+add_js_script($mydir . '/enable_agg_chooser.js');
 
 $slice_id = "None";
 $slice_name = "None";

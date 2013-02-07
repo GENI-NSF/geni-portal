@@ -295,7 +295,7 @@ function fetchRSpecById($id) {
  * and all private RSpecs owned by the current user.
  */
 function fetchRSpecMetaData($user) {
-  $metadata_columns = "id, name, description, visibility, owner_id";
+  $metadata_columns = "id, name, description, visibility, bound, owner_id";
   $conn = portal_conn();
   $sql = "SELECT $metadata_columns FROM rspec";
   $sql .= " where visibility = 'public'";
@@ -313,7 +313,7 @@ function fetchRSpecMetaData($user) {
 }
 
 function db_add_rspec($user, $name, $description, $rspec, $schema,
-        $schema_version, $visibility)
+		      $schema_version, $visibility, $bound)
 {
   if (! isset($description) or is_null($description) or $description == '') {
     $msg = "Description missing for RSpec $name";
@@ -330,7 +330,7 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   $conn = portal_conn();
   $sql = "INSERT INTO rspec";
   $sql .= " (name, description, rspec, schema, schema_version";
-  $sql .= ", owner_id, visibility)";
+  $sql .= ", owner_id, visibility, bound)";
   $sql .= " VALUES (";
   $sql .= $conn->quote($name, 'text');
   $sql .= ", " . $conn->quote($description, 'text');
@@ -339,6 +339,7 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   $sql .= ", " . $conn->quote($schema_version, 'text');
   $sql .= ", " . $conn->quote($user->account_id, 'text');
   $sql .= ", " . $conn->quote($visibility, 'text');
+  $sql .= ", " . $conn->quote($bound, 'boolean');
   $sql .= ")";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
   //  error_log($sql);

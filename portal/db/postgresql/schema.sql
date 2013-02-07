@@ -200,6 +200,7 @@ CREATE TABLE rspec (
   rspec VARCHAR NOT NULL,
   owner_id UUID,
   visibility rspec_visibility NOT NULL,
+  bound boolean,
   PRIMARY KEY (id)
 );
 CREATE INDEX rspec_name ON rspec (name);

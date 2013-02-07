@@ -24,14 +24,34 @@
 function rspec_onchange()
 {
     var rspec_opt = $('#rspec_select').val();
-    if (rspec_opt == 'upload') {
-        $('#paste_rspec').hide(500);
-        $('#upload_rspec').show(500);
-    } else if (rspec_opt == 'paste') {
-        $('#paste_rspec').show(500);
-        $('#upload_rspec').hide(500);
+
+    //    console.log("IN RSPEC_ON_CHANGE");
+    //    if (rspec_opt == 'upload') {
+    //        $('#paste_rspec').hide(500);
+    ///        $('#upload_rspec').show(500);
+    //    } else if (rspec_opt == 'paste') {
+    //        $('#paste_rspec').show(500);
+    //        $('#upload_rspec').hide(500);
+    //    } else {
+    //        $('#paste_rspec').hide(500);
+    //        $('#upload_rspec').hide(500);
+    //    }
+
+    var agg_chooser = $('#agg_chooser');
+    var rspec_chooser = $('#rspec_select');
+
+    var selected_index = document.getElementById('rspec_select').selectedIndex;
+    var selected_element = rspec_chooser.children()[selected_index];
+    var enable_agg_chooser = selected_element.attributes.getNamedItem('bound').value;
+    
+    //    console.log("ENABLE  = " + enable_agg_chooser);
+
+    if (enable_agg_chooser == "1") {
+	$('#agg_chooser').removeAttr('disabled');
+	//	console.log("ENABLING");
     } else {
-        $('#paste_rspec').hide(500);
-        $('#upload_rspec').hide(500);
+	$('#agg_chooser').attr('disabled', 'disabled');
+	//	console.log("DISABLING");
     }
+
 }

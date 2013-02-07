@@ -28,6 +28,13 @@ require_once("header.php");
 require_once 'geni_syslog.php';
 require_once 'db-util.php';
 
+// Do any nodes of given request rspec contain component-manager_id tags?
+function computeRSpecBound($rspec)
+{
+  // *** Need to do a real XML parse
+  return strpos($rspec, 'component_manager_id');
+}
+
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -101,9 +108,10 @@ $description = $_POST["description"];
 $schema = "GENI";
 $schema_version = "3";
 
-geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Calling db_add_rspec");
+$bound = computeRSpecBound($contents);
+
 $result = db_add_rspec($user, $name, $description, $contents,
-        $schema, $schema_version, $visibility);
+		       $schema, $schema_version, $visibility, $bound);
 geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "db_add_rspec: " . print_r($result, true));
 //error_log("db_add_rspec: " . print_r($result, true));
 // FIXME: check result
