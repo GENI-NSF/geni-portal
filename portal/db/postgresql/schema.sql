@@ -201,6 +201,8 @@ CREATE TABLE rspec (
   owner_id UUID,
   visibility rspec_visibility NOT NULL,
   bound boolean,
+  stitch boolean,
+  am_urns VARCHAR,
   PRIMARY KEY (id)
 );
 CREATE INDEX rspec_name ON rspec (name);

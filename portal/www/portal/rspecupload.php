@@ -28,11 +28,81 @@ require_once("header.php");
 require_once 'geni_syslog.php';
 require_once 'db-util.php';
 
-// Do any nodes of given request rspec contain component-manager_id tags?
-function computeRSpecBound($rspec)
+// Parse XML rspec contained in given file
+// Is rspec in given file bound (i.e. does it have any nodes with 
+//      component_manager_id tags)?
+// Is it for stitching (i.e. does any link have two different 
+//      component_manager_id tags)?
+// Return array of four values: 
+//    parsed_rspec (text), 
+//    is_bound (boolean), 
+//    is_stitch (boolean),
+//    a list of AM URN's (component_manager_id's) of requested nodes
+function parseRequestRSpec($rspec_filename)
 {
-  // *** Need to do a real XML parse
-  return strpos($rspec, 'component_manager_id');
+  $am_urns = array();
+  $is_bound = false;
+  $is_stitch = false;
+
+  $dom_document = new DOMDocument();
+  $rspec = file_get_contents($rspec_filename);
+  $dom_document->loadXML($rspec);
+  $root = $dom_document->documentElement;
+
+  // Go over each node and link child
+  // If ANY node child has a component_manager_id, is_bound is true
+  // If ANY link has two componennt_manager children of 
+  //       different names, is_stitch is true
+  foreach ($root->childNodes as $child) {
+    if ($child->nodeType == XML_TEXT_NODE) { continue; }
+    // Pull out 'client_id' and 'component_manager_id' attributes
+    if ($child->nodeName == 'node') {
+      $node = $child;
+      $client_id = NULL;
+      if ($node->hasAttribute('client_id')) { 
+	$client_id = $node->getAttribute('client_id'); 
+      }
+      $component_manager_id = NULL;
+      if ($node->hasAttribute('component_manager_id')) { 
+	$component_manager_id = $node->getAttribute('component_manager_id'); 
+	$is_bound = true;
+	$am_urns[] = $component_manager_id;
+      }
+      //      error_log("Node "  . print_r($node, true) . " " . 
+      //		print_r($client_id, true) . " " . 
+      //		print_r($component_manager_id, true));
+    } elseif ($child->nodeName == 'link') {
+      $link_urns = array();
+      // Extract the client_id attribute and 
+      // component_manager_id child name attribute
+      $link = $child;
+      $link_client_id = NULL;
+      if ($link->hasAttribute('client_id')) { 
+	$link_client_id = $link->getAttribute('client_id'); 
+      }
+      //      error_log("Link "  . print_r($link, true) . " " . 
+      //		print_r($link_client_id, true));
+      foreach($link->childNodes as $link_child) {
+	if ($link_child->nodeType == XML_TEXT_NODE) { continue; }
+	if ($link_child->nodeName == 'component_manager') {
+	  $cm_id = $link_child;
+	  $cmid_component_manager_id = NULL;
+	  if ($cm_id->hasAttribute('name')) { 
+	    $cmid_component_manager_id = $cm_id->getAttribute('name'); 
+	    $link_urns[$cmid_component_manager_id] = true;
+	  }
+	  //	  error_log("   CMID:" . print_r($cm_id, true) . " " . 
+	  //		    print_r($cmid_component_manager_id, true));
+	} 
+      }
+      // We have a link with more than 1 different aggregate URN
+      if (count(array_keys($link_urns)) > 1) {
+	$is_stitch = true;
+      }
+    }
+  }
+
+  return array($rspec, $is_bound, $is_stitch, $am_urns);
 }
 
 
@@ -96,22 +166,35 @@ if ($error != NULL || count($_POST) == 0) {
 }
 
 // The rspec is in $_FILES["file"]["tmp_name"]
-$contents = file_get_contents($_FILES["file"]["tmp_name"]);
+$actual_filename = $_FILES["file"]["tmp_name"];
+$parse_results = parseRequestRSpec($actual_filename);
+$contents = $parse_results[0];
+$is_bound = $parse_results[1];
+$is_stitch = $parse_results[2];
+$am_urns = $parse_results[3];
+
 $filename = $_FILES["file"]["name"];
 $description = NULL;
 $name = $_POST["name"];
 $visibility = $_POST["group1"];
 $description = $_POST["description"];
 
+$am_urns_image = "";
+foreach($am_urns as $am_urn) {
+  $am_urns_image = $am_urns_image . $am_urn . " ";
+}
+
+error_log("PARSE : " . $is_bound . " " . $is_stitch . " " . $am_urns_image);
+
 // FIXME: Need a utility that determines schema and version
 // from the RSpec itself.
 $schema = "GENI";
 $schema_version = "3";
 
-$bound = computeRSpecBound($contents);
-
 $result = db_add_rspec($user, $name, $description, $contents,
-		       $schema, $schema_version, $visibility, $bound);
+		       $schema, $schema_version, $visibility, $is_bound,
+		       $is_stitch, $am_urns_image
+		       );
 geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "db_add_rspec: " . print_r($result, true));
 //error_log("db_add_rspec: " . print_r($result, true));
 // FIXME: check result

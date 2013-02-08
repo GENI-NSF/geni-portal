@@ -313,7 +313,7 @@ function fetchRSpecMetaData($user) {
 }
 
 function db_add_rspec($user, $name, $description, $rspec, $schema,
-		      $schema_version, $visibility, $bound)
+		      $schema_version, $visibility, $is_bound, $is_stitch, $am_urns)
 {
   if (! isset($description) or is_null($description) or $description == '') {
     $msg = "Description missing for RSpec $name";
@@ -330,7 +330,7 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   $conn = portal_conn();
   $sql = "INSERT INTO rspec";
   $sql .= " (name, description, rspec, schema, schema_version";
-  $sql .= ", owner_id, visibility, bound)";
+  $sql .= ", owner_id, visibility, bound, stitch, am_urns)";
   $sql .= " VALUES (";
   $sql .= $conn->quote($name, 'text');
   $sql .= ", " . $conn->quote($description, 'text');
@@ -339,7 +339,9 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   $sql .= ", " . $conn->quote($schema_version, 'text');
   $sql .= ", " . $conn->quote($user->account_id, 'text');
   $sql .= ", " . $conn->quote($visibility, 'text');
-  $sql .= ", " . $conn->quote($bound, 'boolean');
+  $sql .= ", " . $conn->quote($is_bound, 'boolean');
+  $sql .= ", " . $conn->quote($is_stitch, 'boolean');
+  $sql .= ", " . $conn->quote($am_urns, 'text');
   $sql .= ")";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
   //  error_log($sql);
