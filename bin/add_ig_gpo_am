@@ -3,7 +3,7 @@
 FILENAME="/tmp/addiggpoam.$USER"
 
 echo "-- Create the entry for IG GPO AM:" >> $FILENAME
-echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (0, 'https://www.instageni.gpolab.bbn.com:12369/protogeni/xmlrpc/am/2.0', '/usr/share/geni-ch/sr/certs/ig-gpo-cm.pem', 'GPO InstaGENI', 'GPO InstaGENI AM');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_urn, service_cert, service_name, service_description) values (0, 'https://www.instageni.gpolab.bbn.com:12369/protogeni/xmlrpc/am/2.0', 'urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm', '/usr/share/geni-ch/sr/certs/ig-gpo-cm.pem', 'GPO InstaGENI', 'GPO InstaGENI AM');" >> $FILENAME
 echo "-- Now create the entry for ig-gpo-ca:" >> $FILENAME
 echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/ig-gpo-boss.pem', '', 'GPO InstaGENI CA (self-signed)');" >> $FILENAME
 

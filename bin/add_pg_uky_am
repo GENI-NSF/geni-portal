@@ -3,7 +3,7 @@
 FILENAME="/tmp/addpgukyam.$USER"
 
 echo "-- Create the entry for PG UKY AM:" >> $FILENAME
-echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (0, 'https://www.uky.emulab.net:12369/protogeni/xmlrpc/am/2.0', '/usr/share/geni-ch/sr/certs/pg-uky-cm.pem', 'Kentucky ProtoGENI', 'ProtoGENI Kentucky AM');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_urn, service_cert, service_name, service_description) values (0, 'https://www.uky.emulab.net:12369/protogeni/xmlrpc/am/2.0', 'urn:publicid:IDN+uky.emulab.net+authority+cm', '/usr/share/geni-ch/sr/certs/pg-uky-cm.pem', 'Kentucky ProtoGENI', 'ProtoGENI Kentucky AM');" >> $FILENAME
 echo "-- Now create the entry for pg-uky-ca:" >> $FILENAME
 echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/pg-uky-boss.pem', '', 'For Flack: ProtoGENI Kentucky SSL');" >> $FILENAME
 
