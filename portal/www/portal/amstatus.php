@@ -133,6 +133,7 @@ Returned status of slivers on 0 of 2 possible aggregates.
   $fail=array();
   $lines = preg_split ('/$\R?^/m', $msg);
   $num_errs = 0;
+  $m = 0;
   foreach ($lines as $line){  
     if (preg_match("/^Returned status of slivers on (\d+) of (\d+) possible aggregates.$/",$line, $succ)){
       $n = (int) $succ[1];
@@ -158,9 +159,7 @@ Returned status of slivers on 0 of 2 possible aggregates.
     }
   }
 
-  $retVal = Array();
-  $retVal[] = $status_array;
-  $retVal[] = $m;
+  $retVal = $status_array;
 
   return $retVal;
 }
@@ -182,8 +181,7 @@ if (count($obj)>0) {
    $status_array = get_sliver_status( $obj, $status_array );
    // fill in sliver status errors for each agg
    $retVal = get_sliver_status_err( $msg, $status_array );
-   $status_array = $retVal[0];
-   $max_ams = $retVal[1];
+   $status_array = $retVal;
 } 
 
 // Set headers for xml
