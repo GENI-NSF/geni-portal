@@ -134,7 +134,6 @@ var delete_slivers_disabled= "<?php echo $delete_slivers_disabled ?>";
 var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
 var slice= "<?php echo $slice_id ?>";
-var am_id= "<?php echo $am_id ?>";
 <?php include('status_constants_import.php'); ?>
 </script>
 <script src="amstatus.js"></script>
@@ -143,6 +142,10 @@ $(document).ready(build_agg_table_on_slicepg);
 </script>
 <?php 
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
+
+if (isset($slice_expired) && $slice_expired == 't' ) {
+   print "<p class='warn'>This slice is expired!</p>\n";
+}
 
 print "<table>\n";
 print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";

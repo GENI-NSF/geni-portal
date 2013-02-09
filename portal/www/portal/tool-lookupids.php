@@ -81,6 +81,7 @@ if (array_key_exists("slice_id", $_REQUEST)) {
     $slice = lookup_slice($sa_url, $user, $slice_id);
     if (isset($slice) && is_array($slice) && array_key_exists(SA_SLICE_TABLE_FIELDNAME::SLICE_NAME, $slice)) {
       $slice_name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+      $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
     }
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
     if (! uuid_is_valid($slice_project_id)) {
