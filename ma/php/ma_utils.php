@@ -243,6 +243,32 @@ function get_member_info($member_id)
   return $result;
 }
 
+/**
+ * Return a string name suitable for a log message.
+ *
+ * @param string $member_id a UUID for the member
+ * @return string for use in a log message
+ */
+function get_member_id_log_name($member_id)
+{
+  $DISPLAY_NAME = 'displayName';
+  $member = get_member_info($member_id);
+  $all_attrs = $member[MA_ARGUMENT::ATTRIBUTES];
+  $attrs = array();
+  foreach ($all_attrs as $attr) {
+    $attrs[$attr[MA_ATTRIBUTE::NAME]] = $attr[MA_ATTRIBUTE::VALUE];
+  }
+  if (array_key_exists($DISPLAY_NAME, $attrs)) {
+    return $attrs[$DISPLAY_NAME];
+  } else if (array_key_exists(MA_ATTRIBUTE_NAME::FIRST_NAME, $attrs)
+          && array_key_exists(MA_ATTRIBUTE_NAME::LAST_NAME, $attrs)) {
+    return ($attrs[MA_ATTRIBUTE_NAME::FIRST_NAME]
+            . " " . $attrs[MA_ATTRIBUTE_NAME::LAST_NAME]);
+  } else {
+    return $attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
+  }
+}
+
 function mail_account_request($member_id)
 {
   // From /etc/geni-ch/settings.php
