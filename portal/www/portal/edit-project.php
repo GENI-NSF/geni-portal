@@ -67,7 +67,8 @@ class ProjectField
     $txt = "<tr>";
     $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
     $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
-    if (array_key_exists($this->field, $project)) {
+    // $project can be "new", so include is_array test
+    if (is_array($project) && array_key_exists($this->field, $project)) {
       $txt .= " value=\"" . $project[$this->field] . "\"";
     }
     if (! $this->enabled) {
@@ -93,7 +94,8 @@ class DateField extends ProjectField
     $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
     $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
     $txt .= " id=\"datepicker\"";
-    if (array_key_exists($this->field, $project)) {
+    // $project can be "new", so include is_array test
+    if (is_array($project) && array_key_exists($this->field, $project)) {
       $txt .= " value=\"" . $project[$this->field] . "\"";
     }
     if (! $this->enabled) {
