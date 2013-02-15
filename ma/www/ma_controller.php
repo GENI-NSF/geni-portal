@@ -622,9 +622,10 @@ function add_member_privilege($args, $message)
   if (parse_urn($signer_urn, $auth, $type, $name)) {
     $signer_urn = $auth . "." . $name;
   }
-  $log_msg = "$signer_urn adding privilege \"$priv_name\" to member $member_id";
+  $log_signer = get_member_id_log_name($signer_id);
+  $log_member = get_member_id_log_name($member_id);
+  $log_msg = "$log_signer adding privilege \"$priv_name\" to member $log_member";
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
-  $log_msg = "$signer_urn adding privilege \"$priv_name\"";
   log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
