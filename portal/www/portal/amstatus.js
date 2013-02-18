@@ -266,3 +266,80 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 
 
 
+function build_delete_table() 
+{
+   // (1) query the server for all a list of aggregates
+    $.getJSON("aggregates.php", { am_id:am_id }, function(responseTxt,statusTxt,xhr){
+	var json_agg, numAgg;
+	json_agg = responseTxt;
+	// update the displayed count of number of aggregates contacting 
+	numAgg = Object.keys(json_agg).length;
+        $("#total").text( numAgg );
+	for (var tmp_am_id in json_agg ) {
+	    add_agg_row_to_delete_table(tmp_am_id);
+	}
+   });
+}
+
+function add_agg_row_to_delete_table(am_id) {
+  // This queries for the json file at (for example):
+  // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
+  $.getJSON("deletesliver.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+      var succ, fail;
+      var agg; 
+      var numSucc =0;
+      var numFail =0;
+      var numAttempt = 0;
+      var succ_output="";
+      var fail_output="";
+
+      if(statusTxt=="success") 
+      {
+	  succ = responseTxt[0];
+	  fail = responseTxt[1];
+
+	  for (agg in succ) {
+	      succ_output +=  "<li>"+succ+"</li>";
+              $("ul#deletesliver").append( succ_output );
+	  } 
+
+	  for (agg in fail) {
+	      fail_output +=  "<li>"+fail+"</li>";
+              $("ul#deleteerror").append( fail_output );
+	  } 
+
+	  // remove the "Deleting resources..."
+	  $("#delete").css( 'display', 'none');
+	  // replace with "Have attempted to delete resources at 1 of 5 aggregate."
+	  $("#summary").css( 'display', 'block');
+
+	  
+	  // update displayed count of number aggregates contacted
+          numAttempt = parseInt($("span#attempted").text());
+	  numAttempt += 1;
+          $("span#attempted").text( numAttempt );
+	  
+          if ( $("ul#deletesliver").children().length > 0 ) {
+	      // update displayed count of number aggregates successfully deleted at
+              numSucc = parseInt($("span#success").text());
+	      numSucc += 1;
+              $("span#success").text( numSucc );
+
+	      $("div#delsliverlabel").css( 'display', 'block');
+	  }
+          if ( $("ul#deleteerror").children().length > 0 ) {
+	      // update displayed count of number aggregates failed to delete at
+              numFail = parseInt($("span#fail").text());
+	      numFail += 1;
+              $("span#fail").text( numFail );
+
+	      $("div#delerrorlabel").css( 'display', 'block');
+	  }
+      }
+      if(statusTxt=="error")
+          alert("Error: "+xhr.status+": "+xhr.statusText);
+  });  
+}
+
+
+

@@ -74,79 +74,42 @@ if (! isset($ams) || is_null($ams)) {
   }
 }
 
-$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
-if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
-  error_log("Found no AMs!");
-  $slivers_output = "No AMs registered.";
-} else {
-  $slivers_output = "";
-  // Get the slice credential from the SA
-  $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
-  
-  // Get the slice URN via the SA
-  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  error_log("SLIVER_DELETE SLICE_URN = $slice_urn");
+$header = "Deleting resources on slice: $slice_name";
 
-  $am_urls = array();
-  foreach ($ams as $am) {
-    if (is_array($am)) {
-      if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
-	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-      } else {
-	error_log("Malformed array of AM URLs?");
-	continue;
-      }
-    } else {
-      $am_url = $am;
-    }
-    $am_urls[] = $am_url; 
-  }
-  error_log("SLIVER_DELETE AM_URL = " . $am_url);
-  
-  // Call delete sliver at the AM
-  $retVal = delete_sliver($am_urls, $user, $slice_credential,
-			  $slice_urn);
-  error_log("DeleteSliver output = " . $retVal);
-}
-
-$header = "Deleted resources on slice: $slice_name";
-
-$msg = $retVal[0];
-$obj = $retVal[1];
-$success = $obj[0];
-$fail = $obj[1];
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
+
+?>
+
+<script src="amstatus.js"></script>
+<script>
+var slice= "<?php echo $slice_id ?>";
+var am_id= "<?php echo $am_id ?>";
+
+$(document).ready(build_delete_table);
+</script>
+
+
+
+<?php
+
 print "<h2>$header</h2>\n";
+print "<div class='resources' id='prettyxml'>";
+print "<p id='delete' style='display:block;'><i>Deleting resources...</i></p>";
 
-print "<div class='msg'>";
-print_r($msg);
-print "</div>";
+print "<p id='summary' style='display:none;'><i>Have attempted to delete resources at <span id='attempted'>0</span> of <span id='total'>0</span> aggregate.</i></p>";
 
+print "<div id='delsliverlabel' style='display:none;'>Deleted resources at:</div>";
+// print "<div id='delsliverlabel' style='display:none;'>Deleted resources at <span id='success'>0</span> aggregate:</div>";
+print "<div id='deletesliver'><ul id='deletesliver'></ul></div>";	
 
-if (count($success)) {
-  $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
-						  $slice['project_id']);
-  $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
-						$slice['slice_id']);
-  $log_attributes = array_merge($project_attributes, $slice_attributes);
-  log_event($log_url, Portal::getInstance(),
-	    "Deleted resources from slice " . $slice_name,
-          $log_attributes, $slice['owner_id']);
-  print "<div>Deleted resources at:</div>";
-  print "<div>";
-  print_agg_list( $success );
-  print "</div>";
-}
+print "<div id='delerrorlabel' style='display:none;'>No resources deleted at:</div>";
+// print "<div id='delerrorlabel' style='display:none;'>No resources deleted at <span id='fail'>0</span> aggregate:</div>";
+print "<div id='deleteerror'><ul id='deleteerror'></ul></div>";
+print "</div>\n";
 
-if (count($fail)) {
-  print "<div>No resources deleted at:</div>";
-  print "<div>";
-  print_agg_list( $fail );
-  print "</div>";
-}
 print "<hr/>";
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";
@@ -154,3 +117,6 @@ print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
 include("footer.php");
 
 ?>
+
+
+
