@@ -417,7 +417,7 @@ function create_slice($args, $message)
 
   $permitted = request_authorization($cs_url, $mysigner, $owner_id, 'create_slice', 
 				     CS_CONTEXT_TYPE::PROJECT, $project_id);
-  if ($permitted < 1) {
+  if (! $permitted) {
     geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: insufficient privileges for owner \"$owner_id\" in project \"$project_id\"");
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
 			    "Principal " . $owner_id . " may not create slice in project " . $project_id);

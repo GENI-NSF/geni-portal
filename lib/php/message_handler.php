@@ -46,7 +46,8 @@ function mh_debug($msg)
 
 function default_cacerts()
 {
-  return array('/usr/share/geni-ch/CA/cacert.pem');
+  return array('/usr/share/geni-ch/CA/cacert.pem',
+          '/usr/share/geni-ch/ma/ma-cert.pem');
 }
 
 /*

@@ -64,6 +64,7 @@ class MA_ATTRIBUTE_NAME {
 
 class MA_PRIVILEGE {
   const PROJECT_LEAD = 1;
+  const OPERATOR = 2;
 }
 
 

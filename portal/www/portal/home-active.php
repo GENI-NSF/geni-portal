@@ -40,7 +40,7 @@ require_once("util.php");
 <?php
   // Actions / approvals required 
    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
-  include("tools-admin.php");
+//  include("tools-admin.php");
 }
 ?>
 

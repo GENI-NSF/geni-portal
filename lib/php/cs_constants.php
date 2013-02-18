@@ -32,6 +32,7 @@ class CS_ATTRIBUTE_TYPE {
   const ADMIN = 2;
   const MEMBER = 3;
   const AUDITOR = 4;
+  const OPERATOR = 5;
 }
 
 // Names of attribute / role types
@@ -39,7 +40,9 @@ $CS_ATTRIBUTE_TYPE_NAME = array(
 				CS_ATTRIBUTE_TYPE::LEAD => "Lead", 
 				CS_ATTRIBUTE_TYPE::ADMIN =>"Admin", 
 				CS_ATTRIBUTE_TYPE::MEMBER =>"Member", 
-				CS_ATTRIBUTE_TYPE::AUDITOR =>"Auditor");
+				CS_ATTRIBUTE_TYPE::AUDITOR =>"Auditor",
+        CS_ATTRIBUTE_TYPE::OPERATOR => "Operator"
+        );
 
 class CS_CONTEXT_TYPE
 {

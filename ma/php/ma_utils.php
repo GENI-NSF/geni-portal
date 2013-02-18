@@ -72,6 +72,27 @@ function assert_project_lead($cs_url, $ma_signer, $member_id)
   return TRUE;
 }
 
+function assert_operator($cs_url, $ma_signer, $member_id)
+{
+  $signer = NULL; /* this feels wrong */
+  $attribute = CS_ATTRIBUTE_TYPE::OPERATOR;
+  $context_types = array(CS_CONTEXT_TYPE::PROJECT,
+                         CS_CONTEXT_TYPE::SLICE,
+                         CS_CONTEXT_TYPE::RESOURCE,
+                         CS_CONTEXT_TYPE::SERVICE,
+                         CS_CONTEXT_TYPE::MEMBER);
+  $context = NULL;
+  foreach ($context_types as $context_type) {
+    $result = create_assertion($cs_url, $ma_signer, $signer, $member_id,
+                               $attribute, $context_type, $context);
+    geni_syslog(GENI_SYSLOG_PREFIX::MA,
+                "assert_operator($context_type) got result "
+                . print_r($result, TRUE));
+  }
+  // Should combine results from the individual calls?
+  return TRUE;
+}
+
 /**
  * Determine if a username already exists.
  * @param unknown_type $username
@@ -220,6 +241,32 @@ function get_member_info($member_id)
   $result = array(MA_ARGUMENT::MEMBER_ID => $member_id,
           MA_ARGUMENT::ATTRIBUTES => $attrs);
   return $result;
+}
+
+/**
+ * Return a string name suitable for a log message.
+ *
+ * @param string $member_id a UUID for the member
+ * @return string for use in a log message
+ */
+function get_member_id_log_name($member_id)
+{
+  $DISPLAY_NAME = 'displayName';
+  $member = get_member_info($member_id);
+  $all_attrs = $member[MA_ARGUMENT::ATTRIBUTES];
+  $attrs = array();
+  foreach ($all_attrs as $attr) {
+    $attrs[$attr[MA_ATTRIBUTE::NAME]] = $attr[MA_ATTRIBUTE::VALUE];
+  }
+  if (array_key_exists($DISPLAY_NAME, $attrs)) {
+    return $attrs[$DISPLAY_NAME];
+  } else if (array_key_exists(MA_ATTRIBUTE_NAME::FIRST_NAME, $attrs)
+          && array_key_exists(MA_ATTRIBUTE_NAME::LAST_NAME, $attrs)) {
+    return ($attrs[MA_ATTRIBUTE_NAME::FIRST_NAME]
+            . " " . $attrs[MA_ATTRIBUTE_NAME::LAST_NAME]);
+  } else {
+    return $attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
+  }
 }
 
 function mail_account_request($member_id)

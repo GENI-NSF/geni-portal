@@ -13,9 +13,9 @@
  *
  * This must be a full URL.
  */
-$server_url = "https://dagoola.gpolab.bbn.com/server/server.php";
+$server_url = "https://panther.gpolab.bbn.com/server/server.php";
 
-$indirect_server_url = "https://dagoola.gpolab.bbn.com/secure/openid/server.php";
+$indirect_server_url = "https://panther.gpolab.bbn.com/secure/openid/server.php";
 
 
 /**

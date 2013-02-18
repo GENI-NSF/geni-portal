@@ -251,27 +251,23 @@ function query_assertions($args)
 {
   global $CS_ASSERTION_TABLENAME;
   $principal = $args[CS_ARGUMENT::PRINCIPAL];
-  if ($principal == -1) { // For testing
-    $sql = "select * from " . $CS_ASSERTION_TABLENAME;
-  } else {
-    $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
-    $context = null;
-    if (!is_context_type_specific($context_type)) {
-      $context = $args[CS_ARGUMENT::CONTEXT];
-    }
-    $conn = db_conn();
-    if (is_context_type_specific($context_type)) {
-      $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
-	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = " . $conn->quote($principal, 'text');
-    } else {
-      $sql = "select * from " . $CS_ASSERTION_TABLENAME . " WHERE " 
-	. CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = " . $conn->quote($principal, 'text')
-	. " AND " 
-	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $conn->quote($context_type, 'integer')
-	. " AND "
-	. CS_ASSERTION_TABLE_FIELDNAME::CONTEXT . " = " . $conn->quote($context, 'text');
-    }
+  $context_type = $args[CS_ARGUMENT::CONTEXT_TYPE];
+  $context = null;
+  if (is_context_type_specific($context_type)) {
+    $context = $args[CS_ARGUMENT::CONTEXT];
   }
+  $conn = db_conn();
+  $sql = ("select * from " . $CS_ASSERTION_TABLENAME . " WHERE "
+          . CS_ASSERTION_TABLE_FIELDNAME::PRINCIPAL . " = "
+          . $conn->quote($principal, 'text')
+          . " AND "
+          . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = "
+          . $conn->quote($context_type, 'integer'));
+  if (is_context_type_specific($context_type)) {
+    $sql .= (" AND " . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT
+            . " = " . $conn->quote($context, 'text'));
+  }
+  geni_syslog(GENI_SYSLOG_PREFIX::CS, $sql);
   $rows = db_fetch_rows($sql);
   return $rows;
 }
@@ -322,18 +318,20 @@ function request_authorization($args)
   $rows = db_fetch_rows($sql, "CS_AUTH");
   $code = $rows[RESPONSE_ARGUMENT::CODE];
   $rows = $rows[RESPONSE_ARGUMENT::VALUE];
-  $result = 0;
+  $authorized = false;
   if ($code == RESPONSE_ERROR::NONE && count($rows) > 0) {
-    $result = 1;
+    $authorized = true;
+  } elseif (is_operator($principal, $action, $context_type)) {
+    $authorized = true;
   }
   //    error_log("SUCCESS = " . $result . " ROWS " . count($rows));
   //    error_log("ROWS = " . print_r($rows, true));
-  if ($result > 0) {
-    return generate_response(RESPONSE_ERROR::NONE, $result, '');
+  if ($authorized) {
+    return generate_response(RESPONSE_ERROR::NONE, true, '');
   }  else {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, -1, 
-			     "No authorization for action " . $action . " for " . 
-			     $principal . " in context " . $context_type . ' ' . $context);
+    $msg = "No authorization for action " . $action . " for "
+      . $principal . " in context " . $context_type . ' ' . $context;
+    return generate_response(RESPONSE_ERROR::NONE, false, $msg);
   }
 }
 
@@ -432,6 +430,34 @@ function create_policy_cert($signer,
 {
   // *** TODO
   return null;
+}
+
+function is_operator($principal, $action, $context_type)
+{
+  $conn = db_conn();
+  $sql = "select * from cs_action, cs_policy, cs_assertion where "
+    . "cs_assertion.principal = " .  $conn->quote($principal, 'text') . " and "
+    . "cs_assertion.context_type = cs_action.context_type and "
+    . "cs_policy.context_type = cs_action.context_type and "
+    . "cs_action.context_type = " . $conn->quote($context_type, 'integer') . " and "
+    . "cs_assertion.attribute = cs_policy.attribute and "
+    . "cs_assertion.attribute = " . $conn->quote(CS_ATTRIBUTE_TYPE::OPERATOR, 'integer') . " and "
+    . "cs_action.privilege = cs_policy.privilege and "
+    . "cs_action.name = " . $conn->quote($action, 'text');
+
+  error_log("CS.Request_authorization.sql = " . $sql);
+
+  $rows = db_fetch_rows($sql, "CS_AUTH");
+  $code = $rows[RESPONSE_ARGUMENT::CODE];
+  $rows = $rows[RESPONSE_ARGUMENT::VALUE];
+  error_log("CS.is_operator got response $code");
+  if ($code == RESPONSE_ERROR::NONE) {
+    error_log("CS.is_operator response error is none");
+  } else {
+    error_log("CS.is_operator response error is ERROR");
+  }
+  error_log("CS.is_operator got row count " . count($rows));
+  return ($code == RESPONSE_ERROR::NONE && count($rows) > 0);
 }
 
 
