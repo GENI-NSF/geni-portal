@@ -32,7 +32,25 @@ class Member(object):
         for attr in self.attrs:
             setattr(self, attr, '')
         self.project_lead = False
+        self.last_seen = None
 
+
+def note_last_seen(conn):
+    DB_TS_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+    query = "select member_id, ts from last_seen"
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(query)
+    fetchsize = 5
+    rows = cur.fetchmany(fetchsize)
+    while rows:
+        for r in rows:
+            m = Member.find(r['member_id'])
+            m.last_seen = r['ts']
+            # last_seen is a datetime.datetime.
+            # Remove the microsecond, we don't care
+            m.last_seen = m.last_seen.replace(microsecond=0)
+        rows = cur.fetchmany(fetchsize)
+    cur.close()
 
 def load_members(conn):
     query = "select * from ma_member_attribute order by member_id"
@@ -46,6 +64,8 @@ def load_members(conn):
             setattr(m, r['name'], r['value'])
         rows = cur.fetchmany(fetchsize)
     cur.close()
+    # Get the last seen timestamp for each member
+    note_last_seen(conn)
 
 def all_member_attrs(conn):
     query = "select distinct name from ma_member_attribute"
@@ -76,7 +96,8 @@ def print_members_csv(members):
     def ident(x): return x
     def xform_bool(x): return 'Y' if x else ''
     m_attrs = (('id', ident), ('eppn', ident), ('first_name', ident),
-               ('last_name', ident), ('project_lead', xform_bool))
+               ('last_name', ident), ('project_lead', xform_bool),
+               ('last_seen', ident))
     csvout = csv.writer(sys.stdout)
     csvout.writerow([x for (x, y) in m_attrs])
     for m in Member.sorted_members():
