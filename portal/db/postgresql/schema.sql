@@ -227,3 +227,20 @@ DROP TABLE IF EXISTS ssh_key;
 DROP TABLE IF EXISTS project_member;
 DROP TABLE IF EXISTS project_privilege;
 DROP TABLE IF EXISTS project;
+
+-- ----------------------------------------------------------------------
+-- last seen
+--
+-- Record the time an account was last seen, and the page they were
+-- requesting.
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS last_seen;
+
+CREATE TABLE last_seen (
+  id SERIAL,
+  account_id UUID NOT NULL,
+  ts timestamp not null default CURRENT_TIMESTAMP,
+  request_uri VARCHAR,
+  PRIMARY KEY (id)
+);
+CREATE INDEX last_seen_account_id ON last_seen (account_id);

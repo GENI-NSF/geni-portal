@@ -388,4 +388,40 @@ function deleteRSpecById($id, $user)
     return true;
   }
 }
+
+function record_last_seen($user, $request_uri)
+{
+  $conn = portal_conn();
+  $q_request_uri = $conn->quote($request_uri, 'text');
+  $q_account_id = $conn->quote($user->account_id, 'text');
+  $sql = "UPDATE last_seen SET";
+  $sql .= " request_uri = " . $q_request_uri;
+  $sql .= ", ts = now()";
+  $sql .= " WHERE account_id = " . $q_account_id;
+  $result = db_execute_statement($sql, "record_last_seen update");
+  // geni_syslog("UPDATE result = " . print_r($result, true));
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "record_last_seen update: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
+    return false;
+  } elseif ($result[RESPONSE_ARGUMENT::VALUE] == 0) {
+    // There was nothing to update, so do the insert
+    $sql = "INSERT INTO last_seen (account_id, request_uri)";
+    $sql .= " VALUES ($q_account_id, $q_request_uri)";
+    //geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+    $result = db_execute_statement($sql, "record_last_seen insert");
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $msg = "record_last_seen insert: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+      error_log($msg);
+      return false;
+    }
+    return true;
+  } else {
+    // The update succeeded, return true
+    return true;
+  }
+}
+
 ?>

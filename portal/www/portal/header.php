@@ -77,6 +77,8 @@ function show_tab_bar($active_tab = '', $load_user=true)
 	array_push($standard_tabs, array('name' => $TAB_ADMIN,
 					 'url' => 'admin.php'));
       }
+      // Record the last seen time/place
+      record_last_seen($user, $_SERVER['REQUEST_URI']);
     }
   }
 
