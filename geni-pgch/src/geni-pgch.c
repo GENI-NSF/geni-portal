@@ -13,6 +13,7 @@
 /* Note: requires package python-dev */
 
 const char *DEFAULT_PID_FILENAME = "/var/run/geni-pgch.pid";
+const char *DEFAULT_LOG_FILENAME = "/var/log/geni-pgch.log";
 
 static const char *pid_file = NULL;
 
@@ -97,6 +98,9 @@ main(int argc, char *argv[])
   /* Our process ID and Session ID */
   pid_t pid, sid;
 
+  /* File descriptors for the forked child */
+  int log_fd, fd;
+
   /* Fork off the parent process */
   pid = fork();
   if (pid < 0)
@@ -132,10 +136,37 @@ main(int argc, char *argv[])
       exit(EXIT_FAILURE);
     }
 
+  /* Open a log file for output. Give owner read/write on create. */
+  log_fd = open(DEFAULT_LOG_FILENAME, O_WRONLY | O_CREAT | O_APPEND,
+                S_IRUSR | S_IWUSR);
+  if (log_fd < 0)
+    {
+      syslog(LOG_ERR, "Error opening log file %s: %s", DEFAULT_LOG_FILENAME,
+             strerror(errno));
+      exit(EXIT_FAILURE);
+    }
+
   /* Close out the standard file descriptors */
+  /* Close stdin, we don't need it. */
   close(STDIN_FILENO);
+
+  /* Send stdout to the log file */
   close(STDOUT_FILENO);
+  fd = dup2(log_fd, STDOUT_FILENO);
+  if (fd < 0)
+    {
+      syslog(LOG_ERR, "Error duplicating log file to stdout");
+      exit(EXIT_FAILURE);
+    }
+
+  /* Send stderr to the log file */
   close(STDERR_FILENO);
+  fd = dup2(log_fd, STDERR_FILENO);
+  if (fd < 0)
+    {
+      syslog(LOG_ERR, "Error duplicating log file to stderr");
+      exit(EXIT_FAILURE);
+    }
 
   /* Register signal handlers. */
   register_sighandlers();
