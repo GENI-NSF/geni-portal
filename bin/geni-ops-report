@@ -32,6 +32,7 @@ class Member(object):
         for attr in self.attrs:
             setattr(self, attr, '')
         self.project_lead = False
+        self.operator = False
         self.last_seen = None
 
 
@@ -92,12 +93,29 @@ def mark_project_leads(conn):
         rows = cur.fetchmany(fetchsize)
     cur.close()
 
+def mark_operators(conn):
+    query = ("select member_id, privilege"
+             + " from ma_member_privilege m, ma_privilege p"
+             + " where m.privilege_id = p.id"
+             + " and privilege = 'OPERATOR'"
+             + " order by member_id")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(query)
+    fetchsize = 5
+    rows = cur.fetchmany(fetchsize)
+    while rows:
+        for r in rows:
+            m = Member.find(r['member_id'])
+            m.operator = True
+        rows = cur.fetchmany(fetchsize)
+    cur.close()
+
 def print_members_csv(members):
     def ident(x): return x
     def xform_bool(x): return 'Y' if x else ''
     m_attrs = (('id', ident), ('eppn', ident), ('first_name', ident),
                ('last_name', ident), ('project_lead', xform_bool),
-               ('last_seen', ident))
+               ('operator', xform_bool), ('last_seen', ident))
     csvout = csv.writer(sys.stdout)
     csvout.writerow([x for (x, y) in m_attrs])
     for m in Member.sorted_members():
@@ -167,6 +185,7 @@ def main(argv=None):
     Member.attrs = attrs
     load_members(conn)
     mark_project_leads(conn)
+    mark_operators(conn)
     print_members_csv(Member.sorted_members)
 
     projects = load_projects(conn)
