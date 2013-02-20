@@ -59,8 +59,8 @@ def parse_args(argv):
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
     parser.add_option("-u", "--url", help="authority URL")
-    parser.add_option("-p", "--project", help="project id")
-    parser.add_option("-m", "--member", help="authority URL")
+    parser.add_option("-p", "--project", help="project id (UUID) or name")
+    parser.add_option("-m", "--member", help="member id (UUID)")
     parser.add_option("--role", type="choice",
                       choices=["lead", "admin", "member", "auditor",
                                "operator"],
