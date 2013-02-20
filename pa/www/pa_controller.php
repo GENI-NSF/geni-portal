@@ -731,6 +731,7 @@ function remove_project_member($args, $message)
 
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
+  global $log_url;
 
   $conn = db_conn();
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME 
@@ -768,7 +769,7 @@ function remove_project_member($args, $message)
       {
 	$project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
 	$member_name = $member_data->prettyName();
-	$signer_name = $member_data->prettyName();
+	$signer_name = $signer_data->prettyName();
 	$project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	$message = "$signer_name Removed $member_name from Project $project_name";
 	$pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
