@@ -214,32 +214,51 @@ function get_member_attribute($member_info, $attribute_name) {
 }
 
 /* NOTE: This is an internal function and not part of the MA API function. */
-function get_member_info($member_id)
+/* If $is_list return array of [member_id => attributes] */
+/* Otherwise, return [member_id => memberId, attributes=>attributes] */
+function get_member_info($member_id, $is_list=False)
 {
   global $MA_MEMBER_ATTRIBUTE_TABLENAME;
   $conn = db_conn();
+  if ($is_list) {
+    $where_clause = " IN " . convert_list($member_id);
+  } else {
+    $where_clause = " = " . $conn->quote($member_id, 'text');
+  }
   $sql = "select " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME
-  . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
-  . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED
-  . " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME
-  . " where " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
-  . " = " . $conn->quote($member_id, 'text');
+    . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
+    . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
+    . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED
+    . " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME
+    . " where " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
+    . $where_clause;
+
   $rows = db_fetch_rows($sql);
   // Convert $rows to an array of member_ids
-  $attrs = array();
+  $attrs_by_member_id = array();
   foreach ($rows[RESPONSE_ARGUMENT::VALUE] as $row) {
+    $member_id = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
     $aname = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME];
     $avalue = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE];
     $aself = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED];
     // There must be a better way to convert to Boolean
     $aself = ($aself !== "f");
     $attr = array(MA_ATTRIBUTE::NAME => $aname,
-            MA_ATTRIBUTE::VALUE => $avalue,
-            MA_ATTRIBUTE::SELF_ASSERTED => $aself);
-    $attrs[] = $attr;
+		  MA_ATTRIBUTE::VALUE => $avalue,
+		  MA_ATTRIBUTE::SELF_ASSERTED => $aself);
+    if(!array_key_exists($member_id, $attrs_by_member_id)) {
+      $attrs_by_member_id[$member_id] = array();
+    }
+    $attrs_by_member_id[$member_id][] = $attr;
   }
-  $result = array(MA_ARGUMENT::MEMBER_ID => $member_id,
-          MA_ARGUMENT::ATTRIBUTES => $attrs);
+
+  if($is_list) {
+    $result = $attrs_by_member_id;
+  } else {
+    $result = array(MA_ARGUMENT::MEMBER_ID => $member_id,
+		    MA_ARGUMENT::ATTRIBUTES => 
+		    $attrs_by_member_id[$member_id]);
+  }
   return $result;
 }
 

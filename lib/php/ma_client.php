@@ -294,4 +294,16 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
           $signer->certificate(), $signer->privateKey());
   return $result;
 }
+
+function lookup_member_details($ma_url, $signer, $member_uuids)
+{
+  $msg['operation'] = 'lookup_member_details';
+  $msg[MA_ARGUMENT::MEMBER_UUIDS] = $member_uuids;
+  $result = put_message($ma_url, $msg, 
+			$signer->certificate(), $signer->privateKey());
+  return $result;
+}
+
+
+
 ?>

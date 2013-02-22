@@ -297,4 +297,19 @@ function convert_boolean($db_value) {
             . print_r($db_value));
   }
 }
+
+/**
+ * Convert list of string entities (e.g. UUID's)
+ * into SQL list ('A', 'B', 'C')
+ */
+function convert_list($list)
+{
+  $list_image = "";
+  foreach ($list as $elt) {
+    if ($list_image != "") $list_image = $list_image . ", ";
+    $list_image = $list_image . quotify($elt, 'text');
+  }
+  return "(" . $list_image . ")";
+}
+
 ?>

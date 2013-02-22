@@ -73,6 +73,7 @@ $ma_signer = new Signer($ma_cert_file, $ma_key_file);
  *   lookup_member_by_id(member_id)
  *   add_member_privilege(member_id, privilege_id)
  *   revoke_member_privilege(member_id, privilege_id)
+ *   lookup_member_details(member_uuids)
  */
 
 
@@ -687,6 +688,15 @@ function revoke_member_privilege($args, $message)
   return $result;
 }
 
+function lookup_member_details($args)
+{
+  error_log("LMD");
+  $member_uuids = $args[MA_ARGUMENT::MEMBER_UUIDS];
+  error_log("LMD.member_uuids = " . print_r($member_uuids, true));
+  $info = get_member_info($member_uuids, True); 
+  return generate_response(RESPONSE_ERROR::NONE, $info, "");
+}
+
 /**
  * Create a certificate for use with GENI tools outside the
  * GENI portal.
@@ -814,8 +824,6 @@ class MAGuardFactory implements GuardFactory
       $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
     } elseif ($action === 'update_ssh_key') {
       $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
-    } elseif ($action === 'get_member_ids') {
-      $result[] = new SignerAuthorityGuard($message);
     } elseif ($action === 'lookup_keys_and_certs') {
       $result[] = new SignerAuthorityGuard($message);
     } elseif ($action === 'ma_create_certificate') {

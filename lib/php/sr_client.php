@@ -42,13 +42,7 @@ function get_services()
 function get_services_of_type($service_type)
 {
   $services = get_services();
-  $sot = array();
-  foreach($services as $service) {
-    if($service[SR_TABLE_FIELDNAME::SERVICE_TYPE] == $service_type){
-      $sot[] = $service;
-    }
-  }
-  return $sot;
+  return select_services($services, $service_type);
 }
 
 // Get URL of first registered service of given service type
@@ -130,6 +124,21 @@ function remove_service($service_id)
   session_cache_flush(SERVICE_REGISTRY_CACHE_TAG);
 
   return $result;
+}
+
+// Helper function to select only services of type
+// from a complete list of services
+// That is, if you call 'get_services', you can call this
+// with the result instead of subsequent calls to 'get_services_of_type'
+function select_services($services, $service_type)
+{
+  $selected = array();
+  foreach ($services as $service) {
+    if($service[SR_TABLE_FIELDNAME::SERVICE_TYPE] == $service_type) {
+      $selected[] = $service;
+    }
+  }
+  return $selected;
 }
 
 

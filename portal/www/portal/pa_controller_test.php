@@ -72,6 +72,14 @@ function dump_pids($pids)
   }
 }
 
+
+error_log("USER = " . $user->account_id);
+$pids = get_projects_for_member($pa_url, $user, $user->account_id, 
+				true, null);
+error_log("PIDS = " . print_r($pids, true) . " LEN = " . count($pids));
+$project_details = lookup_project_details($pa_url, $user, $pids);
+error_log("DETAILS = " . print_r($project_details, true));
+
 $members = get_member_ids($ma_url, Portal::getInstance());
 if(count($members) < 3) {
   error_log("Need 3 or more members to run pa_controller_test");

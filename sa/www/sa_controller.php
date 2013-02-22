@@ -146,6 +146,7 @@ class SAGuardFactory implements GuardFactory
             'get_slice_members' => array('slice_guard'),
             'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
+            'lookup_slice_details' => array(), // Unguarded
 	    'create_request' => array(), // Unguarded
 	    'resolve_pending_request' => array(), // Unguarded
 	    'get_requests_for_context' => array(), // Unguarded
@@ -1159,6 +1160,32 @@ function get_slices_for_member($args)
   $result = db_fetch_rows($sql);
   return $result;
 }
+
+function lookup_slice_details($args)
+{
+  $slice_uuids = $args[SA_ARGUMENT::SLICE_UUIDS];
+  $slice_uuids_as_sql = convert_list($slice_uuids);
+
+  global $SA_SLICE_TABLENAME;
+
+    $sql = "select "  
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
+    . " FROM " . $SA_SLICE_TABLENAME 
+    . " WHERE " .   SA_SLICE_TABLE_FIELDNAME::SLICE_ID . " IN " .
+      $slice_uuids_as_sql;
+    //    error_log("lookup_slice_details: " . $sql);
+    $rows = db_fetch_rows($sql);
+    return $rows;
+}
+
+
 
 // Include the RQ interface routines
 $REQUEST_TABLENAME = $SA_SLICE_MEMBER_REQUEST_TABLENAME;

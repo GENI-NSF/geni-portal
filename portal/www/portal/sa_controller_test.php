@@ -42,6 +42,17 @@ $sr_url = get_sr_url();
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$user = geni_loadUser();
+
+$project_ids = get_projects_for_member($pa_url, $user, 
+				       $user->account_id, True);
+error_log("PIDS = " . print_r($project_ids, True));
+$project_id = $project_ids[0];
+error_log("PID = " . print_r($project_id, True));
+$slice_ids = lookup_slice_ids($sa_url, $user, $project_id);
+error_log("SIDS = " . print_r($slice_ids, True));
+$slice_details = lookup_slice_details($sa_url, $user, $slice_ids);
+error_log("SDS = " . print_r($slice_details, True));
 
 $members = get_member_ids($ma_url, Portal::getInstance());
 if(count($members) < 3) {
@@ -49,7 +60,6 @@ if(count($members) < 3) {
   relative_redirect('debug');
 }
 
-$user = geni_loadUser();
 $owner = $members[0];
 $member1 = $members[1];
 $member2 = $members[2];

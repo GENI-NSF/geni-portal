@@ -36,6 +36,7 @@
 //   change_slice_member_role(sa_url, slice_id, member_id, role)
 //   get_slice_members(pa_url, slice_id, role=null) // null => Any
 //   get_slices_for_member(pa_url, member_id, is_member, role=null)
+//   lookup_slice_details(sa_url, slice_uuids)
 
 require_once('sa_constants.php');
 
@@ -245,6 +246,17 @@ function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=n
                        $signer->certificate(), $signer->privateKey());
   return $results;
 }
+
+function lookup_slice_details($sa_url, $signer, $slice_uuids)
+{
+  $msg['operation'] = 'lookup_slice_details';
+  $msg[SA_ARGUMENT::SLICE_UUIDS] = $slice_uuids;
+  $result = put_message($sa_url, $msg, 
+			$signer->certificate(), $signer->privateKey());
+  return $result;
+}
+
+
 
 
 

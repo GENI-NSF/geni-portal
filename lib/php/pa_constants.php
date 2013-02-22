@@ -40,6 +40,7 @@ class PA_ARGUMENT
   const ROLE_TYPE = "role_type";
   const CREATION = "creation";
   const EXPIRATION = "expiration";
+  const PROJECT_UUIDS = "project_uuids";
 }
 
 /* Name of table containing per-project info */

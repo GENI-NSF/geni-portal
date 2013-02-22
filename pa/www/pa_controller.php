@@ -55,7 +55,8 @@ include_once('/etc/geni-ch/settings.php');
  *   change_member_role(pa_url, project_id, member_id, role)
  *   get_project_members(pa_url, project_id, role=null) // null => Any
  *   get_projects_for_member(pa_url, member_id, is_member, role=null)
-**/
+ *   lookup_project_details(pa_url, project_uuids)
+ **/
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
@@ -74,28 +75,29 @@ function pa_debug($msg)
 class PAGuardFactory implements GuardFactory
 {
   private static $context_table
-  = array(
-          // Action => array(method_name, method_name, ...)
-          'create_project' => array(), // Unguarded
-          'delete_project' => array('project_guard'),
-          'get_projects' => array(), // Unguarded
-          'lookup_projects' => array(), // Unguarded
-          'lookup_project' => array(), // Unguarded
-          'update_project' => array('project_guard'),
-          'change_lead' => array('project_guard'),
-          'add_project_member' => array('project_guard'),
-          'remove_project_member' => array('project_guard'),
-          'change_member_role' => array('project_guard'),
-          'get_project_members' => array(), // Unguarded
-          'get_projects_for_member' => array(), // Unguarded
-          'create_request' => array(), // Unguarded
-          'resolve_pending_request' => array('project_request_guard'),
-          'get_requests_for_context' => array(), // Unguarded
-          'get_requests_by_user' => array(), // Unguarded
-          'get_pending_requests_for_user' => array(), // Unguarded
-          'get_number_of_pending_requests_for_user' => array(), // Unguarded
-          'get_request_by_id' => array() // Unguarded
-  );
+    = array(
+            // Action => array(method_name, method_name, ...)
+	    'create_project' => array(), // Unguarded
+	    'delete_project' => array('project_guard'),
+	    'get_projects' => array(), // Unguarded
+	    'lookup_projects' => array(), // Unguarded
+	    'lookup_project' => array(), // Unguarded
+	    'update_project' => array('project_guard'), 
+	    'change_lead' => array('project_guard'),
+	    'add_project_member' => array('project_guard'),
+	    'remove_project_member' => array('project_guard'),
+	    'change_member_role' => array('project_guard'),
+	    'get_project_members' => array(), // Unguarded
+	    'get_projects_for_member' => array(), // Unguarded
+	    'lookup_project_details' => array(), // Unguarded
+	    'create_request' => array(), // Unguarded
+	    'resolve_pending_request' => array('project_request_guard'),
+	    'get_requests_for_context' => array(), // Unguarded
+	    'get_requests_by_user' => array(), // Unguarded
+	    'get_pending_requests_for_user' => array(), // Unguarded
+	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
+	    'get_request_by_id' => array() // Unguarded
+            );
 
   public function __construct($cs_url) {
     $this->cs_url = $cs_url;
@@ -964,6 +966,31 @@ function get_projects_for_member($args)
   return $result;
 }
 
+function lookup_project_details($args)
+{
+  $project_uuids = $args[PA_ARGUMENT::PROJECT_UUIDS];
+  $project_uuids_as_sql = convert_list($project_uuids);
+
+  global $PA_PROJECT_TABLENAME;
+
+    $sql = "select "  
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
+    . " FROM " . $PA_PROJECT_TABLENAME 
+    . " WHERE " .   PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . " IN " .
+      $project_uuids_as_sql;
+    //    error_log("lookup_project_details: " . $sql);
+    $rows = db_fetch_rows($sql);
+    return $rows;
+
+}
+
+
 // Include the RQ interface routines
 $REQUEST_TABLENAME = $PA_PROJECT_MEMBER_REQUEST_TABLENAME;
 
@@ -989,5 +1016,6 @@ $mysigner = new Signer($mycertfile, $mykeyfile);
 $guard_factory = new PAGuardFactory($cs_url);
 handle_message("PA", $cs_url, default_cacerts(),
 $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
+
 
 ?>

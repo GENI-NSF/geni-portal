@@ -43,6 +43,7 @@ class MA_ARGUMENT {
   const CSR = "csr";
   const CERTIFICATE = "certificate";
   const PRIVATE_KEY = "private_key";
+  const MEMBER_UUIDS = "member_uuids";
 }
 
 

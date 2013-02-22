@@ -38,6 +38,11 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 $user = geni_loadUser();
 
+$mids = get_member_ids($ma_url, $user);
+error_log("MA-TEST: PIDS = " . print_r($mids, true));
+$details = lookup_member_details($ma_url, $user, $mids);
+error_log("MA-TEST: DETAILS = " . print_r($details, true));
+
 // CREATE ACCOUNT
 $attrs = array("eppn" => "phony@geni.net",
         MA_ATTRIBUTE_NAME::EMAIL_ADDRESS => "phony@mail.geni.net",

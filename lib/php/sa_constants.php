@@ -45,6 +45,7 @@ class SA_ARGUMENT
   const MEMBER_ID = "member_id";
   const IS_MEMBER = "is_member";
   const ROLE_TYPE = "role_type";
+  const SLICE_UUIDS = "slice_uuids";
 }
 
 /* Name of table containing slice info */

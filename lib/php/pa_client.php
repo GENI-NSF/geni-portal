@@ -35,6 +35,7 @@
 //   change_member_role(pa_url, project_id, member_id, role)
 //   get_project_members(pa_url, project_id, role=null) // null => Any
 //   get_projects_for_member(pa_url, member_id, is_member, role=null)
+//   lookup_project_details(pa_url, project_uuids)
 
 require_once('pa_constants.php');
 require_once('message_handler.php');
@@ -250,6 +251,18 @@ function get_projects_for_member($pa_url, $signer, $member_id, $is_member, $role
   $get_projects_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
   $get_projects_message[PA_ARGUMENT::IS_MEMBER] = $is_member;
   $get_projects_message[PA_ARGUMENT::ROLE_TYPE] = $role;
+  $results = put_message($pa_url, $get_projects_message,
+			 $cert, $key, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
+
+function lookup_project_details($pa_url, $signer, $project_uuids)
+{
+  $cert = $signer->certificate;
+  $key = $signer->privateKey();
+  $get_projects_message['operation'] = 'lookup_project_details';
+  $get_projects_message[PA_ARGUMENT::PROJECT_UUIDS] = $project_uuids;
   $results = put_message($pa_url, $get_projects_message,
 			 $cert, $key, 
 			 $signer->certificate(), $signer->privateKey());
