@@ -43,7 +43,8 @@ function show_rspec_chooser($user) {
     $rdesc = $rmd['description'];
     //    error_log("BOUND = " . $rmd['bound']);
     $enable_agg_chooser=1;
-    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+//UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
+//-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
     //    error_log("BOUND = " . $enable_agg_chooser);
     print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
   }
