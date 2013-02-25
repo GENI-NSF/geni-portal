@@ -117,14 +117,11 @@ if (count($projects) > 0) {
   print "\n<table>\n";
   print ("<tr><th>Project Name</th><th>Project Lead</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
 
+  $project_objects = lookup_project_details($pa_url, $user, $projects);
+
   // name, lead_id, purpose
-  foreach ($projects as $project_id) {
-    if (! uuid_is_valid($project_id)) {
-      error_log("tool-projects got invalid project_id from all get_projects_by_lead");
-      continue;
-    }
-    $project = lookup_project($pa_url, $user, $project_id);
-    //    error_log("project = " . print_r($project, true));
+  foreach ($project_objects as $project) {
+    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
 
     $handle_req_str = "";
     if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
