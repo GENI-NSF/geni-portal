@@ -253,7 +253,12 @@ function get_member_info($member_id, $is_list=False)
   }
 
   if($is_list) {
-    $result = $attrs_by_member_id;
+    $result = array();
+    foreach ($attrs_by_member_id as $member_id => $member) {
+        $result[ $member_id ] = array(MA_ARGUMENT::MEMBER_ID => $member_id,
+		    MA_ARGUMENT::ATTRIBUTES => 
+		    $member);       
+    }
   } else {
     $result = array(MA_ARGUMENT::MEMBER_ID => $member_id,
 		    MA_ARGUMENT::ATTRIBUTES => 
