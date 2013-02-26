@@ -28,7 +28,7 @@ require_once('sr_constants.php');
 require_once('session_cache.php');
 
 const SERVICE_REGISTRY_CACHE_TAG = 'service_registry_cache';
-const SERVICE_REGISTRY_CACHE_TIMEOUT = 30;
+const SERVICE_REGISTRY_CACHE_TIMEOUT = 300;
 
 // Return all services in registry
 function get_services()
