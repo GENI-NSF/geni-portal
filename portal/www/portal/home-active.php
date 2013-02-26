@@ -31,6 +31,8 @@
 // $user should be bound to the current user
 
 require_once("util.php");
+require_once("proj_slice_member.php");
+include("services.php");
 ?>
 <div style="width:479px; font-size:80%; text-align:center; float:right; margin:5px 5px 5px 5px;">
   <h2>GENI Resources</h2>
@@ -57,6 +59,14 @@ if (! $user->portalIsAuthorized()) {
   print "<br/>";
   return 0;
 }
+
+
+// lookup all of the project, slice, and lead/owner info needed on this page
+$retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user);
+$project_objects = $retVal[0];
+$slice_objects = $retVal[1];
+$member_objects = $retVal[2];
+$project_slice_map = $retVal[3];
 
 // List of my projects
 include("tool-projects.php");

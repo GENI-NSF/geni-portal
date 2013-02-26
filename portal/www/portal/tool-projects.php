@@ -31,6 +31,7 @@ require_once('rq_client.php');
 require_once("sa_client.php");
 require_once("cs_client.php");
 
+
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
@@ -38,9 +39,12 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
-$projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
-// error_log("PROJECTS = " . print_r($projects, true));
-$num_projects = count($projects);
+
+// $tmp = "PROJECTS = " . print_r($project_objects, true) . "\nSLICES = " . print_r($slice_objects, true) . "\nMEMBERS = " . print_r($member_objects, true);
+
+// print "alert(".$tmp.")";
+
+$num_projects = count($project_objects);
 
 print "<h2>My Projects</h2>\n";
 if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
@@ -113,20 +117,41 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
 /*   error_log("user not allowed to add project members"); */
 /* } */
 
-if (count($projects) > 0) {
+if (count($project_objects) > 0) {
+  $reqlist = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
+							CS_CONTEXT_TYPE::PROJECT);
+  $project_request_map = array();
+  foreach ($reqlist as $req) {
+     // print "\nREQ: ". print_r($req, true);	
+     // print "\nREQ context ID: ". print_r($req[RQ_ARGUMENTS::CONTEXT_ID], true);	
+     if ($req[RQ_REQUEST_TABLE_FIELDNAME::STATUS] != RQ_REQUEST_STATUS::PENDING){
+        // print "\nNOT PENDING: ".$req[RQ_REQUEST_TABLE_FIELDNAME::STATUS];
+        continue;
+     }
+     $context_id = $req[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
+     if (array_key_exists($context_id , $project_request_map )) {
+        $project_request_map[$context_id]++;
+     } else {
+        $project_request_map[$context_id] = 1;
+     }
+ }							
+  // print "\nREQ LIST: ". print_r($reqlist, true);	
+  // print "\nPROJ REQ MAP: ". print_r($project_request_map, true);							
+}
+
+if (count($project_objects) > 0) {
   print "\n<table>\n";
   print ("<tr><th>Project Name</th><th>Project Lead</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
-
-  $project_objects = lookup_project_details($pa_url, $user, $projects);
-
   // name, lead_id, purpose
   foreach ($project_objects as $project) {
     $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-
     $handle_req_str = "";
     if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-      $reqcnt = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id, 
-							CS_CONTEXT_TYPE::PROJECT, $project_id);
+      if (array_key_exists($project_id , $project_request_map )) {
+         $reqcnt = $project_request_map[$project_id];
+      } else {
+         $reqcnt = 0;
+      }
       //      error_log("REQCNT " . print_r($reqcnt, true) . " " . $project_id);
       $handle_req_str = "(<b>$reqcnt</b> Open Join Request(s)) ";
       if ($reqcnt == 0) {
@@ -135,9 +160,18 @@ if (count($projects) > 0) {
     }
 
     //    error_log("Before load user " . time());
-    $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
+    $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+    $lead_obj = $member_objects[ $lead_id ];
+    $lead = new Member();
+    $lead->init_from_record($lead_obj);
+
+    // print "\nMEMBERS: ". print_r($member_objects, true);
+    // print "\nLEAD ID: ". print_r($lead_id, true);
+    // print "\nLEAD Object: ". print_r($member_objects[ $lead_id ], true);
+    // print "\nLEAD USER: ". print_r($lead, true);
+    // print "\nLEAD AccountID: ". print_r($lead->member_id, true);
+
     //    error_log("After load user " . time());
-    $slice_ids = lookup_slice_ids($sa_url, $user, $project_id);
     //<button style="width:65;height:65" onClick="window.location='http://www.javascriptkit.com'"><b>Home</b></button>
     // http://www.javascriptkit.com/howto/button.shtml
     $create_slice_link = "<button style=\"\" onClick=\"window.location='" . "createslice.php?project_id=$project_id" . "'\"><b>Create Slice</b></button>";
@@ -146,9 +180,9 @@ if (count($projects) > 0) {
     }
     print ("<tr><td> <a href=\"project.php?project_id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
 	   "</a> $handle_req_str</td><td> <a href=\"project-member.php?project_id=$project_id&member_id=" .
-	   $lead->account_id . "\">" . $lead->prettyName() . "</a> </td> " .
+	   $lead->member_id . "\">" . $lead->prettyName() . "</a> </td> " .
 	   "<td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
-	   " </td><td align=\"center\"> " . count($slice_ids) . " </td><td> " .
+	   " </td><td align=\"center\"> " . count($project_slice_map[$project_id]) . " </td><td> " .
 	   $create_slice_link . "</td></tr>\n");
     // FIXME: Button to invite people to the project?
   }

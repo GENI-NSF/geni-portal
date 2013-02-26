@@ -32,20 +32,7 @@ require_once("util.php");
 // String to disable button or other active element
 $disabled = "disabled = " . '"' . "disabled" . '"'; 
 
-if (! isset($sa_url)) {
-  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-}
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
-
-// This gets all projects of which the user is a member
-if (isset($project_id) && uuid_is_valid($project_id)) {
-  $slices = lookup_slices($sa_url, $user, $project_id, $user->account_id);
-} else {
-  $slices = lookup_slices($sa_url, $user, null, $user->account_id);
-}
-if (count($slices) > 0) {
+if (count($slice_objects) > 0) {
   print "\n<table>\n";
   print ("<tr><th>Slice Name</th>");
   print ("<th>Project</th>");
@@ -66,13 +53,8 @@ if (count($slices) > 0) {
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
 
-  foreach ($slices as $slice) {
+  foreach ($slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-    // FIXME: Add PROJECT_ID, OWNER_ID
-    if (! uuid_is_valid($slice_id)) {
-      error_log("tool-slices: invalid slice_id from lookup_slices");
-      continue;
-    }
     $args['slice_id'] = $slice_id;
     $query = http_build_query($args);
     $query = $query;
@@ -112,8 +94,10 @@ if (count($slices) > 0) {
 					       CS_CONTEXT_TYPE::SLICE, 
 					       $slice_id);
 
+					       
     // Lookup the project for this project ID
-    $project = lookup_project($pa_url, $user, $slice_project_id);
+    $project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+    $project = $project_objects[ $project_id ];
 
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
