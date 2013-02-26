@@ -30,13 +30,17 @@ require_once("pa_constants.php");
 require_once('rq_client.php');
 require_once("sa_client.php");
 require_once("cs_client.php");
+require_once("proj_slice_member.php");
+include("services.php");
 
-
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
-if (! isset($sa_url)) {
-  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+if(!isset($project_objects) || !isset($slice_objects) || 
+   !isset($member_objects) || !isset($project_slice_map)) 
+{
+  $retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user);
+  $project_objects = $retVal[0];
+  $slice_objects = $retVal[1];
+  $member_objects = $retVal[2];
+  $project_slice_map = $retVal[3];
 }
 
 

@@ -237,6 +237,7 @@ class GeniUser
   }
 
   private function getInsideKeyPair() {
+
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     $row = lookup_keys_and_certs($ma_url, Portal::getInstance(),
             $this->account_id);
@@ -534,6 +535,7 @@ function geni_load_identity_by_eppn($eppn)
  */
 function geni_loadUser()
 {
+
   // TODO: Look up in cache here
   if (! array_key_exists('eppn', $_SERVER)) {
     // Requird attributes were not found - redirect to a gentle error page

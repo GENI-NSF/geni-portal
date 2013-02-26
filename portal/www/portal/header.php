@@ -67,10 +67,14 @@ function show_tab_bar($active_tab = '', $load_user=true)
 {
   global $standard_tabs;
   global $TAB_ADMIN;
+  global $user;
 
   // Do we check per user permissions/state to modify the set of tabs?
   if ($load_user) {
-    $user = geni_loadUser();
+
+    if (!isset($user)) {
+      $user = geni_loadUser();
+    }
     
     if (isset($user) && ! is_null($user)) {
       if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
@@ -165,7 +169,9 @@ function show_header($title, $active_tab = '', $load_user=1)
 
   if ($load_user) {
     global $user;
-    $user = geni_loadUser();
+    if (!isset($user)) {
+      $user = geni_loadUser();
+    }
     check_km_authorization($user);
   }
   echo '<!DOCTYPE HTML>';

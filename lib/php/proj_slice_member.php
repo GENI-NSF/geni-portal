@@ -31,13 +31,21 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user)
   $member_objects = array();
   $project_slice_map = array();
   $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
+  error_log("PROJECTS = " . print_r($projects, true));
+  $slice_data = get_slices_for_projects($sa_url, $user, $projects);
+  error_log("SLICE_DATA =  = " . print_r($slice_data, true));
   if (count($projects) > 0) {
      $project_objects = lookup_project_details($pa_url, $user, $projects);
      foreach ($project_objects as $project) {
         $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
         $proj_lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+	$proj_slices = $slice_data[$project_id];
 	$member_ids[] = $proj_lead_id;
-	$proj_slice_ids = lookup_slice_ids($sa_url, $user, $project_id);	// combine this into a smaller number of calls?
+	$proj_slice_ids = array();
+	foreach($proj_slices as $proj_slice) {
+	  $proj_slice_ids[] = $proj_slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+	}
+	//	$proj_slice_ids = lookup_slice_ids($sa_url, $user, $project_id);  
 	$project_slice_map[ $project_id ] = $proj_slice_ids;
 	$slice_ids = array_merge( $slice_ids, $proj_slice_ids ); // is this ok
      }	      
@@ -46,7 +54,9 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user)
      $slice_objects = lookup_slice_details($sa_url, $user, $slice_ids);
      foreach ($slice_objects as $slice) {
         $owner_id = $slice[SA_SLICE_TABLE_FIELDNAME::OWNER_ID]; // SA_ARGUMENT::OWNER_ID????
- 	$member_ids[] = $owner_id;
+	if(!in_array($owner_id, $member_ids)) {
+	  $member_ids[] = $owner_id;
+	}
      }          
   }    
   if (count($member_ids) > 0) {

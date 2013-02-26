@@ -28,11 +28,37 @@ require_once("sr_constants.php");
 require_once("sa_client.php");
 require_once("pa_client.php");
 require_once("util.php");
+require_once("proj_slice_member.php");
+include("services.php");
 
 // String to disable button or other active element
 $disabled = "disabled = " . '"' . "disabled" . '"'; 
 
-if (count($slice_objects) > 0) {
+if(!isset($project_objects) || !isset($slice_objects) || 
+   !isset($member_objects) || !isset($project_slice_map)) 
+{
+  $retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user);
+  $project_objects = $retVal[0];
+  $slice_objects = $retVal[1];
+  $member_objects = $retVal[2];
+  $project_slice_map = $retVal[3];
+}
+
+$my_slice_objects = $slice_objects;
+if (isset($project_id)) {
+  $my_slice_objects = array();
+  foreach($project_slice_map[$project_id] as $slice_id) {
+    $my_slice_objects[] = $slice_objects[$slice_id];
+  }
+}
+
+error_log("MAP = " . print_r($project_slice_map, true));
+error_log("MAP[PROJ] = " . print_r($project_slice_map[$project_id], true));
+error_log("SO = " . print_r($slice_objects, true));
+error_log("MSO = " . print_r($my_slice_objects, true));
+					       
+
+if (count($my_slice_objects) > 0) {
   print "\n<table>\n";
   print ("<tr><th>Slice Name</th>");
   print ("<th>Project</th>");
@@ -53,7 +79,8 @@ if (count($slice_objects) > 0) {
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
 
-  foreach ($slice_objects as $slice) {
+
+  foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     $args['slice_id'] = $slice_id;
     $query = http_build_query($args);
@@ -96,8 +123,8 @@ if (count($slice_objects) > 0) {
 
 					       
     // Lookup the project for this project ID
-    $project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
-    $project = $project_objects[ $project_id ];
+    $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+    $project = $project_objects[ $slice_project_id ];
 
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];

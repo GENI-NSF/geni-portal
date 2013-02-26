@@ -24,8 +24,8 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once("proj_slice_member.php");
 include("services.php");
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -35,13 +35,6 @@ include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 print "<h1>GENI Projects</h1>\n";
 
-
-// lookup all of the project, slice, and lead/owner info needed on this page
-$retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user);
-$project_objects = $retVal[0];
-$slice_objects = $retVal[1];
-$member_objects = $retVal[2];
-$project_slice_map = $retVal[3];
 
 include("tool-projects.php");
 

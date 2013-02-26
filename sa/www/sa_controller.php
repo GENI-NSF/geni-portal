@@ -1205,7 +1205,8 @@ function get_slices_for_projects($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME 
-    . " WHERE " .   SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " IN " .
+      . " WHERE " .   "NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED 
+      . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " IN " .
       $project_uuids_as_sql;
     $rows = db_fetch_rows($sql);
 
