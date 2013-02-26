@@ -253,7 +253,13 @@ function lookup_slice_details($sa_url, $signer, $slice_uuids)
   $msg[SA_ARGUMENT::SLICE_UUIDS] = $slice_uuids;
   $result = put_message($sa_url, $msg, 
 			$signer->certificate(), $signer->privateKey());
-  return $result;
+
+  $results2 = array();
+  foreach ($result as $slice) {
+  	  $results2[ $slice['slice_id'] ] = $slice;
+  }			 
+  return $results2;
+
 }
 
 

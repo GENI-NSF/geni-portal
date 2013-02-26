@@ -266,7 +266,12 @@ function lookup_project_details($pa_url, $signer, $project_uuids)
   $results = put_message($pa_url, $get_projects_message,
 			 $cert, $key, 
 			 $signer->certificate(), $signer->privateKey());
-  return $results;
+			 
+  $results2 = array();
+  foreach ($results as $project) {
+  	  $results2[ $project['project_id'] ] = $project;
+  }			 
+  return $results2;
 }
 
 
