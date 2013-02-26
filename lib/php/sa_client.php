@@ -37,6 +37,7 @@
 //   get_slice_members(pa_url, slice_id, role=null) // null => Any
 //   get_slices_for_member(pa_url, member_id, is_member, role=null)
 //   lookup_slice_details(sa_url, slice_uuids)
+//   get_slices_for_projects(sa_url, project_uuids)
 
 require_once('sa_constants.php');
 
@@ -261,6 +262,20 @@ function lookup_slice_details($sa_url, $signer, $slice_uuids)
   return $results2;
 
 }
+
+// Return a dictionary of the list of slices (details) for a give
+// set of project uuids, indexed by project UUID
+// e.g.. [p1 => [s1_details, s2_details....], p2 => [s3_details, s4_details...]
+function get_slices_for_projects($sa_url, $signer, $project_uuids)
+{
+  $msg['operation'] = 'get_slices_for_projects';
+  $msg[SA_ARGUMENT::PROJECT_UUIDS] = $project_uuids;
+  $results = put_message($sa_url, $msg, 
+			$signer->certificate(), $signer->privateKey());
+  return $results;
+
+}
+
 
 
 

@@ -46,7 +46,13 @@ $user = geni_loadUser();
 
 $project_ids = get_projects_for_member($pa_url, $user, 
 				       $user->account_id, True);
+
 error_log("PIDS = " . print_r($project_ids, True));
+
+$slice_details_by_project= get_slices_for_projects($sa_url, 
+						   $user, $project_ids);
+error_log("SD_BY_PROJECT = " . print_r($slice_details_by_project, true));
+
 $project_id = $project_ids[0];
 error_log("PID = " . print_r($project_id, True));
 $slice_ids = lookup_slice_ids($sa_url, $user, $project_id);

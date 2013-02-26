@@ -147,6 +147,7 @@ class SAGuardFactory implements GuardFactory
             'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
             'lookup_slice_details' => array(), // Unguarded
+            'get_slices_for_projects' => array(), // Unguarded
 	    'create_request' => array(), // Unguarded
 	    'resolve_pending_request' => array(), // Unguarded
 	    'get_requests_for_context' => array(), // Unguarded
@@ -1183,6 +1184,44 @@ function lookup_slice_details($args)
     //    error_log("lookup_slice_details: " . $sql);
     $rows = db_fetch_rows($sql);
     return $rows;
+}
+
+// Return a dictionary of the list of slices (details) for a give
+// set of project uuids, indexed by project UUID
+// e.g.. [p1 => [s1_details, s2_details....], p2 => [s3_details, s4_details...]
+function get_slices_for_projects($args)
+{
+  $project_uuids = $args[SA_ARGUMENT::PROJECT_UUIDS];
+  $project_uuids_as_sql = convert_list($project_uuids);
+
+  global $SA_SLICE_TABLENAME;
+    $sql = "select "  
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
+    . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
+    . " FROM " . $SA_SLICE_TABLENAME 
+    . " WHERE " .   SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " IN " .
+      $project_uuids_as_sql;
+    $rows = db_fetch_rows($sql);
+
+    //    error_log("gs4p details " . print_r($rows, true));
+
+    $result = array();
+    foreach($project_uuids as $project_uuid) {
+      $result[$project_uuid] = array();
+    }
+
+    foreach($rows['value']  as $row) {
+      $project_uuid = $row[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+      $result[$project_uuid][] = $row;
+    }
+
+    return generate_response(RESPONSE_ERROR::NONE, $result, '');
 }
 
 
