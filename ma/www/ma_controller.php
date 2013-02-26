@@ -690,9 +690,9 @@ function revoke_member_privilege($args, $message)
 
 function lookup_member_details($args)
 {
-  error_log("LMD");
+  //  error_log("LMD");
   $member_uuids = $args[MA_ARGUMENT::MEMBER_UUIDS];
-  error_log("LMD.member_uuids = " . print_r($member_uuids, true));
+  //  error_log("LMD.member_uuids = " . print_r($member_uuids, true));
   $info = get_member_info($member_uuids, True); 
   return generate_response(RESPONSE_ERROR::NONE, $info, "");
 }

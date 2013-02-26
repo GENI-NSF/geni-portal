@@ -52,10 +52,10 @@ if (isset($project_id)) {
   }
 }
 
-error_log("MAP = " . print_r($project_slice_map, true));
-error_log("MAP[PROJ] = " . print_r($project_slice_map[$project_id], true));
-error_log("SO = " . print_r($slice_objects, true));
-error_log("MSO = " . print_r($my_slice_objects, true));
+//error_log("MAP = " . print_r($project_slice_map, true));
+//error_log("MAP[PROJ] = " . print_r($project_slice_map[$project_id], true));
+//error_log("SO = " . print_r($slice_objects, true));
+//error_log("MSO = " . print_r($my_slice_objects, true));
 					       
 
 if (count($my_slice_objects) > 0) {
