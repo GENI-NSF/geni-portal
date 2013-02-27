@@ -37,6 +37,8 @@ class LOGGING_ARGUMENT {
 $LOGGING_TABLENAME = 'logging_entry';
 $LOGGING_ATTRIBUTE_TABLENAME = "logging_entry_attribute";
 
+$MAX_ENTRIES_PER_QUERY = 20; // Number of entries returned for a given query
+
 class LOGGING_TABLE_FIELDNAME {
   const ID = "id";
   const EVENT_TIME = 'event_time';

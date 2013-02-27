@@ -98,6 +98,8 @@ function log_event($args, $message)
 function get_log_entries_by_author($args)
 {
   global $LOGGING_TABLENAME;
+  global $MAX_ENTRIES_PER_QUERY;
+
   $since = new DateTime(null, new DateTimeZone('UTC'));
   $since->setTimestamp($args[LOGGING_ARGUMENT::EARLIEST_TIME]);
   $user_id = $args[LOGGING_ARGUMENT::USER_ID];
@@ -113,7 +115,8 @@ function get_log_entries_by_author($args)
     . " FROM " . $LOGGING_TABLENAME 
     . " WHERE " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " > " . $conn->quote(db_date_format($since), 'timestamp')
     . " AND " . LOGGING_TABLE_FIELDNAME::USER_ID . " = " . $conn->quote($user_id, 'text')
-    . " ORDER BY " . LOGGING_TABLE_FIELDNAME::EVENT_TIME . " DESC";
+    . " ORDER BY " . LOGGING_TABLE_FIELDNAME::EVENT_TIME 
+    . " DESC" . " LIMIT " . $MAX_ENTRIES_PER_QUERY;
     
   //  error_log("LOG.SQL = " . $sql);
 
@@ -128,6 +131,7 @@ function get_log_entries_by_attributes($args)
 
   global $LOGGING_TABLENAME;
   global $LOGGING_ATTRIBUTE_TABLENAME;
+  global $MAX_ENTRIES_PER_QUERY;
   $attribute_sets = $args[LOGGING_ARGUMENT::ATTRIBUTE_SETS];
   $since = new DateTime(null, new DateTimeZone('UTC'));
   $since->setTimestamp($args[LOGGING_ARGUMENT::EARLIEST_TIME]);
@@ -155,7 +159,9 @@ function get_log_entries_by_attributes($args)
     . LOGGING_TABLE_FIELDNAME::MESSAGE 
     . " FROM " . $LOGGING_TABLENAME 
     . " WHERE " .  LOGGING_TABLE_FIELDNAME::ID . " IN  (" 
-    . $attribute_set_sql . ")";
+    . $attribute_set_sql . ")" 
+    . " ORDER BY " . LOGGING_TABLE_FIELDNAME::EVENT_TIME 
+    . " DESC" . " LIMIT " . $MAX_ENTRIES_PER_QUERY;
   //  error_log("LOG.SQL = " . $sql);
 
   $rows = db_fetch_rows($sql);
