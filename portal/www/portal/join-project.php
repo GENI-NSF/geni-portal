@@ -82,8 +82,10 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<table>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
-  foreach ($pids as $project_id) {
-    $project = lookup_project($pa_url, $user, $project_id);
+  $project_details = lookup_project_details($pa_url, $user, $pids);
+  //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
+  foreach ($project_details as $project) {
+    //    $project = lookup_project($pa_url, $user, $project_id);
     print "<tr><td>";
     print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     print "</td><td>";
