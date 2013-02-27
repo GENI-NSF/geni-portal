@@ -148,13 +148,13 @@ class SAGuardFactory implements GuardFactory
             'get_slices_for_member'=> array('signer_member_guard'),
             'lookup_slice_details' => array(), // Unguarded
             'get_slices_for_projects' => array(), // Unguarded
-	    'create_request' => array(), // Unguarded
-	    'resolve_pending_request' => array(), // Unguarded
-	    'get_requests_for_context' => array(), // Unguarded
-	    'get_requests_by_user' => array(), // Unguarded
-	    'get_pending_requests_for_user' => array(), // Unguarded
-	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
-	    'get_request_by_id' => array() // Unguarded
+            'create_request' => array(), // Unguarded
+            'resolve_pending_request' => array(), // Unguarded
+            'get_requests_for_context' => array(), // Unguarded
+            'get_requests_by_user' => array(), // Unguarded
+            'get_pending_requests_for_user' => array(), // Unguarded
+            'get_number_of_pending_requests_for_user' => array(), // Unguarded
+            'get_request_by_id' => array() // Unguarded
             );
 
   public function __construct($cs_url) {
@@ -238,8 +238,8 @@ class SAContextGuard implements Guard
              . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
              . "; context=\"" . print_r($this->context, TRUE) . "\"");
     return request_authorization($this->cs_url, 
-				 $mysigner, 
-				 $this->message->signerUuid(),
+                                 $mysigner,
+                                 $this->message->signerUuid(),
                                  $this->action, $this->context_type,
                                  $this->context);
   }
@@ -396,7 +396,7 @@ function create_slice($args, $message)
       error_log("Illegal slice name $slice_name");
       geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: invalid slice name \"$slice_name\"");
       return generate_response(RESPONSE_ERROR::DATABASE, null, 
-			       "Cannot create slice with invalid slice name $slice_name. Use only alphanumeric plus hyphen (no leading hyphen), and at most 19 characters.");
+                               "Cannot create slice with invalid slice name $slice_name. Use only alphanumeric plus hyphen (no leading hyphen), and at most 19 characters.");
     }
 
   $conn = db_conn();
@@ -412,7 +412,7 @@ function create_slice($args, $message)
   if ($exists > 0) {
     geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: slice name \"$slice_name\" already exists in project.");
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
-			     "Slice of name " . $slice_name . " already exists in project.");
+                             "Slice of name " . $slice_name . " already exists in project.");
   }
 
   $slice_email = 'slice-' . $slice_name . '@example.com';
@@ -515,36 +515,35 @@ function create_slice($args, $message)
     //    error_log("PL $project_lead_id is not OWNER $owner_id");
     // Create assertion of lead membership
     create_assertion($cs_url, $mysigner, $signer, $project_lead_id, 
-		     CS_ATTRIBUTE_TYPE::ADMIN, 
-		     CS_CONTEXT_TYPE::SLICE, $slice_id);
+                     CS_ATTRIBUTE_TYPE::ADMIN,
+                     CS_CONTEXT_TYPE::SLICE, $slice_id);
 
     // add project lead as 'ADMIN' slice member 
     $addres = 
       add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id,
-			     SA_ARGUMENT::MEMBER_ID => $project_lead_id, 
-			     SA_ARGUMENT::ROLE_TYPE => 
-			     CS_ATTRIBUTE_TYPE::ADMIN), 
-		       $message);
-    if (!isset($addres) || 
-	is_null($addres) || 
-	!array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || 
-	$addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
+                             SA_ARGUMENT::MEMBER_ID => $project_lead_id,
+                             SA_ARGUMENT::ROLE_TYPE =>
+                             CS_ATTRIBUTE_TYPE::ADMIN),
+                       $message);
+    if (!isset($addres) ||
+        is_null($addres) ||
+        !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) ||
+        $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
       {
-	error_log("Create slice failed ot add project lead as slice member: " .
-		  $addres[RESPONSE_ARGUMENT::CODE] . ": " . 
-		  $addres[RESPONSE_ARGUMENT::OUTPUT]);
-	return $addres;
+        error_log("Create slice failed ot add project lead as slice member: " .
+                  $addres[RESPONSE_ARGUMENT::CODE] . ": " .
+                  $addres[RESPONSE_ARGUMENT::OUTPUT]);
+        return $addres;
     }
-    
   }
 
   // Log the creation
   global $log_url;
   global $mysigner;
   $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
-						  $project_id);
+                                                  $project_id);
   $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
-						  $slice_id);
+                                                  $slice_id);
   $attributes = array_merge($project_attributes, $slice_attributes);
   log_event($log_url, $mysigner, "Created slice " . $slice_name, $attributes, $owner_id);
   geni_syslog(GENI_SYSLOG_PREFIX::SA, "Created slice $slice_name for owner $owner_id in project $project_id");
@@ -902,7 +901,7 @@ function add_slice_member($args, $message)
   $slice_data = lookup_slice($lookup_slice_message);
   if(($slice_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
      (array_key_exists(SA_SLICE_TABLE_FIELDNAME::SLICE_NAME,
-		       $slice_data[RESPONSE_ARGUMENT::VALUE]))) 
+                       $slice_data[RESPONSE_ARGUMENT::VALUE])))
     {
       global $CS_ATTRIBUTE_TYPE_NAME;
       global $log_url;
@@ -913,9 +912,9 @@ function add_slice_member($args, $message)
       $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
       $message = "Added $member_name to Slice $slice_name in role $role_name";
       $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
-						      $project_id);
+                                                      $project_id);
       $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE,
-						    $slice_id);
+                                                    $slice_id);
       $attributes = array_merge($project_attributes, $slice_attributes);
       log_event($log_url, $mysigner, $message, $attributes, $signer);
     }
@@ -1236,6 +1235,6 @@ $mykeyfile = '/usr/share/geni-ch/sa/sa-key.pem';
 $mysigner = new Signer($mycertfile, $mykeyfile);
 $guard_factory = new SAGuardFactory($cs_url);
 handle_message("SA", $cs_url, default_cacerts(),
-	       $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
+               $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
 
 ?>
