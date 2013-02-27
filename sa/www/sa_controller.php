@@ -415,18 +415,6 @@ function create_slice($args, $message)
 			     "Slice of name " . $slice_name . " already exists in project.");
   }
 
-
-
-  $permitted = request_authorization($cs_url, $mysigner, $owner_id, 'create_slice', 
-				     CS_CONTEXT_TYPE::PROJECT, $project_id);
-  if (! $permitted) {
-    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: insufficient privileges for owner \"$owner_id\" in project \"$project_id\"");
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
-			    "Principal " . $owner_id . " may not create slice in project " . $project_id);
-  }
-
-  //  error_log("SA.CS.args = " . print_r($args, true));
-
   $slice_email = 'slice-' . $slice_name . '@example.com';
   $slice_cert = create_slice_certificate($project_name, $slice_name,
                                          $slice_email, $slice_id,
@@ -498,8 +486,6 @@ function create_slice($args, $message)
   global $cs_url;
   global $mysigner;
   $signer = $message->signerUuid();
-  create_assertion($cs_url, $mysigner, $signer, $owner_id, CS_ATTRIBUTE_TYPE::LEAD,
-		   CS_CONTEXT_TYPE::SLICE, $slice_id);
 
   // Now add the lead as a member of the slice
   $addres = add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id, SA_ARGUMENT::MEMBER_ID => $owner_id, SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD), $message);
