@@ -233,7 +233,7 @@ margin-left: .4in;
  background-color: red;
 }
 
-.busy {
+.busy, .notqueried {
  color: Black;
  border-color: yellow;
  background-color: yellow;

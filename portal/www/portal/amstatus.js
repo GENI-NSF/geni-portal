@@ -1,4 +1,5 @@
 var updating_text = "...updating...";
+var initial_text = "<-- reload for status";
 
 function build_agg_table_on_slicepg() 
 {
@@ -37,8 +38,8 @@ function build_agg_table_on_slicepg()
             output += "<tr id='"+am_id+"'>";
 	    output += "<td class='notapply'></td>";
 	    output += "<td><button id='reload_button_'"+am_id+" type='button' onclick='refresh_agg_row("+am_id+")'>Reload</button>";
-	    output += "</td><td id='status_"+am_id+"' class='updating'>";	
-	    output += updating_text;
+	    output += "</td><td id='status_"+am_id+"' class='notqueried'>";	
+	    output += initial_text;
 	    output += "</td><td>";	
 	    output += name;
 	    output += "</td>";	
@@ -61,7 +62,7 @@ function build_agg_table_on_slicepg()
 	    output += "<button  id='delete_button_"+am_id+"' disabled='' onClick=\"window.location='confirm-sliverdelete.php?slice_id=" + slice+ "&am_id="+am_id+"'\" "+ delete_slivers_disabled +"><b>Delete Resources</b></button>\n";
 	    output += "</td></tr>";
             // (3) Get the status for this slice at this aggregate
-	    update_agg_row( am_id );
+//	    update_agg_row( am_id );
      }	
      output += "</table>";
      $("#status_table_div").html(output);
