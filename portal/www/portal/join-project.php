@@ -30,6 +30,18 @@ require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once("pa_client.php");
 require_once("cs_constants.php");
+
+function project_name_compare($p1, $p2)
+{
+  $pn1 = $p1[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
+  $pn2 = $p2[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
+  if ($pn1 == $pn2) {
+    return 0;
+  } else {
+    return ($pn1 < $pn2) ? -1 : 1;
+  }
+}
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -83,6 +95,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
   $project_details = lookup_project_details($pa_url, $user, $pids);
+  usort($project_details, "project_name_compare");
   //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
 
   $mids = array();
