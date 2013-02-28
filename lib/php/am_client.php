@@ -74,8 +74,14 @@ function write_ssh_keys($user)
   return $result;
 }
 
-function get_template_omni_config($user)
+function get_template_omni_config($user, $version)
 {
+  $legal_versions = array("2.1", "2.2");
+  if (! in_array($version, $legal_versions)) {
+    /* If $version is not understood, default to omni 2.2. */
+    $version = "2.2";
+  }
+
     /* Create OMNI config file */
     $username = $user->username;
     $urn = $user->urn();
@@ -90,18 +96,18 @@ function get_template_omni_config($user)
       $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
       $url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
       if (! isset($name) || is_null($name) || trim($name) == '') {
-	continue;
+        continue;
       }
       // skip AMs running on localhost as they aren't accessible anywhere else
-      if (strpos($url, '://localhost')!==false ) {
-	continue;
+      if (strpos($url, '://localhost') !== false ) {
+        continue;
       }
 
       $name = str_replace(' ', '-', $name);
       $name = str_replace(',', '', $name);
       $name = str_replace('=', '', $name);
       $name = strtolower($name);
-      $nicknames = $nicknames . $name . "=," . $url . "\n";
+      $nicknames .= "$name=,$url\n";
     }
 
     $pgchs = get_services_of_type(SR_SERVICE_TYPE::PGCH);
@@ -119,7 +125,7 @@ function get_template_omni_config($user)
       . "# Each user is defined in a separate section below.\n"
       . "users = $username\n";
 
-/* THIS CODE SHOULD BE ENABLED ONCE Omni 2.2 IS AVAILABLE
+    if ($version == '2.2') {
      $omni_config = $omni_config		
       . "# 'default_project' is the name of the project that will be assumed\n"
       . "# unless '--project' is specified on the command line.\n"
@@ -142,18 +148,17 @@ function get_template_omni_config($user)
 	       . "# default_project = $proj_name\n";
          }
     }
-*/
+    }
 	  	     
     $omni_config = $omni_config
       . "\n"
       . "[portal]\n";
 
-    $omni_config = $omni_config
-      . "type = pg\n";
-/* THIS CODE SHOULD BE ENABLED ONCE Omni 2.2 IS AVAILABLE
-    $omni_config = $omni_config
-      . "type = pgch\n";
-*/
+    if ($version == "2.2") {
+      $omni_config .= "type = pgch\n";
+    } else {
+      $omni_config .= "type = pg\n";
+    }
     $omni_config = $omni_config
       . "ch = $PGCH_URL\n"
       . "sa = $PGCH_URL\n"
