@@ -31,6 +31,12 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+/* Default omni version is 2.2 */
+$omni_version = 2.2;
+if (array_key_exists('version', $_REQUEST)) {
+  $omni_version = $_REQUEST['version'];
+}
+
 /* Filename to download omni_config into*/
 $filename = "portal_omni_config";
 
@@ -38,7 +44,7 @@ $_SESSION['lastmessage'] = "Downloaded '$filename'";
 
 require_once("am_client.php"); 
 // must double backslash things in the omni_config here....
-$omni_config = get_template_omni_config($user);
+$omni_config = get_template_omni_config($user, $omni_version);
 
 // Set headers for download
 header("Cache-Control: public");
