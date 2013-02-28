@@ -84,6 +84,18 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   $jointhis_url = "join-this-project.php?project_id=";
   $project_details = lookup_project_details($pa_url, $user, $pids);
   //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
+
+  $mids = array();
+  foreach($project_details as $project) {
+    $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+    if(!in_array($lead_id, $mids)) {
+	$mids[] = $lead_id;
+      }
+  }
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  $member_names = lookup_member_names($ma_url, $user, $mids);
+  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
+
   foreach ($project_details as $project) {
     //    $project = lookup_project($pa_url, $user, $project_id);
     print "<tr><td>";
@@ -92,8 +104,13 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     print "</td><td>";
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-    $lead = $user->fetchMember($lead_id);
-    $leadname = $lead->prettyName();
+    $leadname = $member_names[$lead_id];
+    //    $lead_info = $member_details[$lead_id];
+    //    $lead = new GeniUser();
+    ///    $lead->init_from_member($lead);
+    //    $leadname = $lead->prettyName();
+    //    $lead = $user->fetchMember($lead_id);
+    //    $leadname = $lead->prettyName();
     print $leadname;
     print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
   }

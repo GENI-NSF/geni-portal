@@ -295,9 +295,20 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
   return $result;
 }
 
+// Lookup all details all members whose ID's are specified
 function lookup_member_details($ma_url, $signer, $member_uuids)
 {
   $msg['operation'] = 'lookup_member_details';
+  $msg[MA_ARGUMENT::MEMBER_UUIDS] = $member_uuids;
+  $result = put_message($ma_url, $msg, 
+			$signer->certificate(), $signer->privateKey());
+  return $result;
+}
+
+// Lookup the 'display name' for all members whose ID's are specified
+function lookup_member_names($ma_url, $signer, $member_uuids)
+{
+  $msg['operation'] = 'lookup_member_names';
   $msg[MA_ARGUMENT::MEMBER_UUIDS] = $member_uuids;
   $result = put_message($ma_url, $msg, 
 			$signer->certificate(), $signer->privateKey());

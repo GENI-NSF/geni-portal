@@ -697,6 +697,63 @@ function lookup_member_details($args)
   return generate_response(RESPONSE_ERROR::NONE, $info, "");
 }
 
+// For each ID in list
+// Return the displayName if available
+// Otherwise, return first_name + "  + last_name
+// Otherwise return "UNKNOWN" 
+// Return "NONE" also for members that don't exist
+function lookup_member_names($args)
+{
+  global $MA_MEMBER_ATTRIBUTE_TABLENAME;
+  //  error_log("LMN");
+  $member_uuids = $args[MA_ARGUMENT::MEMBER_UUIDS];
+  //  error_log("LMN.member_uuids = " . print_r($member_uuids, true));
+
+  $info = array();
+  foreach($member_uuids as $member_id) {
+    $info[$member_id] = array();
+  }
+
+  $sql = "select "
+    . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID . ", " 
+    . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME . ", " 
+    . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE 
+    . " FROM " . $MA_MEMBER_ATTRIBUTE_TABLENAME
+    . " WHERE " 
+    . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID 
+    . " IN " . convert_list($member_uuids)
+    . " AND "
+    . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME . " IN " 
+    . "('displayName', 'first_name', 'last_name')";
+  //  error_LOG("SQL = " . print_r($sql, true));
+  $result = db_fetch_rows($sql);
+
+  foreach($result['value'] as $row) {
+    $member_id = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
+    $attr_name = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+    $attr_value = $row[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE];
+    $info[$member_id][$attr_name] = $attr_value;
+  }
+
+  $names = array();
+  foreach($info as $member_id => $attribs) {
+    $name = "NONE";
+    if (array_key_exists('displayName', $attribs)) {
+      $name = $attribs['displayName'];
+    } else if (array_key_exists('first_name', $attribs) && 
+	       array_key_exists('last_name', $attribs)) {
+      $name = $attribs['first_name'] . " " . $attribs['last_name'];
+    }
+    $names[$member_id] = $name;
+  }
+
+  //  error_log("NAME_INFO = " . print_r($result, true));
+  //  error_log("NAME_INFO = " . print_r($info, true));
+  //  error_log("NAME_INFO = " . print_r($names, true));
+  return generate_response(RESPONSE_ERROR::NONE, $names, "");
+}
+
+
 /**
  * Create a certificate for use with GENI tools outside the
  * GENI portal.
