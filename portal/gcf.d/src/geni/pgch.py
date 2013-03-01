@@ -456,12 +456,17 @@ class PGClearinghouse(Clearinghouse):
                           # Temporarily hardcode authority keys to get
                           # the user's inside keys
                           [portalCert], portalKey)
+        if not triple:
+            raise Exception("Failed to get inside keys: triple was none")
         if triple['code'] != 0:
-            self.logger.error("Failed to get inside keys for %s: %s",
-                              uuid,
+            self.logger.error("Failed to get inside keys for %s: code %d output %s",
+                              uuid, triple['code'], 
                               triple['output'])
-            return None
+            return (None, None)
         keysdict = triple['value']
+        if keysdict is None:
+            self.logger.error("Failed to get inside keys for %s: value was None. output: %s", uuid, triple['output'])
+            return (None, None)
         inside_key = keysdict['private_key']
         inside_certs = self.split_chain(keysdict['certificate'])
         result = (inside_key, inside_certs)
@@ -503,6 +508,9 @@ class PGClearinghouse(Clearinghouse):
         except Exception, exc:
             self.logger.error("GetCredential got unverifiable experimenter cert: %s", exc)
             raise
+
+        if not user_gid:
+            raise Exception("user_gid is None")
 
         if credential is None:
             # return user credential
