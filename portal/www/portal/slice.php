@@ -118,18 +118,18 @@ function build_agg_table_on_slicepg()
                 $output .= "<td><form  method='GET' action=\"do-renew.php\">";
 		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice."\"/>\n";
 		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
-		$output .= "<input id='renew_field_".$am_id."' disabled='' class='date' type='text' name='sliver_expiration'";
+		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration'";
 		$output .= "value=\"".$slice_expiration."\"/>\n";
-		$output .= "<input id='renew_button_".$am_id."' disabled='' type='submit' name= 'Renew' value='Renew'/>\n";
+		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew'/>\n";
 		$output .= "</form></td>\n";
 	    } else {
 		$output .= "<td>".$sliver_expiration."</td>"; 
 	    }
 	    // sliver actions
 	    $output .= "<td>";
-	    $output .= "<button id='status_button_".$am_id."' disabled='' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\"><b>Resource Status</b></button>";
-	    $output .= "<button  id='details_button_".$am_id."' disabled='' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\"><b>Details</b></button>\n";
-	    $output .= "<button  id='delete_button_".$am_id."' disabled='' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled."><b>Delete Resources</b></button>\n";
+	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\"><b>Resource Status</b></button>";
+	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\"><b>Details</b></button>\n";
+	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled."><b>Delete Resources</b></button>\n";
 	    $output .= "</td></tr>";
             // (3) Get the status for this slice at this aggregate
 //	    update_agg_row( am_id );
