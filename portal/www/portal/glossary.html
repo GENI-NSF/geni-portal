@@ -20,11 +20,25 @@
 <ul>
 <li><b><a name="Aggregate"/>Aggregate:</b> An aggregate is a software server that provides resources to clients based on the GENI aggregate manager API. Through that API an aggregate may advertise resources of different types (computation, storage, network) and accept requests for allocating these resources for a period of time. The aggregate may provide virtual 'sliced' or non-virtual 'whole' resources to customers. An aggregate generates custom private internal network topologies per request, and participates in a process for generating cross-aggregate custom private network topologies known as stitching.</li>
 
-<li><b><a name="Project"/>Project:</b> A project organizes research in GENI, containing both people and their experiments. A project is led by a single responsible individual: the project lead. Many GENI experimenters may be members of a given project, and may be members of multiple projects. Experimenters can create slices and perform experiments in the context of a project. A GENI slice belongs to a single project.</li>
+<li><b><a name="Project"/>Project:</b> A project organizes research in
+  GENI, containing both people and their experiments. A project is led
+  by a single responsible individual: the project lead. Many GENI
+  experimenters may be members of a given project, and may be members
+  of multiple projects. Experimenters can create slices and perform
+  experiments in the context of a project. A GENI slice belongs to a
+  single project. Project names are public, global and permanent;
+  there can only ever be a single project with a given name, and that
+  name is visible to all registered users.</li>
 
 <li><b><a name="Project_Lead"/>Project Lead:</b> A principal investigator, professor or lead researcher that manages a set of experiments and associated research staff. The project lead is ultimately accountable for any operations taken on resources associated with slices of the given project.</li>
 
 <li><b><a name="Renewal"/>Renewal:</b> Slices and slivers are created with a particular expiration time, which is aggregate-specific. An experimenter may request that the expiration time be extended by a renewal request. Once the expiration time of a given slice or sliver has passed, however, these elements can no longer be renewed and may be reclaimed by GENI.</li>
+
+<li><b><a name="RSpec"/>RSpec:</b> Resources in GENI are described in XML
+files called <a href="http://groups.geni.net/geni/wiki/GENIExperimenter/RSpecs">RSpecs</a>. Aggregate
+resources listings (advertisements), reservation requests,
+and manifests of resources you have reserved are all
+represented as RSpecs.</li>
 
 <li><b><a name="Slice"/>Slice:</b> A slice is the context for a particular set of experiments, and contains reserved resources and the set of GENI users ('members') who are entitled to act on those resources. A slice belongs to a single project, and can have multiple members. Experimenters can add and delete resources from a slice.</li>
 

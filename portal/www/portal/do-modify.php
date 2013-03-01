@@ -28,6 +28,7 @@ require_once("util.php");
 require_once("user.php");
 require_once("pa_constants.php");
 require_once("cs_client.php");
+require_once('logging_client.php');
 
 $user=geni_loadUser();
 if (! isset($user) || ! $user->isActive()) {
@@ -175,8 +176,14 @@ $body .= "Name: " . $user->prettyName() . "\n";
 $body .= "Username: " . $user->username . "\n";
 if ($pi_request and ! $is_pi) {
   $body .= "Requesting to be a Project Lead.\n";
+  $msg = "Requested to be a Project Lead";
+  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+  log_event($log_url, Portal::getInstance(), $msg, array(), $user->account_id);
 } else if (! $pi_request and $is_pi) {
   $body .= "Requesting to NOT be a Project Lead.\n";
+  $msg = "Requested to NOT be a Project Lead";
+  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+  log_event($log_url, Portal::getInstance(), $msg, array(), $user->account_id);
 }
 if ($changed_str !== '') {
   $body .= "Changes: $changed_str\n";
@@ -224,8 +231,13 @@ if ($added_str !== '') {
 if ($removed_str !== '') {
   print "<li>Removals: $removed_str</li>\n";
 }
+echo '</ul><br/>';
+echo 'Your change request is being processed by the Portal operators, and you will receive an email when your request has been handled.<br/>';
+if ($pi_request and ! $is_pi) {
+  echo 'If and when you are made a Project Lead, your Home Page will show the "Create Project" button.<br/>';
+}
+echo '<br/>';
 ?>
-</ul>
 
 Go to the <a href=
 <?php

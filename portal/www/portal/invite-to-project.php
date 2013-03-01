@@ -26,6 +26,7 @@ require_once("user.php");
 require_once("header.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
+require_once('logging_client.php');
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -84,6 +85,11 @@ Thank you,\n" . $user->prettyName() . "\n";
        "Join my GENI project $project_name!",
        $message,
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+
+  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+  $msg = "Invited people to project $project_name: $to";
+  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+  log_event($log_url, Portal::getInstance(), $msg, $attributes, $user->account_id);
 
   // Put up a page saying we invited them.
   print "<h2>Invite Someone to Project $project_name</h2>\n";

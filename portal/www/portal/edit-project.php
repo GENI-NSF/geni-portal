@@ -137,7 +137,9 @@ $submit_label = $isnew ? "Create Project" : "Update";
 
 </table>
 <?php
-print "<b>Note: Project name is public</b><br/>\n";
+echo '<b>Note</b>: Project names must not contain whitespace or certain control characters: "/:+;\'?#%".</b><br/>';
+echo '<b>Note: Project names are public, global and permanent</b>; there can only ever be a single project with a given name, and that name is visible to all registered users.<br/>';
+echo '<b>Expiration</b>: The date when this project is closed, and slices will expire. Blank means no expiration.<br/>';
 print "<br/>\n";
 print "<input type=\"submit\" value=\"$submit_label\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
