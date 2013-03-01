@@ -83,31 +83,31 @@ function build_agg_table_on_slicepg()
      $listres_url = 'listresources.php?slice_id='.$slice_id;
 
      $updating_text = "...updating...";
-     $initial_text = "<-- press for status";
+     $initial_text = "not retrieved";
 
      // (2) create an HTML table with one row for each aggregate
      $json_agg = $all_ams;
      $output = "<table id='status_table'>";
-     //  output .=  "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
+     //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
      $output .= "<tr>";
-     $output .= "<th>";
-     $output .= "<button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()'>Get All Status</button>";
-     $output .= "</th><th>Status</th><th>Aggregate</th>";
+     $output .= "<th id='status'>";
+     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()'>Get All</button>";
+     $output .= "</th><th>Aggregate</th>";
      //      output .= "<th>&nbsp;</th>";
      $output .= "<th>Renew</th>";
      $output .= "<th>Actions</th></tr>\n";
      foreach ($json_agg as $am_id => $agg ) {
 	    $name = $agg['name'];
             $output .= "<tr id='".$am_id."'>";
-	    $output .= "<td><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")'>Get Status</button>";
-	    $output .= "</td><td id='status_".$am_id."' class='notqueried'>";	
+	    $output .= "<td id='status_".$am_id."' class='notqueried'>";	
 	    $output .= $initial_text;
-	    $output .= "</td><td>";	
+	    $output .= "</td>";
+	    $output .= "<td rowspan='2'>";	
 	    $output .= $name;
 	    $output .= "</td>";	
 	    // sliver expiration
 	    if ($renew_slice_privilege) {
-                $output .= "<td><form  method='GET' action=\"do-renew.php\">";
+                $output .= "<td rowspan='2'><form  method='GET' action=\"do-renew.php\">";
 		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice."\"/>\n";
 		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
 		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration'";
@@ -115,14 +115,21 @@ function build_agg_table_on_slicepg()
 		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew'/>\n";
 		$output .= "</form></td>\n";
 	    } else {
-		$output .= "<td>".$sliver_expiration."</td>"; 
+		$output .= "<td rowspan='2'>".$sliver_expiration."</td>"; 
 	    }
 	    // sliver actions
-	    $output .= "<td>";
+	    $output .= "<td rowspan='2'>";
 	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\"><b>Resource Status</b></button>";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\"><b>Details</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled."><b>Delete Resources</b></button>\n";
 	    $output .= "</td></tr>";
+
+
+
+	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")'>Get Status</button></td></tr>";
+
+
+
             // (3) Get the status for this slice at this aggregate
 //	    update_agg_row( am_id );
      }	

@@ -213,12 +213,14 @@ margin-left: .4in;
  color: gray;
 }
 
-.configuring, .unknown, .busy, .ready, .failed {
- text-transform:uppercase;
+.notqueried, .configuring, .unknown, .busy, .ready, .failed {
  padding: 2px;
  margin: 2px;
  color: black;
  background-color: BlanchedAlmond;
+}
+.configuring, .unknown, .busy, .ready, .failed {
+ text-transform:uppercase;
 }
 
 .ready {
@@ -233,7 +235,7 @@ margin-left: .4in;
  background-color: red;
 }
 
-.busy, .notqueried {
+.busy {
  color: Black;
  border-color: yellow;
  background-color: yellow;
@@ -246,6 +248,7 @@ input.date {
 table {
  background-color: #DCE2E8;
  margin: 1em;
+ 
 }
 
 td {
@@ -254,13 +257,21 @@ td {
  background-color: BlanchedAlmond;
 }
 
-
 th {
  margin: 3px;
  padding: 3px;
  background-color: SkyBlue;
  text-align: left;
 }
+
+td.status_buttons, th#status{
+ text-align:center;
+}
+
+.notqueried, .configuring, .unknown, .busy, .ready, .failed {
+ text-align:center;
+}
+
 
 td.label {
  background-color: #E6D4B8;
