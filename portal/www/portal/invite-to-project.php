@@ -87,7 +87,7 @@ Thank you,\n" . $user->prettyName() . "\n";
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  $msg = "Invited people to project $project_name: $to";
+  $msg = "$name invited people to project $project_name: $to";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
   log_event($log_url, Portal::getInstance(), $msg, $attributes, $user->account_id);
 

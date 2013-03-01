@@ -176,12 +176,12 @@ $body .= "Name: " . $user->prettyName() . "\n";
 $body .= "Username: " . $user->username . "\n";
 if ($pi_request and ! $is_pi) {
   $body .= "Requesting to be a Project Lead.\n";
-  $msg = "Requested to be a Project Lead";
+  $msg = $user->prettyName() . " requested to be a Project Lead";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
   log_event($log_url, Portal::getInstance(), $msg, array(), $user->account_id);
 } else if (! $pi_request and $is_pi) {
   $body .= "Requesting to NOT be a Project Lead.\n";
-  $msg = "Requested to NOT be a Project Lead";
+  $msg = $user->prettyName() . " requested to NOT be a Project Lead";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
   log_event($log_url, Portal::getInstance(), $msg, array(), $user->account_id);
 }
