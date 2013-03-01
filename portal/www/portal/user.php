@@ -276,6 +276,7 @@ class GeniUser
 
   function fetchMember($member_id)
   {
+    if ($this->account_id == $member_id) return $this;
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     $member = ma_lookup_member_by_id($ma_url, $this, $member_id);
     $user = new GeniUser();

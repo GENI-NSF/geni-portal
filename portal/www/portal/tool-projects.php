@@ -144,6 +144,8 @@ if (count($project_objects) > 0) {
 }
 
 if (count($project_objects) > 0) {
+  $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, 
+					     PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
   print "\n<table>\n";
   print ("<tr><th>Project Name</th><th>Project Lead</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
   // name, lead_id, purpose
@@ -165,9 +167,10 @@ if (count($project_objects) > 0) {
 
     //    error_log("Before load user " . time());
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-    $lead_obj = $member_objects[ $lead_id ];
-    $lead = new Member();
-    $lead->init_from_record($lead_obj);
+    $lead_name = $lead_names[$lead_id];
+    //    $lead_obj = $member_objects[ $lead_id ];
+    //    $lead = new Member();
+    //    $lead->init_from_record($lead_obj);
 
     // print "\nMEMBERS: ". print_r($member_objects, true);
     // print "\nLEAD ID: ". print_r($lead_id, true);
@@ -184,7 +187,7 @@ if (count($project_objects) > 0) {
     }
     print ("<tr><td> <a href=\"project.php?project_id=$project_id\">" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . 
 	   "</a> $handle_req_str</td><td> <a href=\"project-member.php?project_id=$project_id&member_id=" .
-	   $lead->member_id . "\">" . $lead->prettyName() . "</a> </td> " .
+	   $lead_id . "\">" . $lead_name . "</a> </td> " .
 	   "<td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
 	   " </td><td align=\"center\"> " . count($project_slice_map[$project_id]) . " </td><td> " .
 	   $create_slice_link . "</td></tr>\n");

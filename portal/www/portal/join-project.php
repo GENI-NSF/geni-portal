@@ -98,16 +98,11 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   usort($project_details, "project_name_compare");
   //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
 
-  $mids = array();
-  foreach($project_details as $project) {
-    $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-    if(!in_array($lead_id, $mids)) {
-	$mids[] = $lead_id;
-      }
-  }
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-  $member_names = lookup_member_names($ma_url, $user, $mids);
-  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
+  $member_names = lookup_member_names_for_rows($ma_url, $user, 
+					       $project_details, 
+					       PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
+  //  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
 
   foreach ($project_details as $project) {
     //    $project = lookup_project($pa_url, $user, $project_id);

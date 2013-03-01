@@ -45,6 +45,10 @@ if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
 
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+}
+
 $project_id = "None";
 $project = null;
 $project_name = "None";
@@ -89,6 +93,8 @@ if (! is_null($project) && $project != "None") {
 
 // Fill in members of project member table
 $members = get_project_members($pa_url, $user, $project_id);
+$member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
+					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 //error_log("members = " . print_r($members, true));
 
 $reqs = null;
@@ -171,8 +177,9 @@ include("tool-slices.php");
 
   foreach($members as $member) {
      $member_id = $member['member_id'];
-     $member_user = $user->fetchMember($member_id);
-     $member_name = $member_user->prettyName();
+     $member_name = $member_names[$member_id];
+     //     $member_user = $user->fetchMember($member_id);
+     //     $member_name = $member_user->prettyName();
      $member_role_index = $member['role'];
      $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
      //     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
@@ -204,12 +211,15 @@ if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $proje
 
 if (is_array($entries)) {
   usort($entries, 'compare_log_entries');
+  $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
+					      LOGGING_TABLE_FIELDNAME::USER_ID);
   foreach($entries as $entry) {
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
     $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-    $member = $user->fetchMember($member_id);
-    $member_name = $member->prettyName();
+    //    $member = $user->fetchMember($member_id);
+    //    $member_name = $member->prettyName();
+    $member_name = $entry_member_names[$member_id];
     //    error_log("ENTRY = " . print_r($entry, true));
     print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
   }

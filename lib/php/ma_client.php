@@ -305,6 +305,30 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
   return $result;
 }
 
+
+// Lookup the display name for all member_ids in a given set of 
+// rows, where the member_id is selected by given field name
+// Do not include the given signer in the query but add in the response
+// If there is no member other than the signer, don't make the query
+function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
+{
+  $member_uuids = array();
+  foreach($rows as $row) {
+    $member_id = $row[$field];
+    if($member_id == $signer->account_id || in_array($member_id, $member_uuids)) 
+      continue;
+    $member_uuids[] = $member_id;
+  }
+  $names_by_id = array();
+  $result = generate_response(RESPONSE_ERROR::NONE, $names_by_id, '');
+  if (count($member_uuids) > 0) {
+    $names_by_id = lookup_member_names($ma_url, $signer, $member_uuids);
+  }
+  $names_by_id[$signer->account_id] = $signer->prettyName();
+  //  error_log('RESULT = ' . print_r($names_by_id, true));
+  return $names_by_id;
+}
+
 // Lookup the 'display name' for all members whose ID's are specified
 function lookup_member_names($ma_url, $signer, $member_uuids)
 {
