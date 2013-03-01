@@ -37,6 +37,7 @@ function show_rspec_chooser($user) {
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
+  echo '<option value="" title="Choose an RSpec" selected="selected">Choose an RSpec...</option>';
   foreach ($all_rmd as $rmd) {
     $rid = $rmd['id'];
     $rname = $rmd['name'];
@@ -76,6 +77,7 @@ function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   print "Choose Aggregate:\n";
   print '<select name="am_id" id="agg_chooser">\n';
+  echo '<option value="" title = "Choose an Aggregate" selected="selected">Choose an Aggregate...</option>';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
     $aggname = $agg['service_name'];
@@ -105,6 +107,26 @@ $keys = $user->sshKeys();
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 
+?>
+<script>
+function validateSubmit()
+{
+  f1 = document.getElementById("f1");
+  rspec = document.getElementById("rspec_select");
+  am = document.getElementById("agg_chooser");
+  if (rspec.value && am.value) {
+    f1.submit();
+    return true;
+  } else if (rspec.value) {
+    alert("Please select an Aggregate.");
+    return false;
+  }
+  alert ("Please select an RSpec.");
+  return false;
+}
+</script>
+
+<?php
 print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
 
 // Put up a warning to upload SSH keys, if not done yet.
@@ -120,16 +142,19 @@ if (count($keys) == 0) {
 
 print '<form id="f1" action="sliceresource.php" method="post">';
 show_rspec_chooser($user);
+
 print '<br/><br/>';
 show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
 
+  print "<br/><button onClick=\"window.location='rspecs.php'\">"
+    . "View Available RSpecs</button><br/>\n";
 
 print '<br/>';
 
 print ("<button onClick=\"");
-print ("document.getElementById('f1').submit();\">"
+print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '<br/><br/>';
