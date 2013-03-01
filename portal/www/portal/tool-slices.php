@@ -134,7 +134,6 @@ if (count($my_slice_objects) > 0) {
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
     $slice_owner_name = $slice_owner_names[$slice_owner_id];
-    //    $slice_owner_name = $user->fetchMember($slice_owner_id)->prettyName();
     print "<tr>"
       . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
          . "</a></td>");

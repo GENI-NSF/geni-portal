@@ -113,12 +113,6 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     print "</td><td>";
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
     $leadname = $member_names[$lead_id];
-    //    $lead_info = $member_details[$lead_id];
-    //    $lead = new GeniUser();
-    ///    $lead->init_from_member($lead);
-    //    $leadname = $lead->prettyName();
-    //    $lead = $user->fetchMember($lead_id);
-    //    $leadname = $lead->prettyName();
     print $leadname;
     print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
   }

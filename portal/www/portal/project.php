@@ -178,8 +178,6 @@ include("tool-slices.php");
   foreach($members as $member) {
      $member_id = $member['member_id'];
      $member_name = $member_names[$member_id];
-     //     $member_user = $user->fetchMember($member_id);
-     //     $member_name = $member_user->prettyName();
      $member_role_index = $member['role'];
      $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
      //     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
@@ -217,8 +215,6 @@ if (is_array($entries)) {
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
     $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-    //    $member = $user->fetchMember($member_id);
-    //    $member_name = $member->prettyName();
     $member_name = $entry_member_names[$member_id];
     //    error_log("ENTRY = " . print_r($entry, true));
     print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";

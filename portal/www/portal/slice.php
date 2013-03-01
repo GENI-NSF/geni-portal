@@ -152,6 +152,10 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+}
+
 if (isset($slice)) {
   //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   //  error_log("SLICE  = " . print_r($slice, true));
@@ -171,6 +175,8 @@ if (isset($slice)) {
   //error_log("slice project_name result: $project_name\n");
   // Fill in members of slice member table
   $members = get_slice_members($sa_url, $user, $slice_id);
+  $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
+					       SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 }
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
@@ -368,9 +374,8 @@ foreach($members as $member) {
 
 
   $member_id = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
-  $member_user = $user->fetchMember($member_id);
   //  error_log("MEMBER = " . print_r($member_user, true));
-  $member_name = $member_user->prettyName();
+  $member_name = $member_names[$member_id];
   $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
   $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
   print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
@@ -390,13 +395,15 @@ foreach($members as $member) {
 		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
                 $entries = get_log_entries_for_context($log_url, Portal::getInstance(),
 						       CS_CONTEXT_TYPE::SLICE, $slice_id);
+                $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
+								   LOGGING_TABLE_FIELDNAME::USER_ID);
+
                 usort($entries, 'compare_log_entries');
 		foreach($entries as $entry) {
 		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
 		  $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
 		  $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-		  $member = $user->fetchMember($member_id);
-		  $member_name = $member->prettyName();
+		  $member_name = $entry_member_names[$member_id];
 		  //    error_log("ENTRY = " . print_r($entry, true));
 		  print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
   }

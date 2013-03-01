@@ -201,6 +201,17 @@ if (count($project_objects) > 0) {
 // Show outstanding project requests BY this user - projects you asked to join
 $reqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
 if (isset($reqs) && count($reqs) > 0) {
+
+  $project_ids = array();
+  foreach($reqs as $req) {
+    $project_id = $req['context_id'];
+    if (!in_array($project_id, $project_ids))
+      $project_ids[] = $project_id;
+  }
+  $projects = lookup_project_details($pa_url, $user, $project_ids);
+  $project_lead_names = lookup_member_names_for_rows($ma_url, $user, $projects, 
+						PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
+
   print "<br/>\n";
   print "Found " . count($reqs) . " outstanding project join request(s) by you:<br/>\n";
   print "<table>\n";
@@ -208,14 +219,15 @@ if (isset($reqs) && count($reqs) > 0) {
   print "<tr><th>Project Name</th><th>Project Lead</th><th>Project Purpose</th><th>Request Created</th><th>Request Reason</th></tr>\n";
   foreach ($reqs as $request) {
     // Print it out
-    $project = lookup_project($pa_url, $user, $request['context_id']);
+    $project_id = $request['context_id'];
+    $project = $projects[$project_id];
     $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     $reason = $request['request_text'];
     $req_date_db = $request['creation_timestamp'];
     $req_date = dateUIFormat($req_date_db);
-    $lead = $user->fetchMember($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
-    $lead_name = $lead->prettyName();
+    $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+    $lead_name = $project_lead_names[$lead_id];
     print "<tr><td>$project_name</td><td>$lead_name</td><td>$purpose</td><td>$req_date</td><td>$reason</td></tr>\n";
   }
   print "</table>\n";
