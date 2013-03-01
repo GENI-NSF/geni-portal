@@ -45,6 +45,109 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 unset($slice);
 include("tool-lookupids.php");
 
+if (! isset($services)) {
+  $services = get_services();	
+}
+
+if (! isset($all_ams)) {
+  $am_list = select_services($services, SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $all_ams = array();
+  foreach ($am_list as $am) 
+  {
+    $single_am = array();
+    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $all_ams[$service_id] = $single_am;
+  }   
+}
+
+// print_r( $all_ams);
+
+
+function build_agg_table_on_slicepg() 
+{
+     global $all_ams;
+     global $slice;
+     global $slice_id;
+     global $renew_slice_privilege;
+     global $slice_expiration;
+     global $delete_slivers_disabled;
+     global $slice_name;
+
+     $sliver_expiration = "NOT IMPLEMENTED YET";
+     $slice_status = "";
+
+
+     $status_url = 'sliverstatus.php?slice_id='.$slice;
+     $listres_url = 'listresources.php?slice_id='.$slice;
+
+     $updating_text = "...updating...";
+     $initial_text = "<-- reload for status";
+
+     // (2) create an HTML table with one row for each aggregate
+     $json_agg = $all_ams;
+     $output = "<table id='status_table'>";
+     //  output .=  "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
+     $output .=  "<tr><th>Status</th><th colspan='6'>Slice</th></tr>\n";
+     /* Slice Info */
+     $output .=  "<tr>";
+     $output .=  "<td class='$slice_status'>".$slice_status."</td>";
+     $output .=  "<td colspan='5'>".$slice_name."</td>";
+     $output .=  "</tr>\n";
+     $output .= "<tr>";
+     $output .= "<th class='notapply'>";
+     $output .= "</th><th>";
+     $output .= "<button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()'>Get All Status</button>";
+     $output .= "</th><th>Status</th><th>Aggregate</th>";
+     //      output .= "<th>&nbsp;</th>";
+     $output .= "<th>Renew</th>";
+     $output .= "<th>Actions</th></tr>\n";
+     foreach ($json_agg as $am_id => $agg ) {
+	    $name = $agg['name'];
+            $output .= "<tr id='".$am_id."'>";
+	    $output .= "<td class='notapply'></td>";
+	    $output .= "<td><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")'>Get Status</button>";
+	    $output .= "</td><td id='status_".$am_id."' class='notqueried'>";	
+	    $output .= $initial_text;
+	    $output .= "</td><td>";	
+	    $output .= $name;
+	    $output .= "</td>";	
+	    // sliver expiration
+	    if ($renew_slice_privilege) {
+                $output .= "<td><form  method='GET' action=\"do-renew.php\">";
+		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice."\"/>\n";
+		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
+		$output .= "<input id='renew_field_".$am_id."' disabled='' class='date' type='text' name='sliver_expiration'";
+		$output .= "value=\"".$slice_expiration."\"/>\n";
+		$output .= "<input id='renew_button_".$am_id."' disabled='' type='submit' name= 'Renew' value='Renew'/>\n";
+		$output .= "</form></td>\n";
+	    } else {
+		$output .= "<td>".$sliver_expiration."</td>"; 
+	    }
+	    // sliver actions
+	    $output .= "<td>";
+	    $output .= "<button id='status_button_".$am_id."' disabled='' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\"><b>Resource Status</b></button>";
+	    $output .= "<button  id='details_button_".$am_id."' disabled='' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\"><b>Details</b></button>\n";
+	    $output .= "<button  id='delete_button_".$am_id."' disabled='' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice."&am_id=".$am_id."'\" ".$delete_slivers_disabled."><b>Delete Resources</b></button>\n";
+	    $output .= "</td></tr>";
+            // (3) Get the status for this slice at this aggregate
+//	    update_agg_row( am_id );
+     }	
+     $output .= "</table>";
+     return $output;
+}
+
+
+
+
+
+
+
+
+
+
+
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
@@ -134,12 +237,14 @@ var delete_slivers_disabled= "<?php echo $delete_slivers_disabled ?>";
 var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
 var slice= "<?php echo $slice_id ?>";
+var all_ams= '<?php echo json_encode($all_ams) ?>';
 <?php include('status_constants_import.php'); ?>
 </script>
 <script src="amstatus.js"></script>
-<script>
-$(document).ready(build_agg_table_on_slicepg);
+<!--<script>
+$(document).ready(build_agg_table_on_slicepg());
 </script>
+-->
 <?php 
 print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
 
@@ -222,18 +327,7 @@ print "<h2>Slice Status</h2>\n";
   $slice_status='';
 
   print "<div id='status_table_div'/>\n";
-  print "<table>\n";
-  //  print "<tr><th>Status</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
-  print "<tr><th>Status</th><th colspan='4'>Slice</th></tr>\n";
-
-
-  /* Slice Info */
-  print "<tr>";
-  print "<td class='$slice_status'>$slice_status</td>";
-  print "<td colspan='4'>$slice_name</td>";
-  print "</tr>\n";
-
-  print "</table>\n";
+  print build_agg_table_on_slicepg();
   print "</div>\n";
 // --- End of Slice and Sliver Status table
 
