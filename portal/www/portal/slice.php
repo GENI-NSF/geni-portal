@@ -79,11 +79,11 @@ function build_agg_table_on_slicepg()
      $slice_status = "";
 
 
-     $status_url = 'sliverstatus.php?slice_id='.$slice;
-     $listres_url = 'listresources.php?slice_id='.$slice;
+     $status_url = 'sliverstatus.php?slice_id='.$slice_id;
+     $listres_url = 'listresources.php?slice_id='.$slice_id;
 
      $updating_text = "...updating...";
-     $initial_text = "<-- reload for status";
+     $initial_text = "<-- press for status";
 
      // (2) create an HTML table with one row for each aggregate
      $json_agg = $all_ams;
@@ -129,7 +129,7 @@ function build_agg_table_on_slicepg()
 	    $output .= "<td>";
 	    $output .= "<button id='status_button_".$am_id."' disabled='' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\"><b>Resource Status</b></button>";
 	    $output .= "<button  id='details_button_".$am_id."' disabled='' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\"><b>Details</b></button>\n";
-	    $output .= "<button  id='delete_button_".$am_id."' disabled='' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice."&am_id=".$am_id."'\" ".$delete_slivers_disabled."><b>Delete Resources</b></button>\n";
+	    $output .= "<button  id='delete_button_".$am_id."' disabled='' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled."><b>Delete Resources</b></button>\n";
 	    $output .= "</td></tr>";
             // (3) Get the status for this slice at this aggregate
 //	    update_agg_row( am_id );
