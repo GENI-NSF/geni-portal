@@ -74,7 +74,7 @@ function write_ssh_keys($user)
   return $result;
 }
 
-function get_template_omni_config($user, $version)
+function get_template_omni_config($user, $version, $default_project=null)
 {
   $legal_versions = array("2.1", "2.2");
   if (! in_array($version, $legal_versions)) {
@@ -135,21 +135,20 @@ function get_template_omni_config($user, $version)
        $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);	
     }
     $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);	
-    $first = True;
-    foreach ($projects as $project_id) {		 
-    	  $project = lookup_project($pa_url, $user, $project_id);    
-    	  $proj_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-	  if ($first) {
-	     $omni_config = $omni_config	
-	       . "default_project = $proj_name\n";
-	     $first = False;
-	  } else {	  
-	     $omni_config = $omni_config
-	       . "# default_project = $proj_name\n";
-         }
+    if (count($projects) > 0 && is_null($default_project)) {
+      $p0 = $projects[0];
+      $default_project = $p0[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    }
+    foreach ($projects as $project_id) {
+      $project = lookup_project($pa_url, $user, $project_id);
+      $proj_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      if ($proj_name == $default_project) {
+        $omni_config .= "default_project = $proj_name\n";
+      } else {
+        $omni_config .= "#default_project = $proj_name\n";
+      }
     }
     }
-	  	     
     $omni_config = $omni_config
       . "\n"
       . "[portal]\n";
