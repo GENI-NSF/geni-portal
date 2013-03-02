@@ -148,6 +148,15 @@ def init_logging(options):
         level = logging.DEBUG
     logging.basicConfig(level=level)
 
+def get_database_password(options):
+    if options.password:
+        return options.password
+    if options.password_file:
+        f = open(options.password_file, 'r')
+        password = f.readlines()[0].strip()
+        f.close()
+        return password
+
 def parse_args(argv):
     parser = optparse.OptionParser()
     parser.add_option("--debug", action="store_true", default=False,
@@ -160,8 +169,10 @@ def parse_args(argv):
                       help="database user")
     parser.add_option("-p", "--password",
                       help="database password")
+    parser.add_option("-P", "--password-file",
+                      help="file containing database password")
     options,args = parser.parse_args()
-    if not (options.password):
+    if not (options.password or options.password_file):
         parser.print_usage()
         raise Exception("Missing some required arguments")
     return options,args
@@ -175,11 +186,12 @@ def main(argv=None):
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
+    password = get_database_password(options)
     # Member dict, id -> Member
     members = dict()
     conn = psycopg2.connect(database=options.database,
                             user=options.user,
-                            password=options.password,
+                            password=password,
                             host=options.host)
     attrs = all_member_attrs(conn)
     Member.attrs = attrs
