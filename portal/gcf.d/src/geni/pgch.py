@@ -202,7 +202,7 @@ class PGSAnCHServer(object):
         output = None
         value = None
         try:
-            self.logger.debug("Calling register in delegate")
+            self.logger.debug("Calling RenewSlice in delegate")
             value = self._delegate.RenewSlice(args)
         except Exception, e:
             output = str(e)
@@ -956,8 +956,10 @@ class PGClearinghouse(Clearinghouse):
             sUrn = urn_util.URN(urn=urn)
             slice_name = sUrn.getName()
             slice_auth = sUrn.getAuthority()
+            self.logger.debug("Slice urn %s gives name %s and auth %s. Compare to SLICE_AUTHORITY %s", urn, slice_name, slice_auth, SLICE_AUTHORITY)
             # Compare that with SLICE_AUTHORITY
             project_id = ''
+            project_name = ''
             if slice_auth and slice_auth.startswith(SLICE_AUTHORITY) and len(slice_auth) > len(SLICE_AUTHORITY)+1:
                 project_name = slice_auth[len(SLICE_AUTHORITY)+2:]
                 self.logger.info("Creating slice in project %s" % project_name)
@@ -978,6 +980,8 @@ class PGClearinghouse(Clearinghouse):
                 if projtriple:
                     projval = getValueFromTriple(projtriple, self.logger, "lookup_project for create_slice", unwrap=True)
                     project_id = projval['project_id']
+            if project_id == '':
+                self.logger.warn("Got no project_id")
             argsdict = dict(project_id=project_id, slice_name=slice_name, owner_id=owner_id, project_name=project_name)
             slicetriple = None
             try:
