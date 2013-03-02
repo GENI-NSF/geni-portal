@@ -206,6 +206,13 @@ in order to use other GENI tools.<br/><br/>
   <td>command line resource allocation tool</td>
   <td><a href='tool-omniconfig.php'>Get omni_config</a></td>
 </tr>
+<!-- Not available until tested against new omni_configure.py
+<tr>
+  <td>omni_configure.py</td>
+  <td>omni configuration tool</td>
+  <td><a href='omni-bundle.php'>Get omni-bundle.zip</a></td>
+</tr>
+-->
 </table>
 
 <?php

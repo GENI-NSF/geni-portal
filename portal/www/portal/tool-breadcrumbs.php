@@ -99,7 +99,8 @@ $parents = array("profile.php" => "home.php",
 		"generatesshkey.php" => "profile.php",
 		"tool-omniconfig.php" => "profile.php",
         "rspecupload.php" => "profile.php",
-        "rspecs.php" => "profile.php");
+        "rspecs.php" => "profile.php",
+        "omni-bundle.php" => "profile.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -152,7 +153,8 @@ $names = array("home.php" => $TAB_HOME,
 		"generatesshkey.php" => "Generate SSH Keypair",
 		"tool-omniconfig.php" => "Omni command line tool",
         "rspecupload.php" => "Upload RSpec",
-        "rspecs.php" => "Manage RSpecs");
+        "rspecs.php" => "Manage RSpecs",
+        "omni-bundle.php" => "Omni Bundle");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
