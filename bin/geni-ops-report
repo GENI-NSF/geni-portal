@@ -205,7 +205,6 @@ def audit_members(inventory, projects):
             if not username in inventory['operator']:
                 errors['unexpected_operators'].append(info)
             operators_seen.append(username)
-        errors['unexpected_operators'].append(info)
         if member.project_lead:
             if not (username in inventory['operator'] or
                     username in inventory['projlead']):
