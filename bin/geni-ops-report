@@ -142,6 +142,96 @@ def load_projects(conn):
     cur.close()
     return result
 
+def read_audit_inventory(audit_file):
+    f = open(audit_file, 'r')
+    inventory = {
+        'operator': [],
+        'projlead': [],
+    }
+    for line in f.readlines():
+        sline = line.strip()
+        if not sline: continue
+        if sline.startswith('#'): continue
+        [privtype, username] = line.split()
+        if not inventory.has_key(privtype):
+            raise ValueError, "Syntax error in %s: unknown privilege type %s" \
+                  % (audit_file, privtype)
+        if username in inventory[privtype]:
+            raise ValueError, "Syntax error in %s: multiple entries for ID %s" \
+                  % (audit_file, username)
+        inventory[privtype].append(username)
+    f.close()
+    return inventory
+
+def audit_member_info(m):
+    info = "%s (%s): %s %s <%s>" % \
+           (m.username, m.id, m.first_name, m.last_name, m.email_address)
+    return info
+
+def audit_members(inventory, projects):
+    operators_seen = []
+    projleads_seen = []
+    errors = {
+      'unexpected_operators': [],
+      'unexpected_projleads': [],
+      'missing_operators': [],
+      'missing_projleads': [],
+    }
+    for member in Member.sorted_members():
+        info = audit_member_info(member)
+        username = member.username
+        if member.operator:
+            if not username in inventory['operator']:
+                errors['unexpected_operators'].append(info)
+            operators_seen.append(username)
+        errors['unexpected_operators'].append(info)
+        if member.project_lead:
+            if not (username in inventory['operator'] or
+                    username in inventory['projlead']):
+                errors['unexpected_projleads'].append(info)
+            projleads_seen.append(username)
+    for operator in inventory['operator']:
+        if not operator in operators_seen:
+            errors['missing_operators'].append(operator)
+    for projlead in inventory['projlead']:
+        if not projlead in projleads_seen:
+            errors['missing_projleads'].append(projlead)
+
+    print projects
+    return errors
+
+def print_audit_report(errors):
+    any_errors = False
+    for errtype in errors.keys():
+        if len(errors[errtype]) > 0:
+            any_errors = True
+    if any_errors:
+        print """Mismatches found between portal state and infra's inventory.
+For guidance on responding to this report, see:
+  http://groups.geni.net/syseng/wiki/OpsPortalUserManagement
+"""
+    if len(errors['unexpected_operators']) > 0:
+        print """ERROR: unexpected users have the portal operator privilege!
+Investigate this:
+  %s\n""" % '\n  '.join(errors['unexpected_operators'])
+
+    if len(errors['unexpected_projleads']) > 0:
+        print """Unknown users have the portal project creation privilege.
+Double-check that these users are real people, then inventory them:
+  %s\n""" % '\n  '.join(errors['unexpected_projleads'])
+
+    if len(errors['missing_operators']) > 0:
+        print """These users are listed infra's inventory as operators, but do
+not have operator privileges on the portal.  Update the inventory (or
+investigate if this is unexpected):
+  %s\n""" % '\n  '.join(errors['missing_operators'])
+
+    if len(errors['missing_projleads']) > 0:
+        print """These users are listed infra's inventory as project
+leads, but do not have project creation privileges on the portal.
+Update the inventory (or investigate if this is unexpected):
+  %s\n""" % '\n  '.join(errors['missing_projleads'])
+
 def init_logging(options):
     level = logging.INFO
     if options.debug:
@@ -171,9 +261,11 @@ def parse_args(argv):
                       help="database password")
     parser.add_option("-P", "--password-file",
                       help="file containing database password")
+    parser.add_option("-A", "--audit-file",
+                      help="audit users against inventory file")
     options,args = parser.parse_args()
     if not (options.password or options.password_file):
-        parser.print_usage()
+        parser.print_help()
         raise Exception("Missing some required arguments")
     return options,args
 
@@ -198,11 +290,17 @@ def main(argv=None):
     load_members(conn)
     mark_project_leads(conn)
     mark_operators(conn)
-    print_members_csv(Member.sorted_members)
-
     projects = load_projects(conn)
-    csvout = csv.writer(sys.stdout)
-    csvout.writerows(projects)
+
+    # Output data depending on requested action
+    if options.audit_file:
+        inventory = read_audit_inventory(options.audit_file)
+        errors = audit_members(inventory, projects)
+        print_audit_report(errors)
+    else:
+        print_members_csv(Member.sorted_members)
+        csvout = csv.writer(sys.stdout)
+        csvout.writerows(projects)
 
     return 0
 
