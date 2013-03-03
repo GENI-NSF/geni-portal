@@ -211,7 +211,7 @@ def audit_members(inventory, projects):
                     username in inventory['projlead']):
                 errors['unexpected_projleads'].append(info)
             projleads_seen.append(username)
-#            projlead_ids.append(member.id)
+            projlead_ids.append(member.id)
 
     # iterate over projects.  look for any projects whose lead ID wasn't
     # seen as a project lead
