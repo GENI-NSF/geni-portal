@@ -142,6 +142,22 @@ def load_projects(conn):
     cur.close()
     return result
 
+def load_projects_for_audit(conn):
+    query = ("select project_id, project_name, lead_id, creation"
+             + " from pa_project")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(query)
+    fetchsize = 5
+    result = []
+    rows = cur.fetchmany(fetchsize)
+    while rows:
+        for r in rows:
+            result.append({'id': r[0], 'name': r[1], 'lead_id': r[2],
+                           'creation': r[3], })
+        rows = cur.fetchmany(fetchsize)
+    cur.close()
+    return result
+
 def read_audit_inventory(audit_file):
     f = open(audit_file, 'r')
     inventory = {
@@ -171,12 +187,17 @@ def audit_member_info(m):
 def audit_members(inventory, projects):
     operators_seen = []
     projleads_seen = []
+    projlead_ids = []
     errors = {
       'unexpected_operators': [],
       'unexpected_projleads': [],
+      'unexpected_project_lead_ids': [],
       'missing_operators': [],
       'missing_projleads': [],
     }
+
+    # iterate over members.  look for unexpected operators and leads,
+    # and store all operators and leads we see.
     for member in Member.sorted_members():
         info = audit_member_info(member)
         username = member.username
@@ -190,6 +211,17 @@ def audit_members(inventory, projects):
                     username in inventory['projlead']):
                 errors['unexpected_projleads'].append(info)
             projleads_seen.append(username)
+#            projlead_ids.append(member.id)
+
+    # iterate over projects.  look for any projects whose lead ID wasn't
+    # seen as a project lead
+    for project in projects:
+        if not project['lead_id'] in projlead_ids:
+            info = ("%(name)s (%(id)s): lead_id=%(lead_id)s,"
+                    + " created=%(creation)s") % project
+            errors['unexpected_project_lead_ids'].append(info)
+
+    # look for any operators or leads we expected, but didn't see
     for operator in inventory['operator']:
         if not operator in operators_seen:
             errors['missing_operators'].append(operator)
@@ -197,7 +229,6 @@ def audit_members(inventory, projects):
         if not projlead in projleads_seen:
             errors['missing_projleads'].append(projlead)
 
-    print projects
     return errors
 
 def print_audit_report(errors):
@@ -210,6 +241,11 @@ def print_audit_report(errors):
 For guidance on responding to this report, see:
   http://groups.geni.net/syseng/wiki/OpsPortalUserManagement
 """
+    if len(errors['unexpected_project_lead_ids']) > 0:
+        print """ERROR: projects have lead_id who does not have the project
+lead privilege!  Investigate this:
+  %s\n""" % '\n  '.join(errors['unexpected_project_lead_ids'])
+
     if len(errors['unexpected_operators']) > 0:
         print """ERROR: unexpected users have the portal operator privilege!
 Investigate this:
@@ -290,14 +326,15 @@ def main(argv=None):
     load_members(conn)
     mark_project_leads(conn)
     mark_operators(conn)
-    projects = load_projects(conn)
 
     # Output data depending on requested action
     if options.audit_file:
+        projects = load_projects_for_audit(conn)
         inventory = read_audit_inventory(options.audit_file)
         errors = audit_members(inventory, projects)
         print_audit_report(errors)
     else:
+        projects = load_projects(conn)
         print_members_csv(Member.sorted_members)
         csvout = csv.writer(sys.stdout)
         csvout.writerows(projects)
