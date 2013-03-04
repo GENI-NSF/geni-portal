@@ -3,7 +3,7 @@
 FILENAME="/tmp/addutaham.$USER"
 
 echo "-- Create the entry for Utah AM:" >> $FILENAME
-echo "insert into service_registry (service_type, service_url, service_urn, service_cert, service_name, service_description) values (0, 'https://www.emulab.net:12369/protogeni/xmlrpc/am/2.0', 'urn:publicid:IDN+emulab.net+authority+cm', '/usr/share/geni-ch/sr/certs/utah-am.pem', 'ProtoGENI Utah', 'ProtoGENI Utah AM');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_urn, service_cert, service_name, service_description) values (0, 'https://www.emulab.net:12369/protogeni/xmlrpc/am/2.0', 'urn:publicid:IDN+emulab.net+authority+cm', '/usr/share/geni-ch/sr/certs/utah-am.pem', 'Utah ProtoGENI', 'ProtoGENI Utah AM');" >> $FILENAME
 
 echo "-- Entry for Thawte signer of Utah web server:" >> $FILENAME
 echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/Thawte_Premium_Server_CA.pem', '', 'For flack: signer of Utah web server cert');" >> $FILENAME
