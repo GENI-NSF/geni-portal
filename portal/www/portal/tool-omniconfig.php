@@ -51,6 +51,15 @@ if ($has_certificate
   $has_private_key = true;
 }
 
+if (! $has_certificate) {
+  // warn that no cert has been generated
+  $warnings[] = '<p class="warn">No certificate has been generated.'
+        . ' Please <a href="kmcert.php?close=1" target="_blank">'
+        . 'generate a certificate'
+        . '</a>.'
+        . '</p>';
+}
+
 // FIXME: hardcoded path
 $download_url = 'https://' . $_SERVER['SERVER_NAME'] . '/secure/kmcert.php?close=1';
 $download_text = 'Create and download your certificate';
@@ -156,7 +165,11 @@ if ($num_projects > 1) {
   <li> Edit the <code>portal_omni_config</code> to correct:
     <ol>
       <?php echo $cert_key_list_items; ?>
-      <li>the path to your SSH public key to use for node logon.</li>
+      <li>the path to your SSH public key to use for node logon.
+        <ul><li>You can use <code>ssh-keygen</code> on many OSes to generate
+                an SSH keypair if you do not have one.</li>
+        </ul>
+      </li>
     </ol>
   </li>
   <li> When running omni:
@@ -190,7 +203,11 @@ reservation tool.
   <li> Edit the <code>portal_omni_config</code> to correct:
     <ol>
       <?php echo $cert_key_list_items; ?>
-      <li> the path to your SSH public key to use for node logon.</li>
+      <li> the path to your SSH public key to use for node logon.
+        <ul><li>You can use <code>ssh-keygen</code> on many OSes to generate
+                an SSH keypair if you do not have one.</li>
+        </ul>
+      </li>
     </ol>
   </li>
   <li> When running omni:
@@ -198,7 +215,9 @@ reservation tool.
       <li> Specify the path to the omni configuration file and the full slice URN. For example:
         <ul><li><code>omni.py -c portal_omni_config sliverstatus &lt;slice URN&gt;</code></li></ul>
       </li>
-      <li> Use the full slice URN when naming your slice, not just the slice name.</li>
+      <li><i>Note: be sure to use the full slice URN when naming your slice, not just the slice name.</i>
+        <ul><li>omni 2.2 (and newer) fixes this, by allowing you to specify the project in which your slice lives</li></ul>
+      </li>
     </ol>
   </li>
 </ol>
