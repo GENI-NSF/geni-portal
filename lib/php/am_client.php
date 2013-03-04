@@ -119,7 +119,14 @@ function get_template_omni_config($user, $version, $default_project=null)
       	$PGCH_URL = $pgch[SR_TABLE_FIELDNAME::SERVICE_URL];	
     }
 
-    $omni_config = "[omni]\n"
+    $omni_config = '# This omni configuration file is for use with omni version ';
+    if ($version == '2.2') {
+      $omni_config .= '2.2 or higher';
+    } else {
+      $omni_config .= '2.1 or earlier';
+    }
+    $omni_config .= "\n";
+    $omni_config .= "[omni]\n"
       . "default_cf = portal\n"
       . "# 'users' is a comma separated list of users which should be added to a slice.\n"
       . "# Each user is defined in a separate section below.\n"
