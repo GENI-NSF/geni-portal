@@ -4,7 +4,8 @@ WWW_GROUP=www-data
 
 SRC=$(DESTDIR)/usr/share/geni-ch/sbin
 DEST=$(DESTDIR)/usr/share/geni-ch/sbin
-ETC=/usr/local/etc
+ETC=$(DESTDIR)/usr/local/etc
+BIN=$(DESTDIR)/usr/local/bin
 
 # Programs
 INSTALL ?= /usr/bin/install
@@ -16,13 +17,16 @@ WWWINSTALL = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
 default:
 	@echo "Try make install"
 
+# To date, these are the scripts to install, and it is just
+# a subset of all the scripts that exist. If we need to
+# install more, just add another line.
 install:
 	$(INSTALL) geni-ch-githash $(ETC)
-# NOTE: the three scripts in the bin directory are NOT installed with
-# this script anymore.  Instead they are managed by Puppet.
-#	/bin/cp gmoc_list_contacts $(DEST)
-#	/bin/cp gmoc_list_slices $(DEST)
-#	/bin/cp report_genich_relations $(DEST)
+	$(INSTALL) -d $(BIN)
+	$(INSTALL) geni-ops-report $(BIN)
+	$(INSTALL) report_genich_relations $(BIN)
+	$(INSTALL) gmoc_list_contacts $(BIN)
+	$(INSTALL) gmoc_list_slices $(BIN)
 
 syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)
