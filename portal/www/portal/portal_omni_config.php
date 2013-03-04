@@ -36,6 +36,11 @@ $omni_version = 2.2;
 if (array_key_exists('version', $_REQUEST)) {
   $omni_version = $_REQUEST['version'];
 }
+$default_project = null;
+if (array_key_exists('project', $_REQUEST)) {
+  $default_project = $_REQUEST['project'];
+}
+
 
 /* Filename to download omni_config into*/
 $filename = "portal_omni_config";
@@ -43,8 +48,8 @@ $filename = "portal_omni_config";
 $_SESSION['lastmessage'] = "Downloaded '$filename'";
 
 require_once("am_client.php"); 
-// must double backslash things in the omni_config here....
-$omni_config = get_template_omni_config($user, $omni_version);
+$omni_config = get_template_omni_config($user, $omni_version,
+                                        $default_project);
 
 // Set headers for download
 header("Cache-Control: public");
