@@ -31,24 +31,97 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Profile', $TAB_PROFILE);
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
 
 // Does the user have an outside certificate?
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+
+// Store any warnings here for display at the top of the page.
+$warnings = array();
+// Warnings specific to omni 2.2 or newer
+$warnings22 = array();
+
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
 $has_certificate = ! is_null($result);
-// FIXME: hardcoded paths
-$create_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
-$download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
+$has_private_key = false;
+if ($has_certificate
+    && array_key_exists(MA_OUTSIDE_CERT_TABLE_FIELDNAME::PRIVATE_KEY,
+                        $result)
+    && (! is_null($result[MA_OUTSIDE_CERT_TABLE_FIELDNAME::PRIVATE_KEY]))) {
+  $has_private_key = true;
+}
 
+// FIXME: hardcoded path
+$download_url = 'https://' . $_SERVER['SERVER_NAME'] . '/secure/kmcert.php?close=1';
+$download_text = 'Create and download your certificate';
+if ($has_certificate) {
+  $download_text = 'Download your certificate';
+}
+
+/* --------- PROJECTS ---------- */
+$project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+$num_projects = count($project_ids);
+$is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
+if ($num_projects > 0) {
+  // If there are any projects, look up their details. We need the names
+  // in order to set up a default project in the config file.
+  $projects = lookup_project_details($pa_url, $user, $project_ids);
+}
+if ($num_projects == 0) {
+  // warn that the user has no projects
+  $warn = '<p class="warn">You are not a member of any projects.'
+        . ' No default project can be chosen unless you';
+  if ($is_project_lead) {
+    $warn .=  ' <button onClick="window.location=\'edit-project.php\'"><b>create a project</b></button> or';
+  }
+  $warn .= ' <button onClick="window.location=\'join-project.php\'"><b>join a project</b></button>.</p>';
+  $warnings22[] = $warn;
+}
+
+
+
+// Build the certificate and key list items. These are based on whether
+// the user generated a cert/key or uploaded a CSR.
+// By default, assume they uploaded a CSR.
+$cert_key_list_items = '<li>the path to the certificate downloaded in step 2</li>';
+$cert_key_list_items .= '<li>the path to the SSL private key used to generate your certificate, and </li>';
+if ($has_private_key) {
+  $cert_key_list_items = '<li>the path to the combined certificate and private key downloaded in step 2</li>';
+}
+
+/* ---------- Set up the omni config link. ---------- */
+$config_url = 'portal_omni_config.php';
+$config_link = $config_url;
+if ($num_projects > 0) {
+  // if there is a project, set the link to the default
+  // project, which is the first in the list
+  $proj = $projects[$project_ids[0]];
+  $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  $config_link .= "?project=$proj_name";
+}
+
+/* ---------- PAGE OUTPUT STARTS HERE ---------- */
+show_header('GENI Portal: Profile', $TAB_PROFILE);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 ?>
 
 
 <h1>Omni command line resource reservation tool</h1>
+<?php
+/* ---------- Display warnings ---------- */
+foreach ($warnings as $warning) {
+  echo $warning;
+}
+?>
 <div id="omni22">
-<i>Note: these instructions are for omni 2.2 or higher.
+<?php
+/* ---------- Display warnings ---------- */
+foreach ($warnings22 as $warning) {
+  echo $warning;
+}
+?>
+<i>Note: these instructions are for omni 2.2 or newer.
 <a id="want21" href="#">See instructions for older versions</a></i>
 <p>
 Download and use a template omni_config file for use with the
@@ -56,42 +129,52 @@ Download and use a template omni_config file for use with the
 reservation tool.
 <br/>
 <ol>
-  <li>Download this <a href='portal_omni_config.php'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>
-
-
 <?php
-if ($has_certificate) {
-?>
-  <li> <a href="<?php print $download_url; ?>" target="_blank">Download your certificate</a>, noting the path.</li>
-<?php
-} else {
-?>
-  <li> <a href="<?php print $download_url; ?>" target="_blank">Create and download your certificate</a>, noting the path.</li>
-<?php
+if ($num_projects > 1) {
+  echo '<li>Choose project as omni default: ';
+  echo '<select id="pselect" name="project" onchange="update_link()">\n';
+  foreach ($projects as $proj) {
+    $proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+    $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    $proj_desc = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+    echo "<option value=\"$proj_name\" title=\"$proj_desc\">$proj_name</option>\n";
+  }
+  echo '</select></li>';
+  // There are multiple projects. Put up a chooser for the default project.
 }
 ?>
 
-
+  <li>Download this
+      <a id='configlink' href='<?php echo $config_link; ?>'>
+          omni_config
+      </a>
+      and save it to a file named <code>portal_omni_config</code>.</li>
+  <li><a href="<?php print $download_url; ?>" target="_blank">
+        <?php echo $download_text; ?>
+      </a>, noting the path.
+  </li>
   <li> Edit the <code>portal_omni_config</code> to correct:
     <ol>
-      <li>the certificate path,</li>
-      <li>the path to the SSL private key used to generate your certificate, and </li>
-      <li> the path to your SSH public key to use for node logon.</li>
+      <?php echo $cert_key_list_items; ?>
+      <li>the path to your SSH public key to use for node logon.</li>
     </ol>
   </li>
   <li> When running omni:
     <ol>
-      <li> Specify the path to the <code>omni_config</code>, specify the project name, and the slice name or URN.  For example:
+      <li> Specify the path to the omni config file and the slice name or URN.  For example:
+        <ul><li><code>omni.py -c portal_omni_config sliverstatus &lt;slice name or URN&gt;</code></li></ul>
+      </li>
+      <li> Alternatively, you can specify a project with the <code>--project</code> option:
         <ul><li><code>omni.py -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice name or URN&gt;</code></li></ul>
       </li>
-    </ol>
+      </ol>
   </li>
 </ol>
 <p/>
 </div>
 
 <div id="omni21">
-<i>Note: these instructions are for omni 2.1 or lower.
+<i>Note: these instructions are for omni 2.1 or earlier.
 <a id="want22" href="#">See instructions for newer versions</a></i>
 <p>
 Download and use a template omni_config file for use with the
@@ -100,32 +183,20 @@ reservation tool.
 <br/>
 <ol>
   <li>Download this <a href='portal_omni_config.php?version=2.1'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>
-
-
-<?php
-if ($has_certificate) {
-?>
-  <li> <a href="<?php print $download_url; ?>" target="_blank">Download your certificate</a>, noting the path.</li>
-<?php
-} else {
-?>
-  <li> <a href="<?php print $download_url; ?>" target="_blank">Create and download your certificate</a>, noting the path.</li>
-<?php
-}
-?>
-
-
+  <li><a href="<?php print $download_url; ?>" target="_blank">
+        <?php echo $download_text; ?>
+      </a>, noting the path.
+  </li>
   <li> Edit the <code>portal_omni_config</code> to correct:
     <ol>
-      <li>the certificate path,</li>
-      <li>the path to the SSL private key used to generate your certificate, and </li>
+      <?php echo $cert_key_list_items; ?>
       <li> the path to your SSH public key to use for node logon.</li>
     </ol>
   </li>
   <li> When running omni:
     <ol>
-      <li> Specify the path to the <code>omni_config</code>, specify the project name, and the full slice URN.  For example:
-        <ul><li><code>omni.py -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice URN&gt;</code></li></ul>
+      <li> Specify the path to the omni configuration file and the full slice URN. For example:
+        <ul><li><code>omni.py -c portal_omni_config sliverstatus &lt;slice URN&gt;</code></li></ul>
       </li>
       <li> Use the full slice URN when naming your slice, not just the slice name.</li>
     </ol>
@@ -144,6 +215,13 @@ $('#want22').click(function() {
 });
 /* hide omni 2.1 by default */
 $('#omni21').hide();
+
+function update_link() {
+  var baseURL = "<?php echo $config_url; ?>";
+  var projName = $('#pselect').val();
+  var fullURL = baseURL + "?project=" + projName;
+  $('#configlink').attr("href", fullURL);
+}
 </script>
 
 
