@@ -46,8 +46,11 @@
   --src="https://www.emulab.net/protogeni/flack2/forge/jsbn2.js"></script> -->
       <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/prng.js"></script>
       <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/random.js"></script>
+      <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/oids.js"></script>
+      <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/rsa.js"></script>
       <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/pki.js"></script>
       <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/tls.js"></script>
+      <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/tlssocket.js"></script>
       <script type="text/javascript" src="https://www.emulab.net/protogeni/flack2/forge/http.js"></script>
 
       <script type="text/javascript">
@@ -142,6 +145,19 @@
   {
     try {
       serverCerts = [];
+      var list = newCert.split("-----END CERTIFICATE-----");
+      for (var i = 0; i < list.length - 1; ++i)
+      {
+        serverCerts.push(list[i] + "-----END CERTIFICATE-----\n");
+      }
+    } catch(ex) {
+       forge.log.error(cat, ex);
+    }
+  }
+
+  function addServerCert(newCert)
+  {
+    try {
       var list = newCert.split("-----END CERTIFICATE-----");
       for (var i = 0; i < list.length - 1; ++i)
       {
