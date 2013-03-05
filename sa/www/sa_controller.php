@@ -400,6 +400,7 @@ function create_slice($args, $message)
     }
 
   $conn = db_conn();
+
   $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME 
     . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = " . $conn->quote($slice_name, 'text')
     . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = " . $conn->quote($project_id, 'text')
@@ -410,10 +411,27 @@ function create_slice($args, $message)
   $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
   $exists = $exists['count'];
   if ($exists > 0) {
-    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: slice name \"$slice_name\" already exists in project.");
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: slice name \"$slice_name\" already exists in this project.");
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, 
-                             "Slice of name " . $slice_name . " already exists in project.");
+                             "Slice of name " . $slice_name . " already exists in this project.");
   }
+
+  // Ticket #433: HACK FOR PROTOGENI, until they support subSAs having unique slice namespaces
+  $exists_sql = "select count(*) from " . $SA_SLICE_TABLENAME
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . " = " . $conn->quote($slice_name, 'text')
+    //    . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " = " . $conn->quote($project_id, 'text')
+    . " AND NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED;
+  //  error_log("SQL = " . $exists_sql);
+  $exists_response = db_fetch_row($exists_sql);
+  //  error_log("Exists " . print_r($exists_response, true));
+  $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
+  $exists = $exists['count'];
+  if ($exists > 0) {
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Create slice error: slice name \"$slice_name\" already exists in another project.");
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
+                             "Slice of name " . $slice_name . " already exists in another project.");
+  }
+  // END OF HACK
 
   $slice_email = 'slice-' . $slice_name . '@example.com';
   $slice_cert = create_slice_certificate($project_name, $slice_name,
