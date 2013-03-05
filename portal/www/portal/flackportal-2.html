@@ -3,14 +3,12 @@
           // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
           var xiSwfUrlStr = "playerProductInstall.swf";
           var flashvars = {};
-          var params = {};
-          params.quality = "high";
-          params.bgcolor = "#d2e1f0";
-          params.allowscriptaccess = "always";
-          params.allowfullscreen = "true";
-		  params.fullScreenOnSelection = "true";
-          var attributes = {};
-          attributes.id = "flack";
-          attributes.name = "flack";
-          attributes.align = "middle";
-          swfobject.embedSWF(
+          flashvars.skipstartup = "1";
+          flashvars.bundlepreset = "1";
+          flashvars.keycertpreset = "1";
+          flashvars.loadallmanagerswithoutasking = "1";
+
+          //flashvars.keycert = "URL_ENCODED_PEM"
+          //flashvars.keypassphrase = "URL_ENCODED_PASSPHRASE";
+          //flashvars.saurl = "https%3A%2F%2Fwww.emulab.net%3A12369%2Fprotogeni%2Fxmlrpc%2Fsa";
+          //flashvars.saurn = "urn%3Apublicid%3AIDN%2Bemulab.net%2Bauthority%2Bsa";
