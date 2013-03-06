@@ -114,6 +114,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
     $leadname = $member_names[$lead_id];
     print $leadname;
+    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
   }
   print "</table><br/>\n";

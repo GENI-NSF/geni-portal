@@ -67,6 +67,14 @@ function validate_password($password, &$error_msg)
     $error_msg = "Invalid passphrase: must be at least $min_length characters.";
     return False;
   }
+  // Disallow bad chars
+  // gives you ASCII chars from 32  to 127: really less than all printable
+  $pw2 = filter_var($password,FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_NO_ENCODE_QUOTES);
+  if ($pw2 != $password) {
+    error_log("Cleaned SSH key PW $pw2 not same as input - rejecting");
+    $error_msg = "Invalid passphrase: Use only ASCII printable characters";
+    return False;
+  }
   return True;
 }
 
@@ -110,7 +118,9 @@ $privatekeyfile = tempnam(sys_get_temp_dir(), 'ssh');
 /* delete the file so ssh-keygen doesn't complain about overwrite. */
 unlink($privatekeyfile);
 $publickeyfile = $privatekeyfile . ".pub"; /* per the ssh-keygen man page */
-$command = "/usr/bin/ssh-keygen -t rsa -f $privatekeyfile -N $password -q";
+// single quote the password
+$cleanpw = escapeshellarg($password);
+$command = "/usr/bin/ssh-keygen -t rsa -f $privatekeyfile -N $cleanpw -q";
 $result = exec($command, $output, $status);
 if ($status != 0) {
 	/* Error! */
