@@ -39,7 +39,7 @@ function query_sliverstatus( $user, $ams, $sa_url, $slice, $slice_id ) {
 // as the ID from the DB of an AM which should be queried
 // If no such arg is given, then query the DB and query all registered AMs
 
-if (! isset($ams) || is_null($ams)) {
+if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   // Didnt get an array of AMs
   if (! isset($am) || is_null($am)) {
     // Nor a single am
@@ -51,7 +51,7 @@ if (! isset($ams) || is_null($ams)) {
 }
 
 if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
-  error_log("Found no AMs!");
+  error_log("Found no AMs for query-sliverstatus!");
   $slivers_output = "No AMs registered.";
 }
 

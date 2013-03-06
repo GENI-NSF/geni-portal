@@ -64,6 +64,9 @@ $header = "Status of Slivers on slice: $slice_name";
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
+if (! isset($am_id) or is_null($am_id)) {
+  $am_id = "";
+}
 ?>
 
 <script src="amstatus.js"></script>

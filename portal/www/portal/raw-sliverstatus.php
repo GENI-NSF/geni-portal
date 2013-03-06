@@ -66,13 +66,16 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 }
 
 
+if (! isset($ams) or is_null($ams)) {
+  $ams = array();
+}
 // Look up the sliverstatus...
 $statRet = query_sliverstatus( $user, $ams, $sa_url, $slice, $slice_id );
 $msg = $statRet[0];
 $obj = $statRet[1];
 
 if (! $obj) {
-  relative_redirect("home.php");
+  relative_redirect("slice.php?slice_id=$slice_id");
 }
 
 /* Construct a filename like "raw-sliverstatus.json" */
