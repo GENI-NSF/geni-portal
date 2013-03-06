@@ -85,7 +85,7 @@ $pids = get_projects_for_member($pa_url, $user, $user->account_id, true);
 if (isset($pids) && ! is_null($pids) && in_array($project_id, $pids)) {
   error_log($user->prettyName() . " already in project " . $project_id);
   $_SESSION['lasterror'] = "You are already in this project.";
-  relative_redirect('project.php?project_id=$project_id');
+  relative_redirect("project.php?project_id=$project_id");
 }
 
 // confirm member has not already requested to join this project
