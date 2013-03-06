@@ -97,7 +97,7 @@ if (array_key_exists('id', $_REQUEST)
       $cancel_dest = $_SERVER['HTTP_REFERER'];
     } else {
       // If no referer, go to home page on cancel.
-      $cancel_dest = relative_url('home.php');
+      $cancel_dest = relative_url('profile.php');
     }
     show_ssh_edit_form($ssh_key, $cancel_dest);
     js_delete_ssh_key();
