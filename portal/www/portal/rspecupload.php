@@ -132,6 +132,15 @@ if (array_key_exists('file', $_FILES)) {
   }
 }
 
+/* Set up the referer, which is used to
+ * redirect after upload.
+ */
+$referer_key = 'HTTP_REFERER';
+if (array_key_exists($referer_key, $_SERVER)) {
+  $referer = $_SERVER['HTTP_REFERER'];
+} else {
+  $referer = relative_url('profile.php');
+}
 if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
@@ -158,7 +167,7 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input type="text" name="description"/> - Required';
   echo '  <br/><br/>';
   echo '  <input type="submit" name="submit" value="Upload"/>';
-  echo '  <input type="hidden" name="referer" value="' . $_SERVER['HTTP_REFERER'] . '"/>';
+  echo '  <input type="hidden" name="referer" value="' . $referer . '"/>';
   echo '</form>';
   echo '<br/>';
   include("footer.php");

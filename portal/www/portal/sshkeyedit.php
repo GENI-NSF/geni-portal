@@ -93,7 +93,13 @@ if (array_key_exists('id', $_REQUEST)
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     $ssh_key = lookup_ssh_key($ma_url, $user, $user->account_id,
             $_REQUEST['id']);
-    show_ssh_edit_form($ssh_key, $_SERVER['HTTP_REFERER']);
+    if (array_key_exists('HTTP_REFERER', $_SERVER)) {
+      $cancel_dest = $_SERVER['HTTP_REFERER'];
+    } else {
+      // If no referer, go to home page on cancel.
+      $cancel_dest = relative_url('profile.php');
+    }
+    show_ssh_edit_form($ssh_key, $cancel_dest);
     js_delete_ssh_key();
     $delete_sshkey_url = relative_url('deletesshkey.php?');
     $args['id'] = $ssh_key['id'];
