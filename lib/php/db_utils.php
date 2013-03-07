@@ -147,8 +147,7 @@ function db_fetch_row($query, $msg = "")
 
   $resultset = $conn->query($query);
   if (PEAR::isError($resultset) || MDB2::isError($resultset)) {
-    error_log("DB ERROR: " . $msg . ": '" . MDB2::errorMessage() . "', details: '" . 
-	      $resultset->getUserInfo() . "', doing query: '" . $query . "'<br/>\n");
+    log_db_error($resultset, $query, $msg);
     return generate_database_response(RESPONSE_ERROR::DATABASE, null, $resultset);
   }
   if (MDB2::isError($resultset->numRows())) {
