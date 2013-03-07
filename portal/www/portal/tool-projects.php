@@ -134,9 +134,9 @@ if (count($project_objects) > 0) {
      }
      $context_id = $req[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
      if (array_key_exists($context_id , $project_request_map )) {
-        $project_request_map[$context_id]++;
+       $project_request_map[$context_id][] = $req;
      } else {
-        $project_request_map[$context_id] = 1;
+       $project_request_map[$context_id] = array($req);
      }
  }							
   // print "\nREQ LIST: ". print_r($reqlist, true);	
@@ -154,14 +154,18 @@ if (count($project_objects) > 0) {
     $handle_req_str = "";
     if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
       if (array_key_exists($project_id , $project_request_map )) {
-         $reqcnt = $project_request_map[$project_id];
+	$reqcnt = count($project_request_map[$project_id]);
       } else {
          $reqcnt = 0;
       }
       //      error_log("REQCNT " . print_r($reqcnt, true) . " " . $project_id);
-      $handle_req_str = "(<b>$reqcnt</b> Open Join Request(s)) ";
       if ($reqcnt == 0) {
 	$handle_req_str = "";
+      } elseif ($reqcnt == 1) {
+	$rid = $project_request_map[$project_id][0][RQ_REQUEST_TABLE_FIELDNAME::ID];
+	$handle_req_str = "(<b>$reqcnt</b> Join Request(s) to <a href=\"handle-project-request.php?request_id=$rid\">Handle</a>) ";
+      } else {
+	$handle_req_str = "(<b>$reqcnt</b> Join Request(s) to <a href=\"project.php?project_id=$project_id\">Handle</a>) ";
       }
     }
 
@@ -213,10 +217,11 @@ if (isset($reqs) && count($reqs) > 0) {
 						PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
 
   print "<br/>\n";
+  print "<h3>Projects you Asked to Join</h3>\n";
   print "Found " . count($reqs) . " outstanding project join request(s) by you:<br/>\n";
   print "<table>\n";
   // Could add a cancel button?
-  print "<tr><th>Project Name</th><th>Project Lead</th><th>Project Purpose</th><th>Request Created</th><th>Request Reason</th></tr>\n";
+  print "<tr><th>Project Name</th><th>Project Lead</th><th>Project Purpose</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request</th></tr>\n";
   foreach ($reqs as $request) {
     // Print it out
     $project_id = $request['context_id'];
@@ -228,7 +233,9 @@ if (isset($reqs) && count($reqs) > 0) {
     $req_date = dateUIFormat($req_date_db);
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
     $lead_name = $project_lead_names[$lead_id];
-    print "<tr><td>$project_name</td><td>$lead_name</td><td>$purpose</td><td>$req_date</td><td>$reason</td></tr>\n";
+    $cancel_url="cancel-join-project.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+    $cancel_button = "<button style=\"\" onClick=\"window.location='" . $cancel_url . "'\"><b>Cancel Request</b></button>";
+    print "<tr><td>$project_name</td><td>$lead_name</td><td>$purpose</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
   }
   print "</table>\n";
   print "<br/><br/>\n";
