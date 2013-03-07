@@ -293,7 +293,11 @@ function print_rspec( $obj, $pretty ) {
   foreach ($args as $arg){
     $arg_url = $arg;
     $arg_name = am_name($arg_url);
-    $xml = $obj[$arg]['value'];
+    if (array_key_exists('value', $obj[$arg])) {
+        $xml = $obj[$arg]['value'];
+    } else {
+        $xml = "";
+    }
     $code = $obj[$arg]['code']['geni_code'];
     if (array_key_exists('output', $obj[$arg])) {
       $output = $obj[$arg]['output'];
@@ -302,8 +306,8 @@ function print_rspec( $obj, $pretty ) {
     }
 
     /* If pretty, keep output clean by only printing RSpec for
-       aggregates which have a slice (ie code!=12)*/
-    if (!($code == 12 and $pretty)){
+       aggregates which have a slice (ie code!=12 or code !==2)*/
+    if (!(($code == 12 or $code == 2) and $pretty)){
       print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
       print "<div class='resources'>";
       if ($code == 0){
