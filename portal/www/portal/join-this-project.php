@@ -34,6 +34,7 @@ require_once('rq_client.php');
 require_once('rq_constants.php');
 require_once("pa_constants.php");
 require_once("pa_client.php");
+require_once("cs_constants.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -65,6 +66,17 @@ if (! isset($project) || is_null($project)) {
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
+
+// Get all the admins for this project, so we can email them as well
+$admins = get_project_members($pa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
+$admin_emails = array();
+if ($admins and count($admins) > 0) {
+  foreach ($admins as $admin_res) {
+    $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
+    $admin_emails[] = $admin->prettyName() . " <" . $admin->email() . ">";
+    //    error_log("Adding admin " . $admin->prettyName());
+  }
+}
 
 $error = null;
 $message = null;
@@ -133,10 +145,17 @@ Thank you,\n" . $user->prettyName() . "\n";
 
   // Send the email
   $email = $user->email();
+  if (count($admin_emails) > 0) {
+    //error_log("Got admin_emails " . print_r($admin_emails, True));
+    $cc = "Cc: " . implode(", ", $admin_emails) . "\r\n";
+  } else {
+    $cc = ""; // FIXME: Include portal-dev-admin?
+  }
+  
   mail($lead->prettyName() . "<" . $lead->email() . ">",
        "Join GENI project $project_name?",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+       "Reply-To: $email" . "\r\n" . $cc . "From: $name <$email>");
 
   // Put up a page saying we sent the request
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
