@@ -56,7 +56,7 @@ if (array_key_exists("am_id", $_REQUEST)) {
     $am_id = $am_ids[0];
     $am = $ams[0];
   } elseif (!$am_id) {
-    error_log(": null am_id from REQUEST");
+    //error_log(": null am_id from REQUEST");
     $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);	
     $am = $ams[0];
   } else {
@@ -71,7 +71,7 @@ if (array_key_exists("am_id", $_REQUEST)) {
       $ams = Array();
     }
   }
-  $all_aggs = $ams;
+  //$all_aggs = $ams;
 } else {
   $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 }

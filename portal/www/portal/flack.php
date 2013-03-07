@@ -32,8 +32,10 @@ require_once('db-util.php');
 
 const FLACK_1_FILENAME = "flackportal-1.html";
 const FLACK_2_FILENAME = "flackportal-2.html";
+const FLACK_22_FILENAME = "flackportal-22.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
-const URL_PREAMBLE = "flack.swf?securitypreset=1&loadallmanagers=1&";
+const URL_PREAMBLE = "https://www.emulab.net/protogeni/flack2/flack.swf?securitypreset=1&loadallmanagers=1&";
+const URL_PREAMBLE2 = "https://www.emulab.net/protogeni/flack2/flack.swf";
 // FIXME: Should not be hard-coded
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
@@ -93,15 +95,22 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
   $filename = "/tmp/" . make_uuid() . ".html";
   $content_1 = file_get_contents(FLACK_1_FILENAME);
   $content_2 = file_get_contents(FLACK_2_FILENAME);
+  $content_22 = file_get_contents(FLACK_22_FILENAME);
   $content_3 = file_get_contents(FLACK_3_FILENAME);
 
   $set_commands = 'setServerCert("' . $am_root_cert_bundle . '");' . "\n" 
     . 'setClientKey("' . $user_key . '");' . "\n"
     . 'setClientCert("' . $user_cert . '");' . "\n";
-
+  //  $keycert = '          flashvars.keycert = "' . $user_key . "\\n" . $user_cert . '";' . "\n"
+  //    . '          flashvars.keypassphrase = "";' . "\n";
+  $savars = '          flashvars.saurl = "' . urlencode($sa_url) . '";' . "\n"
+    . '          flashvars.saurn = "' . $sa_urn . '";' . "\n";
+  $slicevar = '          flashvars.sliceurn = "' . $slice_urn . '";' . "\n";
+  $chvar = '          flashvars.churl = "' . urlencode($ch_url) . '";' . "\n";
   $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=" . $sa_urn. "&churl=$ch_url";
 
-  $content = $content_1 . $set_commands . $content_2 . '"' . URL_PREAMBLE . $url_params . $content_3;
+  $content = $content_1 . $set_commands . $content_2 . $savars . $slicevar . $chvar . $content_22 . '"' . URL_PREAMBLE2 . $content_3;
+  //  $content = $content_1 . $set_commands . $content_2 . '"' . URL_PREAMBLE . $url_params . $content_3;
   file_put_contents($filename, $content);
   return $content;
 }

@@ -127,6 +127,12 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("DeleteSliver output = " . $retVal);
 }
 
+$s = array();
+$f = array();
+$obj = array();
+$obj[] = $s;
+$obj[] = $f;
+
 if ( count($retVal) == 2 ) {
    $msg = $retVal[0];
    $obj1 = $retVal[1];
@@ -140,7 +146,6 @@ if ( count($retVal) == 2 ) {
       }   	      	    
 } else {
    $msg = $retVal;
-   $obj = "";
 }
 
 $success = $obj[0];
@@ -173,6 +178,6 @@ header("Content-Type: application/json");
 if ($obj != "" ) {
    print json_indent(json_encode($obj));
 } else {
-   print json_index($msg);
+   print json_indent($msg);
 }
 ?>

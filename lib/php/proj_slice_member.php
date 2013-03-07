@@ -32,9 +32,9 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user)
   $project_slice_map = array();
   $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
   //  error_log("PROJECTS = " . print_r($projects, true));
-  $slice_data = get_slices_for_projects($sa_url, $user, $projects);
-  //  error_log("SLICE_DATA =  = " . print_r($slice_data, true));
   if (count($projects) > 0) {
+    $slice_data = get_slices_for_projects($sa_url, $user, $projects);
+    //  error_log("SLICE_DATA =  = " . print_r($slice_data, true));
      $project_objects = lookup_project_details($pa_url, $user, $projects);
      foreach ($project_objects as $project) {
         $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
