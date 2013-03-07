@@ -327,8 +327,8 @@ function invoke_omni_function($am_url, $user, $args)
      }
      pclose($handle);
   
-//     unlink($cert_file);
-//     unlink($key_file);
+     unlink($cert_file);
+     unlink($key_file);
      unlink($omni_file);
      unlink($tmp_version_cache);
      foreach ($ssh_key_files as $tmpfile) {
