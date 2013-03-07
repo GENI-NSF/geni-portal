@@ -44,7 +44,7 @@ include("tool-breadcrumbs.php");
 
 $invitees = null;
 $error = null;
-$message = null;
+$message = '';
 if (array_key_exists("to", $_REQUEST)) {
   $invitee_string = $_REQUEST["to"];
   // split on ,
@@ -63,7 +63,7 @@ if (array_key_exists("to", $_REQUEST)) {
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email
   $hostname = $_SERVER['HTTP_HOST'];
-  $message .= "To join my project, go here: 
+  $message .= "\nTo join my project, go here: 
       https://$hostname/secure/join-this-project.php?project_id=$project_id
 
 Once you request to join, I'll get an email to come back to the GENI portal and approve you.
