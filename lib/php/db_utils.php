@@ -97,6 +97,18 @@ function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
   return generate_database_response($code, $value, $output);
 }
 
+function log_db_error($error_result, $query, $msg)
+{
+  if ($msg) {
+    $log_msg .= "DB ERROR $msg: \"";
+  } else {
+    $log_msg = "DB ERROR: \"";
+  }
+  $log_msg .= MDB2::errorMessage($error_result);
+  $log_msg .= "\" for query \"$query\"";
+  error_log($log_msg);
+}
+
 function db_fetch_rows($query, $msg = "")
 {
   //  error_log('db_fetch_rows ' . $query);
@@ -112,8 +124,7 @@ function db_fetch_rows($query, $msg = "")
     $code = RESPONSE_ERROR::DATABASE;
     $value = null;
     $output = $resultset;
-    
-    error_log("DB ERROR " . $msg . ": " . MDB2::errorMessage());
+    log_db_error($resultset, $query, $msg);
   } else {
     while($row = $resultset->fetchRow(MDB2_FETCHMODE_ASSOC)) {
       $rows[] = $row;
