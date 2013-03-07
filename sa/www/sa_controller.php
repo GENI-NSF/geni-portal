@@ -1195,6 +1195,10 @@ function lookup_slice_details($args)
 function get_slices_for_projects($args)
 {
   $project_uuids = $args[SA_ARGUMENT::PROJECT_UUIDS];
+  if (! $project_uuids) {
+    // If there are no project UUIDs, return an empty array.
+    return generate_response(RESPONSE_ERROR::NONE, array(), '');
+  }
   $project_uuids_as_sql = convert_list($project_uuids);
 
   global $SA_SLICE_TABLENAME;
