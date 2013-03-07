@@ -1271,8 +1271,11 @@ class PGClearinghouse(Clearinghouse):
                             self.logger.error("ListComponents failed to create AM gid for AM at %s from server_cert we got from server: %s", url, traceback.format_exc())
                     else:
                         gidS = ''
-                    # try except construct gidO. Then pull out URN. Then turn that into hrn
-                    ret.append(dict(gid=gidS, hrn=hrn, url=url, urn=urn))
+                    if gidS and gidS != '' and hrn != 'AM-hrn-unknown' and urn != 'AM-urn-unknown':
+                        ret.append(dict(gid=gidS, hrn=hrn, url=url, urn=urn))
+                    else:
+                        # Invalid cert. Like the ExoGENI AMs. Suppress these for now
+                        self.logger.error("Not returning AM with URL %s - invalid hrn (%s) or urn (%s) or gid", url, hrn, urn)
             return ret
 
 # End of implementation of PG CH/SA servers
