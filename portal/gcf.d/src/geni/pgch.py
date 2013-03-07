@@ -1259,23 +1259,33 @@ class PGClearinghouse(Clearinghouse):
                     gidO = None
                     hrn = 'AM-hrn-unknown'
                     urn = 'AM-urn-unknown'
+                    if am.has_key('service_urn') and am['service_urn'] is not None and am['service_urn'].strip() != '':
+                        urn = am['service_urn']
+                        hrn = sfa.util.xrn.urn_to_hrn(urn)
+                        self.logger.debug("Got AM urn/hrn from SR: %s (%s)", urn, hrn)
                     if gidS and gidS.strip() != '':
                         self.logger.debug("Got AM cert for url %s:\n%s", url, gidS)
                         try:
                             gidO = gid.GID(string=gidS)
                             urnC = gidO.get_urn()
                             if urnC and urnC.strip() != '':
-                                urn = urnC
+                                if urn and urn != 'AM-urn-unknown' and urn != urnC.strip():
+                                    self.logger.warn("For AM at %s, SR has URN %s, cert says %s", url, urn, urnC)
+                                urn = urnC.strip()
                                 hrn = sfa.util.xrn.urn_to_hrn(urn)
                         except Exception, exc:
                             self.logger.error("ListComponents failed to create AM gid for AM at %s from server_cert we got from server: %s", url, traceback.format_exc())
                     else:
                         gidS = ''
-                    if gidS and gidS != '' and hrn != 'AM-hrn-unknown' and urn != 'AM-urn-unknown':
+
+                    # FIXME: Try to create a urn/hrn from the service_name if none found yet?
+
+                    if gidS and gidS != '' and hrn != 'AM-hrn-unknown' and urn != 'AM-urn-unknown' and url != '':
                         ret.append(dict(gid=gidS, hrn=hrn, url=url, urn=urn))
                     else:
-                        # Invalid cert. Like the ExoGENI AMs. Suppress these for now
-                        self.logger.error("Not returning AM with URL %s - invalid hrn (%s) or urn (%s) or gid", url, hrn, urn)
+                        # Invalid cert or SR entry. Suppress these for now
+                        self.logger.error("AM with URL %s - invalid hrn (%s) or urn (%s) or gid or url", url, hrn, urn)
+            self.logger.info("ListComponents returning %d entries", len(ret))
             return ret
 
 # End of implementation of PG CH/SA servers
