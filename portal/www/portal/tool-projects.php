@@ -229,6 +229,9 @@ if (isset($reqs) && count($reqs) > 0) {
     $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     $reason = $request['request_text'];
+    if (strlen($reason) > 45) {
+      $reason = substr($reason, 0, 40) . '...';
+    }
     $req_date_db = $request['creation_timestamp'];
     $req_date = dateUIFormat($req_date_db);
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
