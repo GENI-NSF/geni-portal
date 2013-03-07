@@ -303,7 +303,8 @@ print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
 /* Tools */
 print "<tr><td>\n";
 /* print "To use a command line tool:<br/>"; */
-print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b> </button>\n";
+$hostname = $_SERVER['HTTP_HOST'];
+print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/><b>Launch Flack</b> </button>\n";
 print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled><b>Use omni</b></button>\n";
 //print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";

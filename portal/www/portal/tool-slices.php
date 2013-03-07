@@ -144,7 +144,8 @@ if (count($my_slice_objects) > 0) {
     print ("<button onClick=\"window.location='$sliver_status_url'\"><b>Resource Status</b></button>");
     print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\"><b>Details</b></button>");
     print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
-  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+    $hostname = $_SERVER['HTTP_HOST'];
+    print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button></td>\n";
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
     }
