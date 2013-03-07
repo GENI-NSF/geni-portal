@@ -190,15 +190,28 @@ $create_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1
 $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
 ?>
 
-<h2>Command line tools</h2>
-For <i>Advanced</i> users:
+<h2>Configure omni</h2>
+<a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>Omni</code></a> is a command line tool.
+It is intended for more advanced users. In order to use omni or other command line tools you will need to
 <?php if ($has_certificate): ?>
-<a href="<?php print $download_url?>" target="_blank">download your SSL certificate</a>
+<a href="<?php print $download_url?>" target="_blank">download your SSL certificate</a>.
 <?php else: ?>
-<a href="<?php print $create_url?>" target="_blank">create an SSL certificate</a>
+<a href="<?php print $create_url?>" target="_blank">create an SSL certificate</a>.
 <?php endif; ?>
-in order to use other GENI tools.<br/><br/>
+<br/><br/>
 
+<h3>Option 1: Automatic omni configuration</h3>
+Use <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure</a>
+to generate a configuration file for you:
+  <ol>
+    <li>Download your <a href='omni-bundle.php'>customized configuration data</a></li>
+    <li>Follow the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure instructions</a></li>
+  </ol>
+
+<h3>Option 2: Manual omni configuration</h3>
+<a href='tool-omniconfig.php'>Download and customize a template omni configuration file</a>
+
+<!--
 <table>
 <tr><th>Tool</th><th>Description</th><th>Configuration File</th></tr>
 <tr>
@@ -212,7 +225,7 @@ in order to use other GENI tools.<br/><br/>
   <td><a href='omni-bundle.php'>Get omni-bundle.zip</a></td>
 </tr>
 </table>
-
+-->
 <?php
 /*----------------------------------------------------------------------
  * ABAC (if enabled)
