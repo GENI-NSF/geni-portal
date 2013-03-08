@@ -216,7 +216,7 @@ function print_rspec_pretty( $xml ){
         $ssh_url .= ":$ssh_port";
       }
       echo "<td colspan='3'>";
-      echo "<a href='$ssh_url'>";
+      echo "<a href='$ssh_url' target='_blank'>";
       echo "ssh ", $login['username'],"@",$login['hostname'];
       if ($ssh_port and $ssh_port != 22) {
 	echo " -p ", $login['port'];
