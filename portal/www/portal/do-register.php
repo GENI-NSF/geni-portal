@@ -201,7 +201,7 @@ $affiliation = "";
 if (array_key_exists('affiliation', $_SERVER)) {
   $affiliation = $_SERVER['affiliation'];
 } else {
-  error_log("IdP " . $ship_idp . " gave no affiliation for eppn " . $eppn);
+  error_log("IdP " . $shib_idp . " gave no affiliation for eppn " . $eppn);
 }
 
 $sql = "INSERT INTO identity (provider_url, eppn, affiliation, account_id)"
