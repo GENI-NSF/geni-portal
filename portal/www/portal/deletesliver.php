@@ -124,7 +124,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   // Call delete sliver at the AM
   $retVal = delete_sliver($am_urls, $user, $slice_credential,
 			  $slice_urn);
-  error_log("DeleteSliver output = " . $retVal);
+  //error_log("DeleteSliver output = " . $retVal);
 }
 
 $s = array();
