@@ -113,14 +113,19 @@ if ($show_form) {
   exit;
 }
 
+/*------------------------*/
 /* Generate a new ssh key */
+/*------------------------*/
+/* Instead of "www-data@panther", make a prettier comment. */
+/* FIXME: GROSS! HARDCODED HOSTNAME! */
+$comment = $user->username . "@portal.geni.net";
 $privatekeyfile = tempnam(sys_get_temp_dir(), 'ssh');
 /* delete the file so ssh-keygen doesn't complain about overwrite. */
 unlink($privatekeyfile);
 $publickeyfile = $privatekeyfile . ".pub"; /* per the ssh-keygen man page */
 // single quote the password
 $cleanpw = escapeshellarg($password);
-$command = "/usr/bin/ssh-keygen -t rsa -f $privatekeyfile -N $cleanpw -q";
+$command = "/usr/bin/ssh-keygen -t rsa -f $privatekeyfile -N $cleanpw -q -C \"$comment\"";
 $result = exec($command, $output, $status);
 if ($status != 0) {
 	/* Error! */
