@@ -171,7 +171,9 @@ if (count($removed_attrs) > 0) {
 // tables, and then email the user that it was approved
 // activate_account script then needs to call this
 $body = "There is a new account change request on ". $_SERVER['SERVER_NAME'] . ":\n\n";
-$body .= "Account ID: " . $user->account_id . "\n";
+$body .= "Account ID: " . $user->account_id . "\n"; // same as member_id
+$body .= "Identity ID: " . $user->identity_id . "\n";
+$body .= "EPPN: " . $user->eppn . "\n"; // same as member->eppn
 $body .= "Name: " . $user->prettyName() . "\n";
 $body .= "Username: " . $user->username . "\n";
 if ($pi_request and ! $is_pi) {
