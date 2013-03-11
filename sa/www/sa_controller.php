@@ -1167,6 +1167,8 @@ function get_slices_for_member($args)
 
 function lookup_slice_details($args)
 {
+  sa_expire_slices();
+
   $slice_uuids = $args[SA_ARGUMENT::SLICE_UUIDS];
   $slice_uuids_as_sql = convert_list($slice_uuids);
 
@@ -1200,6 +1202,8 @@ function get_slices_for_projects($args)
     return generate_response(RESPONSE_ERROR::NONE, array(), '');
   }
   $project_uuids_as_sql = convert_list($project_uuids);
+
+  sa_expire_slices();
 
   global $SA_SLICE_TABLENAME;
     $sql = "select "  
