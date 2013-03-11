@@ -82,7 +82,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
   }
   print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<button onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
-  print "<button onClick=\"window.location='modify.php'\"><b>Ask to be a Project Lead</b></button><br/>\n";
+  print "<button onClick=\"window.location='modify.php?belead=belead'\"><b>Ask to be a Project Lead</b></button><br/>\n";
 }
 
 // The idea here was to show this table only if the user is a lead or admin on _some_ project
