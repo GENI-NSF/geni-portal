@@ -62,7 +62,7 @@ if (array_key_exists("to", $_REQUEST)) {
 
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email
-  $hostname = $_SERVER['HTTP_HOST'];
+  $hostname = $_SERVER['SERVER_NAME'];
   $message .= "\nTo join my project, go here: 
       https://$hostname/secure/join-this-project.php?project_id=$project_id
 
@@ -110,7 +110,7 @@ print "Invite your co-workers and friends to use your GENI project $project_name
 
 print "For your co-workers or students to collaborate on experiments in GENI (share GENI slices), ";
 print "they must be in your project $project_name. <br/>\nThis page lets you invite them to join your project.<br/><br/>\n";
-$hostname = $_SERVER['HTTP_HOST'];
+$hostname = $_SERVER['SERVER_NAME'];
 print "This form will send them an email with a link to a page to join your project $project_name<br/>\n";
 print "They will then request to join the project. You will get an email when they have done this.<br/>\n";
 print "Then, you must approve them to join the project, and specify what kind of role they should have on the project.<br/><br/>\n";

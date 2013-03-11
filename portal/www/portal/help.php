@@ -32,7 +32,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 skip_km_authorization();
 show_header('GENI Portal: Help', $TAB_HELP);
 include("tool-breadcrumbs.php");
-$hostname = $_SERVER['HTTP_HOST'];
+$hostname = $_SERVER['SERVER_NAME'];
 // Links to wiki, help, tutorials
 ?>
 <h2>GENI Help</h2>

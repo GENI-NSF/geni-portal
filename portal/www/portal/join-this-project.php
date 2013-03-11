@@ -113,7 +113,7 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
 
   // FIXME: sub handle-project-request.php with handle-project-request.php?project_id=$project_id&member_id=$user->account_id&request_id=$request_id
   //  $ind = strpos($message, "handle-project-request.php");
-  $hostname = $_SERVER['HTTP_HOST'];
+  $hostname = $_SERVER['SERVER_NAME'];
   $message .= "To handle my request, go to the GENI Portal here:
 https://$hostname/secure/handle-project-request.php?project_id=$project_id&member_id=" . $user->account_id . "&request_id=$request_id
 
@@ -214,7 +214,7 @@ if (isset($error) && ! is_null($error)) {
 print "<form action=\"join-this-project.php?project_id=$project_id\">\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 print "<b>Project join request message</b>:<br/>\n";
-$hostname = $_SERVER['HTTP_HOST'];
+$hostname = $_SERVER['SERVER_NAME'];
 print "<textarea name='message' cols='60' rows='5'>May I join GENI project '$project_name'?
 I think I need to do GENI research in your project.
 I am a student in your lab.\n</textarea><br/>\n";

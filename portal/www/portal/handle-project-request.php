@@ -277,7 +277,7 @@ if (isset($submit)) {
     // Email the member
     $email = $user->email();
     $name = $user->prettyName();
-    $hostname = $_SERVER['HTTP_HOST'];
+    $hostname = $_SERVER['SERVER_NAME'];
     $message = "Your request to join GENI project '$project_name' was accepted!
 You have been added to the project with role $rolestr.
 

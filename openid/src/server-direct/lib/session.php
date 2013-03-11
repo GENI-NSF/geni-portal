@@ -29,7 +29,7 @@ function getStyle()
 function getServerURL()
 {
     $path = $_SERVER['SCRIPT_NAME'];
-    $host = $_SERVER['HTTP_HOST'];
+    $host = $_SERVER['SERVER_NAME'];
     $port = $_SERVER['SERVER_PORT'];
     $s = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '';
     if (($s && $port == "443") || (!$s && $port == "80")) {

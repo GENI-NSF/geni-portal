@@ -87,7 +87,10 @@ if (count($my_slice_objects) > 0) {
 
   foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-    $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
+    $slice_expired = 'f';
+    if (array_key_exists(SA_SLICE_TABLE_FIELDNAME::EXPIRED, $slice)) {
+      $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
+    }
     $isSliceExpired = False;
     $disable_buttons_str = "";
     if (isset($slice_expired) && $slice_expired == 't') {
@@ -151,7 +154,7 @@ if (count($my_slice_objects) > 0) {
     print ("<button onClick=\"window.location='$sliver_status_url'\" $disable_buttons_str><b>Resource Status</b></button>");
     print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $disable_buttons_str><b>Details</b></button>");
     print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
-    $hostname = $_SERVER['HTTP_HOST'];
+    $hostname = $_SERVER['SERVER_NAME'];
     print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button></td>\n";
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";

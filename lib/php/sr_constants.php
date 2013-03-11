@@ -94,8 +94,7 @@ class SR_ATTRIBUTE_TABLE_FIELDNAME {
 /* Get name of singleton service registry (SR) instance */
 function get_sr_url()
 {
-  /* Could be HTTP_HOST or SERVER_NAME */
-  $http_host = $_SERVER['HTTP_HOST'];
+  $http_host = $_SERVER['SERVER_NAME'];
   $sr_url = "https://" . $http_host . "/sr/sr_controller.php";
   return $sr_url;
 }
