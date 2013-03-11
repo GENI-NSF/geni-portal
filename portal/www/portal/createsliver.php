@@ -48,9 +48,9 @@ function no_rspec_error() {
   header('HTTP/1.1 404 Not Found');
   if (array_key_exists("rspec_id", $_REQUEST)) {
     $rspec_id = $_REQUEST['rspec_id'];
-    print "Invalid rspec id \"$rspec_id\" specified.";
+    print "Invalid resource specification id \"$rspec_id\" specified.";
   } else {
-    print 'No rspec id specified.';
+    print 'No rexource specification specified.';
   }
   exit();
 }

@@ -152,8 +152,8 @@ $names = array("home.php" => $TAB_HOME,
 		 "uploadsshkey.php" => "Upload SSH Public Key",
 		"generatesshkey.php" => "Generate SSH Keypair",
 		"tool-omniconfig.php" => "Omni command line tool",
-        "rspecupload.php" => "Upload RSpec",
-        "rspecs.php" => "Manage RSpecs",
+        "rspecupload.php" => "Upload Resource Specification",
+        "rspecs.php" => "Manage Resource Specifications",
         "omni-bundle.php" => "Omni Bundle");
 
 // Look up in the 2 arrays above

@@ -170,10 +170,10 @@ print "<h1>My Stuff</h1>\n";
  * RSpecs
  *----------------------------------------------------------------------
  */
-print "<h2>Manage RSpecs</h2>\n";
+print "<h2>Manage Resource Specifications</h2>\n";
 
 print "<button onClick=\"window.location='rspecs.php'\">"
-  . "Manage RSpecs</button>\n";
+  . "Manage Resource Specifications</button>\n";
 ?>
 
 <?php

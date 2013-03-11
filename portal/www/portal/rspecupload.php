@@ -146,7 +146,7 @@ if ($error != NULL || count($_POST) == 0) {
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
   include("tool-showmessage.php");
-  print("<h2>Upload experiment RSpec</h2>\n");
+  print("<h2>Upload experiment Resource Specification (RSpec)</h2>\n");
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";
@@ -208,9 +208,9 @@ geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "db_add_rspec: " . print_r($result, true
 //error_log("db_add_rspec: " . print_r($result, true));
 // FIXME: check result
 if (! $result) {
-  $_SESSION['lasterror'] = "ERROR. Failed to upload RSpec " . $name;
+  $_SESSION['lasterror'] = "ERROR. Failed to upload Resource Specification " . $name;
 } else {
-  $_SESSION['lastmessage'] = "Uploaded RSpec " . $name;
+  $_SESSION['lastmessage'] = "Uploaded Resource Specification " . $name;
 }
 
 // redirect to referer if available.

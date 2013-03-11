@@ -55,6 +55,14 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
+if (isset($slice_expired) && $slice_expired == 't') {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
 if (!$user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
@@ -102,7 +110,7 @@ print "<h2>$header</h2>\n";
 print "<div class='resources' id='prettyxml'>";
 print "<p id='delete' style='display:block;'><i>Deleting resources...</i></p>";
 
-print "<p id='summary' style='display:none;'><i>Have attempted to delete resources at <span id='attempted'>0</span> of <span id='total'>0</span> aggregate.</i></p>";
+print "<p id='summary' style='display:none;'><i>Issued delete resources at <span id='attempted'>0</span> of <span id='total'>0</span> aggregate.</i></p>";
 
 print "<div id='delsliverlabel' style='display:none;'>Deleted resources at:</div>";
 // print "<div id='delsliverlabel' style='display:none;'>Deleted resources at <span id='success'>0</span> aggregate:</div>";

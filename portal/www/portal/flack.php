@@ -72,6 +72,15 @@ if (! isset($slice_urn)) {
   print 'No slice id specified.';
   exit();
 }
+
+if (isset($slice_expired) && $slice_expired == 't') {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
 $keys = $user->sshKeys();
 if (count($keys) == 0) {
   relative_redirect("error-text.php?error=" . urlencode("No SSH keys " .

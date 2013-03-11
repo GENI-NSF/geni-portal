@@ -48,9 +48,9 @@ function no_rspec_error() {
   header('HTTP/1.1 404 Not Found');
   if (array_key_exists("rspec_id", $_REQUEST)) {
     $rspec_id = $_REQUEST['rspec_id'];
-    print "Invalid rspec id \"$rspec_id\" specified.";
+    print "Invalid resource specification id \"$rspec_id\" specified.";
   } else {
-    print 'No rspec id specified.';
+    print 'No resource specification id specified.';
   }
   exit();
 }
@@ -76,6 +76,14 @@ unset($am);
 include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();
+}
+
+if (isset($slice_expired) && $slice_expired == 't') {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
 }
 
 if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {

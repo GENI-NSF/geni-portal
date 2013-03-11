@@ -135,7 +135,7 @@ function get_name_from_urn( $urn ){
   return $name;
 }
 function print_rspec_pretty( $xml ){
-  $err_str = "<p><i>Rspec returned was not valid XML.</i></p>";
+  $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
     $rspec = new SimpleXMLElement($xml);
     if (!$rspec) {
