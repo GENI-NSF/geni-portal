@@ -118,7 +118,8 @@ function build_agg_table_on_slicepg()
 		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice_id."\"/>\n";
 		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
 		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration'";
-		$output .= "value=\"".$slice_expiration."\"/>\n";
+		$size = strlen($slice_expiration) + 3;
+		$output .= "size=\"$size\" value=\"".$slice_expiration."\"/>\n";
 		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
 		$output .= "</form></td>\n";
 	    } else {
@@ -275,7 +276,8 @@ if($renew_slice_privilege) {
   print "<form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='slice_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
+  $size = strlen($slice_expiration) + 3;
+  print " size=\"$size\" value=\"$slice_expiration\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew Slice' title='Renew the slice until the specified date' $disable_buttons_str/>\n";
   print "</form>\n";
 } else {
@@ -289,7 +291,8 @@ if ($renew_slice_privilege) {
   print "<form method='GET' action=\"do-renew.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
+  $size = strlen($slice_expiration) + 3;
+  print " size=\"$size\" value=\"$slice_expiration\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew Resource Reservations' title='Renew the resource reservation at all aggregates until the specified date' $disable_buttons_str/>\n";
   print "</form>\n";
 } else {
