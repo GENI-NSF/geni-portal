@@ -60,6 +60,14 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
+if (isset($slice_expired) && $slice_expired == 't') {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
 $header = "Status of Slivers on slice: $slice_name";
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
@@ -81,8 +89,25 @@ $(document).ready(build_agg_table_on_sliverstatuspg);
 
 <?php
 print "<h2>$header</h2>\n";
+
+// Count Aggs. If only one, change 'all' text
+$amcnt = 0;
+if (isset($ams)) {
+  $amcnt = count($ams);
+}
+if (isset($am_ids) and $amcnt == 0) {
+  $amcnt = count($am_ids);
+}
+if (! isset($ams) and ! isset($am_ids)) {
+  $amcnt = 2;
+  //error_log("sliverstatus had no ams or amids or am_id");
+}
+$amcntstr = "aggregate";
+if ($amcnt >= 2) {
+  $amcntstr = $amcnt . " aggregates";
+}
         
-echo "<div id='header'>Querying status of resources at all aggregates...</div>";
+echo "<div id='header'>Querying status of resources at " . $amcntstr . "...</div>";
 echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
 
 print "<div id='slivererror'></div>";
