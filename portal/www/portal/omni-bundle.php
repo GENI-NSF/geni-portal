@@ -100,7 +100,7 @@ if ($num_projects > 1) {
 }
 ?>
 <li>Click "Download omni bundle"</li>
-<li>Run "omni-configure.py -f portal &lt;location of bundle&gt;"</li>
+<li>Run "omni-configure.py -f portal [-z &lt;location of bundle&gt;]" ("-z" option default is ~/Downloads/omni-bundle.zip)</li>
 </ol>
 
 <form id="f1" action="downloadomnibundle.php" method="post">
