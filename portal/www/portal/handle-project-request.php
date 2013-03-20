@@ -295,7 +295,7 @@ $reason
     $message = $message . "Thank you,
 $name\n";
 
-    mail($member_name . "<" . $member->email() . ">",
+    mail($member_name . " <" . $member->email() . ">",
        "Added to GENI project $project_name",
        $message,
        "Reply-To: $email" . "\r\n" . "From: $name <$email>");
