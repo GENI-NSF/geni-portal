@@ -63,16 +63,42 @@ class SSHA
 
 }
 
+$errors = array();
+
 /* ---------------- */
 /* Transform inputs */
 /* ---------------- */
 // We'll get 'username', but the column is 'username_requested'
-$_REQUEST['username_requested'] = $_REQUEST['username'];
-unset($_REQUEST['username']);
+if (array_key_exists('username', $_REQUEST) && $_REQUEST['username']) {
+  $_REQUEST['username_requested'] = $_REQUEST['username'];
+  unset($_REQUEST['username']);
+} else {
+  $errors[] = "No username specified.";
+  // Do this to avoid an unnecessary message to the user
+  // about 'username_requested' not specified.
+  $_REQUEST['username_requested'] = ' ';
+}
 
-// Create the password_hash
-$pw_hash = SSHA::newHash($_REQUEST['password1']);
-$_REQUEST['password_hash'] = $pw_hash;
+$p1 = null;
+$p2 = null;
+if (array_key_exists('password1', $_REQUEST) && $_REQUEST['password1']) {
+  $p1 = $_REQUEST['password1'];
+} else {
+  $errors[] = "No password specified.";
+}
+if (array_key_exists('password2', $_REQUEST) && $_REQUEST['password2']) {
+  $p2 = $_REQUEST['password2'];
+} else {
+  $errors[] = "No confirm password specified.";
+}
+if ($p1 === $p2) {
+  // Create the password_hash
+  $pw_hash = SSHA::newHash($p1);
+  $_REQUEST['password_hash'] = $pw_hash;
+} else {
+  $errors[] = "Passwords do not match.";
+}
+
 
 
 /* ----------------- */
@@ -100,12 +126,14 @@ $query_values = array();
 $conn = db_conn();
 
 foreach ($required_vars as $name => $db_type) {
-  if (! array_key_exists($name, $_REQUEST)) {
-    // A required value is missing. What to do?
+  if (array_key_exists($name, $_REQUEST) && $_REQUEST[$name]) {
+    $value = $_REQUEST[$name];
+    $query_vars[] = $name;
+    $query_values[] = $conn->quote($value, $db_type);
+  } else {
+    $pretty_name = str_replace("_", " ", $name);
+    $errors[] = "No $pretty_name specified.";
   }
-  $value = $_REQUEST[$name];
-  $query_vars[] = $name;
-  $query_values[] = $conn->quote($value, $db_type);
 }
 
 foreach ($optional_vars as $name => $db_type) {
@@ -116,6 +144,49 @@ foreach ($optional_vars as $name => $db_type) {
   }
 }
 
+if ($errors) {
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>GENI: Request an account</title>
+<link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>
+</head>
+<body>
+  <div id="header">
+    <a href="http://www.geni.net" target="_blank">
+      <img src="/images/geni.png" width="88" height="75" alt="GENI"/>
+    </a>
+    <h2>Problems with request</h2>
+    <p>Please fix the following problems with your request:</p>
+    <ul>
+<?php foreach ($errors as $error) { ?>
+    <li><?php echo $error; ?></li>
+<?php } ?>
+    </ul>
+  <p>Please use the browser back button to try again.</p>
+  <p>If you have any questions, please send email to <a href="mailto:portal-help@geni.net">portal-help@geni.net</a>.
+  </div> <!-- header -->
+  <hr/>
+  <div id="footer">
+    <small><i>
+        <a href="http://www.geni.net/">GENI</a>
+        is sponsored by the
+        <a href="http://www.nsf.gov/">
+          <img src="https://www.nsf.gov/images/logos/nsf1.gif"
+               alt="NSF Logo" height="25" width="25">
+          National Science Foundation
+        </a>
+    </i></small>
+  </div> <!-- footer -->
+</body>
+</html>
+<?php
+  exit();
+}
+?>
+
+<?php
 $sql = 'INSERT INTO idp_account_request (';
 $sql .= implode(',', $query_vars);
 $sql .= ') VALUES (';

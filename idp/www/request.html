@@ -25,9 +25,11 @@
     <p><label>Phone number*:
         <input name="phone" type="tel" required></label></p>
     <p><label>Password*:
-        <input name="password1" type="password" required></label></p>
+        <input name="password1" type="password" required
+               onchange="form.password2.pattern = this.value;"></label></p>
     <p><label>Confirm password*:
-        <input name="password2" type="password" required></label></p>
+        <input name="password2" type="password" required
+               title="The passwords must match"></label></p>
     <p><label>School/Company/Organization*:
         <input name="organization" required></label></p>
     <p><label>Title*: <input name="title" required></label></p>
