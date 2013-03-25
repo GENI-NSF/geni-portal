@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GENI: Request an account</title>
+<link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>
+</head>
+<body>
+  <div id="header">
+    <a href="http://www.geni.net" target="_blank">
+      <img src="/images/geni.png" width="88" height="75" alt="GENI"/>
+    </a>
+    <h2>Request a GENI account</h2>
+    <br>
+    Fill out the form below to request an account to access the GENI Portal.
+  </div> <!-- header -->
+  <div id="content">
+  <form>
+    <p><label>First name*: <input name="first_name" required></label></p>
+    <p><label>Last name*: <input name="last_name" required></label></p>
+    <p><label>Email address*:
+        <input name="email" type="email" required></label></p>
+    <p><label>Username*:
+        <input name="username" required maxlength="8">
+      </label>(max. 8 chars)</p>
+    <p><label>Phone number*:
+        <input name="phone" type="tel" required></label></p>
+    <p><label>Password*:
+        <input name="password1" type="password" required></label></p>
+    <p><label>Confirm password*:
+        <input name="password2" type="password" required></label></p>
+    <p><label>School/Company/Organization*:
+        <input name="organization" required></label></p>
+    <p><label>Title*: <input name="title" required></label></p>
+    <p><label>URL: <input name="url" type="url"></label></p>
+    <p><label>Reason for using GENI*: <input name="reason" required></label></p>
+    <p>* = required</p>
+    <input type="submit"
+           formaction="https://dagoola.gpolab.bbn.com/idp/handlerequest.php"
+           formmethod="POST"/>
+  </form>
+  </div> <!-- content -->
+  <hr/>
+  <div id="footer">
+    <small><i>
+        <a href="http://www.geni.net/">GENI</a>
+        is sponsored by the
+        <a href="http://www.nsf.gov/">
+          <img src="https://www.nsf.gov/images/logos/nsf1.gif"
+               alt="NSF Logo" height="25" width="25">
+          National Science Foundation
+        </a>
+    </i></small>
+  </div> <!-- footer -->
+</body>
+</html>
