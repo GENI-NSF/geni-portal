@@ -22,11 +22,13 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('/usr/share/geni-ch/lib/php/db_utils.php');
-require_once('/usr/share/geni-ch/lib/php/geni_syslog.php');
-require_once('/usr/share/geni-ch/lib/php/response_format.php');
-require_once('/etc/geni-ch/settings.php');
-//require_once("db_utils.php");
+$mypath = '/usr/share/geni-ch/lib/php' . PATH_SEPARATOR . '/etc/geni-ch';
+set_include_path($mypath . PATH_SEPARATOR . get_include_path());
+
+require_once('db_utils.php');
+require_once('geni_syslog.php');
+require_once('response_format.php');
+require_once('settings.php');
 
 /**
  * A class to create a Salted SHA password hash.
@@ -207,9 +209,17 @@ if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
   // Finally pop up an error page
 } else {
   // Success
-  mail($portal_admin_email,
-    "New IdP Account Request on $server_host",
-    "A new IdP account request has been submitted on host $server_host. See table idp_account_request.");
+  $subject = "New IdP Account Request on $server_host";
+  $body = 'A new IdP account request has been submitted on host ';
+  $body .= "$server_host.\n\n";
+  $email_vars = array('first_name', 'last_name', 'email',
+          'organization', 'title', 'reason');
+  foreach ($email_vars as $var) {
+    $val = $_REQUEST[$var];
+    $body .= "$var: $val\n";
+  }
+  $body .= "\nSee table idp_account_request for complete details.\n";
+  mail($portal_admin_email, $subject, $body);
 }
 
 ?>
