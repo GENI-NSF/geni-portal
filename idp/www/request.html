@@ -3,39 +3,62 @@
 <head>
 <title>GENI: Request an account</title>
 <link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>
+<style type="text/css">
+label.input {font-weight:bold;}
+span.required {color:red;}
+</style>
 </head>
 <body>
   <div id="header">
     <a href="http://www.geni.net" target="_blank">
       <img src="/images/geni.png" width="88" height="75" alt="GENI"/>
     </a>
-    <h2>Request a GENI account</h2>
-    <br>
-    Fill out the form below to request an account to access the GENI Portal.
+    <h2>Request a GPO account for GENI portal access</h2>
+    <p>
+    Fill out the form below to request a new username and password to access
+    the GENI Portal and Clearinghouse. Use this form only if you cannot
+    <a href="http://groups.geni.net/geni/wiki/SignMeUpPortal#CheckifyoucanuseyourInstitutionsaccount">
+     login using your usual home organization account
+     </a>.
+    </p>
+    <p>
+      Once your account has been created, you will be notified by email.
+      You can then use this account to log in to the Portal by identifying
+      your institution as "GENI Project Office" and supplying the username
+      and password you chose here.
+    </p>
   </div> <!-- header -->
   <div id="content">
   <form>
-    <p><label>First name*: <input name="first_name" required></label></p>
-    <p><label>Last name*: <input name="last_name" required></label></p>
-    <p><label>Email address*:
-        <input name="email" type="email" required></label></p>
-    <p><label>Username*:
-        <input name="username" required maxlength="8">
+    <p><label class="input">First name:<span class="required">*</span>
+        <input name="first_name" size="50" required></label></p>
+    <p><label class="input">Last name:<span class="required">*</span>
+        <input name="last_name" size="50" required></label></p>
+    <p><label class="input">Email address:<span class="required">*</span>
+        <input name="email" type="email" size="50" required></label>
+      (Your institutional or organization email address)
+    </p>
+    <p><label class="input">Desired username:<span class="required">*</span>
+        <input name="username" size="50" required maxlength="8">
       </label>(max. 8 chars)</p>
-    <p><label>Phone number*:
-        <input name="phone" type="tel" required></label></p>
-    <p><label>Password*:
-        <input name="password1" type="password" required
+    <p><label class="input">Phone number:<span class="required">*</span>
+        <input name="phone" type="tel" size="50" required></label></p>
+    <p><label class="input">Password:<span class="required">*</span>
+        <input name="password1" type="password" size="50" required
                onchange="form.password2.pattern = this.value;"></label></p>
-    <p><label>Confirm password*:
-        <input name="password2" type="password" required
+    <p><label class="input">Confirm password:<span class="required">*</span>
+        <input name="password2" type="password" size="50" required
                title="The passwords must match"></label></p>
-    <p><label>School/Company/Organization*:
-        <input name="organization" required></label></p>
-    <p><label>Title*: <input name="title" required></label></p>
-    <p><label>URL: <input name="url" type="url"></label></p>
-    <p><label>Reason for using GENI*: <input name="reason" required></label></p>
-    <p>* = required</p>
+    <p><label class="input">School/Company/Organization:<span class="required">*</span>
+        <input name="organization" size="50" required></label></p>
+    <p><label class="input">Title:<span class="required">*</span>
+        <input name="title" size="50" required></label></p>
+    <p><label class="input">URL: <input name="url" type="url" size="50"></label>
+      (For information about you or your organization)
+    </p>
+    <p><label class="input">Reason for using GENI:<span class="required">*</span>
+        <input name="reason" size="50" required></label></p>
+    <p><span class="required">*</span> = required</p>
     <input type="submit"
            formaction="https://dagoola.gpolab.bbn.com/idp/handlerequest.php"
            formmethod="POST"/>
