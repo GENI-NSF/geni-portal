@@ -87,7 +87,7 @@ GENI allows users to log in using their existing accounts via our partnership in
   using your usual username and password to activate
   your GENI account.
   </li><li>If you are not affiliated with an InCommon federated
-  institution, you may <a href="mailto:portal-help@geni.net">request a GENI-only login</a>.</li>
+  institution, you may <a href="/idp/request.html">request a GENI-only login</a>.</li>
 </ul>
 </p>
 
@@ -95,7 +95,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 <h2>If you don't know if you are a member of an InCommon federated institution...</h2>
 <ul>
 <li>
-... check this list of <a href="http://www.incommon.org/federation/info/all-entities.html">members of the InCommon federation</a>.
+... check the list of <a href="http://www.incommon.org/federation/info/all-entities.html">members of the InCommon federation</a>.
 </li>
 </ul>
 
@@ -106,7 +106,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 <b>... and you don't have an account at your home institution</b>, contact your local IT department or computer help desk to inquire about getting a login.
 </li>
 <li>
-<b>... and you have an account, but can't log in</b>. Your login and password are managed at your local instition.  Contact your local IT department or computer help desk for assistance.
+<b>... and you have an account, but can't log in</b>. Your login and password are managed at your local institution.  Contact your local IT department or computer help desk for assistance.
 </li>
 </ul>
 
@@ -115,8 +115,8 @@ GENI allows users to log in using their existing accounts via our partnership in
 
 <ul>
 <li>
-<b>... and don't have a login or can't login</b>, contact <a
-href="mailto:portal-help@geni.net">GENI help</a> and request a GENI-only login. 
+<b>... and don't have a login or can't login</b>,
+  <a href="/idp/request.html">request a GENI-only login</a>.
 </li>
 </ul>
 

@@ -135,7 +135,7 @@ function get_name_from_urn( $urn ){
   return $name;
 }
 function print_rspec_pretty( $xml ){
-  $err_str = "<p><i>Rspec returned was not valid XML.</i></p>";
+  $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
     $rspec = new SimpleXMLElement($xml);
     if (!$rspec) {
@@ -208,11 +208,20 @@ function print_rspec_pretty( $xml ){
     echo "<tr>\n";    
     if ($login){
       echo "<th colspan='2'>Login</th>\n";
-      echo "<td colspan='3'>ssh ", $login['username'],"@",$login['hostname'];
-      if ($login['port'] and $login['port']!==22 and $login['port']!=="22"){
+      $ssh_user = $login['username'];
+      $ssh_host = $login['hostname'];
+      $ssh_port = $login['port'];
+      $ssh_url = "ssh://$ssh_user@$ssh_host";
+      if ($ssh_port and $ssh_port != 22) {
+        $ssh_url .= ":$ssh_port";
+      }
+      echo "<td colspan='3'>";
+      echo "<a href='$ssh_url' target='_blank'>";
+      echo "ssh ", $login['username'],"@",$login['hostname'];
+      if ($ssh_port and $ssh_port != 22) {
 	echo " -p ", $login['port'];
       }
-      echo "</td>\n";
+      echo "</a></td>\n";
     }
     echo "</tr>\n";
 

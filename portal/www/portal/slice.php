@@ -45,8 +45,14 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 unset($slice);
 include("tool-lookupids.php");
 
+$disable_buttons_str = "";
+
+if (isset($slice_expired) && $slice_expired == 't' ) {
+  $disable_buttons_str = " disabled";
+}
+
 if (! isset($services)) {
-  $services = get_services();	
+  $services = get_services();
 }
 
 if (! isset($all_ams)) {
@@ -74,6 +80,7 @@ function build_agg_table_on_slicepg()
      global $slice_expiration;
      global $delete_slivers_disabled;
      global $slice_name;
+     global $disable_buttons_str;
 
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
@@ -91,7 +98,7 @@ function build_agg_table_on_slicepg()
      //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
      $output .= "<tr>";
      $output .= "<th id='status'>";
-     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()'>Get All</button>";
+     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()' $disable_buttons_str>Get All</button>";
      $output .= "</th><th>Aggregate</th>";
      //      output .= "<th>&nbsp;</th>";
      $output .= "<th>Renew</th>";
@@ -108,25 +115,26 @@ function build_agg_table_on_slicepg()
 	    // sliver expiration
 	    if ($renew_slice_privilege) {
                 $output .= "<td rowspan='2'><form  method='GET' action=\"do-renew.php\">";
-		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice."\"/>\n";
+		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice_id."\"/>\n";
 		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
 		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration'";
-		$output .= "value=\"".$slice_expiration."\"/>\n";
-		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew'/>\n";
+		$size = strlen($slice_expiration) + 3;
+		$output .= "size=\"$size\" value=\"".$slice_expiration."\"/>\n";
+		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
 		$output .= "</form></td>\n";
 	    } else {
 		$output .= "<td rowspan='2'>".$sliver_expiration."</td>"; 
 	    }
 	    // sliver actions
 	    $output .= "<td rowspan='2'>";
-	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\"><b>Resource Status</b></button>";
-	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\"><b>Details</b></button>\n";
-	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled."><b>Delete Resources</b></button>\n";
+	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $disable_buttons_str><b>Resource Status</b></button>";
+	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $disable_buttons_str><b>Details</b></button>\n";
+	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete Resources</b></button>\n";
 	    $output .= "</td></tr>";
 
 
 
-	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")'>Get Status</button></td></tr>";
+	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $disable_buttons_str>Get Status</button></td></tr>";
 
 
 
@@ -136,15 +144,6 @@ function build_agg_table_on_slicepg()
      $output .= "</table>";
      return $output;
 }
-
-
-
-
-
-
-
-
-
 
 
 if (! isset($sa_url)) {
@@ -262,13 +261,13 @@ print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 
 /* Slice Actions */
 print "<tr><td rowspan='2'>\n";
-print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled ><b>Add Resources</b></button>\n";
+print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
 
-print "<button onClick=\"window.location='$status_url'\"><b>Resource Status</b></button>\n";
-print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\"><b>Details</b></button>\n";
+print "<button onClick=\"window.location='$status_url'\" $disable_buttons_str><b>Resource Status</b></button>\n";
+print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $disable_buttons_str><b>Details</b></button>\n";
 print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
-print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled><b>Delete Resources</b></button>\n";
+print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
 print "</td>\n";
 
 /* Renew */
@@ -277,8 +276,9 @@ if($renew_slice_privilege) {
   print "<form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='slice_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew Slice'/>\n";
+  $size = strlen($slice_expiration) + 3;
+  print " size=\"$size\" value=\"$slice_expiration\"/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew Slice' title='Renew the slice until the specified date' $disable_buttons_str/>\n";
   print "</form>\n";
 } else {
   print "$slice_expiration";
@@ -291,8 +291,9 @@ if ($renew_slice_privilege) {
   print "<form method='GET' action=\"do-renew.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration'";
-  print "value=\"$slice_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew Resource Reservations'/>\n";
+  $size = strlen($slice_expiration) + 3;
+  print " size=\"$size\" value=\"$slice_expiration\"/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew Resource Reservations' title='Renew the resource reservation at all aggregates until the specified date' $disable_buttons_str/>\n";
   print "</form>\n";
 } else {
   print "$slice_expiration";
@@ -303,8 +304,9 @@ print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
 /* Tools */
 print "<tr><td>\n";
 /* print "To use a command line tool:<br/>"; */
-print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/><b>Launch Flack</b> </button>\n";
-print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled><b>Use omni</b></button>\n";
+$hostname = $_SERVER['SERVER_NAME'];
+print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/><b>Launch Flack</b> </button>\n";
+print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Use omni</b></button>\n";
 //print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";
 

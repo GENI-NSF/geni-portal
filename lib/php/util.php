@@ -34,7 +34,7 @@ function relative_url($relpath) {
   if (array_key_exists('HTTPS', $_SERVER)) {
     $protocol = "https";
   }
-  $host  = $_SERVER['HTTP_HOST'];
+  $host  = $_SERVER['SERVER_NAME'];
   $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
   $extra = $relpath;
   return "$protocol://$host$uri/$extra";
@@ -55,7 +55,7 @@ function relative_redirect($relpath) {
  */
 function incommon_feh_url() {
   $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
-  $params['sp_entityID'] = "https://" . $_SERVER['HTTP_HOST'] . "/shibboleth";
+  $params['sp_entityID'] = "https://" . $_SERVER['SERVER_NAME'] . "/shibboleth";
   $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
   $query = http_build_query($params);
   $url = $error_service_url . $query;

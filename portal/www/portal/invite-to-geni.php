@@ -54,7 +54,7 @@ if (array_key_exists("to", $_REQUEST)) {
   if (array_key_exists("message", $_REQUEST)) {
     $message = $_REQUEST["message"];
   }
-  $hostname = $_SERVER['HTTP_HOST'];
+  $hostname = $_SERVER['SERVER_NAME'];
   $message .= "\nFor more information on GENI, see: http://www.geni.net
 To get started using GENI, go to the GENI Portal: https://$hostname
 
@@ -104,7 +104,7 @@ print "<form action=\"invite-to-geni.php\">\n";
 print "<b>Email address of people to invite</b>:<br/>\n";
 print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
 print "<b>Invitation message</b>:<br/>\n";
-$hostname = $_SERVER['HTTP_HOST'];
+$hostname = $_SERVER['SERVER_NAME'];
 // FIXME: Ticket #66: Make this only partially editable. Maybe starting with 'For more info...'
 print "<textarea name='message' cols='60' rows='5'>Come use GENI! 
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 

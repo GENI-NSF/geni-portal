@@ -819,11 +819,11 @@ class PGClearinghouse(Clearinghouse):
 
                 # OK, we have a URN
                 slices = self.ListMySlices(urn)
-                # This is a list of URNs. I want names, and keyed by slices=
-                slicenames = list()
-                for slice in slices:
-                    slicenames.append(urn_util.nameFromURN(slice))
-                return dict(slices=slicenames)
+#                # This is a list of URNs. I want names, and keyed by slices=
+#                slicenames = list()
+#                for slice in slices:
+#                    slicenames.append(urn_util.nameFromURN(slice))
+                return dict(slices=slices)
 
             else:
                 # Talking to the real CH. Need a uuid, from which we can get a lot of data about slices
@@ -866,19 +866,24 @@ class PGClearinghouse(Clearinghouse):
                     self.logger.error("Resolve got error getting from lookup_slices. Code: %d, Msg: %s", slicestriple["code"], slicestriple["output"])
                     return slicestriple
 
-                # otherwise, create a list of the slice_name fields, and return that
+                # otherwise, create a list of the slice_urn fields, and return that
                 slices = getValueFromTriple(slicestriple, self.logger, "lookup_slices", unwrap=True)
-                slicenames = list()
+#                slicenames = list()
+                sliceurns = list()
                 if slices:
                     if isinstance(slices, list):
                         for slice in slices:
-                            if isinstance(slice, dict) and slice.has_key('slice_name'):
-                                slicenames.append(slice['slice_name'])
+#                            if isinstance(slice, dict) and slice.has_key('slice_name'):
+#                                slicenames.append(slice['slice_name'])
+#                            else:
+#                                self.logger.error("Malformed entry in list of slices from lookup_slices: %r", slice)
+                            if isinstance(slice, dict) and slice.has_key('slice_urn'):
+                                sliceurns.append(slice['slice_urn'])
                             else:
                                 self.logger.error("Malformed entry in list of slices from lookup_slices: %r", slice)
                     else:
                         self.logger.error("Malformed value (not a list) from lookup_slices: %r", slices)
-                return dict(slices=slicenames)
+                return dict(slices=sliceurns)
 
         else:
             self.logger.error("Unknown type %s" % type)
@@ -1259,20 +1264,33 @@ class PGClearinghouse(Clearinghouse):
                     gidO = None
                     hrn = 'AM-hrn-unknown'
                     urn = 'AM-urn-unknown'
+                    if am.has_key('service_urn') and am['service_urn'] is not None and am['service_urn'].strip() != '':
+                        urn = am['service_urn']
+                        hrn = sfa.util.xrn.urn_to_hrn(urn)
+                        self.logger.debug("Got AM urn/hrn from SR: %s (%s)", urn, hrn)
                     if gidS and gidS.strip() != '':
                         self.logger.debug("Got AM cert for url %s:\n%s", url, gidS)
                         try:
                             gidO = gid.GID(string=gidS)
                             urnC = gidO.get_urn()
                             if urnC and urnC.strip() != '':
-                                urn = urnC
+                                if urn and urn != 'AM-urn-unknown' and urn != urnC.strip():
+                                    self.logger.warn("For AM at %s, SR has URN %s, cert says %s", url, urn, urnC)
+                                urn = urnC.strip()
                                 hrn = sfa.util.xrn.urn_to_hrn(urn)
                         except Exception, exc:
                             self.logger.error("ListComponents failed to create AM gid for AM at %s from server_cert we got from server: %s", url, traceback.format_exc())
                     else:
                         gidS = ''
-                    # try except construct gidO. Then pull out URN. Then turn that into hrn
-                    ret.append(dict(gid=gidS, hrn=hrn, url=url, urn=urn))
+
+                    # FIXME: Try to create a urn/hrn from the service_name if none found yet?
+
+                    if gidS and gidS != '' and hrn != 'AM-hrn-unknown' and urn != 'AM-urn-unknown' and url != '':
+                        ret.append(dict(gid=gidS, hrn=hrn, url=url, urn=urn))
+                    else:
+                        # Invalid cert or SR entry. Suppress these for now
+                        self.logger.error("AM with URL %s - invalid hrn (%s) or urn (%s) or gid or url", url, hrn, urn)
+            self.logger.info("ListComponents returning %d entries", len(ret))
             return ret
 
 # End of implementation of PG CH/SA servers

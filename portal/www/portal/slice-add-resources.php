@@ -37,7 +37,7 @@ function show_rspec_chooser($user) {
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
-  echo '<option value="" title="Choose an RSpec" selected="selected">Choose an RSpec...</option>';
+  echo '<option value="" title="Choose a Resource Specification" selected="selected">Choose a Resource Specification...</option>';
   foreach ($all_rmd as $rmd) {
     $rid = $rmd['id'];
     $rname = $rmd['name'];
@@ -53,13 +53,13 @@ function show_rspec_chooser($user) {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
-  print " or <a href=\"rspecupload.php\">upload your own RSpec</a>.";
+  print " or <a href=\"rspecupload.php\">upload your own Resource Specification (RSpec)</a>.";
 //  print " or <button onClick=\"window.location='rspecupload.php'\">";
 //  print "upload your own RSpec</button>.";
   // RSpec entry area
   print '<span id="paste_rspec" style="display:none;vertical-align:top;">'
     . PHP_EOL;
-  print '<label for="paste_rspec2">RSpec:</label>' . PHP_EOL;
+  print '<label for="paste_rspec2">Resource Specification (RSpec):</label>' . PHP_EOL;
   print "<textarea id=\"paste_rspec2\" name=\"rspec\" rows=\"10\" cols=\"40\""
     //. " style=\"display: none;\""
     . "></textarea>\n";
@@ -68,7 +68,7 @@ function show_rspec_chooser($user) {
   // RSpec upload
   print '<span id="upload_rspec" style="display:none;">'
     . PHP_EOL;
-  print '<label for="rspec_file">RSpec File:</label>' . PHP_EOL;
+  print '<label for="rspec_file">Resource Specification (RSpec) File:</label>' . PHP_EOL;
   print '<input type="file" name="rspec_file" id="rspec_file" />' . PHP_EOL;
   print '</span>' . PHP_EOL;
 }
@@ -99,6 +99,14 @@ $slice_id = "None";
 $slice_name = "None";
 include("tool-lookupids.php");
 
+if (isset($slice_expired) && $slice_expired == 't') {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
 if (!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
@@ -121,7 +129,7 @@ function validateSubmit()
     alert("Please select an Aggregate.");
     return false;
   }
-  alert ("Please select an RSpec.");
+  alert ("Please select a Resource Specification.");
   return false;
 }
 </script>
@@ -149,7 +157,7 @@ print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
 
   print "<br/><button onClick=\"window.location='rspecs.php'\">"
-    . "View Available RSpecs</button><br/>\n";
+    . "View Available Resource Specifications</button><br/>\n";
 
 print '<br/>';
 

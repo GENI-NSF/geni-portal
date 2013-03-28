@@ -132,6 +132,9 @@ foreach (array_keys($shib_fields) as $fieldkey) {
     if ($is_pi) {
       print "checked='checked'>I want to remain ";
     } else {
+      if (array_key_exists('belead', $_REQUEST)) {
+	print "checked='checked'";
+      }
       print ">Make me ";
     }
 ?>

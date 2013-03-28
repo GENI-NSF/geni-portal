@@ -50,19 +50,10 @@ if (count($project_ids) > 0) {
 }
 $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
 
-if (count($keys) == 0) {
-  // warn that no ssh keys are present.
-  $warnings[] = '<p class="warn">No ssh keys have been uploaded.'
-        . 'Please <button onClick="window.location=\'uploadsshkey.php\'">'
-         . 'Upload an SSH key</button> or <button'
-         . ' onClick="window.location=\'generatesshkey.php\'">Generate and'
-         . ' Download an SSH keypair</button> to enable logon to nodes.'
-        . '</p>';
-}
 if (is_null($cert)) {
   // warn that no cert has been generated
   $warnings[] = '<p class="warn">No certificate has been generated.'
-        . ' Please <a href="kmcert.php?close=1" target="_blank">'
+        . ' You must <a href="kmcert.php?close=1" target="_blank">'
         . 'generate a certificate'
         . '</a>.'
         . '</p>';
@@ -76,6 +67,15 @@ if ($num_projects == 0) {
   }
   $warn .= ' <button onClick="window.location=\'join-project.php\'"><b>join a project</b></button>.</p>';
   $warnings[] = $warn;
+}
+if (count($keys) == 0) {
+  // warn that no ssh keys are present.
+  $warnings[] = '<p class="warn">No SSH keys have been uploaded. '
+        . 'Please <button onClick="window.location=\'uploadsshkey.php\'">'
+         . 'Upload an SSH key</button> or <button'
+         . ' onClick="window.location=\'generatesshkey.php\'">Generate and'
+         . ' Download an SSH keypair</button> to enable logon to nodes.'
+        . '</p>';
 }
 
 
@@ -100,7 +100,7 @@ if ($num_projects > 1) {
 }
 ?>
 <li>Click "Download omni bundle"</li>
-<li>Run "omni_configure.py &lt;location of bundle&gt;"</li>
+<li>Run "omni-configure.py -f portal [-z &lt;location of bundle&gt;]" ("-z" option default is ~/Downloads/omni-bundle.zip)</li>
 </ol>
 
 <form id="f1" action="downloadomnibundle.php" method="post">
@@ -127,7 +127,11 @@ if ($num_projects > 1) {
 }
 ?>
 </form>
-<button onClick="document.getElementById('f1').submit();">
+<button onClick="document.getElementById('f1').submit();"
+<?php if (is_null($cert)) { ?>
+ disabled="disabled" title="You must generate a certificate before downloading the bundle."
+<?php } ?>
+>
   <b>Download omni bundle</b>
 </button>
 <button onClick="history.back(-1)">Cancel</button>

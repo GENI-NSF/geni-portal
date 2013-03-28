@@ -36,16 +36,16 @@ if (array_key_exists('id', $_GET)) {
 }
 
 if (is_null($rspec_id)) {
-  $_SESSION['lasterror'] = "RSpec delete failed: no id specified.";
+  $_SESSION['lasterror'] = "Resource Specification (RSpec) delete failed: no id specified.";
   redirect_referer('profile.php');
 }
 
 
 $result = deleteRSpecById($rspec_id, $user);
 if ($result) {
-  $_SESSION['lastmessage'] = "Deleted RSpec.";
+  $_SESSION['lastmessage'] = "Deleted Resource Specification (RSpec).";
 } else {
-  $_SESSION['lasterror'] = "RSpec delete failed.";
+  $_SESSION['lasterror'] = "Resource Specification (RSpec) delete failed.";
 }
 
 redirect_referer('profile.php');

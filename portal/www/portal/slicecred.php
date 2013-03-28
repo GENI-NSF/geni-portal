@@ -47,6 +47,14 @@ if (is_null($slice) || $slice == '') {
   no_slice_error();
 }
 
+if (isset($slice_expired) && $slice_expired == 't') {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
 if (!$user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }

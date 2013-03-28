@@ -70,6 +70,14 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
+if (isset($slice_expired) && $slice_expired == 't') {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
 if (!$user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
@@ -124,7 +132,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   // Call delete sliver at the AM
   $retVal = delete_sliver($am_urls, $user, $slice_credential,
 			  $slice_urn);
-  error_log("DeleteSliver output = " . $retVal);
+  //error_log("DeleteSliver output = " . $retVal);
 }
 
 $s = array();

@@ -75,7 +75,7 @@ if (array_key_exists("to", $_REQUEST)) {
   if (array_key_exists("purpose", $_REQUEST)) {
     $project_purpose = $_REQUEST["purpose"];
   }
-  $hostname = $_SERVER['HTTP_HOST'];
+  $hostname = $_SERVER['SERVER_NAME'];
   $message .= "\nCreate my project here: https://$hostname/secure/edit-project.php
 
 In case you are new to GENI:
@@ -152,7 +152,7 @@ print "<input type='text' name='name'/><br/>\n";
 print "<b>Proposed project purpose</b>:<br/>\n";
 print "<textarea name='purpose' cols='60' rows='2'></textarea><br/>\n";
 print "<b>Project request message</b>:<br/>\n";
-$hostname = $_SERVER['HTTP_HOST'];
+$hostname = $_SERVER['SERVER_NAME'];
 // FIXME: Ticket #66: Split this up. Much of this is canned text. Maybe starting with 'Create my...'? More?
 print "<textarea name='message' cols='60' rows='5'>Would you please create a GENI project for me?
 I need to use GENI for my research, and I need someone to create a 'GENI project' to hold my research.

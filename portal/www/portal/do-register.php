@@ -196,8 +196,13 @@ if (PEAR::isError($result)) {
 // TODO: Check for the existence of each, error if not available.
 // TODO: Use filters to sanitize these
 $eppn = $_SERVER['eppn'];
-$affiliation = $_SERVER['affiliation'];
 $shib_idp = $_SERVER['Shib-Identity-Provider'];
+$affiliation = "";
+if (array_key_exists('affiliation', $_SERVER)) {
+  $affiliation = $_SERVER['affiliation'];
+} else {
+  error_log("IdP " . $shib_idp . " gave no affiliation for eppn " . $eppn);
+}
 
 $sql = "INSERT INTO identity (provider_url, eppn, affiliation, account_id)"
   . "VALUES ("

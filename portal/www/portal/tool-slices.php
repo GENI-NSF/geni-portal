@@ -87,6 +87,16 @@ if (count($my_slice_objects) > 0) {
 
   foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    $slice_expired = 'f';
+    if (array_key_exists(SA_SLICE_TABLE_FIELDNAME::EXPIRED, $slice)) {
+      $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
+    }
+    $isSliceExpired = False;
+    $disable_buttons_str = "";
+    if (isset($slice_expired) && $slice_expired == 't') {
+      $isSliceExpired = True;
+      $disable_buttons_str = " disabled";
+    }
     $args['slice_id'] = $slice_id;
     $query = http_build_query($args);
     $query = $query;
@@ -108,13 +118,13 @@ if (count($my_slice_objects) > 0) {
 					      CS_CONTEXT_TYPE::SLICE, 
 					      $slice_id);
     $add_slivers_disabled = "";
-    if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
+    if(!$add_slivers_privilege or $isSliceExpired) { $add_slivers_disabled = $disabled; }
     
     $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
 						 CS_CONTEXT_TYPE::SLICE, 
 						 $slice_id);
     $delete_slivers_disabled = "";
-    if(!$delete_slivers_privilege) { $delete_slivers_disabled = $disabled; }
+    if(!$delete_slivers_privilege or $isSliceExpired) { $delete_slivers_disabled = $disabled; }
 
     $renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE,
 					      CS_CONTEXT_TYPE::SLICE, 
@@ -141,12 +151,13 @@ if (count($my_slice_objects) > 0) {
     print "<td>" . htmlentities($expiration) . "</td>";
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
     print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
-    print ("<button onClick=\"window.location='$sliver_status_url'\"><b>Resource Status</b></button>");
-    print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\"><b>Details</b></button>");
+    print ("<button onClick=\"window.location='$sliver_status_url'\" $disable_buttons_str><b>Resource Status</b></button>");
+    print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $disable_buttons_str><b>Details</b></button>");
     print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
-  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"http://groups.geni.net/geni/attachment/wiki/ProtoGENIFlashClient/pgfc-screenshot.jpg?format=raw\"/><br/>Launch Flack</button></td>\n";
+    $hostname = $_SERVER['SERVER_NAME'];
+    print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button></td>\n";
     if ($portal_enable_abac) {
-      print "<td><button onClick=\"window.location='$sliceabac_url'\"><b>Get ABAC Credential</b></button></td>";
+      print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";
     }
     print "</tr>\n";
   }
