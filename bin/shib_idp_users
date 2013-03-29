@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# List all users with requests
+#
+# Usage: shib_idp_users.sh
+
+if [ $# -ne 0 ]; then
+    echo "Usage: shib_idp_users"
+    exit
+else
+    if [$PGPASSFILE -eq ""]; then
+	export PGPASSFILE="/usr/local/etc/psql_password"	
+    fi	
+    echo "COPY (select  '||', first_name, '||',  last_name, '||', email, '||', username_requested, '||', phone, '||', password_hash, '||', '||', '||', '||',  organization, '||', title, '||', '||',  reason, '||', '||', '||' from idp_account_request where created_ts is null order by id) TO STDOUT;" | psql -U portal -h localhost portal
+fi
