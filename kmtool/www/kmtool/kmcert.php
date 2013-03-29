@@ -210,11 +210,11 @@ if (! is_null($result)) {
 </p><p>
 There are two options for creating these:
 <ol>
-<li>Have the portal generate these files for you <b>(easiest, least secure)</b> </li>
-<li>Have the portal generate a certificate for you based on a private key you have locally <b>(hardest, most secure)</b> </li>
+<li>Have the files generated for you <b>(easiest, least secure)</b> </li>
+<li>Have the certificate generated for you based on a private key you have locally <b>(hardest, most secure)</b> </li>
 </ol>
 </p>
-<h2>Option 1: Have the Portal generate the files for you </h2>
+<h2>Option 1: Have the files generated for you </h2>
 
 <p><b>If in doubt, use this option.</b></p>
 
@@ -225,7 +225,7 @@ There are two options for creating these:
 </form>
 <hr>
 
-<h2>Option 2. Have the portal generate a certificate for you based on a private key you have locally</h2>
+<h2>Option 2. Have the certificate generated for you based on a private key you have locally </h2>
 <p>There are two variations on this option, only do one of them.</p>
 <ul>
 	<li>Option 2a: Create a private key, then upload a certificate signing request (CSR)</li>
