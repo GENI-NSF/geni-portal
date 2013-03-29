@@ -3,18 +3,20 @@
 FILENAME="/tmp/addexoams.$USER"
 
 echo "-- Create the entry for ExoGENI BBN Rack:" >> $FILENAME
-echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description, service_urn) values (0, 'https://bbn-hn.exogeni.net:11443/orca/xmlrpc', '/usr/share/geni-ch/sr/certs/exosm-am.pem', 'GPO ExoGENI', 'ExoGENI GPO Rack', 'urn:publicid:IDN+exogeni.net:bbnvmsite+authority+cm');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description, service_urn) values (0, 'https://bbn-hn.exogeni.net:11443/orca/xmlrpc', '/usr/share/geni-ch/sr/certs/exo-bbn-am.pem', 'GPO ExoGENI', 'ExoGENI GPO Rack', 'urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am');" >> $FILENAME
 
 echo "-- Create the entry for ExoGENI RENCI Rack:" >> $FILENAME
-echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description, service_urn) values (0, 'https://rci-hn.exogeni.net:11443/orca/xmlrpc', '/usr/share/geni-ch/sr/certs/exosm-am.pem', 'RENCI ExoGENI', 'ExoGENI RENCI Rack', 'urn:publicid:IDN+exogeni.net:rcivmsite+authority+cm');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description, service_urn) values (0, 'https://rci-hn.exogeni.net:11443/orca/xmlrpc', '/usr/share/geni-ch/sr/certs/exo-rci-am.pem', 'RENCI ExoGENI', 'ExoGENI RENCI Rack', 'urn:publicid:IDN+exogeni.net:rcivmsite+authority+am');" >> $FILENAME
 
 echo "-- Create the entry for ExoGENI ExoSM:" >> $FILENAME
-echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description, service_urn) values (0, 'https://geni.renci.org:11443/orca/xmlrpc', '/usr/share/geni-ch/sr/certs/exosm-am.pem', 'ExoGENI ExoSM', 'ExoGENI ExoSM', 'urn:publicid:IDN+exogeni.net+authority+cm');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description, service_urn) values (0, 'https://geni.renci.org:11443/orca/xmlrpc', '/usr/share/geni-ch/sr/certs/exosm-am.pem', 'ExoGENI ExoSM', 'ExoGENI ExoSM', 'urn:publicid:IDN+exogeni.net+authority+am');" >> $FILENAME
 
 # The signer has expired, so it causes network connectivity issues with Flack.
 # Remove it until ExoGENI updates.
-#echo "-- Create the entry for ExoGENI AM signer (self, same for BBN and RENCI and ExoSM):" >> $FILENAME
-#echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/exosm-am.pem', '', 'For Flack: Signer of ExoGENI ExoSM and RENCI rack and BBN rack AM cert (self)');" >> $FILENAME
+echo "-- Create the entry for ExoGENI AM signers (each is self-signed):" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/exo-bbn-am.pem', '', 'For Flack: Signer of ExoGENI BBN rack (self)');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/exo-rci-am.pem', '', 'For Flack: Signer of ExoGENI RENCI (self)');" >> $FILENAME
+echo "insert into service_registry (service_type, service_url, service_cert, service_name, service_description) values (7, '', '/usr/share/geni-ch/sr/certs/exosm-am.pem', '', 'For Flack: Signer of ExoGENI ExoSM (self)');" >> $FILENAME
 
 psql -U portal -h localhost portal < $FILENAME
 
