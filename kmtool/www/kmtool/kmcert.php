@@ -205,39 +205,39 @@ if (! is_null($result)) {
 
 ?>
 
-In order to use some GENI tools (like
-<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>
-) you need a certificate and private key. There are three options for
-creating these:
+<p>In order to use some GENI tools (like
+<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need two files: a user SSL certificate and a private key. 
+</p><p>
+There are two options for creating these:
 <ol>
-<li>Generate and download a private key and certificate (if in doubt, use this option: easiest, least secure)
-<li>Create and upload a certificate signing request (recommended: harder, most secure)
-<li>Create and upload a certificate signing request from an existing private key (hardest, secure)
-
+<li>Have the portal generate these files for you <b>(easiest, least secure)</b> </li>
+<li>Have the portal generate a certificate for you based on a private key you have locally <b>(hardest, most secure)</b> </li>
 </ol>
-
-<h2>Option 1: Generate a private key and certificate (easiest, least secure)</h2>
+</p>
+<h2>Option 1: Have the Portal generate the files for you </h2>
 
 <p><b>If in doubt, use this option.</b></p>
 
 <form name="generate" action="kmcert.php" method="post">
 <input type="hidden" name="<?php print $generate_key;?>" value="y"/>
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
-<input type="submit" name="submit" value="Generate Certificate and Key"/>
+<input type="submit" name="submit" value="Generate Combined Certificate and Key File"/>
 </form>
 <hr>
 
-The remaining two options are more advanced but more secure.
-<hr>
-
-
-<h2>Option 2. Create and upload a certificate signing request (harder, most secure)</h2>
-Run the following command in a terminal window on a Mac or Linux host.
-This will generate two files: <code>CSR.csr</code> and <code>privateKey.key</code>.
-Store <code>privateKey.key</code> where you'll remember it ($HOME/.ssl, $HOME/.ssh).
+<h2>Option 2. Have the portal generate a certificate for you based on a private key you have locally</h2>
+<p>There are two variations on this option, only do one of them.</p>
+<ul>
+	<li>Option 2a: Create a private key, then upload a certificate signing request (CSR)</li>
+<p><b>For the most security, use this option.</b></p>
+	<ul>
+		<li>
+Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the same PEM pass phrase twice.
+This will generate two files: <code>CSR.csr</code> and <code>geni-ssl-private.key</code>.
+Store <code>geni-ssl-private.key</code> where you'll remember it ($HOME/.ssl, $HOME/.ssh).
 Upload <code>CSR.csr</code> in the form below.
 <br/>
-<pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout privateKey.key -batch</pre>
+<pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout geni-ssl-private.key -batch</pre>
 <h4>Now upload the file CSR.csr below:</h4>
 <form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
 <label for="csrfile">Certificate Signing Request File:</label>
@@ -247,9 +247,12 @@ Upload <code>CSR.csr</code> in the form below.
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Create Certificate"/>
 </form>
-<hr>
-<h2>Option 3: Create and upload a certificate signing request from an existing private key (hardest, secure):</h2>
-Run the following command in a terminal window on a Mac or Linux host.
+		</li>
+	</ul>
+	<li>Option 2b: Reuse an existing private key, then upload a certificate signing request (CSR) </li>
+	<ul>
+		<li>
+Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the pass phrase for the private key. 
 This will generate a file named <code>CSR.csr</code>.
 Upload <code>CSR.csr</code> in the form below.
 <pre>openssl req -out CSR.csr -new -key &lt;YourPrivateKey&gt; -batch</pre>
@@ -262,8 +265,13 @@ Upload <code>CSR.csr</code> in the form below.
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Create Certificate"/>
 </form>
+		</li>
+	</ul>
+</ul>
 
-
+<p>
+Remember, in order to use these, you will need to keep track of the downloaded certificate, the private key and the passphrase for the key.  
+</p>
 <?php
 show_close_button();
 
