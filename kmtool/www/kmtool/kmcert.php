@@ -205,16 +205,33 @@ if (! is_null($result)) {
 
 ?>
 
-In order to use some geni tools (like
+In order to use some GENI tools (like
 <a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>
 ) you need a certificate and private key. There are three options for
 creating these:
 <ol>
+<li>Generate and download a private key and certificate (if in doubt, use this option: easiest, least secure)
 <li>Create and upload a certificate signing request (recommended: harder, most secure)
 <li>Create and upload a certificate signing request from an existing private key (hardest, secure)
-<li>Generate and download a private key and certificate (easiest, least secure)
+
 </ol>
-<h2>Option 1. Create and upload a certificate signing request</h2>
+
+<h2>Option 1: Generate a private key and certificate (easiest, least secure)</h2>
+
+<p><b>If in doubt, use this option.</b></p>
+
+<form name="generate" action="kmcert.php" method="post">
+<input type="hidden" name="<?php print $generate_key;?>" value="y"/>
+<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
+<input type="submit" name="submit" value="Generate Certificate and Key"/>
+</form>
+<hr>
+
+The remaining two options are more advanced but more secure.
+<hr>
+
+
+<h2>Option 2. Create and upload a certificate signing request (harder, most secure)</h2>
 Run the following command in a terminal window on a Mac or Linux host.
 This will generate two files: <code>CSR.csr</code> and <code>privateKey.key</code>.
 Store <code>privateKey.key</code> where you'll remember it ($HOME/.ssl, $HOME/.ssh).
@@ -231,7 +248,7 @@ Upload <code>CSR.csr</code> in the form below.
 <input type="submit" name="submit" value="Create Certificate"/>
 </form>
 <hr>
-<h2>Option 2: Create and upload a certificate signing request from an existing private key:</h2>
+<h2>Option 3: Create and upload a certificate signing request from an existing private key (hardest, secure):</h2>
 Run the following command in a terminal window on a Mac or Linux host.
 This will generate a file named <code>CSR.csr</code>.
 Upload <code>CSR.csr</code> in the form below.
@@ -245,13 +262,7 @@ Upload <code>CSR.csr</code> in the form below.
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Create Certificate"/>
 </form>
-<hr>
-<h2>Option 3: Generate a private key and certificate</h2>
-<form name="generate" action="kmcert.php" method="post">
-<input type="hidden" name="<?php print $generate_key;?>" value="y"/>
-<input type="hidden" name="<?php print $close_key; ?>" value="1"/>
-<input type="submit" name="submit" value="Generate Certificate and Key"/>
-</form>
+
 
 <?php
 show_close_button();
