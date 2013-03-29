@@ -247,9 +247,12 @@ Upload <code>CSR.csr</code> in the form below.
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Create Certificate"/>
 </form>
+	<br/>
+
 		</li>
 	</ul>
 	<li>Option 2b: Reuse an existing private key, then upload a certificate signing request (CSR) </li>
+	<br/>
 	<ul>
 		<li>
 Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the pass phrase for the private key. 
