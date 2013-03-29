@@ -206,15 +206,15 @@ if (! is_null($result)) {
 ?>
 
 <p>In order to use some GENI tools (like
-<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need two files: a user SSL certificate and a private key. 
+<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need two objects: a user SSL certificate and a private key. 
 </p><p>
 There are two options for creating these:
 <ol>
-<li>Have the files generated for you <b>(easiest, least secure)</b> </li>
+<li>Have the objects generated for you <b>(easiest, least secure)</b> </li>
 <li>Have the certificate generated for you based on a private key you have locally <b>(hardest, most secure)</b> </li>
 </ol>
 </p>
-<h2>Option 1: Have the files generated for you </h2>
+<h2>Option 1: Have the objects generated for you </h2>
 
 <p><b>If in doubt, use this option.</b></p>
 
