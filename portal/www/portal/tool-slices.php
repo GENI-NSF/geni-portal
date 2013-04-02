@@ -83,7 +83,12 @@ if (count($my_slice_objects) > 0) {
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
-
+  $num_slices = count($my_slice_objects);
+  if ($num_slices==1) {
+      print "<p><i>You have access to <b>1</b> slice in this project.</i></p>";
+  } else {
+       print "<p><i>You have access to <b>".$num_slices."</b> slices in this project.</i></p>";
+  }
 
   foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
