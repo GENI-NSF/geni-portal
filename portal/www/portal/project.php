@@ -96,6 +96,7 @@ $members = get_project_members($pa_url, $user, $project_id);
 $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 //error_log("members = " . print_r($members, true));
+$num_members = count($members);
 
 $reqs = null;
 if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
@@ -171,6 +172,14 @@ include("tool-slices.php");
 ?>
 <br/>
 <h2>Project members</h2>
+
+<?php
+if ($num_members==1) {
+   print "<p><i>There is <b>1</b> member in this project.</i></p>";
+} else {
+  print "<p><i>There are <b>".$num_members."</b> members in this project.</i></p>";
+}
+?>
 <table>
 <tr><th>Project Member</th><th>Roles</th></tr>
 <?php
