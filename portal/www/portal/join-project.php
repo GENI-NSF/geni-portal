@@ -106,6 +106,8 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 
   foreach ($project_details as $project) {
     //    $project = lookup_project($pa_url, $user, $project_id);
+    $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+    if ($expired == 't') continue;
     print "<tr><td>";
     print $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     print "</td><td>";
