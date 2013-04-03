@@ -290,6 +290,16 @@ function fetchRSpecById($id) {
   return $row['rspec'];
 }
 
+function fetchRSpecNameById($id) {
+  $conn = portal_conn();
+  $sql = "SELECT rspec.name FROM rspec where rspec.id = "
+    . $conn->quote($id, 'integer');
+  /* print "Query = $sql<br/>"; */
+  $result = db_fetch_row($sql, "fetchRSpecById($id)");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
+  return $row['name'];
+}
+
 /**
  * Get RSpec metadata for all public RSpecs
  * and all private RSpecs owned by the current user.
