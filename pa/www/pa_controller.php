@@ -69,6 +69,96 @@ function pa_debug($msg)
 }
 
 /*----------------------------------------------------------------------
+ * Expiration
+ *----------------------------------------------------------------------
+ */
+/**
+ * A poor man's expiration. Call this at the start of an API method
+ * to expire projects in advance of the call. Eventually we will need
+ * a daemon for this.
+ *
+ * N.B. This is not sufficient for warning emails that a project is
+ * going to expire soon. For that, a daemon is necessary.
+ */
+function pa_expire_projects()
+{
+  /*
+   * Select project ids that should expire.
+   * For each id:
+   *   Update the DB
+   *   Log expire to Logger
+   *   Log expiration to geni_syslog
+   *
+   * Also unexpire those projects that were set to expired 
+   * but whose expiration dates have been extended
+   */
+  pa_expire_projects_internal(True);
+  pa_expire_projects_internal(False);
+}
+
+// Either expire recently expired ($expire_projects = true)
+// or unexpire recently extended expired projects ($expire_projects = false)
+function pa_expire_projects_internal($expire_projects)
+{
+
+  global $log_url;
+  global $mysigner;
+  global $PA_PROJECT_TABLENAME;
+  $conn = db_conn();
+  $now_utc = new DateTime(null, new DateTimeZone('UTC'));
+
+  $time_sense = "<";
+  $expired_sense = "NOT";
+  $expired_value = "TRUE";
+  $expired_label = "Expired";
+  if (!$expire_projects) {
+    $time_sense = ">";
+    $expired_sense = "";
+    $expired_value = "FALSE";
+    $expired_label = "Unexpired";
+  }
+
+  $sql = "SELECT "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID
+    . " FROM " . $PA_PROJECT_TABLENAME
+    . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
+    . " " . $time_sense . " " . $conn->quote(db_date_format($now_utc), 'timestamp')
+    . " AND " . $expired_sense . " " . PA_PROJECT_TABLE_FIELDNAME::EXPIRED;
+  $result = db_fetch_rows($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] !== RESPONSE_ERROR::NONE) {
+    $msg = "pa_expire_projects error: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    return;
+  }
+  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  foreach ($rows as $row) {
+    $project_id = $row[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+    $project_name = $row[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    $lead_id = $row[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+    $sql = "UPDATE $PA_PROJECT_TABLENAME"
+      . " SET " . PA_PROJECT_TABLE_FIELDNAME::EXPIRED . " = " . $expired_value
+      . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . " = "
+      . $conn->quote($project_id, 'text');
+    $result = db_execute_statement($sql);
+    if ($result[RESPONSE_ARGUMENT::CODE] !== RESPONSE_ERROR::NONE) {
+      $msg = "Failed to expire project $project_id; "
+        . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+      continue;
+    }
+    $project_attribute = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
+            $project_id);
+    $attributes = $project_attribute;
+    $log_msg = $expired_label . " project " . $project_name;
+    log_event($log_url, $mysigner, $log_msg, $attributes, $lead_id);
+    $syslog_msg = $expired_label . " project $project_id";
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $syslog_msg);
+  }
+}
+
+/*----------------------------------------------------------------------
  * Authorization
 *----------------------------------------------------------------------
 */
@@ -258,6 +348,8 @@ function create_project($args, $message)
   global $PA_PROJECT_TABLENAME;
   global $cs_url;
   global $mysigner;
+  
+  pa_expire_projects();
 
   //  error_log("ARGS = " . print_r($args, true));
 
@@ -383,6 +475,8 @@ function delete_project($args, $message)
   global $PA_PROJECT_TABLENAME;
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
 
+  pa_expire_projects();
+
   $conn = db_conn();
   $sql = "DELETE FROM " . $PA_PROJECT_TABLENAME
   . " WHERE "
@@ -417,6 +511,9 @@ function delete_project($args, $message)
 function get_projects($args)
 {
   global $PA_PROJECT_TABLENAME;
+
+  pa_expire_projects();
+
   $conn = db_conn();
   $sql = "select "
           . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
@@ -446,6 +543,8 @@ function get_projects($args)
 function lookup_projects($args)
 {
   global $PA_PROJECT_TABLENAME;
+
+  pa_expire_projects();
 
   $lead_id = null;
   $lead_clause = "";
@@ -479,6 +578,8 @@ function lookup_projects($args)
 function lookup_project($args)
 {
   global $PA_PROJECT_TABLENAME;
+
+  pa_expire_projects();
 
   if (array_key_exists(PA_ARGUMENT::PROJECT_ID, $args)) {
     $project_id = $args[PA_ARGUMENT::PROJECT_ID];
@@ -522,6 +623,8 @@ function update_project($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
 
+  pa_expire_projects();
+
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   $expiration = $args[PA_ARGUMENT::EXPIRATION];
@@ -564,6 +667,8 @@ function update_project($args, $message)
 function change_lead($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
+
+  pa_expire_projects();
 
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $previous_lead_id = $args[PA_ARGUMENT::PREVIOUS_LEAD_ID];
@@ -635,6 +740,9 @@ function change_lead($args, $message)
 // Return code/value/output triple
 function add_project_member($args, $message)
 {
+
+  pa_expire_projects();
+
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
   $role = null;
@@ -728,6 +836,9 @@ function add_project_member($args, $message)
 // Remove a member from given project
 function remove_project_member($args, $message)
 {
+
+  pa_expire_projects();
+
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
 
@@ -788,6 +899,9 @@ function remove_project_member($args, $message)
 // Change role of given member in given project
 function change_member_role($args, $message)
 {
+
+  pa_expire_projects();
+
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
   $role = $args[PA_ARGUMENT::ROLE_TYPE];
@@ -861,6 +975,9 @@ function change_member_role($args, $message)
 // If role is provided, filter to members of given role
 function get_project_members($args)
 {
+
+  pa_expire_projects();
+
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $role = null;
   if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
@@ -898,6 +1015,9 @@ function get_project_members($args)
 //    for which member does NOT have given role (is_member = false)
 function get_projects_for_member($args)
 {
+
+  pa_expire_projects();
+
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
   $is_member = true;
   if (array_key_exists(PA_ARGUMENT::IS_MEMBER, $args) && isset($args[PA_ARGUMENT::IS_MEMBER])) {
@@ -968,6 +1088,9 @@ function get_projects_for_member($args)
 
 function lookup_project_details($args)
 {
+
+  pa_expire_projects();
+
   $project_uuids = $args[PA_ARGUMENT::PROJECT_UUIDS];
   $project_uuids_as_sql = convert_list($project_uuids);
 
@@ -980,7 +1103,8 @@ function lookup_project_details($args)
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
     . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
     . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
-    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED
     . " FROM " . $PA_PROJECT_TABLENAME 
     . " WHERE " .   PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . " IN " .
       $project_uuids_as_sql;

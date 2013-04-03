@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user)
+function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_expired=False)
 {
   $member_ids = array();
   $slice_ids = array();
@@ -31,11 +31,30 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user)
   $member_objects = array();
   $project_slice_map = array();
   $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
-  //  error_log("PROJECTS = " . print_r($projects, true));
   if (count($projects) > 0) {
+    $project_objects = lookup_project_details($pa_url, $user, $projects);
+
+    // We get back all the projects. But optionally filter out expired projects.
+    if(!$allow_expired) {
+      $unexpired_projects = array();
+      $unexpired_project_objects = array();
+      $now = new DateTime();
+      foreach($project_objects as $project) {
+        $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+	$project_expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+	$project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+	error_log("PEXP = " . $project_id . " " . $project_name . " " . $project_expired . " " . print_r($project_expired == 't', true));
+	if ($project_expired == 't')
+	  continue;
+	$unexpired_project_objects[] = $project;
+	$unexpired_projects[] = $project_id;
+      }
+      $projects = $unexpired_projects;
+      $project_objects = $unexpired_project_objects;
+    }
+
     $slice_data = get_slices_for_projects($sa_url, $user, $projects);
     //  error_log("SLICE_DATA =  = " . print_r($slice_data, true));
-     $project_objects = lookup_project_details($pa_url, $user, $projects);
      foreach ($project_objects as $project) {
         $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
         $proj_lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
