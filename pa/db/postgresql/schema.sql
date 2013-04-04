@@ -20,6 +20,7 @@ CREATE TABLE pa_project (
   project_purpose VARCHAR,
   creation TIMESTAMP,
   expiration TIMESTAMP,
+  expired BOOLEAN NOT NULL DEFAULT 'FALSE',
   PRIMARY KEY (id)
 );
 

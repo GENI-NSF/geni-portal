@@ -38,5 +38,7 @@ print "<h1>GENI Projects</h1>\n";
 
 include("tool-projects.php");
 
+include("tool-expired-projects.php");
+
 include("footer.php");
 ?>

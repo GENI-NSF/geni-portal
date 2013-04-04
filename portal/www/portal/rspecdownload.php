@@ -41,13 +41,18 @@ if (is_null($rspec_id)) {
 
 /* $rspec is the XML */
 $rspec = fetchRSpecById($rspec_id);
+$name = fetchRSpecNameById($rspec_id);
+$name2 = preg_replace("/[^a-zA-Z0-9]/", "_", $name);
+if ($name2 != ""){
+   $filename = $name2.".xml";
+} else {
+  $filename = "rspec.xml";
+}
 
 /* How to improve this?
  *  - store the filename when uploaded
  *  - convert name to filename (space --> hyphen, append ".xml"
  */
-$filename = "rspec.xml";
-
 if (is_null($rspec)) {
   relative_redirect('home.php');
 } else {

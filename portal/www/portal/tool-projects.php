@@ -36,12 +36,36 @@ include("services.php");
 if(!isset($project_objects) || !isset($slice_objects) || 
    !isset($member_objects) || !isset($project_slice_map)) 
 {
-  $retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user);
+  $retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user, True);
   $project_objects = $retVal[0];
   $slice_objects = $retVal[1];
   $member_objects = $retVal[2];
   $project_slice_map = $retVal[3];
 }
+
+foreach($project_objects as $project) {
+  error_log("PROJ (orig) = " . print_r($project, true));
+}
+
+$expired_projects = array();
+$unexpired_projects = array();
+foreach($project_objects as $project) {
+  //  error_log("PROJ = " . print_r($project, true));
+  $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+  $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+  if($expired == 't') 
+    $expired_projects[$project_id] = $project;
+  else
+    $unexpired_projects[$project_id] = $project;
+}
+
+$project_objects = $unexpired_projects;
+
+foreach($project_objects as $project) {
+  error_log("PROJ (unexp) = " . print_r($project, true));
+}
+
+
 
 
 // $tmp = "PROJECTS = " . print_r($project_objects, true) . "\nSLICES = " . print_r($slice_objects, true) . "\nMEMBERS = " . print_r($member_objects, true);

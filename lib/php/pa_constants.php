@@ -56,6 +56,7 @@ class PA_PROJECT_TABLE_FIELDNAME
   const PROJECT_PURPOSE = "project_purpose";
   const CREATION = "creation";
   const EXPIRATION = "expiration";
+  const EXPIRED = "expired";
 }
 
 /* Name of table containing project membership info */

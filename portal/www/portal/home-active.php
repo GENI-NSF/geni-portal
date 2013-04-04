@@ -96,16 +96,20 @@ $messages = array();
 $logs = array();
 if (is_array($entries) && count($entries) > 0) {
   foreach($entries as $entry) {
-    $msg = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE] . $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+    $msg = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME] . $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     if (!in_array($msg, $messages)) {
       $messages[] = $msg;
-      $logs[$entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]] = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+      $logs[$msg] = $entry;
+    } else {
+      error_log("Already in " . $msg);
     }
   }
+
   krsort($logs);
-  foreach ($logs as $rawtime => $message) {
+  foreach ($logs as $msg => $entry) {
+    $rawtime = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     $time = dateUIFormat($rawtime);
-    //    error_log("ENTRY = " . print_r($entry, true));
     print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
   }
 } else {

@@ -37,7 +37,7 @@ $disabled = "disabled = " . '"' . "disabled" . '"';
 if(!isset($project_objects) || !isset($slice_objects) || 
    !isset($member_objects) || !isset($project_slice_map)) 
 {
-  $retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user);
+  $retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user, True);
   $project_objects = $retVal[0];
   $slice_objects = $retVal[1];
   $member_objects = $retVal[2];
@@ -83,7 +83,12 @@ if (count($my_slice_objects) > 0) {
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
-
+  $num_slices = count($my_slice_objects);
+  if ($num_slices==1) {
+      print "<p><i>You have access to <b>1</b> slice.</i></p>";
+  } else {
+       print "<p><i>You have access to <b>".$num_slices."</b> slices.</i></p>";
+  }
 
   foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
