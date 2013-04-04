@@ -203,7 +203,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
   if ($load_user) {
     echo '<div id="metanav" class="nav">';
-    echo '<ul><li style="border-right: none">Logged in as ' . $user->prettyName() . '</li></ul>';
+    echo '<ul><li style="border-right: none">Welcome, ' . $user->prettyName() . '</li></ul>';
     echo '</div>';
   }
   show_tab_bar($active_tab, $load_user);
