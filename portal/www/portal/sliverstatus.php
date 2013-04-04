@@ -99,12 +99,15 @@ if (isset($am_ids) and $amcnt == 0) {
   $amcnt = count($am_ids);
 }
 if (! isset($ams) and ! isset($am_ids)) {
-  $amcnt = 2;
+  $amcnt = 0;
   //error_log("sliverstatus had no ams or amids or am_id");
 }
+
 $amcntstr = "aggregate";
 if ($amcnt >= 2) {
   $amcntstr = $amcnt . " aggregates";
+} elseif ($amcnt == 0) {
+  $amcntstr = "all aggregates";
 }
         
 echo "<div id='header'>Querying status of resources at " . $amcntstr . "...</div>";
