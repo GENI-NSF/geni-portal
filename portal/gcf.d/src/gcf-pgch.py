@@ -67,13 +67,25 @@ class CommandHandler(object):
 
     def runserver_handler(self, opts):
         """Run the clearinghouse server."""
-        # XXX Verify that opts.keyfile exists
-        # XXX Verify that opts.directory exists
-        ch = PGClearinghouse()
+        # Verify that opts.keyfile exists
+        # Verify that opts.directory exists
+        certfile = getAbsPath(opts.certfile)
+        keyfile = getAbsPath(opts.keyfile)
+        if not os.path.exists(certfile):
+            sys.exit("Clearinghouse certfile %s doesn't exist" % certfile)
+        if not os.path.getsize(certfile) > 0:
+            sys.exit("Clearinghouse certfile %s is empty" % certfile)
+
+        if not os.path.exists(keyfile):
+            sys.exit("Clearinghouse keyfile %s doesn't exist" % keyfile)
+        if not os.path.getsize(keyfile) > 0:
+            sys.exit("Clearinghouse keyfile %s is empty" % keyfile)
+
+        ch = PGClearinghouse((not opts.use_gpo_ch))
         # address is a tuple in python socket servers
         addr = (opts.host, int(opts.port))
         # rootcafile is turned into a concatenated file for Python SSL use inside ch.py
-        ch.runserver(addr, getAbsPath(opts.keyfile), getAbsPath(opts.certfile), 
+        ch.runserver(addr, keyfile, certfile,
                      getAbsPath(opts.rootcadir), config['global']['base_name'],
                      opts.user_cred_duration, opts.slice_duration, config)
 
@@ -97,6 +109,12 @@ def parse_args(argv):
                       help="server port", metavar="PORT")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
+    parser.add_option("--user_cred_duration", default=geni.pgch.USER_CRED_LIFE, metavar="SECONDS",
+                      help="User credential lifetime in seconds (default %d)" % geni.pgch.USER_CRED_LIFE)
+    parser.add_option("--slice_duration", default=geni.pgch.SLICE_CRED_LIFE, metavar="SECONDS",
+                      help="Slice lifetime in seconds (default %d)" % geni.pgch.SLICE_CRED_LIFE)
+    parser.add_option("--use-gpo-ch", default=False, action="store_true",
+                      help="Use remote GPO Clearinghouse (default False) or the local GCF Clearinghouse")
     return parser.parse_args()
 
 def main(argv=None): 
