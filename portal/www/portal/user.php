@@ -87,6 +87,10 @@ class GeniUser
     if (isset($member->affiliation)) {
       $this->affiliation = $member->affiliation;
     }
+    if (isset($member->urn)) {
+      $this->urn = $member->urn;
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found URN  " . $this->urn);
+    }
     // FIXME: MA should maintain a member status
     $this->status = 'active';
   }
@@ -158,17 +162,8 @@ class GeniUser
     return $this->attributes['mail'];
   }
 
-  /* FIXME: This needs to be an MA function. */
   function urn() {
-    exec('/bin/hostname -s', $site, $status);
-    if ($status) {
-      error_log("error running \"/bin/hostname -s\": $site");
-      $site = 'unknown';
-    } else {
-      $site = $site[0];
-    }
-    $urn = "urn:publicid:IDN+$site+user+" . $this->username;
-    return $urn;
+    return $this->urn;
   }
 
   function prettyName() {
