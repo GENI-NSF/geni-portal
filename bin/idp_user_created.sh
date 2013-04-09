@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Mark a user that requested a GPO IdP account as having been
+# created. Select by email address.
+# Do this when infra has actually created the account. And then you
+# sent the user email.
+
 if [ $# -ne 1 ]; then
     echo "Usage: idp_user_created <email>"
     exit
