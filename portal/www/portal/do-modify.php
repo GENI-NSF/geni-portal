@@ -182,13 +182,15 @@ $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
 $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
 					       $member_id);
 $attributes = array_merge($project_attributes, $member_attributes);
+$subject = "New GENI CH account change requested";
 if ($pi_request and ! $is_pi) {
-  $body .= "Requesting to be a Project Lead.\n";
+  $body .= "\t\t**** Requesting to be a Project Lead. ****\n";
   $msg = $user->prettyName() . " requested to be a Project Lead";
+  $subject = "New GENI CH Project Lead request";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
   log_event($log_url, Portal::getInstance(), $msg, $attributes, $user->account_id);
 } else if (! $pi_request and $is_pi) {
-  $body .= "Requesting to NOT be a Project Lead.\n";
+  $body .= "\t\t**** Requesting to NOT be a Project Lead. ****\n";
   $msg = $user->prettyName() . " requested to NOT be a Project Lead";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
   log_event($log_url, Portal::getInstance(), $msg, $attributes, $user->account_id);
@@ -204,8 +206,7 @@ if ($removed_str !== '') {
 }
 include_once('/etc/geni-ch/settings.php');
 global $portal_admin_email;
-mail($portal_admin_email,
-     "New GENI CH account change requested",
+mail($portal_admin_email, $subject,
      $body);
 
 //error_log("Request: " . print_r($_REQUEST, true));
