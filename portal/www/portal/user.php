@@ -182,7 +182,7 @@ class GeniUser
       return $this->attributes['givenName']
         . " " . $this->attributes['sn'];
     } else {
-      return $this->eppn;
+      return $this->email();
     }
   }
 

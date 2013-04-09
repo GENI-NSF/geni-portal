@@ -724,7 +724,10 @@ function lookup_member_names($args)
     . " IN " . convert_list($member_uuids)
     . " AND "
     . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME . " IN " 
-    . "('displayName', 'first_name', 'last_name')";
+    . "('" . MA_ATTRIBUTE_NAME::DISPLAY_NAME . "', '"
+    . MA_ATTRIBUTE_NAME::FIRST_NAME . "', '"
+    . MA_ATTRIBUTE_NAME::LAST_NAME . "', '"
+    . MA_ATTRIBUTE_NAME::EMAIL_ADDRESS . "')";
   //  error_LOG("SQL = " . print_r($sql, true));
   $result = db_fetch_rows($sql);
 
@@ -738,11 +741,13 @@ function lookup_member_names($args)
   $names = array();
   foreach($info as $member_id => $attribs) {
     $name = "NONE";
-    if (array_key_exists('displayName', $attribs)) {
-      $name = $attribs['displayName'];
-    } else if (array_key_exists('first_name', $attribs) && 
-	       array_key_exists('last_name', $attribs)) {
-      $name = $attribs['first_name'] . " " . $attribs['last_name'];
+    if (array_key_exists(MA_ATTRIBUTE_NAME::DISPLAY_NAME, $attribs)) {
+      $name = $attribs[MA_ATTRIBUTE_NAME::DISPLAY_NAME];
+    } else if (array_key_exists(MA_ATTRIBUTE_NAME::FIRST_NAME, $attribs) &&
+	       array_key_exists(MA_ATTRIBUTE_NAME::LAST_NAME, $attribs)) {
+      $name = $attribs[MA_ATTRIBUTE_NAME::FIRST_NAME] . " " . $attribs[MA_ATTRIBUTE_NAME::LAST_NAME];
+    } else if (array_key_exists(MA_ATTRIBUTE_NAME::EMAIL_ADDRESS, $attribs)) {
+      $name = $attribs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS]
     }
     $names[$member_id] = $name;
   }
