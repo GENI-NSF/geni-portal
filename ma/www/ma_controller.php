@@ -747,7 +747,7 @@ function lookup_member_names($args)
 	       array_key_exists(MA_ATTRIBUTE_NAME::LAST_NAME, $attribs)) {
       $name = $attribs[MA_ATTRIBUTE_NAME::FIRST_NAME] . " " . $attribs[MA_ATTRIBUTE_NAME::LAST_NAME];
     } else if (array_key_exists(MA_ATTRIBUTE_NAME::EMAIL_ADDRESS, $attribs)) {
-      $name = $attribs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS]
+      $name = $attribs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
     }
     $names[$member_id] = $name;
   }
