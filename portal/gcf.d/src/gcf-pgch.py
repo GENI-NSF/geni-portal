@@ -113,7 +113,7 @@ def parse_args(argv):
                       help="User credential lifetime in seconds (default %d)" % geni.pgch.USER_CRED_LIFE)
     parser.add_option("--slice_duration", default=geni.pgch.SLICE_CRED_LIFE, metavar="SECONDS",
                       help="Slice lifetime in seconds (default %d)" % geni.pgch.SLICE_CRED_LIFE)
-    parser.add_option("--use-gpo-ch", default=False, action="store_true",
+    parser.add_option("--use-gpo-ch", default=True, action="store_true",
                       help="Use remote GPO Clearinghouse (default False) or the local GCF Clearinghouse")
     return parser.parse_args()
 
