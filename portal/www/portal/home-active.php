@@ -100,8 +100,8 @@ if (is_array($entries) && count($entries) > 0) {
     if (!in_array($msg, $messages)) {
       $messages[] = $msg;
       $logs[$msg] = $entry;
-    } else {
-      error_log("Already in " . $msg);
+    /* } else { */
+    /*   error_log("Already in " . $msg); */
     }
   }
 
