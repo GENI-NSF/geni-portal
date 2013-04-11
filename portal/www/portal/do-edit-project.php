@@ -79,9 +79,12 @@ if ($isnew) {
   } else if (strpos($name, ' ') !== false) {
     error_log("do-edit-project: project name '$name' contains spaces");
     relative_redirect('error-text.php?error=' . urlencode("Project Name may not contain spaces."));
+  } else if (strlen($name) > 32) {
+    error_log("do-edit-project: project name '$name' too long");
+    relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' is too long - use at most 32 characters."));
   } else if (! is_valid_project_name($name)) {
     error_log("do-edit-project: project name '$name' invalid");
-    relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' invalid: Avoid /:+;'?#% "));
+    relative_redirect('error-text.php?error=' . urlencode("Project Name '$name' is invalid: Use at most 32 alphanumeric characters or hyphen or underscore. No leading hyphen or underscore. "));
   }
   // Re-check authorization?
   // Auto?

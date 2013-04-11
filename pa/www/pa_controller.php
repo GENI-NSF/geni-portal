@@ -356,16 +356,16 @@ function create_project($args, $message)
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
   if (! isset($project_name) or is_null($project_name) or $project_name == '') {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project name missing");
+            "Project name is missing");
   }
   if (strpos($project_name, ' ') !== false) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project name '$project_name' invalid: no spaces allowed.");
+            "Project name '$project_name' is invalid: no spaces allowed.");
   }
 
   if (!is_valid_project_name($project_name)) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project name '$project_name' invalid: Avoid /:+;'?#% ");
+            "Project name '$project_name' is invalid: Use at most 32 alphanumerics plus hyphen and underscore; no leading hyphen or underscore.");
   }
   $lead_id = $args[PA_ARGUMENT::LEAD_ID];
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
@@ -378,13 +378,13 @@ function create_project($args, $message)
   $conn = db_conn();
 
   $exists_sql = "select count(*) from " . $PA_PROJECT_TABLENAME
-  . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = " . $conn->quote($project_name, 'text');
+    . " WHERE lower(" . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ") = lower(" . $conn->quote($project_name, 'text') . ")";
   $exists_response = db_fetch_row($exists_sql);
   $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
   $exists = $exists['count'];
   if ($exists > 0) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project of name " . $project_name . " already exists.");
+            "A project named '" . $project_name . "' already exists.");
   }
 
 

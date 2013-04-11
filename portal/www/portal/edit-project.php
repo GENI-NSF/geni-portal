@@ -137,7 +137,7 @@ $submit_label = $isnew ? "Create Project" : "Update";
 
 </table>
 <?php
-echo '<b>Note</b>: Project names must not contain whitespace or certain characters: "/:+;\'?#%".</b><br/>';
+echo '<b>Note</b>: Project names must not contain whitespace. Use at most 32 alphanumeric characters or hyphen or underscore: "a-zA-Z0-9_-".</b><br/>';
 echo '<b>Note: Project names are public, global and permanent</b>; there can only ever be a single project with a given name, and that name is visible to all registered users.<br/>';
 echo '<b>Expiration</b>: The date when this project is closed, and slices will expire. Blank means no expiration.<br/>';
 print "<br/>\n";

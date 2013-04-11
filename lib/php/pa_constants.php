@@ -98,9 +98,16 @@ class PA_ACTION {
 // no / : + ; ' ? # %
 // no leading/trailing whitespace
 // collapse consecutive whitespace
+// Additionally, ProtoGENI has a 32character sub-authority limit. So
+// limit project names to 32 characters.
+// We should also be excluding control characters.
+// Technically we could then allow all kinds of unicode
+// characters. But is that really necessary? For now, restrict project
+// names pretty heavily
 function is_valid_project_name($project_name)
 {
-  $pattern = '/^[^\/\:\+\;\'\?\#\% ]+$/';
+  //  $pattern = '/^[^\/\:\+\;\'\?\#\% ]+$/';
+  $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-_]{0,31}$/';
   return preg_match($pattern, $project_name);
 }
 ?>
