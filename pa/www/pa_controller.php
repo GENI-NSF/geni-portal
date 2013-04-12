@@ -839,14 +839,66 @@ function remove_project_member($args, $message)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to remove_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in remove_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
+
+  if (! array_key_exists(PA_ARGUMENT::MEMBER_ID, $args) or
+      $args[PA_ARGUMENT::MEMBER_ID] == '') {
+    // missing arg
+    error_log("Missing member_id arg to remove_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is missing");
+  }
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+  if (! uuid_is_valid($member_id)) {
+    error_log("member_id invalid in remove_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is invalid: " . $member_id);
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
   global $log_url;
 
+  // Stop if this member is the lead or isn't in the project
   $conn = db_conn();
+  $sql = "SELECT " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " from " . 
+    $PA_PROJECT_MEMBER_TABLENAME . " where "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . " = " .
+    $conn->quote($project_id, 'text') . " and "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = "
+    . $conn->quote($member_id, 'text');
+  $result = db_fetch_row($sql);
+
+  // If we got nothing back, then this member isn't in this project
+  if (! array_key_exists('value', $result) or is_null($result['value'])
+      or !array_key_exists(PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE, $result['value'])) {
+    error_log("remove_from_project: member " . $member_id . " not in project " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member " . $member_id . " not in project " . $project_id);
+  }
+
+  $role = $result['value'][PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+  if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
+    error_log("remove_from_project: member " . $member_id . " is LEAD for project " . $project_id);
+    // Return right error message
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Cannot remove LEAD from project: " . $project_id);
+  }
+
+  // FIXME: Stop if the member is the LEAD on a non-expired slice?
+
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME
   . " WHERE "
           . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
@@ -871,9 +923,14 @@ function remove_project_member($args, $message)
       delete_assertion($cs_url, $mysigner, $assertion_id);
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
+
+    // FIXME: Remove the member from non-expired slices. But what if they are the
+    // LEAD of the slice?
+
     global $ma_url;
     $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
     $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+
     $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
     $project_data = lookup_project($lookup_project_message);
     if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
