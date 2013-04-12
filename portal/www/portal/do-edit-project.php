@@ -124,7 +124,11 @@ if ($isnew) {
   // Return on error?
 }
 
-$_SESSION['lastmessage'] = "Edited project $name: $result";
+if (! isset($name) or is_null($name) or $name == '') {
+  $_SESSION['lastmessage'] = "Edited project: $result";
+} else {
+  $_SESSION['lastmessage'] = "Edited project $name: $result";
+}
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 relative_redirect('project.php?project_id='.$project_id . "&result=" . $result);
 
