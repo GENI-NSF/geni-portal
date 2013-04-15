@@ -141,13 +141,16 @@ function update_agg_row(am_id) {
             am = json_am[am_id];	   
             geni_status = am['geni_status'];
             status_code = am['status_code'];
+            sliver_expiration = am['geni_expires'];
     	    output += geni_status;
 	} else {
 	    status_code = GENI_NO_STATUS;
 	    output += GENI_NO_STATUS_STR;
+            sliver_expiration = 'unknown';
 	}
         $("td#status_"+am_id).text( output );
         $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
+        $("span#renew_sliver_"+am_id).text( sliver_expiration );
 
 	if ((status_code == GENI_NO_RESOURCES) || (status_code == GENI_NO_STATUS)){
 // could hide rows for AMs with no resources	    $("tr#"+am_id).hide(); 

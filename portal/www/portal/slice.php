@@ -78,6 +78,7 @@ function build_agg_table_on_slicepg()
      global $slice_id;
      global $renew_slice_privilege;
      global $slice_expiration;
+     global $slice_date_expiration;
      global $delete_slivers_disabled;
      global $slice_name;
      global $disable_buttons_str;
@@ -114,12 +115,14 @@ function build_agg_table_on_slicepg()
 	    $output .= "</td>";	
 	    // sliver expiration
 	    if ($renew_slice_privilege) {
-                $output .= "<td rowspan='2'><form  method='GET' action=\"do-renew.php\">";
+                $output .= "<td rowspan='2'>";
+		$output .= "Expires on <b><span class='renew_date' id='renew_sliver_".$am_id."'>".$initial_text."</span></b>";
+		$output .= "<form  method='GET' action=\"do-renew.php\">";
 		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice_id."\"/>\n";
 		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
-		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration'";
-		$size = strlen($slice_expiration) + 3;
-		$output .= "size=\"$size\" value=\"".$slice_expiration."\"/>\n";
+		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration' ";
+		$size = strlen($slice_date_expiration) + 3;
+		$output .= "size=\"$size\" value=\"".$slice_date_expiration."\"/>\n";
 		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
 		$output .= "</form></td>\n";
 	    } else {
@@ -134,7 +137,7 @@ function build_agg_table_on_slicepg()
 
 
 
-	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $disable_buttons_str>Get Status</button></td></tr>";
+	    $output .= "<tr><td class='status_buttons'><button id='reload_button_".$am_id."' type='button' onclick='refresh_agg_row(".$am_id.")' $disable_buttons_str>Get Status</button></td></tr>";
 
 
 
@@ -162,6 +165,7 @@ if (isset($slice)) {
   $slice_creation = dateUIFormat($slice_creation_db);
   $slice_expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
   $slice_expiration = dateUIFormat($slice_expiration_db);
+  $slice_date_expiration = dateOnlyUIFormat($slice_expiration_db);
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
@@ -236,6 +240,7 @@ $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE,
 var slice= "<?php echo $slice_id ?>";
 var renew_slice_privilege= "<?php echo $renew_slice_privilege?>";
 var slice_expiration= "<?php echo $slice_expiration?>";
+var slice_date_expiration= "<?php echo $slice_date_expiration?>";
 var sliver_expiration= "NOT IMPLEMENTED YET";
 var delete_slivers_disabled= "<?php echo $delete_slivers_disabled ?>";
 var slice_status= "";
@@ -273,32 +278,53 @@ print "</td>\n";
 /* Renew */
 if($renew_slice_privilege) {
   print "<td>\n";
+  print "Slice expires on <b>".$slice_expiration."</b>";
+  print "</td></tr>";
+  print "<tr><td>\n";
   print "<form method='GET' action=\"do-renew-slice.php\">";
+
+  print "Renew ";
+  print "<div>";
+  print "<input type='radio' name='renew' value='slice'>slice only<br>";
+  print "<input type='radio' name='renew' value='slice_sliver' checked>slice & resources";
+  print "</div>";
+  print " until <br/>";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input class='date' type='text' name='slice_expiration'";
-  $size = strlen($slice_expiration) + 3;
-  print " size=\"$size\" value=\"$slice_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew Slice' title='Renew the slice until the specified date' $disable_buttons_str/>\n";
+  print "<input class='date' type='text' name='slice_expiration' id='datepicker'";
+  $size = strlen($slice_date_expiration) + 3;
+  print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
+  print "<input type='submit' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str/>\n";
   print "</form>\n";
 } else {
   print "$slice_expiration";
 }
 print "</td></tr>\n";
+?>
+<script>
+  $(function() {
+    // minDate = 1 will not allow today or earlier, only future dates.
+    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration });
+    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
+  });
+</script>
+<?php
 
-
+/* 
 print "<tr><td>\n";
 if ($renew_slice_privilege) {
+  print "</td></tr>";
   print "<form method='GET' action=\"do-renew.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration'";
-  $size = strlen($slice_expiration) + 3;
-  print " size=\"$size\" value=\"$slice_expiration\"/>\n";
+  $size = strlen($slice_date_expiration) + 3;
+  print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew Resource Reservations' title='Renew the resource reservation at all aggregates until the specified date' $disable_buttons_str/>\n";
   print "</form>\n";
 } else {
   print "$slice_expiration";
 }
 print "</td></tr>\n";
+*/
 
 print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
 /* Tools */
