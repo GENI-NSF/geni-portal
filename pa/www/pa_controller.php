@@ -399,8 +399,8 @@ function create_project($args, $message)
             "A project named '" . $project_name . "' already exists.");
   }
 
-
-  $permitted = request_authorization($cs_url, $mysigner, $lead_id, 'create_project',
+  // Ensure that designated lead ID is allowed to be a project lead
+  $permitted = request_authorization($cs_url, $mysigner, $lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
@@ -464,8 +464,11 @@ function create_project($args, $message)
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
   $signer_urn = $message->signerUrn();
-  $lead_data = ma_lookup_member_by_id($ma_url, $mysigner, $lead_id);
-  $lead_name = $lead_data->prettyName();
+
+  $ids = array();
+  $ids[] = $lead_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $lead_name = $names[$lead_id];
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   $msg = "Created project: $project_name with lead $lead_name";
@@ -525,8 +528,10 @@ function delete_project($args, $message)
   global $ma_url;
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
-  $signer_data = ma_lookup_user_by_id($ma_url, $mysigner, $signer_id);
-  $signer_name = $signer_data->prettyName();
+  $ids = array();
+  $ids[] = $signer_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
 
@@ -732,8 +737,10 @@ function update_project($args, $message)
   global $ma_url;
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
-  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
-  $signer_name = $signer_data->prettyName();
+  $ids = array();
+  $ids[] = $signer_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
 
   // Need to look up the project name
   $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
@@ -805,13 +812,18 @@ function change_lead($args, $message)
   }
 
   // Check that new person is allowed to be a lead
-  $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, 'create_project',
+  global $cs_url;
+  global $mysigner;
+  $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
             "Principal " . $new_lead_id  . " may not lead projects");
   }
+
+  // FIXME: If caller is an Admin on the project, is this allowed? Or
+  // should the AuthZ service have caught that already?
 
   $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME
@@ -839,7 +851,7 @@ function change_lead($args, $message)
 
   // Make the old lead an admin
   $chngres = change_member_role(array(PA_ARGUMENT::PROJECT_ID => $project_id,
-          PA_ARGUMENT::MEMBER_ID => $lead_id,
+          PA_ARGUMENT::MEMBER_ID => $previous_lead_id,
           PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
           $message);
 
@@ -850,15 +862,18 @@ function change_lead($args, $message)
   global $ma_url;
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
-  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
-  $signer_name = $signer_data->prettyName();
-  $new_lead_data = ma_lookup_member_by_id($ma_url, $mysigner, $new_lead_id);
-  $new_lead_name = $new_lead_data->prettyName();
-  $old_lead_data = ma_lookup_member_by_id($ma_url, $mysigner, $previous_lead_id);
-  $old_lead_name = $old_lead_data->prettyName();
+  $ids = array();
+  $ids[] = $signer_id;
+  $ids[] = $new_lead_id;
+  $ids[] = $previous_lead_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
+  $new_lead_name = $names[$new_lead_id];
+  $old_lead_name = $names[$previous_lead_id];
 
   $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   // FIXME: We'd like to add as a context the old lead, but only 1 member context allowed
+  // But maybe this is OK, cause the actor here is the old lead?
   $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $new_lead_id);
   $attributes = array_merge($pattributes, $mattributes);
 
@@ -999,8 +1014,12 @@ function add_project_member($args, $message)
 
   // Log adding the member
   global $ma_url;
-  $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
-  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+  $ids = array();
+  $ids[] = $signer_id;
+  $ids[] = $member_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
+  $member_name = $names[$member_id];
 
   $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
   $project_data = lookup_project($lookup_project_message);
@@ -1012,11 +1031,8 @@ function add_project_member($args, $message)
     global $log_url;
     // From /etc/geni-ch/settings.php
     global $portal_admin_email;
-    //  error_log("MD = " . print_r($member_data, true));
     //  error_log("PD = " . print_r($project_data, true));
     $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
-    $member_name = $member_data->prettyName();
-    $signer_name = $signer_data->prettyName();
     $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $msg = "$signer_name Added $member_name to Project $project_name in role $role_name";
@@ -1110,7 +1126,7 @@ function remove_project_member($args, $message)
           . " = " . $conn->quote($project_id, 'text') . " AND "
                   . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
                   . "= " . $conn->quote($member_id, 'text');
-  error_log("PA.remove project_member.sql = " . $sql);
+  //  error_log("PA.remove project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
   // Delete previous assertions from CS
@@ -1133,8 +1149,12 @@ function remove_project_member($args, $message)
     // LEAD of the slice?
 
     global $ma_url;
-    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
-    $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+    $ids = array();
+    $ids[] = $signer_id;
+    $ids[] = $member_id;
+    $names = lookup_member_names($ma_url, $mysigner, $ids);
+    $signer_name = $names[$signer_id];
+    $member_name = $names[$member_id];
 
     $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
     $project_data = lookup_project($lookup_project_message);
@@ -1148,8 +1168,6 @@ function remove_project_member($args, $message)
       $project_name = $project_id;
     }
 
-    $member_name = $member_data->prettyName();
-    $signer_name = $signer_data->prettyName();
     $message = "$signer_name Removed $member_name from Project $project_name";
     $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
     $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
@@ -1214,6 +1232,29 @@ function change_member_role($args, $message)
   global $mysigner;
 
   $conn = db_conn();
+
+  // Admin cannot change own role
+  if ($message->signerUuid() == $member_id) {
+    // get member current role
+    $sql = "SELECT "
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE
+      . " FROM " . $PA_PROJECT_MEMBER_TABLENAME
+      . " WHERE "
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
+      . " = " . $conn->quote($project_id, 'text')
+      . " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " =  " 
+      . $conn->quote($member_id, 'text');
+    $result = db_fetch_row($sql);
+    $allowed = TRUE;
+    if($result['code'] == RESPONSE_ERROR::NONE and
+       $result['code'][PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE] ==
+       CS_ATTRIBUTE_TYPE::ADMIN) {
+      error_log("Caller is Admin on project - cannot change own role");
+      return generate_response(RESPONSE_ERROR::AUTHORIZATON, null,
+			     "Project admin cannot change own role on project");
+    }
+  }
+
   $sql = "UPDATE " . $PA_PROJECT_MEMBER_TABLENAME
   . " SET " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $conn->quote($role, 'integer')
   . " WHERE "
@@ -1223,7 +1264,7 @@ function change_member_role($args, $message)
                   . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
                   . " = " . $conn->quote($member_id, 'text');
 
-  error_log("PA.change_member_role.sql = " . $sql);
+  //  error_log("PA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
 
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
@@ -1257,17 +1298,19 @@ function change_member_role($args, $message)
 
     $signer_id = $message->signerUuid();
     global $ma_url;
-    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
-    $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
-    $member_name = $member_data->prettyName();
-    $signer_name = $signer_data->prettyName();
+    $ids = array();
+    $ids[] = $signer_id;
+    $ids[] = $member_id;
+    $names = lookup_member_names($ma_url, $mysigner, $ids);
+    $signer_name = $names[$signer_id];
+    $member_name = $names[$member_id];
     $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
     $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
     $attributes = array_merge($pattributes, $mattributes);
     $msg = "$signer_name changed role of $member_name in project $project_name to $role_name";
-    log_event($log_url, $mysigner,
-    $msg, $attributes, $signer_id);
+    global $log_url;
+    log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
 
   }
 
