@@ -99,7 +99,8 @@ $member_names = lookup_member_names_for_rows($ma_url, $user, $members,
 $num_members = count($members);
 
 $reqs = null;
-if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+
+if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
 					CS_CONTEXT_TYPE::PROJECT, $project_id);
 }
@@ -133,7 +134,7 @@ if(isset($project_id) && $user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TY
 }
 print "</tr></table>\n";
 
-if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
     print "<h3>Approve new project members</h3>\n";
     print "<table>\n";
@@ -181,16 +182,93 @@ if ($num_members==1) {
 }
 ?>
 <table>
-<tr><th>Project Member</th><th>Roles</th></tr>
+<tr><th>Project Member</th><th>Role</th>
 <?php
 
+if ($user->isAllowed(PA_ACTION::REMOVE_PROJECT_MEMBER,
+		     CS_CONTEXT_TYPE::PROJECT, $project_id) or 
+    $user->isAllowed(PA_ACTION::CHANGE_MEMBER_ROLE,
+		     CS_CONTEXT_TYPE::PROJECT, $project_id)    ) {
+  print "<th>Change Membership</th>";
+  print "<form method='POST' action='do-edit-project-membership.php'>\n";
+  print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
+}
+print "</tr>\n";
+
+// Find current users role in this project
+$my_role = CS_ATTRIBUTE_TYPE::AUDITOR;
+  foreach($members as $member) {
+     $member_id = $member['member_id'];
+     if ($user->account_id == $member_id) {
+       $my_role = $member['role'];
+       break;
+     }
+  }
+
+// Write each row in the project member table
   foreach($members as $member) {
      $member_id = $member['member_id'];
      $member_name = $member_names[$member_id];
+     // FIXME: It'd be nice to add email address here - but we're
+     //     currently not looking that up, for efficiency
+     //     $member_email = $member_user->email();
      $member_role_index = $member['role'];
      $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
      //     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
-   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td></tr>\n";
+     print "<tr><td><a href=\"project-member.php?project_id="
+     . $project_id
+       . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td>";
+
+     if ($user->isAllowed(PA_ACTION::REMOVE_PROJECT_MEMBER,
+			  CS_CONTEXT_TYPE::PROJECT, $project_id) or 
+	 $user->isAllowed(PA_ACTION::CHANGE_MEMBER_ROLE,
+			  CS_CONTEXT_TYPE::PROJECT, $project_id)    ) {
+       print "<td><select name=\"$member_id\" id=\"$member_id\">\n";
+       print "<option value=\"nochange\" title=\"Keep as $member_role\" selected=\"selected\">Keep as $member_role</option>\n";
+
+       if ($user->isAllowed(PA_ACTION::REMOVE_PROJECT_MEMBER,
+			    CS_CONTEXT_TYPE::PROJECT, $project_id) and 
+			    $member_role_index != CS_ATTRIBUTE_TYPE::LEAD and 
+			    $member_role_index != CS_ATTRIBUTE_TYPE::OPERATOR) {
+	   print "<option value=\"remove\" title=\"Remove from project\">Remove from project</option>\n";
+       }
+
+       if (	 $user->isAllowed(PA_ACTION::CHANGE_MEMBER_ROLE,
+				  CS_CONTEXT_TYPE::PROJECT,
+				  $project_id)
+		 and $member_role_index != CS_ATTRIBUTE_TYPE::OPERATOR) {
+	 foreach (array_keys($CS_ATTRIBUTE_TYPE_NAME) as $role_id) {
+	   if ($role_id == $member_role_index) {
+	     continue;
+	   }
+	   if ($role_id == CS_ATTRIBUTE_TYPE::OPERATOR) {
+	     continue;
+	   }
+	   // Don't bother showing role options for the lead if there
+	   //		  is only 1 project member
+	   if ($member_role_index == CS_ATTRIBUTE_TYPE::LEAD and
+	       $num_members == 1) {
+	     continue;
+	   }
+	   // Must have change_project_lead priv to change role of the project lead
+	   if (($member_role_index == CS_ATTRIBUTE_TYPE::LEAD or
+	   	$role_id == CS_ATTRIBUTE_TYPE::LEAD) and
+	       ! $user->isAllowed(PA_ACTION::CHANGE_LEAD,
+	   			  CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+	     continue;
+	   }
+	   // project admin cannot change their own role
+	   if ($my_role == CS_ATTRIBUTE_TYPE::ADMIN and
+	       $member_id == $user->account_id) {
+	       continue;
+	   }
+	   $role = $CS_ATTRIBUTE_TYPE_NAME[$role_id];
+	   print "<option value=\"$role_id\" title=\"Make project $role\">Make project $role</option>\n";
+	 }
+       }
+       print "</select></td>";
+     }
+     print "</tr>\n";
   }
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
 //   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Project Lead</td></tr>\n";
@@ -198,7 +276,15 @@ if ($num_members==1) {
 </table>
 
 <?php
-if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+if ($user->isAllowed(PA_ACTION::REMOVE_PROJECT_MEMBER,
+		     CS_CONTEXT_TYPE::PROJECT, $project_id) or 
+    $user->isAllowed(PA_ACTION::CHANGE_MEMBER_ROLE,
+		     CS_CONTEXT_TYPE::PROJECT, $project_id)    ) {
+  //  print "<br/><b><input type=\"submit\" value=\"Change Project Membership\"/></b></form>\n";
+  print "<br/><button type=\"submit\" name='submit' value=\"Change Project Membership\"><b>Change Project Membership</b></button></form>\n";
+}
+
+if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   print "<br/><h3>Invite new project members</h3>\n";
   print "<button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
