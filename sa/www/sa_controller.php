@@ -949,6 +949,8 @@ function remove_slice_member($args, $message)
 
   global $SA_SLICE_MEMBER_TABLENAME;
   global $mysigner;
+  global $ma_url;
+  global $log_url;
   $conn = db_conn();
 
   $sql = "DELETE FROM " . $SA_SLICE_MEMBER_TABLENAME 
@@ -957,13 +959,26 @@ function remove_slice_member($args, $message)
     . " = " . $conn->quote($slice_id, 'text') . " AND "
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
     . " = " . $conn->quote($member_id, 'text');
-  error_log("SA.remove slice_member.sql = " . $sql);
+  //  error_log("SA.remove slice_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
   // Delete previous assertions from CS
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
     $signer = $message->signerUuid();
+
+    $lookup_slice_message = array(SA_ARGUMENT::SLICE_ID => $slice_id);
+    $slice_data = lookup_slice($lookup_slice_message);
+    $slice_data = $slice_data[RESPONSE_ARGUMENT::VALUE];
+    $slice_name = $slice_data[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+    $member_name = $member_data->prettyName();
+
+    $message = "Removed $member_name from Slice $slice_name";
+    $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
+    $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+    $attributes = array_merge($slice_attributes, $member_attributes);
+    log_event($log_url, $mysigner, $message, $attributes, $signer);
 
     $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
@@ -989,6 +1004,8 @@ function change_slice_member_role($args, $message)
 
   global $SA_SLICE_MEMBER_TABLENAME;
   global $mysigner;
+  global $ma_url;
+  global $log_url;
   $conn = db_conn();
 
   $sql = "UPDATE " . $SA_SLICE_MEMBER_TABLENAME
@@ -1000,13 +1017,29 @@ function change_slice_member_role($args, $message)
     . SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
     . " = " . $conn->quote($member_id, 'text'); 
 
-  error_log("SA.change_member_role.sql = " . $sql);
+  //  error_log("SA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
 
 
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
+    global $CS_ATTRIBUTE_TYPE_NAME;
     $signer = $message->signerUuid();
+
+    $lookup_slice_message = array(SA_ARGUMENT::SLICE_ID => $slice_id);
+    $slice_data = lookup_slice($lookup_slice_message);
+    $slice_data = $slice_data[RESPONSE_ARGUMENT::VALUE];
+    $slice_name = $slice_data[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
+    $member_name = $member_data->prettyName();
+    $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
+
+    $message = "Changed role of $member_name on Slice $slice_name to $role_name";
+    $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
+    $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+    $attributes = array_merge($slice_attributes, $member_attributes);
+    log_event($log_url, $mysigner, $message, $attributes, $signer);
+
 
     // Remove previous CS assertions about the member in this slice
     $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::SLICE, $slice_id);

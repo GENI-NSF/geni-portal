@@ -204,6 +204,7 @@ $flack_url = "flack.php?slice_id=".$slice_id;
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
 $addnote_url = 'add-slice-note.php?slice_id='.$slice_id;
+$edit_slice_members_url = 'edit-slice-member.php?slice_id='.$slice_id."&project_id=".$slice_project_id;
 
 // String to disable button or other active element
 $disabled = "disabled = " . '"' . "disabled" . '"'; 
@@ -358,10 +359,10 @@ print "</table>\n";
 
 print "<h2>Slice members</h2>";
 $edit_members_disabled = "";
-if ($user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   $edit_members_disabled = $disabled;
 }
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit</b></button>";
 ?>
 
 <table>
