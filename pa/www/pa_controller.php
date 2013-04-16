@@ -287,6 +287,11 @@ class PAProjectRequestGuard implements Guard
       }
     }
 
+    if (! $allowed) {
+      $msg = "PA denying $signer call to " . $this->action;
+      error_log($msg);
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    }
     //    error_log("Allowed = " . print_r($allowed, true));
     return $allowed;
   }
@@ -314,16 +319,17 @@ class PAContextGuard implements Guard
                             . "; action=\"" . print_r($this->action, TRUE) . "\""
                                     . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
                                             . "; context=\"" . print_r($this->context, TRUE) . "\"");
-                                            $result = request_authorization($this->cs_url, $mysigner,
-                                                    $this->message->signerUuid(),
-                                                    $this->action, $this->context_type,
-                                                    $this->context);
-                                            $result_type = gettype($result);
-                                            geni_syslog(GENI_SYSLOG_PREFIX::PA, "PAContextGuard got result of type $result_type");
-                                            geni_syslog(GENI_SYSLOG_PREFIX::PA,
-                                            "PAContextGuard on action " . $this->action
-                                            . " returning " . print_r($result, true));
-                                            return $result;
+    $result = request_authorization($this->cs_url, $mysigner,
+				    $this->message->signerUuid(),
+				    $this->action, $this->context_type,
+				    $this->context);
+    $result_type = gettype($result);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, "PAContextGuard got result of type $result_type");
+    geni_syslog(GENI_SYSLOG_PREFIX::PA,
+		"PAContextGuard for " . $this->message->signerUuid()
+		. " on action " . $this->action
+		. " returning " . print_r($result, true));
+    return $result;
   }
 }
 
@@ -404,6 +410,7 @@ function create_project($args, $message)
           CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
+    // FIXME: Need a syslog for this?
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
             "Principal " . $lead_id  . " may not create project");
   }
@@ -476,6 +483,8 @@ function create_project($args, $message)
     $msg = $signer_urn . " " . $msg;
   }
   log_event($log_url, $mysigner, $msg, $attributes, $lead_id);
+  geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+  error_log($msg);
   if (parse_urn($message->signer_urn, $chname, $t, $n)) {
     $msg = $msg . " on CH $chname";
   }
@@ -758,6 +767,7 @@ function update_project($args, $message)
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   $msg = "$signer_name Updated project $project_name with purpose: $project_purpose";
   log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+  geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 
   return $result;
 }
@@ -1173,6 +1183,7 @@ function remove_project_member($args, $message)
     $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
     $attributes = array_merge($pattributes, $mattributes);
     log_event($log_url, $mysigner, $message, $attributes, $signer_id);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 
   }
 
@@ -1311,6 +1322,7 @@ function change_member_role($args, $message)
     $msg = "$signer_name changed role of $member_name in project $project_name to $role_name";
     global $log_url;
     log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 
   }
 
