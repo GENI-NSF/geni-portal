@@ -524,7 +524,7 @@ function create_slice($args, $message)
       error_log("Error looking up details for project_id $project_id");
       return $project_details;
     }
-  error_log("PROJECT_DETAILS = " . print_r($project_details, true));
+  //  error_log("PROJECT_DETAILS = " . print_r($project_details, true));
   $project_lead_id = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
     
   // If not, 

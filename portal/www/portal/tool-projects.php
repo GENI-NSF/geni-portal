@@ -43,9 +43,9 @@ if(!isset($project_objects) || !isset($slice_objects) ||
   $project_slice_map = $retVal[3];
 }
 
-foreach($project_objects as $project) {
-  error_log("PROJ (orig) = " . print_r($project, true));
-}
+/* foreach($project_objects as $project) { */
+/*   error_log("PROJ (orig) = " . print_r($project, true)); */
+/* } */
 
 $expired_projects = array();
 $unexpired_projects = array();
@@ -61,12 +61,9 @@ foreach($project_objects as $project) {
 
 $project_objects = $unexpired_projects;
 
-foreach($project_objects as $project) {
-  error_log("PROJ (unexp) = " . print_r($project, true));
-}
-
-
-
+/* foreach($project_objects as $project) { */
+/*   error_log("PROJ (unexp) = " . print_r($project, true)); */
+/* } */
 
 // $tmp = "PROJECTS = " . print_r($project_objects, true) . "\nSLICES = " . print_r($slice_objects, true) . "\nMEMBERS = " . print_r($member_objects, true);
 
