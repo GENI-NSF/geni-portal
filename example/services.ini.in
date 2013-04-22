@@ -10,10 +10,11 @@
 #----------------------------------------------------------------------
 
 #----------------------------------------------------------------------
-# N.B. The settings in the DEFAULT section can be edited. All other
-# sections should be left as is. The clearinghouse and portal are
-# unlikely to function properly with other values.
-#----------------------------------------------------------------------
+# N.B. Some of the settings in the DEFAULT section can be edited. The
+# ones that cannot be edited are clearly marked. All other sections
+# should be left as is. The clearinghouse and portal are unlikely to
+# function properly with other values.
+# ----------------------------------------------------------------------
 
 [DEFAULT]
 # The email address to configure into the service certificates.
@@ -32,59 +33,65 @@ authority=ch.example.com
 # will match authority above.
 servicehost=ch.example.com
 
+# DO NOT EDIT
+# The portal/clearinghouse will not function properly if you change
+# this value.
+datadir = @pkgdatadir@
+
+
 [services]
 services=sr,sa,pa,ma,logging,cs,km,portal,pgch
 
 [ca]
-conf=/usr/share/geni-ch/CA/openssl.cnf
-cert=/usr/share/geni-ch/CA/cacert.pem
-key=/usr/share/geni-ch/CA/private/cakey.pem
+conf=%(datadir)s/CA/openssl.cnf
+cert=%(datadir)s/CA/cacert.pem
+key=%(datadir)s/CA/private/cakey.pem
 
 [sr]
-cert=/usr/share/geni-ch/sr/sr-cert.pem
-key=/usr/share/geni-ch/sr/sr-key.pem
+cert=%(datadir)s/sr/sr-cert.pem
+key=%(datadir)s/sr/sr-key.pem
 
 [sa]
-cert=/usr/share/geni-ch/sa/sa-cert.pem
-key=/usr/share/geni-ch/sa/sa-key.pem
+cert=%(datadir)s/sa/sa-cert.pem
+key=%(datadir)s/sa/sa-key.pem
 ca=yes
 url=https://%(servicehost)s/sa/sa_controller.php
 type=1
 
 [pa]
-cert=/usr/share/geni-ch/pa/pa-cert.pem
-key=/usr/share/geni-ch/pa/pa-key.pem
+cert=%(datadir)s/pa/pa-cert.pem
+key=%(datadir)s/pa/pa-key.pem
 url=https://%(servicehost)s/pa/pa_controller.php
 type=2
 
 [ma]
-cert=/usr/share/geni-ch/ma/ma-cert.pem
-key=/usr/share/geni-ch/ma/ma-key.pem
+cert=%(datadir)s/ma/ma-cert.pem
+key=%(datadir)s/ma/ma-key.pem
 ca=yes
 url=https://%(servicehost)s/ma/ma_controller.php
 type=3
 
 [logging]
-cert=/usr/share/geni-ch/logging/logging-cert.pem
-key=/usr/share/geni-ch/logging/logging-key.pem
+cert=%(datadir)s/logging/logging-cert.pem
+key=%(datadir)s/logging/logging-key.pem
 url=https://%(servicehost)s/logging/logging_controller.php
 type=5
 
 [cs]
-cert=/usr/share/geni-ch/cs/cs-cert.pem
-key=/usr/share/geni-ch/cs/cs-key.pem
+cert=%(datadir)s/cs/cs-cert.pem
+key=%(datadir)s/cs/cs-key.pem
 url=https://%(servicehost)s/cs/cs_controller.php
 type=6
 
 [km]
-cert=/usr/share/geni-ch/km/km-cert.pem
-key=/usr/share/geni-ch/km/km-key.pem
+cert=%(datadir)s/km/km-cert.pem
+key=%(datadir)s/km/km-key.pem
 url=https://%(servicehost)s/secure/kmhome.php
 type=8
 
 [portal]
-cert=/usr/share/geni-ch/portal/portal-cert.pem
-key=/usr/share/geni-ch/portal/portal-key.pem
+cert=%(datadir)s/portal/portal-cert.pem
+key=%(datadir)s/portal/portal-key.pem
 
 [pgch]
 url=https://%(servicehost)s:8443/
