@@ -8,6 +8,10 @@ import sys
 import tempfile
 import ConfigParser
 
+# Constants
+EXT_NAME = 'v3_geni_ca'
+
+
 class Config(object):
     pass
 
@@ -18,26 +22,28 @@ def parse_ini_config(parser):
     OPTION_KEY = 'key'
     OPTION_AUTHORITY = 'authority'
     if not parser.has_section(SECTION_CA):
-        # XXX warn
+        msg = 'No section "%s" found. Exiting.\n' % (SECTION_CA)
+        sys.stderr.write(msg)
         return None
     config = Config()
     for opt in (OPTION_CONF, OPTION_CERT, OPTION_KEY, OPTION_AUTHORITY):
         if not parser.has_option(SECTION_CA, opt):
-            # XXX warn
+            msg = 'Section "%s" is missing option "%s". Exiting.\n'
+            msg = msg % (SECTION_CA, opt)
+            sys.stderr.write(msg)
             return None
         setattr(config, opt, parser.get(SECTION_CA, opt))
     return config
 
 def load_ini_config(fname):
     parser = ConfigParser.SafeConfigParser()
-#    try:
     result = parser.read(fname)
-#    except ConfigParser.Error as exc:
     config = parse_ini_config(parser)
     return config
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    usage = "usage: %prog [options] config.ini"
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option("--force", action="store_true", default=False,
                       help="Force creation of CA certificate and key")
     parser.add_option("--debug", action="store_true", default=False,
@@ -48,23 +54,7 @@ def parse_args(argv):
         raise Exception()
     return (options, args)
 
-def init_ca(config, options):
-    EXT_NAME = 'v3_geni_ca'
-    print 'OpenSSL config file: %s' % (config.conf)
-    print 'OpenSSL cert file: %s' % (config.cert)
-    print 'OpenSSL key file: %s' % (config.key)
-    if os.path.exists(config.cert) and not options.force:
-        msg = "Cowardly refusing to overwrite %s.\n" % (config.cert)
-        sys.stderr.write(msg)
-        return False
-    if os.path.exists(config.key) and not options.force:
-        msg = "Cowardly refusing to overwrite %s.\n" % (config.key)
-        sys.stderr.write(msg)
-        return False
-    # Construct the URN
-    urn_template = "URI:urn:publicid:IDN+%s+authority+ca"
-    urn = urn_template % (config.authority)
-    print "CA URN = %s" % (urn)
+def mk_openssl_conf(urn, config):
     extension_template = """[%s]
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid:always,issuer:always
@@ -72,7 +62,6 @@ subjectAltName=email:copy,%s
 basicConstraints = CA:true
 """
     extension = extension_template % (EXT_NAME, urn)
-    print "EXTENSION =\n%s" % (extension)
 
     # Copy the conf file's contents into memory
     with open(config.conf, 'r') as f:
@@ -90,6 +79,23 @@ basicConstraints = CA:true
     f.write('\n');
     f.write(extension)
     f.close()
+    return ca_conf
+
+
+def init_ca(config, options):
+    if os.path.exists(config.cert) and not options.force:
+        msg = "Cowardly refusing to overwrite %s.\n" % (config.cert)
+        sys.stderr.write(msg)
+        return False
+    if os.path.exists(config.key) and not options.force:
+        msg = "Cowardly refusing to overwrite %s.\n" % (config.key)
+        sys.stderr.write(msg)
+        return False
+    # Construct the URN
+    urn_template = "URI:urn:publicid:IDN+%s+authority+ca"
+    urn = urn_template % (config.authority)
+
+    ca_conf = mk_openssl_conf(urn, config)
 
     # Use the file (via subprocess)
     cmd = ['/usr/bin/openssl', 'req', '-x509', '-nodes',
@@ -103,7 +109,6 @@ basicConstraints = CA:true
     # I would prefer subprocess.check_output but it is not
     # available in Python 2.6, which is the version on Ubuntu 10.04.
     returncode = subprocess.call(cmd)
-    print "returncode = %d" % (returncode)
 
     if options.debug:
         print "openssl conf data is in %s" % (ca_conf)
@@ -116,10 +121,7 @@ def main(argv=None):
     # do initial setup & process the user's call
     if argv is None:
         argv = sys.argv[1:]
-    print "Hello, World!"
     options, args = parse_args(argv)
-    print "options = %r" % (options)
-    print "args = %r" % (args)
     config_fname = args[0]
     config = load_ini_config(config_fname)
     if not config:
