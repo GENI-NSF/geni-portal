@@ -17,6 +17,8 @@ WWWINSTALL = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
 default:
 	@echo "Try make install"
 
+all:
+
 # To date, these are the scripts to install, and it is just
 # a subset of all the scripts that exist. If we need to
 # install more, just add another line.

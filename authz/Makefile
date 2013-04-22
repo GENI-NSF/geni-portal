@@ -20,6 +20,8 @@ WWWINSTALL = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
 default:
 	@echo "Try make install"
 
+all:
+
 install:
 	$(WWWINSTALL) -d $(DESTDIR)
 	$(WWWINSTALL) -d $(WWWDIR)

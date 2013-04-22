@@ -7,6 +7,8 @@ SCHEMA.SQL = db/postgresql/schema.sql
 default:
 	echo "try make install"
 
+all:
+
 /var/www/idp:
 	sudo /bin/mkdir /var/www/idp
 

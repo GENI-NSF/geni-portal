@@ -12,6 +12,11 @@ CACONF   = $(CATOP)/openssl.cnf
 INSTALL ?= /usr/bin/install
 WWWINSTALL = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
 
+default:
+	@echo "Try make install"
+
+all:
+
 install: $(CATOP) $(CASERIAL) $(CAINDEX)
 	$(WWWINSTALL) -d $(CATOP)/certs
 	$(WWWINSTALL) -d $(CATOP)/crl

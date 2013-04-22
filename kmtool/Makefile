@@ -7,6 +7,8 @@ SCHEMA.SQL = db/postgresql/schema.sql
 default:
 	echo "try make install"
 
+all:
+
 www:
 	echo "No www directory present. Exiting."
 	/bin/false
