@@ -14,3 +14,5 @@ services.ini: Makefile
 services.ini: $(srcdir)/services.ini.in
 
 nobase_pkgdata_DATA = services.ini
+
+cleandb:
