@@ -13,7 +13,9 @@ DB.HOST = localhost
 DB.DB = portal
 LIB.DIR = $(DESTDIR)/share/geni-ch/portal
 CA.DIR = $(DESTDIR)/share/geni-ch/CA
+CA.CERT = $(CA.DIR)/cacert.pem
 MA.DIR = $(DESTDIR)/share/geni-ch/ma
+MA.CERT = $(CA.DIR)/ma-cert.pem
 ABAC.DIR = $(LIB.DIR)/abac
 GCF.D = $(LIB.DIR)/gcf.d
 GCF.DIR = $(LIB.DIR)/gcf
@@ -60,11 +62,24 @@ $(GCF.D)/trusted_roots:
 
 # pgch must trust the cacert
 $(GCF.D)/trusted_roots/cacert.pem:
-	/bin/ln -s $(CA.DIR)/cacert.pem $@
+	if [ -f $(CA.CERT) ]; then \
+	  /bin/rm -f $@; \
+	  /bin/ln -s $(CA.CERT) $@; \
+	else \
+	  echo "$(CA.CERT) does not exist. Not linking to $@."; \
+	fi
 
 # pgch must also trust the ma-cert
 $(GCF.D)/trusted_roots/ma-cert.pem:
-	/bin/ln -s $(MA.DIR)/ma-cert.pem $@
+	if [ -f $(MA.CERT) ]; then \
+	  /bin/rm -f $@; \
+	  /bin/ln -s $(MA.CERT) $@; \
+	else \
+	  echo "$(MA.CERT) does not exist. Not linking to $@."; \
+	fi
+
+$(GCF.DIR):
+	$(error Directory $(GCF.DIR) does not exist. Please install gcf.)
 
 $(GCF.DIR)/src/gcf-pgch.py: gcf.d/src/gcf-pgch.py
 	$(INSTALL.WWW) $^ $@
@@ -84,6 +99,7 @@ GCF_DEPS = 	$(GCF.D) \
 		$(GCF.D)/trusted_roots \
 		$(GCF.D)/trusted_roots/cacert.pem \
 		$(GCF.D)/trusted_roots/ma-cert.pem \
+		$(GCF.DIR) \
 		$(GCF.DIR)/src/gcf-pgch.py \
 		$(GCF.DIR)/src/geni/pgch.py \
 		$(GCF.DIR)/src/omni_php.py \
@@ -92,7 +108,7 @@ GCF_DEPS = 	$(GCF.D) \
 install-gcf: $(GCF_DEPS)
 
 
-install: $(LIB.DIR) www install-gcf
+install: $(LIB.DIR) www install-gcf /var/www/secure /var/www/images
 	sudo /bin/cp www/portal/* /var/www/secure
 	sudo /bin/cp -r flack/* /var/www/secure
 	sudo /bin/cp www/images/* /var/www/images
