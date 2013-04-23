@@ -43,19 +43,27 @@ if(!isset($project_objects) || !isset($slice_objects) ||
   $project_slice_map = $retVal[3];
 }
 
+/* foreach($project_objects as $project) { */
+/*   error_log("PROJ (orig) = " . print_r($project, true)); */
+/* } */
+
 $expired_projects = array();
 $unexpired_projects = array();
 foreach($project_objects as $project) {
   //  error_log("PROJ = " . print_r($project, true));
+  $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
   $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
   if($expired == 't') 
-    $expired_projects[] = $project;
+    $expired_projects[$project_id] = $project;
   else
-    $unexpired_projects[] = $project;
+    $unexpired_projects[$project_id] = $project;
 }
 
 $project_objects = $unexpired_projects;
 
+/* foreach($project_objects as $project) { */
+/*   error_log("PROJ (unexp) = " . print_r($project, true)); */
+/* } */
 
 // $tmp = "PROJECTS = " . print_r($project_objects, true) . "\nSLICES = " . print_r($slice_objects, true) . "\nMEMBERS = " . print_r($member_objects, true);
 

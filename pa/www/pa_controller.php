@@ -287,6 +287,11 @@ class PAProjectRequestGuard implements Guard
       }
     }
 
+    if (! $allowed) {
+      $msg = "PA denying $signer call to " . $this->action;
+      error_log($msg);
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    }
     //    error_log("Allowed = " . print_r($allowed, true));
     return $allowed;
   }
@@ -314,16 +319,17 @@ class PAContextGuard implements Guard
                             . "; action=\"" . print_r($this->action, TRUE) . "\""
                                     . "; context_type=\"" . print_r($this->context_type, TRUE) . "\""
                                             . "; context=\"" . print_r($this->context, TRUE) . "\"");
-                                            $result = request_authorization($this->cs_url, $mysigner,
-                                                    $this->message->signerUuid(),
-                                                    $this->action, $this->context_type,
-                                                    $this->context);
-                                            $result_type = gettype($result);
-                                            geni_syslog(GENI_SYSLOG_PREFIX::PA, "PAContextGuard got result of type $result_type");
-                                            geni_syslog(GENI_SYSLOG_PREFIX::PA,
-                                            "PAContextGuard on action " . $this->action
-                                            . " returning " . print_r($result, true));
-                                            return $result;
+    $result = request_authorization($this->cs_url, $mysigner,
+				    $this->message->signerUuid(),
+				    $this->action, $this->context_type,
+				    $this->context);
+    $result_type = gettype($result);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, "PAContextGuard got result of type $result_type");
+    geni_syslog(GENI_SYSLOG_PREFIX::PA,
+		"PAContextGuard for " . $this->message->signerUuid()
+		. " on action " . $this->action
+		. " returning " . print_r($result, true));
+    return $result;
   }
 }
 
@@ -355,43 +361,56 @@ function create_project($args, $message)
 
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
   if (! isset($project_name) or is_null($project_name) or $project_name == '') {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project name missing");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project name is missing");
   }
   if (strpos($project_name, ' ') !== false) {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project name '$project_name' invalid: no spaces allowed.");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project name '$project_name' is invalid: no spaces allowed.");
   }
 
   if (!is_valid_project_name($project_name)) {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project name '$project_name' invalid: Avoid /:+;'?#% ");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project name '$project_name' is invalid: Use at most 32 alphanumerics plus hyphen and underscore; no leading hyphen or underscore.");
+  }
+
+  if (! array_key_exists(PA_ARGUMENT::LEAD_ID, $args) or
+      $args[PA_ARGUMENT::LEAD_ID] == '') {
+    // missing arg
+    error_log("Missing lead_id arg to create_project");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Lead ID is missing");
   }
   $lead_id = $args[PA_ARGUMENT::LEAD_ID];
+  if (! uuid_is_valid($lead_id)) {
+    error_log("lead_id invalid in create_project: " . $lead_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Lead ID is invalid: " . $lead_id);
+  }
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
   if (array_key_exists(PA_ARGUMENT::EXPIRATION, $args)) {
     $expiration = $args[PA_ARGUMENT::EXPIRATION];
   } else {
     $expiration = NULL;
   }
-  $project_id = make_uuid();
-  $conn = db_conn();
 
+  $conn = db_conn();
   $exists_sql = "select count(*) from " . $PA_PROJECT_TABLENAME
-  . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . " = " . $conn->quote($project_name, 'text');
+    . " WHERE lower(" . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ") = lower(" . $conn->quote($project_name, 'text') . ")";
   $exists_response = db_fetch_row($exists_sql);
   $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
   $exists = $exists['count'];
   if ($exists > 0) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-            "Project of name " . $project_name . " already exists.");
+            "A project named '" . $project_name . "' already exists.");
   }
 
-
-  $permitted = request_authorization($cs_url, $mysigner, $lead_id, 'create_project',
+  // Ensure that designated lead ID is allowed to be a project lead
+  $permitted = request_authorization($cs_url, $mysigner, $lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
+    // FIXME: Need a syslog for this?
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
             "Principal " . $lead_id  . " may not create project");
   }
@@ -408,6 +427,8 @@ function create_project($args, $message)
   } else {
     $db_expiration = "NULL";
   }
+
+  $project_id = make_uuid();
 
   $sql = "INSERT INTO " . $PA_PROJECT_TABLENAME
   . "("
@@ -450,8 +471,11 @@ function create_project($args, $message)
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
   $signer_urn = $message->signerUrn();
-  $lead_data = ma_lookup_member_by_id($ma_url, $mysigner, $lead_id);
-  $lead_name = $lead_data->prettyName();
+
+  $ids = array();
+  $ids[] = $lead_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $lead_name = $names[$lead_id];
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   $msg = "Created project: $project_name with lead $lead_name";
@@ -459,6 +483,8 @@ function create_project($args, $message)
     $msg = $signer_urn . " " . $msg;
   }
   log_event($log_url, $mysigner, $msg, $attributes, $lead_id);
+  geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+  error_log($msg);
   if (parse_urn($message->signer_urn, $chname, $t, $n)) {
     $msg = $msg . " on CH $chname";
   }
@@ -473,11 +499,26 @@ function create_project($args, $message)
 function delete_project($args, $message)
 {
   global $PA_PROJECT_TABLENAME;
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to delete_project");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in delete_project: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
 
   pa_expire_projects();
 
   $conn = db_conn();
+
+  // FIXME: stop if there are unexpired slices?
+
   $sql = "DELETE FROM " . $PA_PROJECT_TABLENAME
   . " WHERE "
           . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
@@ -496,12 +537,31 @@ function delete_project($args, $message)
   global $ma_url;
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
-  $signer_data = ma_lookup_user_by_id($ma_url, $mysigner, $signer_id);
-  $signer_name = $signer_data->prettyName();
+  $ids = array();
+  $ids[] = $signer_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+
+  // Need to look up the project name
+  $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
+  $project_data = lookup_project($lookup_project_message);
+  if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+          (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+                  $project_data[RESPONSE_ARGUMENT::VALUE])))
+  {
+    $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
+    $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  } else {
+    $project_name = $project_id;
+  }
+
   $msg = "$signer_name Deleted project: $project_name";
   log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+  if (parse_urn($message->signer_urn, $chname, $t, $n)) {
+    $msg = $msg . " on CH $chname";
+  }
   mail($portal_admin_email, "GENI CH project deleted", $msg);
 
   return $result;
@@ -519,8 +579,13 @@ function get_projects($args)
           . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
           . " FROM " . $PA_PROJECT_TABLENAME;
   if (array_key_exists(PA_ARGUMENT::LEAD_ID, $args)) {
-    $sql = $sql . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID .
-    " = " . $conn->quote($args[PA_ARGUMENT::LEAD_ID], 'text');
+    $lead_id = $args[PA_ARGUMENT::LEAD_ID];
+    if (! uuid_is_valid($lead_id)) {
+      error_log("lead_id invalid in get_projects: " . $lead_id);
+    } else {
+      $sql = $sql . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID .
+	" = " . $conn->quote($args[PA_ARGUMENT::LEAD_ID], 'text');
+    }
   }
 
   $project_ids = array();
@@ -552,7 +617,12 @@ function lookup_projects($args)
   //  error_log("LP.args = " . print_r($args, true));
   if(array_key_exists(PA_ARGUMENT::LEAD_ID, $args)) {
     $lead_id = $args[PA_ARGUMENT::LEAD_ID];
-    $lead_clause = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = " . $conn->quote($lead_id, 'text');
+    if (! uuid_is_valid($lead_id)) {
+      error_log("lead_id invalid in lookup_projects: " . $lead_id);
+    } else {
+      $lead_clause = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID
+	. " = " . $conn->quote($lead_id, 'text');
+    }
   }
 
   $sql = "select "
@@ -587,13 +657,16 @@ function lookup_project($args)
   if (array_key_exists(PA_ARGUMENT::PROJECT_NAME, $args)) {
     $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
   }
-  if ((! isset($project_id) || is_null($project_id) || $project_id == '')  && (! isset($project_name) || is_null($project_name) || $project_name == '')) {
+  if ((! isset($project_id) || is_null($project_id) || $project_id == '' || !uuid_is_valid($project_id))  
+      && (! isset($project_name) || is_null($project_name) || $project_name == '')) {
     error_log("Missing project ID and project name to lookup_project");
-    return null;
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Project ID and project name missing or invalid");
   }
 
   $conn = db_conn();
-  if (isset($project_id) && ! is_null($project_id) && $project_id != '') {
+  if (isset($project_id) && ! is_null($project_id) && $project_id !=
+      '' && uuid_is_valid($project_id)) {
     $where = " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
     . " = " . $conn->quote($project_id, 'text');
   } else {
@@ -625,8 +698,27 @@ function update_project($args, $message)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to update_project");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in update_project: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
   $project_purpose = $args[PA_ARGUMENT::PROJECT_PURPOSE];
+
+  if (! array_key_exists(PA_ARGUMENT::EXPIRATION, $args)) {
+    // missing arg
+    error_log("Missing expiration arg to update_project");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Expiration is missing");
+  }
   $expiration = $args[PA_ARGUMENT::EXPIRATION];
 
   $conn = db_conn();
@@ -654,11 +746,28 @@ function update_project($args, $message)
   global $ma_url;
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
-  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
-  $signer_name = $signer_data->prettyName();
+  $ids = array();
+  $ids[] = $signer_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
+
+  // Need to look up the project name
+  $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
+  $project_data = lookup_project($lookup_project_message);
+  if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+          (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+                  $project_data[RESPONSE_ARGUMENT::VALUE])))
+  {
+    $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
+    $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  } else {
+    $project_name = $project_id;
+  }
+
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-  $msg = "$signer_name Updated project $project_id with purpose $project_purpose";
+  $msg = "$signer_name Updated project $project_name with purpose: $project_purpose";
   log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+  geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 
   return $result;
 }
@@ -670,18 +779,61 @@ function change_lead($args, $message)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to change_lead");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in change_lead: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
+
+  if (! array_key_exists(PA_ARGUMENT::PREVIOUS_LEAD_ID, $args) or
+      $args[PA_ARGUMENT::PREVIOUS_LEAD_ID] == '') {
+    // missing arg
+    error_log("Missing previous_lead_id arg to change_lead");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Previous Lead ID is missing");
+  }
   $previous_lead_id = $args[PA_ARGUMENT::PREVIOUS_LEAD_ID];
+  if (! uuid_is_valid($previous_lead_id)) {
+    error_log("previous_lead_id invalid in change_lead: " . $previous_lead_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Previous Lead ID is invalid: " . $previous_lead_id);
+  }
+
+  if (! array_key_exists(PA_ARGUMENT::LEAD_ID, $args) or
+      $args[PA_ARGUMENT::LEAD_ID] == '') {
+    // missing arg
+    error_log("Missing lead_id arg to change_lead");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "New Lead ID is missing");
+  }
   $new_lead_id = $args[PA_ARGUMENT::LEAD_ID];
+  if (! uuid_is_valid($new_lead_id)) {
+    error_log("new_lead_id invalid in change_lead: " . $new_lead_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "New Lead ID is invalid: " . $new_lead_id);
+  }
 
   // Check that new person is allowed to be a lead
-  $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, 'create_project',
+  global $cs_url;
+  global $mysigner;
+  $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
             "Principal " . $new_lead_id  . " may not lead projects");
   }
+
+  // FIXME: If caller is an Admin on the project, is this allowed? Or
+  // should the AuthZ service have caught that already?
 
   $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME
@@ -709,7 +861,7 @@ function change_lead($args, $message)
 
   // Make the old lead an admin
   $chngres = change_member_role(array(PA_ARGUMENT::PROJECT_ID => $project_id,
-          PA_ARGUMENT::MEMBER_ID => $lead_id,
+          PA_ARGUMENT::MEMBER_ID => $previous_lead_id,
           PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
           $message);
 
@@ -720,17 +872,40 @@ function change_lead($args, $message)
   global $ma_url;
   global $portal_admin_email;
   $signer_id = $message->signerUuid();
-  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
-  $signer_name = $signer_data->prettyName();
-  $new_lead_data = ma_lookup_member_by_id($ma_url, $mysigner, $new_lead_id);
-  $new_lead_name = $new_lead_data->prettyName();
+  $ids = array();
+  $ids[] = $signer_id;
+  $ids[] = $new_lead_id;
+  $ids[] = $previous_lead_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
+  $new_lead_name = $names[$new_lead_id];
+  $old_lead_name = $names[$previous_lead_id];
 
   $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   // FIXME: We'd like to add as a context the old lead, but only 1 member context allowed
+  // But maybe this is OK, cause the actor here is the old lead?
   $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $new_lead_id);
   $attributes = array_merge($pattributes, $mattributes);
-  $msg = "$signer_name changed project lead for $project_name to $new_lead_name";
+
+  // Need to look up the project name
+  $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
+  $project_data = lookup_project($lookup_project_message);
+  if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+          (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+                  $project_data[RESPONSE_ARGUMENT::VALUE])))
+  {
+    $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
+    $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  } else {
+    $project_name = $project_id;
+  }
+
+  $msg = "$signer_name changed project lead for $project_name to $new_lead_name (was $old_lead_name)";
   log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+  geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+  if (parse_urn($message->signer_urn, $chname, $t, $n)) {
+    $msg = $msg . " on CH $chname";
+  }
   mail($portal_admin_email, "Changed GENI CH project lead", $msg);
 
   return $result;
@@ -743,17 +918,70 @@ function add_project_member($args, $message)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to add_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in add_project_member: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
+
+  if (! array_key_exists(PA_ARGUMENT::MEMBER_ID, $args) or
+      $args[PA_ARGUMENT::MEMBER_ID] == '') {
+    // missing arg
+    error_log("Missing member_id arg to add_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is missing");
+  }
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+  if (! uuid_is_valid($member_id)) {
+    error_log("member_id invalid in add_project_member: " . $member_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is invalid: " . $member_id);
+  }
+
   $role = null;
+  global $CS_ATTRIBUTE_TYPE_NAME;
   if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args)) {
     $role = $args[PA_ARGUMENT::ROLE_TYPE];
+    if (! array_key_exists($role, $CS_ATTRIBUTE_TYPE_NAME)) {
+      error_log("role invalid in add_project_member: " . $role);
+      return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Role is invalid: " . $role);
+    }
+  } else {
+    error_log("Missing role arg to add_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Role is missing");
   }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
 
   $conn = db_conn();
+
+  // Check that this is a valid project ID
+  global $PA_PROJECT_TABLENAME;
+  $valid_project_sql = "select count(*) from " . $PA_PROJECT_TABLENAME
+    . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . " = "
+    . $conn->quote($project_id, 'text');
+  $valid_project = db_fetch_row($valid_project_sql);
+  if (! array_key_exists('value', $valid_project) or
+      is_null($valid_project['value']) or ! array_key_exists('count', $valid_project['value'])) {
+    return $valid_project;
+  }
+  $valid_project = $valid_project['value']['count'] > 0;
+  if (!$valid_project) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Project $project_id unknown.");
+  }
+
+  // Check if the member is already in the project
   $already_member_sql = "select count(*) from " . $PA_PROJECT_MEMBER_TABLENAME
   . " WHERE "
           . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . " = " . $conn->quote($project_id, 'text')
@@ -761,7 +989,8 @@ function add_project_member($args, $message)
                   . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($member_id, 'text');
   $already_member = db_fetch_row($already_member_sql);
   //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
-  if (! array_key_exists('value', $already_member) or ! array_key_exists('count', $already_member['value'])) {
+  if (! array_key_exists('value', $already_member) or
+      is_null($already_member['value']) or ! array_key_exists('count', $already_member['value'])) {
     return $already_member;
   }
   $already_member = $already_member['value']['count'] > 0;
@@ -771,6 +1000,7 @@ function add_project_member($args, $message)
   }
 
 
+  // Add the member to the project
   $sql = "INSERT INTO " . $PA_PROJECT_MEMBER_TABLENAME . " ("
           . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . ", "
                   . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . ", "
@@ -794,8 +1024,12 @@ function add_project_member($args, $message)
 
   // Log adding the member
   global $ma_url;
-  $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
-  $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+  $ids = array();
+  $ids[] = $signer_id;
+  $ids[] = $member_id;
+  $names = lookup_member_names($ma_url, $mysigner, $ids);
+  $signer_name = $names[$signer_id];
+  $member_name = $names[$member_id];
 
   $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
   $project_data = lookup_project($lookup_project_message);
@@ -807,11 +1041,8 @@ function add_project_member($args, $message)
     global $log_url;
     // From /etc/geni-ch/settings.php
     global $portal_admin_email;
-    //  error_log("MD = " . print_r($member_data, true));
     //  error_log("PD = " . print_r($project_data, true));
     $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
-    $member_name = $member_data->prettyName();
-    $signer_name = $signer_data->prettyName();
     $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $msg = "$signer_name Added $member_name to Project $project_name in role $role_name";
@@ -839,21 +1070,73 @@ function remove_project_member($args, $message)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to remove_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in remove_project_member: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
+
+  if (! array_key_exists(PA_ARGUMENT::MEMBER_ID, $args) or
+      $args[PA_ARGUMENT::MEMBER_ID] == '') {
+    // missing arg
+    error_log("Missing member_id arg to remove_project_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is missing");
+  }
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+  if (! uuid_is_valid($member_id)) {
+    error_log("member_id invalid in remove_project_member: " . $member_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is invalid: " . $member_id);
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
   global $log_url;
 
+  // Stop if this member is the lead or isn't in the project
   $conn = db_conn();
+  $sql = "SELECT " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " from " . 
+    $PA_PROJECT_MEMBER_TABLENAME . " where "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID . " = " .
+    $conn->quote($project_id, 'text') . " and "
+    . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = "
+    . $conn->quote($member_id, 'text');
+  $result = db_fetch_row($sql);
+
+  // If we got nothing back, then this member isn't in this project
+  if (! array_key_exists('value', $result) or is_null($result['value'])
+      or !array_key_exists(PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE, $result['value'])) {
+    error_log("remove_from_project: member " . $member_id . " not in project " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member " . $member_id . " not in project " . $project_id);
+  }
+
+  $role = $result['value'][PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+  if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
+    error_log("remove_from_project: member " . $member_id . " is LEAD for project " . $project_id);
+    // Return right error message
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Cannot remove LEAD from project: " . $project_id);
+  }
+
+  // FIXME: Stop if the member is the LEAD on a non-expired slice?
+
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME
   . " WHERE "
           . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
           . " = " . $conn->quote($project_id, 'text') . " AND "
                   . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
                   . "= " . $conn->quote($member_id, 'text');
-  error_log("PA.remove project_member.sql = " . $sql);
+  //  error_log("PA.remove project_member.sql = " . $sql);
   $result = db_execute_statement($sql);
 
   // Delete previous assertions from CS
@@ -871,9 +1154,18 @@ function remove_project_member($args, $message)
       delete_assertion($cs_url, $mysigner, $assertion_id);
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
+
+    // FIXME: Remove the member from non-expired slices. But what if they are the
+    // LEAD of the slice?
+
     global $ma_url;
-    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
-    $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
+    $ids = array();
+    $ids[] = $signer_id;
+    $ids[] = $member_id;
+    $names = lookup_member_names($ma_url, $mysigner, $ids);
+    $signer_name = $names[$signer_id];
+    $member_name = $names[$member_id];
+
     $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
     $project_data = lookup_project($lookup_project_message);
     if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
@@ -881,15 +1173,17 @@ function remove_project_member($args, $message)
                     $project_data[RESPONSE_ARGUMENT::VALUE])))
     {
       $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
-      $member_name = $member_data->prettyName();
-      $signer_name = $signer_data->prettyName();
       $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-      $message = "$signer_name Removed $member_name from Project $project_name";
-      $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-      $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
-      $attributes = array_merge($pattributes, $mattributes);
-      log_event($log_url, $mysigner, $message, $attributes, $signer_id);
+    } else {
+      $project_name = $project_id;
     }
+
+    $message = "$signer_name Removed $member_name from Project $project_name";
+    $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
+    $attributes = array_merge($pattributes, $mattributes);
+    log_event($log_url, $mysigner, $message, $attributes, $signer_id);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 
   }
 
@@ -902,14 +1196,76 @@ function change_member_role($args, $message)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to change_member_role");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in change_member_role: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
+
+  if (! array_key_exists(PA_ARGUMENT::MEMBER_ID, $args) or
+      $args[PA_ARGUMENT::MEMBER_ID] == '') {
+    // missing arg
+    error_log("Missing member_id arg to change_member_role");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is missing");
+  }
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
-  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+  if (! uuid_is_valid($member_id)) {
+    error_log("member_id invalid in change_member_role: " . $member_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is invalid: " . $member_id);
+  }
+
+  $role = null;
+  global $CS_ATTRIBUTE_TYPE_NAME;
+  if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args)) {
+    $role = $args[PA_ARGUMENT::ROLE_TYPE];
+    if (! array_key_exists($role, $CS_ATTRIBUTE_TYPE_NAME)) {
+      error_log("role invalid in change_member_role: " . $role);
+      return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Role is invalid: " . $role);
+    }
+  } else {
+    error_log("Missing role arg to change_member_role");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Role is missing");
+  }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
 
   $conn = db_conn();
+
+  // Admin cannot change own role
+  if ($message->signerUuid() == $member_id) {
+    // get member current role
+    $sql = "SELECT "
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE
+      . " FROM " . $PA_PROJECT_MEMBER_TABLENAME
+      . " WHERE "
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
+      . " = " . $conn->quote($project_id, 'text')
+      . " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " =  " 
+      . $conn->quote($member_id, 'text');
+    $result = db_fetch_row($sql);
+    $allowed = TRUE;
+    if($result['code'] == RESPONSE_ERROR::NONE and
+       $result['code'][PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE] ==
+       CS_ATTRIBUTE_TYPE::ADMIN) {
+      error_log("Caller is Admin on project - cannot change own role");
+      return generate_response(RESPONSE_ERROR::AUTHORIZATON, null,
+			     "Project admin cannot change own role on project");
+    }
+  }
+
   $sql = "UPDATE " . $PA_PROJECT_MEMBER_TABLENAME
   . " SET " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE . " = " . $conn->quote($role, 'integer')
   . " WHERE "
@@ -919,7 +1275,7 @@ function change_member_role($args, $message)
                   . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID
                   . " = " . $conn->quote($member_id, 'text');
 
-  error_log("PA.change_member_role.sql = " . $sql);
+  //  error_log("PA.change_member_role.sql = " . $sql);
   $result = db_execute_statement($sql);
 
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
@@ -940,7 +1296,6 @@ function change_member_role($args, $message)
     // Create new assertion for member in this role
     create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
-    // FIXME
     $project_name = $project_id;
     $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
     $project_data = lookup_project($lookup_project_message);
@@ -954,17 +1309,20 @@ function change_member_role($args, $message)
 
     $signer_id = $message->signerUuid();
     global $ma_url;
-    $member_data = ma_lookup_member_by_id($ma_url, $mysigner, $member_id);
-    $signer_data = ma_lookup_member_by_id($ma_url, $mysigner, $signer_id);
-    $member_name = $member_data->prettyName();
-    $signer_name = $signer_data->prettyName();
+    $ids = array();
+    $ids[] = $signer_id;
+    $ids[] = $member_id;
+    $names = lookup_member_names($ma_url, $mysigner, $ids);
+    $signer_name = $names[$signer_id];
+    $member_name = $names[$member_id];
     $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
     $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
     $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
     $attributes = array_merge($pattributes, $mattributes);
     $msg = "$signer_name changed role of $member_name in project $project_name to $role_name";
-    log_event($log_url, $mysigner,
-    $msg, $attributes, $signer_id);
+    global $log_url;
+    log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 
   }
 
@@ -978,10 +1336,29 @@ function get_project_members($args)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to get_project_members");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is missing");
+  }
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in get_project_members: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Project ID is invalid: " . $project_id);
+  }
+
   $role = null;
+  global $CS_ATTRIBUTE_TYPE_NAME;
   if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
     $role = $args[PA_ARGUMENT::ROLE_TYPE];
+    if (! array_key_exists($role, $CS_ATTRIBUTE_TYPE_NAME)) {
+      error_log("role invalid in get_project_members: " . $role);
+      return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Role is invalid: " . $role);
+    }
   }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
@@ -1018,14 +1395,35 @@ function get_projects_for_member($args)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::MEMBER_ID, $args) or
+      $args[PA_ARGUMENT::MEMBER_ID] == '') {
+    // missing arg
+    error_log("Missing member_id arg to get_projects_for_member");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is missing");
+  }
   $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+  if (! uuid_is_valid($member_id)) {
+    error_log("member_id invalid in get_projects_for_member: " . $member_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Member ID is invalid: " . $member_id);
+  }
+
   $is_member = true;
   if (array_key_exists(PA_ARGUMENT::IS_MEMBER, $args) && isset($args[PA_ARGUMENT::IS_MEMBER])) {
+    // FIXME: validate it as a boolean?
     $is_member = $args[PA_ARGUMENT::IS_MEMBER];
   }
+
   $role = null;
+  global $CS_ATTRIBUTE_TYPE_NAME;
   if (array_key_exists(PA_ARGUMENT::ROLE_TYPE, $args) && isset($args[PA_ARGUMENT::ROLE_TYPE])) {
     $role = $args[PA_ARGUMENT::ROLE_TYPE];
+    if (! array_key_exists($role, $CS_ATTRIBUTE_TYPE_NAME)) {
+      error_log("role invalid in get_projects_for_member: " . $role);
+      return generate_response(RESPONSE_ERROR::ARGS, null,
+            "Role is invalid: " . $role);
+    }
   }
 
   global $PA_PROJECT_MEMBER_TABLENAME;
@@ -1091,6 +1489,11 @@ function lookup_project_details($args)
 
   pa_expire_projects();
 
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_UUIDS, $args)) {
+    error_log("Missing project_uuids arg to lookup_project_details");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+            "project_uuids is missing");
+  }
   $project_uuids = $args[PA_ARGUMENT::PROJECT_UUIDS];
   $project_uuids_as_sql = convert_list($project_uuids);
 

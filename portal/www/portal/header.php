@@ -203,7 +203,11 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
   if ($load_user) {
     echo '<div id="metanav" class="nav">';
-    echo '<ul><li style="border-right: none">Logged in as ' . $user->prettyName() . '</li></ul>';
+    echo '<ul>';
+    echo '<li>Logged in as ' . $user->prettyName() . '</li>';
+    $logout_url = relative_url("dologout.php");
+    echo '<li style="border-right: none"><a href="' . $logout_url . '">Logout</a></li>';
+    echo '</ul>';
     echo '</div>';
   }
   show_tab_bar($active_tab, $load_user);

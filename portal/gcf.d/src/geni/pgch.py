@@ -32,6 +32,7 @@ import datetime
 import traceback
 import uuid as uuidModule
 import os
+import xmlrpclib
 
 import dateutil.parser
 from SecureXMLRPCServer import SecureXMLRPCRequestHandler
@@ -424,7 +425,10 @@ class PGClearinghouse(Clearinghouse):
         # or "/ch" for SA or CH respectively.
         self._server.RequestHandlerClass = PgChRequestHandler
         self._server.register_instance(PGSAnCHServer(self, self.logger))
-        self.logger.info('GENI PGCH Listening on port %d...' % (addr[1]))
+        if self.gcf:
+            self.logger.info('GENI GCF PGCH Listening on port %d...' % (addr[1]))
+        else:
+            self.logger.info('GENI GPO CH PGCH Listening on port %d...' % (addr[1]))
         self._server.serve_forever()
 
     def readfile(self, path):
@@ -579,7 +583,10 @@ class PGClearinghouse(Clearinghouse):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        try:
+            self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        except Exception, e:
+            raise xmlrpclib.Fault('Insufficient privileges', str(e))
 
         # Need the slice_id given the urn
         # need the client cert
@@ -675,7 +682,10 @@ class PGClearinghouse(Clearinghouse):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        try:
+            self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        except Exception, e:
+            raise xmlrpclib.Fault('Insufficient privileges', str(e))
 
         # confirm type is Slice or User
         if not type:
@@ -929,7 +939,10 @@ class PGClearinghouse(Clearinghouse):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        try:
+            self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        except Exception, e:
+            raise xmlrpclib.Fault('Insufficient privileges', str(e))
 
         # confirm type is Slice or User
         if not type:
@@ -967,7 +980,7 @@ class PGClearinghouse(Clearinghouse):
             project_name = ''
             if slice_auth and slice_auth.startswith(SLICE_AUTHORITY) and len(slice_auth) > len(SLICE_AUTHORITY)+1:
                 project_name = slice_auth[len(SLICE_AUTHORITY)+2:]
-                self.logger.info("Creating slice in project %s" % project_name)
+                self.logger.info("Creating slice in project '%s'" % project_name)
                 if project_name.strip() == '':
                     self.logger.warn("Empty project name will fail")
                 argsdict = dict(project_name=project_name)
@@ -980,13 +993,29 @@ class PGClearinghouse(Clearinghouse):
                                           self.logger, argsdict, inside_certs,
                                           inside_key)
                 except Exception, e:
-                    self.logger.error("Exception getting project of name %s: %s", project_name, e)
+                    self.logger.error("Exception getting project of name '%s': %s", project_name, e)
                     #raise
                 if projtriple:
                     projval = getValueFromTriple(projtriple, self.logger, "lookup_project for create_slice", unwrap=True)
+                    if not projval:
+                        self.logger.warn("Got None value from lookup_project '%s'", project_name)
+                        if projtriple.has_key("output") and projtriple["output"]:
+                            self.logger.warn(projtriple["output"])
+                        ret = dict(code=1, value=None, output="Unknown project '%s'" % project_name)
+                        return ret
                     project_id = projval['project_id']
-            if project_id == '':
-                self.logger.warn("Got no project_id")
+            elif slice_auth and not slice_auth.startswith(SLICE_AUTHORITY):
+                msg = "Register got slice URN with unknown authority %s" % slice_auth
+                self.logger.error(msg)
+                raise Exception(msg)
+            elif slice_auth:
+                msg = "Slice authority missing project name: %s" % slice_auth
+                self.logger.error(msg)
+                raise Exception(msg)
+            if project_id == '' or project_id is None:
+                self.logger.warn("Got no project_id for project '%s'", project_name)
+                ret = dict(code=1, value=None, output="Unknown project '%s'" % project_name)
+                return ret
             argsdict = dict(project_id=project_id, slice_name=slice_name, owner_id=owner_id, project_name=project_name)
             slicetriple = None
             try:
@@ -1063,7 +1092,10 @@ class PGClearinghouse(Clearinghouse):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        try:
+            self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        except Exception, e:
+            raise xmlrpclib.Fault('Insufficient privileges', str(e))
 
         # get Slice UUID (aka slice_id)
         slice_cert = sfa.trust.credential.Credential(string=credential).get_gid_object()
@@ -1155,7 +1187,11 @@ class PGClearinghouse(Clearinghouse):
         creds.append(credential)
         privs = ()
 #        self.logger.info("type of credential: %s. Type of creds: %s", type(credential), type(creds))
-        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        try:
+            self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        except Exception, e:
+            raise xmlrpclib.Fault('Insufficient privileges', str(e))
+
 #        self.logger.info("getkeys did cred verify")
         # With the real CH, the SSH keys are held by the portal, not the CH
         # see db-util.php#fetchSshKeys which queries the ssh_key table in the portal DB
@@ -1226,7 +1262,10 @@ class PGClearinghouse(Clearinghouse):
         creds = list()
         creds.append(credential)
         privs = ()
-        self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        try:
+            self._cred_verifier.verify_from_strings(user_certstr, creds, None, privs)
+        except Exception, e:
+            raise xmlrpclib.Fault('Insufficient privileges', str(e))
 
         if self.gcf:
             ret = list()

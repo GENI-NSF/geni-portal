@@ -67,12 +67,27 @@ function show_header($title)
   echo '<div id="landingcontent" class="landingpage">';
 }
 
-show_header("Welcome to GENI")
+show_header("Welcome to GENI");
+
+function show_last_message() {
+  $message_key = 'lastmessage';
+  session_start();
+  if (isset($_SESSION[$message_key])) {
+    $last_message = $_SESSION[$message_key];
+    unset($_SESSION[$message_key]);
+  }
+  session_write_close();
+  if (isset($last_message)) {
+    echo "<center><p class='instruction'>$last_message</p></center>";
+  }
+}
+
 ?>
 <div id='blank'>&nbsp;
 </div>
 <div id='main'>
 
+<?php show_last_message();?>
   <a href='secure/home.php'>
     <img id='usegeni' src="/images/UseGENI.png" alt="Use GENI"/>
   </a>
