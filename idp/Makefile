@@ -10,10 +10,10 @@ default:
 all:
 
 /var/www/idp:
-	sudo /bin/mkdir /var/www/idp
+	/bin/mkdir /var/www/idp
 
 install: /var/www/idp
-	sudo /bin/cp www/* /var/www/idp
+	/bin/cp www/* /var/www/idp
 
 # empty target for compatibility
 cleandb:

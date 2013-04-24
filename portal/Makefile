@@ -36,10 +36,10 @@ www:
 	/bin/false
 
 /var/www/secure:
-	sudo /bin/mkdir /var/www/secure
+	/bin/mkdir /var/www/secure
 
 /var/www/images:
-	sudo /bin/mkdir /var/www/images
+	/bin/mkdir /var/www/images
 
 $(LIB.DIR):
 	$(INSTALL.WWW) -d $(LIB.DIR)
@@ -109,15 +109,15 @@ install-gcf: $(GCF_DEPS)
 
 
 install: $(LIB.DIR) www install-gcf /var/www/secure /var/www/images
-	sudo /bin/cp www/portal/* /var/www/secure
-	sudo /bin/cp -r flack/* /var/www/secure
-	sudo /bin/cp www/images/* /var/www/images
-	sudo /bin/cp -r www/common /var/www/
-	sudo /bin/cp www/*.php /var/www/
-	sudo /bin/cp www/favicon.ico /var/www/favicon.ico
-	sudo $(INSTALL.WWW) -m 755 -d /var/www/policy
-	sudo $(INSTALL.WWW) -m 644 www/policy/* /var/www/policy
-	sudo $(INSTALL.WWW) -m 644 apache2-http.conf $(LIB.DIR)
+	/bin/cp www/portal/* /var/www/secure
+	/bin/cp -r flack/* /var/www/secure
+	/bin/cp www/images/* /var/www/images
+	/bin/cp -r www/common /var/www/
+	/bin/cp www/*.php /var/www/
+	/bin/cp www/favicon.ico /var/www/favicon.ico
+	$(INSTALL.WWW) -m 755 -d /var/www/policy
+	$(INSTALL.WWW) -m 644 www/policy/* /var/www/policy
+	$(INSTALL.WWW) -m 644 apache2-http.conf $(LIB.DIR)
 	@echo
 	@echo "*** Remember to check www/portal/settings.php! ***"
 	@echo
@@ -130,16 +130,16 @@ syncm syncd synci syncs syncp:
 	(cd .. && $(MAKE) $@)
 
 $(ABAC.DIR):
-	sudo mkdir -p $(ABAC.DIR)
+	mkdir -p $(ABAC.DIR)
 
 
 $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem: $(ABAC.DIR)
 	/usr/local/bin/creddy --generate --cn GeniPortal
-	/usr/bin/sudo /bin/mv GeniPortal_ID.pem GeniPortal_private.pem $(ABAC.DIR)
-	/usr/bin/sudo /bin/chown www-data $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem
-	/usr/bin/sudo /bin/chgrp www-data $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem
+	/bin/mv GeniPortal_ID.pem GeniPortal_private.pem $(ABAC.DIR)
+	/bin/chown www-data $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem
+	/bin/chgrp www-data $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem
 
 abac: $(ABAC.DIR)/GeniPortal_ID.pem $(ABAC.DIR)/GeniPortal_private.pem
 
 gcf: 
-	sudo /bin/cp -r gcf.d $(LIB.DIR)
+	/bin/cp -r gcf.d $(LIB.DIR)

@@ -14,11 +14,11 @@ www:
 	/bin/false
 
 /var/www/secure:
-	sudo /bin/mkdir /var/www/secure
+	/bin/mkdir /var/www/secure
 
 install: www
-	sudo /bin/cp www/kmtool/* /var/www/secure
-	sudo /bin/cp -r www/common /var/www
+	/bin/cp www/kmtool/* /var/www/secure
+	/bin/cp -r www/common /var/www
 
 # empty target for compatibility
 cleandb:
