@@ -1,5 +1,7 @@
 var updating_text = "...updating...";
-var initial_text = "<-- reload for status";
+var UNKNOWN = 'unknown';
+var NOT_APPLICABLE = "not applicable";
+
 
 // function build_agg_table_on_slicepg() 
 // {
@@ -146,7 +148,7 @@ function update_agg_row(am_id) {
 	} else {
 	    status_code = GENI_NO_STATUS;
 	    output += GENI_NO_STATUS_STR;
-            sliver_expiration = 'unknown';
+            sliver_expiration = UNKNOWN;
 	}
         $("td#status_"+am_id).text( output );
         $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
@@ -158,7 +160,7 @@ function update_agg_row(am_id) {
 	    $("button#status_button_"+am_id).prop( "disabled", true ); 
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
 	    $("button#delete_button_"+am_id).prop( "disabled", true );
-	    $("span#renew_sliver_"+am_id).text( "not applicable");  
+	    $("span#renew_sliver_"+am_id).text( NOT_APPLICABLE);  
 	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
