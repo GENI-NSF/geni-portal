@@ -152,11 +152,13 @@ function update_agg_row(am_id) {
         $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
         $("span#renew_sliver_"+am_id).text( sliver_expiration );
 
+	$("button#reload_button_"+am_id).prop( "disabled", false ); 
 	if ((status_code == GENI_NO_RESOURCES) || (status_code == GENI_NO_STATUS)){
 // could hide rows for AMs with no resources	    $("tr#"+am_id).hide(); 
 	    $("button#status_button_"+am_id).prop( "disabled", true ); 
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
-	    $("button#delete_button_"+am_id).prop( "disabled", true ); 
+	    $("button#delete_button_"+am_id).prop( "disabled", true );
+	    $("span#renew_sliver_"+am_id).text( "not applicable");  
 	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
