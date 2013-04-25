@@ -19,8 +19,8 @@ MA.CERT = $(CA.DIR)/ma-cert.pem
 ABAC.DIR = $(LIB.DIR)/abac
 GCF.D = $(LIB.DIR)/gcf.d
 GCF.DIR = $(LIB.DIR)/gcf
-FQDN = $(shell /bin/hostname -f)
-SHORT_HOST = $(shell /bin/hostname -s)
+# Replace with @sysconfdir@/geni-ch in automake
+SYSCONFDIR = $(DESTDIR)/etc/geni-ch
 SED = /bin/sed
 
 SCHEMA.SQL = db/postgresql/schema.sql
@@ -47,12 +47,9 @@ $(LIB.DIR):
 $(GCF.D):
 	$(INSTALL.WWW) -d $(GCF.D)
 
-# Perform some replacements when install gcf.ini
+# Install gcf.ini as an example in the sys conf dir (usually "etc")
 $(GCF.D)/gcf.ini: gcf.d/gcf.ini
-	$(SED) -e 's/localhost/$(FQDN)/g' < $^ \
-	  | $(SED) -e 's/base_name=.*/base_name=$(SHORT_HOST)/' > $@
-	chown www-data.www-data $@
-	chmod 0644 $@
+	$(INSTALL) -m 0644 gcf.d/gcf.ini $(SYSCONFDIR)/example-gcf.ini
 
 $(GCF.D)/omni.ini: gcf.d/omni.ini
 	$(INSTALL.WWW) -m 644 $^ $@
