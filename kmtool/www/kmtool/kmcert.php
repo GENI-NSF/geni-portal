@@ -214,7 +214,7 @@ There are two options for creating this:
 <li>Have the SSL certificate generated for you based on a private key you have locally <b>(for advanced users, more secure)</b> </li>
 </ol>
 </p>
-<h2>Option 1: Have the objects generated for you </h2>
+<h2>Recommended Option: Have the objects generated for you </h2>
 
 <p><b>If in doubt, use this option.</b></p>
 
@@ -228,7 +228,7 @@ There are two options for creating this:
 
 <hr>
 
-<h2>Option 2. Have the certificate generated for you based on a private key you have locally </h2>
+<h2>Alternative Option: Have the certificate generated for you based on a private key you have locally </h2>
 
 <p><i>If you want to maintain control of your private key, you can request to generate an SSL certificate based on a private key stored locally on your computer.  You have two options, create a new private key or reuse an existing one.</i></p>
 
