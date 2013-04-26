@@ -206,12 +206,12 @@ if (! is_null($result)) {
 ?>
 
 <p>In order to use some GENI tools (like
-<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need two objects: a user SSL certificate and a private key. 
+<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need a signed SSL certificate.
 </p><p>
-There are two options for creating these:
+There are two options for creating this:
 <ol>
-<li>Have the objects generated for you <b>(easiest, least secure)</b> </li>
-<li>Have the certificate generated for you based on a private key you have locally <b>(hardest, most secure)</b> </li>
+<li>Have it generated for you.  If in doubt, use this option. <b>(easiest, recommended)</b> </li>
+<li>Have the SSL certificate generated for you based on a private key you have locally <b>(for advanced users, more secure)</b> </li>
 </ol>
 </p>
 <h2>Option 1: Have the objects generated for you </h2>
@@ -223,9 +223,15 @@ There are two options for creating these:
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
 <input type="submit" name="submit" value="Generate Combined Certificate and Key File"/>
 </form>
+
+<p><i>An SSL certificate always has a corresponding SSL private key.  This option will generate one file which contains both the signed SSL certificate and the corresponding private key.  (This is a new key generated for this SSL certificate and is different from your SSH private key.)</i></p>
+
 <hr>
 
 <h2>Option 2. Have the certificate generated for you based on a private key you have locally </h2>
+
+<p><i>If you want to maintain control of your private key, you can request to generate an SSL certificate based on a private key stored locally on your computer.  You have two options, create a new private key or reuse an existing one.</i></p>
+
 <p>There are two variations on this option, only do one of them.</p>
 <ul>
 	<li>Option 2a: Create a private key, then upload a certificate signing request (CSR)</li>
