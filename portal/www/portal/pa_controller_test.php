@@ -136,12 +136,6 @@ dump_pids($pids);
 $pids = get_projects_for_member($pa_url, $user, $lead2, false, CS_ATTRIBUTE_TYPE::AUDITOR);
 dump_pids($pids);
 
-delete_project($pa_url, $user, $project_id1);
-delete_project($pa_url, $user, $project_id2);
-delete_project($pa_url, $user, $project_id3);
-delete_project($pa_url, $user, $project_id4);
-delete_project($pa_url, $user, $project_id5);
-
 relative_redirect('debug');
 
 ?>

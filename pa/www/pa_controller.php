@@ -46,7 +46,6 @@ include_once('/etc/geni-ch/settings.php');
  *
  * Supports these methods:
  *   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose, expiration)
- *   delete_project(pa_url, project_id);
  *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
  *   update_project(pa_url, project_id, project_email, project_purpose, expiration);
  *   change_lead(pa_url, project_id, previous_lead_id, new_lead_id); *
@@ -168,7 +167,6 @@ class PAGuardFactory implements GuardFactory
     = array(
             // Action => array(method_name, method_name, ...)
 	    'create_project' => array(), // Unguarded
-	    'delete_project' => array('project_guard'),
 	    'get_projects' => array(), // Unguarded
 	    'lookup_projects' => array(), // Unguarded
 	    'lookup_project' => array(), // Unguarded
@@ -491,80 +489,6 @@ function create_project($args, $message)
   mail($portal_admin_email, "New GENI CH project created", $msg);
 
   return generate_response(RESPONSE_ERROR::NONE, $project_id, '');
-}
-
-/**
- * Delete given project of given ID
- */
-function delete_project($args, $message)
-{
-  global $PA_PROJECT_TABLENAME;
-  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
-      $args[PA_ARGUMENT::PROJECT_ID] == '') {
-    // missing arg
-    error_log("Missing project_id arg to delete_project");
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-            "Project ID is missing");
-  }
-  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
-  if (! uuid_is_valid($project_id)) {
-    error_log("project_id invalid in delete_project: " . $project_id);
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-            "Project ID is invalid: " . $project_id);
-  }
-
-  pa_expire_projects();
-
-  $conn = db_conn();
-
-  // FIXME: stop if there are unexpired slices?
-
-  $sql = "DELETE FROM " . $PA_PROJECT_TABLENAME
-  . " WHERE "
-          . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
-          . " = " . $conn->quote($project_id, 'text');
-
-  //  error_log("DELETE.sql = " . $sql);
-
-  $result = db_execute_statement($sql);
-
-  // FIXME: Delete relevant assertions
-  // FIXME: What about relevant slices? resources
-
-  // Log the deletion
-  global $log_url;
-  global $mysigner;
-  global $ma_url;
-  global $portal_admin_email;
-  $signer_id = $message->signerUuid();
-  $ids = array();
-  $ids[] = $signer_id;
-  $names = lookup_member_names($ma_url, $mysigner, $ids);
-  $signer_name = $names[$signer_id];
-
-  $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
-
-  // Need to look up the project name
-  $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
-  $project_data = lookup_project($lookup_project_message);
-  if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
-          (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
-                  $project_data[RESPONSE_ARGUMENT::VALUE])))
-  {
-    $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
-    $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  } else {
-    $project_name = $project_id;
-  }
-
-  $msg = "$signer_name Deleted project: $project_name";
-  log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
-  if (parse_urn($message->signer_urn, $chname, $t, $n)) {
-    $msg = $msg . " on CH $chname";
-  }
-  mail($portal_admin_email, "GENI CH project deleted", $msg);
-
-  return $result;
 }
 
 /* Return list of all project ID's, optionally limited by lead_id */
@@ -1183,7 +1107,7 @@ function remove_project_member($args, $message)
     $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
     $attributes = array_merge($pattributes, $mattributes);
     log_event($log_url, $mysigner, $message, $attributes, $signer_id);
-    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $message);
 
   }
 

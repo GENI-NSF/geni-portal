@@ -35,7 +35,6 @@ namespace Project_Authority;
  * Supports these methods:
 <ul>
 <li>   project_id <= create_project(project_name, lead_id, lead_email, purpose, expiration) </li>
-<li>   success <= delete_project(project_id); </li>
 <li>   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id); </li>
 <li>   success <= update_project(project_id, project_email, project_purpose, expiration); </li>
 <li>   success <= change_lead(project_id, previous_lead_id, new_lead_id);  </li>
@@ -64,21 +63,6 @@ class Project_Authority {
  *   
  */
 function create_project($args_dict)
-{
-}
-
-/**
- * Delete given project of given ID
- *
- * @param dict $args_dict Dictionary containing name/value pairs:
-<ul>
-   <li>"operation" : name of this method ("delete_project")</li>
-   <li>"project_id" : ID of project to be deleted</li>
-</ul>
- * @return boolean Success/Failure
- *   
- */
-function delete_project($args_dict)
 {
 }
 

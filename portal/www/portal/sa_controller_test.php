@@ -163,8 +163,6 @@ dump_sids($sids);
 $sids = get_slices_for_member($sa_url, $user, $user->account_id, false, CS_ATTRIBUTE_TYPE::AUDITOR);
 dump_sids($sids);
 
-delete_project($pa_url, $user, $project);
-
 relative_redirect('debug');
 
 ?>

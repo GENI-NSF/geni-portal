@@ -77,7 +77,6 @@ $PA_PROJECT_MEMBER_REQUEST_TABLENAME = 'pa_project_member_request';
 /* Should match the set of privileges in the cs_action table */
 class PA_ACTION {
   const CREATE_PROJECT = 'create_project';
-  const DELETE_PROJECT = 'delete_project';
   const GET_PROJECTS = 'get_projects';
   const GET_PROJECT_BY_LEAD = 'get_project_by_lead';
   const LOOKUP_PROJECT = 'lookup_project';
