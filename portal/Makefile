@@ -33,6 +33,9 @@ all:
 /var/www/images:
 	$(INSTALL) -d $@
 
+$(SYSCONFDIR):
+	$(INSTALL) -d $@
+
 $(LIB.DIR):
 	$(INSTALL.WWW) -d $(LIB.DIR)
 
@@ -79,7 +82,6 @@ $(GCF.DIR)/src/logging.conf: gcf.d/src/logging.conf
 	$(INSTALL.WWW) $^ $@
 
 GCF_DEPS = 	$(GCF.D) \
-		$(GCF.D)/gcf.ini \
 		$(GCF.D)/omni.ini \
 		$(GCF.D)/trusted_roots \
 		$(GCF.D)/trusted_roots/cacert.pem \
@@ -91,7 +93,7 @@ GCF_DEPS = 	$(GCF.D) \
 		$(GCF.DIR)/src/logging.conf
 
 # Install gcf.ini as an example in the sys conf dir (usually "etc")
-install-gcf: $(GCF_DEPS)
+install-gcf: $(GCF_DEPS) $(SYSCONFDIR)
 	$(INSTALL) -m 0644 gcf.d/gcf.ini $(SYSCONFDIR)/example-gcf.ini
 
 install: $(LIB.DIR) www install-gcf /var/www/secure /var/www/images
