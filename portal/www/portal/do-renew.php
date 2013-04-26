@@ -71,9 +71,9 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
-if (array_key_exists('slice_expiration', $_GET)) {
+if (array_key_exists('sliver_expiration', $_GET)) {
   // what we got asked for
-  $desired_expiration = $_GET['slice_expiration'];
+  $desired_expiration = $_GET['sliver_expiration'];
   // what to send to the AM(s)
   $rfc3339_expiration = rfc3339Format($desired_expiration);
   // what to display to the user
@@ -89,6 +89,9 @@ if (array_key_exists('renew', $_GET)) {
      $renew_sliver = false;
   } elseif  ($renew == 'slice_sliver'){
      $renew_slice = true;
+     $renew_sliver = true;
+  } elseif  ($renew == 'sliver'){
+     $renew_slice = false;
      $renew_sliver = true;
   }
 }
@@ -113,7 +116,7 @@ if (!$res) {
 $res = $res . " - slice expiration is now: <b>$slice_expiration</b>\n";
 }
 
-if ($renewed_slice and $renew_sliver) {
+if ($renew_sliver and (($renew_slice and $renewed_slice) or !$renew_slice)) {
       // Takes an arg am_id which may have multiple values. Each is treated
       // as the ID from the DB of an AM which should be queried
       // If no such arg is given, then query the DB and query all registered AMs
@@ -185,22 +188,25 @@ include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
 print "<div class='msg'>";
-print_r($msg);
+// print_r($msg);
 print "</div>";
 
-print "<p>Renewed slice until: $slice_expiration</p>";
+if ($renew_slice){
+   print "<p>Renewed slice until: $slice_expiration</p>";
+}
+if ($renew_sliver){
+   print "<p>Renewing slivers...</p>";
 
-print "<p>Renewing slivers...</p>";
+   print "<div>Renewed slivers at:</div>";
+   print "<div>";
+   print_list( $success );
+   print "</div>";
 
-print "<div>Renewed slivers at:</div>";
-print "<div>";
-print_list( $success );
-print "</div>";
-
-print "<div>Did not renew slivers at:</div>";
-print "<div>";
-print_list( $fail );
-print "</div>";
+   print "<div>Did not renew slivers at:</div>";
+   print "<div>";
+   print_list( $fail );
+   print "</div>";
+}
 
 print "<hr/>";
 print "<a href='slices.php'>Back to All slices</a>";
