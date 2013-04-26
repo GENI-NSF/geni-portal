@@ -191,7 +191,6 @@ foreach($all_member_row_elements as $amre) {
   $member_url = $amre['member_url'];
   $member_role = $amre['member_role'];
   $member_actions = $amre['member_actions'];
-  $is_member = $amre['is_member'];
   print "<tr><td>$member_url</td><td>$member_role</td><td>$member_actions</td></tr>\n";
 }
 
