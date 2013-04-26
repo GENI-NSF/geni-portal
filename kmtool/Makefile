@@ -3,6 +3,10 @@ DB.USER = portal
 DB.HOST = localhost
 DB.DB = portal
 SCHEMA.SQL = db/postgresql/schema.sql
+# Replace with @pgkdatadir@ in automake
+PKGDATADIR = /usr/share/geni-ch
+MY_DIR = $(PKGDATADIR)/km
+INSTALL = install
 
 default:
 	echo "try make install"
@@ -19,6 +23,7 @@ www:
 install: www
 	/bin/cp www/kmtool/* /var/www/secure
 	/bin/cp -r www/common /var/www
+	$(INSTALL) -d $(MY_DIR)
 
 # empty target for compatibility
 cleandb:
