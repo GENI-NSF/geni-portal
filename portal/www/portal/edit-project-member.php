@@ -22,28 +22,24 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// Edit the members of a given slice
+// Edit the members of a given project
 
 require_once("user.php");
 require_once("header.php");
 require_once("ma_client.php");
-require_once("sa_client.php");
 require_once("pa_client.php");
 require_once('cs_constants.php');
 
 // Return the pieces required to construct the row
 // For a given member: 
 //    'member_url': the URL to the member within the project
-//    'member_role' : the role of the member in the slice (or NOT MEMBER)
-//    'member_role_index' : the index role of the member in the slice 
-//           (or -1 for NOT MEMBER)
+//    'member_role' : the role of the member in the project
 //    'member_actions' : the select menu for actions to 
-//         add/remove/change-role for this user within this slice
-//    'is_member' : is the given project member a member of slice?
+//         add/remove/change-role for this user within this project
 function compute_member_row_elements($member_details, 
 				     $all_project_member_names,
 				     $project_id,
-				     $current_slice_members)
+				     $current_project_members)
 {
   $member_id = $member_details[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
 
@@ -53,15 +49,14 @@ function compute_member_row_elements($member_details,
   $member_url =  "<a href=\"project-member.php?project_id=" . 
     $project_id . "&member_id=" . $member_id . "\">$member_name</a>";
 
-  // Compute the role of the person within the slice (or NOT MEMBER)
+  // Compute the role of the person within the project
   global $CS_ATTRIBUTE_TYPE_NAME;
   $member_role = "NOT MEMBER";
-  $member_role_index = -1;
   $is_member = False;
   $member_id = $member_details[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
-  foreach($current_slice_members as $cm) {
-    $cm_member_id = $cm[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
-    $cm_role_index = $cm[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+  foreach($current_project_members as $cm) {
+    $cm_member_id = $cm[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $cm_role_index = $cm[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
     if($cm_member_id == $member_id) {
       $member_role = $CS_ATTRIBUTE_TYPE_NAME[$cm_role_index];
       $member_role_index = $cm_role_index;
@@ -74,24 +69,17 @@ function compute_member_row_elements($member_details,
   // If a member, can remove or change role
   // If not a member, can add with a given role
   $options = "";
-  if ($is_member) {
-    $options = $options . "<option value=0>Remove from Slice</>";
-  } else {
-    $options = $options . "<option selected value=0>No Change</>";
-  }
+  $options = $options . "<option value=0>Remove from Project</>";
 
   foreach($CS_ATTRIBUTE_TYPE_NAME as $role_index => $role_label) {
     if ($role_index == CS_ATTRIBUTE_TYPE::OPERATOR) continue;
     $selected = "";
-    $prefix = "Add as ";
-    if ($is_member)
-      $prefix = "Change to ";
-      if($member_role == $role_label) {
-	$label= "No Change";
-	$selected = "selected";
-      } else {
-	$label = $prefix . $role_label;
-      } 
+    if($member_role == $role_label) {
+      $label = "No Change";
+      $selected = "selected";
+    } else {
+      $label = "Change to " . $role_label;
+    }
     
     $options = $options . "<option $selected value=$role_index>$label</>";
   }
@@ -102,10 +90,8 @@ function compute_member_row_elements($member_details,
 
   $row_elements = array('member_url' => $member_url,
 			'member_role' => $member_role,
-			'member_role_index' => $member_role_index, 
-			'member_actions' => $member_actions,
-			'is_member' => $is_member
-			);
+			'member_role_index' => $member_role_index,
+			'member_actions' => $member_actions);
   return $row_elements;
 }
 
@@ -113,20 +99,12 @@ function compute_member_row_elements($member_details,
 // Slice Members before non-members
 // Lead > Admin > Member > Auditor > Operator
 // 
-function compare_project_member_row_elements($ent1, $ent2)
+function compare_member_row_elements($ent1, $ent2)
 {
   $member_role1 = $ent1['member_role_index'];
-  $is_member1 = $ent1['is_member'];
   $member_role2 = $ent2['member_role_index'];
-  $is_member2 = $ent2['is_member'];
 
-  if ($is_member1 && !$is_member2)
-    return -1;
-  else if (!$is_member1 && $is_member2)
-    return 1;
-  else if (!$is_member1 && !$is_member2)
-    return 0;
-  else if ($member_role1 < $member_role2)
+  if ($member_role1 < $member_role2)
     return -1;
   else if ($member_role1 == $member_role2)
     return 0;
@@ -136,15 +114,12 @@ function compare_project_member_row_elements($ent1, $ent2)
 }
 
 
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 include("tool-lookupids.php");
-
-if (! isset($sa_url)) {
-  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-}
 
 if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -156,20 +131,17 @@ if (! isset($pa_url)) {
 
 
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
-if($slice_id == '' || $slice_id == 'none') {
-  error_log("Slice ID not set");
-}
 if($project_id == '' || $project_id == 'none') {
-  error_log("Slice ID not set");
+  error_log("PROJECT_ID not set");
 }
 
 // Get current list of members
 
-$current_members = get_slice_members($sa_url, $user, $slice_id);
+$current_members = get_project_members($pa_url, $user, $project_id);
 //foreach($current_members as $cm) {
 //  error_log("CM = " . print_r($cm, true));
 //}
@@ -189,49 +161,39 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 //  error_log("APMD = " . print_r($apmd, true));
 //}
 
-// Create a table with:
-// Each project member (name, click to member page)
-// Whether they are in the project or not, and if so what role
-//     Role or NOT MEMBER
-// If in, add "remove" button
-// If not in, add "JOIN" button
-// If in, have a 'role' pull down
-// Then have a 'save' 'cancel' for the whole shebang
-// 
 
 ?>
-<form method="POST" action="do-edit-slice-member.php">
+<form method="POST" action="do-edit-project-member.php">
 <table>
-<tr><th>Project Member</th><th>Slice Role</th><th>Actions</th></tr>
+<tr><th>Project Member</th><th>Project Role</th><th>Actions</th></tr>
 <?php
 
   print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\">\n";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\">\n";
+
 
 // First capture all the row details for the members
-$all_project_member_row_elements = array();
+$all_member_row_elements = array();
 foreach($all_project_member_details as $apmd) {
-  $project_member_row_elements = compute_member_row_elements($apmd,
+  $member_row_elements = compute_member_row_elements($apmd,
 						    $all_project_member_names,
 						    $project_id,
 						    $current_members);
-  $all_project_member_row_elements[] = $project_member_row_elements;
+  $all_member_row_elements[] = $member_row_elements;
+  
 }
 
-// Now sort them. Members first, sorted by role (Lead, admin, 
-// member, auditor, Operator)
-// Then non-members
-usort($all_project_member_row_elements, 'compare_project_member_row_elements');
+// Now sort them by role.
+usort($all_member_row_elements, 'compare_member_row_elements');
 
 // Then put them in a table
-foreach($all_project_member_row_elements as $apmre) {
-  $member_url = $apmre['member_url'];
-  $member_role = $apmre['member_role'];
-  $member_actions = $apmre['member_actions'];
-  $is_member = $apmre['is_member'];
+// Then put them in a table
+foreach($all_member_row_elements as $amre) {
+  $member_url = $amre['member_url'];
+  $member_role = $amre['member_role'];
+  $member_actions = $amre['member_actions'];
+  $is_member = $amre['is_member'];
   print "<tr><td>$member_url</td><td>$member_role</td><td>$member_actions</td></tr>\n";
 }
-
 
 ?>
 </table>
