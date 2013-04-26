@@ -25,7 +25,6 @@
 // Client-side interface to GENI Clearinghouse Project Authority (PA)
 // Consists of these methods:
 //   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose, expiration);
-//   delete_project(pa_url, project_id);
 //   project_ids <= get_projects(pa_url);
 //   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
 //   update_project(pa_url, project_name, project_id, project_email, project_purpose, expiration);
@@ -68,16 +67,6 @@ function create_project($pa_url, $signer, $project_name, $lead_id, $project_purp
   $project_id = put_message($pa_url, $create_project_message, 
 			    $signer->certificate(), $signer->privateKey());
   return $project_id;
-}
-
-// Delete given projectt of given ID
-function delete_project($pa_url, $signer, $project_id)
-{
-  $delete_project_message['operation'] = 'delete_project';
-  $delete_project_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $result = put_message($pa_url, $delete_project_message, 
-			$signer->certificate(), $signer->privateKey());
-  return $result;
 }
 
 // return list of project ids
