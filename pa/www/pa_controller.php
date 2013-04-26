@@ -1107,7 +1107,7 @@ function remove_project_member($args, $message)
     $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
     $attributes = array_merge($pattributes, $mattributes);
     log_event($log_url, $mysigner, $message, $attributes, $signer_id);
-    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $message);
 
   }
 
