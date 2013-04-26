@@ -282,7 +282,7 @@ if($renew_slice_privilege) {
   print "Slice expires on <b>".$slice_expiration."</b>";
   print "</td></tr>";
   print "<tr><td>\n";
-  print "<form method='GET' action=\"do-renew-slice.php\">";
+  print "<form method='GET' action=\"do-renew.php\">";
 
   print "Renew ";
   print "<div>";
