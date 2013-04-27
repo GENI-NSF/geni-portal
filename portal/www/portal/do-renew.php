@@ -103,8 +103,16 @@ if ($renew_slice){
 if (!$res) {
   $res = "FAILed to renew slice (requested $desired_expiration, was $old_slice_expiration)";
   $slice_expiration = $old_slice_expiration;
-  
+  $msg = $res;
+  $obj = array();
+  $success = array();
+  $fail = array();  
 } else {
+  $msg = $res[0];
+  $obj = $res[1];
+  $success = $obj[0];
+  $fail = $obj[1];
+
   $renewed_slice = true;
   // get the new slice expiration
   $res = "Renewed slice (requested $desired_expiration, was $old_slice_expiration)";
@@ -132,44 +140,6 @@ if (! isset($ams) || is_null($ams)) {
   }
 }
 
-// Get the slice credential from the SA
-$slice_credential = get_slice_credential($sa_url, $user, $slice_id);
-  
-// Get the slice URN via the SA
-$slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-error_log("Renew slice urn = $slice_urn");
-
-if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
-  error_log("Found no AMs!");
-  $slivers_output = "No AMs registered.";
-} else {
-  $slivers_output = "";
-  $am_urls = array();
-  foreach ($ams as $am) {
-    if (is_array($am)) {
-      if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
-	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-      } else {
-	error_log("Malformed array of AM URLs?");
-	continue;
-      }
-    } else {
-      $am_url = $am;
-    }
-    $am_urls[] = $am_url; 
-    error_log("SLIVER_RENEW AM_URL = " . $am_url);
-  }
-  // Call renew sliver at the AM
-  $retVal = renew_sliver($am_urls, $user, $slice_credential,
-			 $slice_urn, $rfc3339_expiration);
-  
-  error_log("RenewSliver output = " . $retVal);
-  
-}
-$msg = $retVal[0];
-$obj = $retVal[1];
-$success = $obj[0];
-$fail = $obj[1];
 }
 
 $header = "Renewing ";
@@ -182,31 +152,44 @@ if ($renew_slice) {
 }
 $header = " on slice: $slice_name";
 
-
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
+?>
+
+<script src="amstatus.js"></script>
+<script>
+var slice= "<?php echo $slice_id ?>";
+var am_id= "<?php echo $am_id ?>";
+var sliver_expiration= "<?php echo $rfc3339_expiration ?>";
+
+<?php
+if ($renew_sliver and (($renew_slice and $renewed_slice) or !$renew_slice)) {
+?>
+   $(document).ready(build_renew_table);
+<?php
+}
+?>
+</script>
+
+<?php
 print "<h2>$header</h2>\n";
-
-print "<div class='msg'>";
-// print_r($msg);
-print "</div>";
-
+print "<div class='resources' id='prettyxml'>";
 if ($renew_slice){
-   print "<p>Renewed slice until: $slice_expiration</p>";
+   print "<p id='slicerenew' >Renewed slice until: $slice_expiration</p>";
 }
 if ($renew_sliver){
-   print "<p>Renewing slivers...</p>";
+   print "<p id='renew' style='display:block;'><i>Renewing resources...</i></p>";	
 
-   print "<div>Renewed slivers at:</div>";
-   print "<div>";
-   print_list( $success );
-   print "</div>";
+   print "<p id='renewsummary' style='display:none;'><i>Issued renew resources at <span id='attempted'>0</span> of <span id='total'>0</span> aggregate.</i></p>";
 
-   print "<div>Did not renew slivers at:</div>";
-   print "<div>";
-   print_list( $fail );
-   print "</div>";
+   print "<div id='renewsliverlabel' style='display:none;'>Renewed resources at:</div>";
+   print "<div id='renewsliver'><ul id='renewsliver'></ul></div>";	
+
+   print "<div id='renewerrorlabel' style='display:none;'>No resources renewed at:</div>";
+   print "<div id='renewerror'><ul id='renewerror'></ul></div>";
 }
+print "</div>\n";
+
 
 print "<hr/>";
 print "<a href='slices.php'>Back to All slices</a>";
