@@ -103,16 +103,7 @@ if ($renew_slice){
 if (!$res) {
   $res = "FAILed to renew slice (requested $desired_expiration, was $old_slice_expiration)";
   $slice_expiration = $old_slice_expiration;
-  $msg = $res;
-  $obj = array();
-  $success = array();
-  $fail = array();  
 } else {
-  $msg = $res[0];
-  $obj = $res[1];
-  $success = $obj[0];
-  $fail = $obj[1];
-
   $renewed_slice = true;
   // get the new slice expiration
   $res = "Renewed slice (requested $desired_expiration, was $old_slice_expiration)";
@@ -154,6 +145,9 @@ $header = " on slice: $slice_name";
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
+if (! isset($am_id) or is_null($am_id)) {
+  $am_id = "";
+}
 ?>
 
 <script src="amstatus.js"></script>
