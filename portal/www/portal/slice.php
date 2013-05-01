@@ -70,6 +70,19 @@ if (! isset($all_ams)) {
 
 // print_r( $all_ams);
 
+// For comparing member records by role (low roles come before high roles)
+function compare_members_by_role($mem1, $mem2)
+{
+  $role1 = $mem1[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+  $role2 = $mem2[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+  if ($role1 < $role2)
+    return -1;
+  else if ($role1 > $role2) 
+    return 1;
+  else return 0;
+  
+}
+
 
 function build_agg_table_on_slicepg() 
 {
@@ -214,6 +227,11 @@ $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
 $add_slivers_disabled = "";
 if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
 
+$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
+						   CS_CONTEXT_TYPE::SLICE, $slice_id);
+$get_slice_credential_disable_buttons = "";
+if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
+
 // String to disable button or other active element
 $disabled = "disabled = " . '"' . "disabled" . '"'; 
 
@@ -264,8 +282,8 @@ print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 print "<tr><td rowspan='2'>\n";
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
 
-print "<button onClick=\"window.location='$status_url'\" $disable_buttons_str><b>Resource Status</b></button>\n";
-print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $disable_buttons_str><b>Details</b></button>\n";
+print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
+print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
@@ -362,7 +380,7 @@ $edit_members_disabled = "";
 if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   $edit_members_disabled = $disabled;
 }
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit</b></button>";
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Membership</b></button>";
 ?>
 
 <table>
@@ -371,6 +389,7 @@ echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_memb
 		<th>Roles</th>
 	</tr>
 	<?php
+usort($members, 'compare_members_by_role');
 foreach($members as $member) {
 
 

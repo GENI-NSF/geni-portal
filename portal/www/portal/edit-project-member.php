@@ -113,8 +113,6 @@ function compare_member_row_elements($ent1, $ent2)
 
 }
 
-
-
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -161,6 +159,7 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 //  error_log("APMD = " . print_r($apmd, true));
 //}
 
+print "<h1>GENI Project: " . $project_name . "</h1>";
 
 ?>
 <form method="POST" action="do-edit-project-member.php">

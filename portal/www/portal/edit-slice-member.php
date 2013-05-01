@@ -199,6 +199,8 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 // Then have a 'save' 'cancel' for the whole shebang
 // 
 
+print "<h1>GENI Slice: " . $slice_name . "</h1>";
+
 ?>
 <form method="POST" action="do-edit-slice-member.php">
 <table>
