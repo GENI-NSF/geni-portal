@@ -34,8 +34,8 @@
 //   add_slice_member(sa_url, project_id, member_id, role)
 //   remove_slice_member(sa_url, slice_id, member_id)
 //   change_slice_member_role(sa_url, slice_id, member_id, role)
-//   get_slice_members(pa_url, slice_id, role=null) // null => Any
-//   get_slices_for_member(pa_url, member_id, is_member, role=null)
+//   get_slice_members(sa_url, slice_id, role=null) // null => Any
+//   get_slices_for_member(sa_url, member_id, is_member, role=null)
 //   lookup_slice_details(sa_url, slice_uuids)
 //   get_slices_for_projects(sa_url, project_uuids)
 
