@@ -33,6 +33,8 @@ require_once('pa_constants.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('ma_client.php');
+require_once("sa_client.php");
+require_once("sa_constants.php");
 require_once('cs_client.php');
 require_once('logging_client.php');
 require_once('cert_utils.php');
@@ -60,6 +62,7 @@ include_once('/etc/geni-ch/settings.php');
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 function pa_debug($msg)
@@ -321,6 +324,8 @@ class PAContextGuard implements Guard
 				    $this->message->signerUuid(),
 				    $this->action, $this->context_type,
 				    $this->context);
+    //    error_log("PAContextGuard.evaluate.result = " . print_r($result, true));
+    $result = $result[RESPONSE_ARGUMENT::VALUE];
     $result_type = gettype($result);
     geni_syslog(GENI_SYSLOG_PREFIX::PA, "PAContextGuard got result of type $result_type");
     geni_syslog(GENI_SYSLOG_PREFIX::PA,
@@ -406,6 +411,10 @@ function create_project($args, $message)
   // Ensure that designated lead ID is allowed to be a project lead
   $permitted = request_authorization($cs_url, $mysigner, $lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
+  if ($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
     // FIXME: Need a syslog for this?
@@ -472,7 +481,12 @@ function create_project($args, $message)
 
   $ids = array();
   $ids[] = $lead_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $lead_name = $names[$lead_id];
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
@@ -672,7 +686,12 @@ function update_project($args, $message)
   $signer_id = $message->signerUuid();
   $ids = array();
   $ids[] = $signer_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $signer_name = $names[$signer_id];
 
   // Need to look up the project name
@@ -750,6 +769,10 @@ function change_lead($args, $message)
   global $mysigner;
   $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
+  if($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
@@ -788,8 +811,8 @@ function change_lead($args, $message)
           PA_ARGUMENT::MEMBER_ID => $previous_lead_id,
           PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
           $message);
-
-  // FIXME: Check for chngres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE
+  if ($chngres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $chngres;
 
   global $log_url;
   global $mysigner;
@@ -800,7 +823,12 @@ function change_lead($args, $message)
   $ids[] = $signer_id;
   $ids[] = $new_lead_id;
   $ids[] = $previous_lead_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $signer_name = $names[$signer_id];
   $new_lead_name = $names[$new_lead_id];
   $old_lead_name = $names[$previous_lead_id];
@@ -943,7 +971,10 @@ function add_project_member($args, $message)
   // If successful, add an assertion of the role's privileges within the CS store
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
-    create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $ca_result = create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, 
+				  CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if($ca_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $ca_result;
   }
 
   // Log adding the member
@@ -951,7 +982,12 @@ function add_project_member($args, $message)
   $ids = array();
   $ids[] = $signer_id;
   $ids[] = $member_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $signer_name = $names[$signer_id];
   $member_name = $names[$member_id];
 
@@ -986,6 +1022,104 @@ function add_project_member($args, $message)
     $msg);
   }
   return $result;
+}
+
+// Remove member from slices to which he belongs in given project
+// If member is lead of such a slice, replace with project lead
+function remove_project_member_from_slices($member_id, $project_id)
+{
+  global $sa_url;
+  global $mysigner;
+
+  // Get slices for member for project
+  $slices = lookup_slices($sa_url, $mysigner, $project_id, $member_id);
+  if ($slices[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
+    return $slices;
+  $slices = $slices[RESPONSE_ARGUMENT::VALUE];
+
+  // Get roles of member within slices
+  $member_slice_roles = get_slices_for_member($sa_url, $mysigner, $member_id, true);
+  if ($member_slice_roles[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
+    return $member_slice_roles;
+  $member_slice_roles = $member_slice_roles[RESPONSE_ARGUMENT::VALUE];
+
+  //  error_log("SLICES = " . print_r($slices, true));
+  //  error_log("MEMBER_SLICE_ROLES = " . print_r($member_slice_roles, true));
+
+  $slices_to_replace_lead = array();
+
+  // For each project slice, see what role member has.
+  foreach($slices as $slice) {
+    $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    $project_contains_slice = false;
+    foreach($member_slice_roles as $member_slice_role) {
+      $member_slice_id = $member_slice_role[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+      $role = $member_slice_role[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+      if($slice_id == $member_slice_id) {
+	error_log("Need to remove " . $member_id . " from slice " . $slice_id . " role " . $role);
+	$rsm_result = remove_slice_member($sa_url, $mysigner, $slice_id, $member_id);
+	if ($rsm_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  return $rsm_result;
+	if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
+	  error_log("Need to replace lead of slice " . $slice_id);
+	  $slices_to_replace_lead[] = $slice_id;
+	}
+      }
+    }
+  }
+
+  // If we need to replace some leads, get the project lead
+  // and the list of slices to which lead belongs. If doesn't belong, add as lead
+  // Otherwise, change role to lead
+  if (count($slices_to_replace_lead) > 0) {
+    // Get the ID of the project lead
+    $project_members_args[PA_ARGUMENT::PROJECT_ID] = $project_id;
+
+    $project_members = get_project_members($project_members_args);
+    if ($project_members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $project_members;
+    $project_members = $project_members[RESPONSE_ARGUMENT::VALUE];
+
+    $project_lead_id = null;
+    foreach($project_members as $project_member) {
+      $role = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+      $member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+      if($role == CS_ATTRIBUTE_TYPE::LEAD) {
+	$project_lead_id = $member_id;
+	break;
+      }
+    }
+
+    // Get the ID's of slices in this project for which project lead is member
+    $project_lead_slices = lookup_slices($sa_url, $mysigner, $project_id, $project_lead_id);
+    if($project_lead_slices[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $proejct_lead_slices;
+    $project_lead_slices = $project_lead_slices[RESPONSE_ARGUMENT::VALUE];
+
+    $slices_for_project_lead = array();
+    foreach($project_lead_slices as $project_lead_slice) {
+      $slice_id = $project_lead_slice[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+      $slices_for_project_lead[] = $slice_id;
+    }
+
+    foreach($slices_to_replace_lead as $slice_id) {
+      $lead_in_slice = in_array($slice_id, $slices_for_project_lead);
+      if($lead_in_slice) {
+	// If project lead is in slice, change to lead in slice
+	$csmr_result = change_slice_member_role($sa_url, $mysigner, $slice_id, $project_lead_id, 
+						CS_ATTRIBUTE_TYPE::LEAD);
+	if ($csmr_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  return $csmr_result;
+	
+      } else {
+	// Otherwise add member as lead to slice
+	$asm_result = add_slice_member($sa_url, $mysigner, $slice_id, $project_lead_id, 
+				       CS_ATTRIBUTE_TYPE::LEAD);
+	if ($asm_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  return $asm_result;
+      }
+    }
+  }
 }
 
 // Remove a member from given project
@@ -1052,6 +1186,11 @@ function remove_project_member($args, $message)
             "Cannot remove LEAD from project: " . $project_id);
   }
 
+
+  // Remove member from all slices. 
+  // If member is lead of a given slice, replace with project lead
+  remove_project_member_from_slices($member_id, $project_id);
+
   // FIXME: Stop if the member is the LEAD on a non-expired slice?
 
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME
@@ -1070,12 +1209,18 @@ function remove_project_member($args, $message)
 
     $membership_assertions = query_assertions($cs_url, $mysigner,
             $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if($membership_assertions[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $membership_assertions;
+    $membership_assertions = $membership_assertions[RESPONSE_ARGUMENT::VALUE];
+
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $mysigner, $assertion_id);
+      $da_result = delete_assertion($cs_url, $mysigner, $assertion_id);
+      if ($da_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	return $da_result;
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
 
@@ -1086,7 +1231,12 @@ function remove_project_member($args, $message)
     $ids = array();
     $ids[] = $signer_id;
     $ids[] = $member_id;
+
     $names = lookup_member_names($ma_url, $mysigner, $ids);
+    if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $names;
+    $names = $names[RESPONSE_ARGUMENT::VALUE];
+
     $signer_name = $names[$signer_id];
     $member_name = $names[$member_id];
 
@@ -1207,18 +1357,28 @@ function change_member_role($args, $message)
     $signer_id = $message->signerUuid();
 
     // Remove previous CS assertions about the member in this project
-    $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, 
+					      CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if($membership_assertions[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $emembership_assertions;
+    $membership_assertions = $membership_assertions[RESPONSE_ARGUMENT::VALUE];
+
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $mysigner, $assertion_id);
+      $da_result = delete_assertion($cs_url, $mysigner, $assertion_id);
+      if ($da_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	return $da_result;
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
 
     // Create new assertion for member in this role
-    create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $ca_result = create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, 
+				  CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if ($ca_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $ca_result;
 
     $project_name = $project_id;
     $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
@@ -1236,7 +1396,12 @@ function change_member_role($args, $message)
     $ids = array();
     $ids[] = $signer_id;
     $ids[] = $member_id;
+
     $names = lookup_member_names($ma_url, $mysigner, $ids);
+    if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $names;
+    $names = $names[RESPONSE_ARGUMENT::VALUE];
+
     $signer_name = $names[$signer_id];
     $member_name = $names[$member_id];
     $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
@@ -1458,6 +1623,15 @@ function user_context_query($account_id)
           . " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($account_id, 'text');
 
 }
+
+// Since the PA calls SA and MA functions, we need to look 
+// at the result codes ourselves
+function pa_message_result_handler($result) 
+{
+  //  error_log("PA_MESSAGE_RESULT_HANDLER.result = " . print_r($result, true));
+  return $result;
+}
+
 require_once('rq_controller.php');
 
 // FIXME: Should not be hardcorded
@@ -1465,8 +1639,9 @@ $mycertfile = '/usr/share/geni-ch/pa/pa-cert.pem';
 $mykeyfile = '/usr/share/geni-ch/pa/pa-key.pem';
 $mysigner = new Signer($mycertfile, $mykeyfile);
 $guard_factory = new PAGuardFactory($cs_url);
+$put_message_result_handler = 'pa_message_result_handler';
+//error_log("PA_CONTROLLER.PUT_MESSAGE_RESULT_HANDLER = " . $put_message_result_handler);
 handle_message("PA", $cs_url, default_cacerts(),
 $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
-
 
 ?>

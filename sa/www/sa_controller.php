@@ -212,6 +212,32 @@ class SAGuardFactory implements GuardFactory
     } else {
       error_log("SA: No guard producers for action \"$action\"");
     }
+
+    // Allow another authority to perform actions on behalf of users
+    // *** FIXME: Should be replaced with speaks-for logic ***
+    if (count($result) > 0) {
+      $result[] = new SignerAuthorityGuard($message);
+      $result = array(new OrGuard($result));
+    }
+    return $result;
+  }
+}
+
+/**
+ * This is more of a demonstration guard than anything else.
+ * It really isn't an appropriate test, but gets the point
+ * across that a user can't call certain methods, but an
+ * authority could.
+ */
+class SignerAuthorityGuard implements Guard
+{
+  public function __construct($message) {
+    $this->message = $message;
+  }
+
+  public function evaluate() {
+    $result =  (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+    //    error_log("SAG.evaluate : " . print_r($result, true) . " " . $this->message->signerUrn());
     return $result;
   }
 }

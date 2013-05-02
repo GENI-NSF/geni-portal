@@ -186,7 +186,7 @@ function modify_project_membership($project_id, $member_id, $selection_id,
     $role = $project_members_by_role[$member_id];
     if ($selection_id == 0) {
       // Remove this member from this project and associated slices
-      remove_project_member_from_project_and_slices($project_id, $member_id, $project_members_by_role);
+      remove_project_member($pa_url, $user, $project_id, $member_id);
     } else if ($selection_id != $role) {
       // Change the role of this member in this project
       change_member_role($pa_url, $user, $project_id, $member_id, $selection_id);

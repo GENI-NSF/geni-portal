@@ -189,6 +189,8 @@ function add_project_member($pa_url, $signer, $project_id, $member_id, $role)
 }
 
 // Remove a member from given project 
+// Also remove from associated slices if any
+// If the member is the lead of such slices, make the project lead the slice lead
 function remove_project_member($pa_url, $signer, $project_id, $member_id)
 {
   $remove_project_member_message['operation'] = 'remove_project_member';
