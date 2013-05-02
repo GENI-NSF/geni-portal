@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = example lib portal kmtool sa sr authz cs ma pa logging \
+SUBDIRS = etc lib portal kmtool sa sr authz cs ma pa logging \
 	  ca openid bin idp
 
 ## In more modern versions of automake we can use
