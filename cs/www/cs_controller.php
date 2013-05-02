@@ -450,7 +450,7 @@ function is_operator($principal, $action, $context_type)
   $rows = db_fetch_rows($sql, "CS_AUTH");
   $code = $rows[RESPONSE_ARGUMENT::CODE];
   $rows = $rows[RESPONSE_ARGUMENT::VALUE];
-  error_log("CS.is_operator got response $code");
+  //  error_log("CS.is_operator got response $code");
   if ($code == RESPONSE_ERROR::NONE) {
     //    error_log("CS.is_operator response error is none");
   } else {
