@@ -339,6 +339,16 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
   return $result;
 }
 
+// Lookup all members with given email
+// Return dictionary email => [member_ids]*
+function lookup_members_by_email($ma_url, $signer, $member_emails)
+{
+  $msg['operation'] = 'lookup_members_by_email';
+  $msg[MA_ARGUMENT::MEMBER_EMAILS] = $member_emails;
+  $result = put_message($ma_url, $msg, $signer->certificate, $signer->privateKey());
+  return $result;
+}
+
 
 
 ?>

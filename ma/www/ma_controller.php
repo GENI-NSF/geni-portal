@@ -74,6 +74,7 @@ $ma_signer = new Signer($ma_cert_file, $ma_key_file);
  *   add_member_privilege(member_id, privilege_id)
  *   revoke_member_privilege(member_id, privilege_id)
  *   lookup_member_details(member_uuids)
+ *   lookup_member_by_email(member_emails)
  */
 
 
@@ -757,6 +758,43 @@ function lookup_member_names($args)
   //  error_log("NAME_INFO = " . print_r($names, true));
   return generate_response(RESPONSE_ERROR::NONE, $names, "");
 }
+
+/*
+ * For each email in list, return list of member UUID's with that email
+ * return dictionary [email => list_of_UUIDs]
+ */
+function lookup_members_by_email($args, $message)
+{
+  global $MA_MEMBER_ATTRIBUTE_TABLENAME;
+  $email_args = $args[MA_ARGUMENT::MEMBER_EMAILS];
+  $emails = "";
+  foreach($email_args as $email) {
+    if ($emails != "") $emails = $emails . ", ";
+    $emails = $emails . "'" . $email . "'";
+  }
+  $sql = "select " . MA_ATTRIBUTE::MEMBER_ID . ", " . MA_ATTRIBUTE::VALUE . 
+    " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME . 
+    " where " . MA_ATTRIBUTE::NAME . " = '" . MA_ATTRIBUTE_NAME::EMAIL_ADDRESS . "'" . 
+    " and " . MA_ATTRIBUTE::VALUE . " in (" . $emails . ")";
+  $rows = db_fetch_rows($sql);
+  if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $rows;
+
+  $dict = array();
+  $rows = $rows[RESPONSE_ARGUMENT::VALUE];
+  //  error_log("ROWS = " . print_r($rows, true));
+  foreach ($rows as $row) {
+    $email = $row[MA_ATTRIBUTE::VALUE];
+    $member_id = $row[MA_ATTRIBUTE::MEMBER_ID];
+    if (!array_key_exists($email, $dict)) 
+      $dict[$email] = array();
+    $dict[$email][] = $member_id;
+  }
+
+  return generate_response(RESPONSE_ERROR::NONE, $dict, "");
+
+}
+
 
 
 /**

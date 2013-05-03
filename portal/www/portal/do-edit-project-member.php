@@ -199,6 +199,7 @@ function modify_project_membership($project_id, $member_id, $selection_id,
   }
 }
 
+error_log("REQUEST = " . print_r($_REQUEST, true));
 $project_id = $_REQUEST['project_id'];
 unset($_REQUEST['project_id']);
 $project_members = get_project_members($pa_url, $user, $project_id);

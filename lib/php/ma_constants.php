@@ -44,10 +44,12 @@ class MA_ARGUMENT {
   const CERTIFICATE = "certificate";
   const PRIVATE_KEY = "private_key";
   const MEMBER_UUIDS = "member_uuids";
+  const MEMBER_EMAILS = "member_emails";
 }
 
 
 class MA_ATTRIBUTE {
+  const MEMBER_ID = "member_id";
   const NAME = "name";
   const VALUE = "value";
   const SELF_ASSERTED = "self_asserted";

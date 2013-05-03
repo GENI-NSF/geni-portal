@@ -244,7 +244,7 @@ print "<br/>\n";
 print "<input type=\"submit\" value=\"$submit_label\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 ?>
-
+</form>
 <?php
 
 include("footer.php");
