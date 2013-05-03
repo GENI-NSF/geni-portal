@@ -31,3 +31,5 @@ nobase_dist_svcdata_DATA = \
 	php/sr_client.php \
 	php/sr_constants.php \
 	php/util.php
+
+cleandb:
