@@ -9,6 +9,8 @@ dist_bin_SCRIPTS = \
 		gmoc_list_slices \
 		geni-add-trusted-tool \
 		geni-add-member-privilege \
+		geni-add-project-member \
+		geni-remove-project-member \
 		assert_email.sh \
 		shib_idp_users
 
