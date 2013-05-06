@@ -3,4 +3,5 @@ AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_FILES([Makefile etc/Makefile bin/Makefile])
 AC_CONFIG_FILES([sr/Makefile lib/Makefile authz/Makefile cs/Makefile])
 AC_CONFIG_FILES([logging/Makefile ma/Makefile pa/Makefile sa/Makefile])
+AC_CONFIG_FILES([kmtool/Makefile])
 AC_OUTPUT
