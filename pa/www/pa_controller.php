@@ -57,6 +57,8 @@ include_once('/etc/geni-ch/settings.php');
  *   get_project_members(pa_url, project_id, role=null) // null => Any
  *   get_projects_for_member(pa_url, member_id, is_member, role=null)
  *   lookup_project_details(pa_url, project_uuids)
+ *   invite_member(pa_url, project_id, role, expiration)
+ *   accept_invitation(pa_url, invite_id)
  **/
 
 $sr_url = get_sr_url();
@@ -187,7 +189,9 @@ class PAGuardFactory implements GuardFactory
 	    'get_requests_by_user' => array(), // Unguarded
 	    'get_pending_requests_for_user' => array(), // Unguarded
 	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
-	    'get_request_by_id' => array() // Unguarded
+	    'get_request_by_id' => array(), // Unguarded
+	    "invite_member" => array("project_guard"),
+	    "accept_invitation" => array() // unguarded
             );
 
   public function __construct($cs_url) {
@@ -1603,6 +1607,126 @@ function lookup_project_details($args)
     //    error_log("lookup_project_details: " . $sql);
     $rows = db_fetch_rows($sql);
     return $rows;
+
+}
+
+// Support for generating and accepting invitations
+
+// Remove expired invitations
+function expire_project_invitations()
+{
+  global $PA_PROJECT_MEMBER_INVITATION_TABLENAME;
+
+  $conn = db_conn();
+
+  $now = new DateTime();
+
+  $sql = "delete from " . $PA_PROJECT_MEMBER_INVITATION_TABLENAME . 
+    " where " . PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION . " < " . 
+    $conn->quote(db_date_format($now), 'timestamp');
+
+  $result = db_execute_statement($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    error_log("EXPIRE_PROJECT_INVITES ERROR : " . print_r($result, true));
+
+}
+
+// Generate an invitation for a given (unknown) member for a given project/role
+// If they hit the accept email link and confirmation button within the expiration window,
+// (and have authenticated) they are added to the project
+function invite_member($args, $message)
+{
+  global $project_default_invitation_expiration_hours;
+  global $PA_PROJECT_MEMBER_INVITATION_TABLENAME;
+
+  expire_project_invitations();
+
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+
+  $now = new DateTime();
+  $expiration = get_future_date(0, $project_default_invitation_expiration_hours);
+  $invite_id = make_uuid();
+
+  $conn = db_conn();
+
+  $sql = "insert into " .   $PA_PROJECT_MEMBER_INVITATION_TABLENAME . "(" . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::PROJECT_ID . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::ROLE . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION . ") VALUES (" . 
+    $conn->quote($invite_id, 'text') . ", " . 
+    $conn->quote($project_id, 'text') . ", " . 
+    $conn->quote($role, 'integer') . ", " . 
+    $conn->quote(db_date_format($expiration), 'timestamp') . ") ";
+
+  $result = db_execute_statement($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $result;
+
+  $result = array(PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID => $invite_id,
+		  PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION => $expiration);
+		  
+  return generate_response(RESPONSE_ERROR::NONE, $result, "");
+
+}
+
+function accept_invitation($args, $message)
+{
+
+  expire_project_invitations();
+
+  $conn = db_conn();
+
+  $invite_id = $args[PA_ARGUMENT::INVITATION_ID];
+  $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+
+  // Grab invite details
+  global $PA_PROJECT_MEMBER_INVITATION_TABLENAME;
+  $sql = "select " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::PROJECT_ID . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::ROLE . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION . 
+    " from " . $PA_PROJECT_MEMBER_INVITATION_TABLENAME .
+    " where "   . PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID . " = " . 
+    $conn->quote($invite_id, 'text');
+
+  $result = db_fetch_rows($sql);
+  if($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $result;
+  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  error_log("ROWS = " . print_r($rows, true));
+  if(count($rows) == 0) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Invitation has been deleted.");
+  }
+
+  $row = $rows[0];
+  $project_id = $row[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::PROJECT_ID];
+  $role = $row[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::ROLE];
+  $expiration = new DateTime($row[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION]);
+
+  // If expired, return error
+  $now = new DateTime();
+  if ($expiration < $now) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Invitation has expired");
+  }
+
+  // Otherwise, grab project_id, add to member project
+  $addres = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id, 
+				     PA_ARGUMENT::MEMBER_ID => $member_id, 
+				     PA_ARGUMENT::ROLE_TYPE => $role), 
+			       $message);
+
+  if ($addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $addres;
+
+  // Delete the invitation
+  $sql = "delete from " . 
+    $PA_PROJECT_MEMBER_INVITATION_TABLENAME .
+    " where "   . PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID . " = " . 
+    $conn->quote($invite_id, 'text');
+  $result = db_fetch_rows($sql);
+  return $result;
 
 }
 

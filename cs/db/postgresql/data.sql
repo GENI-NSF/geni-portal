@@ -71,6 +71,8 @@ INSERT INTO cs_action (name, privilege, context_type) values ('remove_project_me
 INSERT INTO cs_action (name, privilege, context_type) values ('change_member_role', 1, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('get_project_members', 2, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('get_projects_for_member', 2, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('invite_member', 1, 1);
+
 
 -- PORTAL 'admin' actions: These are catch-all privileges in a particular context
 -- and should go away when we refactor

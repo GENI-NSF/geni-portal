@@ -265,5 +265,32 @@ function lookup_project_details($pa_url, $signer, $project_uuids)
   return $results2;
 }
 
+// Routines to invite and accept invivations for members to projects
+
+// Generate an invitation for a (not yet identified) member
+// to join a project
+// return the invitation ID and expiration, `
+function invite_member($pa_url, $signer, $project_id, $role)
+{
+  $invite_member_message['operation'] = 'invite_member';
+  $invite_member_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  $invite_member_message[PA_ARGUMENT::ROLE_TYPE] = $role;
+  $result = put_message($pa_url, $invite_member_message, 
+		       $signer->certificate(), $signer->privateKey());
+  return $result;
+}
+
+// Accept an invitation
+function accept_invitation($pa_url, $signer, $invitation_id)
+{
+  global $user;
+  $accept_invitation_message['operation'] = 'accept_invitation';
+  $accept_invitation_message[PA_ARGUMENT::INVITATION_ID] = $invitation_id;
+  $accept_invitation_message[PA_ARGUMENT::MEMBER_ID] = $user->account_id;
+  $result = put_message($pa_url, $accept_invitation_message, 
+			$signer->certificate(), $signer->privateKey());
+  return $result;
+}
+
 
 ?>
