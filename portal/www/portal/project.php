@@ -191,12 +191,6 @@ include("tool-slices.php");
 
 <?php
 
-$edit_members_disabled = "";
-if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  $edit_members_disabled = $disabled;
-}
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Membership</b></button>";
-
 if ($num_members==1) {
    print "<p><i>There is <b>1</b> member in this project.</i></p>";
 } else {
@@ -244,11 +238,23 @@ $my_role = CS_ATTRIBUTE_TYPE::AUDITOR;
 
 <?php
 
+$edit_members_disabled = "";
+if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  $edit_members_disabled = $disabled;
+}
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Manage Current Project Members</b></button>";
+
+$upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
+
+print "<br/><h3>Add new project members</h3>";
+print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
+
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  print "<br/><h3>Invite new project members</h3>\n";
+  //  print "<br/><h3>Invite new project members</h3>\n";
+  print "<br/>";
   print "<button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
-  print "\"><b>Invite New Project Members</b></button><br/>\n";
+  print "\"><b>Invite New Members</b></button><br/>\n";
   
   print "<br/>\n";
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {

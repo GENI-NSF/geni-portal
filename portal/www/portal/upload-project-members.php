@@ -134,7 +134,7 @@ if ($error != NULL || count($_POST) == 0) {
 
   print "<h2>Upload Project Members</h2>";
   print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
-  print '  <label for="file">RSpec File:</label>';
+  print '  <label for="file">CSV File:</label>';
   print '  <input type="file" name="file" id="file" />';
   print '  <br/><br/>';
   print '  <input type="submit" name="submit" value="Upload"/>';
@@ -188,7 +188,7 @@ foreach($project_members as $project_member) {
 print '<form method="POST" action="do-upload-project-members.php">';
 print '<table>';
 
-print '<tr><th>Candidate Name</th><th>Candidate Email</th><th>Recognized</th><th>Member</th><th>Actions</th></tr>';
+print '<tr><th>Candidate Name</th><th>Candidate Email</th><th>Recognized</th><th>Actions</th></tr>';
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 
 
@@ -219,19 +219,19 @@ foreach($names_by_email as $email => $name) {
   }
 
   $is_member = ($member_id != null && in_array($member_id, $project_member_ids));
-  $is_member_label = "N";
   if ($is_member) {
-    $is_member_label = "Y";
+    $member_actions = "Already Member";
+  } else {
+    $member_options = compute_member_options($email, $member_id, $name,$role, $is_member);
+    $email_name = $email . ":" . $name;
+    // Convert spaces to tabs, convert periods to commas
+    $email_name = str_replace(".", ",", $email_name);
+    $email_name = str_replace(" ", "\t", $email_name);
+    $member_actions = "<select name=\"$email_name\">$member_options</select>";
   }
     
-  $member_options = compute_member_options($email, $member_id, $name,$role, $is_member);
-  $email_name = $email . ":" . $name;
-  // Convert spaces to tabs, convert periods to commas
-  $email_name = str_replace(".", ",", $email_name);
-  $email_name = str_replace(" ", "\t", $email_name);
-  $member_actions = "<select name=\"$email_name\">$member_options</select>";
   //  error_log("MA = " . $member_actions);
-  print "<tr><td>$name</td><td>$email</td><td>$recognized</td><td>$is_member_label</td><td>$member_actions</td></tr>\n";
+  print "<tr><td>$name</td><td>$email</td><td>$recognized</td><td>$member_actions</td></tr>\n";
   //  error_log("EMAIL = " . $email . " NAME = " . $name);
 }
 
