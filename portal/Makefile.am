@@ -1,14 +1,12 @@
 # XXX Do we still need SocketPool.swf?
 # XXX Do we still need playerProductInstall.swf?
-# XXX Rename gcf.d/gcf.ini -> gcf.d/example-gcf.ini
+# XXX Rename gcf.d/gcf.ini -> gcf.d/example-gcf.ini (see below)
 # XXX Do we still need omni.ini (installed in the old Makefile)?
 
 svcdatadir = $(pkgdatadir)/portal
 gcfsrcdir = $(svcdatadir)/gcf/src
 gcfsrcgenidir = $(gcfsrcdir)/geni
-pkgsysconfdir = $(sysconfdir)/geni-ch
 
-dist_pkgsysconf_DATA = gcf.d/example-gcf.ini
 # This is silly -- easier to rename the file in git
 # TODO: rename the file in git and remove this extraneous target
 gcf.d/example-gcf.ini:
@@ -33,7 +31,8 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-2.sql \
 	db/postgresql/update-3.sql \
 	db/postgresql/update-4.sql \
-	db/postgresql/update-5.sql
+	db/postgresql/update-5.sql \
+	gcf.d/example-gcf.ini
 
 #----------------------------------------------------
 # GCF related files that overwrite the installed gcf
