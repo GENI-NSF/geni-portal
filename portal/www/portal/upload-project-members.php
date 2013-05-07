@@ -58,7 +58,7 @@ function compute_member_options($email, $member_id, $member_name, $requested_rol
     }
   }
 
-  //  error_log("Requested role : " . $requested_role . " | " . $requested_role_index . " | " . $member_id . " | " . $email);
+  //  error_log("Requested role : " . $member_name . " | " . $requested_role . " | " . $requested_role_index . " | " . $member_id . " | " . $email);
 
   $options = "";
   $label = "Invite";
@@ -208,6 +208,9 @@ foreach($lines as $line) {
 
 $members_by_email = lookup_members_by_email($ma_url, $user, array_keys($names_by_email));
 
+error_log("NBE = " . print_r($names_by_email, true));
+error_log("RBE = " . print_r($roles_by_email, true));
+
 foreach($names_by_email as $email => $name) {
   $member_id = null;
   $recognized = "No";
@@ -215,6 +218,8 @@ foreach($names_by_email as $email => $name) {
   if (array_key_exists($email, $members_by_email) && count($members_by_email[$email] == 1))  {
     $member_id = $members_by_email[$email][0];
     $recognized = "Yes";
+  }
+  if (array_key_exists($email, $roles_by_email) && count($roles_by_email[$email] == 1)) {
     $role = $roles_by_email[$email];
   }
 
