@@ -124,15 +124,8 @@ if ($error != NULL || count($_POST) == 0) {
     . " style=\"background: #dddddd;font-weight: bold\">\n";
   echo "$error";
   echo "</div>\n";
-
-  print "Upload a CSV (comma-separated-values) file of candidates members for your project.<br/><br/>";
-  print "File format:<br/>";
-  print "<i>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</i><br/>";
-  print "Example:<br/>";
-  print "<i>jsmith@geni.net, Joe Smith, Admin</i><br/>";
-  print "<i>mbrown@geni.net, Mary Brown</i><br/><br/>";
-
   print "<h2>Upload Project Members</h2>";
+  print "Upload a CSV (comma-separated-values) file of candidates members for your project.<br/><br/>";
   print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
   print '  <label for="file">CSV File:</label>';
   print '  <input type="file" name="file" id="file" />';
@@ -141,6 +134,14 @@ if ($error != NULL || count($_POST) == 0) {
   print '  <input type="hidden" name="referer" value="' . $referer . '"/>';
   print '</form>';
   print '<br/>';
+
+  print "<p>";
+  print "File format:<br/>";
+  print "<pre>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</pre><br/>";
+  print "Example:<br/>";
+  print "<pre>jsmith@geni.net, Joe Smith, Admin\n";
+  print "mbrown@geni.net, Mary Brown</pre><br/><br/>";
+  print "</p>";
   include("footer.php");
   exit;
 }
