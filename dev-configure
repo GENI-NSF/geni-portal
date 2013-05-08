@@ -1,0 +1,73 @@
+#!/bin/sh
+# -*- Mode:bash -*-
+
+# Exit on error
+set -e
+# Echo commands
+#set -v
+# Echo commands with variables expanded
+set -x
+
+
+CH_EMAIL='portal-sandbox-admin@gpolab.bbn.com'
+CH_HOST=`/bin/hostname --fqdn`
+PORTAL_HOST=$CH_HOST
+GCF_INI=/usr/share/geni-ch/portal/gcf.d/gcf.ini
+APACHE_HTTPS=/etc/apache2/sites-available/default-ssl
+APACHE_HTTP=/etc/apache2/sites-available/default
+
+autoreconf --install
+./configure --prefix=/usr --sysconfdir=/etc \
+            --bindir=/usr/local/bin --sbindir=/usr/local/sbin
+make
+sudo make install
+
+sudo cp /etc/geni-ch/example-services.ini /etc/geni-ch/services.ini
+
+# Modify recommended settings using sed
+sudo sed -i -e "/^email=/s/=.*/=$CH_EMAIL/" /etc/geni-ch/services.ini
+sudo sed -i -e "/^authority=/s/=.*/=$CH_HOST/" /etc/geni-ch/services.ini
+sudo sed -i -e "/^servicehost=/s/=.*/=$CH_HOST/" /etc/geni-ch/services.ini
+
+sudo geni-init-ca /etc/geni-ch/services.ini
+
+sudo geni-init-services /etc/geni-ch/services.ini --sql out.sql
+
+make cleandb
+
+psql -h localhost portal portal -f out.sql
+
+
+
+sudo cp /usr/share/geni-ch/portal/gcf.d/example-gcf.ini $GCF_INI
+sudo sed -i -e "/^base_name=/s/=.*/=$CH_HOST/" $GCF_INI
+sudo sed -i -e "s,//localhost,//$CH_HOST,g" $GCF_INI
+
+/usr/bin/sudo /bin/ln -s /usr/share/geni-ch/CA/cacert.pem /usr/share/geni-ch/portal/gcf.d/trusted_roots/cacert.pem
+/usr/bin/sudo /bin/ln -s /usr/share/geni-ch/ma/ma-cert.pem /usr/share/geni-ch/portal/gcf.d/trusted_roots/ma-cert.pem
+
+/usr/bin/sudo /usr/bin/apt-get install -y --allow-unauthenticated geni-pgch
+
+sudo sed -i -e '/^<\/Location>/i \
+  php_value include_path ".:/usr/share/php:/usr/share/geni-ch/lib/php"' $APACHE_HTTPS
+sudo sed -i -e '/^<\/VirtualHost>/i\
+Include /usr/share/geni-ch/sa/apache2.conf\
+Include /usr/share/geni-ch/ma/apache2.conf\
+Include /usr/share/geni-ch/pa/apache2.conf\
+Include /usr/share/geni-ch/sr/apache2.conf\
+Include /usr/share/geni-ch/cs/apache2.conf\
+Include /usr/share/geni-ch/logging/apache2.conf' $APACHE_HTTPS
+
+sudo sed -i -e '/^<\/VirtualHost>/i\
+Include /usr/share/geni-ch/portal/apache2-http.conf' $APACHE_HTTP
+
+sudo rm /var/www/index.html
+
+sudo service apache2 restart
+
+/usr/bin/sudo /bin/cp /etc/geni-ch/example-settings.php /etc/geni-ch/settings.php
+
+sudo sed -i -e "/^\$db_dsn =/s/=.*/= 'pgsql:\/\/portal:portal@localhost\/portal';/" /etc/geni-ch/settings.php
+sudo sed -i -e "/^\$portal_admin_email =/s/=.*/= '$CH_EMAIL';/" /etc/geni-ch/settings.php
+
+geni-add-trusted-tool -p portal portal urn:publicid:IDN+$PORTAL_HOST+authority+portal
