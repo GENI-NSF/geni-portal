@@ -213,6 +213,7 @@ $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
 $omni_url = "tool-omniconfig.php";
 $flack_url = "flack.php?slice_id=".$slice_id;
+$gemini_url = "gemini.php?slice_id=" . $slice_id;
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
@@ -325,6 +326,7 @@ print "<tr><td>\n";
 /* print "To use a command line tool:<br/>"; */
 $hostname = $_SERVER['SERVER_NAME'];
 print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/><b>Launch Flack</b> </button>\n";
+print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GEMINI Desktop</b></button>\n";
 print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Use omni</b></button>\n";
 //print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";
