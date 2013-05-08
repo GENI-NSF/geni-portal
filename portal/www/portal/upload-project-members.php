@@ -34,9 +34,10 @@ require_once('cs_constants.php');
 
 
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
+include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-include("tool-lookupids.php");
+
 
 if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
