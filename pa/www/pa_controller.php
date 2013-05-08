@@ -568,15 +568,16 @@ function lookup_projects($args)
   }
 
   $sql = "select "
-          . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
-                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
-                          . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
-                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
-                                          . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-                                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
-                                                          . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
-                                                          . " FROM " . $PA_PROJECT_TABLENAME
-                                                          . $lead_clause;
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED
+    . " FROM " . $PA_PROJECT_TABLENAME
+    . $lead_clause;
 
   //  error_log("LookupProjects.sql = " . $sql);
 
@@ -617,15 +618,16 @@ function lookup_project($args)
   }
 
   $sql = "select "
-          . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
-                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
-                          . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
-                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
-                                          . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-                                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
-                                                          . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
-                                                          . " FROM " . $PA_PROJECT_TABLENAME
-                                                          . $where;
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED
+    . " FROM " . $PA_PROJECT_TABLENAME
+    . $where;
 
   //  error_log("LOOKUP.sql = " . $sql);
 

@@ -700,6 +700,7 @@ function lookup_slices($args, $message)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
@@ -763,6 +764,7 @@ function lookup_slice_by_urn($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
@@ -1237,6 +1239,7 @@ function lookup_slice_details($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
@@ -1253,6 +1256,7 @@ function lookup_slice_details($args)
 // Return a dictionary of the list of slices (details) for a give
 // set of project uuids, indexed by project UUID
 // e.g.. [p1 => [s1_details, s2_details....], p2 => [s3_details, s4_details...]
+// Optionally allow slices that have expired
 function get_slices_for_projects($args)
 {
   $project_uuids = $args[SA_ARGUMENT::PROJECT_UUIDS];
@@ -1262,6 +1266,11 @@ function get_slices_for_projects($args)
   }
   $project_uuids_as_sql = convert_list($project_uuids);
 
+  $allow_expired = $args[SA_ARGUMENT::ALLOW_EXPIRED];
+  $expired_clause = "";
+  if($allow_expired) 
+    $expired_clause = "NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED . " AND ";
+
   sa_expire_slices();
 
   global $SA_SLICE_TABLENAME;
@@ -1269,14 +1278,15 @@ function get_slices_for_projects($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME 
-      . " WHERE " .   "NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED 
-      . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " IN " .
+      . " WHERE " .   $expired_clause
+      . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " IN " .
       $project_uuids_as_sql;
     $rows = db_fetch_rows($sql);
 

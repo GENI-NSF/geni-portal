@@ -45,6 +45,7 @@ if(!isset($project_objects) || !isset($slice_objects) ||
 }
 
 $my_slice_objects = $slice_objects;
+
 if (isset($project_id)) {
   $my_slice_objects = array();
   foreach($project_slice_map[$project_id] as $slice_id) {
@@ -93,6 +94,7 @@ if (count($my_slice_objects) > 0) {
   foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     $slice_expired = 'f';
+    //    error_log("SLICE = " . print_r($slice, true));
     if (array_key_exists(SA_SLICE_TABLE_FIELDNAME::EXPIRED, $slice)) {
       $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
     }

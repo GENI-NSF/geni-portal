@@ -249,6 +249,11 @@ if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
 $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 
+if(!$lookup_slice_privilege) {
+  $_SESSION['lastmessage'] = 'User has no privileges to view slice ' . $slice_name;
+  relative_redirect('home.php');
+}
+
 ?>
 
 <!-- This belongs in the header, probably -->
