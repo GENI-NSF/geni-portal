@@ -72,15 +72,21 @@ foreach($my_slice_objects as $slice) {
     $unexpired_slices[$slice_id] = $slice;
 }
 
+if (count($unexpired_slices) > 0) {
+  $unexpired_slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $unexpired_slices, 
+						    SA_SLICE_TABLE_FIELDNAME::OWNER_ID);
+}
+if (count($expired_slices) > 0) {
+  $expired_slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $expired_slices, 
+						    SA_SLICE_TABLE_FIELDNAME::OWNER_ID);
+}
+
 $my_slice_objects = $unexpired_slices;
+$slice_owner_names = $unexpired_slice_owner_names;
 //error_log("expired_slices ".print_r($expired_slices, true));
 //error_log("unexpired_slices ".print_r($unexpired_slices, true));
 
 if (count($my_slice_objects) > 0) {
-
-  $slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $my_slice_objects, 
-						    SA_SLICE_TABLE_FIELDNAME::OWNER_ID);
-
 
   print "\n<table>\n";
   print ("<tr><th>Slice Name</th>");

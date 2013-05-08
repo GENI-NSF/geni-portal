@@ -132,6 +132,7 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
 
 
   //  error_log("SIDS = " . print_r($slice_ids, true));
+  //  error_log("MIDS = " . print_r($member_ids, true));
   //  error_log("SMIDS = " . print_r($slice_member_ids, true));
   //  foreach($project_objects as $po) { error_log("PO = " . print_r($po, true)); }
   //  foreach($slice_objects as $so) { error_log("SO = " . print_r($so, true)); }

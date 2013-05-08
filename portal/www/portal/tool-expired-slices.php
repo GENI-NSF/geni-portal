@@ -158,7 +158,7 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
 
     $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
-    $slice_owner_name = $slice_owner_names[$slice_owner_id];
+    $slice_owner_name = $expired_slice_owner_names[$slice_owner_id];
     print "<tr>"
       . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
          . "</a></td>");
