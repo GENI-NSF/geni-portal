@@ -63,7 +63,7 @@ if (isset($project_id)) {
 $expired_slices = array();
 $unexpired_slices = array();
 foreach($my_slice_objects as $slice) {
-  error_log("SLICE = " . print_r($slice, true));
+  // error_log("SLICE = " . print_r($slice, true));
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
   if($expired == 't') 
