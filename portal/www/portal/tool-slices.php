@@ -53,11 +53,13 @@ if (isset($project_id)) {
   }
 }
 
+
+//foreach($slice_objects as $so) { error_log("SO = " . print_r($so, true)); }
+//error_log("SLICE_OBJECTS = " . print_r($slice_objects, true));
 //error_log("MAP = " . print_r($project_slice_map, true));
-//error_log("MAP[PROJ] = " . print_r($project_slice_map[$project_id], true));
-//error_log("SO = " . print_r($slice_objects, true));
-//error_log("MSO = " . print_r($my_slice_objects, true));
-					       
+//error_log("MY_SLICE_OBJECTS = " . print_r($my_slice_objects, true));
+//error_log("PROJECT_OBJECTS " . print_r($project_objects, true));
+
 
 if (count($my_slice_objects) > 0) {
 

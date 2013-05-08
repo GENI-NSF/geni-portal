@@ -122,7 +122,7 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
         $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED]; 
 	//	error_log("EXP = " . print_r($expired, true) . " AEXP = " . print_r($allow_expired, true) . " SLICE = " . print_r($slice, true));
 	if($expired != 't' || $allow_expired) 
-	  $slice_objects[] = $slice;
+	  $slice_objects[$slice_id] = $slice;
 
      }          
   }    
