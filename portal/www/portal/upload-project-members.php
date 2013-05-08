@@ -208,8 +208,8 @@ foreach($lines as $line) {
 
 $members_by_email = lookup_members_by_email($ma_url, $user, array_keys($names_by_email));
 
-error_log("NBE = " . print_r($names_by_email, true));
-error_log("RBE = " . print_r($roles_by_email, true));
+//error_log("NBE = " . print_r($names_by_email, true));
+//error_log("RBE = " . print_r($roles_by_email, true));
 
 foreach($names_by_email as $email => $name) {
   $member_id = null;
