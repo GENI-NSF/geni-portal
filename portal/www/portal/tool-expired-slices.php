@@ -61,13 +61,14 @@ function toggleDiv(id) {
 }
 </script>
 <button type='button' onclick='toggleDiv("expired")'>Expired Slices</button>
-<div id="expired" style="display: none; background-color:#E0E0E0;">
+<div id="expired" style="display: none;">
 <h2>Expired Slices</h2>
 <?php
 
 if(isset($expired_slices) && count($expired_slices) > 0) {
   print "\n<table>\n";
   print ("<tr><th>Slice Name</th>");
+//  print ("<tr><th>Slice UUID</th>");
   print ("<th>Project</th>");
   print ("<th>Slice Expiration</th>");
   print ("<th>Slice Owner</th>");
@@ -86,9 +87,9 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
   $flack_url = relative_url("flack.php?");
   $num_slices = count($expired_slices);
   if ($num_slices==1) {
-      print "<p><i>You have access to <b>1</b> slice.</i></p>";
+      print "<p><i>You were a member of <b>1</b> expired slice.</i></p>";
   } else {
-       print "<p><i>You have access to <b>".$num_slices."</b> slices.</i></p>";
+       print "<p><i>You were a member of <b>".$num_slices."</b> expired slices.</i></p>";
   }
 
   foreach ($expired_slices as $slice) {
@@ -115,6 +116,7 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     $sliceflack_url = $flack_url . $query;
     $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+//    $slice_uuid = $slice[SA_ARGUMENT::SLICE_UUIDS];
     $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
     $expiration = dateUIFormat($expiration_db);
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
@@ -160,6 +162,7 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     print "<tr>"
       . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
          . "</a></td>");
+//    print "<td>$slice_uuid</td>";
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
     print "<td>" . htmlentities($expiration) . "</td>";
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
