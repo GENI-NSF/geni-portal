@@ -1238,6 +1238,7 @@ function lookup_slice_details($args)
     $sql = "select "  
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "

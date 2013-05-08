@@ -68,8 +68,8 @@ function toggleDiv(id) {
 if(isset($expired_slices) && count($expired_slices) > 0) {
   print "\n<table>\n";
   print ("<tr><th>Slice Name</th>");
-//  print ("<tr><th>Slice UUID</th>");
   print ("<th>Project</th>");
+  print ("<th>Slice Creation</th>");
   print ("<th>Slice Expiration</th>");
   print ("<th>Slice Owner</th>");
   if ($portal_enable_abac) {
@@ -116,7 +116,7 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     $sliceflack_url = $flack_url . $query;
     $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-//    $slice_uuid = $slice[SA_ARGUMENT::SLICE_UUIDS];
+    $creation = $slice[SA_ARGUMENT::CREATION];
     $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
     $expiration = dateUIFormat($expiration_db);
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
@@ -162,8 +162,8 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     print "<tr>"
       . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
          . "</a></td>");
-//    print "<td>$slice_uuid</td>";
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
+    print "<td>" . htmlentities($creation) . "</td>";
     print "<td>" . htmlentities($expiration) . "</td>";
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
     $hostname = $_SERVER['SERVER_NAME'];
