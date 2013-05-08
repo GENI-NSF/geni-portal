@@ -45,7 +45,6 @@ if(!isset($project_objects) || !isset($slice_objects) ||
 }
 
 $my_slice_objects = $slice_objects;
-
 if (isset($project_id)) {
   $my_slice_objects = array();
   foreach($project_slice_map[$project_id] as $slice_id) {
@@ -54,40 +53,24 @@ if (isset($project_id)) {
 }
 
 
-//foreach($slice_objects as $so) { error_log("SO = " . print_r($so, true)); }
-//error_log("SLICE_OBJECTS = " . print_r($slice_objects, true));
-//error_log("MAP = " . print_r($project_slice_map, true));
-//error_log("MY_SLICE_OBJECTS = " . print_r($my_slice_objects, true));
-//error_log("PROJECT_OBJECTS " . print_r($project_objects, true));
-
-$expired_slices = array();
-$unexpired_slices = array();
-foreach($my_slice_objects as $slice) {
-  error_log("SLICE = " . print_r($slice, true));
-  $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-  $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
-  if($expired == 't') 
-    $expired_slices[$slice_id] = $slice;
-  else
-    $unexpired_slices[$slice_id] = $slice;
+?>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript">
+function toggleDiv(id) {
+   $("#"+id).toggle();
 }
+</script>
+<button type='button' onclick='toggleDiv("expired")'>Expired Slices</button>
+<div id="expired" style="display: none; background-color:#E0E0E0;">
+<h2>Expired Slices</h2>
+<?php
 
-$my_slice_objects = $unexpired_slices;
-//error_log("expired_slices ".print_r($expired_slices, true));
-//error_log("unexpired_slices ".print_r($unexpired_slices, true));
-
-if (count($my_slice_objects) > 0) {
-
-  $slice_owner_names = lookup_member_names_for_rows($ma_url, $user, $my_slice_objects, 
-						    SA_SLICE_TABLE_FIELDNAME::OWNER_ID);
-
-
+if(isset($expired_slices) && count($expired_slices) > 0) {
   print "\n<table>\n";
   print ("<tr><th>Slice Name</th>");
   print ("<th>Project</th>");
   print ("<th>Slice Expiration</th>");
-  print ("<th>Slice Owner</th>"
-         . "<th>Actions</th>");
+  print ("<th>Slice Owner</th>");
   if ($portal_enable_abac) {
     print "<th>ABAC Credential</th>";
   }
@@ -101,17 +84,16 @@ if (count($my_slice_objects) > 0) {
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
-  $num_slices = count($my_slice_objects);
+  $num_slices = count($expired_slices);
   if ($num_slices==1) {
       print "<p><i>You have access to <b>1</b> slice.</i></p>";
   } else {
        print "<p><i>You have access to <b>".$num_slices."</b> slices.</i></p>";
   }
 
-  foreach ($my_slice_objects as $slice) {
+  foreach ($expired_slices as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     $slice_expired = 'f';
-    //    error_log("SLICE = " . print_r($slice, true));
     if (array_key_exists(SA_SLICE_TABLE_FIELDNAME::EXPIRED, $slice)) {
       $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
     }
@@ -181,22 +163,17 @@ if (count($my_slice_objects) > 0) {
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
     print "<td>" . htmlentities($expiration) . "</td>";
     print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
-    print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
-    print ("<button onClick=\"window.location='$sliver_status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
-    print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
-    print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
     $hostname = $_SERVER['SERVER_NAME'];
-    print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button></td>\n";
-    if ($portal_enable_abac) {
-      print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";
-    }
     print "</tr>\n";
   }
   print "</table>\n";
+
 } else {
   if (isset($project_id) && uuid_is_valid($project_id)) {
-    print "<i>You do not have access to any slices in this project.</i><br/>\n";
+    print "<i>You do not have access to any expired slices in this project.</i><br/>\n";
   } else {
-    print "<i>You do not have access to any slices.</i><br/>\n";
+    print "<i>You do not have access to any expired slices.</i><br/>\n";
   }
 }
+
+print "</div>\n";
