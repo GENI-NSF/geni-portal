@@ -245,12 +245,12 @@ if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $
 }
 echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Manage Current Project Members</b></button>";
 
-$upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
-
-print "<br/><h3>Add new project members</h3>";
-print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
+  print "<br/><h3>Add new project members</h3>";
+  print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
+
   //  print "<br/><h3>Invite new project members</h3>\n";
   print "<br/>";
   print "<button onClick=\"window.location='";
