@@ -126,7 +126,6 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
@@ -185,8 +184,10 @@ print "</table>\n";
 <h2>Project slices:</h2>
 <?php
 include("tool-slices.php");
+include("tool-expired-slices.php");
 ?>
 <br/>
+
 <h2>Project members</h2>
 
 <?php

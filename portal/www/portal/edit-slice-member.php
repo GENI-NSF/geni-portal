@@ -238,6 +238,10 @@ foreach($all_project_member_row_elements as $apmre) {
 ?>
 </table>
 <?php
+$upload_project_url = "upload-project-members.php?project_id=".$project_id;
+print "<i>Want to add someone not listed above? <a href='$upload_project_url'>Add them to the project</a> first.</i>";
+
+
 $submit_label = "Modify";
 
 print "<br/>\n";
@@ -245,8 +249,8 @@ print "<input type=\"submit\" value=\"$submit_label\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 ?>
 </form>
-<?php
 
+<?php
 include("footer.php");
 
 ?>

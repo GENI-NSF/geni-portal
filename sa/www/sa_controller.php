@@ -1238,6 +1238,7 @@ function lookup_slice_details($args)
     $sql = "select "  
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
@@ -1268,7 +1269,7 @@ function get_slices_for_projects($args)
 
   $allow_expired = $args[SA_ARGUMENT::ALLOW_EXPIRED];
   $expired_clause = "";
-  if($allow_expired) 
+  if(!$allow_expired) 
     $expired_clause = "NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED . " AND ";
 
   sa_expire_slices();
@@ -1290,6 +1291,7 @@ function get_slices_for_projects($args)
       $project_uuids_as_sql;
     $rows = db_fetch_rows($sql);
 
+    //    error_log("sql = ". $sql);
     //    error_log("gs4p details " . print_r($rows, true));
 
     $result = array();
