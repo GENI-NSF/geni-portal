@@ -1,0 +1,143 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import OpenSSL
+
+OPENSSL = 'openssl'
+CA_CERT = '/usr/share/geni-ch/CA/cacert.pem'
+CA_KEY =  '/usr/share/geni-ch/CA/private/cakey.pem'
+
+cert_file = '/usr/share/geni-ch/ma/ma-cert.pem'
+key_file =  '/usr/share/geni-ch/ma/ma-key.pem'
+
+with open(cert_file, 'rb') as f:
+     cert_pem = f.read()
+
+cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_pem)
+
+subject = ''.join(["/%s=%s" % (x,y)
+                   for (x,y) in cert.get_subject().get_components()])
+# serial must be a string, but convert from long to int first
+serial = str(int(cert.get_serial_number()))
+print "subject = ", subject
+print "serial number = ", serial
+
+# Need to get URN -- probably by running "openssl x509"
+# via Popen and then communicate()
+
+x509_cmd = [OPENSSL, 'x509',
+            '-in', cert_file,
+            '-text',
+            '-noout']
+
+x509_proc = subprocess.Popen(x509_cmd,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+(x509_stdout, x509_stderr) = x509_proc.communicate()
+if x509_proc.returncode != 0:
+     pretty_cmd = ' '.join(x509_cmd)
+     print >>sys.stderr, "Error running command: ", pretty_cmd
+     print >>sys.stderr, x509_stderr
+     sys.exit(1)
+
+print "cert command returned: ", x509_proc.returncode
+pretty_cmd = ' '.join(x509_cmd)
+print "cert command was: ", pretty_cmd
+print "cert contents is: ", x509_stdout
+
+# Dig out the URN
+# Looking for something like "URI:urn:publicid:IDN+dagoola+authority+ma"
+urn_re = re.compile('URI:urn:publicid:IDN[^\s,]*')
+match = urn_re.search(x509_stdout)
+if match is None:
+     print >>sys.stderr, "Unable to locate URN in x509 certificate"
+     sys.exit(1)
+urn = match.group(0)
+print "urn = ", urn
+
+
+uuid_re = re.compile('URI:uuid:[^\s,]*')
+match = uuid_re.search(x509_stdout)
+if match is None:
+     print >>sys.stderr, "Unable to locate UUID in x509 certificate"
+     sys.exit(1)
+uuid = match.group(0)
+print "uuid = ", uuid
+
+# Is the certificate a CA?
+ca_re = re.compile('\n\s*CA:TRUE\n')
+is_ca = bool(ca_re.search(x509_stdout))
+print "is_ca = ", is_ca
+
+
+#----------------------------------------------------------------------
+# Create the certificate signing request
+#----------------------------------------------------------------------
+
+(fd, req_file) = tempfile.mkstemp()
+os.close(fd)
+
+req_cmd = [OPENSSL, 'req',
+           '-new',
+           '-subj', subject,
+           '-key', key_file,
+           '-out', req_file]
+
+# Execute req_cmd...
+retcode = subprocess.call(req_cmd)
+
+print >>sys.stderr, "openssl req returned ", retcode
+print "req file: ", req_file
+
+
+#----------------------------------------------------------------------
+# Create the extension file
+#----------------------------------------------------------------------
+ext_template = """
+[%s]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer:always
+authorityInfoAccess = 2.25.305821105408246119474742976030998643995;URI:%s
+subjectAltName=email:copy,%s,%s
+basicConstraints = CA:%s
+"""
+# The name of the extension section
+ext_name = 'geni'
+# OK to hardcode this
+auth_url = 'https://ch.geni.net/cainfo.html'
+ext_data = ext_template % (ext_name, auth_url, urn, uuid, str(is_ca).lower())
+(fd, ext_file) = tempfile.mkstemp()
+f = os.fdopen(fd, 'w')
+f.write(ext_data)
+f.close()
+print "ext file: ", ext_file
+
+#----------------------------------------------------------------------
+# Sign the req
+#----------------------------------------------------------------------
+(fd, cert_file) = tempfile.mkstemp()
+os.close(fd)
+sign_cmd = [OPENSSL, 'x509',
+            '-req',
+            '-in', req_file,
+            '-extfile', ext_file,
+            '-extensions', ext_name,
+            '-CA', CA_CERT,
+            '-CAkey', CA_KEY,
+            '-set_serial', serial,
+            '-out', cert_file]
+
+# openssl x509 -req -in /tmp/tmpNqhV6m -extfile /tmp/tmpBHJsXs \
+#              -extensions geni -CA /usr/share/geni-ch/CA/cacert.pem
+#              -CAkey /usr/share/geni-ch/CA/private/cakey.pem -set_serial 115
+#              -out /tmp/tm.pem
+
+# Execute cmd
+retcode = subprocess.call(sign_cmd)
+print >>sys.stderr, "openssl signing command returned ", retcode
+print "cert file: ", cert_file
