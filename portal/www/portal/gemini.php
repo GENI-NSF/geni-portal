@@ -33,12 +33,25 @@ const GEMINI_USER_PRIVATE_KEY = 'user_private_key';
 
 require_once('user.php');
 require_once('ma_client.php');
-require_once("header.php");
+require_once('header.php');
+require_once('smime.php');
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 /* Temporary until we get the URL from GEMINI */
 $gemini_url = '/secure/env.php';
+
+/* Temporary until we get the certificate from GEMINI */
+$gemini_cert_file = '/usr/share/geni-ch/ma/ma-cert.pem';
+
+/* Load the certificate into memory */
+$gemini_cert = file_get_contents($gemini_cert_file);
+
+/* How long to wait before auto-submitting the form post to GEMINI,
+ * in seconds.
+ */
+$gemini_post_delay_seconds = 20;
+
 
 if (!isset($user)) {
   $user = geni_loadUser();
@@ -77,10 +90,13 @@ if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
 $gemini_json = json_encode($gemini_info);
 
 /* Sign the data with the portal certificate (Is that correct?) */
+$gemini_signed = $gemini_json;
 
 /* Encrypt the signed data for the GEMINI SSL certificate */
-// For now, just set it to the json
-$gemini_blob = $gemini_json;
+$gemini_blob = smime_encrypt($gemini_signed, $gemini_cert);
+
+/* Finally, JSON encode the result so it can travel via JavaScript */
+$gemini_blob = json_encode($gemini_blob);
 
 /* Send the data to the browser to be auto-posted. */
 
@@ -98,9 +114,8 @@ include("tool-showmessage.php");
 document.write("Hello World!");
 var blob = '<?php echo $gemini_blob;?>';
 $('#blob').val(blob);
-setTimeout(function() {
-  $('#gemini').submit();
-}, 5000);
+setTimeout(function() { $('#gemini').submit(); },
+           <?php echo $gemini_post_delay_seconds * 1000 ?>);
 </script>
 
 <?php
