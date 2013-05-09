@@ -30,6 +30,7 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
   $project_objects = array();
   $member_objects = array();
   $project_slice_map = array();
+  $project_activeslice_map = array();
 
 
   // This is all project IDs the member belongs to, even expired
@@ -87,13 +88,21 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
       $proj_slices = $slice_data[$project_id];
       $member_ids[] = $proj_lead_id;
       $proj_slice_ids = array();
+      $proj_activeslice_ids = array();
       foreach($proj_slices as $proj_slice) {
 	$proj_slice_id = $proj_slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+	$proj_slice_id_expired = $proj_slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
 	if (!in_array($proj_slice_id, $slice_member_ids)) continue;
 	$proj_slice_ids[] = $proj_slice_id;
+	//	error_log("slice id = ". $proj_slice_id . " expired = " . $proj_slice_id_expired);
+	if ($proj_slice_id_expired=="f") {		
+	//	   error_log("Adding active slice to list ....");
+	   $proj_activeslice_ids[] = $proj_slice_id;		
+	}
       }
       //	$proj_slice_ids = lookup_slice_ids($sa_url, $user, $project_id);  
       $project_slice_map[ $project_id ] = $proj_slice_ids;
+      $project_activeslice_map[ $project_id ] = $proj_activeslice_ids;
       $slice_ids = array_merge( $slice_ids, $proj_slice_ids ); // is this ok
     }	      
   }
@@ -145,7 +154,7 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
   //    expired or not by request
   // member_objects
   //    all the members who are leads of slices or projects in previous lists
-  return array( $project_objects, $slice_objects, $member_objects, $project_slice_map );
+  return array( $project_objects, $slice_objects, $member_objects, $project_slice_map, $project_activeslice_map );
 }
 
 ?>

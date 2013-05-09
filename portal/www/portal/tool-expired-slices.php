@@ -42,6 +42,7 @@ if(!isset($project_objects) || !isset($slice_objects) ||
   $slice_objects = $retVal[1];
   $member_objects = $retVal[2];
   $project_slice_map = $retVal[3];
+  $project_activeslice_map = $retVal[4];
 }
 
 $my_slice_objects = $slice_objects;
