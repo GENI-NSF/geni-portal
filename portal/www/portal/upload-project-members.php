@@ -190,7 +190,7 @@ foreach($project_members as $project_member) {
 print '<form method="POST" action="do-upload-project-members.php">';
 print '<table>';
 
-print '<tr><th>Candidate Name</th><th>Candidate Email</th><th>Recognized</th><th>Actions</th></tr>';
+print '<tr><th>Candidate Name</th><th>Candidate Email</th><th>Can Add <br/>Immediately?</th><th>Actions</th></tr>';
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 
 
