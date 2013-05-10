@@ -267,10 +267,18 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
     $key_file = writeDataToTempFile($private_key, "$username-key-");
 
+    $slice_users = $slice_users + array($user);
+    $username_array = array();
+    foreach ($slice_users as $slice_user){
+    	   $username_array[] = $slice_user->username;
+    }
+
     /* Create OMNI config file */
     $omni_config = "[omni]\n"
       . "default_cf = my_gcf\n"
-      . "users = $username\n";
+      . "users = "
+      . implode(", ", $username_array)
+      . "\n";
     if (is_array($am_url)){
       $omni_config = $omni_config.$aggregates."\n";
     }
@@ -282,7 +290,6 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       . "cert=$cert_file\n"
       . "key=$key_file\n";
 
-    $slice_users = $slice_users + array($user);
     $all_ssh_key_files = array();
     foreach ($slice_users as $slice_user){
        $username = $slice_user->username;
