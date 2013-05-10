@@ -157,5 +157,44 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
   return array( $project_objects, $slice_objects, $member_objects, $project_slice_map, $project_activeslice_map );
 }
 
+
+// for a given slice, find all of the members on the slice and 
+// return as a list of GeniUser()
+function get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id) {
+   // Get other users on this project
+   $members = get_slice_members($sa_url, $user, $slice_id);
+   //error_log("Return from get_slice_members = " . print_r($members, TRUE));
+   $member_uuids = array();
+   foreach ($members as $member) {
+	$member_id = $member[MA_ARGUMENT::MEMBER_ID];
+	// In Future consider FILTER by ROLE?
+	//	$role_id = $member[ 'role' ]; // FIND VARIABLE TO REPLACE
+	$member_uuids[] = $member_id;
+   }
+
+   $slice_members = lookup_member_details($ma_url, $user, $member_uuids );
+   //error_log("Slice members = " . print_r($slice_members, TRUE));
+
+   $slice_users = array();
+   foreach ($slice_members as $member_id => $slice_member) {
+	// initialize members
+	$member = new Member();
+	$member->init_from_record($slice_member);
+	//	error_log("Member = " . print_r($member, TRUE));	
+	// now as users 
+	$slice_user = new GeniUser();     
+   	$slice_user->init_from_member($member);
+	//	error_log("Slice user = " . print_r($slice_user, TRUE));
+ 	$identity = geni_load_identity_by_eppn($slice_user->eppn);
+     	$slice_user->init_from_identity($identity);
+ 	$slice_users[] = $slice_user;
+   }
+
+   //error_log("Slice users = " . print_r($slice_users, TRUE));
+   return $slice_users;
+}
+
+
+
 ?>
 

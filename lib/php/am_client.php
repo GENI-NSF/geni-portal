@@ -232,7 +232,7 @@ function write_omni_config($user)
 //    $am_url: URL of AM to which to connect
 //    $user : Structure with user information (for creating temporary files)
 //    $args: list of arguments (including the method itself) included
-function invoke_omni_function($am_url, $user, $args)
+function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
     $username = $user->username;
     
@@ -267,9 +267,6 @@ function invoke_omni_function($am_url, $user, $args)
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
     $key_file = writeDataToTempFile($private_key, "$username-key-");
 
-    $ssh_key_files = write_ssh_keys($user);
-    $all_key_files = implode(',', $ssh_key_files);
-
     /* Create OMNI config file */
     $omni_config = "[omni]\n"
       . "default_cf = my_gcf\n"
@@ -283,10 +280,20 @@ function invoke_omni_function($am_url, $user, $args)
       . "authority=geni:gpo:portal\n"
       . "ch=https://localhost:8000\n"
       . "cert=$cert_file\n"
-      . "key=$key_file\n"
-      . "[$username]\n"
-      . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
-      . "keys=$all_key_files\n";
+      . "key=$key_file\n";
+
+    $slice_users = $slice_users + array($user);
+    $all_ssh_key_files = array();
+    foreach ($slice_users as $slice_user){
+       $username = $slice_user->username;
+       $ssh_key_files = write_ssh_keys($slice_user);
+       $all_ssh_key_files = $all_ssh_key_files + $ssh_key_files;
+       $all_key_files = implode(',', $ssh_key_files);
+       $omni_config = $omni_config
+             . "[$username]\n"
+      	     . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+      	     . "keys=$all_key_files\n";
+    }
 
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
 
@@ -331,7 +338,7 @@ function invoke_omni_function($am_url, $user, $args)
      unlink($key_file);
      unlink($omni_file);
      unlink($tmp_version_cache);
-     foreach ($ssh_key_files as $tmpfile) {
+     foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
      }
 
@@ -448,7 +455,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
 
 
 // Create a sliver on a given AM with given rspec
-function create_sliver($am_url, $user, $slice_credential, $slice_urn,
+function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
                        $rspec_filename)
 {
   if (! isset($am_url) || is_null($am_url) ){
@@ -476,7 +483,7 @@ function create_sliver($am_url, $user, $slice_credential, $slice_urn,
 		$rspec_filename);
   // FIXME: Note that this AM has resources
   // slice_id, am_url or ID, duration?
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, $slice_users);
   unlink($slice_credential_filename);
   return $output;
 }
