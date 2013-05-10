@@ -200,7 +200,7 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 // 
 
 print "<h1>GENI Slice: " . $slice_name . "</h1>";
-print "<b>The following members of the slice will be allowed to login to all resources reserved in the future.</b><br/>";
+print "The following members of the slice will be allowed to login to all resources reserved <i>in the future</i>.<br/>";
 ?>
 <form method="POST" action="do-edit-slice-member.php">
 <table>
