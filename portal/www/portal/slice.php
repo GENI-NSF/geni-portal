@@ -382,11 +382,6 @@ print "</table>\n";
 // ---
 
 print "<h2>Slice members</h2>";
-$edit_members_disabled = "";
-if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-  $edit_members_disabled = $disabled;
-}
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Membership</b></button>";
 ?>
 
 <table>
@@ -411,6 +406,15 @@ foreach($members as $member) {
 }
 	?>
 </table>
+
+<?php
+$edit_members_disabled = "";
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  $edit_members_disabled = $disabled;
+}
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button>";
+?>
+
 
 <h2>Recent Slice Actions</h2>
 <table>

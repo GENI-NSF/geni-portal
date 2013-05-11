@@ -172,7 +172,9 @@ if (array_key_exists('file', $_FILES)) {
 // include("tool-breadcrumbs.php");
 // include("tool-showmessage.php");
   print("<h2>Upload Project Members</h2>\n");
-
+  print "<b>Action Legend</b><br/>";
+  print "<b>Add as ...</b> Candidates who already use the portal will be added to your project with the specified role immediately.<br/>";
+  print "<b>Invite as ...</b> Others will receive an invitation email with instructions on joining your project.";
 
 $actual_filename = $_FILES['file']['tmp_name'];
 $contents = file_get_contents($actual_filename);
@@ -190,7 +192,9 @@ foreach($project_members as $project_member) {
 print '<form method="POST" action="do-upload-project-members.php">';
 print '<table>';
 
-print '<tr><th>Candidate Name</th><th>Candidate Email</th><th>Recognized</th><th>Actions</th></tr>';
+print '<tr><th>Candidate Name</th><th>Candidate Email</th>';
+// <th>Can Add <br/>Immediately?</th>
+print '<th>Action</th></tr>';
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 
 
@@ -238,7 +242,9 @@ foreach($names_by_email as $email => $name) {
   }
     
   //  error_log("MA = " . $member_actions);
-  print "<tr><td>$name</td><td>$email</td><td>$recognized</td><td>$member_actions</td></tr>\n";
+  print "<tr><td>$name</td><td>$email</td>";
+  //<td>$recognized</td>
+  print "<td>$member_actions</td></tr>\n";
   //  error_log("EMAIL = " . $email . " NAME = " . $name);
 }
 

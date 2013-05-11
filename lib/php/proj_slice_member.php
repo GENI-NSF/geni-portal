@@ -30,6 +30,7 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
   $project_objects = array();
   $member_objects = array();
   $project_slice_map = array();
+  $project_activeslice_map = array();
 
 
   // This is all project IDs the member belongs to, even expired
@@ -87,13 +88,21 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
       $proj_slices = $slice_data[$project_id];
       $member_ids[] = $proj_lead_id;
       $proj_slice_ids = array();
+      $proj_activeslice_ids = array();
       foreach($proj_slices as $proj_slice) {
 	$proj_slice_id = $proj_slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+	$proj_slice_id_expired = $proj_slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
 	if (!in_array($proj_slice_id, $slice_member_ids)) continue;
 	$proj_slice_ids[] = $proj_slice_id;
+	//	error_log("slice id = ". $proj_slice_id . " expired = " . $proj_slice_id_expired);
+	if ($proj_slice_id_expired=="f") {		
+	//	   error_log("Adding active slice to list ....");
+	   $proj_activeslice_ids[] = $proj_slice_id;		
+	}
       }
       //	$proj_slice_ids = lookup_slice_ids($sa_url, $user, $project_id);  
       $project_slice_map[ $project_id ] = $proj_slice_ids;
+      $project_activeslice_map[ $project_id ] = $proj_activeslice_ids;
       $slice_ids = array_merge( $slice_ids, $proj_slice_ids ); // is this ok
     }	      
   }
@@ -145,8 +154,47 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
   //    expired or not by request
   // member_objects
   //    all the members who are leads of slices or projects in previous lists
-  return array( $project_objects, $slice_objects, $member_objects, $project_slice_map );
+  return array( $project_objects, $slice_objects, $member_objects, $project_slice_map, $project_activeslice_map );
 }
+
+
+// for a given slice, find all of the members on the slice and 
+// return as a list of GeniUser()
+function get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id) {
+   // Get other users on this project
+   $members = get_slice_members($sa_url, $user, $slice_id);
+   //error_log("Return from get_slice_members = " . print_r($members, TRUE));
+   $member_uuids = array();
+   foreach ($members as $member) {
+	$member_id = $member[MA_ARGUMENT::MEMBER_ID];
+	// In Future consider FILTER by ROLE?
+	//	$role_id = $member[ 'role' ]; // FIND VARIABLE TO REPLACE
+	$member_uuids[] = $member_id;
+   }
+
+   $slice_members = lookup_member_details($ma_url, $user, $member_uuids );
+   //error_log("Slice members = " . print_r($slice_members, TRUE));
+
+   $slice_users = array();
+   foreach ($slice_members as $member_id => $slice_member) {
+	// initialize members
+	$member = new Member();
+	$member->init_from_record($slice_member);
+	//	error_log("Member = " . print_r($member, TRUE));	
+	// now as users 
+	$slice_user = new GeniUser();     
+   	$slice_user->init_from_member($member);
+	//	error_log("Slice user = " . print_r($slice_user, TRUE));
+ 	$identity = geni_load_identity_by_eppn($slice_user->eppn);
+     	$slice_user->init_from_identity($identity);
+ 	$slice_users[] = $slice_user;
+   }
+
+   //error_log("Slice users = " . print_r($slice_users, TRUE));
+   return $slice_users;
+}
+
+
 
 ?>
 
