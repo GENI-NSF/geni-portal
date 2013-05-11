@@ -31,13 +31,16 @@
 //   slice_details <= lookup_slice(slice_id);
 //   slice_details <= lookup_slice_by_urn(slice_urn);
 //   renew_slice(slice_id, expiration, owner_id);
-//   add_slice_member(sa_url, project_id, member_id, role)
-//   remove_slice_member(sa_url, slice_id, member_id)
-//   change_slice_member_role(sa_url, slice_id, member_id, role)
 //   get_slice_members(sa_url, slice_id, role=null) // null => Any
 //   get_slices_for_member(sa_url, member_id, is_member, role=null)
 //   lookup_slice_details(sa_url, slice_uuids)
 //   get_slices_for_projects(sa_url, project_uuids, allow_expired=false)
+//   modify_slice_membership(sa_url, slice_id, 
+//        members_to_add, members_to_change_role, members_to_remove)
+//   add_slice_member(sa_url, project_id, member_id, role)
+//   remove_slice_member(sa_url, slice_id, member_id)
+//   change_slice_member_role(sa_url, slice_id, member_id, role)
+
 
 require_once('sa_constants.php');
 
@@ -171,39 +174,51 @@ function renew_slice($sa_url, $signer, $slice_id, $expiration)
   return $result;
 }
 
+// Modify slice membership according to given lists to add/change_role/remove
+// $members_to_add and $members_to_change role are both
+//     dictionaries of {member_id => role, ....}
+// $members_to_delete is a list of member_ids
+function modify_slice_membership($sa_url, $signer, $slice_id, 
+				 $members_to_add, 
+				 $members_to_change_role, 
+				 $members_to_remove)
+{
+  $modify_slice_membership_msg['operation'] = 'modify_slice_membership';
+  $modify_slice_membership_msg[SA_ARGUMENT::SLICE_ID] = $slice_id;
+  $modify_slice_membership_msg[SA_ARGUMENT::MEMBERS_TO_ADD] = $members_to_add;
+  $modify_slice_membership_msg[SA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE] = $members_to_change_role;
+  $modify_slice_membership_msg[SA_ARGUMENT::MEMBERS_TO_REMOVE] = $members_to_remove;
+  $result = put_message($sa_url, $modify_slice_membership_msg,
+                       $signer->certificate(), $signer->privateKey());
+  return $result;
+  
+}
+
 // Add a member of given role to given slice
 function add_slice_member($sa_url, $signer, $slice_id, $member_id, $role)
 {
-  $add_slice_member_message['operation'] = 'add_slice_member';
-  $add_slice_member_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
-  $add_slice_member_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
-  $add_slice_member_message[SA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $add_slice_member_message,
-                         $signer->certificate(), $signer->privateKey());
-  return $results;
+  $member_roles = array($member_id => $role);
+  $result = modify_slice_membership($sa_url, $signer, $slice_id, 
+				    $member_roles, array(), array());
+  return $result;
 }
 
 // Remove a member from given slice 
 function remove_slice_member($sa_url, $signer, $slice_id, $member_id)
 {
-  $remove_slice_member_message['operation'] = 'remove_slice_member';
-  $remove_slice_member_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
-  $remove_slice_member_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
-  $results = put_message($sa_url, $remove_slice_member_message,
-                         $signer->certificate(), $signer->privateKey());
-  return $results;
+  $member_to_remove = array($member_id);
+  $result = modify_slice_membership($sa_url, $signer, $slice_id, 
+				    array(), array(), $member_to_remove);
+  return $result;
 }
 
 // Change role of given member in given slice
 function change_slice_member_role($sa_url, $signer, $slice_id, $member_id, $role)
 {
-  $change_member_role_message['operation'] = 'change_slice_member_role';
-  $change_member_role_message[SA_ARGUMENT::SLICE_ID] = $slice_id;
-  $change_member_role_message[SA_ARGUMENT::MEMBER_ID] = $member_id;
-  $change_member_role_message[SA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $change_member_role_message,
-                         $signer->certificate(), $signer->privateKey());
-  return $results;
+  $member_roles = array($member_id => $role);
+  $result = modify_slice_membership($sa_url, $signer, $slice_id, 
+				    array(), $member_roles, array());
+  return $result;
 }
 
 // Return list of member ID's and roles associated with given slice
