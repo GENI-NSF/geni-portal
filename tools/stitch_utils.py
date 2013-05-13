@@ -209,6 +209,28 @@ def insert_interface(doc, request, agg, node, aggregate_stitched_interfaces):
   agg_node.appendChild(interface_child)
   return interface_name
 
+# Find all interfaces that don't already have IP addresses dedicated. 
+# Then assign unique addresses to them.
+def assign_ip_addresses(root, request):
+  ip_template = "10.10.0.%d"
+  ip_netmask = "255.255.255.0"
+  next_ip = 100
+  for child in request.childNodes:
+    if child.nodeType != Node.ELEMENT_NODE: 
+      continue
+    for interface in child.childNodes:
+      if interface.nodeType != Node.ELEMENT_NODE or interface.nodeName != "interface":
+        continue
+      # We have an interface node. Does it have an IP child?
+      ip_children = interface.getElementsByTagName('ip')
+      if len(ip_children) == 0:
+        ip_address = ip_template % next_ip
+        next_ip = next_ip + 1
+        ip_node = create_node(root, 'ip', 'address', ip_address);
+        ip_node.setAttribute('netmask', ip_netmask)
+        ip_node.setAttribute('type', 'ipv4')
+        interface.appendChild(ip_node)
+
 
 # Instantiate a request RSPEC for stitching across aggregates
 # aggregates is a list of {'urn', 'agg'} for all aggregates involved in topology
@@ -246,6 +268,9 @@ def instantiate_stitching_rspec(aggregates, internal_topologies, external_links)
     template_doc = parse(open(agg_rspec, 'r'))
     template_node = template_doc.childNodes[0]
     copy_from_template(root, request, template_node, agg_urn, agg_name)
+
+  # Put distinct IP addresses on all requested (explicit) interfaces
+  assign_ip_addresses(root, request)
 
   # Instantiate link between aggregates
   for external_link in external_links:
