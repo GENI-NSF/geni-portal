@@ -1,6 +1,21 @@
 # Routines to manipulate RSPEC templates to produce stitching-ready rspecs
+import json
+import optparse
 import sys
 from xml.dom.minidom import *
+
+# Parse command args
+def parse_args(argv=None):
+  if argv == None: argv = sys.argv
+
+  parser = optparse.OptionParser()
+
+  parser.add_option("--json_filename", \
+                      help="Name of JSON filename containing aggregates [cmid, agg_name], internal [agg_name rspec] and external [agg1_name, agg1_if, agg2_name, agg2_if] tuples", \
+                      default=None, dest="json_filename")
+
+  opts, args = parser.parse_args(argv)
+  return opts
 
 # Change the value of a given name to the namespace denoted by a label
 # i.e. A:name for A being the label (typically the aggregate nickname)
@@ -25,6 +40,8 @@ def copy_attributes(to_node, from_node, label, attributes_to_tag):
 
 def modify_node(element, node_hierarchy, attr_name, \
                   attr_value, prepend, prev_hierarchy = []):
+#  print "MN: " + str(element) + " " + str(node_hierarchy) + " " + attr_name + " " \
+#      + attr_value + " " + str(prepend) + " " + str(prev_hierarchy);
   if element.nodeType != Node.ELEMENT_NODE: return
   current_hierarchy = prev_hierarchy[:]
   current_hierarchy.append(element.nodeName)
@@ -34,7 +51,7 @@ def modify_node(element, node_hierarchy, attr_name, \
       if prepend: 
         current_attr_value = element.getAttribute(attr_name)
         new_attr_value = tag_name(attr_value, current_attr_value)
-        element.setAttribute(attr_name, new_attr_value)
+      element.setAttribute(attr_name, new_attr_value)
   for child in element.childNodes:
     if child.nodeType != Node.ELEMENT_NODE: continue
     modify_node(child, node_hierarchy, attr_name, attr_value, \
@@ -86,8 +103,8 @@ def create_node(doc, element_label, attribute_name, attribute_value):
 
 # Add the stitching link to the request
 # Representing link between interfaces on two different aggregates
-def add_stitching_link(doc, request, template1, agg1_urn, agg1_label, if1, \
-                         template2, agg2_urn, agg2_label, if2):
+def add_stitching_link(doc, request,  agg1_urn, agg1_label, if1, \
+                         agg2_urn, agg2_label, if2):
 
   link = doc.createElement('link')
   link_id = 'link-%s-%s' % (agg1_label, agg2_label)
@@ -114,24 +131,8 @@ def add_stitching_link(doc, request, template1, agg1_urn, agg1_label, if1, \
 
   request.appendChild(link)
 
-# Create a request rspec that:
-#   Instantiates template1 on agg1 (URN)
-#   Instantiates template2 on agg2 (URN)
-#   Builds a stitching link between the two on described interfaces
-def instantiate_stitching_rspec(template1, agg1_urn, link1, \
-                                  template2, agg2_urn, if2):
-#  print "ISR %s %s %s %s %s %s" % (template1, agg1_urn, if1, \
-#                                     template2, agg2_urn, if2)
-
-  template1_doc = parse(open(template1, 'r'))
-  template1_node = template1_doc.childNodes[0]
-#  print template1_doc.toxml()
-
-  template2_doc = parse(open(template2, 'r'))
-  template2_node = template2_doc.childNodes[0]
-#  print template2_doc.toxml()
-
-  root = Document()
+# Set up and return request RSPEC header
+def setup_request_header(root):
   request = root.createElement('rspec')
   request.setAttribute('type', 'request')
   root.appendChild(request)
@@ -146,30 +147,170 @@ def instantiate_stitching_rspec(template1, agg1_urn, link1, \
   for ns in namespaces.keys():
     ns_value = namespaces[ns];
     request.setAttribute(ns, ns_value)
+  return request
 
-  agg1_label = "A"
-  agg2_label = "B"
-  copy_from_template(root, request, template1_node, agg1_urn, agg1_label)
-  copy_from_template(root, request, template2_node, agg2_urn, agg2_label)
-  add_stitching_link(root, request, template1, agg1_urn, agg1_label, if1, \
-                       template2, agg2_urn, agg2_label, if2)
+# Create a request rspec that:
+#   Instantiates template1 on agg1 (URN)
+#   Instantiates template2 on agg2 (URN)
+#   Builds a stitching link between the two on described interfaces
+# def instantiate_stitching_rspec_orig(template1, agg1_urn, link1, \
+#                                   template2, agg2_urn, if2):
+# #  print "ISR %s %s %s %s %s %s" % (template1, agg1_urn, if1, \
+# #                                     template2, agg2_urn, if2)
 
-  print cleanXML(root)
+#   template1_doc = parse(open(template1, 'r'))
+#   template1_node = template1_doc.childNodes[0]
+# #  print template1_doc.toxml()
+
+#   template2_doc = parse(open(template2, 'r'))
+#   template2_node = template2_doc.childNodes[0]
+# #  print template2_doc.toxml()
+
+#   root = Document()
+#   request = setup_request_header(root)
+#   agg1_label = "A"
+#   agg2_label = "B"
+#   copy_from_template(root, request, template1_node, agg1_urn, agg1_label)
+#   copy_from_template(root, request, template2_node, agg2_urn, agg2_label)
+#   add_stitching_link(root, request, agg1_urn, agg1_label, if1, \
+#                        agg2_urn, agg2_label, if2)
+
+#   return root
+
+def find_agg_node(request, agg_node_name):
+  for nd in request.childNodes:
+    if nd.nodeType != Node.ELEMENT_NODE: continue
+    nd_client_id = nd.getAttribute('client_id')
+    if nd_client_id == agg_node_name:
+      return nd
+  print "Aggregate/Node not found : " + agg_node_name
+  sys.exit(0)
+
+# Validate that a given aggregate has been defined
+def validate_aggregate_name(agg_name, aggregate_urns):
+    if agg_name not in aggregate_urns:
+      print "Undefined aggregate : " + agg_name
+      sys.exit(0)
+
+# Insert an interface node into the document as a child of the specified node
+# representing the topology for the given aggregate
+def insert_interface(doc, request, agg, node, aggregate_stitched_interfaces):
+  if agg in aggregate_stitched_interfaces:
+    count = aggregate_stitched_interfaces[agg]
+  else:
+    count = 0
+  aggregate_stitched_interfaces[agg] = count + 1
+  interface_name = "stitch:" + str(count)
+  tagged_interface_name = tag_name(agg, interface_name)
+  
+  agg_node = find_agg_node(request, agg + ":" + node)
+
+  interface_child = create_node(doc, 'interface', 'client_id', tagged_interface_name)
+  agg_node.appendChild(interface_child)
+  return interface_name
+
+
+# Instantiate a request RSPEC for stitching across aggregates
+# aggregates is a list of {'urn', 'agg'} for all aggregates involved in topology
+# internal is a list of {'agg', 'rspec'} indicating which internal topologies 
+#    (specified by rspec)are to be created on which aggregates 
+# external is a list of {'from_agg', 'from_node', 'to_agg', 'to_node'} 
+#    indicating which aggregates (and instantiated nodes) participate in a 
+#    dedicated cross-aggregate interfaces 
+def instantiate_stitching_rspec(aggregates, internal_topologies, external_links):
+
+  # Validate arguments
+  # All aggs in internal and external must be listed in aggregates
+  # ***
+
+  root = Document()
+  request = setup_request_header(root)
+
+  # Maintain a list of aggregate URNs by name
+  aggregate_urns = {}
+  for agg in aggregates:
+    agg_urn = agg['urn']
+    agg_name = agg['agg']
+    aggregate_urns[agg_name] = agg_urn
+
+  # Maintain a list of stitched interfaces for each aggregate by name
+  aggregate_stitched_interfaces = {}
+
+  # Instantiate internal topologies at each aggregate
+  # Changing the names to be in the namespace of the aggregate (to avoid overlap)
+  for internal_topology in internal_topologies:
+    agg_name = internal_topology['agg']
+    agg_rspec = internal_topology['rspec']
+    validate_aggregate_name(agg_name, aggregate_urns)
+    agg_urn = aggregate_urns[agg_name]
+    template_doc = parse(open(agg_rspec, 'r'))
+    template_node = template_doc.childNodes[0]
+    copy_from_template(root, request, template_node, agg_urn, agg_name)
+
+  # Instantiate link between aggregates
+  for external_link in external_links:
+
+    from_agg = external_link['from_agg']
+    from_node = external_link['from_node']
+    validate_aggregate_name(from_agg, aggregate_urns)
+    from_agg_urn = aggregate_urns[from_agg]
+    
+    to_agg = external_link['to_agg']
+    to_node = external_link['to_node']
+    validate_aggregate_name(from_agg, aggregate_urns)
+    to_agg_urn = aggregate_urns[to_agg]
+
+    # Insert a new interface into each aggregate
+    from_agg_interface = insert_interface(root, request, from_agg, from_node, \
+                                            aggregate_stitched_interfaces)
+    to_agg_interface = insert_interface(root, request, to_agg, to_node, \
+                                          aggregate_stitched_interfaces)
+      
+    add_stitching_link(root, request, from_agg_urn, from_agg, from_agg_interface, \
+                         to_agg_urn, to_agg, to_agg_interface)
+        
+
+  return root
+
+# Notes
+# This should take the following structure
+# Aggregates: List of component_id, nickname pairs
+# Internal: List of aggregate/rspec tuples
+# External: List of aggregate/interface/aggregate/interface tuples
+# That's the main interface 
 
 if __name__ == "__main__":
-  if sys.argv < 6:
-    print "Usage: stitch_utils.py template1 agg1 if1 template2 agg2 if2"
-    sys.exit(0)
+  opts = parse_args(sys.argv)
 
-  template1 = sys.argv[1]
-  agg1 = sys.argv[2]
-  if1 = sys.argv[3]
-  template2 = sys.argv[4]
-  agg2= sys.argv[5]
-  if2 = sys.argv[6]
-  instantiate_stitching_rspec(template1, agg1, if1, template2, agg2, if2)
+  json_filename = opts.json_filename
+  json_data = open(json_filename, 'r').read()
+  data = json.loads(json_data)
+#  print str(data)
+
+  aggregates = data['aggregates']
+  internal = data['internal']
+  external = data['external']
+  doc = instantiate_stitching_rspec(aggregates, internal, external)
+
+  print cleanXML(doc)
+
+
+#   template1 = internal[0]['rspec']
+#   agg1 = aggregates[0]['urn']
+#   if1 = external[0]['interface']
+#   template2 = internal[1]['rspec']
+#   agg2 = aggregates[1]['urn']
+#   if2 = external[1]['interface']
+#   doc = instantiate_stitching_rspec(template1, agg1, if1, template2, agg2, if2)
+#   print cleanXML(doc)
 
   
-
-      
-
+# aggregates = [{'urn' : 'urn:publicid:IDN+boscontroller+authority+cm', 'name' : 'BOS'},
+#               {'urn' : 'urn:publicid:IDN+pricontroller+authority+cm', 'name' : 'PRI'}]
+# internal = [{'agg' : 'BOS', 'rspec' : '/Users/mbrinn/geni/rspecs/templates/one-node.xml'},
+#             {'agg' : 'PRI', 'rspec' : '/Users/mbrinn/geni/rspecs/templates/one-node.xml'}]
+# external = [{'agg' : 'BOS', 'interface' : 'if0'}, 
+#             {'agg' : 'PRI', 'interface' : 'if0'}]
+              
+# j = {'aggregates' : aggregates, 'internal' : internal, 'external' : external}
+# print json.dumps(j)
