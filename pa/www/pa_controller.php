@@ -745,15 +745,18 @@ function update_project($args, $message)
 //    
 function modify_project_membership($args, $message)
 {
+  global $cs_url;
+  global $mysigner;
+
   // Unpack arguments
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $members_to_add = $args[PA_ARGUMENT::MEMBERS_TO_ADD];
   $members_to_change_role = $args[PA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE];
   $members_to_remove = $args[PA_ARGUMENT::MEMBERS_TO_REMOVE];
 
-  error_log("MTA = " . print_r($members_to_add, true));
-  error_log("MTC = " . print_r($members_to_change_role, true));
-  error_log("MTR = " . print_r($members_to_remove, true));
+  //  error_log("MTA = " . print_r($members_to_add, true));
+  //  error_log("MTC = " . print_r($members_to_change_role, true));
+  //  error_log("MTR = " . print_r($members_to_remove, true));
 
 
   // Get the members of the project by role
@@ -795,15 +798,20 @@ function modify_project_membership($args, $message)
     return generate_response(RESPONSE_ERROR::ARGS, null, "Can't remove member from project if not a member");
   }
 
+  $new_project_lead = $project_lead;
   // Count up the total lead changes. Should be zero
   $lead_changes = 0;
   foreach($members_to_add as $member_to_add => $new_role) {
-    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) 
+    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) {
       $lead_changes = $lead_changes + 1;
+      $new_project_lead = $member_to_add;
+    }
   }
   foreach($members_to_change_role as $member_to_change_role => $role) {
-    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $project_lead)
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $project_lead) {
       $lead_changes = $lead_changes + 1;
+      $new_project_lead = $member_to_change_role;
+    }
     if ($member_to_change_role == $project_lead && $role != CS_ATTRIBUTE_TYPE::LEAD)
       $lead_changes = $lead_changes - 1;
   }
@@ -816,6 +824,26 @@ function modify_project_membership($args, $message)
   if($lead_changes != 0) {
     return generate_response(RESPONSE_ERROR::ARGS, null, "Must have exactly one project lead");
   }
+
+  // Can't make someone a project lead if they don't have 
+  // create_project capabilities
+  //  error_log("NPL = " . $new_project_lead . " PL = " . $project_lead);
+  if ($new_project_lead != $project_lead) {
+    $permitted = request_authorization($cs_url, $mysigner, $new_project_lead,
+				       PA_ACTION::CREATE_PROJECT,
+				       CS_CONTEXT_TYPE::RESOURCE, null);
+    if($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $permitted;
+    $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+    if (!$permitted)
+      return generate_response(RESPONSE_ERROR::ARGS, null, 
+			       "Proposed project lead does not have " . 
+			       "sufficient privileges for that role.");
+  }
+  
+
+
+
 
   // There is a problem of transactional integrity here
   // The PA keeps its own table of members/roles, and the CS keeps a table of assertions which
