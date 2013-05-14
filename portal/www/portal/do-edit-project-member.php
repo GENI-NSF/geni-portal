@@ -184,7 +184,7 @@ function do_modify_project_membership($selections, $project_id, $project_members
   $members_to_change_role = array();
   $members_to_remove = array();
 
-  error_log("Selections = " . print_r($selections, true));
+  //  error_log("Selections = " . print_r($selections, true));
   //  error_log("PMBR = " . print_r($project_members_by_role, true));
 
   foreach($selections as $member_id => $selection_id) {
@@ -238,7 +238,7 @@ function orig_do_modify_project_membership($project_id, $member_id, $selection_i
   }
 }
 
-error_log("REQUEST = " . print_r($_REQUEST, true));
+// error_log("REQUEST = " . print_r($_REQUEST, true));
 $project_id = $_REQUEST['project_id'];
 unset($_REQUEST['project_id']);
 $project_members = get_project_members($pa_url, $user, $project_id);
