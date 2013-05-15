@@ -175,7 +175,46 @@ function validate_project_member_requests($project_members_by_role, $selections)
   return array('success' => $success, 'text' => $message);
 }
 
-function modify_project_membership($project_id, $member_id, $selection_id, 
+function do_modify_project_membership($selections, $project_id, $project_members_by_role)
+{
+  global $pa_url;
+  global $user;
+
+  $members_to_add = array();
+  $members_to_change_role = array();
+  $members_to_remove = array();
+
+  //  error_log("Selections = " . print_r($selections, true));
+  //  error_log("PMBR = " . print_r($project_members_by_role, true));
+
+  foreach($selections as $member_id => $selection_id) {
+    $is_member = array_key_exists($member_id, $project_members_by_role);
+    if ($is_member) {
+      $role = $project_members_by_role[$member_id];
+      if($selection_id == 0) {
+	// Remove this member from this slice
+	$members_to_remove[] = $member_id;
+      } else if ($selection_id != $role) {
+	// Change the role of this member on this slice
+	$members_to_change_role[$member_id] = $selection_id;
+      }
+    } else {
+      if ($selection_id > 0) {
+	// Add member to slice
+	$members_to_add[$member_id] = $selection_id;
+      }
+    }
+  }
+
+  // Publish changes atomically to SA
+  $result = modify_project_membership($pa_url, $user, $project_id, 
+				      $members_to_add, 
+				      $members_to_change_role, 
+				      $members_to_remove);
+  return $result;
+}
+
+function orig_do_modify_project_membership($project_id, $member_id, $selection_id, 
 				 $project_members_by_role, $is_member)
 {
   global $pa_url;
@@ -199,6 +238,7 @@ function modify_project_membership($project_id, $member_id, $selection_id,
   }
 }
 
+// error_log("REQUEST = " . print_r($_REQUEST, true));
 $project_id = $_REQUEST['project_id'];
 unset($_REQUEST['project_id']);
 $project_members = get_project_members($pa_url, $user, $project_id);
@@ -213,13 +253,11 @@ $selections = $_REQUEST;
 $validation_result = validate_project_member_requests($project_members_by_role, $selections);
 $success = $validation_result['success'];
 if($success) {
-  foreach($selections as $member_id => $selection_id) {
-    $is_member = array_key_exists($member_id, $project_members_by_role);
-    modify_project_membership($project_id, $member_id, $selection_id, 
-			    $project_members_by_role, 
-			    $is_member);
-  }
-  $_SESSION['lastmessage'] = "Project membership successfully changed.";
+  $result = do_modify_project_membership($selections, $project_id, $project_members_by_role);
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE)
+    $_SESSION['lastmessage'] = "Project membership successfully changed.";
+  else
+    $_SESSION['lastmessage'] = 'Error changing project membership : ' .$result[RESPONSE_ARGUMENT::OUTPUT];
 } else {
   $result = $validation_result['text'];
   $_SESSION['lasterror'] = $result;
