@@ -3,6 +3,9 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.4 ==
+ * Clearinghouse
+  * Check for valid arguments in more spots (#5)
+  * Ensure more methods have guards, and log on failed authorization
 
 == 1.3 ==
  * Start a CHANGELOG (#489)
