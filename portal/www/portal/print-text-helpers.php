@@ -197,7 +197,7 @@ function print_rspec_pretty( $xml ){
     $sliver_type=$node->sliver_type;
     $host=$node->host;
     $services=$node->services;
-    $login=$services->login;
+
     if ($sliver_type){
       echo "<td>",$sliver_type['name'],"</td>\n";
     }
@@ -205,9 +205,8 @@ function print_rspec_pretty( $xml ){
       echo "<td>",$host['name'],"</td>\n";
     }
     echo "</tr>\n";
-    echo "<tr>\n";    
-    if ($login){
-      echo "<th colspan='2'>Login</th>\n";
+    $logins=$services->login;
+    foreach ($logins as $login) {	
       $ssh_user = $login['username'];
       $ssh_host = $login['hostname'];
       $ssh_port = $login['port'];
@@ -215,6 +214,9 @@ function print_rspec_pretty( $xml ){
       if ($ssh_port and $ssh_port != 22) {
         $ssh_url .= ":$ssh_port";
       }
+
+      echo "<tr>\n";    
+      echo "<th colspan='2'>Login</th>\n";
       echo "<td colspan='3'>";
       echo "<a href='$ssh_url' target='_blank'>";
       echo "ssh ", $login['username'],"@",$login['hostname'];
@@ -222,8 +224,8 @@ function print_rspec_pretty( $xml ){
 	echo " -p ", $login['port'];
       }
       echo "</a></td>\n";
+      echo "</tr>\n";
     }
-    echo "</tr>\n";
 
     $interfaces = $node->interface;
     /* Add interface header if relevant */

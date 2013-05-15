@@ -93,7 +93,8 @@ foreach($selections as $email_name => $attribs) {
     $invite_id = $invite_data[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID];
     // If not, send an inviation email
     $email_subject = "Invitation to project: " . $project_name;
-    $confirmation_url = "https://marilac.gpolab.bbn.com/secure/accept-project-invite?invite_id=$invite_id&project_name=$project_name";
+    $hostname = $_SERVER['SERVER_NAME'];
+    $confirmation_url = "https://$hostname/secure/accept-project-invite?invite_id=$invite_id&project_name=$project_name";
     $email_text = "Dear $user_name, \n" . 
       "You are invited to join GENI project $project_name whose lead is $lead_name. " . 
       "If you would like to join the project and have a GENI account, click on this URL " . $confirmation_url . ". " .

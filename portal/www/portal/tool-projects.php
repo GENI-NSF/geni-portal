@@ -41,6 +41,7 @@ if(!isset($project_objects) || !isset($slice_objects) ||
   $slice_objects = $retVal[1];
   $member_objects = $retVal[2];
   $project_slice_map = $retVal[3];
+  $project_activeslice_map = $retVal[4];
 }
 
 /* foreach($project_objects as $project) { */
@@ -214,7 +215,9 @@ if (count($project_objects) > 0) {
 	   "</a> $handle_req_str</td><td> <a href=\"project-member.php?project_id=$project_id&member_id=" .
 	   $lead_id . "\">" . $lead_name . "</a> </td> " .
 	   "<td> " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE] . 
-	   " </td><td align=\"center\"> " . count($project_slice_map[$project_id]) . " </td><td> " .
+	   " </td>");
+    print ("<td align=\"center\"> " . count($project_activeslice_map[$project_id]) . " </td>");
+    print ("<td> " .
 	   $create_slice_link . "</td></tr>\n");
     // FIXME: Button to invite people to the project?
   }

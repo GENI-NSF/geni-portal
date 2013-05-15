@@ -202,17 +202,6 @@ print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n"
 
 </form>
 
-<?php
-
-$upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
-print "<br/><br/>";
-
-print "This button enables you to upload a CSV file containing data about people you would like to add as members of this project.";
-print "<br/>";
-print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Upload Member List</b></button><br/>";
-
-?>
-
 
 
 <?php
