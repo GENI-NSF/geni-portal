@@ -70,6 +70,19 @@ if (! isset($all_ams)) {
 
 // print_r( $all_ams);
 
+// For comparing member records by role (low roles come before high roles)
+function compare_members_by_role($mem1, $mem2)
+{
+  $role1 = $mem1[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+  $role2 = $mem2[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+  if ($role1 < $role2)
+    return -1;
+  else if ($role1 > $role2) 
+    return 1;
+  else return 0;
+  
+}
+
 
 function build_agg_table_on_slicepg() 
 {
@@ -81,6 +94,7 @@ function build_agg_table_on_slicepg()
      global $delete_slivers_disabled;
      global $slice_name;
      global $disable_buttons_str;
+     global $get_slice_credential_disable_buttons;
 
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
@@ -98,7 +112,7 @@ function build_agg_table_on_slicepg()
      //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
      $output .= "<tr>";
      $output .= "<th id='status'>";
-     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()' $disable_buttons_str>Get All</button>";
+     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()' $get_slice_credential_disable_buttons>Get All</button>";
      $output .= "</th><th>Aggregate</th>";
      //      output .= "<th>&nbsp;</th>";
      $output .= "<th>Renew</th>";
@@ -127,14 +141,14 @@ function build_agg_table_on_slicepg()
 	    }
 	    // sliver actions
 	    $output .= "<td rowspan='2'>";
-	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $disable_buttons_str><b>Resource Status</b></button>";
-	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $disable_buttons_str><b>Details</b></button>\n";
+	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>";
+	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete Resources</b></button>\n";
 	    $output .= "</td></tr>";
 
 
 
-	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $disable_buttons_str>Get Status</button></td></tr>";
+	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $get_slice_credential_disable_buttons>Get Status</button></td></tr>";
 
 
 
@@ -214,6 +228,11 @@ $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
 $add_slivers_disabled = "";
 if(!$add_slivers_privilege) { $add_slivers_disabled = $disabled; }
 
+$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
+						   CS_CONTEXT_TYPE::SLICE, $slice_id);
+$get_slice_credential_disable_buttons = "";
+if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
+
 // String to disable button or other active element
 $disabled = "disabled = " . '"' . "disabled" . '"'; 
 
@@ -229,6 +248,11 @@ if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
 
 $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
+
+if(!$lookup_slice_privilege) {
+  $_SESSION['lastmessage'] = 'User has no privileges to view slice ' . $slice_name;
+  relative_redirect('home.php');
+}
 
 ?>
 
@@ -264,16 +288,16 @@ print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 print "<tr><td rowspan='2'>\n";
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
 
-print "<button onClick=\"window.location='$status_url'\" $disable_buttons_str><b>Resource Status</b></button>\n";
-print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $disable_buttons_str><b>Details</b></button>\n";
+print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
+print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
 print "</td>\n";
 
 /* Renew */
+print "<td>\n";
 if($renew_slice_privilege) {
-  print "<td>\n";
   print "<form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='slice_expiration'";
@@ -358,11 +382,6 @@ print "</table>\n";
 // ---
 
 print "<h2>Slice members</h2>";
-$edit_members_disabled = "";
-if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-  $edit_members_disabled = $disabled;
-}
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit</b></button>";
 ?>
 
 <table>
@@ -371,6 +390,7 @@ echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_memb
 		<th>Roles</th>
 	</tr>
 	<?php
+usort($members, 'compare_members_by_role');
 foreach($members as $member) {
 
 
@@ -386,6 +406,15 @@ foreach($members as $member) {
 }
 	?>
 </table>
+
+<?php
+$edit_members_disabled = "";
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  $edit_members_disabled = $disabled;
+}
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button>";
+?>
+
 
 <h2>Recent Slice Actions</h2>
 <table>

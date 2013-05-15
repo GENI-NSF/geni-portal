@@ -47,6 +47,10 @@ class SA_ARGUMENT
   const ROLE_TYPE = "role_type";
   const SLICE_UUIDS = "slice_uuids";
   const PROJECT_UUIDS = "project_uuids";
+  const ALLOW_EXPIRED = "allow_expired";
+  const MEMBERS_TO_ADD = "members_to_add";
+  const MEMBERS_TO_CHANGE_ROLE = "members_to_change_role";
+  const MEMBERS_TO_REMOVE = "members_to_remove";
 }
 
 /* Name of table containing slice info */

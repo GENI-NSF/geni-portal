@@ -32,6 +32,7 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("am_map.php");
 require_once("sa_client.php");
+require_once("proj_slice_member.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
 $user = geni_loadUser();
@@ -107,8 +108,12 @@ $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 // Retrieve a canned RSpec
 $rspec_file = writeDataToTempFile($rspec);
 
+
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id);
+
 // Call create sliver at the AM
-$retVal = create_sliver($am_url, $user, $slice_credential,
+$retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
                                $slice_urn, $rspec_file);
 unlink($rspec_file);
 error_log("CreateSliver output = " . print_r($retVal, TRUE));

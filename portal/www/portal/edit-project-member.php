@@ -69,7 +69,7 @@ function compute_member_row_elements($member_details,
   // If a member, can remove or change role
   // If not a member, can add with a given role
   $options = "";
-  $options = $options . "<option value=0>Remove from Project</>";
+  $options = $options . "<option value=0>Remove from Project</option>";
 
   foreach($CS_ATTRIBUTE_TYPE_NAME as $role_index => $role_label) {
     if ($role_index == CS_ATTRIBUTE_TYPE::OPERATOR) continue;
@@ -81,12 +81,9 @@ function compute_member_row_elements($member_details,
       $label = "Change to " . $role_label;
     }
     
-    $options = $options . "<option $selected value=$role_index>$label</>";
+    $options = $options . "<option $selected value=$role_index>$label</option>";
   }
-  $member_actions =  "<select " . 
-    "name=\"$member_id\"" . $member_id .
-    "id=\"$member_id\"" . $member_id .
-    ">$options</select>";
+  $member_actions =  "<select name=\"$member_id\">$options</select>";
 
   $row_elements = array('member_url' => $member_url,
 			'member_role' => $member_role,
@@ -112,8 +109,6 @@ function compare_member_row_elements($ent1, $ent2)
     return 1;
 
 }
-
-
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -161,6 +156,7 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 //  error_log("APMD = " . print_r($apmd, true));
 //}
 
+print "<h1>GENI Project: " . $project_name . "</h1>";
 
 ?>
 <form method="POST" action="do-edit-project-member.php">
@@ -168,7 +164,7 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 <tr><th>Project Member</th><th>Project Role</th><th>Actions</th></tr>
 <?php
 
-  print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\">\n";
+print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 
 
 // First capture all the row details for the members
@@ -203,6 +199,10 @@ print "<br/>\n";
 print "<input type=\"submit\" value=\"$submit_label\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 ?>
+
+</form>
+
+
 
 <?php
 
