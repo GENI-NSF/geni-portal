@@ -894,14 +894,14 @@ class SignerAuthorityGuard implements Guard
   }
 
   public function evaluate() {
-    ret = (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
-    if (not ret) {
+    $ret = (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+    if (! $ret) {
       $parsed_message = $this->message->parse();
       $action = $parsed_message[0];
       $log_msg = "AuthZ Denied: Signer is not authority: " . $this->message->signerUrn() . " cannot call " . $action;
       geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     }
-    return ret;
+    return $ret;
   }
 }
 
