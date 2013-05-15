@@ -126,7 +126,6 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
@@ -185,8 +184,10 @@ print "</table>\n";
 <h2>Project slices:</h2>
 <?php
 include("tool-slices.php");
+include("tool-expired-slices.php");
 ?>
 <br/>
+
 <h2>Project members</h2>
 
 <?php
@@ -242,14 +243,14 @@ $edit_members_disabled = "";
 if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $edit_members_disabled = $disabled;
 }
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Manage Current Project Members</b></button>";
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Current Project Membership</b></button>";
 
-$upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
-
-print "<br/><h3>Add new project members</h3>";
-print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
+  print "<br/><h3>Add new project members</h3>";
+  print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
+
   //  print "<br/><h3>Invite new project members</h3>\n";
   print "<br/>";
   print "<button onClick=\"window.location='";

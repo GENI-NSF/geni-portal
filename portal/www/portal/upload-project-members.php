@@ -34,9 +34,10 @@ require_once('cs_constants.php');
 
 
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
+include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-include("tool-lookupids.php");
+
 
 if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -124,15 +125,8 @@ if ($error != NULL || count($_POST) == 0) {
     . " style=\"background: #dddddd;font-weight: bold\">\n";
   echo "$error";
   echo "</div>\n";
-
-  print "Upload a CSV (comma-separated-values) file of candidates members for your project.<br/><br/>";
-  print "File format:<br/>";
-  print "<i>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</i><br/>";
-  print "Example:<br/>";
-  print "<i>jsmith@geni.net, Joe Smith, Admin</i><br/>";
-  print "<i>mbrown@geni.net, Mary Brown</i><br/><br/>";
-
   print "<h2>Upload Project Members</h2>";
+  print "Upload a CSV (comma-separated-values) file of candidates members for your project.<br/><br/>";
   print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
   print '  <label for="file">CSV File:</label>';
   print '  <input type="file" name="file" id="file" />';
@@ -141,6 +135,14 @@ if ($error != NULL || count($_POST) == 0) {
   print '  <input type="hidden" name="referer" value="' . $referer . '"/>';
   print '</form>';
   print '<br/>';
+
+  print "<p>";
+  print "File format:<br/>";
+  print "<pre>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</pre><br/>";
+  print "Example:<br/>";
+  print "<pre>jsmith@geni.net, Joe Smith, Admin\n";
+  print "mbrown@geni.net, Mary Brown</pre><br/><br/>";
+  print "</p>";
   include("footer.php");
   exit;
 }
@@ -170,7 +172,9 @@ if (array_key_exists('file', $_FILES)) {
 // include("tool-breadcrumbs.php");
 // include("tool-showmessage.php");
   print("<h2>Upload Project Members</h2>\n");
-
+  print "<b>Action Legend</b><br/>";
+  print "<b>Add as ...</b> Candidates who already use the portal will be added to your project with the specified role immediately.<br/>";
+  print "<b>Invite as ...</b> Others will receive an invitation email with instructions on joining your project.";
 
 $actual_filename = $_FILES['file']['tmp_name'];
 $contents = file_get_contents($actual_filename);
@@ -188,7 +192,9 @@ foreach($project_members as $project_member) {
 print '<form method="POST" action="do-upload-project-members.php">';
 print '<table>';
 
-print '<tr><th>Candidate Name</th><th>Candidate Email</th><th>Recognized</th><th>Actions</th></tr>';
+print '<tr><th>Candidate Name</th><th>Candidate Email</th>';
+// <th>Can Add <br/>Immediately?</th>
+print '<th>Action</th></tr>';
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 
 
@@ -236,7 +242,9 @@ foreach($names_by_email as $email => $name) {
   }
     
   //  error_log("MA = " . $member_actions);
-  print "<tr><td>$name</td><td>$email</td><td>$recognized</td><td>$member_actions</td></tr>\n";
+  print "<tr><td>$name</td><td>$email</td>";
+  //<td>$recognized</td>
+  print "<td>$member_actions</td></tr>\n";
   //  error_log("EMAIL = " . $email . " NAME = " . $name);
 }
 

@@ -3,6 +3,14 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.3 ==
+ * Start a CHANGELOG (#489)
  * Clearinghouse
-
+   * Clean up privilege table (#493)
  * Portal
+   * Displayed expired slices on project page but hidden by a button (#523) 
+   * Allow removing members from projects, slices (#153)
+   * Keys for all members included in createsliver (#248)
+   * bulk add people to projects (#171)
+   * slice membership (#58)
+   * Allow adding known people to projects/slices (#86)
+
