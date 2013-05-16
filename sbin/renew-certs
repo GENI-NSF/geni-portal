@@ -86,7 +86,7 @@ class Certificate (object):
           #print "cert command was: ", pretty_cmd
           #print "cert contents is: ", x509_stdout
 
-     def renew(self, days):
+     def renew(self, signcert, signkey, days):
           # The name of the extension section
           ext_name = 'geni'
           try:
@@ -95,7 +95,8 @@ class Certificate (object):
                ext = self.make_ext_file(ext_name)
                print "\tCSR = ", csr
                print "\tEXT = ", ext
-               newcert = self.sign_csr(csr, ext, ext_name, days)
+               newcert = self.sign_csr(csr, ext, ext_name, days, signcert,
+                                       signkey)
                return newcert
           finally:
                print "\tCleanup"
@@ -136,7 +137,7 @@ basicConstraints = CA:%s
           f.close()
           return ext_file
 
-     def sign_csr(self, req_file, ext_file, ext_name, days):
+     def sign_csr(self, req_file, ext_file, ext_name, days, signcert, signkey):
           (fd, cert_file) = tempfile.mkstemp()
           os.close(fd)
           sign_cmd = [OPENSSL, 'x509',
@@ -144,8 +145,8 @@ basicConstraints = CA:%s
                       '-in', req_file,
                       '-extfile', ext_file,
                       '-extensions', ext_name,
-                      '-CA', CA_CERT,
-                      '-CAkey', CA_KEY,
+                      '-CA', signcert,
+                      '-CAkey', signkey,
                       '-set_serial', self.serial,
                       '-out', cert_file,
                       '-days', str(days)]
@@ -164,6 +165,10 @@ def parse_args(argv):
     parser.add_option("--days", type="int", default="365",
                       help=("certificate validity period in days"
                             " [default: %default]"))
+    parser.add_option("--cert", default=CA_CERT,
+                      help="signing certificate [default: %default]")
+    parser.add_option("--key", default=CA_KEY,
+                      help="signing key [default: %default]")
     options,args = parser.parse_args()
     return options,args
 
@@ -191,7 +196,7 @@ def main(argv=None):
               continue
          print "Processing service '%s':" % (svc)
          cert = Certificate(certfile, keyfile)
-         tmpcert = cert.renew(options.days)
+         tmpcert = cert.renew(options.cert, options.key, options.days)
          newcert = "%s-cert.pem" % (svc)
          os.rename(tmpcert, newcert)
          print "\tnew cert = %s" % (newcert)
