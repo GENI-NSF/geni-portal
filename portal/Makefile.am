@@ -49,6 +49,7 @@ dist_svcweb_DATA = \
 	www/portal/abac-id.php \
 	www/portal/abac-key.php \
 	www/portal/abac.php \
+	www/portal/accept-project-invite.php \
 	www/portal/add-project-note.php \
 	www/portal/add-slice-note.php \
 	www/portal/admin.php \
@@ -71,6 +72,7 @@ dist_svcweb_DATA = \
 	www/portal/deletesliver.php \
 	www/portal/deletesshkey.php \
 	www/portal/disable-slice.php \
+	www/portal/do-accept-project-invite.php \
 	www/portal/do-delete-project-member.php \
 	www/portal/do-disable-slice.php \
 	www/portal/do-edit-project-member.php \
@@ -82,6 +84,7 @@ dist_svcweb_DATA = \
 	www/portal/do-register.php \
 	www/portal/do-renew-slice.php \
 	www/portal/do-renew.php \
+	www/portal/do-upload-project-members.php \
 	www/portal/dologout.php \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
@@ -162,6 +165,7 @@ dist_svcweb_DATA = \
 	www/portal/status_constants_import.php \
 	www/portal/tool-breadcrumbs.php \
 	www/portal/tool-expired-projects.php \
+	www/portal/tool-expired-slices.php \
 	www/portal/tool-lookupids.php \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-projects.php \
@@ -169,10 +173,12 @@ dist_svcweb_DATA = \
 	www/portal/tool-slices.php \
 	www/portal/tools-admin.php \
 	www/portal/tools-user.php \
+	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
 	www/portal/user.php \
 	flack/playerProductInstall.swf
+
 
 dist_svcwebforge_DATA = flack/forge/SocketPool.swf
 
