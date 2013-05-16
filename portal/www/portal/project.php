@@ -49,6 +49,19 @@ if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 }
 
+// For comparing member records by role (low roles come before high roles)
+function compare_members_by_role($mem1, $mem2)
+{
+  $role1 = $mem1[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+  $role2 = $mem2[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+  if ($role1 < $role2)
+    return -1;
+  else if ($role1 > $role2) 
+    return 1;
+  else return 0;
+  
+}
+
 $project_id = "None";
 $project = null;
 $project_name = "None";
@@ -113,7 +126,6 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-
 print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
@@ -172,17 +184,13 @@ print "</table>\n";
 <h2>Project slices:</h2>
 <?php
 include("tool-slices.php");
+include("tool-expired-slices.php");
 ?>
 <br/>
+
 <h2>Project members</h2>
 
 <?php
-
-$edit_members_disabled = "";
-if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  $edit_members_disabled = $disabled;
-}
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit</b></button>";
 
 if ($num_members==1) {
    print "<p><i>There is <b>1</b> member in this project.</i></p>";
@@ -195,6 +203,8 @@ if ($num_members==1) {
 <?php
 
 print "</tr>\n";
+
+usort($members, 'compare_members_by_role');
 
 // Find current users role in this project
 $my_role = CS_ATTRIBUTE_TYPE::AUDITOR;
@@ -229,11 +239,23 @@ $my_role = CS_ATTRIBUTE_TYPE::AUDITOR;
 
 <?php
 
+$edit_members_disabled = "";
+if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  $edit_members_disabled = $disabled;
+}
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Current Project Membership</b></button>";
+
+
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  print "<br/><h3>Invite new project members</h3>\n";
+  $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
+  print "<br/><h3>Add new project members</h3>";
+  print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
+
+  //  print "<br/><h3>Invite new project members</h3>\n";
+  print "<br/>";
   print "<button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
-  print "\"><b>Invite New Project Members</b></button><br/>\n";
+  print "\"><b>Invite New Members</b></button><br/>\n";
   
   print "<br/>\n";
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {

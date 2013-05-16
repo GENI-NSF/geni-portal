@@ -41,6 +41,10 @@ class PA_ARGUMENT
   const CREATION = "creation";
   const EXPIRATION = "expiration";
   const PROJECT_UUIDS = "project_uuids";
+  const INVITATION_ID = "invitation_id";
+  const MEMBERS_TO_ADD = "members_to_add";
+  const MEMBERS_TO_CHANGE_ROLE = "members_to_change_role";
+  const MEMBERS_TO_REMOVE = "members_to_remove";
 }
 
 /* Name of table containing per-project info */
@@ -88,6 +92,19 @@ class PA_ACTION {
   const GET_PROJECT_MEMBERS = 'get_project_members';
   const GET_PROJECTS_FOR_MEMBER= 'get_projects_for_member';
 }
+
+// Table of PA project member invitations
+$PA_PROJECT_MEMBER_INVITATION_TABLENAME = "pa_project_member_invitation";
+
+class PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME {
+  const INVITE_ID = "invite_id";
+  const PROJECT_ID = "project_id";
+  const ROLE = "role";
+  const EXPIRATION = "expiration";
+}
+
+// How long to project invitaations have before they expire?
+$project_default_invitation_expiration_hours = 72;
 
 // Per the AM API V3:
 // We want the project name to go without change into the authority part of the URN

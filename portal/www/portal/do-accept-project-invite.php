@@ -22,55 +22,42 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once('header.php');
 require_once("user.php");
-require_once('portal.php');
-require_once('cs_constants.php');
-require_once('maintenance_mode.php');
+require_once('sr_constants.php');
+require_once('sr_client.php');
+require_once('pa_constants.php');
+require_once('pa_client.php');
 
-
-
-/* $GENI_TITLE = "GENI Portal Home"; */
-/* $ACTIVE_TAB = "Home"; */
-require_once("header.php");
 $user = geni_loadUser();
-
-// Non-operators can't use the portal: they go to the 'Maintenance" page
-if ($in_maintenance_mode && 
-    !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
-		      null)) 
-{
-  relative_redirect("maintenance_redirect_page.php");
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
 }
 
-show_header('GENI Portal Home', $TAB_HOME);
-?>
-<div id="home-body">
-<?php
-
-  if($has_maintenance_alert) {
-    print "<p class='instruction'>$maintenance_alert</p></br>";
-  }
-  include("tool-showmessage.php");
-if (is_null($user)) {
-  // TODO: Handle unknown state
-  print "Unable to load user record.<br/>";
-} else {
-  if ($user->isRequested()) {
-    include("home-requested.php");
-  } else if ($user->isDisabled()) {
-    print "User $user->eppn has been disabled.";
-  } else if ($user->isActive()) {
-    include("home-active.php");
-    // Uncomment below if you want jquery tabs example
-    //include("home-active-tabs.php");
-  } else {
-    // TODO: Handle unknown state
-    print "Unknown account state: $user->status<br/>";
-  }
+if (! isset($pa_url)) {
+  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
-?>
-</div>
-<br/>
-<?php
-include("footer.php");
-?>
+
+include("tool-lookupids.php");
+
+error_log("DAPI.request = " . print_r($_REQUEST, true));
+
+$invite_id = null;
+if (array_key_exists('invite_id', $_REQUEST)) {
+  $invite_id = $_REQUEST['invite_id'];
+}
+
+$project_name = null;
+if (array_key_exists('project_name', $_REQUEST)) {
+  $project_name = $_REQUEST['project_name'];
+}
+
+if($invite_id == null) {
+  $_SESSION['lasterror'] = "Ill-formed request to do-accept-project-invite.php";
+  relative_redirect("home.php");
+}
+
+accept_invitation($pa_url, $user, $invite_id);
+
+$_SESSION['lastmessage'] = "Successfully joined project $project_name";
+relative_redirect('home.php');
