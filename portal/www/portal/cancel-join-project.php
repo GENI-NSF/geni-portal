@@ -40,20 +40,20 @@ include("tool-lookupids.php");
 
 // Cancel request to join a project
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  $request = get_request_by_id($pa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
+  $request = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
 } else {
   error_log("cancel-project-request got no project_id");
 }
 if (! isset($request) || is_null($request)) {
   error_log("No request from request_id");
   if (isset($project_id)) {
-    $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $reqs = get_pending_requests_for_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     if (isset($reqs) && count($reqs) > 0) {
       if (count($reqs) > 1) {
 	error_log("cancel-project-request: Got " . count($reqs) . " pending requests on same project for same member");
@@ -151,7 +151,7 @@ if (isset($project_id) && $request['context_id'] != $project_id) {
   error_log("cancel-p-req: Request project != given project: " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] . " != " . $project_id);
 }
 $project_id = $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
-$project = lookup_project($pa_url, $user, $project_id);
+$project = lookup_project($sa_url, $user, $project_id);
 $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = $user->fetchMember($lead_id);
@@ -175,7 +175,7 @@ if (array_key_exists('submit', $_REQUEST)) {
 // Handle form submission
 if (isset($submit)) {
   // Cancel project join request
-  $cancelres = resolve_pending_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
+  $cancelres = resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
 				       $request_id, RQ_REQUEST_STATUS::CANCELLED, $reason);
   // FIXME: Handle result
 

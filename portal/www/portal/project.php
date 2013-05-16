@@ -41,10 +41,6 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
-
 if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 }
@@ -105,7 +101,7 @@ if (! is_null($project) && $project != "None") {
 }
 
 // Fill in members of project member table
-$members = get_project_members($pa_url, $user, $project_id);
+$members = get_project_members($sa_url, $user, $project_id);
 $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 //error_log("members = " . print_r($members, true));
@@ -114,7 +110,7 @@ $num_members = count($members);
 $reqs = null;
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-  $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
+  $reqs = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
 					CS_CONTEXT_TYPE::PROJECT, $project_id);
 }
 

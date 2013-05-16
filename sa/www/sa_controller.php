@@ -841,7 +841,7 @@ function update_project($args, $message)
 
 // Modify project membership according to given lists of add/change_role/remove
 // $members_to_add and $members_to_change are both
-//    dicitoaries of (member_id => role, ...)
+//    dictionaries of (member_id => role, ...)
 // $members_to_delete is a list of mebmer_ids
 //
 // The semantics are as follows:
@@ -1432,6 +1432,10 @@ function remove_project_member_from_slices($member_id, $project_id, $message)
 	if ($asm_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
 	  return $asm_result;
       }
+      // Change the slice owner to the new lead
+      $cso_result = change_slice_owner($slice_id, $project_lead_id);
+      if($cso_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	return $cso_result;
     }
   }
 }
@@ -2844,14 +2848,14 @@ function modify_slice_membership($args, $message)
   foreach($members_to_add as $member_to_add => $new_role) {
     if($new_role == CS_ATTRIBUTE_TYPE::LEAD)  {
       $lead_changes = $lead_changes + 1;
-      $new_slice_lead = $$member_to_add;
+      $new_slice_lead = $member_to_add;
     }
   }
   foreach($members_to_change_role as $member_to_change_role => $role) {
     if ($role == CS_ATTRIBUTE_TYPE::LEAD && 
 	$member_to_change_role != $slice_lead) {
       $lead_changes = $lead_changes + 1;
-      $new_slice_lead = $$member_to_add;
+      $new_slice_lead = $member_to_change_role;
     }
     if ($member_to_change_role == $slice_lead && 
 	$role != CS_ATTRIBUTE_TYPE::LEAD)
@@ -2872,7 +2876,7 @@ function modify_slice_membership($args, $message)
   if ($new_slice_lead != $slice_lead) {
 
     // Change the 'owner_id' field of the slice
-    $csoo_result = change_slice_owner($slice_id, $new_slice_lead);
+    $cso_result = change_slice_owner($slice_id, $new_slice_lead);
     if ($cso_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
       return $cso_result;
 

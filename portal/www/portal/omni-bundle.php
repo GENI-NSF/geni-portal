@@ -35,18 +35,18 @@ if (!isset($user)) {
 }
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 
 $warnings = array();
 $keys = $user->sshKeys();
 $cert = ma_lookup_certificate($ma_url, $user, $user->account_id);
-$project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+$project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
 $num_projects = count($project_ids);
 if (count($project_ids) > 0) {
   // If there's more than 1 project, we need the project names for
   // a default project chooser.
-  $projects = lookup_project_details($pa_url, $user, $project_ids);
+  $projects = lookup_project_details($sa_url, $user, $project_ids);
 }
 $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
 

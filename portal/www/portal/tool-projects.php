@@ -36,7 +36,7 @@ include("services.php");
 if(!isset($project_objects) || !isset($slice_objects) || 
    !isset($member_objects) || !isset($project_slice_map)) 
 {
-  $retVal  = get_project_slice_member_info( $pa_url, $sa_url, $ma_url, $user, True);
+  $retVal  = get_project_slice_member_info( $sa_url, $ma_url, $user, True);
   $project_objects = $retVal[0];
   $slice_objects = $retVal[1];
   $member_objects = $retVal[2];
@@ -112,14 +112,14 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
 /* if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, null)) { */
 /*   error_log("user is allowed to add project members"); */
 /*   // Show outstanding project requests for this user to handle */
-/*   $reqs = get_pending_requests_for_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null); */
+/*   $reqs = get_pending_requests_for_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null); */
 /*   if (isset($reqs) && count($reqs) > 0) { */
 /*     print "Found " . count($reqs) . " outstanding project join requests for you to handle:<br/>\n"; */
 /*     print "<table>\n"; */
 /*     print "<tr><th>Project Name</th><th>Project Lead</th><th>Request Created</th><th>Requestor</th><th>Handle Request</th></tr>\n"; */
 /*     foreach ($reqs as $request) { */
 /*       // Print it out */
-/*       $project = lookup_project($pa_url, $user, $request['context_id']); */
+/*       $project = lookup_project($sa_url, $user, $request['context_id']); */
 /*       $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]; */
 /*       $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; */
 /*       $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE]; */
@@ -144,7 +144,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
 /* } */
 
 if (count($project_objects) > 0) {
-  $reqlist = get_pending_requests_for_user($pa_url, $user, $user->account_id, 
+  $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
 							CS_CONTEXT_TYPE::PROJECT);
   $project_request_map = array();
   foreach ($reqlist as $req) {
@@ -227,7 +227,7 @@ if (count($project_objects) > 0) {
 }
 
 // Show outstanding project requests BY this user - projects you asked to join
-$reqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$reqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
 if (isset($reqs) && count($reqs) > 0) {
 
   $project_ids = array();
@@ -236,7 +236,7 @@ if (isset($reqs) && count($reqs) > 0) {
     if (!in_array($project_id, $project_ids))
       $project_ids[] = $project_id;
   }
-  $projects = lookup_project_details($pa_url, $user, $project_ids);
+  $projects = lookup_project_details($sa_url, $user, $project_ids);
   $project_lead_names = lookup_member_names_for_rows($ma_url, $user, $projects, 
 						PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
 

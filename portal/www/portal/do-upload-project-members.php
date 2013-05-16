@@ -42,8 +42,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
 if (! isset($ma_url)) {
@@ -56,7 +56,7 @@ if (! isset($ma_url)) {
 $project_id = $_REQUEST['project_id'];
 unset($_REQUEST['project_id']);
 
-$project_details = lookup_project($pa_url, $user, $project_id);
+$project_details = lookup_project($sa_url, $user, $project_id);
 $project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 
@@ -85,11 +85,11 @@ foreach($selections as $email_name => $attribs) {
 
   // If they're already a member, add to project and send confirmation email
   if(strlen($member_id) > 0) {
-    add_project_member($pa_url, $user, $project_id, $member_id, $role);
+    add_project_member($sa_url, $user, $project_id, $member_id, $role);
     $num_members_added = $num_members_added + 1;
     
   } else {
-    $invite_data = invite_member($pa_url, $user, $project_id, $role);
+    $invite_data = invite_member($sa_url, $user, $project_id, $role);
     $invite_id = $invite_data[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID];
     // If not, send an inviation email
     $email_subject = "Invitation to project: " . $project_name;

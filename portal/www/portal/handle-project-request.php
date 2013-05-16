@@ -52,17 +52,17 @@ include("tool-lookupids.php");
 
 // The email from the PI supplied project_id, member_id, request_id
 
-// Get the pa_url for accessing request information
-if (!isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  if (!isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-    error_log("Found no Project Authority Service");
+// Get the sa_url for accessing request information
+if (!isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (!isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no Slice Authority Service");
   }
 }
 
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  $request = get_request_by_id($pa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
+  $request = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
 } else {
   error_log("handle-project-request got no request_id");
 }
@@ -83,7 +83,7 @@ if (! isset($request) || is_null($request)) {
     }
 
     // Get requests for the given member_id on the given project
-    $reqs = get_requests_by_user($pa_url, $user, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
+    $reqs = get_requests_by_user($sa_url, $user, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
     if (isset($reqs) && count($reqs) > 0) {
       if (count($reqs) > 1) {
 	error_log("handle-p-reqs: Got " . count($reqs) . " pending requests on same project for same member");
@@ -179,7 +179,7 @@ if (isset($project_id) && $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] != $p
   error_log("handle-p-req: Request project != given project: " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] . " != " . $project_id);
 }
 $project_id = $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
-$project = lookup_project($pa_url, $user, $project_id);
+$project = lookup_project($sa_url, $user, $project_id);
 $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 $lead = $user->fetchMember($lead_id);
@@ -255,10 +255,10 @@ if (array_key_exists('submit', $_REQUEST)) {
 if (isset($submit)) {
   if ($submit == 'approve') {
     // call pa add member
-    $addres = add_project_member($pa_url, $user, $project_id, $member_id, $role);
+    $addres = add_project_member($sa_url, $user, $project_id, $member_id, $role);
     // FIXME: Check result
 
-    $appres = resolve_pending_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT,
+    $appres = resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT,
 				      $request_id, RQ_REQUEST_STATUS::APPROVED, $reason);
     // FIXME: Check result
 
@@ -307,7 +307,7 @@ $name\n";
     relative_redirect('project.php?project_id=' . $project_id);
 
   } else {
-    $appres = resolve_pending_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT,
+    $appres = resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT,
 				      $request_id, RQ_REQUEST_STATUS::REJECTED, $reason);
     // FIXME : check result
 

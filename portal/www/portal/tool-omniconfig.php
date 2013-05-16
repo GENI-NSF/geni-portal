@@ -34,7 +34,6 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 // Does the user have an outside certificate?
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 
 // Store any warnings here for display at the top of the page.
 $warnings = array();
@@ -68,13 +67,13 @@ if ($has_certificate) {
 }
 
 /* --------- PROJECTS ---------- */
-$project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+$project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
 $num_projects = count($project_ids);
 $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
 if ($num_projects > 0) {
   // If there are any projects, look up their details. We need the names
   // in order to set up a default project in the config file.
-  $projects = lookup_project_details($pa_url, $user, $project_ids);
+  $projects = lookup_project_details($sa_url, $user, $project_ids);
 }
 if ($num_projects == 0) {
   // warn that the user has no projects

@@ -138,16 +138,16 @@ function get_template_omni_config($user, $version, $default_project=null)
       . "# unless '--project' is specified on the command line.\n"
       . "# Uncomment only one of the following lines if you want to use this feature\n";
 
-    if (! isset($pa_url)) {
-       $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);	
+    if (! isset($sa_url)) {
+       $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);	
     }
-    $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);	
+    $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);	
     if (count($projects) > 0 && is_null($default_project)) {
       $p0 = $projects[0];
       $default_project = $p0[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     }
     foreach ($projects as $project_id) {
-      $project = lookup_project($pa_url, $user, $project_id);
+      $project = lookup_project($sa_url, $user, $project_id);
       $proj_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       if ($proj_name == $default_project) {
         $omni_config .= "default_project = $proj_name\n";

@@ -168,7 +168,7 @@ if ($isnew) {
 } else {
   print "<h3>Project members</h3>\n";
   print "<table>\n";
-  $members = get_project_members($pa_url, $user, $project_id);
+  $members = get_project_members($sa_url, $user, $project_id);
   print "<tr><th>Project Member</th><th>Roles</th><th>Send Message</th></tr>\n";
   //print "<tr><td><a href=\"project-member.php?project_id=$project_id&member_id=" . $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "\">$leadname</a></td><td>Project Lead</td><td>All</td><td><button onClick=\"window.location='do-delete-project-member.php?project_id=$project_id&member_id=$leadid'\"><b>Delete</b></button></td><td><a href=\"mailto:$leademail\">Email $leadname</a></td></tr>\n";
   foreach ($members as $member) {

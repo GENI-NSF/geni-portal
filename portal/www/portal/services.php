@@ -41,24 +41,12 @@ require_once('session_cache.php');
 
 
 global $SR_SERVICE_TYPE_NAMES;	
-global $services, $pa_url, $sa_url, $ma_url, $sa_url, $log_url;
+global $services, $sa_url, $ma_url, $sa_url, $log_url;
 
 if (! isset($services)) {
    $services = get_services();	
 }
 
-
-if (! isset($pa_url)) {
-  $pa_list = select_services($services, SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  if (count($pa_list) >= 0) 
-  {
-    $pa = $pa_list[0];		
-    $pa_url = $pa[SR_TABLE_FIELDNAME::SERVICE_URL];
-  }   
-  if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-    error_log("Found no PA in SR!'");
-  }
-}
 
 if (! isset($sa_url)) {
   $sa_list = select_services($services, SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -98,7 +86,6 @@ if (! isset($log_url)) {
 }
 
 // print "<html>";
-// print "<p>".$pa_url."</p>";
 // print "<p>".$sa_url."</p>";
 // print "<p>".$ma_url."</p>";
 // print "<p>".$log_url."</p>";
