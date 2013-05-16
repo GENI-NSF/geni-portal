@@ -67,7 +67,7 @@ function test_requests_for_url($url, $context_type, $context_id)
   dump_rows($rows);
   $rows = get_requests_by_user($url, $signer, $signer->account_id, $context_type, $context_id);
   dump_rows($rows);
-  $row = get_request_by_id($url, $signer, $request_id);
+  $row = get_request_by_id($url, $signer, $request_id, $context_type);
   dump_row($row);
   $num_pending = get_number_of_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
@@ -75,7 +75,8 @@ function test_requests_for_url($url, $context_type, $context_id)
   $pending = get_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
   dump_rows($pending);
-  resolve_pending_request($url, $signer, $request_id, RQ_REQUEST_STATUS::APPROVED, 'resolved');
+  resolve_pending_request($url, $signer, $context_type, 
+			  $request_id, RQ_REQUEST_STATUS::APPROVED, 'resolved');
   $num_pending = get_number_of_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
   error_log("Num_pending(post) = " . print_r($num_pending, true));

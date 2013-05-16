@@ -22,12 +22,11 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// Generic controller methods for request management
-// This file is to be 'required' by a real controller (sa, pa, ma, etc)
-// once the $REQUEST_TABLENAME variable is set in that file
+// Generic controller methods for request management, based on context_type (project or slice)
 
 require_once('response_format.php');
 require_once('rq_constants.php');
+require_once('rq_utils.php');
 require_once('db_utils.php');
 
 // Create a request of given type by the given requestor on the given context
@@ -66,11 +65,9 @@ function create_request($args)
 
   $now = new DateTime(null, new DateTimeZone('UTC')); 
 
-  global $REQUEST_TABLENAME;
-
   $conn = db_conn();
-  $sql = "INSERT INTO " . $REQUEST_TABLENAME
-    . "(" 
+  $sql = "INSERT INTO " . get_request_tablename($context_type)
+    . " (" 
     . RQ_REQUEST_TABLE_FIELDNAME::STATUS . ", "
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE . ", "
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . ", "
@@ -116,6 +113,10 @@ function resolve_pending_request($args)
     return generate_response(RESPONSE_ERROR::ARGS, '', 'No request_id given');
   }
 
+  $context_type = null;
+  if (array_key_exists(RQ_ARGUMENTS::CONTEXT_TYPE, $args)) {
+    $context_type = $args[RQ_ARGUMENTS::CONTEXT_TYPE];
+  }
   $resolution_status = null;
   if (array_key_exists(RQ_ARGUMENTS::RESOLUTION_STATUS, $args)) {
     $resolution_status = $args[RQ_ARGUMENTS::RESOLUTION_STATUS];
@@ -131,10 +132,9 @@ function resolve_pending_request($args)
 
   $now = new DateTime(null, new DateTimeZone('UTC'));
 
-  global $REQUEST_TABLENAME;
   $conn = db_conn();
 
-  $sql = "UPDATE " . $REQUEST_TABLENAME
+  $sql = "UPDATE " . get_request_tablename($context_type) 
     . " SET " 
     . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . $conn->quote($resolution_status, 'integer') . ", "
     . RQ_REQUEST_TABLE_FIELDNAME::RESOLUTION_DESCRIPTION . " = " . $conn->quote($resolution_description, 'text') . ", "
@@ -172,9 +172,8 @@ function get_requests_for_context($args)
     $status = $args[RQ_ARGUMENTS::RESOLUTION_STATUS];
   }
 
-  global $REQUEST_TABLENAME;
   $conn = db_conn();
-  $sql = "SELECT * from " . $REQUEST_TABLENAME 
+  $sql = "SELECT * from " . get_request_tablename($context_type)
     . " WHERE "
     . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE . " = " . $conn->quote($context_type, 'integer')
     . " AND " 
@@ -219,10 +218,9 @@ function get_requests_by_user($args)
     $status = $args[RQ_ARGUMENTS::RESOLUTION_STATUS];
   }
 
-  global $REQUEST_TABLENAME;
   $conn = db_conn();
 
-  $sql = "SELECT * from " . $REQUEST_TABLENAME 
+  $sql = "SELECT * from " . get_request_tablename($context_type)
     . " WHERE "
     . RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR . " = " . $conn->quote($account_id, 'text');
   if (isset($context_type) and ! is_null($context_type)) {
@@ -271,7 +269,6 @@ function get_pending_requests_for_user($args)
     $context_id = $args[RQ_ARGUMENTS::CONTEXT_ID];
   }
 
-  global $REQUEST_TABLENAME;
   $conn = db_conn();
 
   $user_for_context_query = '';
@@ -285,9 +282,9 @@ function get_pending_requests_for_user($args)
   // Note that this is in ADDITION to limiting to a specific context if provided.
   $user_for_context_query =  $user_for_context_query . 
     RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
-    user_context_query($account_id) . ")";
+    user_context_query($account_id, $context_type) . ")";
 
-  $sql = "SELECT * from " . $REQUEST_TABLENAME 
+  $sql = "SELECT * from " . get_request_tablename($context_type) 
     . " WHERE "
     . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . RQ_REQUEST_STATUS::PENDING
     . " AND "
@@ -324,7 +321,6 @@ function get_number_of_pending_requests_for_user($args)
     $context_id = $args[RQ_ARGUMENTS::CONTEXT_ID];
   }
 
-  global $REQUEST_TABLENAME;
   $conn = db_conn();
 
   $user_for_context_query = '';
@@ -338,9 +334,9 @@ function get_number_of_pending_requests_for_user($args)
   // Note that this is in ADDITION to limiting to a specific context if provided.
   $user_for_context_query = $user_for_context_query . 
     RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
-    user_context_query($account_id) . ")";
+    user_context_query($account_id, $context_type) . ")";
 
-  $sql = "select count(*) from " . $REQUEST_TABLENAME
+  $sql = "select count(*) from " . get_request_tablename($CONTEXT_TYPE)
     . " WHERE "
     . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . RQ_REQUEST_STATUS::PENDING
     . " AND "
@@ -358,6 +354,10 @@ function get_number_of_pending_requests_for_user($args)
 // return standard triple
 function get_request_by_id($args)
 {
+  $context_type = null;
+  if (array_key_exists(RQ_ARGUMENTS::CONTEXT_TYPE, $args)) {
+    $context_type = $args[RQ_ARGUMENTS::CONTEXT_TYPE];
+  }
   $request_id = null;
   if (array_key_exists(RQ_ARGUMENTS::REQUEST_ID, $args)) {
     $request_id = $args[RQ_ARGUMENTS::REQUEST_ID];
@@ -366,10 +366,9 @@ function get_request_by_id($args)
     return generate_response(RESPONSE_ERROR::ARGS, '', 'No request ID given');
   }
 
-  global $REQUEST_TABLENAME;
   $conn = db_conn();
 
-  $sql = "SELECT * from " . $REQUEST_TABLENAME 
+  $sql = "SELECT * from " . get_request_tablename($context_type)
     . " WHERE "
     . RQ_REQUEST_TABLE_FIELDNAME::ID . " = " . $conn->quote($request_id, 'integer');
   //  error_log("get_requests_by_id.sql = " . $sql);

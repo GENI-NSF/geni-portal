@@ -62,7 +62,7 @@ if (!isset($pa_url)) {
 
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  $request = get_request_by_id($pa_url, $user, $request_id);
+  $request = get_request_by_id($pa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
 } else {
   error_log("handle-project-request got no request_id");
 }
@@ -258,7 +258,8 @@ if (isset($submit)) {
     $addres = add_project_member($pa_url, $user, $project_id, $member_id, $role);
     // FIXME: Check result
 
-    $appres = resolve_pending_request($pa_url, $user, $request_id, RQ_REQUEST_STATUS::APPROVED, $reason);
+    $appres = resolve_pending_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT,
+				      $request_id, RQ_REQUEST_STATUS::APPROVED, $reason);
     // FIXME: Check result
 
     // log this
@@ -306,7 +307,8 @@ $name\n";
     relative_redirect('project.php?project_id=' . $project_id);
 
   } else {
-    $appres = resolve_pending_request($pa_url, $user, $request_id, RQ_REQUEST_STATUS::REJECTED, $reason);
+    $appres = resolve_pending_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT,
+				      $request_id, RQ_REQUEST_STATUS::REJECTED, $reason);
     // FIXME : check result
 
     error_log("handle-p-req denied $member_name membership in $project_name");

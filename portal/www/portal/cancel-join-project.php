@@ -46,7 +46,7 @@ if (! isset($pa_url)) {
 
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  $request = get_request_by_id($pa_url, $user, $request_id);
+  $request = get_request_by_id($pa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
 } else {
   error_log("cancel-project-request got no project_id");
 }
@@ -175,7 +175,8 @@ if (array_key_exists('submit', $_REQUEST)) {
 // Handle form submission
 if (isset($submit)) {
   // Cancel project join request
-  $cancelres = resolve_pending_request($pa_url, $user, $request_id, RQ_REQUEST_STATUS::CANCELLED, $reason);
+  $cancelres = resolve_pending_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
+				       $request_id, RQ_REQUEST_STATUS::CANCELLED, $reason);
   // FIXME: Handle result
 
   if (isset($cancelres) && is_array($cancelres) && array_key_exists('code', $cancelres)) {
