@@ -972,10 +972,26 @@ function modify_project_membership($args, $message)
       return generate_response(RESPONSE_ERROR::ARGS, null, 
 			       "Proposed project lead does not have " . 
 			       "sufficient privileges for that role.");
+
+    // If we're changing the lead, make sure new lead is a member
+    // of all slices of project
+    $aplts = add_project_lead_to_slices($project_id, 
+					$new_project_lead, $message);
+    if ($aplts[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $aplts;
+    
+  }
+
+
+
+  // Can't remove project lead directly
+  // Need to demote them and then remove them
+  if (array_key_exists($project_lead, $members_to_remove)) {
+    return generate_respponse(RESPONSE_ERROR::ARGS, null,
+			      "Cannot remove lead from project. " . 
+			      "Replace first.");
   }
   
-
-
 
 
   // There is a problem of transactional integrity here
@@ -1336,8 +1352,7 @@ function add_project_member($args, $message)
   $result = db_execute_statement($sql);
 
   /* FIXME - The signer needs to have a certificate and private key. 
-   * Who sends this message (below)
-   * to the CS? Is the PA the signer?
+   * Who sends this message (below) to the CS? Is the PA the signer?
    */
   $signer_id = $message->signerUuid();
 
@@ -1402,6 +1417,48 @@ function add_project_member($args, $message)
     }
   return $result;
 }
+
+// Add project lead as admin to all current project slices
+function add_project_lead_to_slices($project_id, $project_lead_id, $message)
+{
+
+  $gsmfp_args = array(SA_ARGUMENT::PROJECT_ID => $project_id);
+  $slices_and_members_for_project = 
+    get_slice_members_for_project($gsmfp_args, $message);
+  if($slices_and_members_for_project[RESPONSE_ARGUMENT::CODE] 
+     != RESPONSE_ERROR::NONE)
+    return $slices_and_members_for_project;
+  $slices_and_members_for_project = 
+    $slices_and_members_for_project[RESPONSE_ARGUMENT::VALUE];
+  error_log("SAMFP = " . print_r($slices_and_members_for_project, true));
+
+  // This is a list of [slice_id, member_id, role] tuples
+  // We need to go through this 
+  // and find all slices to which member does not belong
+  $slice_roles_for_lead = array();
+  foreach(  $slices_and_members_for_project as $row) {
+    $member_id = $row[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBR_ID];
+    $role = $role[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+    $slice_id = $role[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    if(!array_key_exists($slice_id, $slice_roles_for_lead))
+      $slice_roles_for_lead[$slice_id] = -1;
+    if($member_id == $project_lead_id) 
+      $slice_roles_for_lead[$slice_id] = $role;
+  }
+
+  error_log("SRFL = " . print_r($slice_roles_for_lead, true));
+
+  foreach($slice_roles_for_lead as $slice_id => $role) {
+    if($role == -1) {
+      // This is a slice to which the lead doesn't belong
+      array(SA_ARGUMENT::SLICE_ID => $slice_id, 
+	    SA_ARGUMENT::MEMBER_ID => $project_lead_id,
+	    SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN);
+      $asm_result = add_slice_member($asm_args, $message);
+      if ($asm_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	return $asm_result;
+    }
+  }
 
 // Remove member from slices to which he belongs in given project
 // If member is lead of such a slice, replace with project lead
@@ -1594,9 +1651,10 @@ function remove_project_member($args, $message)
 
   // Remove member from all slices. 
   // If member is lead of a given slice, replace with project lead
-  remove_project_member_from_slices($member_id, $project_id, $message);
-
-  // FIXME: Stop if the member is the LEAD on a non-expired slice?
+  $rpmfs_result = 
+    remove_project_member_from_slices($member_id, $project_id, $message);
+  if($rpmfs_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $rpmfs_result;
 
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME
     . " WHERE "
@@ -1630,9 +1688,6 @@ function remove_project_member($args, $message)
 	return $da_result;
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
-
-    // FIXME: Remove the member from non-expired slices. 
-    // But what if they are the  LEAD of the slice?
 
     global $ma_url;
     $ids = array();
