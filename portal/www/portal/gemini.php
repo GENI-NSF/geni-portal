@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -26,10 +26,17 @@
  * context if appropriate.
  */
 
+/* TODO:
+ *
+ *  - put the gemini URL in the service registry
+ *  - put the gemini certificate in the service registry
+ */
+
 /* GEMINI Constants */
 const GEMINI_SLICE_URN = 'slice_urn';
-const GEMINI_USER_CERTIFICATE = 'user_certificate';
-const GEMINI_USER_PRIVATE_KEY = 'user_private_key';
+const GEMINI_USER_CERTIFICATE = 'cert';
+const GEMINI_USER_PRIVATE_KEY = 'private_keys';
+const GEMINI_USER_PASSPHRASE = 'pass';
 
 require_once('user.php');
 require_once('ma_client.php');
@@ -38,11 +45,14 @@ require_once('smime.php');
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
-/* Temporary until we get the URL from GEMINI */
-$gemini_url = '/secure/env.php';
+/* TODO put this in the service registry */
+$gemini_url = 'https://genidesktop.netlab.uky.edu/dev/logon/clearinghouse/logon_entry.php';
 
-/* Temporary until we get the certificate from GEMINI */
-$gemini_cert_file = '/usr/share/geni-ch/ma/ma-cert.pem';
+/* HTML form input name for passing data blob to GEMINI */
+$gemini_input_name = 'encoded_dict';
+
+/* TODO put this in the service registry */
+$gemini_cert_file = '/usr/share/geni-ch/sr/certs/genidesktop.netlab.uky.edu.pem';
 
 /* Load the certificate into memory */
 $gemini_cert = file_get_contents($gemini_cert_file);
@@ -83,8 +93,13 @@ if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
   $user_cert .= $result[MA_ARGUMENT::CERTIFICATE];
 }
 if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
-  $gemini_info[GEMINI_USER_PRIVATE_KEY] = $result[MA_ARGUMENT::PRIVATE_KEY];
+  $private_keys = array($result[MA_ARGUMENT::PRIVATE_KEY]);
+  $gemini_info[GEMINI_USER_PRIVATE_KEYS] = $private_keys;
 }
+/* passphrase is always empty for now. No passphrase is specified at
+ * certificate creation time.
+ */
+$gemini_info[GEMINI_USER_PASSPHRASE] = "";
 
 /* Convert data to JSON and encrypt it for the destination. */
 $gemini_json = json_encode($gemini_info);
@@ -108,7 +123,7 @@ include("tool-showmessage.php");
 
 
 <form id="gemini" action="<?php echo $gemini_url;?>" method="post">
-<input id="blob" type="hidden" name="geni_data" value="">
+<input id="blob" type="hidden" name="<?php echo $gemini_input_name;?>" value="">
 </form>
 <script type="text/javascript">
 document.write("Hello World!");
