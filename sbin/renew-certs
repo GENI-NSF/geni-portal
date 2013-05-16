@@ -89,13 +89,14 @@ class Certificate (object):
      def renew(self):
           # The name of the extension section
           ext_name = 'geni'
+          days = 365 # FIXME: Take from option
           try:
                # Make CSR, Make ext file, sign csr
                csr = self.make_csr()
                ext = self.make_ext_file(ext_name)
                print "\tCSR = ", csr
                print "\tEXT = ", ext
-               newcert = self.sign_csr(csr, ext, ext_name)
+               newcert = self.sign_csr(csr, ext, ext_name, days)
                return newcert
           finally:
                print "\tCleanup"
@@ -136,7 +137,7 @@ basicConstraints = CA:%s
           f.close()
           return ext_file
 
-     def sign_csr(self, req_file, ext_file, ext_name):
+     def sign_csr(self, req_file, ext_file, ext_name, days):
           (fd, cert_file) = tempfile.mkstemp()
           os.close(fd)
           sign_cmd = [OPENSSL, 'x509',
@@ -147,7 +148,8 @@ basicConstraints = CA:%s
                       '-CA', CA_CERT,
                       '-CAkey', CA_KEY,
                       '-set_serial', self.serial,
-                      '-out', cert_file]
+                      '-out', cert_file,
+                      '-days', str(days)]
           # Execute cmd
           retcode = subprocess.call(sign_cmd)
           #print >>sys.stderr, "openssl signing command returned ", retcode
@@ -159,6 +161,7 @@ basicConstraints = CA:%s
 def parse_args(argv):
     parser = optparse.OptionParser()
     # In the future, add command line arguments here
+    # opt.days = num days for cert, default 365
     options,args = parser.parse_args()
     return options,args
 
