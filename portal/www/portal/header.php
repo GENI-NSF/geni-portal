@@ -29,6 +29,8 @@ require_once('sa_client.php');
 require_once('pa_client.php');
 //require_once('starter-status-bar.php');
 require_once('geni_syslog.php');
+require_once("maintenance_mode.php");
+
 
 /*----------------------------------------------------------------------
  * Tab Bar
@@ -166,6 +168,7 @@ function add_js_script($script_url)
 function show_header($title, $active_tab = '', $load_user=1)
 {
   global $extra_js;
+  global $in_maintenance_mode;
 
   if ($load_user) {
     global $user;
@@ -204,6 +207,9 @@ function show_header($title, $active_tab = '', $load_user=1)
   if ($load_user) {
     echo '<div id="metanav" class="nav">';
     echo '<ul>';
+    if ($in_maintenance_mode) {
+      echo "<li><b>*** Maintenance Mode ***</b></li>";
+    }
     echo '<li>Logged in as ' . $user->prettyName() . '</li>';
     $logout_url = relative_url("dologout.php");
     echo '<li style="border-right: none"><a href="' . $logout_url . '">Logout</a></li>';

@@ -94,6 +94,7 @@ function build_agg_table_on_slicepg()
      global $delete_slivers_disabled;
      global $slice_name;
      global $disable_buttons_str;
+     global $get_slice_credential_disable_buttons;
 
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
@@ -111,7 +112,7 @@ function build_agg_table_on_slicepg()
      //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
      $output .= "<tr>";
      $output .= "<th id='status'>";
-     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()' $disable_buttons_str>Get All</button>";
+     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()' $get_slice_credential_disable_buttons>Get All</button>";
      $output .= "</th><th>Aggregate</th>";
      //      output .= "<th>&nbsp;</th>";
      $output .= "<th>Renew</th>";
@@ -140,14 +141,14 @@ function build_agg_table_on_slicepg()
 	    }
 	    // sliver actions
 	    $output .= "<td rowspan='2'>";
-	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $disable_buttons_str><b>Resource Status</b></button>";
-	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $disable_buttons_str><b>Details</b></button>\n";
+	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>";
+	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete Resources</b></button>\n";
 	    $output .= "</td></tr>";
 
 
 
-	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $disable_buttons_str>Get Status</button></td></tr>";
+	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $get_slice_credential_disable_buttons>Get Status</button></td></tr>";
 
 
 
@@ -249,6 +250,11 @@ if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
 $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 
+if(!$lookup_slice_privilege) {
+  $_SESSION['lastmessage'] = 'User has no privileges to view slice ' . $slice_name;
+  relative_redirect('home.php');
+}
+
 ?>
 
 <!-- This belongs in the header, probably -->
@@ -291,8 +297,8 @@ print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . 
 print "</td>\n";
 
 /* Renew */
+print "<td>\n";
 if($renew_slice_privilege) {
-  print "<td>\n";
   print "<form method='GET' action=\"do-renew-slice.php\">";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='slice_expiration'";
@@ -378,11 +384,6 @@ print "</table>\n";
 // ---
 
 print "<h2>Slice members</h2>";
-$edit_members_disabled = "";
-if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-  $edit_members_disabled = $disabled;
-}
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Membership</b></button>";
 ?>
 
 <table>
@@ -407,6 +408,15 @@ foreach($members as $member) {
 }
 	?>
 </table>
+
+<?php
+$edit_members_disabled = "";
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  $edit_members_disabled = $disabled;
+}
+echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button>";
+?>
+
 
 <h2>Recent Slice Actions</h2>
 <table>

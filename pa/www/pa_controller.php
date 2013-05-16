@@ -50,15 +50,19 @@ include_once('/etc/geni-ch/settings.php');
  *   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose, expiration)
  *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
  *   update_project(pa_url, project_id, project_email, project_purpose, expiration);
- *   change_lead(pa_url, project_id, previous_lead_id, new_lead_id); *
- *   add_project_member(pa_url, project_id, member_id, role)
- *   remove_project_member(pa_url, project_id, member_id)
- *   change_member_role(pa_url, project_id, member_id, role)
  *   get_project_members(pa_url, project_id, role=null) // null => Any
  *   get_projects_for_member(pa_url, member_id, is_member, role=null)
  *   lookup_project_details(pa_url, project_uuids)
  *   invite_member(pa_url, project_id, role, expiration)
  *   accept_invitation(pa_url, invite_id)
+ *   modify_project_membership(pa_url, members_to_add, 
+ *        members_to_change_role, members_to_remove)
+ *
+ * *** DEPRECATED ***
+ *   change_lead(pa_url, project_id, previous_lead_id, new_lead_id); *
+ *   add_project_member(pa_url, project_id, member_id, role)
+ *   remove_project_member(pa_url, project_id, member_id)
+ *   change_member_role(pa_url, project_id, member_id, role)
  **/
 
 $sr_url = get_sr_url();
@@ -168,18 +172,27 @@ function pa_expire_projects_internal($expire_projects)
 */
 class PAGuardFactory implements GuardFactory
 {
+  // FIXME: Guard the rest of the methods
+  // get_projects: Just a list of project_ids. We have entries in cs_action for this...
+  //    Maybe any valid member_id?
+  // lookup_project: Have entry in cs_action. Non project members call this to see the project name, etc.
+  //    Maybe any valid member_id?
+  // lookup_projects: Unused? Remove? Require any valid member_id?
+
   private static $context_table
     = array(
             // Action => array(method_name, method_name, ...)
-	    'create_project' => array(), // Unguarded
+	    'create_project' => array(), // Unguarded here, method calls request_authorization. FIXME!!
 	    'get_projects' => array(), // Unguarded
 	    'lookup_projects' => array(), // Unguarded
 	    'lookup_project' => array(), // Unguarded
 	    'update_project' => array('project_guard'), 
-	    'change_lead' => array('project_guard'),
-	    'add_project_member' => array('project_guard'),
-	    'remove_project_member' => array('project_guard'),
-	    'change_member_role' => array('project_guard'),
+	    'modify_project_membership' => array('project_guard'), 
+	    'change_lead' => array('FalseGuard'),
+	    'add_project_member' => array('FalseGuard'),
+	    'remove_project_member' => array('FalseGuard'),
+	    'remove_project_member_from_slices' => array('FalseGuard'),
+	    'change_member_role' => array('FalseGuard'),
 	    'get_project_members' => array(), // Unguarded
 	    'get_projects_for_member' => array(), // Unguarded
 	    'lookup_project_details' => array(), // Unguarded
@@ -224,7 +237,9 @@ class PAGuardFactory implements GuardFactory
         $result[] = call_user_func($meth, $message, $action, $params);
       }
     } else {
+      // FIXME: Deny access at all?
       error_log("PA: No guard producers for action \"$action\"");
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, "Method " . $action . " unguarded!");
     }
     return $result;
   }
@@ -421,9 +436,24 @@ function create_project($args, $message)
 
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
-    // FIXME: Need a syslog for this?
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
-            "Principal " . $lead_id  . " may not create project");
+    $msg = "Principal " . $lead_id . " may not be the lead on a project";
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, $msg);
+  }
+
+  // Ensure that caller is allowed to be a project lead, which is prereq for calling this method
+  // FIXME: Put this in a guard!
+  $permitted = request_authorization($cs_url, $mysigner, $message->signerUuid(), PA_ACTION::CREATE_PROJECT,
+          CS_CONTEXT_TYPE::RESOURCE, null);
+  if ($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+
+  //  error_log("PERMITTED = " . $permitted);
+  if (! $permitted) {
+    $msg = "Principal " . $message->signerUuid() . " may not call create_project";
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, $msg);
   }
 
   // FIXME: Real project email address: ticket #313
@@ -568,15 +598,16 @@ function lookup_projects($args)
   }
 
   $sql = "select "
-          . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
-                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
-                          . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
-                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
-                                          . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-                                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
-                                                          . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
-                                                          . " FROM " . $PA_PROJECT_TABLENAME
-                                                          . $lead_clause;
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED
+    . " FROM " . $PA_PROJECT_TABLENAME
+    . $lead_clause;
 
   //  error_log("LookupProjects.sql = " . $sql);
 
@@ -617,15 +648,16 @@ function lookup_project($args)
   }
 
   $sql = "select "
-          . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
-                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
-                          . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
-                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
-                                          . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-                                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
-                                                          . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
-                                                          . " FROM " . $PA_PROJECT_TABLENAME
-                                                          . $where;
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED
+    . " FROM " . $PA_PROJECT_TABLENAME
+    . $where;
 
   //  error_log("LOOKUP.sql = " . $sql);
 
@@ -718,6 +750,196 @@ function update_project($args, $message)
 
   return $result;
 }
+
+// Modify project membership according to given lists of add/change_role/remove
+// $members_to_add and $members_to_change are both
+//    dicitoaries of (member_id => role, ...)
+// $members_to_delete is a list of mebmer_ids
+//
+// The semantics are as follows:
+//    Give an bad argument (ARGS) error if:
+//       any member to add is already a member
+//       any member_to change role is not a member
+//       any member_to_remove is not a member
+//    Give a bad argument (ARGS) error if:
+//       the change would cause there to be more or less than 1 lead
+//
+// Additional semantics:
+//    If any removed project member was lead of a slice of this project
+//    make the project lead into the lead of that slice
+//    
+function modify_project_membership($args, $message)
+{
+  global $cs_url;
+  global $mysigner;
+
+  // Unpack arguments
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $members_to_add = $args[PA_ARGUMENT::MEMBERS_TO_ADD];
+  $members_to_change_role = $args[PA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE];
+  $members_to_remove = $args[PA_ARGUMENT::MEMBERS_TO_REMOVE];
+
+  //  error_log("MTA = " . print_r($members_to_add, true));
+  //  error_log("MTC = " . print_r($members_to_change_role, true));
+  //  error_log("MTR = " . print_r($members_to_remove, true));
+
+
+  // Get the members of the project by role
+  $project_members = get_project_members(array(PA_ARGUMENT::PROJECT_ID => $project_id));
+  if ($project_members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $project_members;
+  }
+  $project_members = $project_members[RESPONSE_ARGUMENT::VALUE];
+
+  // Determine project lead
+  $project_lead = null;
+  foreach($project_members as $project_member) {
+    $member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $role = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
+      $project_lead = $member_id;
+      break;
+    }
+  }
+
+  // Must be a project lead, else something is wrong with project
+  if($project_lead == null) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Bad project: no lead");
+  }
+
+  // First validate the arguments
+  // No new members should be already a project member
+  if (!already_in_list(array_keys($members_to_add), array_keys($project_members), true)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't add member to a project that already belongs");
+  }
+
+  // No new roles for members who aren't project members
+  if (!already_in_list(array_keys($members_to_change_role), array_keys($project_members), false)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't change member role for member not in project");
+  }
+
+  // Can't remove members who aren't project members
+  if (!already_in_list(array_keys($members_to_remove), array_keys($project_members), false)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't remove member from project if not a member");
+  }
+
+  $new_project_lead = $project_lead;
+  // Count up the total lead changes. Should be zero
+  $lead_changes = 0;
+  foreach($members_to_add as $member_to_add => $new_role) {
+    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) {
+      $lead_changes = $lead_changes + 1;
+      $new_project_lead = $member_to_add;
+    }
+  }
+  foreach($members_to_change_role as $member_to_change_role => $role) {
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $project_lead) {
+      $lead_changes = $lead_changes + 1;
+      $new_project_lead = $member_to_change_role;
+    }
+    if ($member_to_change_role == $project_lead && $role != CS_ATTRIBUTE_TYPE::LEAD)
+      $lead_changes = $lead_changes - 1;
+  }
+
+  foreach($members_to_remove as $member_to_remove) {
+    if($member_to_remove == $project_lead)
+      $lead_changes = $lead_changes - 1;
+  }
+
+  if($lead_changes != 0) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Must have exactly one project lead");
+  }
+
+  // Can't make someone a project lead if they don't have 
+  // create_project capabilities
+  //  error_log("NPL = " . $new_project_lead . " PL = " . $project_lead);
+  if ($new_project_lead != $project_lead) {
+    $permitted = request_authorization($cs_url, $mysigner, $new_project_lead,
+				       PA_ACTION::CREATE_PROJECT,
+				       CS_CONTEXT_TYPE::RESOURCE, null);
+    if($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $permitted;
+    $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+    if (!$permitted)
+      return generate_response(RESPONSE_ERROR::ARGS, null, 
+			       "Proposed project lead does not have " . 
+			       "sufficient privileges for that role.");
+  }
+  
+
+
+
+
+  // There is a problem of transactional integrity here
+  // The PA keeps its own table of members/roles, and the CS keeps a table of assertions which
+  // are essentially redundant. Ultimately, these should be unified and probably kept in the CS
+  // and the CS should allow for a bundling (writing multiple adds/deletes at once)
+  // 
+  // But for now we maintain the two sets of tables, writing the sa_project_member_table atomically
+  // while writing to the CS on each transaction.
+
+  // Grab the database connection and start a transaction
+  $conn = db_conn();
+  $conn->beginTransaction();
+
+  // Set these if there's an error along the way
+  $success = True;
+  $error_message = "";
+
+  // Add new members
+  if ($success) {
+    foreach($members_to_add as $member_to_add => $role) {
+      $result = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id, 
+				       PA_ARGUMENT::MEMBER_ID => $member_to_add,
+				       PA_ARGUMENT::ROLE_TYPE => $role), 
+				 $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // Change roles of existing members
+  if($success) {
+    foreach($members_to_change_role as $member_to_change_role => $role) {
+      $result = change_member_role(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+					 PA_ARGUMENt::MEMBER_ID => $member_to_change_role,
+					 PA_ARGUMENT::ROLE_TYPE => $role), 
+				    $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // Remove members
+  if ($success) {
+    foreach($members_to_remove as $member_to_remove) {
+      $result = remove_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+					  PA_ARGUMEnt::MEMBER_ID => $member_to_remove), 
+				    $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // If all the PA and CS transactions are successful, then commit, otherwise rollback
+  if(!$success) {
+    // One of the writes failed. Rollback the whole thing
+    $conn->rollback();
+    return generate_response(RESPONSE_ERROR::DATABASE, null, $error_message);
+  } else {
+    // All succeeded, commit PA changes and return success
+    $conn->commit();
+    return generate_response(RESPONSE_ERROR::NONE, null, '');
+  }
+}
+
+
 
 /* update lead of given project */
 function change_lead($args, $message)

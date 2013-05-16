@@ -105,12 +105,40 @@ function register_ssh_key($args, $message)
   global $ma_signer;
   global $log_url;
   $conn = db_conn();
-  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $member_id = null;
+  if (array_key_exists(MA_ARGUMENT::MEMBER_ID, $args)) {
+    $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+    if (! uuid_is_valid($member_id)) {
+      error_log("member_id invalid in register_ssh_key: " . $member_id);
+      return generate_response(RESPONSE_ERROR::ARGS, null, "Member ID invalid");
+    }
+  }
+  if (! isset($member_id) or is_null($member_id) or $member_id == '') {
+    error_log("Missing member ID to register_ssh_key");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Member ID missing");
+  }
   $signer_id = $message->signerUuid(); // FIXME: get name. For now, use URN
   $client_urn = $message->signerUrn();
-  $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
-  $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
-  $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
+
+  $ssh_filename = '';
+  if (array_key_exists(MA_ARGUMENT::SSH_FILENAME, $args)) {
+    $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
+  }
+
+  $ssh_description = '';
+  if (array_key_exists(MA_ARGUMENT::SSH_DESCRIPTION, $args)) {
+    $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
+  }
+  $ssh_public_key = null;
+  if (array_key_exists(MA_ARGUMENT::SSH_PUBLIC_KEY, $args)) {
+    $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
+  }
+  if (! isset($ssh_public_key) or is_null($ssh_public_key) or $ssh_public_key == '') {
+    error_log("Missing SSH public key to register_ssh_key");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "SSH Public key missing");
+  }
   if (parse_urn($client_urn, $auth, $type, $name)) {
     $client_urn = $auth . "." . $name;
   }
@@ -866,7 +894,14 @@ class SignerAuthorityGuard implements Guard
   }
 
   public function evaluate() {
-    return (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+    $ret = (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+    if (! $ret) {
+      $parsed_message = $this->message->parse();
+      $action = $parsed_message[0];
+      $log_msg = "AuthZ Denied: Signer is not authority: " . $this->message->signerUrn() . " cannot call " . $action;
+      geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+    }
+    return $ret;
   }
 }
 
@@ -886,6 +921,10 @@ class SignerIsOperatorGuard implements Guard
         return true;
       }
     }
+    $parsed_message = $this->message->parse();
+    $action = $parsed_message[0];
+    $log_msg = "AuthZ Denied: Signer is not operator: " . $this->message->signerUrn() . " cannot call " . $action;
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     return false;
   }
 }
@@ -897,7 +936,14 @@ class SignerKmGuard implements Guard
   }
 
   public function evaluate() {
-    return (strpos($this->message->signerUrn(), '+authority+km') !== FALSE);
+    $result = (strpos($this->message->signerUrn(), '+authority+km') !== FALSE);
+    if (! $result) {
+      $parsed_message = $this->message->parse();
+      $action = $parsed_message[0];
+      $log_msg = "AuthZ Denied: Signer is not the KM: " . $this->message->signerUrn() . " cannot call " . $action;
+      geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+    }
+    return $result;
   }
 }
 
@@ -908,6 +954,18 @@ class MAGuardFactory implements GuardFactory
   }
 
   // FIXME: Key functions are unguarded. 
+  // get_member_ids
+  //     This gets all member_ids. Maybe just require caller has a valid member_id?
+  // lookup_members  Privacy concern!
+  // lookup_member_by_id    Privacy concern!
+  // lookup_member_details    Privacy concern!
+  // lookup_member_names      Privacy concern!
+
+  // Protecting those lookups is harder. If the member is in the same project as you, then you can look them up. 
+  // Plus operators and the person themselves. Maybe the guard can only check
+  // that the user is valid?
+
+  // Plus all the request methods?
 
   public function createGuards($message) {
     $parsed_message = $message->parse();
@@ -929,6 +987,18 @@ class MAGuardFactory implements GuardFactory
     } elseif ($action === 'ma_create_certificate') {
       // Only accept from the KM
       $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'create_account') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'ma_authorize_client') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'ma_list_clients') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'ma_list_authorized_clients') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
     } elseif ($action === 'ma_lookup_certificate') {
       $guards[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
       $guards[] = new SignerKmGuard($message);
@@ -941,6 +1011,17 @@ class MAGuardFactory implements GuardFactory
       $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
       $guards[] = new SignerAuthorityGuard($message);
       $result[] = new OrGuard($guards);
+    } elseif ($action === 'revoke_member_privilege') {
+      global $cs_url;
+      global $ma_signer;
+      // Allow operator or signed by an authority
+      $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
+      $guards[] = new SignerAuthorityGuard($message);
+      $result[] = new OrGuard($guards);
+    } else {
+      // FIXME: Deny access at all?
+      error_log("MA function unguarded: " . $action);
+      geni_syslog(GENI_SYSLOG_PREFIX::MA, "MA function unguarded: " . $action);
     }
     return $result;
   }

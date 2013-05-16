@@ -29,12 +29,15 @@
 //   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
 //   update_project(pa_url, project_name, project_id, project_email, project_purpose, expiration);
 //   change_lead(pa_url, project_id, previous_lead_id, new_lead_id);
-//   add_project_member(pa_url, project_id, member_id, role)
-//   remove_project_member(pa_url, project_id, member_id)
-//   change_member_role(pa_url, project_id, member_id, role)
 //   get_project_members(pa_url, project_id, role=null) // null => Any
 //   get_projects_for_member(pa_url, member_id, is_member, role=null)
 //   lookup_project_details(pa_url, project_uuids)
+//   modify_project_membership(pa_url, project_id, members_to_add, 
+//           members_to_change_role, members_to_remove
+//   add_project_member(pa_url, project_id, member_id, role)
+//   remove_project_member(pa_url, project_id, member_id)
+//   change_member_role(pa_url, project_id, member_id, role)
+
 
 require_once('pa_constants.php');
 require_once('message_handler.php');
@@ -164,53 +167,62 @@ function update_project($pa_url, $signer, $project_id, $project_name,
   return $results;
 }
 
+// Modify project membership according to given lists to add/change_role/remove
+// $members_to_add and $members_to_change role are both
+//     dictionaries of {member_id => role, ....}
+// $members_to_delete is a list of member_ids
+function modify_project_membership($sa_url, $signer, $project_id, 
+				 $members_to_add, 
+				 $members_to_change_role, 
+				 $members_to_remove)
+{
+  $modify_project_membership_msg['operation'] = 'modify_project_membership';
+  $modify_project_membership_msg[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_ADD] = $members_to_add;
+  $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE] = $members_to_change_role;
+  $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_REMOVE] = $members_to_remove;
+  $result = put_message($sa_url, $modify_project_membership_msg,
+                       $signer->certificate(), $signer->privateKey());
+  return $result;
+  
+}
+
+// Modify project lead, make previous into an admin
+// Assumes lead is already a member
 function change_lead($pa_url, $signer, $project_id, $prev_lead_id, $new_lead_id)
 {
-  $change_lead_message['operation'] = 'change_lead';
-  $change_lead_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $change_lead_message[PA_ARGUMENT::PREVIOUS_LEAD_ID] = $prev_lead_id;
-  $change_lead_message[PA_ARGUMENT::LEAD_ID] = $new_lead_id;
-  $results = put_message($pa_url, $change_lead_message, 
-			 $signer->certificate(), $signer->privateKey());
-  return $results;
+  $members_to_change = array($prev_lead_id => CS_ATTRIBUTE_TYPE::ADMIN, 
+			     $new_lead_id => CS_ATTRIBUTE_TYPE::LEAD);
+  $result = modify_project_membership($sa_url, $signer, 
+				      array(), members_to_change, array());
+  return $result;
 }
 
 // Add a member of given role to given project
-// return code/value/output triple
 function add_project_member($pa_url, $signer, $project_id, $member_id, $role)
 {
-  $add_project_member_message['operation'] = 'add_project_member';
-  $add_project_member_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $add_project_member_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
-  $add_project_member_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($pa_url, $add_project_member_message, 
-			 $signer->certificate(), $signer->privateKey());
-  return $results;
+  $member_roles = array($member_id => $role);
+  $result = modify_project_membership($pa_url, $signer, $project_id, 
+				    $member_roles, array(), array());
+  return $result;
 }
 
-// Remove a member from given project 
-// Also remove from associated slices if any
-// If the member is the lead of such slices, make the project lead the slice lead
-function remove_project_member($pa_url, $signer, $project_id, $member_id)
+// Remove a member from given project
+function remove_project_member($sa_url, $signer, $project_id, $member_id)
 {
-  $remove_project_member_message['operation'] = 'remove_project_member';
-  $remove_project_member_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $remove_project_member_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
-  $results = put_message($pa_url, $remove_project_member_message, 
-			 $signer->certificate(), $signer->privateKey());
-  return $results;
+  $member_to_remove = array($member_id);
+  $result = modify_project_membership($sa_url, $signer, $project_id, 
+				    array(), array(), $member_to_remove);
+  return $result;
 }
 
 // Change role of given member in given project
-function change_member_role($pa_url, $signer, $project_id, $member_id, $role) 
+function change_member_role($sa_url, $signer, $project_id, $member_id, $role)
 {
-  $change_member_role_message['operation'] = 'change_member_role';
-  $change_member_role_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $change_member_role_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
-  $change_member_role_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($pa_url, $change_member_role_message, 
-			 $signer->certificate(), $signer->privateKey());
-  return $results;
+  $member_roles = array($member_id => $role);
+  $result = modify_project_membership($sa_url, $signer, $project_id, 
+				    array(), $member_roles, array());
+  return $result;
 }
 
 // Return list of member ID's and roles associated with given project

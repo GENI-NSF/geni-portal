@@ -34,9 +34,10 @@ require_once('cs_constants.php');
 
 
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
+include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-include("tool-lookupids.php");
+
 
 if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -58,7 +59,7 @@ function compute_member_options($email, $member_id, $member_name, $requested_rol
     }
   }
 
-  //  error_log("Requested role : " . $requested_role . " | " . $requested_role_index . " | " . $member_id . " | " . $email);
+  //  error_log("Requested role : " . $member_name . " | " . $requested_role . " | " . $requested_role_index . " | " . $member_id . " | " . $email);
 
   $options = "";
   $label = "Invite";
@@ -124,23 +125,24 @@ if ($error != NULL || count($_POST) == 0) {
     . " style=\"background: #dddddd;font-weight: bold\">\n";
   echo "$error";
   echo "</div>\n";
-
-  print "Upload a CSV (comma-separated-values) file of candidates members for your project.<br/><br/>";
-  print "File format:<br/>";
-  print "<i>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</i><br/>";
-  print "Example:<br/>";
-  print "<i>jsmith@geni.net, Joe Smith, Admin</i><br/>";
-  print "<i>mbrown@geni.net, Mary Brown</i><br/><br/>";
-
   print "<h2>Upload Project Members</h2>";
+  print "Upload a CSV (comma-separated-values) file of candidates members for your project.<br/><br/>";
   print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
-  print '  <label for="file">RSpec File:</label>';
+  print '  <label for="file">CSV File:</label>';
   print '  <input type="file" name="file" id="file" />';
   print '  <br/><br/>';
   print '  <input type="submit" name="submit" value="Upload"/>';
   print '  <input type="hidden" name="referer" value="' . $referer . '"/>';
   print '</form>';
   print '<br/>';
+
+  print "<p>";
+  print "File format:<br/>";
+  print "<pre>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</pre><br/>";
+  print "Example:<br/>";
+  print "<pre>jsmith@geni.net, Joe Smith, Admin\n";
+  print "mbrown@geni.net, Mary Brown</pre><br/><br/>";
+  print "</p>";
   include("footer.php");
   exit;
 }
@@ -170,7 +172,9 @@ if (array_key_exists('file', $_FILES)) {
 // include("tool-breadcrumbs.php");
 // include("tool-showmessage.php");
   print("<h2>Upload Project Members</h2>\n");
-
+  print "<b>Action Legend</b><br/>";
+  print "<b>Add as ...</b> Candidates who already use the portal will be added to your project with the specified role immediately.<br/>";
+  print "<b>Invite as ...</b> Others will receive an invitation email with instructions on joining your project.";
 
 $actual_filename = $_FILES['file']['tmp_name'];
 $contents = file_get_contents($actual_filename);
@@ -188,7 +192,9 @@ foreach($project_members as $project_member) {
 print '<form method="POST" action="do-upload-project-members.php">';
 print '<table>';
 
-print '<tr><th>Candidate Name</th><th>Candidate Email</th><th>Recognized</th><th>Member</th><th>Actions</th></tr>';
+print '<tr><th>Candidate Name</th><th>Candidate Email</th>';
+// <th>Can Add <br/>Immediately?</th>
+print '<th>Action</th></tr>';
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 
 
@@ -208,6 +214,9 @@ foreach($lines as $line) {
 
 $members_by_email = lookup_members_by_email($ma_url, $user, array_keys($names_by_email));
 
+//error_log("NBE = " . print_r($names_by_email, true));
+//error_log("RBE = " . print_r($roles_by_email, true));
+
 foreach($names_by_email as $email => $name) {
   $member_id = null;
   $recognized = "No";
@@ -215,23 +224,27 @@ foreach($names_by_email as $email => $name) {
   if (array_key_exists($email, $members_by_email) && count($members_by_email[$email] == 1))  {
     $member_id = $members_by_email[$email][0];
     $recognized = "Yes";
+  }
+  if (array_key_exists($email, $roles_by_email) && count($roles_by_email[$email] == 1)) {
     $role = $roles_by_email[$email];
   }
 
   $is_member = ($member_id != null && in_array($member_id, $project_member_ids));
-  $is_member_label = "N";
   if ($is_member) {
-    $is_member_label = "Y";
+    $member_actions = "Already Member";
+  } else {
+    $member_options = compute_member_options($email, $member_id, $name,$role, $is_member);
+    $email_name = $email . ":" . $name;
+    // Convert spaces to tabs, convert periods to commas
+    $email_name = str_replace(".", ",", $email_name);
+    $email_name = str_replace(" ", "\t", $email_name);
+    $member_actions = "<select name=\"$email_name\">$member_options</select>";
   }
     
-  $member_options = compute_member_options($email, $member_id, $name,$role, $is_member);
-  $email_name = $email . ":" . $name;
-  // Convert spaces to tabs, convert periods to commas
-  $email_name = str_replace(".", ",", $email_name);
-  $email_name = str_replace(" ", "\t", $email_name);
-  $member_actions = "<select name=\"$email_name\">$member_options</select>";
   //  error_log("MA = " . $member_actions);
-  print "<tr><td>$name</td><td>$email</td><td>$recognized</td><td>$is_member_label</td><td>$member_actions</td></tr>\n";
+  print "<tr><td>$name</td><td>$email</td>";
+  //<td>$recognized</td>
+  print "<td>$member_actions</td></tr>\n";
   //  error_log("EMAIL = " . $email . " NAME = " . $name);
 }
 

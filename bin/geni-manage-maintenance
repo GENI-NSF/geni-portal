@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+#
+#----------------------------------------------------------------------
+# Copyright (c) 2013 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the "Work") to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+#----------------------------------------------------------------------
+
+# Manage GENI Portal/Clearinghouse maintenance
+# Enable/Disable maintenance 'alert' messages
+# Enable/Disable maintenance 'outage' (portal is unavailable to non-operators)
+# Display maintenance status
+
+import optparse
+import os
+import sys
+
+
+alert_message_location = "/tmp/geni_maintenance_alert.msg"
+outage_message_location = "/tmp/geni_maintenance_outage.msg"
+
+def parse_args(argv):
+    parser = optparse.OptionParser()
+    parser.add_option("--debug", action="store_true", default=False, \
+                      help="enable debugging output")
+    parser.add_option("--status", action="store_true", default=False, \
+                     help="display status of maintenance alerts/outages")
+    parser.add_option("--set-alert", help="set maintenance alert message", \
+                          dest="set_alert")
+    parser.add_option("--clear-alert", action="store_true", \
+                          help="clear maintenance alert message", \
+                          dest="clear_alert")
+    parser.add_option("--set-outage", \
+                          help="set maintenance outage mode and message", \
+                          dest = "set_outage")
+    parser.add_option("--clear-outage", action="store_true", \
+                          help="clear maintenance outage mode and  message", \
+                          dest = "clear_outage")
+                      
+    options, args = parser.parse_args(argv)
+    num_args = 0;
+    if options.status: num_args = num_args+1;
+    if options.set_alert: num_args = num_args+1;
+    if options.clear_alert: num_args = num_args+1;
+    if options.set_outage: num_args = num_args+1;
+    if options.clear_outage: num_args = num_args+1;
+
+    if num_args != 1:
+        print "Usage: geni-manage-maintenance [--debug] [--status | --clear-alert | --set-alert | --clear-outage | --set-outage"
+        sys.exit(0)
+
+    return options
+
+
+def main(argv=None):
+    if(argv == None): argv = sys.argv
+
+    options = parse_args(argv)
+
+    currently_alerting = os.path.isfile(alert_message_location)
+    current_alert_msg = None
+    if currently_alerting:
+        f = open(alert_message_location, 'r')
+        current_alert_msg = f.read()
+        f.close()
+
+    currently_outage = os.path.isfile(outage_message_location)
+    current_outage_msg = None
+    if currently_outage:
+        f = open(outage_message_location, 'r')
+        current_outage_msg = f.read()
+        f.close()
+
+    if options.status:
+        print "Alert: %s Msg %s" % (currently_alerting, current_alert_msg)
+        print "Outage: %s Msg %s" % (currently_outage, current_outage_msg)
+    elif options.clear_alert:
+        if not currently_alerting:
+            print "Alert not currently set"
+        else:
+            print "Clearing alert msg : %s" % current_alert_msg
+            os.remove(alert_message_location)
+    elif options.set_alert:
+        if currently_alerting:
+            print "Replacing previous alert msg : %s" % current_alert_msg
+        f = open(alert_message_location, 'w')
+        f.write(options.set_alert)
+        f.close()
+        print "New alert msg : %s" % options.set_alert
+    elif options.clear_outage:
+        if not currently_outage:
+            print "Outage not currently set"
+        else:
+            print "Clearing outage msg : %s" % current_outage_msg
+            os.remove(outage_message_location)
+    elif options.set_outage:
+        if currently_outage:
+            print "Replacing previous outage msg : %s" % current_outage_msg
+        f = open(outage_message_location, 'w')
+        f.write(options.set_outage)
+        f.close()
+        print "New outage msg : %s" % options.set_outage
+    else:
+        print "Option not specified"
+
+if __name__ == "__main__":
+    sys.exit(main())
