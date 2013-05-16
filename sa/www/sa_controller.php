@@ -265,7 +265,7 @@ class SAGuardFactory implements GuardFactory
 	    'lookup_project' => array(), // Unguarded
 	    'update_project' => array('project_guard'), 
 	    'modify_project_membership' => array('project_guard'), 
-	    //	    'change_lead' => array('project_guard'),
+	    //	    'change_project_lead' => array('project_guard'),
 	    //	    'add_project_member' => array('project_guard'),
 	    //	    'remove_project_member' => array('project_guard'),
 	    //	    'change_member_role' => array('project_guard'),
@@ -958,10 +958,11 @@ function modify_project_membership($args, $message)
 			     "Must have exactly one project lead");
   }
 
-  // Can't make someone a project lead if they don't have 
-  // create_project capabilities
+  // This code handles the case wherein we are changing the project lead
   //  error_log("NPL = " . $new_project_lead . " PL = " . $project_lead);
   if ($new_project_lead != $project_lead) {
+    // Can't make someone a project lead if they don't have 
+    // create_project capabilities
     $permitted = request_authorization($cs_url, $mysigner, $new_project_lead,
 				       PA_ACTION::CREATE_PROJECT,
 				       CS_CONTEXT_TYPE::RESOURCE, null);
@@ -972,6 +973,11 @@ function modify_project_membership($args, $message)
       return generate_response(RESPONSE_ERROR::ARGS, null, 
 			       "Proposed project lead does not have " . 
 			       "sufficient privileges for that role.");
+
+    // Change the 'lead_id' field of the project
+    $cl_result = change_project_lead($project_id, $new_project_lead);
+    if($cl_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $cl_result;
 
     // If we're changing the lead, make sure new lead is a member
     // of all slices of project
@@ -1073,170 +1079,22 @@ function modify_project_membership($args, $message)
   }
 }
 
-
-
-/* update lead of given project */
-function change_lead($args, $message)
+/* update lead_id of given project */
+function change_project_lead($project_id, $new_project_lead)
 {
   global $PA_PROJECT_TABLENAME;
 
   pa_expire_projects();
 
-  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
-      $args[PA_ARGUMENT::PROJECT_ID] == '') {
-    // missing arg
-    error_log("Missing project_id arg to change_lead");
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-			     "Project ID is missing");
-  }
-  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
-  if (! uuid_is_valid($project_id)) {
-    error_log("project_id invalid in change_lead: " . $project_id);
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-			     "Project ID is invalid: " . $project_id);
-  }
-
-  if (! array_key_exists(PA_ARGUMENT::PREVIOUS_LEAD_ID, $args) or
-      $args[PA_ARGUMENT::PREVIOUS_LEAD_ID] == '') {
-    // missing arg
-    error_log("Missing previous_lead_id arg to change_lead");
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-			     "Previous Lead ID is missing");
-  }
-  $previous_lead_id = $args[PA_ARGUMENT::PREVIOUS_LEAD_ID];
-  if (! uuid_is_valid($previous_lead_id)) {
-    error_log("previous_lead_id invalid in change_lead: " 
-	      . $previous_lead_id);
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-			     "Previous Lead ID is invalid: " 
-			     . $previous_lead_id);
-  }
-
-  if (! array_key_exists(PA_ARGUMENT::LEAD_ID, $args) or
-      $args[PA_ARGUMENT::LEAD_ID] == '') {
-    // missing arg
-    error_log("Missing lead_id arg to change_lead");
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-			     "New Lead ID is missing");
-  }
-  $new_lead_id = $args[PA_ARGUMENT::LEAD_ID];
-  if (! uuid_is_valid($new_lead_id)) {
-    error_log("new_lead_id invalid in change_lead: " . $new_lead_id);
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-			     "New Lead ID is invalid: " . $new_lead_id);
-  }
-
-  // Check that new person is allowed to be a lead
-  global $cs_url;
-  global $mysigner;
-  $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, 
-				     PA_ACTION::CREATE_PROJECT,
-				     CS_CONTEXT_TYPE::RESOURCE, null);
-  if($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
-    return $permitted;
-  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
-
-  //  error_log("PERMITTED = " . $permitted);
-  if (! $permitted) {
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
-			     "Principal " . $new_lead_id  
-			     . " may not lead projects");
-  }
-
-  // FIXME: If caller is an Admin on the project, is this allowed? Or
-  // should the AuthZ service have caught that already?
-
   $conn = db_conn();
   $sql = "UPDATE " . $PA_PROJECT_TABLENAME
     . " SET "
     . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = " . 
-    $conn->quote($new_lead_id, 'text')
+    $conn->quote($new_project_lead, 'text')
     . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
     . " = " . $conn->quote($project_id, 'text');
-  //  error_log("CHANGE_LEAD.sql = " . $sql);
+  //  error_log("CHANGE_PROJECT_LEAD.sql = " . $sql);
   $result = db_execute_statement($sql);
-
-  // Now add the lead as a member of the project
-  $add_project_member_args = 
-    array(PA_ARGUMENT::PROJECT_ID => $project_id,
-          PA_ARGUMENT::MEMBER_ID => $new_lead_id,
-	  PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD);
-  $addres = add_project_member($add_project_member_args,
-			       $message);
-  if (! isset($addres) || is_null($addres) || 
-      !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || 
-      $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
-    {
-      // Lets assume they are already in the project, 
-      // so we need to change their role only
-      $change_member_role_args = 
-	array(PA_ARGUMENT::PROJECT_ID => $project_id,
-	      PA_ARGUMENT::MEMBER_ID => $new_lead_id,
-	      PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD);
-      $chngres = change_member_role($change_member_role_args, 
-				    $message);
-
-      if ($chgres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
-	return $chgres;
-    }
-
-  // Make the old lead an admin
-  $cmr_args = array(PA_ARGUMENT::PROJECT_ID => $project_id,
-		    PA_ARGUMENT::MEMBER_ID => $previous_lead_id,
-		    PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN);
-  $chngres = change_member_role($cmr_args, $message);
-  if ($chngres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
-    return $chngres;
-
-  global $log_url;
-  global $mysigner;
-  global $ma_url;
-  global $portal_admin_email;
-  $signer_id = $message->signerUuid();
-  $ids = array();
-  $ids[] = $signer_id;
-  $ids[] = $new_lead_id;
-  $ids[] = $previous_lead_id;
-
-  $names = lookup_member_names($ma_url, $mysigner, $ids);
-  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
-    return $names;
-  $names = $names[RESPONSE_ARGUMENT::VALUE];
-
-  $signer_name = $names[$signer_id];
-  $new_lead_name = $names[$new_lead_id];
-  $old_lead_name = $names[$previous_lead_id];
-
-  $pattributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
-					   $project_id);
-  // FIXME: We'd like to add as a context the old lead, 
-  // but only 1 member context allowed
-  // But maybe this is OK, cause the actor here is the old lead?
-  $mattributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, 
-					   $new_lead_id);
-  $attributes = array_merge($pattributes, $mattributes);
-
-  // Need to look up the project name
-  $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
-  $project_data = lookup_project($lookup_project_message);
-  if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
-      (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
-			$project_data[RESPONSE_ARGUMENT::VALUE])))
-    {
-      $project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
-      $project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    } else {
-    $project_name = $project_id;
-  }
-
-  $msg = "$signer_name changed project lead for $project_name to " . 
-    "$new_lead_name (was $old_lead_name)";
-  log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
-  geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
-  if (parse_urn($message->signer_urn, $chname, $t, $n)) {
-    $msg = $msg . " on CH $chname";
-  }
-  mail($portal_admin_email, "Changed GENI CH project lead", $msg);
 
   return $result;
 }
@@ -1430,35 +1288,36 @@ function add_project_lead_to_slices($project_id, $project_lead_id, $message)
     return $slices_and_members_for_project;
   $slices_and_members_for_project = 
     $slices_and_members_for_project[RESPONSE_ARGUMENT::VALUE];
-  error_log("SAMFP = " . print_r($slices_and_members_for_project, true));
+  //  error_log("SAMFP = " . print_r($slices_and_members_for_project, true));
 
   // This is a list of [slice_id, member_id, role] tuples
   // We need to go through this 
   // and find all slices to which member does not belong
   $slice_roles_for_lead = array();
   foreach(  $slices_and_members_for_project as $row) {
-    $member_id = $row[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBR_ID];
-    $role = $role[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
-    $slice_id = $role[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    $member_id = $row[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $role = $row[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+    $slice_id = $row[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     if(!array_key_exists($slice_id, $slice_roles_for_lead))
       $slice_roles_for_lead[$slice_id] = -1;
     if($member_id == $project_lead_id) 
       $slice_roles_for_lead[$slice_id] = $role;
   }
 
-  error_log("SRFL = " . print_r($slice_roles_for_lead, true));
+  //  error_log("SRFL = " . print_r($slice_roles_for_lead, true));
 
   foreach($slice_roles_for_lead as $slice_id => $role) {
     if($role == -1) {
       // This is a slice to which the lead doesn't belong
-      array(SA_ARGUMENT::SLICE_ID => $slice_id, 
-	    SA_ARGUMENT::MEMBER_ID => $project_lead_id,
-	    SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN);
+      $asm_args = array(SA_ARGUMENT::SLICE_ID => $slice_id, 
+			SA_ARGUMENT::MEMBER_ID => $project_lead_id,
+			SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN);
       $asm_result = add_slice_member($asm_args, $message);
       if ($asm_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
 	return $asm_result;
     }
   }
+}
 
 // Remove member from slices to which he belongs in given project
 // If member is lead of such a slice, replace with project lead
@@ -1558,9 +1417,9 @@ function remove_project_member_from_slices($member_id, $project_id, $message)
 	// If project lead is in slice, change to lead in slice
 	$csmr_args = 
 	  array(SA_ARGUMENT::SLICE_ID => $slice_id,
-		SA_ARGUMENNT::MEMBER_ID => $project_lead_id,
+		SA_ARGUMENT::MEMBER_ID => $project_lead_id,
 		SA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::LEAD);
-	$csmr_result = change_slice_member_role($csmr_args);
+	$csmr_result = change_slice_member_role($csmr_args, $message);
 	if ($csmr_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
 	  return $csmr_result;
       } else {
@@ -2979,16 +2838,21 @@ function modify_slice_membership($args, $message)
 			       "not a member");
     }
 
+  $new_slice_lead = $slice_lead;
   // Count up the total lead changes. Should be zero
   $lead_changes = 0;
   foreach($members_to_add as $member_to_add => $new_role) {
-    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) 
+    if($new_role == CS_ATTRIBUTE_TYPE::LEAD)  {
       $lead_changes = $lead_changes + 1;
+      $new_slice_lead = $$member_to_add;
+    }
   }
   foreach($members_to_change_role as $member_to_change_role => $role) {
     if ($role == CS_ATTRIBUTE_TYPE::LEAD && 
-	$member_to_change_role != $slice_lead)
+	$member_to_change_role != $slice_lead) {
       $lead_changes = $lead_changes + 1;
+      $new_slice_lead = $$member_to_add;
+    }
     if ($member_to_change_role == $slice_lead && 
 	$role != CS_ATTRIBUTE_TYPE::LEAD)
       $lead_changes = $lead_changes - 1;
@@ -3002,6 +2866,16 @@ function modify_slice_membership($args, $message)
   if($lead_changes != 0) {
     return generate_response(RESPONSE_ERROR::ARGS, null, 
 			     "Must have exactly one slice lead");
+  }
+
+  // This code handles the case wherein we are changing the slice lead
+  if ($new_slice_lead != $slice_lead) {
+
+    // Change the 'owner_id' field of the slice
+    $csoo_result = change_slice_owner($slice_id, $new_slice_lead);
+    if ($cso_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $cso_result;
+
   }
 
   // There is a problem of transactional integrity here
@@ -3078,6 +2952,28 @@ function modify_slice_membership($args, $message)
   }
 
 }
+
+/* update owner_id of given slice */
+function change_slice_owner($slice_id, $new_slice_lead)
+{
+  global $SA_SLICE_TABLENAME;
+
+  sa_expire_slices();
+
+  $conn = db_conn();
+  $sql = "UPDATE " . $SA_SLICE_TABLENAME
+    . " SET "
+    . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . " = " . 
+    $conn->quote($new_slice_lead, 'text')
+    . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
+    . " = " . $conn->quote($slice_id, 'text');
+  //  error_log("CHANGE_SLICE_OWNER.sql = " . $sql);
+  $result = db_execute_statement($sql);
+
+  return $result;
+}
+
+
 
 // Add a member of given role to given slice
 function add_slice_member($args, $message)
