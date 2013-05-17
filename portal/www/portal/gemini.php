@@ -35,7 +35,7 @@
 /* GEMINI Constants */
 const GEMINI_SLICE_URN = 'slice_urn';
 const GEMINI_USER_CERTIFICATE = 'cert';
-const GEMINI_USER_PRIVATE_KEY = 'private_keys';
+const GEMINI_USER_PRIVATE_KEYS = 'private_keys';
 const GEMINI_USER_PASSPHRASE = 'pass';
 
 require_once('user.php');
@@ -60,7 +60,7 @@ $gemini_cert = file_get_contents($gemini_cert_file);
 /* How long to wait before auto-submitting the form post to GEMINI,
  * in seconds.
  */
-$gemini_post_delay_seconds = 20;
+$gemini_post_delay_seconds = 3;
 
 
 if (!isset($user)) {
