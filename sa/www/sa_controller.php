@@ -307,6 +307,14 @@ class SAGuardFactory implements GuardFactory
     $this->cs_url = $cs_url;
   }
 
+  public function project_request_guard($message, $action, $params)
+  {
+    //    error_log("PA.project_request_guard " . print_r($message, true) 
+    // . " " . print_r($action, true) . " " . print_r($params, true));    
+    return new PAProjectRequestGuard($this->cs_url, $message, $action, 
+				     $params);	
+  }
+
   private function slice_guard($message, $action, $params) {
     sa_debug("slice_guard($message, $action, $params)");
     return new SAContextGuard($this->cs_url, $message, $action,
@@ -442,6 +450,97 @@ class SASignerGuard implements Guard
     return $this->message->signerUuid() === $match_param;
   }
 }
+
+// A guard to check that the requester to resolve a request (accept, reject) has lead or admin                                                                                                                                                                                                 
+// privileges on the project in question                                                                                                                                                                                                                                                       
+class PAProjectRequestGuard implements Guard
+{
+  public function __construct($cs_url, $message, $action, $params)
+  {
+    $this->cs_url = $cs_url;
+    $this->message = $message;
+    $this->action = $action;
+    $this->params = $params;
+  }
+
+  public function evaluate()
+  {
+    $signer = $this->message->signerUuid();
+    $request_id = $this->params[RQ_ARGUMENTS::REQUEST_ID];
+    //    error_log("PARAMS = " . print_r($this->params, true)); 
+    //    error_log("PAProjectRequestGuard.evaluate " . $signer . " " . 
+    //         print_r($request_id, true)); 
+
+    global $PA_PROJECT_MEMBER_TABLENAME;
+    global $PA_PROJECT_MEMBER_REQUEST_TABLENAME;
+    $conn = db_conn();
+    $sql = "select count(*) from $PA_PROJECT_MEMBER_TABLENAME, " 
+      . "$PA_PROJECT_MEMBER_REQUEST_TABLENAME "
+    . " WHERE "
+      . " $PA_PROJECT_MEMBER_REQUEST_TABLENAME." 
+      . RQ_REQUEST_TABLE_FIELDNAME::ID 
+      . " = " . $conn->quote($request_id, 'text')
+      . " AND "
+      . " $PA_PROJECT_MEMBER_REQUEST_TABLENAME." 
+      . RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " = "
+      . " $PA_PROJECT_MEMBER_TABLENAME." 
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::PROJECT_ID
+      . " AND "
+      . " $PA_PROJECT_MEMBER_TABLENAME." 
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID 
+      . " = " . $conn->quote($signer, 'text')
+      . " AND "
+      . " $PA_PROJECT_MEMBER_TABLENAME." 
+      . PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE
+      . " IN (" . $conn->quote(CS_ATTRIBUTE_TYPE::LEAD, 'integer') 
+      . ", " . $conn->quote(CS_ATTRIBUTE_TYPE::ADMIN, 'integer') . ")";
+    //    error_log("PAProjectRequestGuard.sql = $sql"); 
+    $result = db_fetch_row($sql);
+    //    error_log("Result = " . print_r($result, true)); 
+    $allowed = FALSE;
+    if($result['code'] == RESPONSE_ERROR::NONE) {
+      $result = $result['value']['count'];
+      $allowed = $result > 0;
+    }
+
+    // If not allowed but requestor is signer and request status is 
+    // cancelled, then allow it
+    if (! $allowed) {
+      $resolution_status = null;
+      if (array_key_exists(RQ_ARGUMENTS::RESOLUTION_STATUS, $this->params)) {
+        $resolution_status = $this->params[RQ_ARGUMENTS::RESOLUTION_STATUS];
+        //error_log("not allowed but res_status= $resolution_status"); 
+        if ($resolution_status == RQ_REQUEST_STATUS::CANCELLED) {
+
+          $sql = "select " . RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR 
+	    . " FROM $PA_PROJECT_REQUEST_TABLENAME WHERE "
+	    . " $PA_PROJECT_REQUEST_TABLENAME." 
+	    . RQ_REQUEST_TABLE_FIELDNAME::ID 
+	    . " = " . $conn->quote($request_id, 'text');
+          //error_log("doing sql $sql"); 
+          $result = db_fetch_row($sql);
+          if ($result['code'] == RESPONSE_ERROR::NONE and 
+	      $result['value'][RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] 
+	      == $signer) {
+            $allowed = true;
+            //} else {
+            //  error_log(print_r($result));
+          }
+        }
+      }
+    }
+
+    if (! $allowed) {
+      $msg = "PA denying $signer call to " . $this->action;
+      error_log($msg);
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    }
+    //    error_log("Allowed = " . print_r($allowed, true));
+    return $allowed;
+  }
+}
+
+
 
 /*----------------------------------------------------------------------
  * PA API Methods
