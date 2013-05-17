@@ -336,7 +336,7 @@ function get_number_of_pending_requests_for_user($args)
     RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID . " IN (" . 
     user_context_query($account_id, $context_type) . ")";
 
-  $sql = "select count(*) from " . get_request_tablename($CONTEXT_TYPE)
+  $sql = "select count(*) from " . get_request_tablename($context_type)
     . " WHERE "
     . RQ_REQUEST_TABLE_FIELDNAME::STATUS . " = " . RQ_REQUEST_STATUS::PENDING
     . " AND "
