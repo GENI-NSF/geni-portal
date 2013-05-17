@@ -15,6 +15,11 @@ def parse_args(argv=None):
                       default=None, dest="json_filename")
 
   opts, args = parser.parse_args(argv)
+
+  if opts.json_filename is None:
+    parser.print_help()
+    sys.exit(0)
+
   return opts
 
 # Change the value of a given name to the namespace denoted by a label
@@ -31,6 +36,8 @@ def cleanXML(doc):
             clean_xml += line + '\n'
     return clean_xml
 
+# Copy all attributes from one XML node to another
+# For a certain set of attributes, tag with the given label
 def copy_attributes(to_node, from_node, label, attributes_to_tag):
   for attr_name, attr_value in from_node.attributes.items():
     if attr_name in attributes_to_tag:
@@ -38,9 +45,12 @@ def copy_attributes(to_node, from_node, label, attributes_to_tag):
     to_node.setAttribute(attr_name, attr_value)
 
 
+# For a given node, modify all descendents with given
+# attribute/value based on provided label 
 def modify_node(element, node_hierarchy, attr_name, \
                   attr_value, prepend, prev_hierarchy = []):
-#  print "MN: " + str(element) + " " + str(node_hierarchy) + " " + attr_name + " " \
+#  print "MN: " + str(element) + " " 
+#     + str(node_hierarchy) + " " + attr_name + " " \
 #      + attr_value + " " + str(prepend) + " " + str(prev_hierarchy);
   if element.nodeType != Node.ELEMENT_NODE: return
   current_hierarchy = prev_hierarchy[:]
@@ -149,34 +159,6 @@ def setup_request_header(root):
     request.setAttribute(ns, ns_value)
   return request
 
-# Create a request rspec that:
-#   Instantiates template1 on agg1 (URN)
-#   Instantiates template2 on agg2 (URN)
-#   Builds a stitching link between the two on described interfaces
-# def instantiate_stitching_rspec_orig(template1, agg1_urn, link1, \
-#                                   template2, agg2_urn, if2):
-# #  print "ISR %s %s %s %s %s %s" % (template1, agg1_urn, if1, \
-# #                                     template2, agg2_urn, if2)
-
-#   template1_doc = parse(open(template1, 'r'))
-#   template1_node = template1_doc.childNodes[0]
-# #  print template1_doc.toxml()
-
-#   template2_doc = parse(open(template2, 'r'))
-#   template2_node = template2_doc.childNodes[0]
-# #  print template2_doc.toxml()
-
-#   root = Document()
-#   request = setup_request_header(root)
-#   agg1_label = "A"
-#   agg2_label = "B"
-#   copy_from_template(root, request, template1_node, agg1_urn, agg1_label)
-#   copy_from_template(root, request, template2_node, agg2_urn, agg2_label)
-#   add_stitching_link(root, request, agg1_urn, agg1_label, if1, \
-#                        agg2_urn, agg2_label, if2)
-
-#   return root
-
 def find_agg_node(request, agg_node_name):
   for nd in request.childNodes:
     if nd.nodeType != Node.ELEMENT_NODE: continue
@@ -233,13 +215,15 @@ def assign_ip_addresses(root, request):
 
 
 # Instantiate a request RSPEC for stitching across aggregates
+# rspecs is a list of {'file', 'name'} for all rspecs to be referenced
 # aggregates is a list of {'urn', 'agg'} for all aggregates involved in topology
 # internal is a list of {'agg', 'rspec'} indicating which internal topologies 
-#    (specified by rspec)are to be created on which aggregates 
+#    (specified by rspec name) are to be created on which aggregates 
 # external is a list of {'from_agg', 'from_node', 'to_agg', 'to_node'} 
 #    indicating which aggregates (and instantiated nodes) participate in a 
 #    dedicated cross-aggregate interfaces 
-def instantiate_stitching_rspec(aggregates, internal_topologies, external_links):
+def instantiate_stitching_rspec(rspecs, aggregates, internal_topologies, \
+                                  external_links):
 
   # Validate arguments
   # All aggs in internal and external must be listed in aggregates
@@ -247,6 +231,13 @@ def instantiate_stitching_rspec(aggregates, internal_topologies, external_links)
 
   root = Document()
   request = setup_request_header(root)
+
+  # Maintain a list of rspecs files by name
+  rspec_files = {}
+  for rspec in rspecs:
+    rspec_file = rspec['file']
+    rspec_name = rspec['name']
+    rspec_files[rspec_name] = rspec_file
 
   # Maintain a list of aggregate URNs by name
   aggregate_urns = {}
@@ -262,7 +253,8 @@ def instantiate_stitching_rspec(aggregates, internal_topologies, external_links)
   # Changing the names to be in the namespace of the aggregate (to avoid overlap)
   for internal_topology in internal_topologies:
     agg_name = internal_topology['agg']
-    agg_rspec = internal_topology['rspec']
+    agg_rspec_name = internal_topology['rspec']
+    agg_rspec = rspec_files[agg_rspec_name]
     validate_aggregate_name(agg_name, aggregate_urns)
     agg_urn = aggregate_urns[agg_name]
     template_doc = parse(open(agg_rspec, 'r'))
@@ -308,14 +300,18 @@ if __name__ == "__main__":
   opts = parse_args(sys.argv)
 
   json_filename = opts.json_filename
+  if json_filename is None:
+    pass
+  
   json_data = open(json_filename, 'r').read()
   data = json.loads(json_data)
 #  print str(data)
 
+  rspecs = data['rspecs']
   aggregates = data['aggregates']
   internal = data['internal']
   external = data['external']
-  doc = instantiate_stitching_rspec(aggregates, internal, external)
+  doc = instantiate_stitching_rspec(rspecs, aggregates, internal, external)
 
   print cleanXML(doc)
 
