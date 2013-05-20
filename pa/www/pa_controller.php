@@ -33,6 +33,8 @@ require_once('pa_constants.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('ma_client.php');
+require_once("sa_client.php");
+require_once("sa_constants.php");
 require_once('cs_client.php');
 require_once('logging_client.php');
 require_once('cert_utils.php');
@@ -48,18 +50,25 @@ include_once('/etc/geni-ch/settings.php');
  *   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose, expiration)
  *   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
  *   update_project(pa_url, project_id, project_email, project_purpose, expiration);
+ *   get_project_members(pa_url, project_id, role=null) // null => Any
+ *   get_projects_for_member(pa_url, member_id, is_member, role=null)
+ *   lookup_project_details(pa_url, project_uuids)
+ *   invite_member(pa_url, project_id, role, expiration)
+ *   accept_invitation(pa_url, invite_id)
+ *   modify_project_membership(pa_url, members_to_add, 
+ *        members_to_change_role, members_to_remove)
+ *
+ * *** DEPRECATED ***
  *   change_lead(pa_url, project_id, previous_lead_id, new_lead_id); *
  *   add_project_member(pa_url, project_id, member_id, role)
  *   remove_project_member(pa_url, project_id, member_id)
  *   change_member_role(pa_url, project_id, member_id, role)
- *   get_project_members(pa_url, project_id, role=null) // null => Any
- *   get_projects_for_member(pa_url, member_id, is_member, role=null)
- *   lookup_project_details(pa_url, project_uuids)
  **/
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
 function pa_debug($msg)
@@ -171,10 +180,11 @@ class PAGuardFactory implements GuardFactory
 	    'lookup_projects' => array(), // Unguarded
 	    'lookup_project' => array(), // Unguarded
 	    'update_project' => array('project_guard'), 
-	    'change_lead' => array('project_guard'),
-	    'add_project_member' => array('project_guard'),
-	    'remove_project_member' => array('project_guard'),
-	    'change_member_role' => array('project_guard'),
+	    'modify_project_membership' => array('project_guard'), 
+	    //	    'change_lead' => array('project_guard'),
+	    //	    'add_project_member' => array('project_guard'),
+	    //	    'remove_project_member' => array('project_guard'),
+	    //	    'change_member_role' => array('project_guard'),
 	    'get_project_members' => array(), // Unguarded
 	    'get_projects_for_member' => array(), // Unguarded
 	    'lookup_project_details' => array(), // Unguarded
@@ -184,7 +194,9 @@ class PAGuardFactory implements GuardFactory
 	    'get_requests_by_user' => array(), // Unguarded
 	    'get_pending_requests_for_user' => array(), // Unguarded
 	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
-	    'get_request_by_id' => array() // Unguarded
+	    'get_request_by_id' => array(), // Unguarded
+	    "invite_member" => array("project_guard"),
+	    "accept_invitation" => array() // unguarded
             );
 
   public function __construct($cs_url) {
@@ -321,6 +333,8 @@ class PAContextGuard implements Guard
 				    $this->message->signerUuid(),
 				    $this->action, $this->context_type,
 				    $this->context);
+    //    error_log("PAContextGuard.evaluate.result = " . print_r($result, true));
+    $result = $result[RESPONSE_ARGUMENT::VALUE];
     $result_type = gettype($result);
     geni_syslog(GENI_SYSLOG_PREFIX::PA, "PAContextGuard got result of type $result_type");
     geni_syslog(GENI_SYSLOG_PREFIX::PA,
@@ -406,6 +420,10 @@ function create_project($args, $message)
   // Ensure that designated lead ID is allowed to be a project lead
   $permitted = request_authorization($cs_url, $mysigner, $lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
+  if ($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
     // FIXME: Need a syslog for this?
@@ -472,7 +490,12 @@ function create_project($args, $message)
 
   $ids = array();
   $ids[] = $lead_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $lead_name = $names[$lead_id];
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
@@ -550,15 +573,16 @@ function lookup_projects($args)
   }
 
   $sql = "select "
-          . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
-                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
-                          . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
-                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
-                                          . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-                                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
-                                                          . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
-                                                          . " FROM " . $PA_PROJECT_TABLENAME
-                                                          . $lead_clause;
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED
+    . " FROM " . $PA_PROJECT_TABLENAME
+    . $lead_clause;
 
   //  error_log("LookupProjects.sql = " . $sql);
 
@@ -599,15 +623,16 @@ function lookup_project($args)
   }
 
   $sql = "select "
-          . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
-                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
-                          . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
-                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
-                                          . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
-                                                  . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
-                                                          . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION
-                                                          . " FROM " . $PA_PROJECT_TABLENAME
-                                                          . $where;
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::CREATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . ", "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED
+    . " FROM " . $PA_PROJECT_TABLENAME
+    . $where;
 
   //  error_log("LOOKUP.sql = " . $sql);
 
@@ -672,7 +697,12 @@ function update_project($args, $message)
   $signer_id = $message->signerUuid();
   $ids = array();
   $ids[] = $signer_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $signer_name = $names[$signer_id];
 
   // Need to look up the project name
@@ -695,6 +725,196 @@ function update_project($args, $message)
 
   return $result;
 }
+
+// Modify project membership according to given lists of add/change_role/remove
+// $members_to_add and $members_to_change are both
+//    dicitoaries of (member_id => role, ...)
+// $members_to_delete is a list of mebmer_ids
+//
+// The semantics are as follows:
+//    Give an bad argument (ARGS) error if:
+//       any member to add is already a member
+//       any member_to change role is not a member
+//       any member_to_remove is not a member
+//    Give a bad argument (ARGS) error if:
+//       the change would cause there to be more or less than 1 lead
+//
+// Additional semantics:
+//    If any removed project member was lead of a slice of this project
+//    make the project lead into the lead of that slice
+//    
+function modify_project_membership($args, $message)
+{
+  global $cs_url;
+  global $mysigner;
+
+  // Unpack arguments
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $members_to_add = $args[PA_ARGUMENT::MEMBERS_TO_ADD];
+  $members_to_change_role = $args[PA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE];
+  $members_to_remove = $args[PA_ARGUMENT::MEMBERS_TO_REMOVE];
+
+  //  error_log("MTA = " . print_r($members_to_add, true));
+  //  error_log("MTC = " . print_r($members_to_change_role, true));
+  //  error_log("MTR = " . print_r($members_to_remove, true));
+
+
+  // Get the members of the project by role
+  $project_members = get_project_members(array(PA_ARGUMENT::PROJECT_ID => $project_id));
+  if ($project_members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $project_members;
+  }
+  $project_members = $project_members[RESPONSE_ARGUMENT::VALUE];
+
+  // Determine project lead
+  $project_lead = null;
+  foreach($project_members as $project_member) {
+    $member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $role = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
+      $project_lead = $member_id;
+      break;
+    }
+  }
+
+  // Must be a project lead, else something is wrong with project
+  if($project_lead == null) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Bad project: no lead");
+  }
+
+  // First validate the arguments
+  // No new members should be already a project member
+  if (!already_in_list(array_keys($members_to_add), array_keys($project_members), true)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't add member to a project that already belongs");
+  }
+
+  // No new roles for members who aren't project members
+  if (!already_in_list(array_keys($members_to_change_role), array_keys($project_members), false)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't change member role for member not in project");
+  }
+
+  // Can't remove members who aren't project members
+  if (!already_in_list(array_keys($members_to_remove), array_keys($project_members), false)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't remove member from project if not a member");
+  }
+
+  $new_project_lead = $project_lead;
+  // Count up the total lead changes. Should be zero
+  $lead_changes = 0;
+  foreach($members_to_add as $member_to_add => $new_role) {
+    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) {
+      $lead_changes = $lead_changes + 1;
+      $new_project_lead = $member_to_add;
+    }
+  }
+  foreach($members_to_change_role as $member_to_change_role => $role) {
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $project_lead) {
+      $lead_changes = $lead_changes + 1;
+      $new_project_lead = $member_to_change_role;
+    }
+    if ($member_to_change_role == $project_lead && $role != CS_ATTRIBUTE_TYPE::LEAD)
+      $lead_changes = $lead_changes - 1;
+  }
+
+  foreach($members_to_remove as $member_to_remove) {
+    if($member_to_remove == $project_lead)
+      $lead_changes = $lead_changes - 1;
+  }
+
+  if($lead_changes != 0) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Must have exactly one project lead");
+  }
+
+  // Can't make someone a project lead if they don't have 
+  // create_project capabilities
+  //  error_log("NPL = " . $new_project_lead . " PL = " . $project_lead);
+  if ($new_project_lead != $project_lead) {
+    $permitted = request_authorization($cs_url, $mysigner, $new_project_lead,
+				       PA_ACTION::CREATE_PROJECT,
+				       CS_CONTEXT_TYPE::RESOURCE, null);
+    if($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $permitted;
+    $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+    if (!$permitted)
+      return generate_response(RESPONSE_ERROR::ARGS, null, 
+			       "Proposed project lead does not have " . 
+			       "sufficient privileges for that role.");
+  }
+  
+
+
+
+
+  // There is a problem of transactional integrity here
+  // The PA keeps its own table of members/roles, and the CS keeps a table of assertions which
+  // are essentially redundant. Ultimately, these should be unified and probably kept in the CS
+  // and the CS should allow for a bundling (writing multiple adds/deletes at once)
+  // 
+  // But for now we maintain the two sets of tables, writing the sa_project_member_table atomically
+  // while writing to the CS on each transaction.
+
+  // Grab the database connection and start a transaction
+  $conn = db_conn();
+  $conn->beginTransaction();
+
+  // Set these if there's an error along the way
+  $success = True;
+  $error_message = "";
+
+  // Add new members
+  if ($success) {
+    foreach($members_to_add as $member_to_add => $role) {
+      $result = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id, 
+				       PA_ARGUMENT::MEMBER_ID => $member_to_add,
+				       PA_ARGUMENT::ROLE_TYPE => $role), 
+				 $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // Change roles of existing members
+  if($success) {
+    foreach($members_to_change_role as $member_to_change_role => $role) {
+      $result = change_member_role(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+					 PA_ARGUMENt::MEMBER_ID => $member_to_change_role,
+					 PA_ARGUMENT::ROLE_TYPE => $role), 
+				    $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // Remove members
+  if ($success) {
+    foreach($members_to_remove as $member_to_remove) {
+      $result = remove_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+					  PA_ARGUMEnt::MEMBER_ID => $member_to_remove), 
+				    $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // If all the PA and CS transactions are successful, then commit, otherwise rollback
+  if(!$success) {
+    // One of the writes failed. Rollback the whole thing
+    $conn->rollback();
+    return generate_response(RESPONSE_ERROR::DATABASE, null, $error_message);
+  } else {
+    // All succeeded, commit PA changes and return success
+    $conn->commit();
+    return generate_response(RESPONSE_ERROR::NONE, null, '');
+  }
+}
+
+
 
 /* update lead of given project */
 function change_lead($args, $message)
@@ -750,6 +970,10 @@ function change_lead($args, $message)
   global $mysigner;
   $permitted = request_authorization($cs_url, $mysigner, $new_lead_id, PA_ACTION::CREATE_PROJECT,
           CS_CONTEXT_TYPE::RESOURCE, null);
+  if($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
@@ -788,8 +1012,8 @@ function change_lead($args, $message)
           PA_ARGUMENT::MEMBER_ID => $previous_lead_id,
           PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
           $message);
-
-  // FIXME: Check for chngres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE
+  if ($chngres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $chngres;
 
   global $log_url;
   global $mysigner;
@@ -800,7 +1024,12 @@ function change_lead($args, $message)
   $ids[] = $signer_id;
   $ids[] = $new_lead_id;
   $ids[] = $previous_lead_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $signer_name = $names[$signer_id];
   $new_lead_name = $names[$new_lead_id];
   $old_lead_name = $names[$previous_lead_id];
@@ -943,7 +1172,10 @@ function add_project_member($args, $message)
   // If successful, add an assertion of the role's privileges within the CS store
   if($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     global $cs_url;
-    create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $ca_result = create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, 
+				  CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if($ca_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $ca_result;
   }
 
   // Log adding the member
@@ -951,7 +1183,12 @@ function add_project_member($args, $message)
   $ids = array();
   $ids[] = $signer_id;
   $ids[] = $member_id;
+
   $names = lookup_member_names($ma_url, $mysigner, $ids);
+  if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $names;
+  $names = $names[RESPONSE_ARGUMENT::VALUE];
+
   $signer_name = $names[$signer_id];
   $member_name = $names[$member_id];
 
@@ -986,6 +1223,104 @@ function add_project_member($args, $message)
     $msg);
   }
   return $result;
+}
+
+// Remove member from slices to which he belongs in given project
+// If member is lead of such a slice, replace with project lead
+function remove_project_member_from_slices($member_id, $project_id)
+{
+  global $sa_url;
+  global $mysigner;
+
+  // Get slices for member for project
+  $slices = lookup_slices($sa_url, $mysigner, $project_id, $member_id);
+  if ($slices[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
+    return $slices;
+  $slices = $slices[RESPONSE_ARGUMENT::VALUE];
+
+  // Get roles of member within slices
+  $member_slice_roles = get_slices_for_member($sa_url, $mysigner, $member_id, true);
+  if ($member_slice_roles[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
+    return $member_slice_roles;
+  $member_slice_roles = $member_slice_roles[RESPONSE_ARGUMENT::VALUE];
+
+  //  error_log("SLICES = " . print_r($slices, true));
+  //  error_log("MEMBER_SLICE_ROLES = " . print_r($member_slice_roles, true));
+
+  $slices_to_replace_lead = array();
+
+  // For each project slice, see what role member has.
+  foreach($slices as $slice) {
+    $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+    $project_contains_slice = false;
+    foreach($member_slice_roles as $member_slice_role) {
+      $member_slice_id = $member_slice_role[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+      $role = $member_slice_role[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+      if($slice_id == $member_slice_id) {
+	error_log("Need to remove " . $member_id . " from slice " . $slice_id . " role " . $role);
+	$rsm_result = remove_slice_member($sa_url, $mysigner, $slice_id, $member_id);
+	if ($rsm_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  return $rsm_result;
+	if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
+	  error_log("Need to replace lead of slice " . $slice_id);
+	  $slices_to_replace_lead[] = $slice_id;
+	}
+      }
+    }
+  }
+
+  // If we need to replace some leads, get the project lead
+  // and the list of slices to which lead belongs. If doesn't belong, add as lead
+  // Otherwise, change role to lead
+  if (count($slices_to_replace_lead) > 0) {
+    // Get the ID of the project lead
+    $project_members_args[PA_ARGUMENT::PROJECT_ID] = $project_id;
+
+    $project_members = get_project_members($project_members_args);
+    if ($project_members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $project_members;
+    $project_members = $project_members[RESPONSE_ARGUMENT::VALUE];
+
+    $project_lead_id = null;
+    foreach($project_members as $project_member) {
+      $role = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE];
+      $member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+      if($role == CS_ATTRIBUTE_TYPE::LEAD) {
+	$project_lead_id = $member_id;
+	break;
+      }
+    }
+
+    // Get the ID's of slices in this project for which project lead is member
+    $project_lead_slices = lookup_slices($sa_url, $mysigner, $project_id, $project_lead_id);
+    if($project_lead_slices[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $proejct_lead_slices;
+    $project_lead_slices = $project_lead_slices[RESPONSE_ARGUMENT::VALUE];
+
+    $slices_for_project_lead = array();
+    foreach($project_lead_slices as $project_lead_slice) {
+      $slice_id = $project_lead_slice[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+      $slices_for_project_lead[] = $slice_id;
+    }
+
+    foreach($slices_to_replace_lead as $slice_id) {
+      $lead_in_slice = in_array($slice_id, $slices_for_project_lead);
+      if($lead_in_slice) {
+	// If project lead is in slice, change to lead in slice
+	$csmr_result = change_slice_member_role($sa_url, $mysigner, $slice_id, $project_lead_id, 
+						CS_ATTRIBUTE_TYPE::LEAD);
+	if ($csmr_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  return $csmr_result;
+	
+      } else {
+	// Otherwise add member as lead to slice
+	$asm_result = add_slice_member($sa_url, $mysigner, $slice_id, $project_lead_id, 
+				       CS_ATTRIBUTE_TYPE::LEAD);
+	if ($asm_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  return $asm_result;
+      }
+    }
+  }
 }
 
 // Remove a member from given project
@@ -1052,6 +1387,11 @@ function remove_project_member($args, $message)
             "Cannot remove LEAD from project: " . $project_id);
   }
 
+
+  // Remove member from all slices. 
+  // If member is lead of a given slice, replace with project lead
+  remove_project_member_from_slices($member_id, $project_id);
+
   // FIXME: Stop if the member is the LEAD on a non-expired slice?
 
   $sql = "DELETE FROM " . $PA_PROJECT_MEMBER_TABLENAME
@@ -1070,12 +1410,18 @@ function remove_project_member($args, $message)
 
     $membership_assertions = query_assertions($cs_url, $mysigner,
             $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if($membership_assertions[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $membership_assertions;
+    $membership_assertions = $membership_assertions[RESPONSE_ARGUMENT::VALUE];
+
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $mysigner, $assertion_id);
+      $da_result = delete_assertion($cs_url, $mysigner, $assertion_id);
+      if ($da_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	return $da_result;
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
 
@@ -1086,7 +1432,12 @@ function remove_project_member($args, $message)
     $ids = array();
     $ids[] = $signer_id;
     $ids[] = $member_id;
+
     $names = lookup_member_names($ma_url, $mysigner, $ids);
+    if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $names;
+    $names = $names[RESPONSE_ARGUMENT::VALUE];
+
     $signer_name = $names[$signer_id];
     $member_name = $names[$member_id];
 
@@ -1207,18 +1558,28 @@ function change_member_role($args, $message)
     $signer_id = $message->signerUuid();
 
     // Remove previous CS assertions about the member in this project
-    $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $membership_assertions = query_assertions($cs_url, $mysigner, $member_id, 
+					      CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if($membership_assertions[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $emembership_assertions;
+    $membership_assertions = $membership_assertions[RESPONSE_ARGUMENT::VALUE];
+
     //    error_log("ASSERTIONS = " . print_r($membership_assertions, true));
     foreach($membership_assertions as $membership_assertion) {
       //      error_log("ASSERTION = " . print_r($membership_assertion));
       $assertion_id = $membership_assertion[CS_ASSERTION_TABLE_FIELDNAME::ID];
       //      error_log("ASSERTION_ID = " . print_r($assertion_id));
-      delete_assertion($cs_url, $mysigner, $assertion_id);
+      $da_result = delete_assertion($cs_url, $mysigner, $assertion_id);
+      if ($da_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	return $da_result;
       //      error_log("DELETING ASSERTION : " . $assertion_id);
     }
 
     // Create new assertion for member in this role
-    create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, CS_CONTEXT_TYPE::PROJECT, $project_id);
+    $ca_result = create_assertion($cs_url, $mysigner, $signer_id, $member_id, $role, 
+				  CS_CONTEXT_TYPE::PROJECT, $project_id);
+    if ($ca_result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $ca_result;
 
     $project_name = $project_id;
     $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
@@ -1236,7 +1597,12 @@ function change_member_role($args, $message)
     $ids = array();
     $ids[] = $signer_id;
     $ids[] = $member_id;
+
     $names = lookup_member_names($ma_url, $mysigner, $ids);
+    if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $names;
+    $names = $names[RESPONSE_ARGUMENT::VALUE];
+
     $signer_name = $names[$signer_id];
     $member_name = $names[$member_id];
     $role_name = $CS_ATTRIBUTE_TYPE_NAME[$role];
@@ -1441,6 +1807,126 @@ function lookup_project_details($args)
 
 }
 
+// Support for generating and accepting invitations
+
+// Remove expired invitations
+function expire_project_invitations()
+{
+  global $PA_PROJECT_MEMBER_INVITATION_TABLENAME;
+
+  $conn = db_conn();
+
+  $now = new DateTime();
+
+  $sql = "delete from " . $PA_PROJECT_MEMBER_INVITATION_TABLENAME . 
+    " where " . PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION . " < " . 
+    $conn->quote(db_date_format($now), 'timestamp');
+
+  $result = db_execute_statement($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    error_log("EXPIRE_PROJECT_INVITES ERROR : " . print_r($result, true));
+
+}
+
+// Generate an invitation for a given (unknown) member for a given project/role
+// If they hit the accept email link and confirmation button within the expiration window,
+// (and have authenticated) they are added to the project
+function invite_member($args, $message)
+{
+  global $project_default_invitation_expiration_hours;
+  global $PA_PROJECT_MEMBER_INVITATION_TABLENAME;
+
+  expire_project_invitations();
+
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  $role = $args[PA_ARGUMENT::ROLE_TYPE];
+
+  $now = new DateTime();
+  $expiration = get_future_date(0, $project_default_invitation_expiration_hours);
+  $invite_id = make_uuid();
+
+  $conn = db_conn();
+
+  $sql = "insert into " .   $PA_PROJECT_MEMBER_INVITATION_TABLENAME . "(" . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::PROJECT_ID . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::ROLE . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION . ") VALUES (" . 
+    $conn->quote($invite_id, 'text') . ", " . 
+    $conn->quote($project_id, 'text') . ", " . 
+    $conn->quote($role, 'integer') . ", " . 
+    $conn->quote(db_date_format($expiration), 'timestamp') . ") ";
+
+  $result = db_execute_statement($sql);
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $result;
+
+  $result = array(PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID => $invite_id,
+		  PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION => $expiration);
+		  
+  return generate_response(RESPONSE_ERROR::NONE, $result, "");
+
+}
+
+function accept_invitation($args, $message)
+{
+
+  expire_project_invitations();
+
+  $conn = db_conn();
+
+  $invite_id = $args[PA_ARGUMENT::INVITATION_ID];
+  $member_id = $args[PA_ARGUMENT::MEMBER_ID];
+
+  // Grab invite details
+  global $PA_PROJECT_MEMBER_INVITATION_TABLENAME;
+  $sql = "select " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::PROJECT_ID . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::ROLE . ", " . 
+    PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION . 
+    " from " . $PA_PROJECT_MEMBER_INVITATION_TABLENAME .
+    " where "   . PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID . " = " . 
+    $conn->quote($invite_id, 'text');
+
+  $result = db_fetch_rows($sql);
+  if($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $result;
+  $rows = $result[RESPONSE_ARGUMENT::VALUE];
+  error_log("ROWS = " . print_r($rows, true));
+  if(count($rows) == 0) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Invitation has been deleted.");
+  }
+
+  $row = $rows[0];
+  $project_id = $row[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::PROJECT_ID];
+  $role = $row[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::ROLE];
+  $expiration = new DateTime($row[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::EXPIRATION]);
+
+  // If expired, return error
+  $now = new DateTime();
+  if ($expiration < $now) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Invitation has expired");
+  }
+
+  // Otherwise, grab project_id, add to member project
+  $addres = add_project_member(array(PA_ARGUMENT::PROJECT_ID => $project_id, 
+				     PA_ARGUMENT::MEMBER_ID => $member_id, 
+				     PA_ARGUMENT::ROLE_TYPE => $role), 
+			       $message);
+
+  if ($addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $addres;
+
+  // Delete the invitation
+  $sql = "delete from " . 
+    $PA_PROJECT_MEMBER_INVITATION_TABLENAME .
+    " where "   . PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID . " = " . 
+    $conn->quote($invite_id, 'text');
+  $result = db_fetch_rows($sql);
+  return $result;
+
+}
+
 
 // Include the RQ interface routines
 $REQUEST_TABLENAME = $PA_PROJECT_MEMBER_REQUEST_TABLENAME;
@@ -1458,6 +1944,15 @@ function user_context_query($account_id)
           . " AND " . PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID . " = " . $conn->quote($account_id, 'text');
 
 }
+
+// Since the PA calls SA and MA functions, we need to look 
+// at the result codes ourselves
+function pa_message_result_handler($result) 
+{
+  //  error_log("PA_MESSAGE_RESULT_HANDLER.result = " . print_r($result, true));
+  return $result;
+}
+
 require_once('rq_controller.php');
 
 // FIXME: Should not be hardcorded
@@ -1465,8 +1960,9 @@ $mycertfile = '/usr/share/geni-ch/pa/pa-cert.pem';
 $mykeyfile = '/usr/share/geni-ch/pa/pa-key.pem';
 $mysigner = new Signer($mycertfile, $mykeyfile);
 $guard_factory = new PAGuardFactory($cs_url);
+$put_message_result_handler = 'pa_message_result_handler';
+//error_log("PA_CONTROLLER.PUT_MESSAGE_RESULT_HANDLER = " . $put_message_result_handler);
 handle_message("PA", $cs_url, default_cacerts(),
 $mysigner->certificate(), $mysigner->privateKey(), $guard_factory);
-
 
 ?>

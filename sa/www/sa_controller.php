@@ -140,9 +140,10 @@ class SAGuardFactory implements GuardFactory
             'lookup_slice' => array('slice_guard'),
             'lookup_slice_by_urn' => array(), // Unguarded
             'renew_slice' => array('slice_guard'),
-            'add_slice_member' => array('slice_guard'),
-            'remove_slice_member' => array('slice_guard'),
-            'change_slice_member_role' => array('slice_guard'),
+	    'modify_slice_membership' => array('slice_guard'),
+	    //            'add_slice_member' => array('slice_guard'),
+	    //            'remove_slice_member' => array('slice_guard'),
+	    //            'change_slice_member_role' => array('slice_guard'),
             'get_slice_members' => array('slice_guard'),
             'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
@@ -212,6 +213,32 @@ class SAGuardFactory implements GuardFactory
     } else {
       error_log("SA: No guard producers for action \"$action\"");
     }
+
+    // Allow another authority to perform actions on behalf of users
+    // *** FIXME: Should be replaced with speaks-for logic ***
+    if (count($result) > 0) {
+      $result[] = new SignerAuthorityGuard($message);
+      $result = array(new OrGuard($result));
+    }
+    return $result;
+  }
+}
+
+/**
+ * This is more of a demonstration guard than anything else.
+ * It really isn't an appropriate test, but gets the point
+ * across that a user can't call certain methods, but an
+ * authority could.
+ */
+class SignerAuthorityGuard implements Guard
+{
+  public function __construct($message) {
+    $this->message = $message;
+  }
+
+  public function evaluate() {
+    $result =  (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+    //    error_log("SAG.evaluate : " . print_r($result, true) . " " . $this->message->signerUrn());
     return $result;
   }
 }
@@ -674,6 +701,7 @@ function lookup_slices($args, $message)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
@@ -737,6 +765,7 @@ function lookup_slice_by_urn($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
@@ -865,6 +894,165 @@ function renew_slice($args, $message)
   geni_syslog(GENI_SYSLOG_PREFIX::SA,
           "Renewed slice $slice_id until $new_expiration");
   return $slice_info;
+}
+
+// Modify slice membership according to given lists of add/change_role/remove
+// $members_to_add and $members_to_change are both
+//    dictionaries of (member_id => role, ...)
+// $members_to_delete is a list of mebmer_ids
+//
+// The semantics are as follows:
+//    Give an bad argument (ARGS) error if:
+//       any member to add is already a member
+//       any member_to change role is not a member
+//       any member_to_remove is not a member
+//    Give a bad argument (ARGS) error if:
+//       the change would cause there to be more or less than 1 lead
+//    
+// Note: This is all done in a transaction, so the inserts, updates and deletes all happen atomically.
+//    
+function modify_slice_membership($args, $message)
+{
+  // Unpack arguments
+  $slice_id = $args[SA_ARGUMENT::SLICE_ID];
+  $members_to_add = $args[SA_ARGUMENT::MEMBERS_TO_ADD];
+  $members_to_change_role = $args[SA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE];
+  $members_to_remove = $args[SA_ARGUMENT::MEMBERS_TO_REMOVE];
+
+  //  error_log("MTA = " . print_r($members_to_add, true));
+  //  error_log("MTC = " . print_r($members_to_change_role, true));
+  //  error_log("MTR = " . print_r($members_to_remove, true));
+
+
+  // Get the members of the slice by role
+  $slice_members = get_slice_members(array(SA_ARGUMENT::SLICE_ID => $slice_id));
+  if ($slice_members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    return $slice_members;
+  }
+  $slice_members = $slice_members[RESPONSE_ARGUMENT::VALUE];
+
+  // Determine slice lead
+  $slice_lead = null;
+  foreach($slice_members as $slice_member) {
+    $member_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $role = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
+      $slice_lead = $member_id;
+      break;
+    }
+  }
+
+  // Must be a slice lead, else something is wrong with slice
+  if($slice_lead == null) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Bad slice: no lead");
+  }
+
+  // First validate the arguments
+  // No new members should be already a slice member
+  if (!already_in_list(array_keys($members_to_add), array_keys($slice_members), true)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't add member to a slice that already belongs");
+  }
+
+  // No new roles for members who aren't slice members
+  if (!already_in_list(array_keys($members_to_change_role), array_keys($slice_members), false)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't change member role for member not in slice");
+  }
+
+  // Can't remove members who aren't slice members
+  if (!already_in_list(array_keys($members_to_remove), array_keys($slice_members), false)) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Can't remove member from slice if not a member");
+  }
+
+  // Count up the total lead changes. Should be zero
+  $lead_changes = 0;
+  foreach($members_to_add as $member_to_add => $new_role) {
+    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) 
+      $lead_changes = $lead_changes + 1;
+  }
+  foreach($members_to_change_role as $member_to_change_role => $role) {
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $slice_lead)
+      $lead_changes = $lead_changes + 1;
+    if ($member_to_change_role == $slice_lead && $role != CS_ATTRIBUTE_TYPE::LEAD)
+      $lead_changes = $lead_changes - 1;
+  }
+
+  foreach($members_to_remove as $member_to_remove) {
+    if($member_to_remove == $slice_lead)
+      $lead_changes = $lead_changes - 1;
+  }
+
+  if($lead_changes != 0) {
+    return generate_response(RESPONSE_ERROR::ARGS, null, "Must have exactly one slice lead");
+  }
+
+  // There is a problem of transactional integrity here
+  // The SA keeps its own table of members/roles, and the CS keeps a table of assertions which
+  // are essentially redundant. Ultimately, these should be unified and probably kept in the CS
+  // and the CS should allow for a bundling (writing multiple adds/deletes at once)
+  // 
+  // But for now we maintain the two sets of tables, writing the sa_slice_member_table atomically
+  // while writing to the CS on each transaction.
+
+  // Grab the database connection and start a transaction
+  $conn = db_conn();
+  $conn->beginTransaction();
+
+  // Set these if there's an error along the way
+  $success = True;
+  $error_message = "";
+
+  // Add new members
+  if ($success) {
+    foreach($members_to_add as $member_to_add => $role) {
+      $result = add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id, 
+				       SA_ARGUMENT::MEMBER_ID => $member_to_add,
+				       SA_ARGUMENT::ROLE_TYPE => $role), 
+				 $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // Change roles of existing members
+  if($success) {
+    foreach($members_to_change_role as $member_to_change_role => $role) {
+      $result = change_slice_member_role(array(SA_ARGUMENT::SLICE_ID => $slice_id,
+					       SA_ARGUMENt::MEMBER_ID => $member_to_change_role,
+					       SA_ARGUMENT::ROLE_TYPE => $role), 
+				    $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // Remove members
+  if ($success) {
+    foreach($members_to_remove as $member_to_remove) {
+      $result = remove_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id,
+					  SA_ARGUMEnt::MEMBER_ID => $member_to_remove), 
+				    $message);
+      if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	$success = False;
+	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+      }
+    }
+  }
+
+  // If all the SA and CS transactions are successful, then commit, otherwise rollback
+  if(!$success) {
+    // One of the writes failed. Rollback the whole thing
+    $conn->rollback();
+    return generate_response(RESPONSE_ERROR::DATABASE, null, $error_message);
+  } else {
+    // All succeeded, commit SA changes and return success
+    $conn->commit();
+    return generate_response(RESPONSE_ERROR::NONE, null, '');
+  }
+
 }
 
 // Add a member of given role to given slice
@@ -1210,7 +1398,9 @@ function lookup_slice_details($args)
     $sql = "select "  
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
+    . SA_SLICE_TABLE_FIELDNAME::CREATION . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
@@ -1227,6 +1417,7 @@ function lookup_slice_details($args)
 // Return a dictionary of the list of slices (details) for a give
 // set of project uuids, indexed by project UUID
 // e.g.. [p1 => [s1_details, s2_details....], p2 => [s3_details, s4_details...]
+// Optionally allow slices that have expired
 function get_slices_for_projects($args)
 {
   $project_uuids = $args[SA_ARGUMENT::PROJECT_UUIDS];
@@ -1236,6 +1427,11 @@ function get_slices_for_projects($args)
   }
   $project_uuids_as_sql = convert_list($project_uuids);
 
+  $allow_expired = $args[SA_ARGUMENT::ALLOW_EXPIRED];
+  $expired_clause = "";
+  if(!$allow_expired) 
+    $expired_clause = "NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED . " AND ";
+
   sa_expire_slices();
 
   global $SA_SLICE_TABLENAME;
@@ -1243,17 +1439,19 @@ function get_slices_for_projects($args)
     . SA_SLICE_TABLE_FIELDNAME::SLICE_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_NAME . ", "
     . SA_SLICE_TABLE_FIELDNAME::EXPIRATION . ", "
+    . SA_SLICE_TABLE_FIELDNAME::EXPIRED . ", "
     . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_DESCRIPTION . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_EMAIL . ", "
     . SA_SLICE_TABLE_FIELDNAME::SLICE_URN 
     . " FROM " . $SA_SLICE_TABLENAME 
-      . " WHERE " .   "NOT " . SA_SLICE_TABLE_FIELDNAME::EXPIRED 
-      . " AND " . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " IN " .
+      . " WHERE " .   $expired_clause
+      . SA_SLICE_TABLE_FIELDNAME::PROJECT_ID . " IN " .
       $project_uuids_as_sql;
     $rows = db_fetch_rows($sql);
 
+    //    error_log("sql = ". $sql);
     //    error_log("gs4p details " . print_r($rows, true));
 
     $result = array();

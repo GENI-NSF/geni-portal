@@ -94,29 +94,69 @@ function validate_slice_member_requests($slice_members_by_role, $selections)
   return array('success' => $success, 'text' => $message);
 }
 
-function modify_slice_membership($slice_id, $member_id, $selection_id, 
-				 $slice_members_by_role, $is_member)
+function do_modify_slice_membership($selections, $slice_id, $slice_members_by_role)
 {
   global $sa_url;
   global $user;
-  //   error_log("MSM = " . $member_id . " " . $selection_id . " " . $is_member);
 
-  if($is_member) {
-    $role = $slice_members_by_role[$member_id];
-    if ($selection_id == 0) {
-      // Remove this member from this slice
-      remove_slice_member($sa_url, $user, $slice_id, $member_id);
-    } else if ($selection_id != $role) {
-      // Change the role of this member in this slice
-      change_slice_member_role($sa_url, $user, $slice_id, $member_id, $selection_id);
-    }
-  } else {
-    if ($selection_id > 0) {
-      // Add this member to this slice
-      add_slice_member($sa_url, $user, $slice_id, $member_id, $selection_id);
+  $members_to_add = array();
+  $members_to_change_role = array();
+  $members_to_remove = array();
+
+  error_log("Selections = " . print_r($selections, true));
+  //  error_log("SMBR = " . print_r($slice_members_by_role, true));
+
+  foreach($selections as $member_id => $selection_id) {
+    $is_member = array_key_exists($member_id, $slice_members_by_role);
+    if ($is_member) {
+      $role = $slice_members_by_role[$member_id];
+      if($selection_id == 0) {
+	// Remove this member from this slice
+	$members_to_remove[] = $member_id;
+      } else if ($selection_id != $role) {
+	// Change the role of this member on this slice
+	$members_to_change_role[$member_id] = $selection_id;
+      }
+    } else {
+      if ($selection_id > 0) {
+	// Add member to slice
+	$members_to_add[$member_id] = $selection_id;
+      }
     }
   }
+
+  // Publish changes atomically to SA
+  $result = modify_slice_membership($sa_url, $user, $slice_id, 
+				    $members_to_add, 
+				    $members_to_change_role, 
+				    $members_to_remove);
+  return $result;
 }
+
+//function orig_do_modify_slice_membership($slice_id, $member_id, $selection_id, 
+//				 $slice_members_by_role, $is_member)
+//{
+//  global $sa_url;
+//  global $user;
+//  //   error_log("MSM = " . $member_id . " " . $selection_id . " " . $is_member);
+//
+//
+//  if($is_member) {
+//    $role = $slice_members_by_role[$member_id];
+//    if ($selection_id == 0) {
+//      // Remove this member from this slice
+//      remove_slice_member($sa_url, $user, $slice_id, $member_id);
+//    } else if ($selection_id != $role) {
+//      // Change the role of this member in this slice
+//      change_slice_member_role($sa_url, $user, $slice_id, $member_id, $selection_id);
+//    }
+//  } else {
+//    if ($selection_id > 0) {
+//      // Add this member to this slice
+//      add_slice_member($sa_url, $user, $slice_id, $member_id, $selection_id);
+//    }
+//  }
+//}
 
 $slice_id = $_REQUEST['slice_id'];
 unset($_REQUEST['slice_id']);
@@ -134,13 +174,11 @@ $selections = $_REQUEST;
 $validation_result = validate_slice_member_requests($slice_members_by_role, $selections);
 $success = $validation_result['success'];
 if($success) {
-  foreach($selections as $member_id => $selection_id) {
-    $is_member = array_key_exists($member_id, $slice_members_by_role);
-    modify_slice_membership($slice_id, $member_id, $selection_id, 
-			    $slice_members_by_role, 
-			    $is_member);
-  }
-  $_SESSION['lastmessage'] = "Slice membership successfully changed.";
+  $result = do_modify_slice_membership($selections, $slice_id, $slice_members_by_role);
+  if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE)
+    $_SESSION['lastmessage'] = "Slice membership successfully changed.";
+  else
+    $_SESSION['lastmessage'] = 'Error changing slice membership : ' .$result[RESPONSE_ARGUMENT::OUTPUT];
 } else {
   $result = $validation_result['text'];
   $_SESSION['lasterror'] = $result;

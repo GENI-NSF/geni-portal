@@ -36,6 +36,8 @@ require_once('util.php');
 require_once('guard.php');
 require_once 'geni_syslog.php';
 
+$put_message_result_handler = null;
+
 /**
  * An easy way to turn message handler debugging on or off.
  */
@@ -255,6 +257,7 @@ function handle_message($prefix, $cs_url, $cacerts,
     if (! $guard->evaluate()) {
       $principal = $geni_message->signerUrn();
       $msg = "$principal is not authorized to $action.";
+      error_log("Failed by guard " . print_r($guard, true));
       $result = generate_response(RESPONSE_ERROR::AUTHORIZATION,
               NULL,
               $msg);
@@ -373,6 +376,20 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
   }
 
   $result = decode_result($result);
+
+  // If a custom handler is set, use it.
+  global $put_message_result_handler;
+  //  error_log("PUT_MESSAGE:PUT_MESSAGE_RESULT_HANDLER = " . $put_message_result_handler);
+  if($put_message_result_handler != null) {
+    return $put_message_result_handler($result);
+  } else {
+    // Otherwise, here's the default handler
+    return default_put_message_result_handler($result);
+  }
+}
+
+function default_put_message_result_handler($result)
+{
   //  error_log("Decoded raw result : " . $result);
 
   //  error_log("MH.RESULT = " . print_r($result, true));

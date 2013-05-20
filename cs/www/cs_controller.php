@@ -445,18 +445,18 @@ function is_operator($principal, $action, $context_type)
     . "cs_action.privilege = cs_policy.privilege and "
     . "cs_action.name = " . $conn->quote($action, 'text');
 
-  error_log("CS.Request_authorization.sql = " . $sql);
+  //  error_log("CS.Request_authorization.sql = " . $sql);
 
   $rows = db_fetch_rows($sql, "CS_AUTH");
   $code = $rows[RESPONSE_ARGUMENT::CODE];
   $rows = $rows[RESPONSE_ARGUMENT::VALUE];
-  error_log("CS.is_operator got response $code");
+  //  error_log("CS.is_operator got response $code");
   if ($code == RESPONSE_ERROR::NONE) {
-    error_log("CS.is_operator response error is none");
+    //    error_log("CS.is_operator response error is none");
   } else {
-    error_log("CS.is_operator response error is ERROR");
+    //    error_log("CS.is_operator response error is ERROR");
   }
-  error_log("CS.is_operator got row count " . count($rows));
+  //  error_log("CS.is_operator got row count " . count($rows));
   return ($code == RESPONSE_ERROR::NONE && count($rows) > 0);
 }
 

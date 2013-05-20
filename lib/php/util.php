@@ -132,4 +132,21 @@ function rfc3339Format($date_string)
   $rfc3339 = $date_dt->format(DateTime::RFC3339);
   return $rfc3339;
 }
+
+// Are the candiates all in the given list
+// If 'true_if_any' is true, return true if ANY candidate is in the list, not ALL
+function already_in_list($candidates, $members, $true_if_any)
+{
+  $all_members = true;
+  foreach($candidates as $candidate) {
+    if (in_array($candidate, $members)) {
+	if ($true_if_any) 
+	  return true;
+      } else {
+      $all_emmbers = false;
+    }
+  }
+  return $all_members;
+}
+
 ?>
