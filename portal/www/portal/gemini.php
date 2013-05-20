@@ -58,9 +58,10 @@ $gemini_cert_file = '/usr/share/geni-ch/sr/certs/genidesktop.netlab.uky.edu.pem'
 $gemini_cert = file_get_contents($gemini_cert_file);
 
 /* How long to wait before auto-submitting the form post to GEMINI,
- * in seconds.
+ * in seconds. Set this high if you want to inspect the page before
+ * the auto-submit happens.
  */
-$gemini_post_delay_seconds = 3;
+$gemini_post_delay_seconds = 0;
 
 
 if (!isset($user)) {
@@ -68,6 +69,16 @@ if (!isset($user)) {
 }
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
+}
+
+$cert = ma_lookup_certificate($ma_url, $user, $user->account_id);
+if (is_null($cert)) {
+  // warn that no cert has been generated
+  $warnings[] = '<p class="warn">No certificate has been generated.'
+        . ' You must <a href="kmcert.php?close=1" target="_blank">'
+        . 'generate a certificate'
+        . '</a>.'
+        . '</p>';
 }
 
 unset($slice);
@@ -120,8 +131,13 @@ include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 ?>
 
-
-
+<?php
+if (count($warnings)) {
+  foreach ($warnings as $warning) {
+    echo $warning;
+  }
+} else {
+?>
 <form id="gemini" action="<?php echo $gemini_url;?>" method="post">
 <input id="blob" type="hidden" name="<?php echo $gemini_input_name;?>" value="">
 </form>
@@ -132,6 +148,7 @@ $('#blob').val(blob);
 setTimeout(function() { $('#gemini').submit(); },
            <?php echo $gemini_post_delay_seconds * 1000 ?>);
 </script>
+<?php } ?>
 
 <?php
 include("footer.php");
