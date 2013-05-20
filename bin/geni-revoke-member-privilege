@@ -26,7 +26,7 @@
 
 #----------------------------------------------------------------------
 #
-# Add a privilege to a GENI user: Make them a project lead or an operator
+# Remove a privilege from a GENI user: Make them NOT a project lead or an operator
 #
 # Communicates with a GENI MEmber Authority via its public API
 # Status indicates success or failure.
@@ -60,9 +60,9 @@ def parse_args(argv):
                       help="Invoker's GENI certificate")
     parser.add_option("-u", "--url", help="authority URL")
     parser.add_option("-o", "--operator",  action="store_true", default=False,
-                      help="add operator privilege")
+                      help="remove operator privilege")
     parser.add_option("-l", "--lead",  action="store_true", default=False,
-                      help="add lead privilege")
+                      help="remove lead privilege")
     parser.add_option("-m", "--member", help="member id (a UUID)")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
@@ -118,7 +118,7 @@ def main(argv=None):
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    operation = "add_member_privilege"
+    operation = "revoke_member_privilege"
     logger = logging.getLogger()
     if options.operator:
         # This matches ma_privilege values
