@@ -117,8 +117,26 @@ function smime_sign_message($message, $signer_cert=null, $signer_key=null)
   return $message;
 }
 
-function smime_encrypt($message)
+function smime_encrypt($message, $target_cert=NULL)
 {
+  if (! $target_cert) {
+    /* Cannot encrypt without a target certificate. */
+    return $message;
+  }
+  $msg_file = writeDataToTempFile($message, "msg-");
+  $out_file = tempnam(sys_get_temp_dir(), "smime-");
+  /* No mail headers */
+  $headers = array();
+  if (openssl_pkcs7_encrypt($msg_file, $out_file, $target_cert, $headers)) {
+    /* SUCCESS */
+      smime_debug("smime_sign_message succeeded.");
+      $message = file_get_contents($out_file);
+  } else {
+    /* FAILURE */
+      error_log("smime_encrypt failed.");
+  }
+  unlink($msg_file);
+  unlink($out_file);
   return $message;
 }
 
