@@ -6,6 +6,12 @@
  * Clearinghouse
   * Check for valid arguments in more spots (#5)
   * Ensure more methods have guards, and log on failed authorization
+  * Added sbin/renew-certs script to renew service certificates (#507)
+  * Add support for GetVersion in pgch (#492)
+  * Add a revoke privilege script (#549)
+
+== 1.3.1 ==
+ * Add a missing copyright (#544)
 
 == 1.3 ==
  * Start a CHANGELOG (#489)
