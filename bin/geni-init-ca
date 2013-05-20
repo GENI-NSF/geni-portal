@@ -99,7 +99,7 @@ def init_ca(config, options):
 
     # Use the file (via subprocess)
     cmd = ['/usr/bin/openssl', 'req', '-x509', '-nodes',
-           '-days', '365',
+           '-days', '1825',
            '-subj', '/CN=%s' % (config.authority),
            '-newkey', 'rsa:1024',
            '-keyout', config.key,

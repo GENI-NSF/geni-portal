@@ -211,7 +211,7 @@ def init_ca(config, options):
 
     # Use the file (via subprocess)
     cmd = ['/usr/bin/openssl', 'req', '-x509', '-nodes',
-           '-days', '365',
+           '-days', '1825',
            '-subj', '/CN=%s' % (config.authority),
            '-newkey', 'rsa:1024',
            '-keyout', config.key,
@@ -243,7 +243,7 @@ def create_req(req_file, key_file, subject, options):
 
 def sign_service_req(req_file, service, ca_config, options):
     # The authority URL for more info about the CA, I suppose.
-    auth_url_tmpl = 'https://%s/ca.html'
+    auth_url_tmpl = 'https://%s/cainfo.html'
     auth_url = auth_url_tmpl % (service.authority)
     uuid_tmpl = 'URI:uuid:%s'
     uuid = uuid_tmpl % (service.uuid)
@@ -269,6 +269,7 @@ def sign_service_req(req_file, service, ca_config, options):
            '-notext',
            '-extfile', ext_file,
            '-extensions', ext_name,
+           '-days', '1825',
            '-in', req_file,
            '-out', service.cert_file,
            '-cert', ca_cert_file,
