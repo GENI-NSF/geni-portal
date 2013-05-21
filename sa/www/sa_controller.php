@@ -965,13 +965,18 @@ function modify_slice_membership($args, $message)
 
   // Count up the total lead changes. Should be zero
   $lead_changes = 0;
+  $new_lead = null;
   foreach($members_to_add as $member_to_add => $new_role) {
-    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) 
+    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) {
       $lead_changes = $lead_changes + 1;
+      $new_lead = $member_to_add;
+    }    
   }
   foreach($members_to_change_role as $member_to_change_role => $role) {
-    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $slice_lead)
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $slice_lead) {
       $lead_changes = $lead_changes + 1;
+      $new_lead = $member_to_change_role;
+    }
     if ($member_to_change_role == $slice_lead && $role != CS_ATTRIBUTE_TYPE::LEAD)
       $lead_changes = $lead_changes - 1;
   }
@@ -1012,6 +1017,22 @@ function modify_slice_membership($args, $message)
 	$success = False;
 	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
       }
+    }
+  }
+
+  // Change the slice owner
+  if ($success and ! is_null($new_lead)) {
+    global $SA_SLICE_TABLENAME;
+    $sql = "UPDATE " . $SA_SLICE_TABLENAME
+      . " SET "
+      . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . " = " . $conn->quote($new_lead, 'text')
+      . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
+      . " = " . $conn->quote($slice_id, 'text');
+  //  error_log("CHANGE_LEAD.sql = " . $sql);
+    $result = db_execute_statement($sql);
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $success = False;
+      $error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
     }
   }
 
