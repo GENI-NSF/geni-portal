@@ -10,6 +10,8 @@
   * Add support for GetVersion in pgch (#492)
   * Add a revoke privilege script (#549)
   * Fix up revoking project lead and operator privileges (#550)
+  * Add a service certificate renewal script (#507)
+  * Enable preliminary support for data handoff to GEMINI (#503)
 
 == 1.3.1 ==
  * Add a missing copyright (#544)
