@@ -12,6 +12,7 @@
   * Fix up revoking project lead and operator privileges (#550)
   * Add a service certificate renewal script (#507)
   * Enable preliminary support for data handoff to GEMINI (#503)
+  * Bug fix for changing project leads (#512)
 
 == 1.3.1 ==
  * Add a missing copyright (#544)
