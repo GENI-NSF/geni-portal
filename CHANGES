@@ -4,7 +4,7 @@
 
 == 1.4 ==
   * Check for valid arguments in more spots (#5)
-  * Ensure more methods have guards, and log on failed authorization
+  * Ensure more methods have guards, and log on failed authorization (#501)
   * Added sbin/renew-certs script to renew service certificates (#507)
   * Add support for GetVersion in pgch (#492)
   * Add a revoke privilege script (#549)
