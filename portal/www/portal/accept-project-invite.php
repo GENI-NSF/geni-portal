@@ -34,8 +34,6 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 // error_log("REQUEST = " . print_R($_REQUEST, true));
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
-
 
 $invite_id = null;
 if(array_key_exists('invite_id', $_REQUEST)) {
@@ -51,6 +49,10 @@ if($invite_id == null || $project_name == null) {
   $_SESSION['lasterror'] = "Ill-formed request to accept-project-invite.php";
   relative_redirect("home.php");
 }
+
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 print "<h2>Invitation to Join Project: $project_name</h2>";
 
@@ -73,4 +75,5 @@ print "<input type=\"submit\" value=\"Confirm\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"GoHome()\"/>\n";
 print "</form>";
 
+include("footer.php");
 ?>
