@@ -1933,7 +1933,7 @@ function accept_invitation($args, $message)
   if($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $result;
   $rows = $result[RESPONSE_ARGUMENT::VALUE];
-  error_log("ROWS = " . print_r($rows, true));
+  //  error_log("ROWS = " . print_r($rows, true));
   if(count($rows) == 0) {
     return generate_response(RESPONSE_ERROR::ARGS, null, "Invitation has been deleted.");
   }
