@@ -5,6 +5,7 @@ cert_FILES = \
 	certs/exo-bbn-am.pem \
 	certs/exo-rci-am.pem \
 	certs/exosm-am.pem \
+	certs/genidesktop.netlab.uky.edu.pem \
 	certs/ig-gpo-boss.pem \
 	certs/ig-gpo-cm.pem \
 	certs/ig-utah-boss.pem \

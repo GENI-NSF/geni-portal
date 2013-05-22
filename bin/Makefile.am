@@ -11,6 +11,7 @@ dist_bin_SCRIPTS = \
 		geni-add-member-privilege \
 		geni-add-project-member \
 		geni-remove-project-member \
+		geni-revoke-member-privilege \
 		assert_email.sh \
 		shib_idp_users
 
