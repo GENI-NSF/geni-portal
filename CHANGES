@@ -2,6 +2,8 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.5 ==
+
 == 1.4 ==
   * Check for valid arguments in more spots (#5)
   * Ensure more methods have guards, and log on failed authorization (#501)
