@@ -124,6 +124,8 @@ dist_svcweb_DATA = \
 	www/portal/listresources_plain.php \
 	www/portal/logging_test.php \
 	www/portal/ma_controller_test.php \
+	www/portal/maintenance_mode.php \
+	www/portal/maintenance_redirect_page.php \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/pa_controller_test.php \
