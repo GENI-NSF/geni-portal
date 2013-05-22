@@ -115,7 +115,7 @@ if ($email_address_self_asserted) {
   $attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
 }
 
-$result = ma_create_account($ma_url, Portal::getInstance(), $attrs, $sa_attrs);
+$result = ma_create_account($ma_url, $km_signer, $attrs, $sa_attrs);
 if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
   error_log("Failed to create account for $attrs: $result");
   relative_redirect('error-text.php' . "?error=" . urlencode($result[RESPONSE_ARGUMENT::OUTPUT]));

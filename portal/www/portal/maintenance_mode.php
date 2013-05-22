@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2011 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,42 +22,28 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('header.php');
-require_once("user.php");
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('pa_constants.php');
-require_once('pa_client.php');
+// Determines if the PORTAL is in maintenance mode
+// If so, operators are allowed to use portal but the header is changed
+// Otherwise, users are forwarded to a page indicating that GENI Portal
+// is in maintenance mode
 
-$user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
-}
+$maintenance_outage_file = "/tmp/geni_maintenance_outage.msg";
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
+$maintenance_alert_file = "/tmp/geni_maintenance_alert.msg";
 
-include("tool-lookupids.php");
+$in_maintenance_mode = file_exists($maintenance_outage_file);
 
-//error_log("DAPI.request = " . print_r($_REQUEST, true));
+$has_maintenance_alert = file_exists($maintenance_alert_file);
 
-$invite_id = null;
-if (array_key_exists('invite_id', $_REQUEST)) {
-  $invite_id = $_REQUEST['invite_id'];
-}
+$maintenance_message = "";
+if ($in_maintenance_mode)
+  $maintenance_message = file_get_contents($maintenance_outage_file);
 
-$project_name = null;
-if (array_key_exists('project_name', $_REQUEST)) {
-  $project_name = $_REQUEST['project_name'];
-}
+$maintenance_alert = "";
+if ($has_maintenance_alert)
+  $maintenance_alert = file_get_contents($maintenance_alert_file);
 
-if($invite_id == null) {
-  $_SESSION['lasterror'] = "Ill-formed request to do-accept-project-invite.php";
-  relative_redirect("home.php");
-}
+// error_log("Maint " . print_r($in_maintenance_mode, true) . " " . 
+//    $maintenance_message);
 
-accept_invitation($pa_url, $user, $invite_id);
-
-$_SESSION['lastmessage'] = "Successfully joined project $project_name";
-relative_redirect('home.php');
+?>

@@ -172,19 +172,27 @@ function pa_expire_projects_internal($expire_projects)
 */
 class PAGuardFactory implements GuardFactory
 {
+  // FIXME: Guard the rest of the methods
+  // get_projects: Just a list of project_ids. We have entries in cs_action for this...
+  //    Maybe any valid member_id?
+  // lookup_project: Have entry in cs_action. Non project members call this to see the project name, etc.
+  //    Maybe any valid member_id?
+  // lookup_projects: Unused? Remove? Require any valid member_id?
+
   private static $context_table
     = array(
             // Action => array(method_name, method_name, ...)
-	    'create_project' => array(), // Unguarded
+	    'create_project' => array(), // Unguarded here, method calls request_authorization. FIXME!!
 	    'get_projects' => array(), // Unguarded
 	    'lookup_projects' => array(), // Unguarded
 	    'lookup_project' => array(), // Unguarded
 	    'update_project' => array('project_guard'), 
 	    'modify_project_membership' => array('project_guard'), 
-	    //	    'change_lead' => array('project_guard'),
-	    //	    'add_project_member' => array('project_guard'),
-	    //	    'remove_project_member' => array('project_guard'),
-	    //	    'change_member_role' => array('project_guard'),
+	    'change_lead' => array('FalseGuard'),
+	    'add_project_member' => array('FalseGuard'),
+	    'remove_project_member' => array('FalseGuard'),
+	    'remove_project_member_from_slices' => array('FalseGuard'),
+	    'change_member_role' => array('FalseGuard'),
 	    'get_project_members' => array(), // Unguarded
 	    'get_projects_for_member' => array(), // Unguarded
 	    'lookup_project_details' => array(), // Unguarded
@@ -229,7 +237,9 @@ class PAGuardFactory implements GuardFactory
         $result[] = call_user_func($meth, $message, $action, $params);
       }
     } else {
+      // FIXME: Deny access at all?
       error_log("PA: No guard producers for action \"$action\"");
+      geni_syslog(GENI_SYSLOG_PREFIX::PA, "Method " . $action . " unguarded!");
     }
     return $result;
   }
@@ -426,9 +436,24 @@ function create_project($args, $message)
 
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
-    // FIXME: Need a syslog for this?
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
-            "Principal " . $lead_id  . " may not create project");
+    $msg = "Principal " . $lead_id . " may not be the lead on a project";
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, $msg);
+  }
+
+  // Ensure that caller is allowed to be a project lead, which is prereq for calling this method
+  // FIXME: Put this in a guard!
+  $permitted = request_authorization($cs_url, $mysigner, $message->signerUuid(), PA_ACTION::CREATE_PROJECT,
+          CS_CONTEXT_TYPE::RESOURCE, null);
+  if ($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+
+  //  error_log("PERMITTED = " . $permitted);
+  if (! $permitted) {
+    $msg = "Principal " . $message->signerUuid() . " may not call create_project";
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, $msg);
   }
 
   // FIXME: Real project email address: ticket #313
@@ -872,6 +897,22 @@ function modify_project_membership($args, $message)
 	$success = False;
 	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
       }
+    }
+  }
+
+  // On the project itself, set the new project lead
+  if ($success and ($new_project_lead != $project_lead)) {
+    global $PA_PROJECT_TABLENAME;
+    $sql = "UPDATE " . $PA_PROJECT_TABLENAME
+      . " SET "
+      . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = " . $conn->quote($new_project_lead, 'text')
+      . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
+      . " = " . $conn->quote($project_id, 'text');
+  //  error_log("CHANGE_LEAD.sql = " . $sql);
+    $result = db_execute_statement($sql);
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $success = False;
+      $error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
     }
   }
 
@@ -1892,7 +1933,7 @@ function accept_invitation($args, $message)
   if($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $result;
   $rows = $result[RESPONSE_ARGUMENT::VALUE];
-  error_log("ROWS = " . print_r($rows, true));
+  //  error_log("ROWS = " . print_r($rows, true));
   if(count($rows) == 0) {
     return generate_response(RESPONSE_ERROR::ARGS, null, "Invitation has been deleted.");
   }
