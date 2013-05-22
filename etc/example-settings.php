@@ -27,4 +27,6 @@ $db_dsn = 'pgsql://scott:tiger@localhost/portal';
 
 $portal_admin_email = 'portal-admin@example.com';
 
+$service_registry_url = 'https://ch.example.com/sr/sr_controller.php';
+
 ?>
