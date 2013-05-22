@@ -69,6 +69,7 @@ class GeniUser
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->username = $member->username;
+    $this->urn = $member->urn;
     if (isset($member->email_address)) {
       $this->attributes['mail'] = $member->email_address;
     }
@@ -161,17 +162,8 @@ class GeniUser
     return $this->attributes['mail'];
   }
 
-  /* FIXME: This needs to be an MA function. */
   function urn() {
-    exec('/bin/hostname -s', $site, $status);
-    if ($status) {
-      error_log("error running \"/bin/hostname -s\": $site");
-      $site = 'unknown';
-    } else {
-      $site = $site[0];
-    }
-    $urn = "urn:publicid:IDN+$site+user+" . $this->username;
-    return $urn;
+    return $this->urn;
   }
 
   function prettyName() {
