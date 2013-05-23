@@ -71,4 +71,4 @@ sudo sed -i -e "/^\$db_dsn =/s/=.*/= 'pgsql:\/\/portal:portal@localhost\/portal'
 sudo sed -i -e "/^\$portal_admin_email =/s/=.*/= '$CH_EMAIL';/" /etc/geni-ch/settings.php
 sudo sed -i -e "/^\$service_registry_url =/s/=.*/= 'https:\/\/$CH_HOST\/sr\/sr_controller.php';/" /etc/geni-ch/settings.php
 
-geni-add-trusted-tool -p portal portal urn:publicid:IDN+$PORTAL_HOST+authority+portal
+geni-add-trusted-tool -p portal portal urn:publicid:IDN+$CH_HOST+authority+portal
