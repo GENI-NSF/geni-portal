@@ -29,22 +29,15 @@ def run_sql(sql, outfile):
     cmd = ['psql', 'portal', '-U',  'portal', '-h', 'localhost', '-c', sql, '-o', outfile, '-t' , '-q']
     output = subprocess.call(cmd);
 
-# Update user certificate in database
-def update_certificate(user_id, user_cert, ma_cert):
+# Update user certificate in database table
+def update_certificate(user_id, table_name, user_cert, ma_cert):
     new_cert = user_cert + ma_cert
-    sql = "update ma_inside_key set certificate = '%s' where id = %d" % (new_cert, user_id)
+    sql = "update %s set certificate = '%s' where id = %d" % (table_name, new_cert, user_id)
     outfile = '/tmp/insert.txt'
     run_sql(sql, outfile)
 
-def main(argv=None):
-    if not argv: argv = sys.argv
-
-    options = parse_args(argv)
-
-    old_ma_cert = read_file(options.old_ma_cert)
-    new_ma_cert = read_file(options.new_ma_cert)
-
-    sql = "select id from ma_inside_key"
+def update_certs_in_table(tablename, old_ma_cert, new_ma_cert):
+    sql = "select id from %s" % tablename
     outfile = "/tmp/user_ids.txt"
     run_sql(sql, outfile)
 
@@ -54,7 +47,7 @@ def main(argv=None):
         if len(user_id) == 0: continue
         user_id = int(user_id)
 
-        sql = "select certificate from ma_inside_key where id = %d" % user_id;
+        sql = "select certificate from %s where id = %d" % (tablename, user_id);
         outfile = "/tmp/cert-%d.txt" % user_id
         run_sql(sql, outfile)
         cert = read_file(outfile)
@@ -69,12 +62,24 @@ def main(argv=None):
         ma_cert = cert_pieces[1] + end_certificate
 
         if ma_cert == old_ma_cert:
-            print "Replacing old MA cert with new MA cert: user ID %d" % user_id
-            update_certificate(user_id, user_cert, new_ma_cert)
+            print "Replacing old MA cert with new MA cert: user ID %d table %s" % (user_id, tablename)
+            update_certificate(user_id, tablename, user_cert, new_ma_cert)
         elif ma_cert == new_ma_cert:
-            print "Already associated with new MA cert: user ID %d" % user_id
+            print "Already associated with new MA cert: user ID %d table %s" % (user_id, tablename)
         else:
-            print "MA cert unknown: user ID %d" % user_id
+            print "MA cert unknown: user ID %d table %s" % (user_id, tablename)
+
+
+def main(argv=None):
+    if not argv: argv = sys.argv
+
+    options = parse_args(argv)
+
+    old_ma_cert = read_file(options.old_ma_cert)
+    new_ma_cert = read_file(options.new_ma_cert)
+
+    update_certs_in_table('ma_inside_key', old_ma_cert, new_ma_cert)
+    update_certs_in_table('ma_outside_cert', old_ma_cert, new_ma_cert)
 
 if __name__ == "__main__":
     sys.exit(main())
