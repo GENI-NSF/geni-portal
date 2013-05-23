@@ -31,6 +31,7 @@ require_once 'sr_client.php';
 require_once 'portal.php';
 require_once("pa_client.php");
 require_once("pa_constants.php");
+require_once('cert_utils.php');
 
 function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
 {
@@ -193,6 +194,9 @@ function get_template_omni_config($user, $version, $default_project=null)
 function write_omni_config($user)
 {
     $username = $user->username;
+    $urn = $user->urn();
+    // Get the authority from the user's URN
+    parse_urn($urn, $authority, $type, $name);
 
     /* Write key and credential files. */
     $cert = $user->certificate();
@@ -210,12 +214,12 @@ function write_omni_config($user)
       . "users = $username\n"
       . "[my_gcf]\n"
       . "type=gcf\n"
-      . "authority=geni:gpo:portal\n"
+      . "authority=$authority\n"
       . "ch=https://localhost:8000\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n"
       . "[$username]\n"
-      . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+      . "urn=$urn\n"
       . "keys=$all_key_files\n";
 
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-");
@@ -235,7 +239,9 @@ function write_omni_config($user)
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
     $username = $user->username;
-    
+    $urn = $user->urn();
+    // Get the authority from the user's URN
+    parse_urn($urn, $authority, $type, $name);
     
     $aggregates = "aggregates=";
     $first=True;
@@ -285,7 +291,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $omni_config = $omni_config
       . "[my_gcf]\n"
       . "type=gcf\n"
-      . "authority=geni:gpo:portal\n"
+      . "authority=$authority\n"
       . "ch=https://localhost:8000\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n";
@@ -298,7 +304,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
              . "[$username]\n"
-      	     . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+             . "urn=$urn\n"
       	     . "keys=$all_key_files\n";
     }
 

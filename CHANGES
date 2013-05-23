@@ -4,6 +4,7 @@
 
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
+  * Remove some hardcoded URNs (#10)
 
 == 1.4 ==
   * Check for valid arguments in more spots (#5)
