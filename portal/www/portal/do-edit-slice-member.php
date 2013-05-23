@@ -103,7 +103,7 @@ function do_modify_slice_membership($selections, $slice_id, $slice_members_by_ro
   $members_to_change_role = array();
   $members_to_remove = array();
 
-  error_log("Selections = " . print_r($selections, true));
+  //  error_log("Selections = " . print_r($selections, true));
   //  error_log("SMBR = " . print_r($slice_members_by_role, true));
 
   foreach($selections as $member_id => $selection_id) {

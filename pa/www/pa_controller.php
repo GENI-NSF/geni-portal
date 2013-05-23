@@ -900,6 +900,22 @@ function modify_project_membership($args, $message)
     }
   }
 
+  // On the project itself, set the new project lead
+  if ($success and ($new_project_lead != $project_lead)) {
+    global $PA_PROJECT_TABLENAME;
+    $sql = "UPDATE " . $PA_PROJECT_TABLENAME
+      . " SET "
+      . PA_PROJECT_TABLE_FIELDNAME::LEAD_ID . " = " . $conn->quote($new_project_lead, 'text')
+      . " WHERE " . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID
+      . " = " . $conn->quote($project_id, 'text');
+  //  error_log("CHANGE_LEAD.sql = " . $sql);
+    $result = db_execute_statement($sql);
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $success = False;
+      $error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
+    }
+  }
+
   // Change roles of existing members
   if($success) {
     foreach($members_to_change_role as $member_to_change_role => $role) {
@@ -1917,7 +1933,7 @@ function accept_invitation($args, $message)
   if($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $result;
   $rows = $result[RESPONSE_ARGUMENT::VALUE];
-  error_log("ROWS = " . print_r($rows, true));
+  //  error_log("ROWS = " . print_r($rows, true));
   if(count($rows) == 0) {
     return generate_response(RESPONSE_ERROR::ARGS, null, "Invitation has been deleted.");
   }

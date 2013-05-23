@@ -653,11 +653,18 @@ function add_member_privilege($args, $message)
     $signer_urn = $auth . "." . $name;
   }
   $log_signer = get_member_id_log_name($signer_id);
+  if (! isset($log_signer) or is_null($log_signer) or $log_signer == '') {
+    $log_signer = $signer_urn;
+  }
   $log_member = get_member_id_log_name($member_id);
+  if (! isset($log_member) or is_null($log_member) or $log_member == '') {
+    $log_member = $member_id;
+  }
   $log_msg = "$log_signer adding privilege \"$priv_name\" to member $log_member";
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
   log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  error_log($log_msg);
   $conn = db_conn();
   $sql = ("insert into " . $MA_MEMBER_PRIVILEGE_TABLENAME
           . " ( " . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::MEMBER_ID
@@ -685,6 +692,7 @@ function revoke_member_privilege($args, $message)
   global $MA_MEMBER_PRIVILEGE_TABLENAME;
   global $ma_signer;
   global $log_url;
+  global $cs_url;
 
   $signer_id = $message->signerUuid();
   $signer_urn = $message->signerUrn();
@@ -694,15 +702,26 @@ function revoke_member_privilege($args, $message)
   $priv_name = "<other>";
   if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
     $priv_name = "Project Lead";
+  } else if ($privilege_id === MA_PRIVILEGE::OPERATOR) {
+    $priv_name = "Operator";
   }
 
   if (parse_urn($signer_urn, $auth, $type, $name)) {
     $signer_urn = $auth . "." . $name;
   }
-  $log_msg = "$signer_urn revoking privilege \"$priv_name\" from member $member_id";
+  $log_signer = get_member_id_log_name($signer_id);
+  if (! isset($log_signer) or is_null($log_signer) or $log_signer == '') {
+    $log_signer = $signer_urn;
+  }
+  $log_member = get_member_id_log_name($member_id);
+  if (! isset($log_member) or is_null($log_member) or $log_member == '') {
+    $log_member = $member_id;
+  }
+  $log_msg = "$log_signer revoking privilege \"$priv_name\" from member $log_member";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  error_log($log_msg);
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
-  $log_msg = "$signer_urn revoking privilege \"$priv_name\"";
+  $log_msg = "$log_signer revoking privilege \"$priv_name\"";
   log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   // FIXME: Email portal_dev_admin?
   $conn = db_conn();
@@ -714,6 +733,59 @@ function revoke_member_privilege($args, $message)
           . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::PRIVILEGE_ID
           . " = " . $conn->quote($privilege_id, 'integer'));
   $result = db_execute_statement($sql);
+
+  // Need to reverse the assert_project_lead / assert_operator calls
+  if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
+    $attribute = CS_ATTRIBUTE_TYPE::LEAD;
+    $context_type = CS_CONTEXT_TYPE::RESOURCE;
+    $context = NULL;
+    $assert_id = NULL;
+    $assertions = query_assertions($cs_url, $ma_signer, $member_id, $context_type, $context);
+    // each is a row containing all columns of cs_assertion
+    // id, signer, principal, attribute, context_Type, context, expiration, asserion_cert
+    // We want the row, if any, where attribute is $attribute 
+    if (isset($assertions) and is_array($assertions)) {
+      foreach ($assertions as $row) {
+	if (array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE, $row) and $row[CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE] == $attribute and array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ID, $row)) {
+	  $assert_id = $row[CS_ASSERTION_TABLE_FIELDNAME::ID];
+	}
+      }
+    }
+    if (! is_null($assert_id)) {
+      delete_assertion($cs_url, $ma_signer, $assert_id);
+    }
+    //    assert_project_lead($cs_url, $ma_signer, $member_id);
+
+    // FIXME: Send mail?
+    //    mail_new_project_lead($member_id);
+  } else if ($privilege_id === MA_PRIVILEGE::OPERATOR) {
+    $attribute = CS_ATTRIBUTE_TYPE::OPERATOR;
+    $context_types = array(CS_CONTEXT_TYPE::PROJECT,
+			   CS_CONTEXT_TYPE::SLICE,
+			   CS_CONTEXT_TYPE::RESOURCE,
+			   CS_CONTEXT_TYPE::SERVICE,
+			   CS_CONTEXT_TYPE::MEMBER);
+    $context = NULL;
+    $assert_id = NULL;
+    foreach ($context_types as $context_type) {
+      $assertions = query_assertions($cs_url, $ma_signer, $member_id, $context_type, $context);
+      // each is a row containing all columns of cs_assertion
+      // id, signer, principal, attribute, context_Type, context, expiration, asserion_cert
+      // We want the row, if any, where attribute is $attribute 
+      if (isset($assertions) and is_array($assertions)) {
+	foreach ($assertions as $row) {
+	  if (array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE, $row) and $row[CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE] == $attribute and array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ID, $row)) {
+	    $assert_id = $row[CS_ASSERTION_TABLE_FIELDNAME::ID];
+	  }
+	}
+      }
+      if (! is_null($assert_id)) {
+	delete_assertion($cs_url, $ma_signer, $assert_id);
+      }
+    }
+    //    assert_operator($cs_url, $ma_signer, $member_id);
+  }
+
   return $result;
 }
 

@@ -69,6 +69,7 @@ class GeniUser
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->username = $member->username;
+    $this->urn = $member->urn;
     if (isset($member->email_address)) {
       $this->attributes['mail'] = $member->email_address;
     }
@@ -89,6 +90,9 @@ class GeniUser
     }
     // FIXME: MA should maintain a member status
     $this->status = 'active';
+    /* Store the MA member to read arbitrary properties
+       via has_attribute */
+    $this->ma_member = $member;
   }
 
   // Fill in attributes from this identity on this user. Lets us get affiliation and idp_url
@@ -158,17 +162,8 @@ class GeniUser
     return $this->attributes['mail'];
   }
 
-  /* FIXME: This needs to be an MA function. */
   function urn() {
-    exec('/bin/hostname -s', $site, $status);
-    if ($status) {
-      error_log("error running \"/bin/hostname -s\": $site");
-      $site = 'unknown';
-    } else {
-      $site = $site[0];
-    }
-    $urn = "urn:publicid:IDN+$site+user+" . $this->username;
-    return $urn;
+    return $this->urn;
   }
 
   function prettyName() {
@@ -294,6 +289,19 @@ class GeniUser
     // is authorized.
     return ! is_null($this->certificate());
   }
+
+  /**
+   * Determine if the user has the specified attribute.
+   * Returns true if the attribute exists, false otherwise.
+   */
+  function hasAttribute($a)
+  {
+    return property_exists($this->ma_member, $a);
+  }
+
+  // We could add getAttribute($a) which would return the value
+  // of the attribute rather than the existence of the attribute.
+
 } // End of class GeniUser
 
 /* Insufficient attributes were released.

@@ -103,7 +103,8 @@ $parents = array("profile.php" => "home.php",
 		 "accept-project-inviate.php" => "project.php",
         "rspecupload.php" => "profile.php",
         "rspecs.php" => "profile.php",
-        "omni-bundle.php" => "profile.php");
+                 "omni-bundle.php" => "profile.php",
+                 "gemini.php" => "slice.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -160,7 +161,8 @@ $names = array("home.php" => $TAB_HOME,
 	       "accept-project-invite.php" => "Accept Project Invite : %project_name",
         "rspecupload.php" => "Upload Resource Specification",
         "rspecs.php" => "Manage Resource Specifications",
-        "omni-bundle.php" => "Omni Bundle");
+        "omni-bundle.php" => "Omni Bundle",
+        "gemini.php" => "GENI Desktop");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
