@@ -217,12 +217,12 @@ if (! is_null($result)) {
 ?>
 
 <p>In order to use some GENI tools (like
-<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need a signed SSL certificate.
+<a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need a signed SSL user certificate.
 </p><p>
 There are two options for creating this:
 <ol>
-<li>Have it generated for you.  If in doubt, use this option. <b>(easiest, recommended)</b> </li>
-<li>Have the SSL certificate generated for you based on a private key you have locally <b>(for advanced users, more secure)</b> </li>
+<li>Have it generated for you.  This is the easiest option. <b>If in doubt, use this option.</b></li>
+<li>Have the SSL certificate generated for you based on a private key you have locally. This is the most secure option.  For advanced users only.</li>
 </ol>
 </p>
 <div style="padding-left:10px; background-color:#F0F0F0;">
@@ -251,7 +251,7 @@ Remember, in order to use this, you will need to have the downloaded combination
 <hr>
 <h2>Advanced Option: Have the certificate generated for you based on a private key you have locally </h2>
 
-<p><i>If you want to maintain control of your private key, you can request to generate an SSL certificate based on a private key stored locally on your computer.  You have two options, create a new private key or reuse an existing one.</i></p>
+<p><i>If you want to maintain control of your SSL private key, you can request to generate an SSL certificate based on a private key stored locally on your computer.  You have two options, create a new private key or reuse an existing one.</i></p>
 
 <p>There are two variations on this option, only do one of them.</p>
 <ul>
@@ -259,8 +259,8 @@ Remember, in order to use this, you will need to have the downloaded combination
 <p><b>For the most security, use this option.</b></p>
 	<ul>
 		<li>
-Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the same PEM pass phrase twice.
-This will generate two files: <code>CSR.csr</code> and <code>geni_ssl_portal.key</code>.  <i>Note: this will overwrite any existing file at <code>~/.ssl/geni_ssl_portal.key</code>.</i>
+Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the same PEM passphrase twice.
+This will generate two files: <code>CSR.csr</code> and <code>geni_ssl_portal.key</code>.  <i>Note: The command below will overwrite any existing file at <code>~/.ssl/geni_ssl_portal.key</code>.</i>
 Upload <code>CSR.csr</code> in the form below.
 <br/>
 <pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout ~/.ssl/geni_ssl_portal.key -batch</pre>
@@ -281,7 +281,7 @@ Upload <code>CSR.csr</code> in the form below.
 	<br/>
 	<ul>
 		<li>
-Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the pass phrase for the private key. 
+Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the passphrase for the private key. 
 This will generate a file named <code>CSR.csr</code>.
 Upload <code>CSR.csr</code> in the form below.
 <pre>openssl req -out CSR.csr -new -key &lt;YourPrivateKey&gt; -batch</pre>
