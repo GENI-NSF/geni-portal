@@ -382,6 +382,8 @@ function create_slice($args, $message)
   global $sa_default_slice_expiration_hours;
   global $cs_url;
   global $mysigner;
+  global $in_sundown_mode;
+  global $maintenance_sundown_time;
 
   /* Expire slices */
   sa_expire_slices();
@@ -486,6 +488,11 @@ function create_slice($args, $message)
       geni_syslog(GENI_SYSLOG_PREFIX::SA, "Adjusting slice expiration to " . $project_expiration->format(DateTime::RFC3339));
       $expiration = $project_expiration;
     }
+
+    // if in sundown mode, limit the expiration to the maintenance sundown time
+    if($in_sundown_mode && ($expiration > $maintenance_sundown_time))
+      $expiration = $maintenance_sundown_time;
+
     geni_syslog(GENI_SYSLOG_PREFIX::SA, "Slice expiration is " . $expiration->format(DateTime::RFC3339));
   }
   $creation = new DateTime(null, new DateTimeZone('UTC'));
@@ -841,6 +848,13 @@ function renew_slice($args, $message)
   }
   $tz_utc = new DateTimeZone('UTC');
   $req_dt->setTimezone($tz_utc);
+
+  global $in_sundown_mode;
+  global $maintenance_sundown_time;
+  global $maintenance_sundown_message;
+  if($in_sundown_mode && ($maintenance_sundown_time < $req_dt)) {
+    return generate_response(RESPONSE_ERROR::ARGS, '', $maintenance_sundown_message);
+  }
 
   // Is requested expiration >= current expiration?
   $slice_expiration = $slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRATION];

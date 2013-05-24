@@ -413,7 +413,7 @@ foreach($members as $member) {
 
 <?php
 $edit_members_disabled = "";
-if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id) || $in_lockdown_mode) {
   $edit_members_disabled = $disabled;
 }
 echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button>";

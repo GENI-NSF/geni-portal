@@ -169,6 +169,7 @@ function show_header($title, $active_tab = '', $load_user=1)
 {
   global $extra_js;
   global $in_maintenance_mode;
+  global $in_lockdown_mode;
 
   if ($load_user) {
     global $user;
@@ -207,6 +208,9 @@ function show_header($title, $active_tab = '', $load_user=1)
   if ($load_user) {
     echo '<div id="metanav" class="nav">';
     echo '<ul>';
+    if ($in_lockdown_mode) {
+      echo "<li><b>*** Lockdown Mode ***</b></li>";
+    } 
     if ($in_maintenance_mode) {
       echo "<li><b>*** Maintenance Mode ***</b></li>";
     }
