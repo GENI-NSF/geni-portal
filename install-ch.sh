@@ -56,10 +56,14 @@ APACHE_HTTPS_PORTAL=/etc/apache2/sites-available/portal-ssl
 APACHE_HTTP=/etc/apache2/sites-available/default
 
 autoreconf --install
+sleep 10
 ./configure --prefix=/usr --sysconfdir=/etc \
             --bindir=/usr/local/bin --sbindir=/usr/local/sbin
+sleep 10
 make
+sleep 10
 sudo make install
+sleep 10
 
 if [ "${INSTALL_CONFIG_FILES}" = "yes" ]; then
   sudo cp /etc/geni-ch/example-services.ini /etc/geni-ch/services.ini
@@ -73,12 +77,16 @@ else
 fi
 
 sudo geni-init-ca /etc/geni-ch/services.ini
+sleep 10
 
 sudo geni-init-services /etc/geni-ch/services.ini --sql out.sql
+sleep 10
 
 make cleandb
+sleep 10
 
 psql -h localhost portal portal -f out.sql
+sleep 10
 
 
 if [ "${INSTALL_CONFIG_FILES}" = "yes" ]; then
@@ -91,19 +99,25 @@ fi
 
 sudo /bin/ln -s /usr/share/geni-ch/CA/cacert.pem /usr/share/geni-ch/portal/gcf.d/trusted_roots/cacert.pem
 sudo /bin/ln -s /usr/share/geni-ch/ma/ma-cert.pem /usr/share/geni-ch/portal/gcf.d/trusted_roots/ma-cert.pem
+sleep 10
 
 sudo /usr/bin/apt-get install -y --allow-unauthenticated geni-pgch
+sleep 10
 
 # This install process always updates the apache config files, regardless
 # of whether portal/CH config files are being installed
 sudo sed -i -e 's/^#PROTOCH//' $APACHE_HTTPS_CH
+sleep 10
 
 sudo sed -i -e '/^<\/VirtualHost>/i\
 Include /usr/share/geni-ch/portal/apache2-http.conf' $APACHE_HTTP
+sleep 10
 
 sudo rm /var/www/index.html
+sleep 10
 
 sudo service apache2 restart
+sleep 10
 
 if [ "${INSTALL_CONFIG_FILES}" = "yes" ]; then
   sudo /bin/cp /etc/geni-ch/example-settings.php /etc/geni-ch/settings.php
