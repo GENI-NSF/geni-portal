@@ -74,7 +74,8 @@ print "<br/>";
 
 print "<form method=\"POST\" action=\"do-accept-project-invite.php?invite_id=$invite_id&project_name=$project_name\"/>";
 print "<br/>";
-print "<input type=\"submit\" value=\"Confirm\"/>\n";
+//print "<input type=\"submit\" value=\"Confirm\"/>\n";
+print "<button onClick=\"window.location='do-accept-project-invite.php?invite_id=$invite_id&project_name=$project_name'\"><b>Confirm</b></button>";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"GoHome()\"/>\n";
 print "</form>";
 
