@@ -50,6 +50,9 @@ if($invite_id == null || $project_name == null) {
   relative_redirect("home.php");
 }
 
+// FIXME: It would be nice to have the lead name and project description here to help confirm
+// this is what you meant to join
+
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
