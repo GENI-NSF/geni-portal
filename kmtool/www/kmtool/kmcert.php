@@ -178,6 +178,8 @@ include('kmheader.php');
 <script type="text/javascript">
 function toggleDiv(divId) {
    $("#"+divId).toggle();
+   $("#shownButton").toggle();
+   $("#hiddenButton").toggle();
 }
 </script>
 
@@ -223,9 +225,9 @@ There are two options for creating this:
 <li>Have the SSL certificate generated for you based on a private key you have locally <b>(for advanced users, more secure)</b> </li>
 </ol>
 </p>
-<div style="padding-left:10px; background-color:#E0E0E0;">
+<div style="padding-left:10px; background-color:#F0F0F0;">
 <hr/>
-<h2>Recommended Option: Have the objects generated for you </h2>
+<h2>Simple Option: Have the objects generated for you </h2>
 
 <p><b>If in doubt, use this option.</b></p>
 
@@ -236,13 +238,18 @@ There are two options for creating this:
 </form>
 
 <p><i>An SSL certificate always has a corresponding SSL private key.  This option will generate one file which contains both the signed SSL certificate and the corresponding private key.  (This is a new key generated for this SSL certificate and is different from your SSH private key.)</i></p>
+<p>
+Remember, in order to use this, you will need to have the downloaded combination certificate/private key file. 
+</p>
 <hr/>
 </div>
 
-<button type='button' onclick='toggleDiv("alternative")'>Advanced</button>
-<div id="alternative" style="display: none; background-color:#E0E0E0;">
+<button id='shownButton' type='button' onclick='toggleDiv("alternative")'><b>Show Advanced Option</b></button>
+<button id='hiddenButton' type='button' style='display: none;' onclick='toggleDiv("alternative")'><b>Hide Advanced Option</b></button>
+
+<div id="alternative" style="display: none; background-color:#F0F0F0;">
 <hr>
-<h2>Alternative Option: Have the certificate generated for you based on a private key you have locally </h2>
+<h2>Advanced Option: Have the certificate generated for you based on a private key you have locally </h2>
 
 <p><i>If you want to maintain control of your private key, you can request to generate an SSL certificate based on a private key stored locally on your computer.  You have two options, create a new private key or reuse an existing one.</i></p>
 
@@ -290,11 +297,12 @@ Upload <code>CSR.csr</code> in the form below.
 		</li>
 	</ul>
 </ul>
-<hr>
-</div>
 <p>
 Remember, in order to use these, you will need to keep track of the downloaded certificate, the private key and the passphrase for the key.  
 </p>
+<hr>
+
+</div>
 <?php
 show_close_button();
 
