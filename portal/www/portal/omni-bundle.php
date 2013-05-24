@@ -93,7 +93,7 @@ foreach ($warnings as $warning) {
 Instructions:
 <ol>
 <?php
-if ($num_projects > 1) {
+if ($num_projects >= 1) {
 ?>
 <li>Choose a project below as your default omni project.</li>
 <?php
@@ -106,7 +106,7 @@ if ($num_projects > 1) {
 <form id="f1" action="downloadomnibundle.php" method="post">
 
 <?php
-if ($num_projects > 1) {
+if ($num_projects >= 1) {
   echo 'Choose project as omni default:';
   echo '<select name="project">\n';
   foreach ($projects as $proj) {
@@ -117,11 +117,6 @@ if ($num_projects > 1) {
   }
   echo '</select>';
   // There are multiple projects. Put up a chooser for the default project.
-} else if ($num_projects == 1) {
-  // Put the default project in a hidden variable
-  $proj = $projects[$project_ids[0]];
-  $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  echo "<input type=\"hidden\" name=\"project\" value=\"$proj_name\"/>\n";
 } else {
   // No projects, so no default project
 }

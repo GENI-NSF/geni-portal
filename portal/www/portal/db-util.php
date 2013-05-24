@@ -74,45 +74,6 @@ function loadIdentityAttributes($identity_id) {
   return $value[RESPONSE_ARGUMENT::VALUE];
 }
 
-function db_create_slice($account_id, $slice_id, $name)
-{
-  $conn = portal_conn();
-  $expires = get_future_date(30);
-  $urn = "urn:publicid:IDN+geni:gpo:portal+slice+" . $name;
-
-  $my_tx = $conn->beginTransaction();
-  $sql = "INSERT INTO slice (slice_id, name, expiration, owner, urn) VALUES ("
-    . $conn->quote($slice_id, 'text')
-    . ', ' . $conn->quote($name, 'text')
-    . ', ' . $conn->quote(db_date_format($expires), 'timestamp')
-    . ', ' . $conn->quote($account_id, 'text')
-    . ', ' . $conn->quote($urn, 'text')
-    . ')';
-  /* print "command = $sql<br/>"; */
-  $result = db_execute_statement($sql, "slice insert", true);
-
-  $sql = "INSERT INTO account_slice (account_id, slice_id) VALUES ("
-    . $conn->quote($account_id, 'text')
-    . ', ' . $conn->quote($slice_id, 'text')
-    . ')';
-  /* print "command 2 = $sql<br/>"; */
-  $result = db_execute_statement($sql, "account_slice insert", true);
-  $my_tx = $conn->commit();
-}
-
-function fetch_slices($account_id)
-{
-  $conn = portal_conn();
-  $sql = "SELECT slice.* FROM slice, account_slice"
-    . " WHERE account_slice.account_id = "
-    . $conn->quote($account_id, 'text')
-    . " AND slice.slice_id = account_slice.slice_id";
-  // print "Query = $sql<br/>";
-  $value = db_fetch_rows($sql);
-  // FIXME: Check for errors
-  return $value[RESPONSE_ARGUMENT::VALUE];
-}
-
 function fetch_slice($slice_id)
 {
   $conn = portal_conn();
