@@ -253,11 +253,10 @@ There are two options for creating this:
 	<ul>
 		<li>
 Run the following command in a terminal window on a Mac or Linux host. When prompted, enter the same PEM pass phrase twice.
-This will generate two files: <code>CSR.csr</code> and <code>geni-ssl-private.key</code>.
-Store <code>geni-ssl-private.key</code> where you'll remember it ($HOME/.ssl, $HOME/.ssh).
+This will generate two files: <code>CSR.csr</code> and <code>geni_ssl_portal.key</code>.  <i>Note: this will overwrite any existing file at <code>~/.ssl/geni_ssl_portal.key</code>.</i>
 Upload <code>CSR.csr</code> in the form below.
 <br/>
-<pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout geni-ssl-private.key -batch</pre>
+<pre>openssl req -out CSR.csr -new -newkey rsa:2048 -keyout ~/.ssl/geni_ssl_portal.key -batch</pre>
 <h4>Now upload the file CSR.csr below:</h4>
 <form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
 <label for="csrfile">Certificate Signing Request File:</label>
