@@ -69,6 +69,7 @@ class GeniUser
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->username = $member->username;
+    $this->urn = $member->urn;
     if (isset($member->email_address)) {
       $this->attributes['mail'] = $member->email_address;
     }
