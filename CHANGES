@@ -4,7 +4,13 @@
 
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
-  * Remove some hardcoded URNs (#10)
+  * Remove some hardcoded URNs (progress on #10)
+  * Clean up page to accept project invitations (#530)
+  * Sign experimenter data message to GEMINI (#560)
+  * Remove use of /bin/hostname in scripts & code (#354)
+  * Fix a DB authentication bug in geni-add-trusted-tool (#505)
+  * Clean up make install to avoid ~ and # files (#488)
+  * Install operator scripts in /usr/local/bin on portals (#499)
 
 == 1.4 ==
   * Check for valid arguments in more spots (#5)
