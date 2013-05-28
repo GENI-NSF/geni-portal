@@ -222,12 +222,12 @@ if (! is_null($result)) {
 There are two options for creating this:
 <ol>
 <li>Have it generated for you.  This is the easiest option. <b>If in doubt, use this option.</b></li>
-<li>Have the SSL certificate generated for you based on a private key you have locally. This is the most secure option.  For advanced users only.</li>
+<li>Have the SSL certificate generated for you based on a private key you keep locally. This is the most secure option.  For advanced users only.</li>
 </ol>
 </p>
 <div style="padding-left:10px; background-color:#F0F0F0;">
 <hr/>
-<h2>Simple Option: Have the objects generated for you </h2>
+<h2>Simple Option: Have the SSL certificate generated for you </h2>
 
 <p><b>If in doubt, use this option.</b></p>
 
@@ -249,7 +249,7 @@ Remember, in order to use this, you will need to have the downloaded combination
 
 <div id="alternative" style="display: none; background-color:#F0F0F0;">
 <hr>
-<h2>Advanced Option: Have the certificate generated for you based on a private key you have locally </h2>
+<h2>Advanced Option: Have the SSL certificate generated for you based on a private key you keep locally </h2>
 
 <p><i>If you want to maintain control of your SSL private key, you can request to generate an SSL certificate based on a private key stored locally on your computer.  You have two options, create a new private key or reuse an existing one.</i></p>
 
