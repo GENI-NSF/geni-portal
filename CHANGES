@@ -11,6 +11,10 @@
   * Fix a DB authentication bug in geni-add-trusted-tool (#505)
   * Clean up make install to avoid ~ and # files (#488)
   * Install operator scripts in /usr/local/bin on portals (#499)
+  * Add `authority` field to omni-bundle and template omni_config (#551)
+  * Update certificate creation instructions to match omni-configure (#552)
+  * Make omni-bundle download be the same regardless of the number of projects (#566)
+  * Clarify wording on user cert generation page (#567)
 
 == 1.4 ==
   * Check for valid arguments in more spots (#5)
