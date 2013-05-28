@@ -108,7 +108,7 @@ function get_sr_url()
   } else {
     /* If no setting above, assume this host as SR. */
     $http_host = $_SERVER['SERVER_NAME'];
-    $sr_url = "https://" . $http_host . "/sr2/sr2_controller.php";
+    $sr_url = "https://" . $http_host . "/sr/sr_controller.php";
     return $sr_url;
   }
 }
