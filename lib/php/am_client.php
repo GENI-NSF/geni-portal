@@ -86,6 +86,8 @@ function get_template_omni_config($user, $version, $default_project=null)
     /* Create OMNI config file */
     $username = $user->username;
     $urn = $user->urn();
+    // Get the authority from the user's URN
+    parse_urn($urn, $authority, $type, $name);
 
     // Add shortcuts for all known AMs?
     // Note this makes the config long in the extreme case....
@@ -166,7 +168,9 @@ function get_template_omni_config($user, $version, $default_project=null)
     } else {
       $omni_config .= "type = pg\n";
     }
+
     $omni_config = $omni_config
+      . "authority=$authority\n"
       . "ch = $PGCH_URL\n"
       . "sa = $PGCH_URL\n"
       . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
