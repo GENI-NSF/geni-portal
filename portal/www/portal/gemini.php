@@ -42,6 +42,7 @@ require_once('user.php');
 require_once('ma_client.php');
 require_once('header.php');
 require_once('smime.php');
+require_once('portal.php');
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
@@ -88,6 +89,11 @@ if (isset($slice)) {
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 }
 
+/* Sign the outbound message with the portal cert/key */
+$portal = Portal::getInstance();
+$portal_cert = $portal->certificate();
+$portal_key = $portal->privateKey();
+
 $gemini_info = array();
 if (isset($slice)) {
   $gemini_info[GEMINI_SLICE_URN] = $slice[SA_ARGUMENT::SLICE_URN];
@@ -116,7 +122,7 @@ $gemini_info[GEMINI_USER_PASSPHRASE] = "";
 $gemini_json = json_encode($gemini_info);
 
 /* Sign the data with the portal certificate (Is that correct?) */
-$gemini_signed = $gemini_json;
+$gemini_signed = smime_sign_message($gemini_json, $portal_cert, $portal_key);
 
 /* Encrypt the signed data for the GEMINI SSL certificate */
 $gemini_blob = smime_encrypt($gemini_signed, $gemini_cert);
