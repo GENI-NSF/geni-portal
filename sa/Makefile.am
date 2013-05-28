@@ -4,8 +4,6 @@ svcbindir = $(svcdatadir)/bin
 nobase_dist_svcdata_DATA = \
 	apache2.conf \
 	www/sa_controller.php \
-	www/sa.php \
-	php/sa_db.php \
 	php/sa_settings.php \
 	php/sa_utils.php \
 	db/postgresql/README.txt \
