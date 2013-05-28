@@ -27,14 +27,14 @@
 // Otherwise, users are forwarded to a page indicating that GENI Portal
 // is in maintenance mode
 
-$maintenance_outage_file = "/tmp/geni_maintenance_outage.msg";
+$maintenance_outage_file = "/etc/geni-ch/geni_maintenance_outage.msg";
 
-$maintenance_alert_file = "/tmp/geni_maintenance_alert.msg";
+$maintenance_alert_file = "/etc/geni-ch/geni_maintenance_alert.msg";
 
-$maintenance_lockdown_file = "/tmp/geni_maintenance_lockdown.msg";
+$maintenance_lockdown_file = "/etc/geni-ch/geni_maintenance_lockdown.msg";
 
-$maintenance_sundown_message_file = "/tmp/geni_maintenance_sundown.msg";
-$maintenance_sundown_time_file = "/tmp/geni_maintenance_sundown.time";
+$maintenance_sundown_message_file = "/etc/geni-ch/geni_maintenance_sundown.msg";
+$maintenance_sundown_time_file = "/etc/geni-ch/geni_maintenance_sundown.time";
 
 $in_maintenance_mode = file_exists($maintenance_outage_file);
 

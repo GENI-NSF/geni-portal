@@ -50,11 +50,11 @@ if($in_lockdown_mode) {
   print "</br>";
   print "Creation of new accounts on this Clearinghouse is not allowed.";
   print "</br>";
-  print "Please go to GENI Portal pointing to the new Clearinghouse at " 
+  print "Please go to the GENI Portal pointing to the new Clearinghouse at " 
     . $new_portal;
   print "</br>";
   print "</br>";
-  print "<button onClick=\"window.location='$new_portal'\">New Portal</>";
+  print "<button onClick=\"window.location='$new_portal'\"><b>New Portal</b></button>";
   return;
 }
 

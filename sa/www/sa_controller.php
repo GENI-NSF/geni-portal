@@ -492,8 +492,13 @@ function create_slice($args, $message)
   }
 
   // if in sundown mode, limit the expiration to the maintenance sundown time
-  if($in_sundown_mode && ($expiration > $maintenance_sundown_time))
-    $expiration = $maintenance_sundown_time;
+  if($in_sundown_mode) {
+    if ($maintenance_sundown_time === FALSE) {
+      error_log("Maintenance sundown time was not parsable?!");
+    } else if ($expiration > $maintenance_sundown_time) {
+      $expiration = $maintenance_sundown_time;
+    }
+  }
 
   geni_syslog(GENI_SYSLOG_PREFIX::SA, "Slice expiration is " . $expiration->format(DateTime::RFC3339));
   $creation = new DateTime(null, new DateTimeZone('UTC'));
@@ -855,8 +860,12 @@ function renew_slice($args, $message)
   global $maintenance_sundown_message;
 
   error_log("SUNDOWN " . print_r($in_sundown_mode, true) . " TIME " . print_r($maintenance_sundown_time, true) . " MSG " . print_r($maintenance_sundown_message, true));
-  if($in_sundown_mode && ($maintenance_sundown_time < $req_dt)) {
-    return generate_response(RESPONSE_ERROR::ARGS, '', $maintenance_sundown_message);
+  if($in_sundown_mode) {
+    if ($maintenance_sundown_time === FALSE) {
+      error_log("Maintenance sundown time was not parsable?! Message was " . $maintenance_sundown_message);
+    } else if ($maintenance_sundown_time < $req_dt) {
+      return generate_response(RESPONSE_ERROR::ARGS, '', $maintenance_sundown_message);
+    }
   }
 
   // Is requested expiration >= current expiration?

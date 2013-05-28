@@ -111,7 +111,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
        existing Project, ask someone to create a Project for you, or ask
        to be a Project Lead.</p>";
   }
-  print "<button $disable_create_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
+  print "<button $disable_join_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
   print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\"><b>Ask to be a Project Lead</b></button><br/>\n";
 }

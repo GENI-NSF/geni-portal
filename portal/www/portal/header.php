@@ -209,7 +209,7 @@ function show_header($title, $active_tab = '', $load_user=1)
     echo '<div id="metanav" class="nav">';
     echo '<ul>';
     if ($in_lockdown_mode) {
-      echo "<li><b>*** Lockdown Mode ***</b></li>";
+      echo "<li><b>*** Read-Only Mode; Use <a href=\"https://portal.geni.net\">portal.geni.net</a> ***</b></li>";
     } 
     if ($in_maintenance_mode) {
       echo "<li><b>*** Maintenance Mode ***</b></li>";

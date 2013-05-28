@@ -34,11 +34,11 @@ import os
 import sys
 
 
-alert_message_location = "/tmp/geni_maintenance_alert.msg"
-lockdown_message_location = "/tmp/geni_maintenance_lockdown.msg"
-sundown_message_location = "/tmp/geni_maintenance_sundown.msg"
-sundown_time_location = "/tmp/geni_maintenance_sundown.time"
-outage_message_location = "/tmp/geni_maintenance_outage.msg"
+alert_message_location = "/etc/geni-ch/geni_maintenance_alert.msg"
+lockdown_message_location = "/etc/geni-ch/geni_maintenance_lockdown.msg"
+sundown_message_location = "/etc/geni-ch/geni_maintenance_sundown.msg"
+sundown_time_location = "/etc/geni-ch/geni_maintenance_sundown.time"
+outage_message_location = "/etc/geni-ch/geni_maintenance_outage.msg"
 
 def parse_args(argv):
     parser = optparse.OptionParser()
@@ -46,29 +46,29 @@ def parse_args(argv):
                       help="enable debugging output")
     parser.add_option("--status", action="store_true", default=False, \
                      help="display status of maintenance alerts/outages")
-    parser.add_option("--set-alert", help="set maintenance alert message", \
+    parser.add_option("--set-alert", help="set maintenance alert message (requires root)", \
                           dest="set_alert")
     parser.add_option("--clear-alert", action="store_true", \
-                          help="clear maintenance alert message", \
+                          help="clear maintenance alert message (requires root)", \
                           dest="clear_alert")
     parser.add_option("--set-lockdown", \
-                          help="set portal/CH to lockdown mode", \
+                          help="set portal/CH to lockdown mode (requires root)", \
                           action="store_true",
                           dest="set_lockdown")
     parser.add_option("--clear-lockdown", action="store_true", \
-                          help="clear portal/CH lockdown mode", \
+                          help="clear portal/CH lockdown mode (requires root)", \
                           dest="clear_lockdown")
     parser.add_option("--set-sundown", \
-                          help="set portal/CH to sundown mode: msg yyyy-mm-dd hh:mm:ss", \
+                          help="set portal/CH to sundown mode: msg \"yyyy-mm-dd hh:mm:ss\" (24 hour time in local time zone) (requires root)", \
                           dest="set_sundown", nargs=2)
     parser.add_option("--clear-sundown", action="store_true", \
-                          help="clear portal/CH sundown mode", \
+                          help="clear portal/CH sundown mode (requires root)", \
                           dest="clear_sundown")
     parser.add_option("--set-outage", \
-                          help="set maintenance outage mode and message", \
+                          help="set maintenance outage mode and message (requires root)", \
                           dest = "set_outage")
     parser.add_option("--clear-outage", action="store_true", \
-                          help="clear maintenance outage mode and  message", \
+                          help="clear maintenance outage mode and message (requires root)", \
                           dest = "clear_outage")
                       
     options, args = parser.parse_args(argv)
