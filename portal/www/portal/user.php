@@ -88,10 +88,6 @@ class GeniUser
     if (isset($member->affiliation)) {
       $this->affiliation = $member->affiliation;
     }
-    if (isset($member->urn)) {
-      $this->urn = $member->urn;
-      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found URN  " . $this->urn);
-    }
     // FIXME: MA should maintain a member status
     $this->status = 'active';
     /* Store the MA member to read arbitrary properties
