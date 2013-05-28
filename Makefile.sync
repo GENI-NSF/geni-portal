@@ -40,3 +40,6 @@ syncp: bin/geni-ch-githash
 
 syncc: bin/geni-ch-githash
 	$(RSYNC) $(RSYNC_ARGS) ../proto-ch cascade.gpolab.bbn.com:
+
+syncn: bin/geni-ch-githash
+	$(RSYNC) $(RSYNC_ARGS) ../proto-ch nye.gpolab.bbn.com:
