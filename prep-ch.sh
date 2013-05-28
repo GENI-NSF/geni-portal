@@ -15,7 +15,7 @@ check_errs()
 }
 
 PKGS="postgresql git-core apache2 php5-pgsql php-mdb2-driver-pgsql"
-PKGS="$PKGS php5-uuid php5-curl curl python-psycopg2"
+PKGS="$PKGS php5-uuid php5-curl curl python-psycopg2 autoconf libtool"
 
 # Packages for gcf/omni
 PKGS="$PKGS python-m2crypto python-dateutil python-pyopenssl"
@@ -32,17 +32,6 @@ check_errs $? "apt-get failed to dist-upgrade"
 check_errs $? "apt-get failed to install packages"
 
 
-# GENI Portal/Clearinghouse packages
-#
-# Note: this requires the proto-ch repository:
-#
-#       http://www.gpolab.bbn.com/internal/projects/proto-ch/apt
-#
-PKGS="geni-pgch"
-/usr/bin/sudo /usr/bin/apt-get install -y ${PKGS}
-check_errs $? "apt-get failed to install portal/ch packages"
-
-
 #
 # gcf installation
 #
@@ -53,9 +42,9 @@ if [ ! -d "${SHARE_DIR}" ]; then
   /usr/bin/sudo /bin/mkdir -p "${SHARE_DIR}"
 fi
 
-GCF=gcf-2.1
+GCF=gcf-2.2.1
 GCF_PKG=${GCF}.tar.gz
-/usr/bin/wget http://www.gpolab.bbn.com/internal/projects/gcf/${GCF_PKG}
+/usr/bin/wget http://www.gpolab.bbn.com/internal/projects/proto-ch/${GCF_PKG}
 /usr/bin/sudo /bin/tar xzfC "${GCF_PKG}" "${SHARE_DIR}"
 /usr/bin/sudo /bin/ln -s -f ${SHARE_DIR}/${GCF} ${SHARE_DIR}/gcf
 
