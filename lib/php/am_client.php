@@ -31,6 +31,7 @@ require_once 'sr_client.php';
 require_once 'portal.php';
 require_once("pa_client.php");
 require_once("pa_constants.php");
+require_once('cert_utils.php');
 
 function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
 {
@@ -85,6 +86,8 @@ function get_template_omni_config($user, $version, $default_project=null)
     /* Create OMNI config file */
     $username = $user->username;
     $urn = $user->urn();
+    // Get the authority from the user's URN
+    parse_urn($urn, $authority, $type, $name);
 
     // Add shortcuts for all known AMs?
     // Note this makes the config long in the extreme case....
@@ -165,7 +168,9 @@ function get_template_omni_config($user, $version, $default_project=null)
     } else {
       $omni_config .= "type = pg\n";
     }
+
     $omni_config = $omni_config
+      . "authority=$authority\n"
       . "ch = $PGCH_URL\n"
       . "sa = $PGCH_URL\n"
       . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
@@ -193,6 +198,9 @@ function get_template_omni_config($user, $version, $default_project=null)
 function write_omni_config($user)
 {
     $username = $user->username;
+    $urn = $user->urn();
+    // Get the authority from the user's URN
+    parse_urn($urn, $authority, $type, $name);
 
     /* Write key and credential files. */
     $cert = $user->certificate();
@@ -210,12 +218,12 @@ function write_omni_config($user)
       . "users = $username\n"
       . "[my_gcf]\n"
       . "type=gcf\n"
-      . "authority=geni:gpo:portal\n"
+      . "authority=$authority\n"
       . "ch=https://localhost:8000\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n"
       . "[$username]\n"
-      . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+      . "urn=$urn\n"
       . "keys=$all_key_files\n";
 
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-");
@@ -235,7 +243,9 @@ function write_omni_config($user)
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
     $username = $user->username;
-    
+    $urn = $user->urn();
+    // Get the authority from the user's URN
+    parse_urn($urn, $authority, $type, $name);
     
     $aggregates = "aggregates=";
     $first=True;
@@ -285,20 +295,21 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $omni_config = $omni_config
       . "[my_gcf]\n"
       . "type=gcf\n"
-      . "authority=geni:gpo:portal\n"
+      . "authority=$authority\n"
       . "ch=https://localhost:8000\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n";
 
     $all_ssh_key_files = array();
     foreach ($slice_users as $slice_user){
-       $username = $slice_user->username;
+       $slice_username = $slice_user->username;
+       $slice_urn = $slice_user->urn();	
        $ssh_key_files = write_ssh_keys($slice_user);
        $all_ssh_key_files = $all_ssh_key_files + $ssh_key_files;
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
-             . "[$username]\n"
-      	     . "urn=urn:publicid:IDN+geni:gpo:portal+user+$username\n"
+             . "[$slice_username]\n"
+             . "urn=$slice_urn\n"
       	     . "keys=$all_key_files\n";
     }
 

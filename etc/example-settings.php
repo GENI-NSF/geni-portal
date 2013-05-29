@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2012 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,28 +22,11 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// Determines if the PORTAL is in maintenance mode
-// If so, operators are allowed to use portal but the header is changed
-// Otherwise, users are forwarded to a page indicating that GENI Portal
-// is in maintenance mode
+// user scott with password tiger connecting to database portal on localhost
+$db_dsn = 'pgsql://scott:tiger@localhost/portal';
 
-$maintenance_outage_file = "/tmp/geni_maintenance_outage.msg";
+$portal_admin_email = 'portal-admin@example.com';
 
-$maintenance_alert_file = "/tmp/geni_maintenance_alert.msg";
-
-$in_maintenance_mode = file_exists($maintenance_outage_file);
-
-$has_maintenance_alert = file_exists($maintenance_alert_file);
-
-$maintenance_message = "";
-if ($in_maintenance_mode)
-  $maintenance_message = file_get_contents($maintenance_outage_file);
-
-$maintenance_alert = "";
-if ($has_maintenance_alert)
-  $maintenance_alert = file_get_contents($maintenance_alert_file);
-
-// error_log("Maint " . print_r($in_maintenance_mode, true) . " " . 
-//    $maintenance_message);
+$service_registry_url = 'https://ch.example.com/sr/sr_controller.php';
 
 ?>

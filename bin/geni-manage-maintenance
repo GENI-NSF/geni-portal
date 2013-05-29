@@ -34,8 +34,11 @@ import os
 import sys
 
 
-alert_message_location = "/tmp/geni_maintenance_alert.msg"
-outage_message_location = "/tmp/geni_maintenance_outage.msg"
+alert_message_location = "/etc/geni-ch/geni_maintenance_alert.msg"
+lockdown_message_location = "/etc/geni-ch/geni_maintenance_lockdown.msg"
+sundown_message_location = "/etc/geni-ch/geni_maintenance_sundown.msg"
+sundown_time_location = "/etc/geni-ch/geni_maintenance_sundown.time"
+outage_message_location = "/etc/geni-ch/geni_maintenance_outage.msg"
 
 def parse_args(argv):
     parser = optparse.OptionParser()
@@ -43,16 +46,29 @@ def parse_args(argv):
                       help="enable debugging output")
     parser.add_option("--status", action="store_true", default=False, \
                      help="display status of maintenance alerts/outages")
-    parser.add_option("--set-alert", help="set maintenance alert message", \
+    parser.add_option("--set-alert", help="set maintenance alert message (requires root)", \
                           dest="set_alert")
     parser.add_option("--clear-alert", action="store_true", \
-                          help="clear maintenance alert message", \
+                          help="clear maintenance alert message (requires root)", \
                           dest="clear_alert")
+    parser.add_option("--set-lockdown", \
+                          help="set portal/CH to lockdown mode (requires root)", \
+                          action="store_true",
+                          dest="set_lockdown")
+    parser.add_option("--clear-lockdown", action="store_true", \
+                          help="clear portal/CH lockdown mode (requires root)", \
+                          dest="clear_lockdown")
+    parser.add_option("--set-sundown", \
+                          help="set portal/CH to sundown mode: msg \"yyyy-mm-dd hh:mm:ss\" (24 hour time in local time zone) (requires root)", \
+                          dest="set_sundown", nargs=2)
+    parser.add_option("--clear-sundown", action="store_true", \
+                          help="clear portal/CH sundown mode (requires root)", \
+                          dest="clear_sundown")
     parser.add_option("--set-outage", \
-                          help="set maintenance outage mode and message", \
+                          help="set maintenance outage mode and message (requires root)", \
                           dest = "set_outage")
     parser.add_option("--clear-outage", action="store_true", \
-                          help="clear maintenance outage mode and  message", \
+                          help="clear maintenance outage mode and message (requires root)", \
                           dest = "clear_outage")
                       
     options, args = parser.parse_args(argv)
@@ -60,11 +76,15 @@ def parse_args(argv):
     if options.status: num_args = num_args+1;
     if options.set_alert: num_args = num_args+1;
     if options.clear_alert: num_args = num_args+1;
+    if options.set_lockdown: num_args = num_args+1;
+    if options.clear_lockdown: num_args = num_args+1;
+    if options.set_sundown: num_args = num_args+1;
+    if options.clear_sundown: num_args = num_args+1;
     if options.set_outage: num_args = num_args+1;
     if options.clear_outage: num_args = num_args+1;
 
     if num_args != 1:
-        print "Usage: geni-manage-maintenance [--debug] [--status | --clear-alert | --set-alert | --clear-outage | --set-outage"
+        parser.print_help()
         sys.exit(0)
 
     return options
@@ -82,6 +102,19 @@ def main(argv=None):
         current_alert_msg = f.read()
         f.close()
 
+    currently_lockdown = os.path.isfile(lockdown_message_location)
+
+    currently_sundown = os.path.isfile(sundown_message_location)
+    current_sundown_msg = None
+    current_sundown_time = None
+    if currently_sundown:
+        f = open(sundown_message_location, 'r')
+        current_sundown_msg = f.read()
+        f.close()
+        f = open(sundown_time_location, 'r')
+        current_sundown_time = f.read()
+        f.close()
+
     currently_outage = os.path.isfile(outage_message_location)
     current_outage_msg = None
     if currently_outage:
@@ -91,33 +124,64 @@ def main(argv=None):
 
     if options.status:
         print "Alert: %s Msg %s" % (currently_alerting, current_alert_msg)
+        print "Lockdown: %s" % currently_lockdown
         print "Outage: %s Msg %s" % (currently_outage, current_outage_msg)
+        print "Sundown: %s Msg %s Time %s" % (currently_sundown, current_sundown_msg, current_sundown_time)
     elif options.clear_alert:
         if not currently_alerting:
             print "Alert not currently set"
         else:
-            print "Clearing alert msg : %s" % current_alert_msg
+            print "Clearing alert msg: %s" % current_alert_msg
             os.remove(alert_message_location)
     elif options.set_alert:
         if currently_alerting:
-            print "Replacing previous alert msg : %s" % current_alert_msg
+            print "Replacing previous alert msg: %s" % current_alert_msg
         f = open(alert_message_location, 'w')
         f.write(options.set_alert)
         f.close()
         print "New alert msg : %s" % options.set_alert
+    elif options.clear_lockdown:
+        if currently_lockdown:
+            os.remove(lockdown_message_location)
+        else:
+            print "Not currently in lockdown mode"
+    elif options.set_lockdown:
+        if currently_lockdown:
+            print "Already in lockdown mode"
+        else:
+            f = open(lockdown_message_location, 'w')
+            f.close()
     elif options.clear_outage:
         if not currently_outage:
             print "Outage not currently set"
         else:
-            print "Clearing outage msg : %s" % current_outage_msg
+            print "Clearing outage msg: %s" % current_outage_msg
             os.remove(outage_message_location)
     elif options.set_outage:
         if currently_outage:
-            print "Replacing previous outage msg : %s" % current_outage_msg
+            print "Replacing previous outage msg: %s" % current_outage_msg
         f = open(outage_message_location, 'w')
         f.write(options.set_outage)
         f.close()
-        print "New outage msg : %s" % options.set_outage
+        print "New outage msg: %s" % options.set_outage
+    elif options.set_sundown:
+        if currently_sundown:
+            print "Already in sundown mode"
+        else:
+            sundown_msg = options.set_sundown[0]
+            sundown_time = options.set_sundown[1]
+            f = open(sundown_message_location, 'w')
+            f.write(sundown_msg)
+            f.close()
+            f = open(sundown_time_location, 'w')
+            f.write(sundown_time)
+            f.close()
+    elif options.clear_sundown:
+        if not currently_sundown:
+            print "Not currently in sundown mode"
+        else:
+            os.remove(sundown_message_location)
+            os.remove(sundown_time_location)
     else:
         print "Option not specified"
 

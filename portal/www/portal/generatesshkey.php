@@ -116,9 +116,8 @@ if ($show_form) {
 /*------------------------*/
 /* Generate a new ssh key */
 /*------------------------*/
-/* Instead of "www-data@panther", make a prettier comment. */
-/* FIXME: GROSS! HARDCODED HOSTNAME! */
-$comment = $user->username . "@portal.geni.net";
+/* Instead of "www-data@host", use the username as the comment. */
+$comment = $user->username;
 $privatekeyfile = tempnam(sys_get_temp_dir(), 'ssh');
 /* delete the file so ssh-keygen doesn't complain about overwrite. */
 unlink($privatekeyfile);
