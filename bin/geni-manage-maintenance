@@ -131,11 +131,11 @@ def main(argv=None):
         if not currently_alerting:
             print "Alert not currently set"
         else:
-            print "Clearing alert msg : %s" % current_alert_msg
+            print "Clearing alert msg: %s" % current_alert_msg
             os.remove(alert_message_location)
     elif options.set_alert:
         if currently_alerting:
-            print "Replacing previous alert msg : %s" % current_alert_msg
+            print "Replacing previous alert msg: %s" % current_alert_msg
         f = open(alert_message_location, 'w')
         f.write(options.set_alert)
         f.close()
@@ -155,15 +155,15 @@ def main(argv=None):
         if not currently_outage:
             print "Outage not currently set"
         else:
-            print "Clearing outage msg : %s" % current_outage_msg
+            print "Clearing outage msg: %s" % current_outage_msg
             os.remove(outage_message_location)
     elif options.set_outage:
         if currently_outage:
-            print "Replacing previous outage msg : %s" % current_outage_msg
+            print "Replacing previous outage msg: %s" % current_outage_msg
         f = open(outage_message_location, 'w')
         f.write(options.set_outage)
         f.close()
-        print "New outage msg : %s" % options.set_outage
+        print "New outage msg: %s" % options.set_outage
     elif options.set_sundown:
         if currently_sundown:
             print "Already in sundown mode"
