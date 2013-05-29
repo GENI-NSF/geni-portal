@@ -2,6 +2,8 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.6 ==
+
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
   * Remove some hardcoded URNs (progress on #10)
