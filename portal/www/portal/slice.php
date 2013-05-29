@@ -37,6 +37,7 @@ require_once("sa_client.php");
 require_once('logging_client.php');
 require_once('am_map.php');
 require_once('status_constants.php');
+require_once('maintenance_mode.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -282,6 +283,14 @@ if (isset($slice_expired) && $slice_expired == 't' ) {
    print "<p class='warn'>This slice is expired!</p>\n";
 }
 
+$add_note_disabled = "";
+if ($in_lockdown_mode or $in_maintenance_mode) {
+  $add_note_disabled = "disabled";
+}
+
+// FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
+// FIXME: Disable launch flack if in lockdown mode?
+
 print "<table>\n";
 print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 
@@ -291,7 +300,7 @@ print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $dis
 
 print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
 print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
-print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
+print "<button $add_note_disabled $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
 print "</td>\n";

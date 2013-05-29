@@ -13,7 +13,7 @@ psql -U portal -h localhost portal < /usr/share/geni-ch/cs/db/postgresql/enable_
 alert="This GENI Clearingnouse and Portal has been transitioned \
 to <a href=\"https://portal.geni.net\">https://portal.geni.net</a>. Please use the new site. Old data will be \
 available read-only here until June 17th. <br/><br/>At this site, you can no \
-longer reserve resources, create or join projects, create slices, renew slices, edit \
+longer create or join projects, create slices, renew slices, edit \
 projects, edit slices, ask to join projects, invite people to \
 projects or to use GENI, change slice or project \
 membership, register new accounts, upload or edit RSpecs, upload or \
