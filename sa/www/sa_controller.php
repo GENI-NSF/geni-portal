@@ -859,7 +859,7 @@ function renew_slice($args, $message)
   global $maintenance_sundown_time;
   global $maintenance_sundown_message;
 
-  error_log("SUNDOWN " . print_r($in_sundown_mode, true) . " TIME " . print_r($maintenance_sundown_time, true) . " MSG " . print_r($maintenance_sundown_message, true));
+  //  error_log("SUNDOWN " . print_r($in_sundown_mode, true) . " TIME " . print_r($maintenance_sundown_time, true) . " MSG " . print_r($maintenance_sundown_message, true));
   if($in_sundown_mode) {
     if ($maintenance_sundown_time === FALSE) {
       error_log("Maintenance sundown time was not parsable?! Message was " . $maintenance_sundown_message);
