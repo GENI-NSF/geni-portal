@@ -27,13 +27,23 @@
 // Otherwise, users are forwarded to a page indicating that GENI Portal
 // is in maintenance mode
 
-$maintenance_outage_file = "/tmp/geni_maintenance_outage.msg";
+$maintenance_outage_file = "/etc/geni-ch/geni_maintenance_outage.msg";
 
-$maintenance_alert_file = "/tmp/geni_maintenance_alert.msg";
+$maintenance_alert_file = "/etc/geni-ch/geni_maintenance_alert.msg";
+
+$maintenance_lockdown_file = "/etc/geni-ch/geni_maintenance_lockdown.msg";
+
+$maintenance_sundown_message_file = "/etc/geni-ch/geni_maintenance_sundown.msg";
+$maintenance_sundown_time_file = "/etc/geni-ch/geni_maintenance_sundown.time";
 
 $in_maintenance_mode = file_exists($maintenance_outage_file);
 
 $has_maintenance_alert = file_exists($maintenance_alert_file);
+
+$in_lockdown_mode = file_exists($maintenance_lockdown_file);
+
+$in_sundown_mode = file_exists($maintenance_sundown_message_file) && 
+  file_exists($maintenance_sundown_time_file);
 
 $maintenance_message = "";
 if ($in_maintenance_mode)
@@ -43,7 +53,24 @@ $maintenance_alert = "";
 if ($has_maintenance_alert)
   $maintenance_alert = file_get_contents($maintenance_alert_file);
 
+$maintenance_sundown_message = "";
+$maintenance_sundown_time = null;
+if ($in_sundown_mode) {
+  $maintenance_sundown_message = 
+    file_get_contents($maintenance_sundown_message_file);
+  $maintenance_sundown_time_text = 
+    file_get_contents($maintenance_sundown_time_file);
+  $date_format = 'Y-m-d H:i:s';
+  $maintenance_sundown_time = 
+    date_create_from_format($date_format, $maintenance_sundown_time_text);
+}
+
+
 // error_log("Maint " . print_r($in_maintenance_mode, true) . " " . 
 //    $maintenance_message);
+
+//error_log("Sundown " . print_r($in_sundown_mode, true) . " " . 
+//	  $maintenance_sundown_message . " " . 
+//	  print_r($maintenance_sundown_time, true));
 
 ?>

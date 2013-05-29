@@ -28,6 +28,7 @@
 
 require_once('km_utils.php');
 require_once('ma_client.php');
+require_once('maintenance_mode.php');
 
 $member_id_key = 'eppn';
 $member_id_value = null;
@@ -143,11 +144,19 @@ $upload_key = "upload";
 $download_key = "download";
 $close_key = key_exists("close", $_REQUEST) ? "close" : "noclose";
 
-if (key_exists($generate_key, $_REQUEST)) {
+$disabled = "";
+if ($in_maintenance_mode or $in_lockdown_mode) {
+  //  error_log("KMCert disabling input");
+  $disabled = " disabled ";
+  //} else {
+  //  error_log("KMCert NOT disabling input");
+}
+
+if (key_exists($generate_key, $_REQUEST) and ! $in_maintenance_mode and ! $in_lockdown_mode) {
   // User has asked to generate a cert/key.
   generate_cert($ma_url, $km_signer, $member_id);
 }
-if (key_exists($upload_key, $_REQUEST)) {
+if (key_exists($upload_key, $_REQUEST) and ! $in_maintenance_mode and ! $in_lockdown_mode) {
   $status = handle_upload($ma_url, $km_signer, $member_id, $error);
 }
 if (key_exists($download_key, $_REQUEST)) {
@@ -234,7 +243,9 @@ There are two options for creating this:
 <form name="generate" action="kmcert.php" method="post">
 <input type="hidden" name="<?php print $generate_key;?>" value="y"/>
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
-<input type="submit" name="submit" value="Generate Combined Certificate and Key File"/>
+<?php
+  print "<input type=\"submit\" name=\"submit\" value=\"Generate Combined Certificate and Key File\" $disabled/>\n";
+?>
 </form>
 
 <p><i>An SSL certificate always has a corresponding SSL private key.  This option will generate one file which contains both the signed SSL certificate and the corresponding private key.  (This is a new key generated for this SSL certificate and is different from your SSH private key.)</i></p>
@@ -267,11 +278,15 @@ Upload <code>CSR.csr</code> in the form below.
 <h4>Now upload the file CSR.csr below:</h4>
 <form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
 <label for="csrfile">Certificate Signing Request File:</label>
-<input type="file" name="csrfile" id="csrfile"/>
+<?php
+   print "<input type=\"file\" name=\"csrfile\" id=\"csrfile\" $disabled/>\n";
+?>
 <br/>
 <input type="hidden" name="<?php print $upload_key; ?>" value="y"/>
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
-<input type="submit" name="submit" value="Create Certificate"/>
+<?php
+print "<input type=\"submit\" name=\"submit\" value=\"Create Certificate\" $disabled/>\n";
+?>
 </form>
 	<br/>
 
@@ -288,11 +303,15 @@ Upload <code>CSR.csr</code> in the form below.
 <h4>Now upload the file CSR.csr below:</h4>
 <form name="upload" action="kmcert.php" method="post" enctype="multipart/form-data">
 <label for="csrfile">Certificate Signing Request File:</label>
-<input type="file" name="csrfile" id="csrfile"/>
+<?php
+    print "<input type=\"file\" name=\"csrfile\" id=\"csrfile\" $disabled/>\n";
+?>
 <br/>
 <input type="hidden" name="<?php print $upload_key; ?>" value="y"/>
 <input type="hidden" name="<?php print $close_key; ?>" value="1"/>
-<input type="submit" name="submit" value="Create Certificate"/>
+<?php
+    print "<input type=\"submit\" name=\"submit\" value=\"Create Certificate\" $disabled/>\n";
+?>
 </form>
 		</li>
 	</ul>

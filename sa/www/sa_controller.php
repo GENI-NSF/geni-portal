@@ -40,6 +40,7 @@ require_once('ma_client.php');
 require_once('logging_client.php');
 require_once('geni_syslog.php');
 require_once('response_format.php');
+require_once('maintenance_mode.php');
 
 $sr_url = get_sr_url();
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
@@ -382,6 +383,8 @@ function create_slice($args, $message)
   global $sa_default_slice_expiration_hours;
   global $cs_url;
   global $mysigner;
+  global $in_sundown_mode;
+  global $maintenance_sundown_time;
 
   /* Expire slices */
   sa_expire_slices();
@@ -486,8 +489,18 @@ function create_slice($args, $message)
       geni_syslog(GENI_SYSLOG_PREFIX::SA, "Adjusting slice expiration to " . $project_expiration->format(DateTime::RFC3339));
       $expiration = $project_expiration;
     }
-    geni_syslog(GENI_SYSLOG_PREFIX::SA, "Slice expiration is " . $expiration->format(DateTime::RFC3339));
   }
+
+  // if in sundown mode, limit the expiration to the maintenance sundown time
+  if($in_sundown_mode) {
+    if ($maintenance_sundown_time === FALSE) {
+      error_log("Maintenance sundown time was not parsable?!");
+    } else if ($expiration > $maintenance_sundown_time) {
+      $expiration = $maintenance_sundown_time;
+    }
+  }
+
+  geni_syslog(GENI_SYSLOG_PREFIX::SA, "Slice expiration is " . $expiration->format(DateTime::RFC3339));
   $creation = new DateTime(null, new DateTimeZone('UTC'));
 
   $sql = "INSERT INTO " 
@@ -841,6 +854,19 @@ function renew_slice($args, $message)
   }
   $tz_utc = new DateTimeZone('UTC');
   $req_dt->setTimezone($tz_utc);
+
+  global $in_sundown_mode;
+  global $maintenance_sundown_time;
+  global $maintenance_sundown_message;
+
+  //  error_log("SUNDOWN " . print_r($in_sundown_mode, true) . " TIME " . print_r($maintenance_sundown_time, true) . " MSG " . print_r($maintenance_sundown_message, true));
+  if($in_sundown_mode) {
+    if ($maintenance_sundown_time === FALSE) {
+      error_log("Maintenance sundown time was not parsable?! Message was " . $maintenance_sundown_message);
+    } else if ($maintenance_sundown_time < $req_dt) {
+      return generate_response(RESPONSE_ERROR::ARGS, '', $maintenance_sundown_message);
+    }
+  }
 
   // Is requested expiration >= current expiration?
   $slice_expiration = $slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRATION];

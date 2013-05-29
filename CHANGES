@@ -15,6 +15,10 @@
   * Update certificate creation instructions to match omni-configure (#552)
   * Make omni-bundle download be the same regardless of the number of projects (#566)
   * Clarify wording on user cert generation page (#567)
+  * Implement 'sundown' mode that forces slices to expire by a
+  configured date (i.e. June 17, 2013) (#548)
+  * Implement 'lockdown' mode that makes most operations read-only, to
+  be enabled around June 5, 2013. (#547)
 
 == 1.4 ==
   * Check for valid arguments in more spots (#5)
@@ -28,8 +32,9 @@
   * Quiet debug printouts (#531)
   * Enable preliminary support for data handoff to GEMINI (#503)
   * GENI IdP login formats strange on GEC16 tutorial VM (#452)
-  * On portal login page, add link to GPO IdP account request form (#487)
-
+  * On portal login page, add link to GPO IdP account request form
+  (#487)
+  * Implement a maintenance mode to lock out users during maintenance (#485)
 
 == 1.3.1 ==
  * Add a missing copyright (#544)
