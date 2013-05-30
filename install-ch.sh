@@ -76,8 +76,12 @@ else
   test -f /etc/geni-ch/services.ini
 fi
 
-sudo geni-init-ca /etc/geni-ch/services.ini
-sleep 10
+if [ -f /usr/share/geni-ch/CA/cacert.pem ]; then
+  echo "CA certificate already exists - reusing it"
+else
+  sudo geni-init-ca /etc/geni-ch/services.ini
+  sleep 10
+fi
 
 sudo geni-init-services /etc/geni-ch/services.ini --sql out.sql
 sleep 10
