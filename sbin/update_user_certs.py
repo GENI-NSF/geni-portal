@@ -142,60 +142,59 @@ class UserCertificateUpdater:
         self._argv = argv
         self._options = self.parse_args()
 
-        self._old_ma_cert_file = self._options.old_ma_cert_file
-        self._new_ma_cert_file = self._options.new_ma_cert_file
+        self._ma_cert_file = self._options.ma_cert_file
         self._ma_key_file = self._options.ma_key_file
-        self._old_ma_cert = read_file(self._options.old_ma_cert_file)
-        self._new_ma_cert = read_file(self._options.new_ma_cert_file)
+        self._ma_cert = read_file(self._options.ma_cert_file)
         self._old_authority= self._options.old_authority
         self._new_authority= self._options.new_authority
 
     def parse_args(self):
         parser = optparse.OptionParser()
-        parser.add_option("--old_ma_cert_file", help="location of old MA cert")
-        parser.add_option("--new_ma_cert_file", help="location of new MA cert")
+        parser.add_option("--ma_cert_file", help="location of MA cert")
         parser.add_option("--ma_key_file", help="location of MA private key")
         parser.add_option("--old_authority", help="name of old MA authority")
         parser.add_option("--new_authority", help="name of new MA authority")
 
         options, args = parser.parse_args(self._argv)
 
-        if not options.old_ma_cert_file or not options.new_ma_cert_file \
-                or not options.ma_key_file or not options.old_authority or not options.new_authority:
+        if not options.ma_cert_file \
+                or not options.ma_key_file \
+                or not options.old_authority \
+                or not options.new_authority:
             parser.print_help()
             sys.exit()
 
         return options
 
 
-    def update_certs_in_table(self, tablename):
-        sql = "select member_id from %s" % tablename
-        user_ids = run_sql(sql).split('\n')
+#    def update_certs_in_table(self, tablename):
+#        sql = "select member_id from %s" % tablename
+#        user_ids = run_sql(sql).split('\n')
+#
+#        for user_id in user_ids:
+#            user_id = user_id.strip()
+#            if len(user_id) == 0: continue
+#            user_id = int(user_id)
+#
+#            sql = "select certificate from %s where member_id = %d" % (tablename, user_id);
+#            cert = run_sql(sql)
 
-        for user_id in user_ids:
-            user_id = user_id.strip()
-            if len(user_id) == 0: continue
-            user_id = int(user_id)
-
-            sql = "select certificate from %s where member_id = %d" % (tablename, user_id);
-            cert = run_sql(sql)
-
-            # Need to split into lines, take off the leading space and rejoin
-            lines = cert.split('\n')
-            trimmed_lines = [line[1:] for line in lines]
-            cert = '\n'.join(trimmed_lines)
-            end_certificate = 'END CERTIFICATE-----\n'
-            cert_pieces = cert.split(end_certificate);
-            user_cert = cert_pieces[0] + end_certificate
-            ma_cert = cert_pieces[1] + end_certificate
-
-        if ma_cert == self._old_ma_cert:
-            print "Replacing old MA cert with new MA cert: user ID %d table %s" % (user_id, tablename)
-            update_certificate(user_id, tablename, user_cert, self._new_ma_cert)
-        elif ma_cert == self._new_ma_cert:
-            print "Already associated with new MA cert: user ID %d table %s" % (user_id, tablename)
-        else:
-            print "MA cert unknown: user ID %d table %s" % (user_id, tablename)
+#            # Need to split into lines, take off the leading space and rejoin
+#            lines = cert.split('\n')
+#            trimmed_lines = [line[1:] for line in lines]
+#            cert = '\n'.join(trimmed_lines)
+#            end_certificate = 'END CERTIFICATE-----\n'
+#            cert_pieces = cert.split(end_certificate);
+#            user_cert = cert_pieces[0] + end_certificate
+#            ma_cert = cert_pieces[1] + end_certificate
+#
+#        if ma_cert == self._old_ma_cert:
+#            print "Replacing old MA cert with new MA cert: user ID %d table %s" % (user_id, tablename)
+#            update_certificate(user_id, tablename, user_cert, self._new_ma_cert)
+#        elif ma_cert == self._new_ma_cert:
+#            print "Already associated with new MA cert: user ID %d table %s" % (user_id, tablename)
+#        else:
+#            print "MA cert unknown: user ID %d table %s" % (user_id, tablename)
 
     def create_certs_in_table(self, tablename, send_email_if_no_private_key):
         sql = "select member_id from %s" % tablename
@@ -239,12 +238,12 @@ class UserCertificateUpdater:
                 fix_keyfile(user_key_file)
                 cert_file = "/tmp/cert-%s.pem" % user_uuid
                 cert_generator = UserCertGenerator()
-                cert_generator.create_cert_for_user_key(self._new_ma_cert_file, self._ma_key_file,
+                cert_generator.create_cert_for_user_key(self._ma_cert_file, self._ma_key_file,
                                                         user_urn, full_user_uuid, user_email,
                                                         user_key_file, cert_file)
 
                 user_cert = read_file(cert_file)
-                update_certificate(user_uuid, tablename, user_cert, self._new_ma_cert)
+                update_certificate(user_uuid, tablename, user_cert, self._ma_cert)
                 os.remove(user_key_file)
                 os.remove(cert_file)
 
