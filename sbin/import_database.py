@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Take a database dump from one GENI Clearinghouse and import 
 # it into another one. Intended for transition from one
 # CH (going off line) to another (coming on line)
@@ -65,7 +67,7 @@ class DatabaseImporter:
             run_cmd = ['/bin/bash', filename]
             if as_user:
                 os.chmod(filename, 0777)
-                run_cmd = ['sudo',  'su', '-', as_user, filename]
+                run_cmd = ['sudo',  '-u', as_user, filename]
             subprocess.call(run_cmd)
         except Exception as e:
             print "Error running shell command: " + " ".join(run_cmd)
@@ -139,6 +141,16 @@ class DatabaseImporter:
              '--new_authority', self._new_authority]
         self.execute(update_user_certs_cmd, 'www-data')
 
+        # Change ssh public keys that have 'www-data@panther.gpolab.bbn.com'
+        # in the comment field to have the username as the comment.
+        update_ssh_sql = \
+            "update ma_ssh_key set public_key ="\
+            + " replace(public_key, 'www-data@panther.gpolab.bbn.com',"\
+            + " (select value from ma_member_attribute mma"\
+            + " where mma.member_id = ma_ssh_key.member_id"\
+            + " and name = 'username'));"
+        update_ssh_cmd = psql_cmd + ['-c', '"' + update_ssh_sql + '"']
+        self.execute(update_ssh_cmd)
         
 
 if __name__ == "__main__":
