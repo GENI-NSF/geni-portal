@@ -30,7 +30,7 @@ class DatabaseImporter:
         self._new_hostname = self._options.new_hostname
         self._old_authority = self._options.old_authority
         self._new_authority = self._options.new_authority
-        self._new_portal_urn = "urn:public:IDN+%s+authority+portal" \
+        self._new_portal_urn = "urn:publicid:IDN+%s+authority+portal" \
             % self._new_authority
 
 
