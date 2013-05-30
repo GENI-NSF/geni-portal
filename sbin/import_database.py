@@ -72,8 +72,7 @@ class DatabaseImporter:
             print "Error running actual command: " + " ".join(cmd)
             print str(e)
         finally:
-            if not as_user:
-                os.remove(filename)
+            os.remove(filename)
 
 
     def run(self):
@@ -133,7 +132,7 @@ class DatabaseImporter:
 
         # Run update_user_certs as www-data
         update_user_certs_cmd = \
-            ['python', '~mbrinn/proto-ch/sbin/update_user_certs.py', 
+            ['python', '/usr/local/sbin/update_user_certs.py', 
              '--ma_cert_file', self.ma_cert_filename, 
              '--ma_key_file', self.ma_key_filename, 
              '--old_authority', self._old_authority, 
