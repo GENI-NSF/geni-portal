@@ -124,7 +124,6 @@ class DatabaseImporter:
         self.execute(drop_constraints_cmd)
 
         # Swap member_ids
-        # FIXME FIXME
         print 'Swap member IDs....'
         tcfile = '/tmp/member_id-table-column'
         with open (tcfile, 'r') as file:
@@ -134,8 +133,9 @@ class DatabaseImporter:
             (table, column) = line.split(',')
             table = table.strip()
             column = column.strip()
-            updatesql = 'update %s set %s = (select T2.new_id from T2 where %s.%s = T2.old_id)' % (table, column, table, column)
+            updatesql = 'update %s set %s = (select T2.new_id from ma_member_id_translation T2 where %s.%s = T2.old_id)' % (table, column, table, column)
             do_update_cmd = psql_cmd + ['-c', '"' + updatesql + '"']
+        # FIXME FIXME
 #            self.execute(do_update_cmd)
             print "Member ID swap: %s" % updatesql
 
