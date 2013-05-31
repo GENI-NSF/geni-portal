@@ -37,6 +37,8 @@ import os
 import sys
 import subprocess
 import tempfile
+import time
+import uuid
 
 class DatabaseImporter:
 
@@ -99,6 +101,61 @@ class DatabaseImporter:
             os.remove(filename)
 
 
+    def translate_member_ids(self, psql_cmd):
+        psql = subprocess.Popen(psql_cmd, stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        # Extract all the member ids
+        member_id_file = '/tmp/members.dat'
+        extract_members_sql = \
+            "select member_id from ma_member \\g %s\n" % (member_id_file)
+        psql.stdin.write(extract_members_sql)
+
+        # Give the db a moment to write the members file
+        time.sleep(3)
+
+        # Now read the file
+        with open(member_id_file) as f:
+            raw = f.readlines()
+        member_ids = dict()
+        for r in raw:
+            r = r.strip()
+            try:
+                mid = uuid.UUID(r)
+                member_ids[mid] = None
+            except ValueError:
+                pass
+        for old in member_ids:
+            new = uuid.uuid4()
+            while new in member_ids:
+                print "COLLISION"
+                new = uuid.uuid4()
+            member_ids[old] = new
+
+        drop_sql = 'DROP TABLE IF EXISTS ma_member_id_translation;\n'
+        psql.stdin.write(drop_sql)
+        create_sql = ('CREATE TABLE ma_member_id_translation ('
+                      + ' id SERIAL PRIMARY KEY,'
+                      + ' old_id UUID UNIQUE,'
+                      + ' new_id UUID UNIQUE'
+                      + ');\n')
+        psql.stdin.write(create_sql)
+
+        insert_sql = ('INSERT INTO ma_member_id_translation'
+                      + "(old_id, new_id) values ('%s', '%s');\n")
+        for o,n in member_ids.iteritems():
+            psql.stdin.write(insert_sql % (o, n))
+
+        # write an EOF
+        (stdoutdata, stderrdata) = psql.communicate(None)
+        if False:
+            print '------------------------------------------------------------'
+            print stdoutdata
+            print '------------------------------------------------------------'
+            print stderrdata
+            print '------------------------------------------------------------'
+        return psql.returncode == 0
+
     def run(self):
 
         psql_cmd = ['psql', '-U', 'portal', '-h', 'localhost', 'portal']
@@ -110,6 +167,7 @@ class DatabaseImporter:
         # Generate new member_id swapping table
         # FIXME FIXME
         print 'Generate new member ID swapping table'
+        self.translate_member_ids(psql_cmd)
 
         # Generate SQL for dropping constraints
         gen_drop_cmd = psql_cmd + ['-q', '-t', '-o', '/tmp/drop-constraints.sql', '<', '/usr/local/sbin/gen-drop-constraints.sql']
@@ -125,7 +183,7 @@ class DatabaseImporter:
 
         # Swap member_ids
         print 'Swap member IDs....'
-        tcfile = '/tmp/member_id-table-column'
+        tcfile = '/tmp/member-id-columns.txt'
         with open (tcfile, 'r') as file:
             lines = file.readlines()
 
@@ -136,7 +194,7 @@ class DatabaseImporter:
             updatesql = 'update %s set %s = (select T2.new_id from ma_member_id_translation T2 where %s.%s = T2.old_id)' % (table, column, table, column)
             do_update_cmd = psql_cmd + ['-c', '"' + updatesql + '"']
         # FIXME FIXME
-#            self.execute(do_update_cmd)
+            self.execute(do_update_cmd)
             print "Member ID swap: %s" % updatesql
 
         # Re-add constraints
