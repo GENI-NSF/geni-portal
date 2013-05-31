@@ -107,6 +107,60 @@ class DatabaseImporter:
         import_db_cmd = psql_cmd + ['<', self._dump_file]
         self.execute(import_db_cmd)
 
+        # Generate new member_id swapping table
+        # FIXME FIXME
+        print 'Generate new member ID swapping table'
+
+        # Generate SQL for dropping constraints
+        gen_drop_cmd = psql_cmd + ['-q', '-t', '-o', '/tmp/drop-constraints.sql', '<', '/usr/local/sbin/gen-drop-constraints.sql']
+        self.execute(gen_drop_cmd)
+
+        # Generate SQL for adding constraints
+        gen_add_cmd = psql_cmd + ['-q', '-t', '-o', '/tmp/add-constraints.sql', '<', '/usr/local/sbin/gen-add-constraints.sql']
+        self.execute(gen_add_cmd)
+
+        # Drop constraints
+        drop_constraints_cmd = psql_cmd + ['<', '/tmp/drop-constraints.sql']
+        self.execute(drop_constraints_cmd)
+
+        # Swap member_ids
+        # FIXME FIXME
+        print 'Swap member IDs....'
+        tcfile = '/tmp/member_id-table-column'
+        with open (tcfile, 'r') as file:
+            lines = file.readlines()
+
+        for line in lines:
+            (table, column) = line.split(',')
+            table = table.strip()
+            column = column.strip()
+            updatesql = 'update %s set %s = (select T2.new_id from T2 where %s.%s = T2.old_id)' % (table, column, table, column)
+            do_update_cmd = psql_cmd + ['-c', '"' + updatesql + '"']
+#            self.execute(do_update_cmd)
+            print "Member ID swap: %s" % updatesql
+
+        # Re-add constraints
+        add_constraints_cmd = psql_cmd + ['<', '/tmp/add-constraints.sql']
+        self.execute(add_constraints_cmd)
+
+        # Check for errors:
+
+        # Generate SQL for dropping constraints to compare
+        gen_drop_cmd = psql_cmd + ['-q', '-t', '-o', '/tmp/drop-constraints2.sql', '<', '/usr/local/sbin/gen-drop-constraints.sql']
+        self.execute(gen_drop_cmd)
+
+        if os.path.getsize('/tmp/drop-constraints.sql') != os.path.getsize('/tmp/drop-constraints2.sql'):
+
+            print 'ERROR: some contraints not successfully re-added!'
+            run_cmd = ['diff', '/tmp/drop-constraints.sql', '/tmp/drop-constraints2.sql']
+            self.execute(run_cmd)
+            sys.exit(-1)
+        else:
+            print "Constraints successfully re-added"
+
+        # Member IDs updated...
+        print "Member ID update complete"
+
         # Change the service registry
         change_sr_sql = \
             "update service_registry set service_url = " \

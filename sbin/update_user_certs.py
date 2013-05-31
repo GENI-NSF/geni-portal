@@ -228,6 +228,8 @@ class UserCertificateUpdater:
         user_uuids_no_key = run_sql(sql).split('\n')
         uunks = [uunk.strip() for uunk in user_uuids_no_key if len(uunk.strip()) > 0]
         user_uuids_no_key = uunks
+        user_emails_no_key = []
+        user_emails_with_key = []
 
         if not send_email_if_no_private_key and len(user_uuids_no_key):
             print "Error: table with no private keys not allowed: %s" % tablename
@@ -251,9 +253,31 @@ class UserCertificateUpdater:
             if user_uuid in user_uuids_no_key:
                 # No private key: Send an email to generate a new CSR
                 print "User has no private key: %s" % user_uuid
+
+                if send_email_if_no_private_key:
+                    # Note this in the DB
+                    sql = "insert into ma_member_attribute (member_id, name, value, self_asserted) values ('%s', 'panther_outside_cert', 'no key', false)" % (user_uuid)
+                    run_sql(sql)
+
+                    # Delete the old outside cert, so they are forced to re generate
+                    sql = "delete from %s where member_id = '%s'" % (tablename, user_uuid)
+                    run_sql(sql)
+
+                    # Record their email in a file so we can email all these people
+                    user_emails_no_key.append(user_email)
                 
             else:
                 print "User has private key: %s" % user_uuid
+
+                if send_email_if_no_private_key:
+                    # Record their email in a file so we can email all these people
+                    user_emails_with_key.append(user_email)
+
+                    # Note this in the DB
+                    sql = "insert into ma_member_attribute (member_id, name, value, self_asserted) values ('%s', 'panther_outside_cert', 'had key', false)" % (user_uuid)
+                    run_sql(sql)
+
+                # Re-generate their cert
                 sql = "select private_key from %s where member_id='%s'" % (tablename, user_uuid)
                 user_key_file = get_tempfile()
                 run_sql_to_file(sql, user_key_file)
@@ -268,6 +292,26 @@ class UserCertificateUpdater:
                 update_certificate(user_uuid, tablename, user_cert, self._ma_cert)
                 os.remove(user_key_file)
                 os.remove(cert_file)
+        # End of loop over user_uuids
+
+        if send_email_if_no_private_key:
+            # Record file of people who had outside cert no private key (did CSR)
+            if len(user_emails_no_key):
+                fname = "/tmp/%s-user-emails-no-key.txt" % tablename
+                with open(fname, 'w') as file:
+                    for email in user_emails_no_key:
+                        file.write(email)
+                        file.write('\n')
+                        
+            # Record file of people who had outside cert with private key (need to re-download)
+            if len(user_emails_with_key):
+                fname = "/tmp/%s-user-emails-with-key.txt" % tablename
+                with open(fname, 'w') as file:
+                    for email in user_emails_with_key:
+                        file.write(email);
+                        file.write('\n')
+            
+    # end of create_certs_in_table
 
 
     def run(self):
