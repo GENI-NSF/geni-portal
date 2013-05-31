@@ -132,6 +132,15 @@ class DatabaseImporter:
         expire_slices_cmd = psql_cmd + ['-c', '"' + expire_slices_sql + '"']
         self.execute(expire_slices_cmd)
 
+        # Copy the .pgpass file to /tmp so that www-data can use it
+        pgpass = ".pgpass"
+        pgpass_tmp = "/tmp/" + pgpass
+        copy_pgpass_cmd =  ['cp', '~/' + pgpass, '/tmp']
+        self.execute(copy_pgpass_cmd)
+        self.execute(['chown', 'www-data.www-data', pgpass_tmp], 'root')
+        self.execute(['chmod', '0600', pgpass_tmp], 'root')
+        self.execute(['mv', pgpass_tmp, '~www-data'], 'root')
+
         # Run update_user_certs as www-data
         update_user_certs_cmd = \
             ['python', '/usr/local/sbin/update_user_certs.py', 
@@ -140,6 +149,9 @@ class DatabaseImporter:
              '--old_authority', self._old_authority, 
              '--new_authority', self._new_authority]
         self.execute(update_user_certs_cmd, 'www-data')
+
+        # Remove the .pgpass file from ~www-data
+        self.execute(['rm', '~www-data/'+pgpass], 'root')
 
         # Change ssh public keys that have 'www-data@panther.gpolab.bbn.com'
         # in the comment field to have the username as the comment.
