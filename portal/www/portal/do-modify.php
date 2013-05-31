@@ -177,23 +177,20 @@ $body .= "Identity ID: " . $user->identity_id . "\n";
 $body .= "EPPN: " . $user->eppn . "\n"; // same as member->eppn
 $body .= "Name: " . $user->prettyName() . "\n";
 $body .= "Username: " . $user->username . "\n";
-$project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
-						$project_id);
 $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
-					       $member_id);
-$attributes = array_merge($project_attributes, $member_attributes);
+					       $user->account_id);
 $subject = "New GENI CH account change requested";
 if ($pi_request and ! $is_pi) {
   $body .= "\t\t**** Requesting to be a Project Lead. ****\n";
   $msg = $user->prettyName() . " requested to be a Project Lead";
   $subject = "New GENI CH Project Lead request";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, Portal::getInstance(), $msg, $attributes, $user->account_id);
+  log_event($log_url, Portal::getInstance(), $msg, $member_attributes, $user->account_id);
 } else if (! $pi_request and $is_pi) {
   $body .= "\t\t**** Requesting to NOT be a Project Lead. ****\n";
   $msg = $user->prettyName() . " requested to NOT be a Project Lead";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, Portal::getInstance(), $msg, $attributes, $user->account_id);
+  log_event($log_url, Portal::getInstance(), $msg, $member_attributes, $user->account_id);
 }
 if ($changed_str !== '') {
   $body .= "Changes: $changed_str\n";

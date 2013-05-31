@@ -4,6 +4,7 @@
 
 == 1.6 ==
   * Add more bin scripts to install (#569)
+  * portal_enable_abac controls all use of ABAC - so all disabled now (#556)
 
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
