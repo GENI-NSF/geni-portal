@@ -5,6 +5,7 @@
 == 1.6 ==
   * Add more bin scripts to install (#569)
   * portal_enable_abac controls all use of ABAC - so all disabled now (#556)
+  * update_user_certs script updates the ma_outside_cert table for DB transition (#564)
   * Add missing copyright (#576)
   * Change member IDs when importing to new DB. And make a file of emails of people who had outside certs. (#577)
 
