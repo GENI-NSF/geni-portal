@@ -8,6 +8,7 @@
   * update_user_certs script updates the ma_outside_cert table for DB transition (#564)
   * Add missing copyright (#576)
   * Change member IDs when importing to new DB. And make a file of emails of people who had outside certs. (#577)
+  * Re-enable some functions in maintenance mode for operators (#579)
 
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
