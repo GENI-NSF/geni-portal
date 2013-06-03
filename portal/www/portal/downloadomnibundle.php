@@ -77,7 +77,7 @@ if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
 /* For the template omni config, omni version must be 2.2
  * because the bundle feature in omni_configure.py did not
  * exist in earlier version. */
-$omni_version = 2.2;
+$omni_version = 2.3;
 $omni_config = get_template_omni_config($user, $omni_version, $default_project);
 
 $zip = new ZipArchive();
