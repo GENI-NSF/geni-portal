@@ -215,6 +215,15 @@ It is intended for more advanced users. In order to use omni or other command li
 Use <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure</a>
 to generate a configuration file for you:
   <ol>
+    <li>Make sure you are running <b>omni 2.3</b> or later. 
+       <ul>
+         <li>To determine the version of an existing omni installation, run:
+	<pre>omni.py --version</pre>
+	 </li>
+         <li>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of omni.</li>
+
+       </ul>
+    </li>
     <li>Download your <a href='omni-bundle.php'>customized configuration data</a></li>
     <li>Follow the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure instructions</a></li>
   </ol>
