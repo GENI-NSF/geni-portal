@@ -3,6 +3,7 @@ cs_assertion, principal
 cs_policy, signer
 km_asserted_attribute, asserter_id
 logging_entry, user_id
+logging_entry_attribute, attribute_value
 ma_member, member_id
 ma_member_attribute, member_id
 ma_member_privilege, member_id
