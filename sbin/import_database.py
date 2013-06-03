@@ -183,7 +183,7 @@ class DatabaseImporter:
 
         # Swap member_ids
         print 'Swap member IDs....'
-        tcfile = '/tmp/member-id-columns.txt'
+        tcfile = '/etc/geni-ch/member-id-columns.dat'
         with open (tcfile, 'r') as file:
             lines = file.readlines()
 
