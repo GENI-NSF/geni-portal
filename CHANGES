@@ -9,6 +9,7 @@
   * Add missing copyright (#576)
   * Change member IDs when importing to new DB. And make a file of emails of people who had outside certs. (#577)
   * Re-enable some functions in maintenance mode for operators (#579)
+  * Fix Accept Project Invite breadcrumbs (#582)
 
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
