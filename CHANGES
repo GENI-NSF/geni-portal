@@ -11,6 +11,7 @@
   * Re-enable some functions in maintenance mode for operators (#579)
   * Fix Accept Project Invite breadcrumbs (#582)
   * Add cainfo.html (#578)
+  * Install 2 cs / lockdown sql files (#586)
 
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
