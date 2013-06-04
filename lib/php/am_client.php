@@ -77,10 +77,10 @@ function write_ssh_keys($user)
 
 function get_template_omni_config($user, $version, $default_project=null)
 {
-  $legal_versions = array("2.1", "2.2");
+  $legal_versions = array("2.3.1");
   if (! in_array($version, $legal_versions)) {
-    /* If $version is not understood, default to omni 2.2. */
-    $version = "2.2";
+    /* If $version is not understood, default to omni 2.3.1. */
+    $version = "2.3.1";
   }
 
     /* Create OMNI config file */
@@ -123,10 +123,8 @@ function get_template_omni_config($user, $version, $default_project=null)
     }
 
     $omni_config = '# This omni configuration file is for use with omni version ';
-    if ($version == '2.2') {
-      $omni_config .= '2.2 or higher';
-    } else {
-      $omni_config .= '2.1 or earlier';
+    if ($version == '2.3.1') {
+      $omni_config .= '2.3.1 or higher';
     }
     $omni_config .= "\n";
     $omni_config .= "[omni]\n"
@@ -135,7 +133,7 @@ function get_template_omni_config($user, $version, $default_project=null)
       . "# Each user is defined in a separate section below.\n"
       . "users = $username\n";
 
-    if ($version == '2.2') {
+    if ($version == '2.3.1') {
      $omni_config = $omni_config		
       . "# 'default_project' is the name of the project that will be assumed\n"
       . "# unless '--project' is specified on the command line.\n"
@@ -163,10 +161,8 @@ function get_template_omni_config($user, $version, $default_project=null)
       . "\n"
       . "[portal]\n";
 
-    if ($version == "2.2") {
+    if ($version == "2.3.1") {
       $omni_config .= "type = pgch\n";
-    } else {
-      $omni_config .= "type = pg\n";
     }
 
     $omni_config = $omni_config
