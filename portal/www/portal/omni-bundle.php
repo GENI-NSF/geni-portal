@@ -100,7 +100,7 @@ if ($num_projects >= 1) {
 }
 ?>
 <li>Click "Download omni bundle"</li>
-<li>Using <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>omni 2.3 or later</a>, run "omni-configure.py -f portal [-z &lt;location of bundle&gt;]" ("-z" option default is ~/Downloads/omni-bundle.zip)</li>
+<li>Using <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>omni 2.3.1 or later</a>, run "omni-configure.py [-z &lt;location of bundle&gt;]" ("-z" option default is ~/Downloads/omni-bundle.zip)</li>
 </ol>
 
 <form id="f1" action="downloadomnibundle.php" method="post">

@@ -31,8 +31,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-/* Default omni version is 2.3 */
-$omni_version = 2.3;
+/* Default omni version is 2.3.1 */
+$omni_version = "2.3.1";
 if (array_key_exists('version', $_REQUEST)) {
   $omni_version = $_REQUEST['version'];
 }
