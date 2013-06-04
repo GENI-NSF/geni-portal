@@ -130,7 +130,7 @@ foreach ($warnings22 as $warning) {
   echo $warning;
 }
 ?>
-<i>Note: The portal can only be used with omni 2.3 or newer.</i>
+<i>Note: The portal can only be used with omni 2.3.1 or newer.</i>
 
 <p>
 Download and use a template omni_config file for use with the
@@ -195,7 +195,7 @@ Download and use a template omni_config file for use with the
 reservation tool.
 <br/>
 <ol>
-  <li>Download this <a href='portal_omni_config.php?version=2.3'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>
+  <li>Download this <a href='portal_omni_config.php?version=2.3.1'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>
   <li><a href="<?php print $download_url; ?>" target="_blank">
         <?php echo $download_text; ?>
       </a>, noting the path.
