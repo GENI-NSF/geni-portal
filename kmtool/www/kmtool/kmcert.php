@@ -145,18 +145,28 @@ $download_key = "download";
 $close_key = key_exists("close", $_REQUEST) ? "close" : "noclose";
 
 $disabled = "";
-if ($in_maintenance_mode or $in_lockdown_mode) {
+$enable = True;
+$user = null;
+if ($in_maintenance_mode) {
+  require_once("user.php");
+  $user = geni_loadUser();
+}
+if (($in_maintenance_mode && ! is_null($user) && 
+    !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
+		      null))
+    or $in_lockdown_mode) {
   //  error_log("KMCert disabling input");
+  $enable = False;
   $disabled = " disabled ";
   //} else {
   //  error_log("KMCert NOT disabling input");
 }
 
-if (key_exists($generate_key, $_REQUEST) and ! $in_maintenance_mode and ! $in_lockdown_mode) {
+if (key_exists($generate_key, $_REQUEST) and $enable) {
   // User has asked to generate a cert/key.
   generate_cert($ma_url, $km_signer, $member_id);
 }
-if (key_exists($upload_key, $_REQUEST) and ! $in_maintenance_mode and ! $in_lockdown_mode) {
+if (key_exists($upload_key, $_REQUEST) and $enable) {
   $status = handle_upload($ma_url, $km_signer, $member_id, $error);
 }
 if (key_exists($download_key, $_REQUEST)) {

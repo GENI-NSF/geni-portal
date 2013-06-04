@@ -2,6 +2,16 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.6 ==
+  * Add more bin scripts to install (#569)
+  * portal_enable_abac controls all use of ABAC - so all disabled now (#556)
+  * update_user_certs script updates the ma_outside_cert table for DB transition (#564)
+  * Add missing copyright (#576)
+  * Change member IDs when importing to new DB. And make a file of emails of people who had outside certs. (#577)
+  * Re-enable some functions in maintenance mode for operators (#579)
+  * Fix Accept Project Invite breadcrumbs (#582)
+  * Add cainfo.html (#578)
+
 == 1.5 ==
   * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
   * Remove some hardcoded URNs (progress on #10)

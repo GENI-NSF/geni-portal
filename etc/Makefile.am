@@ -17,7 +17,10 @@ ch-services.ini: $(srcdir)/ch-services.ini.in
 
 pkgsysconfdir = $(sysconfdir)/geni-ch
 
-dist_pkgsysconf_DATA = example-services.ini example-settings.php
+dist_pkgsysconf_DATA = \
+	example-services.ini \
+	example-settings.php \
+	member-id-columns.dat
 
 # Do not distribute ch-services
 pkgsysconf_DATA = ch-services.ini

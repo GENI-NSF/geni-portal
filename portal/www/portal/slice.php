@@ -284,7 +284,9 @@ if (isset($slice_expired) && $slice_expired == 't' ) {
 }
 
 $add_note_disabled = "";
-if ($in_lockdown_mode or $in_maintenance_mode) {
+if ($in_lockdown_mode or ($in_maintenance_mode &&
+    !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
+		      null))) {
   $add_note_disabled = "disabled";
 }
 

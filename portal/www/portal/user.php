@@ -28,7 +28,9 @@ require_once 'cs_client.php';
 require_once 'sr_constants.php';
 require_once 'sr_client.php';
 require_once 'permission_manager.php';
-require 'abac.php';
+require_once 'settings.php';
+if ($portal_enable_abac)
+  require 'abac.php';
 require_once 'ma_constants.php';
 require_once 'ma_client.php';
 require_once 'geni_syslog.php';
@@ -443,8 +445,10 @@ function geni_loadUser_legacy($id='')
     $user->account_id = $row['account_id'];
     $user->loadAccount();
 
-    // Cache the IDP attributes as ABAC assertions
-    abac_store_idp_attrs($user);
+    if ($portal_enable_abac) {
+      // Cache the IDP attributes as ABAC assertions
+      abac_store_idp_attrs($user);
+    }
 
     // Cache the user by account_id
     ensure_user_cache();

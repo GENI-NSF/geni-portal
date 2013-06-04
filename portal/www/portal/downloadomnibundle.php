@@ -74,10 +74,10 @@ if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
   $geni_cert_pem .= $result[MA_ARGUMENT::CERTIFICATE];
 }
 
-/* For the template omni config, omni version must be 2.2
+/* For the template omni config, omni version must be 2.3.1
  * because the bundle feature in omni_configure.py did not
  * exist in earlier version. */
-$omni_version = 2.2;
+$omni_version = "2.3.1";
 $omni_config = get_template_omni_config($user, $omni_version, $default_project);
 
 $zip = new ZipArchive();
