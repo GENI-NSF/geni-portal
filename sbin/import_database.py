@@ -198,7 +198,7 @@ class DatabaseImporter:
             print "Member ID swap: %s" % updatesql
 
         # Special case handle the table whose column is a string
-        updatesql = "update logging_entry_attribute set attribute_value = (select T2.new_id from ma_member_id_translation T2 where logging_entry_attribute.attribute_value::uuid = T2.old_id and logging_entry_attribute.attribute_name = 'MEMBER')"
+        updatesql = "update logging_entry_attribute set attribute_value = (select T2.new_id from ma_member_id_translation T2 where logging_entry_attribute.attribute_value::uuid = T2.old_id) where logging_entry_attribute.attribute_name = 'MEMBER'"
         do_update_cmd = psql_cmd + ['-c', '"' + updatesql + '"']
         self.execute(do_update_cmd)
         print "Member ID swap: %s" % updatesql
