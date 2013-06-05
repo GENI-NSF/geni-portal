@@ -2,6 +2,8 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.7 ==
+
 == 1.6.1 ==
   * Import databascript was losing non member log messages (#589)
 
