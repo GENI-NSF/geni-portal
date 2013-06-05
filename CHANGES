@@ -3,6 +3,8 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.7 ==
+  * On new project page, note showing that name of lead is public (#469)
+  * Have raw manifest appear in a separate window/tab/popup (#520)
 
 == 1.6.1 ==
   * Import databascript was losing non member log messages (#589)
