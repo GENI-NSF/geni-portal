@@ -206,7 +206,8 @@ dist_svcwebcss_DATA =  \
 dist_svcwebtop_DATA = \
 	www/index.php \
 	www/login-help.php \
-	www/favicon.ico
+	www/favicon.ico \
+	www/cainfo.html
 
 dist_svcwebpolicy_DATA = \
 	www/policy/privacy.html

@@ -8,7 +8,9 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-1.sql \
 	db/postgresql/update-2.sql \
 	db/postgresql/update-3.sql \
-	db/postgresql/update-4.sql
+	db/postgresql/update-4.sql \
+	db/postgresql/enable_lockdown.sql \
+	db/postgresql/disable_lockdown.sql
 
 # To do: transition database initialization to a script using
 # the installed schema and data SQL files.
