@@ -2,6 +2,9 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.6.1 ==
+  * Import databascript was losing non member log messages (#589)
+
 == 1.6 ==
   * Add more bin scripts to install (#569)
   * portal_enable_abac controls all use of ABAC - so all disabled now (#556)
