@@ -88,7 +88,7 @@ function show_last_message() {
 <div id='main'>
 
 <?php show_last_message();?>
-  <center><p class='instruction'><b>June 5, 2013</b>: This portal is now read-only. Most users should use the new <button onClick=\"window.location='https://portal.geni.net'\"><b>portal.geni.net</b></button>. <br/>Only continue here if you have an existing slice in which you want to reserve or manage resources; but remember that all such slices expire by June 17th.</p></center>
+  <center><p class='instruction'><b>June 5, 2013</b>: This portal is now read-only. Most users should use the new <button onClick="window.location='https://portal.geni.net'"><b>portal.geni.net</b></button>. <br/>Only continue here if you have an existing slice in which you want to reserve or manage resources; but remember that all such slices expire by June 17th.</p></center>
   <a href='secure/home.php'>
     <img id='usegeni' src="/images/UseGENI.png" alt="Use GENI"/>
   </a>
