@@ -2,7 +2,7 @@
 
 # To delete extraneous files on the remote side, do the following:
 #
-# make RSYNC='/usr/bin/rsync --delete --delete-excluded' -f Makefile.sync syncd
+# make RSYNC='/usr/bin/rsync --delete --delete-excluded' -f Makefile.sync synci
 #
 
 RSYNC = /usr/bin/rsync

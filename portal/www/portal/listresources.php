@@ -152,7 +152,7 @@ if ($pretty) {
     $am_id_str = "";
   }
 
-  print "<a href='listresources.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw Resource Specification</a>";
+  print "<a href='listresources.php?pretty=False&slice_id=" . $slice_id . $am_id_str . "' target='_blank'>Raw Resource Specification</a>";
 }
 
 print "<hr/>";
