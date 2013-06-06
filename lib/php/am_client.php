@@ -77,15 +77,17 @@ function write_ssh_keys($user)
 
 function get_template_omni_config($user, $version, $default_project=null)
 {
-  $legal_versions = array("2.1", "2.2");
+  $legal_versions = array("2.3.1");
   if (! in_array($version, $legal_versions)) {
-    /* If $version is not understood, default to omni 2.2. */
-    $version = "2.2";
+    /* If $version is not understood, default to omni 2.3.1. */
+    $version = "2.3.1";
   }
 
     /* Create OMNI config file */
     $username = $user->username;
     $urn = $user->urn();
+    // Get the authority from the user's URN
+    parse_urn($urn, $authority, $type, $name);
 
     // Add shortcuts for all known AMs?
     // Note this makes the config long in the extreme case....
@@ -121,10 +123,8 @@ function get_template_omni_config($user, $version, $default_project=null)
     }
 
     $omni_config = '# This omni configuration file is for use with omni version ';
-    if ($version == '2.2') {
-      $omni_config .= '2.2 or higher';
-    } else {
-      $omni_config .= '2.1 or earlier';
+    if ($version == '2.3.1') {
+      $omni_config .= '2.3.1 or higher';
     }
     $omni_config .= "\n";
     $omni_config .= "[omni]\n"
@@ -133,7 +133,7 @@ function get_template_omni_config($user, $version, $default_project=null)
       . "# Each user is defined in a separate section below.\n"
       . "users = $username\n";
 
-    if ($version == '2.2') {
+    if ($version == '2.3.1') {
      $omni_config = $omni_config		
       . "# 'default_project' is the name of the project that will be assumed\n"
       . "# unless '--project' is specified on the command line.\n"
@@ -161,12 +161,12 @@ function get_template_omni_config($user, $version, $default_project=null)
       . "\n"
       . "[portal]\n";
 
-    if ($version == "2.2") {
+    if ($version == "2.3.1") {
       $omni_config .= "type = pgch\n";
-    } else {
-      $omni_config .= "type = pg\n";
     }
+
     $omni_config = $omni_config
+      . "authority=$authority\n"
       . "ch = $PGCH_URL\n"
       . "sa = $PGCH_URL\n"
       . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
@@ -298,13 +298,14 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 
     $all_ssh_key_files = array();
     foreach ($slice_users as $slice_user){
-       $username = $slice_user->username;
+       $slice_username = $slice_user->username;
+       $slice_urn = $slice_user->urn();	
        $ssh_key_files = write_ssh_keys($slice_user);
        $all_ssh_key_files = $all_ssh_key_files + $ssh_key_files;
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
-             . "[$username]\n"
-             . "urn=$urn\n"
+             . "[$slice_username]\n"
+             . "urn=$slice_urn\n"
       	     . "keys=$all_key_files\n";
     }
 

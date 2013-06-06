@@ -115,8 +115,16 @@ if (is_array($entries) && count($entries) > 0) {
 } else {
   print "<tr><td><i>No messages.</i></td></tr>\n";
 }
-?>
-</table>
 
-<br/>
-<button style="" onClick="window.location='invite-to-geni.php'"><b>Invite Someone to GENI</b></button>
+print "</table>";
+
+
+print "<br/>";
+
+$disable_invite_geni = "";
+if ($in_lockdown_mode)
+  $disable_invite_geni = "disabled";
+
+print "<button style=\"\" $disable_invite_geni onClick=\"window.location='invite-to-geni.php'\"><b>Invite Someone to GENI</b></button>";
+
+?>
