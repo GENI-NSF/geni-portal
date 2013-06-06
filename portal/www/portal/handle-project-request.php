@@ -121,11 +121,16 @@ foreach($requests as $request) {
     $all_requestors[] = $member_id;
 }
 
-//error_log("REQUESTS = " . print_r($requests, true));
-//error_log("ALL REQUESTORS = " . print_r($all_requestors, true));
+// error_log("REQUESTS = " . print_r($requests, true));
+// error_log("ALL REQUESTORS = " . print_r($all_requestors, true));
 
 $member_details = lookup_member_details($ma_url, $user, $all_requestors);
 // error_log("MEMBERS = " . print_r($member_details, true));
+$member_names = lookup_member_names_for_rows($ma_url, $user, 
+					     $member_details, 
+					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
+// error_log("MEMBER_NAMES = " . print_r($member_names, true));
+
 
 function get_attribute_named($member_detail, $attribute_name)
 {
@@ -161,12 +166,13 @@ function compute_actions_for_member($member_id, $request_id)
 foreach($requests as $request) {
   $member_id = $request['requestor'];
   $member_detail = $member_details[$member_id];
+  $member_name = $member_names[$member_id];
   $request_id = $request['id'];
-  $name = get_attribute_named($member_detail, 'displayName');
+  //  $member_name = get_attribute_named($member_detail, 'displayName');
   $email= get_attribute_named($member_detail, 'email_address');
   $actions = compute_actions_for_member($member_id, $request_id);
   $select_actions = "<select name=\"$email\">$actions</select>";
-  print "<tr><td>$name</td><td>$email<td>$select_actions</td></tr>";
+  print "<tr><td>$member_name</td><td>$email<td>$select_actions</td></tr>";
   //  error_log("REQ = " . print_r($request, true));
 }
 print '</table>';
