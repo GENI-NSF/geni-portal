@@ -200,8 +200,14 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 // 
 
 print "<h1>GENI Slice: " . $slice_name . "</h1>";
-print "Adding or removing members to the slice will affect who can login to resources reserved <i>in the future</i>.<br/>";
 ?>
+
+Slice members will be able to login to resources reserved <i>in the future</i> if
+<ul>
+ <li>the resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
+ <li>the slice member has uploaded an ssh public key.</li>
+</ul>
+
 <form method="POST" action="do-edit-slice-member.php">
 <table>
 <tr><th>Project Member</th><th>Slice Role</th><th>Actions</th></tr>
