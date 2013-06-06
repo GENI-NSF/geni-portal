@@ -399,6 +399,12 @@ print "</table>\n";
 print "<h2>Slice members</h2>";
 ?>
 
+Slice members will be able to login to resources reserved <i>in the future</i> if
+<ul>
+ <li>the resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
+ <li>the slice member has uploaded an ssh public key.</li>
+</ul>
+
 <table>
 	<tr>
 		<th>Slice Member</th>
