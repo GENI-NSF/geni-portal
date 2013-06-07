@@ -37,6 +37,7 @@ const GEMINI_SLICE_URN = 'slice_urn';
 const GEMINI_USER_CERTIFICATE = 'cert';
 const GEMINI_USER_PRIVATE_KEYS = 'private_keys';
 const GEMINI_USER_PASSPHRASE = 'pass';
+const GEMINI_USER_PROJECT_NAMES = 'project_names';
 
 require_once('user.php');
 require_once('ma_client.php');
@@ -117,6 +118,16 @@ if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
  * certificate creation time.
  */
 $gemini_info[GEMINI_USER_PASSPHRASE] = "";
+
+/* Get project info and include it in what is sent */
+$project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+if (count($project_ids) > 0) {
+  /*$projects = lookup_project_details($pa_url, $user, $project_ids);
+  echo '<!--';
+  var_dump($projects);
+  echo '-->'; */
+}
+
 
 /* Convert data to JSON and encrypt it for the destination. */
 $gemini_json = json_encode($gemini_info);
