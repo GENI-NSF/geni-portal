@@ -65,6 +65,19 @@ $gemini_cert = file_get_contents($gemini_cert_file);
  */
 $gemini_post_delay_seconds = 0;
 
+/* function project_is expired
+    Checks to see whether project has expired
+    Returns false if not expired, true if expired
+ */
+function project_is_expired($proj) {
+  if($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED] == 'f') {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
 
 if (!isset($user)) {
   $user = geni_loadUser();
@@ -119,15 +132,19 @@ if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
  */
 $gemini_info[GEMINI_USER_PASSPHRASE] = "";
 
-/* Get project info and include it in what is sent */
+/* Get project info of projects that have not expired and include them */
+$projects_not_expired = array();
 $project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
 if (count($project_ids) > 0) {
-  /*$projects = lookup_project_details($pa_url, $user, $project_ids);
-  echo '<!--';
-  var_dump($projects);
-  echo '-->'; */
+  $projects = lookup_project_details($pa_url, $user, $project_ids);
+  foreach ($projects as $proj) {
+    if(!project_is_expired($proj)) {
+      // set the key as project id of that project
+      $projects_not_expired[$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]] = $proj;
+    }
+  }
 }
-
+$gemini_info[GEMINI_USER_PROJECT_NAMES] = $projects_not_expired;
 
 /* Convert data to JSON and encrypt it for the destination. */
 $gemini_json = json_encode($gemini_info);
