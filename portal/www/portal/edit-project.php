@@ -200,7 +200,7 @@ print "<br/>\n";
 if ($isnew) {
   print "<b>Project Lead</b><br/>\n";
   print "There is exactly one project lead for each project. Project leads are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
-  print "You will be the project lead on your new project.<br/>\n";
+  print "You will be the project lead on your new project. The name of the project lead is public.<br/>\n";
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
 //   print "Project lead is: <b>$leadname</b><br/>\n";
