@@ -1,0 +1,206 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+
+import optparse
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import OpenSSL
+
+OPENSSL = 'openssl'
+CA_CERT = '/usr/share/geni-ch/CA/cacert.pem'
+CA_KEY =  '/usr/share/geni-ch/CA/private/cakey.pem'
+
+class Certificate (object):
+     def __init__(self, certfile, keyfile):
+          self.certfile = certfile
+          self.keyfile = keyfile
+          self.text = None
+          # cert is the OpenSSL.crypt.X509 instance
+          self.cert = None
+          self.subject = None
+          self.serial = None
+          self.urn = None
+          self.uuid = None
+          self.is_ca = False
+          self.text = self.cert_text()
+          self.extract_info()
+
+     def extract_info(self):
+          with open(self.certfile, 'rb') as f:
+               cert_pem = f.read()
+          cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM,
+                                                 cert_pem)
+          subj_components = cert.get_subject().get_components()
+          self.subject = ''.join(["/%s=%s" % (x,y)
+                                  for (x,y) in subj_components])
+          # serial must be a string, but convert from long to int first
+          self.serial = str(int(cert.get_serial_number()))
+          #print "subject = ", subject
+          #print "serial number = ", serial
+
+          # Dig out the URN
+          # Looking for something like:
+          #              "URI:urn:publicid:IDN+dagoola+authority+ma"
+          urn_re = re.compile('URI:urn:publicid:IDN[^\s,]*')
+          match = urn_re.search(self.text)
+          if match is None:
+               print >>sys.stderr, "Unable to locate URN in x509 certificate"
+               sys.exit(1)
+          self.urn = match.group(0)
+          #print "urn = ", self.urn
+
+          uuid_re = re.compile('URI:uuid:[^\s,]*')
+          match = uuid_re.search(self.text)
+          if match is None:
+               print >>sys.stderr, "Unable to locate UUID in x509 certificate"
+               sys.exit(1)
+          self.uuid = match.group(0)
+          #print "uuid = ", self.uuid
+
+          # Is the certificate a CA?
+          ca_re = re.compile('\n\s*CA:TRUE\n')
+          self.is_ca = bool(ca_re.search(self.text))
+          #print "is_ca = ", self.is_ca
+
+     def cert_text(self):
+          # Run "openssl x509" via Popen and then communicate()
+          x509_cmd = [OPENSSL, 'x509',
+                      '-in', self.certfile,
+                      '-text',
+                      '-noout']
+          x509_proc = subprocess.Popen(x509_cmd,
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.PIPE)
+          (x509_stdout, x509_stderr) = x509_proc.communicate()
+          if x509_proc.returncode != 0:
+               pretty_cmd = ' '.join(x509_cmd)
+               print >>sys.stderr, "Error running command: ", pretty_cmd
+               print >>sys.stderr, x509_stderr
+               sys.exit(1)
+          return x509_stdout
+          #print "cert command returned: ", x509_proc.returncode
+          #pretty_cmd = ' '.join(x509_cmd)
+          #print "cert command was: ", pretty_cmd
+          #print "cert contents is: ", x509_stdout
+
+     def renew(self, signcert, signkey, days):
+          # The name of the extension section
+          ext_name = 'geni'
+          try:
+               # Make CSR, Make ext file, sign csr
+               csr = self.make_csr()
+               ext = self.make_ext_file(ext_name)
+               print "\tCSR = ", csr
+               print "\tEXT = ", ext
+               newcert = self.sign_csr(csr, ext, ext_name, days, signcert,
+                                       signkey)
+               return newcert
+          finally:
+               print "\tCleanup"
+               if csr: os.unlink(csr)
+               if ext: os.unlink(ext)
+
+     def make_csr(self):
+          (fd, req_file) = tempfile.mkstemp()
+          os.close(fd)
+          req_cmd = [OPENSSL, 'req',
+                     '-new',
+                     '-subj', self.subject,
+                     '-key', self.keyfile,
+                     '-out', req_file]
+          # Execute req_cmd...
+          retcode = subprocess.call(req_cmd)
+          if retcode == 0:
+               return req_file
+          else:
+               raise(Exception("make_csr command returned %d" % (retcode)))
+
+     def make_ext_file(self, ext_name):
+          ext_template = """
+[%s]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer:always
+authorityInfoAccess = 2.25.305821105408246119474742976030998643995;URI:%s
+subjectAltName=email:copy,%s,%s
+basicConstraints = CA:%s
+"""
+          # OK to hardcode this
+          auth_url = 'https://ch.geni.net/cainfo.html'
+          ext_data = ext_template % (ext_name, auth_url, self.urn, self.uuid,
+                                     str(self.is_ca).lower())
+          (fd, ext_file) = tempfile.mkstemp()
+          f = os.fdopen(fd, 'w')
+          f.write(ext_data)
+          f.close()
+          return ext_file
+
+     def sign_csr(self, req_file, ext_file, ext_name, days, signcert, signkey):
+          (fd, cert_file) = tempfile.mkstemp()
+          os.close(fd)
+          sign_cmd = [OPENSSL, 'x509',
+                      '-req',
+                      '-in', req_file,
+                      '-extfile', ext_file,
+                      '-extensions', ext_name,
+                      '-CA', signcert,
+                      '-CAkey', signkey,
+                      '-set_serial', self.serial,
+                      '-out', cert_file,
+                      '-days', str(days)]
+          # Execute cmd
+          retcode = subprocess.call(sign_cmd)
+          #print >>sys.stderr, "openssl signing command returned ", retcode
+          if retcode == 0:
+               return cert_file
+          else:
+               raise(Exception("sign_csr command returned %d" % (retcode)))
+
+def parse_args(argv):
+    parser = optparse.OptionParser()
+    # In the future, add command line arguments here
+    # opt.days = num days for cert, default 365
+    parser.add_option("--days", type="int", default="365",
+                      help=("certificate validity period in days"
+                            " [default: %default]"))
+    parser.add_option("--cert", default=CA_CERT,
+                      help="signing certificate [default: %default]")
+    parser.add_option("--key", default=CA_KEY,
+                      help="signing key [default: %default]")
+    options,args = parser.parse_args()
+    return options,args
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    try:
+        options,args = parse_args(argv)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
+        return 1
+    services = ['cs', 'km', 'logging', 'ma', 'pa', 'portal', 'sa', 'sr']
+    # Take advantage of the filesystem layout of the CH services...
+    basedir = '/usr/share/geni-ch'
+    for svc in services:
+         certfile = os.path.join(basedir, svc, svc + '-cert.pem')
+         keyfile = os.path.join(basedir, svc, svc + '-key.pem')
+         if not os.path.isfile(certfile):
+              msg = "File %s does not exist. Skipping" % (certfile)
+              print >>sys.stderr, msg
+              continue
+         if not os.path.isfile(keyfile):
+              msg = "File %s does not exist. Skipping" % (keyfile)
+              print >>sys.stderr, msg
+              continue
+         print "Processing service '%s':" % (svc)
+         cert = Certificate(certfile, keyfile)
+         tmpcert = cert.renew(options.cert, options.key, options.days)
+         newcert = "%s-cert.pem" % (svc)
+         os.rename(tmpcert, newcert)
+         print "\tnew cert = %s" % (newcert)
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

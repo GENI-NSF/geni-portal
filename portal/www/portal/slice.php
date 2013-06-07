@@ -37,6 +37,7 @@ require_once("sa_client.php");
 require_once('logging_client.php');
 require_once('am_map.php');
 require_once('status_constants.php');
+require_once('maintenance_mode.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -220,6 +221,7 @@ $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
 $omni_url = "tool-omniconfig.php";
 $flack_url = "flack.php?slice_id=".$slice_id;
+$gemini_url = "gemini.php?slice_id=" . $slice_id;
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
@@ -288,6 +290,16 @@ if (isset($slice_expired) && $slice_expired == 't' ) {
    print "<p class='warn'>This slice is expired!</p>\n";
 }
 
+$add_note_disabled = "";
+if ($in_lockdown_mode or ($in_maintenance_mode &&
+    !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
+		      null))) {
+  $add_note_disabled = "disabled";
+}
+
+// FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
+// FIXME: Disable launch flack if in lockdown mode?
+
 print "<table>\n";
 print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 
@@ -297,7 +309,7 @@ print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $dis
 
 print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
 print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
-print "<button  $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
+print "<button $add_note_disabled $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
 print "</td>\n";
@@ -354,6 +366,9 @@ print "<tr><td>\n";
 /* print "To use a command line tool:<br/>"; */
 $hostname = $_SERVER['SERVER_NAME'];
 print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/><b>Launch Flack</b> </button>\n";
+if ($user->hasAttribute('gemini-user')) {
+  print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GEMINI Desktop</b></button>\n";
+}
 print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Use omni</b></button>\n";
 //print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";
@@ -407,6 +422,12 @@ print "</table>\n";
 print "<h2>Slice members</h2>";
 ?>
 
+Slice members will be able to login to resources reserved <i>in the future</i> if
+<ul>
+ <li>the resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
+ <li>the slice member has uploaded an ssh public key.</li>
+</ul>
+
 <table>
 	<tr>
 		<th>Slice Member</th>
@@ -432,7 +453,7 @@ foreach($members as $member) {
 
 <?php
 $edit_members_disabled = "";
-if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id) || $in_lockdown_mode) {
   $edit_members_disabled = $disabled;
 }
 echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button>";

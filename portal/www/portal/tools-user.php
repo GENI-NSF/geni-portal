@@ -35,13 +35,17 @@ require_once("rq_client.php");
  */
 print "<h2>SSH Keys</h2>\n";
 $keys = $user->sshKeys();
+
+$disable_ssh_keys = "";
+if ($in_lockdown_mode) $disable_ssh_keys = "disabled";
+
 if (count($keys) == 0)
   {
     // No ssh keys are present.
     print "No SSH keys have been uploaded. ";
     print "SSH keys are required to log in to reserved compute resources.<br/><br/>\n";
-    print "You can <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>";
-    print "or <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>, if you have one you want to use.<br/>\n";
+    print "You can <button $disable_ssh_keys onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>";
+    print "or <button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>, if you have one you want to use.<br/>\n";
     print "If you're not sure what to do, choose 'Generate'.<br/>\n";
 
   }
@@ -62,7 +66,7 @@ else
                 . $download_pkey_url . $query
                 . "'\">Download Private Key</button>");
       }
-      $edit_cell = ("<button onClick=\"window.location='"
+      $edit_cell = ("<button $disable_ssh_keys onClick=\"window.location='"
                 . $edit_sshkey_url . $query
                 . "'\">Edit</button>");
       print "<tr>"
@@ -75,17 +79,21 @@ else
     print "</table>\n";
     print "<i>Note</i>: You will need your SSH private key on your local machine. <br/>\nIf you generated your SSH keypair on this portal and have not already done so, be sure to Download your SSH key. <br/>\nAfter you download your key, be sure to set local permissions on that file appropriately. On Linux and Mac, do \"chmod 0600 <i>[path-to-SSH-private-key]</i>\". <br/>\nWhen you invoke SSH to log in to reserved resources, you will need to remember the path to that file. <br/>Your SSH command will be something like: \"ssh -i <i>path-to-SSH-key-you-downloaded</i> <i>[username]@[hostname]</i>\".<br/>\n";
     print "<br/>\n";
-    print "<button onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button>\n";
+    print "<button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button>\n";
   }
-?>
 
-<h2>Edit Account Details</h2>
-<button onClick="window.location='modify.php'">Modify user supplied account details </button> (e.g. to become
-a Project Lead).<br/>
-<br/>
-<button onClick="window.location='kmhome.php'">Authorize or De-authorize tools</button> to act on your behalf.<br/>
-<h2>Outstanding Requests</h2>
-<?php
+$disable_account_details = "";
+$disable_authorize_tools = "";
+if($in_lockdown_mode) {
+  $disable_account_details = "disabled";
+  $disable_authorize_tools = "disabled";
+}
+print "<h2>Edit Account Details</h2>";
+print "<button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).<br/>";
+print "<br/>";
+print "<button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.<br/>";
+print "<h2>Outstanding Requests</h2>";
+
 // Show outstanding requests BY this user
 if (! isset($pa_url)) {
   $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
@@ -172,7 +180,10 @@ print "<h1>My Stuff</h1>\n";
  */
 print "<h2>Manage Resource Specifications</h2>\n";
 
-print "<button onClick=\"window.location='rspecs.php'\">"
+$disable_manage_rspecs = "";
+if ($in_lockdown_mode) $disable_manage_rspecs = "disabled";
+
+print "<button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
   . "Manage Resource Specifications</button>\n";
 ?>
 
@@ -204,6 +215,15 @@ It is intended for more advanced users. In order to use omni or other command li
 Use <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure</a>
 to generate a configuration file for you:
   <ol>
+    <li>Make sure you are running <b>omni 2.3.1</b> or later. 
+       <ul>
+         <li>To determine the version of an existing omni installation, run:
+	<pre>omni.py --version</pre>
+	 </li>
+         <li>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of omni.</li>
+
+       </ul>
+    </li>
     <li>Download your <a href='omni-bundle.php'>customized configuration data</a></li>
     <li>Follow the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure instructions</a></li>
   </ol>

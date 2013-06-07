@@ -105,12 +105,40 @@ function register_ssh_key($args, $message)
   global $ma_signer;
   global $log_url;
   $conn = db_conn();
-  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $member_id = null;
+  if (array_key_exists(MA_ARGUMENT::MEMBER_ID, $args)) {
+    $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+    if (! uuid_is_valid($member_id)) {
+      error_log("member_id invalid in register_ssh_key: " . $member_id);
+      return generate_response(RESPONSE_ERROR::ARGS, null, "Member ID invalid");
+    }
+  }
+  if (! isset($member_id) or is_null($member_id) or $member_id == '') {
+    error_log("Missing member ID to register_ssh_key");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Member ID missing");
+  }
   $signer_id = $message->signerUuid(); // FIXME: get name. For now, use URN
   $client_urn = $message->signerUrn();
-  $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
-  $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
-  $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
+
+  $ssh_filename = '';
+  if (array_key_exists(MA_ARGUMENT::SSH_FILENAME, $args)) {
+    $ssh_filename = $args[MA_ARGUMENT::SSH_FILENAME];
+  }
+
+  $ssh_description = '';
+  if (array_key_exists(MA_ARGUMENT::SSH_DESCRIPTION, $args)) {
+    $ssh_description = $args[MA_ARGUMENT::SSH_DESCRIPTION];
+  }
+  $ssh_public_key = null;
+  if (array_key_exists(MA_ARGUMENT::SSH_PUBLIC_KEY, $args)) {
+    $ssh_public_key = $args[MA_ARGUMENT::SSH_PUBLIC_KEY];
+  }
+  if (! isset($ssh_public_key) or is_null($ssh_public_key) or $ssh_public_key == '') {
+    error_log("Missing SSH public key to register_ssh_key");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "SSH Public key missing");
+  }
   if (parse_urn($client_urn, $auth, $type, $name)) {
     $client_urn = $auth . "." . $name;
   }
@@ -625,11 +653,18 @@ function add_member_privilege($args, $message)
     $signer_urn = $auth . "." . $name;
   }
   $log_signer = get_member_id_log_name($signer_id);
+  if (! isset($log_signer) or is_null($log_signer) or $log_signer == '') {
+    $log_signer = $signer_urn;
+  }
   $log_member = get_member_id_log_name($member_id);
+  if (! isset($log_member) or is_null($log_member) or $log_member == '') {
+    $log_member = $member_id;
+  }
   $log_msg = "$log_signer adding privilege \"$priv_name\" to member $log_member";
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
   log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  error_log($log_msg);
   $conn = db_conn();
   $sql = ("insert into " . $MA_MEMBER_PRIVILEGE_TABLENAME
           . " ( " . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::MEMBER_ID
@@ -657,6 +692,7 @@ function revoke_member_privilege($args, $message)
   global $MA_MEMBER_PRIVILEGE_TABLENAME;
   global $ma_signer;
   global $log_url;
+  global $cs_url;
 
   $signer_id = $message->signerUuid();
   $signer_urn = $message->signerUrn();
@@ -666,15 +702,26 @@ function revoke_member_privilege($args, $message)
   $priv_name = "<other>";
   if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
     $priv_name = "Project Lead";
+  } else if ($privilege_id === MA_PRIVILEGE::OPERATOR) {
+    $priv_name = "Operator";
   }
 
   if (parse_urn($signer_urn, $auth, $type, $name)) {
     $signer_urn = $auth . "." . $name;
   }
-  $log_msg = "$signer_urn revoking privilege \"$priv_name\" from member $member_id";
+  $log_signer = get_member_id_log_name($signer_id);
+  if (! isset($log_signer) or is_null($log_signer) or $log_signer == '') {
+    $log_signer = $signer_urn;
+  }
+  $log_member = get_member_id_log_name($member_id);
+  if (! isset($log_member) or is_null($log_member) or $log_member == '') {
+    $log_member = $member_id;
+  }
+  $log_msg = "$log_signer revoking privilege \"$priv_name\" from member $log_member";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  error_log($log_msg);
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER, $member_id);
-  $log_msg = "$signer_urn revoking privilege \"$priv_name\"";
+  $log_msg = "$log_signer revoking privilege \"$priv_name\"";
   log_event($log_url, $ma_signer, $log_msg, $attributes, $signer_id);
   // FIXME: Email portal_dev_admin?
   $conn = db_conn();
@@ -686,6 +733,59 @@ function revoke_member_privilege($args, $message)
           . MA_MEMBER_PRIVILEGE_TABLE_FIELDNAME::PRIVILEGE_ID
           . " = " . $conn->quote($privilege_id, 'integer'));
   $result = db_execute_statement($sql);
+
+  // Need to reverse the assert_project_lead / assert_operator calls
+  if ($privilege_id === MA_PRIVILEGE::PROJECT_LEAD) {
+    $attribute = CS_ATTRIBUTE_TYPE::LEAD;
+    $context_type = CS_CONTEXT_TYPE::RESOURCE;
+    $context = NULL;
+    $assert_id = NULL;
+    $assertions = query_assertions($cs_url, $ma_signer, $member_id, $context_type, $context);
+    // each is a row containing all columns of cs_assertion
+    // id, signer, principal, attribute, context_Type, context, expiration, asserion_cert
+    // We want the row, if any, where attribute is $attribute 
+    if (isset($assertions) and is_array($assertions)) {
+      foreach ($assertions as $row) {
+	if (array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE, $row) and $row[CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE] == $attribute and array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ID, $row)) {
+	  $assert_id = $row[CS_ASSERTION_TABLE_FIELDNAME::ID];
+	}
+      }
+    }
+    if (! is_null($assert_id)) {
+      delete_assertion($cs_url, $ma_signer, $assert_id);
+    }
+    //    assert_project_lead($cs_url, $ma_signer, $member_id);
+
+    // FIXME: Send mail?
+    //    mail_new_project_lead($member_id);
+  } else if ($privilege_id === MA_PRIVILEGE::OPERATOR) {
+    $attribute = CS_ATTRIBUTE_TYPE::OPERATOR;
+    $context_types = array(CS_CONTEXT_TYPE::PROJECT,
+			   CS_CONTEXT_TYPE::SLICE,
+			   CS_CONTEXT_TYPE::RESOURCE,
+			   CS_CONTEXT_TYPE::SERVICE,
+			   CS_CONTEXT_TYPE::MEMBER);
+    $context = NULL;
+    $assert_id = NULL;
+    foreach ($context_types as $context_type) {
+      $assertions = query_assertions($cs_url, $ma_signer, $member_id, $context_type, $context);
+      // each is a row containing all columns of cs_assertion
+      // id, signer, principal, attribute, context_Type, context, expiration, asserion_cert
+      // We want the row, if any, where attribute is $attribute 
+      if (isset($assertions) and is_array($assertions)) {
+	foreach ($assertions as $row) {
+	  if (array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE, $row) and $row[CS_ASSERTION_TABLE_FIELDNAME::ATTRIBUTE] == $attribute and array_key_exists(CS_ASSERTION_TABLE_FIELDNAME::ID, $row)) {
+	    $assert_id = $row[CS_ASSERTION_TABLE_FIELDNAME::ID];
+	  }
+	}
+      }
+      if (! is_null($assert_id)) {
+	delete_assertion($cs_url, $ma_signer, $assert_id);
+      }
+    }
+    //    assert_operator($cs_url, $ma_signer, $member_id);
+  }
+
   return $result;
 }
 
@@ -866,7 +966,14 @@ class SignerAuthorityGuard implements Guard
   }
 
   public function evaluate() {
-    return (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+    $ret = (strpos($this->message->signerUrn(), '+authority+') !== FALSE);
+    if (! $ret) {
+      $parsed_message = $this->message->parse();
+      $action = $parsed_message[0];
+      $log_msg = "AuthZ Denied: Signer is not authority: " . $this->message->signerUrn() . " cannot call " . $action;
+      geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+    }
+    return $ret;
   }
 }
 
@@ -886,6 +993,10 @@ class SignerIsOperatorGuard implements Guard
         return true;
       }
     }
+    $parsed_message = $this->message->parse();
+    $action = $parsed_message[0];
+    $log_msg = "AuthZ Denied: Signer is not operator: " . $this->message->signerUrn() . " cannot call " . $action;
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
     return false;
   }
 }
@@ -897,7 +1008,14 @@ class SignerKmGuard implements Guard
   }
 
   public function evaluate() {
-    return (strpos($this->message->signerUrn(), '+authority+km') !== FALSE);
+    $result = (strpos($this->message->signerUrn(), '+authority+km') !== FALSE);
+    if (! $result) {
+      $parsed_message = $this->message->parse();
+      $action = $parsed_message[0];
+      $log_msg = "AuthZ Denied: Signer is not the KM: " . $this->message->signerUrn() . " cannot call " . $action;
+      geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+    }
+    return $result;
   }
 }
 
@@ -908,6 +1026,18 @@ class MAGuardFactory implements GuardFactory
   }
 
   // FIXME: Key functions are unguarded. 
+  // get_member_ids
+  //     This gets all member_ids. Maybe just require caller has a valid member_id?
+  // lookup_members  Privacy concern!
+  // lookup_member_by_id    Privacy concern!
+  // lookup_member_details    Privacy concern!
+  // lookup_member_names      Privacy concern!
+
+  // Protecting those lookups is harder. If the member is in the same project as you, then you can look them up. 
+  // Plus operators and the person themselves. Maybe the guard can only check
+  // that the user is valid?
+
+  // Plus all the request methods?
 
   public function createGuards($message) {
     $parsed_message = $message->parse();
@@ -929,6 +1059,18 @@ class MAGuardFactory implements GuardFactory
     } elseif ($action === 'ma_create_certificate') {
       // Only accept from the KM
       $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'create_account') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'ma_authorize_client') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'ma_list_clients') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
+    } elseif ($action === 'ma_list_authorized_clients') {
+      // Only accept from the KM
+      $result[] = new SignerKmGuard($message);
     } elseif ($action === 'ma_lookup_certificate') {
       $guards[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
       $guards[] = new SignerKmGuard($message);
@@ -941,6 +1083,17 @@ class MAGuardFactory implements GuardFactory
       $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
       $guards[] = new SignerAuthorityGuard($message);
       $result[] = new OrGuard($guards);
+    } elseif ($action === 'revoke_member_privilege') {
+      global $cs_url;
+      global $ma_signer;
+      // Allow operator or signed by an authority
+      $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
+      $guards[] = new SignerAuthorityGuard($message);
+      $result[] = new OrGuard($guards);
+    } else {
+      // FIXME: Deny access at all?
+      error_log("MA function unguarded: " . $action);
+      geni_syslog(GENI_SYSLOG_PREFIX::MA, "MA function unguarded: " . $action);
     }
     return $result;
   }

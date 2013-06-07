@@ -40,7 +40,7 @@ if (! isset($pa_url)) {
 
 include("tool-lookupids.php");
 
-error_log("DAPI.request = " . print_r($_REQUEST, true));
+//error_log("DAPI.request = " . print_r($_REQUEST, true));
 
 $invite_id = null;
 if (array_key_exists('invite_id', $_REQUEST)) {
