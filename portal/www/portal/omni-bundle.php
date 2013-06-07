@@ -37,6 +37,13 @@ if (!isset($user)) {
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 
+/* function project_is expired
+    Checks to see whether project has expired
+    Returns false if not expired, true if expired
+ */
+function project_is_expired($proj) {
+  return convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
+}
 
 $warnings = array();
 $keys = $user->sshKeys();
@@ -110,10 +117,13 @@ if ($num_projects >= 1) {
   echo 'Choose project as omni default:';
   echo '<select name="project">\n';
   foreach ($projects as $proj) {
-    $proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-    $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    $proj_desc = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-    echo "<option value=\"$proj_name\" title=\"$proj_desc\">$proj_name</option>\n";
+    // show only projects that have not expired
+    if(!project_is_expired($proj)) {
+      $proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+      $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $proj_desc = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+      echo "<option value=\"$proj_name\" title=\"$proj_desc\">$proj_name</option>\n";
+    }
   }
   echo '</select>';
   // There are multiple projects. Put up a chooser for the default project.
