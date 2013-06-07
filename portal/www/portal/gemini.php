@@ -139,8 +139,7 @@ if (count($project_ids) > 0) {
   $projects = lookup_project_details($pa_url, $user, $project_ids);
   foreach ($projects as $proj) {
     if(!project_is_expired($proj)) {
-      // set the key as project id of that project
-      $projects_not_expired[$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]] = $proj;
+      $projects_not_expired[] = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     }
   }
 }
