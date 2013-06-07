@@ -71,7 +71,7 @@ if (! array_key_exists('agree', $_POST) or $_POST['agree'] !== 'agree') {
   relative_redirect('kmactivate.php');
 }
 
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 
 attrValue('givenName', $first_name, $first_name_self_asserted);
 attrValue('sn', $last_name, $larst_name_self_asserted);
@@ -94,9 +94,12 @@ $sa_attrs = array();
 $all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
         'sn' => MA_ATTRIBUTE_NAME::LAST_NAME,
         'affiliation' => 'affiliation',
-        'eppn' => 'eppn',
         'displayName' => 'displayName'
 		   );
+
+/* We already have the EPPN, add it here. */
+$attrs['eppn'] = $eppn;
+
 foreach (array_keys($all_attrs) as $attr_name) {
   if (attrValue($attr_name, $value, $self_asserted)) {
     if ($self_asserted) {
@@ -195,7 +198,7 @@ if (PEAR::isError($result)) {
 
 // TODO: Check for the existence of each, error if not available.
 // TODO: Use filters to sanitize these
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 $shib_idp = $_SERVER['Shib-Identity-Provider'];
 $affiliation = "";
 if (array_key_exists('affiliation', $_SERVER)) {

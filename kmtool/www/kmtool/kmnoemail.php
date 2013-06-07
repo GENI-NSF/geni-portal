@@ -24,7 +24,7 @@
 
 include("kmheader.php");
 include("util.php");
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 ?>
 
 <h2>No email address</h2>
