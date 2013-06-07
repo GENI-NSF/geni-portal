@@ -70,12 +70,7 @@ $gemini_post_delay_seconds = 0;
     Returns false if not expired, true if expired
  */
 function project_is_expired($proj) {
-  if($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED] == 'f') {
-    return false;
-  }
-  else {
-    return true;
-  }
+  return convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 }
 
 
