@@ -245,6 +245,7 @@ input.date {
  width: 14en;
 }
 
+
 table {
  background-color: #DCE2E8;
  margin: 1em;
@@ -266,6 +267,16 @@ th {
 
 td.status_buttons, th#status{
  text-align:center;
+}
+
+table#renewtable, table#renewtable > td {
+    margin: 0em;
+    padding: 0em;
+    text-align:left;
+    background-color: BlanchedAlmond;
+}
+td#renewbutton {
+    text-align:right;
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {

@@ -316,35 +316,30 @@ print "</td>\n";
 
 /* Renew */
 print "<td>\n";
-if($renew_slice_privilege) {
-  print "<form method='GET' action=\"do-renew-slice.php\">";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input class='date' type='text' name='slice_expiration'";
-  $size = strlen($slice_expiration) + 3;
-  print " size=\"$size\" value=\"$slice_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew Slice' title='Renew the slice until the specified date' $disable_buttons_str/>\n";
-  print "</form>\n";
-} else {
-  print "$slice_expiration";
-}
+print "Slice expires on <b>$slice_expiration</b>";
 print "</td></tr>\n";
 
 
-print "<tr><td>\n";
+print "<tr><td id='renewcell'>\n";
 if ($renew_slice_privilege) {
   print "<form method='GET' action=\"do-renew.php\">";
-
+  print "<table id='renewtable'><tr><td>";
   print "Renew ";
+  print "</td><td>";
   print "<div>";
   print "<input type='radio' name='renew' value='slice'>slice only<br>";
   print "<input type='radio' name='renew' value='slice_sliver' checked>slice & resources";
   print "</div>";
+  print "</td><td>";
   print " until <br/>";
+  print "</td></tr><tr>";
+  print "<tr><td id='renewbutton' colspan=3>";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   $size = strlen($slice_date_expiration) + 3;
   print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
   print "<input type='submit' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str/>\n";
+  print "</td></tr></table>";
   print "</form>\n";
 } else {
   print "$slice_expiration";
