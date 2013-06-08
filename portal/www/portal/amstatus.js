@@ -1,7 +1,7 @@
 var updating_text = "...updating...";
 var UNKNOWN = 'unknown';
 var NOT_APPLICABLE = "not applicable";
-
+var NOT_RETRIEVED = "not retrieved";
 
 // function build_agg_table_on_slicepg() 
 // {
@@ -124,7 +124,14 @@ function refresh_agg_row(am_id) {
     update_agg_row(am_id);
 }
 
-
+function twodigits( input ) {
+    var in_str = "";
+    in_str = input + "";
+    if (in_str.length == 1) {
+	 in_str = "0"+in_str;
+    }
+    return in_str;
+}
 
 function update_agg_row(am_id) {
   // This queries for the json file at (for example):
@@ -137,13 +144,20 @@ function update_agg_row(am_id) {
         var am;
         var geni_status;
         var output=""; 
+	var geni_expires;
         json_am = responseTxt;
 
 	if (Object.keys(json_am).length > 0) {
             am = json_am[am_id];	   
             geni_status = am['geni_status'];
             status_code = am['status_code'];
-            sliver_expiration = am['geni_expires'];
+            geni_expires = am['geni_expires'];
+	    var exp = new Date( geni_expires );
+	    if (isNaN(exp.getUTCFullYear())) { 
+		sliver_expiration = NOT_RETRIEVED;
+	    } else {
+		sliver_expiration = exp.getUTCFullYear() + "-" + twodigits(exp.getUTCMonth()) + "-" + twodigits(exp.getUTCDate()) + " " + twodigits(exp.getUTCHours()) + ":" + twodigits(exp.getUTCMinutes()) + ":" + twodigits(exp.getUTCSeconds()) + " UTC";
+	    }
     	    output += geni_status;
 	} else {
 	    status_code = GENI_NO_STATUS;
