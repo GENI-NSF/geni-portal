@@ -351,7 +351,7 @@ if ($renew_slice_privilege) {
 <script>
   $(function() {
     // minDate = 1 will not allow today or earlier, only future dates.
-    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: "+21d"  }); # Max slice renewal 
+    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: "+21d"  });
     $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
   });
 </script>
