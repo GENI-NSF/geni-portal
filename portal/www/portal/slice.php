@@ -129,9 +129,9 @@ function build_agg_table_on_slicepg()
 	    $output .= $name;
 	    $output .= "</td>";	
 	    // sliver expiration
+            $output .= "<td rowspan='2'>";
+	    $output .= "Expires on <b><span class='renew_date' id='renew_sliver_".$am_id."'>".$initial_text."</span></b>";
 	    if ($renew_slice_privilege) {
-                $output .= "<td rowspan='2'>";
-		$output .= "Expires on <b><span class='renew_date' id='renew_sliver_".$am_id."'>".$initial_text."</span></b>";
 		$output .= "<form  method='GET' action=\"do-renew.php\">";
 		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice_id."\"/>\n";
 		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
@@ -140,10 +140,9 @@ function build_agg_table_on_slicepg()
 		$size = strlen($slice_date_expiration) + 3;
 		$output .= "size=\"$size\" value=\"".$slice_date_expiration."\"/>\n";
 		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
-		$output .= "</form></td>\n";
-	    } else {
-		$output .= "<td rowspan='2'>".$sliver_expiration."</td>"; 
-	    }
+		$output .= "</form>";
+	    }		
+	    $output .= "</td>\n";
 	    // sliver actions
 	    $output .= "<td rowspan='2'>";
 	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>";
@@ -304,7 +303,12 @@ print "<table>\n";
 print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
 
 /* Slice Actions */
-print "<tr><td rowspan='2'>\n";
+print "<tr>";
+if ($renew_slice_privilege) {
+print "<td rowspan='2'>\n";
+} else {
+print "<td>\n";
+}
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
 
 print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
@@ -320,8 +324,8 @@ print "Slice expires on <b>$slice_expiration</b>";
 print "</td></tr>\n";
 
 
-print "<tr><td id='renewcell'>\n";
 if ($renew_slice_privilege) {
+  print "<tr><td id='renewcell'>\n";
   print "<form method='GET' action=\"do-renew.php\">";
   print "<table id='renewtable'><tr><td>";
   print "Renew ";
@@ -341,10 +345,8 @@ if ($renew_slice_privilege) {
   print "<input type='submit' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str/>\n";
   print "</td></tr></table>";
   print "</form>\n";
-} else {
-  print "$slice_expiration";
+  print "</td></tr>\n";
 }
-print "</td></tr>\n";
 ?>
 <script>
   $(function() {
