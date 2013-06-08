@@ -9,6 +9,7 @@
   * New project lead email had broken link (#593)
   * New project lead email sometimes had blank for name (#521)
   * Add timestamps to pgch logs (#398)
+  * Script to delete an outside cert (#601)
 
 == 1.6.1 ==
   * Import databascript was losing non member log messages (#589)

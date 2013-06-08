@@ -9,6 +9,7 @@ dist_bin_SCRIPTS = \
 		enable_lockdown.sh \
 		enable_sundown.sh \
 		geni-add-member-privilege \
+		geni-delete-outside-cert \
 		geni-add-project-member \
 		geni-add-trusted-tool \
 		geni-manage-maintenance \
