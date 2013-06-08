@@ -134,14 +134,14 @@ if (! isset($ams) || is_null($ams)) {
 }
 
 $header = "Renewing ";
-if ($renew_slice) {
-   $header = $header . "Sliver";
-} elseif ($renew_slice and $renew_sliver) {
-  $header = $header . "Slice and Sliver";
+if ($renew_slice and $renew_sliver) {
+  $header = $header . "Slice and Resources";
+} elseif ($renew_slice) {
+  $header = $header . "Slice";
 } else {
-  $header = $header . "Sliver";
+  $header = $header . "Resources";
 }
-$header = " on slice: $slice_name";
+$header = $header . " on: $slice_name";
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
@@ -169,7 +169,7 @@ if ($renew_sliver and (($renew_slice and $renewed_slice) or !$renew_slice)) {
 print "<h2>$header</h2>\n";
 print "<div class='resources' id='prettyxml'>";
 if ($renew_slice){
-   print "<p id='slicerenew' >Renewed slice until: $slice_expiration</p>";
+   print "<p id='slicerenew'>Renewed slice until: $slice_expiration</p>";
 }
 if ($renew_sliver){
    print "<p id='renew' style='display:block;'><i>Renewing resources...</i></p>";	
