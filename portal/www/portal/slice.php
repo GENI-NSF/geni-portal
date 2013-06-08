@@ -349,7 +349,7 @@ print "</td></tr>\n";
 <script>
   $(function() {
     // minDate = 1 will not allow today or earlier, only future dates.
-    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: "+21d"  });
+    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: "+21d"  }); # Max slice renewal 
     $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
   });
 </script>
