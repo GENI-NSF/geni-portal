@@ -61,7 +61,7 @@
 
   // CA certificate for test server
   var serverCerts = [];
-  var clientCert = '';
+  var clientCerts = '';
   var clientKey = '';
 
   var flash_id = "";
@@ -168,11 +168,11 @@
   function setClientCert(newCert)
   {
     try {
-      clientCert = [];
+      clientCerts = [];
       var list = newCert.split("-----END CERTIFICATE-----");
       for (var i = 0; i < list.length - 1; ++i)
       {
-        clientCert.push(list[i] + "-----END CERTIFICATE-----\n");
+        clientCerts.push(list[i] + "-----END CERTIFICATE-----\n");
       }
     } catch(ex) {
        forge.log.error(cat, ex);
@@ -221,9 +221,9 @@
           },
           primeTlsSockets: false
        };
-       if (clientCert != "")
+       if (clientCerts != "")
        {
-          arg.getCertificate = function(c, request) { return clientCert; };
+          arg.getCertificate = function(c, request) { return clientCerts; };
           arg.getPrivateKey = function(c, cert) { return clientKey; };
        }
        result = http.createClient(arg);
