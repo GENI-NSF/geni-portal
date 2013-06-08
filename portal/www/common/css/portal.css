@@ -276,7 +276,7 @@ table#renewtable, table#renewtable > td {
     background-color: BlanchedAlmond;
 }
 td#renewbutton {
-    text-align:right;
+    text-align:center;
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {

@@ -332,7 +332,7 @@ if ($renew_slice_privilege) {
   print "</td><td>";
   print "<div>";
   print "<input type='radio' name='renew' value='slice'>slice only<br>";
-  print "<input type='radio' name='renew' value='slice_sliver' checked>slice & resources";
+  print "<input type='radio' name='renew' value='slice_sliver' checked>slice & all resources";
   print "</div>";
   print "</td><td>";
   print " until <br/>";
