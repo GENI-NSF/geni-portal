@@ -111,6 +111,7 @@ if (count($my_slice_objects) > 0) {
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
+  $gemini_base_url = relative_url("gemini.php?");
   $num_slices = count($my_slice_objects);
   if ($num_slices==1) {
       print "<p><i>You have access to <b>1</b> slice.</i></p>";
@@ -146,6 +147,7 @@ if (count($my_slice_objects) > 0) {
     $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
     $expiration = dateUIFormat($expiration_db);
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
+    $gemini_url = $gemini_base_url . $query;
 
     // Determine privileges to this slice for this user
     $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
@@ -196,7 +198,11 @@ if (count($my_slice_objects) > 0) {
     print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
     print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
     $hostname = $_SERVER['SERVER_NAME'];
-    print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button></td>\n";
+    print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
+    if ($user->hasAttribute('gemini-user')) {
+      print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GEMINI Desktop</b></button>";
+    }
+    print "</td>";
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";
     }
