@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.7 ==
+  * Add project info to GEMINI data (#585)
   * Update OpenID for portal.geni.net (#594)
   * List of project in download omni bundle should only include active projects (#554)
   * On new project page, note showing that name of lead is public (#469)
