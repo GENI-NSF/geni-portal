@@ -38,6 +38,9 @@ const GEMINI_USER_CERTIFICATE = 'cert';
 const GEMINI_USER_PRIVATE_KEYS = 'private_keys';
 const GEMINI_USER_PASSPHRASE = 'pass';
 const GEMINI_USER_PROJECT_NAMES = 'project_names';
+const GEMINI_USER_SSH_KEYS = 'ssh_keys';
+const GEMINI_SSH_PUBLIC_KEY = 'public_key';
+const GEMINI_SSH_PRIVATE_KEY = 'private_key';
 
 require_once('user.php');
 require_once('ma_client.php');
@@ -139,6 +142,25 @@ if (count($project_ids) > 0) {
   }
 }
 $gemini_info[GEMINI_USER_PROJECT_NAMES] = $projects_not_expired;
+
+/* ------------------------------------------------------------
+ * Send SSH keys
+ * ------------------------------------------------------------
+ */
+$ssh_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
+$gemini_ssh_keys = array();
+foreach ($ssh_keys as $ssh_key) {
+  $public_key = $ssh_key[MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY];
+  $private_key = $ssh_key[MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
+  /* Public key is always there, pass it along. */
+  $this_key[GEMINI_SSH_PUBLIC_KEY] = $public_key;
+  /* Only include private key if it exists. */
+  if ($private_key) {
+    $this_key[GEMINI_SSH_PRIVATE_KEY] = $private_key;
+  }
+  $gemini_ssh_keys[] = $this_key;
+}
+$gemini_info[GEMINI_USER_SSH_KEYS] = $gemini_ssh_keys;
 
 /* Convert data to JSON and encrypt it for the destination. */
 $gemini_json = json_encode($gemini_info);
