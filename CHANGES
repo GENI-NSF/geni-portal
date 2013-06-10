@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.7 ==
+  * Add a "delete" ssh key button to Profile page (#542)
   * Call setClientCert with an array instead of a string (#592)
   * Add GEMINI button(s) to home page (#602)
   * Add project info to GEMINI data (#585)
