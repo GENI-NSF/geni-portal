@@ -61,7 +61,7 @@ if($in_lockdown_mode) {
 
 
 // Get the EPPN now that we know it's there.
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 
 // If no email address and no preasserted email
 //    Then redirect to kmnoemail.php
