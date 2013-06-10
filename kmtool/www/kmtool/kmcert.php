@@ -58,7 +58,7 @@ if (array_key_exists('displayName', $_SERVER)) {
 } else if (array_key_exists('sn', $_SERVER) && array_key_exists('givenName', $_SERVER)){
   $username = $_SERVER['givenName'] . " " . $_SERVER['sn'];
 } else if (array_key_exists('eppn', $_SERVER)) {
-  $username = $_SERVER['eppn'];
+  $username = strtolower($_SERVER['eppn']);
 } else if (array_key_exists("username", $_REQUEST)) {
   $username = $_REQUEST["username"];
 }

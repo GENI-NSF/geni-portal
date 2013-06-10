@@ -11,6 +11,9 @@
   * Add timestamps to pgch logs (#398)
   * Script to delete an outside cert (#601)
 
+== 1.6.2 ==
+  * Handle EPPNs as case-insensitive strings (#597)
+
 == 1.6.1 ==
   * Import databascript was losing non member log messages (#589)
 

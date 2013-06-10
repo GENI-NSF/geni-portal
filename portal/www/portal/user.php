@@ -349,123 +349,6 @@ function send_attribute_fail_email()
           $body);
 }
 
-// Loads an experimenter from the database.
-function geni_loadUser_legacy($id='')
-{
-  $conn = portal_conn();
-  $conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
-  $eppn = '';
-
-  if ($id == '') {
-    // Short circuit if no eppn. We require eppn as the persistent db key.
-    if (! array_key_exists('eppn', $_SERVER)) {
-      // No eppn was found - redirect to a gentle error page
-      incommon_attribute_redirect();
-    }
-
-    $eppn = $_SERVER['eppn'];
-
-    $query = 'SELECT * FROM identity WHERE eppn = '
-      . $conn->quote($eppn, 'text');
-  } else {
-    // FIXME: There may be multiple identities with the same account
-    // So which identity do you use
-    $query = 'SELECT * FROM identity WHERE account_id = ' . $conn->quote($id, 'text');
-  }
-
-  // Try to return a value from cache
-  if (strcmp($id, '') <> 0 || strcmp($eppn, '') <> 0) {
-    $user_from_cache = geni_loadUser_cache($id, $eppn);
-    if ($user_from_cache != null) {
-      $dbStatus = loadAccountStatus($user_from_cache->account_id);
-      if (is_null($dbStatus)) {
-	$dbStatus = "noaccount";
-      } elseif (is_array($dbStatus)) {
-	$dbStatus = $dbStatus['status'];
-      }
-      if ($dbStatus == $user_from_cache->status) {
-	return $user_from_cache;
-      } else {
-	error_log("Not using user from cache with different status: $dbStatus != " . $user_from_cache->status);
-      }
-    }
-  }
-
-  $res =& $conn->queryAll($query);
-
-  // Always check that result is not an error
-  if (PEAR::isError($res)) {
-    die("error on query: " . $res->getMessage());
-  }
-
-  $row_count = count($res);
-  /* print("Query was: $query<br/>"); */
-  /* print("Found $row_count rows<br/>"); */
-
-  $rownum = -1;
-  if ($row_count == 0) {
-    // New identity, go to activation page
-    relative_redirect("kmactivate.php");
-  } else if ($row_count > 1) {
-    if ($id != '') {
-      // An account ID was selected. Which identity do we use?
-      // Pick the max by identity ID for now
-      $rowcur = 0;
-      $idmax = 0;
-      foreach ($res as $row) {
-	$rowcur = $rowcur+1;
-	if ($row['identity_id'] > $idmax) {
-	  $idmax = $row['identity_id'];
-	  $rownum = $rowcur;
-	}
-      }
-    } else {
-      // More than one row! Something is wrong!
-      die("Too many identity matches - " . $row_count . " identities for eppn " . $eppn . ".");
-    }
-  } else {
-    $rownum = 0;
-  }
- 
-  if ($rownum >= 0) {
-    // There is exactly 1 such identity, or an account_id was
-    // specified, and we picked the row we want
-
-    // The identity already exists, find the account
-    $row = $res[$rownum];
-    /* foreach ($row as $var => $value) { */
-    /*   print "geni_loadUser row $var = $value<br/>"; */
-    /* } */
-
-    $user = new GeniUser();
-    $user->identity_id = $row['identity_id'];
-    $user->idp_url = $row['provider_url'];
-    $user->affiliation = $row['affiliation'];
-    $user->eppn = $row['eppn'];
-    $user->account_id = $row['account_id'];
-    $user->loadAccount();
-
-    if ($portal_enable_abac) {
-      // Cache the IDP attributes as ABAC assertions
-      abac_store_idp_attrs($user);
-    }
-
-    // Cache the user by account_id
-    ensure_user_cache();
-    $user_cache_account_id = $_SESSION[USER_CACHE_ACCOUNT_ID_TAG];
-    $user_cache_eppn = $_SESSION[USER_CACHE_EPPN_TAG];
-    $user_cache_account_id[$user->account_id] = $user;
-    $user_cache_eppn[$user->eppn] = $user;
-    $_SESSION[USER_CACHE_ACCOUNT_ID_TAG] = $user_cache_account_id;
-    $_SESSION[USER_CACHE_EPPN_TAG] = $user_cache_eppn;
-    //    error_log("Caching " . print_r($user, true) . " " . $user->account_id . " " . $user->eppn);
-
-    return $user;
-  }
-
-}
-
-
 function geni_load_user_by_eppn($eppn)
 {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -524,7 +407,7 @@ function geni_load_identity_by_eppn($eppn)
   $rows = $res['value'];
   $cureppn = null;
   if (array_key_exists('eppn', $_SERVER)) {
-    $cureppn = $_SERVER['eppn'];
+    $cureppn = strtolower($_SERVER['eppn']);
   }
   foreach($rows as $row) {
     $identity[$row['name']] = $row['value'];
@@ -556,7 +439,7 @@ function geni_loadUser()
     incommon_attribute_redirect();
   }
   // Load current user based on Shibboleth environment
-  $eppn = $_SERVER['eppn'];
+  $eppn = strtolower($_SERVER['eppn']);
   $user = geni_load_user_by_eppn($eppn);
   $identity = geni_load_identity_by_eppn($eppn);
   $user->init_from_identity($identity);
