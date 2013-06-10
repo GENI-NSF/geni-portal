@@ -67,11 +67,26 @@ unset($project_id);
 unset($project);
 print "<h2>My Slices</h2>\n";
 include("tool-slices.php");
+?>
 
+<?php
+/* ------------------------------------------------------------
+ * Other tools
+ *
+ * For now there is only one listed tool, GEMINI. Since it
+ * currently requires a special attribute, the whole section
+ * only shows up if the user has that attribute.
+ * ------------------------------------------------------------
+ */
+$gemini_url = relative_url("gemini.php");
+if ($user->hasAttribute('gemini-user')) {
+  print "<h3>Tools</h3>";
+  print "<button onClick=\"window.open('$gemini_url')\">";
+  print "<b>GENI Desktop</b></button>";
+}
+?>
 
-
-
-
+<?php
 // Table with GENI wide or per user messages, plus a GENI map
 // FIXME: We need a table of messages: account_id, datetime, message
 // Then a query by account_id ordered by time
