@@ -34,6 +34,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
+require_once("settings.php");
 require_once('logging_client.php');
 require_once('am_map.php');
 require_once('status_constants.php');
@@ -275,6 +276,7 @@ var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
 var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
+var max_slice_renewal_days = "+" + "<?php echo $portal_max_slice_renewal_days ?>" + "d";
 <?php include('status_constants_import.php'); ?>
 </script>
 <script src="amstatus.js"></script>
@@ -351,7 +353,7 @@ if ($renew_slice_privilege) {
 <script>
   $(function() {
     // minDate = 1 will not allow today or earlier, only future dates.
-    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: "+21d"  });
+    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: max_slice_renewal_days  });
     $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
   });
 </script>
