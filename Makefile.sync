@@ -12,13 +12,16 @@ RSYNC_DELETE = --delete --delete-excluded
 RSYNC_ARGS = -aztv $(RSYNC_EXCLUDE)
 
 
-.PHONY: syncd syncm synci syncs synct syncp syncc
+.PHONY: syncb syncd syncm synci syncs synct syncp syncc
 
 default:
 	echo "Choose a specific sync target."
 
 bin/geni-ch-githash: .git
 	git rev-parse HEAD > bin/geni-ch-githash
+
+syncb: bin/geni-ch-githash
+	$(RSYNC) $(RSYNC_ARGS) ../proto-ch bigslide.gpolab.bbn.com:
 
 syncd: bin/geni-ch-githash
 	$(RSYNC) $(RSYNC_ARGS) ../proto-ch dagoola.gpolab.bbn.com:
