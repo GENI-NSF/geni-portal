@@ -179,6 +179,7 @@ dist_svcweb_DATA = \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
 	www/portal/user.php \
+        www/portal/wimax.php \
 	flack/playerProductInstall.swf
 
 
