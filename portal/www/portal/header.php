@@ -141,7 +141,7 @@ if(!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
 if ($shib_id_changed) {
   $eppn = "No EPPN Found";
   if (array_key_exists("eppn", $_SERVER)) {
-    $eppn = $_SERVER["eppn"];
+    $eppn = strtolower($_SERVER["eppn"]);
   }
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . $eppn);
   $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;

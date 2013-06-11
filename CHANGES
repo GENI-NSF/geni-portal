@@ -3,12 +3,24 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.7 ==
+  * Added an HTML index page for clearinghouse hosts (#595)
+  * Removed obsolete create_standard_services.sh script (#587)
+  * Add a "delete" ssh key button to Profile page (#542)
+  * Call setClientCert with an array instead of a string (#592)
+  * Add GEMINI button(s) to home page (#602)
+  * Add project info to GEMINI data (#585)
+  * Add ssh keys to GEMINI data (#604)
+  * Update OpenID for portal.geni.net (#594)
   * List of project in download omni bundle should only include active projects (#554)
   * On new project page, note showing that name of lead is public (#469)
   * Have raw manifest appear in a separate window/tab/popup (#520)
   * New project lead email had broken link (#593)
   * New project lead email sometimes had blank for name (#521)
   * Add timestamps to pgch logs (#398)
+  * Script to delete an outside cert (#601)
+
+== 1.6.2 ==
+  * Handle EPPNs as case-insensitive strings (#597)
 
 == 1.6.1 ==
   * Import databascript was losing non member log messages (#589)

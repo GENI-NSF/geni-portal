@@ -50,8 +50,8 @@ function get_asserted_attributes($eppn) {
   $table_name = "km_asserted_attribute";
   $conn = db_conn();
   $sql = ("select * from " . $table_name
-          . " where eppn "
-          . " = " . $conn->quote($eppn, 'text'));
+          . " where LOWER(eppn) "
+          . " = LOWER(" . $conn->quote($eppn, 'text') . ")");
   $result = db_fetch_rows($sql);
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     $db_error = $result[RESPONSE_ARGUMENT::OUTPUT];
