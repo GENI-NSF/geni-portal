@@ -46,49 +46,61 @@ function project_is_expired($proj) {
 }
 
 /* check if user is submitting information or hasn't started */
-if (array_key_exists('id', $_REQUEST)
-        && array_key_exists('name', $_REQUEST)
-        && array_key_exists('description', $_REQUEST))
+if (array_key_exists('project', $_REQUEST))
 {
 
   echo "<h1>Request WiMAX Resources (Build LDIF file)</h1>";
   
-  // define variables here to be used in ldif string
-  $project_name = "bensproject1";
-  $project_description = "Ben's Test Project 1";
+  // get project info (that was sent)
+  $project_info = lookup_project($pa_url, $user, $_REQUEST['project']);
+  
+  // get information about project lead
+  $project_lead_info = ma_lookup_member_by_id($ma_url, $user, $project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
+  
+  // TODO: get members of project (probably required?)
+  
+  // define variables here to be used in LDIF string
+  $project_name = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  $project_description = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+  $project_lead_username = $project_lead_info->username;
   $username = $user->username;
   $email = $user->mail;
   $pretty_name = $user->givenName . " " . $user->sn;
   $given_name = $user->givenName;
   $sn = $user->sn;
   
-  $ldif_string = "# LDIF for a project\n";
-    $ldif_string .= "dn: ou=$project_name,dc=ch,dc=geni,dc=net\n";
-    $ldif_string .= "description: $project_description\n";
-    $ldif_string .= "ou: $project_name\n";
-    $ldif_string .= "objectclass: top\n";
-    $ldif_string .= "objectclass: organizationalUnit\n";
+  $ldif_string = "# LDIF for a project\n"
+    . "dn: ou=$project_name,dc=ch,dc=geni,dc=net\n"
+    . "description: $project_description\n"
+    . "ou: $project_name\n"
+    . "objectclass: top\n"
+    . "objectclass: organizationalUnit\n";
   
-  $ldif_string .= "\n# LDIF for the project lead\n";
-    $ldif_string .= "dn: cn=admin,ou=$project_name,dc=ch,dc=geni,dc=net\n";
-    $ldif_string .= "cn: admin\n";
-    $ldif_string .= "objectclass: top\n";
-    $ldif_string .= "objectclass: organizationalRole\n";
-    $ldif_string .= "roleoccupant: FIXME\n";
+  $ldif_string .= "\n# LDIF for the project lead\n"
+    . "dn: cn=admin,ou=$project_name,dc=ch,dc=geni,dc=net\n"
+    . "cn: admin\n"
+    . "objectclass: top\n"
+    . "objectclass: organizationalRole\n"
+    . "roleoccupant: FIXME\n";
   
-  $ldif_string .= "\n# LDIF for the project members group\n";
-    $ldif_string .= "dn: cn=$project_name,ou=$project_name,dc=ch,dc=geni,dc=net\n";
-    $ldif_string .= "cn: $project_name\n";
-    $ldif_string .= "# FIXME: Need memberuid entries?\n";
+  $ldif_string .= "\n# LDIF for the project members group\n"
+    . "dn: cn=$project_name,ou=$project_name,dc=ch,dc=geni,dc=net\n"
+    . "cn: $project_name\n"
+    . "# FIXME: Need memberuid entries?\n";
   
-  $ldif_string .= "\n# LDIF for the project admins group\n";
+  $ldif_string .= "\n# LDIF for the project admins group\n"
+    . "dn: cn=$project_name" . "-admin,ou=$project_name,dc=ch,dc=geni,dc=net\n"
+    . "cn: $project_name" . "-admin\n"
+    . "memberuid: $project_lead_username\n"
+    . "objectclass: top\n"
+    . "objectclass: posixGroup\n";
   
-  $ldif_string .= "\n# LDIF for the user\n";
-    $ldif_string .= "dn: uid=$username,ou=$project_name,dc=ch,dc=geni,dc=net\n";
-    $ldif_string .= "cn: $pretty_name\n";
-    $ldif_string .= "givenname: $given_name\n";
-    $ldif_string .= "email: $email\n";
-    $ldif_string .= "sn: $sn\n";
+  $ldif_string .= "\n# LDIF for the user\n"
+    . "dn: uid=$username,ou=$project_name,dc=ch,dc=geni,dc=net\n"
+    . "cn: $pretty_name\n"
+    . "givenname: $given_name\n"
+    . "email: $email\n"
+    . "sn: $sn\n";
     
     // grab public keys and add to ldif string as appropriate
     $ssh_public_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
@@ -123,18 +135,100 @@ if (array_key_exists('id', $_REQUEST)
   echo "<p>The LDIF file to be sent is: </p>";
   echo "<blockquote><pre>$ldif_string</pre></blockquote>";
 
-  echo "<p>The var_dump of user is: </p>";
+  echo "<p><b>The var_dump of user is:</b> </p>";
   var_dump($user);
   
   
-  echo "<p>The var_dump of ssh public keys is: </p>";
+  echo "<p><b>The var_dump of ssh public keys is:</b> </p>";
   var_dump($ssh_public_keys);
+  
+  echo "<p><b>The var_dump of REQUEST is:</b> </p>";
+  var_dump($_REQUEST);  
+  
+  echo "<p><b>The var_dump of project_info is:</b> </p>";
+  var_dump($project_info);   
+  
+  echo "<p><b>The var_dump of project_lead_info is:</b> </p>";
+  var_dump($project_lead_info);
 
 }
 /* user needs to select project (initial screen) */
 else {
 
-  echo "<h1>Request WiMAX Resources</h1>";
+  $warnings = array();
+  $keys = $user->sshKeys();
+  $cert = ma_lookup_certificate($ma_url, $user, $user->account_id);
+  $project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+  $num_projects = count($project_ids);
+  if (count($project_ids) > 0) {
+    // If there's more than 1 project, we need the project names for
+    // a default project chooser.
+    $projects = lookup_project_details($pa_url, $user, $project_ids);
+  }
+  $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
+
+  if (is_null($cert)) {
+    // warn that no cert has been generated
+    $warnings[] = '<p class="warn">No certificate has been generated.'
+          . ' You must <a href="kmcert.php?close=1" target="_blank">'
+          . 'generate a certificate'
+          . '</a>.'
+          . '</p>';
+  }
+  if ($num_projects == 0) {
+    // warn that the user has no projects
+    $warn = '<p class="warn">You are not a member of any projects.'
+          . ' No default project can be chosen unless you';
+    if ($is_project_lead) {
+      $warn .=  ' <button onClick="window.location=\'edit-project.php\'"><b>create a project</b></button> or';
+    }
+    $warn .= ' <button onClick="window.location=\'join-project.php\'"><b>join a project</b></button>.</p>';
+    $warnings[] = $warn;
+  }
+  if (count($keys) == 0) {
+    // warn that no ssh keys are present.
+    $warnings[] = '<p class="warn">No SSH keys have been uploaded. '
+          . 'Please <button onClick="window.location=\'uploadsshkey.php\'">'
+           . 'Upload an SSH key</button> or <button'
+           . ' onClick="window.location=\'generatesshkey.php\'">Generate and'
+           . ' Download an SSH keypair</button> to enable logon to nodes.'
+          . '</p>';
+  }
+
+
+  echo "<h1>Request WiMAX Resources</h1>\n";
+
+  foreach ($warnings as $warning) {
+    echo $warning;
+  }
+  
+  
+  if ($num_projects >= 1) {
+  
+    echo '<form id="f1" action="wimax.php" method="get">';
+    echo "<p>Choose a project: \n";
+    echo '<select name="project">\n';
+    foreach ($projects as $proj) {
+      // show only projects that have not expired
+      if(!project_is_expired($proj)) {
+        $proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+        $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+        echo "<option value=\"$proj_id\" title=\"$proj_name\">$proj_name</option>\n";
+      }
+    }
+    echo '</select>';
+    echo "</form>\n";
+    echo " <button onClick=\"document.getElementById('f1').submit();\">  <b>Generate LDIF file</b></button>\n";
+    echo "</p>\n";
+    
+    // There are multiple projects. Put up a chooser for the default project.
+  } else {
+    // No projects, so no default project
+  }
+
+  
+
+
 
 
 }
