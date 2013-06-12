@@ -156,7 +156,7 @@ function update_agg_row(am_id) {
 	    if (isNaN(exp.getUTCFullYear())) { 
 		sliver_expiration = NOT_RETRIEVED;
 	    } else {
-		sliver_expiration = exp.getUTCFullYear() + "-" + twodigits(exp.getUTCMonth()) + "-" + twodigits(exp.getUTCDate()) + " " + twodigits(exp.getUTCHours()) + ":" + twodigits(exp.getUTCMinutes()) + ":" + twodigits(exp.getUTCSeconds()) + " UTC";
+		sliver_expiration = exp.getUTCFullYear() + "-" + twodigits(exp.getUTCMonth()+1) + "-" + twodigits(exp.getUTCDate()) + " " + twodigits(exp.getUTCHours()) + ":" + twodigits(exp.getUTCMinutes()) + ":" + twodigits(exp.getUTCSeconds()) + " UTC";
 	    }
     	    output += geni_status;
 	} else {
