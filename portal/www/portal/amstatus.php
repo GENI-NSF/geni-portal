@@ -89,8 +89,8 @@ function get_sliver_status( $obj,  $status_array ) {
               $geni_expires = $am_status['geni_expires'];
        } elseif (array_key_exists("pg_expires", $am_status )) {
               $geni_expires = $am_status['pg_expires'];
-       } elseif (array_key_exists("orca_expires", $am_status )) {
-              $geni_expires = $am_status['orca_expires'];
+       } elseif (array_key_exists("geni_resources", $am_status ) and (count($am_status['geni_resources'])>=1) and ((array_key_exists("orca_expires", $am_status['geni_resources'][0]) )) ) {	       
+              $geni_expires = $am_status['geni_resources'][0]['orca_expires'];
        } else {
               $geni_expires = 'unknown';
        }
