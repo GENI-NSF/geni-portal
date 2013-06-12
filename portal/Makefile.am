@@ -141,6 +141,7 @@ dist_svcweb_DATA = \
 	www/portal/query-sliverstatus.php \
 	www/portal/raw-sliverstatus.php \
 	www/portal/readyToLogin.php \
+	www/portal/renewsliver.php \
 	www/portal/request_test.php \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \

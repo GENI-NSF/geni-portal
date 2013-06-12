@@ -112,6 +112,20 @@ function dateUIFormat($dateString) {
   return $prettyDateString;
 }
 
+function dateOnlyUIFormat($dateString) {
+  // Note this leaves the TZ alone, which we hope is UTC
+  // Note also that if you don't supply a dateString, you'll get the current date-time.
+  $date_dt = new DateTime($dateString); 
+  // See http://www.w3.org/QA/Tips/iso-date which argues for ISO8601 date formats
+  // ISO8601
+  //  $prettyDateString = $date_dt->format('c');
+  // Mostly ISO8601, but spell out the time zone
+  $prettyDateString = $date_dt->format('Y-m-d');
+  // Spell out the month name
+  //    $prettyDateString = $date_dt->format('j-M-Y H:i:s e');
+  return $prettyDateString;
+}
+
 function rfc3339Format($date_string)
 {
   $date_dt = new DateTime($date_string);
