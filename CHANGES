@@ -1,6 +1,7 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
 = GENI Clearinghouse and Portal Release Notes =
+== 1.8 ==
 
 == 1.7.1 ==
   * Add `do-handle-project-request.php` to Makefile.am (#609)
