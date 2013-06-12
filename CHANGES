@@ -2,6 +2,10 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.7.1 ==
+  * Add `do-handle-project-request.php` to Makefile.am (#609)
+  * Month in expiration date should be incremented by one (#610)
+
 == 1.7 ==
   * Added an HTML index page for clearinghouse hosts (#595)
   * Removed obsolete create_standard_services.sh script (#587)
