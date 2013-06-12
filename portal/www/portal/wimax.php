@@ -121,8 +121,8 @@ if (array_key_exists('project', $_REQUEST)
   $ldif_string .= "\n# LDIF for the project members group\n"
     . "dn: cn=$project_name,ou=$project_name,dc=ch,dc=geni,dc=net\n"
     . "cn: $project_name\n";
-    foreach($project_members_usernames as $username) {
-      $ldif_string .= "memberuid: $username\n";
+    foreach($project_members_usernames as $memberuid) {
+      $ldif_string .= "memberuid: $memberuid\n";
     }
   
   $ldif_string .= "\n# LDIF for the project admins group\n"
@@ -226,7 +226,7 @@ else {
   if ($num_projects == 0) {
     // warn that the user has no projects
     $warn = '<p class="warn">You are not a member of any projects.'
-          . ' No default project can be chosen unless you';
+          . ' No project can be chosen unless you';
     if ($is_project_lead) {
       $warn .=  ' <button onClick="window.location=\'edit-project.php\'"><b>create a project</b></button> or';
     }
@@ -284,65 +284,15 @@ else {
     echo "</form>\n";
     echo "</p>\n";
     
-    // There are multiple projects. Put up a chooser for the default project.
+    // There are multiple projects.
   } else {
-    // No projects, so no default project
+    // No projects (warnings will have already been displayed)
   }
 
   
 
-
-
-
 }
 
-
-
-
-
-
-
-/* copied from omni-bundle.php
-$warnings = array();
-$keys = $user->sshKeys();
-$cert = ma_lookup_certificate($ma_url, $user, $user->account_id);
-$project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
-$num_projects = count($project_ids);
-if (count($project_ids) > 0) {
-  // If there's more than 1 project, we need the project names for
-  // a default project chooser.
-  $projects = lookup_project_details($pa_url, $user, $project_ids);
-}
-$is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
-
-if (is_null($cert)) {
-  // warn that no cert has been generated
-  $warnings[] = '<p class="warn">No certificate has been generated.'
-        . ' You must <a href="kmcert.php?close=1" target="_blank">'
-        . 'generate a certificate'
-        . '</a>.'
-        . '</p>';
-}
-if ($num_projects == 0) {
-  // warn that the user has no projects
-  $warn = '<p class="warn">You are not a member of any projects.'
-        . ' No default project can be chosen unless you';
-  if ($is_project_lead) {
-    $warn .=  ' <button onClick="window.location=\'edit-project.php\'"><b>create a project</b></button> or';
-  }
-  $warn .= ' <button onClick="window.location=\'join-project.php\'"><b>join a project</b></button>.</p>';
-  $warnings[] = $warn;
-}
-if (count($keys) == 0) {
-  // warn that no ssh keys are present.
-  $warnings[] = '<p class="warn">No SSH keys have been uploaded. '
-        . 'Please <button onClick="window.location=\'uploadsshkey.php\'">'
-         . 'Upload an SSH key</button> or <button'
-         . ' onClick="window.location=\'generatesshkey.php\'">Generate and'
-         . ' Download an SSH keypair</button> to enable logon to nodes.'
-        . '</p>';
-}
-end copy of omni-bundle.php */
 
 
 

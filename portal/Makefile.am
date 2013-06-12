@@ -75,6 +75,7 @@ dist_svcweb_DATA = \
 	www/portal/do-accept-project-invite.php \
 	www/portal/do-delete-project-member.php \
 	www/portal/do-disable-slice.php \
+	www/portal/do-handle-project-request.php \
 	www/portal/do-edit-project-member.php \
 	www/portal/do-edit-project-membership.php \
 	www/portal/do-edit-project.php \
