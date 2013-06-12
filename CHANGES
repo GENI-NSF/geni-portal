@@ -19,6 +19,8 @@
   * Add timestamps to pgch logs (#398)
   * Script to delete an outside cert (#601)
   * Update user certs script dies if a user did not enable the portal (#606)
+  * Revamped Slice and Sliver renewal (#603, #126)
+  * Add a note that slice member keys/accounts will only be added via the native portal resource reservation mechanism (#596)
 
 == 1.6.2 ==
   * Handle EPPNs as case-insensitive strings (#597)
