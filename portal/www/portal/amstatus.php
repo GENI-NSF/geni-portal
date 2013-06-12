@@ -85,6 +85,18 @@ function get_sliver_status( $obj,  $status_array ) {
        $geni_status = strtolower( $geni_status );
        $status_item['geni_status'] = $geni_status;
        $status_item['status_code'] = $GENI_MESSAGES_REV[ $geni_status ]; //STATUS_INDEX::GENI_READY; //FIXME
+       if (array_key_exists("geni_expires", $am_status )) {
+              $geni_expires = $am_status['geni_expires'];
+       } elseif (array_key_exists("pg_expires", $am_status )) {
+              $geni_expires = $am_status['pg_expires'];
+       } elseif (array_key_exists("geni_resources", $am_status ) and (count($am_status['geni_resources'])>=1) and ((array_key_exists("orca_expires", $am_status['geni_resources'][0]) )) ) {	       
+       	      // this assumes all resources have the same expiration time
+	      // this may cease to be the case in AM API v3 and later
+              $geni_expires = $am_status['geni_resources'][0]['orca_expires'];
+       } else {
+              $geni_expires = 'unknown';
+       }
+       $status_item['geni_expires'] = $geni_expires;	     
        // slice URN
        $status_item['slice_urn'] = $am_status['geni_urn'];
        // Resources
