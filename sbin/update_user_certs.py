@@ -224,7 +224,7 @@ class UserCertificateUpdater:
         uus = [uu.strip() for uu in user_uuids if len(uu.strip()) > 0]
         user_uuids = uus
 
-        sql = "select member_id from %s where private_key is null" % tablename;
+        sql = "select member_id from %s where private_key is null and certificate is not null" % tablename;
         user_uuids_no_key = run_sql(sql).split('\n')
         uunks = [uunk.strip() for uunk in user_uuids_no_key if len(uunk.strip()) > 0]
         user_uuids_no_key = uunks
