@@ -25,6 +25,7 @@ require_once("user.php");
 require_once("header.php");
 require_once("am_client.php");
 require_once("ma_client.php");
+require_once("sr_client.php");
 require_once('util.php');
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -47,13 +48,13 @@ function project_is_expired($proj) {
 
 
 /* FIXME: Static arrays to be used temporarily for WiMAX sites */
-$sites = array();
-$sites[] = array(
+$sites_temp = array();
+$sites_temp[] = array(
     "site_id" => 123,
     "site_name" => "Rutgers WINLAB",
     "site_location" => "Rutgers University, NJ",
     "site_ldap_url" => "http://some_ldap_url_rutgers/");
-$sites[] = array(
+$sites_temp[] = array(
     "site_id" => 456,
     "site_name" => "Clemson WiMAX Project",
     "site_location" => "Clemson University, SC",
@@ -61,8 +62,10 @@ $sites[] = array(
     
 
 /* if user has submited form */
+// NOTE: Implicitly, if no sites are selected, user gets bounced
+//    back to page they started from since 'site[]' doesn't exist
 if (array_key_exists('project', $_REQUEST)
-    && array_key_exists('site', $_REQUEST)
+    && array_key_exists('sites', $_REQUEST)
 )
 {
 
@@ -71,13 +74,12 @@ if (array_key_exists('project', $_REQUEST)
   // TODO: Verify that project actually exists? verify project ID somehow?
   
   // get site info (that was sent)
-  // FIXME: Update this to services registry when that is implemented
-  foreach($sites as $site) {
-    if($site[site_id] == $_REQUEST['site']) {
-      $site_name = $site[site_name];
-      $site_location = $site[site_location];
-    }
+  $sites = $_REQUEST['sites'];
+  $sites_attributes = array();
+  foreach($sites as $site_id) {
+    $sites_attributes[] = get_service_by_id($site_id);
   }
+  
   
   // get project info (that was sent)
   $project_info = lookup_project($pa_url, $user, $_REQUEST['project']);
@@ -167,9 +169,15 @@ if (array_key_exists('project', $_REQUEST)
 
   
   
-  // display LDIF (to be changed in the future)
-  echo "<p>The WiMAX site chosen was <b>$site_name</b> at <b>$site_location</b>.</p>";
+  // display sites chosen
+  echo "<p>The WiMAX site(s) chosen: </p>\n";
+  echo "<ul>\n";
+  foreach($sites_attributes as $site) {
+    echo "<li><b>" . $site[SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION] . " (" . $site[SR_TABLE_FIELDNAME::SERVICE_NAME] . ")</b>, sending to the URL " . $site[SR_TABLE_FIELDNAME::SERVICE_URL] . "</li>\n";
+  }
+  echo "</ul>\n";
   
+  // display LDIF (to be changed in the future)
   echo "<p>The LDIF file to be sent is: </p>";
   echo "<blockquote><pre>$ldif_string</pre></blockquote>";
 
@@ -202,6 +210,8 @@ if (array_key_exists('project', $_REQUEST)
 }
 /* user needs to select project (initial screen) */
 else {
+
+  // TODO: Verify that at least one site exists (otherwise this is pointless)
 
   $warnings = array();
   $keys = $user->sshKeys();
@@ -257,6 +267,7 @@ else {
   
     // TODO: query service registry somehow to find project sites that have WiMAX
     //  for now, temporary fix is to use global array
+
   
     // FIXME: change method from GET to POST when done (GET used for debugging)
     echo '<form id="f1" action="wimax.php" method="get">';
@@ -272,13 +283,24 @@ else {
     }
     echo '</select>';
     echo "</p>\n";
-    echo "<p>Choose a site:\n <select name=\"site\">\n";
-    // FIXME: Change when getting this from database
+    echo "<p>Choose a site:</p>\n";
+    
+    // query service registry to find sites
+    $sites = get_services_of_type(SR_SERVICE_TYPE::WIMAX_SITE);
+    echo "<blockquote>\n";
+    foreach($sites as $site) {
+      echo "  <input type=\"checkbox\" name=\"sites[]\" value=\"" . $site[SR_TABLE_FIELDNAME::SERVICE_ID] . "\" /> " . $site[SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION] . " <br/> \n";
+    }
+    echo "</blockquote>\n";
+    
+    
+    // old info (when info gathered from array)
+    /* echo "<select name=\"site\">\n";
     foreach($sites as $site) {
       echo "<option value=\"{$site[site_id]}\" title=\"{$site[site_id]}\"> {$site[site_name]} ({$site[site_location]})</option>\n";
     }
     echo '</select>';
-    echo "</p>\n";
+    echo "</p>\n";*/
     
     echo " <button onClick=\"document.getElementById('f1').submit();\">  <b>Generate LDIF file</b></button>\n";
     echo "</form>\n";
