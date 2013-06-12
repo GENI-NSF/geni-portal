@@ -45,11 +45,39 @@ function project_is_expired($proj) {
   return convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 }
 
-/* check if user is submitting information or hasn't started */
-if (array_key_exists('project', $_REQUEST))
+
+/* FIXME: Static arrays to be used temporarily for WiMAX sites */
+$sites = array();
+$sites[] = array(
+    "site_id" => 123,
+    "site_name" => "Rutgers WINLAB",
+    "site_location" => "Rutgers University, NJ",
+    "site_ldap_url" => "http://some_ldap_url_rutgers/");
+$sites[] = array(
+    "site_id" => 456,
+    "site_name" => "Clemson WiMAX Project",
+    "site_location" => "Clemson University, SC",
+    "site_ldap_url" => "http://some_ldap_url_clemson/");
+    
+
+/* if user has submited form */
+if (array_key_exists('project', $_REQUEST)
+    && array_key_exists('site', $_REQUEST)
+)
 {
 
-  echo "<h1>Request WiMAX Resources (Build LDIF file)</h1>";
+  echo "<h1>Enable WiMAX Resources (Build LDIF file)</h1>";
+  
+  // TODO: Verify that project actually exists? verify project ID somehow?
+  
+  // get site info (that was sent)
+  // FIXME: Update this to services registry when that is implemented
+  foreach($sites as $site) {
+    if($site[site_id] == $_REQUEST['site']) {
+      $site_name = $site[site_name];
+      $site_location = $site[site_location];
+    }
+  }
   
   // get project info (that was sent)
   $project_info = lookup_project($pa_url, $user, $_REQUEST['project']);
@@ -57,7 +85,14 @@ if (array_key_exists('project', $_REQUEST))
   // get information about project lead
   $project_lead_info = ma_lookup_member_by_id($ma_url, $user, $project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
   
-  // TODO: get members of project (probably required?)
+  // get members' usernames of project (probably required?)
+  $project_members = get_project_members($pa_url, $user, $_REQUEST['project']);
+  $project_members_usernames = array();
+  foreach($project_members as $project_member) {
+    $project_member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $project_member_info = ma_lookup_member_by_id($ma_url, $user, $project_member_id);
+    $project_members_usernames[] = $project_member_info->username;
+  }
   
   // define variables here to be used in LDIF string
   $project_name = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -81,12 +116,14 @@ if (array_key_exists('project', $_REQUEST))
     . "cn: admin\n"
     . "objectclass: top\n"
     . "objectclass: organizationalRole\n"
-    . "roleoccupant: FIXME\n";
+    . "roleoccupant: cn=admin,ou=$project_name,dc=ch,dc=geni,dc=net\n";
   
   $ldif_string .= "\n# LDIF for the project members group\n"
     . "dn: cn=$project_name,ou=$project_name,dc=ch,dc=geni,dc=net\n"
-    . "cn: $project_name\n"
-    . "# FIXME: Need memberuid entries?\n";
+    . "cn: $project_name\n";
+    foreach($project_members_usernames as $username) {
+      $ldif_string .= "memberuid: $username\n";
+    }
   
   $ldif_string .= "\n# LDIF for the project admins group\n"
     . "dn: cn=$project_name" . "-admin,ou=$project_name,dc=ch,dc=geni,dc=net\n"
@@ -117,24 +154,26 @@ if (array_key_exists('project', $_REQUEST))
       }
     }
     
-    $ldif_string .= "uid: $username\n";
-    $ldif_string .= "o: $project_description\n";
-    $ldif_string .= "objectclass: top\n";
-    $ldif_string .= "objectclass: person\n";
-    $ldif_string .= "objectclass: posixAccount\n";
-    $ldif_string .= "objectclass: shadowAccount\n";
-    $ldif_string .= "objectclass: inetOrgPerson\n";
-    $ldif_string .= "objectclass: organizationalPerson\n";
-    $ldif_string .= "objectclass: hostObject\n";
-    $ldif_string .= "objectclass: ldapPublicKey\n";
+    $ldif_string .= "uid: $username\n"
+      . "o: $project_description\n"
+      . "objectclass: top\n"
+      . "objectclass: person\n"
+      . "objectclass: posixAccount\n"
+      . "objectclass: shadowAccount\n"
+      . "objectclass: inetOrgPerson\n"
+      . "objectclass: organizationalPerson\n"
+      . "objectclass: hostObject\n"
+      . "objectclass: ldapPublicKey\n";
 
   
   
-  
+  // display LDIF (to be changed in the future)
+  echo "<p>The WiMAX site chosen was <b>$site_name</b> at <b>$site_location</b>.</p>";
   
   echo "<p>The LDIF file to be sent is: </p>";
   echo "<blockquote><pre>$ldif_string</pre></blockquote>";
 
+  /* // debug info
   echo "<p><b>The var_dump of user is:</b> </p>";
   var_dump($user);
   
@@ -150,6 +189,15 @@ if (array_key_exists('project', $_REQUEST))
   
   echo "<p><b>The var_dump of project_lead_info is:</b> </p>";
   var_dump($project_lead_info);
+  
+  echo "<p><b>The var_dump of project_members is:</b> </p>";
+  var_dump($project_members);
+
+  echo "<p><b>The var_dump of project_members_usernames is:</b> </p>";
+  var_dump($project_members_usernames);
+  
+  echo "<p><b>The var_dump of sites is:</b> </p>";
+  var_dump($sites); */
 
 }
 /* user needs to select project (initial screen) */
@@ -196,7 +244,7 @@ else {
   }
 
 
-  echo "<h1>Request WiMAX Resources</h1>\n";
+  echo "<h1>Enable WiMAX Resources</h1>\n";
 
   foreach ($warnings as $warning) {
     echo $warning;
@@ -205,6 +253,12 @@ else {
   
   if ($num_projects >= 1) {
   
+    // TODO: Get member attribute and figure out if EnableWiMAX has been enabled yet for that site
+  
+    // TODO: query service registry somehow to find project sites that have WiMAX
+    //  for now, temporary fix is to use global array
+  
+    // FIXME: change method from GET to POST when done (GET used for debugging)
     echo '<form id="f1" action="wimax.php" method="get">';
     echo "<p>Choose a project: \n";
     echo '<select name="project">\n';
@@ -217,8 +271,17 @@ else {
       }
     }
     echo '</select>';
-    echo "</form>\n";
+    echo "</p>\n";
+    echo "<p>Choose a site:\n <select name=\"site\">\n";
+    // FIXME: Change when getting this from database
+    foreach($sites as $site) {
+      echo "<option value=\"{$site[site_id]}\" title=\"{$site[site_id]}\"> {$site[site_name]} ({$site[site_location]})</option>\n";
+    }
+    echo '</select>';
+    echo "</p>\n";
+    
     echo " <button onClick=\"document.getElementById('f1').submit();\">  <b>Generate LDIF file</b></button>\n";
+    echo "</form>\n";
     echo "</p>\n";
     
     // There are multiple projects. Put up a chooser for the default project.
