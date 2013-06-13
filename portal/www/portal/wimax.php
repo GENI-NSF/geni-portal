@@ -264,9 +264,9 @@ else {
   if ($num_projects >= 1) {
   
     // TODO: Get member attribute and figure out if EnableWiMAX has been enabled yet for that site
-  
-    // TODO: query service registry somehow to find project sites that have WiMAX
-    //  for now, temporary fix is to use global array
+    //  list by two categories?:
+    //    sites that user has already enabled (don't send a new LDIF to these sites)
+    //    sites that user has not enabled yet (use these to generate LDIF?)
 
   
     // FIXME: change method from GET to POST when done (GET used for debugging)
@@ -283,6 +283,31 @@ else {
     }
     echo '</select>';
     echo "</p>\n";
+    
+    echo "<p>Sites that have previously been enabled:</p>\n";
+    // query member attributes to find sites that have been enabled    
+    
+    
+    var_dump($user);
+    
+    // FIXME: Currently, sites are stored in comma-separated list in value field
+    //    of key "enable-wimax" in ma_member_attribute. This is a temporary
+    //    workaround until a better design can be implemented.
+    $sites_enabled = explode(",", $user->ma_member->enable_wimax);
+    
+    
+
+
+    echo "<p>sites enabled: <b>\n";
+    var_dump($sites_enabled);
+    echo "</b></p>\n";
+        
+    echo "<p>enable-wimax: <b>\n";
+    var_dump($user->ma_member->enable_wimax);
+    echo "</b></p>\n";
+    
+
+    
     echo "<p>Choose a site:</p>\n";
     
     // query service registry to find sites
