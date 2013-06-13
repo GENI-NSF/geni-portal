@@ -12,23 +12,10 @@ set -x
 # * CH_EMAIL: e-mail address of the admin for this CH
 # * CH_HOST: the FQDN to which this CH should answer
 # * PORTAL_PASSWORD: the portal user's psql database password
+# Currently, all known hosts have config files managed out of band,
+# so the EXAMPLE_CH_FQDN block has been left in as an example
 LOCAL_FQDN=$(/bin/hostname --fqdn)
-if [ "$LOCAL_FQDN" = "dagoola.gpolab.bbn.com" ]; then
-  INSTALL_CONFIG_FILES="yes"
-  CH_EMAIL='portal-sandbox-admin@gpolab.bbn.com'
-  CH_HOST=`/bin/hostname --fqdn`
-  PORTAL_PASSWORD='portal'
-elif [ "$LOCAL_FQDN" = "illyrica.gpolab.bbn.com" ]; then
-  INSTALL_CONFIG_FILES="yes"
-  CH_EMAIL='portal-sandbox-admin@gpolab.bbn.com'
-  CH_HOST=`/bin/hostname --fqdn`
-  PORTAL_PASSWORD='portal'
-elif [ "$LOCAL_FQDN" = "marilac.gpolab.bbn.com" ]; then
-  INSTALL_CONFIG_FILES="yes"
-  CH_EMAIL='portal-sandbox-admin@gpolab.bbn.com'
-  CH_HOST=`/bin/hostname --fqdn`
-  PORTAL_PASSWORD='portal'
-elif [ "$LOCAL_FQDN" = "sergyar.gpolab.bbn.com" ]; then
+if [ "$LOCAL_FQDN" = "EXAMPLE_CH_FQDN" ]; then
   INSTALL_CONFIG_FILES="yes"
   CH_EMAIL='portal-sandbox-admin@gpolab.bbn.com'
   CH_HOST=`/bin/hostname --fqdn`
