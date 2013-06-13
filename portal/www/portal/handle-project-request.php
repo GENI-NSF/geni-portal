@@ -144,12 +144,12 @@ function get_attribute_named($member_detail, $attribute_name)
   return "";
 }
 
-function compute_actions_for_member($member_id, $request_id)
+function compute_actions_for_member($member_id, $request_id, $email)
 {
   global $CS_ATTRIBUTE_TYPE_NAME;
 
   $actions = "";
-  $actions = $actions . "<option value=0,$member_id,$request_id>Do not add</option>";
+  $actions = $actions . "<option value=0,$member_id,$request_id,$email>Do not add</option>";
   foreach($CS_ATTRIBUTE_TYPE_NAME as $role_index => $role_label) {
     $selected = "";
     if ($role_index == CS_ATTRIBUTE_TYPE::LEAD || 
@@ -157,7 +157,7 @@ function compute_actions_for_member($member_id, $request_id)
       continue;
     if ($role_index == CS_ATTRIBUTE_TYPE::MEMBER)
       $selected = "selected";
-    $action = "<option $selected value=$role_index,$member_id,$request_id>Add as $role_label</option>";
+    $action = "<option $selected value=$role_index,$member_id,$request_id,$email>Add as $role_label</option>";
     $actions = $actions . $action;
   }
   return $actions;
@@ -170,8 +170,8 @@ foreach($requests as $request) {
   $request_id = $request['id'];
   //  $member_name = get_attribute_named($member_detail, 'displayName');
   $email= get_attribute_named($member_detail, 'email_address');
-  $actions = compute_actions_for_member($member_id, $request_id);
-  $select_actions = "<select name=\"$email\">$actions</select>";
+  $actions = compute_actions_for_member($member_id, $request_id, $email);
+  $select_actions = "<select name=\"$request_id\">$actions</select>";
   print "<tr><td>$member_name</td><td>$email<td>$select_actions</td></tr>";
   //  error_log("REQ = " . print_r($request, true));
 }
