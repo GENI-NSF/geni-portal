@@ -2,6 +2,7 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 == 1.8 ==
+  * gemini.php is issuing PHP warnings (#619)
   * Modify the "Join the project" default email text (#616)
   * Fix email bounces in do-handle-project-request.php (#611)
 
