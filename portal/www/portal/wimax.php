@@ -37,7 +37,6 @@ include("tool-showmessage.php");
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 
-
 /* function project_is expired
     Checks to see whether project has expired
     Returns false if not expired, true if expired
@@ -46,20 +45,6 @@ function project_is_expired($proj) {
   return convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 }
 
-
-/* FIXME: Static arrays to be used temporarily for WiMAX sites */
-$sites_temp = array();
-$sites_temp[] = array(
-    "site_id" => 123,
-    "site_name" => "Rutgers WINLAB",
-    "site_location" => "Rutgers University, NJ",
-    "site_ldap_url" => "http://some_ldap_url_rutgers/");
-$sites_temp[] = array(
-    "site_id" => 456,
-    "site_name" => "Clemson WiMAX Project",
-    "site_location" => "Clemson University, SC",
-    "site_ldap_url" => "http://some_ldap_url_clemson/");
-    
 
 /* if user has submited form */
 // NOTE: Implicitly, if no sites are selected, user gets bounced
@@ -260,14 +245,21 @@ else {
     echo $warning;
   }
   
+  // if user is member of 1+ projects and has 1+ SSH keys
+  if ($num_projects >= 1 && count($keys) >= 1) {
   
-  if ($num_projects >= 1) {
+    // check if user belongs to any WiMAX-enabled projects that haven't expired
+    
+      // get project list
+      // for each project,
+        // check if 'enable_wimax' field is in a project attributes table?
+        // if not expired, then add to array
+    
+    // if yes (array is not empty), display projects
+    
+    
+    // if no, display message "None of your project leads have enabled WiMAX on their projects."
   
-    // TODO: Get member attribute and figure out if EnableWiMAX has been enabled yet for that site
-    //  list by two categories?:
-    //    sites that user has already enabled (don't send a new LDIF to these sites)
-    //    sites that user has not enabled yet (use these to generate LDIF?)
-
   
     // FIXME: change method from GET to POST when done (GET used for debugging)
     echo '<form id="f1" action="wimax.php" method="get">';
@@ -288,7 +280,7 @@ else {
     // query member attributes to find sites that have been enabled    
     
     
-    var_dump($user);
+    //var_dump($user);
     
     // FIXME: Currently, sites are stored in comma-separated list in value field
     //    of key "enable-wimax" in ma_member_attribute. This is a temporary
@@ -297,7 +289,7 @@ else {
     
     
 
-
+    /*
     echo "<p>sites enabled: <b>\n";
     var_dump($sites_enabled);
     echo "</b></p>\n";
@@ -305,7 +297,7 @@ else {
     echo "<p>enable-wimax: <b>\n";
     var_dump($user->ma_member->enable_wimax);
     echo "</b></p>\n";
-    
+    */    
 
     
     echo "<p>Choose a site:</p>\n";
