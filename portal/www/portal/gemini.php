@@ -76,6 +76,8 @@ function project_is_expired($proj) {
   return convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 }
 
+// Store any warnings here for display at the top of the page.
+$warnings = array();
 
 if (!isset($user)) {
   $user = geni_loadUser();
@@ -119,7 +121,8 @@ if (isset($slice)) {
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
 if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
   $gemini_info[GEMINI_USER_CERTIFICATE] = $result[MA_ARGUMENT::CERTIFICATE];
-  $user_cert .= $result[MA_ARGUMENT::CERTIFICATE];
+  // no longer used
+  //$user_cert .= $result[MA_ARGUMENT::CERTIFICATE];
 }
 if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_keys = array($result[MA_ARGUMENT::PRIVATE_KEY]);
