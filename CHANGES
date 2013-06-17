@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 == 1.8 ==
   * Fix OpenID service registry error (#618)
+  * Conditionalize display of the generate ssh key button (#625)
   * tools-admin.php is fake (#539)
   * Update GEMINI integration (#623)
   * gemini.php is issuing PHP warnings (#619)
