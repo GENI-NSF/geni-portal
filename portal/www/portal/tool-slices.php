@@ -199,9 +199,9 @@ if (count($my_slice_objects) > 0) {
     print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
     $hostname = $_SERVER['SERVER_NAME'];
     print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
-    if ($user->hasAttribute('gemini-user')) {
+
       print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
-    }
+
     print "</td>";
     if ($portal_enable_abac) {
       print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";

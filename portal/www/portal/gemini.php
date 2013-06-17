@@ -51,7 +51,7 @@ require_once('portal.php');
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 /* TODO put this in the service registry */
-$gemini_url = 'https://genidesktop.netlab.uky.edu/dev/logon/clearinghouse/logon_entry.php';
+$gemini_url = 'https://genidesktop.netlab.uky.edu/stable/logon/clearinghouse/logon_entry.php';
 
 /* HTML form input name for passing data blob to GEMINI */
 $gemini_input_name = 'encoded_dict';
@@ -195,7 +195,7 @@ if (count($warnings)) {
 <input id="blob" type="hidden" name="<?php echo $gemini_input_name;?>" value="">
 </form>
 <script type="text/javascript">
-document.write("Hello World!");
+document.write("Redirecting to GENI Desktop...");
 var blob = '<?php echo $gemini_blob;?>';
 $('#blob').val(blob);
 setTimeout(function() { $('#gemini').submit(); },
