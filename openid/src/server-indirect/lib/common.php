@@ -10,6 +10,10 @@ require_once "lib/render/trust.php";
 require_once "Auth/OpenID/Server.php";
 require_once "Auth/OpenID/SReg.php";
 
+/* Bring in some GENI code. */
+require_once "settings.php";
+require_once "user.php";
+
 function authCancel($info)
 {
     if ($info) {
@@ -56,9 +60,7 @@ function doAuth($info, $trusted=null, $fail_cancels=false,
         // Answer with some sample Simple Registration data.
         global $portal_cert_file;
         global $portal_private_key_file;
-        require_once "settings.php";
         error_log("openid-indirect: portal cert file is $portal_cert_file");
-        require_once "user.php";
         $geni_user = geni_loadUser();
         $sreg_data = array();
         if ($geni_user) {
