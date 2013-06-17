@@ -2,6 +2,7 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 == 1.8 ==
+  * tools-admin.php is fake (#539)
   * Update GEMINI integration (#623)
   * gemini.php is issuing PHP warnings (#619)
   * Modify the "Join the project" default email text (#616)
