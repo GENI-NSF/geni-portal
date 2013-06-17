@@ -45,7 +45,21 @@ function project_is_expired($proj) {
   return convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 }
 
+/* function check_membership_of_project
+    Checks to see if the supplied project ID is found
+    in user's list of projects that they're a member of
+    Returns true if found; false if not found
+*/
+function check_membership_of_project($ids, $my_id) {
+  foreach($ids as $id) {
+    if($id == $my_id) {
+      return true;
+    }
+  }
+  return false;
+}
 
+/* PAGE 2 */
 /* if user has submited form */
 // NOTE: Implicitly, if no sites are selected, user gets bounced
 //    back to page they started from since 'site[]' doesn't exist
@@ -56,7 +70,25 @@ if (array_key_exists('project', $_REQUEST)
 
   echo "<h1>Enable WiMAX Resources (Build LDIF file)</h1>";
   
-  // TODO: Verify that project actually exists? verify project ID somehow?
+  // Verification that data is okay
+  
+  // Step 1: check that user is member of at least one project
+  $project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+  $num_projects = count($project_ids);
+  if (count($project_ids) == 0) {
+    $_SESSION['lasterror'] = 'You are not a member of any projects.';
+    relative_redirect('wimax.php');
+  }
+  
+  // Step 2: check that user is a member of the project they specify
+  if(!(check_membership_of_project($project_ids, $_REQUEST['project']))) {
+    $_SESSION['lasterror'] = 'You are not a member of the project that you specified.';
+    relative_redirect('wimax.php');
+  }
+  
+  // Step 3: TODO: check that project has WiMAX enabled
+  
+  // If user hasn't been redirected yet, safe to continue
   
   // get site info (that was sent)
   $sites = $_REQUEST['sites'];
@@ -131,13 +163,13 @@ if (array_key_exists('project', $_REQUEST)
     $number_keys = count($ssh_public_keys);
     
     if($number_keys == 1) {
-      $ldif_string .= "sshpublickey: {$ssh_public_keys[0][public_key]}\n";
+      $ldif_string .= "sshpublickey: {$ssh_public_keys[0]['public_key']}\n";
     }
     else {
       for($i = 0; $i < $number_keys; $i++) {
         // display as one greater than ith entry in array
         // i.e., start with sshpublickey1 stored in position 0, etc.
-        $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i][public_key] . "\n";
+        $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
       }
     }
     
@@ -193,6 +225,8 @@ if (array_key_exists('project', $_REQUEST)
   var_dump($sites); */
 
 }
+
+/* PAGE 1 */
 /* user needs to select project (initial screen) */
 else {
 
