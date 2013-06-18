@@ -66,5 +66,5 @@ print incommon_feh_url();
 ?>
 ">Technical Information</a>
 <?php
-include("footer.php");
+include("kmfooter.php");
 ?>

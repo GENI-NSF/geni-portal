@@ -106,7 +106,8 @@ class DatabaseImporter:
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         # Extract all the member ids
-        member_id_file = '/tmp/members.dat'
+        (fd, member_id_file) = tempfile.mkstemp()
+        os.close(fd)
         extract_members_sql = \
             "select member_id from ma_member \\g %s\n" % (member_id_file)
         psql.stdin.write(extract_members_sql)
@@ -131,6 +132,8 @@ class DatabaseImporter:
                 print "COLLISION"
                 new = uuid.uuid4()
             member_ids[old] = new
+
+        os.remove(member_id_file)
 
         drop_sql = 'DROP TABLE IF EXISTS ma_member_id_translation;\n'
         psql.stdin.write(drop_sql)

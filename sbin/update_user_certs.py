@@ -93,7 +93,7 @@ class UserCertGenerator:
             + "subjectKeyIdentifier=hash\n" \
             + "authorityKeyIdentifier=keyid:always,issuer:always\n" \
             + "basicConstraints = CA:FALSE\n" \
-            + "subjectAltName=email:copy,URI:%s,URI:%s\n"
+            + "subjectAltName=email:copy,URI:%s,URI:urn:uuid:%s\n"
         extdata = extdata_template % (self.extname, user_urn, user_uuid);
 
         retval = 0
@@ -231,6 +231,11 @@ class UserCertificateUpdater:
         user_emails_no_key = []
         user_emails_with_key = []
 
+        sql = "select member_id from %s where private_key is null and certificate is null" % tablename;
+        user_uuids_no_key_no_cert = run_sql(sql).split('\n')
+        uunkncs = [uunknc.strip() for uunknc in user_uuids_no_key_no_cert if len(uunknc.strip()) > 0]
+        user_uuids_no_key_no_cert = uunkncs
+
         if not send_email_if_no_private_key and len(user_uuids_no_key):
             print "Error: table with no private keys not allowed: %s" % tablename
             sys.exit(-1)
@@ -250,7 +255,12 @@ class UserCertificateUpdater:
 
             full_user_uuid = "urn:uuid:%s" % user_uuid
 
-            if user_uuid in user_uuids_no_key:
+            if user_uuid in user_uuids_no_key_no_cert:
+                print "User has no private key or cert: %s" % user_uuid
+                sql = "delete from %s where member_id = '%s'" % (tablename, user_uuid)
+                run_sql(sql)
+
+            elif user_uuid in user_uuids_no_key:
                 # No private key: Send an email to generate a new CSR
                 print "User has no private key: %s" % user_uuid
 
@@ -285,7 +295,7 @@ class UserCertificateUpdater:
                 cert_file = "/tmp/cert-%s.pem" % user_uuid
                 cert_generator = UserCertGenerator()
                 cert_generator.create_cert_for_user_key(self._ma_cert_file, self._ma_key_file,
-                                                        user_urn, full_user_uuid, user_email,
+                                                        user_urn, user_uuid, user_email,
                                                         user_key_file, cert_file)
 
                 user_cert = read_file(cert_file)
