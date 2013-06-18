@@ -2,6 +2,8 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 == 1.8 ==
+  * Use a tempfile for list of members on import db (#632)
+  * Handle no-key/no-cert case in update_user_certs (#631)
   * Fix GEMINI ssh private key data (#628)
   * Fix OpenID service registry error (#618)
   * Conditionalize display of the generate ssh key button (#625)
