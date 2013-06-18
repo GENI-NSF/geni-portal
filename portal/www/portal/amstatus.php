@@ -176,6 +176,108 @@ Returned status of slivers on 0 of 2 possible aggregates.
   return $retVal;
 }
 
+function getInfoFromSliverStatusPG( $obj, $status_array ){
+    $loginInfo = Array();
+    $pgKeyList = Array();
+
+    foreach ($obj as $am_url => $am_item) {
+    $status_item = Array();
+    // AM url
+    $status_item['url'] = $am_url;
+    // AM name	     
+    $status_item['am_name'] = am_name($am_url);
+    $status_array[am_id( $am_url )]['login_info'] = array();
+
+    if (!$am_item){
+      // "ERROR: empty sliver status!"
+      return $status_array;
+    }
+    if (! array_key_exists("users", $am_item )){
+      // "ERROR: No 'users' key in sliver status!"
+      return $status_array;
+    }
+    if (! array_key_exists('geni_resources', $am_item)){
+      // "ERROR: Sliver Status lists no resources"
+      return $status_array;
+    }
+
+    foreach ($am_item['users'] as $userDict) {
+      if (! array_key_exists('login',$userDict)){
+      // "User entry had no 'login' key"
+      		   continue;
+      }
+      $pgKeyList[$userDict['login']] = array();
+      if (! array_key_exists('keys',$userDict)) {
+        continue;
+      }
+    }
+    foreach ($userDict['keys'] as $k) {
+      #XXX nriga Keep track of keys, in the future we can verify what key goes with
+      # which private key
+      $pgKeyList[$userDict['login']][] = $k['key'];
+    }
+
+    foreach ($am_item['geni_resources'] as $resourceDict) {
+      if (! array_key_exists('pg_manifest',$resourceDict)){
+        continue;
+      }
+      if (! array_key_exists('children',$resourceDict['pg_manifest'])){
+        continue;
+      }
+      foreach ($resourceDict['pg_manifest']['children'] as $children1) {	
+          if (! array_key_exists('children',$children1)){
+             continue;
+          }
+          foreach ($children1['children'] as $children2) {	
+             if (! array_key_exists('attributes',$children2)){
+               continue;
+             }
+             $child = $children2['attributes'];
+             $port = "";
+             $hostname = "";
+             if (array_key_exists("hostname", $child)){
+                $hostname = $child["hostname"];
+             } else {
+                continue;
+ 	     }
+             if (array_key_exists("port", $child)){
+                $port = $child["port"];
+	     }
+             $client_id = "";
+             if (array_key_exists('attributes', $resourceDict["pg_manifest"]) and array_key_exists("client_id", $resourceDict["pg_manifest"]["attributes"])){
+                $client_id = $resourceDict["pg_manifest"]["attributes"]["client_id"];
+ 	     }
+             $geni_status = "";
+             if (array_key_exists("geni_status",$resourceDict)){
+                $geni_status = $resourceDict["geni_status"];
+             }
+             $am_status = "";
+             if (array_key_exists("pg_status",$resourceDict)){
+               $am_status = $resourceDict["pg_status"];
+	     }	    
+
+	 }
+      }
+      $loginInfo[ $client_id ] = array();
+      foreach ($pgKeyList as $user => $keys) {	
+            $loginInfo[ $client_id ][$user] = array('authentication' => 'ssh-keys', 
+                              'hostname' => $hostname,
+                              'client_id' =>  $client_id,
+                              'port' => $port,
+                              'username' => $user,
+                              'keys'  =>  $keys,
+                              'geni_status' => $geni_status,
+                              'am_status' => $am_status
+                             );
+     }
+
+     $status_array[am_id( $am_url )]['login_info']["resources"]  = $loginInfo ;
+     }
+
+     }
+     return $status_array; 
+}
+
 // Close the session here to allow multiple AJAX requests to run
 // concurrently. If the session is left open, it holds the session
 // lock, causing AJAX requests to run serially.
@@ -192,7 +294,10 @@ if (count($obj)>0) {
    // fill in sliver status info for each agg
    $status_array = get_sliver_status( $obj, $status_array );
    // fill in sliver status errors for each agg
+   $status_array = getInfoFromSliverStatusPG( $obj, $status_array );
+   // fill in sliver status errors for each agg
    $retVal = get_sliver_status_err( $msg, $status_array );
+
    $status_array = $retVal;
 } 
 
