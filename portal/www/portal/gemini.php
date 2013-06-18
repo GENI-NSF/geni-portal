@@ -153,6 +153,7 @@ $gemini_info[GEMINI_USER_PROJECT_NAMES] = $projects_not_expired;
 $ssh_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
 $gemini_ssh_keys = array();
 foreach ($ssh_keys as $ssh_key) {
+  $this_key = array();
   $public_key = $ssh_key[MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY];
   $private_key = $ssh_key[MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
   /* Public key is always there, pass it along. */
