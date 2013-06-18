@@ -196,6 +196,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   /* Stylesheet(s) */
   echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
+  echo '<link href="https://fonts.googleapis.com/css?family=Droid+Sans:700,400|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
 
   /* Close the "head" */
   echo '</head>';

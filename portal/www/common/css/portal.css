@@ -1,48 +1,278 @@
-html {
- font: normal 14px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
-/* margin: 0; 
- padding: 0; */
-}
+/*
+  CSS Style Sheet for GENI Portal
+
+  Color scheme:
+    #E17000 - official GENI orange
+    #DBD7CC - medium gray
+    #5F584E - dark gray
+    #E5E5E5 - light gray
+
+
+*/
 
 body {
-/* width='8in'; */
-}
-
-/* GENI Orange: #E17000 */
-h1, h2, h3, h4, h5, h6, h7 {
- color: #E17000; /* official GENI orange */
+  background-color: #C5D3D7;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 hr {
- color: #E17000; /* official GENI orange */
- background-color: #E17000; /* official GENI orange */
- height: 1px;
+ height: 0px;
  border: none;
- margin-top: 1em;
- margin-bottom: 1em;
+ margin: 0px;
+ padding: 0px;
  clear: both;
 }
 
+/*
+  HEADER CONTAINER (and navigation bar)
+*/
 
-div#header {
- display: block;
-/* width: 10in; */
- color:black;
+#header {
+  padding-bottom: 0px;
+    /* center */
+    margin-left: auto;
+    margin-right: auto;
+    width: 830px;
+  margin-bottom: 0px;
+  border-top: 37px solid #E5E5E5;
+  background-color: #FFFFFF;
+  /* by default, let text be serif */
+  font-family: 'Droid Sans', sans-serif;
+  font-weight: 400;
 }
 
-#header div {
- background-color: white;
- margin: 0;
- padding: 0;
+/* Main navigation bar */
+#mainnav {
+  background: #5F584E;
+  border: 5px solid #5F584E;
+  margin: 0;
+  padding: 5px;
+  width: 810px;
+}
+#mainnav li { 
+  border-left: 2px solid #ffffff;
+  padding: 0.25em;
+  text-transform:uppercase;
 }
 
-div#header h1 {
- color:black;
+#mainnav :link, #mainnav :visited {
+  text-decoration: none;
+  color: #ffffff;
+  padding: .2em 20px;
 }
 
-div#header div {
- margin-bottom: .1in;
+#mainnav :link:hover, #mainnav :visited:hover {
+  color: #ffffff;
+  text-shadow: 0.1em 0.1em 0.2em #ffffff;
 }
+
+#mainnav .active :link, #mainnav .active :visited {
+  color: #ffffff;
+  font-weight: bold;
+}
+#mainnav .active :link:hover, #mainnav .active :visited:hover {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* Navigation */
+
+.nav h2, .nav hr { display: none }
+.nav ul { 
+  font-size: 0.8em; 
+  list-style: none; 
+  margin: 0; 
+  text-align: right;
+}
+  
+.nav li {
+  display: inline;
+  padding: 0 .75em;
+  white-space: nowrap;
+}
+.nav li.last { 
+  border-right: none;
+}
+
+
+/*
+  CONTENT CONTAINER
+*/
+
+#content {
+  /* white space */
+  background-color: #FFFFFF;
+  padding-left: 100px;
+  padding-right: 30px;
+  padding-bottom: 30px;
+  /* center (684 px + 16 px border) */
+  margin-left: auto;
+  margin-right: auto;
+  width: 684px;
+  /* follow right after header (no gap) */
+  margin-top: 0px;
+  /* by default, let everything be serif 
+     unless otherwise specified */
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  /* by default, let everything have a line
+     height of 1.4em unless otherwise specified */
+  line-height: 1.4em;
+  /* side borders */
+  border-left: 14px solid #DBD7CC;
+  border-right: 2px solid #E17000;
+}
+
+/* Headers: use sans serif */
+#content h1, h2, h3, h4, h5, h6, h7 {
+  font-family: 'Droid Sans', sans-serif;
+  font-weight: 700;
+  text-shadow: 0.1em 0.1em 0.2em #dddddd;
+  color: #E17000; /* official GENI orange */
+}
+
+/* Header spacing */
+#content h1 {
+  font-size: 1.8em;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  margin-left: 0px;
+}
+#content h2 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 15px;
+}
+#content h3, h4, h5, h6, h7 {
+  font-size: 1.1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 30px;
+}
+
+/* Bold: use sans serif */
+#content b {
+  font-family: 'Droid Sans', sans-serif;
+  font-weight: 700;
+}
+
+/* Paragraphs: use serif */
+#content p {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 45px;
+}
+
+/* Lists */
+#content li {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 45px;
+}
+
+#content li li {
+  margin-left: 0px;
+}
+
+/* Blocks of code */
+#content pre {
+  font-family: 'Droid Sans Mono', monospace;
+  font-weight: 400;
+  font-size: .8em;
+  line-height: 1.3em;
+  background-color: #5F584E;
+  color: #E5E5E5;
+  padding: 5px;
+  margin-left: 45px;
+}
+
+/* Inline code */
+#content code, tt {
+  font-family: 'Droid Sans Mono', monospace;
+  font-weight: 400;
+}
+
+/* Buttons */
+#content button, input[type=submit] {
+  /* make all buttons have bold text by default */
+  font-family: 'Droid Sans', sans-serif;
+  font-weight: 700;
+}
+
+/* Links */
+#content a {
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
+}
+
+#content a:hover {
+  background-color: #E5E5E5;
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
+}
+
+/* Tables */
+#content table {
+  background-color: #FFFFFF;
+  border-collapse: collapse;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  line-height: 1.2em;
+  margin-left: 30px;
+}
+
+#content th {
+  font-family: 'Droid Sans', sans-serif;
+  font-weight: 700;
+	font-size: 1em;
+	padding: 6px;
+	background: #E17000;
+	border-top: 4px solid #5F584E;
+	border-bottom: 1px solid #fff;
+	color: #fff;
+	vertical-align:middle;
+}
+
+#content td {
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  font-size: 0.9em;
+	padding: 6px;
+	background: #DBD7CC; 
+	border-bottom: 1px solid #fff;
+	color: #5F584E;
+	border-top: 1px solid transparent;
+	vertical-align:middle;
+}
+
+/*
+  FOOTER CONTAINER
+*/
+
+#footer {
+  padding-top: 15px;
+  padding-bottom: 15px;
+    /* center to 650 px */
+    margin-left: auto;
+    margin-right: auto;
+    width: 830px;
+  border-top: 5px solid #5F584E;
+  background-color: #E5E5E5;
+  /* by default, let text be serif */
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  text-align: center;
+}
+
+
+
 
 .landingpage {
  width:10in;
@@ -80,21 +310,6 @@ div#loginHelpdiv{
 }
 
 
-
-#landingcontent :link, #landingcontent :visited, #header :link, #header :visited, #header :link:hover, #header :visited:hover {
- color: black;
-}
-
-
-#footer :link, #footer :visited, #footer :link:hover, #footer :visited:hover {
- color: gray;
-}
-
-div#footer {
- color:gray;
- clear:both;
-}
-
 div#landingcontent, div#content.landingpage {
  display: block;
 }
@@ -103,10 +318,6 @@ div#blank {
  display: block;
  width: 1.5in;
  float: left;
-}
-
-div#content.landingpage {
- width: 7in;
 }
 
 div#main{
@@ -246,7 +457,7 @@ input.date {
 }
 
 
-table {
+/*table {
  background-color: #DCE2E8;
  margin: 1em;
  
@@ -278,6 +489,7 @@ table#renewtable, table#renewtable > td {
 td#renewbutton {
     text-align:center;
 }
+*/
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
  text-align:center;
@@ -317,47 +529,6 @@ table .notapply {
  white-space: pre;
  font-family: monospace;
 }
-/* Navigation */
-.nav h2, .nav hr { display: none }
-.nav ul { font-size: 10px; list-style: none; margin: 0; text-align: right }
-.nav li {
- border-right: 1px solid #d7d7d7;
- display: inline;
- padding: 0 .75em;
- white-space: nowrap;
-}
-.nav li.last { border-right: none }
 
-/* Main navigation bar */
-#mainnav {
- background: #f7f7f7 url(../topbar_gradient.png) 0 0;
- border: 1px solid #000;
- font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
- margin: .66em 0 .33em;
- padding: .2em 0;
-}
-#mainnav li { border-right: none; padding: .25em 0 }
-#mainnav :link, #mainnav :visited {
- background: url(../dots.gif) 0 0 no-repeat;
- text-decoration: none;
- border-right: 1px solid #fff;
- border-bottom: none;
- border-left: 1px solid #555;
- color: #000;
- padding: .2em 20px;
-}
-* html #mainnav :link, * html #mainnav :visited { background-position: 1px 0 }
-#mainnav :link:hover, #mainnav :visited:hover {
- background-color: #ccc;
- border-right: 1px solid #ddd;
-}
-#mainnav .active :link, #mainnav .active :visited {
- background: #333 url(../topbar_gradient2.png) 0 0 repeat-x;
- border-top: none;
- border-right: 1px solid #000;
- color: #eee;
- font-weight: bold;
-}
-#mainnav .active :link:hover, #mainnav .active :visited:hover {
- border-right: 1px solid #000;
-}
+
+
