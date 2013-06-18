@@ -2,6 +2,7 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 == 1.8 ==
+  * Portal website refers to incorrect 'footer.php' file (#633)
   * Use a tempfile for list of members on import db (#632)
   * Handle no-key/no-cert case in update_user_certs (#631)
   * Fix GEMINI ssh private key data (#628)
