@@ -290,6 +290,49 @@ function add_agg_row_on_sliverstatuspg(am_id) {
   });  
 }
 
+function add_login_to_manifest_table() 
+{
+  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+     if(statusTxt=="success") 
+     {
+        var json_am;
+	var login_info;
+        var hostname;
+        var client_id;
+        var output=""; 
+	var port;
+	var username;
+        json_am = responseTxt;
+	if (Object.keys(json_am).length > 0) {
+            am = json_am[am_id];
+	    // ARE WE INDEXING CORRECTLY HERE?
+	    if (!("login_info" in am)) {
+		    return;
+	    }
+	    login_info = am['login_info'];
+	    resource = login_info['resources'];
+	    for (var i = 0; i < resource.length; i++ ){
+		var rsc = resource[i];
+		hostname = rsc['hostname'];
+		client_id = rsc['client_id'];
+		port = rsc['port'];
+		username = rsc['username'];
+		// eg <a href='ssh://sedwards@pc1.pgeni3.gpolab.bbn.com' target='_blank'>ssh sedwards@pc1.pgeni3.gpolab.bbn.com</a>
+		anchor_login = "ssh://"+username+"@"+hostname;
+		login = "ssh "+username+"@"+hostname;
+		if (port !=22){
+		    login += " -p "+port;
+		    anchor_login += ":"+port;
+		}
+		$("td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+	    }
+	}
+	 
+     }
+     if(statusTxt=="error")
+        alert("Error: "+xhr.status+": "+xhr.statusText);
+   });
+}
 
 
 function build_delete_table() 
