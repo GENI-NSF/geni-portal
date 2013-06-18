@@ -327,7 +327,11 @@ function add_login_to_manifest_table()
 		}
 		// check for a div with an ID for the aggregates AND
 		// then update it's descendant td with an ID for the client_id
-		$("div#agg_"+am_id+" td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		if (i==0) {
+		    $("div#agg_"+am_id+" td#login_"+client_id).html( "<a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		} else {
+		    $("div#agg_"+am_id+" td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		}
 	    }
 	}
      }
