@@ -304,6 +304,7 @@ function print_rspec( $obj, $pretty ) {
   $args = array_keys( $obj );
   foreach ($args as $arg){
     $arg_url = $arg;
+    $am_id = am_id( $arg_url );
     $arg_name = am_name($arg_url);
     if (array_key_exists('value', $obj[$arg])) {
         $xml = $obj[$arg]['value'];
@@ -321,7 +322,7 @@ function print_rspec( $obj, $pretty ) {
        aggregates which have a slice (ie code!=12 or code !==2)*/
     if (!(($code == 12 or $code == 2) and $pretty)){
       print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
-      print "<div class='resources'>";
+      print "<div class='resources' id='agg_" . $am_id ."'>";
       if ($code == 0){
 	if ($pretty){
 	  /* Parsed into a table */

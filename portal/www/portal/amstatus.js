@@ -292,7 +292,9 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 
 function add_login_to_manifest_table() 
 {
+  $('.login').append("<div class='status_msg'><i>Querying more login information... </i></div>");
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+     $(".status_msg").remove(); 
      if(statusTxt=="success") 
      {
         var json_am;
@@ -305,9 +307,8 @@ function add_login_to_manifest_table()
         json_am = responseTxt;
 	if (Object.keys(json_am).length > 0) {
             am = json_am[am_id];
-	    // ARE WE INDEXING CORRECTLY HERE?
 	    if (!("login_info" in am)) {
-		    return;
+		return;
 	    }
 	    login_info = am['login_info'];
 	    resource = login_info['resources'];
@@ -317,17 +318,18 @@ function add_login_to_manifest_table()
 		client_id = rsc['client_id'];
 		port = rsc['port'];
 		username = rsc['username'];
-		// eg <a href='ssh://sedwards@pc1.pgeni3.gpolab.bbn.com' target='_blank'>ssh sedwards@pc1.pgeni3.gpolab.bbn.com</a>
+		// eg <a href='ssh://sedwards@pc1.pgeni3.gpolab.bbn.com:2020' target='_blank'>ssh sedwards@pc1.pgeni3.gpolab.bbn.com -p 2020</a>
 		anchor_login = "ssh://"+username+"@"+hostname;
 		login = "ssh "+username+"@"+hostname;
 		if (port !=22){
 		    login += " -p "+port;
 		    anchor_login += ":"+port;
 		}
-		$("td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		// check for a div with an ID for the aggregates AND
+		// then update it's descendant td with an ID for the client_id
+		$("div#agg_"+am_id+" td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
 	    }
 	}
-	 
      }
      if(statusTxt=="error")
         alert("Error: "+xhr.status+": "+xhr.statusText);
