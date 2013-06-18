@@ -172,6 +172,7 @@ function print_rspec_pretty( $xml ){
     $num_ifs = $node->interface->count();
     echo "<b>Node #",$node_num,"</b>";
     $node_num = $node_num+1;
+    $client_id = $node['client_id'];
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";
     echo "<th>Component ID</th>\n";
@@ -184,7 +185,7 @@ function print_rspec_pretty( $xml ){
     /* echo "<th>Exclusive</th>\n"; */
     /* echo "</tr>\n"; */
     echo "<tr>\n"; 
-    echo "<td>",$node['client_id'],"</td>\n";
+    echo "<td>",$client_id,"</td>\n";
     $comp_id = $node['component_id'];
     $comp_name = get_name_from_urn($comp_id);
     echo "<td>",$comp_name,"</td>";
@@ -217,7 +218,7 @@ function print_rspec_pretty( $xml ){
 
       echo "<tr>\n";    
       echo "<th colspan='2'>Login</th>\n";
-      echo "<td colspan='3'>";
+      echo "<td colspan='3' class='login' id='login_".$client_id."'>";
       echo "<a href='$ssh_url' target='_blank'>";
       echo "ssh ", $login['username'],"@",$login['hostname'];
       if ($ssh_port and $ssh_port != 22) {
