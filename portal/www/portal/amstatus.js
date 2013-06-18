@@ -305,9 +305,8 @@ function add_all_logins_to_manifest_table()
 
 function add_one_login(am_id, slice_id) 
 {
-  $('.login').append("<div id='status_"+am_id+"' class='status_msg'><i>Querying for more login information... </i></div>");
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
-     $(".status_msg").remove(); 
+     $("div#agg_"+am_id+" .status_msg").css( 'display', 'none' );
      if(statusTxt=="success") 
      {
 	var tmp_am_id;

@@ -224,7 +224,9 @@ function print_rspec_pretty( $xml ){
       if ($ssh_port and $ssh_port != 22) {
 	echo " -p ", $login['port'];
       }
-      echo "</a></td>\n";
+      echo "</a>\n";
+      echo "<span class='status_msg'><i>Querying for more login information... </i></span>\n";      
+      echo "</td>\n";
       echo "</tr>\n";
     }
 
