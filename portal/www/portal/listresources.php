@@ -139,7 +139,7 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 var slice= "<?php echo $slice_id ?>";
 var am_id= "<?php echo $am_id ?>";
 
-$(document).ready(add_login_to_manifest_table);
+$(document).ready(add_all_logins_to_manifest_table);
 </script>
 
 <?php

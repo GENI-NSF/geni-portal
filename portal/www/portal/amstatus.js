@@ -290,13 +290,27 @@ function add_agg_row_on_sliverstatuspg(am_id) {
   });  
 }
 
-function add_login_to_manifest_table() 
+function add_all_logins_to_manifest_table() 
 {
-  $('.login').append("<div class='status_msg'><i>Querying for more login information... </i></div>");
+   // (1) query the server for all a list of aggregates
+    $.getJSON("aggregates.php", { am_id:am_id, slice_id:slice }, function(responseTxt,statusTxt,xhr){
+     var json_agg;
+     json_agg = responseTxt;
+     for (var tmp_am_id in json_agg ) {
+	 add_one_login(tmp_am_id, slice);
+     }
+   });
+}
+
+
+function add_one_login(am_id, slice_id) 
+{
+  $('.login').append("<div id='status_"+am_id+"' class='status_msg'><i>Querying for more login information... </i></div>");
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
      $(".status_msg").remove(); 
      if(statusTxt=="success") 
      {
+	var tmp_am_id;
         var json_am;
 	var login_info;
 	var resources;
@@ -309,7 +323,7 @@ function add_login_to_manifest_table()
 	var firstrow;
         json_am = responseTxt;
 	if (Object.keys(json_am).length > 0) {
-            am = json_am[am_id];
+	    am = json_am[am_id];
 	    if (!("login_info" in am)) {
 		return;
 	    }
