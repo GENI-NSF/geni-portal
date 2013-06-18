@@ -190,15 +190,15 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
 
     if (!$am_item){
       // "ERROR: empty sliver status!"
-      return $am_item;
+      return $status_array;
     }
     if (! array_key_exists("users", $am_item )){
       // "ERROR: No 'users' key in sliver status!"
-      return $am_item;
+      return $status_array;
     }
     if (! array_key_exists('geni_resources', $am_item)){
       // "ERROR: Sliver Status lists no resources"
-      return $am_item;
+      return $status_array;
     }
 
     foreach ($am_item['users'] as $userDict) {
@@ -258,9 +258,9 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
 
 	 }
       }
-
+      $loginInfo[ $client_id ] = array();
       foreach ($pgKeyList as $user => $keys) {	
-            $loginInfo[] = array('authentication' => 'ssh-keys', 
+            $loginInfo[ $client_id ][$user] = array('authentication' => 'ssh-keys', 
                               'hostname' => $hostname,
                               'client_id' =>  $client_id,
                               'port' => $port,

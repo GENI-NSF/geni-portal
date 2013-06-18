@@ -292,18 +292,21 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 
 function add_login_to_manifest_table() 
 {
-  $('.login').append("<div class='status_msg'><i>Querying more login information... </i></div>");
+  $('.login').append("<div class='status_msg'><i>Querying for more login information... </i></div>");
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
      $(".status_msg").remove(); 
      if(statusTxt=="success") 
      {
         var json_am;
 	var login_info;
+	var resources;
+	var client;
         var hostname;
         var client_id;
         var output=""; 
 	var port;
 	var username;
+	var firstrow;
         json_am = responseTxt;
 	if (Object.keys(json_am).length > 0) {
             am = json_am[am_id];
@@ -311,9 +314,20 @@ function add_login_to_manifest_table()
 		return;
 	    }
 	    login_info = am['login_info'];
-	    resource = login_info['resources'];
-	    for (var i = 0; i < resource.length; i++ ){
-		var rsc = resource[i];
+	    if (!(login_info)) {
+		// sometimes (eg if BUSY) might have contain anything
+		return;
+	    }
+	    resources = login_info['resources'];
+
+	    if (!(resources)) {
+		return;
+	    }
+	    for (var i in resources ){
+		var client = resources[i];
+		firstrow = true;
+		for (var j in client ){
+		var rsc = client[j];
 		hostname = rsc['hostname'];
 		client_id = rsc['client_id'];
 		port = rsc['port'];
@@ -327,10 +341,12 @@ function add_login_to_manifest_table()
 		}
 		// check for a div with an ID for the aggregates AND
 		// then update it's descendant td with an ID for the client_id
-		if (i==0) {
+		if (firstrow) {
 		    $("div#agg_"+am_id+" td#login_"+client_id).html( "<a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		    firstrow = false;
 		} else {
 		    $("div#agg_"+am_id+" td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		}
 		}
 	    }
 	}
