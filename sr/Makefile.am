@@ -9,6 +9,12 @@ cert_FILES = \
 	certs/genidesktop.netlab.uky.edu.pem \
 	certs/ig-gpo-boss.pem \
 	certs/ig-gpo-cm.pem \
+	certs/ig-kettering-boss.pem \
+	certs/ig-kettering-cm.pem \
+	certs/ig-ky-boss.pem \
+	certs/ig-ky-cm.pem \
+	certs/ig-northwestern-boss.pem \
+	certs/ig-northwestern-cm.pem \
 	certs/ig-utah-boss.pem \
 	certs/ig-utah-cm.pem \
 	certs/pg-uky-boss.pem \

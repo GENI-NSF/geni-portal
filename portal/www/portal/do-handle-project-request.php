@@ -75,12 +75,13 @@ $selections = $_REQUEST;
 $num_members_added = 0;
 $num_members_rejected = 0;
 
-foreach($selections as $email_address => $attribs) {
-  //  error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
+foreach($selections as $select_id => $attribs) {
   $attribs_parts = explode(',', $attribs);
   $role = $attribs_parts[0];
   $member_id = $attribs_parts[1];
   $request_id = $attribs_parts[2];
+  $email_address = $attribs_parts[3];
+  // error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
   $resolution_status = RQ_REQUEST_STATUS::APPROVED;
   $resolution_status_label = "approved";
   $resolution_description = "";

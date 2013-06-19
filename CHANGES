@@ -1,6 +1,19 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
 = GENI Clearinghouse and Portal Release Notes =
+== 1.8 ==
+  * Portal website refers to incorrect 'footer.php' file (#633)
+  * Use a tempfile for list of members on import db (#632)
+  * Handle no-key/no-cert case in update_user_certs (#631)
+  * Fix GEMINI ssh private key data (#628)
+  * Fix OpenID service registry error (#618)
+  * Conditionalize display of the generate ssh key button (#625)
+  * tools-admin.php is fake (#539)
+  * Update GEMINI integration (#623)
+  * gemini.php is issuing PHP warnings (#619)
+  * Modify the "Join the project" default email text (#616)
+  * Fix email bounces in do-handle-project-request.php (#611)
+  * Add login information for multiple users (#510) 
 
 == 1.7.1 ==
   * Add `do-handle-project-request.php` to Makefile.am (#609)

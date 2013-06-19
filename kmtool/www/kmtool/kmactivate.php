@@ -121,5 +121,5 @@ manage GENI resources, and is recommended for most GENI users.<br/><br/>
 <input type="submit" value="Activate"/>
 </form>
 <?php
-include("footer.php");
+include("kmfooter.php");
 ?>

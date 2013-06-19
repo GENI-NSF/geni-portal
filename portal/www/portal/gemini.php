@@ -51,7 +51,7 @@ require_once('portal.php');
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 /* TODO put this in the service registry */
-$gemini_url = 'https://genidesktop.netlab.uky.edu/dev/logon/clearinghouse/logon_entry.php';
+$gemini_url = 'https://genidesktop.netlab.uky.edu/stable/logon/clearinghouse/logon_entry.php';
 
 /* HTML form input name for passing data blob to GEMINI */
 $gemini_input_name = 'encoded_dict';
@@ -76,6 +76,8 @@ function project_is_expired($proj) {
   return convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 }
 
+// Store any warnings here for display at the top of the page.
+$warnings = array();
 
 if (!isset($user)) {
   $user = geni_loadUser();
@@ -119,7 +121,8 @@ if (isset($slice)) {
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
 if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
   $gemini_info[GEMINI_USER_CERTIFICATE] = $result[MA_ARGUMENT::CERTIFICATE];
-  $user_cert .= $result[MA_ARGUMENT::CERTIFICATE];
+  // no longer used
+  //$user_cert .= $result[MA_ARGUMENT::CERTIFICATE];
 }
 if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_keys = array($result[MA_ARGUMENT::PRIVATE_KEY]);
@@ -150,6 +153,7 @@ $gemini_info[GEMINI_USER_PROJECT_NAMES] = $projects_not_expired;
 $ssh_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
 $gemini_ssh_keys = array();
 foreach ($ssh_keys as $ssh_key) {
+  $this_key = array();
   $public_key = $ssh_key[MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY];
   $private_key = $ssh_key[MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
   /* Public key is always there, pass it along. */
@@ -192,7 +196,7 @@ if (count($warnings)) {
 <input id="blob" type="hidden" name="<?php echo $gemini_input_name;?>" value="">
 </form>
 <script type="text/javascript">
-document.write("Hello World!");
+document.write("Redirecting to GENI Desktop...");
 var blob = '<?php echo $gemini_blob;?>';
 $('#blob').val(blob);
 setTimeout(function() { $('#gemini').submit(); },

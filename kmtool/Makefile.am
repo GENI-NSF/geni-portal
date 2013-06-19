@@ -8,7 +8,7 @@ svccssdir = /var/www/common/css
 nobase_dist_svcdata_DATA = db/postgresql/schema.sql
 
 dist_svcweb_DATA = \
-	www/kmtool/footer.php \
+	www/kmtool/kmfooter.php \
 	www/kmtool/km_utils.php \
 	www/kmtool/kmactivate.php \
 	www/kmtool/kmcert.php \

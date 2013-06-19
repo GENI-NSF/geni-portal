@@ -290,6 +290,84 @@ function add_agg_row_on_sliverstatuspg(am_id) {
   });  
 }
 
+function add_all_logins_to_manifest_table() 
+{
+   // (1) query the server for all a list of aggregates
+    $.getJSON("aggregates.php", { am_id:am_id, slice_id:slice }, function(responseTxt,statusTxt,xhr){
+     var json_agg;
+     json_agg = responseTxt;
+     for (var tmp_am_id in json_agg ) {
+	 add_one_login(tmp_am_id, slice);
+     }
+   });
+}
+
+
+function add_one_login(am_id, slice_id) 
+{
+  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+     $("div#agg_"+am_id+" .status_msg").css( 'display', 'none' );
+     if(statusTxt=="success") 
+     {
+	var tmp_am_id;
+        var json_am;
+	var login_info;
+	var resources;
+	var client;
+        var hostname;
+        var client_id;
+        var output=""; 
+	var port;
+	var username;
+	var firstrow;
+        json_am = responseTxt;
+	if (Object.keys(json_am).length > 0) {
+	    am = json_am[am_id];
+	    if (!("login_info" in am)) {
+		return;
+	    }
+	    login_info = am['login_info'];
+	    if (!(login_info)) {
+		// sometimes (eg if BUSY) might have contain anything
+		return;
+	    }
+	    resources = login_info['resources'];
+
+	    if (!(resources)) {
+		return;
+	    }
+	    for (var i in resources ){
+		var client = resources[i];
+		firstrow = true;
+		for (var j in client ){
+		var rsc = client[j];
+		hostname = rsc['hostname'];
+		client_id = rsc['client_id'];
+		port = rsc['port'];
+		username = rsc['username'];
+		// eg <a href='ssh://sedwards@pc1.pgeni3.gpolab.bbn.com:2020' target='_blank'>ssh sedwards@pc1.pgeni3.gpolab.bbn.com -p 2020</a>
+		anchor_login = "ssh://"+username+"@"+hostname;
+		login = "ssh "+username+"@"+hostname;
+		if (port !=22){
+		    login += " -p "+port;
+		    anchor_login += ":"+port;
+		}
+		// check for a div with an ID for the aggregates AND
+		// then update it's descendant td with an ID for the client_id
+		if (firstrow) {
+		    $("div#agg_"+am_id+" td#login_"+client_id).html( "<a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		    firstrow = false;
+		} else {
+		    $("div#agg_"+am_id+" td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		}
+		}
+	    }
+	}
+     }
+     if(statusTxt=="error")
+        alert("Error: "+xhr.status+": "+xhr.statusText);
+   });
+}
 
 
 function build_delete_table() 
