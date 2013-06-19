@@ -141,7 +141,7 @@ if(!array_key_exists($CURRENT_SHIB_ID_TAG, $_SESSION) ||
 if ($shib_id_changed) {
   $eppn = "No EPPN Found";
   if (array_key_exists("eppn", $_SERVER)) {
-    $eppn = $_SERVER["eppn"];
+    $eppn = strtolower($_SERVER["eppn"]);
   }
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "New login to portal: " . $eppn);
   $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
@@ -169,6 +169,7 @@ function show_header($title, $active_tab = '', $load_user=1)
 {
   global $extra_js;
   global $in_maintenance_mode;
+  global $in_lockdown_mode;
 
   if ($load_user) {
     global $user;
@@ -207,6 +208,9 @@ function show_header($title, $active_tab = '', $load_user=1)
   if ($load_user) {
     echo '<div id="metanav" class="nav">';
     echo '<ul>';
+    if ($in_lockdown_mode) {
+      echo "<li><b>*** Read-Only Mode; Use <a href=\"https://portal.geni.net\">portal.geni.net</a> ***</b></li>";
+    } 
     if ($in_maintenance_mode) {
       echo "<li><b>*** Maintenance Mode ***</b></li>";
     }

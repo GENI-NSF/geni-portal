@@ -84,6 +84,11 @@ if (! isset($ams) || is_null($ams)) {
     $ams[] = $am;
   }
 }
+
+
+
+
+
 $slivers_output = '';
 if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs!");
@@ -120,13 +125,30 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
 
 }
 
-$header = "Resources on slice: $slice_name";
 
+
+$header = "Resources on slice: $slice_name";
 $msg = $retVal[0];
 $obj = $retVal[1];
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
+?>
+
+<script src="amstatus.js"></script>
+<script>
+var slice= "<?php echo $slice_id ?>";
+var am_id= "<?php echo $am_id ?>";
+
+$(document).ready(add_all_logins_to_manifest_table);
+</script>
+
+<?php
+
 include("tool-breadcrumbs.php");
+
+
+
+
 print "<h2>$header</h2>\n";
 
 if (isset($obj) && $obj && $obj != '') {
@@ -152,7 +174,7 @@ if ($pretty) {
     $am_id_str = "";
   }
 
-  print "<a href='listresources.php?pretty=False&slice_id=".$slice_id.$am_id_str."'>Raw Resource Specification</a>";
+  print "<a href='listresources.php?pretty=False&slice_id=" . $slice_id . $am_id_str . "' target='_blank'>Raw Resource Specification</a>";
 }
 
 print "<hr/>";

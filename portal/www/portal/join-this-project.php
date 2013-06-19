@@ -216,8 +216,7 @@ print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 print "<b>Project join request message</b>:<br/>\n";
 $hostname = $_SERVER['SERVER_NAME'];
 print "<textarea name='message' cols='60' rows='5'>May I join GENI project '$project_name'?
-I think I need to do GENI research in your project.
-I am a student in your lab.\n</textarea><br/>\n";
+I think I need to do GENI research in your project.\n</textarea><br/>\n";
 print "<b>Message footer</b>: <br/>\n";
 print "To handle my request, go to the GENI Portal here: <br/>
 https://$hostname/secure/handle-project-request.php<br/>

@@ -58,7 +58,7 @@ if (array_key_exists('displayName', $_SERVER)) {
 } else if (array_key_exists('sn', $_SERVER) && array_key_exists('givenName', $_SERVER)){
   $username = $_SERVER['givenName'] . " " . $_SERVER['sn'];
 } else if (array_key_exists('eppn', $_SERVER)) {
-  $username = $_SERVER['eppn'];
+  $username = strtolower($_SERVER['eppn']);
 } else if (array_key_exists("username", $_REQUEST)) {
   $username = $_REQUEST["username"];
 }
@@ -128,7 +128,7 @@ print "This tool manages what clients can act on your behalf when " .
 
 if (! isset($member_id)) {
   print "You must first activate your GENI account <a href=\"kmactivate.php\">here</a>.<br\>\n";
-  include("footer.php");
+  include("kmfooter.php");
   return;
 }
 
@@ -198,5 +198,5 @@ if (! empty($redirect_address)) {
     "Clearinghouse tool.<br/>";
 }
 
-include("footer.php");
+include("kmfooter.php");
 ?>

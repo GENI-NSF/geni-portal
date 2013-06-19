@@ -81,6 +81,7 @@ require_once('logging_client.php');
 require_once('geni_syslog.php');
 require_once('response_format.php');
 require_once('rq_controller.php');
+require_once('maintenance_mode.php');
 
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -2271,6 +2272,8 @@ function create_slice($args, $message)
   global $sa_default_slice_expiration_hours;
   global $cs_url;
   global $mysigner;
+  global $in_sundown_mode;
+  global $maintenance_sundown_time;
 
   /* Expire slices */
   sa_expire_slices();
@@ -2379,6 +2382,17 @@ function create_slice($args, $message)
 					   $sa_authority_private_key);
 
     $slice_urn = urn_from_cert($slice_cert);
+
+  $expiration = get_future_date(0, $sa_default_slice_expiration_hours);
+
+  // if in sundown mode, limit the expiration to the maintenance sundown time
+  if($in_sundown_mode) {
+    if ($maintenance_sundown_time === FALSE) {
+      error_log("Maintenance sundown time was not parsable?!");
+    } else if ($expiration > $maintenance_sundown_time) {
+      $expiration = $maintenance_sundown_time;
+    }
+  }
 
     $project_details = 
       lookup_project(array(PA_ARGUMENT::PROJECT_ID => $project_id));
@@ -2790,6 +2804,19 @@ function renew_slice($args, $message)
   $tz_utc = new DateTimeZone('UTC');
   $req_dt->setTimezone($tz_utc);
 
+  global $in_sundown_mode;
+  global $maintenance_sundown_time;
+  global $maintenance_sundown_message;
+
+  //  error_log("SUNDOWN " . print_r($in_sundown_mode, true) . " TIME " . print_r($maintenance_sundown_time, true) . " MSG " . print_r($maintenance_sundown_message, true));
+  if($in_sundown_mode) {
+    if ($maintenance_sundown_time === FALSE) {
+      error_log("Maintenance sundown time was not parsable?! Message was " . $maintenance_sundown_message);
+    } else if ($maintenance_sundown_time < $req_dt) {
+      return generate_response(RESPONSE_ERROR::ARGS, '', $maintenance_sundown_message);
+    }
+  }
+
   // Is requested expiration >= current expiration?
   $slice_expiration = $slice_row[SA_SLICE_TABLE_FIELDNAME::EXPIRATION];
   $slice_expiration_dt = new DateTime($slice_expiration, $tz_utc);
@@ -2944,20 +2971,19 @@ function modify_slice_membership($args, $message)
   $new_slice_lead = $slice_lead;
   // Count up the total lead changes. Should be zero
   $lead_changes = 0;
+  $new_lead = null;
   foreach($members_to_add as $member_to_add => $new_role) {
-    if($new_role == CS_ATTRIBUTE_TYPE::LEAD)  {
+    if($new_role == CS_ATTRIBUTE_TYPE::LEAD) {
       $lead_changes = $lead_changes + 1;
-      $new_slice_lead = $member_to_add;
-    }
+      $new_lead = $member_to_add;
+    }    
   }
   foreach($members_to_change_role as $member_to_change_role => $role) {
-    if ($role == CS_ATTRIBUTE_TYPE::LEAD && 
-	$member_to_change_role != $slice_lead) {
+    if ($role == CS_ATTRIBUTE_TYPE::LEAD && $member_to_change_role != $slice_lead) {
       $lead_changes = $lead_changes + 1;
-      $new_slice_lead = $member_to_change_role;
+      $new_lead = $member_to_change_role;
     }
-    if ($member_to_change_role == $slice_lead && 
-	$role != CS_ATTRIBUTE_TYPE::LEAD)
+    if ($member_to_change_role == $slice_lead && $role != CS_ATTRIBUTE_TYPE::LEAD)
       $lead_changes = $lead_changes - 1;
   }
 
@@ -3012,6 +3038,22 @@ function modify_slice_membership($args, $message)
 	$success = False;
 	$error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
       }
+    }
+  }
+
+  // Change the slice owner
+  if ($success and ! is_null($new_lead)) {
+    global $SA_SLICE_TABLENAME;
+    $sql = "UPDATE " . $SA_SLICE_TABLENAME
+      . " SET "
+      . SA_SLICE_TABLE_FIELDNAME::OWNER_ID . " = " . $conn->quote($new_lead, 'text')
+      . " WHERE " . SA_SLICE_TABLE_FIELDNAME::SLICE_ID
+      . " = " . $conn->quote($slice_id, 'text');
+  //  error_log("CHANGE_LEAD.sql = " . $sql);
+    $result = db_execute_statement($sql);
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $success = False;
+      $error_message = $result[RESPONSE_ARGUMENT::OUTPUT];
     }
   }
 

@@ -26,6 +26,14 @@
  * GENI Clearinghouse Service Registry
  */
 
+/*
+ * Include local host settings.
+ *
+ * FIXME: parameterize file location
+ */
+include_once('/etc/geni-ch/settings.php');
+
+
 /* Set of known services types for services within GENI CH SR */
 /* We store/retrieve by index into this array, but print the strings */
 $SR_SERVICE_TYPE_NAMES = array("AGGREGATE_MANAGER", 
@@ -94,9 +102,15 @@ class SR_ATTRIBUTE_TABLE_FIELDNAME {
 /* Get name of singleton service registry (SR) instance */
 function get_sr_url()
 {
-  $http_host = $_SERVER['SERVER_NAME'];
-  $sr_url = "https://" . $http_host . "/sr/sr_controller.php";
-  return $sr_url;
+  global $service_registry_url;
+  if (isset($service_registry_url)) {
+    return $service_registry_url;
+  } else {
+    /* If no setting above, assume this host as SR. */
+    $http_host = $_SERVER['SERVER_NAME'];
+    $sr_url = "https://" . $http_host . "/sr/sr_controller.php";
+    return $sr_url;
+  }
 }
 
 ?>

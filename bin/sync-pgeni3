@@ -13,10 +13,15 @@ if [ ! -d $TMPDIR ]; then
 fi
 cd $TMPDIR
 
-for h in dagoola illyrica marilac sergyar cascade panther; do
+#------------------------------------------------------------
+# ch1   = cascade
+# ch5   = tau-ceti
+# ch-bu = bigslide
+#------------------------------------------------------------
+
+for h in dagoola illyrica marilac sergyar ch1 ch5 ch-bu; do
   echo "Pulling from ${h}"
   scp "${h}.gpolab.bbn.com:/usr/share/geni-ch/CA/cacert.pem" cacert-${h}.pem
-  scp "${h}.gpolab.bbn.com:/usr/share/geni-ch/ma/ma-cert.pem" ma-cert-${h}.pem
 done
 
 cat *.pem > extracerts.bundle

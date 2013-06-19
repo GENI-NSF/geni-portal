@@ -67,11 +67,24 @@ unset($project_id);
 unset($project);
 print "<h2>My Slices</h2>\n";
 include("tool-slices.php");
+?>
 
+<?php
+/* ------------------------------------------------------------
+ * Other tools
+ *
+ * For now there is only one listed tool, GEMINI.
+ * ------------------------------------------------------------
+ */
+$gemini_url = relative_url("gemini.php");
 
+  print "<h3>Tools</h3>";
+  print "<button onClick=\"window.open('$gemini_url')\">";
+  print "<b>GENI Desktop</b></button>";
 
+?>
 
-
+<?php
 // Table with GENI wide or per user messages, plus a GENI map
 // FIXME: We need a table of messages: account_id, datetime, message
 // Then a query by account_id ordered by time
@@ -115,8 +128,16 @@ if (is_array($entries) && count($entries) > 0) {
 } else {
   print "<tr><td><i>No messages.</i></td></tr>\n";
 }
-?>
-</table>
 
-<br/>
-<button style="" onClick="window.location='invite-to-geni.php'"><b>Invite Someone to GENI</b></button>
+print "</table>";
+
+
+print "<br/>";
+
+$disable_invite_geni = "";
+if ($in_lockdown_mode)
+  $disable_invite_geni = "disabled";
+
+print "<button style=\"\" $disable_invite_geni onClick=\"window.location='invite-to-geni.php'\"><b>Invite Someone to GENI</b></button>";
+
+?>

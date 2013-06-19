@@ -321,18 +321,28 @@ function mail_new_project_lead($member_id)
   foreach ($member_info[MA_ARGUMENT::ATTRIBUTES] as $attr) {
     $member_attrs[$attr[MA_ATTRIBUTE::NAME]] = $attr[MA_ATTRIBUTE::VALUE];
   }
+  $email_addr = $member_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
   if (isset($member_attrs['displayName'])) {
     $pretty_name = $member_attrs['displayName'];
   } else if (isset($member_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME])) {
     $pretty_name = $member_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME];
+  } else {
+    $pretty_name = $email_addr;
   }
-  $email_addr = $member_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
   $body = "Dear " . $pretty_name . ",\n\n";
   $body .= "Congratulations, you have been made a 'Project Lead', meaning";
   $body .= " you can create GENI Projects, as well as create slices in";
   $body .= " projects and reserve resources.\n\n";
-  $body .= "Please visit https://" . $_SERVER['SERVER_NAME'];
-  $body .= "/secure/home.php for more information, or to get started.\n\n";
+
+  $body .= "If you are using the GENI Portal, see ";
+  $body .= "http://groups.geni.net/geni/wiki/SignMeUpPortal#a2b.CreateaGENIProject "; // FIXME: Edit if page moves
+  $body .= "for instructions on creating a project.\n\n";
+
+  // proto-ch ticket #593: This points you to ch.geni.net
+  // It also assumes you are using the portal to interact with the PA
+  //  $body .= "Please visit https://" . $_SERVER['SERVER_NAME'];
+  //  $body .= "/secure/home.php for more information, or to get started.\n\n";
+
   $body .= "Sincerely,\n";
   $body .= "GENI Clearinghouse operations\n";
   // The example in the PHP docs uses \r\n

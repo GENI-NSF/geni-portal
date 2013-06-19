@@ -71,7 +71,7 @@ if (! array_key_exists('agree', $_POST) or $_POST['agree'] !== 'agree') {
   relative_redirect('kmactivate.php');
 }
 
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 
 attrValue('givenName', $first_name, $first_name_self_asserted);
 attrValue('sn', $last_name, $larst_name_self_asserted);
@@ -94,9 +94,12 @@ $sa_attrs = array();
 $all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
         'sn' => MA_ATTRIBUTE_NAME::LAST_NAME,
         'affiliation' => 'affiliation',
-        'eppn' => 'eppn',
         'displayName' => 'displayName'
 		   );
+
+/* We already have the EPPN, add it here. */
+$attrs['eppn'] = $eppn;
+
 foreach (array_keys($all_attrs) as $attr_name) {
   if (attrValue($attr_name, $value, $self_asserted)) {
     if ($self_asserted) {
@@ -115,7 +118,7 @@ if ($email_address_self_asserted) {
   $attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
 }
 
-$result = ma_create_account($ma_url, Portal::getInstance(), $attrs, $sa_attrs);
+$result = ma_create_account($ma_url, $km_signer, $attrs, $sa_attrs);
 if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
   error_log("Failed to create account for $attrs: $result");
   relative_redirect('error-text.php' . "?error=" . urlencode($result[RESPONSE_ARGUMENT::OUTPUT]));
@@ -195,7 +198,7 @@ if (PEAR::isError($result)) {
 
 // TODO: Check for the existence of each, error if not available.
 // TODO: Use filters to sanitize these
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 $shib_idp = $_SERVER['Shib-Identity-Provider'];
 $affiliation = "";
 if (array_key_exists('affiliation', $_SERVER)) {
@@ -262,52 +265,54 @@ foreach ($attrs as $attr) {
   }
 }
 
-// ----------------------------------------------------------------------
-// Add an ABAC cert and key. This should probably be done when
-// and admin approves the request, but we don't have that page
-// yet, so... do it here for now, and migrate it later.
-// ----------------------------------------------------------------------
-$cmd_array = array("/usr/local/bin/creddy",
-                   "--generate",
-                   "--cn",
-                   $username
-                   );
-$command = implode(" ", $cmd_array);
-$orig_dir = getcwd();
-chdir(sys_get_temp_dir());
-$result = exec($command, $output, $status);
-$abac_id_file = $username . "_ID.pem";
-$abac_key_file = $username . "_private.pem";
-$abac_id = file_get_contents($abac_id_file);
-$abac_key = file_get_contents($abac_key_file);
-
-// Get the ABAC fingerprint for use in creating attributes later
-$cmd_array = array("/usr/local/bin/creddy",
-                   "--keyid",
-                   "--cert",
-                   $abac_id_file
-                   );
-$command = implode(" ", $cmd_array);
-// Clear the previous output
-unset($output);
-$result = exec($command, $output, $status);
-$abac_fingerprint = $output[0];
-unlink($abac_id_file);
-unlink($abac_key_file);
-chdir($orig_dir);
-
-// Put this stuff in the database
-$sql = "INSERT INTO abac"
-  . "(account_id, abac_id, abac_key, abac_fingerprint) VALUES ("
-  . $conn->quote($account_id, 'text')
-  . ", ". $conn->quote($abac_id, 'text')
-  . ", ". $conn->quote($abac_key, 'text')
-  . ", ". $conn->quote($abac_fingerprint, 'text')
-  . ");";
-$result = $conn->exec($sql);
-if (PEAR::isError($result)) {
-  die("error on abac insert: " . $result->getMessage());
-}
+if ($portal_enable_abac) {
+  // ----------------------------------------------------------------------
+  // Add an ABAC cert and key. This should probably be done when
+  // and admin approves the request, but we don't have that page
+  // yet, so... do it here for now, and migrate it later.
+  // ----------------------------------------------------------------------
+  $cmd_array = array("/usr/local/bin/creddy",
+		     "--generate",
+		     "--cn",
+		     $username
+		     );
+  $command = implode(" ", $cmd_array);
+  $orig_dir = getcwd();
+  chdir(sys_get_temp_dir());
+  $result = exec($command, $output, $status);
+  $abac_id_file = $username . "_ID.pem";
+  $abac_key_file = $username . "_private.pem";
+  $abac_id = file_get_contents($abac_id_file);
+  $abac_key = file_get_contents($abac_key_file);
+  
+  // Get the ABAC fingerprint for use in creating attributes later
+  $cmd_array = array("/usr/local/bin/creddy",
+		     "--keyid",
+		     "--cert",
+		     $abac_id_file
+		     );
+  $command = implode(" ", $cmd_array);
+  // Clear the previous output
+  unset($output);
+  $result = exec($command, $output, $status);
+  $abac_fingerprint = $output[0];
+  unlink($abac_id_file);
+  unlink($abac_key_file);
+  chdir($orig_dir);
+  
+  // Put this stuff in the database
+  $sql = "INSERT INTO abac"
+    . "(account_id, abac_id, abac_key, abac_fingerprint) VALUES ("
+    . $conn->quote($account_id, 'text')
+    . ", ". $conn->quote($abac_id, 'text')
+    . ", ". $conn->quote($abac_key, 'text')
+    . ", ". $conn->quote($abac_fingerprint, 'text')
+    . ");";
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on abac insert: " . $result->getMessage());
+  }
+} // end of block if portal_enable_abac
 
 // if portal=portal, then authorize the portal.
 // FIXME: Really this should be in a util in the km area for code

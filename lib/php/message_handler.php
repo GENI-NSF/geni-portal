@@ -293,26 +293,6 @@ done:
   print $output;
 }
 
-/*
- * *** TEMP FIX
-//--------------------------------------------------
-// Get account_ID for current user on portal
-//--------------------------------------------------
-function get_account_id()
-{
-  $eppn = $_SERVER['eppn'];
-  $conn = db_conn();
-  $query = "SELECT account_id from identity where eppn = " . $conn->quote($eppn, 'text');
-  $row = db_fetch_row($query);
-  error_log("GAI QUERY = " . $query . " ROW = " . print_r($row, true));
-  $account_id = $row['account_id'];
-  return $account_id;
-}
-
-$ACCOUNT_ID = null; 
-// END OF TEMP FIX 
-*/
-
 //--------------------------------------------------
 // Send a message (via PUT) to a given URL and return response
 //--------------------------------------------------

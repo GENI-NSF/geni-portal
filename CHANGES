@@ -1,8 +1,98 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
 = GENI Clearinghouse and Portal Release Notes =
+== 1.9 ==
+== 1.8 ==
+  * Portal website refers to incorrect 'footer.php' file (#633)
+  * Use a tempfile for list of members on import db (#632)
+  * Handle no-key/no-cert case in update_user_certs (#631)
+  * Fix GEMINI ssh private key data (#628)
+  * Fix OpenID service registry error (#618)
+  * Conditionalize display of the generate ssh key button (#625)
+  * tools-admin.php is fake (#539)
+  * Update GEMINI integration (#623)
+  * gemini.php is issuing PHP warnings (#619)
+  * Modify the "Join the project" default email text (#616)
+  * Fix email bounces in do-handle-project-request.php (#611)
+  * Add login information for multiple users (#510) 
+
+== 1.7.1 ==
+  * Add `do-handle-project-request.php` to Makefile.am (#609)
+  * Month in expiration date should be incremented by one (#610)
+
+== 1.7 ==
+  * Added an HTML index page for clearinghouse hosts (#595)
+  * Removed obsolete create_standard_services.sh script (#587)
+  * Add a "delete" ssh key button to Profile page (#542)
+  * Call setClientCert with an array instead of a string (#592)
+  * Add GEMINI button(s) to home page (#602)
+  * Add project info to GEMINI data (#585)
+  * Add ssh keys to GEMINI data (#604)
+  * Update OpenID for portal.geni.net (#594)
+  * List of project in download omni bundle should only include active projects (#554)
+  * On new project page, note showing that name of lead is public (#469)
+  * Have raw manifest appear in a separate window/tab/popup (#520)
+  * New project lead email had broken link (#593)
+  * New project lead email sometimes had blank for name (#521)
+  * Add timestamps to pgch logs (#398)
+  * Script to delete an outside cert (#601)
+  * Update user certs script dies if a user did not enable the portal (#606)
+  * Revamped Slice and Sliver renewal (#603, #126)
+  * Add a note that slice member keys/accounts will only be added via the native portal resource reservation mechanism (#596)
+
+== 1.6.2 ==
+  * Handle EPPNs as case-insensitive strings (#597)
+
+== 1.6.1 ==
+  * Import databascript was losing non member log messages (#589)
+
+== 1.6 ==
+  * Add more bin scripts to install (#569)
+  * portal_enable_abac controls all use of ABAC - so all disabled now (#556)
+  * update_user_certs script updates the ma_outside_cert table for DB transition (#564)
+  * Add missing copyright (#576)
+  * Change member IDs when importing to new DB. And make a file of emails of people who had outside certs. (#577)
+  * Re-enable some functions in maintenance mode for operators (#579)
+  * Fix Accept Project Invite breadcrumbs (#582)
+  * Add cainfo.html (#578)
+  * Install 2 cs / lockdown sql files (#586)
+
+== 1.5 ==
+  * Fix error return on renewslice error in pgch (for omni/Flack) (#555)
+  * Remove some hardcoded URNs (progress on #10)
+  * Clean up page to accept project invitations (#530)
+  * Sign experimenter data message to GEMINI (#560)
+  * Remove use of /bin/hostname in scripts & code (#354)
+  * Fix a DB authentication bug in geni-add-trusted-tool (#505)
+  * Clean up make install to avoid ~ and # files (#488)
+  * Install operator scripts in /usr/local/bin on portals (#499)
+  * Add `authority` field to omni-bundle and template omni_config (#551)
+  * Update certificate creation instructions to match omni-configure (#552)
+  * Make omni-bundle download be the same regardless of the number of projects (#566)
+  * Clarify wording on user cert generation page (#567)
+  * Implement 'sundown' mode that forces slices to expire by a
+  configured date (i.e. June 17, 2013) (#548)
+  * Implement 'lockdown' mode that makes most operations read-only, to
+  be enabled around June 5, 2013. (#547)
 
 == 1.4 ==
+  * Check for valid arguments in more spots (#5)
+  * Ensure more methods have guards, and log on failed authorization (#501)
+  * Added sbin/renew-certs script to renew service certificates (#507)
+  * Add support for GetVersion in pgch (#492)
+  * Add a revoke privilege script (#549)
+  * Fix up revoking project lead and operator privileges (#550)
+  * Bug fix for changing project leads (#512)
+  * Fix Changing Slice leads (#537)
+  * Quiet debug printouts (#531)
+  * Enable preliminary support for data handoff to GEMINI (#503)
+  * GENI IdP login formats strange on GEC16 tutorial VM (#452)
+  * On portal login page, add link to GPO IdP account request form
+  (#487)
+  * Implement a maintenance mode to lock out users during maintenance (#485)
+
+== 1.3.1 ==
+ * Add a missing copyright (#544)
 
 == 1.3 ==
  * Start a CHANGELOG (#489)

@@ -72,6 +72,15 @@ $project_objects = $unexpired_projects;
 
 $num_projects = count($project_objects);
 
+$disable_create_project = "";
+$disable_join_project = "";
+$disable_project_lead = "";
+if ($in_lockdown_mode) {
+  $disable_create_project = "disabled";
+  $disable_join_project = "disabled";
+  $disable_project_lead = "disabled";
+}
+
 print "<h2>My Projects</h2>\n";
 if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
   if ($num_projects==0) {
@@ -85,8 +94,8 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
     print "You are not a member of any projects.  You need to Create or Join a Project.";
     print "</p>";
   }
-  print "<button onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
-  print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
+  print "<button $disable_create_project onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
+  print "<button $disable_join_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<br/>\n";
 } else {
   if ($num_projects==0) {
@@ -102,9 +111,9 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
        existing Project, ask someone to create a Project for you, or ask
        to be a Project Lead.</p>";
   }
-  print "<button onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
-  print "<button onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
-  print "<button onClick=\"window.location='modify.php?belead=belead'\"><b>Ask to be a Project Lead</b></button><br/>\n";
+  print "<button $disable_join_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
+  print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
+  print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\"><b>Ask to be a Project Lead</b></button><br/>\n";
 }
 
 // The idea here was to show this table only if the user is a lead or admin on _some_ project

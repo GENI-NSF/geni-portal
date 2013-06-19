@@ -24,7 +24,7 @@
 
 include("kmheader.php");
 include("util.php");
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 ?>
 
 <h2>No email address</h2>
@@ -66,5 +66,5 @@ print incommon_feh_url();
 ?>
 ">Technical Information</a>
 <?php
-include("footer.php");
+include("kmfooter.php");
 ?>

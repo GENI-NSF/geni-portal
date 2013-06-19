@@ -28,6 +28,7 @@ require_once 'ma_client.php';
 require_once 'portal.php';
 require_once 'util.php';
 require_once 'km_utils.php';
+require_once 'maintenance_mode.php';
 
 $redirect_address = "";
 
@@ -42,8 +43,25 @@ if (! key_exists('eppn', $_SERVER)) {
   exit;
 }
 
+if($in_lockdown_mode) {
+
+  $new_portal = "https://portal.geni.net";
+  print "This GENI Clearinghouse is currently transitioning offline.";
+  print "</br>";
+  print "Creation of new accounts on this Clearinghouse is not allowed.";
+  print "</br>";
+  print "Please go to the GENI Portal pointing to the new Clearinghouse at " 
+    . $new_portal;
+  print "</br>";
+  print "</br>";
+  print "<button onClick=\"window.location='$new_portal'\"><b>New Portal</b></button>";
+  return;
+}
+
+
+
 // Get the EPPN now that we know it's there.
-$eppn = $_SERVER['eppn'];
+$eppn = strtolower($_SERVER['eppn']);
 
 // If no email address and no preasserted email
 //    Then redirect to kmnoemail.php
@@ -103,5 +121,5 @@ manage GENI resources, and is recommended for most GENI users.<br/><br/>
 <input type="submit" value="Activate"/>
 </form>
 <?php
-include("footer.php");
+include("kmfooter.php");
 ?>
