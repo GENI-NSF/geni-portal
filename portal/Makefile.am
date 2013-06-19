@@ -192,7 +192,8 @@ dist_svcwebimages_DATA = \
 	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
-	www/images/staticmap.png
+	www/images/staticmap.png \
+	www/images/header-home.jpg
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \

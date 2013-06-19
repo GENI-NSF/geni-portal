@@ -33,13 +33,25 @@ hr {
     /* center */
     margin-left: auto;
     margin-right: auto;
-    width: 830px;
+    width: 900px;
   margin-bottom: 0px;
   border-top: 37px solid #E5E5E5;
   background-color: #FFFFFF;
   /* by default, let text be serif */
-  font-family: 'Droid Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 400;
+  vertical-align: bottom;
+  background-image: url("../../images/header-home.jpg");
+  background-repeat: no-repeat;
+}
+
+#header-top {
+  height: 150px;
+}
+
+#metanav {
+  padding: 5px;
+  color: #ffffff;
 }
 
 /* Main navigation bar */
@@ -48,7 +60,7 @@ hr {
   border: 5px solid #5F584E;
   margin: 0;
   padding: 5px;
-  width: 810px;
+  width: 880px;
 }
 #mainnav li { 
   border-left: 2px solid #ffffff;
@@ -100,16 +112,22 @@ hr {
   CONTENT CONTAINER
 */
 
+/* orange bar on left side */
+#content-outer {
+  border-left: 2px solid #E17000;
+  border-right: 1px solid #E17000;
+  margin-left: auto;
+  margin-right: auto;
+  width: 897px;
+}
+
 #content {
   /* white space */
   background-color: #FFFFFF;
   padding-left: 100px;
   padding-right: 30px;
   padding-bottom: 30px;
-  /* center (684 px + 16 px border) */
-  margin-left: auto;
-  margin-right: auto;
-  width: 684px;
+
   /* follow right after header (no gap) */
   margin-top: 0px;
   /* by default, let everything be serif 
@@ -121,12 +139,11 @@ hr {
   line-height: 1.4em;
   /* side borders */
   border-left: 14px solid #DBD7CC;
-  border-right: 2px solid #E17000;
 }
 
 /* Headers: use sans serif */
 #content h1, h2, h3, h4, h5, h6, h7 {
-  font-family: 'Droid Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 700;
   text-shadow: 0.1em 0.1em 0.2em #dddddd;
   color: #E17000; /* official GENI orange */
@@ -142,19 +159,19 @@ hr {
 #content h2 {
   font-size: 1.4em;
   margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 15px;
+  margin-bottom: 15px;
+  margin-left: 20px;
 }
 #content h3, h4, h5, h6, h7 {
   font-size: 1.1em;
-  margin-top: 10px;
+  margin-top: 15px;
   margin-bottom: 10px;
-  margin-left: 30px;
+  margin-left: 40px;
 }
 
 /* Bold: use sans serif */
 #content b {
-  font-family: 'Droid Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 700;
 }
 
@@ -163,7 +180,7 @@ hr {
   font-size: 1em;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 45px;
+  margin-left: 60px;
 }
 
 /* Lists */
@@ -171,16 +188,17 @@ hr {
   font-size: 1em;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 45px;
+  margin-left: 60px;
 }
 
+/* inline lists should not have large left margin */
 #content li li {
   margin-left: 0px;
 }
 
 /* Blocks of code */
 #content pre {
-  font-family: 'Droid Sans Mono', monospace;
+  font-family: 'Open Sans Mono', monospace;
   font-weight: 400;
   font-size: .8em;
   line-height: 1.3em;
@@ -188,19 +206,23 @@ hr {
   color: #E5E5E5;
   padding: 5px;
   margin-left: 45px;
+  border: 2px solid #E5E5E5;
+  box-shadow: 3px 3px 10px #5F584E;
 }
 
 /* Inline code */
 #content code, tt {
-  font-family: 'Droid Sans Mono', monospace;
+  font-family: 'Open Sans Mono', monospace;
   font-weight: 400;
 }
 
 /* Buttons */
-#content button, input[type=submit] {
+#content button, input[type=submit], input[type=button] {
   /* make all buttons have bold text by default */
-  font-family: 'Droid Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 700;
+  box-shadow: 0px 0px 5px #5F584E;
+  margin: 2px;
 }
 
 /* Links */
@@ -222,14 +244,20 @@ hr {
   background-color: #FFFFFF;
   border-collapse: collapse;
   text-align: left;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   line-height: 1.2em;
-  margin-left: 30px;
+  margin-left: 60px;
+  box-shadow: 3px 3px 10px #5F584E;
+}
+
+/* inline table should not have large left margin */
+#content table table {
+  margin-left: 0px;
 }
 
 #content th {
-  font-family: 'Droid Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 700;
 	font-size: 1em;
 	padding: 6px;
@@ -259,10 +287,10 @@ hr {
 #footer {
   padding-top: 15px;
   padding-bottom: 15px;
-    /* center to 650 px */
+    /* center */
     margin-left: auto;
     margin-right: auto;
-    width: 830px;
+    width: 900px;
   border-top: 5px solid #5F584E;
   background-color: #E5E5E5;
   /* by default, let text be serif */

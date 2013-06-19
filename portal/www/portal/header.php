@@ -196,16 +196,12 @@ function show_header($title, $active_tab = '', $load_user=1)
   /* Stylesheet(s) */
   echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
-  echo '<link href="https://fonts.googleapis.com/css?family=Droid+Sans:700,400|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
 
   /* Close the "head" */
   echo '</head>';
   echo '<body>';
-  echo '<div id="header">';
-  echo '<a href="http://www.geni.net" target="_blank">';
-  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
-  echo '</a>';
-  echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
+  echo '<div id="header"><div id="header-top">';
   if ($load_user) {
     echo '<div id="metanav" class="nav">';
     echo '<ul>';
@@ -215,14 +211,15 @@ function show_header($title, $active_tab = '', $load_user=1)
     if ($in_maintenance_mode) {
       echo "<li><b>*** Maintenance Mode ***</b></li>";
     }
-    echo '<li>Logged in as ' . $user->prettyName() . '</li>';
+    echo '<li>Logged in as <b>' . $user->prettyName() . '</b></li>';
     $logout_url = relative_url("dologout.php");
     echo '<li style="border-right: none"><a href="' . $logout_url . '">Logout</a></li>';
     echo '</ul>';
-    echo '</div>';
+    echo '</div></div>';
   }
   show_tab_bar($active_tab, $load_user);
   echo '</div>';
+  echo '<div id="content-outer">';
   echo '<div id="content">';
   //  show_starter_status_bar($load_user);
 }
