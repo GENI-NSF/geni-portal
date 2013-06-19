@@ -186,20 +186,21 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
     $status_item['url'] = $am_url;
     // AM name	     
     $status_item['am_name'] = am_name($am_url);
-    $status_array[am_id( $am_url )]['login_info'] = array();
 
     if (!$am_item){
       // "ERROR: empty sliver status!"
-      return $status_array;
+	continue;
     }
     if (! array_key_exists("users", $am_item )){
       // "ERROR: No 'users' key in sliver status!"
-      return $status_array;
+	continue;
     }
     if (! array_key_exists('geni_resources', $am_item)){
       // "ERROR: Sliver Status lists no resources"
-      return $status_array;
+	continue;
     }
+
+    $status_array[am_id( $am_url )]['login_info'] = array();
 
     foreach ($am_item['users'] as $userDict) {
       if (! array_key_exists('login',$userDict)){

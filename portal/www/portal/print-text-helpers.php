@@ -134,7 +134,7 @@ function get_name_from_urn( $urn ){
   $name = end($urn_pieces);
   return $name;
 }
-function print_rspec_pretty( $xml ){
+function print_rspec_pretty( $xml, $manifestOnly=True ){
   $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
     $rspec = new SimpleXMLElement($xml);
@@ -225,7 +225,9 @@ function print_rspec_pretty( $xml ){
 	echo " -p ", $login['port'];
       }
       echo "</a>\n";
-      echo "<span class='status_msg'><i>Querying for more login information... </i></span>\n";      
+      if (!$manifestOnly){
+      	 echo "<span class='status_msg'><i>Querying for more login information... </i></span>\n";      
+      }
       echo "</td>\n";
       echo "</tr>\n";
     }
@@ -328,7 +330,7 @@ function print_rspec( $obj, $pretty ) {
       if ($code == 0){
 	if ($pretty){
 	  /* Parsed into a table */
-	  print_rspec_pretty($xml);
+	  print_rspec_pretty($xml, False);
 	} else {
 	  /* As plain XML */
 	  print_xml($xml);
