@@ -70,6 +70,15 @@ if ($error != NULL || count($_POST) == 0) {
     echo "</div>\n";
   }
   include('uploadsshkey.html');
+  
+  // show button only if there are no SSH keys on file
+  // don't let user generate public/private keypair if
+  // they already have 1+ public keys on file
+  $keys = $user->sshKeys();
+  if (count($keys) == 0) {
+    echo "If you don't have an SSH keypair or want to create a new SSH keypair, <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>.";
+  }
+  
   include("footer.php");
   exit;
 }

@@ -73,17 +73,15 @@ include("tool-slices.php");
 /* ------------------------------------------------------------
  * Other tools
  *
- * For now there is only one listed tool, GEMINI. Since it
- * currently requires a special attribute, the whole section
- * only shows up if the user has that attribute.
+ * For now there is only one listed tool, GEMINI.
  * ------------------------------------------------------------
  */
 $gemini_url = relative_url("gemini.php");
-if ($user->hasAttribute('gemini-user')) {
+
   print "<h3>Tools</h3>";
   print "<button onClick=\"window.open('$gemini_url')\">";
   print "<b>GENI Desktop</b></button>";
-}
+
 ?>
 
 <?php

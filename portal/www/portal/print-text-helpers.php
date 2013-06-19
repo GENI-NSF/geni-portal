@@ -134,7 +134,7 @@ function get_name_from_urn( $urn ){
   $name = end($urn_pieces);
   return $name;
 }
-function print_rspec_pretty( $xml ){
+function print_rspec_pretty( $xml, $manifestOnly=True ){
   $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
     $rspec = new SimpleXMLElement($xml);
@@ -172,6 +172,7 @@ function print_rspec_pretty( $xml ){
     $num_ifs = $node->interface->count();
     echo "<b>Node #",$node_num,"</b>";
     $node_num = $node_num+1;
+    $client_id = $node['client_id'];
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";
     echo "<th>Component ID</th>\n";
@@ -184,7 +185,7 @@ function print_rspec_pretty( $xml ){
     /* echo "<th>Exclusive</th>\n"; */
     /* echo "</tr>\n"; */
     echo "<tr>\n"; 
-    echo "<td>",$node['client_id'],"</td>\n";
+    echo "<td>",$client_id,"</td>\n";
     $comp_id = $node['component_id'];
     $comp_name = get_name_from_urn($comp_id);
     echo "<td>",$comp_name,"</td>";
@@ -217,13 +218,17 @@ function print_rspec_pretty( $xml ){
 
       echo "<tr>\n";    
       echo "<th colspan='2'>Login</th>\n";
-      echo "<td colspan='3'>";
+      echo "<td colspan='3' class='login' id='login_".$client_id."'>";
       echo "<a href='$ssh_url' target='_blank'>";
       echo "ssh ", $login['username'],"@",$login['hostname'];
       if ($ssh_port and $ssh_port != 22) {
 	echo " -p ", $login['port'];
       }
-      echo "</a></td>\n";
+      echo "</a>\n";
+      if (!$manifestOnly){
+      	 echo "<span class='status_msg'><i>Querying for more login information... </i></span>\n";      
+      }
+      echo "</td>\n";
       echo "</tr>\n";
     }
 
@@ -303,6 +308,7 @@ function print_rspec( $obj, $pretty ) {
   $args = array_keys( $obj );
   foreach ($args as $arg){
     $arg_url = $arg;
+    $am_id = am_id( $arg_url );
     $arg_name = am_name($arg_url);
     if (array_key_exists('value', $obj[$arg])) {
         $xml = $obj[$arg]['value'];
@@ -320,11 +326,11 @@ function print_rspec( $obj, $pretty ) {
        aggregates which have a slice (ie code!=12 or code !==2)*/
     if (!(($code == 12 or $code == 2) and $pretty)){
       print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
-      print "<div class='resources'>";
+      print "<div class='resources' id='agg_" . $am_id ."'>";
       if ($code == 0){
 	if ($pretty){
 	  /* Parsed into a table */
-	  print_rspec_pretty($xml);
+	  print_rspec_pretty($xml, False);
 	} else {
 	  /* As plain XML */
 	  print_xml($xml);
