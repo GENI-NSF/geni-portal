@@ -13,6 +13,7 @@
   * gemini.php is issuing PHP warnings (#619)
   * Modify the "Join the project" default email text (#616)
   * Fix email bounces in do-handle-project-request.php (#611)
+  * Add login information for multiple users (#510) 
 
 == 1.7.1 ==
   * Add `do-handle-project-request.php` to Makefile.am (#609)
