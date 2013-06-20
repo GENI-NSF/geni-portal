@@ -135,8 +135,9 @@ if (array_key_exists('project', $_REQUEST)
     . "cn: admin\n"
     . "objectclass: top\n"
     . "objectclass: organizationalRole\n"
-    . "roleoccupant: cn=admin,ou=$project_name,dc=ch,dc=geni,dc=net\n";
+    . "roleoccupant: uid=$project_lead_username,ou=$project_name,dc=ch,dc=geni,dc=net\n";
   
+  /*
   $ldif_string .= "\n# LDIF for the project members group\n"
     . "dn: cn=$project_name,ou=$project_name,dc=ch,dc=geni,dc=net\n"
     . "cn: $project_name\n";
@@ -150,6 +151,7 @@ if (array_key_exists('project', $_REQUEST)
     . "memberuid: $project_lead_username\n"
     . "objectclass: top\n"
     . "objectclass: posixGroup\n";
+  */
   
   $ldif_string .= "\n# LDIF for the user\n"
     . "dn: uid=$username,ou=$project_name,dc=ch,dc=geni,dc=net\n"
