@@ -140,7 +140,7 @@ if (! isset($request) || is_null($request)) {
 // If the request isn't provided, grab all pending
 // Get requests for the given member_id on the given project
 if(!isset($requests)) {
-  $requests = get_requests_by_user($pa_url, $user, $member_id, 
+  $requests = get_requests_by_user($sa_url, $user, $member_id, 
 				   CS_CONTEXT_TYPE::PROJECT, 
 				   $project_id, RQ_REQUEST_STATUS::PENDING);
   error_log("Resetting requests");
@@ -195,7 +195,7 @@ $request_id = $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 
-$project_details = lookup_project($pa_url, $user, $project_id);
+$project_details = lookup_project($sa_url, $user, $project_id);
 // error_log("PD = " . print_r($project_details, true));
 $project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 
