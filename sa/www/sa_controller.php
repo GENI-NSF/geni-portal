@@ -2872,11 +2872,13 @@ function renew_slice($args, $message)
   $slice_info = lookup_slice(array(SA_ARGUMENT::SLICE_ID => $slice_id));
   if($slice_info[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $slice_info;
-  $slice_info = $slice_info[SA_ARGUMENT::VALUE];
+    
+    
+  $slice_info_modified = $slice_info[RESPONSE_ARGUMENT::VALUE];
   $slice_name = 
-    $slice_info[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+    $slice_info_modified[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
   $new_expiration = 
-    $slice_info[SA_SLICE_TABLE_FIELDNAME::EXPIRATION];
+    $slice_info_modified[SA_SLICE_TABLE_FIELDNAME::EXPIRATION];
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, $slice_id);
   log_event($log_url, $mysigner,
 	    "Renewed slice $slice_name until $new_expiration",
