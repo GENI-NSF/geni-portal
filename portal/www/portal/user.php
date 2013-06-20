@@ -384,6 +384,7 @@ function geni_load_identity_by_eppn($eppn)
   if (! isset($eppn) || is_null($eppn)) {
     return array();
   }
+  $eppn = strtolower($eppn);
   $identity = array();
   $conn = db_conn();
   $sql = "select * from identity where eppn = " . $conn->quote($eppn, 'text');
@@ -453,6 +454,7 @@ function geni_loadUser()
 // Loads an exerimenter from the cache if there
 function geni_loadUser_cache($account_id, $eppn)
 {
+  $eppn = strtolower($eppn);
   ensure_user_cache();
   $user = null;
   //  error_log("GLUC -" . $account_id . "- -" . $eppn . "- -" . strcmp($account_id, '') . "-");
