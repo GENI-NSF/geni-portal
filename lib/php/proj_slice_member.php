@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_expired=False)
+function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=False)
 {
   $member_ids = array();
   $slice_ids = array();
@@ -34,10 +34,10 @@ function get_project_slice_member_info($pa_url, $sa_url, $ma_url, $user, $allow_
 
 
   // This is all project IDs the member belongs to, even expired
-  $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
+  $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);
   if (count($projects) > 0) {
     // These are the details of these projects 
-    $project_objects = lookup_project_details($pa_url, $user, $projects);
+    $project_objects = lookup_project_details($sa_url, $user, $projects);
 
     // We get back all the projects. But optionally filter out expired projects.
     if(!$allow_expired) {

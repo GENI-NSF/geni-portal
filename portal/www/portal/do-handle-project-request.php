@@ -43,8 +43,12 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+// Get the sa_url for accessing request information
+if (!isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (!isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no Slice Authority Service");
+  }
 }
 
 if (! isset($ma_url)) {
@@ -63,7 +67,7 @@ $selections = $_REQUEST;
 
 // error_log("SELECTIONS = " . print_r($selections, true));
 
-$project_details = lookup_project($pa_url, $user, $project_id);
+$project_details = lookup_project($sa_url, $user, $project_id);
 $project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 
@@ -99,11 +103,11 @@ foreach($selections as $select_id => $attribs) {
     $resolution_description = "Added as " . $CS_ATTRIBUTE_TYPE_NAME[$role];
     // This is an 'add' selection
     // Add member 
-    add_project_member($pa_url, $user, $project_id, $member_id, $role);
+    add_project_member($sa_url, $user, $project_id, $member_id, $role);
     // and send acceptance letter
   }
   // Resolve pending request
-  resolve_pending_request($pa_url, $user, $request_id, 
+  resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, $request_id,
 			  $resolution_status, $resolution_description);
 
   // Send acceptance/rejection letter

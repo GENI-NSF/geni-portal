@@ -24,6 +24,7 @@ nobase_dist_svcdata_DATA = \
 	php/rq_client.php \
 	php/rq_constants.php \
 	php/rq_controller.php \
+	php/rq_utils.php \
 	php/sa_client.php \
 	php/sa_constants.php \
 	php/session_cache.php \

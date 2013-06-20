@@ -89,7 +89,7 @@ if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
-  $project_id = create_project($pa_url, $user, $name, $lead_id, $purpose,
+  $project_id = create_project($sa_url, $user, $name, $lead_id, $purpose,
           $expiration);
   if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("do-edit-project create_project got project_id $project_id");
@@ -104,7 +104,7 @@ if ($isnew) {
 
   // FIXME: Diff new vals from old?
 
-  $result = update_project($pa_url, $user, $project_id, $name, $purpose,
+  $result = update_project($sa_url, $user, $project_id, $name, $purpose,
           $expiration);
   if ($result == '') {
     error_log("update_project failed? empty...");
@@ -113,7 +113,7 @@ if ($isnew) {
   }
 
   if ($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] != $newlead) {
-    $result2 = change_lead($pa_url, $user, $project_id, $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID], $newlead);
+    $result2 = change_lead($sa_url, $user, $project_id, $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID], $newlead);
     if ($result2 == '') {
       $result = $result . "; Project Lead change failed? empty...?";
     } else {
