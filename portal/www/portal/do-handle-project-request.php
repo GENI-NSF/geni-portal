@@ -43,6 +43,14 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+// Get the sa_url for accessing request information
+if (!isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (!isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no Slice Authority Service");
+  }
+}
+
 if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 }
@@ -99,7 +107,7 @@ foreach($selections as $select_id => $attribs) {
     // and send acceptance letter
   }
   // Resolve pending request
-  resolve_pending_request($sa_url, $user, $request_id, 
+  resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, $request_id,
 			  $resolution_status, $resolution_description);
 
   // Send acceptance/rejection letter
