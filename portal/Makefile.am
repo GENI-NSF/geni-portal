@@ -193,7 +193,8 @@ dist_svcwebimages_DATA = \
 	www/images/portal.png \
 	www/images/portal2.png \
 	www/images/staticmap.png \
-	www/images/header-home.jpg
+	www/images/header-home.jpg \
+	www/images/geni_globe.png
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \

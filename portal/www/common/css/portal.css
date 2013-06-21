@@ -34,8 +34,9 @@ hr {
     margin-left: auto;
     margin-right: auto;
     width: 900px;
+  margin-top: 30px;
   margin-bottom: 0px;
-  border-top: 37px solid #E5E5E5;
+  border-top: 5px solid #5F584E;
   background-color: #FFFFFF;
   /* by default, let text be serif */
   font-family: 'Open Sans', sans-serif;
@@ -43,10 +44,11 @@ hr {
   vertical-align: bottom;
   background-image: url("../../images/header-home.jpg");
   background-repeat: no-repeat;
+  box-shadow: 0px 0px 10px #5F584E;
 }
 
 #header-top {
-  height: 150px;
+  height: 145px;
 }
 
 #metanav {
@@ -65,7 +67,6 @@ hr {
 #mainnav li { 
   border-left: 2px solid #ffffff;
   padding: 0.25em;
-  text-transform:uppercase;
 }
 
 #mainnav :link, #mainnav :visited {
@@ -119,6 +120,7 @@ hr {
   margin-left: auto;
   margin-right: auto;
   width: 897px;
+  box-shadow: 0px 0px 10px #5F584E;
 }
 
 #content {
@@ -244,8 +246,8 @@ hr {
   background-color: #FFFFFF;
   border-collapse: collapse;
   text-align: left;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   line-height: 1.2em;
   margin-left: 60px;
   box-shadow: 3px 3px 10px #5F584E;
@@ -291,12 +293,14 @@ hr {
     margin-left: auto;
     margin-right: auto;
     width: 900px;
+  margin-bottom: 30px;
   border-top: 5px solid #5F584E;
   background-color: #E5E5E5;
   /* by default, let text be serif */
   font-family: 'PT Serif', serif;
   font-weight: 400;
   text-align: center;
+  box-shadow: 0px 0px 10px #5F584E;
 }
 
 
