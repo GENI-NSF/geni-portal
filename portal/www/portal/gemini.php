@@ -48,7 +48,18 @@ require_once('header.php');
 require_once('smime.php');
 require_once('portal.php');
 
-$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no SA in SR!'");
+  }
+}
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
+    error_log("Found no MA in SR!'");
+  }
+}
 
 /* TODO put this in the service registry */
 $gemini_url = 'https://genidesktop.netlab.uky.edu/stable/logon/clearinghouse/logon_entry.php';
@@ -119,12 +130,12 @@ if (isset($slice)) {
  *         help with that.
  */
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
-if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
+if ($result && key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
   $gemini_info[GEMINI_USER_CERTIFICATE] = $result[MA_ARGUMENT::CERTIFICATE];
   // no longer used
   //$user_cert .= $result[MA_ARGUMENT::CERTIFICATE];
 }
-if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
+if ($result && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_keys = array($result[MA_ARGUMENT::PRIVATE_KEY]);
   $gemini_info[GEMINI_USER_PRIVATE_KEYS] = $private_keys;
 }
@@ -135,9 +146,9 @@ $gemini_info[GEMINI_USER_PASSPHRASE] = "";
 
 /* Get project info of projects that have not expired and include them */
 $projects_not_expired = array();
-$project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+$project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
 if (count($project_ids) > 0) {
-  $projects = lookup_project_details($pa_url, $user, $project_ids);
+  $projects = lookup_project_details($sa_url, $user, $project_ids);
   foreach ($projects as $proj) {
     if(!project_is_expired($proj)) {
       $projects_not_expired[] = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
