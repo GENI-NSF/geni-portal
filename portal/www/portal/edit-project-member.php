@@ -120,8 +120,8 @@ if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 }
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
 
@@ -136,14 +136,14 @@ if($project_id == '' || $project_id == 'none') {
 
 // Get current list of members
 
-$current_members = get_project_members($pa_url, $user, $project_id);
+$current_members = get_project_members($sa_url, $user, $project_id);
 //foreach($current_members as $cm) {
 //  error_log("CM = " . print_r($cm, true));
 //}
 
 // Get list of all members of project
 
-$all_project_members = get_project_members($pa_url, $user, $project_id);
+$all_project_members = get_project_members($sa_url, $user, $project_id);
 $all_project_member_names = lookup_member_names_for_rows($ma_url, $user, $all_project_members, PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 $all_project_member_ids = array();
 foreach($all_project_members as $apm) {

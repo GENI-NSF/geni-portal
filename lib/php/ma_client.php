@@ -189,6 +189,13 @@ function ma_lookup_members($ma_url, $signer, $lookup_attrs)
   $msg[MA_ARGUMENT::ATTRIBUTES] = $attrs;
   $members = put_message($ma_url, $msg,
           $signer->certificate(), $signer->privateKey());
+  // Somegtimes we get the whole record, not just value, 
+  // depending on the controller
+  if (array_key_exists(RESPONSE_ARGUMENT::CODE, $members)) {
+    if ($members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return array();
+    $members = $members[RESPONSE_ARGUMENT::VALUE];
+  }
   $result = array();
   foreach ($members as $member_info) {
     $member = new Member();
@@ -258,14 +265,21 @@ function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
 function ma_lookup_member_by_id($ma_url, $signer, $member_id)
 {
   global $member_cache;
-  $msg['operation'] = 'lookup_member_by_id';
-  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
   if (array_key_exists($member_id, $member_cache)) {
     //    error_log("CACHE HIT lookup_member_by_id: " . $member_id);
     return $member_cache[$member_id];
   }
+  $msg['operation'] = 'lookup_member_by_id';
+  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
   $result = put_message($ma_url, $msg,
           $signer->certificate(), $signer->privateKey());
+  // Somegtimes we get the whole record, not just value, 
+  // depending on the controller
+  if(array_key_exists(RESPONSE_ARGUMENT::CODE, $result)) {
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return null;
+    $result = $result[RESPONSE_ARGUMENT::VALUE];
+  }
   $member = new Member();
   $member->init_from_record($result);
   $member_cache[$member_id]=$member;

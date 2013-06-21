@@ -48,10 +48,10 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 include("tool-lookupids.php");
 
-$mpids = get_projects_for_member($pa_url, $user, $user->account_id, false, null);
+$mpids = get_projects_for_member($sa_url, $user, $user->account_id, false, null);
 
 // Filter out projects for which this user has not already requested to join (nothing pending)
-$rs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$rs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
 $rpids = array();
 foreach ($rs as $request) {
   $rpids[] = $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
@@ -94,7 +94,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<table>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
-  $project_details = lookup_project_details($pa_url, $user, $pids);
+  $project_details = lookup_project_details($sa_url, $user, $pids);
   usort($project_details, "project_name_compare");
   //  error_log("PROJ_DETAILS = " . print_r($project_details, true));
 
@@ -105,7 +105,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   //  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
 
   foreach ($project_details as $project) {
-    //    $project = lookup_project($pa_url, $user, $project_id);
+    //    $project = lookup_project($sa_url, $user, $project_id);
     $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
     if ($expired == 't') continue;
     print "<tr><td>";

@@ -124,13 +124,6 @@ print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php
 print "<h2>Outstanding Requests</h2>";
 
 // Show outstanding requests BY this user
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-    error_log("Found no PA in SR!'");
-  }
-}
-
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
@@ -145,7 +138,7 @@ if (! isset($ma_url)) {
 }
 
 // FIXME: Also show rejected requests?
-$preqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$preqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
 $sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
 $reqs = array_merge($preqs, $sreqs);
 if (isset($reqs) && count($reqs) > 0) {
@@ -162,7 +155,7 @@ if (isset($reqs) && count($reqs) > 0) {
     $typestr = $REQ_TYPE_NAMES[$request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]] . " " . $CS_CONTEXT_TYPE_NAME[$request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]];
     if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::PROJECT) {
       //error_log("looking up project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
-      $project = lookup_project($pa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      $project = lookup_project($sa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $cancel_url="cancel-join-project.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
     } elseif ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::SLICE) {

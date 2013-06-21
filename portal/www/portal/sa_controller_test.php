@@ -40,11 +40,10 @@ error_log("SA TEST\n");
 
 $sr_url = get_sr_url();
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $user = geni_loadUser();
 
-$project_ids = get_projects_for_member($pa_url, $user, 
+$project_ids = get_projects_for_member($sa_url, $user, 
 				       $user->account_id, True);
 
 error_log("PIDS = " . print_r($project_ids, True));
@@ -112,7 +111,7 @@ function dump_slices($user, $project)
 }
 
 $project_name = make_uuid();
-$project = create_project($pa_url, $user, $project_name, $owner, '', null);
+$project = create_project($sa_url, $user, $project_name, $owner, '', null);
 $slice_info = create_slice($sa_url, $user, $project, $project_name, 'SSS',
                            $owner);
 error_log("SLICE_INFO " . print_r($slice_info, true));

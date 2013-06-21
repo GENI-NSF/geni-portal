@@ -34,8 +34,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
 include("tool-lookupids.php");
@@ -57,7 +57,7 @@ if($invite_id == null) {
   relative_redirect("home.php");
 }
 
-accept_invitation($pa_url, $user, $invite_id);
+accept_invitation($sa_url, $user, $invite_id);
 
 $_SESSION['lastmessage'] = "Successfully joined project $project_name";
 relative_redirect('home.php');

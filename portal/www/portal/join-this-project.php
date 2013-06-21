@@ -68,7 +68,7 @@ $lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
 // Get all the admins for this project, so we can email them as well
-$admins = get_project_members($pa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
+$admins = get_project_members($sa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
 $admin_emails = array();
 if ($admins and count($admins) > 0) {
   foreach ($admins as $admin_res) {
@@ -84,16 +84,16 @@ if (array_key_exists("message", $_REQUEST)) {
   $message = $_REQUEST["message"];
 }
 
-// Get the pa_url for accessing request information
-if (!isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  if (!isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-    error_log("Found no Project Authority Service");
+// Get the sa_url for accessing request information
+if (!isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (!isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no Slice Authority Service");
   }
 }
 
 // confirm member is not already in this project
-$pids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+$pids = get_projects_for_member($sa_url, $user, $user->account_id, true);
 if (isset($pids) && ! is_null($pids) && in_array($project_id, $pids)) {
   error_log($user->prettyName() . " already in project " . $project_id);
   $_SESSION['lasterror'] = "You are already in this project.";
@@ -101,7 +101,7 @@ if (isset($pids) && ! is_null($pids) && in_array($project_id, $pids)) {
 }
 
 // confirm member has not already requested to join this project
-$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
+$rpids = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
 if (in_array($project_id, $rpids)) {
   error_log($user->prettyName() . " already requested to join project " . $project_id);
   $_SESSION['lasterror'] = "You already requested to join that project.";
@@ -109,7 +109,7 @@ if (in_array($project_id, $rpids)) {
 }
 
 if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error))) {
-  $request_id = create_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
+  $request_id = create_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
 
   // FIXME: sub handle-project-request.php with handle-project-request.php?project_id=$project_id&member_id=$user->account_id&request_id=$request_id
   //  $ind = strpos($message, "handle-project-request.php");

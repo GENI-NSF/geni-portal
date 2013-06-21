@@ -36,7 +36,7 @@ $members = array();
 $member = null;
 $member_id = null;
 if (array_key_exists($member_id_key, $_SERVER)) {
-  $member_id_value = $_SERVER[$member_id_key];
+  $member_id_value = strtolower($_SERVER[$member_id_key]);
   $members = ma_lookup_member_id($ma_url, $km_signer,
 				 $member_id_key, $member_id_value);
 } else if (array_key_exists("member_id", $_REQUEST)) {
