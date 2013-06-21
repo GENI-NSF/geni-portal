@@ -35,7 +35,7 @@ show_header('GENI Portal: WiMAX Setup', $TAB_PROFILE);
 include("tool-showmessage.php");
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 /* function project_is expired
     Checks to see whether project has expired
@@ -73,7 +73,7 @@ if (array_key_exists('project', $_REQUEST)
   // Verification that data is okay
   
   // Step 1: check that user is member of at least one project
-  $project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+  $project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
   $num_projects = count($project_ids);
   if (count($project_ids) == 0) {
     $_SESSION['lasterror'] = 'You are not a member of any projects.';
@@ -99,19 +99,19 @@ if (array_key_exists('project', $_REQUEST)
   
   
   // get project info (that was sent)
-  $project_info = lookup_project($pa_url, $user, $_REQUEST['project']);
+  $project_info = lookup_project($sa_url, $user, $_REQUEST['project']);
   
   // get information about project lead
   $project_lead_info = ma_lookup_member_by_id($ma_url, $user, $project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
   
-  // get members' usernames of project (probably required?)
-  $project_members = get_project_members($pa_url, $user, $_REQUEST['project']);
-  $project_members_usernames = array();
-  foreach($project_members as $project_member) {
-    $project_member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
-    $project_member_info = ma_lookup_member_by_id($ma_url, $user, $project_member_id);
-    $project_members_usernames[] = $project_member_info->username;
-  }
+  // get members' contact information and put into an array
+  $project_members = get_project_members($sa_url, $user, $_REQUEST['project']);
+    // create array to store members' info in
+    $project_members_array = array();
+    foreach($project_members as $project_member) {
+      $project_member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+      $project_members_array[] = ma_lookup_member_by_id($ma_url, $user, $project_member_id);
+    }
   
   // define variables here to be used in LDIF string
   $project_name = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -153,13 +153,48 @@ if (array_key_exists('project', $_REQUEST)
     . "objectclass: posixGroup\n";
   */
   
-  $ldif_string .= "\n# LDIF for the user\n"
-    . "dn: uid=$username,ou=$project_name,dc=ch,dc=geni,dc=net\n"
-    . "cn: $pretty_name\n"
-    . "givenname: $given_name\n"
-    . "email: $email\n"
-    . "sn: $sn\n";
+  // add info about each project member
+  foreach($project_members_array as $member) {
+  
+    // header
+    $ldif_string .= "\n# LDIF for a user\n"
+      . "dn: uid={$member->username},ou=$project_name,dc=ch,dc=geni,dc=net\n"
+      . "cn: {$member->first_name} {$member->last_name}\n"
+      . "givenname: {$member->first_name}\n"
+      . "email: {$member->email_address}\n"
+      . "sn: {$member->last_name}\n";
+      
+    /* 
+    // ssh keys (don't remove; to be used later on)
+    $ssh_public_keys = lookup_ssh_keys($ma_url, $user, $member->member_id);
+
+    echo "ACCOUNT ID: " . $user->account_id . "\n";
+
+    $number_keys = count($ssh_public_keys);
+    if($number_keys > 0) {
+      for($i = 0; $i < $number_keys; $i++) {
+        // display as one greater than ith entry in array
+        // i.e., start with sshpublickey1 stored in position 0, etc.
+        $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
+      }
+    }
+    */
     
+    // other information
+    $ldif_string .= "uid: {$member->username}\n"
+      . "o: $project_description\n"
+      . "objectclass: top\n"
+      . "objectclass: person\n"
+      . "objectclass: posixAccount\n"
+      . "objectclass: shadowAccount\n"
+      . "objectclass: inetOrgPerson\n"
+      . "objectclass: organizationalPerson\n"
+      . "objectclass: hostObject\n"
+      . "objectclass: ldapPublicKey\n";
+    
+  }
+  
+    /*
     // grab public keys and add to ldif string as appropriate
     $ssh_public_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
     $number_keys = count($ssh_public_keys);
@@ -175,16 +210,8 @@ if (array_key_exists('project', $_REQUEST)
       }
     }
     
-    $ldif_string .= "uid: $username\n"
-      . "o: $project_description\n"
-      . "objectclass: top\n"
-      . "objectclass: person\n"
-      . "objectclass: posixAccount\n"
-      . "objectclass: shadowAccount\n"
-      . "objectclass: inetOrgPerson\n"
-      . "objectclass: organizationalPerson\n"
-      . "objectclass: hostObject\n"
-      . "objectclass: ldapPublicKey\n";
+    */
+    
 
   
   
@@ -237,12 +264,12 @@ else {
   $warnings = array();
   $keys = $user->sshKeys();
   $cert = ma_lookup_certificate($ma_url, $user, $user->account_id);
-  $project_ids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+  $project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
   $num_projects = count($project_ids);
   if (count($project_ids) > 0) {
     // If there's more than 1 project, we need the project names for
     // a default project chooser.
-    $projects = lookup_project_details($pa_url, $user, $project_ids);
+    $projects = lookup_project_details($sa_url, $user, $project_ids);
   }
   $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
 
