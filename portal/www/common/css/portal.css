@@ -3,10 +3,18 @@
 
   Color scheme:
     #E17000 - official GENI orange
-    #DBD7CC - medium gray
+                  table headers
+                  header colors
+                  link colors
     #5F584E - dark gray
+                  code background
+                  navigation bar background
+    #C5D3D7 - medium gray
+                  page background
     #E5E5E5 - light gray
-
+                  footer background
+    #DBD7CC - tan
+                  accents
 
 */
 
@@ -33,7 +41,9 @@ hr {
     /* center */
     margin-left: auto;
     margin-right: auto;
-    width: 900px;
+    width: 897px;
+  border-left: 2px solid #5F584E;
+  border-right: 1px solid #5F584E;
   margin-top: 30px;
   margin-bottom: 0px;
   border-top: 5px solid #5F584E;
@@ -49,11 +59,20 @@ hr {
 
 #header-top {
   height: 145px;
+  border-left: 14px solid #DBD7CC;
 }
 
 #metanav {
   padding: 5px;
   color: #ffffff;
+}
+
+#metanav a {
+  color: #ffffff;
+}
+
+#metanav li { 
+  border-right: 2px solid #ffffff;
 }
 
 /* Main navigation bar */
@@ -62,7 +81,7 @@ hr {
   border: 5px solid #5F584E;
   margin: 0;
   padding: 5px;
-  width: 880px;
+  width: 878px;
 }
 #mainnav li { 
   border-left: 2px solid #ffffff;
@@ -117,8 +136,10 @@ hr {
 #content-outer {
   border-left: 2px solid #E17000;
   border-right: 1px solid #E17000;
+  border-top: 5px solid #E17000;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 20px;
   width: 897px;
   box-shadow: 0px 0px 10px #5F584E;
 }
@@ -126,11 +147,10 @@ hr {
 #content {
   /* white space */
   background-color: #FFFFFF;
-  padding-left: 100px;
+  padding-left: 135px;
   padding-right: 30px;
   padding-bottom: 30px;
-
-  /* follow right after header (no gap) */
+  padding-top: 20px;
   margin-top: 0px;
   /* by default, let everything be serif 
      unless otherwise specified */
