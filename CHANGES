@@ -2,6 +2,12 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 == 1.9 ==
+  * Fix warnings in gemini.php (#641)
+  * SA/PA merge (#540)
+
+== 1.8.1 ==
+  * Modifications to KM tool and user to make sure EPPN's 
+       are uniformly lower case (so that IDP's that provide mixed-case match)
 == 1.8 ==
   * Portal website refers to incorrect 'footer.php' file (#633)
   * Use a tempfile for list of members on import db (#632)

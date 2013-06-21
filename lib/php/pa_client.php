@@ -24,19 +24,19 @@
 
 // Client-side interface to GENI Clearinghouse Project Authority (PA)
 // Consists of these methods:
-//   project_id <= create_project(pa_url, project_name, lead_id, lead_email, purpose, expiration);
-//   project_ids <= get_projects(pa_url);
+//   project_id <= create_project(sa_url, project_name, lead_id, lead_email, purpose, expiration);
+//   project_ids <= get_projects(sa_url);
 //   [project_name, lead_id, project_email, project_purpose] <= lookup_project(project_id);
-//   update_project(pa_url, project_name, project_id, project_email, project_purpose, expiration);
-//   change_lead(pa_url, project_id, previous_lead_id, new_lead_id);
-//   get_project_members(pa_url, project_id, role=null) // null => Any
-//   get_projects_for_member(pa_url, member_id, is_member, role=null)
-//   lookup_project_details(pa_url, project_uuids)
-//   modify_project_membership(pa_url, project_id, members_to_add, 
+//   update_project(sa_url, project_name, project_id, project_email, project_purpose, expiration);
+//   change_lead(sa_url, project_id, previous_lead_id, new_lead_id);
+//   get_project_members(sa_url, project_id, role=null) // null => Any
+//   get_projects_for_member(sa_url, member_id, is_member, role=null)
+//   lookup_project_details(sa_url, project_uuids)
+//   modify_project_membership(sa_url, project_id, members_to_add, 
 //           members_to_change_role, members_to_remove
-//   add_project_member(pa_url, project_id, member_id, role)
-//   remove_project_member(pa_url, project_id, member_id)
-//   change_member_role(pa_url, project_id, member_id, role)
+//   add_project_member(sa_url, project_id, member_id, role)
+//   remove_project_member(sa_url, project_id, member_id)
+//   change_member_role(sa_url, project_id, member_id, role)
 
 
 require_once('pa_constants.php');
@@ -50,7 +50,7 @@ if(!isset($project_cache)) {
 
 // Create a project with given name, lead_id (UUID of lead member), email to contact on all 
 // matters related to project, and documentation purpose of project
-function create_project($pa_url, $signer, $project_name, $lead_id, $project_purpose, $expiration)
+function create_project($sa_url, $signer, $project_name, $lead_id, $project_purpose, $expiration)
 {
   $create_project_message['operation'] = 'create_project';
   $create_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
@@ -67,46 +67,46 @@ function create_project($pa_url, $signer, $project_name, $lead_id, $project_purp
 
   // FIXME: Disallow if project_name already taken!
 
-  $project_id = put_message($pa_url, $create_project_message, 
+  $project_id = put_message($sa_url, $create_project_message, 
 			    $signer->certificate(), $signer->privateKey());
   return $project_id;
 }
 
 // return list of project ids
-function get_projects($pa_url, $signer)
+function get_projects($sa_url, $signer)
 {
   $get_projects_message['operation'] = 'get_projects';
-  $project_ids = put_message($pa_url, $get_projects_message, 
+  $project_ids = put_message($sa_url, $get_projects_message, 
 			     $signer->certificate(), $signer->privateKey());
   return $project_ids;
 }
 
 // return list of project ids
-function get_projects_by_lead($pa_url, $signer, $lead_id)
+function get_projects_by_lead($sa_url, $signer, $lead_id)
 {
   //  error_log("GPBL.start " . $lead_id . " " . time());
   $get_projects_message['operation'] = 'get_projects';
   $get_projects_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
-  $project_ids = put_message($pa_url, $get_projects_message, 
+  $project_ids = put_message($sa_url, $get_projects_message, 
 			     $signer->certificate(), $signer->privateKey());
   //  error_log("GPBL.end " . $lead_id . " " . time());
   return $project_ids;
 }
 
 // Return project details
-function lookup_projects($pa_url, $signer, $lead_id=null)
+function lookup_projects($sa_url, $signer, $lead_id=null)
 {
   $lookup_projects['operation'] = 'lookup_projects';
   if( $lead_id <> null) {
     $lookup_projects[PA_ARGUMENT::LEAD_ID] = $lead_id;
   }
-  $projects = put_message($pa_url, $lookup_projects, 
+  $projects = put_message($sa_url, $lookup_projects, 
 			  $signer->certificate(), $signer->privateKey());
   return $projects;
 }
 
 // Return project details
-function lookup_project($pa_url, $signer, $project_id)
+function lookup_project($sa_url, $signer, $project_id)
 {
   global $project_cache;
   if (! is_object($signer)) {
@@ -122,7 +122,7 @@ function lookup_project($pa_url, $signer, $project_id)
   //  error_log("LP.start " . $project_id . " " . time());
   $lookup_project_message['operation'] = 'lookup_project';
   $lookup_project_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $details = put_message($pa_url, $lookup_project_message,
+  $details = put_message($sa_url, $lookup_project_message,
 			 $cert, $key, 
 			 $signer->certificate(), $signer->privateKey());
   //  error_log("LP.end " . $project_id . " " . time());
@@ -133,7 +133,7 @@ function lookup_project($pa_url, $signer, $project_id)
 }
 
 // Return project details
-function lookup_project_by_name($pa_url, $signer, $project_name)
+function lookup_project_by_name($sa_url, $signer, $project_name)
 {
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
@@ -143,7 +143,7 @@ function lookup_project_by_name($pa_url, $signer, $project_name)
   //  error_log("LP.start " . $project_name . " " . time());
   $lookup_project_message['operation'] = 'lookup_project';
   $lookup_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
-  $details = put_message($pa_url, $lookup_project_message,
+  $details = put_message($sa_url, $lookup_project_message,
 			 $cert, $key, 
 			 $signer->certificate(), $signer->privateKey());
   //  error_log("LP.end " . $project_id . " " . time());
@@ -151,10 +151,10 @@ function lookup_project_by_name($pa_url, $signer, $project_name)
   return $details;
 }
 
-// FIXME: lookup_projects_member(pa_url, member_id, is_member, role)
-// FIXME: lookup_projects_ids(pa_url, project_ids_list)
+// FIXME: lookup_projects_member(sa_url, member_id, is_member, role)
+// FIXME: lookup_projects_ids(sa_url, project_ids_list)
 
-function update_project($pa_url, $signer, $project_id, $project_name,
+function update_project($sa_url, $signer, $project_id, $project_name,
         $project_purpose, $expiration)
 {
   $update_project_message['operation'] = 'update_project';
@@ -162,7 +162,7 @@ function update_project($pa_url, $signer, $project_id, $project_name,
   $update_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
   $update_project_message[PA_ARGUMENT::PROJECT_PURPOSE] = $project_purpose;
   $update_project_message[PA_ARGUMENT::EXPIRATION] = $expiration;
-  $results = put_message($pa_url, $update_project_message, 
+  $results = put_message($sa_url, $update_project_message, 
 			 $signer->certificate(), $signer->privateKey());
   return $results;
 }
@@ -189,7 +189,7 @@ function modify_project_membership($sa_url, $signer, $project_id,
 
 // Modify project lead, make previous into an admin
 // Assumes lead is already a member
-function change_lead($pa_url, $signer, $project_id, $prev_lead_id, $new_lead_id)
+function change_lead($sa_url, $signer, $project_id, $prev_lead_id, $new_lead_id)
 {
   $members_to_change = array($prev_lead_id => CS_ATTRIBUTE_TYPE::ADMIN, 
 			     $new_lead_id => CS_ATTRIBUTE_TYPE::LEAD);
@@ -199,10 +199,10 @@ function change_lead($pa_url, $signer, $project_id, $prev_lead_id, $new_lead_id)
 }
 
 // Add a member of given role to given project
-function add_project_member($pa_url, $signer, $project_id, $member_id, $role)
+function add_project_member($sa_url, $signer, $project_id, $member_id, $role)
 {
   $member_roles = array($member_id => $role);
-  $result = modify_project_membership($pa_url, $signer, $project_id, 
+  $result = modify_project_membership($sa_url, $signer, $project_id, 
 				    $member_roles, array(), array());
   return $result;
 }
@@ -227,12 +227,12 @@ function change_member_role($sa_url, $signer, $project_id, $member_id, $role)
 
 // Return list of member ID's and roles associated with given project
 // If role is provided, filter to members of given role
-function get_project_members($pa_url, $signer, $project_id, $role=null) 
+function get_project_members($sa_url, $signer, $project_id, $role=null) 
 {
   $get_project_members_message['operation'] = 'get_project_members';
   $get_project_members_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $get_project_members_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($pa_url, $get_project_members_message, 
+  $results = put_message($sa_url, $get_project_members_message, 
 			 $signer->certificate(), $signer->privateKey());
   return $results;
 }
@@ -243,7 +243,7 @@ function get_project_members($pa_url, $signer, $project_id, $role=null)
 // If role is provided, filter on projects 
 //    for which member has given role (is_member = true)
 //    for which member does NOT have given role (is_member = false)
-function get_projects_for_member($pa_url, $signer, $member_id, $is_member, $role=null)
+function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role=null)
 {
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
@@ -254,19 +254,19 @@ function get_projects_for_member($pa_url, $signer, $member_id, $is_member, $role
   $get_projects_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
   $get_projects_message[PA_ARGUMENT::IS_MEMBER] = $is_member;
   $get_projects_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($pa_url, $get_projects_message,
+  $results = put_message($sa_url, $get_projects_message,
 			 $cert, $key, 
 			 $signer->certificate(), $signer->privateKey());
   return $results;
 }
 
-function lookup_project_details($pa_url, $signer, $project_uuids)
+function lookup_project_details($sa_url, $signer, $project_uuids)
 {
   $cert = $signer->certificate;
   $key = $signer->privateKey();
   $get_projects_message['operation'] = 'lookup_project_details';
   $get_projects_message[PA_ARGUMENT::PROJECT_UUIDS] = $project_uuids;
-  $results = put_message($pa_url, $get_projects_message,
+  $results = put_message($sa_url, $get_projects_message,
 			 $cert, $key, 
 			 $signer->certificate(), $signer->privateKey());
 			 
@@ -282,24 +282,24 @@ function lookup_project_details($pa_url, $signer, $project_uuids)
 // Generate an invitation for a (not yet identified) member
 // to join a project
 // return the invitation ID and expiration, `
-function invite_member($pa_url, $signer, $project_id, $role)
+function invite_member($sa_url, $signer, $project_id, $role)
 {
   $invite_member_message['operation'] = 'invite_member';
   $invite_member_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $invite_member_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $result = put_message($pa_url, $invite_member_message, 
+  $result = put_message($sa_url, $invite_member_message, 
 		       $signer->certificate(), $signer->privateKey());
   return $result;
 }
 
 // Accept an invitation
-function accept_invitation($pa_url, $signer, $invitation_id)
+function accept_invitation($sa_url, $signer, $invitation_id)
 {
   global $user;
   $accept_invitation_message['operation'] = 'accept_invitation';
   $accept_invitation_message[PA_ARGUMENT::INVITATION_ID] = $invitation_id;
   $accept_invitation_message[PA_ARGUMENT::MEMBER_ID] = $user->account_id;
-  $result = put_message($pa_url, $accept_invitation_message, 
+  $result = put_message($sa_url, $accept_invitation_message, 
 			$signer->certificate(), $signer->privateKey());
   return $result;
 }

@@ -24,6 +24,7 @@
 
 require_once('util.php');
 require_once('sa_client.php');
+require_once('cs_constants.php');
 
 $USER_STARTER_TASK_CACHE_TAG ='user_starter_task_cache';
 $IS_ACTIVATED_TAG ='is_activated';
@@ -105,18 +106,15 @@ function show_starter_status_bar($load_user)
     return;
   }
 
-  if (! isset($pa_url)) {
-    $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  }
   if (! isset($sa_url)) {
     $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   }
 
   $activated = $user->isActive();
   $ssh_keys = $user->sshKeys();
-  $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);
+  $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);
   //  $slices = get_slices_for_member($sa_url, $user, $user->account_id, true);
-  //  $project_requests = get_number_of_pending_requests_for_user($pa_url, $user, $user->account_id);
+  //  $project_requests = get_number_of_pending_requests_for_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT);
 
   register_starter_tasks($user, $activated, $ssh_keys, $projects, array());
   if(already_done_starter_tasks($user)) {

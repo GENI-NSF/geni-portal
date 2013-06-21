@@ -46,13 +46,6 @@ $file = $_SERVER["SCRIPT_NAME"];
 $pinfo = pathinfo($file);
 $script = $pinfo['basename'];
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-    error_log("Found no PA in SR!'");
-  }
-}
-
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
@@ -63,7 +56,7 @@ if (! isset($sa_url)) {
 if (array_key_exists("project_id", $_REQUEST)) {
   $project_id = $_REQUEST['project_id'];
   if (uuid_is_valid($project_id)) {
-    $project = lookup_project($pa_url, $user, $project_id);
+    $project = lookup_project($sa_url, $user, $project_id);
     if (isset($project) && is_array($project) && array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $project)) {
       $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     }
@@ -90,10 +83,10 @@ if (array_key_exists("slice_id", $_REQUEST)) {
     } else {
       if (! isset($project_id)) {
 	$project_id = $slice_project_id;
-	if (! isset($pa_url)) {
-	  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
+	if (! isset($sa_url)) {
+	  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 	}
-	$project = lookup_project($pa_url, $user, $project_id);
+	$project = lookup_project($sa_url, $user, $project_id);
 	if (isset($project) && is_array($project) && array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME, $project)) {
 	  $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	}

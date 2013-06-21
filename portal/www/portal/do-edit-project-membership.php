@@ -48,15 +48,17 @@ if (! isset($project) or is_null($project)) {
   $_SESSION['lasterror'] = "No project specified to edit membership.";
   relative_redirect('home.php');
 }
+
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+}
+
 if (! $user->isAllowed(PA_ACTION::REMOVE_PROJECT_MEMBER,
 		       CS_CONTEXT_TYPE::PROJECT, $project_id) and 
     ! $user->isAllowed(PA_ACTION::CHANGE_MEMBER_ROLE,
 		       CS_CONTEXT_TYPE::PROJECT, $project_id)    ) {
   error_log($user->prettyName() . " not allowed to edit project membership for $project_name");
   relative_redirect("project.php?project_id=$project_id");
-}
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 }
 $members = array();
 foreach (array_keys($_REQUEST) as $input) {
@@ -69,7 +71,7 @@ if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 }
 $member_names = lookup_member_names($ma_url, $user, $members);
-$member_roles = get_project_members($pa_url, $user, $project_id);
+$member_roles = get_project_members($sa_url, $user, $project_id);
 
 $edits = array();
 global $CS_ATTRIBUTE_TYPE_NAME;
@@ -118,7 +120,7 @@ foreach (array_keys($_REQUEST) as $input) {
 	$errors = $errors . "; " . $msg;
       }
     } else {
-      $edits[$input] = remove_project_member($pa_url, $user, $project_id,
+      $edits[$input] = remove_project_member($sa_url, $user, $project_id,
 				      $input);
       /* error_log("Remove $input from project result: " */
       /* 		. print_r($edits[$input], true)); */
@@ -198,7 +200,7 @@ foreach (array_keys($_REQUEST) as $input) {
 	  continue;
 	} else {
 	  // Change project lead
-	  $res1 = change_lead($pa_url, $user, $project_id, $value, $new_lead_id);
+	  $res1 = change_lead($sa_url, $user, $project_id, $value, $new_lead_id);
 	  /* error_log("Change project $project_name lead from $value to $new_lead_id result: " */
 	  /* 	    . print_r($res1, true)); */
 	  if($res1[RESPONSE_ARGUMENT::CODE] ==
@@ -249,7 +251,7 @@ foreach (array_keys($_REQUEST) as $input) {
 	  continue;
 	} else {
 	  // Change project lead
-	  $res1 = change_lead($pa_url, $user, $project_id, $old_lead_id, $new_lead_id);
+	  $res1 = change_lead($sa_url, $user, $project_id, $old_lead_id, $new_lead_id);
 	  error_log("Change project $project_name lead from $old_lead_id to $new_lead_id result: "
 		    . print_r($res1, true));
 	  if($res1[RESPONSE_ARGUMENT::CODE] ==
@@ -285,7 +287,7 @@ foreach (array_keys($_REQUEST) as $input) {
 	  $value = $old_lead_new_role;
 	}
       }
-      $edits[$input] = change_member_role($pa_url, $user, $project_id, $input, $value);
+      $edits[$input] = change_member_role($sa_url, $user, $project_id, $input, $value);
       /* error_log("Change Role for $input to $value result: " */
       /* 		. print_r($edits[$input], true)); */
       if($edits[$input][RESPONSE_ARGUMENT::CODE] ==

@@ -39,7 +39,6 @@ error_log("RQ TEST\n");
 
 $sr_url = get_sr_url();
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 $signer = geni_loadUser();
@@ -67,7 +66,7 @@ function test_requests_for_url($url, $context_type, $context_id)
   dump_rows($rows);
   $rows = get_requests_by_user($url, $signer, $signer->account_id, $context_type, $context_id);
   dump_rows($rows);
-  $row = get_request_by_id($url, $signer, $request_id);
+  $row = get_request_by_id($url, $signer, $request_id, $context_type);
   dump_row($row);
   $num_pending = get_number_of_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
@@ -75,13 +74,14 @@ function test_requests_for_url($url, $context_type, $context_id)
   $pending = get_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
   dump_rows($pending);
-  resolve_pending_request($url, $signer, $request_id, RQ_REQUEST_STATUS::APPROVED, 'resolved');
+  resolve_pending_request($url, $signer, $context_type, 
+			  $request_id, RQ_REQUEST_STATUS::APPROVED, 'resolved');
   $num_pending = get_number_of_pending_requests_for_user($url, $signer, $signer->account_id, 
 						 $context_type, $context_id);
   error_log("Num_pending(post) = " . print_r($num_pending, true));
 }
 
-$project_ids = lookup_projects($pa_url, $signer);
+$project_ids = lookup_projects($sa_url, $signer);
 // error_log("PIDS = " . print_r($project_ids, true));
 $project_id = $project_ids[0]['project_id'];
 // error_log("PID = " . print_r($project_id, true));
@@ -91,7 +91,7 @@ $slice_ids = lookup_slice_ids($sa_url, $signer, $project_id);
 $slice_id = $slice_ids[0];
 
 test_requests_for_url($sa_url, CS_CONTEXT_TYPE::SLICE, $slice_id);
-test_requests_for_url($pa_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
+test_requests_for_url($sa_url, CS_CONTEXT_TYPE::PROJECT, $project_id);
 
 
 relative_redirect('debug');

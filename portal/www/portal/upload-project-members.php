@@ -179,7 +179,7 @@ if (array_key_exists('file', $_FILES)) {
 $actual_filename = $_FILES['file']['tmp_name'];
 $contents = file_get_contents($actual_filename);
 
-$project_members = get_project_members($pa_url, $user, $project_id);
+$project_members = get_project_members($sa_url, $user, $project_id);
 $project_member_ids = array();
 foreach($project_members as $project_member) {
   $project_member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
