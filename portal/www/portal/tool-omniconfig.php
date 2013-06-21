@@ -33,7 +33,18 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 // Does the user have an outside certificate?
-$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+if (! isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no SA in SR!'");
+  }
+}
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
+    error_log("Found no MA in SR!'");
+  }
+}
 
 // Store any warnings here for display at the top of the page.
 $warnings = array();
