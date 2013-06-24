@@ -58,7 +58,8 @@ $ma_signer = new Signer($ma_cert_file, $ma_key_file);
  * 
  * Supports these methods:
  *   register_ssh_key(member_id, filename, description, ssh_key);
- *   lookup_ssh_keys(member_id);
+ *   lookup_public_ssh_keys(member_id);
+ *   lookup_private_ssh_keys(member_id);
  *   update_ssh_key(member_id, ssh_key_id, ssh_filename, ssh_description)
  *   delete_ssh_key(member_id, ssh_key_id)
  *   lookup_keys_and_certs(member_id);
@@ -172,10 +173,32 @@ function register_ssh_key($args, $message)
   return $result;
 }
 
-function lookup_ssh_keys($args, $message)
+// Get all SSH key information EXCEPT private key
+function lookup_public_ssh_keys($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
-  //  error_log("LOOKUP_SSH_KEYS " . print_r($args, true));
+  //  error_log("LOOKUP_PUBLIC_SSH_KEYS " . print_r($args, true));
+  $member_id = $args[MA_ARGUMENT::MEMBER_ID];
+  $log_msg = "Looking up SSH keys for $member_id";
+  geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
+  $conn = db_conn();
+  $fields = MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID . ", " .
+    MA_SSH_KEY_TABLE_FIELDNAME::FILENAME . ", " .
+    MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION . ", " .
+    MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY;
+  $sql = ("select " . $fields . " from " . $MA_SSH_KEY_TABLENAME
+          . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
+          . " = " . $conn->quote($member_id, 'text'));
+  $rows = db_fetch_rows($sql);
+  //  error_log("LOOKUP_PUBLIC_SSH_KEYS " . print_r($rows, true));
+  return $rows;
+}
+
+// Get all SSH key information INCLUDING private key
+function lookup_private_ssh_keys($args, $message)
+{
+  global $MA_SSH_KEY_TABLENAME;
+  //  error_log("LOOKUP_PRIVATE_SSH_KEYS " . print_r($args, true));
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $log_msg = "Looking up SSH keys for $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
@@ -184,7 +207,7 @@ function lookup_ssh_keys($args, $message)
           . " WHERE " . MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID
           . " = " . $conn->quote($member_id, 'text'));
   $rows = db_fetch_rows($sql);
-  //  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
+  //  error_log("LOOKUP_PRIVATE_SSH_KEYS " . print_r($rows, true));
   return $rows;
 }
 
@@ -240,7 +263,7 @@ function update_ssh_key($args, $message)
           . " AND " . MA_SSH_KEY_TABLE_FIELDNAME::ID
           . " = " . $conn->quote($ssh_key_id, 'integer'));
   $rows = db_fetch_rows($sql);
-  //  error_log("LOOKUP_SSH_KEYS " . print_r($rows, true));
+  //  error_log("UPDATE_SSH_KEYS " . print_r($rows, true));
   return $rows;
 }
 
@@ -1046,8 +1069,13 @@ class MAGuardFactory implements GuardFactory
     $result = array();
     $result[] = new SignedMessageGuard($message);
     // As more guards accumulate, make this table-driven.
-    if ($action === 'lookup_ssh_keys') {
-      $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
+    if ($action === 'lookup_public_ssh_keys') {
+      // Anyone can get the public SSH keys
+      $result [] = new TrueGuard();
+    } elseif ($action == 'lookup_private_ssh_keys') {
+      // Only the user themselves (not even authorities or operators) can
+      // get the private SSH keys
+      $result [] =  new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
     } elseif ($action === 'register_ssh_key') {
       $result[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
     } elseif ($action === 'delete_ssh_key') {
