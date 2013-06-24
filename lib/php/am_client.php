@@ -62,14 +62,17 @@ function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
  * Returns an array of temporary filenames. The caller is responsible
  * for deleting (unlink) these files.
  */
-function write_ssh_keys($user)
+function write_ssh_keys($for_user, $as_user)
 {
   $result = array();
-  $ssh_keys = $user->sshKeys();
+
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  $ssh_keys = lookup_public_ssh_keys($ma_url, $as_user, $for_user->account_id);
+
   foreach ($ssh_keys as $key_info)
     {
       $key = $key_info['public_key'];
-      $tmp_file = writeDataToTempFile($key, $user->username . "-ssh-key-");
+      $tmp_file = writeDataToTempFile($key, $for_user->username . "-ssh-key-");
       $result[] = $tmp_file;
     }
   return $result;
@@ -205,7 +208,7 @@ function write_omni_config($user)
     $key_file = writeDataToTempFile($private_key, "$username-key-");
 
     /* Write ssh keys to tmp files. */
-    $ssh_key_files = write_ssh_keys($user);
+    $ssh_key_files = write_ssh_keys($user, $user);
     $all_key_files = implode(',', $ssh_key_files);
 
     /* Create OMNI config file */
@@ -300,7 +303,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     foreach ($slice_users as $slice_user){
        $slice_username = $slice_user->username;
        $slice_urn = $slice_user->urn();	
-       $ssh_key_files = write_ssh_keys($slice_user);
+       $ssh_key_files = write_ssh_keys($slice_user, $user);
        $all_ssh_key_files = $all_ssh_key_files + $ssh_key_files;
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
