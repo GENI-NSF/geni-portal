@@ -177,6 +177,7 @@ $body .= "Identity ID: " . $user->identity_id . "\n";
 $body .= "EPPN: " . $user->eppn . "\n"; // same as member->eppn
 $body .= "Name: " . $user->prettyName() . "\n";
 $body .= "Username: " . $user->username . "\n";
+$body .= "Email: " . $user->email() . "\n";
 $member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
 					       $user->account_id);
 $subject = "New GENI CH account change requested";

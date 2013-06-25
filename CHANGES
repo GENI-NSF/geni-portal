@@ -10,6 +10,7 @@
   * Fix warnings in gemini.php (#641)
   * SA/PA merge (#540)
   * Fix link to SignMeUp (#653)
+  * Include email address in account change request emails (#626)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
