@@ -8,6 +8,7 @@
   * Fix sa_url in tool-omniconfig.php (#643)
   * Fix warnings in gemini.php (#641)
   * SA/PA merge (#540)
+  * Fix link to SignMeUp (#653)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
