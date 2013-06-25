@@ -1,7 +1,10 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
 = GENI Clearinghouse and Portal Release Notes =
+
 == 1.9 ==
+  * Login information is wrong in multi-user slices (#645)
+  * Save error Omni results (#444)
   * Fix sa_url in tool-omniconfig.php (#643)
   * Fix warnings in gemini.php (#641)
   * SA/PA merge (#540)
