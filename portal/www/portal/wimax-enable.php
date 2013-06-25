@@ -77,13 +77,13 @@ if (array_key_exists('project', $_REQUEST)
   $num_projects = count($project_ids);
   if (count($project_ids) == 0) {
     $_SESSION['lasterror'] = 'You are not a member of any projects.';
-    relative_redirect('wimax.php');
+    relative_redirect('wimax-enable.php');
   }
   
   // Step 2: check that user is a member of the project they specify
   if(!(check_membership_of_project($project_ids, $_REQUEST['project']))) {
     $_SESSION['lasterror'] = 'You are not a member of the project that you specified.';
-    relative_redirect('wimax.php');
+    relative_redirect('wimax-enable.php');
   }
   
   // Step 3: TODO: check that project has WiMAX enabled
@@ -119,7 +119,7 @@ if (array_key_exists('project', $_REQUEST)
   $project_lead_username = $project_lead_info->username;
   $username = $user->username;
   $email = $user->mail;
-  $pretty_name = $user->givenName . " " . $user->sn;
+  $pretty_name = $user->prettyName();
   $given_name = $user->givenName;
   $sn = $user->sn;
   
@@ -153,23 +153,18 @@ if (array_key_exists('project', $_REQUEST)
     . "objectclass: posixGroup\n";
   */
   
-  // add info about each project member
-  foreach($project_members_array as $member) {
+  // add info about project lead
   
     // header
-    $ldif_string .= "\n# LDIF for a user\n"
-      . "dn: uid={$member->username},ou=$project_name,dc=ch,dc=geni,dc=net\n"
-      . "cn: {$member->first_name} {$member->last_name}\n"
-      . "givenname: {$member->first_name}\n"
-      . "email: {$member->email_address}\n"
-      . "sn: {$member->last_name}\n";
+    $ldif_string .= "\n# LDIF for user (project lead)\n"
+      . "dn: uid=$username,ou=$project_name,dc=ch,dc=geni,dc=net\n"
+      . "cn: $pretty_name\n"
+      . "givenname: $given_name\n"
+      . "email: $email\n"
+      . "sn: $sn\n";
       
-    /* 
-    // ssh keys (don't remove; to be used later on)
-    $ssh_public_keys = lookup_ssh_keys($ma_url, $user, $member->member_id);
-
-    echo "ACCOUNT ID: " . $user->account_id . "\n";
-
+    // ssh keys
+    $ssh_public_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
     $number_keys = count($ssh_public_keys);
     if($number_keys > 0) {
       for($i = 0; $i < $number_keys; $i++) {
@@ -178,10 +173,9 @@ if (array_key_exists('project', $_REQUEST)
         $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
       }
     }
-    */
     
     // other information
-    $ldif_string .= "uid: {$member->username}\n"
+    $ldif_string .= "uid: $username\n"
       . "o: $project_description\n"
       . "objectclass: top\n"
       . "objectclass: person\n"
@@ -191,30 +185,7 @@ if (array_key_exists('project', $_REQUEST)
       . "objectclass: organizationalPerson\n"
       . "objectclass: hostObject\n"
       . "objectclass: ldapPublicKey\n";
-    
-  }
-  
-    /*
-    // grab public keys and add to ldif string as appropriate
-    $ssh_public_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
-    $number_keys = count($ssh_public_keys);
-    
-    if($number_keys == 1) {
-      $ldif_string .= "sshpublickey: {$ssh_public_keys[0]['public_key']}\n";
-    }
-    else {
-      for($i = 0; $i < $number_keys; $i++) {
-        // display as one greater than ith entry in array
-        // i.e., start with sshpublickey1 stored in position 0, etc.
-        $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
-      }
-    }
-    
-    */
-    
 
-  
-  
   // display sites chosen
   echo "<p>The WiMAX site(s) chosen: </p>\n";
   echo "<ul>\n";
@@ -325,7 +296,7 @@ else {
   
   
     // FIXME: change method from GET to POST when done (GET used for debugging)
-    echo '<form id="f1" action="wimax.php" method="get">';
+    echo '<form id="f1" action="wimax-enable.php" method="get">';
     echo "<p>Choose a project: \n";
     echo '<select name="project">\n';
     foreach ($projects as $proj) {
