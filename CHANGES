@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * Add pa_project_attribute table (#656)
   * Allow for download public SSH key (#655)
   * undefined variables in amstatus with am_id (#648)
   * Login information is wrong in multi-user slices (#645)
