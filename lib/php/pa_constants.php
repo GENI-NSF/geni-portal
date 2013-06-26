@@ -126,4 +126,20 @@ function is_valid_project_name($project_name)
   $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-_]{0,31}$/';
   return preg_match($pattern, $project_name);
 }
+
+/* Name of table containing project attributes */
+$PA_PROJECT_ATTRIBUTE_TABLENAME = "pa_project_attribute";
+
+class PA_ATTRIBUTE {
+  const PROJECT_ID = "project_id";
+  const NAME = "name";
+  const VALUE = "value";
+}
+
+/* Add projects/tools here as necessary */
+class PA_ATTRIBUTE_NAME {
+  const ENABLE_WIMAX = "enable_wimax";
+}
+
+
 ?>
