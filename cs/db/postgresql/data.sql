@@ -167,8 +167,12 @@ INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) 
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 2, 5, 4, null);
 
--- A MEMBER of a context_type has WRITE, READ, USE PRIVILEGE in project that context
+-- A MEMBER of a context_type has WRITE, READ, USE PRIVILEGE in that context
 -- Except for projects, which is READ, USE ONLY
+-- IE:
+-- WRITE SLICE: add_slivers, delete_slivers, renew_slice
+-- USE: create_slice
+-- READ: lookup_slices, get_slice_members, list_resources, get_services, get_projects, get_project_members
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 3, 1, 2, null);
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
@@ -199,6 +203,7 @@ INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) 
        (null, 3, 5, 4, null);
 
 -- An AUDITOR of a context_type has READ PRIVILEGE in that context
+-- IE lookup_slices, get_slice_members, list_resources, get_services, get_projects, get_project_members
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
        (null, 4, 1, 2, null);
 INSERT INTO cs_policy (signer, attribute, context_type, privilege, policy_cert) values
