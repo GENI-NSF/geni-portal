@@ -71,11 +71,12 @@ if (count($keys) == 0)
 else
   {
     $download_pkey_url = relative_url('downloadsshkey.php?');
+    $download_public_key_url = relative_url('downloadsshpublickey.php?');
     $edit_sshkey_url = relative_url('sshkeyedit.php?');
     $delete_sshkey_url = relative_url('deletesshkey.php?');
     js_delete_ssh_key();  // javascript for delete key confirmation
     print "\n<table>\n";
-    print "<tr><th>Name</th><th>Description</th><th>Private Key</th>"
+    print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
           . "<th>Edit</th><th>Delete</th></tr>\n";
     foreach ($keys as $key) {
       $args['id'] = $key['id'];
@@ -87,6 +88,9 @@ else
                 . $download_pkey_url . $query
                 . "'\">Download Private Key</button>");
       }
+      $public_key_download_cell = ("<button $disable_ssh_keys onClick=\"window.location='"
+                . $download_public_key_url . $query
+                . "'\">Download Public Key</button>");
       $edit_cell = ("<button $disable_ssh_keys onClick=\"window.location='"
                 . $edit_sshkey_url . $query
                 . "'\">Edit</button>");
@@ -96,6 +100,7 @@ else
       print "<tr>"
       . "<td>" . htmlentities($key['filename']) . "</td>"
       . "<td>" . htmlentities($key['description']) . "</td>"
+      . '<td>' . $public_key_download_cell . '</td>'
       . '<td>' . $pkey_cell . '</td>'
       . '<td>' . $edit_cell . '</td>'
       . '<td>' . $delete_cell . '</td>'
