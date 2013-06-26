@@ -38,6 +38,7 @@
 //   remove_project_member(sa_url, project_id, member_id)
 //   change_member_role(sa_url, project_id, member_id, role)
 //   lookup_project_attributes(sa_url, project_id)
+//   add_project_attribute(sa_url, signer, project_id, name, value)
 
 
 require_once('pa_constants.php');
