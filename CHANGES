@@ -3,6 +3,8 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * Move cainfo.html (#642)
+  * Fix OpenID for GIMI (#661)
   * Add pa_project_attribute table (#656)
   * Allow for download public SSH key (#655)
   * undefined variables in amstatus with am_id (#648)
