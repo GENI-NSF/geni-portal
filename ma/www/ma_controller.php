@@ -182,7 +182,8 @@ function lookup_public_ssh_keys($args, $message)
   $log_msg = "Looking up SSH keys for $member_id";
   geni_syslog(GENI_SYSLOG_PREFIX::MA, $log_msg);
   $conn = db_conn();
-  $fields = MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID . ", " .
+  $fields = MA_SSH_KEY_TABLE_FIELDNAME::ID . ", " . 
+    MA_SSH_KEY_TABLE_FIELDNAME::MEMBER_ID . ", " .
     MA_SSH_KEY_TABLE_FIELDNAME::FILENAME . ", " .
     MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION . ", " .
     MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY;
@@ -214,6 +215,7 @@ function lookup_private_ssh_keys($args, $message)
 function update_ssh_key($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
+
   $member_id = $args[MA_ARGUMENT::MEMBER_ID];
   $signer_id = $message->signerUuid();
   $client_urn = $message->signerUrn();
@@ -251,6 +253,7 @@ function update_ssh_key($args, $message)
           . " = " . $conn->quote($member_id, 'text')
           . " AND " . MA_SSH_KEY_TABLE_FIELDNAME::ID
           . " = " . $conn->quote($ssh_key_id, 'integer'));
+
   $rows = db_execute_statement($sql);
   if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     return $rows;

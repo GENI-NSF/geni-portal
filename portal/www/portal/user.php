@@ -272,7 +272,7 @@ class GeniUser
       return array();
     }
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-    $keys = lookup_public_ssh_keys($ma_url, $this, $this->account_id);
+    $keys = lookup_private_ssh_keys($ma_url, $this, $this->account_id);
     return $keys;
   }
 
