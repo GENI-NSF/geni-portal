@@ -235,6 +235,11 @@ class GeniUser
 
   private function getInsideKeyPair() {
 
+    // We only do this for the currently logged in user
+    if(strtolower($_SERVER['eppn']) != $this->eppn) {
+      throw new Exception("Can't call getInsideKeyPair other than for current suer");
+    }
+
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     $row = lookup_keys_and_certs($ma_url, Portal::getInstance(),
             $this->account_id);
@@ -257,7 +262,7 @@ class GeniUser
   }
 
   /**
-   * Fetch the user's ssh keys.
+   * Fetch the user's public ssh keys.
    */
   function sshKeys() {
     // NOTE: This is a candidate for caching on the HTTP session
@@ -267,7 +272,7 @@ class GeniUser
       return array();
     }
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-    $keys = lookup_ssh_keys($ma_url, $this, $this->account_id);
+    $keys = lookup_private_ssh_keys($ma_url, $this, $this->account_id);
     return $keys;
   }
 
@@ -275,7 +280,8 @@ class GeniUser
   {
     if ($this->account_id == $member_id) return $this;
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-    $member = ma_lookup_member_by_id($ma_url, $this, $member_id);
+    $member = ma_lookup_member_by_id($ma_url, $this,
+				     $member_id);
     $user = new GeniUser();
     $user->init_from_member($member);
     // add in identity attributes

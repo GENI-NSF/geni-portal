@@ -49,6 +49,7 @@ if (! count($_GET)) {
   no_slice_error();
 }
 unset($slice);
+$am_id = "";  // initialize this before going into tools
 include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();

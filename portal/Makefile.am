@@ -90,6 +90,7 @@ dist_svcweb_DATA = \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
 	www/portal/downloadsshkey.php \
+	www/portal/downloadsshpublickey.php \
 	www/portal/edit-project-member.php \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
