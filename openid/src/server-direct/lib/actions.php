@@ -44,7 +44,15 @@ function action_default()
       // the POST to the new location. Normal redirect (without 307)
       // causes a GET instead of a POST
       global $indirect_server_url;
-      header('Location: ' . $indirect_server_url, true, 307);
+      $new_location = $indirect_server_url;
+      if ($method == 'GET') {
+        // If the request comes in via get, we want to redirect
+        // to a URL that includes the full query string. Otherwise
+        // all that juicy data gets lost. This was a problem for GIMI,
+        // which uses a ruby openid client.
+        $new_location .= '?' . $_SERVER['QUERY_STRING'];
+      }
+      header('Location: ' . $new_location, true, 307);
 	exit;
         if ($request->idSelect()) {
             // Perform IDP-driven identifier selection
