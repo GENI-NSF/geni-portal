@@ -363,6 +363,9 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_null($output2)) {
        error_log("am_client invoke_omni_function:"
                . "JSON result is not parseable: \"$output\"");
+       // this is probably a traceback from python
+       // return it as a string
+       return $output;
      }
      return $output2;
 }

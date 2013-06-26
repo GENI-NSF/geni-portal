@@ -1,10 +1,16 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
 = GENI Clearinghouse and Portal Release Notes =
+
 == 1.9 ==
+  * undefined variables in amstatus with am_id (#648)
+  * Login information is wrong in multi-user slices (#645)
+  * Save error Omni results (#444)
   * Fix sa_url in tool-omniconfig.php (#643)
   * Fix warnings in gemini.php (#641)
   * SA/PA merge (#540)
+  * Fix link to SignMeUp (#653)
+  * Include email address in account change request emails (#626)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
