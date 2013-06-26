@@ -161,7 +161,7 @@ $gemini_info[GEMINI_USER_PROJECT_NAMES] = $projects_not_expired;
  * Send SSH keys
  * ------------------------------------------------------------
  */
-$ssh_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
+$ssh_keys = lookup_public_ssh_keys($ma_url, $user, $user->account_id);
 $gemini_ssh_keys = array();
 foreach ($ssh_keys as $ssh_key) {
   $this_key = array();

@@ -75,7 +75,7 @@ register_ssh_key($ma_url, $user, $member1, 'FILE', 'DESC', 'KEY');
 
 foreach($member_ids as $member_id) {
   error_log("Member_ID " . $member_id);
-  $ssh_keys_for_member = lookup_ssh_keys($ma_url, $user, $member_id);
+  $ssh_keys_for_member = lookup_public_ssh_keys($ma_url, $user, $member_id);
   foreach($ssh_keys_for_member as $ssh_key_for_member) {
     //    error_log("   KEY : " . print_r($ssh_key_for_member, true));
     $filename = $ssh_key_for_member[MA_SSH_KEY_TABLE_FIELDNAME::FILENAME];

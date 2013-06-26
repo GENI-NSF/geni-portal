@@ -43,6 +43,8 @@
  *   accept_invitation(invite_id)
  *   modify_project_membership(project_id, members_to_add, 
  *        members_to_change_role, members_to_remove)
+ *   lookup_project_attributes(project_id)
+ *   add_project_attribute(project_id, name, value)
  *
  *
  * The SA interface supports these methods:
@@ -275,6 +277,8 @@ class SAGuardFactory implements GuardFactory
 	    'lookup_project_details' => array(), // Unguarded
 	    "invite_member" => array("project_guard"),
 	    "accept_invitation" => array(), // unguarded
+	    "lookup_project_attributes" => array(), // unguarded
+	    "add_project_attribute" => array(), // unguarded
 	    // SA Methods
             'get_slice_credential' => array('slice_guard'),
             'get_user_credential' => array(), // Unguarded
@@ -2177,6 +2181,106 @@ function accept_invitation($args, $message)
   return $result;
 
 }
+
+
+
+
+
+
+
+/* Get all attributes of project
+ */
+function lookup_project_attributes($args)
+{
+
+  pa_expire_projects();
+
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    // missing arg
+    error_log("Missing project_id arg to lookup_project_attributes");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Project ID is missing");
+  }
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in lookup_project_attributes: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Project ID is invalid: " . $project_id);
+  }
+
+
+  global $PA_PROJECT_ATTRIBUTE_TABLENAME;
+  $conn = db_conn();
+  $query = "SELECT * FROM " . $PA_PROJECT_ATTRIBUTE_TABLENAME . " WHERE " . 
+    PA_ATTRIBUTE::PROJECT_ID . 
+    " = " . $conn->quote($project_id, 'text');
+  $result = db_fetch_rows($query);
+  return $result;
+}
+
+
+/* Add attribute name/value pair to project
+   Requires project_id, name, value
+*/
+function add_project_attribute($args)
+{
+
+  // verify project ID exists
+  if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
+      $args[PA_ARGUMENT::PROJECT_ID] == '') {
+    error_log("Missing project_id arg to lookup_project_attributes");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Project ID is missing");
+  }
+  
+  // verify that both name and value pair exist
+  // needed since both cannot be null when adding to database
+  if (! array_key_exists(PA_ATTRIBUTE::NAME, $args) or
+      $args[PA_ATTRIBUTE::NAME] == '') {
+    error_log("Missing name arg to lookup_project_attributes");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Name is missing");
+  }
+  if (! array_key_exists(PA_ATTRIBUTE::VALUE, $args) or
+      $args[PA_ATTRIBUTE::VALUE] == '') {
+    error_log("Missing value arg to lookup_project_attributes");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Value is missing");
+  }
+  
+  // verify project ID is valid
+  $project_id = $args[PA_ARGUMENT::PROJECT_ID];
+  if (! uuid_is_valid($project_id)) {
+    error_log("project_id invalid in lookup_project_attributes: " . $project_id);
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Project ID is invalid: " . $project_id);
+  }
+
+  global $PA_PROJECT_ATTRIBUTE_TABLENAME;
+  $conn = db_conn();
+  
+  // we know name/value pair exists, so define what they are
+  $name = $args[PA_ATTRIBUTE::NAME];
+  $value = $args[PA_ATTRIBUTE::VALUE];
+  
+  // insert
+  $sql = ("insert into " . $PA_PROJECT_ATTRIBUTE_TABLENAME
+          . " ( " . PA_ATTRIBUTE::PROJECT_ID
+          . ", " . PA_ATTRIBUTE::NAME
+          . ", " . PA_ATTRIBUTE::VALUE
+          . ")  VALUES ("
+          . $conn->quote($project_id, 'text')
+          . ", " . $conn->quote($name, 'text')
+          . ", " . $conn->quote($value, 'text')
+          . ")");
+  $result = db_execute_statement($sql);
+  return $result;
+
+}
+
+
+
 
 
 /*----------------------------------------------------------------------

@@ -37,6 +37,8 @@
 //   add_project_member(sa_url, project_id, member_id, role)
 //   remove_project_member(sa_url, project_id, member_id)
 //   change_member_role(sa_url, project_id, member_id, role)
+//   lookup_project_attributes(sa_url, project_id)
+//   add_project_attribute(sa_url, signer, project_id, name, value)
 
 
 require_once('pa_constants.php');
@@ -303,6 +305,32 @@ function accept_invitation($sa_url, $signer, $invitation_id)
 			$signer->certificate(), $signer->privateKey());
   return $result;
 }
+
+// Look up all attributes of a given project
+function lookup_project_attributes($sa_url, $signer, $project_id)
+{
+  global $user;
+  $lookup_project_attributes_message['operation'] = 'lookup_project_attributes';
+  $lookup_project_attributes_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  $results = put_message($sa_url, $lookup_project_attributes_message, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
+
+// Add attribute (name/value pair) to a given project
+function add_project_attribute($sa_url, $signer, $project_id, $name, $value)
+{
+  global $user;
+  $add_project_attribute_message['operation'] = 'add_project_attribute';
+  $add_project_attribute_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  $add_project_attribute_message[PA_ATTRIBUTE::NAME] = $name;
+  $add_project_attribute_message[PA_ATTRIBUTE::VALUE] = $value;
+  $results = put_message($sa_url, $add_project_attribute_message, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
+
+
 
 
 ?>
