@@ -30,6 +30,8 @@ nobase_dist_svcdata_DATA = \
 	php/session_cache.php \
 	php/signer.php \
 	php/smime.php \
+	php/Pest.php \
+	php/PestJSON.php \
 	php/sr_client.php \
 	php/sr_constants.php \
 	php/util.php
