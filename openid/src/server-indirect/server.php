@@ -58,7 +58,8 @@ function action_show_trust() {
   $trust_root = htmlspecialchars($info->trust_root);
   $title = 'GENI OpenID Trust';
   $authorize_url = buildURL('authorize', true);
-  $text = sprintf(page_template, $title, $trust_root, $trust_root, $authorize_url);
+  $text = sprintf(page_template, $title, $trust_root, $trust_root,
+                  $authorize_url);
   $headers = array();
   return array($headers, $text);
 }
@@ -111,7 +112,8 @@ function send_geni_user($server, $info) {
   // response message.
   $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($info);
 
-  $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, $sreg_data);
+  $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request,
+                                                             $sreg_data);
 
   $sreg_response->toMessage($response->fields);
 
