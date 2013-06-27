@@ -302,7 +302,7 @@ class SAGuardFactory implements GuardFactory
 	    //
 	    // Methods for managing pending requests on projects or slices
 	    'create_request' => array(), // Unguarded
-	    'resolve_pending_request' => array('project_request_guard'),
+	    'resolve_pending_request' => array('project_request_guard'), // only called for project requests
 	    'get_requests_for_context' => array(), // Unguarded
 	    'get_requests_by_user' => array(), // Unguarded
 	    'get_pending_requests_for_user' => array(), // Unguarded
