@@ -262,16 +262,16 @@ class SAGuardFactory implements GuardFactory
     = array(
             // Action => array(method_name, method_name, ...)
 	    // PA methods
-	    'create_project' => array(), // Unguarded
+	    'create_project' => array(), // Unguarded -- method itself checks that LEAD_ID is a valid project lead
 	    'get_projects' => array(), // Unguarded
 	    'lookup_projects' => array(), // Unguarded
 	    'lookup_project' => array(), // Unguarded
 	    'update_project' => array('project_guard'), 
 	    'modify_project_membership' => array('project_guard'), 
-	    //	    'change_project_lead' => array('project_guard'),
-	    //	    'add_project_member' => array('project_guard'),
-	    //	    'remove_project_member' => array('project_guard'),
-	    //	    'change_member_role' => array('project_guard'),
+	    'change_project_lead' => array('FalseGuard'),
+	    'add_project_member' => array('FalseGuard'),
+	    'remove_project_member' => array('FalseGuard'),
+	    'change_member_role' => array('FalseGuard'),
 	    'get_project_members' => array(), // Unguarded
 	    'get_projects_for_member' => array(), // Unguarded
 	    'lookup_project_details' => array(), // Unguarded
@@ -279,6 +279,8 @@ class SAGuardFactory implements GuardFactory
 	    "accept_invitation" => array(), // unguarded
 	    "lookup_project_attributes" => array(), // unguarded
 	    "add_project_attribute" => array(), // unguarded
+	    'add_project_lead_to_slices' => array('FalseGuard'),
+	    'remove_project_member_from_slices' => array('FalseGuard'),
 	    // SA Methods
             'get_slice_credential' => array('slice_guard'),
             'get_user_credential' => array(), // Unguarded
@@ -289,9 +291,9 @@ class SAGuardFactory implements GuardFactory
             'lookup_slice_by_urn' => array(), // Unguarded
             'renew_slice' => array('slice_guard'),
 	    'modify_slice_membership' => array('slice_guard'),
-	    //            'add_slice_member' => array('slice_guard'),
-	    //            'remove_slice_member' => array('slice_guard'),
-	    //            'change_slice_member_role' => array('slice_guard'),
+	    'add_slice_member' => array('FalseGuard'),
+	    'remove_slice_member' => array('FalseGuard'),
+	    'change_slice_member_role' => array('FalseGuard'),
             'get_slice_members' => array('slice_guard'),
             'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
@@ -306,6 +308,15 @@ class SAGuardFactory implements GuardFactory
 	    'get_pending_requests_for_user' => array(), // Unguarded
 	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
 	    'get_request_by_id' => array(), // Unguarded
+	    //
+	    // Internal methods
+	    'sa_debug' => array('FalseGuard'),
+	    'sa_expire_slices' => array('FalseGuard'),
+	    'pa_expire_projects' => array('FalseGuard'),
+	    'pa_expire_projects_internal' => array('FalseGuard'),
+	    'expire_project_invitations' => array('FalseGuard'),
+	    'change_slice_owner' => array('FalseGuard'),
+	    'sa_message_result_handler' => array('FalseGuard')
             );
 
   public function __construct($cs_url) {
@@ -365,13 +376,18 @@ class SAGuardFactory implements GuardFactory
     $action = $parsed_message[0];
     $params = $parsed_message[1];
     if (array_key_exists($action, self::$context_table)) {
+      if (self::$context_table[$action] == array()) {
+	// FIXME: Deny access altogether?
+	error_log("SA/PA function unguarded: " . $action);
+	geni_syslog(GENI_SYSLOG_PREFIX::SA, "SA/PA function unguarded: " . $action);
+      }
       foreach (self::$context_table[$action] as $method_name) {
         // How to call a method dynamically
         $meth = array($this, $method_name);
         $result[] = call_user_func($meth, $message, $action, $params);
       }
     } else {
-      error_log("SA: No guard producers for action \"$action\"");
+      error_log("SA/PA: No guard producers for action \"$action\"");
     }
 
     // Allow another authority to perform actions on behalf of users
@@ -1183,7 +1199,8 @@ function modify_project_membership($args, $message)
   }
 }
 
-/* update lead_id of given project */
+/* update lead_id of given project.
+*  To be called only be SA/PA local functions */
 function change_project_lead($project_id, $new_project_lead)
 {
   global $PA_PROJECT_TABLENAME;
@@ -1205,6 +1222,7 @@ function change_project_lead($project_id, $new_project_lead)
 
 // Add a member of given role to given project
 // Return code/value/output triple
+// Internal only method
 function add_project_member($args, $message)
 {
 
@@ -1381,6 +1399,7 @@ function add_project_member($args, $message)
 }
 
 // Add project lead as admin to all current project slices
+// internal only method
 function add_project_lead_to_slices($project_id, $project_lead_id, $message)
 {
 
@@ -1425,6 +1444,7 @@ function add_project_lead_to_slices($project_id, $project_lead_id, $message)
 
 // Remove member from slices to which he belongs in given project
 // If member is lead of such a slice, replace with project lead
+// internal only method
 function remove_project_member_from_slices($member_id, $project_id, $message)
 {
   global $mysigner;
@@ -1545,7 +1565,7 @@ function remove_project_member_from_slices($member_id, $project_id, $message)
 }
 
 
-// Remove a member from given project
+// Remove a member from given project - internal only method
 function remove_project_member($args, $message)
 {
 
@@ -1696,6 +1716,7 @@ function remove_project_member($args, $message)
 }
 
 // Change role of given member in given project
+// internal only method
 function change_member_role($args, $message)
 {
 
@@ -2181,11 +2202,6 @@ function accept_invitation($args, $message)
   return $result;
 
 }
-
-
-
-
-
 
 
 /* Get all attributes of project
@@ -3227,6 +3243,7 @@ function change_slice_owner($slice_id, $new_slice_lead)
 
 
 // Add a member of given role to given slice
+// internal only method
 function add_slice_member($args, $message)
 {
   sa_expire_slices();
@@ -3313,6 +3330,7 @@ function add_slice_member($args, $message)
 }
 
 // Remove a member from given slice 
+// internal only method
 function remove_slice_member($args, $message)
 {
   sa_expire_slices();
@@ -3380,6 +3398,7 @@ function remove_slice_member($args, $message)
 }
 
 // Change role of given member in given slice
+// internal only method
 function change_slice_member_role($args, $message)
 {
   sa_expire_slices();
