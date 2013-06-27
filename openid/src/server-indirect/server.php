@@ -68,9 +68,10 @@ function action_authorize() {
   $info = getRequestInfo();
   if (! $info) {
     $info = $server->decodeRequest();
-    setRequestInfo($info);
   }
 
+  // Throw away the info, we no longer need it.
+  setRequestInfo();
   $trusted = isset($_POST['save']);
   if ($trusted) {
     return send_geni_user($server, $info);
@@ -82,7 +83,6 @@ function action_authorize() {
 function send_cancel($info)
 {
     if ($info) {
-        setRequestInfo();
         $url = $info->getCancelURL();
     } else {
         $url = getServerURL();
