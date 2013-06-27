@@ -51,6 +51,11 @@ function action_default()
         // all that juicy data gets lost. This was a problem for GIMI,
         // which uses a ruby openid client.
         $new_location .= '?' . $_SERVER['QUERY_STRING'];
+      } else if ($method == 'POST') {
+        /* error_log("About to translate POST: " . print_r($_POST, true)); */
+        $query = Auth_OpenID::getQuery();
+        $new_location .= '?' . http_build_query($query);
+        /* error_log("OpenID-Direct POST redirecting to $new_location"); */
       }
       header('Location: ' . $new_location, true, 307);
 	exit;
