@@ -17,8 +17,51 @@ if (!$try_include) {
     header("Location: setup.php");
 }
 
+/* Bring in some GENI code. */
+require_once "settings.php";
+require_once "user.php";
+
 header('Cache-Control: no-cache');
 header('Pragma: no-cache');
+
+function returnUserInfo() {
+  $server =& getServer();
+  $info = $server->decodeRequest();
+
+  $geni_user = geni_loadUser();
+  $req_url = idURL($geni_user->username);
+  $response =& $info->answer(true, null, $req_url);
+
+  // Answer with some sample Simple Registration data.
+  global $portal_cert_file;
+  global $portal_private_key_file;
+  $sreg_data = array();
+  if ($geni_user) {
+    $sreg_data['nickname'] = $geni_user->username;
+    $sreg_data['email'] = $geni_user->email();
+  }
+  if (empty($sreg_data)) {
+    error_log("OpenID: Unable to access user information.");
+  }
+  // Add the simple registration response values to the OpenID
+  // response message.
+  $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($info);
+
+  $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, $sreg_data);
+
+  $sreg_response->toMessage($response->fields);
+
+  // Generate a response to send to the user agent.
+  $webresponse =& $server->encodeResponse($response);
+
+  $new_headers = array();
+
+  foreach ($webresponse->headers as $k => $v) {
+    $new_headers[] = $k.": ".$v;
+  }
+
+  return array($new_headers, $webresponse->body);
+}
 
 if (function_exists('getOpenIDStore')) {
     require_once 'lib/session.php';
@@ -26,12 +69,7 @@ if (function_exists('getOpenIDStore')) {
 
     init();
 
-    $action = getAction();
-    if (!function_exists($action)) {
-        $action = 'action_default';
-    }
-
-    $resp = $action();
+    $resp = returnUserInfo();
 
     writeResponse($resp);
 } else {
