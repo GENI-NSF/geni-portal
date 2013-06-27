@@ -19,6 +19,7 @@
   * Check permissions and remove dead code in do-edit-project (#666)
   * Ensure SA/PA methods all have guards or we warn why not (#540)
   * Hide Update Project button if user not permitted (#540)
+  * CS logs if it authorizes an action only cause you are an operator (#397)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
