@@ -277,6 +277,6 @@ if ($portal_enable_abac)
   }
 
 
-     print '<h2>iRODS</h2>\n';
+     print '<h2>iRODS</h2>';
 print "<button onClick=\"window.location='irods.php'\"><b>Create iRODS Account</b></button><br/>\n";
 ?>

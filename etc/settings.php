@@ -26,4 +26,7 @@ $db_dsn = 'pgsql://portal:portal@localhost/portal';
 
 $portal_admin_email = 'portal-dev-admin@gpolab.bbn.com';
 
+// User/PW for an admin account on the iRODS server for use by the portal in creating iRODS accounts
+$portal_irods_user = 'rods';
+$portal_irods_pw = 'rods';
 ?>
