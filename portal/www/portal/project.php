@@ -141,7 +141,7 @@ if (isset($project_id)) {
     print relative_url("createslice?project_id=$project_id'");
     print "\"><b>Create Slice</b></button>";
   }
-  if ($user->isAllowed(SA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
     $putBut = True;
     print "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
   }
