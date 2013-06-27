@@ -263,31 +263,37 @@ class SAGuardFactory implements GuardFactory
             // Action => array(method_name, method_name, ...)
 	    // PA methods
 	    'create_project' => array(), // Unguarded -- method itself checks that LEAD_ID is a valid project lead
-	    'get_projects' => array(), // Unguarded
-	    'lookup_projects' => array(), // Unguarded
-	    'lookup_project' => array(), // Unguarded
+	    'get_projects' => array('TrueGuard'), // Unguarded - by intent
+	    'lookup_projects' => array('TrueGuard'), // Unguarded - by intent
+	    'lookup_project' => array('TrueGuard'), // Unguarded - by intent
 	    'update_project' => array('project_guard'), 
 	    'modify_project_membership' => array('project_guard'), 
 	    'change_project_lead' => array('FalseGuard'),
 	    'add_project_member' => array('FalseGuard'),
 	    'remove_project_member' => array('FalseGuard'),
 	    'change_member_role' => array('FalseGuard'),
+	    // FIXME: Can this be just if you are a member of the project?
 	    'get_project_members' => array(), // Unguarded
+	    // FIXME: Can this be just operators or the given member?
 	    'get_projects_for_member' => array(), // Unguarded
-	    'lookup_project_details' => array(), // Unguarded
+	    'lookup_project_details' => array('TrueGuard'), // Unguarded - by intent
 	    "invite_member" => array("project_guard"),
-	    "accept_invitation" => array(), // unguarded
+	    "accept_invitation" => array('TrueGuard'), // unguarded - by intent
+	    // FIXME: This could be unguarded, or could be only people in the project
 	    "lookup_project_attributes" => array(), // unguarded
+	    // FIXME: This should be only project lead or admin (or operator)
 	    "add_project_attribute" => array(), // unguarded
 	    'add_project_lead_to_slices' => array('FalseGuard'),
 	    'remove_project_member_from_slices' => array('FalseGuard'),
 	    // SA Methods
             'get_slice_credential' => array('slice_guard'),
+	    // FIXME: Should this only be the given user?
             'get_user_credential' => array(), // Unguarded
             'create_slice' => array('project_guard'),
             'lookup_slice_ids' => array('project_guard'),
             'lookup_slices' => array('lookup_slices_guard'),
             'lookup_slice' => array('slice_guard'),
+	    // FIXME: Should this be the slice_guard?
             'lookup_slice_by_urn' => array(), // Unguarded
             'renew_slice' => array('slice_guard'),
 	    'modify_slice_membership' => array('slice_guard'),
@@ -297,12 +303,15 @@ class SAGuardFactory implements GuardFactory
             'get_slice_members' => array('slice_guard'),
             'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
+	    // FIXME: Should this be the slice guard?
             'lookup_slice_details' => array(), // Unguarded
+	    // FIXME: Allow this if you have the right on all project IDs in the given list?
             'get_slices_for_projects' => array(), // Unguarded
 	    //
 	    // Methods for managing pending requests on projects or slices
-	    'create_request' => array(), // Unguarded
+	    'create_request' => array('TrueGuard'), // Unguarded - by intent
 	    'resolve_pending_request' => array('project_request_guard'), // only called for project requests
+	    // FIXME: should these all be unguarded? 
 	    'get_requests_for_context' => array(), // Unguarded
 	    'get_requests_by_user' => array(), // Unguarded
 	    'get_pending_requests_for_user' => array(), // Unguarded
