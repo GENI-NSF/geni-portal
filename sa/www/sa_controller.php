@@ -366,6 +366,14 @@ class SAGuardFactory implements GuardFactory
 			     SA_ARGUMENT::MEMBER_ID);
   }
 
+  private function TrueGuard($message, $action, $params) {
+    return new TrueGuard();
+  }
+
+  private function FalseGuard($message, $action, $params) {
+    return new FalseGuard();
+  }
+
   /**
    * Special function for 'lookup_slices' to handle the case where
    * PROJECT_ID is null.
@@ -396,7 +404,8 @@ class SAGuardFactory implements GuardFactory
         $result[] = call_user_func($meth, $message, $action, $params);
       }
     } else {
-      error_log("SA/PA: No guard producers for action \"$action\"");
+      error_log("SA/PA function unguarded: " . $action);
+      geni_syslog(GENI_SYSLOG_PREFIX::SA, "SA/PA function unguarded: " . $action);
     }
 
     // Allow another authority to perform actions on behalf of users
