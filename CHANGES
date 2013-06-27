@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * Verify OpenID username (#289)
   * Improve OpenID page flow (#288)
   * Fix call(s) to modify_project_membership in pa_client.php (#665)
   * Move cainfo.html (#642)
