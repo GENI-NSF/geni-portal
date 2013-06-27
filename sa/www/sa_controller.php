@@ -651,10 +651,27 @@ function create_project($args, $message)
 
   if (! $permitted) {
     // FIXME: Need a syslog for this?
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
+   $msg = "Principal " . $lead_id . " may not be the lead on a project";
+   geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+   return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
 			     "Principal " . $lead_id  . " may not create project");
   }
 
+  // Ensure that caller is allowed to be a project lead, which is prereq for calling this method
+  // FIXME: Put this in a guard!
+  $permitted = request_authorization($cs_url, $mysigner, $message->signerUuid(), PA_ACTION::CREATE_PROJECT,
+				     CS_CONTEXT_TYPE::RESOURCE, null);
+  if ($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+  
+  //  error_log("PERMITTED = " . $permitted);
+  if (! $permitted) {
+    $msg = "Principal " . $message->signerUuid() . " may not call create_project";
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, $msg);
+  }
+	
   // FIXME: Real project email address: ticket #313
   $project_email = 'project-' . $project_name . '@example.com';
 
@@ -700,6 +717,7 @@ function create_project($args, $message)
 				     PA_ARGUMENT::ROLE_TYPE 
 				     => CS_ATTRIBUTE_TYPE::LEAD),
 			       $message);
+
   if (! isset($addres) || is_null($addres) || ! 
       array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || 
       $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
@@ -928,6 +946,7 @@ function update_project($args, $message)
   //  error_log("UPDATE.sql = " . $sql);
 
   $result = db_execute_statement($sql);
+  // FIXME: Check that this succeeded!
 
   global $log_url;
   global $mysigner;
