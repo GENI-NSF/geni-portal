@@ -4,6 +4,7 @@
 
 == 1.9 ==
   * Improve OpenID page flow (#288)
+  * Fix call(s) to modify_project_membership in pa_client.php (#665)
   * Move cainfo.html (#642)
   * Fix OpenID for GIMI (#661)
   * Add pa_project_attribute table (#656)
