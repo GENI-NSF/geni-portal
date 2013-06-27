@@ -131,16 +131,28 @@ print "<tr><th>Project Actions</th></tr>\n";
 print "<tr>\n";
 /* Edit Project */
 /* Only show create slice link if user has appropriate privilege. */
-if(isset($project_id) && $user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-	/* Create a new slice*/
-	print "<td><button onClick=\"window.location='";
-	print relative_url("createslice?project_id=$project_id'");
-	print "\"><b>Create Slice</b></button>";
-	print "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
-	print "</td>\n";
+if (isset($project_id)) {
+  print "<td>";
+  $putBut = False;
+  if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+    $putBut = True;
+    /* Create a new slice*/
+    print "<button onClick=\"window.location='";
+    print relative_url("createslice?project_id=$project_id'");
+    print "\"><b>Create Slice</b></button>";
+  }
+  if ($user->isAllowed(SA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+    $putBut = True;
+    print "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+  }
+  if (! $putBut) {
+    /* Put in an empty table cell if no slice privilege. */
+    print "<i>None: no privileges.</i>";
+  }
+  print "</td>\n";
 } else {
-	/* Put in an empty table cell if no slice privilege. */
-	print "<td><i>None: no privileges.</i></td>";
+	/* Put in an empty table cell if no project. */
+	print "<td><i>None: no project.</i></td>";
 }
 print "</tr></table>\n";
 
