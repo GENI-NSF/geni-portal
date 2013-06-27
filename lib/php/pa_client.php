@@ -32,8 +32,8 @@
 //   get_project_members(sa_url, project_id, role=null) // null => Any
 //   get_projects_for_member(sa_url, member_id, is_member, role=null)
 //   lookup_project_details(sa_url, project_uuids)
-//   modify_project_membership(sa_url, project_id, members_to_add, 
-//           members_to_change_role, members_to_remove
+//   modify_project_membership(sa_url, signer, project_id, 
+//			 members_to_add, members_to_change_role, members_to_remove)
 //   add_project_member(sa_url, project_id, member_id, role)
 //   remove_project_member(sa_url, project_id, member_id)
 //   change_member_role(sa_url, project_id, member_id, role)
@@ -195,8 +195,8 @@ function change_lead($sa_url, $signer, $project_id, $prev_lead_id, $new_lead_id)
 {
   $members_to_change = array($prev_lead_id => CS_ATTRIBUTE_TYPE::ADMIN, 
 			     $new_lead_id => CS_ATTRIBUTE_TYPE::LEAD);
-  $result = modify_project_membership($sa_url, $signer, 
-				      array(), members_to_change, array());
+  $result = modify_project_membership($sa_url, $signer, $project_id,
+				      array(), $members_to_change, array());
   return $result;
 }
 
