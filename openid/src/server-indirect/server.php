@@ -58,7 +58,8 @@ function action_show_trust() {
   $trust_root = htmlspecialchars($info->trust_root);
   $title = 'GENI OpenID Trust';
   $authorize_url = buildURL('authorize', true);
-  $text = sprintf(page_template, $title, $trust_root, $trust_root, $authorize_url);
+  $text = sprintf(page_template, $title, $trust_root, $trust_root,
+                  $authorize_url);
   $headers = array();
   return array($headers, $text);
 }
@@ -68,9 +69,10 @@ function action_authorize() {
   $info = getRequestInfo();
   if (! $info) {
     $info = $server->decodeRequest();
-    setRequestInfo($info);
   }
 
+  // Throw away the info, we no longer need it.
+  setRequestInfo();
   $trusted = isset($_POST['save']);
   if ($trusted) {
     return send_geni_user($server, $info);
@@ -82,7 +84,6 @@ function action_authorize() {
 function send_cancel($info)
 {
     if ($info) {
-        setRequestInfo();
         $url = $info->getCancelURL();
     } else {
         $url = getServerURL();
@@ -111,7 +112,8 @@ function send_geni_user($server, $info) {
   // response message.
   $sreg_request = Auth_OpenID_SRegRequest::fromOpenIDRequest($info);
 
-  $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request, $sreg_data);
+  $sreg_response = Auth_OpenID_SRegResponse::extractResponse($sreg_request,
+                                                             $sreg_data);
 
   $sreg_response->toMessage($response->fields);
 
