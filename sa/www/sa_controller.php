@@ -447,18 +447,15 @@ class SAContextGuard implements Guard
 				    $this->action, $this->context_type,
 				    $this->context);
     $result = $ra_res[RESPONSE_ARGUMENT::VALUE];
-    $result_type = gettype($result);
-    geni_syslog(GENI_SYSLOG_PREFIX::SA, "SAContextGuard got result of type $result_type");
+    if ($ra_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      $result = false;
     geni_syslog(GENI_SYSLOG_PREFIX::SA,
 		"SAContextGuard for " . $this->message->signerUuid()
 		. " on action " . $this->action
 		. " returning " . print_r($result, true));
-    error_log("SAContextGuard got result of type $result_type");
     error_log("SAContextGuard for " . $this->message->signerUuid()
 		. " on action " . $this->action
 		. " returning " . print_r($result, true));
-    if ($ra_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
-      return false;
     return $result;
   }
 }
