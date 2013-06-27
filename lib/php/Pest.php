@@ -112,6 +112,9 @@ class Pest
      */
     public function get($url, $data = array(), $headers=array())
     {
+      if (! array_key_exists(CURLOPT_HTTPAUTH, $this->curl_opts)) {
+	error_log("httpauth opt not set");
+      }
         if (!empty($data)) {
             $pos = strpos($url, '?');
             if ($pos !== false) {
@@ -150,8 +153,13 @@ class Pest
             throw new Pest_Curl_Init($this->processError(curl_error($curl), 'curl'));
         }
 
-        foreach ($opts as $opt => $val)
+        foreach ($opts as $opt => $val) {
+	  if ($opt == CURLOPT_USERPWD) {
+	    error_log("Setting userpwd");
+	  }
+	  error_log("Setting curl opt " . $opt . "=" . $val);
             curl_setopt($curl, $opt, $val);
+	}
 
         $this->last_request = array(
             'url' => $url
