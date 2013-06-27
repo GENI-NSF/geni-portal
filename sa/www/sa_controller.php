@@ -446,9 +446,20 @@ class SAContextGuard implements Guard
 				    $this->message->signerUuid(),
 				    $this->action, $this->context_type,
 				    $this->context);
+    $result = $ra_res[RESPONSE_ARGUMENT::VALUE];
+    $result_type = gettype($result);
+    geni_syslog(GENI_SYSLOG_PREFIX::SA, "SAContextGuard got result of type $result_type");
+    geni_syslog(GENI_SYSLOG_PREFIX::SA,
+		"SAContextGuard for " . $this->message->signerUuid()
+		. " on action " . $this->action
+		. " returning " . print_r($result, true));
+    error_log("SAContextGuard got result of type $result_type");
+    error_log("SAContextGuard for " . $this->message->signerUuid()
+		. " on action " . $this->action
+		. " returning " . print_r($result, true));
     if ($ra_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
       return false;
-    return $ra_res[RESPONSE_ARGUMENT::VALUE];
+    return $result;
   }
 }
 
@@ -497,7 +508,7 @@ class PAProjectRequestGuard implements Guard
     $conn = db_conn();
     $sql = "select count(*) from $PA_PROJECT_MEMBER_TABLENAME, " 
       . "$PA_PROJECT_MEMBER_REQUEST_TABLENAME "
-    . " WHERE "
+      . " WHERE "
       . " $PA_PROJECT_MEMBER_REQUEST_TABLENAME." 
       . RQ_REQUEST_TABLE_FIELDNAME::ID 
       . " = " . $conn->quote($request_id, 'text')
