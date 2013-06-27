@@ -35,9 +35,9 @@ require_once('smime.php');
 require_once('portal.php');
 require_once('settings.php');
 require_once('sr_client.php');
-require_once('sr_settings.php');
 include_once('/etc/geni-ch/settings.php');
 require_once('PestJSON.php');
+require_once('PestXML.php');
 
 /* iRods Constants */
 const IRODS_USER_NAME = 'userName';
@@ -136,26 +136,38 @@ $irodsError = "";
 $tempPassword = "";
 
 // FIXME: Replace with something homegrown?
-$pest = new Pest($irods_url);
-$pest->setupAuth($portal_irods_user, $portal_irods_pw);
+global $portal_irods_user;
+global $portal_irods_pw;
+$pestget = new PestXML($irods_url);
+$pestget->setupAuth($portal_irods_user, $portal_irods_pw);
+error_log("pestget curlopts" . print_r($pestget->curl_opts, TRUE));
 
 $userinfo = array();
+
 
 // Need util function to parse the userinfo
 // if it is an array and has error code and it is 0 then get result. Else construct error message.
 
 try {
-  $userjson = $pest->get(IRODS_GET_USER_URI . $username);
-  error_log("Got userjson: " . $userjson);
-  $userinfo = json_decode($userjson, true);
-  // If code 0 and username and username not empty, save username and a flag indicating we don't know the PW
-  if (! is_null($userinfo) && is_array($userinfo) && array_key_exists(IRODS_USER_NAME, $userinfo)) {
-    $userExisted = True;
+  $userxml = $pestget->get(IRODS_GET_USER_URI . $username);
+  error_log(print_r($pestget->last_response, TRUE));
+  error_log("Got user: " . $userxml);
+  if (! is_null($userxml)) {
+    $userDN = $userxml->xpath('//userDN');
+    if (! is_null($userDN)) {
+      $userExisted = True;
+      $comment = $userxml->xpath('//comment');
+      $createTime = $userxml->xpath('//createTime');
+      $info = $userxml->xpath('//info');
+      $modifyTime = $userxml->xpath('//modifyTime');
+      $userType = $userxml->xpath('//userType');
+    }
   }
 } 
 catch (Exception $e) 
 {
   error_log("Error checking if iRODS account $username exists: " . $e->getMessage());
+  $irodsError = $e->getMessage();
 }
 
 if (! $userExisted) {
@@ -172,6 +184,8 @@ if (! $userExisted) {
   
   $irods_json = json_encode($irods_info);
 
+  error_log("Doing put of irods_json: " . $irods_json);
+
   ///* Sign the data with the portal certificate (Is that correct?) */
   //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
   
@@ -179,10 +193,11 @@ if (! $userExisted) {
   //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
   
 // FIXME!!!!
-
 // REST HTTP PUT this stuff
   try {
-    $addstruct = $pest->put(IRODS_PUT_USER_URI, $irods_json);
+    $pestput = new PestJSON($irods_url);
+    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
+    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
     $addjson = json_decode($addstruct, true);
     // Parse the result. If code 0, show username and password. Else show the error for now.
     // Later if username taken, find another.
@@ -201,6 +216,7 @@ if (! $userExisted) {
   } catch (Exception $e) {
     error_log("Error doing irods put to create iRODS account for " . $username . ": " . $e->getMessage());
   }
+}
 
 // Now show a page with the result
 
@@ -224,8 +240,10 @@ if ($didCreate) {
   print "<p><b>WARNING: You must find your iRods password, or contact XXX to have it reset.</b></p>\n";
 } else {
   // Some kind of error
-  print "<p>There was an error talking to iRODS.</p>";
-  print "<p>$irodsError</p>\n";
+  print "<div id=\"error-message\">";
+  print "<p class='warn'>There was an error talking to iRODS.<br/>";
+  print "$irodsError</p>\n";
+  print "</div>\n";
   // FIXME: Do more?
 }
 include("footer.php");
