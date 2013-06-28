@@ -262,50 +262,82 @@ class SAGuardFactory implements GuardFactory
     = array(
             // Action => array(method_name, method_name, ...)
 	    // PA methods
-	    'create_project' => array(), // Unguarded
-	    'get_projects' => array(), // Unguarded
-	    'lookup_projects' => array(), // Unguarded
-	    'lookup_project' => array(), // Unguarded
+	    'create_project' => array(), // Unguarded -- method itself checks that LEAD_ID is a valid project lead
+	    'get_projects' => array('TrueGuard'), // Unguarded - by intent
+	    'lookup_projects' => array('TrueGuard'), // Unguarded - by intent
+	    'lookup_project' => array('TrueGuard'), // Unguarded - by intent
 	    'update_project' => array('project_guard'), 
 	    'modify_project_membership' => array('project_guard'), 
-	    //	    'change_project_lead' => array('project_guard'),
-	    //	    'add_project_member' => array('project_guard'),
-	    //	    'remove_project_member' => array('project_guard'),
-	    //	    'change_member_role' => array('project_guard'),
-	    'get_project_members' => array(), // Unguarded
-	    'get_projects_for_member' => array(), // Unguarded
-	    'lookup_project_details' => array(), // Unguarded
+	    'change_project_lead' => array('FalseGuard'),
+	    'add_project_member' => array('FalseGuard'),
+	    'remove_project_member' => array('FalseGuard'),
+	    'change_member_role' => array('FalseGuard'),
+	    // FIXME: This is used when you request to join a project
+	    // so we can email the project admins. But we'd like to limit this 
+	    // to members of the project
+	    'get_project_members' => array(), // want to use project_guard?
+	    // Technically this method could be used to query about someone else, but don't allow that
+	    'get_projects_for_member' => array('signer_member_guard'),
+	    'lookup_project_details' => array('TrueGuard'), // Unguarded - by intent
 	    "invite_member" => array("project_guard"),
-	    "accept_invitation" => array(), // unguarded
-	    "lookup_project_attributes" => array(), // unguarded
-	    "add_project_attribute" => array(), // unguarded
+	    "accept_invitation" => array('TrueGuard'), // unguarded - by intent
+	    // FIXME: Does this work?
+	    "lookup_project_attributes" => array('signer_member_guard'),
+	    // This should be only project lead or admin (or operator)
+	    // FIXME: Does this work?
+	    "add_project_attribute" => array('project_guard'),
+	    'add_project_lead_to_slices' => array('FalseGuard'),
+	    'remove_project_member_from_slices' => array('FalseGuard'),
+	    //
 	    // SA Methods
             'get_slice_credential' => array('slice_guard'),
+	    // FIXME: Should this only be the given user? But here we just have their cert
             'get_user_credential' => array(), // Unguarded
             'create_slice' => array('project_guard'),
             'lookup_slice_ids' => array('project_guard'),
             'lookup_slices' => array('lookup_slices_guard'),
             'lookup_slice' => array('slice_guard'),
+	    // FIXME: Should this be the slice_guard? (ie any member of the slice)
+	    // But we don't know the slice object here, we just have the URN
             'lookup_slice_by_urn' => array(), // Unguarded
             'renew_slice' => array('slice_guard'),
 	    'modify_slice_membership' => array('slice_guard'),
-	    //            'add_slice_member' => array('slice_guard'),
-	    //            'remove_slice_member' => array('slice_guard'),
-	    //            'change_slice_member_role' => array('slice_guard'),
+	    'add_slice_member' => array('FalseGuard'),
+	    'remove_slice_member' => array('FalseGuard'),
+	    'change_slice_member_role' => array('FalseGuard'),
             'get_slice_members' => array('slice_guard'),
             'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
+	    // FIXME: Should this be the slice guard?
+	    // Trick is this takes a list of slice IDs.
+	    // This is how a user sees the details of their slices
             'lookup_slice_details' => array(), // Unguarded
+	    // FIXME: Allow this if you have the right on all project IDs in the given list?
+	    // but all we have is a list of project UUIDs
+	    // This is how we get the list of slices for a user
             'get_slices_for_projects' => array(), // Unguarded
 	    //
 	    // Methods for managing pending requests on projects or slices
-	    'create_request' => array(), // Unguarded
-	    'resolve_pending_request' => array('project_request_guard'),
+	    'create_request' => array('TrueGuard'), // Unguarded - by intent
+	    'resolve_pending_request' => array('project_request_guard'), // only called for project requests
+	    // FIXME: limit to lead/admin of this context
 	    'get_requests_for_context' => array(), // Unguarded
-	    'get_requests_by_user' => array(), // Unguarded
-	    'get_pending_requests_for_user' => array(), // Unguarded
-	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
+	    // limit to this user (arg is ACCOUNT_ID, should match signer UUID)
+	    'get_requests_by_user' => array('signer_account_guard'),
+	    // limit to this user (arg ACCOUNT_ID matches signer UUID)
+	    'get_pending_requests_for_user' => array('signer_account_guard'),
+	    // limit to this user (arg ACCOUNT_ID matches signer UUID
+	    'get_number_of_pending_requests_for_user' => array('signer_account_guard'),
 	    'get_request_by_id' => array(), // Unguarded
+	    //
+	    // Internal methods
+	    'sa_debug' => array('FalseGuard'),
+	    'sa_expire_slices' => array('FalseGuard'),
+	    'pa_expire_projects' => array('FalseGuard'),
+	    'pa_expire_projects_internal' => array('FalseGuard'),
+	    'expire_project_invitations' => array('FalseGuard'),
+	    'change_slice_owner' => array('FalseGuard'),
+	    'sa_message_result_handler' => array('FalseGuard')
             );
 
   public function __construct($cs_url) {
@@ -346,6 +378,20 @@ class SAGuardFactory implements GuardFactory
 			     SA_ARGUMENT::MEMBER_ID);
   }
 
+  /* Ensure that the signer matches the ACCOUNT_ID parameter. */
+  private function signer_account_guard($message, $action, $params) {
+    return new SASignerGuard($this->cs_url, $message, $action, $params, 
+			     RQ_ARGUMENTS::ACCOUNT_ID);
+  }
+
+  private function TrueGuard($message, $action, $params) {
+    return new TrueGuard();
+  }
+
+  private function FalseGuard($message, $action, $params) {
+    return new FalseGuard();
+  }
+
   /**
    * Special function for 'lookup_slices' to handle the case where
    * PROJECT_ID is null.
@@ -365,13 +411,19 @@ class SAGuardFactory implements GuardFactory
     $action = $parsed_message[0];
     $params = $parsed_message[1];
     if (array_key_exists($action, self::$context_table)) {
+      if (self::$context_table[$action] == array()) {
+	// FIXME: Deny access altogether?
+	error_log("SA/PA function unguarded: " . $action);
+	geni_syslog(GENI_SYSLOG_PREFIX::SA, "SA/PA function unguarded: " . $action);
+      }
       foreach (self::$context_table[$action] as $method_name) {
         // How to call a method dynamically
         $meth = array($this, $method_name);
         $result[] = call_user_func($meth, $message, $action, $params);
       }
     } else {
-      error_log("SA: No guard producers for action \"$action\"");
+      error_log("SA/PA function unguarded: " . $action);
+      geni_syslog(GENI_SYSLOG_PREFIX::SA, "SA/PA function unguarded: " . $action);
     }
 
     // Allow another authority to perform actions on behalf of users
@@ -430,9 +482,19 @@ class SAContextGuard implements Guard
 				    $this->message->signerUuid(),
 				    $this->action, $this->context_type,
 				    $this->context);
+    $result = $ra_res[RESPONSE_ARGUMENT::VALUE];
     if ($ra_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
-      return false;
-    return $ra_res[RESPONSE_ARGUMENT::VALUE];
+      $result = false;
+    if (! $result || $result != 1) {
+      geni_syslog(GENI_SYSLOG_PREFIX::SA,
+		  "SAContextGuard for " . $this->message->signerUuid()
+		  . " on action " . $this->action
+		  . " returning " . print_r($result, true));
+      error_log("SAContextGuard for " . $this->message->signerUuid()
+		. " on action " . $this->action
+		. " returning " . print_r($result, true));
+    }
+    return $result;
   }
 }
 
@@ -481,7 +543,7 @@ class PAProjectRequestGuard implements Guard
     $conn = db_conn();
     $sql = "select count(*) from $PA_PROJECT_MEMBER_TABLENAME, " 
       . "$PA_PROJECT_MEMBER_REQUEST_TABLENAME "
-    . " WHERE "
+      . " WHERE "
       . " $PA_PROJECT_MEMBER_REQUEST_TABLENAME." 
       . RQ_REQUEST_TABLE_FIELDNAME::ID 
       . " = " . $conn->quote($request_id, 'text')
@@ -627,8 +689,25 @@ function create_project($args, $message)
 
   if (! $permitted) {
     // FIXME: Need a syslog for this?
-    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
+   $msg = "Principal " . $lead_id . " may not be the lead on a project";
+   geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+   return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted,
 			     "Principal " . $lead_id  . " may not create project");
+  }
+
+  // Ensure that caller is allowed to be a project lead, which is prereq for calling this method
+  // FIXME: Put this in a guard!
+  $permitted = request_authorization($cs_url, $mysigner, $message->signerUuid(), PA_ACTION::CREATE_PROJECT,
+				     CS_CONTEXT_TYPE::RESOURCE, null);
+  if ($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $permitted;
+  $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
+
+  //  error_log("PERMITTED = " . $permitted);
+  if (! $permitted) {
+    $msg = "Principal " . $message->signerUuid() . " may not call create_project";
+    geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, $msg);
   }
 
   // FIXME: Real project email address: ticket #313
@@ -676,6 +755,7 @@ function create_project($args, $message)
 				     PA_ARGUMENT::ROLE_TYPE 
 				     => CS_ATTRIBUTE_TYPE::LEAD),
 			       $message);
+
   if (! isset($addres) || is_null($addres) || ! 
       array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) || 
       $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) 
@@ -904,6 +984,7 @@ function update_project($args, $message)
   //  error_log("UPDATE.sql = " . $sql);
 
   $result = db_execute_statement($sql);
+  // FIXME: Check that this succeeded!
 
   global $log_url;
   global $mysigner;
@@ -1183,7 +1264,8 @@ function modify_project_membership($args, $message)
   }
 }
 
-/* update lead_id of given project */
+/* update lead_id of given project.
+*  To be called only be SA/PA local functions */
 function change_project_lead($project_id, $new_project_lead)
 {
   global $PA_PROJECT_TABLENAME;
@@ -1205,6 +1287,7 @@ function change_project_lead($project_id, $new_project_lead)
 
 // Add a member of given role to given project
 // Return code/value/output triple
+// Internal only method
 function add_project_member($args, $message)
 {
 
@@ -1381,6 +1464,7 @@ function add_project_member($args, $message)
 }
 
 // Add project lead as admin to all current project slices
+// internal only method
 function add_project_lead_to_slices($project_id, $project_lead_id, $message)
 {
 
@@ -1425,6 +1509,7 @@ function add_project_lead_to_slices($project_id, $project_lead_id, $message)
 
 // Remove member from slices to which he belongs in given project
 // If member is lead of such a slice, replace with project lead
+// internal only method
 function remove_project_member_from_slices($member_id, $project_id, $message)
 {
   global $mysigner;
@@ -1545,7 +1630,7 @@ function remove_project_member_from_slices($member_id, $project_id, $message)
 }
 
 
-// Remove a member from given project
+// Remove a member from given project - internal only method
 function remove_project_member($args, $message)
 {
 
@@ -1696,6 +1781,7 @@ function remove_project_member($args, $message)
 }
 
 // Change role of given member in given project
+// internal only method
 function change_member_role($args, $message)
 {
 
@@ -2181,11 +2267,6 @@ function accept_invitation($args, $message)
   return $result;
 
 }
-
-
-
-
-
 
 
 /* Get all attributes of project
@@ -3227,6 +3308,7 @@ function change_slice_owner($slice_id, $new_slice_lead)
 
 
 // Add a member of given role to given slice
+// internal only method
 function add_slice_member($args, $message)
 {
   sa_expire_slices();
@@ -3313,6 +3395,7 @@ function add_slice_member($args, $message)
 }
 
 // Remove a member from given slice 
+// internal only method
 function remove_slice_member($args, $message)
 {
   sa_expire_slices();
@@ -3380,6 +3463,7 @@ function remove_slice_member($args, $message)
 }
 
 // Change role of given member in given slice
+// internal only method
 function change_slice_member_role($args, $message)
 {
   sa_expire_slices();
@@ -3641,7 +3725,7 @@ function lookup_slice_details($args)
   return $rows;
 }
 
-// Return a dictionary of the list of slices (details) for a give
+// Return a dictionary of the list of slices (details) for a given
 // set of project uuids, indexed by project UUID
 // e.g.. [p1 => [s1_details, s2_details....], p2 => [s3_details, s4_details...]
 // Optionally allow slices that have expired
