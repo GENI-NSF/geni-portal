@@ -36,8 +36,73 @@ require_once('portal.php');
 require_once('settings.php');
 require_once('sr_client.php');
 include_once('/etc/geni-ch/settings.php');
-require_once('PestJSON.php');
-require_once('PestXML.php');
+//require_once('PestJSON.php');
+//require_once('PestXML.php');
+
+function doGET($url, $user, $password) {
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  //  curl_setopt($ch, CURLOPT_HTTPAUTH, 'CURLAUTH_BASIC');
+  curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $result = curl_exec($ch);
+  $meta = curl_getinfo($ch);
+  $error = curl_error($ch);
+  curl_close($ch);
+  if ($result === false) {
+    error_log("GET failed (no result): " . $error);
+  } else {
+    error_log("GET result: " . print_r($result, true));
+  }
+  if ($meta === false) {
+    error_log("GET failed (no meta): " . $error);
+  } else {
+    if (is_array($meta) && array_key_exists("http_code", $meta)) {
+      error_log("GET got error return code " . $meta["http_code"]);
+    }
+    error_log("GET meta: " . print_r($meta, true));
+  }
+  error_log("GET error: " . print_r($error, true));
+  return $result;
+}
+
+function doPUT($url, $user, $password, $data, $content_type="application/json") {
+  if ($content_type==="application/json") {
+    $data = json_encode($data);
+  }
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  $headers = array();
+  $headers[] = "Content-Type: " . $content_type;
+  $headers[] = "Content-Length: " . strlen($data);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_HEADER, 1);
+  //  curl_setopt($ch, CURLOPT_HTTPAUTH, 'CURLAUTH_BASIC');
+  curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  //  curl_setopt($ch, CURLOPT_PUT, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+  $result = curl_exec($ch);
+  $meta = curl_getinfo($ch);
+  $error = curl_error($ch);
+  curl_close($ch);
+  if ($result === false) {
+    error_log("PUT failed (no result): " . $error);
+  } else {
+    error_log("PUT result: " . print_r($result, true));
+  }
+  if ($meta === false) {
+    error_log("PUT failed (no meta): " . $error);
+  } else {
+    if (is_array($meta) && array_key_exists("http_code", $meta)) {
+      error_log("PUT got error return code " . $meta["http_code"]);
+    }
+    error_log("PUT meta: " . print_r($meta, true));
+  }
+  error_log("PUT error: " . print_r($error, true));
+  return $result;
+}
 
 /* iRods Constants */
 const IRODS_USER_NAME = 'userName';
@@ -138,9 +203,9 @@ $tempPassword = "";
 // FIXME: Replace with something homegrown?
 global $portal_irods_user;
 global $portal_irods_pw;
-$pestget = new PestXML($irods_url);
-$pestget->setupAuth($portal_irods_user, $portal_irods_pw);
-error_log("pestget curlopts" . print_r($pestget->curl_opts, TRUE));
+//$pestget = new PestXML($irods_url);
+//$pestget->setupAuth($portal_irods_user, $portal_irods_pw);
+//error_log("pestget curlopts" . print_r($pestget->curl_opts, TRUE));
 
 $userinfo = array();
 
@@ -149,10 +214,10 @@ $userinfo = array();
 // if it is an array and has error code and it is 0 then get result. Else construct error message.
 
 try {
-  $userxml = $pestget->get(IRODS_GET_USER_URI . $username);
-  error_log(print_r($pestget->last_response, TRUE));
+  $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw);
+//  error_log(print_r($pestget->last_response, TRUE));
   error_log("Got user: " . $userxml);
-  if (! is_null($userxml)) {
+/*  if (! is_null($userxml)) {
     $userDN = $userxml->xpath('//userDN');
     if (! is_null($userDN)) {
       $userExisted = True;
@@ -162,7 +227,7 @@ try {
       $modifyTime = $userxml->xpath('//modifyTime');
       $userType = $userxml->xpath('//userType');
     }
-  }
+    } */
 } 
 catch (Exception $e) 
 {
@@ -195,9 +260,10 @@ if (! $userExisted) {
 // FIXME!!!!
 // REST HTTP PUT this stuff
   try {
-    $pestput = new PestJSON($irods_url);
-    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
-    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
+    //    $pestput = new PestJSON($irods_url);
+    //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
+    //    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
+    $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI, $portal_irods_user, $portal_irods_pw, $irods_json);
     $addjson = json_decode($addstruct, true);
     // Parse the result. If code 0, show username and password. Else show the error for now.
     // Later if username taken, find another.
