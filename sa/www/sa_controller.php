@@ -272,8 +272,10 @@ class SAGuardFactory implements GuardFactory
 	    'add_project_member' => array('FalseGuard'),
 	    'remove_project_member' => array('FalseGuard'),
 	    'change_member_role' => array('FalseGuard'),
-	    // FIXME: Does this work?
-	    'get_project_members' => array('project_guard'),
+	    // FIXME: This is used when you request to join a project
+	    // so we can email the project admins. But we'd like to limit this 
+	    // to members of the project
+	    'get_project_members' => array(), // want to use project_guard
 	    // FIXME: Can this be just operators or the given member?
 	    'get_projects_for_member' => array(), // Unguarded
 	    'lookup_project_details' => array('TrueGuard'), // Unguarded - by intent
