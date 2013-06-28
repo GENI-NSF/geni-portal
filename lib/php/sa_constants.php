@@ -93,6 +93,7 @@ class SA_ACTION {
   const LOOKUP_SLICES = 'lookup_slices';
   const LOOKUP_SLICE_IDS = 'lookup_slice_ids';
   const GET_SLICE_CREDENTIAL = 'get_slice_credential';
+  const GET_USER_CREDENTIAL = 'get_user_credential';
   const ADD_SLIVERS = 'add_slivers';
   const DELETE_SLIVERS = 'delete_slivers';
   const RENEW_SLICE = 'renew_slice';
@@ -103,6 +104,9 @@ class SA_ACTION {
   const GET_SLICES_FOR_MEMBER =  'get_slices_for_member';
   const LOOKUP_SLICES_BY_IDS = 'lookup_slices_by_ids';
   const GET_SLICE_MEMBERS_FOR_PROJECT = 'get_slice_members_for_project';
+  const LOOKUP_SLICE_BY_URN = 'lookup_slice_by_urn';
+  const LOOKUP_SLICE_DETAILS = 'lookup_slice_details';
+  const GET_SLICES_FOR_PROJECTS = 'get_slices_for_projects';
 
   // These aren't SA functions but AM functions on a slice
   const LIST_RESOURCES = 'list_resources';

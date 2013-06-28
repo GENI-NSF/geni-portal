@@ -99,7 +99,9 @@ example, use this page to request to be a Project Lead (get Project
 Creation permissions).<br/><br/>
 Please provide a current telephone number. GENI operations staff will
 use it only in an emergency, such as if a resource owned by you is severely misbehaving. <br/>
-If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.<br/><br/>
+If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.<br/>
+<p><i>Note</i>: Based on GENI's current policy, only faculty and senior members of an organization
+may be project leads (e.g. students <i>may not</i> be project leads).</p><br/>
 <form method="POST" action="do-modify.php">
 <?php
   //  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone');

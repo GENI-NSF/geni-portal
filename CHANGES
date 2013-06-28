@@ -3,6 +3,12 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * Verify OpenID username (#289)
+  * Improve OpenID page flow (#288)
+  * Fix call(s) to modify_project_membership in pa_client.php (#665)
+  * Move cainfo.html (#642)
+  * Fix OpenID for GIMI (#661)
+  * Add pa_project_attribute table (#656)
   * Allow for download public SSH key (#655)
   * undefined variables in amstatus with am_id (#648)
   * Login information is wrong in multi-user slices (#645)
@@ -12,10 +18,18 @@
   * SA/PA merge (#540)
   * Fix link to SignMeUp (#653)
   * Include email address in account change request emails (#626)
+  * Check permissions and remove dead code in do-edit-project (#666)
+  * Ensure SA/PA methods all have guards or we warn why not (#540)
+  * Hide Update Project button if user not permitted (#540)
+  * CS logs if it authorizes an action only cause you are an operator (#397)
+  * Apply guards to more SA and PA methods (requires CS update-5.sql) (#502)
+  * Remove a debug printout in rspec upload (#663)
+  * Warn about project lead policy (#630)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
        are uniformly lower case (so that IDP's that provide mixed-case match)
+
 == 1.8 ==
   * Portal website refers to incorrect 'footer.php' file (#633)
   * Use a tempfile for list of members on import db (#632)
