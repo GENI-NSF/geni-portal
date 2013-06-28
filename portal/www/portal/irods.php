@@ -67,9 +67,6 @@ function doGET($url, $user, $password) {
 }
 
 function doPUT($url, $user, $password, $data, $content_type="application/json") {
-  if ($content_type==="application/json") {
-    $data = json_encode($data);
-  }
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   $headers = array();
@@ -172,8 +169,8 @@ if (! isset($irods_url) || is_null($irods_url) || $irods_url == '') {
 
 /* Get this from /etc/geni-ch/settings.php */
 // FIXME: Get the right values!
-//$portal_irods_user = 'rods';
-//$portal_irods_pw = 'rods';
+$portal_irods_user = 'rods';
+$portal_irods_pw = 'rods';
 
 if (!isset($user)) {
   $user = geni_loadUser();
@@ -201,8 +198,6 @@ $irodsError = "";
 $tempPassword = "";
 
 // FIXME: Replace with something homegrown?
-global $portal_irods_user;
-global $portal_irods_pw;
 //$pestget = new PestXML($irods_url);
 //$pestget->setupAuth($portal_irods_user, $portal_irods_pw);
 //error_log("pestget curlopts" . print_r($pestget->curl_opts, TRUE));
@@ -247,7 +242,10 @@ if (! $userExisted) {
   $irods_info[IRODS_USER_PASSWORD] = $tempPassword;
   $irods_info[IRODS_USER_DN] = $subjectDN;
   
+  // Note: in PHP 5.4, use JSON_UNESCAPED_SLASHES.
+  //   we have PHP 5.3, so we have to remove those manually.
   $irods_json = json_encode($irods_info);
+  $irods_json = str_replace('\\/','/', $irods_json);
 
   error_log("Doing put of irods_json: " . $irods_json);
 
