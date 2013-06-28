@@ -33,10 +33,10 @@ import sys
 import traceback
 
 PASSWD_FILE = '/usr/local/etc/monitoring_passwd'
-VERSION_FILE = '/usr/local/etc/geni-ch-githash'
+VERSION_FILE = '/etc/geni-ch/geni-ch-githash'
 CONFIG_FILE = '/usr/local/etc/gmoc_monitoring.conf'
-CONTACT_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_contacts'
-SLICE_GATHER_SCRIPT = '/usr/share/geni-ch/sbin/gmoc_list_slices'
+CONTACT_GATHER_SCRIPT = '/usr/local/bin/gmoc_list_contacts'
+SLICE_GATHER_SCRIPT = '/usr/local/bin/gmoc_list_slices'
 
 MANDATORY_CONFIG_VARS = ['GMOC_REL_URL', 'SITENAME', 'ORGNAME', 'POPNAME', 'SA_URN', 'SA_TYPE']
 
@@ -46,7 +46,7 @@ MANDATORY_CONTACT_KEYS = ['contact_email', 'contact_lastname', 'contact_givennam
 MANDATORY_SLICE_KEYS = ['slice_email', 'slice_creator', 'slice_created', 'slice_expires', 'slice_uuid']
 
 # Include local libraries, to submit monitoring data
-sys.path.append('/usr/sysadmin/lib')
+sys.path.append('/usr/local/lib')
 import gmoc
 
 ## The caller may pass the relational URL on the command-line.  Take it

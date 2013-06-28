@@ -10,7 +10,7 @@ if [ $# -ne 0 ]; then
     exit
 else
     if [$PGPASSFILE -eq ""]; then
-	export PGPASSFILE="/usr/local/etc/psql_password"	
+	export PGPASSFILE="/usr/local/etc/portal_password"	
     fi	
     echo "COPY (select slice_urn, slice_email, value as slice_creator, creation as slice_created, expiration as slice_expires, slice_id as slice_uuid from ma_member_attribute, sa_slice where (name='urn') and owner_id=member_id and expired='f') TO STDOUT with CSV HEADER;" | psql -U portal -h localhost portal
 fi
