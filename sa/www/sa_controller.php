@@ -282,7 +282,7 @@ class SAGuardFactory implements GuardFactory
 	    "invite_member" => array("project_guard"),
 	    "accept_invitation" => array('TrueGuard'), // unguarded - by intent
 	    // FIXME: Does this work?
-	    "lookup_project_attributes" => array('signer_member_guard'),
+	    "lookup_project_attributes" => array('project_guard'),
 	    // This should be only project lead or admin (or operator)
 	    // FIXME: Does this work?
 	    "add_project_attribute" => array('project_guard'),
