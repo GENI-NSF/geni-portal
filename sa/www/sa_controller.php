@@ -272,28 +272,31 @@ class SAGuardFactory implements GuardFactory
 	    'add_project_member' => array('FalseGuard'),
 	    'remove_project_member' => array('FalseGuard'),
 	    'change_member_role' => array('FalseGuard'),
-	    // FIXME: Can this be just if you are a member of the project?
-	    'get_project_members' => array(), // Unguarded
+	    // FIXME: Does this work?
+	    'get_project_members' => array('project_guard'),
 	    // FIXME: Can this be just operators or the given member?
 	    'get_projects_for_member' => array(), // Unguarded
 	    'lookup_project_details' => array('TrueGuard'), // Unguarded - by intent
 	    "invite_member" => array("project_guard"),
 	    "accept_invitation" => array('TrueGuard'), // unguarded - by intent
-	    // FIXME: This could be unguarded, or could be only people in the project
-	    "lookup_project_attributes" => array(), // unguarded
-	    // FIXME: This should be only project lead or admin (or operator)
-	    "add_project_attribute" => array(), // unguarded
+	    // FIXME: Does this work?
+	    "lookup_project_attributes" => array('signer_member_guard'),
+	    // This should be only project lead or admin (or operator)
+	    // FIXME: Does this work?
+	    "add_project_attribute" => array('project_guard'),
 	    'add_project_lead_to_slices' => array('FalseGuard'),
 	    'remove_project_member_from_slices' => array('FalseGuard'),
+	    //
 	    // SA Methods
             'get_slice_credential' => array('slice_guard'),
-	    // FIXME: Should this only be the given user?
+	    // FIXME: Should this only be the given user? But here we just have their cert
             'get_user_credential' => array(), // Unguarded
             'create_slice' => array('project_guard'),
             'lookup_slice_ids' => array('project_guard'),
             'lookup_slices' => array('lookup_slices_guard'),
             'lookup_slice' => array('slice_guard'),
-	    // FIXME: Should this be the slice_guard?
+	    // FIXME: Should this be the slice_guard? (ie any member of the slice)
+	    // But we don't know the slice object here, we just have the URN
             'lookup_slice_by_urn' => array(), // Unguarded
             'renew_slice' => array('slice_guard'),
 	    'modify_slice_membership' => array('slice_guard'),
@@ -304,18 +307,28 @@ class SAGuardFactory implements GuardFactory
             'get_slice_members_for_project' => array('project_guard'),
             'get_slices_for_member'=> array('signer_member_guard'),
 	    // FIXME: Should this be the slice guard?
+	    // Trick is this takes a list of slice IDs.
+	    // This is how a user sees the details of their slices
             'lookup_slice_details' => array(), // Unguarded
 	    // FIXME: Allow this if you have the right on all project IDs in the given list?
+	    // but all we have is a list of project UUIDs
+	    // This is how we get the list of slices for a user
             'get_slices_for_projects' => array(), // Unguarded
 	    //
 	    // Methods for managing pending requests on projects or slices
 	    'create_request' => array('TrueGuard'), // Unguarded - by intent
 	    'resolve_pending_request' => array('project_request_guard'), // only called for project requests
-	    // FIXME: should these all be unguarded? 
+	    // FIXME: limit to lead/admin of this context
 	    'get_requests_for_context' => array(), // Unguarded
-	    'get_requests_by_user' => array(), // Unguarded
-	    'get_pending_requests_for_user' => array(), // Unguarded
-	    'get_number_of_pending_requests_for_user' => array(), // Unguarded
+	    // limit to this user (arg is ACCOUNT_ID, should match signer UUID)
+	    // FIXME: Does this work?
+	    'get_requests_by_user' => array('signer_account_guard'),
+	    // limit to this user (arg ACCOUNT_ID matches signer UUID)
+	    // FIXME: Does this work?
+	    'get_pending_requests_for_user' => array('signer_account_guard'),
+	    // limit to this user (arg ACCOUNT_ID matches signer UUID
+	    // FIXME: Does this work?
+	    'get_number_of_pending_requests_for_user' => array('signer_account_guard'),
 	    'get_request_by_id' => array(), // Unguarded
 	    //
 	    // Internal methods
@@ -364,6 +377,12 @@ class SAGuardFactory implements GuardFactory
   private function signer_member_guard($message, $action, $params) {
     return new SASignerGuard($this->cs_url, $message, $action, $params, 
 			     SA_ARGUMENT::MEMBER_ID);
+  }
+
+  /* Ensure that the signer matches the ACCOUNT_ID parameter. */
+  private function signer_account_guard($message, $action, $params) {
+    return new SASignerGuard($this->cs_url, $message, $action, $params, 
+			     RQ_ARGUMENTS::ACCOUNT_ID);
   }
 
   private function TrueGuard($message, $action, $params) {
@@ -3705,7 +3724,7 @@ function lookup_slice_details($args)
   return $rows;
 }
 
-// Return a dictionary of the list of slices (details) for a give
+// Return a dictionary of the list of slices (details) for a given
 // set of project uuids, indexed by project UUID
 // e.g.. [p1 => [s1_details, s2_details....], p2 => [s3_details, s4_details...]
 // Optionally allow slices that have expired

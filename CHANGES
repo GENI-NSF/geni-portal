@@ -22,6 +22,7 @@
   * Ensure SA/PA methods all have guards or we warn why not (#540)
   * Hide Update Project button if user not permitted (#540)
   * CS logs if it authorizes an action only cause you are an operator (#397)
+  * Apply guards to more SA and PA methods (requires CS update-5.sql) (#502)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
