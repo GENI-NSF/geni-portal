@@ -141,7 +141,7 @@ if (array_key_exists('project_id', $_REQUEST))
       . "dn: uid=$ldif_user_username,ou=$ldif_project_name,dc=ch,dc=geni,dc=net\n"
       . "cn: $ldif_user_pretty_name\n"
       . "givenname: $ldif_user_given_name\n"
-      . "email: $ldif_user_email\n"
+      . "mail: $ldif_user_email\n"
       . "sn: $ldif_user_sn\n";
         
     $ssh_public_keys = lookup_public_ssh_keys($ma_url, $user, $user->account_id);
@@ -191,11 +191,11 @@ if (array_key_exists('project_id', $_REQUEST))
     
       $ldif_string = "";
       
-      $ldif_string .= "\n# LDIF for user (member of project)\n"
+      $ldif_string .= "# LDIF for user (member of project)\n"
         . "dn: uid=$ldif_user_username,ou=$ldif_project_name,dc=ch,dc=geni,dc=net\n"
         . "cn: $ldif_user_pretty_name\n"
         . "givenname: $ldif_user_given_name\n"
-        . "email: $ldif_user_email\n"
+        . "mail: $ldif_user_email\n"
         . "sn: $ldif_user_sn\n";
           
       $ssh_public_keys = lookup_public_ssh_keys($ma_url, $user, $user->account_id);
@@ -236,7 +236,11 @@ if (array_key_exists('project_id', $_REQUEST))
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  // FIXME: Change to true or remove line to set to true when CA issue fixed
+  // Error message: SSL certificate problem, verify that the CA cert is OK. 
+  // Details:\nerror:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  //curl_setopt($ch, CURLOPT_CAPATH, "/etc/ssl/certs");
   curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data"));
   curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
   $result = curl_exec($ch);
@@ -370,7 +374,7 @@ else {
         . "<a href='project.php?project_id=" 
         . $user->ma_member->enable_wimax 
         . "'>" . $selected_project_name 
-        . "</a>. Your WiMAX-enabled project cannot change.</p>";
+        . "</a>. <b>Your WiMAX-enabled project cannot change.</b></p>";
     }
     // if not, warn user that they can only select one project
     else {
