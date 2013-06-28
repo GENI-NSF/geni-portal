@@ -60,10 +60,20 @@ function register_ssh_key($ma_url, $signer, $member_id, $filename,
   return $result;
 }
 
-// Lookup SSH keys associated with user
-function lookup_ssh_keys($ma_url, $signer, $member_id)
+// Lookup public SSH keys associated with user
+function lookup_public_ssh_keys($ma_url, $signer, $member_id)
 {
-  $lookup_ssh_keys_message['operation'] = 'lookup_ssh_keys';
+  $lookup_ssh_keys_message['operation'] = 'lookup_public_ssh_keys';
+  $lookup_ssh_keys_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message,
+          $signer->certificate(), $signer->privateKey());
+  return $ssh_keys;
+}
+
+// Lookup private SSH keys associated with user
+function lookup_private_ssh_keys($ma_url, $signer, $member_id)
+{
+  $lookup_ssh_keys_message['operation'] = 'lookup_private_ssh_keys';
   $lookup_ssh_keys_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
   $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message,
           $signer->certificate(), $signer->privateKey());
@@ -71,9 +81,9 @@ function lookup_ssh_keys($ma_url, $signer, $member_id)
 }
 
 // Lookup a single SSH key by id
-function lookup_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
+function lookup_public_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
 {
-  $keys = lookup_ssh_keys($ma_url, $signer, $member_id);
+  $keys = lookup_publc_ssh_keys($ma_url, $signer, $member_id);
   foreach ($keys as $key) {
     if ($key[MA_SSH_KEY_TABLE_FIELDNAME::ID] === $ssh_key_id) {
       return $key;

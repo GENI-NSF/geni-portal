@@ -90,6 +90,7 @@ dist_svcweb_DATA = \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
 	www/portal/downloadsshkey.php \
+	www/portal/downloadsshpublickey.php \
 	www/portal/edit-project-member.php \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
@@ -209,8 +210,7 @@ dist_svcwebcss_DATA =  \
 dist_svcwebtop_DATA = \
 	www/index.php \
 	www/login-help.php \
-	www/favicon.ico \
-	www/cainfo.html
+	www/favicon.ico
 
 dist_svcwebpolicy_DATA = \
 	www/policy/privacy.html

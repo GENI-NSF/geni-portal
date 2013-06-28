@@ -33,6 +33,7 @@ CREATE TABLE pa_project_member (
   PRIMARY KEY (id)
 );
 
+
 -- These are for common queries, but so far the DB doesn't use these. Tables too small?
 -- CREATE INDEX project_index_project_id ON pa_project (project_id);
 -- CREATE INDEX project_index_lead_project ON pa_project (lead_id, project_id);
@@ -67,3 +68,20 @@ create TABLE pa_project_member_invitation(
        role INT,
        expiration TIMESTAMP
 );
+
+
+-- ----------------------------------------------------------------------
+-- Project attribute table. Store all attributes of project as name/value
+-- pairs keyed to the project id.
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS pa_project_attribute;
+
+CREATE TABLE pa_project_attribute (
+  id SERIAL PRIMARY KEY,
+  project_id UUID NOT NULL,
+  name VARCHAR NOT NULL,
+  value VARCHAR NOT NULL
+);
+
+CREATE INDEX pa_project_attribute_index_project_id
+  ON pa_project_attribute (project_id);

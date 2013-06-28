@@ -38,7 +38,7 @@ function show_ssh_edit_form($ssh_key, $cancel_dest) {
     <td><input type="text" size="60" name="description" value="$description"/></td>
     <tr/>
     <tr>
-    <td><label for="name">Name:</label></td>
+    <td><label for="name">Filename:</label></td>
     <td><input type="text" name="name" value="$filename"/></td>
     </tr>
     </table>
@@ -81,6 +81,7 @@ if (array_key_exists('id', $_REQUEST)
   print "<br>Name = " . $_REQUEST['name'];
   print "<br>Description = " . $_REQUEST['description'];
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+
   $result = update_ssh_key($ma_url, $user, $user->account_id,
             $_REQUEST['id'], $_REQUEST['name'], $_REQUEST['description']);
   $_SESSION['lastmessage'] = "Updated SSH keypair ($result)";
@@ -91,9 +92,15 @@ if (array_key_exists('id', $_REQUEST)
   print "<h1>Edit SSH Key</h1>";
   if (array_key_exists('id', $_REQUEST)) {
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-    $ssh_key = lookup_ssh_key($ma_url, $user, $user->account_id,
-            $_REQUEST['id']);
-    if (array_key_exists('HTTP_REFERER', $_SERVER)) {
+    $ssh_keys = lookup_private_ssh_keys($ma_url, $user, $user->account_id);
+    $ssh_key = NULL;
+    foreach($ssh_keys as $one_key) {
+      if ($one_key['id'] == $_REQUEST['id']) {
+	$ssh_key = $one_key;
+      }
+    }
+
+    if (($ssh_key != NULL) && array_key_exists('HTTP_REFERER', $_SERVER)) {
       $cancel_dest = $_SERVER['HTTP_REFERER'];
     } else {
       // If no referer, go to home page on cancel.

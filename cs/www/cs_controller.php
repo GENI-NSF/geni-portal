@@ -33,6 +33,7 @@ require_once('permission_manager.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('logging_client.php');
+require_once('geni_syslog.php');
 
 /**
  * GENI Clearinghouse Credential Store (CS) controller interface
@@ -322,6 +323,9 @@ function request_authorization($args)
   if ($code == RESPONSE_ERROR::NONE && count($rows) > 0) {
     $authorized = true;
   } elseif (is_operator($principal, $action, $context_type)) {
+    $msg = "CS Authorized " . $principal . " as an operator to do " . $action;
+    error_log($msg);
+    geni_syslog(GENI_SYSLOG_PREFIX::CS, $msg);
     $authorized = true;
   }
   //    error_log("SUCCESS = " . $result . " ROWS " . count($rows));

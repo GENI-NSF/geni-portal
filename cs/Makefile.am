@@ -9,6 +9,7 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-2.sql \
 	db/postgresql/update-3.sql \
 	db/postgresql/update-4.sql \
+	db/postgresql/update-5.sql \
 	db/postgresql/enable_lockdown.sql \
 	db/postgresql/disable_lockdown.sql
 

@@ -84,6 +84,7 @@ class PA_ACTION {
   const GET_PROJECTS = 'get_projects';
   const GET_PROJECT_BY_LEAD = 'get_project_by_lead';
   const LOOKUP_PROJECT = 'lookup_project';
+  const LOOKUP_PROJECTS = 'lookup_projects';
   const UPDATE_PROJECT = 'update_project';
   const CHANGE_LEAD = 'change_lead';
   const ADD_PROJECT_MEMBER = 'add_project_member';
@@ -91,6 +92,11 @@ class PA_ACTION {
   const CHANGE_MEMBER_ROLE = 'change_member_role';
   const GET_PROJECT_MEMBERS = 'get_project_members';
   const GET_PROJECTS_FOR_MEMBER= 'get_projects_for_member';
+  const LOOKUP_PROJECT_DETAILS= 'lookup_project_details';
+  const LOOKUP_PROJECT_ATTRIBUTES= 'lookup_project_attributes';
+  const ADD_PROJECT_ATTRIBUTE= 'add_project_attribute';
+  const INVITE_MEMBER = 'invite_member';
+  const ACCEPT_INVITATION = 'accept_invitation';
 }
 
 // Table of PA project member invitations
@@ -126,4 +132,20 @@ function is_valid_project_name($project_name)
   $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-_]{0,31}$/';
   return preg_match($pattern, $project_name);
 }
+
+/* Name of table containing project attributes */
+$PA_PROJECT_ATTRIBUTE_TABLENAME = "pa_project_attribute";
+
+class PA_ATTRIBUTE {
+  const PROJECT_ID = "project_id";
+  const NAME = "name";
+  const VALUE = "value";
+}
+
+/* Add projects/tools here as necessary */
+class PA_ATTRIBUTE_NAME {
+  const ENABLE_WIMAX = "enable_wimax";
+}
+
+
 ?>
