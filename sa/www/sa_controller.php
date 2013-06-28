@@ -701,14 +701,14 @@ function create_project($args, $message)
   if ($permitted[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $permitted;
   $permitted = $permitted[RESPONSE_ARGUMENT::VALUE];
-  
+
   //  error_log("PERMITTED = " . $permitted);
   if (! $permitted) {
     $msg = "Principal " . $message->signerUuid() . " may not call create_project";
     geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
     return generate_response(RESPONSE_ERROR::AUTHORIZATION, $permitted, $msg);
   }
-	
+
   // FIXME: Real project email address: ticket #313
   $project_email = 'project-' . $project_name . '@example.com';
 
