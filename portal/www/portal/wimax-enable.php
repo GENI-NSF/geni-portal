@@ -162,48 +162,9 @@ if (array_key_exists('project_id', $_REQUEST))
       . "objectclass: organizationalPerson\n"
       . "objectclass: hostObject\n"
       . "objectclass: ldapPublicKey\n";
-
-    echo "<p>The generated full LDIF:</p>";
-    echo "<blockquote><pre>$ldif_string</pre></blockquote>";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
   
   }
+  
   // if you're not the project lead, determine if project is even allowed to request WiMAX resources
   else {
   
@@ -219,9 +180,6 @@ if (array_key_exists('project_id', $_REQUEST))
     if($enabled) {
     
       // PREPARE PARTIAL LDIF
-
-
-
 
       $ldif_project_name = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $ldif_project_description = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
@@ -258,20 +216,6 @@ if (array_key_exists('project_id', $_REQUEST))
         . "objectclass: organizationalPerson\n"
         . "objectclass: hostObject\n"
         . "objectclass: ldapPublicKey\n";
-
-      echo "<p>The generated partial LDIF:</p>";
-      echo "<blockquote><pre>$ldif_string</pre></blockquote>";
-
-
-
-
-
-
-
-
-
-
-
     
     }
     
@@ -284,110 +228,58 @@ if (array_key_exists('project_id', $_REQUEST))
   
   }
   
-  
-  
-  
-  /*
-  // Step 4: check that project has WiMAX enabled
-  $project_attributes = lookup_project_attributes($sa_url, $user, $project_id);
-  $enabled = 0;
-  foreach($project_attributes as $attribute) {
-    if($attribute[PA_ATTRIBUTE::NAME] == PA_ATTRIBUTE_NAME::ENABLE_WIMAX) {
-      $enabled = 1;
-    }
+  // SEND LDIF
+  // FIXME: hard-coded url for Rutgers ORBIT
+  $url = "https://www.orbit-lab.org/userupload/save";
+
+  $postdata = array("ldif" => $ldif_string);
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data"));
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+  $result = curl_exec($ch);
+  $error = curl_error($ch);
+  curl_close($ch);
+  if ($error) {
+    error_log("put_message error: $error");
   }
-  if(! $enabled) {
-    $_SESSION['lasterror'] = 'Project specified is not enabled for WiMAX';
-    relative_redirect('wimax-enable.php');
+  $result = trim($result);
+  if (strpos($result, "404 Not Found")) {
+    error_log("put_message error: Page $url Not Found");
   }
+
+  // debug
+  echo "<p>The generated LDIF:</p>";
+  echo "<blockquote><pre>$ldif_string</pre></blockquote>";
+  echo "<p>The cURL result was: $result</p>";
+  
+  // CHECK REPLY FROM SENDER
+  
+  if (strpos($result, 'Operation failed - Group') !== false) {
+    
+    echo "<p><b>Error</b>: A group record already exists</b></p>";
+  
+  }
+  
+  
+  /* if response was successful:
+        add member_attribute to user
+          name: enable_wimax
+          value: <project_id>
+        if enabling project
+          add project_attribute to project
+            name: enable_wimax
+            value: foo
   */
   
   
   
   
-  
-  // If user hasn't been redirected yet, safe to continue
   /*
-  
-  // get site info (that was sent)
-  $sites = $_REQUEST['sites'];
-  $sites_attributes = array();
-  foreach($sites as $site_id) {
-    $sites_attributes[] = get_service_by_id($site_id);
-  }
-  
-  
-  // get project info (that was sent)
-  $project_info = lookup_project($sa_url, $user, $_REQUEST['project']);
-  
-  // get information about project lead
-  $project_lead_info = ma_lookup_member_by_id($ma_url, $user, $project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID]);
-  
-  // get members' contact information and put into an array
-  $project_members = get_project_members($sa_url, $user, $_REQUEST['project']);
-    // create array to store members' info in
-    $project_members_array = array();
-    foreach($project_members as $project_member) {
-      $project_member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
-      $project_members_array[] = ma_lookup_member_by_id($ma_url, $user, $project_member_id);
-    }
-  
-  // define variables here to be used in LDIF string
-  $project_name = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  $project_description = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-  $project_lead_username = $project_lead_info->username;
-  $username = $user->username;
-  $email = $user->mail;
-  $pretty_name = $user->prettyName();
-  $given_name = $user->givenName;
-  $sn = $user->sn;
-  
-  $ldif_string = "# LDIF for a project\n"
-    . "dn: ou=$project_name,dc=ch,dc=geni,dc=net\n"
-    . "description: $project_description\n"
-    . "ou: $project_name\n"
-    . "objectclass: top\n"
-    . "objectclass: organizationalUnit\n";
-  
-  $ldif_string .= "\n# LDIF for the project lead\n"
-    . "dn: cn=admin,ou=$project_name,dc=ch,dc=geni,dc=net\n"
-    . "cn: admin\n"
-    . "objectclass: top\n"
-    . "objectclass: organizationalRole\n"
-    . "roleoccupant: uid=$project_lead_username,ou=$project_name,dc=ch,dc=geni,dc=net\n";
-  
-  // add info about project lead
-  
-    // header
-    $ldif_string .= "\n# LDIF for user (project lead)\n"
-      . "dn: uid=$username,ou=$project_name,dc=ch,dc=geni,dc=net\n"
-      . "cn: $pretty_name\n"
-      . "givenname: $given_name\n"
-      . "email: $email\n"
-      . "sn: $sn\n";
-      
-    // ssh keys
-    $ssh_public_keys = lookup_ssh_keys($ma_url, $user, $user->account_id);
-    $number_keys = count($ssh_public_keys);
-    if($number_keys > 0) {
-      for($i = 0; $i < $number_keys; $i++) {
-        // display as one greater than ith entry in array
-        // i.e., start with sshpublickey1 stored in position 0, etc.
-        $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
-      }
-    }
-    
-    // other information
-    $ldif_string .= "uid: $username\n"
-      . "o: $project_description\n"
-      . "objectclass: top\n"
-      . "objectclass: person\n"
-      . "objectclass: posixAccount\n"
-      . "objectclass: shadowAccount\n"
-      . "objectclass: inetOrgPerson\n"
-      . "objectclass: organizationalPerson\n"
-      . "objectclass: hostObject\n"
-      . "objectclass: ldapPublicKey\n";
+
+
 
   // display sites chosen
   echo "<p>The WiMAX site(s) chosen: </p>\n";
@@ -397,35 +289,7 @@ if (array_key_exists('project_id', $_REQUEST))
   }
   echo "</ul>\n";
   
-  // display LDIF (to be changed in the future)
-  echo "<p>The LDIF file to be sent is: </p>";
-  echo "<blockquote><pre>$ldif_string</pre></blockquote>";
-
-  /* // debug info
-  echo "<p><b>The var_dump of user is:</b> </p>";
-  var_dump($user);
-  
-  
-  echo "<p><b>The var_dump of ssh public keys is:</b> </p>";
-  var_dump($ssh_public_keys);
-  
-  echo "<p><b>The var_dump of REQUEST is:</b> </p>";
-  var_dump($_REQUEST);  
-  
-  echo "<p><b>The var_dump of project_info is:</b> </p>";
-  var_dump($project_info);   
-  
-  echo "<p><b>The var_dump of project_lead_info is:</b> </p>";
-  var_dump($project_lead_info);
-  
-  echo "<p><b>The var_dump of project_members is:</b> </p>";
-  var_dump($project_members);
-
-  echo "<p><b>The var_dump of project_members_usernames is:</b> </p>";
-  var_dump($project_members_usernames);
-  
-  echo "<p><b>The var_dump of sites is:</b> </p>";
-  var_dump($sites); */
+ */
 
 }
 
@@ -669,15 +533,6 @@ else {
     }
     
 
-  
-  
-  
-  
-  
-  
-  
-  
-
     
   } 
   
@@ -687,11 +542,6 @@ else {
 
 
 }
-
-
-
-
-
 
 
 include("footer.php");
