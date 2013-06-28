@@ -78,7 +78,7 @@ INSERT INTO cs_action (name, privilege, context_type) values ('add_project_membe
 INSERT INTO cs_action (name, privilege, context_type) values ('remove_project_member', 1, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('change_member_role', 1, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('get_project_members', 2, 1);
-INSERT INTO cs_action (name, privilege, context_type) values ('get_projects_for_member', 2, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('get_projects_for_member', 2, 3);
 INSERT INTO cs_action (name, privilege, context_type) values ('invite_member', 1, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_project_details', 2, 3)
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_project_attributes', 2, 1);

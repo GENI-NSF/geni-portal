@@ -275,9 +275,9 @@ class SAGuardFactory implements GuardFactory
 	    // FIXME: This is used when you request to join a project
 	    // so we can email the project admins. But we'd like to limit this 
 	    // to members of the project
-	    'get_project_members' => array(), // want to use project_guard
-	    // FIXME: Can this be just operators or the given member?
-	    'get_projects_for_member' => array(), // Unguarded
+	    'get_project_members' => array(), // want to use project_guard?
+	    // Technically this method could be used to query about someone else, but don't allow that
+	    'get_projects_for_member' => array('signer_member_guard'),
 	    'lookup_project_details' => array('TrueGuard'), // Unguarded - by intent
 	    "invite_member" => array("project_guard"),
 	    "accept_invitation" => array('TrueGuard'), // unguarded - by intent
@@ -323,13 +323,10 @@ class SAGuardFactory implements GuardFactory
 	    // FIXME: limit to lead/admin of this context
 	    'get_requests_for_context' => array(), // Unguarded
 	    // limit to this user (arg is ACCOUNT_ID, should match signer UUID)
-	    // FIXME: Does this work?
 	    'get_requests_by_user' => array('signer_account_guard'),
 	    // limit to this user (arg ACCOUNT_ID matches signer UUID)
-	    // FIXME: Does this work?
 	    'get_pending_requests_for_user' => array('signer_account_guard'),
 	    // limit to this user (arg ACCOUNT_ID matches signer UUID
-	    // FIXME: Does this work?
 	    'get_number_of_pending_requests_for_user' => array('signer_account_guard'),
 	    'get_request_by_id' => array(), // Unguarded
 	    //
@@ -488,13 +485,15 @@ class SAContextGuard implements Guard
     $result = $ra_res[RESPONSE_ARGUMENT::VALUE];
     if ($ra_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
       $result = false;
-    geni_syslog(GENI_SYSLOG_PREFIX::SA,
-		"SAContextGuard for " . $this->message->signerUuid()
+    if (! $result || $result != 1) {
+      geni_syslog(GENI_SYSLOG_PREFIX::SA,
+		  "SAContextGuard for " . $this->message->signerUuid()
+		  . " on action " . $this->action
+		  . " returning " . print_r($result, true));
+      error_log("SAContextGuard for " . $this->message->signerUuid()
 		. " on action " . $this->action
 		. " returning " . print_r($result, true));
-    error_log("SAContextGuard for " . $this->message->signerUuid()
-		. " on action " . $this->action
-		. " returning " . print_r($result, true));
+    }
     return $result;
   }
 }
