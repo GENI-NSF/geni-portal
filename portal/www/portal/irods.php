@@ -46,7 +46,7 @@ const IRODS_USER_DN = 'distinguishedName';
 const IRODS_ADD_RESPONSE_DESCRIPTION = 'userAddActionResponse';
 const IRODS_ADD_RESPONSE_CODE = 'userAddActionResponseNumericCode';
 const IRODS_MESSAGE = 'message';
-const IRODS_GET_USER_URI = '/user/name/';
+const IRODS_GET_USER_URI = '/user/';
 const IRODS_PUT_USER_URI = '/user';
 
 /*
