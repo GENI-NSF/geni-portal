@@ -59,10 +59,14 @@ function doGET($url, $user, $password) {
   } else {
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       error_log("GET got error return code " . $meta["http_code"]);
+      if ($meta["http_code"] != 200) {
+	$result = $error;
+      }
     }
     error_log("GET meta: " . print_r($meta, true));
   }
-  error_log("GET error: " . print_r($error, true));
+  if (! is_null($error) && $error != '')
+    error_log("GET error: " . print_r($error, true));
   return $result;
 }
 
@@ -77,7 +81,6 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   //  curl_setopt($ch, CURLOPT_HTTPAUTH, 'CURLAUTH_BASIC');
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  //  curl_setopt($ch, CURLOPT_PUT, true);
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $result = curl_exec($ch);
@@ -94,10 +97,14 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   } else {
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       error_log("PUT got error return code " . $meta["http_code"]);
+      if ($meta["http_code"] != 200) {
+	$result = $error;
+      }
     }
     error_log("PUT meta: " . print_r($meta, true));
   }
-  error_log("PUT error: " . print_r($error, true));
+  if (! is_null($error) && $error != '')
+    error_log("PUT error: " . print_r($error, true));
   return $result;
 }
 
@@ -110,6 +117,7 @@ const IRODS_ADD_RESPONSE_CODE = 'userAddActionResponseNumericCode';
 const IRODS_MESSAGE = 'message';
 const IRODS_GET_USER_URI = '/user/';
 const IRODS_PUT_USER_URI = '/user';
+const IRODS_SEND_JSON = '?contentType=application/json';
 
 /*
 0 - Success (user can log in with that username/password)
@@ -168,9 +176,11 @@ if (! isset($irods_url) || is_null($irods_url) || $irods_url == '') {
 }
 
 /* Get this from /etc/geni-ch/settings.php */
-// FIXME: Get the right values!
-$portal_irods_user = 'rods';
-$portal_irods_pw = 'rods';
+// FIXME: Get the right values from settings.php
+if (! isset($portal_irods_user) || isnull($portal_irods_user)) {
+  $portal_irods_user = 'rods';
+  $portal_irods_pw = 'rods';
+}
 
 if (!isset($user)) {
   $user = geni_loadUser();
@@ -179,7 +189,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-$username = $user->username;
+$username = $user->username . "2";
 $uid = $user->account_id;
 $email = $user->email();
 $certStruct = openssl_x509_parse($user->certificate());
@@ -196,6 +206,7 @@ $didCreate = False;
 $userExisted = False;
 $irodsError = "";
 $tempPassword = "";
+$createTime = "";
 
 // FIXME: Replace with something homegrown?
 //$pestget = new PestXML($irods_url);
@@ -204,7 +215,6 @@ $tempPassword = "";
 
 $userinfo = array();
 
-
 // Need util function to parse the userinfo
 // if it is an array and has error code and it is 0 then get result. Else construct error message.
 
@@ -212,25 +222,43 @@ try {
   $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw);
 //  error_log(print_r($pestget->last_response, TRUE));
   error_log("Got user: " . $userxml);
-/*  if (! is_null($userxml)) {
-    $userDN = $userxml->xpath('//userDN');
-    if (! is_null($userDN)) {
+  $xml = simplexml_load_string($userxml);
+  if (!$xml) {
+    error_log("Failed to parse XML");
+  } else {
+    $userxml = $xml;
+    if (! is_null($userxml) && $userxml->getName() == "user") {
       $userExisted = True;
-      $comment = $userxml->xpath('//comment');
-      $createTime = $userxml->xpath('//createTime');
-      $info = $userxml->xpath('//info');
-      $modifyTime = $userxml->xpath('//modifyTime');
-      $userType = $userxml->xpath('//userType');
-    }
-    } */
-} 
+      //      foreach ($userxml->attributes() as $a=>$b) {
+      //	error_log($a . '=' . $b);
+      //      }
+      foreach ($userxml->children() as $child) {
+	$name = $child->getName();
+	if ($name == "createTime")
+	  $createTime = strval($child);
+	//	error_log($child->getName() . '=' . $child);
+      }
+      /*
+      $userDN = $userxml->xpath('//userDN');
+      if (! is_null($userDN)) {
+	$userExisted = True;
+	$comment = $userxml->xpath('//comment');
+	$createTime = $userxml->xpath('//createTime');
+	$info = $userxml->xpath('//info');
+	$modifyTime = $userxml->xpath('//modifyTime');
+	$userType = $userxml->xpath('//userType');
+      }
+      */
+    } 
+  } 
+}
 catch (Exception $e) 
 {
   error_log("Error checking if iRODS account $username exists: " . $e->getMessage());
   $irodsError = $e->getMessage();
 }
 
-if (! $userExisted) {
+if (! $userExisted or True) {
 
   // Create a temp password of 10 characters
   $hash = strtoupper(md5(rand()));
@@ -261,7 +289,8 @@ if (! $userExisted) {
     //    $pestput = new PestJSON($irods_url);
     //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
     //    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
-    $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI, $portal_irods_user, $portal_irods_pw, $irods_json);
+    $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json);
+    error_log("PUT raw result: " . print_r($addstruct, true));
     $addjson = json_decode($addstruct, true);
     // Parse the result. If code 0, show username and password. Else show the error for now.
     // Later if username taken, find another.
@@ -300,8 +329,9 @@ if ($didCreate) {
   print "<p><b>WARNING: Write down your password. It is not recorded anywhere. You will need to change it after accessing iRods.</b></p>\n";
 } elseif ($userExisted) {
   print "<p>Your GENI iRODS account already exists.</p>";
-  print "<table><tr><td class='label'><b>Username</b></td><td>$username</td></tr>\n";
-  print "<p><b>WARNING: You must find your iRods password, or contact XXX to have it reset.</b></p>\n";
+  print "<table><tr><td class='label'><b>Username</b></td><td>$username</td></tr>";
+  print "<tr><td class='label'><b>Created</b></td><td>$createTime</td></tr></table>\n";
+  print "<p><b>WARNING: You must find your iRODS password, or contact XXX to have it reset.</b></p>\n";
 } else {
   // Some kind of error
   print "<div id=\"error-message\">";
