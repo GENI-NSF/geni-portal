@@ -112,9 +112,6 @@ class Pest
      */
     public function get($url, $data = array(), $headers=array())
     {
-      if (! array_key_exists(CURLOPT_HTTPAUTH, $this->curl_opts)) {
-	error_log("httpauth opt not set");
-      }
         if (!empty($data)) {
             $pos = strpos($url, '?');
             if ($pos !== false) {
