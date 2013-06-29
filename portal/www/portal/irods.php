@@ -22,10 +22,14 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// Create an account for the user at iRods with a temporary password
+// Search for an irods account for this user under their portal username. Display it if found.
+// Otherwise, Create an account for the user at iRods with a temporary password
 
 /* TODO:
- *
+ * Get irods from SR
+ * Get U/P from settings only
+ * S/MIME
+ * On fatal error from GET don't try PUT
  */
 
 require_once('user.php');
@@ -39,10 +43,10 @@ include_once('/etc/geni-ch/settings.php');
 //require_once('PestJSON.php');
 //require_once('PestXML.php');
 
+// Do a BasicAuth protected get of the given URL
 function doGET($url, $user, $password) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
-  //  curl_setopt($ch, CURLOPT_HTTPAUTH, 'CURLAUTH_BASIC');
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   $result = curl_exec($ch);
@@ -51,19 +55,35 @@ function doGET($url, $user, $password) {
   curl_close($ch);
   if ($result === false) {
     error_log("GET failed (no result): " . $error);
+    $code = "";
+    if (is_array($meta) && array_key_exists("http_code", $meta)) {
+      $code = "HTTP error " . $meta['http_code'] . ": ";
+    }
+    throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
     error_log("GET result: " . print_r($result, true));
   }
   if ($meta === false) {
-    error_log("GET failed (no meta): " . $error);
+    error_log("GET error (no meta): " . $error);
+    $code = "";
+    throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
+    error_log("GET meta: " . print_r($meta, true));
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       error_log("GET got error return code " . $meta["http_code"]);
       if ($meta["http_code"] != 200) {
-	$result = $error;
+	// code ??? means user not found - raise a different exception?
+	// then if I don't get that and don't get the real result I show the error 
+	// and don't try to do the PUT?
+	$codestr = "HTTP Error " . $meta["http_code"];
+	if (is_null($error) || $error === "") {
+	  $error = $codestr . ": \"" . $result . '"';
+	} else {
+	  $error = $codestr . ": \"" . $error . '"';
+	} 
+	throw new Exception($error);
       }
     }
-    error_log("GET meta: " . print_r($meta, true));
   }
   if (! is_null($error) && $error != '')
     error_log("GET error: " . print_r($error, true));
@@ -78,7 +98,6 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   $headers[] = "Content-Length: " . strlen($data);
   curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
   curl_setopt($ch, CURLOPT_HEADER, 1);
-  //  curl_setopt($ch, CURLOPT_HTTPAUTH, 'CURLAUTH_BASIC');
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
@@ -89,19 +108,32 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   curl_close($ch);
   if ($result === false) {
     error_log("PUT failed (no result): " . $error);
+    $code = "";
+    if (is_array($meta) && array_key_exists("http_code", $meta)) {
+      $code = "HTTP error " . $meta['http_code'] . ": ";
+    }
+    throw new Exception("PUT to " . $url . " failed: " . $code . $error);
   } else {
     error_log("PUT result: " . print_r($result, true));
   }
   if ($meta === false) {
-    error_log("PUT failed (no meta): " . $error);
+    error_log("PUT error (no meta): " . $error);
+    $code = "";
+    throw new Exception("PUT to " . $url . " failed: " . $code . $error);
   } else {
+    error_log("PUT meta: " . print_r($meta, true));
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       error_log("PUT got error return code " . $meta["http_code"]);
       if ($meta["http_code"] != 200) {
-	$result = $error;
+	$codestr = "HTTP Error " . $meta["http_code"];
+	if (is_null($error) || $error === "") {
+	  $error = $codestr . ": \"" . $result . '"';
+	} else {
+	  $error = $codestr . ": \"" . $error . '"';
+	}
+	throw new Exception($error);
       }
     }
-    error_log("PUT meta: " . print_r($meta, true));
   }
   if (! is_null($error) && $error != '')
     error_log("PUT error: " . print_r($error, true));
@@ -118,6 +150,7 @@ const IRODS_MESSAGE = 'message';
 const IRODS_GET_USER_URI = '/user/';
 const IRODS_PUT_USER_URI = '/user';
 const IRODS_SEND_JSON = '?contentType=application/json';
+const IRODS_CREATE_TIME = 'createTime';
 
 /*
 0 - Success (user can log in with that username/password)
@@ -221,7 +254,10 @@ $userinfo = array();
 try {
   $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw);
 //  error_log(print_r($pestget->last_response, TRUE));
-  error_log("Got user: " . $userxml);
+  error_log("Got userxml: " . $userxml);
+  if (! isset($userxml) || strncmp($userxml, "<?xml", 5)) {
+    throw new Exception("Error looking up " . $username . " at iRODS: " . $userxml);
+  } 
   $xml = simplexml_load_string($userxml);
   if (!$xml) {
     error_log("Failed to parse XML");
@@ -234,10 +270,13 @@ try {
       //      }
       foreach ($userxml->children() as $child) {
 	$name = $child->getName();
-	if ($name == "createTime")
-	  $createTime = strval($child);
 	//	error_log($child->getName() . '=' . $child);
+	if ($name == IRODS_CREATE_TIME) {
+	  $createTime = strval($child);
+	  break;
+	}
       }
+      // Show more of what iRODS has for them?
       /*
       $userDN = $userxml->xpath('//userDN');
       if (! is_null($userDN)) {
@@ -255,10 +294,11 @@ try {
 catch (Exception $e) 
 {
   error_log("Error checking if iRODS account $username exists: " . $e->getMessage());
-  $irodsError = $e->getMessage();
+  $irodsError = htmlentities($e->getMessage());
+  // FIXME: Errors that are not 'not found' we should not do PUT
 }
 
-if (! $userExisted or True) {
+if (! $userExisted) {
 
   // Create a temp password of 10 characters
   $hash = strtoupper(md5(rand()));
@@ -290,8 +330,16 @@ if (! $userExisted or True) {
     //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
     //    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
     $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json);
-    error_log("PUT raw result: " . print_r($addstruct, true));
-    $addjson = json_decode($addstruct, true);
+    //error_log("PUT raw result: " . print_r($addstruct, true));
+
+    // look for (\r or \n or \r\n){2} and move past that
+    preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
+    if (! array_key_exists(2, $m)) {
+      error_log("Malformed PUT result - error?");
+      throw new Exception("Failed to create iRODS account - server error: " . $addstruct);
+    }
+    error_log("PUT result content: " . $m[2]);
+    $addjson = json_decode($m[2], true);
     // Parse the result. If code 0, show username and password. Else show the error for now.
     // Later if username taken, find another.
     if (! is_null($addjson) && is_array($addjson) && array_key_exists(IRODS_ADD_RESPONSE_CODE, $addjson)) {
@@ -299,7 +347,10 @@ if (! $userExisted or True) {
 	$didCreate = True;
       } else {
 	// Get the various messages
-	$irodsError = $addjson[IRODS_ADD_RESPONSE_DESCRIPTION] . ": " . $addjson[IRODS_MESSAGE];
+
+	// Which error description do we use? The one they sent? Or ours?
+	$irodsError = $IRODS_ERROR_NAMES[$addjson[IRODS_ADD_RESPONSE_CODE]] . ": " . $addjson[IRODS_MESSAGE];
+	//	$irodsError = $addjson[IRODS_ADD_RESPONSE_DESCRIPTION] . ": " . $addjson[IRODS_MESSAGE];
 	error_log("iRODS returned an error creating account for " . $username . ": " . $irodsError);
       }
     } else {
@@ -308,6 +359,7 @@ if (! $userExisted or True) {
     }
   } catch (Exception $e) {
     error_log("Error doing irods put to create iRODS account for " . $username . ": " . $e->getMessage());
+    $irodsError = htmlentities($e->getMessage());
   }
 }
 
@@ -335,7 +387,7 @@ if ($didCreate) {
 } else {
   // Some kind of error
   print "<div id=\"error-message\">";
-  print "<p class='warn'>There was an error talking to iRODS.<br/>";
+  print "<p class='warn'>There was an error talking to iRODS.<br/><br/>";
   print "$irodsError</p>\n";
   print "</div>\n";
   // FIXME: Do more?
