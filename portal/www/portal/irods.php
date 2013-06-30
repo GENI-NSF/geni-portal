@@ -43,22 +43,34 @@ include_once('/etc/geni-ch/settings.php');
 //require_once('PestJSON.php');
 //require_once('PestXML.php');
 
+class PermFailException extends Exception{}
+
 // Do a BasicAuth protected get of the given URL
 function doGET($url, $user, $password) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
   $result = curl_exec($ch);
+
   $meta = curl_getinfo($ch);
   $error = curl_error($ch);
   curl_close($ch);
   if ($result === false) {
     error_log("GET failed (no result): " . $error);
     $code = "";
+    $perm = false;
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       $code = "HTTP error " . $meta['http_code'] . ": ";
+      //      if ($meta['http_code'] < 200 || $meta['http_code'] > 299)
+      if ($meta['http_code'] == 0) 
+	$perm = true;
     }
+    if ($perm)
+      throw new PermFailException("GET " . $url . " failed: " . $code . $error);
+
     throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
     error_log("GET result: " . print_r($result, true));
@@ -82,6 +94,7 @@ function doGET($url, $user, $password) {
 	  $error = $codestr . ": \"" . $error . '"';
 	} 
 	throw new Exception($error);
+	//	throw new PermFailException($error);
       }
     }
   }
@@ -100,6 +113,8 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   curl_setopt($ch, CURLOPT_HEADER, 1);
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   $result = curl_exec($ch);
@@ -251,6 +266,9 @@ $userinfo = array();
 // Need util function to parse the userinfo
 // if it is an array and has error code and it is 0 then get result. Else construct error message.
 
+// Did GET fail in a way that we shouldn't try the PUT
+$permError = false;
+
 try {
   $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw);
 //  error_log(print_r($pestget->last_response, TRUE));
@@ -291,6 +309,12 @@ try {
     } 
   } 
 }
+catch (PermFailException $e) 
+{
+  error_log("Error checking if iRODS account $username exists: " . $e->getMessage());
+  $irodsError = htmlentities($e->getMessage());
+  $permError = true;
+}
 catch (Exception $e) 
 {
   error_log("Error checking if iRODS account $username exists: " . $e->getMessage());
@@ -298,7 +322,7 @@ catch (Exception $e)
   // FIXME: Errors that are not 'not found' we should not do PUT
 }
 
-if (! $userExisted) {
+if (! $permError && ! $userExisted) {
 
   // Create a temp password of 10 characters
   $hash = strtoupper(md5(rand()));
