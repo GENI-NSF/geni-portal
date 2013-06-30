@@ -30,6 +30,8 @@
  * Get U/P from settings only
  * S/MIME
  * On fatal error from GET don't try PUT
+ * Should username really be the HRN? Or how do we deal with the possibility of duplicate usernames?
+ * Should the page provide a download of the irods config file?
  */
 
 require_once('user.php');
@@ -59,7 +61,7 @@ function doGET($url, $user, $password) {
   $error = curl_error($ch);
   curl_close($ch);
   if ($result === false) {
-    error_log("GET failed (no result): " . $error);
+    error_log("GET of " . $url . " failed (no result): " . $error);
     $code = "";
     $perm = false;
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
@@ -73,16 +75,17 @@ function doGET($url, $user, $password) {
 
     throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
-    error_log("GET result: " . print_r($result, true));
+    // FIXME: Comment this out when ready
+    error_log("GET of " . $url . " result: " . print_r($result, true));
   }
   if ($meta === false) {
-    error_log("GET error (no meta): " . $error);
+    error_log("GET of " . $url . " error (no meta): " . $error);
     $code = "";
     throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
     error_log("GET meta: " . print_r($meta, true));
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      error_log("GET got error return code " . $meta["http_code"]);
+      error_log("GET of " . $url . " got error return code " . $meta["http_code"]);
       if ($meta["http_code"] != 200) {
 	// code ??? means user not found - raise a different exception?
 	// then if I don't get that and don't get the real result I show the error 
@@ -99,7 +102,7 @@ function doGET($url, $user, $password) {
     }
   }
   if (! is_null($error) && $error != '')
-    error_log("GET error: " . print_r($error, true));
+    error_log("GET of " . $url . " error: " . print_r($error, true));
   return $result;
 }
 
@@ -122,21 +125,22 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   $error = curl_error($ch);
   curl_close($ch);
   if ($result === false) {
-    error_log("PUT failed (no result): " . $error);
+    error_log("PUT to " . $url . " failed (no result): " . $error);
     $code = "";
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       $code = "HTTP error " . $meta['http_code'] . ": ";
     }
     throw new Exception("PUT to " . $url . " failed: " . $code . $error);
   } else {
-    error_log("PUT result: " . print_r($result, true));
+    // FIXME: Comment this out when ready
+    error_log("PUT to " . $url . " result: " . print_r($result, true));
   }
   if ($meta === false) {
-    error_log("PUT error (no meta): " . $error);
+    error_log("PUT to " . $url . " error (no meta): " . $error);
     $code = "";
     throw new Exception("PUT to " . $url . " failed: " . $code . $error);
   } else {
-    error_log("PUT meta: " . print_r($meta, true));
+    error_log("PUT to " . $url . " meta: " . print_r($meta, true));
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       error_log("PUT got error return code " . $meta["http_code"]);
       if ($meta["http_code"] != 200) {
@@ -151,7 +155,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
     }
   }
   if (! is_null($error) && $error != '')
-    error_log("PUT error: " . print_r($error, true));
+    error_log("PUT to " . $url . " error: " . print_r($error, true));
   return $result;
 }
 
@@ -166,6 +170,8 @@ const IRODS_GET_USER_URI = '/user/';
 const IRODS_PUT_USER_URI = '/user';
 const IRODS_SEND_JSON = '?contentType=application/json';
 const IRODS_CREATE_TIME = 'createTime';
+const IRODS_ZONE = "zone";
+const IRODS_USERDN = "userDN";
 
 /*
 0 - Success (user can log in with that username/password)
@@ -209,6 +215,10 @@ if (! isset($ma_url)) {
 
 /* TODO put this in the service registry */
 $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
+$irods_host = "irods_hostname";
+$irods_port = 1247; // FIXME: Always right?
+$irods_resource = "demoResc"; // FIXME: Always right?
+$default_zone = "tempZone";
 
 // Get the irods server cert for smime purposes
 $irods_cert = null;
@@ -238,11 +248,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $username = $user->username . "2";
-$uid = $user->account_id;
-$email = $user->email();
 $certStruct = openssl_x509_parse($user->certificate());
 $subjectDN = $certStruct['name'];
-//$userdn = "CN=" . $uid . "/emailAddress=" . $email;
 //$userurn = $user->urn();
 
 ///* Sign the outbound message with the portal cert/key */
@@ -255,6 +262,9 @@ $userExisted = False;
 $irodsError = "";
 $tempPassword = "";
 $createTime = "";
+$zone = "";
+$userDN = "";
+$irodsUsername = "";
 
 // FIXME: Replace with something homegrown?
 //$pestget = new PestXML($irods_url);
@@ -263,49 +273,51 @@ $createTime = "";
 
 $userinfo = array();
 
-// Need util function to parse the userinfo
-// if it is an array and has error code and it is 0 then get result. Else construct error message.
-
 // Did GET fail in a way that we shouldn't try the PUT
 $permError = false;
 
+// First we try to GET the username: if there, the user already has an account. Remind them.
+// FIXME: Or could someone non portal have claimed this username?
 try {
   $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw);
 //  error_log(print_r($pestget->last_response, TRUE));
-  error_log("Got userxml: " . $userxml);
+//  error_log("Got userxml: " . $userxml);
   if (! isset($userxml) || strncmp($userxml, "<?xml", 5)) {
     throw new Exception("Error looking up " . $username . " at iRODS: " . $userxml);
   } 
   $xml = simplexml_load_string($userxml);
   if (!$xml) {
-    error_log("Failed to parse XML");
+    error_log("Failed to parse XML from GET of iRODS user " . $username);
   } else {
     $userxml = $xml;
     if (! is_null($userxml) && $userxml->getName() == "user") {
       $userExisted = True;
-      //      foreach ($userxml->attributes() as $a=>$b) {
-      //	error_log($a . '=' . $b);
-      //      }
+      foreach ($userxml->attributes() as $a=>$b) {
+	if ($a == "name") {
+	  $irodsUsername = $b;
+	  if ($irodsUsername != $username) {
+	    error_log("GET for iRODS username " . $username . " got a different username " . $irodsUsername);
+	  }
+	  break;
+	}
+	//      	error_log($a . '=' . $b);
+      }
       foreach ($userxml->children() as $child) {
 	$name = $child->getName();
 	//	error_log($child->getName() . '=' . $child);
 	if ($name == IRODS_CREATE_TIME) {
 	  $createTime = strval($child);
-	  break;
+	} elseif ($name == IRODS_ZONE) {
+	  $zone = strval($child);
+	} elseif ($name == IRODS_USERDN) {
+	  $userDN = strval($child);
+	  if ($userDN === "") {
+	    error_log("userDN empty from IRODS for user " . $username);
+	  } elseif ($userDN !== $subjectDN) {
+	    error_log("GET for username " . $username . " got DN from iRODS " . $userDN . " != user's: " . $subjectDN);
+	  }
 	}
       }
-      // Show more of what iRODS has for them?
-      /*
-      $userDN = $userxml->xpath('//userDN');
-      if (! is_null($userDN)) {
-	$userExisted = True;
-	$comment = $userxml->xpath('//comment');
-	$createTime = $userxml->xpath('//createTime');
-	$info = $userxml->xpath('//info');
-	$modifyTime = $userxml->xpath('//modifyTime');
-	$userType = $userxml->xpath('//userType');
-      }
-      */
     } 
   } 
 }
@@ -322,6 +334,7 @@ catch (Exception $e)
   // FIXME: Errors that are not 'not found' we should not do PUT
 }
 
+// If the iRODS server is working but the user didn't exist, create them
 if (! $permError && ! $userExisted) {
 
   // Create a temp password of 10 characters
@@ -339,6 +352,7 @@ if (! $permError && ! $userExisted) {
   $irods_json = json_encode($irods_info);
   $irods_json = str_replace('\\/','/', $irods_json);
 
+  // FIXME: Take this out when ready
   error_log("Doing put of irods_json: " . $irods_json);
 
   ///* Sign the data with the portal certificate (Is that correct?) */
@@ -347,8 +361,7 @@ if (! $permError && ! $userExisted) {
   ///* Encrypt the signed data for the iRODS SSL certificate */
   //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
   
-// FIXME!!!!
-// REST HTTP PUT this stuff
+  // Now do the REST PUT
   try {
     //    $pestput = new PestJSON($irods_url);
     //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
@@ -359,16 +372,20 @@ if (! $permError && ! $userExisted) {
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
     if (! array_key_exists(2, $m)) {
-      error_log("Malformed PUT result - error?");
+      error_log("Malformed PUT result to iRODS - error? Got: " . $addstruct);
       throw new Exception("Failed to create iRODS account - server error: " . $addstruct);
     }
+
+    // FIXME: Comment this out when ready
     error_log("PUT result content: " . $m[2]);
+
     $addjson = json_decode($m[2], true);
     // Parse the result. If code 0, show username and password. Else show the error for now.
     // Later if username taken, find another.
     if (! is_null($addjson) && is_array($addjson) && array_key_exists(IRODS_ADD_RESPONSE_CODE, $addjson)) {
       if ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::SUCCESS) {
 	$didCreate = True;
+	// FIXME: Redo the GET so I can show the zone et al?
       } else {
 	// Get the various messages
 
@@ -379,10 +396,10 @@ if (! $permError && ! $userExisted) {
       }
     } else {
       // malformed return struct
-      error_log("Malformed return from irods put to create iRODS account for " . $username . ": " . $addjson);
+      error_log("Malformed return from iRODS PUT to create iRODS account for " . $username . ": " . $addjson);
     }
   } catch (Exception $e) {
-    error_log("Error doing irods put to create iRODS account for " . $username . ": " . $e->getMessage());
+    error_log("Error doing iRODS put to create iRODS account for " . $username . ": " . $e->getMessage());
     $irodsError = htmlentities($e->getMessage());
   }
 }
@@ -403,11 +420,45 @@ if ($didCreate) {
   print "<table><tr><td class='label'><b>Username</b></td><td>$username</td></tr>\n";
   print "<tr><td class='label'><b>Temporary Password</b></td><td>$tempPassword</td></tr></table>\n";
   print "<p><b>WARNING: Write down your password. It is not recorded anywhere. You will need to change it after accessing iRods.</b></p>\n";
+  print "<br/>\n";
+  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':\<br/>\n";
+  if ($zone === "")
+    $zone = $default_zone;
+  print "<p>irodsHost=$irods_host</p>\n";
+  print "<p>irodsPort=$irods_port</p>\n";
+  print "<p>irodsDefResource=$irods_resource</p>\n";
+  print "<p>irodsHome=/$zone/home/$username</p>\n";
+  print "<p>irodsCmd=/$zone/home/$username</p>\n";
+  print "<p>irodsUserName=$username</p>\n";
+  print "<p>irodsZone=$zone</p>\n";
 } elseif ($userExisted) {
-  print "<p>Your GENI iRODS account already exists.</p>";
+  $isDiffDN = false;
+  print "<p>Your GENI iRODS account has already been created.</p>";
   print "<table><tr><td class='label'><b>Username</b></td><td>$username</td></tr>";
-  print "<tr><td class='label'><b>Created</b></td><td>$createTime</td></tr></table>\n";
+  if ($createTime !== "")
+    print "<tr><td class='label'><b>Created</b></td><td>$createTime</td></tr>\n";
+  if ($zone !== "")
+    print "<tr><td class='label'><b>irodsZone</b></td><td>$zone</td></tr>\n";
+  if ($userDN !== "") {
+    print "<tr><td class='label'><b>User DN</b></td><td>$userDN</td></tr>\n";
+    if ($userDN != $subjectDN)
+      $isDiffDN = true;
+  }
+  // FIXME: Show what the config file should look like?
+  print "</table>\n";
   print "<p><b>WARNING: You must find your iRODS password, or contact XXX to have it reset.</b></p>\n";
+  if ($isDiffDN)
+    print "<p><b>WARNING: This iRODS user has your username but a different DN. Is this you? Your DN is: " . $subjectDN . "/</b></p>\n";
+  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':\<br/>\n";
+  if ($zone === "")
+    $zone = $default_zone;
+  print "<p>irodsHost=$irods_host</p>\n";
+  print "<p>irodsPort=$irods_port</p>\n";
+  print "<p>irodsDefResource=$irods_resource</p>\n";
+  print "<p>irodsHome=/$zone/home/$username</p>\n";
+  print "<p>irodsCmd=/$zone/home/$username</p>\n";
+  print "<p>irodsUserName=$username</p>\n";
+  print "<p>irodsZone=$zone</p>\n";
 } else {
   // Some kind of error
   print "<div id=\"error-message\">";
