@@ -73,7 +73,7 @@ $admin_emails = array();
 if ($admins and count($admins) > 0) {
   foreach ($admins as $admin_res) {
     $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
-    $admin_emails[] = $admin->prettyName() . " <" . $admin->email() . ">";
+    $admin_emails[] = $admin->prettyEmailAddress();
     //    error_log("Adding admin " . $admin->prettyName());
   }
 }
@@ -144,6 +144,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   }
 
   // Send the email
+  $prettyEmail = $user->prettyEmailAddress();
   $email = $user->email();
   if (count($admin_emails) > 0) {
     //error_log("Got admin_emails " . print_r($admin_emails, True));
@@ -152,10 +153,10 @@ Thank you,\n" . $user->prettyName() . "\n";
     $cc = ""; // FIXME: Include portal-dev-admin?
   }
   
-  mail($lead->prettyName() . "<" . $lead->email() . ">",
+  mail($lead->prettyEmailAddress(),
        "Join GENI project $project_name?",
        $message,
-       "Reply-To: $email" . "\r\n" . $cc . "From: $name <$email>");
+       "Reply-To: $email" . "\r\n" . $cc . "From: $prettyEmail");
 
   // Put up a page saying we sent the request
   show_header('GENI Portal: Projects', $TAB_PROJECTS);

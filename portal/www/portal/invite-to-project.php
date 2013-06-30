@@ -81,10 +81,11 @@ Thank you,\n" . $user->prettyName() . "\n";
   $to = implode(", ", $invitees);
   $email = $user->email();
   $name = $user->prettyName();
+  $prettyEmail = $user->prettyEmailAddress();
   mail($to,
        "Join my GENI project $project_name!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+       "Reply-To: $email" . "\r\n" . "From: $prettyEmail");
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   $msg = "$name invited people to project $project_name: $to";

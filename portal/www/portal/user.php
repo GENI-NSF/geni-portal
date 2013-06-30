@@ -163,6 +163,12 @@ class GeniUser
     /* return the value of the 'mail' attribute from the IdP. */
     return $this->attributes['mail'];
   }
+  
+  // Produce a pretty email name/address for sending like '"My Name" <my email>'
+  function prettyEmailAddress() {
+    return sprintf('"%s" <%s>', $this->prettyName(),
+		   $this->email());
+  }
 
   function urn() {
     return $this->urn;
