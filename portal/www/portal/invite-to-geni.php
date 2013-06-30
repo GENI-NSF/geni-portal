@@ -71,11 +71,11 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   // Send the email
   $to = implode(", ", $invitees);
   $email = $user->email();
-  $name = $user->prettyName();
+  $prettyEmail = $user->prettyEmailAddress();
   mail($to,
        "Join GENI!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+       "Reply-To: $email" . "\r\n" . "From: $prettyEmail");
 
   // Put up a page saying we invited them.
   print "<h2>Invite Someone to GENI</h2>\n";

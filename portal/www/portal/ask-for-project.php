@@ -108,11 +108,11 @@ Thank you,\n" . $user->prettyName() . "\n";
 if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($error))) {
   // Send the email
   $email = $user->email();
-  $name = $user->prettyName();
+  $prettyEmail = $user->prettyEmailAddress();
   mail($requestee,
        "Please create me a GENI Project",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+       "Reply-To: $email" . "\r\n" . "From: $prettyEmail");
 
   // FIXME: Ticket #65: Put this as a request. Include the request ID in the email?
   // Then when the request is handled, can auto add the member who requested the project.
