@@ -27,6 +27,8 @@
   * Remove a debug printout in rspec upload (#663)
   * Warn about project lead policy (#630)
   * Fix path bitrot in GMOC slice reporting (#669)
+  * Clean up bulk invite email (#529)
+  * Handle names with commas when sending email (#629)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
