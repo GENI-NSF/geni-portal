@@ -283,5 +283,8 @@ if ($portal_enable_abac)
 
 
      print '<h2>iRODS</h2>';
-print "<button onClick=\"window.location='irods.php'\"><b>Create iRODS Account</b></button><br/>\n";
+$irodsdisabled="disabled";
+if ($user->hasAttribute('enable_irods'))
+  $irodsdisabled = "";
+print "<button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button><br/>\n";
 ?>

@@ -37,6 +37,8 @@
   invite-to-geni, ask-for-project. (#409)
   * Pages that take a bunch of emails clarify how to separate
   addresses (space or newline or comma). (#405)
+  * Allow creating / looking up an iRODS account based on your portal
+  username (#640)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
