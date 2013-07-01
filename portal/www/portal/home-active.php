@@ -78,7 +78,7 @@ include("tool-slices.php");
  */
 $gemini_url = relative_url("gemini.php");
 
-  print "<h3>Tools</h3>";
+  print "<h2>Tools</h2>";
   print "<button onClick=\"window.open('$gemini_url')\">";
   print "<b>GENI Desktop</b></button>";
 
@@ -92,7 +92,7 @@ $gemini_url = relative_url("gemini.php");
 // Or must the users explicitly delete each one?
 ?>
 
-<h3>GENI Messages</h3>
+<h2>GENI Messages</h2>
 <table>
 <?php
    // FIXME: foreach project or slice where user is admin or lead, get log entries for that context
