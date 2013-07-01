@@ -157,6 +157,9 @@ Thank you,\n" . $user->prettyName() . "\n";
        "Join GENI project $project_name?",
        $message,
        "Reply-To: $email" . "\r\n" . $cc . "From: $prettyEmail");
+  // We could supply the -f arg to make bounces go back to this portal user,
+  // but we probably want to know if the lead's email address is bouncing.
+       //       "-f $email");
 
   // Put up a page saying we sent the request
   show_header('GENI Portal: Projects', $TAB_PROJECTS);

@@ -77,7 +77,6 @@ include("tool-breadcrumbs.php");
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email
   $to = implode(", ", $invitees);
-  // FIXME: replace ", , " with ", "
   if (preg_match("/ , /", $to)) {
     $to = preg_replace("/ , /", " ", $to);
   }
@@ -87,8 +86,6 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   if (preg_match("/, $/", $to)) {
     $to = preg_replace("/, $/", "", $to);
   }
-  //  preg_match("/^([^,]+)(, )*$/", $to, $m);
-  //  $to = $m[1];
   $email = $user->email();
   $prettyEmail = $user->prettyEmailAddress();
   mail($to,

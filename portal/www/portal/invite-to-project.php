@@ -45,14 +45,21 @@ include("tool-breadcrumbs.php");
 $invitees = null;
 $error = null;
 $message = '';
+$skips = "";
 if (array_key_exists("to", $_REQUEST)) {
   $invitee_string = $_REQUEST["to"];
-  // split on ,
-  $invitees = preg_split("/[\s,]+/", $invitee_string);
+  // split on ,;
+  $invitees = preg_split("/[\s,;]+/", $invitee_string);
   for ($i = 0; $i < count($invitees); $i++) {
     $invitees[$i] = trim($invitees[$i]);
-    // FIXME: validate each as an email
     $invitees[$i] = filter_var($invitees[$i], FILTER_SANITIZE_EMAIL);
+    if (! filter_var($invitees[$i], FILTER_VALIDATE_EMAIL)) {
+      //error_log("invite-to-project Skipping invitee " . $invitees[$i] . " that seems invalid");
+      if ($skips !== "")
+	$skips = $skips . ", ";
+      $skips = $skips . $invitees[$i];
+      $invitees[$i] = null;
+    }
     // FIXME: See http://www.linuxjournal.com/article/9585
   }
   if (array_key_exists("message", $_REQUEST)) {
@@ -79,13 +86,23 @@ You log in with your home university or college username, or request a GENI-spec
 Thank you,\n" . $user->prettyName() . "\n";
 
   $to = implode(", ", $invitees);
+  if (preg_match("/ , /", $to)) {
+    $to = preg_replace("/ , /", " ", $to);
+  }
+  if (preg_match("/^, /", $to)) {
+    $to = preg_replace("/^, /", "", $to);
+  }
+  if (preg_match("/, $/", $to)) {
+    $to = preg_replace("/, $/", "", $to);
+  }
   $email = $user->email();
   $name = $user->prettyName();
   $prettyEmail = $user->prettyEmailAddress();
   mail($to,
        "Join my GENI project $project_name!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $prettyEmail");
+       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   $msg = "$name invited people to project $project_name: $to";
@@ -96,6 +113,9 @@ Thank you,\n" . $user->prettyName() . "\n";
   print "<h2>Invite Someone to Project $project_name</h2>\n";
   print "<br/>\n";
   print "<b>Sent</b> Project $project_name invitation to:<br/>\n" . "$to.<br/><br/>\n";
+  if ($skips !== "") {
+    print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
+  }
   $lines = explode("\r\n", $message);
   print "<b>Message</b>: <br/><pre>\n";
   foreach ($lines as $line) {
@@ -126,6 +146,7 @@ print "<form action=\"invite-to-project.php\">\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 print "<b>Email addresses of people to invite</b>:<br/>\n";
 print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
+print "<p>Addresses should be space, comma, or newline separated.</p>\n";
 print "<b>Invitation message</b>:<br/>\n";
 
 // FIXME: ticket #66: Make this a template. Take from 'To join my' out of the editable bits.
