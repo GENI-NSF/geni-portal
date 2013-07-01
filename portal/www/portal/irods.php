@@ -22,16 +22,18 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// Search for an irods account for this user under their portal username. Display it if found.
-// Otherwise, Create an account for the user at iRods with a temporary password
+// Search for an iRODS account for this user under their portal username. Display it if found.
+// Otherwise, Create an account for the user at iRODS with a temporary password
 
 /* TODO:
  * Get irods from SR
  * Get U/P from settings only
  * S/MIME
- * On fatal error from GET don't try PUT
- * Should username really be the HRN? Or how do we deal with the possibility of duplicate usernames?
- * Should the page provide a download of the irods config file?
+ * test with the iEnv and WebURL bits
+ * Put up a contact point for resetting your PW
+ * Other info to the user?
+ * Enable for all users
+ * When server has a real cert, take out disabling VERIFYPEER and VERIFYHOST
  */
 
 require_once('user.php');
@@ -58,14 +60,16 @@ function doGET($url, $user, $password, $serverroot=null) {
   if (! is_null($serverroot)) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // iren-web is using a self signed cert at the moment
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
   }
-  $result = curl_exec($ch);
 
+  // Now do it
+  $result = curl_exec($ch);
   $meta = curl_getinfo($ch);
   $error = curl_error($ch);
   curl_close($ch);
+
   if ($result === false) {
     error_log("GET of " . $url . " failed (no result): " . $error);
     $code = "";
@@ -89,10 +93,10 @@ function doGET($url, $user, $password, $serverroot=null) {
     $code = "";
     throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
-    error_log("GET meta: " . print_r($meta, true));
+    //error_log("GET meta: " . print_r($meta, true));
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      error_log("GET of " . $url . " got error return code " . $meta["http_code"]);
       if ($meta["http_code"] != 200) {
+	error_log("GET of " . $url . " got error return code " . $meta["http_code"]);
 	// code ??? means user not found - raise a different exception?
 	// then if I don't get that and don't get the real result I show the error 
 	// and don't try to do the PUT?
@@ -127,15 +131,18 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   if (! is_null($serverroot)) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // iren-web is using a self signed cert at the moment
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
   }
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+  // Now do it
   $result = curl_exec($ch);
   $meta = curl_getinfo($ch);
   $error = curl_error($ch);
   curl_close($ch);
+
   if ($result === false) {
     error_log("PUT to " . $url . " failed (no result): " . $error);
     $code = "";
@@ -152,10 +159,10 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
     $code = "";
     throw new Exception("PUT to " . $url . " failed: " . $code . $error);
   } else {
-    error_log("PUT to " . $url . " meta: " . print_r($meta, true));
+    //error_log("PUT to " . $url . " meta: " . print_r($meta, true));
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      error_log("PUT got error return code " . $meta["http_code"]);
       if ($meta["http_code"] != 200) {
+	error_log("PUT got error return code " . $meta["http_code"]);
 	$codestr = "HTTP Error " . $meta["http_code"];
 	if (is_null($error) || $error === "") {
 	  $error = $codestr . ": \"" . $result . '"';
@@ -171,6 +178,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   return $result;
 }
 
+// Create a unique username from the given base, where latest is what we tried that failed
 function derive_username($baseusername, $latestname=null) {
   $ind = 1;
   if (! is_null($latestname)) {
@@ -236,6 +244,7 @@ if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
     error_log("Found no MA in SR!");
+    relative_redirect("error-text.php?error=" . urlencode("No Member Authority configured."));
   }
 }
 
@@ -261,7 +270,6 @@ if (! isset($irods_url) || is_null($irods_url) || $irods_url == '') {
 }
 
 /* Get this from /etc/geni-ch/settings.php */
-// FIXME: Get the right values from settings.php
 if (! isset($portal_irods_user) || isnull($portal_irods_user)) {
   $portal_irods_user = 'rods';
   $portal_irods_pw = 'rods';
@@ -274,6 +282,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+// FIXME: Only let this page run for testers for now
 if (! $user->hasAttribute('enable_irods')) {
   error_log("User " . $user->prettyName() . " not enabled for iRODS");
   relative_redirect('profile.php');
@@ -290,19 +299,19 @@ $subjectDN = $certStruct['name'];
 //$portal_cert = $portal->certificate();
 //$portal_key = $portal->privateKey();
 
-$didCreate = False;
-$userExisted = False;
-$usernameTaken = False;
-$irodsError = "";
+$didCreate = False; // Did we create the account on this page
+$userExisted = False; // Did the user already exist
+$usernameTaken = False; // Is the basic username taken
+$irodsError = ""; // Error from iRODS server
 $tempPassword = "";
 $createTime = "";
 $zone = "";
-$userDN = "";
-$irodsUsername = "";
-$irodsEnv = null;
-$irodsWebURL = null;
+$userDN = ""; // DN from iRODS
+$irodsUsername = ""; // username from iRODS
+$irodsEnv = null; // iEnv file contents from iRODS
+$irodsWebURL = null; // iRDODS web URL to show user
 
-// FIXME: Replace with something homegrown?
+// FIXME: Is Pest better?
 //$pestget = new PestXML($irods_url);
 //$pestget->setupAuth($portal_irods_user, $portal_irods_pw);
 //error_log("pestget curlopts" . print_r($pestget->curl_opts, TRUE));
@@ -313,7 +322,6 @@ $userinfo = array();
 $permError = false;
 
 // First we try to GET the username: if there, the user already has an account. Remind them.
-// FIXME: Or could someone non portal have claimed this username?
 try {
   while(True) {
     $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw, $irods_cert);
@@ -393,7 +401,6 @@ catch (Exception $e)
 {
   error_log("Error checking if iRODS account $username exists: " . $e->getMessage());
   $irodsError = htmlentities($e->getMessage());
-  // FIXME: Errors that are not 'not found' we should not do PUT
 }
 
 // If the iRODS server is working but the user didn't exist, create them
@@ -463,16 +470,18 @@ if (! $permError && ! $userExisted) {
 	  $keepTrying = False;
 	} elseif ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::TRY_AGAIN) {
 	  $tempFailTries = $tempFailTries + 1;
-	  if ($tempFailTries > 5) {
+	  if ($tempFailTries > 5) { // FIXME: Is 5 times enough?
 	    error_log("iRODS got temporary error on PUT. But retried a bunch already. " . $addjson[IRODS_MESSAGE]);
 	    $irodsError = $IRODS_ERROR_NAMES[$addjson[IRODS_ADD_RESPONSE_CODE]] . ": " . $addjson[IRODS_MESSAGE];
 	    $keepTrying = False;
 	  } else {
 	    error_log("iRODS got temporary error on PUT. Sleep and retry. " . $addjson[IRODS_MESSAGE]);
-	    sleep(10);
+	    sleep(10); // FIXME: Long enough?
 	  }
 	  // now allow to repeat
 	} elseif ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::USERNAME_TAKEN) {
+	  // Really I should check the userDN via a GET
+	  // But that presumes another portal page created the user while this was querying. Unlikely.
 	  error_log("iRODS says username " . $username . " is now taken. " . $addjson[IRODS_MESSAGE]);
 	  $username = derive_username($baseusername, $username);
 	} else {
@@ -544,7 +553,6 @@ if ($didCreate) {
     if ($userDN != $subjectDN)
       $isDiffDN = true;
   }
-  // FIXME: Show what the config file should look like?
   print "</table>\n";
   print "<p><b>WARNING: You must find your iRODS password, or contact XXX to have it reset.</b></p>\n";
   if ($isDiffDN)
