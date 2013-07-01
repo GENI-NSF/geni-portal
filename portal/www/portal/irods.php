@@ -36,6 +36,7 @@
  * When server has a real cert, take out disabling VERIFYPEER and VERIFYHOST
  * Are temporary failure sleep/retry counts good?
  * irodsHost/port/resource default values - get them from a config?
+ * Username has a prefix? HRN like prefix? None? Currently prefix is geni-
  */
 
 require_once('user.php');
@@ -88,7 +89,7 @@ function doGET($url, $user, $password, $serverroot=null) {
     throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
     // FIXME: Comment this out when ready
-    error_log("GET of " . $url . " result: " . print_r($result, true));
+    //    error_log("GET of " . $url . " result: " . print_r($result, true));
   }
   if ($meta === false) {
     error_log("GET of " . $url . " error (no meta): " . $error);
@@ -155,7 +156,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
     throw new Exception("PUT to " . $url . " failed: " . $code . $error);
   } else {
     // FIXME: Comment this out when ready
-    error_log("PUT to " . $url . " result: " . print_r($result, true));
+    //    error_log("PUT to " . $url . " result: " . print_r($result, true));
   }
   if ($meta === false) {
     error_log("PUT to " . $url . " error (no meta): " . $error);
@@ -293,8 +294,11 @@ if (! $user->hasAttribute('enable_irods')) {
   relative_redirect('profile.php');
 }
 
-$username = $user->username;
+$userPrefix = "geni-"; // FIXME: Make this an HRN but with hyphens? No prefix?
+//$userPrefix = "";
+$username = $userPrefix . $user->username;
 $baseusername = $username;
+
 $certStruct = openssl_x509_parse($user->certificate());
 $subjectDN = $certStruct['name'];
 //$userurn = $user->urn();
@@ -559,7 +563,7 @@ if ($didCreate) {
       $isDiffDN = true;
   }
   print "</table>\n";
-  print "<p><b>WARNING: You must find your iRODS password, or contact XXX to have it reset.</b></p>\n";
+  print "<p><b>WARNING: Only you know your iRODS password.</b></p>\n";
   if ($isDiffDN)
     print "<p><b>WARNING: This iRODS user has your username but a different DN. Is this you? Your DN is: " . $subjectDN . "</b></p>\n";
   if (! is_null($irodsWebURL))
