@@ -58,6 +58,7 @@ function doGET($url, $user, $password, $serverroot=null) {
   if (! is_null($serverroot)) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   }
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
   $result = curl_exec($ch);
 
@@ -125,6 +126,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   if (! is_null($serverroot)) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   }
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -332,7 +334,7 @@ try {
 	  } elseif ($name == IRODS_USERDN) {
 	    $userDN = strval($child);
 	    if ($userDN === "") {
-	      error_log("userDN empty from IRODS for user " . $username);
+	      error_log("userDN empty from iRODS for user " . $username);
 	    } elseif ($userDN !== $subjectDN) {
 	      error_log("GET for username " . $username . " got DN from iRODS " . $userDN . " != user's: " . $subjectDN);
 	      $usernameTaken = True;
@@ -453,16 +455,16 @@ if ($didCreate) {
   if ($username != $baseusername) 
     print "<p><b>NOTE</b>: Your username is not the same as your portal username (which was taken). Write it down</p>\n";
   print "<br/>\n";
-  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':\<br/>\n";
+  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
   if ($zone === "")
     $zone = $default_zone;
-  print "<p>irodsHost=$irods_host</p>\n";
-  print "<p>irodsPort=$irods_port</p>\n";
-  print "<p>irodsDefResource=$irods_resource</p>\n";
-  print "<p>irodsHome=/$zone/home/$username</p>\n";
-  print "<p>irodsCmd=/$zone/home/$username</p>\n";
-  print "<p>irodsUserName=$username</p>\n";
-  print "<p>irodsZone=$zone</p>\n";
+  print "<p>irodsHost=$irods_host><br/>\n";
+  print "irodsPort=$irods_port<br/>\n";
+  print "irodsDefResource=$irods_resource<br/>\n";
+  print "irodsHome=/$zone/home/$username<br/>\n";
+  print "irodsCwd=/$zone/home/$username<br/>\n";
+  print "irodsUserName=$username<br/>\n";
+  print "irodsZone=$zone</p>\n";
 } elseif ($userExisted) {
   $isDiffDN = false;
   print "<p>Your GENI iRODS account has already been created.</p>";
@@ -481,16 +483,16 @@ if ($didCreate) {
   print "<p><b>WARNING: You must find your iRODS password, or contact XXX to have it reset.</b></p>\n";
   if ($isDiffDN)
     print "<p><b>WARNING: This iRODS user has your username but a different DN. Is this you? Your DN is: " . $subjectDN . "/</b></p>\n";
-  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':\<br/>\n";
+  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
   if ($zone === "")
     $zone = $default_zone;
-  print "<p>irodsHost=$irods_host</p>\n";
-  print "<p>irodsPort=$irods_port</p>\n";
-  print "<p>irodsDefResource=$irods_resource</p>\n";
-  print "<p>irodsHome=/$zone/home/$username</p>\n";
-  print "<p>irodsCmd=/$zone/home/$username</p>\n";
-  print "<p>irodsUserName=$username</p>\n";
-  print "<p>irodsZone=$zone</p>\n";
+  print "<p>irodsHost=$irods_host<br/>\n";
+  print "irodsPort=$irods_port<br/>\n";
+  print "irodsDefResource=$irods_resource<br/>\n";
+  print "irodsHome=/$zone/home/$username<br/>\n";
+  print "irodsCwd=/$zone/home/$username<br/>\n";
+  print "irodsUserName=$username<br/>\n";
+  print "irodsZone=$zone</p>\n";
 } else {
   // Some kind of error
   print "<div id=\"error-message\">";
