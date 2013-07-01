@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * WiMAX integration (#484)
   * Extend default and max slice expiration (#636)
   * Verify OpenID username (#289)
   * Improve OpenID page flow (#288)

@@ -80,7 +80,13 @@ $gemini_url = relative_url("gemini.php");
 
   print "<h2>Tools</h2>";
   print "<button onClick=\"window.open('$gemini_url')\">";
-  print "<b>GENI Desktop</b></button>";
+  print "<b>GENI Desktop</b></button> ";
+
+  if ($user->hasAttribute('enable_wimax_button')) {
+    $wimax_url = relative_url("wimax-enable.php");
+    print "<button onClick=\"window.open('$wimax_url')\">";
+    print "<b>WiMAX</b></button>";
+  }
 
 ?>
 
