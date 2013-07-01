@@ -255,18 +255,26 @@ if (array_key_exists('project_id', $_REQUEST))
   }
 
   // debug
-  echo "<p>The generated LDIF:</p>";
-  echo "<blockquote><pre>$ldif_string</pre></blockquote>";
-  echo "<p>The cURL result was: $result</p>";
+  //echo "<p>The generated LDIF:</p>";
+  //echo "<blockquote><pre>$ldif_string</pre></blockquote>";
+  //echo "<p>The cURL result was: $result</p>";
   
   // CHECK REPLY FROM SENDER
   
-  if (strpos($result, 'Operation failed - Group') !== false) {
+  /*
+    Some error messages from their side:
     
-    echo "<p><b>Error</b>: A group record already exists</b></p>";
+      Operation failed - You trying to upload user for organization 
+      that does not egist. Missing organization LDIF entry
+      
+      Operation failed - Username bujcich alerady exist
+      
+      Operation failed - undefined method `[]' for nil:NilClass
   
-  }
+  */
   
+  // Assume unsuccessful unless reply indicates otherwise
+  $success = 0;
   
   /* if response was successful:
         add member_attribute to user
@@ -277,23 +285,33 @@ if (array_key_exists('project_id', $_REQUEST))
             name: enable_wimax
             value: foo
   */
+  if (strpos(strtolower($result), 'success' !== false)) {
+    // add yourself as someone using WiMAX
+    add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $project_id, 't');
+    
+    // if you're the project lead, enable the project for WiMAX
+    if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
+      add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, 'foo');
+    }
   
-  
-  
-  
-  /*
-
-
-
-  // display sites chosen
-  echo "<p>The WiMAX site(s) chosen: </p>\n";
-  echo "<ul>\n";
-  foreach($sites_attributes as $site) {
-    echo "<li><b>" . $site[SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION] . " (" . $site[SR_TABLE_FIELDNAME::SERVICE_NAME] . ")</b>, sending to the URL " . $site[SR_TABLE_FIELDNAME::SERVICE_URL] . "</li>\n";
+    echo "<p><b>Success</b>: You have enabled and/or requested your account. Check {$user->mail} for login information.</p>";
   }
-  echo "</ul>\n";
   
- */
+  else {
+  
+    echo "<p><b>Error (from $url):</b> $result</p>";
+    echo "<p>Debug information:</p>";
+    echo "<blockquote><pre>$ldif_string</pre></blockquote>";
+    
+  }
+  
+  
+
+  
+  
+  
+  
+
 
 }
 
