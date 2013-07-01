@@ -100,6 +100,71 @@ function get_member_ids($args, $message)
   return generate_response(RESPONSE_ERROR::NONE, $ids, null);
 }
 
+
+
+/* Add attribute name/value pair to member
+   Requires member_id, name, value, self asserted
+*/
+function add_member_attribute($args)
+{
+
+  global $MA_MEMBER_ATTRIBUTE_TABLENAME;
+
+  if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID, $args) or
+      $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] == '') {
+    error_log("Missing member_id arg to add_member_attributes");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Member ID is missing");
+  }
+  
+  if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME, $args) or
+      $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] == '') {
+    error_log("Missing name arg to add_member_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Name is missing");
+  }
+  if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE, $args) or
+      $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE] == '') {
+    error_log("Missing value arg to add_member_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Value is missing");
+  }
+  if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED, $args) or
+      $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED] == '') {
+    error_log("Missing value self_asserted to add_member_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Self asserted is missing");
+  }
+  
+  $conn = db_conn();
+  
+  // define variables
+  $member_id = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
+  $name = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  $value = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE];
+  $self_asserted = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED];
+  
+  // insert
+  $sql = ("insert into " . $MA_MEMBER_ATTRIBUTE_TABLENAME
+          . " ( " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID
+          . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME
+          . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE
+          . ", " . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED
+          . ")  VALUES ("
+          . $conn->quote($member_id, 'text')
+          . ", " . $conn->quote($name, 'text')
+          . ", " . $conn->quote($value, 'text')
+          . ", " . $conn->quote($self_asserted, 'text')
+          . ")");
+  $result = db_execute_statement($sql);
+  return $result;
+
+}
+
+
+
+
+
 function register_ssh_key($args, $message)
 {
   global $MA_SSH_KEY_TABLENAME;
