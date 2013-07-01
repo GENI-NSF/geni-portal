@@ -405,66 +405,90 @@ if (! $permError && ! $userExisted) {
 
   // Construct the array of stuff to send iRODS
   $irods_info = array();
-  $irods_info[IRODS_USER_NAME] = $username;
   $irods_info[IRODS_USER_PASSWORD] = $tempPassword;
   $irods_info[IRODS_USER_DN] = $subjectDN;
-  
-  // Note: in PHP 5.4, use JSON_UNESCAPED_SLASHES.
-  //   we have PHP 5.3, so we have to remove those manually.
-  $irods_json = json_encode($irods_info);
-  $irods_json = str_replace('\\/','/', $irods_json);
 
-  // FIXME: Take this out when ready
-  error_log("Doing put of irods_json: " . $irods_json);
-
-  ///* Sign the data with the portal certificate (Is that correct?) */
-  //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
-  
-  ///* Encrypt the signed data for the iRODS SSL certificate */
-  //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
   
   // Now do the REST PUT
   try {
-    //    $pestput = new PestJSON($irods_url);
-    //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
-    //    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
-    $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
-    //error_log("PUT raw result: " . print_r($addstruct, true));
+    $keepTrying = True;
+    $tempFailTries = 0;
+    while ($keepTrying) {
 
-    // look for (\r or \n or \r\n){2} and move past that
-    preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
-    if (! array_key_exists(2, $m)) {
-      error_log("Malformed PUT result to iRODS - error? Got: " . $addstruct);
-      throw new Exception("Failed to create iRODS account - server error: " . $addstruct);
-    }
+      $irods_info[IRODS_USER_NAME] = $username;
 
-    // FIXME: Comment this out when ready
-    error_log("PUT result content: " . $m[2]);
+      // Note: in PHP 5.4, use JSON_UNESCAPED_SLASHES.
+      //   we have PHP 5.3, so we have to remove those manually.
+      $irods_json = json_encode($irods_info);
+      $irods_json = str_replace('\\/','/', $irods_json);
 
-    $addjson = json_decode($m[2], true);
-    // Parse the result. If code 0, show username and password. Else show the error for now.
-    // Later if username taken, find another.
-    if (! is_null($addjson) && is_array($addjson) && array_key_exists(IRODS_ADD_RESPONSE_CODE, $addjson)) {
-      if ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::SUCCESS) {
-	$didCreate = True;
-	// FIXME: Redo the GET so I can show the zone et al?
-	if (array_key_exists(IRODS_ENV, $addjson)) 
-	  $irodsEnv = $addjson[IRODS_ENV];
-	if (array_key_exists(IRODS_URL, $addjson)) 
-	  $irodsWebURL = $addjson[IRODS_URL];
+      // FIXME: Take this out when ready
+      error_log("Doing put of irods_json: " . $irods_json);
 
-      } else {
-	// Get the various messages
+      ///* Sign the data with the portal certificate (Is that correct?) */
+      //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
 
-	// Which error description do we use? The one they sent? Or ours?
-	$irodsError = $IRODS_ERROR_NAMES[$addjson[IRODS_ADD_RESPONSE_CODE]] . ": " . $addjson[IRODS_MESSAGE];
-	//	$irodsError = $addjson[IRODS_ADD_RESPONSE_DESCRIPTION] . ": " . $addjson[IRODS_MESSAGE];
-	error_log("iRODS returned an error creating account for " . $username . ": " . $irodsError);
+      ///* Encrypt the signed data for the iRODS SSL certificate */
+      //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
+
+
+      //    $pestput = new PestJSON($irods_url);
+      //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
+      //    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
+      $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
+      //error_log("PUT raw result: " . print_r($addstruct, true));
+
+      // look for (\r or \n or \r\n){2} and move past that
+      preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
+      if (! array_key_exists(2, $m)) {
+	error_log("Malformed PUT result to iRODS - error? Got: " . $addstruct);
+	throw new Exception("Failed to create iRODS account - server error: " . $addstruct);
       }
-    } else {
-      // malformed return struct
-      error_log("Malformed return from iRODS PUT to create iRODS account for " . $username . ": " . $addjson);
-    }
+
+      // FIXME: Comment this out when ready
+      error_log("PUT result content: " . $m[2]);
+
+      $addjson = json_decode($m[2], true);
+
+      // Parse the result. If code 0, show username and password. Else show the error for now.
+      // Later if username taken, find another.
+      if (! is_null($addjson) && is_array($addjson) && array_key_exists(IRODS_ADD_RESPONSE_CODE, $addjson)) {
+	if ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::SUCCESS) {
+	  $didCreate = True;
+	  // FIXME: Redo the GET so I can show the zone et al?
+	  if (array_key_exists(IRODS_ENV, $addjson)) 
+	    $irodsEnv = $addjson[IRODS_ENV];
+	  if (array_key_exists(IRODS_URL, $addjson)) 
+	    $irodsWebURL = $addjson[IRODS_URL];
+	  $keepTrying = False;
+	} elseif ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::TRY_AGAIN) {
+	  $tempFailTries = $tempFailTries + 1;
+	  if ($tempFailTries > 5) {
+	    error_log("iRODS got temporary error on PUT. But retried a bunch already. " . $addjson[IRODS_MESSAGE]);
+	    $irodsError = $IRODS_ERROR_NAMES[$addjson[IRODS_ADD_RESPONSE_CODE]] . ": " . $addjson[IRODS_MESSAGE];
+	    $keepTrying = False;
+	  } else {
+	    error_log("iRODS got temporary error on PUT. Sleep and retry. " . $addjson[IRODS_MESSAGE]);
+	    sleep(10);
+	  }
+	  // now allow to repeat
+	} elseif ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::USERNAME_TAKEN) {
+	  error_log("iRODS says username " . $username . " is now taken. " . $addjson[IRODS_MESSAGE]);
+	  $username = derive_username($baseusername, $username);
+	} else {
+	  $keepTrying = False;
+	  // Get the various messages
+	  
+	  // Which error description do we use? The one they sent? Or ours?
+	  $irodsError = $IRODS_ERROR_NAMES[$addjson[IRODS_ADD_RESPONSE_CODE]] . ": " . $addjson[IRODS_MESSAGE];
+	  //	$irodsError = $addjson[IRODS_ADD_RESPONSE_DESCRIPTION] . ": " . $addjson[IRODS_MESSAGE];
+	  error_log("iRODS returned an error creating account for " . $username . ": " . $irodsError);
+	}
+      } else {
+	// malformed return struct
+	error_log("Malformed return from iRODS PUT to create iRODS account for " . $username . ": " . $addjson);
+      }
+    } // end of while loop to retry PUT
   } catch (Exception $e) {
     error_log("Error doing iRODS put to create iRODS account for " . $username . ": " . $e->getMessage());
     $irodsError = htmlentities($e->getMessage());
