@@ -34,6 +34,8 @@
  * Other info to the user?
  * Enable for all users
  * When server has a real cert, take out disabling VERIFYPEER and VERIFYHOST
+ * Are temporary failure sleep/retry counts good?
+ * irodsHost/port/resource default values - get them from a config?
  */
 
 require_once('user.php');
@@ -61,8 +63,8 @@ function doGET($url, $user, $password, $serverroot=null) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
   }
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
 
   // Now do it
   $result = curl_exec($ch);
@@ -132,8 +134,9 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
   }
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
+
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
@@ -248,8 +251,10 @@ if (! isset($ma_url)) {
   }
 }
 
-/* TODO put this in the service registry */
+// This is just the default - otherwise it comes from the SR
 $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+
+/* TODO put these in the service registry or similar */
 $irods_host = "irods_hostname";
 $irods_port = 1247; // FIXME: Always right?
 $irods_resource = "demoResc"; // FIXME: Always right?
