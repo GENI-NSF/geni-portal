@@ -37,6 +37,7 @@
   invite-to-geni, ask-for-project. (#409)
   * Pages that take a bunch of emails clarify how to separate
   addresses (space or newline or comma). (#405)
+  * Lookup existing users with case insensitive email in bulk add (#646)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
