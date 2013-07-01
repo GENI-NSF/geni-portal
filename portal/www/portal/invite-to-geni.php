@@ -44,11 +44,10 @@ $message = "";
 $skips = "";
 if (array_key_exists("to", $_REQUEST)) {
   $invitee_string = $_REQUEST["to"];
-  // split on ,
-  $invitees = preg_split("/[\s\n\r,]+/", $invitee_string);
+  // split on ,;
+  $invitees = preg_split("/[\s,;]+/", $invitee_string);
   for ($i = 0; $i < count($invitees); $i++) {
     $invitees[$i] = trim($invitees[$i]);
-    // FIXME: validate each as an email
     $invitees[$i] = filter_var($invitees[$i], FILTER_SANITIZE_EMAIL);
     if (! filter_var($invitees[$i], FILTER_VALIDATE_EMAIL)) {
       error_log("Skipping invitee " . $invitees[$i] . " that seems invalid");
@@ -124,8 +123,9 @@ if (isset($error) && ! is_null($error)) {
 }
 //mailto:larry,dan?cc=mike&bcc=sue&subject=test&body=type+your&body=message+here
 print "<form action=\"invite-to-geni.php\">\n";
-print "<b>Email address of people to invite</b>:<br/>\n";
+print "<b>Email addresses of people to invite</b>:<br/>\n";
 print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
+print "<p>Addresses should be space, comma, or newline separated.</p>\n";
 print "<b>Invitation message</b>:<br/>\n";
 $hostname = $_SERVER['SERVER_NAME'];
 // FIXME: Ticket #66: Make this only partially editable. Maybe starting with 'For more info...'
