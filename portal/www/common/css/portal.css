@@ -63,16 +63,22 @@ hr {
 }
 
 #metanav {
-  padding: 5px;
-  color: #ffffff;
+  padding: 0px;
+  color: #5F584E;
+  float: right;
 }
 
 #metanav a {
-  color: #ffffff;
+  color: #5F584E;
 }
 
 #metanav li { 
-  border-right: 2px solid #ffffff;
+  border-right: 2px solid #5F584E;
+}
+
+#metanav ul {
+  padding: 5px;
+    background-color:rgba(229,229,229,0.75);
 }
 
 /* Main navigation bar */
@@ -147,7 +153,7 @@ hr {
 #content {
   /* white space */
   background-color: #FFFFFF;
-  padding-left: 135px;
+  padding-left: 60px;
   padding-right: 30px;
   padding-bottom: 30px;
   padding-top: 20px;
@@ -300,6 +306,31 @@ hr {
 	color: #5F584E;
 	border-top: 1px solid transparent;
 	vertical-align:middle;
+}
+
+#content td a {
+  color: #5F584E;
+  border-bottom: 1px dashed #5F584E;
+}
+
+/*
+  BREADCRUMB CONTAINER
+*/
+#breadcrumb {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: #5F584E;
+  background-image: url("../../images/geni_globe.png");
+  background-size:30px auto;
+  background-repeat:no-repeat;
+  padding-left: 40px;
+  min-height: 30px;
+  border-bottom: 1px solid #E17000;
+}
+
+#breadcrumb a {
+  text-decoration: none;
+  border-bottom: 0px;
 }
 
 /*
@@ -581,6 +612,4 @@ table .notapply {
  white-space: pre;
  font-family: monospace;
 }
-
-
 

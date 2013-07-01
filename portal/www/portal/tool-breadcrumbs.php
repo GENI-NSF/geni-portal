@@ -245,9 +245,9 @@ if ($parent != '') {
     $thisScript = getHref($cur);
     /* } */
     // Crumb is link to script with right name
-    $crumb = getCrumbString($thisScript, $thisPair[0]) . " -> " . $crumb;
+    $crumb = getCrumbString($thisScript, $thisPair[0]) . " &rarr;  " . $crumb;
   } while ($cur != "home.php" && $cur != '');
 }
 
-print $crumb . "<br/>\n";
+print "<div id='breadcrumb'>" . $crumb . "</div>\n";
 
