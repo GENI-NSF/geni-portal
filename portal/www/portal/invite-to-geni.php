@@ -50,7 +50,7 @@ if (array_key_exists("to", $_REQUEST)) {
     $invitees[$i] = trim($invitees[$i]);
     $invitees[$i] = filter_var($invitees[$i], FILTER_SANITIZE_EMAIL);
     if (! filter_var($invitees[$i], FILTER_VALIDATE_EMAIL)) {
-      error_log("Skipping invitee " . $invitees[$i] . " that seems invalid");
+      //error_log("invite-to-geni Skipping invitee " . $invitees[$i] . " that seems invalid");
       if ($skips !== "")
 	$skips = $skips . ", ";
       $skips = $skips . $invitees[$i];
@@ -94,7 +94,8 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   mail($to,
        "Join GENI!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $prettyEmail");
+       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
 
   // Put up a page saying we invited them.
   print "<h2>Invite Someone to GENI</h2>\n";
