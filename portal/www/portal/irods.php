@@ -26,7 +26,6 @@
 // Otherwise, Create an account for the user at iRODS with a temporary password
 
 /* TODO:
- * Get irods from SR
  * Get U/P from settings only
  * S/MIME
  * test with the iEnv and WebURL bits
@@ -352,7 +351,10 @@ try {
 	      error_log("GET for iRODS username " . $username . " got a different username " . $irodsUsername);
 	      throw new PermFailException("Lookup of iRODS username " . $username . " got a different username " . $irodsUsername);
 	    }
-	    break;
+	  } elseif ($a == IRODS_ENV) {
+	    $irodsEnv = $b;
+	  } elseif ($a == IRODS_URL) {
+	    $irodsWebURL = $b;
 	  }
 	  //      	error_log($a . '=' . $b);
 	}
@@ -408,7 +410,7 @@ catch (PermFailException $e)
 }
 catch (Exception $e) 
 {
-  error_log("Error checking if iRODS account $username exists: " . $e->getMessage());
+  error_log("Error checking if iRODS account $username exists - probably it does not"); //: " . $e->getMessage());
   $irodsError = htmlentities($e->getMessage());
 }
 
@@ -439,7 +441,7 @@ if (! $permError && ! $userExisted) {
       $irods_json = str_replace('\\/','/', $irods_json);
 
       // FIXME: Take this out when ready
-      error_log("Doing put of irods_json: " . $irods_json);
+      error_log("Trying to create iRODS account with values: " . $irods_json);
 
       ///* Sign the data with the portal certificate (Is that correct?) */
       //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
@@ -533,7 +535,7 @@ if ($didCreate) {
     print "<p><b>NOTE</b>: Your username is not the same as your portal username (which was taken). Write it down!</p>\n";
   print "<br/>\n";
   if (! is_null($irodsWebURL))
-    print "<p>To act on your iRODS account, go to $irodsWebURL</p>\n";
+    print "<p>To act on your iRODS account, go to <a href=\"$irodsWebURL\">$irodsWebURL</a>.</p>\n";
   print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
   if ($zone === "")
     $zone = $default_zone;
