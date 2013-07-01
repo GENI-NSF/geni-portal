@@ -48,12 +48,16 @@ include_once('/etc/geni-ch/settings.php');
 class PermFailException extends Exception{}
 
 // Do a BasicAuth protected get of the given URL
-function doGET($url, $user, $password) {
+function doGET($url, $user, $password, $serverroot=null) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // iren-web is using a self signed cert at the moment
+  if (! is_null($serverroot)) {
+    curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
+  }
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
   $result = curl_exec($ch);
 
@@ -106,7 +110,7 @@ function doGET($url, $user, $password) {
   return $result;
 }
 
-function doPUT($url, $user, $password, $data, $content_type="application/json") {
+function doPUT($url, $user, $password, $data, $content_type="application/json", $serverroot=null) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
   $headers = array();
@@ -117,6 +121,10 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // iren-web is using a self signed cert at the moment
+  if (! is_null($serverroot)) {
+    curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
+  }
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -157,6 +165,15 @@ function doPUT($url, $user, $password, $data, $content_type="application/json") 
   if (! is_null($error) && $error != '')
     error_log("PUT to " . $url . " error: " . print_r($error, true));
   return $result;
+}
+
+function derive_username($baseusername, $latestname=null) {
+  $ind = 1;
+  if (! is_null($latestname)) {
+    $ind = intval(substr($latestname, strlen($baseusername)));
+    $ind = $ind + 1;
+  }
+  return $baseusername . $ind;
 }
 
 /* iRods Constants */
@@ -214,7 +231,7 @@ if (! isset($ma_url)) {
 }
 
 /* TODO put this in the service registry */
-$irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
+$irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
 $irods_host = "irods_hostname";
 $irods_port = 1247; // FIXME: Always right?
 $irods_resource = "demoResc"; // FIXME: Always right?
@@ -247,7 +264,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-$username = $user->username . "2";
+$username = $user->username;
+$baseusername = $username;
 $certStruct = openssl_x509_parse($user->certificate());
 $subjectDN = $certStruct['name'];
 //$userurn = $user->urn();
@@ -259,6 +277,7 @@ $subjectDN = $certStruct['name'];
 
 $didCreate = False;
 $userExisted = False;
+$usernameTaken = False;
 $irodsError = "";
 $tempPassword = "";
 $createTime = "";
@@ -279,47 +298,58 @@ $permError = false;
 // First we try to GET the username: if there, the user already has an account. Remind them.
 // FIXME: Or could someone non portal have claimed this username?
 try {
-  $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw);
-//  error_log(print_r($pestget->last_response, TRUE));
-//  error_log("Got userxml: " . $userxml);
-  if (! isset($userxml) || strncmp($userxml, "<?xml", 5)) {
-    throw new Exception("Error looking up " . $username . " at iRODS: " . $userxml);
-  } 
-  $xml = simplexml_load_string($userxml);
-  if (!$xml) {
-    error_log("Failed to parse XML from GET of iRODS user " . $username);
-  } else {
-    $userxml = $xml;
-    if (! is_null($userxml) && $userxml->getName() == "user") {
-      $userExisted = True;
-      foreach ($userxml->attributes() as $a=>$b) {
-	if ($a == "name") {
-	  $irodsUsername = $b;
-	  if ($irodsUsername != $username) {
-	    error_log("GET for iRODS username " . $username . " got a different username " . $irodsUsername);
-	  }
-	  break;
-	}
-	//      	error_log($a . '=' . $b);
-      }
-      foreach ($userxml->children() as $child) {
-	$name = $child->getName();
-	//	error_log($child->getName() . '=' . $child);
-	if ($name == IRODS_CREATE_TIME) {
-	  $createTime = strval($child);
-	} elseif ($name == IRODS_ZONE) {
-	  $zone = strval($child);
-	} elseif ($name == IRODS_USERDN) {
-	  $userDN = strval($child);
-	  if ($userDN === "") {
-	    error_log("userDN empty from IRODS for user " . $username);
-	  } elseif ($userDN !== $subjectDN) {
-	    error_log("GET for username " . $username . " got DN from iRODS " . $userDN . " != user's: " . $subjectDN);
-	  }
-	}
-      }
+  while(True) {
+    $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw, $irods_cert);
+    //  error_log(print_r($pestget->last_response, TRUE));
+    //  error_log("Got userxml: " . $userxml);
+    if (! isset($userxml) || strncmp($userxml, "<?xml", 5)) {
+      throw new Exception("Error looking up " . $username . " at iRODS: " . $userxml);
     } 
-  } 
+    $xml = simplexml_load_string($userxml);
+    if (!$xml) {
+      error_log("Failed to parse XML from GET of iRODS user " . $username);
+    } else {
+      $userxml = $xml;
+      if (! is_null($userxml) && $userxml->getName() == "user") {
+	foreach ($userxml->attributes() as $a=>$b) {
+	  if ($a == "name") {
+	    $irodsUsername = $b;
+	    if ($irodsUsername != $username) {
+	      error_log("GET for iRODS username " . $username . " got a different username " . $irodsUsername);
+	    }
+	    break;
+	  }
+	  //      	error_log($a . '=' . $b);
+	}
+	$userExisted = True; // since it is always empty at the moment. Take this out if userDN consistently there
+	foreach ($userxml->children() as $child) {
+	  $name = $child->getName();
+	  //	error_log($child->getName() . '=' . $child);
+	  if ($name == IRODS_CREATE_TIME) {
+	    $createTime = strval($child);
+	  } elseif ($name == IRODS_ZONE) {
+	    $zone = strval($child);
+	  } elseif ($name == IRODS_USERDN) {
+	    $userDN = strval($child);
+	    if ($userDN === "") {
+	      error_log("userDN empty from IRODS for user " . $username);
+	    } elseif ($userDN !== $subjectDN) {
+	      error_log("GET for username " . $username . " got DN from iRODS " . $userDN . " != user's: " . $subjectDN);
+	      $usernameTaken = True;
+	    } else {
+	      $userExisted = True;
+	    }
+	  }
+	}
+      } // End of block where we got a valid GET result
+      if ($usernameTaken) {
+	$username = foo($baseusername, $username);
+	$usernameTaken = False;
+      }
+      if ($userExisted) 
+	break;
+    } // End of block to parse GET result 
+  } // end of while to either find the user or raise an exception (IE found a free username)
 }
 catch (PermFailException $e) 
 {
@@ -366,7 +396,7 @@ if (! $permError && ! $userExisted) {
     //    $pestput = new PestJSON($irods_url);
     //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
     //    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
-    $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json);
+    $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
     //error_log("PUT raw result: " . print_r($addstruct, true));
 
     // look for (\r or \n or \r\n){2} and move past that
@@ -420,6 +450,8 @@ if ($didCreate) {
   print "<table><tr><td class='label'><b>Username</b></td><td>$username</td></tr>\n";
   print "<tr><td class='label'><b>Temporary Password</b></td><td>$tempPassword</td></tr></table>\n";
   print "<p><b>WARNING: Write down your password. It is not recorded anywhere. You will need to change it after accessing iRods.</b></p>\n";
+  if ($username != $baseusername) 
+    print "<p><b>NOTE</b>: Your username is not the same as your portal username (which was taken). Write it down</p>\n";
   print "<br/>\n";
   print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':\<br/>\n";
   if ($zone === "")
