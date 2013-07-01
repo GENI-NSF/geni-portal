@@ -29,6 +29,13 @@
   * Fix path bitrot in GMOC slice reporting (#669)
   * Clean up bulk invite email (#529)
   * Handle names with commas when sending email (#629)
+  * Handle various newlines in bulk add file (#584)
+  * Emails from experimenter bounce back to experimenter. (#409)
+  * Check user entered emails - both sanitize and validate them. Warn
+  experimenter about any that are skipped. See EG invite-to-project,
+  invite-to-geni, ask-for-project. (#409)
+  * Pages that take a bunch of emails clarify how to separate
+  addresses (space or newline or comma). (#405)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
