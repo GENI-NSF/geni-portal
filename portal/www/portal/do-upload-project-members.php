@@ -67,6 +67,7 @@ $selections = $_REQUEST;
 
 $num_members_added = 0;
 $num_members_invited = 0;
+$num_emails_skipped = 0;
 
 foreach($selections as $email_name => $attribs) {
   // Turn commas back to periods, and tabs back to spaces
@@ -89,6 +90,12 @@ foreach($selections as $email_name => $attribs) {
     $num_members_added = $num_members_added + 1;
     
   } else {
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      error_log("do-upload-project-members Skipping invitee " . $email . " that seems invalid");
+      $num_emails_skipped = $num_emails_skipped + 1;
+      continue;
+    }
     $invite_data = invite_member($sa_url, $user, $project_id, $role);
     $invite_id = $invite_data[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID];
     // If not, send an inviation email
@@ -110,12 +117,13 @@ foreach($selections as $email_name => $attribs) {
     $userEmail = $user->email();
     $userPrettyEmail = $user->prettyEmailAddress();
     mail($email, $email_subject, $email_text,
-       "Reply-To: $userEmail" . "\r\n" . "From: $userPrettyEmail");
+	 "Reply-To: $userEmail" . "\r\n" . "From: $userPrettyEmail",
+	 "-f $userEmail");
     $num_members_invited = $num_members_invited + 1;
   }
 }
 
-$_SESSION['lastmessage'] = "Added $num_members_added members; Invited $num_members_invited members";
+$_SESSION['lastmessage'] = "Added $num_members_added members; Invited $num_members_invited members; Skipped $num_emails_skipped invalid email addresses.";
 
 relative_redirect("project.php?project_id=".$project_id);
 

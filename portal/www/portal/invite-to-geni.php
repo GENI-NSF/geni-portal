@@ -41,14 +41,21 @@ include("tool-lookupids.php");
 $invitees = null;
 $error = null;
 $message = "";
+$skips = "";
 if (array_key_exists("to", $_REQUEST)) {
   $invitee_string = $_REQUEST["to"];
-  // split on ,
-  $invitees = preg_split("/[\s,]+/", $invitee_string);
+  // split on ,;
+  $invitees = preg_split("/[\s,;]+/", $invitee_string);
   for ($i = 0; $i < count($invitees); $i++) {
     $invitees[$i] = trim($invitees[$i]);
-    // FIXME: validate each as an email
     $invitees[$i] = filter_var($invitees[$i], FILTER_SANITIZE_EMAIL);
+    if (! filter_var($invitees[$i], FILTER_VALIDATE_EMAIL)) {
+      //error_log("invite-to-geni Skipping invitee " . $invitees[$i] . " that seems invalid");
+      if ($skips !== "")
+	$skips = $skips . ", ";
+      $skips = $skips . $invitees[$i];
+      $invitees[$i] = null;
+    }
     // FIXME: See http://www.linuxjournal.com/article/9585
   }
   if (array_key_exists("message", $_REQUEST)) {
@@ -70,17 +77,30 @@ include("tool-breadcrumbs.php");
 if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($error))) {
   // Send the email
   $to = implode(", ", $invitees);
+  if (preg_match("/ , /", $to)) {
+    $to = preg_replace("/ , /", " ", $to);
+  }
+  if (preg_match("/^, /", $to)) {
+    $to = preg_replace("/^, /", "", $to);
+  }
+  if (preg_match("/, $/", $to)) {
+    $to = preg_replace("/, $/", "", $to);
+  }
   $email = $user->email();
   $prettyEmail = $user->prettyEmailAddress();
   mail($to,
        "Join GENI!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $prettyEmail");
+       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
 
   // Put up a page saying we invited them.
   print "<h2>Invite Someone to GENI</h2>\n";
   print "<br/>\n";
   print "<b>Sent</b> GENI invitation to:<br/>\n" . "$to.<br/><br/>\n";
+  if ($skips !== "") {
+    print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
+  }
   $lines = explode("\r\n", $message);
   print "<b>Message</b>: <br/><pre>\n";
   foreach ($lines as $line) {
@@ -101,8 +121,9 @@ if (isset($error) && ! is_null($error)) {
 }
 //mailto:larry,dan?cc=mike&bcc=sue&subject=test&body=type+your&body=message+here
 print "<form action=\"invite-to-geni.php\">\n";
-print "<b>Email address of people to invite</b>:<br/>\n";
+print "<b>Email addresses of people to invite</b>:<br/>\n";
 print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
+print "<p>Addresses should be space, comma, or newline separated.</p>\n";
 print "<b>Invitation message</b>:<br/>\n";
 $hostname = $_SERVER['SERVER_NAME'];
 // FIXME: Ticket #66: Make this only partially editable. Maybe starting with 'For more info...'
