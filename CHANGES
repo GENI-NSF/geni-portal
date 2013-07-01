@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * WiMAX integration (#484)
   * Extend default and max slice expiration (#636)
   * Verify OpenID username (#289)
   * Improve OpenID page flow (#288)
@@ -26,6 +27,16 @@
   * Apply guards to more SA and PA methods (requires CS update-5.sql) (#502)
   * Remove a debug printout in rspec upload (#663)
   * Warn about project lead policy (#630)
+  * Fix path bitrot in GMOC slice reporting (#669)
+  * Clean up bulk invite email (#529)
+  * Handle names with commas when sending email (#629)
+  * Handle various newlines in bulk add file (#584)
+  * Emails from experimenter bounce back to experimenter. (#409)
+  * Check user entered emails - both sanitize and validate them. Warn
+  experimenter about any that are skipped. See EG invite-to-project,
+  invite-to-geni, ask-for-project. (#409)
+  * Pages that take a bunch of emails clarify how to separate
+  addresses (space or newline or comma). (#405)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 

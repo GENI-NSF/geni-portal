@@ -110,6 +110,12 @@ foreach (array_keys($all_attrs) as $attr_name) {
   }
 }
 
+$email_address = filter_var($email_address, FILTER_SANITIZE_EMAIL);
+if (! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+  error_log("do-register got invalid email address! EPPN: " . $eppn . ", email: " . $email_address);
+  // FIXME: Bail out?
+}
+
 // Special case for email because it may not be available
 // via "attrValue".
 if ($email_address_self_asserted) {

@@ -580,8 +580,8 @@ class PAProjectRequestGuard implements Guard
         if ($resolution_status == RQ_REQUEST_STATUS::CANCELLED) {
 
           $sql = "select " . RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR 
-	    . " FROM $PA_PROJECT_REQUEST_TABLENAME WHERE "
-	    . " $PA_PROJECT_REQUEST_TABLENAME." 
+	    . " FROM $PA_PROJECT_MEMBER_REQUEST_TABLENAME WHERE "
+	    . " $PA_PROJECT_MEMBER_REQUEST_TABLENAME." 
 	    . RQ_REQUEST_TABLE_FIELDNAME::ID 
 	    . " = " . $conn->quote($request_id, 'text');
           //error_log("doing sql $sql"); 
@@ -2310,7 +2310,7 @@ function add_project_attribute($args)
   // verify project ID exists
   if (! array_key_exists(PA_ARGUMENT::PROJECT_ID, $args) or
       $args[PA_ARGUMENT::PROJECT_ID] == '') {
-    error_log("Missing project_id arg to lookup_project_attributes");
+    error_log("Missing project_id arg to add_project_attribute");
     return generate_response(RESPONSE_ERROR::ARGS, null,
 			     "Project ID is missing");
   }
@@ -2319,13 +2319,13 @@ function add_project_attribute($args)
   // needed since both cannot be null when adding to database
   if (! array_key_exists(PA_ATTRIBUTE::NAME, $args) or
       $args[PA_ATTRIBUTE::NAME] == '') {
-    error_log("Missing name arg to lookup_project_attributes");
+    error_log("Missing name arg to add_project_attribute");
     return generate_response(RESPONSE_ERROR::ARGS, null,
 			     "Name is missing");
   }
   if (! array_key_exists(PA_ATTRIBUTE::VALUE, $args) or
       $args[PA_ATTRIBUTE::VALUE] == '') {
-    error_log("Missing value arg to lookup_project_attributes");
+    error_log("Missing value arg to add_project_attribute");
     return generate_response(RESPONSE_ERROR::ARGS, null,
 			     "Value is missing");
   }
@@ -2333,7 +2333,7 @@ function add_project_attribute($args)
   // verify project ID is valid
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   if (! uuid_is_valid($project_id)) {
-    error_log("project_id invalid in lookup_project_attributes: " . $project_id);
+    error_log("project_id invalid in add_project_attribute: " . $project_id);
     return generate_response(RESPONSE_ERROR::ARGS, null,
 			     "Project ID is invalid: " . $project_id);
   }

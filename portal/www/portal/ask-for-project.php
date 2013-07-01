@@ -64,6 +64,11 @@ if (array_key_exists("to", $_REQUEST)) {
   $requestee_string = trim($_REQUEST["to"]);
   // FIXME: validate as an email
   $requestee = filter_var($requestee_string, FILTER_SANITIZE_EMAIL);
+  if (! filter_var($requestee, FILTER_VALIDATE_EMAIL)) {
+    error_log("ask-for-project Got invalid requestee " . $requestee);
+    $error = "Invalid email address: " . $requestee;
+    $requestee = null;
+  }
   // FIXME: See http://www.linuxjournal.com/article/9585
 
   if (array_key_exists("message", $_REQUEST)) {
@@ -108,11 +113,12 @@ Thank you,\n" . $user->prettyName() . "\n";
 if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($error))) {
   // Send the email
   $email = $user->email();
-  $name = $user->prettyName();
+  $prettyEmail = $user->prettyEmailAddress();
   mail($requestee,
        "Please create me a GENI Project",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       "-f $email");
 
   // FIXME: Ticket #65: Put this as a request. Include the request ID in the email?
   // Then when the request is handled, can auto add the member who requested the project.
@@ -141,7 +147,7 @@ print "This form will send them an email with links to the GENI portal and main 
 print "You should include a custom message explaining how you want to use GENI and why they should create a project for you.<br/>\n";
 print "<br/>\n";
 if (isset($error) && ! is_null($error)) {
-  print $error;
+  print "<p class='warn'>$error</p>\n";
 }
 //mailto:larry,dan?cc=mike&bcc=sue&subject=test&body=type+your&body=message+here
 print "<form action=\"ask-for-project.php\">\n";
