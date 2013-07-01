@@ -536,7 +536,7 @@ if ($didCreate) {
   print "<br/>\n";
   if (! is_null($irodsWebURL))
     print "<p>To act on your iRODS account, go to <a href=\"$irodsWebURL\">$irodsWebURL</a>.</p>\n";
-  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
+  print "To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
   if ($zone === "")
     $zone = $default_zone;
   if (is_null($irodsEnv)) {
@@ -569,8 +569,8 @@ if ($didCreate) {
   if ($isDiffDN)
     print "<p><b>WARNING: This iRODS user has your username but a different DN. Is this you? Your DN is: " . $subjectDN . "</b></p>\n";
   if (! is_null($irodsWebURL))
-    print "<p>To act on your iRODS account, go to $irodsWebURL</p>\n";
-  print "To use iRODS commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
+    print "<p>To act on your iRODS account, go to <a href=\"$irodsWebURL\">$irodsWebURL</a>.</p>\n";
+  print "To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
   if ($zone === "")
     $zone = $default_zone;
   if (is_null($irodsEnv)) {
