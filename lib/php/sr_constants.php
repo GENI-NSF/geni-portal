@@ -46,6 +46,7 @@ $SR_SERVICE_TYPE_NAMES = array("AGGREGATE_MANAGER",
 			       "CERTIFICATE_AUTHORITY",
 			       "KEY_MANAGER",
 			       "PGCH",
+			       "WIMAX_SITE",
 			       "iRODS"
 			       );
 
@@ -61,7 +62,8 @@ class SR_SERVICE_TYPE
   const CERTIFICATE_AUTHORITY = 7;
   const KEY_MANAGER = 8;
   const PGCH = 9;
-  const IRODS = 10;
+  const WIMAX_SITE = 10;
+  const IRODS = 11;
 }
 
 /* Set of arguments in calls to the SR interface */

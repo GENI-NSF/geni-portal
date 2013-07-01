@@ -34,6 +34,20 @@ if(!isset($member_cache)) {
   $member_by_attribute_cache = array(); // Only for single attribute lookups
 }
 
+// Add member attribute
+function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self_asserted)
+{
+  global $user;
+  $add_member_attribute_message['operation'] = 'add_member_attribute';
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] = $member_id;
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] = $name;
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE] = $value;
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED] = $self_asserted;
+  $results = put_message($ma_url, $add_member_attribute_message, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
+
 // Get list of all member_ids in repository
 function get_member_ids($ma_url, $signer)
 {
