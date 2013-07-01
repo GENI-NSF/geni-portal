@@ -104,6 +104,7 @@ $parents = array("profile.php" => "home.php",
         "rspecupload.php" => "profile.php",
         "rspecs.php" => "profile.php",
                  "omni-bundle.php" => "profile.php",
+		 "irods.php" => "profile.php",
                  "gemini.php" => "slice.php");
 
 // Array from script name to a pretty name
@@ -162,6 +163,7 @@ $names = array("home.php" => $TAB_HOME,
         "rspecupload.php" => "Upload Resource Specification",
         "rspecs.php" => "Manage Resource Specifications",
         "omni-bundle.php" => "Omni Bundle",
+	       "irods.php" => "iRODS Account",
         "gemini.php" => "GENI Desktop");
 
 // Look up in the 2 arrays above

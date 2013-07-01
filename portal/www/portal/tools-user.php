@@ -280,4 +280,11 @@ if ($portal_enable_abac)
     print "<button onClick=\"window.location='abac-id.php'\">Download your ABAC ID</button><br/>\n";
     print "<button onClick=\"window.location='abac-key.php'\">Download your ABAC private key</button>\n";
   }
+
+
+     print '<h2>iRODS</h2>';
+$irodsdisabled="disabled";
+if ($user->hasAttribute('enable_irods'))
+  $irodsdisabled = "";
+print "<button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button><br/>\n";
 ?>
