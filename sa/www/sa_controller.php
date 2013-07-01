@@ -580,8 +580,8 @@ class PAProjectRequestGuard implements Guard
         if ($resolution_status == RQ_REQUEST_STATUS::CANCELLED) {
 
           $sql = "select " . RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR 
-	    . " FROM $PA_PROJECT_REQUEST_TABLENAME WHERE "
-	    . " $PA_PROJECT_REQUEST_TABLENAME." 
+	    . " FROM $PA_PROJECT_MEMBER_REQUEST_TABLENAME WHERE "
+	    . " $PA_PROJECT_MEMBER_REQUEST_TABLENAME." 
 	    . RQ_REQUEST_TABLE_FIELDNAME::ID 
 	    . " = " . $conn->quote($request_id, 'text');
           //error_log("doing sql $sql"); 

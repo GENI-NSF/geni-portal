@@ -67,6 +67,7 @@ $selections = $_REQUEST;
 
 $num_members_added = 0;
 $num_members_invited = 0;
+$num_emails_skipped = 0;
 
 foreach($selections as $email_name => $attribs) {
   // Turn commas back to periods, and tabs back to spaces
@@ -89,28 +90,40 @@ foreach($selections as $email_name => $attribs) {
     $num_members_added = $num_members_added + 1;
     
   } else {
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      error_log("do-upload-project-members Skipping invitee " . $email . " that seems invalid");
+      $num_emails_skipped = $num_emails_skipped + 1;
+      continue;
+    }
     $invite_data = invite_member($sa_url, $user, $project_id, $role);
     $invite_id = $invite_data[PA_PROJECT_MEMBER_INVITATION_TABLE_FIELDNAME::INVITE_ID];
     // If not, send an inviation email
-    $email_subject = "Invitation to project: " . $project_name;
+    $email_subject = "Invitation to GENI project: " . $project_name;
     $hostname = $_SERVER['SERVER_NAME'];
     $confirmation_url = "https://$hostname/secure/accept-project-invite?invite_id=$invite_id&project_name=$project_name";
     $email_text = "Dear $user_name, \n" . 
-      "You are invited to join GENI project $project_name whose lead is $lead_name. " . 
-      "If you would like to join the project and have a GENI account, click on this URL " . $confirmation_url . ". " .
-      "If you have a GENI account, once you authenticate you will directed to a page to confirm your choice to join the project. " .
-      "If you do not have a GENI account, contact help@geni.net to sign up for a GENI account.";
+      "You are invited to join GENI project $project_name whose lead is $lead_name. \n\n" . 
+      "If you would like to join the project, click on this URL " . $confirmation_url . ". " .
+      "Once you authenticate you will directed to a page to confirm your choice to join the project. \n" .
+      "If you have not used the GENI Portal before, see http://groups.geni.net/geni/wiki/SignMeUp for instructions on logging in to the GENI Portal." .
+      "\n\n" .
+      "Sincerely,\n" .
+      $user->prettyName();
 
     //    error_log("EMAIL_ADDRESS : $email");
     //    error_log("EMAIL_SUBJECT : $email_subject");
     //    error_log("EMAIL_TEXT : $email_text");
-
-    mail($email, $email_subject, $email_text);
+    $userEmail = $user->email();
+    $userPrettyEmail = $user->prettyEmailAddress();
+    mail($email, $email_subject, $email_text,
+	 "Reply-To: $userEmail" . "\r\n" . "From: $userPrettyEmail",
+	 "-f $userEmail");
     $num_members_invited = $num_members_invited + 1;
   }
 }
 
-$_SESSION['lastmessage'] = "Added $num_members_added members; Invited $num_members_invited members";
+$_SESSION['lastmessage'] = "Added $num_members_added members; Invited $num_members_invited members; Skipped $num_emails_skipped invalid email addresses.";
 
 relative_redirect("project.php?project_id=".$project_id);
 
