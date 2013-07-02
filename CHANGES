@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * load balancing pgch (#650)
   * WiMAX integration (#484)
   * Extend default and max slice expiration (#636)
   * Verify OpenID username (#289)
