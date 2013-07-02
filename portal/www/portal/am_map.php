@@ -28,16 +28,19 @@ require_once('sr_client.php');
 function create_am_map() {
   global $am_mapping;
   global $am_mapping_id;
+  global $am_mapping_urn;
   $am_mapping=array();
   $am_mapping_id=array();
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
     $aggurl = $agg[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $aggurn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
     $aggname = $agg[SR_TABLE_FIELDNAME::SERVICE_NAME];
     $aggdesc = $agg[SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION];
     $am_mapping[ $aggurl ] = $aggname;
     $am_mapping_id[ $aggurl ] = $aggid;
+    $am_mapping_urn[ $aggurl ] = $aggurn;
   }
 }
 
@@ -51,6 +54,11 @@ function am_name( $aggurl ) {
 function am_id( $aggurl ) {
   global $am_mapping_id;
   return $am_mapping_id[ $aggurl ];
+}
+
+function am_urn( $aggurl ) {
+  global $am_mapping_urn;
+  return $am_mapping_urn[ $aggurl ];
 }
 
 ?>

@@ -153,7 +153,8 @@ include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 
 if (isset($obj) && $obj && $obj != '') {
-  print_rspec( $obj, $pretty );
+  $filterToAM = True;
+  print_rspec( $obj, $pretty, $filterToAM );
 } else {
   print "<i>No resources found.</i><br/>\n";
 }
