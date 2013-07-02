@@ -15,6 +15,11 @@
                   footer background
     #DBD7CC - tan
                   accents
+                  
+  Fonts:
+    Open Sans - header/footer text, headers
+    PT Serif - body text
+    Open Sans Mono - monospaced text
 
 */
 
@@ -348,13 +353,17 @@ hr {
   border-top: 5px solid #5F584E;
   background-color: #E5E5E5;
   /* by default, let text be serif */
-  font-family: 'PT Serif', serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   text-align: center;
   box-shadow: 0px 0px 10px #5F584E;
+  font-size: 0.8em;
+  color: #5F584E;
 }
 
-
+#footer a {
+  text-decoration: none;
+}
 
 
 .landingpage {
