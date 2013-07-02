@@ -40,7 +40,7 @@
   addresses (space or newline or comma). (#405)
   * Lookup existing users with case insensitive email in bulk add (#646)
   * Allow creating / looking up an iRODS account based on your portal
-  username (#640)
+  username (#640,#673)
   * Update InCommon privacy policy (#654)
   * Only show nodes and links from current aggregate on Details (aka
     manifest) page (#605)
