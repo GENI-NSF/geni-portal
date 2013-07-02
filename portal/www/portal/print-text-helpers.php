@@ -199,6 +199,12 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   
   $link_num = 1;
   foreach ($links as $link) {
+    $comp_mgrs = $link->component_manager;
+    foreach ($comp_mgrs as $comp_mgr_link_id) {
+    	if ($filterToAM and ($comp_mgr_link_id!=$componentMgrURN)){
+       	   continue 2;
+    	}
+    }
     echo "<b>Link #",$link_num,"</b>";
     $link_num = $link_num+1;
     echo "<table><tr>\n";
