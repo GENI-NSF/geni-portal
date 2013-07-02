@@ -208,6 +208,7 @@ foreach($lines as $line) {
   if (count($parts) < 2) continue;
   $email = trim($parts[0]);
   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+  $email = strtolower($email);
   if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
     error_log("Uploaded file of candidate members had invalid email address: " . $line);
     if ($skips !== "")
@@ -231,11 +232,11 @@ foreach($names_by_email as $email => $name) {
   $member_id = null;
   $recognized = "No";
   $role = null;
-  if (array_key_exists($email, $members_by_email) && count($members_by_email[$email] == 1))  {
+  if (array_key_exists(strtolower($email), array_change_key_case($members_by_email)) && count($members_by_email[strtolower($email)] == 1))  {
     $member_id = $members_by_email[$email][0];
     $recognized = "Yes";
   }
-  if (array_key_exists($email, $roles_by_email) && count($roles_by_email[$email] == 1)) {
+  if (array_key_exists(strtolower($email), array_change_key_case($roles_by_email)) && count($roles_by_email[strtolower($email)] == 1)) {
     $role = $roles_by_email[$email];
   }
 

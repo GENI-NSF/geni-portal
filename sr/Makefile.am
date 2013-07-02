@@ -21,7 +21,8 @@ cert_FILES = \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \
 	certs/pgeni3.pem \
-	certs/utah-am.pem
+	certs/utah-am.pem \
+	certs/irods.pem
 
 www_FILES = www/sr_controller.php
 

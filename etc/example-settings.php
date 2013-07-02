@@ -29,4 +29,7 @@ $portal_admin_email = 'portal-admin@example.com';
 
 $service_registry_url = 'https://ch.example.com/sr/sr_controller.php';
 
+// User/PW for an admin account on the iRODS server for use by the portal in creating iRODS accounts
+$portal_irods_user = 'rods';
+$portal_irods_pw = 'rods';
 ?>
