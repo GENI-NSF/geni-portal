@@ -99,7 +99,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   if ($num_links!=1) {
     $links_text = $links_text."s";
   }
-  echo "<p>There are ",$nodes_text," and ",$links_text," at this aggregate.</p>";
+//COUNT ONLY NODES FOR THIS AM  echo "<p>There are ",$nodes_text," and ",$links_text," at this aggregate.</p>";
   
   $node_num = 0;
   foreach ($nodes as $node) {
