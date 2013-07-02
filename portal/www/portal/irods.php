@@ -46,8 +46,6 @@ require_once('portal.php');
 require_once('settings.php');
 require_once('sr_client.php');
 include_once('/etc/geni-ch/settings.php');
-//require_once('PestJSON.php');
-//require_once('PestXML.php');
 
 class PermFailException extends Exception{}
 
@@ -255,7 +253,7 @@ if (! isset($ma_url)) {
 $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
 
 /* TODO put these in the service registry or similar */
-$irods_host = "irods_hostname";
+$irods_host = "irods_hostname"; // FIXME
 $irods_port = 1247; // FIXME: Always right?
 $irods_resource = "demoResc"; // FIXME: Always right?
 $default_zone = "tempZone";
@@ -276,8 +274,8 @@ if (! isset($irods_url) || is_null($irods_url) || $irods_url == '') {
 
 /* Get this from /etc/geni-ch/settings.php */
 if (! isset($portal_irods_user) || isnull($portal_irods_user)) {
-  $portal_irods_user = 'rods';
-  $portal_irods_pw = 'rods';
+  $portal_irods_user = 'rods'; // FIXME: Testing value
+  $portal_irods_pw = 'rods'; // FIXME: Testing value
 }
 
 if (!isset($user)) {
@@ -318,11 +316,6 @@ $userDN = ""; // DN from iRODS
 $irodsUsername = ""; // username from iRODS
 $irodsEnv = null; // iEnv file contents from iRODS
 $irodsWebURL = null; // iRDODS web URL to show user
-
-// FIXME: Is Pest better?
-//$pestget = new PestXML($irods_url);
-//$pestget->setupAuth($portal_irods_user, $portal_irods_pw);
-//error_log("pestget curlopts" . print_r($pestget->curl_opts, TRUE));
 
 $userinfo = array();
 
@@ -450,9 +443,6 @@ if (! $permError && ! $userExisted) {
       //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
 
 
-      //    $pestput = new PestJSON($irods_url);
-      //    $pestput->setupAuth($portal_irods_user, $portal_irods_pw);
-      //    $addstruct = $pestput->put(IRODS_PUT_USER_URI, $irods_json);
       $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
       //error_log("PUT raw result: " . print_r($addstruct, true));
 
