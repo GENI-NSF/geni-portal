@@ -1,6 +1,6 @@
 <?php
 
-define('page_template',
+define('render_page_template',
 '<html>
   <head>
     <meta http-equiv="cache-control" content="no-cache"/>
@@ -105,7 +105,7 @@ function page_render($body, $user, $title, $h1=null, $login=false)
     }
 
     $style = getStyle();
-    $text = sprintf(page_template, $title, $style, $navigation, $h1, $body);
+    $text = sprintf(render_page_template, $title, $style, $navigation, $h1, $body);
     // No special headers here
     $headers = array();
     return array($headers, $text);
