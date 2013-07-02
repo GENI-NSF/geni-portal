@@ -250,7 +250,11 @@ if (! isset($ma_url)) {
 }
 
 // This is just the default - otherwise it comes from the SR
+// Test server
 $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+
+// Production server
+// $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
 
 /* TODO put these in the service registry or similar */
 $irods_host = "irods_hostname"; // FIXME
