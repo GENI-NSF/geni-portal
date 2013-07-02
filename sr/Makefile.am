@@ -22,7 +22,8 @@ cert_FILES = \
 	certs/pgeni3-ca.pem \
 	certs/pgeni3.pem \
 	certs/utah-am.pem \
-	certs/irods.pem
+	certs/irods.pem \
+	certs/irods-test.pem
 
 www_FILES = www/sr_controller.php
 
