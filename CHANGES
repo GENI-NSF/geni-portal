@@ -2,6 +2,8 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.0 ==
+
 == 1.9 ==
   * load balancing pgch (#650)
   * WiMAX integration (#484)

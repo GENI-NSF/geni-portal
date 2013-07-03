@@ -57,7 +57,7 @@ USER_CRED_LIFE = 86400
 SLICE_CRED_LIFE = 3600
 
 # Values returned by GetVersion
-API_VERSION = 1.3
+API_VERSION = 1.9
 CODE_VERSION = "0001"
 CH_HOSTNAME = "ch.geni.net"
 CH_PORT = "8443"
