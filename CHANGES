@@ -54,6 +54,7 @@
     - Fix a bug in sshkeyedit that didn't handle lists of keys
       (assumed only one).
   * Ensure Gemini page sends both private and public SSH keys (#674)
+  * Use the SA not the PA from pgch (#676)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
