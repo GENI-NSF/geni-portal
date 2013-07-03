@@ -291,7 +291,7 @@ if (array_key_exists('project_id', $_REQUEST))
             name: enable_wimax
             value: foo
   */
-  if (strpos(strtolower($result), 'success' !== false)) {
+  if (strpos(strtolower($result), 'success') !== false) {
     // add yourself as someone using WiMAX
     add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $project_id, 't');
     
@@ -301,6 +301,7 @@ if (array_key_exists('project_id', $_REQUEST))
     }
   
     echo "<p><b>Success</b>: You have enabled and/or requested your account. Check {$user->mail} for login information.</p>";
+    error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name);
   }
   
   else {
@@ -308,6 +309,7 @@ if (array_key_exists('project_id', $_REQUEST))
     echo "<p><b>Error (from $url):</b> $result</p>";
     echo "<p>Debug information:</p>";
     echo "<blockquote><pre>$ldif_string</pre></blockquote>";
+    error_log("Error enabling WiMAX for " . $user->prettyName() . " in project " . $ldif_project_name . ": " . $result);
     
   }
   
