@@ -62,6 +62,7 @@
   * Show links for current AM on aggregate page (#682)
   * Filter nodes and link for current AM on createsliver page (#683)
   * Name 1st WiMAX SSH key sshpublickey (#684)
+  * Ensure success detected on WiMAX page (#685)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
