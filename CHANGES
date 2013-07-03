@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9.2 ==
+  * Fix tracebacks in omni_php.py when creating a sliver fails (#649)
   * wimax-enable.php should not check for certificates (#689)
 
 == 1.9.1 ==
