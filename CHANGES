@@ -60,6 +60,7 @@
   * Delete SSH key result message cleanup (#679)
   * Suppress RSpec logging (#680)
   * Show links for current AM on aggregate page (#682)
+  * Name 1st WiMAX SSH key sshpublickey (#684)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
