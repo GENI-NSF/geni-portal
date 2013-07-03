@@ -90,6 +90,7 @@ dist_svcweb_DATA = \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
 	www/portal/downloadsshkey.php \
+	www/portal/downloadsshpublickey.php \
 	www/portal/edit-project-member.php \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
@@ -108,6 +109,7 @@ dist_svcweb_DATA = \
 	www/portal/flackportal-C.html \
 	www/portal/footer.php \
 	www/portal/gemini.php \
+	www/portal/irods.php \
 	www/portal/generatesshkey.php \
 	www/portal/getversion.php \
 	www/portal/glossary.html \
@@ -181,6 +183,7 @@ dist_svcweb_DATA = \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
 	www/portal/user.php \
+        www/portal/wimax-enable.php \
 	flack/playerProductInstall.swf
 
 
@@ -208,8 +211,7 @@ dist_svcwebcss_DATA =  \
 dist_svcwebtop_DATA = \
 	www/index.php \
 	www/login-help.php \
-	www/favicon.ico \
-	www/cainfo.html
+	www/favicon.ico
 
 dist_svcwebpolicy_DATA = \
 	www/policy/privacy.html

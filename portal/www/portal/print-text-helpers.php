@@ -59,82 +59,14 @@ function print_xml( $xml ){
   print "</div>\n";
 }
 
-function print_rspec_pretty_ORIG( $xml ){
-  $rspec = new SimpleXMLElement($xml);
-  // if ($rspec == False) {
-  //  return; 
-  // }
-  print "<div class='xml'>";
-  print "<ul>\n";
-  foreach ($rspec as $node) {
-    if ($node->getName() == "node") {
-      echo "<li><b>Node: </b>",$node['client_id'],"</li>";
-      print "<ul>\n";
-      echo "<li>Exclusive: ",$node['exclusive'],"</li>";
-      echo "<li>Component ID: ",$node['component_id'],"</li>";
-      foreach ($node as $interface){
-	if ($interface->getName() == "interface") {
-	  echo "<li><b>Interface: </b></li>";
-	  print "<ul>\n";
-	  echo "<li><b>Client ID: </b>",$interface['client_id'],"</li>";
-	  echo "<li>Component ID: ",$interface['component_id'],"</li>";
-	  echo "<li>MAC Address: ",$interface['mac_address'],"</li>";
-	  foreach ($interface as $ip){
-	    if ($ip->getName() == "ip") {
-	      print "<ul>\n";
-	      echo "<li>Type: ",$ip['type'],"</li>";
-	      echo "<li>IP: ",$ip['address'],"</li>";
-	      print "</ul>\n";
-	    }
-	  }
-	  print "</ul>\n";
-	}
-      }
-      print "</ul>\n";
-      print "\n";
-    }
-  }
-
-  foreach ($rspec as $link) {
-    if ($link->getName() == "link") {
-      echo "<li><b>Link: </b>",$node['client_id'],"</li>";
-      print "\n";
-      print "<ul>\n";
-      foreach ($link as $interface_ref) {
-	if ($interface_ref->getName() == "interface_ref") {
-	  echo "<li><b>Interface Ref </b></li>";
-	  print "<ul>\n";
-	  echo "<li><b>Client ID: </b>",$interface_ref['client_id'],"</li>";
-	  echo "<li>Component ID: ",$interface_ref['component_id'],"</li>";
-	  print "</ul>\n";
-	}
-      }
-      foreach ($link as $property) {
-	if ($property->getName() == "property") {
-	  echo "<li><b>",$property['source_id']," --> ",$property['dest_id'],"</b></li>";
-	  //	  echo "<li><b>Source ID: </b>",$property['source_id'],"</li>";
-	  //	  echo "<li><b>Destination ID: </b>",$property['dest_id'],"</li>";
-	  print "<ul>\n";
-	  echo "<li>Capacity: ",$property['capacity'],"</li>";
-	  echo "<li>Latency: ",$property['latency'],"</li>";
-	  echo "<li>Packet Loss: ",$property['packet_loss'],"</li>";
-	  print "</ul>\n";
-	}
-      }
-      print "</ul>\n";
-    }
-  }
-  print "</ul>\n";
-  print "</div>\n";
-}
-
 
 function get_name_from_urn( $urn ){
   $urn_pieces = explode( "+", $urn );
   $name = end($urn_pieces);
   return $name;
 }
-function print_rspec_pretty( $xml, $manifestOnly=True ){
+
+function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $componentMgrURN=""){
   $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
     $rspec = new SimpleXMLElement($xml);
@@ -152,8 +84,11 @@ function print_rspec_pretty( $xml, $manifestOnly=True ){
   $rspec->registerXPathNamespace("def", "http://www.geni.net/resources/rspec/3/manifest.xsd");
   print "<div class='xml'>";
   $nodes = $rspec->node;
+// $nodes = $rspec->xpath('//def:node[@component_manager_id=$componentMgrURN]');
+// $nodes = $rspec->xpath('/def:node');
   $links = $rspec->link;
   $num_nodes = $nodes->count();
+//  $num_nodes = count($nodes);
   $num_links = $links->count();
 
   $nodes_text = "<b>".$num_nodes."</b> node";
@@ -164,15 +99,25 @@ function print_rspec_pretty( $xml, $manifestOnly=True ){
   if ($num_links!=1) {
     $links_text = $links_text."s";
   }
-  echo "<p>There are ",$nodes_text," and ",$links_text," at this aggregate.</p>";
+//COUNT ONLY NODES FOR THIS AM  echo "<p>There are ",$nodes_text," and ",$links_text," at this aggregate.</p>";
   
-  $node_num = 1;
+  $node_num = 0;
   foreach ($nodes as $node) {
 
     $num_ifs = $node->interface->count();
-    echo "<b>Node #",$node_num,"</b>";
-    $node_num = $node_num+1;
     $client_id = $node['client_id'];
+    $comp_id = $node['component_id'];
+    $comp_mgr_id = $node['component_manager_id'];
+    if ($filterToAM and ($comp_mgr_id!=$componentMgrURN)){
+       continue;
+    }
+    $node_num = $node_num+1;
+    $comp_name = get_name_from_urn($comp_id);
+    $sliver_type=$node->sliver_type;
+    $host=$node->host;
+    $services=$node->services;
+    $logins=$services->login;
+    echo "<b>Node #",$node_num,"</b>";
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";
     echo "<th>Component ID</th>\n";
@@ -180,14 +125,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True ){
     echo "<th>Type</th>\n";
     echo "<th>Hostname</th>\n";
     echo "</tr>\n";
-    /* echo "<tr>\n"; */
-    /* echo "<th colspan='2'>Node</th>"; */
-    /* echo "<th>Exclusive</th>\n"; */
-    /* echo "</tr>\n"; */
     echo "<tr>\n"; 
     echo "<td>",$client_id,"</td>\n";
-    $comp_id = $node['component_id'];
-    $comp_name = get_name_from_urn($comp_id);
     echo "<td>",$comp_name,"</td>";
     if (strtolower($node['exclusive'])=="true"){
       $exclusive = "exclusive";
@@ -195,10 +134,6 @@ function print_rspec_pretty( $xml, $manifestOnly=True ){
       $exclusive = "not exclusive";
     }
     echo "<td>",$exclusive,"</td>";
-    $sliver_type=$node->sliver_type;
-    $host=$node->host;
-    $services=$node->services;
-
     if ($sliver_type){
       echo "<td>",$sliver_type['name'],"</td>\n";
     }
@@ -206,7 +141,6 @@ function print_rspec_pretty( $xml, $manifestOnly=True ){
       echo "<td>",$host['name'],"</td>\n";
     }
     echo "</tr>\n";
-    $logins=$services->login;
     foreach ($logins as $login) {	
       $ssh_user = $login['username'];
       $ssh_host = $login['hostname'];
@@ -265,6 +199,11 @@ function print_rspec_pretty( $xml, $manifestOnly=True ){
   
   $link_num = 1;
   foreach ($links as $link) {
+    $comp_mgrs = $link->component_manager;
+    $componentMgrName = $comp_mgrs['name'];		      
+    if ($filterToAM and ($componentMgrName!=$componentMgrURN)){
+       continue;
+    }
     echo "<b>Link #",$link_num,"</b>";
     $link_num = $link_num+1;
     echo "<table><tr>\n";
@@ -304,12 +243,13 @@ function print_rspec_pretty( $xml, $manifestOnly=True ){
   print "</div>\n";
 }
 
-function print_rspec( $obj, $pretty ) {
+function print_rspec( $obj, $pretty, $filterToAM ) {
   $args = array_keys( $obj );
   foreach ($args as $arg){
     $arg_url = $arg;
     $am_id = am_id( $arg_url );
     $arg_name = am_name($arg_url);
+    $arg_urn = am_urn($arg_url);
     if (array_key_exists('value', $obj[$arg])) {
         $xml = $obj[$arg]['value'];
     } else {
@@ -330,7 +270,7 @@ function print_rspec( $obj, $pretty ) {
       if ($code == 0){
 	if ($pretty){
 	  /* Parsed into a table */
-	  print_rspec_pretty($xml, False);
+	  print_rspec_pretty($xml, False, $filterToAM, $arg_urn );
 	} else {
 	  /* As plain XML */
 	  print_xml($xml);

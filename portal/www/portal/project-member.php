@@ -43,7 +43,6 @@ $slices = null;
 include("tool-lookupids.php");
 
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
-$pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 if ($project == "None") {
@@ -67,7 +66,7 @@ if ($member == "None") {
 //error_log("SA = " .  print_r($project_attributes, true));
 //error_log("PID = " . print_r($project_id, true));
 //error_log("PID = " . $project_id);
-$project_members = get_project_members($pa_url, $user, $project_id, null);
+$project_members = get_project_members($sa_url, $user, $project_id, null);
 //$slice_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::SLICE, null);
 $slice_members = get_slice_members_for_project($sa_url, $user, $project_id, null);
 if (! is_null($slice_members) && count($slice_members) > 0) {

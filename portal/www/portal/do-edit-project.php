@@ -65,6 +65,8 @@ if (array_key_exists("newlead", $_REQUEST)) {
   if (is_null($newlead) || $newlead == '' || ! uuid_is_valid($newlead)) {
     $newlead = $lead_id;
   }
+
+  // FIXME: Check if newlead is allowed to be a project lead?
 }
 //print "ID=$project_id, Name=$name, Purpose=$purpose, newlead=$newlead.<br/>\n";
 
@@ -72,6 +74,11 @@ if (array_key_exists("newlead", $_REQUEST)) {
 $result = null;
 
 if ($isnew) {
+  if (! $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
+    error_log("Non project lead " . $user->urn . " tried to create a project");
+    relative_redirect('home.php');
+  }
+
   // Validate the project name...
   if (! isset($name) or is_null($name) or $name == '') {
     error_log("do-edit-project missing a project name");
@@ -89,7 +96,7 @@ if ($isnew) {
   // Re-check authorization?
   // Auto?
   // Ensure project name is unique?!
-  $project_id = create_project($pa_url, $user, $name, $lead_id, $purpose,
+  $project_id = create_project($sa_url, $user, $name, $lead_id, $purpose,
           $expiration);
   if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("do-edit-project create_project got project_id $project_id");
@@ -102,24 +109,24 @@ if ($isnew) {
 } else {
   //  error_log("about to update project");
 
-  // FIXME: Diff new vals from old?
+  if (! $user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+    error_log("Non privileged user " . $user->urn . " tried to update project " . $project_id);
+    relative_redirect('home.php');
+  }
 
-  $result = update_project($pa_url, $user, $project_id, $name, $purpose,
+  // FIXME: Diff new vals from old?
+  
+  // If this fails, message_handler currently redirects to an error page
+  // If this fails, the return is a count of rows updated (should be 1)
+  $result = update_project($sa_url, $user, $project_id, $name, $purpose,
           $expiration);
   if ($result == '') {
     error_log("update_project failed? empty...");
+    $result = "update failed";
   } else {
     $result = "updated";
   }
 
-  if ($project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] != $newlead) {
-    $result2 = change_lead($pa_url, $user, $project_id, $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID], $newlead);
-    if ($result2 == '') {
-      $result = $result . "; Project Lead change failed? empty...?";
-    } else {
-      $result = $result . "; Project Lead change: $result2";
-    }
-  }
   //  print "Edited project $project, got result: $result.<br/>\n";
   // Return on error?
 }

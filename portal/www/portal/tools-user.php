@@ -71,11 +71,12 @@ if (count($keys) == 0)
 else
   {
     $download_pkey_url = relative_url('downloadsshkey.php?');
+    $download_public_key_url = relative_url('downloadsshpublickey.php?');
     $edit_sshkey_url = relative_url('sshkeyedit.php?');
     $delete_sshkey_url = relative_url('deletesshkey.php?');
     js_delete_ssh_key();  // javascript for delete key confirmation
     print "\n<table>\n";
-    print "<tr><th>Name</th><th>Description</th><th>Private Key</th>"
+    print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
           . "<th>Edit</th><th>Delete</th></tr>\n";
     foreach ($keys as $key) {
       $args['id'] = $key['id'];
@@ -87,6 +88,9 @@ else
                 . $download_pkey_url . $query
                 . "'\">Download Private Key</button>");
       }
+      $public_key_download_cell = ("<button $disable_ssh_keys onClick=\"window.location='"
+                . $download_public_key_url . $query
+                . "'\">Download Public Key</button>");
       $edit_cell = ("<button $disable_ssh_keys onClick=\"window.location='"
                 . $edit_sshkey_url . $query
                 . "'\">Edit</button>");
@@ -96,6 +100,7 @@ else
       print "<tr>"
       . "<td>" . htmlentities($key['filename']) . "</td>"
       . "<td>" . htmlentities($key['description']) . "</td>"
+      . '<td>' . $public_key_download_cell . '</td>'
       . '<td>' . $pkey_cell . '</td>'
       . '<td>' . $edit_cell . '</td>'
       . '<td>' . $delete_cell . '</td>'
@@ -120,13 +125,6 @@ print "<button $disable_authorize_tools onClick=\"window.location='kmhome.php'\"
 print "<h2>Outstanding Requests</h2>";
 
 // Show outstanding requests BY this user
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  if (! isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-    error_log("Found no PA in SR!'");
-  }
-}
-
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
@@ -141,7 +139,7 @@ if (! isset($ma_url)) {
 }
 
 // FIXME: Also show rejected requests?
-$preqs = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
+$preqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
 $sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
 $reqs = array_merge($preqs, $sreqs);
 if (isset($reqs) && count($reqs) > 0) {
@@ -158,7 +156,7 @@ if (isset($reqs) && count($reqs) > 0) {
     $typestr = $REQ_TYPE_NAMES[$request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]] . " " . $CS_CONTEXT_TYPE_NAME[$request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]];
     if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::PROJECT) {
       //error_log("looking up project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
-      $project = lookup_project($pa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      $project = lookup_project($sa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $cancel_url="cancel-join-project.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
     } elseif ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::SLICE) {
@@ -282,4 +280,11 @@ if ($portal_enable_abac)
     print "<button onClick=\"window.location='abac-id.php'\">Download your ABAC ID</button><br/>\n";
     print "<button onClick=\"window.location='abac-key.php'\">Download your ABAC private key</button>\n";
   }
+
+
+     print '<h2>iRODS</h2>';
+$irodsdisabled="disabled";
+if ($user->hasAttribute('enable_irods'))
+  $irodsdisabled = "";
+print "<button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button><br/>\n";
 ?>

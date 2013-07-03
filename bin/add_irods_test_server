@@ -1,0 +1,14 @@
+#!/bin/bash
+
+FILENAME="/tmp/addirods.$USER"
+
+echo "-- Create the entry for iRODS:" >> $FILENAME
+# Test server
+echo "insert into service_registry (service_type, service_url, service_urn, service_cert, service_name, service_description) values (11, 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest', '', '/usr/share/geni-ch/sr/certs/irods-test.pem', 'iRODS', 'iRODS Test REST server');" >> $FILENAME
+
+# Production server
+# echo "insert into service_registry (service_type, service_url, service_urn, service_cert, service_name, service_description) values (11, 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest', '', '/usr/share/geni-ch/sr/certs/irods.pem', 'iRODS', 'iRODS REST server');" >> $FILENAME
+
+psql -U portal -h localhost portal < $FILENAME
+
+rm $FILENAME

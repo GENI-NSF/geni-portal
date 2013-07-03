@@ -62,14 +62,17 @@ function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
  * Returns an array of temporary filenames. The caller is responsible
  * for deleting (unlink) these files.
  */
-function write_ssh_keys($user)
+function write_ssh_keys($for_user, $as_user)
 {
   $result = array();
-  $ssh_keys = $user->sshKeys();
+
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  $ssh_keys = lookup_public_ssh_keys($ma_url, $as_user, $for_user->account_id);
+
   foreach ($ssh_keys as $key_info)
     {
       $key = $key_info['public_key'];
-      $tmp_file = writeDataToTempFile($key, $user->username . "-ssh-key-");
+      $tmp_file = writeDataToTempFile($key, $for_user->username . "-ssh-key-");
       $result[] = $tmp_file;
     }
   return $result;
@@ -139,16 +142,16 @@ function get_template_omni_config($user, $version, $default_project=null)
       . "# unless '--project' is specified on the command line.\n"
       . "# Uncomment only one of the following lines if you want to use this feature\n";
 
-    if (! isset($pa_url)) {
-       $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);	
+    if (! isset($sa_url)) {
+       $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);	
     }
-    $projects = get_projects_for_member($pa_url, $user, $user->account_id, true);	
+    $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);	
     if (count($projects) > 0 && is_null($default_project)) {
       $p0 = $projects[0];
       $default_project = $p0[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     }
     foreach ($projects as $project_id) {
-      $project = lookup_project($pa_url, $user, $project_id);
+      $project = lookup_project($sa_url, $user, $project_id);
       $proj_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       if ($proj_name == $default_project) {
         $omni_config .= "default_project = $proj_name\n";
@@ -205,7 +208,7 @@ function write_omni_config($user)
     $key_file = writeDataToTempFile($private_key, "$username-key-");
 
     /* Write ssh keys to tmp files. */
-    $ssh_key_files = write_ssh_keys($user);
+    $ssh_key_files = write_ssh_keys($user, $user);
     $all_key_files = implode(',', $ssh_key_files);
 
     /* Create OMNI config file */
@@ -300,7 +303,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     foreach ($slice_users as $slice_user){
        $slice_username = $slice_user->username;
        $slice_urn = $slice_user->urn();	
-       $ssh_key_files = write_ssh_keys($slice_user);
+       $ssh_key_files = write_ssh_keys($slice_user, $user);
        $all_ssh_key_files = $all_ssh_key_files + $ssh_key_files;
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
@@ -360,6 +363,9 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_null($output2)) {
        error_log("am_client invoke_omni_function:"
                . "JSON result is not parseable: \"$output\"");
+       // this is probably a traceback from python
+       // return it as a string
+       return $output;
      }
      return $output2;
 }

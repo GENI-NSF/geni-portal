@@ -34,6 +34,20 @@ if(!isset($member_cache)) {
   $member_by_attribute_cache = array(); // Only for single attribute lookups
 }
 
+// Add member attribute
+function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self_asserted)
+{
+  global $user;
+  $add_member_attribute_message['operation'] = 'add_member_attribute';
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] = $member_id;
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] = $name;
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE] = $value;
+  $add_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED] = $self_asserted;
+  $results = put_message($ma_url, $add_member_attribute_message, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
+
 // Get list of all member_ids in repository
 function get_member_ids($ma_url, $signer)
 {
@@ -60,10 +74,20 @@ function register_ssh_key($ma_url, $signer, $member_id, $filename,
   return $result;
 }
 
-// Lookup SSH keys associated with user
-function lookup_ssh_keys($ma_url, $signer, $member_id)
+// Lookup public SSH keys associated with user
+function lookup_public_ssh_keys($ma_url, $signer, $member_id)
 {
-  $lookup_ssh_keys_message['operation'] = 'lookup_ssh_keys';
+  $lookup_ssh_keys_message['operation'] = 'lookup_public_ssh_keys';
+  $lookup_ssh_keys_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
+  $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message,
+          $signer->certificate(), $signer->privateKey());
+  return $ssh_keys;
+}
+
+// Lookup private SSH keys associated with user
+function lookup_private_ssh_keys($ma_url, $signer, $member_id)
+{
+  $lookup_ssh_keys_message['operation'] = 'lookup_private_ssh_keys';
   $lookup_ssh_keys_message[MA_ARGUMENT::MEMBER_ID] = $member_id;
   $ssh_keys = put_message($ma_url, $lookup_ssh_keys_message,
           $signer->certificate(), $signer->privateKey());
@@ -71,9 +95,9 @@ function lookup_ssh_keys($ma_url, $signer, $member_id)
 }
 
 // Lookup a single SSH key by id
-function lookup_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
+function lookup_public_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
 {
-  $keys = lookup_ssh_keys($ma_url, $signer, $member_id);
+  $keys = lookup_publc_ssh_keys($ma_url, $signer, $member_id);
   foreach ($keys as $key) {
     if ($key[MA_SSH_KEY_TABLE_FIELDNAME::ID] === $ssh_key_id) {
       return $key;
@@ -189,6 +213,13 @@ function ma_lookup_members($ma_url, $signer, $lookup_attrs)
   $msg[MA_ARGUMENT::ATTRIBUTES] = $attrs;
   $members = put_message($ma_url, $msg,
           $signer->certificate(), $signer->privateKey());
+  // Somegtimes we get the whole record, not just value, 
+  // depending on the controller
+  if (array_key_exists(RESPONSE_ARGUMENT::CODE, $members)) {
+    if ($members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return array();
+    $members = $members[RESPONSE_ARGUMENT::VALUE];
+  }
   $result = array();
   foreach ($members as $member_info) {
     $member = new Member();
@@ -258,14 +289,21 @@ function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
 function ma_lookup_member_by_id($ma_url, $signer, $member_id)
 {
   global $member_cache;
-  $msg['operation'] = 'lookup_member_by_id';
-  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
   if (array_key_exists($member_id, $member_cache)) {
     //    error_log("CACHE HIT lookup_member_by_id: " . $member_id);
     return $member_cache[$member_id];
   }
+  $msg['operation'] = 'lookup_member_by_id';
+  $msg[MA_ARGUMENT::MEMBER_ID] = $member_id;
   $result = put_message($ma_url, $msg,
           $signer->certificate(), $signer->privateKey());
+  // Somegtimes we get the whole record, not just value, 
+  // depending on the controller
+  if(array_key_exists(RESPONSE_ARGUMENT::CODE, $result)) {
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return null;
+    $result = $result[RESPONSE_ARGUMENT::VALUE];
+  }
   $member = new Member();
   $member->init_from_record($result);
   $member_cache[$member_id]=$member;

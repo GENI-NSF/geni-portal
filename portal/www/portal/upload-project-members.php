@@ -179,7 +179,7 @@ if (array_key_exists('file', $_FILES)) {
 $actual_filename = $_FILES['file']['tmp_name'];
 $contents = file_get_contents($actual_filename);
 
-$project_members = get_project_members($pa_url, $user, $project_id);
+$project_members = get_project_members($sa_url, $user, $project_id);
 $project_member_ids = array();
 foreach($project_members as $project_member) {
   $project_member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
@@ -198,13 +198,24 @@ print '<th>Action</th></tr>';
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
 
 
-$lines = explode("\n", $contents);
+//$lines = explode("\n", $contents); // See http://stackoverflow.com/questions/3997336/explode-php-string-by-new-line
+$lines = preg_split('/\r\n|\n|\r/', $contents, -1, PREG_SPLIT_NO_EMPTY);
 $names_by_email = array();
 $roles_by_email = array();
+$skips = "";
 foreach($lines as $line) {
   $parts = explode(",", $line);
   if (count($parts) < 2) continue;
   $email = trim($parts[0]);
+  $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+  $email = strtolower($email);
+  if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    error_log("Uploaded file of candidate members had invalid email address: " . $line);
+    if ($skips !== "")
+      $skips = $skips . ", ";
+    $skips = $skips . $email;
+    continue;
+  }
   $name = trim($parts[1]);
   $role = null;
   if (count($parts) > 2) $role = trim($parts[2]);
@@ -221,11 +232,11 @@ foreach($names_by_email as $email => $name) {
   $member_id = null;
   $recognized = "No";
   $role = null;
-  if (array_key_exists($email, $members_by_email) && count($members_by_email[$email] == 1))  {
+  if (array_key_exists(strtolower($email), array_change_key_case($members_by_email)) && count($members_by_email[strtolower($email)] == 1))  {
     $member_id = $members_by_email[$email][0];
     $recognized = "Yes";
   }
-  if (array_key_exists($email, $roles_by_email) && count($roles_by_email[$email] == 1)) {
+  if (array_key_exists(strtolower($email), array_change_key_case($roles_by_email)) && count($roles_by_email[strtolower($email)] == 1)) {
     $role = $roles_by_email[$email];
   }
 
@@ -249,6 +260,9 @@ foreach($names_by_email as $email => $name) {
 }
 
 print '</table>';
+if ($skips !== "") {
+  print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
+}
 print "<br/>\n";
 print "<input type=\"submit\" value=\"Invite Selected Members\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";

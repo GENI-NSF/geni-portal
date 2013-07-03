@@ -1,5 +1,5 @@
 #----------------------------------------------------------------------
-# Copyright (c) 2011 Raytheon BBN Technologies
+# Copyright (c) 2011-2013 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and/or hardware specification (the "Work") to
@@ -399,9 +399,6 @@ class PGClearinghouse(Clearinghouse):
                 continue
             if key.lower() == 'sr_url':
                 self.sr_url = val.strip()
-                continue
-            if key.lower() == 'pa_url':
-                self.pa_url = val.strip()
                 continue
         
     def runserver(self, addr, keyfile=None, certfile=None,
@@ -1036,7 +1033,7 @@ class PGClearinghouse(Clearinghouse):
                     # CAUTION: untested use of inside cert/key
                     user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                     inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                    projtriple = invokeCH(self.pa_url, "lookup_project",
+                    projtriple = invokeCH(self.sa_url, "lookup_project",
                                           self.logger, argsdict, inside_certs,
                                           inside_key)
                 except Exception, e:
@@ -1253,12 +1250,12 @@ class PGClearinghouse(Clearinghouse):
             self.logger.warn("GetKeys couldnt get uuid for user from cert with urn %s" % user_urn)
         else:
             self.logger.info("GetKeys called for user with uuid %s" % user_uuid)
-        # Use new MA lookup_ssh_keys method
+        # Use new MA lookup_public_ssh_keys method
         inside_key, inside_certs = self.getInsideKeys(user_uuid)
         argsdict=dict(member_id=user_uuid);
-        keys_triple=invokeCH(self.ma_url, "lookup_ssh_keys", self.logger,
+        keys_triple=invokeCH(self.ma_url, "lookup_public_ssh_keys", self.logger,
                              argsdict, inside_certs, inside_key)
-        self.logger.info("lookup_ssh_keys: " + str(keys_triple));
+        self.logger.info("lookup_public_ssh_keys: " + str(keys_triple));
         if not keys_triple['value']:
             self.logger.error("No SSH key structure. Return the triple with error");
             return keys_triple;

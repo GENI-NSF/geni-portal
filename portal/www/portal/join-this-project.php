@@ -68,12 +68,12 @@ $lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
 // Get all the admins for this project, so we can email them as well
-$admins = get_project_members($pa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
+$admins = get_project_members($sa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
 $admin_emails = array();
 if ($admins and count($admins) > 0) {
   foreach ($admins as $admin_res) {
     $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
-    $admin_emails[] = $admin->prettyName() . " <" . $admin->email() . ">";
+    $admin_emails[] = $admin->prettyEmailAddress();
     //    error_log("Adding admin " . $admin->prettyName());
   }
 }
@@ -84,16 +84,16 @@ if (array_key_exists("message", $_REQUEST)) {
   $message = $_REQUEST["message"];
 }
 
-// Get the pa_url for accessing request information
-if (!isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-  if (!isset($pa_url) || is_null($pa_url) || $pa_url == '') {
-    error_log("Found no Project Authority Service");
+// Get the sa_url for accessing request information
+if (!isset($sa_url)) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  if (!isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+    error_log("Found no Slice Authority Service");
   }
 }
 
 // confirm member is not already in this project
-$pids = get_projects_for_member($pa_url, $user, $user->account_id, true);
+$pids = get_projects_for_member($sa_url, $user, $user->account_id, true);
 if (isset($pids) && ! is_null($pids) && in_array($project_id, $pids)) {
   error_log($user->prettyName() . " already in project " . $project_id);
   $_SESSION['lasterror'] = "You are already in this project.";
@@ -101,7 +101,7 @@ if (isset($pids) && ! is_null($pids) && in_array($project_id, $pids)) {
 }
 
 // confirm member has not already requested to join this project
-$rpids = get_requests_by_user($pa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
+$rpids = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
 if (in_array($project_id, $rpids)) {
   error_log($user->prettyName() . " already requested to join project " . $project_id);
   $_SESSION['lasterror'] = "You already requested to join that project.";
@@ -109,7 +109,7 @@ if (in_array($project_id, $rpids)) {
 }
 
 if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error))) {
-  $request_id = create_request($pa_url, $user, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
+  $request_id = create_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_TYPE::JOIN, $message);
 
   // FIXME: sub handle-project-request.php with handle-project-request.php?project_id=$project_id&member_id=$user->account_id&request_id=$request_id
   //  $ind = strpos($message, "handle-project-request.php");
@@ -144,6 +144,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   }
 
   // Send the email
+  $prettyEmail = $user->prettyEmailAddress();
   $email = $user->email();
   if (count($admin_emails) > 0) {
     //error_log("Got admin_emails " . print_r($admin_emails, True));
@@ -152,10 +153,13 @@ Thank you,\n" . $user->prettyName() . "\n";
     $cc = ""; // FIXME: Include portal-dev-admin?
   }
   
-  mail($lead->prettyName() . "<" . $lead->email() . ">",
+  mail($lead->prettyEmailAddress(),
        "Join GENI project $project_name?",
        $message,
-       "Reply-To: $email" . "\r\n" . $cc . "From: $name <$email>");
+       "Reply-To: $email" . "\r\n" . $cc . "From: $prettyEmail");
+  // We could supply the -f arg to make bounces go back to this portal user,
+  // but we probably want to know if the lead's email address is bouncing.
+       //       "-f $email");
 
   // Put up a page saying we sent the request
   show_header('GENI Portal: Projects', $TAB_PROJECTS);

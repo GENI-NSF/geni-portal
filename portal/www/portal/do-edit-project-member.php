@@ -48,10 +48,6 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-if (! isset($pa_url)) {
-  $pa_url = get_first_service_of_type(SR_SERVICE_TYPE::PROJECT_AUTHORITY);
-}
-
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
@@ -101,7 +97,6 @@ function add_project_lead_as_slice_lead($slice_id, $project_members_by_role, $sl
 function remove_project_member_from_project_and_slices($project_id, $project_member_id, $project_members_by_role)
 {
   global $sa_url;
-  global $pa_url;
   global $user;
 
   // Get the project slices and memberships
@@ -127,7 +122,7 @@ function remove_project_member_from_project_and_slices($project_id, $project_mem
   }
 
   error_log("Removing " . $project_member_id . " from project " . $project_id);
-  remove_project_member($pa_url, $user, $project_id, $project_member_id);
+  remove_project_member($sa_url, $user, $project_id, $project_member_id);
 }
 
 // Ensure that the new roles maintains a single project lead
@@ -177,8 +172,8 @@ function validate_project_member_requests($project_members_by_role, $selections)
 
 function do_modify_project_membership($selections, $project_id, $project_members_by_role)
 {
-  global $pa_url;
   global $user;
+  global $sa_url;
 
   $members_to_add = array();
   $members_to_change_role = array();
@@ -207,7 +202,7 @@ function do_modify_project_membership($selections, $project_id, $project_members
   }
 
   // Publish changes atomically to SA
-  $result = modify_project_membership($pa_url, $user, $project_id, 
+  $result = modify_project_membership($sa_url, $user, $project_id, 
 				      $members_to_add, 
 				      $members_to_change_role, 
 				      $members_to_remove);
@@ -217,7 +212,7 @@ function do_modify_project_membership($selections, $project_id, $project_members
 function orig_do_modify_project_membership($project_id, $member_id, $selection_id, 
 				 $project_members_by_role, $is_member)
 {
-  global $pa_url;
+  global $sa_url;
   global $user;
   //   error_log("MSM = " . $member_id . " " . $selection_id . " " . $is_member);
 
@@ -225,15 +220,15 @@ function orig_do_modify_project_membership($project_id, $member_id, $selection_i
     $role = $project_members_by_role[$member_id];
     if ($selection_id == 0) {
       // Remove this member from this project and associated slices
-      remove_project_member($pa_url, $user, $project_id, $member_id);
+      remove_project_member($sa_url, $user, $project_id, $member_id);
     } else if ($selection_id != $role) {
       // Change the role of this member in this project
-      change_member_role($pa_url, $user, $project_id, $member_id, $selection_id);
+      change_member_role($sa_url, $user, $project_id, $member_id, $selection_id);
     }
   } else {
     if ($selection_id > 0) {
       // Add this member to this project
-      add_project_member($pa_url, $user, $project_id, $member_id, $selection_id);
+      add_project_member($sa_url, $user, $project_id, $member_id, $selection_id);
     }
   }
 }
@@ -241,7 +236,7 @@ function orig_do_modify_project_membership($project_id, $member_id, $selection_i
 // error_log("REQUEST = " . print_r($_REQUEST, true));
 $project_id = $_REQUEST['project_id'];
 unset($_REQUEST['project_id']);
-$project_members = get_project_members($pa_url, $user, $project_id);
+$project_members = get_project_members($sa_url, $user, $project_id);
 $project_members_by_role = array();
 foreach($project_members as $project_member) {
   $project_member_id = $project_member['member_id'];

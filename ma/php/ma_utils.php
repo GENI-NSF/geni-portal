@@ -335,7 +335,7 @@ function mail_new_project_lead($member_id)
   $body .= " projects and reserve resources.\n\n";
 
   $body .= "If you are using the GENI Portal, see ";
-  $body .= "http://groups.geni.net/geni/wiki/SignMeUpPortal#a2b.CreateaGENIProject "; // FIXME: Edit if page moves
+  $body .= "http://groups.geni.net/geni/wiki/SignMeUp#a2b.CreateaGENIProject "; // FIXME: Edit if page moves
   $body .= "for instructions on creating a project.\n\n";
 
   // proto-ch ticket #593: This points you to ch.geni.net

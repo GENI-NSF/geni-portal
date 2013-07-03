@@ -257,8 +257,6 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
                $am_status = $resourceDict["pg_status"];
 	     }	    
 
-	 }
-      }
       $loginInfo[ $client_id ] = array();
       foreach ($pgKeyList as $user => $keys) {	
             $loginInfo[ $client_id ][$user] = array('authentication' => 'ssh-keys', 
@@ -271,6 +269,10 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
                               'am_status' => $am_status
                              );
      }
+
+	 }
+      }
+
 
      $status_array[am_id( $am_url )]['login_info']["resources"]  = $loginInfo ;
      }

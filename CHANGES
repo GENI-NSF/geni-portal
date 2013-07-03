@@ -1,11 +1,73 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
 = GENI Clearinghouse and Portal Release Notes =
+
 == 1.9 ==
+  * load balancing pgch (#650)
+  * WiMAX integration (#484)
+  * Extend default and max slice expiration (#636)
+  * Verify OpenID username (#289)
+  * Improve OpenID page flow (#288)
+  * Fix call(s) to modify_project_membership in pa_client.php (#665)
+  * Move cainfo.html (#642)
+  * Fix OpenID for GIMI (#661)
+  * Add pa_project_attribute table (#656)
+  * Allow for download public SSH key (#655)
+  * undefined variables in amstatus with am_id (#648)
+  * Login information is wrong in multi-user slices (#645)
+  * Save error Omni results (#444)
+  * Fix sa_url in tool-omniconfig.php (#643)
+  * Fix warnings in gemini.php (#641)
+  * Fix link to SignMeUp (#653)
+  * Include email address in account change request emails (#626)
+  * Check permissions and remove dead code in do-edit-project (#666)
+  * SA/PA merge including... (#540)
+     - Ensure SA/PA methods all have guards or we warn why not
+     - Hide Update Project button if user not permitted
+  * CS logs if it authorizes an action only cause you are an operator (#397)
+  * Apply guards to more SA and PA methods (requires CS update-5.sql) (#502)
+  * Remove a debug printout in rspec upload (#663)
+  * Warn about project lead policy (#630)
+  * Fix path bitrot in GMOC slice reporting (#669)
+  * Clean up bulk invite email (#529)
+  * Handle names with commas when sending email (#629)
+  * Handle various newlines in bulk add file (#584)
+  * Emails from experimenter bounce back to experimenter. (#409)
+  * Check user entered emails - both sanitize and validate them. Warn
+  experimenter about any that are skipped. See EG invite-to-project,
+  invite-to-geni, ask-for-project. (#409)
+  * Pages that take a bunch of emails clarify how to separate
+  addresses (space or newline or comma). (#405)
+  * Lookup existing users with case insensitive email in bulk add (#646)
+  * Allow creating / looking up an iRODS account based on your portal
+  username (#640,#673)
+  * Update InCommon privacy policy (#654)
+  * Only show nodes and links from current aggregate on Details (aka
+    manifest) page (#605)
+  * Change API methods for getting user keys (#644):
+    - Split lookup_ssh_keys into two calls: lookup_public_ssh_keys and
+      lookup_private_ssh_keys
+    - Make sure that only the current user can call
+      lookup_private_ssh_keys for themselves (not portal, not another
+      user). This is in addition to the protections done in the MA
+      itself.
+    - Fix a bug in sshkeyedit that didn't handle lists of keys
+      (assumed only one).
+  * Ensure Gemini page sends both private and public SSH keys (#674)
+  * Use the SA not the PA from pgch (#676)
+  * Restore missing valid_expiration method - could not set an expiration on a project (#677)
+  * Edit SSH key result message printing wrong (#678)
+  * Delete SSH key result message cleanup (#679)
+  * Suppress RSpec logging (#680)
+  * Show links for current AM on aggregate page (#682)
+  * Filter nodes and link for current AM on createsliver page (#683)
+  * Name 1st WiMAX SSH key sshpublickey (#684)
+  * Ensure success detected on WiMAX page (#685)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
        are uniformly lower case (so that IDP's that provide mixed-case match)
+
 == 1.8 ==
   * Portal website refers to incorrect 'footer.php' file (#633)
   * Use a tempfile for list of members on import db (#632)

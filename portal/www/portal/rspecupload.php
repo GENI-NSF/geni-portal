@@ -193,7 +193,7 @@ foreach($am_urns as $am_urn) {
   $am_urns_image = $am_urns_image . $am_urn . " ";
 }
 
-error_log("PARSE : " . $is_bound . " " . $is_stitch . " " . $am_urns_image);
+//error_log("PARSE : " . $is_bound . " " . $is_stitch . " " . $am_urns_image);
 
 // FIXME: Need a utility that determines schema and version
 // from the RSpec itself.

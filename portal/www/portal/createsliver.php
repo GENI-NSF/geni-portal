@@ -150,12 +150,29 @@ header("Cache-Control: public");
 header("Content-Type: text/xml");
 //$obj2 = trim($obj);
 if ($obj != "" ) {
-   $obj2 = print_rspec_pretty($obj);
+   $manifestOnly=True;
+   $filterToAM = True;	
+   $arg_urn = am_urn($am_url);
+   $obj2 = print_rspec_pretty($obj, $manifestOnly, $filterToAM, $arg_urn);
    print $obj2; 
 } else {
+
+  // replace newlines with line breaks to make it easier to read
+  $new_msg = str_replace("\n", "<br>", $msg);
+  
+  // grab URL given in the error message and link to it so user can get
+  // details easily
+  //   note: preg_match returns 1 if URL is found
+  //         and matched URL string is stored in $error_url[0]
+  //   preg note: assumes form http(s)://.../spewlogfile... with the ')'
+  //              symbol ending the matching
+  if(preg_match("/http[s]?:\/\/[a-zA-Z0-9.\/]*\/spewlogfile[^)]*/", $msg, $error_url)) {
+    print '<b>Error:</b> Check log file at <a href="' . $error_url[0] . '" target="_blank">' . $error_url[0] . '</a>.<br><br>';
+  }
+
    print "<i>";
-   print $msg;
-   print "</i>"; 
+   print $new_msg;
+   print "</i>";
 }
 
 ?>

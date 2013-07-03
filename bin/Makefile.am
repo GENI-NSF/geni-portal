@@ -6,6 +6,7 @@ dist_bin_SCRIPTS = \
 		assert_email.sh \
 		disable_lockdown.sh \
 		disable_sundown.sh \
+		do-make-install.sh \
 		enable_lockdown.sh \
 		enable_sundown.sh \
 		geni-add-member-privilege \

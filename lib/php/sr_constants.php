@@ -45,7 +45,9 @@ $SR_SERVICE_TYPE_NAMES = array("AGGREGATE_MANAGER",
 			       "CREDENTIAL_STORE", 
 			       "CERTIFICATE_AUTHORITY",
 			       "KEY_MANAGER",
-			       "PGCH"
+			       "PGCH",
+			       "WIMAX_SITE",
+			       "iRODS"
 			       );
 
 class SR_SERVICE_TYPE
@@ -60,6 +62,8 @@ class SR_SERVICE_TYPE
   const CERTIFICATE_AUTHORITY = 7;
   const KEY_MANAGER = 8;
   const PGCH = 9;
+  const WIMAX_SITE = 10;
+  const IRODS = 11;
 }
 
 /* Set of arguments in calls to the SR interface */
@@ -87,6 +91,7 @@ class SR_TABLE_FIELDNAME {
   const SERVICE_CERT_CONTENTS = "service_cert_contents";
   const SERVICE_NAME = "service_name";
   const SERVICE_DESCRIPTION = "service_description";
+  const SERVICE_URN = "service_urn";
 }
 
 /* Name of table which holds SR name/value attributes */

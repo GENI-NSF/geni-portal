@@ -30,25 +30,34 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-$rspec_id = NULL;
+$key_id = NULL;
 if (array_key_exists('id', $_GET)) {
-  $rspec_id = $_GET['id'];
+  $key_id = $_GET['id'];
 }
 
-if (is_null($rspec_id)) {
+if (is_null($key_id)) {
   relative_redirect('home.php');
 }
 
-/* $rspec is the XML */
-$rspec = fetchRSpecById($rspec_id);
+$keys = $user->sshKeys();
+$public_key = NULL;
+$filename = NULL;
+foreach ($keys as $key) {
+  if ($key['id'] == $key_id) {
+    $public_key = $key['public_key'];
+    $filename = $key['filename'];
+  }
+}
 
-if (is_null($rspec)) {
+if (is_null($public_key)) {
   relative_redirect('home.php');
 } else {
-  //error_log("RSPEC:$rspec");
-  // Set headers for xml
+// Set headers for download
   header("Cache-Control: public");
-  header("Content-Type: text/xml");
-  print $rspec;
+  header("Content-Description: File Transfer");
+  header("Content-Disposition: attachment; filename=$filename");
+  header("Content-Type: application/pem");
+  header("Content-Transfer-Encoding: binary");
+  print $public_key;
 }
 ?>
