@@ -45,7 +45,7 @@ $rspec = fetchRSpecById($rspec_id);
 if (is_null($rspec)) {
   relative_redirect('home.php');
 } else {
-  error_log("RSPEC:$rspec");
+  //error_log("RSPEC:$rspec");
   // Set headers for xml
   header("Cache-Control: public");
   header("Content-Type: text/xml");
