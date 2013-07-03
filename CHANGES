@@ -58,6 +58,7 @@
   * Restore missing valid_expiration method - could not set an expiration on a project (#677)
   * Edit SSH key result message printing wrong (#678)
   * Delete SSH key result message cleanup (#679)
+  * Suppress RSpec logging (#680)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
