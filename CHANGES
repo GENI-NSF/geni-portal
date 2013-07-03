@@ -56,6 +56,7 @@
   * Ensure Gemini page sends both private and public SSH keys (#674)
   * Use the SA not the PA from pgch (#676)
   * Restore missing valid_expiration method - could not set an expiration on a project (#677)
+  * Edit SSH key result message printing wrong (#678)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 

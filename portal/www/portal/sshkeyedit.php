@@ -84,6 +84,12 @@ if (array_key_exists('id', $_REQUEST)
 
   $result = update_ssh_key($ma_url, $user, $user->account_id,
             $_REQUEST['id'], $_REQUEST['name'], $_REQUEST['description']);
+  if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result)) {
+    $result = "Error " . $result[RESPONSE_ARGUMENT::CODE] . ": " . $result[RESPONSE_ARGUMENT::OUTPUT];
+  } elseif (is_array($result)) {
+    $result = $result[0];
+    $result = "File " . $result[MA_SSH_KEY_TABLE_FIELDNAME::FILENAME] . " (" . $result[MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION] . ")";
+  }
   $_SESSION['lastmessage'] = "Updated SSH keypair ($result)";
   relative_redirect('profile.php');
 } else {
