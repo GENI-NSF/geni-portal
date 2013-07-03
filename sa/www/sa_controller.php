@@ -94,6 +94,13 @@ function sa_debug($msg)
   //  error_log('SA DEBUG: ' . $msg);
 }
 
+function valid_expiration($expiration)
+{
+  $exp_timestamp = strtotime($expiration);
+  // Any valid (ie. parseable) date is fine
+  return $exp_timestamp !== false;
+}
+
 /*----------------------------------------------------------------------
  * Expiration
  *----------------------------------------------------------------------

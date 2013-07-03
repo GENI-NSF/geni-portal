@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 1.9 ==
+  * load balancing pgch (#650)
   * WiMAX integration (#484)
   * Extend default and max slice expiration (#636)
   * Verify OpenID username (#289)
@@ -39,7 +40,7 @@
   addresses (space or newline or comma). (#405)
   * Lookup existing users with case insensitive email in bulk add (#646)
   * Allow creating / looking up an iRODS account based on your portal
-  username (#640)
+  username (#640,#673)
   * Update InCommon privacy policy (#654)
   * Only show nodes and links from current aggregate on Details (aka
     manifest) page (#605)
@@ -52,6 +53,16 @@
       itself.
     - Fix a bug in sshkeyedit that didn't handle lists of keys
       (assumed only one).
+  * Ensure Gemini page sends both private and public SSH keys (#674)
+  * Use the SA not the PA from pgch (#676)
+  * Restore missing valid_expiration method - could not set an expiration on a project (#677)
+  * Edit SSH key result message printing wrong (#678)
+  * Delete SSH key result message cleanup (#679)
+  * Suppress RSpec logging (#680)
+  * Show links for current AM on aggregate page (#682)
+  * Filter nodes and link for current AM on createsliver page (#683)
+  * Name 1st WiMAX SSH key sshpublickey (#684)
+  * Ensure success detected on WiMAX page (#685)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 
