@@ -152,10 +152,10 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
 /*   error_log("user not allowed to add project members"); */
 /* } */
 
+$project_request_map = array();
 if (count($project_objects) > 0) {
   $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
 							CS_CONTEXT_TYPE::PROJECT);
-  $project_request_map = array();
   foreach ($reqlist as $req) {
      // print "\nREQ: ". print_r($req, true);	
      // print "\nREQ context ID: ". print_r($req[RQ_ARGUMENTS::CONTEXT_ID], true);	
