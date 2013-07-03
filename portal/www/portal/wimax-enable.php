@@ -339,14 +339,6 @@ else {
   }
   $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
 
-  if (is_null($cert)) {
-    // warn that no cert has been generated
-    $warnings[] = '<p class="warn">No certificate has been generated.'
-          . ' You must <a href="kmcert.php?close=1" target="_blank">'
-          . 'generate a certificate'
-          . '</a>.'
-          . '</p>';
-  }
   if ($num_projects == 0) {
     // warn that the user has no projects
     $warn = '<p class="warn">You are not a member of any projects.'
