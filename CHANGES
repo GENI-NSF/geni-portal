@@ -2,6 +2,9 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.9.1 ==
+  * GMOC reporting fix (#688)
+
 == 1.9 ==
   * load balancing pgch (#650)
   * WiMAX integration (#484)
