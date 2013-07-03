@@ -205,7 +205,10 @@ if (array_key_exists('project_id', $_REQUEST))
       $number_keys = count($ssh_public_keys);
       if($number_keys > 0) {
         for($i = 0; $i < $number_keys; $i++) {
-          $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
+	  if ($i == 0)
+	    $ldif_string .= "sshpublickey: " . $ssh_public_keys[$i]['public_key'] . "\n";
+	  else
+	    $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
         }
       }
         
