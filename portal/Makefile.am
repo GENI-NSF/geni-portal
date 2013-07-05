@@ -129,6 +129,8 @@ dist_svcweb_DATA = \
 	www/portal/logging_test.php \
 	www/portal/ma_controller_test.php \
 	www/portal/maintenance_redirect_page.php \
+	www/portal/map.php \
+	www/portal/map.json \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/pa_controller_test.php \

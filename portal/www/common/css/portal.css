@@ -340,6 +340,31 @@ hr {
 }
 
 /*
+  MAP CONTAINERS
+*/
+
+
+#map1 {
+  color: #ffffff;
+}
+
+#map1 a {
+  color: #ffffff;
+  text-decoration: none;
+  border-bottom: 0px;
+}
+
+.olControlAttribution {
+    padding: 5px;
+    z-index: 1000;
+    bottom: 0.2em !important;
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 1em !important;
+    text-align: right;
+}
+
+/*
   FOOTER CONTAINER
 */
 

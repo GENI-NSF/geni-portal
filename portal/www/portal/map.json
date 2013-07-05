@@ -1,0 +1,70 @@
+{
+"type": "FeatureCollection",
+"features": [
+
+  { "type": "Feature", 
+    "properties": 
+      { "component_id": "Northwestern",
+        "resources": 23
+      }, 
+        "geometry": 
+        { "type": "Point", 
+          "coordinates": [ -87.67502, 42.053896 ] } } ,
+
+  { "type": "Feature", 
+    "properties": 
+      { "component_id": "Utah",
+        "resources": 101
+      }, 
+        "geometry": 
+        { "type": "Point", 
+          "coordinates": [ -111.835627, 40.762428 ] } } ,
+
+  { "type": "Feature", 
+    "properties": 
+      { "component_id": "Kettering",
+        "resources": 20
+      }, 
+        "geometry": 
+        { "type": "Point", 
+          "coordinates": [ -83.713208, 43.012159 ] } } ,
+
+  { "type": "Feature", 
+    "properties": 
+      { "component_id": "Kentucky",
+        "resources": 15
+      }, 
+        "geometry": 
+        { "type": "Point", 
+          "coordinates": [ -84.498135, 38.039324 ] } } ,
+
+  { "type": "Feature", 
+    "properties": 
+      { "component_id": "RENCI",
+        "resources": 18
+      }, 
+        "geometry": 
+        { "type": "Point", 
+          "coordinates": [ -78.944145, 36.00016 ] } } ,
+
+
+  { "type": "Feature", 
+    "properties": 
+      { "component_id": "GPO InstaGENI",
+        "resources": 5
+      }, 
+        "geometry": 
+        { "type": "Point", 
+          "coordinates": [ -71.147735, 42.38956 ] } } ,
+
+  { "type": "Feature", 
+    "properties": 
+      { "component_id": "GPO ExoGENI",
+        "resources": 12
+      }, 
+        "geometry": 
+        { "type": "Point", 
+          "coordinates": [ -71.147735, 42.38956 ] } } 
+
+]
+}

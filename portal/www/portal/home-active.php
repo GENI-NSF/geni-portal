@@ -32,13 +32,7 @@
 
 require_once("util.php");
 include("services.php");
-?>
-<div style="width:479px; font-size:80%; text-align:center; float:right; margin:5px 5px 5px 5px;">
-  <h2>GENI Resources</h2>
-  <img src="/images/staticmap.png" alt="MAP" width="479" height="265"
-       style="border:3px solid #000000" />
-</div>
-<?php
+
   // Actions / approvals required 
    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
 //  include("tools-admin.php");
@@ -58,6 +52,12 @@ if (! $user->portalIsAuthorized()) {
   print "<br/>";
   return 0;
 }
+
+include("tool-breadcrumbs.php");
+
+print "<h1>Home</h1>\n";
+
+include("map.php");
 
 // List of my projects
 include("tool-projects.php");
