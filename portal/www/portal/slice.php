@@ -262,6 +262,18 @@ if(!$lookup_slice_privilege) {
   relative_redirect('home.php');
 }
 
+// determine maximum date of slice renewal
+$renewal_days = $portal_max_slice_renewal_days;
+$project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+if ($project_expiration) {
+  $project_expiration_dt = new DateTime($project_expiration);
+  $now_dt = new DateTime();
+  $difference = $project_expiration_dt->diff($now_dt);
+  $renewal_days = $difference->days;
+  // take the minimum of the two as the constraint
+  $renewal_days = min($renewal_days, $portal_max_slice_renewal_days);
+}
+
 ?>
 
 <!-- This belongs in the header, probably -->
@@ -276,7 +288,7 @@ var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
 var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
-var max_slice_renewal_days = "+" + "<?php echo $portal_max_slice_renewal_days ?>" + "d";
+var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
 <?php include('status_constants_import.php'); ?>
 </script>
 <script src="amstatus.js"></script>
