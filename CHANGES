@@ -2,6 +2,9 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.9.3 ==
+  * Re-enable pgch threading with fixes (#690)
+
 == 1.9.2 ==
   * Disable pgch threading until it works (#690)
 
