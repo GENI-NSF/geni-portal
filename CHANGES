@@ -4,9 +4,10 @@
 
 == 1.9.4 ==
   * slice expiration shouldn't pick a date past project expiration (#614)
-  * Fix tracebacks in omni_php.py when creating a sliver fails (#649)
+  * Fix tracebacks in omni_php.py when creating a sliver fails (#649,#321)
   * wimax-enable.php should not check for certificates (#689)
   * Undefined variable in tool-expired-projects (#687)
+  * pgch logs something with each CH call (#697)
 
 == 1.9.3 ==
   * Re-enable pgch threading with fixes (#690)
