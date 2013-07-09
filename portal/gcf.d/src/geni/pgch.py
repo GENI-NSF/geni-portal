@@ -592,7 +592,7 @@ class PGClearinghouse(Clearinghouse):
                     # CAUTION: untested use of inside cert/key
                     user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                     inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                    self.logger.info("Calling get_user_credential for %s (%s)", user_gid.get_hrn(), user_gid.get_uuid())
+                    self.logger.info("Calling get_user_credential for %s (%s)", user_gid.get_hrn(), user_uuid)
                     restriple = invokeCH(self.sa_url, "get_user_credential",
                                          self.logger, argsdict, inside_certs,
                                          inside_key)
@@ -660,7 +660,7 @@ class PGClearinghouse(Clearinghouse):
                 # CAUTION: untested use of inside cert/key
                 user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                 inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                self.logger.info("Calling lookup_slice_by_urn(%s) for %s (%s)", urn, user_gid.get_hrn(), user_gid.get_uuid())
+                self.logger.info("Calling lookup_slice_by_urn(%s) for %s (%s)", urn, user_gid.get_hrn(), user_uuid)
                 slicetriple = invokeCH(self.sa_url, 'lookup_slice_by_urn',
                                        self.logger, argsdict, inside_certs,
                                        inside_key)
@@ -686,7 +686,7 @@ class PGClearinghouse(Clearinghouse):
         try:
             user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
             inside_key, inside_certs = self.getInsideKeys(user_uuid)
-            self.logger.info("Calling get_slice_credential(%s) for %s (%s)", slice_id, user_gid.get_hrn(), user_gid.get_uuid())
+            self.logger.info("Calling get_slice_credential(%s) for %s (%s)", slice_id, user_gid.get_hrn(), user_uuid)
             res = invokeCH(self.sa_url, 'get_slice_credential', self.logger,
                            argsdict, inside_certs, inside_key)
         except Exception, e:
@@ -828,7 +828,7 @@ class PGClearinghouse(Clearinghouse):
                     # CAUTION: untested use of inside cert/key
                     user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                     inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                    self.logger.info("Calling %s(%s) for %s (%s)", op, key, user_gid.get_hrn(), user_gid.get_uuid())
+                    self.logger.info("Calling %s(%s) for %s (%s)", op, key, user_gid.get_hrn(), user_uuid)
                     slicetriple = invokeCH(self.sa_url, op, self.logger,
                                            argsdict, inside_certs, inside_key)
                 except Exception, e:
@@ -935,7 +935,7 @@ class PGClearinghouse(Clearinghouse):
                 try:
                     # CAUTION: untested use of inside cert/key
                     inside_key, inside_certs = self.getInsideKeys(str(uuidO))
-                    self.logger.info("Calling lookup_slices(%s) for %s (%s)", str(uuidO), user_gid.get_hrn(), user_gid.get_uuid())
+                    self.logger.info("Calling lookup_slices(%s) for %s (%s)", str(uuidO), user_gid.get_hrn(), user_uuid)
                     slicestriple = invokeCH(self.sa_url, "lookup_slices",
                                             self.logger, argsdict, inside_certs,
                                             inside_key)
@@ -1067,7 +1067,7 @@ class PGClearinghouse(Clearinghouse):
                     # CAUTION: untested use of inside cert/key
                     user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                     inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                    self.logger.info("Calling lookup_project(%s) for %s (%s)", project_name, user_gid.get_hrn(), user_gid.get_uuid())
+                    self.logger.info("Calling lookup_project(%s) for %s (%s)", project_name, user_gid.get_hrn(), user_uuid)
                     projtriple = invokeCH(self.sa_url, "lookup_project",
                                           self.logger, argsdict, inside_certs,
                                           inside_key)
@@ -1101,7 +1101,7 @@ class PGClearinghouse(Clearinghouse):
                 # CAUTION: untested use of inside cert/key
                 user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                 inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                self.logger.info("Calling create_slice(project=%s, slice_name=%s) for %s (%s)", project_name, slice_name, user_gid.get_hrn(), user_gid.get_uuid())
+                self.logger.info("Calling create_slice(project=%s, slice_name=%s) for %s (%s)", project_name, slice_name, user_gid.get_hrn(), user_uuid)
                 slicetriple = invokeCH(self.sa_url, "create_slice", self.logger,
                                        argsdict, inside_certs, inside_key)
             except Exception, e:
@@ -1126,7 +1126,7 @@ class PGClearinghouse(Clearinghouse):
                 # CAUTION: untested use of inside cert/key
                 user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                 inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                self.logger.info("Calling get_slice_credential(%s) for %s (%s)", sliceval['slice_id'], user_gid.get_hrn(), user_gid.get_uuid())
+                self.logger.info("Calling get_slice_credential(%s) for %s (%s)", sliceval['slice_id'], user_gid.get_hrn(), user_uuid)
                 res = invokeCH(self.sa_url, 'get_slice_credential', self.logger,
                                argsdict, inside_certs, inside_key)
             except Exception, e:
@@ -1207,7 +1207,7 @@ class PGClearinghouse(Clearinghouse):
                 # CAUTION: untested use of inside cert/key
                 user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                 inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                self.logger.info("Calling renew_slice(%s, %s) for %s (%s)", slice_uuid, expiration, user_gid.get_hrn(), user_gid.get_uuid())
+                self.logger.info("Calling renew_slice(%s, %s) for %s (%s)", slice_uuid, expiration, user_gid.get_hrn(), user_uuid)
                 slicetriple = invokeCH(self.sa_url, "renew_slice", self.logger,
                                        argsdict, inside_certs, inside_key)
             except Exception, e:
@@ -1232,7 +1232,7 @@ class PGClearinghouse(Clearinghouse):
                 # CAUTION: untested use of inside cert/key
                 user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                 inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                self.logger.info("Calling get_slice_credential(%s) for %s (%s)", sliceval['slice_id'], user_gid.get_hrn(), user_gid.get_uuid())
+                self.logger.info("Calling get_slice_credential(%s) for %s (%s)", sliceval['slice_id'], user_gid.get_hrn(), user_uuid)
                 res = invokeCH(self.sa_url, 'get_slice_credential', self.logger,
                                argsdict, inside_certs, inside_key)
             except Exception, e:
@@ -1410,7 +1410,7 @@ class PGClearinghouse(Clearinghouse):
                 # CAUTION: untested use of inside cert/key
                 user_uuid = str(uuidModule.UUID(int=user_gid.get_uuid()))
                 inside_key, inside_certs = self.getInsideKeys(user_uuid)
-                self.logger.info("Calling get_services_of_type(0=AM) for %s (%s)", user_gid.get_hrn(), user_gid.get_uuid())
+                self.logger.info("Calling get_services_of_type(0=AM) for %s (%s)", user_gid.get_hrn(), user_uuid)
                 amstriple = invokeCH(self.sr_url, "get_services_of_type",
                                      self.logger, argsdict, inside_certs,
                                      inside_key)
