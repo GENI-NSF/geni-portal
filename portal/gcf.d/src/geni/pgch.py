@@ -935,7 +935,7 @@ class PGClearinghouse(Clearinghouse):
                 try:
                     # CAUTION: untested use of inside cert/key
                     inside_key, inside_certs = self.getInsideKeys(str(uuidO))
-                    self.logger.info("Calling lookup_slices(%s) for %s (%s)", str(uuidO), user_gid.get_hrn(), user_uuid)
+                    self.logger.info("Calling lookup_slices(%s) for %s (%s)", str(uuidO), user_gid.get_hrn(), str(uuidO))
                     slicestriple = invokeCH(self.sa_url, "lookup_slices",
                                             self.logger, argsdict, inside_certs,
                                             inside_key)
