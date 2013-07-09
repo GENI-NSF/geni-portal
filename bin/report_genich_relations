@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# NOTE: This script is NOT installed via the Makefile.  It is managed by Puppet.
 #
 #----------------------------------------------------------------------
 # Copyright (c) 2012 Raytheon BBN Technologies
@@ -35,7 +34,8 @@ import traceback
 PASSWD_FILE = '/usr/local/etc/monitoring_passwd'
 VERSION_FILE = '/etc/geni-ch/geni-ch-githash'
 CONFIG_FILE = '/usr/local/etc/gmoc_monitoring.conf'
-CONTACT_GATHER_SCRIPT = '/usr/local/bin/gmoc_list_contacts'
+CONTACT_GATHER_SCRIPT_ARGS = ('/usr/local/bin/geni-ops-report -u portal ' + \
+                              '-P /usr/sysadmin/etc/portal_password -g')
 SLICE_GATHER_SCRIPT = '/usr/local/bin/gmoc_list_slices'
 
 MANDATORY_CONFIG_VARS = ['GMOC_REL_URL', 'SITENAME', 'ORGNAME', 'POPNAME', 'SA_URN', 'SA_TYPE']
@@ -150,12 +150,12 @@ sa = gmoc.SliceAuthority(
 
 ## Information is collected from GENI CH two dedicated scripts
 # Run the script to get CONTACT info
-p = subprocess.Popen([CONTACT_GATHER_SCRIPT],
+p = subprocess.Popen(CONTACT_GATHER_SCRIPT_ARGS.split(),
                      stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE)
 [contact_info, errout] = p.communicate()
 if p.returncode != 0:
-  print "%s failed: %s" % (CONTACT_GATHER_SCRIPT, errout)
+  print "%s failed: %s" % (CONTACT_GATHER_SCRIPT_ARGS, errout)
   sys.exit(1)
 
 # Parse the script output line-by-line
@@ -170,7 +170,7 @@ for contact in contact_list:
   for contact_key in MANDATORY_CONTACT_KEYS:
     if not contact.has_key(contact_key):
       print "%s output for contact %s missing mandatory key: %s" % \
-            (CONTACT_GATHER_SCRIPT, contact['contact_urn'], contact_key)
+            (CONTACT_GATHER_SCRIPT_ARGS, contact['contact_urn'], contact_key)
   user = contact['contact_urn']
   users[user] = gmoc.Contact(
     user,

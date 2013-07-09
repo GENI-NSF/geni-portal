@@ -58,6 +58,17 @@ class Member(object):
         self.operator = False
         self.last_seen = None
 
+    def parsed_firstname(self):
+        """Get a usable firstname for a member, or fall back to email"""
+        if self.first_name:
+            return self.first_name
+        return self.email_address
+
+    def parsed_lastname(self):
+        """Get a usable lastname for a member, or fall back to email"""
+        if self.last_name:
+            return self.last_name
+        return self.email_address
 
 def note_last_seen(conn):
     DB_TS_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
@@ -143,6 +154,21 @@ def print_members_csv(members):
     csvout.writerow([x for (x, y) in m_attrs])
     for m in Member.sorted_members():
         vals = [fn(getattr(m, k)) for (k, fn) in m_attrs]
+        csvout.writerow(vals)
+
+def print_members_gmoc_csv(members):
+    def ident(x): return x
+    m_attrnames = ('contact_urn', 'contact_email', 'contact_lastname',
+                   'contact_givenname', 'owner_id')
+    csvout = csv.writer(sys.stdout, lineterminator='\n')
+    csvout.writerow(m_attrnames)
+    for m in Member.sorted_members():
+        urn = getattr(m, 'urn')
+        email = getattr(m, 'email_address')
+        uuid = getattr(m, 'id')
+        lastname = m.parsed_lastname()
+        firstname = m.parsed_firstname()
+        vals = [urn, email, lastname, firstname, uuid]
         csvout.writerow(vals)
 
 def load_projects(conn):
@@ -311,6 +337,9 @@ def parse_args(argv):
                        help="enable debugging output")
     parser.add_option("-d", "--database", default='portal',
                       help="database name")
+    parser.add_option("-g", "--gmoc-format", action="store_true",
+                      default=False,
+                      help="produce output in GMOC contact reporting format")
     parser.add_option("--host", default='localhost',
                       help="database host")
     parser.add_option("-u", "--user", default='portal',
@@ -355,6 +384,8 @@ def main(argv=None):
         inventory = read_audit_inventory(options.audit_file)
         errors = audit_members(inventory, projects)
         print_audit_report(errors)
+    elif options.gmoc_format:
+        print_members_gmoc_csv(Member.sorted_members)
     else:
         projects = load_projects(conn)
         print_members_csv(Member.sorted_members)

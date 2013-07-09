@@ -1,5 +1,4 @@
 #!/bin/bash
-# NOTE: This script is NOT installed via the Makefile.  It is managed by Puppet.
 #
 # List all slices at SA
 #
