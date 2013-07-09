@@ -157,22 +157,41 @@ if ($obj != "" ) {
    print $obj2; 
 } else {
 
-  // replace newlines with line breaks to make it easier to read
-  $new_msg = str_replace("\n", "<br>", $msg);
+  /* error parsing */
   
-  // grab URL given in the error message and link to it so user can get
-  // details easily
-  //   note: preg_match returns 1 if URL is found
-  //         and matched URL string is stored in $error_url[0]
-  //   preg note: assumes form http(s)://.../spewlogfile... with the ')'
-  //              symbol ending the matching
-  if(preg_match("/http[s]?:\/\/[a-zA-Z0-9.\/]*\/spewlogfile[^)]*/", $msg, $error_url)) {
-    print '<b>Error:</b> Check log file at <a href="' . $error_url[0] . '" target="_blank">' . $error_url[0] . '</a>.<br><br>';
+  $new_msg = $msg;
+  
+  //   note: preg_match returns 1 if expression is found
+  //         and matched string is stored in $string[0]
+  
+  // match on omni python traceback error
+  if(preg_match("/omnilib\.util\.omnierror.*/", $msg, $new_msg)) {
+    print '<b>Error:</b> Failed to create a sliver.<br><br>';
+    print "<i>";
+    print $new_msg[0];
+    print "</i>";
   }
+  
+  // match on InstaGENI URL
+  else if(preg_match("/http[s]?:\/\/[a-zA-Z0-9.\/]*\/spewlogfile[^)]*/", $msg, $error_url)) {
+    $new_msg = str_replace("\n", "<br>", $msg);
+    print '<b>Error:</b> Failed to create a sliver. Check log file at <a href="' . $error_url[0] . '" target="_blank">' . $error_url[0] . '</a>.<br><br>';
+    print "<i>";
+    print $new_msg;
+    print "</i>";
+  
+  }
+  
+  // if unknown error, display in its entirety
+  else {
+    $new_msg = str_replace("\n", "<br>", $msg);
+    print '<b>Error:</b> Failed to create a sliver.<br><br>';
+    print "<i>";
+    print $new_msg;
+    print "</i>";
+  }
+  
 
-   print "<i>";
-   print $new_msg;
-   print "</i>";
 }
 
 ?>
