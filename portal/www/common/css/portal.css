@@ -343,9 +343,9 @@ hr {
   MAP CONTAINERS
 */
 
-
 #map1 {
   color: #ffffff;
+    box-shadow: 3px 3px 10px #5F584E;
 }
 
 #map1 a {
@@ -354,15 +354,60 @@ hr {
   border-bottom: 0px;
 }
 
-.olControlAttribution {
+#maptext {
+  color: #5F584E;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+}
+
+#maptext h1 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  text-shadow: 0.1em 0.1em 0.2em #dddddd;
+  color: #E17000;
+  font-size: 1em;
+  margin: 5px;
+  line-height: 1.2em;
+}
+
+#maptext p {
+  font-size: 0.7em;
+  margin: 5px;
+  padding-left: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  line-height: 1em;
+}
+
+#maptext ul {
+  margin-left: 0px;
+}
+
+#maptext li {
+  font-size: 0.7em;
+  margin: 5px;
+  line-height: 0.7em;
+}
+
+.olPopupContent {
+    overflow: auto;
+    padding: 0px;
+}
+
+#OpenLayers_Control_Attribution_7 {
     padding: 5px;
     z-index: 1000;
     bottom: 0.2em !important;
     overflow: hidden;
-    color: #ffffff;
-    font-size: 1em !important;
+    color: #5F584E;
+    font-size: 0.8em !important;
     text-align: right;
 }
+
+#OpenLayers_Control_Attribution_7 a {
+      color: #5F584E;
+}
+
 
 /*
   FOOTER CONTAINER

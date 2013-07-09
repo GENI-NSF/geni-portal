@@ -1,0 +1,190 @@
+<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript">
+
+// Adapted from http://acuriousanimal.com/code/animatedCluster/
+
+window.onload = function init() {
+
+            // Create a map and add OSM raster layer as the base layer
+            var map1 = new OpenLayers.Map("map1");
+            var osm1 = new OpenLayers.Layer.OSM();
+            map1.addLayer(osm1);
+            
+            // Initial view location
+            var center = new OpenLayers.LonLat(-96,38);
+            center.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+            map1.setCenter(center, 4);
+            
+            // set up presentation rules for style
+            var rule = new OpenLayers.Rule({
+                symbolizer: {
+                    fillColor: '#E17000',
+                    fillOpacity: 0.75, 
+                    strokeColor: '#5F584E',
+                    strokeOpacity: 1,
+                    strokeWidth: 2,
+                    pointRadius: "${radius}",
+                    label: "${resourceCount}",
+                    labelOutlineWidth: 1,
+                    fontColor: "#ffffff",
+                    fontFamily: 'Arial',
+                    fontSize: "12px"
+                }
+            });
+           
+            // set up style
+            var style = new OpenLayers.Style(null, {
+                context: {
+                  resourceCount: 
+                    function(feature) {
+                      var sum = 0;
+                      for(var i = 0; i < feature.cluster.length; i++) {
+                        sum = sum + feature.cluster[i].attributes.resources;
+                      }
+                      return sum;
+                    } ,
+                  radius:
+                    function(feature) {
+                      var sum = 0;
+                      for(var i = 0; i < feature.cluster.length; i++) {
+                        sum = sum + feature.cluster[i].attributes.resources;
+                      }
+                      if(sum < 10) {
+                        return 10;
+                      }
+                      else if (sum < 100) {
+                        return 14;
+                      }
+                      else {
+                        return 22;
+                      }
+                      
+                    }
+                    
+                    
+                }, 
+                  
+                rules: [rule]
+                
+                
+                
+                
+            });            
+
+            // Create a vector layers
+            var vector1 = new OpenLayers.Layer.Vector("GENI Resources", {
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "https://portal-bu.gpolab.bbn.com/map/map/map.php",
+                    format: new OpenLayers.Format.GeoJSON()
+                }),
+                strategies: [
+                    new OpenLayers.Strategy.Fixed(),
+                    new OpenLayers.Strategy.Cluster()
+                ],
+                styleMap:  new OpenLayers.StyleMap(style)
+                
+                
+            });
+            
+
+            
+            map1.addLayer(vector1);
+            
+            function resourceCount(feature) {
+              var sum = 0;
+              for(var i = 0; i < feature.cluster.length; i++) {
+                sum = sum + feature.cluster[i].attributes.resources;
+              }
+              return sum;
+            }
+            
+            function resourceString(feature) {
+              var sum = feature.cluster[0].attributes.component_id;
+              for(var i = 1; i < feature.cluster.length; i++) {
+                  sum = sum + ", " + feature.cluster[i].attributes.component_id;
+              }
+              return sum;
+            }
+
+            function amString(feature) {
+            
+              var ams = new Array();
+              var ams_count = new Array();
+              
+              // look through each AM
+              for(var i = 0; i < feature.cluster.length; i++) {
+              
+                  // look through AMs already in array
+                  var found = 0;
+                  for(var j = 0; j < ams.length; j++) {
+                    if(ams[j] === feature.cluster[i].attributes.am) {
+                      ams_count[j]++;
+                      found = 1;
+                    }
+                  }
+                  if(!found) {
+                    ams.push(feature.cluster[i].attributes.am);
+                    ams_count.push("1");
+                  }
+              
+              }
+              
+              // return string
+              
+              var sum = "";
+              for(var i = 0; i < ams.length; i++) {
+                  sum = sum + "<li>" + ams[i] + " <b>(" + ams_count[i] + ")</b></li>";
+              }
+              return sum;
+              
+            }
+
+            function onPopupClose(evt) {
+              selectControl.unselect(selectedFeature);
+            }
+            
+            function onFeatureSelect(feature) {
+              selectedFeature = feature;
+              popup = new OpenLayers.Popup.Anchored("chicken", 
+                                       feature.geometry.getBounds().getCenterLonLat(),
+                                       new OpenLayers.Size(250,156),
+                                          "<div id='maptext'>" +
+                                          "<h1>Aggregate Managers</h1>" + 
+                                          "<ul>" + 
+                                          amString(feature) + 
+                                          "</ul>" + 
+                                          "<h1>Nodes (" + resourceCount(feature) + ")</h1>" + 
+                                          "<p>" + 
+                                          resourceString(feature) + 
+                                          "</p>" + 
+                                          "</div>",
+                                       null, false, onPopupClose);
+              popup.setBackgroundColor("#ffffff");
+              popup.setBorder("1px solid #5F584E");                         
+              feature.popup = popup;
+              map1.addPopup(popup);
+            }
+            
+            function onFeatureUnselect(feature) {
+              map1.removePopup(feature.popup);
+              feature.popup.destroy();
+              feature.popup = null;
+            }    
+
+                       
+            var selectControl = new OpenLayers.Control.SelectFeature(vector1, {
+                onSelect: onFeatureSelect,
+                onUnselect: onFeatureUnselect
+            });
+
+            map1.addControl(selectControl);
+
+            selectControl.activate();
+                                    
+            
+}
+
+</script>
+<div id="map1" style="width: 793px; height: 400px"></div>
+
+

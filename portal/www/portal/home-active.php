@@ -55,9 +55,8 @@ if (! $user->portalIsAuthorized()) {
 
 include("tool-breadcrumbs.php");
 
-print "<h1>Home</h1>\n";
-
-include("map.php");
+print '<h2 align="center">Current GENI Clearinghouse Resources</h2>';
+include("map.html");
 
 // List of my projects
 include("tool-projects.php");
