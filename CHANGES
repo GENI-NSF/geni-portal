@@ -2,6 +2,9 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 1.9.4 ==
+  * Log when someone tries to download their outside cert (#699)
+
 == 1.9.3 ==
   * Re-enable pgch threading with fixes (#690)
 
