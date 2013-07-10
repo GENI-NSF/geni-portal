@@ -241,7 +241,7 @@ hr {
   padding: 5px;
   margin-left: 45px;
   border: 2px solid #E5E5E5;
-  box-shadow: 3px 3px 10px #5F584E;
+  box-shadow: 4px 4px 10px #B5B5B5;
 }
 
 /* Inline code */
@@ -282,7 +282,7 @@ hr {
   margin-bottom: 20px;
   line-height: 1.2em;
   margin-left: 60px;
-  box-shadow: 4px 4px 10px #5F584E;
+  box-shadow: 4px 4px 10px #B5B5B5;
 }
 
 /* inline table should not have large left margin */
@@ -586,7 +586,7 @@ margin-left: .4in;
   padding: 20px;
   font-family: 'PT Serif', serif;
   font-weight: 400;
-  box-shadow: 4px 4px 10px #C5D3D7;
+  box-shadow: 4px 4px 10px #B5B5B5;
   margin-left: 0px !important;
   margin-top: 20px !important;
   margin-bottom: 20px !important;
@@ -608,7 +608,7 @@ margin-left: .4in;
   padding: 20px;
   font-family: 'PT Serif', serif;
   font-weight: 400;
-  box-shadow: 4px 4px 10px #C5D3D7;
+  box-shadow: 4px 4px 10px #B5B5B5;
   margin-left: 0px !important;
   margin-top: 20px !important;
   margin-bottom: 20px !important;

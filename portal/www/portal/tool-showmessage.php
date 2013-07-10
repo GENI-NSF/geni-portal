@@ -29,10 +29,10 @@ if (! isset($_SESSION)) {
 }
 
 if (isset($_SESSION['lastmessage'])) {
-  print "<p class='instruction'>" . $_SESSION['lastmessage'] . "</p><br/>\n";
+  print "<p class='instruction'>" . $_SESSION['lastmessage'] . "</p>\n";
   unset($_SESSION['lastmessage']);
 }
 if (isset($_SESSION['lasterror'])) {
-  print "<p class='warn'>" . $_SESSION['lasterror'] . "</p><br/>\n";
+  print "<p class='warn'>" . $_SESSION['lasterror'] . "</p>\n";
   unset($_SESSION['lasterror']);
 }
