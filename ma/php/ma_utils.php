@@ -390,6 +390,9 @@ function ma_fetch_outside_cert($member_id) {
     geni_syslog(GENI_SYSLOG_PREFIX::MA,
             ("Database error: $db_error"));
     geni_syslog(GENI_SYSLOG_PREFIX::MA, "Query was: " . $sql);
+  } else {
+    error_log("User " . $member_id . " retrieving outside cert");
+    geni_syslog(GENI_SYSLOG_PREFIX::MA, "User " . $member_id . " retrieving outside cert");
   }
   return $result;
 }
