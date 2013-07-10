@@ -108,6 +108,7 @@ dist_svcweb_DATA = \
 	www/portal/flackportal-B.html \
 	www/portal/flackportal-C.html \
 	www/portal/footer.php \
+	www/portal/future.json \
 	www/portal/gemini.php \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \

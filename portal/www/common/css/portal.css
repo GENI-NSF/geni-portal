@@ -345,7 +345,7 @@ hr {
 
 #map1 {
   color: #ffffff;
-    box-shadow: 3px 3px 10px #5F584E;
+  /*  box-shadow: 3px 3px 10px #5F584E;*/
 }
 
 #map1 a {
@@ -358,6 +358,7 @@ hr {
   color: #5F584E;
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
+  padding: 5px;
 }
 
 #maptext h1 {
@@ -392,6 +393,17 @@ hr {
 .olPopupContent {
     overflow: auto;
     padding: 0px;
+}
+
+#OpenLayers_Control_Zoom_5 a {
+  color: #ffffff !important;
+  border-bottom: none !important;
+}
+
+#OpenLayers_Control_Zoom_5 a:hover {
+  color: #E17000 !important;
+  background: transparent !important;
+  border-bottom: none !important;
 }
 
 #OpenLayers_Control_Attribution_7 {
@@ -568,21 +580,47 @@ margin-left: .4in;
 }
 
 .instruction {
- color: green;
- font-weight: bold;
- border: 1px solid green;
- margin: 10px;
- padding: 10px;
- width: 50%;
+  background-color: #E5E5E5;
+  border-left: 10px solid green;
+  color: #5F584E;
+  padding: 20px;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  box-shadow: 4px 4px 10px #C5D3D7;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}
+
+.instruction:before {
+  content: "Notice";
+  color: green;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  display: block;
+  font-size: 1.1em !important;
 }
 
 .warn {
- color: red;
- font-weight: bold;
- border: 1px solid red;
- margin: 10px;
- padding: 10px;
- width: 50%;
+  background-color: #E5E5E5;
+  border-left: 10px solid red;
+  color: #5F584E;
+  padding: 20px;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  box-shadow: 4px 4px 10px #C5D3D7;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}
+
+.warn:before {
+  content: "Warning";
+  color: red;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  display: block;
+  font-size: 1.1em !important;
 }
 
 .starter {
@@ -637,39 +675,7 @@ input.date {
 }
 
 
-/*table {
- background-color: #DCE2E8;
- margin: 1em;
- 
-}
 
-td {
- margin: 3px;
- padding: 3px;
- background-color: BlanchedAlmond;
-}
-
-th {
- margin: 3px;
- padding: 3px;
- background-color: SkyBlue;
- text-align: left;
-}
-
-td.status_buttons, th#status{
- text-align:center;
-}
-
-table#renewtable, table#renewtable > td {
-    margin: 0em;
-    padding: 0em;
-    text-align:left;
-    background-color: BlanchedAlmond;
-}
-td#renewbutton {
-    text-align:center;
-}
-*/
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
  text-align:center;

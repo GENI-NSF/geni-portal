@@ -5,186 +5,221 @@
 
 window.onload = function init() {
 
-            // Create a map and add OSM raster layer as the base layer
-            var map1 = new OpenLayers.Map("map1");
-            var osm1 = new OpenLayers.Layer.OSM();
-            map1.addLayer(osm1);
-            
-            // Initial view location
-            var center = new OpenLayers.LonLat(-96,38);
-            center.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-            map1.setCenter(center, 4);
-            
+  // create map and add OSM as base
+  var map1 = new OpenLayers.Map("map1");
+  var osm1 = new OpenLayers.Layer.OSM();
+  map1.addLayer(osm1);
+  
+  // Initial view location
+  var center = new OpenLayers.LonLat(-96,38);
+  center.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+  map1.setCenter(center, 4);
+  map1.addControl(new OpenLayers.Control.LayerSwitcher());
+     
+  // set up style for current GENI resources
+  var style = new OpenLayers.Style(null, {
+      context: {
+        resourceCount: 
+          function(feature) {
+            var sum = 0;
+            for(var i = 0; i < feature.cluster.length; i++) {
+              sum = sum + feature.cluster[i].attributes.resources;
+            }
+            return sum;
+          } ,
+        radius:
+          function(feature) {
+            var sum = 0;
+            for(var i = 0; i < feature.cluster.length; i++) {
+              sum = sum + feature.cluster[i].attributes.resources;
+            }
+            if(sum < 10) {
+              return 10;
+            }
+            else if (sum < 100) {
+              return 14;
+            }
+            else {
+              return 22;
+            }
+          }
+          
+      }, 
+        
+      rules: [new OpenLayers.Rule({
+      symbolizer: {
+          fillColor: '#E17000',
+          fillOpacity: 0.75, 
+          strokeColor: '#5F584E',
+          strokeOpacity: 1,
+          strokeWidth: 2,
+          pointRadius: "${radius}",
+          label: "${resourceCount}",
+          labelOutlineWidth: 1,
+          fontColor: "#ffffff",
+          fontFamily: 'Arial',
+          fontSize: "12px"
+      }
+  })]
+      
+  });  
+
+  // currentSites: layer for current GENI resources
+  var currentSites = new OpenLayers.Layer.Vector("GENI CH Resources", {
+      protocol: new OpenLayers.Protocol.HTTP({
+          url: "https://portal-bu.gpolab.bbn.com/map/map/map.php",
+          format: new OpenLayers.Format.GeoJSON()
+      }),
+      strategies: [
+          new OpenLayers.Strategy.Fixed(),
+          new OpenLayers.Strategy.Cluster()
+      ],
+      styleMap:  new OpenLayers.StyleMap(style)
+      
+  });
+  
+  // add GENI current resources to map
+  map1.addLayer(currentSites);
+  
+  /*
+    resourceCount
+      returns number of resources
+  */
+  function resourceCount(feature) {
+    var sum = 0;
+    for(var i = 0; i < feature.cluster.length; i++) {
+      sum = sum + feature.cluster[i].attributes.resources;
+    }
+    return sum;
+  }
+  
+  /*
+    resourceString
+      returns list of resources
+  */
+  function resourceString(feature) {
+    var sum = feature.cluster[0].attributes.component_id;
+    for(var i = 1; i < feature.cluster.length; i++) {
+        sum = sum + ", " + feature.cluster[i].attributes.component_id;
+    }
+    return sum;
+  }
+
+  /* 
+    amString
+      determines unique list of AMs and resource counts
+  */
+  function amString(feature) {
+  
+    var ams = new Array();
+    var ams_count = new Array();
+    
+    // look through each AM
+    for(var i = 0; i < feature.cluster.length; i++) {
+    
+        // look through AMs already in array
+        var found = 0;
+        for(var j = 0; j < ams.length; j++) {
+          if(ams[j] === feature.cluster[i].attributes.am) {
+            ams_count[j] = ams_count[j] + parseInt(feature.cluster[i].attributes.resources);
+            found = 1;
+          }
+        }
+        if(!found) {
+          ams.push(feature.cluster[i].attributes.am);
+          ams_count.push(parseInt(feature.cluster[i].attributes.resources));
+        }
+    
+    }
+    
+    // create the string that lists AMs
+    var sum = "";
+    for(var i = 0; i < ams.length; i++) {
+        sum = sum + "<li>" + ams[i] + " <b>(" + ams_count[i] + ")</b></li>";
+    }
+    return sum;
+    
+  }
+
+  /*
+    popups windows for current GENI resources
+  */
+  function onPopupClose(evt) {
+    selectControl.unselect(selectedFeature);
+  }
+  function onFeatureSelect(feature) {
+    selectedFeature = feature;
+    popup = new OpenLayers.Popup.Anchored("chicken", 
+         feature.geometry.getBounds().getCenterLonLat(),
+         new OpenLayers.Size(250,156),
+            "<div id='maptext'>" +
+            "<h1>Aggregate Manager(s):</h1>" + 
+            "<ul>" + 
+            amString(feature) + 
+            "</ul>" + 
+            "<h1>Node(s):</h1>" + 
+            "<p>" + 
+            resourceString(feature) + 
+            "</p>" + 
+            "</div>",
+         null, false, onPopupClose);
+    popup.setBackgroundColor("#ffffff");
+    popup.setBorder("1px solid #5F584E");     
+    feature.popup = popup;
+    map1.addPopup(popup);
+  }
+  function onFeatureUnselect(feature) {
+    map1.removePopup(feature.popup);
+    feature.popup.destroy();
+    feature.popup = null;
+  }      
+  var selectControl = new OpenLayers.Control.SelectFeature(currentSites, {
+      onSelect: onFeatureSelect,
+      onUnselect: onFeatureUnselect
+  });
+  map1.addControl(selectControl);
+  selectControl.activate();
+
+
+
             // set up presentation rules for style
-            var rule = new OpenLayers.Rule({
+            var rule_future = new OpenLayers.Rule({
                 symbolizer: {
                     fillColor: '#E17000',
                     fillOpacity: 0.75, 
                     strokeColor: '#5F584E',
                     strokeOpacity: 1,
                     strokeWidth: 2,
-                    pointRadius: "${radius}",
-                    label: "${resourceCount}",
-                    labelOutlineWidth: 1,
-                    fontColor: "#ffffff",
-                    fontFamily: 'Arial',
+                    pointRadius: 3,
                     fontSize: "12px"
                 }
             });
            
             // set up style
-            var style = new OpenLayers.Style(null, {
-                context: {
-                  resourceCount: 
-                    function(feature) {
-                      var sum = 0;
-                      for(var i = 0; i < feature.cluster.length; i++) {
-                        sum = sum + feature.cluster[i].attributes.resources;
-                      }
-                      return sum;
-                    } ,
-                  radius:
-                    function(feature) {
-                      var sum = 0;
-                      for(var i = 0; i < feature.cluster.length; i++) {
-                        sum = sum + feature.cluster[i].attributes.resources;
-                      }
-                      if(sum < 10) {
-                        return 10;
-                      }
-                      else if (sum < 100) {
-                        return 14;
-                      }
-                      else {
-                        return 22;
-                      }
-                      
-                    }
-                    
-                    
-                }, 
-                  
-                rules: [rule]
-                
-                
-                
-                
+            var style_future = new OpenLayers.Style(null, {     
+                rules: [rule_future]
             });            
 
             // Create a vector layers
-            var vector1 = new OpenLayers.Layer.Vector("GENI Resources", {
+            var vector2 = new OpenLayers.Layer.Vector("Future GENI Resources", {
                 protocol: new OpenLayers.Protocol.HTTP({
-                    url: "https://portal-bu.gpolab.bbn.com/map/map/map.php",
+                    url: "future.json",
                     format: new OpenLayers.Format.GeoJSON()
                 }),
                 strategies: [
                     new OpenLayers.Strategy.Fixed(),
                     new OpenLayers.Strategy.Cluster()
                 ],
-                styleMap:  new OpenLayers.StyleMap(style)
+                styleMap:  new OpenLayers.StyleMap(style_future)
                 
                 
             });
             
+            //map1.addLayer(vector2);
 
-            
-            map1.addLayer(vector1);
-            
-            function resourceCount(feature) {
-              var sum = 0;
-              for(var i = 0; i < feature.cluster.length; i++) {
-                sum = sum + feature.cluster[i].attributes.resources;
-              }
-              return sum;
-            }
-            
-            function resourceString(feature) {
-              var sum = feature.cluster[0].attributes.component_id;
-              for(var i = 1; i < feature.cluster.length; i++) {
-                  sum = sum + ", " + feature.cluster[i].attributes.component_id;
-              }
-              return sum;
-            }
 
-            function amString(feature) {
-            
-              var ams = new Array();
-              var ams_count = new Array();
-              
-              // look through each AM
-              for(var i = 0; i < feature.cluster.length; i++) {
-              
-                  // look through AMs already in array
-                  var found = 0;
-                  for(var j = 0; j < ams.length; j++) {
-                    if(ams[j] === feature.cluster[i].attributes.am) {
-                      ams_count[j]++;
-                      found = 1;
-                    }
-                  }
-                  if(!found) {
-                    ams.push(feature.cluster[i].attributes.am);
-                    ams_count.push("1");
-                  }
-              
-              }
-              
-              // return string
-              
-              var sum = "";
-              for(var i = 0; i < ams.length; i++) {
-                  sum = sum + "<li>" + ams[i] + " <b>(" + ams_count[i] + ")</b></li>";
-              }
-              return sum;
-              
-            }
-
-            function onPopupClose(evt) {
-              selectControl.unselect(selectedFeature);
-            }
-            
-            function onFeatureSelect(feature) {
-              selectedFeature = feature;
-              popup = new OpenLayers.Popup.Anchored("chicken", 
-                                       feature.geometry.getBounds().getCenterLonLat(),
-                                       new OpenLayers.Size(250,156),
-                                          "<div id='maptext'>" +
-                                          "<h1>Aggregate Managers</h1>" + 
-                                          "<ul>" + 
-                                          amString(feature) + 
-                                          "</ul>" + 
-                                          "<h1>Nodes (" + resourceCount(feature) + ")</h1>" + 
-                                          "<p>" + 
-                                          resourceString(feature) + 
-                                          "</p>" + 
-                                          "</div>",
-                                       null, false, onPopupClose);
-              popup.setBackgroundColor("#ffffff");
-              popup.setBorder("1px solid #5F584E");                         
-              feature.popup = popup;
-              map1.addPopup(popup);
-            }
-            
-            function onFeatureUnselect(feature) {
-              map1.removePopup(feature.popup);
-              feature.popup.destroy();
-              feature.popup = null;
-            }    
-
-                       
-            var selectControl = new OpenLayers.Control.SelectFeature(vector1, {
-                onSelect: onFeatureSelect,
-                onUnselect: onFeatureUnselect
-            });
-
-            map1.addControl(selectControl);
-
-            selectControl.activate();
-                                    
-            
+  
 }
 
 </script>
 <div id="map1" style="width: 793px; height: 400px"></div>
-
-
