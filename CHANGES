@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.0 ==
+  * Fix Slice/Project Membership functionality according to feedback (#496)
   * enable VERIFYHOST in put_message (#660)
 
 == 1.9.5 ==
