@@ -194,7 +194,6 @@ print "</table>\n";
 include("tool-slices.php");
 include("tool-expired-slices.php");
 ?>
-<br/>
 
 <h2>Project members</h2>
 
@@ -251,23 +250,21 @@ $edit_members_disabled = "";
 if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $edit_members_disabled = $disabled;
 }
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Current Project Membership</b></button>";
+echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Current Project Membership</b></button></p>";
 
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
-  print "<br/><h3>Add new project members</h3>";
-  print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
+  print "<h3>Add new project members</h3>";
+  print "<p><button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button>";
 
   //  print "<br/><h3>Invite new project members</h3>\n";
-  print "<br/>";
-  print "<button onClick=\"window.location='";
+  print " <button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
-  print "\"><b>Invite New Members</b></button><br/>\n";
+  print "\"><b>Invite New Members</b></button></p>\n";
   
-  print "<br/>\n";
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
-    print "<div class='announce'>No outstanding project join requests.</div><br/>\n";
+    print "<div class='announce'><p>No outstanding project join requests.</p></div>\n";
   }
 }
 ?>
@@ -297,7 +294,6 @@ if (is_array($entries)) {
 $disable_add_note = "";
 if ($in_lockdown_mode) $disable_add_note = $disabled;
 $addnote_url = 'add-project-note.php?project_id='.$project_id;
-print "<button $disable_add_note onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
-print "<br/>\n";
+print "<p><button $disable_add_note onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button></p>\n";
 include("footer.php");
 ?>

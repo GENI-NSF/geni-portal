@@ -93,13 +93,13 @@ include("tool-showmessage.php");
 
 ?>
 
-<h2> Modify Account Page </h2>
-Request a modification to user supplied account properties. For
+<h1> Modify Account Page </h1>
+<p>Request a modification to user supplied account properties. For
 example, use this page to request to be a Project Lead (get Project
-Creation permissions).<br/><br/>
-Please provide a current telephone number. GENI operations staff will
-use it only in an emergency, such as if a resource owned by you is severely misbehaving. <br/>
-If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.<br/>
+Creation permissions).</p>
+<p>Please provide a current telephone number. GENI operations staff will
+use it only in an emergency, such as if a resource owned by you is severely misbehaving. </p>
+<p>If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.</p>
 <p><i>Note</i>: Based on GENI's current policy, only faculty and senior members of an organization
 may be project leads (e.g. students <i>may not</i> be project leads).</p><br/>
 <form method="POST" action="do-modify.php">
@@ -128,7 +128,7 @@ foreach (array_keys($shib_fields) as $fieldkey) {
     }
   }
 ?>
-<br/>
+<p>
 <input type="checkbox" name="projectlead" value="projectlead"
 <?php
     if ($is_pi) {
@@ -141,9 +141,11 @@ foreach (array_keys($shib_fields) as $fieldkey) {
     }
 ?>
 a 'Project Lead' who can create projects.<br/>
-<br/>
+</p>
+<p>
 <input type="submit" value="Modify Account"/>
 <input type="button" value="Cancel" onclick="history.back(-1)"/>
+</p>
 </form>
 <?php
 include("footer.php");
