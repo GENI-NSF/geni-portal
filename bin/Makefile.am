@@ -21,7 +21,8 @@ dist_bin_SCRIPTS = \
 		gmoc_list_slices \
 		idp_user_created.sh \
 		report_genich_relations \
-		shib_idp_users
+		shib_idp_users \
+		geni-add-member-attribute
 
 dist_pkgsysconf_DATA = geni-ch-githash
 
