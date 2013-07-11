@@ -156,7 +156,7 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 //  error_log("APMD = " . print_r($apmd, true));
 //}
 
-print "<h1>GENI Project: " . $project_name . "</h1>";
+print "<h1>Edit GENI Project Membership: " . $project_name . "</h1>";
 
 ?>
 <form method="POST" action="do-edit-project-member.php">

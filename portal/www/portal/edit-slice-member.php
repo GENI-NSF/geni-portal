@@ -194,7 +194,7 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 // Then have a 'save' 'cancel' for the whole shebang
 // 
 
-print "<h1>GENI Slice: " . $slice_name . "</h1>";
+print "<h1>Edit GENI Slice Membership: " . $slice_name . "</h1>";
 ?>
 
 Slice members will be able to login to resources reserved <i>in the future</i> if
