@@ -46,10 +46,11 @@ if (! $user->portalIsAuthorized()) {
   $query = http_build_query($params);
   $km_url = $km_url . "?" . $query;
   print "<h2>Portal authorization</h2>\n";
+  print "<p>";
   print "The GENI Portal is not authorized by you as a client tool. If you would like";
   print " the GENI Portal to help you manage your projects and slices, you can";
   print " <a href=\"$km_url\">authorize the portal</a> to do so.";
-  print "<br/>";
+  print "</p>";
   return 0;
 }
 
@@ -79,6 +80,7 @@ include("tool-slices.php");
 $gemini_url = relative_url("gemini.php");
 
   print "<h2>Tools</h2>";
+  print "<p>";
   print "<button onClick=\"window.open('$gemini_url')\">";
   print "<b>GENI Desktop</b></button> ";
 
@@ -87,6 +89,7 @@ $gemini_url = relative_url("gemini.php");
     print "<button onClick=\"window.open('$wimax_url')\">";
     print "<b>WiMAX</b></button>";
   }
+  print "</p>";
 
 ?>
 
@@ -137,13 +140,10 @@ if (is_array($entries) && count($entries) > 0) {
 
 print "</table>";
 
-
-print "<br/>";
-
 $disable_invite_geni = "";
 if ($in_lockdown_mode)
   $disable_invite_geni = "disabled";
 
-print "<button style=\"\" $disable_invite_geni onClick=\"window.location='invite-to-geni.php'\"><b>Invite Someone to GENI</b></button>";
+print "<p><button style=\"\" $disable_invite_geni onClick=\"window.location='invite-to-geni.php'\"><b>Invite Someone to GENI</b></button></p>";
 
 ?>

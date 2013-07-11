@@ -35,7 +35,7 @@ include("tool-breadcrumbs.php");
 $hostname = $_SERVER['SERVER_NAME'];
 // Links to wiki, help, tutorials
 ?>
-<h2>GENI Help</h2>
+<h1>GENI Help</h1>
 <ul>
 <li><a href="http://groups.geni.net/geni/wiki">GENI Wiki</a> -- GENI documentation</li>
 <li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Meta-Operations Center (GMOC)</a> -- Create and search trouble tickets.  Calendar of planned and unplanned outages.</li>

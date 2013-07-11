@@ -283,6 +283,12 @@ hr {
   line-height: 1.2em;
   margin-left: 60px;
   box-shadow: 4px 4px 10px #B5B5B5;
+  width: 733px;
+}
+
+#content table table {
+  width: auto;
+  box-shadow: none;
 }
 
 /* inline table should not have large left margin */
