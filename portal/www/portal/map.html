@@ -67,7 +67,7 @@ window.onload = function init() {
   // currentSites: layer for current GENI resources
   var currentSites = new OpenLayers.Layer.Vector("GENI CH Resources", {
       protocol: new OpenLayers.Protocol.HTTP({
-          url: "https://portal-bu.gpolab.bbn.com/map/map/map.php",
+          url: "map.php",
           format: new OpenLayers.Format.GeoJSON()
       }),
       strategies: [

@@ -195,12 +195,16 @@ hr {
   margin-top: 20px;
   margin-bottom: 15px;
   margin-left: 20px;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 7px;
 }
 #content h3, h4, h5, h6, h7 {
   font-size: 1.1em;
   margin-top: 15px;
   margin-bottom: 10px;
   margin-left: 40px;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 4px;
 }
 
 /* Bold: use sans serif */
@@ -315,7 +319,7 @@ hr {
   font-weight: 400;
   font-size: 0.9em;
 	padding: 6px;
-	background: #DBD7CC; 
+	background: #E5E5E5; 
 	border-bottom: 1px solid #fff;
 	color: #5F584E;
 	border-top: 1px solid transparent;
@@ -325,6 +329,8 @@ hr {
 #content td a {
   color: #5F584E;
   border-bottom: 1px dashed #5F584E;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
 }
 
 /*
@@ -443,6 +449,7 @@ hr {
     margin-right: auto;
     width: 807px;
   margin-bottom: 30px;
+  margin-top: 20px;
   /* by default, let text be serif */
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
