@@ -185,10 +185,11 @@ hr {
 
 /* Header spacing */
 #content h1 {
-  font-size: 1.8em;
+  font-size: 2em;
   margin-top: 30px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   margin-left: 0px;
+  font-variant: small-caps;
 }
 #content h2 {
   font-size: 1.4em;
