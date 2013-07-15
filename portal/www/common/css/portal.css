@@ -544,90 +544,126 @@ hr {
   padding-right: 15px;
 }
 
-.landingpage {
- width:10in;
- margin-left: auto;
- margin-right: auto;
+/*
+  WELCOME PAGE CONTAINERS
+*/
+
+#welcome {
+  border-top: 10px solid #5F584E;
+  background-color: #FFFFFF;
+  
+  border-bottom: 5px solid #E17000;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  padding: 30px;
+  width: 840px;
+  overflow: auto;
+  box-shadow: 0px 0px 10px #5F584E;  
 }
 
-div#geni{
- display: block;
- float: left;
- margin-left: .4in; 
- margin-right: .1in;
- margin-top: .2in;
+#welcome-left {
+  float: left;
+  width: 220px;
 }
 
-div#geni img{
- width: 1in;
+#welcome-right {
+  float: right;
+  width: 620px;
+  overflow: auto;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  /* by default, let everything have a line
+     height of 1.4em unless otherwise specified */
+  line-height: 1.4em;
+  color: #5F584E;
 }
 
-div#welcome{
- display: block;
- width: 7in;
- float: left;
- border-top: solid 10px lightgray;
- margin: 0;
- padding: 0;
- padding-top: .25in;
+#usegeni {
+    width: 1.5in;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
-div#loginHelpdiv{
- display: block;
- width: 1in;
- float: left;
- margin-top: 0.25in;
+#welcome-right h1, h2 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  text-shadow: 0.1em 0.1em 0.2em #dddddd;
+  color: #E17000; /* official GENI orange */
 }
 
-
-div#landingcontent, div#content.landingpage {
- display: block;
+#welcome-right h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  font-variant: small-caps;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 15px;
+}
+#welcome-right h2 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-right: 20px;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 7px;
 }
 
-div#blank {
- display: block;
- width: 1.5in;
- float: left;
+#welcome-right b {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
 }
 
-div#main{
- display: block;
- width: 4.5in;
- float:left; 
+#welcome-right p {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #5F584E;
 }
 
-div#map{
- display: block;
- width: 3in;
- float:left; 
- top: 1in;
- padding-top: 2em;
- font-size:80%; 
- text-align:center; 
- margin:5px 5px 5px 25px;
+#welcome-right a {
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
 }
 
-div#map img {
- width: 3in;
- height: 2in;
+#welcome-right a:hover {
+  background-color: #E5E5E5;
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
 }
 
-div#map .legend {
- text-align: left;
- color: gray;
+#welcome-right-top {
+  float: left;
+  width: 620px;
+  padding-bottom: 20px;
 }
 
-/* #loginDiv { */
-/*  display: block; */
-/*  clear: both; */
-/*  position: relative; */
-/*  height: 1.5in; */
-/* } */
-/* #loginDiv > #loginButtons { */
-/*  text-align: center; */
-/*  padding-left: 0.5in; */
-/*  padding-top: 0.5in; */
-/* } */
+#welcome-right-left {
+  float: left;
+  width: 275px;
+}
+
+#welcome-right-right {
+  float: right;
+  width: 345px;
+  background: #E5E5E5;
+  border-top: 5px solid #E17000;
+}
+
+#welcome-right-right p {
+  margin-left: 10px;
+  margin-right: 10px;
+  text-align: center;
+}
+
+/*
+  OTHER
+*/
+
 
 #incommon-logo {
 width: .75in;

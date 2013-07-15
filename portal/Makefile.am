@@ -227,7 +227,8 @@ dist_svcwebmap_DATA =  \
   www/common/map/uky.emulab.net.cm.rspec \
   www/common/map/geni.kettering.edu.cm.rspec \
   www/common/map/utah.geniracks.net.cm.rspec \
-  www/common/map/current.json
+  www/common/map/current.json \
+  www/common/map/map-small.html
 
 dist_svcwebtop_DATA = \
 	www/index.php \
