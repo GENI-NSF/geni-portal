@@ -297,7 +297,7 @@ $(document).ready(build_agg_table_on_slicepg());
 </script>
 -->
 <?php 
-print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
+print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
 
 if (isset($slice_expired) && $slice_expired == 't' ) {
    print "<p class='warn'>This slice is expired!</p>\n";

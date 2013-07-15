@@ -78,12 +78,11 @@ if (! is_null($slice_members) && count($slice_members) > 0) {
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
-print "<h1>GENI Project: " . $project_name . ", Member: " . $member_name . "</h1>\n";
+print "<h1>GENI Project: " . "<i>" . $project_name . "</i>" . ", Member: " . "<i>" . $member_name . "</i>" . "</h1>\n";
 
 // error_log("PID = " . print_r($project_id, true));
 
 // FIXME: Retrieve info from DB
-print "<br/>\n";
 
 /*
 print "<form style=\"color: grey\" method=\"POST\" action=\"do-edit-project-member.php\">\n";
@@ -111,7 +110,7 @@ foreach ($rolevals as $role) {
 print "</select>\n<br/>\n";
 */
 
-print("<b>Project Roles</b>");
+print("<h2>Project Roles</h2>");
 print("\n<table>\n");
 print ("<tr><th>Project</th><th>Role</th></tr>");
 /*
@@ -134,8 +133,7 @@ foreach($project_members as $project_member) {
 }
 print("</table>\n\n");
 
-print("<br>\n");
-print("<b>Slice Roles</b>");
+print("<h2>Slice Roles</h2>");
 if (! is_null($slice_members) && count($slice_members) > 0) {
   print("\n<table>\n");
   print ("<tr><th>Slice</th><th>Role</th></tr>");
@@ -178,7 +176,7 @@ if (! is_null($slice_members) && count($slice_members) > 0) {
   }
   print("</table>\n\n");
 } else {
-  print "<br/>\n<i>Not in any slices.</i><br/>\n";
+  print "<p>Not in any slices.</p>\n";
 }
 /*
 

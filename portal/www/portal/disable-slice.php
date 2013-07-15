@@ -40,7 +40,7 @@ include("tool-lookupids.php");
 show_header('GENI Portal: slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 
-print "<h1>DISABLE GENI Slice: " . $slice_name . "</h1>\n";
+print "<h1>DISABLE GENI Slice: " . "<i>" . $slice_name . "</i>" .  "</h1>\n";
 // FIXME: What does happen when you delete a slice?
 print "<b>Warning</b>: This operation is not reversible. Running slices will not be removed, but you will no longer be able to renew slices or use the GENI portal to modify them.<br/><br/>\n";
 $edit_url = 'do-disable-slice.php?slice_id='.$slice_id;

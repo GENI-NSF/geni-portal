@@ -78,7 +78,7 @@ if (isset($slice)) {
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 
-print "<h1>Edit GENI Slice: " . $slice_name ."</h1>\n";
+print "<h1>Edit GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
 print "<table border=\"1\">\n";
 // print "<tr><th>Name</th><th>Value</th></tr>\n";
 print "<tr><td><b>Slice Name <a href='#warn'>*</a> </b></td><td>$slice_name</td></tr>\n";

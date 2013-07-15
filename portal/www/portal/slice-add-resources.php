@@ -135,7 +135,7 @@ function validateSubmit()
 </script>
 
 <?php
-print "<h1>Add resources to GENI Slice: " . $slice_name . "</h1>\n";
+print "<h1>Add resources to GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
 
 // Put up a warning to upload SSH keys, if not done yet.
 if (count($keys) == 0) {
