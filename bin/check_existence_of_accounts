@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+# -*- mode:python -*-
+
+#----------------------------------------------------------------------
+# Copyright (c) 2013 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the "Work") to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+#----------------------------------------------------------------------
+
+import csv
+
+
+class Person( object ):
+      def __init__( self, first_name=None, last_name=None, company=None, email=None ):
+      	  self.first_name = first_name	 
+	  self.last_name = last_name
+	  self.company = company
+	  self.email = email
+      def __str__( self ):
+      	  return "%s %s (%s) from %s" % (self.first_name, self.last_name, self.email, self.company)
+# class Account( object ):
+#       def __init__( self, first_name=None, last_name=None, email=None ):
+#       	  self.first_name = first_name	 
+# 	  self.last_name = last_name
+# 	  self.email = email
+#       def __str__( self ):
+#       	  return "%s %s (%s)" % (self.first_name, self.last_name, self.email)
+
+check_list_file = '../../sandbox/tutorial_account_check/tutorial_sergyar.csv'
+accounts_list_file = '../../sandbox/tutorial_account_check/accounts_sergyar.csv'
+output_list_file = '../../sandbox/tutorial_account_check/output_sergyar.csv'
+
+check_fieldnames = ['first_name', 'last_name', 'company', 'email']
+accounts_fieldnames = ['contact_urn','contact_email','contact_lastname','contact_givenname','owner_id']
+output_fieldnames = ['email', 'name']
+
+check_list = open(check_list_file)
+check = csv.DictReader( check_list, fieldnames=check_fieldnames)
+accounts_list = open(accounts_list_file)
+accounts = csv.DictReader( accounts_list, fieldnames=accounts_fieldnames)
+
+print "="*80
+print " Names to check "
+check_set = set()
+for row in check:
+#    check_set |= {Person( row['first_name'].strip(), row['last_name'].strip(), row['company'].strip(), row['email'].strip() )}
+    check_set |= {Person( row['first_name'].strip(), row['last_name'].strip(), email=row['email'].strip() )}
+    
+for person in check_set:
+    print person
+
+print "="*80
+print " Accounts "
+accounts_set = set()
+accounts_by_email = {}
+accounts_by_lastname = {}
+for row in accounts:
+    first_name = row['contact_givenname'].strip()
+    last_name = row['contact_lastname'].strip() 
+    email = email=row['contact_email'].strip()
+    account_obj = Person( first_name, last_name, email=email)
+    accounts_set |= { account_obj }
+    accounts_by_email[email] = account_obj
+    accounts_by_lastname[last_name] = account_obj
+for account in accounts_set:
+    print account
+
+print "="*80
+print " Output "
+output_set = set()
+output_options = {}
+for check_user in check_set:
+    if accounts_by_email.has_key(check_user.email):
+       account_obj = accounts_by_email[check_user.email]
+       #       print account_obj
+       output_set |= {account_obj}
+    elif accounts_by_lastname.has_key(check_user.last_name):
+       account_obj = accounts_by_lastname[check_user.last_name]
+       if account_obj.first_name == check_user.first_name:       
+       	  output_set |= {account_obj}
+       else:
+          if not output_options.has_key(check_user.email):
+	     output_options[ check_user.email ] = set()
+	  output_options[ check_user.email ] |= {account_obj}	  
+          
+for output in output_set:
+    print output
+
+print "="*80
+print " Output Options "
+for key, output2 in output_options.items():
+    for person in output2:
+     	print "# Possible values for "+key+":"
+        print person
+
+
+check_list.close()
+accounts_list.close()
