@@ -225,7 +225,8 @@ dist_svcwebmap_DATA =  \
   www/common/map/exogeni.net.rcivmsite.am.rspec \
   www/common/map/uky.emulab.net.cm.rspec \
   www/common/map/geni.kettering.edu.cm.rspec \
-  www/common/map/utah.geniracks.net.cm.rspec 
+  www/common/map/utah.geniracks.net.cm.rspec \
+  www/common/map/current.json
 
 dist_svcwebtop_DATA = \
 	www/index.php \

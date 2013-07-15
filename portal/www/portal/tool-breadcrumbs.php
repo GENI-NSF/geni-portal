@@ -215,7 +215,7 @@ function insertName($name)
   global $project_name;
   global $slice_name;
   global $member_name;
-  return str_replace(array("%project_name", "%slice_name", "%member_name"), array($project_name, $slice_name, $member_name), $name);
+  return str_replace(array("%project_name", "%slice_name", "%member_name"), array("<i>".$project_name."</i>", "<i>".$slice_name."</i>", "<i>".$member_name."</i>"), $name);
 }
 
 // Complete the crumb addition for this bit
