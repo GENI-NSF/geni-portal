@@ -46,12 +46,37 @@ END;
 }
 ?>
 
-<h1>About Me</h1>
+<h1>Profile</h1>
+
+<?php include "tabs.js"; ?>
+
+  <div id='tablist'>
+		<ul class='tabs'>
+			<li><a href='#ssh'>SSH Keys</a></li>
+			<li><a href='#accountdetails'>Account Details</a></li>
+			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
+			<li><a href='#accountsummary'>Account Summary</a></li>
+			<li><a href='#rspecs'>RSpecs</a></li>
+			<li><a href='#omni'>Configure <code>omni</code></a></li>
+			<li style="border-right: none"><a href='#other'>Other</a></li>
+		</ul>
+  </div>
+		
+<?php
+
+  // BEGIN the tabContent class
+  // this makes a fixed height box with scrolling for overflow
+  echo "<div class='tabContent'>";
+
+?>
+
 <?php
 /*----------------------------------------------------------------------
  * SSH key management
  *----------------------------------------------------------------------
  */
+// BEGIN SSH tab
+echo "<div id='ssh'>";
 print "<h2>SSH Keys</h2>\n";
 $keys = $user->sshKeys();
 
@@ -117,6 +142,11 @@ else
     print "<p><button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button></p>\n";
   }
 
+// END SSH tab
+echo "</div>";
+
+// BEGIN account details tab
+echo "<div id='accountdetails'>";
 $disable_account_details = "";
 $disable_authorize_tools = "";
 if($in_lockdown_mode) {
@@ -126,6 +156,12 @@ if($in_lockdown_mode) {
 print "<h2>Edit Account Details</h2>";
 print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
 print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
+
+// END account details tab
+echo "</div>";
+
+// BEGIN outstand requests tab
+echo "<div id='outstandingrequests'>";
 print "<h2>Outstanding Requests</h2>";
 
 // Show outstanding requests BY this user
@@ -184,6 +220,11 @@ if (isset($reqs) && count($reqs) > 0) {
   print "<p><i>No outstanding requests to join projects or slices or change your profile.</i></p>\n";
 }
 
+// END outstanding requests tab
+echo "</div>";
+
+// BEGIN account summary tab
+echo "<div id='accountsummary'>";
 print "<h2>Account Summary</h2>\n";
 // Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
 // Put this in a nice table
@@ -199,8 +240,13 @@ print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
 // FIXME: Permissions
 print "</table>\n";
 
-print "<h1>My Stuff</h1>\n";
+// END account summary tab
+echo "</div>";
 
+//print "<h1>My Stuff</h1>\n";
+
+// BEGIN rspecs tab
+echo "<div id='rspecs'>";
 /*----------------------------------------------------------------------
  * RSpecs
  *----------------------------------------------------------------------
@@ -212,13 +258,20 @@ if ($in_lockdown_mode) $disable_manage_rspecs = "disabled";
 
 print "<p><button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
   . "Manage Resource Specifications</button></p>\n";
+
+// END rspecs tab
+echo "</div>";
 ?>
+
 
 <?php
 /*----------------------------------------------------------------------
  * SSL key management
  *----------------------------------------------------------------------
  */
+
+// BEGIN omni tab
+echo "<div id='omni'>";
 
 // Does the user have an outside certificate?
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
@@ -258,6 +311,11 @@ to generate a configuration file for you:</p>
 <h3>Option 2: Manual <code>omni</code> configuration</h3>
 <p><a href='tool-omniconfig.php'>Download and customize a template <code>omni</code> configuration file</a>.</p>
 
+<?php
+// END omni tab
+echo "</div>";
+?>
+
 <!--
 <table>
 <tr><th>Tool</th><th>Description</th><th>Configuration File</th></tr>
@@ -274,6 +332,8 @@ to generate a configuration file for you:</p>
 </table>
 -->
 <?php
+// BEGIN other tab
+echo "<div id='other'>";
 /*----------------------------------------------------------------------
  * ABAC (if enabled)
  *----------------------------------------------------------------------
@@ -291,4 +351,10 @@ $irodsdisabled="disabled";
 if ($user->hasAttribute('enable_irods'))
   $irodsdisabled = "";
 print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
+// END other tab
+echo "</div>";
+
+  // END the tabContent class
+  echo "</div>";
+
 ?>
