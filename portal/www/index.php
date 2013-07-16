@@ -58,6 +58,7 @@ function show_last_message() {
   echo '<div id="welcome-left"><img src="/images/geni.png" alt="GENI"/></div>';
   echo '<div id="welcome-right">';
     echo '<div id="welcome-right-top">';
+    show_last_message();
   echo '<h1> Welcome to GENI </h1>';
   echo '<a href="http://www.geni.net">GENI</a> is a new, nationwide suite of infrastructure supporting ';
   echo '"at scale" research in networking, distributed systems, security, and novel applications. ';
@@ -67,7 +68,7 @@ function show_last_message() {
 
 
 
-show_last_message();
+
 
 ?>
 

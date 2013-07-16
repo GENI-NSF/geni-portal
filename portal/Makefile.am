@@ -20,6 +20,10 @@ svcwebimagesdir = /var/www/images
 svcwebcommondir = /var/www/common
 svcwebcssdir = /var/www/common/css
 svcwebmapdir = /var/www/common/map
+svcwebmapoldir = /var/www/common/map/OpenLayers-2.13
+svcwebmapolimgdir = /var/www/common/map/OpenLayers-2.13/img
+svcwebmapolthemedir = /var/www/common/map/OpenLayers-2.13/theme/default
+svcwebmapolthemeimgdir = /var/www/common/map/OpenLayers-2.13/theme/default/img
 svcwebtopdir = /var/www
 svcwebpolicydir = /var/www/policy
 
@@ -229,6 +233,81 @@ dist_svcwebmap_DATA =  \
   www/common/map/utah.geniracks.net.cm.rspec \
   www/common/map/current.json \
   www/common/map/map-small.html
+
+dist_svcwebmapol_DATA =  \
+  www/common/map/OpenLayers-2.13/OpenLayers.js \
+  www/common/map/OpenLayers-2.13/readme.md
+
+dist_svcwebmapolimg_DATA =  \
+  www/common/map/OpenLayers-2.13/img/blank.gif \
+  www/common/map/OpenLayers-2.13/img/cloud-popup-relative.png \
+  www/common/map/OpenLayers-2.13/img/drag-rectangle-off.png \
+  www/common/map/OpenLayers-2.13/img/drag-rectangle-on.png \
+  www/common/map/OpenLayers-2.13/img/east-mini.png \
+  www/common/map/OpenLayers-2.13/img/layer-switcher-maximize.png \
+  www/common/map/OpenLayers-2.13/img/layer-switcher-minimize.png \
+  www/common/map/OpenLayers-2.13/img/marker-blue.png \
+  www/common/map/OpenLayers-2.13/img/marker-gold.png \
+  www/common/map/OpenLayers-2.13/img/marker-green.png \
+  www/common/map/OpenLayers-2.13/img/marker.png \
+  www/common/map/OpenLayers-2.13/img/measuring-stick-off.png \
+  www/common/map/OpenLayers-2.13/img/measuring-stick-on.png \
+  www/common/map/OpenLayers-2.13/img/north-mini.png \
+  www/common/map/OpenLayers-2.13/img/panning-hand-off.png \
+  www/common/map/OpenLayers-2.13/img/panning-hand-on.png \
+  www/common/map/OpenLayers-2.13/img/slider.png \
+  www/common/map/OpenLayers-2.13/img/south-mini.png \
+  www/common/map/OpenLayers-2.13/img/west-mini.png \
+  www/common/map/OpenLayers-2.13/img/zoombar.png \
+  www/common/map/OpenLayers-2.13/img/zoom-minus-mini.png \
+  www/common/map/OpenLayers-2.13/img/zoom-plus-mini.png \
+  www/common/map/OpenLayers-2.13/img/zoom-world-mini.png
+  
+dist_svcwebmapoltheme_DATA =  \
+  www/common/map/OpenLayers-2.13/theme/default/google.css \
+  www/common/map/OpenLayers-2.13/theme/default/google.tidy.css \
+  www/common/map/OpenLayers-2.13/theme/default/ie6-style.css \
+  www/common/map/OpenLayers-2.13/theme/default/ie6-style.tidy.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.mobile.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.mobile.tidy.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.tidy.css
+  
+dist_svcwebmapolthemeimg_DATA =  \
+  www/common/map/OpenLayers-2.13/theme/default/img/add_point_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/add_point_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/blank.gif \
+  www/common/map/OpenLayers-2.13/theme/default/img/close.gif \
+  www/common/map/OpenLayers-2.13/theme/default/img/drag-rectangle-off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/drag-rectangle-on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_line_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_line_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_point_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_point_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_polygon_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_polygon_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/editing_tool_bar.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/move_feature_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/move_feature_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/navigation_history.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/overview_replacement.gif \
+  www/common/map/OpenLayers-2.13/theme/default/img/panning-hand-off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/panning-hand-on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan-panel-NOALPHA.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan-panel.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/remove_point_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/remove_point_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/ruler.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/save_features_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/save_features_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_next_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_next_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_previous_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_previous_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel-NOALPHA.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel.png
 
 dist_svcwebtop_DATA = \
 	www/index.php \
