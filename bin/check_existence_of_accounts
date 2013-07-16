@@ -72,7 +72,7 @@ print " Names to check "
 check_set = set()
 for row in check:
 #    check_set |= {Person( row['first_name'].strip(), row['last_name'].strip(), row['company'].strip(), row['email'].strip() )}
-    check_set |= {Person( row['first_name'].strip(), row['last_name'].strip(), email=row['email'].strip() )}
+    check_set |= {Person( row['first_name'].strip().lower(), row['last_name'].strip().lower(), email=row['email'].strip().lower() )}
     
 for person in check_set:
     print person
@@ -84,15 +84,15 @@ accounts_by_email = {}
 accounts_by_lastname = {}
 check_by_email = {}
 for row in accounts:
-    first_name = row['contact_givenname'].strip()
-    last_name = row['contact_lastname'].strip() 
-    email = email=row['contact_email'].strip()
+    first_name = row['contact_givenname'].strip().lower()
+    last_name = row['contact_lastname'].strip().lower() 
+    email = email=row['contact_email'].strip().lower()
     account_obj = Person( first_name, last_name, email=email)
     accounts_set |= { account_obj }
     accounts_by_email[email] = account_obj
     accounts_by_lastname[last_name] = account_obj
-for account in accounts_set:
-    print account
+#for account in accounts_set:
+#    print account
 
 print "="*80
 print " Output "
@@ -114,7 +114,8 @@ for check_user in check_set:
 	     output_options[ check_user.email ] = set()
 	  output_options[ check_user.email ] |= {account_obj}
     else:
-	output_none.append(check_user.email)           
+	output_none.append(check_user.email)    
+	print check_user.email       
 for output in output_set:
     print output
 
