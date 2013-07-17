@@ -16,6 +16,7 @@ class Properties {
   var $resources;
   var $am;
   var $am_id;
+  var $type;
 }
 
 class Geometry {
@@ -85,8 +86,24 @@ foreach($files as $file) {
         }
       }
       
+      /* determine what type of resource it is
+          switch: anything with 'procurve', 'cisco', 'switch' in URN
+      */
+      if(strpos((string)$type_value->attributes()->component_id, 'pc') !== false
+        || strpos((string)$type_value->attributes()->component_id, 'pg') !== false
+      ) {
+        $node->type = 'pc';
+      }
+      else if(strpos((string)$type_value->attributes()->component_id, 'procurve') !== false
+        || strpos((string)$type_value->attributes()->component_id, 'cisco') !== false
+      ) {
+        $node->type = 'switch';
+      }
+      else {
+        $node->type = 'unknown';
+      }
+      
       $node->am_id = (string)$type_value->attributes()->component_manager_id;
-      $node->type = $type;
       $node->name = (string)$type_value->attributes()->component_name;
       $node->id = (string)$type_value->attributes()->component_id;
       $node->latitude = (string)$type_value->location["latitude"];
@@ -127,6 +144,7 @@ foreach($resources_by_node as $resource) {
   $feature->properties->component_id = $resource->name;
   $feature->properties->am = $resource->am;
   $feature->properties->am_id = $resource->am_id;
+  $feature->properties->type = $resource->type;
   $feature->properties->resources = 1;
   $feature->geometry = new Geometry;
   $feature->geometry->type = "Point";
