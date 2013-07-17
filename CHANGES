@@ -4,7 +4,8 @@
 
 == 2.0 ==
   * Fix Slice/Project Membership functionality according to feedback (#496)
-  * enable VERIFYHOST in put_message (#660)
+  * Enable VERIFYHOST in put_message (#660)
+  * Add script to add an arbitrary attribute to a user (#701)
 
 == 1.9.5 ==
   * slice expiration shouldn't pick a date past project expiration (#614)
