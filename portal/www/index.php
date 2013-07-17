@@ -115,7 +115,7 @@ function show_last_message() {
 <div id="footer-right">
   Copyright &copy; 2013 BBN Technologies<br>
   All Rights Reserved - NSF Award CNS-0714770<br>
-  <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="https://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo" height="16" width="16"> National Science Foundation</a>
+  <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"> National Science Foundation</a>
 </div>
 </div>
 

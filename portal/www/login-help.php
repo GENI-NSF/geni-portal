@@ -131,11 +131,17 @@ GENI allows users to log in using their existing accounts via our partnership in
 </div>
 </div>
 </div>
-<div id="footer"  class="landingpage">
-  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the
-  <a href="http://www.nsf.gov/"><img
-  src="https://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo"
-  height="25" width="25"> National Science Foundation</a></i></small>
+<div id="footer">
+<div id="footer-left">
+  <!-- <a href="https://portal.geni.net">GENI Portal Home</a><br>
+  <a href="http://www.geni.net">GENI Home</a><br>
+  <a href="http://groups.geni.net/geni">GENI Wiki</a> -->
+</div>
+<div id="footer-right">
+  Copyright &copy; 2013 BBN Technologies<br>
+  All Rights Reserved - NSF Award CNS-0714770<br>
+  <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"> National Science Foundation</a>
+</div>
 </div>
 </body>
 </html>
