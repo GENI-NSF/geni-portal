@@ -45,7 +45,29 @@ class Person( object ):
       	  return "%s %s (%s)" % (self.first_name, self.last_name, self.email)
 
 def main():
-      parser = optparse.OptionParser()
+      usage = "%prog --check-file tutorial.csv \\\n" \
+          "\t\t --accounts-file accounts.csv " \
+          "--output-file output.csv\n\n" \
+          "Arguments:\n" \
+          "\t--check-file is a CSV of the accounts to check for.  Each line is of "\
+          "\t\t\tthe form: \n" \
+          "\t\t\temail, first name, last name\n" \
+          "\t--accounts-file is the output of running: \n" \
+          "\t\tsudo -u www-data /usr/local/bin/geni-ops-report -u portal -P /usr/sysadmin/etc/portal_password -g > accounts.csv\n" \
+          "\t--output-file contains three parts:\n" \
+          "\t\t* People who HAVE accounts reported in the bulk upload format: \n"\
+          "\t\t\temail, first_name last_name\n" \
+          "\t\t* People who DO NOT have accounts reported in the same format \n"\
+          "\t\t  as --check-file\n" \
+          "\t\t* People who MAY have accounts and possible matches: \n" \
+          "\t\t\t-People being looked up are listed in the same format \n"\
+          "\t\t\t as --check-file\n" \
+          "\t\t\t-Accounts which may be a match are listed in the bulk \n"\
+          "\t\t\t upload format\n" \
+          "\nThe idea is that a file containing people for whom their was no account can be"\
+          "\npassed back into the script and compared to an updated --accounts-file at a "\
+          "\nlater time."
+      parser = optparse.OptionParser( usage=usage )
       parser.add_option("-c", "--check-file",
                             help="File containing a list of people to check if they have accounts (in CSV)", metavar="FILE", default=check_list_file_default, dest='check_list_file')
       parser.add_option("-a", "--accounts-file",
