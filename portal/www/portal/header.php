@@ -30,6 +30,7 @@ require_once('pa_client.php');
 //require_once('starter-status-bar.php');
 require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
+require_once('settings.php');
 
 
 /*----------------------------------------------------------------------
@@ -170,6 +171,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $extra_js;
   global $in_maintenance_mode;
   global $in_lockdown_mode;
+  global $portal_enable_analytics;
 
   if ($load_user) {
     global $user;
@@ -197,6 +199,20 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+  
+  /* Google Analytics */
+  /* Use the following tracking IDs depending on which server this will be running on
+      portal1.gpolab.bbn.com: UA-42566976-1
+  */
+  if($portal_enable_analytics) {
+    echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+    echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+    echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+    echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+    echo "ga('create', 'UA-42566976-1', 'bbn.com');";
+    echo "ga('send', 'pageview');";
+    echo '</script>';
+  }
 
   /* Close the "head" */
   echo '</head>';
