@@ -73,11 +73,9 @@ def main():
 
       check_set = set() # the set of people who's accounts you are looking up
       for row in check:
-          check_set |= {Person( row['first_name'].strip().lower(), row['last_name'].strip().lower(), email=row['email'].strip().lower() )}
+          check_set.add(Person( row['first_name'].strip().lower(), row['last_name'].strip().lower(), email=row['email'].strip().lower() ))
 
 
-      #print "="*80
-      #print " Accounts "
       accounts_set = set() # the set of people who have accounts
       accounts_by_email = {} # dict keyed by email where value a member of the above set
       accounts_by_lastname = {} # dict keyed by lastname where value a member of the above set
@@ -86,11 +84,9 @@ def main():
           last_name = row['contact_lastname'].strip().lower() 
           email = email=row['contact_email'].strip().lower()
           account_obj = Person( first_name, last_name, email=email)
-          accounts_set |= { account_obj }
+          accounts_set.add( account_obj )
           accounts_by_email[email] = account_obj
           accounts_by_lastname[last_name] = account_obj
-      #for account in accounts_set:
-      #    print account
 
       output_set = set() # the set of people who we are looking up who HAVE accounts
       output_options = {} # the set of people we are looking up who MAY have accounts
@@ -101,17 +97,17 @@ def main():
           # People who HAVE accounts (verified by email)
           if accounts_by_email.has_key(check_user.email):
              account_obj = accounts_by_email[check_user.email]
-             output_set |= {account_obj}
+             output_set.add( account_obj )
           elif accounts_by_lastname.has_key(check_user.last_name):
              account_obj = accounts_by_lastname[check_user.last_name]
              if account_obj.first_name == check_user.first_name:       
                    # People who HAVE have accounts (last name and first name match)
-                   output_set |= {account_obj}
+                   output_set.add( account_obj )
              else:
                 if not output_options.has_key(check_user.email):
                    output_options[ check_user.email ] = set()
                 # People who MAY have accounts (last name matches)
-                output_options[ check_user.email ] |= {account_obj}
+                output_options[ check_user.email ].add( account_obj )
           else:
               # People who DO NOT have accounts (none of email, last name, first name matches)
               output_none.append(check_user.email)    
@@ -146,6 +142,12 @@ def main():
             print " Names to check "
             for person in check_set:
                   print person
+
+            #print "="*80
+            #print " Accounts "
+            #for account in accounts_set:
+            #    print account
+
             print "="*80
             print " Output "
             for output in output_set:
