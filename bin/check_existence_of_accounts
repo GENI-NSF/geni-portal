@@ -108,7 +108,11 @@ def main():
           account_obj = Person( first_name, last_name, email=email)
           accounts_set.add( account_obj )
           accounts_by_email[email] = account_obj
-          accounts_by_lastname[last_name] = account_obj
+#          accounts_by_lastname[last_name] = account_obj
+          if not accounts_by_lastname.has_key(last_name):
+                accounts_by_lastname[ last_name ] = set()
+          accounts_by_lastname[ last_name ].add( account_obj )
+
 
       output_set = set() # the set of people who we are looking up who HAVE accounts
       output_options = {} # the set of people we are looking up who MAY have accounts
@@ -121,15 +125,19 @@ def main():
              account_obj = accounts_by_email[check_user.email]
              output_set.add( account_obj )
           elif accounts_by_lastname.has_key(check_user.last_name):
-             account_obj = accounts_by_lastname[check_user.last_name]
-             if account_obj.first_name == check_user.first_name:       
-                   # People who HAVE have accounts (last name and first name match)
-                   output_set.add( account_obj )
-             else:
-                if not output_options.has_key(check_user.email):
-                   output_options[ check_user.email ] = set()
-                # People who MAY have accounts (last name matches)
-                output_options[ check_user.email ].add( account_obj )
+             account_obj_list = accounts_by_lastname[check_user.last_name]
+             for account_obj in account_obj_list:
+                   if account_obj.first_name == check_user.first_name:       
+                         # People who HAVE have accounts (last name and first name match)
+                         output_set.add( account_obj)
+                         if output_options.has_key(check_user.email):
+                               del output_options[ check_user.email ]
+                         break
+                   else:
+                      if not output_options.has_key(check_user.email):
+                         output_options[ check_user.email ] = set()
+                      # People who MAY have accounts (last name matches)
+                      output_options[ check_user.email ].add( account_obj )
           else:
               # People who DO NOT have accounts (none of email, last name, first name matches)
               output_none.append(check_user.email)    
@@ -176,11 +184,12 @@ def main():
                   print output
             print "="*80
             print " Output Options "
-
             for key, output2 in output_options.items():
-                  for person in output2:
+                  person = check_by_email[key]
+                  if len(output2)>0:
                         print "# Possible values for "+person.first_name+" "+person.last_name+" ("+key+"):"
-                        print person
+                  for person2 in output2:
+                        print person2
             print "# These people have no account:"
             for output3 in output_none:
                   person3 = check_by_email[output3]
