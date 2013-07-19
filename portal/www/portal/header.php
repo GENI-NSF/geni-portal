@@ -201,15 +201,19 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
   
   /* Google Analytics */
-  /* Use the following tracking IDs depending on which server this will be running on
-      portal1.gpolab.bbn.com: UA-42566976-1
-  */
   if($portal_enable_analytics) {
+    // FIXME: Allow some users (e.g. operators) to bypass tracking
     echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
     echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
     echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
     echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+    
+    /* Use the following tracking IDs depending on which server this will be running on
+        portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+        portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+    */
     echo "ga('create', 'UA-42566976-1', 'bbn.com');";
+    
     echo "ga('send', 'pageview');";
     echo '</script>';
   }

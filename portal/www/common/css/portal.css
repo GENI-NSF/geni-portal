@@ -19,7 +19,7 @@
   Fonts:
     Open Sans - header/footer text, headers
     PT Serif - body text
-    Open Sans Mono - monospaced text
+    Droid Sans Mono - monospaced text
 
 */
 
@@ -243,7 +243,7 @@ hr {
 
 /* Blocks of code */
 #content pre {
-  font-family: 'Open Sans Mono', monospace;
+  font-family: 'Droid Sans Mono', monospace;
   font-weight: 400;
   font-size: .9em;
   line-height: 1.3em;
@@ -264,7 +264,7 @@ hr {
 
 /* Inline code */
 #content code, tt {
-  font-family: 'Open Sans Mono', monospace;
+  font-family: 'Droid Sans Mono', monospace;
   font-weight: 400;
 }
 

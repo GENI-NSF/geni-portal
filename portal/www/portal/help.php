@@ -39,7 +39,7 @@ $hostname = $_SERVER['SERVER_NAME'];
 <ul>
 <li><a href="http://groups.geni.net/geni/wiki">GENI Wiki</a> -- GENI documentation</li>
 <li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Meta-Operations Center (GMOC)</a> -- Create and search trouble tickets.  Calendar of planned and unplanned outages.</li>
-<li><a href="glossary.html">GENI Glossary</a></li>
+<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary</a></li>
 <li><a href="https://
 <?php
 print "$hostname";
