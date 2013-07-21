@@ -123,13 +123,15 @@ def main():
           # People who HAVE accounts (verified by email)
           if accounts_by_email.has_key(check_user.email):
              account_obj = accounts_by_email[check_user.email]
-             output_set.add( account_obj )
+             print_obj = Person( check_user.first_name, check_user.last_name, account_obj.email )
+             output_set.add( print_obj )
           elif accounts_by_lastname.has_key(check_user.last_name):
              account_obj_list = accounts_by_lastname[check_user.last_name]
              for account_obj in account_obj_list:
                    if account_obj.first_name == check_user.first_name:       
                          # People who HAVE have accounts (last name and first name match)
-                         output_set.add( account_obj)
+                         print_obj = Person( check_user.first_name, check_user.last_name, account_obj.email )
+                         output_set.add( print_obj)
                          if output_options.has_key(check_user.email):
                                del output_options[ check_user.email ]
                          break
