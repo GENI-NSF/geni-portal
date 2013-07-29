@@ -118,7 +118,6 @@ dist_svcweb_DATA = \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \
 	www/portal/getversion.php \
-	www/portal/glossary.html \
 	www/portal/handle-project-request.php \
 	www/portal/header.php \
 	www/portal/help.php \
@@ -207,7 +206,8 @@ dist_svcwebimages_DATA = \
 	www/images/portal2.png \
 	www/images/staticmap.png \
 	www/images/header-home.jpg \
-	www/images/geni_globe.png
+	www/images/geni_globe.png \
+	www/images/geni_globe_small.png
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \

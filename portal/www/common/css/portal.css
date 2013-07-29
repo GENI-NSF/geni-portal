@@ -352,8 +352,7 @@ hr {
   font-family: 'Open Sans', sans-serif;
   font-weight: 700;
   color: #5F584E;
-  background-image: url("../../images/geni_globe.png");
-  background-size:30px auto;
+  background-image: url("../../images/geni_globe_small.png");
   background-repeat:no-repeat;
   padding-left: 40px;
   min-height: 30px;
@@ -534,10 +533,6 @@ hr {
   background-color: #5F584E;
   color: #ffffff;
   overflow: auto;
-  -moz-border-radius: 12px;
-  -webkit-border-radius: 12px;
-  border-radius: 12px; /* future proofing */
-  -khtml-border-radius: 12px; /* for old Konqueror browsers */
 }
 
 #footer a {
@@ -840,19 +835,44 @@ table .notapply {
 }
 
 .aggregate, .resources {
- padding: 8px;
+  padding: 8px;
+  margin-left: 20px;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  width: 757px;
+ 
 }
 .aggregate {
  background-color: SkyBlue;
+ margin-top: 15px;
 }
 
 .resources {
- margin-bottom: 1em;
+ margin-bottom: 15px;
  background-color: PowderBlue;
 }
 
 .xml, .msg {
  white-space: pre;
- font-family: monospace;
+  font-family: 'Droid Sans Mono', monospace;
+  font-weight: 400;
+  font-size: .9em;
+  line-height: 1.3em;
+ overflow: auto;
 }
 
+.xml table {
+  margin-left: 8px !important;
+  width: 701px !important;
+  font-size: .9em !important;
+  line-height: 1.3em !important;
+}
+
+.xml td {
+  font-family: 'Droid Sans Mono', monospace !important;
+  font-weight: 400 !important;
+}
+
+/* for IE browsers that want to put a border around linked images */
+img {
+  border-style: none;
+}
