@@ -83,7 +83,8 @@ hr {
 
 #metanav ul {
   padding: 5px;
-  background-color:rgba(229,229,229,0.75);
+  background-color:#E5E5E5;
+  /* background-color:rgba(229,229,229,0.75); */
   -moz-border-radius: 0 0 0 10px;
   -webkit-border-radius: 0 0 0 10px;
   border-radius: 0 0 0 10px; /* future proofing */

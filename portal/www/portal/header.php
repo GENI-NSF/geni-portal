@@ -31,6 +31,7 @@ require_once('pa_client.php');
 require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
+include_once('/etc/geni-ch/settings.php');
 
 
 /*----------------------------------------------------------------------
@@ -208,11 +209,16 @@ function show_header($title, $active_tab = '', $load_user=1)
     echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
     echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
     
-    /* Use the following tracking IDs depending on which server this will be running on
+    /* Get this from /etc/geni-ch/settings.php */
+    if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
+      /* Use the following tracking IDs depending on which server this will be running on
         portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
         portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
-    */
-    echo "ga('create', 'UA-42566976-1', 'bbn.com');";
+      */
+      $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+    }
+    
+    echo $portal_analytics_string;
     
     echo "ga('send', 'pageview');";
     echo '</script>';
