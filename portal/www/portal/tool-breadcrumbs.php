@@ -161,7 +161,7 @@ $names = array("home.php" => $TAB_HOME,
 	       "upload-project-members.php" => "Upload Project Members : %project_name",
 	       "accept-project-invite.php" => "Accept Project Invite : %project_name",
         "rspecupload.php" => "Upload Resource Specification",
-        "rspecs.php" => "Manage Resource Specifications",
+        "rspecs.php" => "Manage RSpecs",
         "omni-bundle.php" => "Omni Bundle",
 	       "irods.php" => "iRODS Account",
         "gemini.php" => "GENI Desktop");
