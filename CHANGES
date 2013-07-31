@@ -2,6 +2,20 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.0 ==
+  * Remove fake slice and project email addresses (#729)
+  * Create GENI resource map for monitor display (#734)
+  * Update the portal's CSS (#717)
+  * Add Google Analytics functionality (#718)
+  * Make button-like things be buttons (#175)
+  * Create interactive map of resources (#28)
+  * Fix Slice/Project Membership functionality according to feedback (#496)
+  * Enable VERIFYHOST in put_message (#660)
+  * Add script to add an arbitrary attribute to a user (#701)
+
+== 1.9.6 ==
+  * Add ExoGENI FIU and UH racks to service registry (#714)
+
 == 1.9.5 ==
   * slice expiration shouldn't pick a date past project expiration (#614)
   * Fix tracebacks in omni_php.py when creating a sliver fails (#649,#321)

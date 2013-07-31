@@ -61,7 +61,7 @@ function toggleDiv(id) {
    $("#"+id).toggle();
 }
 </script>
-<button type='button' onclick='toggleDiv("expired")'>Expired Slices</button>
+<p><button type='button' onclick='toggleDiv("expired")'>Expired Slices</button></p>
 <div id="expired" style="display: none;">
 <h2>Expired Slices</h2>
 <?php

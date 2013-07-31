@@ -215,7 +215,7 @@ function insertName($name)
   global $project_name;
   global $slice_name;
   global $member_name;
-  return str_replace(array("%project_name", "%slice_name", "%member_name"), array($project_name, $slice_name, $member_name), $name);
+  return str_replace(array("%project_name", "%slice_name", "%member_name"), array("<i>".$project_name."</i>", "<i>".$slice_name."</i>", "<i>".$member_name."</i>"), $name);
 }
 
 // Complete the crumb addition for this bit
@@ -247,9 +247,9 @@ if ($parent != '') {
     $thisScript = getHref($cur);
     /* } */
     // Crumb is link to script with right name
-    $crumb = getCrumbString($thisScript, $thisPair[0]) . " -> " . $crumb;
+    $crumb = getCrumbString($thisScript, $thisPair[0]) . " &rarr;  " . $crumb;
   } while ($cur != "home.php" && $cur != '');
 }
 
-print $crumb . "<br/>\n";
+print "<div id='breadcrumb'>" . $crumb . "</div>\n";
 

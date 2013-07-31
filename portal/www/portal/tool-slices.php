@@ -211,8 +211,8 @@ if (count($my_slice_objects) > 0) {
   print "</table>\n";
 } else {
   if (isset($project_id) && uuid_is_valid($project_id)) {
-    print "<i>You do not have access to any slices in this project.</i><br/>\n";
+    print "<p><i>You do not have access to any slices in this project.</i></p>\n";
   } else {
-    print "<i>You do not have access to any slices.</i><br/>\n";
+    print "<p><i>You do not have access to any slices.</i></p>\n";
   }
 }

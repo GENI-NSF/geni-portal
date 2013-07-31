@@ -56,7 +56,7 @@ if (isset($slice) && $slice != "None") {
 }
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
-print "<h1>Delete resources from GENI Slice: " . $slice_name . "</h1>\n";
+print "<h1>Delete resources from GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
 
 print "<p>Delete all reserved resources?</p>\n";
 print "<p>Otherwise click 'Cancel'.</p>\n";

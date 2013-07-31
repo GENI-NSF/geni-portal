@@ -106,11 +106,11 @@ if ($message) {
 }
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-print "<h2>Create New Slice</h2>\n";
-print "Create a new Slice. A GENI slice is a container for reserving and managing a set of GENI resources.<br/>\n";
+print "<h1>Create New Slice</h1>\n";
+print "<p>A GENI slice is a container for reserving and managing a set of GENI resources.</p>\n";
 print '<form method="GET" action="createslice">';
 print "\n";
-print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
+print "<input type='hidden' name='project_id' value='$project_id'/>";
 print "\n";
 print "<table>";
 print "<tr><th>Project name</th><td><b>$project_name</b></td></tr>\n";
@@ -122,10 +122,10 @@ print '<tr><th>Slice description</th>';
 print "\n";
 print "<td><input type='text' name='slice_description' value='$slice_description'/></td>";
 print "</tr></table>\n";
-print "<b>Note: Slice name is public</b><br/>\n";
-print '<input type="submit" value="Create slice"/>';
+print "<p><b>Note: Slice name is public</b></p>\n";
+print '<p><input type="submit" value="Create slice"/>';
 print "\n";
-print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/>\n";
+print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/></p>\n";
 print '</form>';
 print "\n";
 ?>

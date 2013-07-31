@@ -70,7 +70,6 @@ if (is_null($user)) {
 }
 ?>
 </div>
-<br/>
 <?php
 include("footer.php");
 ?>

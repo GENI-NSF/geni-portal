@@ -1,24 +1,19 @@
-<br/>
-<b>Upload an SSH public key</b><br/>
-<br/>
-Upload an SSH public key. This key will be provided to Aggregates when
+<p>This key will be provided to Aggregates when
 you create slivers. Some aggregates will install this key on reserved
 nodes, for use in logging in to your reserved resources.
-<br/><br/>
+</p>
 <form action="uploadsshkey.php" method="post" enctype="multipart/form-data">
-  <label for="file">SSH Public Key File:</label>
-  <input type="file" name="file" id="file" />
-  <br/>
-  <label for="file">Description (optional):</label>
-  <input type="text" name="description"/>
-  <br/>
-  <input type="submit" name="submit" value="Upload"/>
+  <p><label for="file">SSH Public Key File:</label>
+  <input type="file" name="file" id="file" /></p>
+  <p><label for="file">Description (optional):</label>
+  <input type="text" name="description"/></p>
+  <p><input type="submit" name="submit" value="Upload"/></p>
 </form>
-<br/>
-Note: An SSH public key can be found in your $HOME/.ssh directory on
-Unix-based systems. Public keys will usually have a .pub extension.
-<br/><br/>
+<p>Note: An SSH public key can be found in your <code>$HOME/.ssh</code> directory on
+Unix-based systems. Public keys will usually have a <code>.pub</code> extension.
+</p>
+<p>
 <b>Mac OS X Users</b>: in the file chooser dialog, press
 Command-Shift-. (period) to display hidden directories so that the
-.ssh directory is visible.
-<br/><br/>
+<code>.ssh</code> directory is visible.
+</p>

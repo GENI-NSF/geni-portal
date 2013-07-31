@@ -57,7 +57,7 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
-print "<h2>Invitation to Join Project: $project_name</h2>";
+print "<h2>Invitation to Join Project: <i>$project_name</i></h2>";
 
 // error_log("PID = $project_id invite = $invite_id");
 

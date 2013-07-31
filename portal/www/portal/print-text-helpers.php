@@ -193,8 +193,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       }
       echo "</tr>\n";
     }
-    echo "</table>\n";
-    print "\n";
+    echo "</table>";
   }
   
   $link_num = 1;

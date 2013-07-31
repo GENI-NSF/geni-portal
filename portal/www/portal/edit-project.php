@@ -51,7 +51,7 @@ if (! isset($project)) {
   $lead = $user->fetchMember($leadid);
   $leadname = $lead->prettyName();
   $leademail = $lead->email();
-  print "<h1>EDIT GENI Project: " . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</h1>\n";
+  print "<h1>Edit GENI Project: " . "<i>" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "</i>" . "</h1>\n";
 }
 
 class ProjectField
@@ -112,10 +112,6 @@ class DateField extends ProjectField
 
 $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
         "Project Name", ($isnew?true:false), ($isnew?true:false));
-if (! $isnew) {
-  $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL,
-          "Email", false, false);
-}
 $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE,
         "Purpose", true, false);
 $fields[] = new DateField(PA_PROJECT_TABLE_FIELDNAME::EXPIRATION,
@@ -137,12 +133,12 @@ $submit_label = $isnew ? "Create Project" : "Update";
 
 </table>
 <?php
-echo '<b>Note</b>: Project names must not contain whitespace. Use at most 32 alphanumeric characters or hyphen or underscore: "a-zA-Z0-9_-".</b><br/>';
-echo '<b>Note: Project names are public, global and permanent</b>; there can only ever be a single project with a given name, and that name is visible to all registered users.<br/>';
-echo '<b>Expiration</b>: The date when this project is closed, and slices will expire. Blank means no expiration.<br/>';
-print "<br/>\n";
+echo '<p><b>Note</b>: Project names must not contain whitespace. Use at most 32 alphanumeric characters or hyphen or underscore: "a-zA-Z0-9_-".</b></p>';
+echo '<p><b>Note: Project names are public, global and permanent</b>; there can only ever be a single project with a given name, and that name is visible to all registered users.</p>';
+echo '<p><b>Expiration</b>: The date when this project is closed, and slices will expire. Blank means no expiration.</p>';
+print "<p>\n";
 print "<input type=\"submit\" value=\"$submit_label\"/>\n";
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 ?>
 </form>
 <script>
@@ -166,7 +162,7 @@ if ($isnew) {
   /* print "<input type=\"textarea\" name=\"invites\" disabled=\"disabled\"/>\n"; */
   /* print "</p>\n"; */
 } else {
-  print "<h3>Project members</h3>\n";
+  print "<h2>Project members</h2>\n";
   print "<table>\n";
   $members = get_project_members($sa_url, $user, $project_id);
   print "<tr><th>Project Member</th><th>Roles</th><th>Send Message</th></tr>\n";
@@ -188,19 +184,19 @@ if ($isnew) {
   print "</table>\n";
 
   $edit_url = relative_url("edit-project-member.php?project_id=$project_id");
-  print "<button onClick=\"window.location='$edit_url'\">";
-  print "<b>Edit Membership</b></button><br/>\n";
+  print "<p><button onClick=\"window.location='$edit_url'\">";
+  print "<b>Edit Membership</b></button>\n";
 
   $inv_url= relative_url("invite-to-project.php?project_id=$project_id");
-  print "<button onClick=\"window.location='$inv_url'\">";
+  print " <button onClick=\"window.location='$inv_url'\">";
   print "<b>Invite New Project Members</b></button><br/>\n";
 }
-print "<br/>\n";
+print "</p>\n";
 
 if ($isnew) {
-  print "<b>Project Lead</b><br/>\n";
-  print "There is exactly one project lead for each project. Project leads are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.<br/><br/>\n";
-  print "You will be the project lead on your new project. The name of the project lead is public.<br/>\n";
+  print "<p><b>Project Lead</b></p>\n";
+  print "<p>There is exactly one project lead for each project. Project leads are ultimately responsible for all activity in all slices in their project, and may be contacted by GENI operations in the event of a problem.</p>\n";
+  print "<p>You will be the project lead on your new project. The name of the project lead is public.</p>\n";
   print "<input type=\"hidden\" name=\"newlead\" value=\"" . $user->account_id . "\"/>\n";
 } else {
 //   print "Project lead is: <b>$leadname</b><br/>\n";
