@@ -54,11 +54,12 @@ foreach ($all_rspecs as $rspec) {
 show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
+print("<h1>Manage Resource Specifications (RSpecs)</h1>\n");
 print("<h2>Manage My Resource Specifications</h2>\n");
-print "You can ";
+print "<p>You can ";
 print "<button onClick=\"window.location='rspecupload.php'\">"
     . "upload a new resource specification (RSpec)</button>\n";
-print " or edit your existing RSpecs.";
+print " or edit your existing RSpecs.</p>";
 
 /* Show the table of existing RSpecs. */
 rspec_table_header();
@@ -68,7 +69,7 @@ foreach ($my_rspecs as $rspec) {
 rspec_table_footer();
 
 print("<h2>View Public Resource Specifications</h2>\n");
-print "You can view or download existing public Resource Specifications (RSpecs).";
+print "<p>You can view or download existing public Resource Specifications (RSpecs).</p>";
 
 /* Show the table of public RSpecs. */
 rspec_table_header(True);

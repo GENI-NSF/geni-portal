@@ -97,8 +97,7 @@ if(isset($expired_projects) && count($expired_projects) > 0) {
   }
   print "</table>\n";
 } else {
-  print "<i> No expired projects.</i><br/>\n";
+  print "<p><i> No expired projects.</i></p>\n";
 }
 
-print "<br/>\n";
 
