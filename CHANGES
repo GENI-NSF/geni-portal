@@ -3,6 +3,10 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.0 ==
+  * Update the portal's CSS (#717)
+  * Add Google Analytics functionality (#718)
+  * Make button-like things be buttons (#175)
+  * Create interactive map of resources (#28)
   * Fix Slice/Project Membership functionality according to feedback (#496)
   * Enable VERIFYHOST in put_message (#660)
   * Add script to add an arbitrary attribute to a user (#701)
