@@ -20,6 +20,7 @@ svcwebimagesdir = /var/www/images
 svcwebcommondir = /var/www/common
 svcwebcssdir = /var/www/common/css
 svcwebmapdir = /var/www/common/map
+svcwebmapdisplaydir = /var/www/common/map/1080display
 svcwebmapoldir = /var/www/common/map/OpenLayers-2.13
 svcwebmapolimgdir = /var/www/common/map/OpenLayers-2.13/img
 svcwebmapolthemedir = /var/www/common/map/OpenLayers-2.13/theme/default
@@ -235,6 +236,10 @@ dist_svcwebmap_DATA =  \
   www/common/map/current.json \
   www/common/map/map-small.html
 
+dist_svcwebmapdisplay_DATA =  \
+  www/common/map/1080display/index.php \
+  www/common/map/1080display/map-big.html
+  
 dist_svcwebmapol_DATA =  \
   www/common/map/OpenLayers-2.13/OpenLayers.js \
   www/common/map/OpenLayers-2.13/readme.md
