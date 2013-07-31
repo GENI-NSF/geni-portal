@@ -112,10 +112,6 @@ class DateField extends ProjectField
 
 $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
         "Project Name", ($isnew?true:false), ($isnew?true:false));
-if (! $isnew) {
-  $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL,
-          "Email", false, false);
-}
 $fields[] = new ProjectField(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE,
         "Purpose", true, false);
 $fields[] = new DateField(PA_PROJECT_TABLE_FIELDNAME::EXPIRATION,
