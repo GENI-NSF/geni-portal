@@ -4,6 +4,8 @@
 
 == 2.0 ==
   * Fix copyright notice in map.php (#735)
+  * Add a script to check account existence (#700)
+  * Remove fake slice and project email addresses (#729)
   * Create GENI resource map for monitor display (#734)
   * Update the portal's CSS (#717)
   * Add Google Analytics functionality (#718)

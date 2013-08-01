@@ -184,7 +184,6 @@ if (isset($slice)) {
   $slice_expiration = dateUIFormat($slice_expiration_db);
   $slice_date_expiration = dateOnlyUIFormat($slice_expiration_db);
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
   $owner = $user->fetchMember($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
@@ -423,7 +422,6 @@ print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
 echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print ("<tr><td class='label'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
 print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 // ---

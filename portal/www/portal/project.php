@@ -61,7 +61,6 @@ function compare_members_by_role($mem1, $mem2)
 $project_id = "None";
 $project = null;
 $project_name = "None";
-$email = "";
 $creation = "";
 $purpose = "";
 $leademail = "";
@@ -77,7 +76,6 @@ if (array_key_exists("result", $_GET)) {
 
 include("tool-lookupids.php");
 if (! is_null($project) && $project != "None") {
-  $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $creation_db = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $creation = dateUIFormat($creation_db);
@@ -181,7 +179,6 @@ print "</td></tr>\n";
 print "<tr><td class='label'><b>Expiration</b></td><td>$expiration</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print "<tr><td class='label'><b>Project e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table>\n";
 
