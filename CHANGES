@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.0 ==
+  * Don't install ad RSpecs and map.php (#736)
   * Fix glossary to link to Trac wiki (#703)
   * Fix copyright notice in map.php (#735)
   * Add a script to check account existence (#700)
