@@ -67,11 +67,15 @@ function sign_csr($csr_file, $uuid, $email, $urn, $signer_cert_file, $signer_key
   $extdata = "[ $extname ]\n"
     . "subjectKeyIdentifier=hash\n"
     . "authorityKeyIdentifier=keyid:always,issuer:always\n"
-    . "basicConstraints = CA:false\n"
-    //    . "authorityInfoAccess = caIssuers;URI:https://ma.example.com/ma_controller.php\n"
-    . "subjectAltName=email:copy,URI:$urn,URI:urn:uuid:$uuid\n";
+    . "basicConstraints = CA:false\n";
+  if ($email) {
+    $extdata .= "subjectAltName=email:copy,URI:$urn,URI:urn:uuid:$uuid\n";
+    $subject = "/CN=$uuid/emailAddress=$email";
+  } else {
+    $extdata .= "subjectAltName=URI:$urn,URI:urn:uuid:$uuid\n";
+    $subject = "/CN=$uuid";
+  }
   $ext_file = writeDataToTempFile($extdata, $temp_prefix);
-  $subject = "/CN=$uuid/emailAddress=$email";
   $cmd_array = array('/usr/bin/openssl',
                      'ca',
                      // FIXME: this should be an MA-specific openssl conf file.

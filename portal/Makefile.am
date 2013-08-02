@@ -20,6 +20,7 @@ svcwebimagesdir = /var/www/images
 svcwebcommondir = /var/www/common
 svcwebcssdir = /var/www/common/css
 svcwebmapdir = /var/www/common/map
+svcwebmapdisplaydir = /var/www/common/map/1080display
 svcwebmapoldir = /var/www/common/map/OpenLayers-2.13
 svcwebmapolimgdir = /var/www/common/map/OpenLayers-2.13/img
 svcwebmapolthemedir = /var/www/common/map/OpenLayers-2.13/theme/default
@@ -135,8 +136,6 @@ dist_svcweb_DATA = \
 	www/portal/ma_controller_test.php \
 	www/portal/maintenance_redirect_page.php \
 	www/portal/map.html \
-	www/portal/map.json \
-	www/portal/map.php \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/pa_controller_test.php \
@@ -222,19 +221,13 @@ dist_svcwebcss_DATA =  \
 	www/common/css/portal.css
 
 dist_svcwebmap_DATA =  \
-  www/common/map/emulab.net.cm.rspec \
-  www/common/map/instageni.gpolab.bbn.com.cm.rspec \
-  www/common/map/exogeni.net.am.rspec \
-  www/common/map/instageni.northwestern.edu.cm.rspec \
-  www/common/map/exogeni.net.bbnvmsite.am.rspec \
-  www/common/map/lan.sdn.uky.edu.cm.rspec \
-  www/common/map/exogeni.net.rcivmsite.am.rspec \
-  www/common/map/uky.emulab.net.cm.rspec \
-  www/common/map/geni.kettering.edu.cm.rspec \
-  www/common/map/utah.geniracks.net.cm.rspec \
   www/common/map/current.json \
   www/common/map/map-small.html
 
+dist_svcwebmapdisplay_DATA =  \
+  www/common/map/1080display/index.php \
+  www/common/map/1080display/map-big.html
+  
 dist_svcwebmapol_DATA =  \
   www/common/map/OpenLayers-2.13/OpenLayers.js \
   www/common/map/OpenLayers-2.13/readme.md

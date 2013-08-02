@@ -3,6 +3,12 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.0 ==
+  * Don't install ad RSpecs and map.php (#736)
+  * Fix glossary to link to Trac wiki (#703)
+  * Fix copyright notice in map.php (#735)
+  * Add a script to check account existence (#700)
+  * Remove fake slice and project email addresses (#729)
+  * Create GENI resource map for monitor display (#734)
   * Update the portal's CSS (#717)
   * Add Google Analytics functionality (#718)
   * Make button-like things be buttons (#175)
