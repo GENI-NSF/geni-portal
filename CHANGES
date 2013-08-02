@@ -16,6 +16,7 @@
   * Fix Slice/Project Membership functionality according to feedback (#496)
   * Enable VERIFYHOST in put_message (#660)
   * Add script to add an arbitrary attribute to a user (#701)
+  * Change "Resource Specification" to RSpec on Profile and Add Resources pages (#707)
 
 == 1.9.6 ==
   * Add ExoGENI FIU and UH racks to service registry (#714)
