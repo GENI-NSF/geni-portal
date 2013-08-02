@@ -56,7 +56,7 @@ END;
 			<li><a href='#accountdetails'>Account Details</a></li>
 			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
 			<li><a href='#accountsummary'>Account Summary</a></li>
-			<li><a href='#rspecs'>RSpecs</a></li>
+			<li><a href='#rspecs'title="Resource Specifications">RSpecs</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
 			<li style="border-right: none"><a href='#other'>Other</a></li>
 		</ul>
@@ -251,13 +251,13 @@ echo "<div id='rspecs'>";
  * RSpecs
  *----------------------------------------------------------------------
  */
-print "<h2>Manage Resource Specifications</h2>\n";
+print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
 
 $disable_manage_rspecs = "";
 if ($in_lockdown_mode) $disable_manage_rspecs = "disabled";
 
 print "<p><button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
-  . "Manage Resource Specifications</button></p>\n";
+  . "Manage RSpecs</button></p>\n";
 
 // END rspecs tab
 echo "</div>";

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012 Raytheon BBN Technologiesc
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -33,11 +33,11 @@ require_once 'geni_syslog.php';
 
 function show_rspec_chooser($user) {
   $all_rmd = fetchRSpecMetaData($user);
-  print "<p><b>Choose Resources:</b> \n";
+  print "<p><b>Choose Resources:</b> \n" ;
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
-  echo '<option value="" title="Choose a Resource Specification" selected="selected">Choose a Resource Specification...</option>';
+  echo '<option value="" title="Choose RSpec" selected="selected">Choose RSpec...</option>';
   foreach ($all_rmd as $rmd) {
     $rid = $rmd['id'];
     $rname = $rmd['name'];
@@ -53,7 +53,7 @@ function show_rspec_chooser($user) {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
-  print "<br>or <a href=\"rspecupload.php\">upload your own Resource Specification (RSpec)</a>.";
+  print "<br>or <a href=\"rspecupload.php\">upload your own RSpec</a>.";
 //  print " or <button onClick=\"window.location='rspecupload.php'\">";
 //  print "upload your own RSpec</button>.";
   // RSpec entry area
@@ -133,14 +133,14 @@ function validateSubmit()
     alert("Please select an Aggregate.");
     return false;
   }
-  alert ("Please select a Resource Specification.");
+  alert ("Please select a Resource Specification (RSpec).");
   return false;
 }
 </script>
 
 <?php
 print "<h1>Add resources to GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
-
+print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
 // Put up a warning to upload SSH keys, if not done yet.
 if (count($keys) == 0) {
   // No ssh keys are present.
@@ -152,14 +152,15 @@ if (count($keys) == 0) {
   print "<br/>\n";
 }
 
+print "<p><button onClick=\"window.location='rspecs.php'\">"
+    . "View Available RSpecs</button></p>\n";
+
+
 print '<form id="f1" action="sliceresource.php" method="post">';
 show_rspec_chooser($user);
 show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
-
-  print "<p><button onClick=\"window.location='rspecs.php'\">"
-    . "View Available Resource Specifications</button></p>\n";
 
 print ("<p><button onClick=\"");
 print ("validateSubmit();\">"
