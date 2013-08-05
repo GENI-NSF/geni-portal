@@ -72,7 +72,7 @@ $slices_for_member = get_slices_for_member($sa_url, $user, $member_id, true, nul
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
-print "<h1>GENI Slice: " . $slice_name . ", Member: " . $member_name . "</h1>\n";
+print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . ", Member: " . "<i>" . $member_name . "</i>" . "</h1>\n";
 
 print("<b>Slice Roles</b>");
 print("\n<table>\n");

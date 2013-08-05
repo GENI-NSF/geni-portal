@@ -2566,7 +2566,15 @@ function create_slice($args, $message)
     }
     // END OF HACK
 
-    $slice_email = 'slice-' . $slice_name . '@example.com';
+    /*
+     * A note about slice email. We don't have it yet. In the absence
+     * of a slice email, stop making one up in the "example.com"
+     * domain. It's obviously fake, and is causing problems at FOAM.
+     * For now, set it to null. In the future, when we have the
+     * capability, make it real.
+     */
+    //$slice_email = 'slice-' . $slice_name . '@example.com';
+    $slice_email = null;
     $slice_cert = create_slice_certificate($project_name, $slice_name,
 					   $slice_email, $slice_id,
 					   $sa_slice_cert_life_days,

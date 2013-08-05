@@ -184,7 +184,6 @@ if (isset($slice)) {
   $slice_expiration = dateUIFormat($slice_expiration_db);
   $slice_date_expiration = dateOnlyUIFormat($slice_expiration_db);
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  $slice_email = $slice[SA_ARGUMENT::SLICE_EMAIL];
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
   $owner = $user->fetchMember($slice_owner_id);
   $slice_owner_name = $owner->prettyName();
@@ -297,7 +296,7 @@ $(document).ready(build_agg_table_on_slicepg());
 </script>
 -->
 <?php 
-print "<h1>GENI Slice: " . $slice_name . " </h1>\n";
+print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
 
 if (isset($slice_expired) && $slice_expired == 't' ) {
    print "<p class='warn'>This slice is expired!</p>\n";
@@ -398,7 +397,7 @@ print "</table>\n";
 /* print "</table>\n"; */
 
 
-print "<br/>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='glossary.html'>GENI Glossary</a>.<br/>";
+print "<p>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='glossary.html'>GENI Glossary</a>.</p>";
 
 // ----
 // Now show slice / sliver status
@@ -412,8 +411,6 @@ print "<h2>Slice Status</h2>\n";
   print "</div>\n";
 // --- End of Slice and Sliver Status table
 
-print "<br/>\n";
-
 // Slice Identifers table
 print "<table>\n";
 print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
@@ -425,7 +422,6 @@ print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
 echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print ("<tr><td class='label'><b>Slice e-mail</b></td><td><a href='mailto:$slice_email'>" . "$slice_email</a></td></tr>\n");
 print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 // ---
@@ -433,7 +429,7 @@ print "</table>\n";
 print "<h2>Slice members</h2>";
 ?>
 
-Slice members will be able to login to resources reserved <i>in the future</i> if
+<p>Slice members will be able to login to resources reserved <i>in the future</i> if</p>
 <ul>
  <li>the resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
  <li>the slice member has uploaded an ssh public key.</li>
@@ -467,7 +463,7 @@ $edit_members_disabled = "";
 if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id) || $in_lockdown_mode) {
   $edit_members_disabled = $disabled;
 }
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button>";
+echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button></p>";
 ?>
 
 
@@ -496,8 +492,6 @@ echo "<button $edit_members_disabled onClick=\"window.location='$edit_slice_memb
 ?>
 
 </table>
-<br />
-<br />
 
 <?php
 include("footer.php");

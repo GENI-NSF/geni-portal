@@ -19,6 +19,12 @@ svcwebforgedir = $(svcwebdir)/forge
 svcwebimagesdir = /var/www/images
 svcwebcommondir = /var/www/common
 svcwebcssdir = /var/www/common/css
+svcwebmapdir = /var/www/common/map
+svcwebmapdisplaydir = /var/www/common/map/1080display
+svcwebmapoldir = /var/www/common/map/OpenLayers-2.13
+svcwebmapolimgdir = /var/www/common/map/OpenLayers-2.13/img
+svcwebmapolthemedir = /var/www/common/map/OpenLayers-2.13/theme/default
+svcwebmapolthemeimgdir = /var/www/common/map/OpenLayers-2.13/theme/default/img
 svcwebtopdir = /var/www
 svcwebpolicydir = /var/www/policy
 
@@ -108,11 +114,11 @@ dist_svcweb_DATA = \
 	www/portal/flackportal-B.html \
 	www/portal/flackportal-C.html \
 	www/portal/footer.php \
+	www/portal/future.json \
 	www/portal/gemini.php \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \
 	www/portal/getversion.php \
-	www/portal/glossary.html \
 	www/portal/handle-project-request.php \
 	www/portal/header.php \
 	www/portal/help.php \
@@ -129,6 +135,7 @@ dist_svcweb_DATA = \
 	www/portal/logging_test.php \
 	www/portal/ma_controller_test.php \
 	www/portal/maintenance_redirect_page.php \
+	www/portal/map.html \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/pa_controller_test.php \
@@ -169,6 +176,7 @@ dist_svcweb_DATA = \
 	www/portal/starter-status-bar.php \
 	www/portal/status_constants.php \
 	www/portal/status_constants_import.php \
+	www/portal/tabs.js \
 	www/portal/tool-breadcrumbs.php \
 	www/portal/tool-expired-projects.php \
 	www/portal/tool-expired-slices.php \
@@ -195,18 +203,105 @@ dist_svcwebimages_DATA = \
 	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
-	www/images/staticmap.png
+	www/images/staticmap.png \
+	www/images/header-home.jpg \
+	www/images/geni_globe.png \
+	www/images/geni_globe_small.png
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
 	www/common/README-incommon-logo.txt \
 	www/common/dots.gif \
+	www/common/nsf1.gif \
 	www/common/logos.html \
 	www/common/topbar_gradient.png \
 	www/common/topbar_gradient2.png
 
 dist_svcwebcss_DATA =  \
 	www/common/css/portal.css
+
+dist_svcwebmap_DATA =  \
+  www/common/map/current.json \
+  www/common/map/map-small.html
+
+dist_svcwebmapdisplay_DATA =  \
+  www/common/map/1080display/index.php \
+  www/common/map/1080display/map-big.html
+  
+dist_svcwebmapol_DATA =  \
+  www/common/map/OpenLayers-2.13/OpenLayers.js \
+  www/common/map/OpenLayers-2.13/readme.md
+
+dist_svcwebmapolimg_DATA =  \
+  www/common/map/OpenLayers-2.13/img/blank.gif \
+  www/common/map/OpenLayers-2.13/img/cloud-popup-relative.png \
+  www/common/map/OpenLayers-2.13/img/drag-rectangle-off.png \
+  www/common/map/OpenLayers-2.13/img/drag-rectangle-on.png \
+  www/common/map/OpenLayers-2.13/img/east-mini.png \
+  www/common/map/OpenLayers-2.13/img/layer-switcher-maximize.png \
+  www/common/map/OpenLayers-2.13/img/layer-switcher-minimize.png \
+  www/common/map/OpenLayers-2.13/img/marker-blue.png \
+  www/common/map/OpenLayers-2.13/img/marker-gold.png \
+  www/common/map/OpenLayers-2.13/img/marker-green.png \
+  www/common/map/OpenLayers-2.13/img/marker.png \
+  www/common/map/OpenLayers-2.13/img/measuring-stick-off.png \
+  www/common/map/OpenLayers-2.13/img/measuring-stick-on.png \
+  www/common/map/OpenLayers-2.13/img/north-mini.png \
+  www/common/map/OpenLayers-2.13/img/panning-hand-off.png \
+  www/common/map/OpenLayers-2.13/img/panning-hand-on.png \
+  www/common/map/OpenLayers-2.13/img/slider.png \
+  www/common/map/OpenLayers-2.13/img/south-mini.png \
+  www/common/map/OpenLayers-2.13/img/west-mini.png \
+  www/common/map/OpenLayers-2.13/img/zoombar.png \
+  www/common/map/OpenLayers-2.13/img/zoom-minus-mini.png \
+  www/common/map/OpenLayers-2.13/img/zoom-plus-mini.png \
+  www/common/map/OpenLayers-2.13/img/zoom-world-mini.png
+  
+dist_svcwebmapoltheme_DATA =  \
+  www/common/map/OpenLayers-2.13/theme/default/google.css \
+  www/common/map/OpenLayers-2.13/theme/default/google.tidy.css \
+  www/common/map/OpenLayers-2.13/theme/default/ie6-style.css \
+  www/common/map/OpenLayers-2.13/theme/default/ie6-style.tidy.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.mobile.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.mobile.tidy.css \
+  www/common/map/OpenLayers-2.13/theme/default/style.tidy.css
+  
+dist_svcwebmapolthemeimg_DATA =  \
+  www/common/map/OpenLayers-2.13/theme/default/img/add_point_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/add_point_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/blank.gif \
+  www/common/map/OpenLayers-2.13/theme/default/img/close.gif \
+  www/common/map/OpenLayers-2.13/theme/default/img/drag-rectangle-off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/drag-rectangle-on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_line_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_line_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_point_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_point_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_polygon_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/draw_polygon_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/editing_tool_bar.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/move_feature_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/move_feature_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/navigation_history.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/overview_replacement.gif \
+  www/common/map/OpenLayers-2.13/theme/default/img/panning-hand-off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/panning-hand-on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan-panel-NOALPHA.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/pan-panel.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/remove_point_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/remove_point_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/ruler.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/save_features_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/save_features_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_next_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_next_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_previous_off.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/view_previous_on.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel-NOALPHA.png \
+  www/common/map/OpenLayers-2.13/theme/default/img/zoom-panel.png
 
 dist_svcwebtop_DATA = \
 	www/index.php \

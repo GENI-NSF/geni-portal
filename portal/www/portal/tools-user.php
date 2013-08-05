@@ -46,12 +46,37 @@ END;
 }
 ?>
 
-<h1>About Me</h1>
+<h1>Profile</h1>
+
+<?php include "tabs.js"; ?>
+
+  <div id='tablist'>
+		<ul class='tabs'>
+			<li><a href='#ssh'>SSH Keys</a></li>
+			<li><a href='#accountdetails'>Account Details</a></li>
+			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
+			<li><a href='#accountsummary'>Account Summary</a></li>
+			<li><a href='#rspecs'title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#omni'>Configure <code>omni</code></a></li>
+			<li style="border-right: none"><a href='#other'>Other</a></li>
+		</ul>
+  </div>
+		
+<?php
+
+  // BEGIN the tabContent class
+  // this makes a fixed height box with scrolling for overflow
+  echo "<div class='tabContent'>";
+
+?>
+
 <?php
 /*----------------------------------------------------------------------
  * SSH key management
  *----------------------------------------------------------------------
  */
+// BEGIN SSH tab
+echo "<div id='ssh'>";
 print "<h2>SSH Keys</h2>\n";
 $keys = $user->sshKeys();
 
@@ -61,11 +86,11 @@ if ($in_lockdown_mode) $disable_ssh_keys = "disabled";
 if (count($keys) == 0)
   {
     // No ssh keys are present.
-    print "No SSH keys have been uploaded. ";
-    print "SSH keys are required to log in to reserved compute resources.<br/><br/>\n";
-    print "You can <button $disable_ssh_keys onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>";
-    print "or <button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>, if you have one you want to use.<br/>\n";
-    print "If you're not sure what to do, choose 'Generate'.<br/>\n";
+    print "<p>No SSH keys have been uploaded. ";
+    print "SSH keys are required to log in to reserved compute resources.</p>\n";
+    print "<p>You can <button $disable_ssh_keys onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button> ";
+    print "or <button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>, if you have one you want to use.</p>\n";
+    print "<p>If you're not sure what to do, choose 'Generate'.</p>\n";
 
   }
 else
@@ -107,11 +132,21 @@ else
       . "</tr>\n";
     }
     print "</table>\n";
-    print "<i>Note</i>: You will need your SSH private key on your local machine. <br/>\nIf you generated your SSH keypair on this portal and have not already done so, be sure to Download your SSH key. <br/>\nAfter you download your key, be sure to set local permissions on that file appropriately. On Linux and Mac, do \"chmod 0600 <i>[path-to-SSH-private-key]</i>\". <br/>\nWhen you invoke SSH to log in to reserved resources, you will need to remember the path to that file. <br/>Your SSH command will be something like: \"ssh -i <i>path-to-SSH-key-you-downloaded</i> <i>[username]@[hostname]</i>\".<br/>\n";
-    print "<br/>\n";
-    print "<button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button>\n";
+    print "<p><b>Note</b>: You will need your SSH private key on your local machine. </p>\n<p>If you generated your SSH keypair on this portal and have not already done so, be sure to:</p>
+     <ol>
+     <li>Download your SSH key.</li>
+     <li>After you download your key, be sure to set local permissions on that file appropriately. On Linux and Mac, do <pre>chmod 0600 [path-to-SSH-private-key]</pre></li>
+     <li>When you invoke SSH to log in to reserved resources, you will need to remember the path to that file.</li>
+     <li>Your SSH command will be something like: <pre>ssh -i path-to-SSH-key-you-downloaded [username]@[hostname]</pre>\n";
+    print "</ol>\n";
+    print "<p><button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button></p>\n";
   }
 
+// END SSH tab
+echo "</div>";
+
+// BEGIN account details tab
+echo "<div id='accountdetails'>";
 $disable_account_details = "";
 $disable_authorize_tools = "";
 if($in_lockdown_mode) {
@@ -119,9 +154,14 @@ if($in_lockdown_mode) {
   $disable_authorize_tools = "disabled";
 }
 print "<h2>Edit Account Details</h2>";
-print "<button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).<br/>";
-print "<br/>";
-print "<button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.<br/>";
+print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
+print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
+
+// END account details tab
+echo "</div>";
+
+// BEGIN outstand requests tab
+echo "<div id='outstandingrequests'>";
 print "<h2>Outstanding Requests</h2>";
 
 // Show outstanding requests BY this user
@@ -177,9 +217,14 @@ if (isset($reqs) && count($reqs) > 0) {
   print "</table>\n";
   print "<br/>\n";
 } else {
-  print "<i>No outstanding requests to join projects or slices or change your profile.</i><br/>\n";
+  print "<p><i>No outstanding requests to join projects or slices or change your profile.</i></p>\n";
 }
 
+// END outstanding requests tab
+echo "</div>";
+
+// BEGIN account summary tab
+echo "<div id='accountsummary'>";
 print "<h2>Account Summary</h2>\n";
 // Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
 // Put this in a nice table
@@ -195,26 +240,38 @@ print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
 // FIXME: Permissions
 print "</table>\n";
 
-print "<h1>My Stuff</h1>\n";
+// END account summary tab
+echo "</div>";
 
+//print "<h1>My Stuff</h1>\n";
+
+// BEGIN rspecs tab
+echo "<div id='rspecs'>";
 /*----------------------------------------------------------------------
  * RSpecs
  *----------------------------------------------------------------------
  */
-print "<h2>Manage Resource Specifications</h2>\n";
+print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
 
 $disable_manage_rspecs = "";
 if ($in_lockdown_mode) $disable_manage_rspecs = "disabled";
 
-print "<button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
-  . "Manage Resource Specifications</button>\n";
+print "<p><button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
+  . "Manage RSpecs</button></p>\n";
+
+// END rspecs tab
+echo "</div>";
 ?>
+
 
 <?php
 /*----------------------------------------------------------------------
  * SSL key management
  *----------------------------------------------------------------------
  */
+
+// BEGIN omni tab
+echo "<div id='omni'>";
 
 // Does the user have an outside certificate?
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
@@ -224,35 +281,40 @@ $create_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1
 $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close=1";
 ?>
 
-<h2>Configure omni</h2>
-<a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>Omni</code></a> is a command line tool.
-It is intended for more advanced users. In order to use omni or other command line tools you will need to
+<h2>Configure <code>omni</code></h2>
+<p><a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>omni</code></a> is a command line tool.
+It is intended for more advanced users. In order to use <code>omni</code> or other command line tools you will need to
 <?php if ($has_certificate): ?>
 <a href="<?php print $download_url?>" target="_blank">download your SSL certificate</a>.
 <?php else: ?>
 <a href="<?php print $create_url?>" target="_blank">create an SSL certificate</a>.
 <?php endif; ?>
-<br/><br/>
+</p>
 
-<h3>Option 1: Automatic omni configuration</h3>
-Use <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure</a>
-to generate a configuration file for you:
+<h3>Option 1: Automatic <code>omni</code> configuration</h3>
+<p>Use <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a>
+to generate a configuration file for you:</p>
   <ol>
     <li>Make sure you are running <b>omni 2.3.1</b> or later. 
        <ul>
-         <li>To determine the version of an existing omni installation, run:
+         <li>To determine the version of an existing <code>omni</code> installation, run:
 	<pre>omni.py --version</pre>
 	 </li>
-         <li>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of omni.</li>
+         <li>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of <code>omni</code>.</li>
 
        </ul>
     </li>
-    <li>Download your <a href='omni-bundle.php'>customized configuration data</a></li>
-    <li>Follow the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'>omni-configure instructions</a></li>
+    <li>Download your <a href='omni-bundle.php'>customized configuration data</a>.</li>
+    <li>Follow the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code> instructions</a>.</li>
   </ol>
 
-<h3>Option 2: Manual omni configuration</h3>
-<a href='tool-omniconfig.php'>Download and customize a template omni configuration file</a>
+<h3>Option 2: Manual <code>omni</code> configuration</h3>
+<p><a href='tool-omniconfig.php'>Download and customize a template <code>omni</code> configuration file</a>.</p>
+
+<?php
+// END omni tab
+echo "</div>";
+?>
 
 <!--
 <table>
@@ -270,6 +332,8 @@ to generate a configuration file for you:
 </table>
 -->
 <?php
+// BEGIN other tab
+echo "<div id='other'>";
 /*----------------------------------------------------------------------
  * ABAC (if enabled)
  *----------------------------------------------------------------------
@@ -286,5 +350,11 @@ if ($portal_enable_abac)
 $irodsdisabled="disabled";
 if ($user->hasAttribute('enable_irods'))
   $irodsdisabled = "";
-print "<button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button><br/>\n";
+print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
+// END other tab
+echo "</div>";
+
+  // END the tabContent class
+  echo "</div>";
+
 ?>

@@ -62,7 +62,7 @@ if ($error != NULL || count($_POST) == 0) {
   // Display the form and exit
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
-  print("<h2>Upload SSH Public Key</h2>\n");
+  print("<h1>Upload SSH Public Key</h1>\n");
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";
@@ -76,7 +76,7 @@ if ($error != NULL || count($_POST) == 0) {
   // they already have 1+ public keys on file
   $keys = $user->sshKeys();
   if (count($keys) == 0) {
-    echo "If you don't have an SSH keypair or want to create a new SSH keypair, <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>.";
+    echo "<p>If you don't have an SSH keypair or want to create a new SSH keypair, <button onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button>.</p>";
   }
   
   include("footer.php");

@@ -97,7 +97,7 @@ foreach ($warnings as $warning) {
 }
 ?>
 
-Instructions:
+<h2>Instructions</h2>
 <ol>
 <?php
 if ($num_projects >= 1) {
@@ -107,14 +107,14 @@ if ($num_projects >= 1) {
 }
 ?>
 <li>Click "Download omni bundle"</li>
-<li>Using <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>omni 2.3.1 or later</a>, run "omni-configure.py [-z &lt;location of bundle&gt;]" ("-z" option default is ~/Downloads/omni-bundle.zip)</li>
+<li>Using <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>omni 2.3.1 or later</a>, run <code>omni-configure.py [-z &lt;location of bundle&gt;]</code> (<code>-z</code> option default is <code>~/Downloads/omni-bundle.zip</code>)</li>
 </ol>
 
 <form id="f1" action="downloadomnibundle.php" method="post">
 
 <?php
 if ($num_projects >= 1) {
-  echo 'Choose project as omni default:';
+  echo '<p>Choose project as omni default: ';
   echo '<select name="project">\n';
   foreach ($projects as $proj) {
     // show only projects that have not expired
@@ -125,13 +125,14 @@ if ($num_projects >= 1) {
       echo "<option value=\"$proj_name\" title=\"$proj_desc\">$proj_name</option>\n";
     }
   }
-  echo '</select>';
+  echo '</select></p>';
   // There are multiple projects. Put up a chooser for the default project.
 } else {
   // No projects, so no default project
 }
 ?>
 </form>
+<p>
 <button onClick="document.getElementById('f1').submit();"
 <?php if (is_null($cert)) { ?>
  disabled="disabled" title="You must generate a certificate before downloading the bundle."
@@ -140,7 +141,7 @@ if ($num_projects >= 1) {
   <b>Download omni bundle</b>
 </button>
 <button onClick="history.back(-1)">Cancel</button>
-<br/><br/>
+</p>
 
 <?php
 include("footer.php");
