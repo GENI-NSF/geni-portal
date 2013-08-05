@@ -118,7 +118,7 @@ $keys = $user->sshKeys();
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
-
+include("tool-showmessage.php");
 ?>
 <script>
 function validateSubmit()
