@@ -93,7 +93,7 @@ include("tool-showmessage.php");
 
 ?>
 
-<h1> Modify Account Page </h1>
+<h1> Modify Your Account </h1>
 <p>Request a modification to user supplied account properties. For
 example, use this page to request to be a Project Lead (get Project
 Creation permissions).</p>

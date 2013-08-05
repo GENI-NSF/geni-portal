@@ -216,42 +216,43 @@ mail($portal_admin_email, $subject,
 
 include("header.php");
 show_header('GENI Portal Home', $TAB_HOME);
+include("tool-breadcrumbs.php");
 ?>
 
-<h2>Your account modification request has been submitted.</h2>
+<h1> Modify Your Account </h1>
+<p><b>Your account modification request has been submitted.</b></p>
 <ul>
 <?php
-print "<li>Account ID: " . $user->account_id . "</li>\n";
-print "<li>Name: " . $user->prettyName() . "</li>\n";
-print "<li>Username: " . $user->username . "</li>\n";
+print "<li><b>Account ID:</b> " . $user->account_id . "</li>\n";
+print "<li><b>Name:</b> " . $user->prettyName() . "</li>\n";
+print "<li><b>Username:</b> " . $user->username . "</li>\n";
 if ($pi_request and ! $is_pi) {
-  print "<li>Requesting to be a Project Lead</li>\n";
+  print "<li><b>Requesting to be a Project Lead</b></li>\n";
 } else if (! $pi_request and $is_pi) {
-  print "<li>Requesting to NOT be a Project Lead</li>\n";
+  print "<li><b>Requesting to NOT be a Project Lead</b></li>\n";
 }
 if ($changed_str !== '') {
-  print "<li>Changes: $changed_str</li>\n";
+  print "<li><b>Changes:</b> $changed_str</li>\n";
 }
 if ($added_str !== '') {
-  print "<li>Additions: $added_str</li>\n";
+  print "<li><b>Additions:</b> $added_str</li>\n";
 }
 if ($removed_str !== '') {
-  print "<li>Removals: $removed_str</li>\n";
+  print "<li><b>Removals:</b> $removed_str</li>\n";
 }
-echo '</ul><br/>';
-echo 'Your change request is being processed by the Portal operators, and you will receive an email when your request has been handled.<br/>';
+echo '</ul>';
+echo '<p>Your change request is being processed by the Portal operators, and you will receive an email when your request has been handled.</p>';
 if ($pi_request and ! $is_pi) {
-  echo 'If and when you are made a Project Lead, your Home Page will show the "Create Project" button.<br/>';
+  echo '<p>If and when you are made a Project Lead, your Home Page will show the "Create Project" button.</p>';
 }
-echo '<br/>';
 ?>
 
-Go to the <a href=
+<p>Go to the <a href=
 <?php
 $url = relative_url("home.php");
 print $url
 ?>
->portal home page</a>.
+>portal home page</a>.</p>
 
 <?php
 include("footer.php");
