@@ -33,7 +33,7 @@ include("header.php");
 // Local functions
 function shib_input($shib_name, $pretty_name, $value)
 {
-  print $pretty_name . ": ";
+  print "<li><b>" . $pretty_name . ":</b> ";
   print "<input type=\"text\" name=\"$shib_name\"";
   if (array_key_exists($shib_name, $_SERVER)) {
       if (isset($value)) {
@@ -45,7 +45,7 @@ function shib_input($shib_name, $pretty_name, $value)
   } else {
      echo " value=\"$value\"";
   }
-  print "/><br/>\n";
+  print "/></li>\n";
 }
 
 // Only allow modifying fields that didn't come from Shib
@@ -101,14 +101,15 @@ Creation permissions).</p>
 use it only in an emergency, such as if a resource owned by you is severely misbehaving. </p>
 <p>If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.</p>
 <p><i>Note</i>: Based on GENI's current policy, only faculty and senior members of an organization
-may be project leads (e.g. students <i>may not</i> be project leads).</p><br/>
+may be project leads (e.g. students <i>may not</i> be project leads).</p>
 <form method="POST" action="do-modify.php">
 <?php
   //  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone');
   $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone',
-		       'reference' => 'Optional: Reference Contact (e.g. Advisor)',
-		       'reason' => 'Optional: Intended use of GENI, explanation of request, or other comments',
-		       'profile'=> 'Optional: URL of your profile page for more information (not GENI public)');
+		       'reference' => '<i>(Optional)</i> Reference Contact (e.g. Advisor)',
+		       'reason' => '<i>(Optional)</i> Intended use of GENI, explanation of request, or other comments',
+		       'profile'=> '<i>(Optional)</i> URL of your profile page for more information (not GENI public)');
+print "<ul>";
 foreach (array_keys($shib_fields) as $fieldkey) {
     $is_user = false;
     foreach ($attrs as $a) {
@@ -127,6 +128,7 @@ foreach (array_keys($shib_fields) as $fieldkey) {
       shib_input($a['name'], $a['name'], $a['value']);
     }
   }
+print "</ul>";
 ?>
 <p>
 <input type="checkbox" name="projectlead" value="projectlead"

@@ -89,7 +89,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
     print "You have been made a 'Project Lead', meaning you can create GENI Projects, 
     as well as create slices in projects and reserve resources.<br/><br/>";
     print "A project is a group of people and their research, led by a
-    single responsible individual - the project lead. See the <a href=\"glossary.html\">Glossary</a>.</p>\n";
+    single responsible individual - the project lead. See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>\n";
     print "<p class='warn'>";
     print "You are not a member of any projects.  You need to Create or Join a Project.";
     print "</p>";
@@ -104,7 +104,7 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
      meaning you must join a project created by someone else, 
      before you can create slices or use GENI resources.<br/><br/>";
     print "A project is a group of people and their research, led by a
-    single responsible individual - the project lead. See the <a href=\"glossary.html\">Glossary</a>.</p>\n";
+    single responsible individual - the project lead. See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>\n";
     print "<p class='warn'>";
     print "You are not a member of any projects. Please join an
        existing Project, ask someone to create a Project for you, or ask

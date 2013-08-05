@@ -397,7 +397,7 @@ print "</table>\n";
 /* print "</table>\n"; */
 
 
-print "<p>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='glossary.html'>GENI Glossary</a>.</p>";
+print "<p>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p>";
 
 // ----
 // Now show slice / sliver status
