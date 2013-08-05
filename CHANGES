@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.0 ==
+  * Remove obsolete settings file (#741)
   * Add Resources page should include tool-showmessage (#738)
   * Fix minor bugs in new portal CSS (#737)
   * Don't install ad RSpecs and map.php (#736)
@@ -18,7 +19,8 @@
   * Fix Slice/Project Membership functionality according to feedback (#496)
   * Enable VERIFYHOST in put_message (#660)
   * Add script to add an arbitrary attribute to a user (#701)
-  * Change "Resource Specification" to RSpec on Profile and Add Resources pages (#707)
+  * Change "Resource Specification" to RSpec on Profile and Add
+  Resources pages (#707)
 
 == 1.9.6 ==
   * Add ExoGENI FIU and UH racks to service registry (#714)
