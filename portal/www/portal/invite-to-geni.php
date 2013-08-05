@@ -95,14 +95,14 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
        "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
 
   // Put up a page saying we invited them.
-  print "<h2>Invite Someone to GENI</h2>\n";
-  print "<br/>\n";
-  print "<b>Sent</b> GENI invitation to:<br/>\n" . "$to.<br/><br/>\n";
+  print "<h1>Invite Someone to GENI</h1>\n";
+  print "<p>\n";
+  print "<b>Sent</b> GENI invitation to:<br/>\n" . "$to.</p>\n";
   if ($skips !== "") {
     print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
   }
   $lines = explode("\r\n", $message);
-  print "<b>Message</b>: <br/><pre>\n";
+  print "<p><b>Message</b>: </p><pre style='margin-left:80px;'>\n";
   foreach ($lines as $line) {
     print "$line\n";
   }

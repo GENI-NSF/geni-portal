@@ -529,7 +529,7 @@ else {
     
     // only show button for these two cases
     if(($projects_lead_count > 0) || ($projects_non_lead_count > 0)) {
-      echo "<button $disabled onClick=\"document.getElementById('f1').submit();\">Submit</button>";
+      echo "<p><button $disabled onClick=\"document.getElementById('f1').submit();\">Submit</button></p>";
     }
     
     // end form
