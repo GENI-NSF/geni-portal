@@ -140,7 +140,7 @@ foreach ($warnings22 as $warning) {
   echo $warning;
 }
 ?>
-<i>Note: The portal can only be used with omni 2.3.1 or newer.</i>
+<p><i>Note: The portal can only be used with omni 2.3.1 or newer.</i></p>
 
 <p>
 Download and use a template omni_config file for use with the
@@ -185,10 +185,10 @@ if ($num_projects > 1) {
   <li> When running omni:
     <ol>
       <li> Specify the path to the omni config file and the slice name or URN.  For example:
-        <ul><li><code>omni.py -c portal_omni_config sliverstatus &lt;slice name or URN&gt;</code></li></ul>
+        <pre>omni.py -c portal_omni_config sliverstatus &lt;slice name or URN&gt;</pre>
       </li>
       <li> Alternatively, you can specify a project with the <code>--project</code> option:
-        <ul><li><code>omni.py -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice name or URN&gt;</code></li></ul>
+        <pre>omni.py -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice name or URN&gt;</pre>
       </li>
       </ol>
   </li>
