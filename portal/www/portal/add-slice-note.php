@@ -59,8 +59,8 @@ if (array_key_exists("note", $_REQUEST)) {
     show_header('GENI Portal: Slices', '');
 
     include("tool-breadcrumbs.php");
-    print "<h2>Added Note on Slice $slice_name</h2>\n";
-    print "<br><table><tr><th>Slice</th><td>$slice_name</td></tr>\n";
+    print "<h1>Added Note on Slice <i>$slice_name</i></h1>\n";
+    print "<table><tr><th>Slice</th><td>$slice_name</td></tr>\n";
     print "<tr><th>Note</th><td>$note</td></tr></table>\n";
     include("footer.php");
     exit(0);
@@ -70,15 +70,15 @@ if (array_key_exists("note", $_REQUEST)) {
 require_once("header.php");
 show_header('GENI Portal: Slices', '');
 include("tool-breadcrumbs.php");
-print "<h2>Add Note on Slice $slice_name</h2>\n";
-print "Add a note about what you are doing in this slice.<br/>\n";
+print "<h1>Add Note on Slice <i>$slice_name</i></h1>\n";
+print "<p>Add a note about what you are doing in this slice.</p>\n";
 print "<table><tr><th>Slice</th><td>$slice_name</td></tr>\n";
 print '<form method="GET" action="add-slice-note.php">';
-print "<input type='hidden' name='slice_id' value='$slice_id'/><br/>";
-print "<tr><th>Note</th><td><textarea columns='60' rows='4' name=\"note\"></textarea/td></tr></table>\n";
-print '<input type="submit" value="Create slice note"/>';
+print "<input type='hidden' name='slice_id' value='$slice_id'/>";
+print "<tr><th>Note</th><td><textarea cols='80' rows='4' name=\"note\"></textarea/td></tr></table>\n";
+print '<p><input type="submit" value="Create slice note"/>';
 print "\n";
-print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/>\n";
+print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/></p>\n";
 print '</form>';
 include("footer.php");
 

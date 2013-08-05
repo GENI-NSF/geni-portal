@@ -132,14 +132,14 @@ I use GENI, and you should too.
 </textarea></p>\n";
 
 print "<h3>Message footer:</h3>\n";
-print "<p>For more information on GENI, see: http://www.geni.net<br/>
+print "<p><i>For more information on GENI, see: http://www.geni.net<br/>
 To get started using GENI, go to the GENI Portal: https://$hostname<br/>
 <br/>
 You log in with your home university or college username, or request a GENI-specific account.<br/>
 <br/>
 Thank you,<br/>\n";
 print $user->prettyName();
-print "</p>\n";
+print "</i></p>\n";
 print "<p><button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 print "</form>\n";

@@ -789,21 +789,21 @@ margin-left: .4in;
 }
 
 .ready {
- color: White;
+ color: White !important;
  border-color: green;
- background-color: green;
+ background-color: green !important;
 }
 
 .failed {
- color: BlanchedAlmond;
+ color: BlanchedAlmond !important;
  border-color: red;
- background-color: red;
+ background-color: red !important;
 }
 
 .busy {
- color: Black;
+ color: Black !important;
  border-color: yellow;
- background-color: yellow;
+ background-color: yellow !important;
 }
 
 input.date {

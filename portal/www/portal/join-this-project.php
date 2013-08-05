@@ -221,12 +221,12 @@ $hostname = $_SERVER['SERVER_NAME'];
 print "<p><textarea name='message' cols='60' rows='5'>May I join GENI project '$project_name'?
 I think I need to do GENI research in your project.\n</textarea></p>\n";
 print "<h3>Message footer:</h3>\n";
-print "<p>To handle my request, go to the GENI Portal here: <br/>
+print "<p><i>To handle my request, go to the GENI Portal here: <br/>
 https://$hostname/secure/handle-project-request.php<br/>
 <br/>
 Thank you,<br/>\n";
 print $user->prettyName();
-print "</p>\n";
+print "</i></p>\n";
 
 print "<p><button type=\"submit\" value=\"submit\"><b>Send Join Request</b></button>\n";
 
