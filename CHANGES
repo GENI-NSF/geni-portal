@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.0 ==
+  * Add Resources page should include tool-showmessage (#738)
   * Fix minor bugs in new portal CSS (#737)
   * Don't install ad RSpecs and map.php (#736)
   * Fix glossary to link to Trac wiki (#703)
