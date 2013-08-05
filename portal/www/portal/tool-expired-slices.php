@@ -174,9 +174,9 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
 
 } else {
   if (isset($project_id) && uuid_is_valid($project_id)) {
-    print "<i>You do not have access to any expired slices in this project.</i><br/>\n";
+    print "<p><i>You do not have access to any expired slices in this project.</i></p>\n";
   } else {
-    print "<i>You do not have access to any expired slices.</i><br/>\n";
+    print "<p><i>You do not have access to any expired slices.</i></p>\n";
   }
 }
 
