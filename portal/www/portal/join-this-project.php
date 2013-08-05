@@ -164,36 +164,35 @@ Thank you,\n" . $user->prettyName() . "\n";
   // Put up a page saying we sent the request
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
   include("tool-breadcrumbs.php");
-  print "<h2>Join Project $project_name</h2>\n";
-
-  print "<br/>\n";
-  print "<b>Sent</b> request to join GENI project <b>$project_name</b> to <b>$leadname</b>.<br/><br/>\n";
+  print "<h1>Join Project <i>$project_name</i></h1>\n";
+  
+  print "<p>\n";
+  print "<b>Sent</b> request to join GENI project <b>$project_name</b> to <b>$leadname</b>.</p>\n";
   $lines = explode("\r\n", $message);
-  print "<b>Message</b>: <br/><pre>\n";
+  print "<p><b>Message</b>: </p><pre style='margin-left:80px;'>\n";
   foreach ($lines as $line) {
     print "$line\n";
   }
   print "</pre>";
   include("footer.php");
   exit();
+  
 }
 
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
-print "<h2>Join Project $project_name</h2>\n";
+print "<h1>Join Project <i>$project_name</i></h1>\n";
 
-print "All GENI actions must be taken in the context of a project.<br/>\n";
-print "On this page, you can request to join the project $project_name.<br/><br/> " 
-  . "The project lead ($leadname) will be sent an email, to approve or deny your request.\n";
-print "That email will have a link to a page where the project lead can act on your request.\n";
+print "<p>All GENI actions must be taken in the context of a project. \n";
+print "On this page, you can request to join the project <i>$project_name</i>.</p> " 
+  . "<p>The project lead ($leadname) will be sent an email, to approve or deny your request. \n";
+print "That email will have a link to a page where the project lead can act on your request. \n";
 print "When the project lead ($leadname) acts on your request, you will get an email " .
 "notifying you whether your request was approved.\n";
-print "Once approved, you can create a slice, or request to join an existing slice.<br/>\n";
-
-print "<br/>\n";
+print "Once approved, you can create a slice, or request to join an existing slice.</p>\n";
 
 //- Show info on the project, lead
-print "<b>Project $project_name details</b>:<br/>\n";
+print "<h3>Project <i>$project_name</i> details:</h3>\n";
 print "<table>\n";
 print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th></tr>\n";
 print "<tr><td>";
@@ -204,7 +203,7 @@ print "</td><td>";
 print $leadname;
 print "</td></tr>\n";
 // FIXME: Could add Project creation date?
-print "</table><br/>\n";
+print "</table>\n";
 
 // Start form
 //- Show text area for justification of your request
@@ -217,21 +216,21 @@ if (isset($error) && ! is_null($error)) {
 
 print "<form action=\"join-this-project.php?project_id=$project_id\">\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
-print "<b>Project join request message</b>:<br/>\n";
+print "<h3>Project join request message:</h3>\n";
 $hostname = $_SERVER['SERVER_NAME'];
-print "<textarea name='message' cols='60' rows='5'>May I join GENI project '$project_name'?
-I think I need to do GENI research in your project.\n</textarea><br/>\n";
-print "<b>Message footer</b>: <br/>\n";
-print "To handle my request, go to the GENI Portal here: <br/>
+print "<p><textarea name='message' cols='60' rows='5'>May I join GENI project '$project_name'?
+I think I need to do GENI research in your project.\n</textarea></p>\n";
+print "<h3>Message footer:</h3>\n";
+print "<p><i>To handle my request, go to the GENI Portal here: <br/>
 https://$hostname/secure/handle-project-request.php<br/>
 <br/>
 Thank you,<br/>\n";
 print $user->prettyName();
-print "<br/><br/>\n";
+print "</i></p>\n";
 
-print "<button type=\"submit\" value=\"submit\"><b>Send Join Request</b></button>\n";
+print "<p><button type=\"submit\" value=\"submit\"><b>Send Join Request</b></button>\n";
 
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 print "</form>\n";
 
 include("footer.php");

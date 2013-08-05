@@ -260,7 +260,7 @@ function add_agg_row_on_sliverstatuspg(am_id) {
 	     am_error = am['geni_error'];
 	     /* output += "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
              if ( $("table#slivererror").children().length == 0 ) {
-		 $("table#slivererror").before( "<div>Received errors from the following aggregates:</div>" );
+		 $("table#slivererror").before( "<div><p>Received errors from the following aggregates:</p></div>" );
 		 output += "<tr><th>Aggregate</th><th>Message</th></tr>";
 	     }
 	     output += "<tr>";

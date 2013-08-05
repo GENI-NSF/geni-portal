@@ -154,7 +154,7 @@ print "<p><textarea name='message' cols='60' rows='5'>Please work with me on GEN
 Since we work in the same lab, we should do our GENI research together. 
 That means belonging to the same GENI project.\n</textarea></p>\n";
 print "<h3>Message footer:</h3>\n";
-print "<p>To join my project, go here: <br/>
+print "<p><i>To join my project, go here: <br/>
       https://$hostname/secure/join-this-project.php?project_id=$project_id<br/>
 <br/>
 Once you request to join, I'll get an email to come back to the GENI portal and approve you.
@@ -169,7 +169,7 @@ You log in with your home university or college username, or request a GENI-spec
 <br/>
 Thank you,<br/>\n";
 print $user->prettyName();
-print "</p>\n";
+print "</i></p>\n";
 
 print "<p><button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
