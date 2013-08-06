@@ -173,6 +173,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $in_maintenance_mode;
   global $in_lockdown_mode;
   global $portal_enable_analytics;
+  global $portal_analytics_string;
 
   if ($load_user) {
     global $user;
