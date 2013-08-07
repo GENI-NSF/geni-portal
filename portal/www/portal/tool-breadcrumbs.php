@@ -69,6 +69,7 @@ $parents = array("profile.php" => "home.php",
 		 "listresources.php" => "slice.php",
 		 "listresources_plain.php" => "slice.php",
 		 "modify.php" => "profile.php",
+		 "do-modify.php" => "profile.php",
 		 "slice-add-resources.php" => "slice.php",
 		 "slice-member.php" => "slice.php",
 		 "sliceabac.php" => "slice.php",
@@ -128,6 +129,7 @@ $names = array("home.php" => $TAB_HOME,
 		 "listresources.php" => "Resources on Slice %slice_name",
 		 "listresources_plain.php" => "List Advertised Resources",
 		 "modify.php" => "Modify Your Account",
+		 "do-modify.php" => "Modify Your Account",
 		 "slice-add-resources.php" => "Add Resources to %slice_name",
 		 "slice-member.php" => "Member %member_name in Slice %slice_name",
 		 "sliceabac.php" => "Get Slice %slice_name ABAC Credentials",
@@ -161,7 +163,7 @@ $names = array("home.php" => $TAB_HOME,
 	       "upload-project-members.php" => "Upload Project Members : %project_name",
 	       "accept-project-invite.php" => "Accept Project Invite : %project_name",
         "rspecupload.php" => "Upload Resource Specification",
-        "rspecs.php" => "Manage Resource Specifications",
+        "rspecs.php" => "Manage RSpecs",
         "omni-bundle.php" => "Omni Bundle",
 	       "irods.php" => "iRODS Account",
         "gemini.php" => "GENI Desktop");
@@ -215,7 +217,7 @@ function insertName($name)
   global $project_name;
   global $slice_name;
   global $member_name;
-  return str_replace(array("%project_name", "%slice_name", "%member_name"), array($project_name, $slice_name, $member_name), $name);
+  return str_replace(array("%project_name", "%slice_name", "%member_name"), array("<i>".$project_name."</i>", "<i>".$slice_name."</i>", "<i>".$member_name."</i>"), $name);
 }
 
 // Complete the crumb addition for this bit
@@ -247,9 +249,9 @@ if ($parent != '') {
     $thisScript = getHref($cur);
     /* } */
     // Crumb is link to script with right name
-    $crumb = getCrumbString($thisScript, $thisPair[0]) . " -> " . $crumb;
+    $crumb = getCrumbString($thisScript, $thisPair[0]) . " &rarr;  " . $crumb;
   } while ($cur != "home.php" && $cur != '');
 }
 
-print $crumb . "<br/>\n";
+print "<div id='breadcrumb'>" . $crumb . "</div>\n";
 

@@ -37,7 +37,7 @@ if (strpos($referer, 'register') !== false or strpos($referer, 'activate') !== f
   show_header('GENI Portal: Home',  $TAB_SLICES);
 }
 $header = "Error";
-print "<h2>$header</h2>\n";
+print "<h1>$header</h1>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";
 
 // error_log('$_GET = ' . print_r($_GET, true));

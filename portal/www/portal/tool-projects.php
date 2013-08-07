@@ -89,14 +89,13 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
     print "You have been made a 'Project Lead', meaning you can create GENI Projects, 
     as well as create slices in projects and reserve resources.<br/><br/>";
     print "A project is a group of people and their research, led by a
-    single responsible individual - the project lead. See the <a href=\"glossary.html\">Glossary</a>.</p>\n";
+    single responsible individual - the project lead. See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>\n";
     print "<p class='warn'>";
     print "You are not a member of any projects.  You need to Create or Join a Project.";
     print "</p>";
   }
-  print "<button $disable_create_project onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
-  print "<button $disable_join_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
-  print "<br/>\n";
+  print "<p><button $disable_create_project onClick=\"window.location='edit-project.php'\"><b>Create New Project</b></button>\n";
+  print "<button $disable_join_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button></p>\n";
 } else {
   if ($num_projects==0) {
     print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/><br/>";
@@ -105,15 +104,15 @@ if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)
      meaning you must join a project created by someone else, 
      before you can create slices or use GENI resources.<br/><br/>";
     print "A project is a group of people and their research, led by a
-    single responsible individual - the project lead. See the <a href=\"glossary.html\">Glossary</a>.</p>\n";
+    single responsible individual - the project lead. See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>\n";
     print "<p class='warn'>";
     print "You are not a member of any projects. Please join an
        existing Project, ask someone to create a Project for you, or ask
        to be a Project Lead.</p>";
   }
-  print "<button $disable_join_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
+  print "<p><button $disable_join_project onClick=\"window.location='join-project.php'\"><b>Join a Project</b></button><br/>\n";
   print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\"><b>Ask Someone to Create a Project</b></button><br/>\n";
-  print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\"><b>Ask to be a Project Lead</b></button><br/>\n";
+  print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\"><b>Ask to be a Project Lead</b></button></p>\n";
 }
 
 // The idea here was to show this table only if the user is a lead or admin on _some_ project
@@ -276,8 +275,7 @@ if (isset($reqs) && count($reqs) > 0) {
   print "</table>\n";
   print "<br/><br/>\n";
 } else {
-  print "<div class='announce'>No outstanding project join requests by you.</div><br/>\n";
+  print "<div class='announce'><p>No outstanding project join requests by you.</p></div>\n";
 }
 
-print "<br/>\n";
 

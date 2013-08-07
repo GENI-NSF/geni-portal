@@ -110,14 +110,14 @@ Thank you,\n" . $user->prettyName() . "\n";
   log_event($log_url, Portal::getInstance(), $msg, $attributes, $user->account_id);
 
   // Put up a page saying we invited them.
-  print "<h2>Invite Someone to Project $project_name</h2>\n";
-  print "<br/>\n";
-  print "<b>Sent</b> Project $project_name invitation to:<br/>\n" . "$to.<br/><br/>\n";
+  print "<h1>Invite Someone to Project $project_name</h1>\n";
+  print "<p>\n";
+  print "<b>Sent</b> Project $project_name invitation to:<br/>\n" . "$to.</p>\n";
   if ($skips !== "") {
     print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
   }
   $lines = explode("\r\n", $message);
-  print "<b>Message</b>: <br/><pre>\n";
+  print "<p><b>Message</b>: </p><pre style='margin-left:80px;'>\n";
   foreach ($lines as $line) {
     print "$line\n";
   }
@@ -126,36 +126,35 @@ Thank you,\n" . $user->prettyName() . "\n";
   exit();
 }
 
-print "<h2>Invite Someone to Project $project_name</h2>\n";
-print "Invite your co-workers and friends to use your GENI project $project_name!<br/>\n";
+print "<h1>Invite Someone to Project <i>$project_name</i></h1>\n";
+print "<p>Invite your co-workers and friends to use your GENI project <i>$project_name</i>!</p>\n";
 
-print "For your co-workers or students to collaborate on experiments in GENI (share GENI slices), ";
-print "they must be in your project $project_name. <br/>\nThis page lets you invite them to join your project.<br/><br/>\n";
+print "<p>For your co-workers or students to collaborate on experiments in GENI (share GENI slices), ";
+print "they must be in your project <i>$project_name</i>. This page lets you invite them to join your project.</p>\n";
 $hostname = $_SERVER['SERVER_NAME'];
-print "This form will send them an email with a link to a page to join your project $project_name<br/>\n";
-print "They will then request to join the project. You will get an email when they have done this.<br/>\n";
-print "Then, you must approve them to join the project, and specify what kind of role they should have on the project.<br/><br/>\n";
+print "<p>This form will send them an email with a link to a page to join your project <i>$project_name</i>. \n";
+print "They will then request to join the project. You will get an email when they have done this. \n";
+print "Then, you must approve them to join the project, and specify what kind of role they should have on the project.</p>\n";
 
-print "You can include a custom message explaining how you want to collaborate with them in GENI.<br/>\n";
-print "<br/>\n";
+print "<p>You can include a custom message explaining how you want to collaborate with them in GENI.</p>\n";
 if (isset($error) && ! is_null($error)) {
   print $error;
 }
 //mailto:larry,dan?cc=mike&bcc=sue&subject=test&body=type+your&body=message+here
 print "<form action=\"invite-to-project.php\">\n";
 print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
-print "<b>Email addresses of people to invite</b>:<br/>\n";
-print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
+print "<h3>Email addresses of people to invite:</h3>\n";
+print "<p><textarea name='to' cols=\"60\" rows=\"4\"></textarea></p>\n"; // FIXME: Need to ensure this is valid - JS?
 print "<p>Addresses should be space, comma, or newline separated.</p>\n";
-print "<b>Invitation message</b>:<br/>\n";
+print "<h3>Invitation message:</h3>\n";
 
 // FIXME: ticket #66: Make this a template. Take from 'To join my' out of the editable bits.
-print "<textarea name='message' cols='60' rows='5'>Please work with me on GENI project $project_name!
+print "<p><textarea name='message' cols='60' rows='5'>Please work with me on GENI project $project_name!
 
 Since we work in the same lab, we should do our GENI research together. 
-That means belonging to the same GENI project.\n</textarea><br/>\n";
-print "<b>Message footer</b>: <br/>\n";
-print "To join my project, go here: <br/>
+That means belonging to the same GENI project.\n</textarea></p>\n";
+print "<h3>Message footer:</h3>\n";
+print "<p><i>To join my project, go here: <br/>
       https://$hostname/secure/join-this-project.php?project_id=$project_id<br/>
 <br/>
 Once you request to join, I'll get an email to come back to the GENI portal and approve you.
@@ -170,10 +169,10 @@ You log in with your home university or college username, or request a GENI-spec
 <br/>
 Thank you,<br/>\n";
 print $user->prettyName();
-print "<br/><br/>\n";
+print "</i></p>\n";
 
-print "<button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "<p><button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 print "</form>\n";
 
 include("footer.php");

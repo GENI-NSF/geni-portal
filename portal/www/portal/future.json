@@ -1,0 +1,109 @@
+{"type":"FeatureCollection","features":
+  [
+  
+    {"type":"Feature",
+      "properties":
+        { "name":"University of Illinois, Urbana-Champaign",
+          "location":"Champaign, IL",
+          "type":"InstaGENI",
+          "status":"Some status" 
+        },
+      "geometry":
+        {"type":"Point",
+          "coordinates":[-88.230464, 40.109023]
+        }
+    },
+
+    {"type":"Feature",
+      "properties":
+        { "name":"Carnegie Mellon University",
+          "location":"Pittsburgh, PA",
+          "type":"InstaGENI",
+          "status":"Some status" 
+        },
+      "geometry":
+        {"type":"Point",
+          "coordinates":[-79.942973, 40.444769]
+        }
+    },
+
+    {"type":"Feature",
+      "properties":
+        { "name":"Case Western Reserve University",
+          "location":"Cleveland, OH",
+          "type":"InstaGENI",
+          "status":"Some status" 
+        },
+      "geometry":
+        {"type":"Point",
+          "coordinates":[-81.610149, 41.505251]
+        }
+    },
+
+    {"type":"Feature",
+      "properties":
+        { "name":"Clemson Univeristy",
+          "location":"Clemson, SC",
+          "type":"InstaGENI",
+          "status":"Some status" 
+        },
+      "geometry":
+        {"type":"Point",
+          "coordinates":[-82.837505, 34.682831]
+        }
+    },
+
+    {"type":"Feature",
+      "properties":
+        { "name":"Georgia Institute of Technology",
+          "location":"Atlanta, GA",
+          "type":"InstaGENI",
+          "status":"Some status" 
+        },
+      "geometry":
+        {"type":"Point",
+          "coordinates":[-84.40222, 33.774898]
+        }
+    },
+
+    {"type":"Feature",
+      "properties":
+        { "name":"University of Chicago",
+          "location":"Chicago, IL",
+          "type":"InstaGENI",
+          "status":"Some status" 
+        },
+      "geometry":
+        {"type":"Point",
+          "coordinates":[-87.601348, 41.789534]
+        }
+    },
+
+    {"type":"Feature",
+      "properties":
+        { "name":"University of Maryland, College Park",
+          "location":"College Park, MD",
+          "type":"InstaGENI",
+          "status":"Some status" 
+        },
+      "geometry":
+        {"type":"Point",
+          "coordinates":[-76.937148, 38.98555]
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ]
+}

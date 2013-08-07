@@ -60,8 +60,8 @@ if (array_key_exists("note", $_REQUEST)) {
     show_header('GENI Portal: Projects', '');
 
     include("tool-breadcrumbs.php");
-    print "<h2>Added Note on Project $project_name</h2>\n";
-    print "<br><table><tr><th>Project</th><td>$project_name</td></tr>\n";
+    print "<h1>Added Note on Project $project_name</h1>\n";
+    print "<table><tr><th>Project</th><td>$project_name</td></tr>\n";
     print "<tr><th>Note</th><td>$note</td></tr></table>\n";
     include("footer.php");
     exit(0);
@@ -71,15 +71,15 @@ if (array_key_exists("note", $_REQUEST)) {
 require_once("header.php");
 show_header('GENI Portal: Projects', '');
 include("tool-breadcrumbs.php");
-print "<h2>Add Note on Project $project_name</h2>\n";
-print "Add a note about what you are doing in this project.<br/>\n";
+print "<h1>Add Note on Project $project_name</h1>\n";
+print "<p>Add a note about what you are doing in this project.</p>\n";
 print "<table><tr><th>Project</th><td>$project_name</td></tr>\n";
 print '<form method="GET" action="add-project-note.php">';
-print "<input type='hidden' name='project_id' value='$project_id'/><br/>";
+print "<input type='hidden' name='project_id' value='$project_id'/>";
 print "<tr><th>Note</th><td><textarea columns='60' rows='4' name=\"note\"></textarea/td></tr></table>\n";
-print '<input type="submit" value="Create project note"/>';
+print '<p><input type="submit" value="Create project note"/>';
 print "\n";
-print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/>\n";
+print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/></p>\n";
 print '</form>';
 include("footer.php");
 

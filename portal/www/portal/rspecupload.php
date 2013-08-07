@@ -146,7 +146,7 @@ if ($error != NULL || count($_POST) == 0) {
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
   include("tool-showmessage.php");
-  print("<h2>Upload experiment Resource Specification (RSpec)</h2>\n");
+  print("<h1>Upload experiment Resource Specification (RSpec)</h1>\n");
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";
@@ -154,22 +154,21 @@ if ($error != NULL || count($_POST) == 0) {
     echo "</div>\n";
   }
   echo '<form action="rspecupload.php" method="post" enctype="multipart/form-data">';
-  echo '  <label for="file">RSpec File:</label>';
-  echo '  <input type="file" name="file" id="file" />';
-  echo '  <br/><br/>';
+  echo '  <p><label for="file">RSpec File:</label>';
+  echo '  <input type="file" name="file" id="file" /></p>';
+  echo '  <p>';
   echo '  <label for="file">Short Name:</label>';
-  echo '  <input type="text" name="name"/> - Required';
-  echo '  <br/><br/>';
+  echo '  <input type="text" name="name"/> - Required</p>';
+  echo '  <p>Type: ';
   echo '  <input type="radio" name="group1" value="public" checked> public';
-  echo '  <input type="radio" name="group1" value="private"> private';
-  echo '  <br/><br/>';
+  echo '  <input type="radio" name="group1" value="private"> private</p>';
+  echo '  <p>';
   echo '  <label for="file">Description:</label>';
-  echo '  <input type="text" name="description"/> - Required';
-  echo '  <br/><br/>';
+  echo '  <input type="text" name="description"/> - Required</p>';
+  echo '  <p>';
   echo '  <input type="submit" name="submit" value="Upload"/>';
-  echo '  <input type="hidden" name="referer" value="' . $referer . '"/>';
+  echo '  <input type="hidden" name="referer" value="' . $referer . '"/></p>';
   echo '</form>';
-  echo '<br/>';
   include("footer.php");
   exit;
 }

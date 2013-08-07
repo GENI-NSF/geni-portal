@@ -33,7 +33,7 @@ include("header.php");
 // Local functions
 function shib_input($shib_name, $pretty_name, $value)
 {
-  print $pretty_name . ": ";
+  print "<li><b>" . $pretty_name . ":</b> ";
   print "<input type=\"text\" name=\"$shib_name\"";
   if (array_key_exists($shib_name, $_SERVER)) {
       if (isset($value)) {
@@ -45,7 +45,7 @@ function shib_input($shib_name, $pretty_name, $value)
   } else {
      echo " value=\"$value\"";
   }
-  print "/><br/>\n";
+  print "/></li>\n";
 }
 
 // Only allow modifying fields that didn't come from Shib
@@ -93,22 +93,23 @@ include("tool-showmessage.php");
 
 ?>
 
-<h2> Modify Account Page </h2>
-Request a modification to user supplied account properties. For
+<h1> Modify Your Account </h1>
+<p>Request a modification to user supplied account properties. For
 example, use this page to request to be a Project Lead (get Project
-Creation permissions).<br/><br/>
-Please provide a current telephone number. GENI operations staff will
-use it only in an emergency, such as if a resource owned by you is severely misbehaving. <br/>
-If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.<br/>
+Creation permissions).</p>
+<p>Please provide a current telephone number. GENI operations staff will
+use it only in an emergency, such as if a resource owned by you is severely misbehaving. </p>
+<p>If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.</p>
 <p><i>Note</i>: Based on GENI's current policy, only faculty and senior members of an organization
-may be project leads (e.g. students <i>may not</i> be project leads).</p><br/>
+may be project leads (e.g. students <i>may not</i> be project leads).</p>
 <form method="POST" action="do-modify.php">
 <?php
   //  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone');
   $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone',
-		       'reference' => 'Optional: Reference Contact (e.g. Advisor)',
-		       'reason' => 'Optional: Intended use of GENI, explanation of request, or other comments',
-		       'profile'=> 'Optional: URL of your profile page for more information (not GENI public)');
+		       'reference' => '<i>(Optional)</i> Reference Contact (e.g. Advisor)',
+		       'reason' => '<i>(Optional)</i> Intended use of GENI, explanation of request, or other comments',
+		       'profile'=> '<i>(Optional)</i> URL of your profile page for more information (not GENI public)');
+print "<ul>";
 foreach (array_keys($shib_fields) as $fieldkey) {
     $is_user = false;
     foreach ($attrs as $a) {
@@ -127,8 +128,9 @@ foreach (array_keys($shib_fields) as $fieldkey) {
       shib_input($a['name'], $a['name'], $a['value']);
     }
   }
+print "</ul>";
 ?>
-<br/>
+<p>
 <input type="checkbox" name="projectlead" value="projectlead"
 <?php
     if ($is_pi) {
@@ -141,9 +143,11 @@ foreach (array_keys($shib_fields) as $fieldkey) {
     }
 ?>
 a 'Project Lead' who can create projects.<br/>
-<br/>
+</p>
+<p>
 <input type="submit" value="Modify Account"/>
 <input type="button" value="Cancel" onclick="history.back(-1)"/>
+</p>
 </form>
 <?php
 include("footer.php");

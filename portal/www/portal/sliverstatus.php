@@ -88,7 +88,7 @@ $(document).ready(build_agg_table_on_sliverstatuspg);
 </script>
 
 <?php
-print "<h2>$header</h2>\n";
+print "<h1>$header</h1>\n";
 
 // Count Aggs. If only one, change 'all' text
 $amcnt = 0;
@@ -110,10 +110,10 @@ if ($amcnt >= 2) {
   $amcntstr = "all aggregates";
 }
         
-echo "<div id='header'>Querying status of resources at " . $amcntstr . "...</div>";
+echo "<div class='aggregate'>Querying status of resources at " . $amcntstr . "...</div>";
 echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
 
-print "<div id='slivererror'></div>";
+print "<div id='slivererror'>";
 print "<table id='slivererror'></table></div>";
 
 if (isset($am_id) && $am_id ) {
@@ -122,11 +122,12 @@ if (isset($am_id) && $am_id ) {
   $am_id_str = "";
 }
 
-print "<a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
-print "<br/><br/>";
+print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
+print "</p>";
 
-print "<a href='slices.php'>Back to All slices</a><br/>";
-print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
+print "<p><a href='slices.php'>Back to All slices</a>";
+print "<br/>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 
 include("footer.php");
 ?>

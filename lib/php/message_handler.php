@@ -321,11 +321,7 @@ function put_message($url, $message, $signer_cert=null, $signer_key=null)
   curl_setopt($ch, CURLOPT_INFILE, $fp);
   curl_setopt($ch, CURLOPT_INFILESIZE, strlen($message));
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  // Disabling VERIFYHOST is a temporary patch during
-  // the transition from panther.gpolab.bbn.com to
-  // portal.geni.net. If you're seeing this after
-  // December, 2012, you should probably delete it.
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
   $result = curl_exec($ch);
   $error = curl_error($ch);
   curl_close($ch);

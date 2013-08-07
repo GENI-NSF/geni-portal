@@ -112,19 +112,19 @@ print "<p id='delete' style='display:block;'><i>Deleting resources...</i></p>";
 
 print "<p id='summary' style='display:none;'><i>Issued delete resources at <span id='attempted'>0</span> of <span id='total'>0</span> aggregate.</i></p>";
 
-print "<div id='delsliverlabel' style='display:none;'>Deleted resources at:</div>";
+print "<div id='delsliverlabel' style='display:none;'><p>Deleted resources at:</p></div>";
 // print "<div id='delsliverlabel' style='display:none;'>Deleted resources at <span id='success'>0</span> aggregate:</div>";
 print "<div id='deletesliver'><ul id='deletesliver'></ul></div>";	
 
-print "<div id='delerrorlabel' style='display:none;'>No resources deleted at:</div>";
+print "<div id='delerrorlabel' style='display:none;'><p>No resources deleted at:</p></div>";
 // print "<div id='delerrorlabel' style='display:none;'>No resources deleted at <span id='fail'>0</span> aggregate:</div>";
 print "<div id='deleteerror'><ul id='deleteerror'></ul></div>";
 print "</div>\n";
 
 print "<hr/>";
-print "<a href='slices.php'>Back to All slices</a>";
+print "<p><a href='slices.php'>Back to All slices</a>";
 print "<br/>";
-print "<a href='slice.php?slice_id=$slice_id'>Back to Slice $slice_name</a>";
+print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 include("footer.php");
 
 ?>
