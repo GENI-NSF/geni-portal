@@ -19,7 +19,7 @@ cd $TMPDIR
 # ch-bu = bigslide
 #------------------------------------------------------------
 
-for h in dagoola illyrica marilac sergyar ch1 ch5 ch-bu; do
+for h in dagoola illyrica marilac sergyar ch1 ch5 ch-bu ch-dm ch-ph ch-mt; do
   echo "Pulling from ${h}"
   scp "${h}.gpolab.bbn.com:/usr/share/geni-ch/CA/cacert.pem" cacert-${h}.pem
 done
