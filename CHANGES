@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.0 ==
+  * Fix Google Analytics string to be a global variable (#743)
   * Remove obsolete settings file (#741)
   * Add Resources page should include tool-showmessage (#738)
   * Fix minor bugs in new portal CSS (#737)
