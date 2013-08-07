@@ -2,6 +2,8 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.1 ==
+
 == 2.0 ==
   * Fix Google Analytics string to be a global variable (#743)
   * Remove obsolete settings file (#741)
