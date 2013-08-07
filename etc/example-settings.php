@@ -22,14 +22,30 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// user scott with password tiger connecting to database portal on localhost
+/*
+ * The location of the database (DSN = "data source name").  This one
+ * is user "scott" with password "tiger" connecting to database "portal"
+ * on host "localhost".
+ *
+ * See http://pear.php.net/manual/en/package.database.mdb2.intro-dsn.php
+ */
 $db_dsn = 'pgsql://scott:tiger@localhost/portal';
 
+/*
+ * Where to send administrative email.
+ */
 $portal_admin_email = 'portal-admin@example.com';
 
+/*
+ * Bootstrap the service registry. All other services are discovered
+ * via the service registry.
+ */
 $service_registry_url = 'https://ch.example.com/sr/sr_controller.php';
 
-// User/PW for an admin account on the iRODS server for use by the portal in creating iRODS accounts
+/*
+ * User/PW for an admin account on the iRODS Test server for use by
+ * the portal in creating iRODS accounts
+ */
 $portal_irods_user = 'rods';
 $portal_irods_pw = 'rods';
 ?>
