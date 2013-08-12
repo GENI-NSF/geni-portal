@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.1 ==
+  * Remove unnecessary host reference (#755)
   * Output account request passwords in monospace font (#732)
   * Show project page to members only (#727)
   * Remove hardcoded hostnames in openid configuration (#287)
