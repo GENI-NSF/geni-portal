@@ -100,6 +100,27 @@ if (! is_null($project) && $project != "None") {
 
 // Fill in members of project member table
 $members = get_project_members($sa_url, $user, $project_id);
+
+/*------------------------------------------------------------
+ * Does this user have privileges on this project?
+ *
+ * If not, redirect to home page.
+ *------------------------------------------------------------
+ */
+$user_is_project_member = false;
+foreach ($members as $m) {
+  if ($user->account_id == $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID]) {
+    $user_is_project_member = true;
+    break;
+  }
+}
+if (! $user_is_project_member) {
+  $_SESSION['lastmessage'] = ('User has no privileges to view project '
+                              . $project_name);
+  relative_redirect('home.php');
+}
+
+
 $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 //error_log("members = " . print_r($members, true));
