@@ -3,6 +3,11 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.1 ==
+  * Remove unnecessary host reference (#755)
+  * Output account request passwords in monospace font (#732)
+  * Show project page to members only (#727)
+  * Remove hardcoded hostnames in openid configuration (#287)
+  * Update the supported gcf release to 2.2.1-threaded-ticket313 (#746)
   * Add new GPO sandboxes to utility scripts (#745)
   * Allow case-insensitive upload of member email addresses (#713)
 
