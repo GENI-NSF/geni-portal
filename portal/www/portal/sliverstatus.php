@@ -110,7 +110,15 @@ if ($amcnt >= 2) {
   $amcntstr = "all aggregates";
 }
         
-echo "<div class='aggregate'>Querying status of resources at " . $amcntstr . "...</div>";
+//echo "<div class='aggregate'>Querying status of resources at " . $amcntstr . "...</div>";
+print "<div class='aggregate' id='prettyxml'>";
+print "<p id='query' style='display:block;'><i>Querying aggregates for status of resources...</i></p>";
+
+print "<p id='summary' style='display:none;'><i>Queried resources at <span id='numagg'>0</span> aggregates. </i></p>";
+
+print "</p>";
+print "</div>\n";
+
 echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";	
 
 print "<div id='slivererror'>";
@@ -122,9 +130,9 @@ if (isset($am_id) && $am_id ) {
   $am_id_str = "";
 }
 
-print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
-print "</p>";
 
+print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
+print "<hr/>";
 print "<p><a href='slices.php'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
