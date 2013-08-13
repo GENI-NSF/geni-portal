@@ -10,6 +10,7 @@
   * Update the supported gcf release to 2.2.1-threaded-ticket313 (#746)
   * Add new GPO sandboxes to utility scripts (#745)
   * Allow case-insensitive upload of member email addresses (#713)
+  * Fix sliver status page (resource status) (#429)
 
 == 2.0 ==
   * Fix Google Analytics string to be a global variable (#743)
