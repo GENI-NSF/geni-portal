@@ -4,6 +4,7 @@
 
 == 2.1 ==
   * Add new GPO sandboxes to utility scripts (#745)
+  * Remove custom pgch; use version from latest GCF (#347)
 
 == 2.0 ==
   * Fix Google Analytics string to be a global variable (#743)
