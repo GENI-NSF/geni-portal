@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.1 ==
+  * Mark uploaded RSplecs as private by default (#421)
   * Handle malformed XML in RSpec upload (#720)
   * Remove unnecessary host reference (#755)
   * Output account request passwords in monospace font (#732)
