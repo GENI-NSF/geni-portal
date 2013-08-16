@@ -46,10 +46,8 @@ nobase_dist_svcdata_DATA = \
 dist_gcfsrc_DATA = \
 	gcf.d/src/logging.conf
 dist_gcfsrc_SCRIPTS = \
-	gcf.d/src/gcf-pgch.py \
 	gcf.d/src/omni_php.py
-dist_gcfsrcgeni_DATA = \
-	gcf.d/src/geni/pgch.py
+dist_gcfsrcgeni_DATA = 
 
 dist_svcweb_DATA = \
 	www/portal/abac-id.php \

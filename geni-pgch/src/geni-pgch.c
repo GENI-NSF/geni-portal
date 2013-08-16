@@ -66,7 +66,9 @@ run_pgch(char *prog_name)
   char *py_args[] = {
     "/usr/share/geni-ch/portal/gcf/src/gcf-pgch.py",
     "-c", "/usr/share/geni-ch/portal/gcf.d/gcf.ini",
-    "-p", "8443"
+    "-p", "8443",
+    "--use-gpo-ch" /* Force using the GPO CH, not the fake GCF
+		      CH. Requires gcf-2.3.1 or greater */
   };
   FILE* file;
 
