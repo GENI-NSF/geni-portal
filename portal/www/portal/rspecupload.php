@@ -189,8 +189,8 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <label for="file">Short Name:</label>';
   echo '  <input type="text" name="name"/> - Required</p>';
   echo '  <p>Type: ';
-  echo '  <input type="radio" name="group1" value="public" checked> public';
-  echo '  <input type="radio" name="group1" value="private"> private</p>';
+  echo '  <input type="radio" name="group1" value="public"> public';
+  echo '  <input type="radio" name="group1" value="private" checked> private</p>';
   echo '  <p>';
   echo '  <label for="file">Description:</label>';
   echo '  <input type="text" name="description"/> - Required</p>';
