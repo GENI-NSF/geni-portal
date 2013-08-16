@@ -13,7 +13,22 @@
  *
  * This must be a full URL.
  */
-$server_url = "https://portal.geni.net/server/server.php";
+function configGetServerURL($path)
+{
+    $host = $_SERVER['SERVER_NAME'];
+    $port = $_SERVER['SERVER_PORT'];
+    $s = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '';
+    if (($s && $port == "443") || (!$s && $port == "80")) {
+        $p = '';
+    } else {
+        $p = ':' . $port;
+    }
+
+    return "http$s://$host$p$path";
+}
+
+$server_url = configGetServerURL('/server/server.php');
+
 
 /**
  * Initialize an OpenID store

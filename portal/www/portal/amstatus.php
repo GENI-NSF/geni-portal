@@ -63,9 +63,9 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-function get_sliver_status( $obj,  $status_array ) {
+function get_sliver_status( $obj,  $status_array, $goodret ) {
 
-    $GENI_MESSAGES_REV = array( 
+$GENI_MESSAGES_REV = array( 
     		       STATUS_MSG::GENI_CONFIGURING => STATUS_INDEX::GENI_CONFIGURING,
 		       STATUS_MSG::GENI_READY => STATUS_INDEX::GENI_READY,
 		       STATUS_MSG::GENI_FAILED => STATUS_INDEX::GENI_FAILED,
@@ -73,7 +73,7 @@ function get_sliver_status( $obj,  $status_array ) {
   		       STATUS_MSG::GENI_NO_RESOURCES => STATUS_INDEX::GENI_NO_RESOURCES,
 		       STATUS_MSG::GENI_BUSY => STATUS_INDEX::GENI_BUSY);
 
-    foreach ($obj as $am_url => $am_status) {
+foreach ($obj as $am_url => $am_status) {
     $status_item = Array();
     // AM url
     $status_item['url'] = $am_url;
@@ -123,15 +123,21 @@ function get_sliver_status( $obj,  $status_array ) {
       	   }
       	   $status_item['resources'][] = $resource_item;
        }
-    } else {
+    } else if ($goodret == TRUE) {
        $status_item['geni_status'] = STATUS_MSG::GENI_NO_RESOURCES; 
        $status_item['status_code'] = STATUS_INDEX::GENI_NO_RESOURCES; 
-    }
+    } else {
+       $status_item['geni_status'] = STATUS_MSG::GENI_FAILED; 
+       $status_item['status_code'] = STATUS_INDEX::GENI_FAILED; 
+
+    }   
     $status_array[am_id( $am_url )] = $status_item ; //append this to the end of the list
     }
     return $status_array;
 }
 
+
+//THIS FUNCTION DOESN'T CURRENTLY DO ANYTHING
 function get_sliver_status_err( $msg,  $status_array ) {
   /* Sample input */
   /*  Slice urn:publicid:IDN+sergyar:AMtest+slice+test1 expires on 2012-07-07 18:21:41 UTC
@@ -146,6 +152,7 @@ Returned status of slivers on 0 of 2 possible aggregates.
   $lines = preg_split ('/$\R?^/m', $msg);
   $num_errs = 0;
   $m = 0;
+
   foreach ($lines as $line){  
     if (preg_match("/^Returned status of slivers on (\d+) of (\d+) possible aggregates.$/",$line, $succ)){
       $n = (int) $succ[1];
@@ -154,25 +161,24 @@ Returned status of slivers on 0 of 2 possible aggregates.
       $num_errs = $num_errs+1;
       $agg = $fail[4];
       $err = $fail[5];
-      $am_url = $agg; // FIXME is this always return a URL
-      $id = am_id( $am_url );
-      if ( $status_array[ $id ] ) {
-      	$status_array[ $id ]['geni_error'] = $err;
-      } else {       
-      	$status_array[ $id ] = Array();
-      	$status_array[ $id ]['url'] = $am_url;
-      }
+ // FIXME We don't have these variables here
+      //$id = am_id( $am_url );
+      //if ( $status_array[ $id ] ) {
+      	//$status_array[ $id ]['geni_error'] = $err;
+//      } else {       
+ //     	$status_array[ $id ] = Array();
+  //    	$status_array[ $id ]['url'] = $am_url;
+     // }
 
       // if geni_error indicates that the AM is busy
-      if (($status_array[ $id ]['status_code'] == STATUS_INDEX::GENI_NO_RESOURCES) && (strpos($err,'busy') !== false)) {
-        $status_array[ $id ]['geni_status'] = $busy_resource_msg;		      
-        $status_array[ $id ]['status_code'] = STATUS_INDEX::GENI_BUSY; 
-      }
+      //if (($status_array[ $id ]['status_code'] == STATUS_INDEX::GENI_NO_RESOURCES) && (strpos($err,'busy') !== false)) {
+        //$status_array[ $id ]['geni_status'] = $busy_resource_msg;		      
+        //$status_array[ $id ]['status_code'] = STATUS_INDEX::GENI_BUSY; 
+//      }
     }
   }
 
   $retVal = $status_array;
-
   return $retVal;
 }
 
@@ -181,85 +187,85 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
     $pgKeyList = Array();
 
     foreach ($obj as $am_url => $am_item) {
-    $status_item = Array();
-    // AM url
-    $status_item['url'] = $am_url;
-    // AM name	     
-    $status_item['am_name'] = am_name($am_url);
+        $status_item = Array();
+    	// AM url
+    	$status_item['url'] = $am_url;
+    	// AM name	     
+    	$status_item['am_name'] = am_name($am_url);
 
-    if (!$am_item){
-      // "ERROR: empty sliver status!"
-	continue;
-    }
-    if (! array_key_exists("users", $am_item )){
-      // "ERROR: No 'users' key in sliver status!"
-	continue;
-    }
-    if (! array_key_exists('geni_resources', $am_item)){
-      // "ERROR: Sliver Status lists no resources"
-	continue;
-    }
+    	if (!$am_item){
+      	// "ERROR: empty sliver status!"
+	   continue;
+    	}
+    	if (! array_key_exists("users", $am_item )){
+      	//    "ERROR: No 'users' key in sliver status!"
+	      continue;
+    	}
+    	if (! array_key_exists('geni_resources', $am_item)){
+      	// "ERROR: Sliver Status lists no resources"
+	   continue;
+    	}
 
-    $status_array[am_id( $am_url )]['login_info'] = array();
+    	$status_array[am_id( $am_url )]['login_info'] = array();
 
-    foreach ($am_item['users'] as $userDict) {
-      if (! array_key_exists('login',$userDict)){
-      // "User entry had no 'login' key"
-      		   continue;
-      }
-      $pgKeyList[$userDict['login']] = array();
-      if (! array_key_exists('keys',$userDict)) {
-        continue;
-      }
-    }
-    foreach ($userDict['keys'] as $k) {
-      #XXX nriga Keep track of keys, in the future we can verify what key goes with
-      # which private key
-      $pgKeyList[$userDict['login']][] = $k['key'];
-    }
+    	foreach ($am_item['users'] as $userDict) {
+      		if (! array_key_exists('login',$userDict)){
+      		// "User entry had no 'login' key"
+      		      continue;
+      		}		      //    } elseif (preg_match("/^Failed to get SliverStatus on urn*$/",$line,$fail)) {
+      		$pgKeyList[$userDict['login']] = array();
+      		if (! array_key_exists('keys',$userDict)) {
+        	continue;
+      		}
+    	}
+    	foreach ($userDict['keys'] as $k) {
+      	#XXX nriga Keep track of keys, in the future we can verify what key goes with
+      	# which private key
+      	  	$pgKeyList[$userDict['login']][] = $k['key'];
+    	}
 
-    foreach ($am_item['geni_resources'] as $resourceDict) {
-      if (! array_key_exists('pg_manifest',$resourceDict)){
-        continue;
-      }
-      if (! array_key_exists('children',$resourceDict['pg_manifest'])){
-        continue;
-      }
-      foreach ($resourceDict['pg_manifest']['children'] as $children1) {	
-          if (! array_key_exists('children',$children1)){
-             continue;
-          }
-          foreach ($children1['children'] as $children2) {	
-             if (! array_key_exists('attributes',$children2)){
-               continue;
-             }
-             $child = $children2['attributes'];
-             $port = "";
-             $hostname = "";
-             if (array_key_exists("hostname", $child)){
-                $hostname = $child["hostname"];
-             } else {
-                continue;
- 	     }
-             if (array_key_exists("port", $child)){
-                $port = $child["port"];
-	     }
-             $client_id = "";
-             if (array_key_exists('attributes', $resourceDict["pg_manifest"]) and array_key_exists("client_id", $resourceDict["pg_manifest"]["attributes"])){
-                $client_id = $resourceDict["pg_manifest"]["attributes"]["client_id"];
- 	     }
-             $geni_status = "";
-             if (array_key_exists("geni_status",$resourceDict)){
-                $geni_status = $resourceDict["geni_status"];
-             }
-             $am_status = "";
-             if (array_key_exists("pg_status",$resourceDict)){
-               $am_status = $resourceDict["pg_status"];
-	     }	    
+    	foreach ($am_item['geni_resources'] as $resourceDict) {
+      		if (! array_key_exists('pg_manifest',$resourceDict)){
+        	   continue;
+      		}
+      		if (! array_key_exists('children',$resourceDict['pg_manifest'])){
+        	  continue;
+      		}
+      		foreach ($resourceDict['pg_manifest']['children'] as $children1) {	
+          	  if (! array_key_exists('children',$children1)){
+             	    continue;
+          	  }
+          	  foreach ($children1['children'] as $children2) {	
+             	    if (! array_key_exists('attributes',$children2)){
+               	       continue;
+             	    }
+             	    $child = $children2['attributes'];
+             	    $port = "";
+             	    $hostname = "";
+             	    if (array_key_exists("hostname", $child)){
+                      $hostname = $child["hostname"];
+             	    } else {
+                      continue;
+ 	     	    }
+             	    if (array_key_exists("port", $child)){
+                      $port = $child["port"];
+	     	    }
+             	    $client_id = "";
+             	    if (array_key_exists('attributes', $resourceDict["pg_manifest"]) and array_key_exists("client_id", $resourceDict["pg_manifest"]["attributes"])){
+                       $client_id = $resourceDict["pg_manifest"]["attributes"]["client_id"];
+ 	     	    }
+		    $geni_status = "";
+             	    if (array_key_exists("geni_status",$resourceDict)){
+                       $geni_status = $resourceDict["geni_status"];
+             	    }
+             	    $am_status = "";
+             	    if (array_key_exists("pg_status",$resourceDict)){
+               	      $am_status = $resourceDict["pg_status"];
+	     	    }	    
 
-      $loginInfo[ $client_id ] = array();
-      foreach ($pgKeyList as $user => $keys) {	
-            $loginInfo[ $client_id ][$user] = array('authentication' => 'ssh-keys', 
+      		    $loginInfo[ $client_id ] = array();
+      		    foreach ($pgKeyList as $user => $keys) {	
+            	    	    $loginInfo[ $client_id ][$user] = array('authentication' => 'ssh-keys', 
                               'hostname' => $hostname,
                               'client_id' =>  $client_id,
                               'port' => $port,
@@ -268,17 +274,17 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
                               'geni_status' => $geni_status,
                               'am_status' => $am_status
                              );
-     }
+     		    }
 
 	 }
       }
 
 
      $status_array[am_id( $am_url )]['login_info']["resources"]  = $loginInfo ;
-     }
+   }
 
-     }
-     return $status_array; 
+   }
+   return $status_array; 
 }
 
 // Close the session here to allow multiple AJAX requests to run
@@ -291,17 +297,19 @@ session_write_close();
 $statRet = query_sliverstatus( $user, $ams, $sa_url, $slice, $slice_id );
 $msg = $statRet[0];
 $obj = $statRet[1];
+$good = $statRet[2];
+
 $status_array = Array();
 
 if (count($obj)>0) {
    // fill in sliver status info for each agg
-   $status_array = get_sliver_status( $obj, $status_array );
-   // fill in sliver status errors for each agg
+   $status_array = get_sliver_status( $obj, $status_array, $good );
+   // fill in sliver status errors for each agg 
    $status_array = getInfoFromSliverStatusPG( $obj, $status_array );
    // fill in sliver status errors for each agg
-   $retVal = get_sliver_status_err( $msg, $status_array );
+   //$retVal = get_sliver_status_err( $msg, $status_array );
 
-   $status_array = $retVal;
+   //$status_array = $retVal;
 } 
 
 // Set headers for xml
