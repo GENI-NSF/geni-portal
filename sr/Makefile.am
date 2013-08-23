@@ -9,6 +9,7 @@ cert_FILES = \
 	certs/exo-uh-am.pem \
 	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
+	certs/ig-gatech-of.pem \
 	certs/ig-gpo-boss.pem \
 	certs/ig-gpo-cm.pem \
 	certs/ig-kettering-boss.pem \
@@ -17,8 +18,10 @@ cert_FILES = \
 	certs/ig-ky-cm.pem \
 	certs/ig-northwestern-boss.pem \
 	certs/ig-northwestern-cm.pem \
+	certs/ig-northwestern-of.pem \
 	certs/ig-utah-boss.pem \
 	certs/ig-utah-cm.pem \
+	certs/ig-utah-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \
