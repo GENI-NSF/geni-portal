@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.1 ==
+  * SSH public key from downloaded pair filename should end in .pub (#681)
   * Mark uploaded RSplecs as private by default (#421)
   * Handle malformed XML in RSpec upload (#720)
   * Remove unnecessary host reference (#755)
