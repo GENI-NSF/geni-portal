@@ -18,9 +18,9 @@ insert into service_registry
       -- CERT
      '/usr/share/geni-ch/sr/certs/gpo-of.pem',
       -- NAME
-     'InstaGENI OpenFlow',
+     'GPO OpenFlow',
       -- DESCRIPTION
-     'GPO Rack OpenFlow',
+     'GPO Lab OpenFlow',
       -- URN
      'urn:publicid:IDN+openflow:foam:foam.gpolab.bbn.com+authority+am'
     );
@@ -38,7 +38,7 @@ insert into service_registry
       -- NAME
      '',
       -- DESCRIPTION
-     'GPO FOAM cert signer (self)',
+     'GPO Lab FOAM cert signer (self)',
       -- URN
      ''
     );
