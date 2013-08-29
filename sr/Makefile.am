@@ -9,9 +9,11 @@ cert_FILES = \
 	certs/exo-uh-am.pem \
 	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
+        certs/gpo-of.pem \
 	certs/ig-gatech-of.pem \
 	certs/ig-gpo-boss.pem \
 	certs/ig-gpo-cm.pem \
+        certs/ig-gpo-of.pem \
 	certs/ig-kettering-boss.pem \
 	certs/ig-kettering-cm.pem \
 	certs/ig-ky-boss.pem \
