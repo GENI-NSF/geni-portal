@@ -24,6 +24,9 @@ cert_FILES = \
 	certs/ig-utah-boss.pem \
 	certs/ig-utah-cm.pem \
 	certs/ig-utah-of.pem \
+	certs/ig-utahddc-boss.pem \
+	certs/ig-utahddc-cm.pem \
+	certs/ig-utahddc-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \
