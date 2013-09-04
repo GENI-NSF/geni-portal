@@ -188,6 +188,16 @@ class Member {
   }
 }
 
+function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
+{
+  $attrs = array('eppn' => $eppn);
+  $members = ma_lookup_members($ma_url, $signer, $attrs);
+  if (count($ma_members) == 0) {
+    return null;
+  }
+  return $members[0];
+}
+
 function ma_lookup_members($ma_url, $signer, $lookup_attrs)
 {
   global $member_cache;
