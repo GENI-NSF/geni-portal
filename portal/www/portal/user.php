@@ -366,7 +366,7 @@ function geni_load_user_by_eppn($eppn)
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   //  $attrs = array('eppn' => $eppn);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
-  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn)
+  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
   if (is_null($member)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");
