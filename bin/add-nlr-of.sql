@@ -1,9 +1,9 @@
 -- -----------------------------------------------------------------
--- Create the entry for InstaGENI Georgia Tech FOAM aggregate:
+-- Create the entry for NLR OpenFlow aggregate:
 --
 -- Execute as:
 --
---    psql -U portal -h localhost -f add-ig-gatech-of.sql portal
+--    psql -U portal -h localhost -f add-nlr-of.sql portal
 --
 -- -----------------------------------------------------------------
 
