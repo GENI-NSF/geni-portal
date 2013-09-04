@@ -35,6 +35,7 @@ cert_FILES = \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \
 	certs/pgeni3.pem \
+	certs/uen-of.pem \
 	certs/utah-am.pem \
 	certs/irods.pem \
 	certs/irods-test.pem
