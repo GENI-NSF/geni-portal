@@ -10,6 +10,7 @@ cert_FILES = \
 	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
         certs/gpo-of.pem \
+	certs/i2-of.pem \
 	certs/ig-gatech-boss.pem \
 	certs/ig-gatech-cm.pem \
 	certs/ig-gatech-of.pem \
