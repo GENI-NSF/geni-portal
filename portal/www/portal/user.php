@@ -364,18 +364,15 @@ function send_attribute_fail_email()
 function geni_load_user_by_eppn($eppn)
 {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-  $attrs = array('eppn' => $eppn);
+  //  $attrs = array('eppn' => $eppn);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
-  $ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
-  $count = count($ma_members);
-  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found " . $count . " members.");
-  if ($count == 0) {
+  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn)
+  if (is_null($member)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");
-  } else if ($count > 1) {
-    // ERROR: multiple users under unique key
+  } else {
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found member for EPPN " . $eppn);
   }
-  $member = $ma_members[0];
   $user = new GeniUser();
   $user->init_from_member($member);
   return $user;
