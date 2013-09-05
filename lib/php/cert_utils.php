@@ -180,4 +180,45 @@ function make_urn($authority, $type, $name)
 {
   return "urn:publicid:IDN+$authority+$type+$name";
 }
+
+
+/**
+ * Return the GENI URN from the parsed certificate given.
+ * If no URN is present, return NULL.
+ *
+ * @param $parsed_cert the result of openssl_x509_parse()
+ */
+function parsed_cert_geni_urn($parsed_cert) {
+  $urn = NULL;
+  $extensions_key = 'extensions';
+  $subjectAltName_key = 'subjectAltName';
+
+  if (array_key_exists($extensions_key, $parsed_cert)) {
+    $extensions = $parsed_cert[$extensions_key];
+    if (array_key_exists($subjectAltName_key, $extensions)) {
+      $altname = $extensions[$subjectAltName_key];
+      /* altnames are comma separated, so split it up. */
+      $altnames = explode(",", $altname);
+      foreach ($altnames as $name) {
+        /* remove whitespace */
+        $tname = trim($name);
+        if (strpos($tname, 'URI:urn:publicid:IDN') === 0) {
+          $urn = substr($tname, strlen('URI:'));
+        }
+      }
+    }
+  }
+  /* $urn will be NULL if no URN is found in the certificate. */
+  return $urn;
+}
+
+/**
+ * Return the GENI URN from the PEM encoded certificate given.
+ * If no URN is present, return NULL.
+ *
+ * @param $pem_cert A PEM encoded certificate string.
+ */
+function pem_cert_geni_urn($pemcert) {
+  return parsed_cert_geni_urn(openssl_x509_parse($pemcert));
+}
 ?>
