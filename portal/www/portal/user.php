@@ -325,14 +325,14 @@ class GeniUser
  */
 function incommon_attribute_redirect()
 {
-	$error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
-	$params['sp_entityID'] = "https://" . $_SERVER['SERVER_NAME'] . "/shibboleth";
-	$params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
-	$query = http_build_query($params);
-	$url = $error_service_url . $query;
-	error_log("Insufficient attributes. Redirecting to $url");
-	header("Location: $url");
-	exit;
+  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
+  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+  $query = http_build_query($params);
+  $url = $error_service_url . $query;
+  error_log("Insufficient attributes. Redirecting to $url");
+  header("Location: $url");
+  exit;
 }
 
 /**
