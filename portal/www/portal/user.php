@@ -429,6 +429,9 @@ function geni_load_identity_by_eppn($eppn)
 	error_log("IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
 	geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
 	// FIXME: Update the identity_attribute table!
+	// "update identity_attribute set value = '" . $conn->quote($_SERVER[$row['name']], 'text') . "' where identity_id = " . $conn->quote($identity['identity_id'], 'text') . " and name = '" . $conn->quote($row['name'], 'text')
+	// What about ma_member_attribute? That one is harder to generalize
+	// update ma_member_attribute set value = <new> where value = <old> and member_id = !!!! <and name = !!!
       }
     }
   }
