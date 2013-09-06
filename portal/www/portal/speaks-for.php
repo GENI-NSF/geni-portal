@@ -36,7 +36,7 @@ $toolurn = pem_cert_geni_urn($toolcert);
 /*
  * XXX FIXME: put the authorization service URL in a config file.
  */
-$auth_svc_js = 'https://tabletop.gpolab.bbn.com/xml-signer/geni-auth.js'
+$auth_svc_js = 'https://tabletop.gpolab.bbn.com/xml-signer/geni-auth.js';
 
 /*------------------------------------------------------------
  * Page display starts here
@@ -61,6 +61,13 @@ portal.authZResponse = function(speaks_for_cred)
   // Called if the user authorizes us in the signing tool
   alert('Response available from genilib.authorize');
   $("#cred").text(speaks_for_cred).html();
+  var jqxhr = $.post('speaks-for-upload.php', speaks_for_cred);
+  jqxhr.done(function(data, textStatus, jqxhr) {
+      alert('got result: ' + textStatus);
+    })
+  .fail(function(data, textStatus, jqxhr) {
+      alert('got fail result: ' + textStatus);
+    });
 }
 portal.initialize = function()
 {

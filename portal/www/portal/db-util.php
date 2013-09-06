@@ -395,4 +395,44 @@ function record_last_seen($user, $request_uri)
   }
 }
 
+function store_speaks_for($user, $cred, $expires) {
+  $conn = portal_conn();
+  $q_cred = $conn->quote($cred, 'text');
+  $q_expires = $conn->quote($expires, 'timestamp');
+  $q_member_id = $conn->quote($user->account_id, 'text');
+  $q_member_urn = $conn->quote($user->urn(), 'text');
+
+  $sql = "UPDATE speaks_for SET";
+  $sql .= " cred = " . $q_cred;
+  $sql .= ", upload_ts = now() at time zone 'utc'";
+  $sql .= ", expires_ts = " . $q_expires;
+  $sql .= " WHERE member_id = " . $q_member_id;
+  $result = db_execute_statement($sql, "store_speaks_for update");
+  // geni_syslog("UPDATE result = " . print_r($result, true));
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "record_last_seen update: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
+    return false;
+  } elseif ($result[RESPONSE_ARGUMENT::VALUE] == 0) {
+    // There was nothing to update, so do the insert
+    $sql = "INSERT INTO speaks_for";
+    $sql .= ' (cred, upload_ts, expires_ts, member_id, member_urn)';
+    $sql .= " VALUES ($q_cred, now() at time zone 'utc', $q_expires,";
+    $sql .= "         $q_member_id, $q_member_urn)";
+    //geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+    $result = db_execute_statement($sql, "record_last_seen insert");
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $msg = "store_speaks_for insert: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+      error_log($msg);
+      return false;
+    }
+    return true;
+  } else {
+    // The update succeeded, return true
+    return true;
+  }
+}
+
 ?>

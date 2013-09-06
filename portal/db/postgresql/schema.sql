@@ -244,3 +244,21 @@ CREATE TABLE last_seen (
   PRIMARY KEY (id)
 );
 CREATE INDEX last_seen_member_id ON last_seen (member_id);
+
+-- ----------------------------------------------------------------------
+-- speaks for
+--
+-- Record a speaks for credential for users.
+-- ----------------------------------------------------------------------
+DROP TABLE IF EXISTS speaks_for;
+
+CREATE TABLE speaks_for (
+  id SERIAL,
+  member_id UUID NOT NULL,
+  member_urn VARCHAR NOT NULL,
+  upload_ts timestamp NOT NULL,
+  expires_ts timestamp NOT NULL,
+  cred VARCHAR,
+  PRIMARY KEY (id)
+);
+CREATE INDEX speaks_for_member_id ON speaks_for (member_id);

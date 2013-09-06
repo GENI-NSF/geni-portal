@@ -171,6 +171,7 @@ dist_svcweb_DATA = \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
 	www/portal/speaks-for.php \
+	www/portal/speaks-for-upload.php \
 	www/portal/sr_controller_test.php \
 	www/portal/sshkeyedit.php \
 	www/portal/starter-status-bar.php \
