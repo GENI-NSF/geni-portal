@@ -31,6 +31,7 @@ require_once('pa_client.php');
 require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
+require_once 'cs_constants.php';
 include_once('/etc/geni-ch/settings.php');
 
 
@@ -202,27 +203,31 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
   
-  /* Google Analytics */
-  if($portal_enable_analytics) {
-    // FIXME: Allow some users (e.g. operators) to bypass tracking
-    echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
-    echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
-    echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
-    echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
-    
-    /* Get this from /etc/geni-ch/settings.php */
-    if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
-      /* Use the following tracking IDs depending on which server this will be running on
-        portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
-        portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
-      */
-      $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+  /* Google Analytics
+     Get this from /etc/geni-ch/settings.php, but first check to see if
+       $portal_analytics_enable exists
+  */
+  if(isset($portal_analytics_enable)) {
+    if($portal_analytics_enable) {
+      // FIXME: Allow some users (e.g. operators) to bypass tracking
+      echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+      echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+      echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+      echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+      
+      if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
+        /* Use the following tracking IDs depending on which server this will be running on
+          portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+          portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+        */
+        $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+      }
+      
+      echo $portal_analytics_string;
+      
+      echo "ga('send', 'pageview');";
+      echo '</script>';
     }
-    
-    echo $portal_analytics_string;
-    
-    echo "ga('send', 'pageview');";
-    echo '</script>';
   }
 
   /* Close the "head" */
