@@ -134,6 +134,7 @@ dist_svcweb_DATA = \
 	www/portal/ma_controller_test.php \
 	www/portal/maintenance_redirect_page.php \
 	www/portal/map.html \
+	www/portal/map.php \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/pa_controller_test.php \
@@ -219,8 +220,21 @@ dist_svcwebcss_DATA =  \
 	www/common/css/portal.css
 
 dist_svcwebmap_DATA =  \
-  www/common/map/current.json \
-  www/common/map/map-small.html
+	www/common/map/current.json \
+	www/common/map/map-small.html \
+	www/common/map/rspec-emulab-net.xml \
+	www/common/map/rspec-exogeni-net-bbnvmsite.xml \
+	www/common/map/rspec-exogeni-net-fiuvmsite.xml \
+	www/common/map/rspec-exogeni-net-rcivmsite.xml \
+	www/common/map/rspec-exogeni-net-uhvmsite.xml \
+	www/common/map/rspec-exogeni-net.xml \
+	www/common/map/rspec-geni-kettering-edu.xml \
+	www/common/map/rspec-instageni-gpolab-bbn-com.xml \
+	www/common/map/rspec-instageni-northwestern-edu.xml \
+	www/common/map/rspec-lan-sdn-uky-edu.xml \
+	www/common/map/rspec-uky-emulab-net.xml \
+	www/common/map/rspec-utah-geniracks-net.xml \
+	www/common/map/rspec-utahddc-geniracks-net.xml
 
 dist_svcwebmapdisplay_DATA =  \
   www/common/map/1080display/index.php \
