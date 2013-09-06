@@ -235,6 +235,11 @@ foreach($all_project_member_row_elements as $apmre) {
   print "<tr><td>$member_url</td><td>$member_role</td><td>$member_actions</td></tr>\n";
 }
 
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
+$edit_members_disabled = "";
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id) || $in_lockdown_mode) {
+  $edit_members_disabled = $disabled;
+}
 
 ?>
 </table>
@@ -246,7 +251,7 @@ print "<p><i>Want to add someone not listed above? <a href='$upload_project_url'
 $submit_label = "Modify";
 
 print "<p>\n";
-print "<input type=\"submit\" value=\"$submit_label\"/>\n";
+print "<input type=\"submit\" value=\"$submit_label\" ". $edit_members_disabled. "/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 ?>
 </form>
