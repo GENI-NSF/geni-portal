@@ -76,7 +76,7 @@ if (! key_exists('mail', $_SERVER)) {
 // user before displaying the page. If this user is already
 // registered, redirect to the home page.
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$member = ma_lookup_member_by_epph($ma_url, Portal::getInstance(), $eppn)
+$member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
   //$attrs = array('eppn' => $eppn);
   //$ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
   //$count = count($ma_members);
