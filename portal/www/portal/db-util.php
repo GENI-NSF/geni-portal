@@ -435,4 +435,27 @@ function store_speaks_for($user, $cred, $expires) {
   }
 }
 
+function fetch_speaks_for($user, &$expires) {
+  $expires = null;
+  $conn = portal_conn();
+  $q_member_id = $conn->quote($user->account_id, 'text');
+  $sql = 'SELECT cred, expires_ts FROM speaks_for';
+  $sql .= ' WHERE member_id = ' . $q_member_id;
+  /* print "Query = $sql<br/>"; */
+  $result = db_fetch_row($sql, "fetch_speaks_for");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $msg = "fetch_speaks_for: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+      error_log($msg);
+      return false;
+  } elseif (is_null($result[RESPONSE_ARGUMENT::VALUE])) {
+    // No credential in DB
+    return null;
+  } else {
+    $row = $result[RESPONSE_ARGUMENT::VALUE];
+    $expires = $row['expires_ts'];
+    return $row['cred'];
+  }
+}
+
 ?>

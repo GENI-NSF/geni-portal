@@ -28,6 +28,8 @@
 require_once 'header.php';
 require_once 'portal.php';
 require_once 'cert_utils.php';
+require_once 'user.php';
+require_once 'db-util.php';
 
 $portal = Portal::getInstance();
 $toolcert = $portal->certificate();
@@ -37,6 +39,22 @@ $toolurn = pem_cert_geni_urn($toolcert);
  * XXX FIXME: put the authorization service URL in a config file.
  */
 $auth_svc_js = 'https://tabletop.gpolab.bbn.com/xml-signer/geni-auth.js';
+
+$user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+
+$cred = fetch_speaks_for($user, $expires);
+if ($cred === false) {
+  // A database error occurred
+  $cred_info = '<i>DB Error fetching credential</i><br/>';
+} elseif (is_null($cred)) {
+  $cred_info = '<i>No credential in DB</i><br/>';
+} else {
+  $cred_info = "<i>Credential expires $expires</i><br/>";
+}
+
 
 /*------------------------------------------------------------
  * Page display starts here
@@ -85,6 +103,10 @@ $(document).ready(portal.initialize);
    * has disappeared.
    */
 ?>
+<div>
+<?php echo $cred_info; ?>
+</div>
+
 <form onsubmit="return false;">
    <input id="authorize"
           type="submit"
