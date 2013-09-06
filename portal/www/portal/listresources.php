@@ -129,8 +129,13 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
 
 
 $header = "Resources on slice: $slice_name";
-$msg = $retVal[0];
-$obj = $retVal[1];
+if (! is_array($retVal) or count($retVal) == 1) {
+  $msg = $retVal;
+  $obj = null;
+} else {
+  $msg = $retVal[0];
+  $obj = $retVal[1];
+}
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 ?>
@@ -152,15 +157,16 @@ include("tool-breadcrumbs.php");
 
 print "<h2>$header</h2>\n";
 
-if (isset($obj) && $obj && $obj != '') {
+if (isset($obj) && $obj && is_array($obj)) {
   $filterToAM = True;
   print_rspec( $obj, $pretty, $filterToAM );
 } else {
+  // FIXME: $obj might be an error message?
   print "<i>No resources found.</i><br/>\n";
 }
 
 if (isset($msg) && $msg && $msg != '') {
-  error_log($msg);
+  error_log("ListResources message: " . $msg);
 }
 
 if ($slivers_output) {

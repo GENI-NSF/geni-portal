@@ -5,7 +5,7 @@
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
   * SSH public key from downloaded pair filename should end in .pub (#681)
-  * Mark uploaded RSplecs as private by default (#421)
+  * Mark uploaded RSpecs as private by default (#421)
   * Handle malformed XML in RSpec upload (#720)
   * Remove unnecessary host reference (#755)
   * Output account request passwords in monospace font (#732)
@@ -15,6 +15,7 @@
   * Add new GPO sandboxes to utility scripts (#745)
   * Allow case-insensitive upload of member email addresses (#713)
   * Fix sliver status page (resource status) (#429)
+  * Remove custom pgch; use version from latest GCF. Now requires gcf 2.4+ (#347,#392)
   * Ensure that only leads and admins can edit slice membership (#533)
 
 == 2.0 ==
