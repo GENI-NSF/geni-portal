@@ -35,6 +35,7 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once("settings.php");
+require_once('logging_constants.php');
 require_once('logging_client.php');
 require_once('am_map.php');
 require_once('status_constants.php');
