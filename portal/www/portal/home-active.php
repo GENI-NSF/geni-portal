@@ -31,6 +31,7 @@
 // $user should be bound to the current user
 
 require_once("util.php");
+require_once('logging_constants.php');
 include("services.php");
 
   // Actions / approvals required 
