@@ -1,4 +1,4 @@
-AC_INIT([geni-pgch], [0.1], [portal-help@geni.net])
+AC_INIT([geni-pgch], [0.3], [portal-help@geni.net])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC

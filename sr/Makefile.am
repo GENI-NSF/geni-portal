@@ -2,6 +2,7 @@ svcdatadir = $(pkgdatadir)/sr
 
 cert_FILES = \
 	certs/Thawte_Premium_Server_CA.pem \
+	certs/exo-gpo-of.pem \
 	certs/exo-bbn-am.pem \
 	certs/exo-fiu-am.pem \
 	certs/exo-nicta-am.pem \
@@ -10,6 +11,9 @@ cert_FILES = \
 	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
         certs/gpo-of.pem \
+	certs/i2-of.pem \
+	certs/ig-gatech-boss.pem \
+	certs/ig-gatech-cm.pem \
 	certs/ig-gatech-of.pem \
 	certs/ig-gpo-boss.pem \
 	certs/ig-gpo-cm.pem \
@@ -27,10 +31,13 @@ cert_FILES = \
 	certs/ig-utahddc-boss.pem \
 	certs/ig-utahddc-cm.pem \
 	certs/ig-utahddc-of.pem \
+	certs/nlr-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \
 	certs/pgeni3.pem \
+	certs/sox-of.pem \
+	certs/uen-of.pem \
 	certs/utah-am.pem \
 	certs/irods.pem \
 	certs/irods-test.pem

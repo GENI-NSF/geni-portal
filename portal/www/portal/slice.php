@@ -35,6 +35,7 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once("settings.php");
+require_once('logging_constants.php');
 require_once('logging_client.php');
 require_once('am_map.php');
 require_once('status_constants.php');
@@ -53,12 +54,8 @@ if (isset($slice_expired) && $slice_expired == 't' ) {
   $disable_buttons_str = " disabled";
 }
 
-if (! isset($services)) {
-  $services = get_services();
-}
-
 if (! isset($all_ams)) {
-  $am_list = select_services($services, SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $all_ams = array();
   foreach ($am_list as $am) 
   {
@@ -88,7 +85,7 @@ function compare_members_by_role($mem1, $mem2)
 
 function build_agg_table_on_slicepg() 
 {
-     global $all_ams;
+     global $am_list;
      global $slice;
      global $slice_id;
      global $renew_slice_privilege;
@@ -110,7 +107,6 @@ function build_agg_table_on_slicepg()
      $initial_text = "not retrieved";
 
      // (2) create an HTML table with one row for each aggregate
-     $json_agg = $all_ams;
      $output = "<table id='status_table'>";
      //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
      $output .= "<tr>";
@@ -120,8 +116,9 @@ function build_agg_table_on_slicepg()
      //      output .= "<th>&nbsp;</th>";
      $output .= "<th>Renew</th>";
      $output .= "<th>Actions</th></tr>\n";
-     foreach ($json_agg as $am_id => $agg ) {
-	    $name = $agg['name'];
+     foreach ($am_list as $am) {
+	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+            $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
             $output .= "<tr id='".$am_id."'>";
 	    $output .= "<td id='status_".$am_id."' class='notqueried'>";	
 	    $output .= $initial_text;
