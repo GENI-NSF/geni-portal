@@ -2,6 +2,9 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.2 ==
+  * Find owning aggregate using sliver_id for manifest (#712)
+
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
   * SSH public key from downloaded pair filename should end in .pub (#681)

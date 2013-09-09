@@ -66,6 +66,26 @@ function get_name_from_urn( $urn ){
   return $name;
 }
 
+function get_auth_from_urn( $urn ){
+  if (! isset($urn) or $urn == "") {
+    return $urn;
+  }
+  if (strpos($urn, "urn:publicid:IDN+") < 0) {
+    return $urn;
+  }
+  // Exclude the usual prefix with trailing +
+  $temp = substr($urn, strlen("urn:publicid:IDN+"));
+  if (! $temp or $temp == "") {
+    return $urn;
+  }
+  // grap all up to the next +
+  $auth = substr($temp, 0, strpos("+"));
+  if (! $auth or $auth == "") {
+    return $urn;
+  }
+  return $auth;
+}
+
 function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $componentMgrURN=""){
   $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
@@ -109,7 +129,14 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $comp_id = $node['component_id'];
     $comp_mgr_id = $node['component_manager_id'];
     if ($filterToAM and ($comp_mgr_id!=$componentMgrURN)){
+      $sliver_id = $node['sliver_id'];
+      $sliver_auth = get_auth_from_urn($urn);
+      $compMgrAuth = get_auth_from_urn($componentMgrURN);
+      if ($sliver_auth == $compMgrAuth) {
+	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+      } else {
        continue;
+      }
     }
     $node_num = $node_num+1;
     $comp_name = get_name_from_urn($comp_id);
@@ -201,7 +228,14 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $comp_mgrs = $link->component_manager;
     $componentMgrName = $comp_mgrs['name'];		      
     if ($filterToAM and ($componentMgrName!=$componentMgrURN)){
-       continue;
+      $sliver_id = $link['sliver_id'];
+      $sliver_auth = get_auth_from_urn($urn);
+      $compMgrAuth = get_auth_from_urn($componentMgrURN);
+      if ($sliver_auth == $compMgrAuth) {
+	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+      } else {
+	continue;
+      }
     }
     echo "<b>Link #",$link_num,"</b>";
     $link_num = $link_num+1;
