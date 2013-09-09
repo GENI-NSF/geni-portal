@@ -289,17 +289,10 @@ function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
 function ma_lookup_member_by_eppn($ma_url, $signer, $eppn) {
   $attrs = array('eppn' => $eppn);
   $result = ma_lookup_members($ma_url, $signer, $attrs);
-  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+  if (count($result) == 0) {
     return null;
   }
-  $value = $result[RESPONSE_ARGUMENT::VALUE];
-  if (len(value) == 0) {
-    return null;
-  }
-  $member_info = $value[0];
-  $member = new Member();
-  $member->init_from_record($member_info);
-  return $member;
+  return $result[0];
 }
 
 function ma_lookup_member_by_id($ma_url, $signer, $member_id)
