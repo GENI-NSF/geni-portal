@@ -76,10 +76,12 @@ if (! key_exists('mail', $_SERVER)) {
 // user before displaying the page. If this user is already
 // registered, redirect to the home page.
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-$attrs = array('eppn' => $eppn);
-$ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
-$count = count($ma_members);
-if ($count !== 0) {
+$member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
+  //$attrs = array('eppn' => $eppn);
+  //$ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
+  //$count = count($ma_members);
+  //if ($count !== 0) {
+if (!is_null($member)) {
   // Existing account, go to home page or to referer
   if ($redirect_address != '') {
     relative_redirect($redirect_address);

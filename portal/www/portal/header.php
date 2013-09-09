@@ -31,7 +31,7 @@ require_once('pa_client.php');
 require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
-require_once 'cs_constants.php';
+require_once('cs_constants.php');
 include_once('/etc/geni-ch/settings.php');
 
 
