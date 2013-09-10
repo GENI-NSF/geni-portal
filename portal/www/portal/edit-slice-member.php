@@ -197,10 +197,10 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 print "<h1>Edit GENI Slice Membership: " . $slice_name . "</h1>";
 ?>
 
-<p>Slice members will be able to login to resources reserved <i>in the future</i> if</p>
+<p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
 <ul>
- <li>the resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
- <li>the slice member has uploaded an ssh public key.</li>
+ <li>The resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
+ <li>The slice member has uploaded an ssh public key.</li>
 </ul>
 
 <form method="POST" action="do-edit-slice-member.php">
