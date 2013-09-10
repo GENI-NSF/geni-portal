@@ -100,14 +100,15 @@ function compute_permission_manager($rows)
   $pm  = new PermissionManager();
   foreach($rows as $row)
     {
+      /*
+	FIXME: New CHAPI wants this code
       $permission = $row[0];
       $context_type = $row[1];
       $context = $row[2];
-      /*
+      */
       $permission = $row['name'];
       $context_type = $row[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE];
       $context = $row[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
-      */
       $pm->add($permission, $context_type, $context);
     }
   //  error_log("CPM = " . $pm);
