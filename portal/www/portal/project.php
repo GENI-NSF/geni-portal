@@ -116,7 +116,7 @@ foreach ($members as $m) {
   }
 }
 if (! $user_is_project_member) {
-  $_SESSION['lastmessage'] = ('User has no privileges to view project '
+  $_SESSION['lasterror'] = ('User has no privileges to view project '
                               . $project_name);
   relative_redirect('home.php');
 }

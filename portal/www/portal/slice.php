@@ -192,23 +192,12 @@ if (isset($slice)) {
   $members = get_slice_members($sa_url, $user, $slice_id);
   $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					       SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
-}
-
-show_header('GENI Portal: Slices', $TAB_SLICES);
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
-
-
-if (! isset($slice)) {
+} else {
   print "Unable to load slice<br/>\n";
-  include("footer.php");
+  $_SESSION['lasterror'] = "Unable to load slice";
+  relative_redirect("home.php");
   exit();
 }
-
-?>
-
-
-<?php
 
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
 $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
@@ -255,7 +244,7 @@ $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 
 if(!$lookup_slice_privilege) {
-  $_SESSION['lastmessage'] = 'User has no privileges to view slice ' . $slice_name;
+  $_SESSION['lasterror'] = 'User has no privileges to view slice ' . $slice_name;
   relative_redirect('home.php');
 }
 
@@ -270,6 +259,10 @@ if ($project_expiration) {
   // take the minimum of the two as the constraint
   $renewal_days = min($renewal_days, $portal_max_slice_renewal_days);
 }
+
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 ?>
 
