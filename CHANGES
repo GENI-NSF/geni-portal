@@ -18,6 +18,8 @@
   * Remove custom pgch; use version from latest GCF. Now requires gcf 2.4+ (#347,#392)
   * Ensure that only leads and admins can edit slice membership (#533)
   * Re define how we lookup members by EPPN
+  * Take out links to slice-member page which is not informative and
+  often forbidden (#538)
 
 == 2.0 ==
   * Fix Google Analytics string to be a global variable (#743)
