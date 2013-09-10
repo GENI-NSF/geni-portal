@@ -24,7 +24,6 @@
   * Update aggregate location data for map (#780)
   * Add additional validation checks to RSpec upload (#781)
   * Add additional aggregates for internal testing (#779)
-  * Re define how we lookup members by EPPN
   * Take out links to slice-member page which is not informative and
   often forbidden (#538)
 
