@@ -535,13 +535,13 @@ if ($didCreate) {
   if ($zone === "")
     $zone = $default_zone;
   if (is_null($irodsEnv)) {
-      print "<p>irodsHost=$irods_host<br/>\n";
-      print "irodsPort=$irods_port<br/>\n";
-      print "irodsDefResource=$irods_resource<br/>\n";
-      print "irodsHome=/$zone/home/$username<br/>\n";
-      print "irodsCwd=/$zone/home/$username<br/>\n";
-      print "irodsUserName=$username<br/>\n";
-      print "irodsZone=$zone</p>\n";
+      print "<pre>irodsHost=$irods_host\n";
+      print "irodsPort=$irods_port\n";
+      print "irodsDefResource=$irods_resource\n";
+      print "irodsHome=/$zone/home/$username\n";
+      print "irodsCwd=/$zone/home/$username\n";
+      print "irodsUserName=$username\n";
+      print "irodsZone=$zone</pre>\n";
     } else {
       $irodsEnv = preg_replace("/\n/", "<br/>\n", $irodsEnv);
       print "<p>$irodsEnv</p\n";
@@ -570,13 +570,13 @@ if ($didCreate) {
   if ($zone === "")
     $zone = $default_zone;
   if (is_null($irodsEnv)) {
-      print "<p>irodsHost=$irods_host<br/>\n";
-      print "irodsPort=$irods_port<br/>\n";
-      print "irodsDefResource=$irods_resource<br/>\n";
-      print "irodsHome=/$zone/home/$username<br/>\n";
-      print "irodsCwd=/$zone/home/$username<br/>\n";
-      print "irodsUserName=$username<br/>\n";
-      print "irodsZone=$zone</p>\n";
+      print "<pre>irodsHost=$irods_host\n";
+      print "irodsPort=$irods_port\n";
+      print "irodsDefResource=$irods_resource\n";
+      print "irodsHome=/$zone/home/$username\n";
+      print "irodsCwd=/$zone/home/$username\n";
+      print "irodsUserName=$username\n";
+      print "irodsZone=$zone</pre>\n";
     } else {
       $irodsEnv = preg_replace("/\n/", "<br/>\n", $irodsEnv);
       print "<p>$irodsEnv</p\n";
