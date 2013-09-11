@@ -31,7 +31,7 @@ require_once('pa_client.php');
 require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
-require_once 'cs_constants.php';
+require_once('cs_constants.php');
 include_once('/etc/geni-ch/settings.php');
 
 
@@ -173,7 +173,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $extra_js;
   global $in_maintenance_mode;
   global $in_lockdown_mode;
-  global $portal_enable_analytics;
+  global $portal_analytics_enable;
   global $portal_analytics_string;
 
   if ($load_user) {

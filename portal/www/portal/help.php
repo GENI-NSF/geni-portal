@@ -45,7 +45,8 @@ $hostname = $_SERVER['SERVER_NAME'];
 print "$hostname";
 ?>
 /login-help.php">GENI Accounts and Portal Login Issues</a></li>
-<li><a href="mailto:portal-help@geni.net">Email Portal Help</a></li>
+  <li><a href="mailto:portal-help@geni.net">Email Portal Help</a> for questions, comments or problems using this website.</li>
+  <li><a href="mailto:help@geni.net">Email GENI Help</a> for questions or issues with GENI resources, designing experiments, or other general GENI issues.</li>
 </ul>
 <?php
 include("footer.php");

@@ -278,6 +278,15 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
 
 function print_rspec( $obj, $pretty, $filterToAM ) {
   $args = array_keys( $obj );
+
+  // How many AMs reported actual results
+  $amc = 0;
+  foreach ($args as $arg){
+    if (array_key_exists('value', $obj[$arg]) and array_key_exists('code', $obj[$arg]) and $obj[$arg]['code']['geni_code'] == 0) {
+      $amc = $amc + 1;
+    }
+  }
+
   foreach ($args as $arg){
     $arg_url = $arg;
     $am_id = am_id( $arg_url );
@@ -296,8 +305,11 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
     }
 
     /* If pretty, keep output clean by only printing RSpec for
-       aggregates which have a slice (ie code!=12 or code !==2)*/
-    if (!(($code == 12 or $code == 2) and $pretty)){
+       aggregates which have a slice (ie code!=12 or code !==2).
+       -- unless there are no aggregates with resources, in which case
+       we print the error.
+    */
+    if (!(($code == 12 or $code == 2) and $pretty and $amc >= 1)){
       print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
       print "<div class='resources' id='agg_" . $am_id ."'>";
       if ($code == 0){

@@ -3135,16 +3135,20 @@ function modify_slice_membership($args, $message)
       $slice_lead = $member_id;
       if ($my_uid === $member_id) {
 	$member_change_allowed = true;
+	break;
       }
     }
     if ($role == CS_ATTRIBUTE_TYPE::ADMIN) {
-      if ($my_uid ===$member_id) {
+      if ($my_uid === $member_id) {
 	$member_change_allowed = true;
+	if (! is_null($slice_lead)) {
+	  break;
+	}
       }
     }
   }
   if (!$member_change_allowed) {
-    return generate_response(RESPONSE_ERROR::ARGS, null, "Only lead or admin can change slice membership");
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, "Only a lead or admin can change slice membership");
   }
 
   // Must be a slice lead, else something is wrong with slice
@@ -3158,8 +3162,8 @@ function modify_slice_membership($args, $message)
 		       array_keys($slice_members), true)) 
     {
       return generate_response(RESPONSE_ERROR::ARGS, null, 
-			       "Can't add member to a slice that " . 
-			       "already belongs");
+			       "Can't add member to a slice to which they " . 
+			       "already belong");
     }
 
   // No new roles for members who aren't slice members

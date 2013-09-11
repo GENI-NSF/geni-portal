@@ -116,7 +116,7 @@ foreach ($members as $m) {
   }
 }
 if (! $user_is_project_member) {
-  $_SESSION['lastmessage'] = ('User has no privileges to view project '
+  $_SESSION['lasterror'] = ('User has no privileges to view project '
                               . $project_name);
   relative_redirect('home.php');
 }
@@ -208,13 +208,13 @@ print "</table>\n";
 // a permission error on lookup_slices
 
 ?>
-<h2>Project slices:</h2>
+<h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");
 ?>
 
-<h2>Project members</h2>
+<h2>Project Members</h2>
 
 <?php
 
@@ -274,7 +274,7 @@ echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_project
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
-  print "<h3>Add new project members</h3>";
+  print "<h3>Add New Project Members</h3>";
   print "<p><button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button>";
 
   //  print "<br/><h3>Invite new project members</h3>\n";
