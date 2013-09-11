@@ -250,7 +250,11 @@ if (! isset($ma_url)) {
 }
 
 // This is just the default - otherwise it comes from the SR
+// Test server
 $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+
+// Production server
+// $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
 
 /* TODO put these in the service registry or similar */
 $irods_host = "irods_hostname"; // FIXME
@@ -273,7 +277,7 @@ if (! isset($irods_url) || is_null($irods_url) || $irods_url == '') {
 }
 
 /* Get this from /etc/geni-ch/settings.php */
-if (! isset($portal_irods_user) || isnull($portal_irods_user)) {
+if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
   $portal_irods_user = 'rods'; // FIXME: Testing value
   $portal_irods_pw = 'rods'; // FIXME: Testing value
 }
@@ -526,6 +530,7 @@ if ($didCreate) {
   print "<br/>\n";
   if (! is_null($irodsWebURL))
     print "<p>To act on your iRODS account, go to <a href=\"$irodsWebURL\">$irodsWebURL</a>.</p>\n";
+  print "<p>To learn more about using iRODS, go to <a href=\"http://groups.geni.net/geni/wiki/HowToUseiRODS\">http://groups.geni.net/geni/wiki/HowToUseiRODS</a>.</p>\n";
   print "To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
   if ($zone === "")
     $zone = $default_zone;
@@ -560,6 +565,7 @@ if ($didCreate) {
     print "<p><b>WARNING: This iRODS user has your username but a different DN. Is this you? Your DN is: " . $subjectDN . "</b></p>\n";
   if (! is_null($irodsWebURL))
     print "<p>To act on your iRODS account, go to <a href=\"$irodsWebURL\">$irodsWebURL</a>.</p>\n";
+  print "<p>To learn more about using iRODS, go to <a href=\"http://groups.geni.net/geni/wiki/HowToUseiRODS\">http://groups.geni.net/geni/wiki/HowToUseiRODS</a>.</p>\n";
   print "To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
   if ($zone === "")
     $zone = $default_zone;

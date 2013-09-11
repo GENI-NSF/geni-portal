@@ -67,30 +67,27 @@ include("tool-breadcrumbs.php");
 // Produce a table of projects you could join
 // project name, project lead, project description, Button to Join
 
-print "<h2>Join a Project</h2>\n";
+print "<h1>Join a Project</h1>\n";
 
-print "All GENI actions must be taken in the context of a project.<br/>\n";
-print "On this page, you can request to join a project.<br/><br/> " 
-  . "The project lead will be sent an email, to approve or deny your request.\n";
+print "<p>All GENI actions must be taken in the context of a project. On this page, you can request to join a project.</p>" 
+  . "<p>The project lead will be sent an email, to approve or deny your request.\n";
 print "That email will have a link to a page where the lead can act on your request.\n";
 print "When the project lead acts on your request, you will get an email " .
 "notifying you whether your request was approved.\n";
-print "Once approved, you can create a slice, or request to join an existing slice.<br/>\n";
+print "Once approved, you can create a slice, or request to join an existing slice.</p>\n";
 
-print "<br/>\n";
 
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
-  print "<i>There are no more projects for you to join.</i><br/>\n";
+  print "<p><i>There are no more projects for you to join.</i></p>\n";
   if (count($rpids) > 0) {
-    print "You have " . count($rpids) . " open <a href='projects.php'>request(s) to join a project</a>.<br/>";
+    print "<p>You have " . count($rpids) . " open <a href='projects.php'>request(s) to join a project</a>.</p>";
   }
-  print "<br/>\n";
 
 } else {
 
-  print "<h3>Select a project to join</h3>\n";
+  print "<h2>Select a project to join</h2>\n";
   print "<table>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
@@ -119,19 +116,19 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
   }
-  print "</table><br/>\n";
+  print "</table>\n";
 }
 
-print "If you didn't see a project in which you want to work, you can: \n";
+print "<p>If you didn't see a project in which you want to work, you can: \n";
 // If the user can create a project, show the Create Project Button
 if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
-  print "<button onClick=\"window.location='edit-project.php'\"><b>Create a New Project</b></button><br/>\n";
+  print "<button onClick=\"window.location='edit-project.php'\"><b>Create a New Project</b></button>\n";
 } else {
 // Else, Show button to invite someone to create you a project
-  print "<button onClick=\"window.location='ask-for-project.php'\"><b>Ask For a New Project</b></button><br/>\n";
+  print "<button onClick=\"window.location='ask-for-project.php'\"><b>Ask For a New Project</b></button>\n";
 }
-print "<br/>\n";
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "</p>\n";
+print "<p><input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 
 include("footer.php");
 ?>

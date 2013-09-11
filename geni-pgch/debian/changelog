@@ -1,3 +1,9 @@
+geni-pgch (0.3) unstable; urgency=low
+
+  * Update with --use-gpo-ch for compatibility with gcf-2.3.1 or later
+
+ -- Tom Mitchell <tmitchell@bbn.com>  Thu, 05 Sep 2013 21:24:49 +0000
+
 geni-pgch (0.2) unstable; urgency=low
 
   * Add logging for python daemon

@@ -91,6 +91,7 @@ class SR_TABLE_FIELDNAME {
   const SERVICE_CERT_CONTENTS = "service_cert_contents";
   const SERVICE_NAME = "service_name";
   const SERVICE_DESCRIPTION = "service_description";
+  const SERVICE_URN = "service_urn";
 }
 
 /* Name of table which holds SR name/value attributes */

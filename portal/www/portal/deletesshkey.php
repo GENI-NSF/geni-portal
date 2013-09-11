@@ -25,12 +25,6 @@
 require_once("settings.php");
 require_once("user.php");
 
-function portal_log($message)
-{
-  $logfile = "/tmp/portal.log";
-  error_log($message . "\n", 3, $logfile);
-}
-
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -42,14 +36,18 @@ if (array_key_exists('id', $_GET)) {
 }
 
 if (is_null($key_id)) {
-  portal_log("delete ssh key: No key id available");
+  error_log("delete ssh key: No key id available");
   relative_redirect('home.php');
 }
-portal_log("delete ssh key: key id = $key_id");
+error_log("delete ssh key: key id = $key_id");
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $result = delete_ssh_key($ma_url, $user, $user->account_id, $key_id);
-portal_log("delete ssh key result = " . print_r($result, true));
+if (is_array($result))
+  $result = "Error: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+else
+  $result = "Succeeded";
+error_log("delete ssh key result = " . print_r($result, true));
 
 $_SESSION['lastmessage'] = "Deleted SSH Key $key_id: $result";
 

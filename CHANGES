@@ -2,7 +2,81 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.2 ==
+  * Comment out call to error log in MA causing PHP warning (#790)
+  * Change some mail links to help@geni.net (#572)
+  * Project admins are made admins of newly created slices (#559)
+
+== 2.1 ==
+  * Revise handling of Google Analytics (#742)
+  * SSH public key from downloaded pair filename should end in .pub (#681)
+  * Mark uploaded RSpecs as private by default (#421)
+  * Handle malformed XML in RSpec upload (#720)
+  * Remove unnecessary host reference (#755)
+  * Output account request passwords in monospace font (#732)
+  * Show project page to members only (#727)
+  * Remove hardcoded hostnames in openid configuration (#287)
+  * Update the supported gcf release to 2.2.1-threaded-ticket313 (#746)
+  * Add new GPO development hosts to utility scripts (#745)
+  * Allow case-insensitive upload of member email addresses (#713)
+  * Fix sliver status page (resource status) (#429)
+  * Update portal to gcf 2.4 (#392)
+  * Remove custom pgch and use standard version from gcf (#347)
+  * Ensure that only leads and admins can edit slice membership (#533)
+  * Update member lookup by EPPN for new CH API (no ticket)
+  * Make order of aggregates consistent (#478)
+  * Fix redirect to InCommon Federated Error Handler (#778)
+  * Update aggregate location data for map (#780)
+  * Add additional validation checks to RSpec upload (#781)
+  * Add additional aggregates for internal testing (#779)
+  * Take out links to slice-member page which is not informative and
+  often forbidden (#538)
+
+== 2.0 ==
+  * Fix Google Analytics string to be a global variable (#743)
+  * Remove obsolete settings file (#741)
+  * Add Resources page should include tool-showmessage (#738)
+  * Fix minor bugs in new portal CSS (#737)
+  * Don't install ad RSpecs and map.php (#736)
+  * Fix glossary to link to Trac wiki (#703)
+  * Fix copyright notice in map.php (#735)
+  * Add a script to check account existence (#700)
+  * Remove fake slice and project email addresses (#729)
+  * Create GENI resource map for monitor display (#734)
+  * Update the portal's CSS (#717)
+  * Add Google Analytics functionality (#718)
+  * Make button-like things be buttons (#175)
+  * Create interactive map of resources (#28)
+  * Fix Slice/Project Membership functionality according to feedback (#496)
+  * Enable VERIFYHOST in put_message (#660)
+  * Add script to add an arbitrary attribute to a user (#701)
+  * Change "Resource Specification" to RSpec on Profile and Add
+  Resources pages (#707)
+
+== 1.9.6 ==
+  * Add ExoGENI FIU and UH racks to service registry (#714)
+
+== 1.9.5 ==
+  * slice expiration shouldn't pick a date past project expiration (#614)
+  * Fix tracebacks in omni_php.py when creating a sliver fails (#649,#321)
+  * wimax-enable.php should not check for certificates (#689)
+  * Undefined variable in tool-expired-projects (#687)
+  * pgch logs something with each CH call (#697)
+
+== 1.9.4 ==
+  * Log when someone tries to download their outside cert (#699)
+
+== 1.9.3 ==
+  * Re-enable pgch threading with fixes (#690)
+
+== 1.9.2 ==
+  * Disable pgch threading until it works (#690)
+
+== 1.9.1 ==
+  * GMOC reporting fix (#688)
+
 == 1.9 ==
+  * load balancing pgch (#650)
   * WiMAX integration (#484)
   * Extend default and max slice expiration (#636)
   * Verify OpenID username (#289)
@@ -17,12 +91,12 @@
   * Save error Omni results (#444)
   * Fix sa_url in tool-omniconfig.php (#643)
   * Fix warnings in gemini.php (#641)
-  * SA/PA merge (#540)
   * Fix link to SignMeUp (#653)
   * Include email address in account change request emails (#626)
   * Check permissions and remove dead code in do-edit-project (#666)
-  * Ensure SA/PA methods all have guards or we warn why not (#540)
-  * Hide Update Project button if user not permitted (#540)
+  * SA/PA merge including... (#540)
+     - Ensure SA/PA methods all have guards or we warn why not
+     - Hide Update Project button if user not permitted
   * CS logs if it authorizes an action only cause you are an operator (#397)
   * Apply guards to more SA and PA methods (requires CS update-5.sql) (#502)
   * Remove a debug printout in rspec upload (#663)
@@ -39,7 +113,29 @@
   addresses (space or newline or comma). (#405)
   * Lookup existing users with case insensitive email in bulk add (#646)
   * Allow creating / looking up an iRODS account based on your portal
-  username (#640)
+  username (#640,#673)
+  * Update InCommon privacy policy (#654)
+  * Only show nodes and links from current aggregate on Details (aka
+    manifest) page (#605)
+  * Change API methods for getting user keys (#644):
+    - Split lookup_ssh_keys into two calls: lookup_public_ssh_keys and
+      lookup_private_ssh_keys
+    - Make sure that only the current user can call
+      lookup_private_ssh_keys for themselves (not portal, not another
+      user). This is in addition to the protections done in the MA
+      itself.
+    - Fix a bug in sshkeyedit that didn't handle lists of keys
+      (assumed only one).
+  * Ensure Gemini page sends both private and public SSH keys (#674)
+  * Use the SA not the PA from pgch (#676)
+  * Restore missing valid_expiration method - could not set an expiration on a project (#677)
+  * Edit SSH key result message printing wrong (#678)
+  * Delete SSH key result message cleanup (#679)
+  * Suppress RSpec logging (#680)
+  * Show links for current AM on aggregate page (#682)
+  * Filter nodes and link for current AM on createsliver page (#683)
+  * Name 1st WiMAX SSH key sshpublickey (#684)
+  * Ensure success detected on WiMAX page (#685)
 
 == 1.8.1 ==
   * Modifications to KM tool and user to make sure EPPN's 

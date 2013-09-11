@@ -77,26 +77,26 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     $am_urls[] = $am_url; 
   }
 
-  //  error_log( "am_urls = ".print_r($am_urls) );
-  
   $retVal = sliver_status($am_urls, $user, $slice_credential,
 			 $slice_urn);
+  $good = FALSE;
+
   if ( !is_null($retVal) && (count($retVal)==2) ) {
     $msg = $retVal[0];
     $obj = $retVal[1];
+    $good = TRUE;
   } elseif (count($retVal)==1) {
     $msg = $retVal;
-    $obj = Array();
+    $obj[$am_url] = "";
   } else {
     $msg = "Call to sliver_status() FAILed";
     $obj = Array();
-    error_log( "Call to sliver_status() FAILed" );    
   }
-
 
 $retVal2 = Array();
 $retVal2[] = $msg;
 $retVal2[] = $obj;
+$retVal2[] = $good;	 
 return $retVal2;
 
 }

@@ -126,23 +126,21 @@ if ($error != NULL || count($_POST) == 0) {
   echo "$error";
   echo "</div>\n";
   print "<h2>Upload Project Members</h2>";
-  print "Upload a CSV (comma-separated-values) file of candidates members for your project.<br/><br/>";
+  print "<p>Upload a CSV (comma-separated-values) file of candidates members for your project.</p>";
   print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
-  print '  <label for="file">CSV File:</label>';
+  print '  <p><b><label for="file">CSV File:</label></b>';
   print '  <input type="file" name="file" id="file" />';
-  print '  <br/><br/>';
-  print '  <input type="submit" name="submit" value="Upload"/>';
+  print '  </p>';
+  print '  <p><input type="submit" name="submit" value="Upload"/></p>';
   print '  <input type="hidden" name="referer" value="' . $referer . '"/>';
   print '</form>';
-  print '<br/>';
 
   print "<p>";
-  print "File format:<br/>";
-  print "<pre>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</pre><br/>";
-  print "Example:<br/>";
-  print "<pre>jsmith@geni.net, Joe Smith, Admin\n";
-  print "mbrown@geni.net, Mary Brown</pre><br/><br/>";
-  print "</p>";
+  print "File format:</p>";
+  print "<pre style='margin-left:80px;'>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</pre>";
+  print "<p>Example:</p>";
+  print "<pre style='margin-left:80px;'>jsmith@geni.net, Joe Smith, Admin\n";
+  print "mbrown@geni.net, Mary Brown</pre>";
   include("footer.php");
   exit;
 }
@@ -224,6 +222,7 @@ foreach($lines as $line) {
 }
 
 $members_by_email = lookup_members_by_email($ma_url, $user, array_keys($names_by_email));
+$members_by_email = array_change_key_case($members_by_email,CASE_LOWER);
 
 //error_log("NBE = " . print_r($names_by_email, true));
 //error_log("RBE = " . print_r($roles_by_email, true));
@@ -232,8 +231,8 @@ foreach($names_by_email as $email => $name) {
   $member_id = null;
   $recognized = "No";
   $role = null;
-  if (array_key_exists(strtolower($email), array_change_key_case($members_by_email)) && count($members_by_email[strtolower($email)] == 1))  {
-    $member_id = $members_by_email[$email][0];
+  if (array_key_exists(strtolower($email), $members_by_email) && count($members_by_email[strtolower($email)] == 1))  {
+    $member_id = $members_by_email[strtolower($email)][0];
     $recognized = "Yes";
   }
   if (array_key_exists(strtolower($email), array_change_key_case($roles_by_email)) && count($roles_by_email[strtolower($email)] == 1)) {

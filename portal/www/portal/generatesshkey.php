@@ -33,10 +33,8 @@ require_once("sr_client.php");
 
 function show_form($error_msg)
 {
-  print "<br/>\n";
-  print "<h2>Generate an SSH private key</h2>\n";
-  print "SSH keys are required to log in to reserved compute resources.<br/><br/>\n";
-  print "On this page, you can generate a new SSH key pair. <br/>\n";
+  print "<h1>Generate an SSH private key</h1>\n";
+  print "<p>SSH keys are required to log in to reserved compute resources. On this page, you can generate a new SSH key pair.</p>\n";
 
   if ($error_msg) {
     print "<div id=\"error-message\""
@@ -45,18 +43,18 @@ function show_form($error_msg)
       . "</div>\n";
   }
   print "<form action=\"generatesshkey.php\" method=\"post\">\n";
-  print "Please supply a new passphrase to protect your SSH private key (minimum 5 characters).<br/>\n";
-  print "<label for=\"password\">Passphrase:</label>\n";
-  print "<input type=\"password\" name=\"password\"/><br/>\n";
-  print "<label for=\"password2\">Confirm Passphrase:</label>\n";
+  print "<p>Please supply a new passphrase to protect your SSH private key (minimum 5 characters).</p>\n";
+  print "<p><label for=\"password\">Passphrase:</label>\n";
+  print "<input type=\"password\" name=\"password\"/></p>\n";
+  print "<p><label for=\"password2\">Confirm Passphrase:</label>\n";
   print "<input type=\"password\" name=\"password2\"/>\n";
-  print "<br/>\n";
-  print "<input type=\"submit\" name=\"submit\" value=\"Generate SSH private key\"/>\n";
-  print "</form><br/>\n";
-  print "If you already have an SSH key pair ";
-  print "that you want to use, you can instead <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>.<br/>\n";
-  print "If you're not sure what to do, use this page to generate a new key pair.<br/>\n";
-  print "<br/>\n";
+  print "</p>\n";
+  print "<p><input type=\"submit\" name=\"submit\" value=\"Generate SSH private key\"/></p>\n";
+  print "</form>\n";
+  print "<p>If you already have an SSH key pair ";
+  print "that you want to use, you can instead <button onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>.</p>\n";
+  print "<p>If you're not sure what to do, use this page to generate a new key pair.</p>\n";
+
   //  print "<i>Note</i>: You will need your SSH private key on your local machine. <br/>\nAfter generating your SSH keypair, be sure to Download your SSH key. <br/>\nAfter you download your key, be sure to set local permissions on that file appropriately. On Linux and Mac, do \"chmod 0600 <i>[path-to-SSH-private-key-you-downloaded]</i>\". <br/>\nWhen you invoke SSH to log in to reserved resources, you will need to remember the path to that file. <br/>Your SSH command will be something like: \"ssh -i <i>path-to-SSH-key-you-downloaded</i> <i>[username]@[hostname]</i>\".<br/>\n";
 }
 

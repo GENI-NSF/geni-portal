@@ -30,6 +30,9 @@ require_once('pa_client.php');
 //require_once('starter-status-bar.php');
 require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
+require_once('settings.php');
+require_once('cs_constants.php');
+include_once('/etc/geni-ch/settings.php');
 
 
 /*----------------------------------------------------------------------
@@ -170,6 +173,8 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $extra_js;
   global $in_maintenance_mode;
   global $in_lockdown_mode;
+  global $portal_analytics_enable;
+  global $portal_analytics_string;
 
   if ($load_user) {
     global $user;
@@ -196,15 +201,39 @@ function show_header($title, $active_tab = '', $load_user=1)
   /* Stylesheet(s) */
   echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+  
+  /* Google Analytics
+     Get this from /etc/geni-ch/settings.php, but first check to see if
+       $portal_analytics_enable exists
+  */
+  if(isset($portal_analytics_enable)) {
+    if($portal_analytics_enable) {
+      // FIXME: Allow some users (e.g. operators) to bypass tracking
+      echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+      echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+      echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+      echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+      
+      if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
+        /* Use the following tracking IDs depending on which server this will be running on
+          portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+          portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+        */
+        $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+      }
+      
+      echo $portal_analytics_string;
+      
+      echo "ga('send', 'pageview');";
+      echo '</script>';
+    }
+  }
 
   /* Close the "head" */
   echo '</head>';
   echo '<body>';
-  echo '<div id="header">';
-  echo '<a href="http://www.geni.net" target="_blank">';
-  echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
-  echo '</a>';
-  echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
+  echo '<div id="header"><div id="header-top">';
   if ($load_user) {
     echo '<div id="metanav" class="nav">';
     echo '<ul>';
@@ -214,14 +243,17 @@ function show_header($title, $active_tab = '', $load_user=1)
     if ($in_maintenance_mode) {
       echo "<li><b>*** Maintenance Mode ***</b></li>";
     }
-    echo '<li>Logged in as ' . $user->prettyName() . '</li>';
+    echo '<li>Logged in as <b>' . $user->prettyName() . '</b></li>';
     $logout_url = relative_url("dologout.php");
     echo '<li style="border-right: none"><a href="' . $logout_url . '">Logout</a></li>';
     echo '</ul>';
-    echo '</div>';
+      echo '</div>';
+    
   }
+  echo '</div>';
   show_tab_bar($active_tab, $load_user);
   echo '</div>';
+  echo '<div id="content-outer">';
   echo '<div id="content">';
   //  show_starter_status_bar($load_user);
 }

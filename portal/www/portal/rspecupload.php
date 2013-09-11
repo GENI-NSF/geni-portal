@@ -28,6 +28,35 @@ require_once("header.php");
 require_once 'geni_syslog.php';
 require_once 'db-util.php';
 
+/**
+ * Validate the uploaded RSpec.
+ *
+ * @return boolean -- true for valid, false if invalid
+ */
+function validateRSpec($rspec_filename, &$error_msg)
+{
+  $error = null;
+
+  //--------------------------------------------------
+  // is it parseable as XML?
+  $rspec = file_get_contents($rspec_filename);
+  $xml_parser = xml_parser_create();
+  $parse_result = xml_parse($xml_parser, $rspec, true);
+  if ($parse_result === 0) {
+    $xml_error = xml_error_string(xml_get_error_code($xml_parser));
+    $line = xml_get_current_line_number($xml_parser);
+    $column = xml_get_current_column_number($xml_parser);
+    $error_msg = "$xml_error at line $line, column $column";
+    xml_parser_free($xml_parser);
+    return false;
+  }
+  /* TODO: do some more checks on the rspec.
+   * Does it pass "rspeclint"?
+   * Is it a request RSpec (not ad or manifest)?
+   */
+  return true;
+}
+
 // Parse XML rspec contained in given file
 // Is rspec in given file bound (i.e. does it have any nodes with 
 //      component_manager_id tags)?
@@ -125,10 +154,10 @@ if (array_key_exists('file', $_FILES)) {
     /*
      * Upload was successful, do some basic checks on the contents.
      */
-    /* TODO: do some sort of check on the rspec.
-     * Is it valid XML? Does it pass "rspeclint"?
-     * Is it a request RSpec (not ad or manifest)?
-     */
+    $rspec_filename = $_FILES["file"]["tmp_name"];
+    if (! validateRSpec($rspec_filename, $msg)) {
+      $error = 'Uploaded RSpec is invalid: ' . $msg;
+    }
   }
 }
 
@@ -146,7 +175,7 @@ if ($error != NULL || count($_POST) == 0) {
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
   include("tool-showmessage.php");
-  print("<h2>Upload experiment Resource Specification (RSpec)</h2>\n");
+  print("<h1>Upload experiment Resource Specification (RSpec)</h1>\n");
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";
@@ -154,22 +183,21 @@ if ($error != NULL || count($_POST) == 0) {
     echo "</div>\n";
   }
   echo '<form action="rspecupload.php" method="post" enctype="multipart/form-data">';
-  echo '  <label for="file">RSpec File:</label>';
-  echo '  <input type="file" name="file" id="file" />';
-  echo '  <br/><br/>';
+  echo '  <p><label for="file">RSpec File:</label>';
+  echo '  <input type="file" name="file" id="file" /></p>';
+  echo '  <p>';
   echo '  <label for="file">Short Name:</label>';
-  echo '  <input type="text" name="name"/> - Required';
-  echo '  <br/><br/>';
-  echo '  <input type="radio" name="group1" value="public" checked> public';
-  echo '  <input type="radio" name="group1" value="private"> private';
-  echo '  <br/><br/>';
+  echo '  <input type="text" name="name"/> - Required</p>';
+  echo '  <p>Type: ';
+  echo '  <input type="radio" name="group1" value="public"> public';
+  echo '  <input type="radio" name="group1" value="private" checked> private</p>';
+  echo '  <p>';
   echo '  <label for="file">Description:</label>';
-  echo '  <input type="text" name="description"/> - Required';
-  echo '  <br/><br/>';
+  echo '  <input type="text" name="description"/> - Required</p>';
+  echo '  <p>';
   echo '  <input type="submit" name="submit" value="Upload"/>';
-  echo '  <input type="hidden" name="referer" value="' . $referer . '"/>';
+  echo '  <input type="hidden" name="referer" value="' . $referer . '"/></p>';
   echo '</form>';
-  echo '<br/>';
   include("footer.php");
   exit;
 }

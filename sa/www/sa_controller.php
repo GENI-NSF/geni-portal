@@ -94,6 +94,13 @@ function sa_debug($msg)
   //  error_log('SA DEBUG: ' . $msg);
 }
 
+function valid_expiration($expiration)
+{
+  $exp_timestamp = strtotime($expiration);
+  // Any valid (ie. parseable) date is fine
+  return $exp_timestamp !== false;
+}
+
 /*----------------------------------------------------------------------
  * Expiration
  *----------------------------------------------------------------------
@@ -625,8 +632,6 @@ function create_project($args, $message)
   global $mysigner;
   
   pa_expire_projects();
-
-  //  error_log("ARGS = " . print_r($args, true));
 
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
   if (! isset($project_name) or is_null($project_name) or 
@@ -2559,7 +2564,15 @@ function create_slice($args, $message)
     }
     // END OF HACK
 
-    $slice_email = 'slice-' . $slice_name . '@example.com';
+    /*
+     * A note about slice email. We don't have it yet. In the absence
+     * of a slice email, stop making one up in the "example.com"
+     * domain. It's obviously fake, and is causing problems at FOAM.
+     * For now, set it to null. In the future, when we have the
+     * capability, make it real.
+     */
+    //$slice_email = 'slice-' . $slice_name . '@example.com';
+    $slice_email = null;
     $slice_cert = create_slice_certificate($project_name, $slice_name,
 					   $slice_email, $slice_id,
 					   $sa_slice_cert_life_days,
@@ -2715,13 +2728,75 @@ function create_slice($args, $message)
 	  !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) ||
 	  $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
 	{
-	  error_log("Create slice failed ot add project lead as " . 
+	  error_log("Create slice failed to add project lead as " . 
 		    "slice member: " .
 		    $addres[RESPONSE_ARGUMENT::CODE] . ": " .
 		    $addres[RESPONSE_ARGUMENT::OUTPUT]);
 	  return $addres;
 	}
     }
+
+    // Add all project ADMINs as members of the slice as well
+    // get all project admins
+    $admins = array();
+    $admins_res = get_project_members(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+					    PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
+				      $message);
+    if (! isset($admins_res) || is_null($admins_res) || 
+	! array_key_exists(RESPONSE_ARGUMENT::CODE, $admins_res) ||
+	$admins_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE ||
+	! array_key_exists(RESPONSE_ARGUMENT::VALUE, $admins_res)) {
+      error_log("Create slice failed to get admins in project: " . 
+		$admins_res[RESPONSE_ARGUMENT::CODE] . ": " . 
+		$admins_res[RESPONSE_ARGUMENT::OUTPUT]);
+    } else {
+      $admins = $admins_res[RESPONSE_ARGUMENT::VALUE];
+      if (is_null($admins) || count($admins) <= 0) {
+	error_log("Create slice: No project admins found in project " . $project_name);
+	$admins = array();
+      }
+    }
+
+    // For each admin of the project
+    foreach ($admins as $project_admin) {
+      $project_admin_id = $project_admin[PA_ARGUMENT::MEMBER_ID];
+
+      // If not the slice owner, then add them
+      if ($project_admin_id != $owner_id) {
+
+	//    error_log("PL $project_admin_id is not OWNER $owner_id");
+	// Create assertion of admin membership
+	$ca_res = create_assertion($cs_url, $mysigner, $signer, 
+				   $project_admin_id, 
+				   CS_ATTRIBUTE_TYPE::ADMIN,
+				   CS_CONTEXT_TYPE::SLICE, $slice_id);
+	if ($ca_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	  error_log("Create slice failed to make a project admin a slice admin: " .
+		$ca_res[RESPONSE_ARGUMENT::CODE] . ": " . 
+		$ca_res[RESPONSE_ARGUMENT::OUTPUT]);
+	  continue;
+	}
+
+	// add project admin as 'ADMIN' slice member 
+	$addres = 
+	  add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id,
+				 SA_ARGUMENT::MEMBER_ID => $project_admin_id,
+				 SA_ARGUMENT::ROLE_TYPE =>
+				 CS_ATTRIBUTE_TYPE::ADMIN),
+			   $message);
+	if (!isset($addres) ||
+	    is_null($addres) ||
+	    !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) ||
+	    $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  {
+	    error_log("Create slice failed to add project admin as " . 
+		      "slice member: " .
+		      $addres[RESPONSE_ARGUMENT::CODE] . ": " .
+		      $addres[RESPONSE_ARGUMENT::OUTPUT]);
+	    continue;
+	  }
+      }
+    } // end of loop over project admins
 
     // Log the creation
     global $log_url;
@@ -3113,13 +3188,29 @@ function modify_slice_membership($args, $message)
 
   // Determine slice lead
   $slice_lead = null;
+  $member_change_allowed = false;
+  $my_uid = $message->signerUuid();
   foreach($slice_members as $slice_member) {
     $member_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
     $role = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
     if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
       $slice_lead = $member_id;
-      break;
+      if ($my_uid === $member_id) {
+	$member_change_allowed = true;
+	break;
+      }
     }
+    if ($role == CS_ATTRIBUTE_TYPE::ADMIN) {
+      if ($my_uid === $member_id) {
+	$member_change_allowed = true;
+	if (! is_null($slice_lead)) {
+	  break;
+	}
+      }
+    }
+  }
+  if (!$member_change_allowed) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, "Only a lead or admin can change slice membership");
   }
 
   // Must be a slice lead, else something is wrong with slice
@@ -3133,8 +3224,8 @@ function modify_slice_membership($args, $message)
 		       array_keys($slice_members), true)) 
     {
       return generate_response(RESPONSE_ERROR::ARGS, null, 
-			       "Can't add member to a slice that " . 
-			       "already belongs");
+			       "Can't add member to a slice to which they " . 
+			       "already belong");
     }
 
   // No new roles for members who aren't slice members

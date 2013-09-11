@@ -56,11 +56,9 @@ if (isset($slice) && $slice != "None") {
 }
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
-print "<h1>Delete resources from GENI Slice: " . $slice_name . "</h1>\n";
+print "<h2>Delete resources from GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h2>\n";
 
-print "<p>Delete all reserved resources?</p>\n";
-print "<p>Otherwise click 'Cancel'.</p>\n";
-print "<br/>\n";
+print "<p class='warn'>Delete all reserved resources? Otherwise click <b>Cancel</b>.</p>\n";
 
 $cancel_url = "slice.php?slice_id=$slice_id";
 if (isset($am_id) && $am_id) {
@@ -68,9 +66,9 @@ if (isset($am_id) && $am_id) {
 } else {
   $edit_url = "sliverdelete.php?slice_id=$slice_id";
 }
-print "<button onclick=\"window.location='$edit_url'\"><b>Delete Resources</b></button>\n";
+print "<p><button onclick=\"window.location='$edit_url'\"><b>Delete Resources</b></button> \n";
 //print "<button onclick=\"window.location='$cancel_url'\">Cancel</button>\n";
-print "<button onclick=\"history.back(-1)\">Cancel</button>\n";
+print "<button onclick=\"history.back(-1)\">Cancel</button></p>\n";
 
 
 include("footer.php");

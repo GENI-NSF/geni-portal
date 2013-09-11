@@ -151,15 +151,15 @@ if (! isset($sa_url)) {
 }
 
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
-
-if($slice_id == '' || $slice_id == 'none') {
+if(! isset($slice_id) || $slice_id == '' || $slice_id == 'none') {
   error_log("Slice ID not set");
+  $_SESSION['lasterror'] = "Slice not specified to edit";
+  relative_redirect("slices.php");
 }
-if($project_id == '' || $project_id == 'none') {
-  error_log("Slice ID not set");
+if(! isset($project_id) || $project_id == '' || $project_id == 'none') {
+  error_log("Project ID not set");
+  $_SESSION['lasterror'] = "No project specified for editting slice membership";
+  relative_redirect("slice.php?slice_id=$slice_id");
 }
 
 // Get current list of members
@@ -184,32 +184,13 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 //  error_log("APMD = " . print_r($apmd, true));
 //}
 
-// Create a table with:
-// Each project member (name, click to member page)
-// Whether they are in the project or not, and if so what role
-//     Role or NOT MEMBER
-// If in, add "remove" button
-// If not in, add "JOIN" button
-// If in, have a 'role' pull down
-// Then have a 'save' 'cancel' for the whole shebang
-// 
-
-print "<h1>GENI Slice: " . $slice_name . "</h1>";
-?>
-
-Slice members will be able to login to resources reserved <i>in the future</i> if
-<ul>
- <li>the resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
- <li>the slice member has uploaded an ssh public key.</li>
-</ul>
-
-<form method="POST" action="do-edit-slice-member.php">
-<table>
-<tr><th>Project Member</th><th>Slice Role</th><th>Actions</th></tr>
-<?php
-
-  print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\">\n";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\">\n";
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
+$edit_members_disabled = "";
+if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slice_id) || $in_lockdown_mode) {
+  $edit_members_disabled = $disabled;
+  $_SESSION['lasterror'] = "User has no privileges to edit slice '" . $slice_name . "'.";
+  relative_redirect("slice.php?slice_id=$slice_id");
+}
 
 // First capture all the row details for the members
 $all_project_member_row_elements = array();
@@ -226,7 +207,42 @@ foreach($all_project_member_details as $apmd) {
 // Then non-members
 usort($all_project_member_row_elements, 'compare_project_member_row_elements');
 
-// Then put them in a table
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
+
+// Create a table with:
+// Each project member (name, click to member page)
+// Whether they are in the project or not, and if so what role
+//     Role or NOT MEMBER
+// If in, add "remove" button
+// If not in, add "JOIN" button
+// If in, have a 'role' pull down
+// Then have a 'save' 'cancel' for the whole shebang
+// 
+
+print "<h1>Edit GENI Slice Membership: " . $slice_name . "</h1>";
+if ($edit_members_disabled !== "") {
+  print "<p>You are not permitted to edit membership of this slice.</p\n";
+}
+?>
+
+<p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
+<ul>
+ <li>The resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
+ <li>The slice member has uploaded an ssh public key.</li>
+</ul>
+
+<form method="POST" action="do-edit-slice-member.php">
+<table>
+<tr><th>Project Member</th><th>Slice Role</th><th>Actions</th></tr>
+<?php
+
+  print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\">\n";
+  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\">\n";
+
+
+// Then put the members in a table
 foreach($all_project_member_row_elements as $apmre) {
   $member_url = $apmre['member_url'];
   $member_role = $apmre['member_role'];
@@ -240,14 +256,14 @@ foreach($all_project_member_row_elements as $apmre) {
 </table>
 <?php
 $upload_project_url = "upload-project-members.php?project_id=".$project_id;
-print "<i>Want to add someone not listed above? <a href='$upload_project_url'>Add them to the project first</a>.</i>";
+print "<p><i>Want to add someone not listed above? <a href='$upload_project_url'>Add them to the project first</a>.</i></p>";
 
 
 $submit_label = "Modify";
 
-print "<br/>\n";
-print "<input type=\"submit\" value=\"$submit_label\"/>\n";
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "<p>\n";
+print "<input type=\"submit\" value=\"$submit_label\" ". $edit_members_disabled. "/>\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 ?>
 </form>
 

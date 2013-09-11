@@ -961,13 +961,14 @@ function lookup_members_by_email($args, $message)
   $emails = "";
   foreach($email_args as $email) {
     if ($emails != "") $emails = $emails . ", ";
-    $emails = $emails . "'" . $email . "'";
+    $emails = $emails . "'" . strtolower($email) . "'";
   }
   $sql = "select " . MA_ATTRIBUTE::MEMBER_ID . ", " . MA_ATTRIBUTE::VALUE . 
     " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME . 
     " where " . MA_ATTRIBUTE::NAME . " = '" . MA_ATTRIBUTE_NAME::EMAIL_ADDRESS . "'" . 
-    " and " . MA_ATTRIBUTE::VALUE . " in (" . $emails . ")";
+    " and lower(" . MA_ATTRIBUTE::VALUE . ") in (" . $emails . ")";
   $rows = db_fetch_rows($sql);
+  //  error_log($rows);
   if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $rows;
 

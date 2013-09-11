@@ -95,14 +95,14 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
        "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
 
   // Put up a page saying we invited them.
-  print "<h2>Invite Someone to GENI</h2>\n";
-  print "<br/>\n";
-  print "<b>Sent</b> GENI invitation to:<br/>\n" . "$to.<br/><br/>\n";
+  print "<h1>Invite Someone to GENI</h1>\n";
+  print "<p>\n";
+  print "<b>Sent</b> GENI invitation to:<br/>\n" . "$to.</p>\n";
   if ($skips !== "") {
     print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
   }
   $lines = explode("\r\n", $message);
-  print "<b>Message</b>: <br/><pre>\n";
+  print "<p><b>Message</b>: </p><pre style='margin-left:80px;'>\n";
   foreach ($lines as $line) {
     print "$line\n";
   }
@@ -111,38 +111,37 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   exit();
 }
 
-print "<h2>Invite Someone to GENI</h2>\n";
-print "Invite your co-workers and friends to use GENI!<br/>\n";
-print "This form will send them an email with links to the GENI portal and main web site.<br/>\n";
-print "You can include a custom message explaining how you use GENI or might want to collaborate with them in GENI.<br/>\n";
-print "<br/>\n";
+print "<h1>Invite Someone to GENI</h1>\n";
+print "<p>Invite your co-workers and friends to use GENI!</p>\n";
+print "<p>This form will send them an email with links to the GENI portal and main web site. \n";
+print "You can include a custom message explaining how you use GENI or might want to collaborate with them in GENI.</p>\n";
 if (isset($error) && ! is_null($error)) {
   print $error;
 }
 //mailto:larry,dan?cc=mike&bcc=sue&subject=test&body=type+your&body=message+here
 print "<form action=\"invite-to-geni.php\">\n";
-print "<b>Email addresses of people to invite</b>:<br/>\n";
-print "<textarea name='to' cols=\"60\" rows=\"4\"></textarea><br/>\n"; // FIXME: Need to ensure this is valid - JS?
+print "<h3>Email addresses of people to invite:</h3>\n";
+print "<p><textarea name='to' cols=\"60\" rows=\"4\"></textarea></p>\n"; // FIXME: Need to ensure this is valid - JS?
 print "<p>Addresses should be space, comma, or newline separated.</p>\n";
-print "<b>Invitation message</b>:<br/>\n";
+print "<h3>Invitation message:</h3>\n";
 $hostname = $_SERVER['SERVER_NAME'];
 // FIXME: Ticket #66: Make this only partially editable. Maybe starting with 'For more info...'
-print "<textarea name='message' cols='60' rows='5'>Come use GENI! 
+print "<p><textarea name='message' cols='60' rows='5'>Come use GENI! 
 GENI is an NSF funded virtual testbed supporting computer networking research and innovation. 
 I use GENI, and you should too.
-</textarea><br/>\n";
+</textarea></p>\n";
 
-print "<b>Message footer</b>: <br/>\n";
-print "For more information on GENI, see: http://www.geni.net<br/>
+print "<h3>Message footer:</h3>\n";
+print "<p><i>For more information on GENI, see: http://www.geni.net<br/>
 To get started using GENI, go to the GENI Portal: https://$hostname<br/>
 <br/>
 You log in with your home university or college username, or request a GENI-specific account.<br/>
 <br/>
 Thank you,<br/>\n";
 print $user->prettyName();
-print "<br/><br/>\n";
-print "<button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
-print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+print "</i></p>\n";
+print "<p><button type=\"submit\" value=\"submit\"><b>Invite</b></button>\n";
+print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
 print "</form>\n";
 include("footer.php");
 ?>

@@ -26,6 +26,7 @@ require_once("user.php");
 require_once("header.php");
 require_once('portal.php');
 require_once('util.php');
+require_once('logging_constants.php');
 require_once('pa_constants.php');
 require_once('sa_constants.php');
 require_once('pa_client.php');
@@ -61,7 +62,6 @@ function compare_members_by_role($mem1, $mem2)
 $project_id = "None";
 $project = null;
 $project_name = "None";
-$email = "";
 $creation = "";
 $purpose = "";
 $leademail = "";
@@ -77,7 +77,6 @@ if (array_key_exists("result", $_GET)) {
 
 include("tool-lookupids.php");
 if (! is_null($project) && $project != "None") {
-  $email = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL];
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $creation_db = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $creation = dateUIFormat($creation_db);
@@ -102,6 +101,27 @@ if (! is_null($project) && $project != "None") {
 
 // Fill in members of project member table
 $members = get_project_members($sa_url, $user, $project_id);
+
+/*------------------------------------------------------------
+ * Does this user have privileges on this project?
+ *
+ * If not, redirect to home page.
+ *------------------------------------------------------------
+ */
+$user_is_project_member = false;
+foreach ($members as $m) {
+  if ($user->account_id == $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID]) {
+    $user_is_project_member = true;
+    break;
+  }
+}
+if (! $user_is_project_member) {
+  $_SESSION['lasterror'] = ('User has no privileges to view project '
+                              . $project_name);
+  relative_redirect('home.php');
+}
+
+
 $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 //error_log("members = " . print_r($members, true));
@@ -122,7 +142,7 @@ show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-print "<h1>GENI Project: " . $project_name . "$result</h1>\n";
+print "<h1>GENI Project: " . "<i>" . $project_name . "</i>" . "$result</h1>\n";
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
 
@@ -181,7 +201,6 @@ print "</td></tr>\n";
 print "<tr><td class='label'><b>Expiration</b></td><td>$expiration</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print "<tr><td class='label'><b>Project e-mail</b></td><td><a href=\"mailto:$email\">$email</a></td></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table>\n";
 
@@ -189,14 +208,13 @@ print "</table>\n";
 // a permission error on lookup_slices
 
 ?>
-<h2>Project slices:</h2>
+<h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");
 ?>
-<br/>
 
-<h2>Project members</h2>
+<h2>Project Members</h2>
 
 <?php
 
@@ -251,23 +269,21 @@ $edit_members_disabled = "";
 if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $edit_members_disabled = $disabled;
 }
-echo "<button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Current Project Membership</b></button>";
+echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Current Project Membership</b></button></p>";
 
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
-  print "<br/><h3>Add new project members</h3>";
-  print "<button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button><br/>";
+  print "<h3>Add New Project Members</h3>";
+  print "<p><button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button>";
 
   //  print "<br/><h3>Invite new project members</h3>\n";
-  print "<br/>";
-  print "<button onClick=\"window.location='";
+  print " <button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
-  print "\"><b>Invite New Members</b></button><br/>\n";
+  print "\"><b>Invite New Members</b></button></p>\n";
   
-  print "<br/>\n";
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
-    print "<div class='announce'>No outstanding project join requests.</div><br/>\n";
+    print "<div class='announce'><p>No outstanding project join requests.</p></div>\n";
   }
 }
 ?>
@@ -297,7 +313,6 @@ if (is_array($entries)) {
 $disable_add_note = "";
 if ($in_lockdown_mode) $disable_add_note = $disabled;
 $addnote_url = 'add-project-note.php?project_id='.$project_id;
-print "<button $disable_add_note onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
-print "<br/>\n";
+print "<p><button $disable_add_note onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button></p>\n";
 include("footer.php");
 ?>

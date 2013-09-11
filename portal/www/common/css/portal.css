@@ -1,152 +1,683 @@
-html {
- font: normal 14px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
-/* margin: 0; 
- padding: 0; */
-}
+/*
+  CSS Style Sheet for GENI Portal
+
+  Color scheme:
+    #E17000 - official GENI orange
+                  table headers
+                  header colors
+                  link colors
+    #5F584E - dark gray
+                  code background
+                  navigation bar background
+    #C5D3D7 - medium gray
+                  page background
+    #E5E5E5 - light gray
+                  footer background
+    #DBD7CC - tan
+                  accents
+                  
+  Fonts:
+    Open Sans - header/footer text, headers
+    PT Serif - body text
+    Droid Sans Mono - monospaced text
+
+*/
 
 body {
-/* width='8in'; */
-}
-
-/* GENI Orange: #E17000 */
-h1, h2, h3, h4, h5, h6, h7 {
- color: #E17000; /* official GENI orange */
+  background-color: #C5D3D7;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 hr {
- color: #E17000; /* official GENI orange */
- background-color: #E17000; /* official GENI orange */
- height: 1px;
+ height: 0px;
  border: none;
- margin-top: 1em;
- margin-bottom: 1em;
+ margin: 0px;
+ padding: 0px;
  clear: both;
 }
 
+/*
+  HEADER CONTAINER (and navigation bar)
+*/
 
-div#header {
- display: block;
-/* width: 10in; */
- color:black;
+#header {
+  padding-bottom: 0px;
+    /* center */
+    margin-left: auto;
+    margin-right: auto;
+    width: 897px;
+  border-left: 2px solid #5F584E;
+  border-right: 1px solid #5F584E;
+  margin-top: 30px;
+  margin-bottom: 0px;
+  border-top: 5px solid #5F584E;
+  background-color: #FFFFFF;
+  /* by default, let text be serif */
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  vertical-align: bottom;
+  background-image: url("../../images/header-home.jpg");
+  background-repeat: no-repeat;
+  box-shadow: 0px 0px 10px #5F584E;
 }
 
-#header div {
- background-color: white;
- margin: 0;
- padding: 0;
+#header-top {
+  height: 145px;
+  border-left: 14px solid #DBD7CC;
 }
 
-div#header h1 {
- color:black;
+#metanav {
+  padding: 0px;
+  color: #5F584E;
+  float: right;
 }
 
-div#header div {
- margin-bottom: .1in;
+#metanav a {
+  color: #5F584E;
 }
 
-.landingpage {
- width:10in;
- margin-left: auto;
- margin-right: auto;
+#metanav li { 
+  border-right: 2px solid #5F584E;
 }
 
-div#geni{
- display: block;
- float: left;
- margin-left: .4in; 
- margin-right: .1in;
- margin-top: .2in;
+#metanav ul {
+  padding: 5px;
+  background-color:#E5E5E5;
+  /* background-color:rgba(229,229,229,0.75); */
+  -moz-border-radius: 0 0 0 10px;
+  -webkit-border-radius: 0 0 0 10px;
+  border-radius: 0 0 0 10px; /* future proofing */
+  -khtml-border-radius: 0 0 0 10px; /* for old Konqueror browsers */
 }
 
-div#geni img{
- width: 1in;
+/* Main navigation bar */
+#mainnav {
+  background: #5F584E;
+  border: 5px solid #5F584E;
+  margin: 0;
+  padding: 5px;
+  width: 878px;
+}
+#mainnav li { 
+  border-left: 2px solid #ffffff;
+  padding: 0.25em;
 }
 
-div#welcome{
- display: block;
- width: 7in;
- float: left;
- border-top: solid 10px lightgray;
- margin: 0;
- padding: 0;
- padding-top: .25in;
+#mainnav :link, #mainnav :visited {
+  text-decoration: none;
+  color: #ffffff;
+  padding: .2em 20px;
 }
 
-div#loginHelpdiv{
- display: block;
- width: 1in;
- float: left;
- margin-top: 0.25in;
+#mainnav :link:hover, #mainnav :visited:hover {
+  color: #ffffff;
+  text-shadow: 0.1em 0.1em 0.2em #ffffff;
+}
+
+#mainnav .active :link, #mainnav .active :visited {
+  color: #ffffff;
+  font-weight: bold;
+}
+#mainnav .active :link:hover, #mainnav .active :visited:hover {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* Navigation */
+
+.nav h2, .nav hr { display: none }
+.nav ul { 
+  font-size: 0.8em; 
+  list-style: none; 
+  margin: 0; 
+  text-align: right;
+}
+  
+.nav li {
+  display: inline;
+  padding: 0 .75em;
+  white-space: nowrap;
+}
+.nav li.last { 
+  border-right: none;
 }
 
 
+/*
+  CONTENT CONTAINER
+*/
 
-#landingcontent :link, #landingcontent :visited, #header :link, #header :visited, #header :link:hover, #header :visited:hover {
- color: black;
+/* orange bar on left side */
+#content-outer {
+  border-left: 2px solid #E17000;
+  border-right: 1px solid #E17000;
+  border-top: 5px solid #E17000;
+  border-bottom: 5px solid #E17000;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  width: 897px;
+  box-shadow: 0px 0px 10px #5F584E;
+}
+
+#content {
+  /* white space */
+  background-color: #FFFFFF;
+  padding-left: 60px;
+  padding-right: 30px;
+  padding-bottom: 30px;
+  padding-top: 20px;
+  margin-top: 0px;
+  /* by default, let everything be serif 
+     unless otherwise specified */
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  /* by default, let everything have a line
+     height of 1.4em unless otherwise specified */
+  line-height: 1.4em;
+  /* side borders */
+  border-left: 14px solid #DBD7CC;
+}
+
+/* Headers: use sans serif */
+#content h1, h2, h3, h4, h5, h6, h7 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  text-shadow: 0.1em 0.1em 0.2em #dddddd;
+  color: #E17000; /* official GENI orange */
+}
+
+/* Header spacing */
+#content h1 {
+  font-size: 2em;
+  margin-top: 30px;
+  margin-bottom: 25px;
+  margin-left: 0px;
+  font-variant: small-caps;
+}
+#content h2 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-left: 20px;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 7px;
+}
+#content h3, h4, h5, h6, h7 {
+  font-size: 1.1em;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  margin-left: 40px;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 4px;
+}
+
+/* Bold: use sans serif */
+#content b {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+}
+
+/* Paragraphs: use serif */
+#content p {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 60px;
+  color: #5F584E;
+}
+
+/* Lists */
+#content li {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 60px;
+  color: #5F584E;
+}
+
+/* inline lists should not have large left margin */
+#content li li {
+  margin-left: 0px;
+}
+
+/* Blocks of code */
+#content pre {
+  font-family: 'Droid Sans Mono', monospace;
+  font-weight: 400;
+  font-size: .9em;
+  line-height: 1.3em;
+  background-color: #E5E5E5;
+  color: #5F584E;
+  padding: 5px;
+  padding-left: 10px;
+  margin-left: 45px;
+  border: 1px solid #5F584E;
+  border-left: 10px solid #5F584E;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  overflow: auto;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px; /* future proofing */
+  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+}
+
+/* Inline code */
+#content code, tt {
+  font-family: 'Droid Sans Mono', monospace;
+  font-weight: 400;
+}
+
+/* Buttons */
+#content button, input[type=submit], input[type=button] {
+  /* make all buttons have bold text by default */
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  box-shadow: 0px 0px 5px #5F584E;
+  margin: 2px;
+}
+
+/* Links */
+#content a {
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
+}
+
+#content a:hover {
+  background-color: #E5E5E5;
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
+}
+
+/* Tables */
+#content table {
+  background-color: #FFFFFF;
+  border-collapse: collapse;
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  line-height: 1.2em;
+  margin-left: 60px;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  width: 733px;
+}
+
+#content table table {
+  width: auto;
+  box-shadow: none;
+}
+
+/* inline table should not have large left margin */
+#content table table {
+  margin-left: 0px;
+}
+
+#content th {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+	font-size: 1em;
+	padding: 6px;
+	background: #E17000;
+	border-top: 4px solid #5F584E;
+	border-bottom: 1px solid #fff;
+	color: #fff;
+	vertical-align:middle;
+}
+
+#content td {
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  font-size: 0.9em;
+	padding: 6px;
+	background: #E5E5E5; 
+	border-bottom: 1px solid #fff;
+	color: #5F584E;
+	border-top: 1px solid transparent;
+	vertical-align:middle;
+}
+
+#content td a {
+  color: #5F584E;
+  border-bottom: 1px dashed #5F584E;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+}
+
+/*
+  BREADCRUMB CONTAINER
+*/
+#breadcrumb {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: #5F584E;
+  background-image: url("../../images/geni_globe_small.png");
+  background-repeat:no-repeat;
+  padding-left: 40px;
+  min-height: 30px;
+  border-bottom: 1px solid #E17000;
+}
+
+#breadcrumb a {
+  text-decoration: none;
+  border-bottom: 0px;
+}
+
+/*
+  TABS CONTAINER
+*/
+
+#tablist {
+  margin-left: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  background: #5F584E;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.8em;
+  font-weight: 400;
+  min-height: 1.4em;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px; /* future proofing */
+  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+}
+
+#tablist ul {
+  padding: 0px;
+  margin-left: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#tablist li {
+  list-style:none;
+  display:inline;
+  margin-left: 0px;
+  padding-left:10px;
+  padding-right:10px;
+  border-right: 2px solid white;
+}
+
+#tablist a {
+  display:inline;
+  color:#fff;
+  text-decoration:none;
+  border-bottom: none;
+}
+
+#tablist a.active {
+  font-weight: 700;
+  border-bottom: none;
+}
+
+#tablist a:hover {
+  color: white;
+  text-shadow: 0.1em 0.1em 0.2em #ffffff;
+  background: none;
+  border-bottom: none;
+}
+
+/* Use this if scrolling is needed in tabbed content */
+.tabContent {
+  /*height:900px;
+  overflow:auto;
+  padding:0px;
+  margin:0px;*/
+}
+
+/*
+  MAP CONTAINERS
+*/
+
+#map1 {
+  color: #ffffff;
+  /*  box-shadow: 3px 3px 10px #5F584E;*/
+}
+
+#map1 a {
+  color: #ffffff;
+  text-decoration: none;
+  border-bottom: 0px;
+}
+
+#maptext {
+  color: #5F584E;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  padding: 5px;
+}
+
+#maptext h1 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  text-shadow: 0.1em 0.1em 0.2em #dddddd;
+  color: #E17000;
+  font-size: 1em;
+  margin: 5px;
+  line-height: 1.2em;
+}
+
+#maptext p {
+  font-size: 0.7em;
+  margin: 5px;
+  padding-left: 15px;
+  padding-top: 7px;
+  padding-bottom: 10px;
+  line-height: 1.2em;
+}
+
+#maptext ul {
+  margin-left: 0px;
+}
+
+#maptext li {
+  font-size: 0.7em;
+  margin: 5px;
+  line-height: 0.7em;
+}
+
+.olPopupContent {
+    overflow: auto;
+    padding: 0px;
+}
+
+#OpenLayers_Control_Zoom_5 a {
+  color: #ffffff !important;
+  border-bottom: none !important;
+}
+
+#OpenLayers_Control_Zoom_5 a:hover {
+  color: #E17000 !important;
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+#OpenLayers_Control_Attribution_7 {
+    padding: 5px;
+    z-index: 1000;
+    bottom: 0.2em !important;
+    overflow: hidden;
+    color: #5F584E;
+    font-size: 0.8em !important;
+    text-align: right;
+}
+
+#OpenLayers_Control_Attribution_7 a {
+      color: #5F584E;
 }
 
 
-#footer :link, #footer :visited, #footer :link:hover, #footer :visited:hover {
- color: gray;
+/*
+  FOOTER CONTAINER
+*/
+
+#footer {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left:62px;
+  padding-right:31px;
+    /* center */
+    margin-left: auto;
+    margin-right: auto;
+    width: 807px;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  /* by default, let text be serif */
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  box-shadow: 0px 0px 10px #5F584E;
+  background-color: #5F584E;
+  color: #ffffff;
+  overflow: auto;
 }
 
-div#footer {
- color:gray;
- clear:both;
+#footer a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 700;
 }
 
-div#landingcontent, div#content.landingpage {
- display: block;
+#footer-left {
+  float: left;
+  text-align: left;
+  width: 400px;
+  font-size: 0.9em;
 }
 
-div#blank {
- display: block;
- width: 1.5in;
- float: left;
+#footer-right {
+  float: right;
+  text-align: right;
+  width: 400px;
+  font-size: 0.8em;
+  border-right: 2px solid #ffffff;
+  padding-right: 15px;
 }
 
-div#content.landingpage {
- width: 7in;
+/*
+  WELCOME PAGE CONTAINERS
+*/
+
+#welcome {
+  border-top: 10px solid #5F584E;
+  background-color: #FFFFFF;
+  
+  border-bottom: 5px solid #E17000;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  padding: 30px;
+  width: 840px;
+  overflow: auto;
+  box-shadow: 0px 0px 10px #5F584E;  
 }
 
-div#main{
- display: block;
- width: 4.5in;
- float:left; 
+#welcome-left {
+  float: left;
+  width: 220px;
 }
 
-div#map{
- display: block;
- width: 3in;
- float:left; 
- top: 1in;
- padding-top: 2em;
- font-size:80%; 
- text-align:center; 
- margin:5px 5px 5px 25px;
+#welcome-right {
+  float: right;
+  width: 620px;
+  overflow: auto;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  /* by default, let everything have a line
+     height of 1.4em unless otherwise specified */
+  line-height: 1.4em;
+  color: #5F584E;
 }
 
-div#map img {
- width: 3in;
- height: 2in;
+#usegeni {
+    width: 1.5in;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
-div#map .legend {
- text-align: left;
- color: gray;
+#welcome-right h1, h2 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  text-shadow: 0.1em 0.1em 0.2em #dddddd;
+  color: #E17000; /* official GENI orange */
 }
 
-/* #loginDiv { */
-/*  display: block; */
-/*  clear: both; */
-/*  position: relative; */
-/*  height: 1.5in; */
-/* } */
-/* #loginDiv > #loginButtons { */
-/*  text-align: center; */
-/*  padding-left: 0.5in; */
-/*  padding-top: 0.5in; */
-/* } */
+#welcome-right h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  font-variant: small-caps;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 15px;
+}
+#welcome-right h2 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-right: 20px;
+  border-bottom: 1px solid #E17000;
+  padding-bottom: 7px;
+}
+
+#welcome-right b {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+}
+
+#welcome-right p {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #5F584E;
+}
+
+#welcome-right a {
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
+}
+
+#welcome-right a:hover {
+  background-color: #E5E5E5;
+  color: #E17000; /* official GENI orange */
+  border-bottom: 1px dashed #E17000;
+  text-decoration:none;
+}
+
+#welcome-right-top {
+  float: left;
+  width: 620px;
+  padding-bottom: 20px;
+}
+
+#welcome-right-left {
+  float: left;
+  width: 275px;
+}
+
+#welcome-right-right {
+  float: right;
+  width: 345px;
+  background: #E5E5E5;
+  border-top: 5px solid #E17000;
+}
+
+#welcome-right-right p {
+  margin-left: 10px;
+  margin-right: 10px;
+  text-align: center;
+}
+
+/*
+  OTHER
+*/
+
 
 #incommon-logo {
 width: .75in;
@@ -177,21 +708,55 @@ margin-left: .4in;
 }
 
 .instruction {
- color: green;
- font-weight: bold;
- border: 1px solid green;
- margin: 10px;
- padding: 10px;
- width: 50%;
+  background-color: #E5E5E5;
+  border-left: 10px solid green;
+  color: #5F584E;
+  padding: 20px;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px; /* future proofing */
+  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+}
+
+.instruction:before {
+  content: "Notice";
+  color: green;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  display: block;
+  font-size: 1.1em !important;
 }
 
 .warn {
- color: red;
- font-weight: bold;
- border: 1px solid red;
- margin: 10px;
- padding: 10px;
- width: 50%;
+  background-color: #E5E5E5;
+  border-left: 10px solid red;
+  color: #5F584E;
+  padding: 20px;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px; /* future proofing */
+  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+}
+
+.warn:before {
+  content: "Warning";
+  color: red;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  display: block;
+  font-size: 1.1em !important;
 }
 
 .starter {
@@ -224,21 +789,21 @@ margin-left: .4in;
 }
 
 .ready {
- color: White;
+ color: White !important;
  border-color: green;
- background-color: green;
+ background-color: green !important;
 }
 
 .failed {
- color: BlanchedAlmond;
+ color: BlanchedAlmond !important;
  border-color: red;
- background-color: red;
+ background-color: red !important;
 }
 
 .busy {
- color: Black;
+ color: Black !important;
  border-color: yellow;
- background-color: yellow;
+ background-color: yellow !important;
 }
 
 input.date {
@@ -246,38 +811,7 @@ input.date {
 }
 
 
-table {
- background-color: #DCE2E8;
- margin: 1em;
- 
-}
 
-td {
- margin: 3px;
- padding: 3px;
- background-color: BlanchedAlmond;
-}
-
-th {
- margin: 3px;
- padding: 3px;
- background-color: SkyBlue;
- text-align: left;
-}
-
-td.status_buttons, th#status{
- text-align:center;
-}
-
-table#renewtable, table#renewtable > td {
-    margin: 0em;
-    padding: 0em;
-    text-align:left;
-    background-color: BlanchedAlmond;
-}
-td#renewbutton {
-    text-align:center;
-}
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
  text-align:center;
@@ -302,62 +836,44 @@ table .notapply {
 }
 
 .aggregate, .resources {
- padding: 8px;
+  padding: 8px;
+  margin-left: 20px;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  width: 757px;
+ 
 }
 .aggregate {
  background-color: SkyBlue;
+ margin-top: 15px;
 }
 
 .resources {
- margin-bottom: 1em;
+ margin-bottom: 15px;
  background-color: PowderBlue;
 }
 
 .xml, .msg {
  white-space: pre;
- font-family: monospace;
+  font-family: 'Droid Sans Mono', monospace;
+  font-weight: 400;
+  font-size: .9em;
+  line-height: 1.3em;
+ overflow: auto;
 }
-/* Navigation */
-.nav h2, .nav hr { display: none }
-.nav ul { font-size: 10px; list-style: none; margin: 0; text-align: right }
-.nav li {
- border-right: 1px solid #d7d7d7;
- display: inline;
- padding: 0 .75em;
- white-space: nowrap;
-}
-.nav li.last { border-right: none }
 
-/* Main navigation bar */
-#mainnav {
- background: #f7f7f7 url(../topbar_gradient.png) 0 0;
- border: 1px solid #000;
- font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
- margin: .66em 0 .33em;
- padding: .2em 0;
+.xml table {
+  margin-left: 8px !important;
+  width: 701px !important;
+  font-size: .9em !important;
+  line-height: 1.3em !important;
 }
-#mainnav li { border-right: none; padding: .25em 0 }
-#mainnav :link, #mainnav :visited {
- background: url(../dots.gif) 0 0 no-repeat;
- text-decoration: none;
- border-right: 1px solid #fff;
- border-bottom: none;
- border-left: 1px solid #555;
- color: #000;
- padding: .2em 20px;
+
+.xml td {
+  font-family: 'Droid Sans Mono', monospace !important;
+  font-weight: 400 !important;
 }
-* html #mainnav :link, * html #mainnav :visited { background-position: 1px 0 }
-#mainnav :link:hover, #mainnav :visited:hover {
- background-color: #ccc;
- border-right: 1px solid #ddd;
-}
-#mainnav .active :link, #mainnav .active :visited {
- background: #333 url(../topbar_gradient2.png) 0 0 repeat-x;
- border-top: none;
- border-right: 1px solid #000;
- color: #eee;
- font-weight: bold;
-}
-#mainnav .active :link:hover, #mainnav .active :visited:hover {
- border-right: 1px solid #000;
+
+/* for IE browsers that want to put a border around linked images */
+img {
+  border-style: none;
 }

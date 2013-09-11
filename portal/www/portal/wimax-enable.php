@@ -148,7 +148,10 @@ if (array_key_exists('project_id', $_REQUEST))
     $number_keys = count($ssh_public_keys);
     if($number_keys > 0) {
       for($i = 0; $i < $number_keys; $i++) {
-        $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
+	if ($i == 0)
+	  $ldif_string .= "sshpublickey: " . $ssh_public_keys[$i]['public_key'] . "\n";
+	else
+	  $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
       }
     }
       
@@ -202,7 +205,10 @@ if (array_key_exists('project_id', $_REQUEST))
       $number_keys = count($ssh_public_keys);
       if($number_keys > 0) {
         for($i = 0; $i < $number_keys; $i++) {
-          $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
+	  if ($i == 0)
+	    $ldif_string .= "sshpublickey: " . $ssh_public_keys[$i]['public_key'] . "\n";
+	  else
+	    $ldif_string .= "sshpublickey" . ($i + 1) . ": " . $ssh_public_keys[$i]['public_key'] . "\n";
         }
       }
         
@@ -285,7 +291,7 @@ if (array_key_exists('project_id', $_REQUEST))
             name: enable_wimax
             value: foo
   */
-  if (strpos(strtolower($result), 'success' !== false)) {
+  if (strpos(strtolower($result), 'success') !== false) {
     // add yourself as someone using WiMAX
     add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $project_id, 't');
     
@@ -295,6 +301,7 @@ if (array_key_exists('project_id', $_REQUEST))
     }
   
     echo "<p><b>Success</b>: You have enabled and/or requested your account. Check {$user->mail} for login information.</p>";
+    error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name);
   }
   
   else {
@@ -302,6 +309,7 @@ if (array_key_exists('project_id', $_REQUEST))
     echo "<p><b>Error (from $url):</b> $result</p>";
     echo "<p>Debug information:</p>";
     echo "<blockquote><pre>$ldif_string</pre></blockquote>";
+    error_log("Error enabling WiMAX for " . $user->prettyName() . " in project " . $ldif_project_name . ": " . $result);
     
   }
   
@@ -331,14 +339,6 @@ else {
   }
   $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
 
-  if (is_null($cert)) {
-    // warn that no cert has been generated
-    $warnings[] = '<p class="warn">No certificate has been generated.'
-          . ' You must <a href="kmcert.php?close=1" target="_blank">'
-          . 'generate a certificate'
-          . '</a>.'
-          . '</p>';
-  }
   if ($num_projects == 0) {
     // warn that the user has no projects
     $warn = '<p class="warn">You are not a member of any projects.'
@@ -529,7 +529,7 @@ else {
     
     // only show button for these two cases
     if(($projects_lead_count > 0) || ($projects_non_lead_count > 0)) {
-      echo "<button $disabled onClick=\"document.getElementById('f1').submit();\">Submit</button>";
+      echo "<p><button $disabled onClick=\"document.getElementById('f1').submit();\">Submit</button></p>";
     }
     
     // end form
