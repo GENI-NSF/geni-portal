@@ -363,6 +363,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      unlink($omni_file);
      unlink($tmp_version_cache);
      unlink($tmp_agg_cache);
+     unlink($omni_log_file);
      foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
      }
