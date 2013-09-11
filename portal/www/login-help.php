@@ -123,7 +123,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 <h3>For all other issues...</h3>
 <ul>
 <li>
-... contact <a href="mailto:portal-help@geni.net">GENI help</a>. Please describe your problem and the date and time you observed the issue.
+... contact <a href="mailto:help@geni.net">GENI help</a>. Please describe your problem and the date and time you observed the issue.
 </li>
 </ul>
 

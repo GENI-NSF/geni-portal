@@ -4,6 +4,7 @@
 
 == 2.2 ==
   * Comment out call to error log in MA causing PHP warning (#790)
+  * Change some mail links to help@geni.net (#572)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
