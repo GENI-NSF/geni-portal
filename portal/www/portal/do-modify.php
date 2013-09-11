@@ -94,6 +94,7 @@ $added_attrs = array();
 $removed_attrs = array();
 $changed_attrs = array();
 $changed_attrs_old = array();
+$newEmail = null;
 
 // Diff the fields
 foreach (array_keys($sa_attrs) as $attr_name) {
@@ -101,10 +102,16 @@ foreach (array_keys($sa_attrs) as $attr_name) {
     if ($sa_attrs[$attr_name] != $user->attributes[$attr_name]) {
       $changed_attrs[$attr_name] = $sa_attrs[$attr_name];
       $changed_attrs_old[$attr_name] = $user->attributes[$attr_name];
+      if ($attr_name === "mail" or $attr_name === "email_address") {
+	$newEmail = $sa_attrs[$attr_name];
+      }
     }
   } else if (isset($sa_attrs[$attr_name]) and
 	     !is_null($sa_attrs[$attr_name]) and $sa_attrs[$attr_name] !== ''){
     $added_attrs[$attr_name] = $sa_attrs[$attr_name];
+    if ($attr_name === "mail" or $attr_name === "email_address") {
+      $newEmail = $sa_attrs[$attr_name];
+    }
   }
 }
 foreach (array_keys($user->attributes) as $attr_name) {
@@ -151,16 +158,26 @@ if (count($changed_attrs) == 0 and count($added_attrs) == 0 and
 
 $changed_str = "";
 if (count($changed_attrs) > 0) {
-  $changed_str = print_r($changed_attrs, true) . "(was "
-    . print_r($changed_attrs_old, true) . ")";
+  foreach (array_keys($changed_attrs) as $attr_name) {
+    $changed_str = $changed_str . "[" . $attr_name . "]: " . $changed_attrs_old[$attr_name] . " => " .
+      $changed_attrs[$attr_name] . "; \n";
+  }
+    //  $changed_str = print_r($changed_attrs, true) . "(was "
+    //    . print_r($changed_attrs_old, true) . ")";
 }
 $added_str = "";
 if (count($added_attrs) > 0) {
-  $added_str = print_r($added_attrs, true);
+  foreach (array_keys($added_attrs) as $attr_name) {
+    $added_str = $added_str . "[" . $attr_name . "]: " . $added_attrs[$attr_name] . "; \n";
+  }
+  //  $added_str = print_r($added_attrs, true);
 }
 $removed_str = "";
 if (count($removed_attrs) > 0) {
-  $removed_str = print_r($removed_attrs, true);
+  foreach (array_keys($removed_attrs) as $attr_name) {
+    $removed_str = $removed_str . "[" . $attr_name . "]: " . $removed_attrs[$attr_name] . "; \n";
+  }
+  //  $removed_str = print_r($removed_attrs, true);
 }
 
 // FIXME: This is not right
@@ -194,18 +211,38 @@ if ($pi_request and ! $is_pi) {
   log_event($log_url, Portal::getInstance(), $msg, $member_attributes, $user->account_id);
 }
 if ($changed_str !== '') {
-  $body .= "Changes: $changed_str\n";
+  $body .= "Changes: \n$changed_str\n";
 }
 if ($added_str !== '') {
-  $body .= "Additions: $added_str\n";
+  $body .= "Additions: \n$added_str\n";
 }
 if ($removed_str !== '') {
-  $body .= "Removals: $removed_str\n";
+  $body .= "Removals: \n$removed_str\n";
 }
 include_once('/etc/geni-ch/settings.php');
 global $portal_admin_email;
 mail($portal_admin_email, $subject,
      $body);
+
+if ($pi_request and ! $is_pi) {
+  // Email the experimenter that their request was received
+  $cc = "";
+  if (! is_null($newEmail) and $newEmail !== $user->email()) {
+    $cc = "\r\nCc: " . $newEmail;
+  }
+  $bcc = "Bcc: " . $portal_admin_email;
+  $to = $user->prettyEmailAddress();
+  $replyto = "Reply-To: help@geni.net";
+  //  $from = "From: GENI Portal <www-data@portal.geni.net>"; // FIXME!!!
+  $subject = "Your GENI Project Lead request has been received";
+  $body = "\nDear " . $user->prettyName() . ",\n";
+  $body = $body . "\nWe have received your request to be a GENI Project Lead.  We are processing your request and you should hear from us in 3-4 business days.\n";
+  $body = $body . "\nIf you have any questions about your request or about using GENI in general, please email help@geni.net.\n";
+  $body = $body . "\nThank you for your interest in GENI!\n";
+  $body = $body . "\nSincerely,\n\nGENI Experimenter Support\nhelp@geni.net\n";
+  mail($to, $subject, $body,
+       $replyto . "\r\n" . $bcc . $cc);
+}
 
 //error_log("Request: " . print_r($_REQUEST, true));
 
