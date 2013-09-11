@@ -968,7 +968,7 @@ function lookup_members_by_email($args, $message)
     " where " . MA_ATTRIBUTE::NAME . " = '" . MA_ATTRIBUTE_NAME::EMAIL_ADDRESS . "'" . 
     " and lower(" . MA_ATTRIBUTE::VALUE . ") in (" . $emails . ")";
   $rows = db_fetch_rows($sql);
-  error_log($rows);
+  //  error_log($rows);
   if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $rows;
 
