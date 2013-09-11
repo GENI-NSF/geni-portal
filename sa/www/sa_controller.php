@@ -633,8 +633,6 @@ function create_project($args, $message)
   
   pa_expire_projects();
 
-  //  error_log("ARGS = " . print_r($args, true));
-
   $project_name = $args[PA_ARGUMENT::PROJECT_NAME];
   if (! isset($project_name) or is_null($project_name) or 
       $project_name == '') 
@@ -3128,13 +3126,29 @@ function modify_slice_membership($args, $message)
 
   // Determine slice lead
   $slice_lead = null;
+  $member_change_allowed = false;
+  $my_uid = $message->signerUuid();
   foreach($slice_members as $slice_member) {
     $member_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
     $role = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
     if ($role == CS_ATTRIBUTE_TYPE::LEAD) {
       $slice_lead = $member_id;
-      break;
+      if ($my_uid === $member_id) {
+	$member_change_allowed = true;
+	break;
+      }
     }
+    if ($role == CS_ATTRIBUTE_TYPE::ADMIN) {
+      if ($my_uid === $member_id) {
+	$member_change_allowed = true;
+	if (! is_null($slice_lead)) {
+	  break;
+	}
+      }
+    }
+  }
+  if (!$member_change_allowed) {
+    return generate_response(RESPONSE_ERROR::AUTHORIZATION, null, "Only a lead or admin can change slice membership");
   }
 
   // Must be a slice lead, else something is wrong with slice
@@ -3148,8 +3162,8 @@ function modify_slice_membership($args, $message)
 		       array_keys($slice_members), true)) 
     {
       return generate_response(RESPONSE_ERROR::ARGS, null, 
-			       "Can't add member to a slice that " . 
-			       "already belongs");
+			       "Can't add member to a slice to which they " . 
+			       "already belong");
     }
 
   // No new roles for members who aren't slice members

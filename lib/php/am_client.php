@@ -272,6 +272,8 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $private_key = $user->privateKey();
     $tmp_version_cache = tempnam(sys_get_temp_dir(),
             'omniVersionCache');
+    $tmp_agg_cache = tempnam(sys_get_temp_dir(),
+            'omniAggCache');
 
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
     $key_file = writeDataToTempFile($private_key, "$username-key-");
@@ -327,8 +329,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 		       '--logoutput', $omni_log_file,
 		       '--api-version',
 		       '2',
-            "--GetVersionCacheName",
-            $tmp_version_cache);
+		       "--GetVersionCacheName",
+		       $tmp_version_cache,
+		       "--ForceUseAggNickCache", // Do not try to
+		       //                           download the AM nickname definitions
+		       "--AggNickCacheName", // Use an empty file that
+		       //                       defines no AM nicknames
+		       $tmp_agg_cache);
 
     if (!is_array($am_url)){
       $cmd_array[]='-a';
@@ -355,6 +362,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      unlink($key_file);
      unlink($omni_file);
      unlink($tmp_version_cache);
+     unlink($tmp_agg_cache);
      foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
      }

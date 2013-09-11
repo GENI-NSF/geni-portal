@@ -325,14 +325,14 @@ class GeniUser
  */
 function incommon_attribute_redirect()
 {
-	$error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
-	$params['sp_entityID'] = "https://" . $_SERVER['SERVER_NAME'] . "/shibboleth";
-	$params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
-	$query = http_build_query($params);
-	$url = $error_service_url . $query;
-	error_log("Insufficient attributes. Redirecting to $url");
-	header("Location: $url");
-	exit;
+  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
+  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+  $query = http_build_query($params);
+  $url = $error_service_url . $query;
+  error_log("Insufficient attributes. Redirecting to $url");
+  header("Location: $url");
+  exit;
 }
 
 /**
@@ -364,18 +364,15 @@ function send_attribute_fail_email()
 function geni_load_user_by_eppn($eppn)
 {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-  $attrs = array('eppn' => $eppn);
+  //  $attrs = array('eppn' => $eppn);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
-  $ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
-  $count = count($ma_members);
-  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found " . $count . " members.");
-  if ($count == 0) {
+  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
+  if (is_null($member)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");
-  } else if ($count > 1) {
-    // ERROR: multiple users under unique key
+  } else {
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Found member for EPPN " . $eppn);
   }
-  $member = $ma_members[0];
   $user = new GeniUser();
   $user->init_from_member($member);
   return $user;
@@ -429,6 +426,9 @@ function geni_load_identity_by_eppn($eppn)
 	error_log("IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
 	geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
 	// FIXME: Update the identity_attribute table!
+	// "update identity_attribute set value = '" . $conn->quote($_SERVER[$row['name']], 'text') . "' where identity_id = " . $conn->quote($identity['identity_id'], 'text') . " and name = '" . $conn->quote($row['name'], 'text')
+	// What about ma_member_attribute? That one is harder to generalize
+	// update ma_member_attribute set value = <new> where value = <old> and member_id = !!!! <and name = !!!
       }
     }
   }

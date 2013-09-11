@@ -286,6 +286,15 @@ function ma_lookup_member_id($ma_url, $signer, $member_id_key, $member_id_value)
   return $result;
 }
 
+function ma_lookup_member_by_eppn($ma_url, $signer, $eppn) {
+  $attrs = array('eppn' => $eppn);
+  $result = ma_lookup_members($ma_url, $signer, $attrs);
+  if (count($result) == 0) {
+    return null;
+  }
+  return $result[0];
+}
+
 function ma_lookup_member_by_id($ma_url, $signer, $member_id)
 {
   global $member_cache;

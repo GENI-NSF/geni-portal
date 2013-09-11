@@ -66,15 +66,19 @@ run_pgch(char *prog_name)
   char *py_args[] = {
     "/usr/share/geni-ch/portal/gcf/src/gcf-pgch.py",
     "-c", "/usr/share/geni-ch/portal/gcf.d/gcf.ini",
-    "-p", "8443"
+    "-p", "8443",
+    "--use-gpo-ch" /* Force using the GPO CH, not the fake GCF
+		      CH. Requires gcf-2.3.1 or greater */
   };
+  /* Determine the number of py_args */
+  int py_argc = sizeof(py_args) / sizeof(py_args[0]);
   FILE* file;
 
   /* TODO: open /var/log/gcf-pgch.log and send STDOUT and STDERR there. */
 
   Py_SetProgramName(prog_name);  /* optional but recommended */
   Py_Initialize();
-  PySys_SetArgv(5, py_args);
+  PySys_SetArgv(py_argc, py_args);
   /* check return from fopen */
   file = fopen(py_args[0],"r");
   PyRun_SimpleFile(file, py_args[0]);

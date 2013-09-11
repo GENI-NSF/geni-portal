@@ -35,6 +35,7 @@ require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once("settings.php");
+require_once('logging_constants.php');
 require_once('logging_client.php');
 require_once('am_map.php');
 require_once('status_constants.php');
@@ -53,12 +54,8 @@ if (isset($slice_expired) && $slice_expired == 't' ) {
   $disable_buttons_str = " disabled";
 }
 
-if (! isset($services)) {
-  $services = get_services();
-}
-
 if (! isset($all_ams)) {
-  $am_list = select_services($services, SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $all_ams = array();
   foreach ($am_list as $am) 
   {
@@ -88,7 +85,7 @@ function compare_members_by_role($mem1, $mem2)
 
 function build_agg_table_on_slicepg() 
 {
-     global $all_ams;
+     global $am_list;
      global $slice;
      global $slice_id;
      global $renew_slice_privilege;
@@ -110,7 +107,6 @@ function build_agg_table_on_slicepg()
      $initial_text = "not retrieved";
 
      // (2) create an HTML table with one row for each aggregate
-     $json_agg = $all_ams;
      $output = "<table id='status_table'>";
      //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
      $output .= "<tr>";
@@ -120,8 +116,9 @@ function build_agg_table_on_slicepg()
      //      output .= "<th>&nbsp;</th>";
      $output .= "<th>Renew</th>";
      $output .= "<th>Actions</th></tr>\n";
-     foreach ($json_agg as $am_id => $agg ) {
-	    $name = $agg['name'];
+     foreach ($am_list as $am) {
+	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+            $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
             $output .= "<tr id='".$am_id."'>";
 	    $output .= "<td id='status_".$am_id."' class='notqueried'>";	
 	    $output .= $initial_text;
@@ -195,29 +192,19 @@ if (isset($slice)) {
   $members = get_slice_members($sa_url, $user, $slice_id);
   $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					       SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
-}
-
-show_header('GENI Portal: Slices', $TAB_SLICES);
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
-
-
-if (! isset($slice)) {
+} else {
   print "Unable to load slice<br/>\n";
-  include("footer.php");
+  $_SESSION['lasterror'] = "Unable to load slice";
+  relative_redirect("home.php");
   exit();
 }
-
-?>
-
-
-<?php
 
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
 $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
 $proj_url = 'project.php?project_id='.$slice_project_id;
-$slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
+$slice_own_url = "mailto:$owner_email";
+//$slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
 $omni_url = "tool-omniconfig.php";
 $flack_url = "flack.php?slice_id=".$slice_id;
 $gemini_url = "gemini.php?slice_id=" . $slice_id;
@@ -257,7 +244,7 @@ $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
 
 if(!$lookup_slice_privilege) {
-  $_SESSION['lastmessage'] = 'User has no privileges to view slice ' . $slice_name;
+  $_SESSION['lasterror'] = 'User has no privileges to view slice ' . $slice_name;
   relative_redirect('home.php');
 }
 
@@ -272,6 +259,10 @@ if ($project_expiration) {
   // take the minimum of the two as the constraint
   $renewal_days = min($renewal_days, $portal_max_slice_renewal_days);
 }
+
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 ?>
 
@@ -422,23 +413,24 @@ print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
 echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
+//print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 // ---
 
-print "<h2>Slice members</h2>";
+print "<h2>Slice Members</h2>";
 ?>
 
-<p>Slice members will be able to login to resources reserved <i>in the future</i> if</p>
+<p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
 <ul>
- <li>the resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
- <li>the slice member has uploaded an ssh public key.</li>
+ <li>The resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
+ <li>The slice member has uploaded an ssh public key.</li>
 </ul>
 
 <table>
 	<tr>
 		<th>Slice Member</th>
-		<th>Roles</th>
+		<th>Role</th>
 	</tr>
 	<?php
 usort($members, 'compare_members_by_role');
@@ -451,9 +443,14 @@ foreach($members as $member) {
   $member_name = $member_names[$member_id];
   $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
   $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
+  // FIXME: Make this a mailto link
+  print "<tr><td>$member_name</td>" . 
+    "<td>$member_role</td></tr>\n";
+  /*
   print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
     "&member_id=$member_id\">$member_name</a></td>" . 
     "<td>$member_role</td></tr>\n";
+  */
 }
 	?>
 </table>
@@ -487,7 +484,9 @@ echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_slice_m
 		  $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
 		  $member_name = $entry_member_names[$member_id];
 		  //    error_log("ENTRY = " . print_r($entry, true));
-		  print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+		  //		  print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+		  // FIXME: Want a mailto link
+		  print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
   }
 ?>
 

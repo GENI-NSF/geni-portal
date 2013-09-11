@@ -46,6 +46,9 @@ foreach ($keys as $key) {
   if ($key['id'] == $key_id) {
     $public_key = $key['public_key'];
     $filename = $key['filename'];
+    if (strtolower(substr($filename, -strlen(".pub"))) !== strtolower(".pub")) {
+      $filename .= ".pub"; // append '.pub' since this isn't done automatically
+    }
   }
 }
 

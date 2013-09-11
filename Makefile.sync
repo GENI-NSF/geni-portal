@@ -20,11 +20,20 @@ default:
 bin/geni-ch-githash: .git
 	git rev-parse HEAD > bin/geni-ch-githash
 
+synca: bin/geni-ch-githash
+	$(RSYNC) $(RSYNC_ARGS) ../proto-ch algonquin.gpolab.bbn.com:
+
 syncb: bin/geni-ch-githash
 	$(RSYNC) $(RSYNC_ARGS) ../proto-ch bigslide.gpolab.bbn.com:
 
 syncd: bin/geni-ch-githash
 	$(RSYNC) $(RSYNC_ARGS) ../proto-ch dagoola.gpolab.bbn.com:
+
+synce: bin/geni-ch-githash
+	$(RSYNC) $(RSYNC_ARGS) ../proto-ch emmons.gpolab.bbn.com:
+
+synch: bin/geni-ch-githash
+	$(RSYNC) $(RSYNC_ARGS) ../proto-ch haystack.gpolab.bbn.com:
 
 syncm: bin/geni-ch-githash
 	$(RSYNC) $(RSYNC_ARGS) ../proto-ch marilac.gpolab.bbn.com:

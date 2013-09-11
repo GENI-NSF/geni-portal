@@ -26,6 +26,7 @@ require_once("user.php");
 require_once("header.php");
 require_once('portal.php');
 require_once('util.php');
+require_once('logging_constants.php');
 require_once('pa_constants.php');
 require_once('sa_constants.php');
 require_once('pa_client.php');
@@ -100,6 +101,27 @@ if (! is_null($project) && $project != "None") {
 
 // Fill in members of project member table
 $members = get_project_members($sa_url, $user, $project_id);
+
+/*------------------------------------------------------------
+ * Does this user have privileges on this project?
+ *
+ * If not, redirect to home page.
+ *------------------------------------------------------------
+ */
+$user_is_project_member = false;
+foreach ($members as $m) {
+  if ($user->account_id == $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID]) {
+    $user_is_project_member = true;
+    break;
+  }
+}
+if (! $user_is_project_member) {
+  $_SESSION['lasterror'] = ('User has no privileges to view project '
+                              . $project_name);
+  relative_redirect('home.php');
+}
+
+
 $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 //error_log("members = " . print_r($members, true));
@@ -186,13 +208,13 @@ print "</table>\n";
 // a permission error on lookup_slices
 
 ?>
-<h2>Project slices:</h2>
+<h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");
 ?>
 
-<h2>Project members</h2>
+<h2>Project Members</h2>
 
 <?php
 
@@ -252,7 +274,7 @@ echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_project
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
-  print "<h3>Add new project members</h3>";
+  print "<h3>Add New Project Members</h3>";
   print "<p><button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button>";
 
   //  print "<br/><h3>Invite new project members</h3>\n";

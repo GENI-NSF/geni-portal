@@ -166,16 +166,17 @@ if (count($my_slice_objects) > 0) {
 					      CS_CONTEXT_TYPE::SLICE, 
 					      $slice_id);
     $renew_disabled = "";
-    if(!$renew_slice_privilege) { $renew_disabled = $disabled; }
+    if(!$renew_slice_privilege or $isSliceExpired) { $renew_disabled = $disabled; }
 
-    $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
-					       CS_CONTEXT_TYPE::SLICE, 
-					       $slice_id);
+    // FIXME: Shouldn't we be using this?
+    //    $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
+    //					       CS_CONTEXT_TYPE::SLICE, 
+    //					       $slice_id);
 
     $get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
 						       CS_CONTEXT_TYPE::SLICE, $slice_id);
     $get_slice_credential_disable_buttons = "";
-    if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
+    if(!$get_slice_credential_privilege or $isSliceExpired) {$get_slice_credential_disable_buttons = $disabled; }
 
 
 

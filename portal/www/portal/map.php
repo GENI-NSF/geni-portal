@@ -63,17 +63,26 @@ $resources_by_node = array();
 $directory = "../common/map/";
 
 // list of AM rspecs to check
+/*
+ * The filenames below correspond to omni output from
+ *
+ *        omni.py -o listresources
+ *
+ */
 $files = array(
-  $directory . 'exogeni.net.am.rspec',
-  $directory . 'exogeni.net.bbnvmsite.am.rspec',
-  $directory . 'exogeni.net.rcivmsite.am.rspec',
-  $directory . 'geni.kettering.edu.cm.rspec',
-  $directory . 'instageni.gpolab.bbn.com.cm.rspec',
-  $directory . 'instageni.northwestern.edu.cm.rspec',
-  $directory . 'lan.sdn.uky.edu.cm.rspec',
-  $directory . 'uky.emulab.net.cm.rspec',
-  $directory . 'utah.geniracks.net.cm.rspec',
-  $directory . 'emulab.net.cm.rspec'
+  $directory . 'rspec-emulab-net.xml',
+  $directory . 'rspec-exogeni-net-bbnvmsite.xml',
+  $directory . 'rspec-exogeni-net-fiuvmsite.xml',
+  $directory . 'rspec-exogeni-net-rcivmsite.xml',
+  $directory . 'rspec-exogeni-net-uhvmsite.xml',
+  $directory . 'rspec-exogeni-net.xml',
+  $directory . 'rspec-geni-kettering-edu.xml',
+  $directory . 'rspec-instageni-gpolab-bbn-com.xml',
+  $directory . 'rspec-instageni-northwestern-edu.xml',
+  $directory . 'rspec-lan-sdn-uky-edu.xml',
+  $directory . 'rspec-uky-emulab-net.xml',
+  $directory . 'rspec-utah-geniracks-net.xml',
+  $directory . 'rspec-utahddc-geniracks-net.xml'
 );
 
 // list of AMs from service registry
