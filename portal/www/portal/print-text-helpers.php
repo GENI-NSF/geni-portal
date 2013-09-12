@@ -57,7 +57,7 @@ function print_xml( $xml ){
     if (trim($line) == "") {
       continue;
     }
-    echo htmlspecialchars($line) . "<br />\n";
+    echo htmlspecialchars(rtrim($line)) . "\n";
   }
   print "</div>\n";
 }
