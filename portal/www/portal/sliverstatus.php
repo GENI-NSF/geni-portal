@@ -118,6 +118,8 @@ if ($amcnt >= 2) {
   $amcntstr = "all aggregates";
 }
         
+print "<p><button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
+
 //echo "<div class='aggregate'>Querying status of resources at " . $amcntstr . "...</div>";
 print "<div class='aggregate' id='prettyxml'>";
 print "<p id='query' style='display:block;'><i>Querying aggregates for status of resources...</i></p>";
@@ -131,7 +133,6 @@ echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";
 
 print "<div id='slivererror'>";
 print "<table id='slivererror'></table></div>";
-print "<p><button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
 
 if (isset($am_id) && $am_id ) {
   $am_id_str = "&am_id=$am_id";
