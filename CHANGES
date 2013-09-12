@@ -15,6 +15,7 @@
   * Show something for ExoGENI hostnames in details page (#767)
   * Remove 2 more uses of slice-member.php (#328)
   * Clean up temp files (#383)
+  * Fix company name in copyright on footer (#793)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
