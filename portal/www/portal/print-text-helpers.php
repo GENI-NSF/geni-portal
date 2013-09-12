@@ -79,7 +79,7 @@ function get_auth_from_urn( $urn ){
     return $urn;
   }
   // grap all up to the next +
-  $auth = substr($temp, 0, strpos("+"));
+  $auth = substr($temp, 0, strpos($temp, "+"));
   if (! $auth or $auth == "") {
     return $urn;
   }
@@ -137,7 +137,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $comp_mgr_id = $node['component_manager_id'];
     if ($filterToAM and ($comp_mgr_id!=$componentMgrURN)){
       $sliver_id = $node['sliver_id'];
-      $sliver_auth = get_auth_from_urn($urn);
+      $sliver_auth = get_auth_from_urn($sliver_id);
       $compMgrAuth = get_auth_from_urn($componentMgrURN);
       if ($sliver_auth == $compMgrAuth) {
 	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
@@ -170,9 +170,13 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     echo "<td>",$exclusive,"</td>";
     if ($sliver_type){
       echo "<td>",$sliver_type['name'],"</td>\n";
+    } else {
+      echo "<td>(not specified)</td>\n";
     }
     if ($host){
       echo "<td>",$host['name'],"</td>\n";
+    } else {
+      echo "<td>(not specified)</td>\n";
     }
     echo "</tr>\n";
     foreach ($logins as $login) {	
@@ -236,7 +240,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $componentMgrName = $comp_mgrs['name'];		      
     if ($filterToAM and ($componentMgrName!=$componentMgrURN)){
       $sliver_id = $link['sliver_id'];
-      $sliver_auth = get_auth_from_urn($urn);
+      $sliver_auth = get_auth_from_urn($sliver_id);
       $compMgrAuth = get_auth_from_urn($componentMgrURN);
       if ($sliver_auth == $compMgrAuth) {
 	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
