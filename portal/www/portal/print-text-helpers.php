@@ -91,12 +91,12 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   try {
     $rspec = new SimpleXMLElement($xml);
     if (!$rspec) {
-      error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr(str($xml), 0, 40) . "...");
+      error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr((string)($xml), 0, 40) . "...");
       echo $err_str;
       return ;
     }
   } catch (Exception $e) {
-    error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr(str($xml), 0, 40) . "... : " . str($e));
+    error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr((string)($xml), 0, 40) . "... : " . (string)($e));
     echo $err_str;
     return;
   }
@@ -111,7 +111,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   $num_links = $links->count();
 
   if ($num_nodes + $num_links == 0) {
-    error_log("print-rspec-pretty got RSpec with 0 nodes and links: " . substr(str($xml), 0, 40));
+    error_log("print-rspec-pretty got RSpec with 0 nodes and links: " . substr((string)($xml), 0, 40));
     print_xml($xml);
     return;
   }
@@ -315,7 +315,7 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
     if (is_array($obj[$arg]) and array_key_exists('output', $obj[$arg])) {
       $output = $obj[$arg]['output'];
     } else if (! is_array($obj[$arg]) or ! array_key_exists('code', $obj[$arg])) {
-      $output = str($obj[$arg]);
+      $output = (string)($obj[$arg]);
     } else {
       $output = "";
     }
