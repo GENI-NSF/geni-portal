@@ -118,13 +118,15 @@ if ($amcnt >= 2) {
   $amcntstr = "all aggregates";
 }
         
-print "<p><button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
 
 //echo "<div class='aggregate'>Querying status of resources at " . $amcntstr . "...</div>";
 print "<div class='aggregate' id='prettyxml'>";
 print "<p id='query' style='display:block;'><i>Querying aggregates for status of resources...</i></p>";
 
-print "<p id='summary' style='display:none;'><i>Queried resources at <span id='numagg'>0</span> aggregates. </i></p>";
+print "<p id='summary' style='display:none;'><i>Queried resources at <span id='numagg'>0</span> aggregates. </i><br/>";
+print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
+
+//print "<p><button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
 
 print "</p>";
 print "</div>\n";
