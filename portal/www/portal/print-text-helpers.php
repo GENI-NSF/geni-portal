@@ -54,6 +54,9 @@ function print_xml( $xml ){
   $xml2 = explode("\n",$xml);
   print "<div class='xml'>";
   foreach ($xml2 as $line_num => $line) {
+    if (trim($line) == "") {
+      continue;
+    }
     echo htmlspecialchars($line) . "<br />\n";
   }
   print "</div>\n";
