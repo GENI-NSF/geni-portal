@@ -363,7 +363,6 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      unlink($omni_file);
      unlink($tmp_version_cache);
      unlink($tmp_agg_cache);
-     unlink($omni_log_file);
      foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
      }
@@ -375,6 +374,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        // this is probably a traceback from python
        // return it as a string
        return $output;
+     }
+     /* Delete the log file only if the decoded output is an array and
+        its length is 2 and the second value (index 1) is boolean true
+        (not null or empty string).
+      */
+     if (is_array($output2) && count($output2) == 2 && $output2[1]) {
+       unlink($omni_log_file);
      }
      return $output2;
 }
