@@ -46,6 +46,7 @@ $sa_gcf_include_path = '/usr/share/geni-ch/portal/gcf/src';
 
 $sa_trusted_roots = array('/usr/share/geni-ch/CA/cacert.pem');
 
+// 168 hours = 7 days
 $sa_default_slice_expiration_hours = 168;
 
 $sa_max_slice_renewal_days = 185;

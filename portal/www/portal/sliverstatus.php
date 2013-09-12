@@ -70,6 +70,14 @@ if (isset($slice_expired) && $slice_expired == 't') {
 
 $header = "Status of Slivers on slice: $slice_name";
 
+// String to disable button or other active element
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
+
+$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
+						   CS_CONTEXT_TYPE::SLICE, $slice_id);
+$get_slice_credential_disable_buttons = "";
+if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
+
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 if (! isset($am_id) or is_null($am_id)) {
@@ -123,6 +131,7 @@ echo "<div id='sliverstatus'><table id='sliverstatus'></table></div>";
 
 print "<div id='slivererror'>";
 print "<table id='slivererror'></table></div>";
+print "<p><button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
 
 if (isset($am_id) && $am_id ) {
   $am_id_str = "&am_id=$am_id";
@@ -131,7 +140,7 @@ if (isset($am_id) && $am_id ) {
 }
 
 
-print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
+print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a></p>";
 print "<hr/>";
 print "<p><a href='slices.php'>Back to All slices</a>";
 print "<br/>";
