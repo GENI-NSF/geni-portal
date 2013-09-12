@@ -306,7 +306,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        $slice_username = $slice_user->username;
        $slice_urn = $slice_user->urn();	
        $ssh_key_files = write_ssh_keys($slice_user, $user);
-       $all_ssh_key_files = $all_ssh_key_files + $ssh_key_files;
+       $all_ssh_key_files = array_merge($all_ssh_key_files, $ssh_key_files);
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
              . "[$slice_username]\n"
