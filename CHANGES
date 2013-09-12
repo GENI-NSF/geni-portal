@@ -14,6 +14,7 @@
   * Put a refresh button the sliver status page (#451)
   * Show something for ExoGENI hostnames in details page (#767)
   * Remove 2 more uses of slice-member.php (#328)
+  * Clean up temp files (#383)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
