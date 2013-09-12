@@ -101,7 +101,6 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
   $slice_urn = urlencode($slice_urn);
   $sa_urn = urlencode(SA_URN);
 
-  $filename = "/tmp/" . make_uuid() . ".html";
   $content_1 = file_get_contents(FLACK_1_FILENAME);
   $content_2 = file_get_contents(FLACK_2_FILENAME);
   $content_22 = file_get_contents(FLACK_22_FILENAME);
@@ -120,7 +119,6 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
 
   $content = $content_1 . $set_commands . $content_2 . $savars . $slicevar . $chvar . $content_22 . '"' . URL_PREAMBLE2 . $content_3;
   //  $content = $content_1 . $set_commands . $content_2 . '"' . URL_PREAMBLE . $url_params . $content_3;
-  file_put_contents($filename, $content);
   return $content;
 }
 
