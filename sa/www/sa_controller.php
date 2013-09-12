@@ -2728,13 +2728,75 @@ function create_slice($args, $message)
 	  !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) ||
 	  $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
 	{
-	  error_log("Create slice failed ot add project lead as " . 
+	  error_log("Create slice failed to add project lead as " . 
 		    "slice member: " .
 		    $addres[RESPONSE_ARGUMENT::CODE] . ": " .
 		    $addres[RESPONSE_ARGUMENT::OUTPUT]);
 	  return $addres;
 	}
     }
+
+    // Add all project ADMINs as members of the slice as well
+    // get all project admins
+    $admins = array();
+    $admins_res = get_project_members(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+					    PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
+				      $message);
+    if (! isset($admins_res) || is_null($admins_res) || 
+	! array_key_exists(RESPONSE_ARGUMENT::CODE, $admins_res) ||
+	$admins_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE ||
+	! array_key_exists(RESPONSE_ARGUMENT::VALUE, $admins_res)) {
+      error_log("Create slice failed to get admins in project: " . 
+		$admins_res[RESPONSE_ARGUMENT::CODE] . ": " . 
+		$admins_res[RESPONSE_ARGUMENT::OUTPUT]);
+    } else {
+      $admins = $admins_res[RESPONSE_ARGUMENT::VALUE];
+      if (is_null($admins) || count($admins) <= 0) {
+	error_log("Create slice: No project admins found in project " . $project_name);
+	$admins = array();
+      }
+    }
+
+    // For each admin of the project
+    foreach ($admins as $project_admin) {
+      $project_admin_id = $project_admin[PA_ARGUMENT::MEMBER_ID];
+
+      // If not the slice owner, then add them
+      if ($project_admin_id != $owner_id) {
+
+	//    error_log("PL $project_admin_id is not OWNER $owner_id");
+	// Create assertion of admin membership
+	$ca_res = create_assertion($cs_url, $mysigner, $signer, 
+				   $project_admin_id, 
+				   CS_ATTRIBUTE_TYPE::ADMIN,
+				   CS_CONTEXT_TYPE::SLICE, $slice_id);
+	if ($ca_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	  error_log("Create slice failed to make a project admin a slice admin: " .
+		$ca_res[RESPONSE_ARGUMENT::CODE] . ": " . 
+		$ca_res[RESPONSE_ARGUMENT::OUTPUT]);
+	  continue;
+	}
+
+	// add project admin as 'ADMIN' slice member 
+	$addres = 
+	  add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id,
+				 SA_ARGUMENT::MEMBER_ID => $project_admin_id,
+				 SA_ARGUMENT::ROLE_TYPE =>
+				 CS_ATTRIBUTE_TYPE::ADMIN),
+			   $message);
+	if (!isset($addres) ||
+	    is_null($addres) ||
+	    !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) ||
+	    $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  {
+	    error_log("Create slice failed to add project admin as " . 
+		      "slice member: " .
+		      $addres[RESPONSE_ARGUMENT::CODE] . ": " .
+		      $addres[RESPONSE_ARGUMENT::OUTPUT]);
+	    continue;
+	  }
+      }
+    } // end of loop over project admins
 
     // Log the creation
     global $log_url;

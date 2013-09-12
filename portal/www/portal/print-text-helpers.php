@@ -91,18 +91,17 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   try {
     $rspec = new SimpleXMLElement($xml);
     if (!$rspec) {
-      error_log("Call to print_rspec_pretty() FAILED");
+      error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr(str($xml), 0, 40) . "...");
       echo $err_str;
       return ;
     }
   } catch (Exception $e) {
-      error_log("Call to print_rspec_pretty() FAILED");
-      echo $err_str;
-      return;
+    error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr(str($xml), 0, 40) . "... : " . str($e));
+    echo $err_str;
+    return;
   }
 
   $rspec->registerXPathNamespace("def", "http://www.geni.net/resources/rspec/3/manifest.xsd");
-  print "<div class='xml'>";
   $nodes = $rspec->node;
 // $nodes = $rspec->xpath('//def:node[@component_manager_id=$componentMgrURN]');
 // $nodes = $rspec->xpath('/def:node');
@@ -110,6 +109,12 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   $num_nodes = $nodes->count();
 //  $num_nodes = count($nodes);
   $num_links = $links->count();
+
+  if ($num_nodes + $num_links == 0) {
+    error_log("print-rspec-pretty got RSpec with 0 nodes and links: " . substr(str($xml), 0, 40));
+    print_xml($xml);
+    return;
+  }
 
   $nodes_text = "<b>".$num_nodes."</b> node";
   if ($num_nodes!=1) {
@@ -121,6 +126,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   }
 //COUNT ONLY NODES FOR THIS AM  echo "<p>There are ",$nodes_text," and ",$links_text," at this aggregate.</p>";
   
+  print "<div class='xml'>";
+
   $node_num = 0;
   foreach ($nodes as $node) {
 
@@ -281,25 +288,30 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 
   // How many AMs reported actual results
   $amc = 0;
-  foreach ($args as $arg){
-    if (array_key_exists('value', $obj[$arg]) and array_key_exists('code', $obj[$arg]) and $obj[$arg]['code']['geni_code'] == 0) {
+  foreach ($args as $arg) {
+    if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg]) and array_key_exists('code', $obj[$arg]) and is_array($obj[$arg]['code']) and array_key_exists('geni_code', $obj[$arg]['code']) and $obj[$arg]['code']['geni_code'] == 0) {
       $amc = $amc + 1;
     }
   }
 
-  foreach ($args as $arg){
+  foreach ($args as $arg) {
     $arg_url = $arg;
     $am_id = am_id( $arg_url );
     $arg_name = am_name($arg_url);
     $arg_urn = am_urn($arg_url);
-    if (array_key_exists('value', $obj[$arg])) {
+    if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg])) {
         $xml = $obj[$arg]['value'];
     } else {
         $xml = "";
     }
-    $code = $obj[$arg]['code']['geni_code'];
-    if (array_key_exists('output', $obj[$arg])) {
+    $code = -1;
+    if (is_array($obj[$arg]) and array_key_exists('code', $obj[$arg]) and is_array($obj[$arg]['code']) and array_key_exists('geni_code', $obj[$arg]['code'])) {
+      $code = $obj[$arg]['code']['geni_code'];
+    }
+    if (is_array($obj[$arg]) and array_key_exists('output', $obj[$arg])) {
       $output = $obj[$arg]['output'];
+    } else if (! is_array($obj[$arg]) or ! array_key_exists('code', $obj[$arg])) {
+      $output = str($obj[$arg]);
     } else {
       $output = "";
     }

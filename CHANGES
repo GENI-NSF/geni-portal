@@ -6,6 +6,10 @@
   * Comment out call to error log in MA causing PHP warning (#790)
   * Change some mail links to help@geni.net (#572)
   * Find owning aggregate using sliver_id for manifest (#712)
+  * Project admins are made admins of newly created slices (#559)
+  * Email experimenters when they request to be a project lead (#760)
+  * Use code format for sample .irodsEnv file (#744)
+  * Be more careful checking XML when printing RSpec (#791)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
