@@ -21,6 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
+
+require_once('settings.php');
+
 ?>
 
 <!-- close the "content" div. -->
@@ -36,6 +39,15 @@
   Copyright &copy; 2013 BBN Technologies<br>
   All Rights Reserved - NSF Award CNS-0714770<br>
   <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"> National Science Foundation</a>
+  
+<?php
+  // show version if it exists in settings.php
+  if(isset($portal_version)) {
+    echo "<br>";
+    echo "<small>GENI Portal Version $portal_version</small>";
+  }
+?>
+
 </div>
 </div>
 </body>
