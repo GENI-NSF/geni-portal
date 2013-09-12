@@ -193,7 +193,9 @@ if (count($my_slice_objects) > 0) {
          . "</a></td>");
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
     print "<td>" . htmlentities($expiration) . "</td>";
-    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
+    // FIXME: Make this a mailto. Need to use member_objects to do init_from_record of a member and then retrieve the email address
+    print "<td>" . htmlentities($slice_owner_name) . "/td>";
+    //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
     print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
     print ("<button onClick=\"window.location='$sliver_status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
     print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
