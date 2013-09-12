@@ -129,6 +129,9 @@ if ($status != 0) {
 	error_log("Error generating ssh key; command = $command");
 	error_log("Error generating ssh key; status = $status");
 	error_log("Error generating ssh key; output = " . print_r($output, TRUE));
+        // clean up temp files
+        if (file_exists($privatekeyfile)) { unlink($privatekeyfile); }
+        if (file_exists($publickeyfile)) { unlink($publickeyfile); }
 	$GENI_TITLE = "Generate SSH keypair";
 	$load_user = TRUE;
 	show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
@@ -141,6 +144,8 @@ if ($status != 0) {
 /* ssh keys (public and private) were successfully generated. Store them in the database. */
 $private_key = file_get_contents($privatekeyfile);
 $public_key = file_get_contents($publickeyfile);
+unlink($privatekeyfile);
+unlink($publickeyfile);
 /* This is the name of the file on the experimenter's machine. */
 $filename = "id_geni_ssh_rsa";
 $description = "Generated SSH keypair";
