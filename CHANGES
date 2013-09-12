@@ -10,6 +10,8 @@
   * Email experimenters when they request to be a project lead (#760)
   * Use code format for sample .irodsEnv file (#744)
   * Be more careful checking XML when printing RSpec (#791)
+  * Put a refresh button the sliver status page (#451)
+  * Show something for ExoGENI hostnames in details page (#767)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
