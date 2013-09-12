@@ -28,6 +28,7 @@ require_once("util.php");
 require_once("user.php");
 require_once("pa_constants.php");
 require_once("cs_client.php");
+require_once("cs_constants.php");
 require_once('logging_client.php');
 require_once('logging_constants.php');
 

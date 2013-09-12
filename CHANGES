@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.2 ==
+  * Added version information to GENI portal (#789)
   * Comment out call to error log in MA causing PHP warning (#790)
   * Change some mail links to help@geni.net (#572)
   * Find owning aggregate using sliver_id for manifest (#712)
