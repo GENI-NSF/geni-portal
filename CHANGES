@@ -16,6 +16,7 @@
   * Remove 2 more uses of slice-member.php (#328)
   * Clean up temp files (#383)
   * Fix company name in copyright on footer (#793)
+  * Password hash in account requests is quoted more succinctly (#795)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
