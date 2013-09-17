@@ -119,6 +119,12 @@ if (count($my_slice_objects) > 0) {
        print "<p><i>You have access to <b>".$num_slices."</b> slices.</i></p>";
   }
 
+  function cmp($a,$b) {
+    return strcmp($a['slice_name'],$b['slice_name']);
+  }
+
+  usort($my_slice_objects,"cmp");
+
   foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     $slice_expired = 'f';
