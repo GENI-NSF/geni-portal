@@ -20,6 +20,7 @@
   * Fix "already a member" message to include member and project names instead of id numbers (#617)
   * Check if slice is expired before querying for status (#675)
   * Alphabetize slices in slice list (#788)
+  * Comment out a debug (#798)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
