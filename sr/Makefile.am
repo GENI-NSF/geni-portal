@@ -40,6 +40,7 @@ cert_FILES = \
 	certs/renci-eg-of.pem \
 	certs/sox-of.pem \
 	certs/uen-of.pem \
+	certs/uky-ig-of.pem \
 	certs/utah-am.pem \
 	certs/irods.pem \
 	certs/irods-test.pem
