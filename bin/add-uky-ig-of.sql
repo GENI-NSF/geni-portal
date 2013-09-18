@@ -18,7 +18,7 @@ insert into service_registry
       -- CERT
      '/usr/share/geni-ch/sr/certs/uky-ig-of.pem',
       -- NAME
-     'UKY InstaGENI OpenFlow',
+     'Kentucky InstaGENI OpenFlow',
       -- DESCRIPTION
      'University of Kentucky InstaGENI Rack OpenFlow',
       -- URN
