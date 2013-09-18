@@ -33,6 +33,9 @@ cert_FILES = \
 	certs/ig-utahddc-of.pem \
 	certs/kettering-ig-of.pem \
 	certs/nlr-of.pem \
+	certs/nysernet-ig-boss.pem \
+	certs/nysernet-ig-cm.pem \
+	certs/nysernet-ig-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \
