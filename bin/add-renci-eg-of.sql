@@ -7,9 +7,6 @@
 --
 -- -----------------------------------------------------------------
 
-urn:publicid:IDN+openflow:foam:rci-hn.exogeni.gpolab.bbn.com+authority+am
-
-
 insert into service_registry
     (service_type, service_url, service_cert, service_name,
      service_description, service_urn)
