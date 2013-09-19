@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
      'NYSERNet InstaGENI Rack',
       -- URN
-     'urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am'
+     'urn:publicid:IDN+instageni.nysernet.org+authority+cm'
     );
 
 insert into service_registry
