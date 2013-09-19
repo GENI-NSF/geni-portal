@@ -21,6 +21,7 @@
   * Check if slice is expired before querying for status (#675)
   * Alphabetize slices in slice list (#788)
   * Comment out a debug (#798)
+  * Log if the pretty RSpec printer is skipping a node as not for this AM (#803)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)

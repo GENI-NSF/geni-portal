@@ -145,7 +145,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       if ($sliver_auth == $compMgrAuth) {
 	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
       } else {
-       continue;
+	error_log("print-rspec-pretty skipping node " . $comp_id . ": its comp_mgr " . $comp_mgr_id . " != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
+	continue;
       }
     }
     $node_num = $node_num+1;
@@ -240,6 +241,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   $link_num = 1;
   foreach ($links as $link) {
     $comp_mgrs = $link->component_manager;
+    $comp_id = $link['component_id'];
     $componentMgrName = $comp_mgrs['name'];		      
     if ($filterToAM and ($componentMgrName!=$componentMgrURN)){
       $sliver_id = $link['sliver_id'];
@@ -248,6 +250,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       if ($sliver_auth == $compMgrAuth) {
 	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
       } else {
+	error_log("print-rspec-pretty skipping link " . $comp_id . ": its comp_mgr " . $comp_mgr_id . " != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
 	continue;
       }
     }
