@@ -221,8 +221,10 @@ foreach($lines as $line) {
   $roles_by_email[$email] = $role;
 }
 
-$members_by_email = lookup_members_by_email($ma_url, $user, array_keys($names_by_email));
-$members_by_email = array_change_key_case($members_by_email,CASE_LOWER);
+if (count(array_keys($names_by_email)) > 0) {
+  $members_by_email = lookup_members_by_email($ma_url, $user, array_keys($names_by_email));
+  $members_by_email = array_change_key_case($members_by_email,CASE_LOWER);
+}
 
 //error_log("NBE = " . print_r($names_by_email, true));
 //error_log("RBE = " . print_r($roles_by_email, true));
@@ -263,7 +265,9 @@ if ($skips !== "") {
   print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
 }
 print "<br/>\n";
-print "<input type=\"submit\" value=\"Invite Selected Members\"/>\n";
+if (count(array_keys($names_by_email)) > 0) {
+  print "<input type=\"submit\" value=\"Invite Selected Members\"/>\n";
+}
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print '</form>';
 
