@@ -1,9 +1,9 @@
 -- -----------------------------------------------------------------
--- Create the entry for I2 OpenFlow aggregate:
+-- Create the entry for the RENCI ExoGENI FOAM aggregate:
 --
 -- Execute as:
 --
---    psql -U portal -h localhost -f add-i2-of.sql portal
+--    psql -U portal -h localhost -f add-renci-eg-of.sql portal
 --
 -- -----------------------------------------------------------------
 
@@ -14,15 +14,15 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-     'https://foam.net.internet2.edu:3626/foam/gapi/2',
+      'https://rci-hn.exogeni.net:3626/foam/gapi/2',
       -- CERT
-     '/usr/share/geni-ch/sr/certs/i2-of.pem',
+     '/usr/share/geni-ch/sr/certs/renci-eg-of.pem',
       -- NAME
-     'Internet2 OpenFlow',
+     'RENCI ExoGENI OpenFlow',
       -- DESCRIPTION
-     'Internet2 OpenFlow',
+     'RENCI ExoGENI Rack OpenFlow',
       -- URN
-     'urn:publicid:IDN+openflow:foam:foam.net.internet2.edu+authority+am'
+     'urn:publicid:IDN+openflow:foam:rci-hn.exogeni.gpolab.bbn.com+authority+am'
     );
 
 insert into service_registry
@@ -34,11 +34,11 @@ insert into service_registry
       -- URL
      '',
       -- CERT (self signed)
-     '/usr/share/geni-ch/sr/certs/i2-of.pem',
+     '/usr/share/geni-ch/sr/certs/renci-eg-of.pem',
       -- NAME
      '',
       -- DESCRIPTION
-     'Internet2 OpenFlow cert signer (self)',
+     'RENCI ExoGENI FOAM cert signer (self)',
       -- URN
      ''
     );

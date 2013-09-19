@@ -1,9 +1,9 @@
 -- -----------------------------------------------------------------
--- Create the entry for I2 OpenFlow aggregate:
+-- Create the entry for the NYSERNet InstaGENI FOAM aggregate:
 --
 -- Execute as:
 --
---    psql -U portal -h localhost -f add-i2-of.sql portal
+--    psql -U portal -h localhost -f add-nysernet-ig-of.sql portal
 --
 -- -----------------------------------------------------------------
 
@@ -14,15 +14,15 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-     'https://foam.net.internet2.edu:3626/foam/gapi/2',
+      'https://foam.instageni.nysernet.org:3626/foam/gapi/2',
       -- CERT
-     '/usr/share/geni-ch/sr/certs/i2-of.pem',
+     '/usr/share/geni-ch/sr/certs/nysernet-ig-of.pem',
       -- NAME
-     'Internet2 OpenFlow',
+     'NYSERNet InstaGENI OpenFlow',
       -- DESCRIPTION
-     'Internet2 OpenFlow',
+     'NYSERNet InstaGENI Rack OpenFlow',
       -- URN
-     'urn:publicid:IDN+openflow:foam:foam.net.internet2.edu+authority+am'
+     'urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am'
     );
 
 insert into service_registry
@@ -34,11 +34,11 @@ insert into service_registry
       -- URL
      '',
       -- CERT (self signed)
-     '/usr/share/geni-ch/sr/certs/i2-of.pem',
+     '/usr/share/geni-ch/sr/certs/nysernet-ig-of.pem',
       -- NAME
      '',
       -- DESCRIPTION
-     'Internet2 OpenFlow cert signer (self)',
+     'NYSERNet InstaGENI FOAM cert signer (self)',
       -- URN
      ''
     );
