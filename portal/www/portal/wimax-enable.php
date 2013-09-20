@@ -338,7 +338,8 @@ if (array_key_exists('project_id', $_REQUEST))
       add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, 'foo');
     }
   
-    echo "<p><b>Success</b>: You have enabled and/or requested your account and/or changed your WiMAX project. Your WiMAX username is '$ldif_user_username' for project '$ldif_project_name'. Check your email {$user->mail} for login information.</p>";
+    echo "<p><b>Success</b>: You have enabled and/or requested your account and/or changed your WiMAX project.</p>";
+    echo "<p>Your WiMAX username is '$ldif_user_username' for project '$ldif_project_name'. Check your email ({$user->mail}) for login information.</p>";
     error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name);
   }
   
