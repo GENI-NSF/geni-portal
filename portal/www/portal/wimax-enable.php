@@ -34,8 +34,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 // FIXME: hard-coded url for Rutgers ORBIT
 // See tickets #772, #773
-$wimax_server_url_old = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
-$wimax_server_url = "https://www.orbit-lab.org/loginService/upload"; // New as of August, 2013
+$wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
+$new_wimax_server_url = "https://www.orbit-lab.org/loginService/upload"; // New as of August, 2013
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -217,7 +217,7 @@ if (array_key_exists('project_id', $_REQUEST))
       
     $ldif_string .= "\n" . get_ldif_for_project_lead($ldif_project_name, $ldif_user_username);
     
-    $ldif_string .= "\n" . get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_desription, "project lead");  
+    $ldif_string .= "\n" . get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project lead");  
     }
     
     // if you're not the project lead, determine if project is even allowed to request WiMAX resources
@@ -235,8 +235,8 @@ if (array_key_exists('project_id', $_REQUEST))
       if($enabled) {
 	
 	// PREPARE PARTIAL LDIF
-	$ldif_string = get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_desription, "member of project")
-	  }
+	$ldif_string = get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "member of project");
+      }
       
       // WiMAX hasn't been enabled, so this is an error; redirect
       else {
@@ -309,7 +309,7 @@ if (array_key_exists('project_id', $_REQUEST))
     // This implies that there's an error with our
     // portal trying to resend the exact same information that it had done
     // at a previous time. That is, this user already has a WiMAX account under the given project name
-    echo "<p><b>Error</b>: You already have a WiMAX account for username $ldif_user_username in project $ldif_project_name.  ";
+    echo "<p><b>WiMAX (already) enabled</b>: You already have a WiMAX account for username '$ldif_user_username' in project '$ldif_project_name'.  ";
     echo "Check your email {$user->mail} for more information.</p>";
     error_log($user->prettyName() . " already enabled for WiMAX in project " . $ldif_project_name . ". Result was: " . $result);
   } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
@@ -338,7 +338,7 @@ if (array_key_exists('project_id', $_REQUEST))
       add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, 'foo');
     }
   
-    echo "<p><b>Success</b>: You have enabled and/or requested your account and/or changed your WiMAX project. Check your email {$user->mail} for login information.</p>";
+    echo "<p><b>Success</b>: You have enabled and/or requested your account and/or changed your WiMAX project. Your WiMAX username is '$ldif_user_username' for project '$ldif_project_name'. Check your email {$user->mail} for login information.</p>";
     error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name);
   }
   

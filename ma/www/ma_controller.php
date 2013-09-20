@@ -1247,6 +1247,8 @@ class MAGuardFactory implements GuardFactory
       $result[] = new OrGuard($guards);
     } elseif ($action === 'add_member_attribute' or $action === 'remove_member_attribute') {
       // Operators, and authority, or the member in question can add/remove attributes
+      global $cs_url;
+      global $ma_signer;
       $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
       $guards[] = new SignerAuthorityGuard($message);
       $guards[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
