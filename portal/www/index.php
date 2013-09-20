@@ -74,7 +74,7 @@ function show_last_message() {
 
 
 <div id="welcome-right-left">
-  <a href='secure/home.php' title='Use the GENI Experimenter Portal''>
+  <a href='secure/home.php' title='Login to the GENI Experimenter Portal''>
     <img src="/images/UseGENI.png" id="usegeni" alt="Use GENI"/>
   </a>
 <h2>Find out more about using GENI</h2>
@@ -113,6 +113,7 @@ function show_last_message() {
   <a href="http://groups.geni.net/geni">GENI Wiki</a> -->
 </div>
 <div id="footer-right">
+  GENI Portal<br/>
   Copyright &copy; 2013 BBN Technologies<br>
   All Rights Reserved - NSF Award CNS-0714770<br>
   <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"> National Science Foundation</a>
