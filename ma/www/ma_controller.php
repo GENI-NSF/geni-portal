@@ -105,18 +105,21 @@ function get_member_ids($args, $message)
 /* Add attribute name/value pair to member
    Requires member_id, name, value, self asserted
 */
-function add_member_attribute($args)
+function add_member_attribute($args, $message)
 {
 
   global $MA_MEMBER_ATTRIBUTE_TABLENAME;
 
+  $member_id = null;
   if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID, $args) or
       $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] == '') {
-    error_log("Missing member_id arg to add_member_attributes");
+    error_log("Missing member_id arg to add_member_attribute");
     return generate_response(RESPONSE_ERROR::ARGS, null,
 			     "Member ID is missing");
+  } else {
+    $member_id = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
   }
-  
+
   if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME, $args) or
       $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] == '') {
     error_log("Missing name arg to add_member_attribute");
@@ -131,18 +134,28 @@ function add_member_attribute($args)
   }
   if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED, $args) or
       $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED] == '') {
-    error_log("Missing value self_asserted to add_member_attribute");
-    return generate_response(RESPONSE_ERROR::ARGS, null,
-			     "Self asserted is missing");
+    if (! is_null($member_id)) {
+      if ($member_id === $message->signerUuid()) {
+	error_log("Add attribute marking as self_asserted cause signer == member");
+	$self_asserted = True;
+      } else {
+	error_log("Add attribute marking as NOT self_asserted cause signer != member");
+	$self_asserted = False;
+      }
+    } else {
+      error_log("Missing value self_asserted to add_member_attribute");
+      return generate_response(RESPONSE_ERROR::ARGS, null,
+			       "Self asserted is missing");
+    }
+  } else {
+    $self_asserted = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED];
   }
   
   $conn = db_conn();
   
   // define variables
-  $member_id = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
   $name = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME];
   $value = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::VALUE];
-  $self_asserted = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::SELF_ASSERTED];
   
   // insert
   $sql = ("insert into " . $MA_MEMBER_ATTRIBUTE_TABLENAME
@@ -161,9 +174,44 @@ function add_member_attribute($args)
 
 }
 
+/* remove attribute name/value pair from member
+   Requires member_id, name
+*/
+function remove_member_attribute($args)
+{
 
+  global $MA_MEMBER_ATTRIBUTE_TABLENAME;
 
+  if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID, $args) or
+      $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] == '') {
+    error_log("Missing member_id arg to remove_member_attributes");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Member ID is missing");
+  }
+  
+  if (! array_key_exists(MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME, $args) or
+      $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] == '') {
+    error_log("Missing name arg to remove_member_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Name is missing");
+  }
+  
+  $conn = db_conn();
+  
+  // define variables
+  $member_id = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID];
+  $name = $args[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  
+  // insert
+  $sql = ("delete from " . $MA_MEMBER_ATTRIBUTE_TABLENAME . " WHERE "
+          . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID . " = "
+          . $conn->quote($member_id, 'text') . " AND " 
+          . MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME . " = "
+          . $conn->quote($name, 'text'));
+  $result = db_execute_statement($sql);
+  return $result;
 
+}
 
 function register_ssh_key($args, $message)
 {
@@ -1196,6 +1244,12 @@ class MAGuardFactory implements GuardFactory
       // Allow operator or signed by an authority
       $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
       $guards[] = new SignerAuthorityGuard($message);
+      $result[] = new OrGuard($guards);
+    } elseif ($action === 'add_member_attribute' or $action === 'remove_member_attribute') {
+      // Operators, and authority, or the member in question can add/remove attributes
+      $guards[] = new SignerIsOperatorGuard($message, $cs_url, $ma_signer);
+      $guards[] = new SignerAuthorityGuard($message);
+      $guards[] = new SignerUuidParameterGuard($message, MA_ARGUMENT::MEMBER_ID);
       $result[] = new OrGuard($guards);
     } else {
       // FIXME: Deny access at all?

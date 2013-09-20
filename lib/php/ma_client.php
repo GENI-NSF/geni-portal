@@ -48,6 +48,18 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
   return $results;
 }
 
+// Remove member attribute
+function remove_member_attribute($ma_url, $signer, $member_id, $name)
+{
+  global $user;
+  $remove_member_attribute_message['operation'] = 'remove_member_attribute';
+  $remove_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] = $member_id;
+  $remove_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] = $name;
+  $results = put_message($ma_url, $remove_member_attribute_message, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
+
 // Get list of all member_ids in repository
 function get_member_ids($ma_url, $signer)
 {
