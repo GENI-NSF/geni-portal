@@ -36,6 +36,7 @@ cert_FILES = \
 	certs/nysernet-ig-boss.pem \
 	certs/nysernet-ig-cm.pem \
 	certs/nysernet-ig-of.pem \
+	certs/nysernet-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \

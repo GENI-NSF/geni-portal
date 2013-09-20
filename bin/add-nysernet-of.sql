@@ -1,9 +1,9 @@
 -- -----------------------------------------------------------------
--- Create the entry for InstaGENI Northwestern FOAM aggregate:
+-- Create the entry for NYSERNet OpenFlow aggregate:
 --
 -- Execute as:
 --
---    psql -U portal -h localhost -f add-ig-northwestern-of.sql portal
+--    psql -U portal -h localhost -f add-nysernet-of.sql portal
 --
 -- -----------------------------------------------------------------
 
@@ -14,15 +14,15 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-     'https://foam.instageni.northwestern.edu:3626/foam/gapi/2',
+      'https://foam.nysernet.org:3626/foam/gapi/2',
       -- CERT
-     '/usr/share/geni-ch/sr/certs/ig-northwestern-of.pem',
+     '/usr/share/geni-ch/sr/certs/nysernet-of.pem',
       -- NAME
-     'Northwestern InstaGENI OpenFlow',
+     'NYSERNet OpenFlow',
       -- DESCRIPTION
-     'InstaGENI Northwestern Rack OpenFlow',
+     'NYSERNet OpenFlow',
       -- URN
-     'urn:publicid:IDN+openflow:foam:foam.instageni.northwestern.edu+authority+am'
+     'urn:publicid:IDN+openflow:foam:foam.nysernet.org+authority+am'
     );
 
 insert into service_registry
@@ -34,11 +34,11 @@ insert into service_registry
       -- URL
      '',
       -- CERT (self signed)
-     '/usr/share/geni-ch/sr/certs/ig-northwestern-of.pem',
+     '/usr/share/geni-ch/sr/certs/nysernet-of.pem',
       -- NAME
      '',
       -- DESCRIPTION
-     'InstaGENI Northwestern FOAM cert signer (self)',
+     'NYSERNet OpenFlow cert signer (self)',
       -- URN
      ''
     );
