@@ -38,6 +38,9 @@ $old_wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #
 $new_wimax_server_url = "https://www.orbit-lab.org/loginService/upload"; // New as of August, 2013
 $wimax_server_url = "https://www.orbit-lab.org/login/save"; // New as of September, 2013
 
+// Does the server allow a wimax group lead to change their project?
+$pi_can_change_project = False;
+
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
@@ -184,6 +187,33 @@ if (array_key_exists('project_id', $_REQUEST))
     relative_redirect('wimax-enable.php');
   }
   
+  // If PIs cannot change and user is enabled for wimax on a project and is lead of that project, then bail out
+  if (! $pi_can_change_project and isset($user->ma_member->enable_wimax)) {
+    // get ma_member_attribute for wimax
+    $my_project = $user->ma_member->enable_wimax;
+
+    // Is this user lead of that project
+    $project_info = lookup_project($sa_url, $user, $my_project);  
+    if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
+      $project_attributes = lookup_project_attributes($sa_url, $user, $my_project);
+      $enabled = 0;
+      foreach($project_attributes as $attribute) {
+	if($attribute[PA_ATTRIBUTE::NAME] == PA_ATTRIBUTE_NAME::ENABLE_WIMAX) {
+	  $enabled = 1;
+	}
+      }
+      if ($enabled == 0) {
+	// FIXME: How is that possible? The project should have been enabled
+	error_log("wimax-enable: " . $user->prettyName() . " is marked as in project " . $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " for wimax but that project is not marked wimax enabled");
+      }
+      error_log("wimax-enable: " . $user->prettyName() . " is marked as lead for project " . $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " that is wimax enabled, so cannot change");
+
+      // Regardless, user cannot change their project
+      $_SESSION['lasterror'] = 'You are already lead of project ' . $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . ' and project leads cannot change their WiMAX project.';
+      relative_redirect('wimax-enable.php');
+    } // end block if this user is lead of their current wimax project
+  } // end block to handle pi_can_change_project
+
   /*
     Program logic in brief:
   
@@ -216,9 +246,10 @@ if (array_key_exists('project_id', $_REQUEST))
     }
   }
 
+
   while ($usernameTaken) {
     $usernameTaken = False;
-    // if you're the project lead of the project, enable WiMAX
+    // if you're the project lead of the project, enable WiMAX if needed
     if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
       
       $ldif_string = "";
@@ -445,14 +476,22 @@ else {
         . "<a href='project.php?project_id=" 
         . $user->ma_member->enable_wimax 
         . "'>" . $selected_project_name . "</a>. ";
-      // echo "<b>Your WiMAX-enabled project cannot change.</b>"; // FIXME: Drop this line
+
+      // If pi's cannot change and user is pi of selected project, then tell them they cannot change.
+      if (! $pi_can_change_project and $project_attributes[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
+	echo "<b>As the project lead for this project, your WiMAX-enabled project cannot change.</b>";
+	$disabled = "disabled";
+      }
+
       echo "</p>";
     }
     // if not, warn user that they can only select one project
     else {
       echo "<p>You have not enabled WiMAX on any of your projects. ";
       echo "Please select a project below.<br>";
-      // echo "<b>Note:</b> Once you select a project, you cannot change it.";
+      if (! $pi_can_change_project) {
+	echo "<b>Note:</b> If you select a project for which you are the lead, you cannot change it.";
+      }
       echo "</p>";
     }
     
@@ -560,7 +599,11 @@ else {
     // for projects I don't lead, request login for projects that do have it enabled
     if($projects_non_lead_count > 0) {
       echo "<h2>Request WiMAX Login Information</h2>";
-      echo "<p>You can <b>request WiMAX login information</b> for the following projects:</p>";
+      if ($disabled === "") {
+	echo "<p>You can <b>request WiMAX login information</b> for the following projects:</p>";
+      } else {
+	echo "<p>You cannot change your WiMAX project. Projects includes:</p>";
+      }
     
       echo "<table>";
       echo "<tr><th>Project Name</th><th>Project Lead</th><th>Purpose</th><th>Request Login Info</th></tr>";
@@ -588,7 +631,7 @@ else {
       
       echo "</table>";
     
-    }
+    } // end of block for non lead projects
     
     // only show button for these two cases
     if (($projects_lead_count > 0) || ($projects_non_lead_count > 0)) {
@@ -601,7 +644,11 @@ else {
     // for projects I don't lead and don't have it enabled, list them
     if ($projects_non_lead_disabled_count > 0) {
       echo "<h2>Projects Not Enabled</h2>";
-      echo "<p>You are a member of the following projects that do not have WiMAX enabled. Please contact your project lead if you would like to use WiMAX on any one of these projects:</p>";
+      echo "<p>You are a member of the following projects that do not have WiMAX enabled. ";
+      if ($disabled === "") {
+	echo "Please contact your project lead if you would like to use WiMAX on any one of these projects:";
+      }
+      echo "</p>";
     
       echo "<ul>";
       $lead_names = lookup_member_names_for_rows($ma_url, $user, $projects_non_lead_disabled, 
