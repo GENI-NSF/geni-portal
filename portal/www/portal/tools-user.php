@@ -56,7 +56,7 @@ END;
 			<li><a href='#accountdetails'>Account Details</a></li>
 			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
 			<li><a href='#accountsummary'>Account Summary</a></li>
-			<li><a href='#rspecs'title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
 			<li style="border-right: none"><a href='#other'>Other</a></li>
 		</ul>
@@ -104,6 +104,25 @@ else
     print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
           . "<th>Edit</th><th>Delete</th></tr>\n";
     foreach ($keys as $key) {
+      // generate key's fingerprint
+        $fingerprint_key = NULL;
+        $fingerprint_key = $key['public_key'];
+        // write key to temp file
+        $fingerprint_key_filename = tempnam(sys_get_temp_dir(), 'fingerprint');
+        $fingerprint_key_file = fopen($fingerprint_key_filename, "w");
+        fwrite($fingerprint_key_file, $fingerprint_key);
+        fclose($fingerprint_key_file);
+        // get fingerprint
+        $cmd_array = array('/usr/bin/ssh-keygen',
+                         '-lf',
+                         $fingerprint_key_filename,
+                         );
+        $command = implode(" ", $cmd_array);
+        $result = exec($command, $output, $status);
+        $fingerprint_array = explode(' ', $result);
+        $fingerprint = $fingerprint_array[1]; // store fingerprint
+        unlink($fingerprint_key_filename);
+      
       $args['id'] = $key['id'];
       $query = http_build_query($args);
       if (is_null($key['private_key'])) {
@@ -123,7 +142,7 @@ else
                 . $delete_sshkey_url . $query
                 . "')\">Delete</button>");
       print "<tr>"
-      . "<td>" . htmlentities($key['filename']) . "</td>"
+      . "<td>" . htmlentities($key['filename']) . "<br><small>" . $fingerprint . "</small>" . "</td>"
       . "<td>" . htmlentities($key['description']) . "</td>"
       . '<td>' . $public_key_download_cell . '</td>'
       . '<td>' . $pkey_cell . '</td>'
@@ -282,31 +301,44 @@ $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close
 ?>
 
 <h2>Configure <code>omni</code></h2>
-<p><a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>omni</code></a> is a command line tool.
-It is intended for more advanced users. In order to use <code>omni</code> or other command line tools you will need to
-<?php if ($has_certificate): ?>
-<a href="<?php print $download_url?>" target="_blank">download your SSL certificate</a>.
-<?php else: ?>
-<a href="<?php print $create_url?>" target="_blank">create an SSL certificate</a>.
-<?php endif; ?>
+<p><a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>omni</code></a> is a command line tool intended for experienced users. 
 </p>
 
 <h3>Option 1: Automatic <code>omni</code> configuration</h3>
-<p>Use <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a>
-to generate a configuration file for you:</p>
+<p>To configure <code>omni</code>, use the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a> script distributed with <code>omni</code> as described below.</p>
   <ol>
-    <li>Make sure you are running <b>omni 2.3.1</b> or later. 
-       <ul>
-         <li>To determine the version of an existing <code>omni</code> installation, run:
-	<pre>omni.py --version</pre>
-	 </li>
-         <li>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of <code>omni</code>.</li>
+    <li>
+In order to use <code>omni</code> or other command line tools you will need to generate an SSL certificate. <br/>
+<?php if (!$has_certificate): ?>
 
-       </ul>
+<button onClick="window.location='<?php print $create_url?>'">Generate an SSL certificate</button>.
+<?php else: ?>
+<b>Good! You have already generated an SSL certificate.</b>
+<?php endif; ?>
+
     </li>
-    <li>Download your <a href='omni-bundle.php'>customized configuration data</a>.</li>
-    <li>Follow the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code> instructions</a>.</li>
+    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni-bundle.zip</code>):<br/>
+    		 <button onClick="window.location='omni-bundle.php'">Download your omni data</button>
+    </li>
+    <li>Generate an <code>omni_config</code> by running the following command in a terminal: <pre>omni-configure.py</pre></li>
+    <li>Test your setup by running the following command in a terminal: <pre>omni.py -a ig-gpo getversion</pre>
+    The output should look similar to this <a href='http://trac.gpolab.bbn.com/gcf/attachment/wiki/OmniConfigure/Automatic/getversion.out'>example output</a>.
+</li>
   </ol>
+
+  <table id='tip'>
+    <tr>
+       <td rowspan=3><img id='tipimg' src="http://groups.geni.net/geni/attachment/wiki/GENIExperimenter/Tutorials/Graphics/Symbols-Tips-icon-clear.png?format=raw" width="75" height="75" alt="Tip"></td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
+    </tr>
+       <tr><td>To determine the version of an existing <code>omni</code> installation, run:
+	            <pre>omni.py --version</pre>
+       </td></tr>
+        <tr><td>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of <code>omni</code>.</td></tr>
+
+  </table>
+
+<p>Complete <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code> instructions</a> are available.</p>
 
 <h3>Option 2: Manual <code>omni</code> configuration</h3>
 <p><a href='tool-omniconfig.php'>Download and customize a template <code>omni</code> configuration file</a>.</p>
