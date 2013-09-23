@@ -208,29 +208,34 @@ if (array_key_exists('project_id', $_REQUEST))
   $ldif_user_sn = $user->sn;
   $usernameTaken = True;
 
+  $project_attributes = lookup_project_attributes($sa_url, $user, $project_id);
+  $enabled = 0;
+  foreach($project_attributes as $attribute) {
+    if($attribute[PA_ATTRIBUTE::NAME] == PA_ATTRIBUTE_NAME::ENABLE_WIMAX) {
+      $enabled = 1;
+    }
+  }
+
   while ($usernameTaken) {
     $usernameTaken = False;
     // if you're the project lead of the project, enable WiMAX
     if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
       
-      // PREPARE FULL LDIF
-      $ldif_string = get_ldif_for_project($ldif_project_name, $ldif_project_description);
-      
-    $ldif_string .= "\n" . get_ldif_for_project_lead($ldif_project_name, $ldif_user_username);
-    
-    $ldif_string .= "\n" . get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project lead");  
+      $ldif_string = "";
+      if (! $enabled) {
+	// PREPARE FULL LDIF
+	$ldif_string = get_ldif_for_project($ldif_project_name, $ldif_project_description);
+
+	$ldif_string .= "\n" . get_ldif_for_project_lead($ldif_project_name, $ldif_user_username);
+
+	$ldif_string .= "\n";
+      } // else just send the ldif for this user
+
+      $ldif_string .= get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project lead");  
     }
     
     // if you're not the project lead, determine if project is even allowed to request WiMAX resources
     else {
-      
-      $project_attributes = lookup_project_attributes($sa_url, $user, $project_id);
-      $enabled = 0;
-      foreach($project_attributes as $attribute) {
-	if($attribute[PA_ATTRIBUTE::NAME] == PA_ATTRIBUTE_NAME::ENABLE_WIMAX) {
-	  $enabled = 1;
-	}
-      }
       
       // WiMAX has been enabled, so good to go
       if($enabled) {
@@ -341,14 +346,16 @@ if (array_key_exists('project_id', $_REQUEST))
     // add user as someone using WiMAX for given project
     add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $project_id, 't');
     
-    // if user is the project lead, enable the project for WiMAX
-    if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
+    error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name);
+
+    // if user is the project lead and the project is not enabled, enable the project for WiMAX
+    if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id and ! $enabled) {
       add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, 'foo');
+      error_log($user->prettyName() . " enabled project " . $ldif_project_name . " for WiMAX use");
     }
   
     echo "<p><b>Success</b>: You have enabled and/or requested your account and/or changed your WiMAX project.</p>";
     echo "<p>Your WiMAX username is '$ldif_user_username' for project '$ldif_project_name'. Check your email ({$user->mail}) for login information.</p>";
-    error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name);
   }
   
   else {
@@ -434,7 +441,7 @@ else {
                 $user->ma_member->enable_wimax);
       $selected_project_name = $project_attributes[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $selected_project_id = $project_attributes[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-      echo "<p>You have enabled WiMAX on project " 
+      echo "<p>You have elected to use WiMAX on project " 
         . "<a href='project.php?project_id=" 
         . $user->ma_member->enable_wimax 
         . "'>" . $selected_project_name . "</a>. ";
@@ -526,7 +533,7 @@ else {
           }
         }
 
-	//  FIXME: Want to let a project lead switch to using a different WiMAX project.
+	// Want to let a project lead switch to using a different WiMAX project.
 	// Use selected_project_id to decide if this project is currently the wimax project for this user
 
         // display different buttons if enabled or not
