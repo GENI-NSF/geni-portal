@@ -23,6 +23,9 @@
   * Comment out a debug (#798)
   * Log if the pretty RSpec printer is skipping a node as not for this AM (#803)
   * Handle bulk upload file with 0 valid email addresses (#802)
+  * Use the word "Portal" on the portal landing page (#733)
+  * Reconcile the use of the phrase "omni-bundle" (#752)
+  * Rephrase Omni Configuration instructions (#753)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
