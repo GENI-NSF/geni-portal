@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -34,8 +34,9 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 // FIXME: hard-coded url for Rutgers ORBIT
 // See tickets #772, #773
-$wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
+$old_wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
 $new_wimax_server_url = "https://www.orbit-lab.org/loginService/upload"; // New as of August, 2013
+$wimax_server_url = "https://www.orbit-lab.org/login/save"; // New as of September, 2013
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -309,8 +310,8 @@ if (array_key_exists('project_id', $_REQUEST))
     // This implies that there's an error with our
     // portal trying to resend the exact same information that it had done
     // at a previous time. That is, this user already has a WiMAX account under the given project name
-    echo "<p><b>WiMAX (already) enabled</b>: You already have a WiMAX account for username '$ldif_user_username' in project '$ldif_project_name'.  ";
-    echo "Check your email {$user->mail} for more information.</p>";
+    echo "<p><b>WiMAX (already) enabled</b></p>\n<p>You already have a WiMAX account for username '$ldif_user_username' in project '$ldif_project_name'.</p>";
+    echo "<p>Check your email ({$user->mail}) for more information.</p>";
     error_log($user->prettyName() . " already enabled for WiMAX in project " . $ldif_project_name . ". Result was: " . $result);
   } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
     // This implies that our portal member's username
@@ -323,6 +324,13 @@ if (array_key_exists('project_id', $_REQUEST))
     echo "<p>Debug information:</p>";
     echo "<p>Result: $result</p>";
     echo "<blockquote><pre>$ldif_string</pre></blockquote>";
+  } else if (strpos(strtolower($result), strtolower("ERROR 2: UID and DC match but OU is different")) !== false) {
+    // This is trying to change the project for a person. Supposedly this should never happen as the service
+    // supports this now.
+    echo "<p><b>Error trying to change WiMAX project for '$ldif_user_username' to '$ldif_project_name': $result</b></p>";
+    echo "<p>Debug information:</p>";
+    echo "<blockquote><pre>$ldif_string</pre></blockquote>";
+    error_log("Unexpected error changing WiMAX project for " . $user->prettyName() . " to project " . $ldif_project_name . ": " . $result);
   } else if (strpos(strtolower($result), 'success') !== false) {
     // FIXME: Was this user enabled for wimax before? And for that project, is this user the lead?
     // If so, should that wimax project no longer be wimax enabled? Do I need to send new LDIF?
@@ -412,17 +420,20 @@ else {
     
 
     $disabled = "";
-    //    // FIXME: Stop doing this. Instead, put up text / do LDIF for changing project
+    //    // Stop doing this. Instead, put up text / do LDIF for changing project
     //    // disable radio buttons on form
     //    if($already_enabled) {
     //      $disabled = "disabled";
     //    }
+
+    $selected_project_id = null;
     
     // if enabled, display info and which project
     if($already_enabled) {
       $project_attributes = lookup_project($sa_url, $user, 
                 $user->ma_member->enable_wimax);
       $selected_project_name = $project_attributes[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $selected_project_id = $project_attributes[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
       echo "<p>You have enabled WiMAX on project " 
         . "<a href='project.php?project_id=" 
         . $user->ma_member->enable_wimax 
@@ -435,7 +446,7 @@ else {
       echo "<p>You have not enabled WiMAX on any of your projects. ";
       echo "Please select a project below.<br>";
       // echo "<b>Note:</b> Once you select a project, you cannot change it.";
-      echo "</p>"; // FIXME: Drop this line
+      echo "</p>";
     }
     
     // get list of all non-expired projects
@@ -514,12 +525,22 @@ else {
             $enabled = 1;
           }
         }
+
+	//  FIXME: Want to let a project lead switch to using a different WiMAX project.
+	// Use selected_project_id to decide if this project is currently the wimax project for this user
+
         // display different buttons if enabled or not
         if($enabled) {
-          echo "<b>Enabled on project {$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]}</b>";
+	  if ($selected_project_id === $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]) {
+	    echo "<b>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} is enabled for WiMAX and is your WiMAX project</b>";
+	  } else {
+	    echo "<input type='radio' name='project_id' value='" . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]
+	      . "' $disabled> Use project {$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} as your WiMAX project";
+	  }
+	  //	    echo "<b>Enabled on project {$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]}</b>";
         } else {
           echo "<input type='radio' name='project_id' value='" . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]
-             . "' $disabled> Enable for project {$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]}";
+             . "' $disabled> Enable project {$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} for WiMAX and select it as your WiMAX project";
         }
         echo "</td>";
         echo "</tr>";
