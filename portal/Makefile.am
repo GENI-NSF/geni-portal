@@ -231,7 +231,21 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-geni-kettering-edu.xml \
 	www/common/map/rspec-instageni-gpolab-bbn-com.xml \
 	www/common/map/rspec-instageni-northwestern-edu.xml \
+	www/common/map/rspec-instageni-nysernet-org.xml \
+	www/common/map/rspec-instageni-rnoc-gatech-edu.xml \
 	www/common/map/rspec-lan-sdn-uky-edu.xml \
+	www/common/map/rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-foam-geni-kettering-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-northwestern-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-nysernet-org.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-lan-sdn-uky-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-nysernet-org.xml \
+	www/common/map/rspec-openflow-foam-foam-sox-net.xml \
+	www/common/map/rspec-openflow-foam-foam-utahddc-geniracks-net.xml \
+	www/common/map/rspec-openflow-foam-ig-utah.xml \
+	www/common/map/rspec-openflow-foam-rci-hn-exogeni-gpolab-bbn-com.xml \
 	www/common/map/rspec-uky-emulab-net.xml \
 	www/common/map/rspec-utah-geniracks-net.xml \
 	www/common/map/rspec-utahddc-geniracks-net.xml
