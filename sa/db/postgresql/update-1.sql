@@ -11,7 +11,7 @@ CREATE TABLE sa_sliver_info (
        creation timestamp without time zone,
        expiration timestamp without time zone,
        creator_urn varchar not null,
-       aggrgate_url varchar not null
+       aggregate_urn varchar not null
 );
 CREATE INDEX sa_sliver_info_id ON sa_sliver_info(id);
 
