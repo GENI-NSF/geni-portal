@@ -29,6 +29,7 @@
   * Rephrase Omni Configuration instructions (#753)
   * Label private and public rspecs in list and alphabetize (#761)
   * Add GENI usernames to header and make more prominent on Profile page (#797)
+  * Update gcf to 2.4 final (#794)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
