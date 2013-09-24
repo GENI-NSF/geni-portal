@@ -32,6 +32,11 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+// If user isn't supposed to see the wimax stuff at all, stop now
+if (! $user->hasAttribute('enable_wimax_button')) {
+  relative_redirect('home.php');
+}
+
 // FIXME: hard-coded url for Rutgers ORBIT
 // See tickets #772, #773
 $old_wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
@@ -231,7 +236,11 @@ if (array_key_exists('project_id', $_REQUEST))
   // Define basic vars for use in constructing LDIF
   $ldif_project_name = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   $ldif_project_description = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-  $ldif_user_username = gen_username_base($user);
+  if(isset($user->ma_member->wimax_username)) {
+    $ldif_user_username = $user->ma_member->wimax_username;
+  } else {
+    $ldif_user_username = gen_username_base($user);
+  }
   $ldif_user_pretty_name = $user->prettyName();
   $ldif_user_given_name = $user->givenName;
   $ldif_user_email = $user->mail;
@@ -376,8 +385,11 @@ if (array_key_exists('project_id', $_REQUEST))
 
     // add user as someone using WiMAX for given project
     add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $project_id, 't');
+
+    // If we enabled wimax under a variant of the username, record that
+    add_member_attribute($ma_url, $user, $user->account_id, 'wimax_username', $ldif_user_username, 't');
     
-    error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name);
+    error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name . " with username " . $ldif_user_username);
 
     // if user is the project lead and the project is not enabled, enable the project for WiMAX
     if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id and ! $enabled) {
@@ -449,11 +461,15 @@ else {
     echo "<h2>Your Status</h2>";
     
     // find out if member has chosen WiMAX project and if so, which one
+    $wimax_username = gen_username_base($user);
     $already_enabled = 0;
     $my_project = "";
     if(isset($user->ma_member->enable_wimax)) {
       $already_enabled = 1;
       $my_project = $user->ma_member->enable_wimax;
+      if(isset($user->ma_member->wimax_username)) {
+	$wimax_username = $user->ma_member->wimax_username;
+      }
     }
     
 
@@ -475,7 +491,7 @@ else {
       echo "<p>You have elected to use WiMAX on project " 
         . "<a href='project.php?project_id=" 
         . $user->ma_member->enable_wimax 
-        . "'>" . $selected_project_name . "</a>. ";
+        . "'>" . $selected_project_name . "</a> with username '$wimax_username'. ";
 
       // If pi's cannot change and user is pi of selected project, then tell them they cannot change.
       if (! $pi_can_change_project and $project_attributes[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
