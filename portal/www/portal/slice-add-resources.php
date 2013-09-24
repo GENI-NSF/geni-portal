@@ -31,24 +31,47 @@ require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once 'geni_syslog.php';
 
+function cmp($a,$b) {
+  return strcmp($a['name'],$b['name']);
+}
+
 function show_rspec_chooser($user) {
   $all_rmd = fetchRSpecMetaData($user);
+  usort($all_rmd,"cmp");
   print "<p><b>Choose Resources:</b> \n" ;
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
   echo '<option value="" title="Choose RSpec" selected="selected">Choose RSpec...</option>';
+  echo '<option value="PRIVATE" disabled>---Private RSpecs---</option>';
   foreach ($all_rmd as $rmd) {
-    $rid = $rmd['id'];
-    $rname = $rmd['name'];
-    $rdesc = $rmd['description'];
-    //    error_log("BOUND = " . $rmd['bound']);
-    $enable_agg_chooser=1;
-//UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
-//-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
-    //    error_log("BOUND = " . $enable_agg_chooser);
-    print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
+    if ($rmd['visibility']==="private") {
+      $rid = $rmd['id'];
+      $rname = $rmd['name'];
+      $rdesc = $rmd['description'];
+      //    error_log("BOUND = " . $rmd['bound']);
+      $enable_agg_chooser=1;
+      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
+      //-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+      //    error_log("BOUND = " . $enable_agg_chooser);
+      print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
+    }
   }
+  echo '<option value="PUBLIC" disabled>---Public RSpecs---</option>';
+  foreach ($all_rmd as $rmd) {
+    if ($rmd['visibility']==="public") {
+      $rid = $rmd['id'];
+      $rname = $rmd['name'];
+      $rdesc = $rmd['description'];
+      //    error_log("BOUND = " . $rmd['bound']);
+      $enable_agg_chooser=1;
+      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
+      //-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+      //    error_log("BOUND = " . $enable_agg_chooser);
+      print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
+    }
+  }
+  
   //  print "<option value=\"paste\" title=\"Paste your own RSpec\">Paste</option>\n";
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";

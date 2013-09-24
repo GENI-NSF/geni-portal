@@ -51,8 +51,9 @@ foreach ($all_rspecs as $rspec) {
     usort($my_rspecs,"cmp");
 
   } else {
-    usort($my_rspecs,"cmp");
     $public_rspecs[] = $rspec;
+    usort($public_rspecs,"cmp");
+
   }
 }
 
