@@ -27,6 +27,8 @@ require_once("sr_client.php");
 require_once('util.php');
 //$user = geni_loadUser();
 
+$openflow_ns = "http://www.geni.net/resources/rspec/ext/openflow/3";
+
 class Feature {
   var $type;
   var $properties;
@@ -54,7 +56,69 @@ class GENIResource {
   var $id;
   var $latitude;
   var $longitude;
+  public static $am_services;
+
+  private static function mgr_name($mgr_id) {
+    $mgr_name = NULL;
+    /* Prefer a URN match in the service registry. */
+    foreach(GENIResource::$am_services as $am_service) {
+
+      // if it happens to be in SR, use it
+      //echo "<p>";echo $am_service[SR_TABLE_FIELDNAME::SERVICE_URN]; echo "<br>";
+      //echo $type_value->attributes()->component_manager_id; echo "</p>";
+      if ($am_service[SR_TABLE_FIELDNAME::SERVICE_URN] == $mgr_id) {
+        $mgr_name = $am_service[SR_TABLE_FIELDNAME::SERVICE_NAME];
+      }
+    }
+    if (is_null($mgr_name)) {
+      $count = preg_match("/IDN\+(.*)\+authority/", $mgr_id, $matches);
+      if ($count === FALSE) {
+        // An error occurred.
+      } else if ($count > 0) {
+        $mgr_name = $matches[1];
+      }
+    }
+    return $mgr_name;
+  }
+
+  public static function parse_datapath($type, $type_value) {
+    global $openflow_ns;
+    $node = new GENIResource();
+    $mgr_id = (string) $type_value->attributes()->component_manager_id;
+    // Is it ever not a string?
+    $node->am = GENIResource::mgr_name($mgr_id);
+
+    /* determine what type of resource it is
+       switch: anything with 'procurve', 'cisco', 'switch' in URN
+    */
+    $component_id = (string) $type_value->attributes()->component_id;
+    $node->type = 'OpenFlow datapath';
+    $node->am_id = $mgr_id;
+    $node->name = (string)$type_value->attributes()->component_name;
+    $node->id = $component_id;
+
+    foreach ($type_value->children($openflow_ns) as $child) {
+      if ($child->getName() == 'location') {
+        $attrs = $child->attributes();
+        foreach ($child->attributes() as $attr => $value) {
+          switch ((string)$attr) {
+          case 'latitude':
+            $node->latitude = $value;
+          case 'longitude':
+            $node->longitude = $value;
+          }
+        }
+      }
+    }
+    if (! $node->longitude) {
+      // FIXME: fix what happens when no location is specified
+      $node->latitude = "0";
+      $node->longitude = "0";
+    }
+    return $node;
+  }
 }
+
 
 // array of all GENI resources by node
 $resources_by_node = array();
@@ -102,11 +166,16 @@ $files = array(
 // list of AMs from service registry
 // use these to get pretty names of AMs if they exist
 $am_services = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+GENIResource::$am_services = $am_services;
+
 //var_dump($am_services);
 
 foreach($files as $file) {
-
   $xml = simplexml_load_file($file);
+  if ($xml === FALSE) {
+    error_log("Error parsing advertisement rspec $file");
+    continue;
+  }
 
   foreach($xml as $type => $type_value) {
 
@@ -122,10 +191,8 @@ foreach($files as $file) {
       // better source of information: service registry
       foreach($am_services as $am_service) {
         // if it happens to be in SR, use it
-        
         //echo "<p>";echo $am_service[SR_TABLE_FIELDNAME::SERVICE_URN]; echo "<br>";
         //echo $type_value->attributes()->component_manager_id; echo "</p>";
-        
         if($am_service[SR_TABLE_FIELDNAME::SERVICE_URN] == $type_value->attributes()->component_manager_id) {
           $node->am = $am_service[SR_TABLE_FIELDNAME::SERVICE_NAME];
         }
@@ -153,20 +220,27 @@ foreach($files as $file) {
       $node->id = (string)$type_value->attributes()->component_id;
       $node->latitude = (string)$type_value->location["latitude"];
       $node->longitude = (string)$type_value->location["longitude"];
-      
+
       if($node->longitude == "") {
         // FIXME: fix what happens when no location is specified
         $node->latitude = "0";
         $node->longitude = "0";
-        
       }
       
       $resources_by_node[] = $node;
     
     }
-
   }
 
+  $of_children = $xml->children($openflow_ns);
+  if (count($of_children) > 0) {
+    foreach ($of_children as $type => $type_value) {
+      $node = GENIResource::parse_datapath($type, $type_value);
+      if ($node) {
+        $resources_by_node[] = $node;
+      }
+    }
+  }
 }
 
 
