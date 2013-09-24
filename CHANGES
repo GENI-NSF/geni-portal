@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.2 ==
+  * Display fingerprints of SSH keys (#695)
   * Added version information to GENI portal (#789)
   * Comment out call to error log in MA causing PHP warning (#790)
   * Change some mail links to help@geni.net (#572)
@@ -23,6 +24,10 @@
   * Comment out a debug (#798)
   * Log if the pretty RSpec printer is skipping a node as not for this AM (#803)
   * Handle bulk upload file with 0 valid email addresses (#802)
+  * Use the word "Portal" on the portal landing page (#733)
+  * Reconcile the use of the phrase "omni-bundle" (#752)
+  * Rephrase Omni Configuration instructions (#753)
+  * Label private and public rspecs in list and alphabetize (#761)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)

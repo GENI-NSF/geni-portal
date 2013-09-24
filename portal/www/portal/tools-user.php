@@ -56,7 +56,7 @@ END;
 			<li><a href='#accountdetails'>Account Details</a></li>
 			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
 			<li><a href='#accountsummary'>Account Summary</a></li>
-			<li><a href='#rspecs'title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
 			<li style="border-right: none"><a href='#other'>Other</a></li>
 		</ul>
@@ -104,6 +104,25 @@ else
     print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
           . "<th>Edit</th><th>Delete</th></tr>\n";
     foreach ($keys as $key) {
+      // generate key's fingerprint
+        $fingerprint_key = NULL;
+        $fingerprint_key = $key['public_key'];
+        // write key to temp file
+        $fingerprint_key_filename = tempnam(sys_get_temp_dir(), 'fingerprint');
+        $fingerprint_key_file = fopen($fingerprint_key_filename, "w");
+        fwrite($fingerprint_key_file, $fingerprint_key);
+        fclose($fingerprint_key_file);
+        // get fingerprint
+        $cmd_array = array('/usr/bin/ssh-keygen',
+                         '-lf',
+                         $fingerprint_key_filename,
+                         );
+        $command = implode(" ", $cmd_array);
+        $result = exec($command, $output, $status);
+        $fingerprint_array = explode(' ', $result);
+        $fingerprint = $fingerprint_array[1]; // store fingerprint
+        unlink($fingerprint_key_filename);
+      
       $args['id'] = $key['id'];
       $query = http_build_query($args);
       if (is_null($key['private_key'])) {
@@ -123,7 +142,7 @@ else
                 . $delete_sshkey_url . $query
                 . "')\">Delete</button>");
       print "<tr>"
-      . "<td>" . htmlentities($key['filename']) . "</td>"
+      . "<td>" . htmlentities($key['filename']) . "<br><small>" . $fingerprint . "</small>" . "</td>"
       . "<td>" . htmlentities($key['description']) . "</td>"
       . '<td>' . $public_key_download_cell . '</td>'
       . '<td>' . $pkey_cell . '</td>'
