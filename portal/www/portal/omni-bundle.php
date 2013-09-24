@@ -99,12 +99,12 @@ foreach ($warnings as $warning) {
 
 
 <p>
-Use the omni configuration data downloaded from this page, to automatically <a href="profile.php#omni">configure omni</a>.
+Use the omni configuration data downloaded from this page, to automatically <a href="profile.php#omni">configure omni</a>.</p>
 <form id="f1" action="downloadomnibundle.php" method="post">
 
 <?php
 if ($num_projects >= 1) {
-  echo 'Choose a default project to use with omni: ';
+  echo '<p>Choose a default project to use with omni: ';
   echo '<select name="project">\n';
   foreach ($projects as $proj) {
     // show only projects that have not expired
@@ -115,14 +115,14 @@ if ($num_projects >= 1) {
       echo "<option value=\"$proj_name\" title=\"$proj_desc\">$proj_name</option>\n";
     }
   }
-  echo '</select><br/>';
+  echo '</select></p>';
   // There are multiple projects. Put up a chooser for the default project.
 } else {
   // No projects, so no default project
 }
 ?>
 </form>
-<button onClick="document.getElementById('f1').submit();"
+<p><button onClick="document.getElementById('f1').submit();"
 <?php if (is_null($cert)) { ?>
  disabled="disabled" title="You must generate a certificate before downloading the omni configuration data."
 <?php } ?>
