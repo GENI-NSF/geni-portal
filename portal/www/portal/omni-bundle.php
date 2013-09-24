@@ -97,6 +97,9 @@ foreach ($warnings as $warning) {
 }
 ?>
 
+
+<p>
+Use the omni configuration data downloaded from this page, to automatically <a href="profile.php#omni">configure omni</a>.
 <form id="f1" action="downloadomnibundle.php" method="post">
 
 <?php
@@ -127,8 +130,7 @@ if ($num_projects >= 1) {
   <b>Download your omni data</b>
 </button>
 <button onClick="history.back(-1)">Cancel</button>
-
-
+</p>
 <?php
 include("footer.php");
 ?>
