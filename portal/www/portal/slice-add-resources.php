@@ -32,7 +32,7 @@ require_once("sa_client.php");
 require_once 'geni_syslog.php';
 
 function cmp($a,$b) {
-  return strcmp($a['name'],$b['name']);
+  return strcmp(strtolower($a['name']),strtolower($b['name']));
 }
 
 function show_rspec_chooser($user) {
