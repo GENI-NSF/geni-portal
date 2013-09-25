@@ -960,21 +960,31 @@ function lookup_members_by_email($args, $message)
   $email_args = $args[MA_ARGUMENT::MEMBER_EMAILS];
   $emails = "";
   foreach($email_args as $email) {
+    $email = trim($email);
+    if ($email == "") {
+      continue;
+    }
     if ($emails != "") $emails = $emails . ", ";
     $emails = $emails . "'" . strtolower($email) . "'";
   }
-  $sql = "select " . MA_ATTRIBUTE::MEMBER_ID . ", " . MA_ATTRIBUTE::VALUE . 
-    " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME . 
-    " where " . MA_ATTRIBUTE::NAME . " = '" . MA_ATTRIBUTE_NAME::EMAIL_ADDRESS . "'" . 
-    " and lower(" . MA_ATTRIBUTE::VALUE . ") in (" . $emails . ")";
-  $rows = db_fetch_rows($sql);
-  error_log($rows);
-  if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
-    return $rows;
-
   $dict = array();
-  $rows = $rows[RESPONSE_ARGUMENT::VALUE];
-  //  error_log("ROWS = " . print_r($rows, true));
+
+  if ($emails !== "") {
+    $sql = "select " . MA_ATTRIBUTE::MEMBER_ID . ", " . MA_ATTRIBUTE::VALUE . 
+      " from " . $MA_MEMBER_ATTRIBUTE_TABLENAME . 
+      " where " . MA_ATTRIBUTE::NAME . " = '" . MA_ATTRIBUTE_NAME::EMAIL_ADDRESS . "'" . 
+      " and lower(" . MA_ATTRIBUTE::VALUE . ") in (" . $emails . ")";
+    $rows = db_fetch_rows($sql);
+    //  error_log($rows);
+    if ($rows[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $rows;
+
+    $rows = $rows[RESPONSE_ARGUMENT::VALUE];
+    //  error_log("ROWS = " . print_r($rows, true));
+  } else {
+    //    error_log("No emails to lookup in lookup_members_by_email");
+    $rows = array();
+  }
   foreach ($rows as $row) {
     $email = $row[MA_ATTRIBUTE::VALUE];
     $member_id = $row[MA_ATTRIBUTE::MEMBER_ID];

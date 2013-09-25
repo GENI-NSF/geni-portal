@@ -2,6 +2,35 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.2 ==
+  * Display fingerprints of SSH keys (#695)
+  * Added version information to GENI portal (#789)
+  * Comment out call to error log in MA causing PHP warning (#790)
+  * Change some mail links to help@geni.net (#572)
+  * Find owning aggregate using sliver_id for manifest (#712)
+  * Project admins are made admins of newly created slices (#559)
+  * Email experimenters when they request to be a project lead (#760)
+  * Use code format for sample .irodsEnv file (#744)
+  * Be more careful checking XML when printing RSpec (#791)
+  * Put a refresh button the sliver status page (#451)
+  * Show something for ExoGENI hostnames in details page (#767)
+  * Remove 2 more uses of slice-member.php (#328)
+  * Clean up temp files (#383)
+  * Fix company name in copyright on footer (#793)
+  * Password hash in account requests is quoted more succinctly (#795)
+  * Fix "already a member" message to include member and project names instead of id numbers (#617)
+  * Check if slice is expired before querying for status (#675)
+  * Alphabetize slices in slice list (#788)
+  * Comment out a debug (#798)
+  * Log if the pretty RSpec printer is skipping a node as not for this AM (#803)
+  * Handle bulk upload file with 0 valid email addresses (#802)
+  * Use the word "Portal" on the portal landing page (#733)
+  * Reconcile the use of the phrase "omni-bundle" (#752)
+  * Rephrase Omni Configuration instructions (#753)
+  * Label private and public rspecs in list and alphabetize (#761)
+  * Add GENI usernames to header and make more prominent on Profile page (#797)
+  * Update gcf to 2.4 final (#794)
+
 == 2.1 ==
   * Revise handling of Google Analytics (#742)
   * SSH public key from downloaded pair filename should end in .pub (#681)

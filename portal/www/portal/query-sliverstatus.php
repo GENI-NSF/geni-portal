@@ -32,7 +32,6 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("sa_client.php");
 
-
 function query_sliverstatus( $user, $ams, $sa_url, $slice, $slice_id ) {
 
 // Takes an arg am_id which may have multiple values. Each is treated
@@ -54,11 +53,15 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs for query-sliverstatus!");
   $slivers_output = "No AMs registered.";
 }
-
+if ($slice['expired'] === "t") {
+  $msg = "Slice is expired";
+  $good = false;
+  $obj = array();
+} else {
   $slivers_output = "";
   // Get the slice credential from the SA
   $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
-  
+
   // Get the slice URN via the SA
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
@@ -92,7 +95,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     $msg = "Call to sliver_status() FAILed";
     $obj = Array();
   }
-
+}
 $retVal2 = Array();
 $retVal2[] = $msg;
 $retVal2[] = $obj;

@@ -39,13 +39,21 @@ $my_rspecs = array();
 $public_rspecs = array();
 $me = $user->account_id;
 
+function cmp($a,$b) {
+  return strcmp(strtolower($a['name']),strtolower($b['name']));
+}
+
 // Generate a list of my RSpecs and a list of public RSpecs
 foreach ($all_rspecs as $rspec) {
   $owner = $rspec['owner_id'];
   if ($owner == $me) {
     $my_rspecs[] = $rspec;
+    usort($my_rspecs,"cmp");
+
   } else {
     $public_rspecs[] = $rspec;
+    usort($public_rspecs,"cmp");
+
   }
 }
 
@@ -61,12 +69,24 @@ print "<button onClick=\"window.location='rspecupload.php'\">"
     . "upload a new RSpec</button>\n";
 print " or edit your existing RSpecs.</p>";
 
-/* Show the table of existing RSpecs. */
+/* Show the table of existing private RSpecs. */
+print "<h3>My Private Rspecs</h3>\n";
 rspec_table_header();
 foreach ($my_rspecs as $rspec) {
-  display_rspec($rspec);
+  if ($rspec['visibility'] === "private")
+    display_rspec($rspec);
 }
 rspec_table_footer();
+
+/* Show the table of existing public but editable RSpecs. */
+print "<h3>My Public Rspecs</h3>\n";
+rspec_table_header();
+foreach ($my_rspecs as $rspec) {
+  if ($rspec['visibility'] === "public")
+    display_rspec($rspec);
+}
+rspec_table_footer();
+
 
 print("<h2>View Public RSpecs</h2>\n");
 print "<p>You can view or download existing public RSpecs.</p>";

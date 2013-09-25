@@ -1056,7 +1056,6 @@ function modify_project_membership($args, $message)
   $members_to_add = $args[PA_ARGUMENT::MEMBERS_TO_ADD];
   $members_to_change_role = $args[PA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE];
   $members_to_remove = $args[PA_ARGUMENT::MEMBERS_TO_REMOVE];
-
   //  error_log("MTA = " . print_r($members_to_add, true));
   //  error_log("MTC = " . print_r($members_to_change_role, true));
   //  error_log("MTR = " . print_r($members_to_remove, true));
@@ -1343,6 +1342,7 @@ function add_project_member($args, $message)
 
   global $PA_PROJECT_MEMBER_TABLENAME;
   global $mysigner;
+  global $ma_url;
 
   $conn = db_conn();
 
@@ -1384,9 +1384,29 @@ function add_project_member($args, $message)
   $already_member = $already_member['value']['count'] > 0;
   //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
   if ($already_member) {
+    // get member name
+    $ids = array();
+    $ids[] = $member_id;
+    $names = lookup_member_names($ma_url,$mysigner,$ids);
+    if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $names;
+    $names = $names[RESPONSE_ARGUMENT::VALUE];
+    $member_name = $names[$member_id];
+    // get project name
+    $lookup_project_message = array(PA_ARGUMENT::PROJECT_ID => $project_id);
+    $project_data = lookup_project($lookup_project_message);
+    if (($project_data[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) &&
+	(array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+			  $project_data[RESPONSE_ARGUMENT::VALUE])))
+      {
+	$project_data = $project_data[RESPONSE_ARGUMENT::VALUE];
+	$project_name = $project_data[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      } else {
+      $project_name = $project_id;
+    }
     return generate_response(RESPONSE_ERROR::ARGS, null, 
-			     "Member $member_id is already a member of " . 
-			     "project $project_id");
+			     "Member $member_name is already a member of " . 
+			     "project $project_name");
   }
 
 
@@ -1418,7 +1438,6 @@ function add_project_member($args, $message)
   }
 
   // Log adding the member
-  global $ma_url;
   $ids = array();
   $ids[] = $signer_id;
   $ids[] = $member_id;
@@ -2234,7 +2253,7 @@ function accept_invitation($args, $message)
   if($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $result;
   $rows = $result[RESPONSE_ARGUMENT::VALUE];
-  error_log("ROWS = " . print_r($rows, true));
+  //error_log("ROWS = " . print_r($rows, true));
   if(count($rows) == 0) {
     return generate_response(RESPONSE_ERROR::ARGS, null, 
 			     "Invitation has been deleted.");
@@ -2728,13 +2747,75 @@ function create_slice($args, $message)
 	  !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) ||
 	  $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
 	{
-	  error_log("Create slice failed ot add project lead as " . 
+	  error_log("Create slice failed to add project lead as " . 
 		    "slice member: " .
 		    $addres[RESPONSE_ARGUMENT::CODE] . ": " .
 		    $addres[RESPONSE_ARGUMENT::OUTPUT]);
 	  return $addres;
 	}
     }
+
+    // Add all project ADMINs as members of the slice as well
+    // get all project admins
+    $admins = array();
+    $admins_res = get_project_members(array(PA_ARGUMENT::PROJECT_ID => $project_id,
+					    PA_ARGUMENT::ROLE_TYPE => CS_ATTRIBUTE_TYPE::ADMIN),
+				      $message);
+    if (! isset($admins_res) || is_null($admins_res) || 
+	! array_key_exists(RESPONSE_ARGUMENT::CODE, $admins_res) ||
+	$admins_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE ||
+	! array_key_exists(RESPONSE_ARGUMENT::VALUE, $admins_res)) {
+      error_log("Create slice failed to get admins in project: " . 
+		$admins_res[RESPONSE_ARGUMENT::CODE] . ": " . 
+		$admins_res[RESPONSE_ARGUMENT::OUTPUT]);
+    } else {
+      $admins = $admins_res[RESPONSE_ARGUMENT::VALUE];
+      if (is_null($admins) || count($admins) <= 0) {
+	error_log("Create slice: No project admins found in project " . $project_name);
+	$admins = array();
+      }
+    }
+
+    // For each admin of the project
+    foreach ($admins as $project_admin) {
+      $project_admin_id = $project_admin[PA_ARGUMENT::MEMBER_ID];
+
+      // If not the slice owner, then add them
+      if ($project_admin_id != $owner_id) {
+
+	//    error_log("PL $project_admin_id is not OWNER $owner_id");
+	// Create assertion of admin membership
+	$ca_res = create_assertion($cs_url, $mysigner, $signer, 
+				   $project_admin_id, 
+				   CS_ATTRIBUTE_TYPE::ADMIN,
+				   CS_CONTEXT_TYPE::SLICE, $slice_id);
+	if ($ca_res[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+	  error_log("Create slice failed to make a project admin a slice admin: " .
+		$ca_res[RESPONSE_ARGUMENT::CODE] . ": " . 
+		$ca_res[RESPONSE_ARGUMENT::OUTPUT]);
+	  continue;
+	}
+
+	// add project admin as 'ADMIN' slice member 
+	$addres = 
+	  add_slice_member(array(SA_ARGUMENT::SLICE_ID => $slice_id,
+				 SA_ARGUMENT::MEMBER_ID => $project_admin_id,
+				 SA_ARGUMENT::ROLE_TYPE =>
+				 CS_ATTRIBUTE_TYPE::ADMIN),
+			   $message);
+	if (!isset($addres) ||
+	    is_null($addres) ||
+	    !array_key_exists(RESPONSE_ARGUMENT::CODE, $addres) ||
+	    $addres[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+	  {
+	    error_log("Create slice failed to add project admin as " . 
+		      "slice member: " .
+		      $addres[RESPONSE_ARGUMENT::CODE] . ": " .
+		      $addres[RESPONSE_ARGUMENT::OUTPUT]);
+	    continue;
+	  }
+      }
+    } // end of loop over project admins
 
     // Log the creation
     global $log_url;
@@ -3347,6 +3428,7 @@ function add_slice_member($args, $message)
 
   global $SA_SLICE_MEMBER_TABLENAME;
   global $mysigner;
+  global $ma_url;
   $conn = db_conn();
 
   $already_member_sql = "select count(*) from " . $SA_SLICE_MEMBER_TABLENAME
@@ -3361,9 +3443,21 @@ function add_slice_member($args, $message)
   $already_member = $already_member['value']['count'] > 0;
   //  error_log("ALREADY_MEMBER = " . print_r($already_member, true));
   if ($already_member) {
+    // get member name
+    $ids = array();
+    $ids[] = $member_id;
+    $names = lookup_member_names($ma_url,$mysigner,$ids);
+    if ($names[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+      return $names;
+    $names = $names[RESPONSE_ARGUMENT::VALUE];
+    $member_name = $names[$member_id];
+    $lookup_slice_message = array(SA_ARGUMENT::SLICE_ID => $slice_id);
+    $slice_data = lookup_slice($lookup_slice_message);
+    $slice_data = $slice_data[RESPONSE_ARGUMENT::VALUE];
+    $slice_name = $slice_data[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
     return generate_response(RESPONSE_ERROR::ARGS, null, 
-			     "Member $member_id is already a member " . 
-			     "of slice $slice_id");
+			     "Member $member_name is already a member " . 
+			     "of slice $slice_name");
   }
 
   $sql = "INSERT INTO " . $SA_SLICE_MEMBER_TABLENAME . " ("

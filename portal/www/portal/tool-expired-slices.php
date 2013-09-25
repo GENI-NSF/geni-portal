@@ -166,7 +166,9 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
     print "<td>" . htmlentities($creation) . "</td>";
     print "<td>" . htmlentities($expiration) . "</td>";
-    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
+    // FIXME: Make this a mailto. Need to use member_objects to do init_from_record of a member and then retrieve the email address
+    print "<td>" . htmlentities($slice_owner_name) . "</td>";
+    //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
     $hostname = $_SERVER['SERVER_NAME'];
     print "</tr>\n";
   }

@@ -54,7 +54,10 @@ function print_xml( $xml ){
   $xml2 = explode("\n",$xml);
   print "<div class='xml'>";
   foreach ($xml2 as $line_num => $line) {
-    echo htmlspecialchars($line) . "<br />\n";
+    if (trim($line) == "") {
+      continue;
+    }
+    echo htmlspecialchars(rtrim($line)) . "\n";
   }
   print "</div>\n";
 }
@@ -66,23 +69,42 @@ function get_name_from_urn( $urn ){
   return $name;
 }
 
+function get_auth_from_urn( $urn ){
+  if (! isset($urn) or $urn == "") {
+    return $urn;
+  }
+  if (strpos($urn, "urn:publicid:IDN+") < 0) {
+    return $urn;
+  }
+  // Exclude the usual prefix with trailing +
+  $temp = substr($urn, strlen("urn:publicid:IDN+"));
+  if (! $temp or $temp == "") {
+    return $urn;
+  }
+  // grap all up to the next +
+  $auth = substr($temp, 0, strpos($temp, "+"));
+  if (! $auth or $auth == "") {
+    return $urn;
+  }
+  return $auth;
+}
+
 function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $componentMgrURN=""){
   $err_str = "<p><i>Resource Specification returned was not valid XML.</i></p>";
   try {
     $rspec = new SimpleXMLElement($xml);
     if (!$rspec) {
-      error_log("Call to print_rspec_pretty() FAILED");
+      error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr((string)($xml), 0, 40) . "...");
       echo $err_str;
       return ;
     }
   } catch (Exception $e) {
-      error_log("Call to print_rspec_pretty() FAILED");
-      echo $err_str;
-      return;
+    error_log("Call to print_rspec_pretty() FAILED to parse xml: " . substr((string)($xml), 0, 40) . "... : " . (string)($e));
+    echo $err_str;
+    return;
   }
 
   $rspec->registerXPathNamespace("def", "http://www.geni.net/resources/rspec/3/manifest.xsd");
-  print "<div class='xml'>";
   $nodes = $rspec->node;
 // $nodes = $rspec->xpath('//def:node[@component_manager_id=$componentMgrURN]');
 // $nodes = $rspec->xpath('/def:node');
@@ -90,6 +112,12 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   $num_nodes = $nodes->count();
 //  $num_nodes = count($nodes);
   $num_links = $links->count();
+
+  if ($num_nodes + $num_links == 0) {
+    error_log("print-rspec-pretty got RSpec with 0 nodes and links: " . substr((string)($xml), 0, 40));
+    print_xml($xml);
+    return;
+  }
 
   $nodes_text = "<b>".$num_nodes."</b> node";
   if ($num_nodes!=1) {
@@ -101,6 +129,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   }
 //COUNT ONLY NODES FOR THIS AM  echo "<p>There are ",$nodes_text," and ",$links_text," at this aggregate.</p>";
   
+  print "<div class='xml'>";
+
   $node_num = 0;
   foreach ($nodes as $node) {
 
@@ -109,7 +139,15 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $comp_id = $node['component_id'];
     $comp_mgr_id = $node['component_manager_id'];
     if ($filterToAM and ($comp_mgr_id!=$componentMgrURN)){
-       continue;
+      $sliver_id = $node['sliver_id'];
+      $sliver_auth = get_auth_from_urn($sliver_id);
+      $compMgrAuth = get_auth_from_urn($componentMgrURN);
+      if ($sliver_auth == $compMgrAuth) {
+	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+      } else {
+	error_log("print-rspec-pretty skipping node " . $comp_id . ": its comp_mgr " . $comp_mgr_id . " != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
+	continue;
+      }
     }
     $node_num = $node_num+1;
     $comp_name = get_name_from_urn($comp_id);
@@ -136,9 +174,13 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     echo "<td>",$exclusive,"</td>";
     if ($sliver_type){
       echo "<td>",$sliver_type['name'],"</td>\n";
+    } else {
+      echo "<td>(not specified)</td>\n";
     }
     if ($host){
       echo "<td>",$host['name'],"</td>\n";
+    } else {
+      echo "<td>(not specified)</td>\n";
     }
     echo "</tr>\n";
     foreach ($logins as $login) {	
@@ -199,9 +241,18 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   $link_num = 1;
   foreach ($links as $link) {
     $comp_mgrs = $link->component_manager;
+    $comp_id = $link['component_id'];
     $componentMgrName = $comp_mgrs['name'];		      
     if ($filterToAM and ($componentMgrName!=$componentMgrURN)){
-       continue;
+      $sliver_id = $link['sliver_id'];
+      $sliver_auth = get_auth_from_urn($sliver_id);
+      $compMgrAuth = get_auth_from_urn($componentMgrURN);
+      if ($sliver_auth == $compMgrAuth) {
+	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+      } else {
+	error_log("print-rspec-pretty skipping link " . $comp_id . ": its comp_mgr " . $comp_mgr_id . " != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
+	continue;
+      }
     }
     echo "<b>Link #",$link_num,"</b>";
     $link_num = $link_num+1;
@@ -247,25 +298,30 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 
   // How many AMs reported actual results
   $amc = 0;
-  foreach ($args as $arg){
-    if (array_key_exists('value', $obj[$arg]) and array_key_exists('code', $obj[$arg]) and $obj[$arg]['code']['geni_code'] == 0) {
+  foreach ($args as $arg) {
+    if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg]) and array_key_exists('code', $obj[$arg]) and is_array($obj[$arg]['code']) and array_key_exists('geni_code', $obj[$arg]['code']) and $obj[$arg]['code']['geni_code'] == 0) {
       $amc = $amc + 1;
     }
   }
 
-  foreach ($args as $arg){
+  foreach ($args as $arg) {
     $arg_url = $arg;
     $am_id = am_id( $arg_url );
     $arg_name = am_name($arg_url);
     $arg_urn = am_urn($arg_url);
-    if (array_key_exists('value', $obj[$arg])) {
+    if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg])) {
         $xml = $obj[$arg]['value'];
     } else {
         $xml = "";
     }
-    $code = $obj[$arg]['code']['geni_code'];
-    if (array_key_exists('output', $obj[$arg])) {
+    $code = -1;
+    if (is_array($obj[$arg]) and array_key_exists('code', $obj[$arg]) and is_array($obj[$arg]['code']) and array_key_exists('geni_code', $obj[$arg]['code'])) {
+      $code = $obj[$arg]['code']['geni_code'];
+    }
+    if (is_array($obj[$arg]) and array_key_exists('output', $obj[$arg])) {
       $output = $obj[$arg]['output'];
+    } else if (! is_array($obj[$arg]) or ! array_key_exists('code', $obj[$arg])) {
+      $output = (string)($obj[$arg]);
     } else {
       $output = "";
     }
