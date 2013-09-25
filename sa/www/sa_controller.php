@@ -1051,6 +1051,7 @@ function modify_project_membership($args, $message)
   global $cs_url;
   global $mysigner;
 
+  error_log(print_r($args,true));
   // Unpack arguments
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $members_to_add = $args[PA_ARGUMENT::MEMBERS_TO_ADD];
