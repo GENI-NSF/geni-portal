@@ -9,11 +9,11 @@
                   <ns3:node_type type_slots="10"/>      
             </hardware_type>    
             <available now="true"/>    
-            <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet" role="experimental"/>    
-            <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet" role="experimental"/>    
-            <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" role="experimental"/>    
             <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet" role="experimental"/>    
+            <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" role="experimental"/>    
+            <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet" role="experimental"/>    
             <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet" role="experimental"/>    
+            <interface component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet" role="experimental"/>    
       </node>  
       <external_ref component_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:ExoGeni:TengigabitEthernet:2:ethernet" component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am"/>  
       <link component_id="urn:publicid:IDN+exogeni.net:uhNet+link+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet_internet2-ion">    
@@ -78,27 +78,27 @@
       </link>  
       <node component_id="urn:publicid:IDN+exogeni.net:uhvmsite+node+orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uhvmsite+authority+am" component_name="orca-vm-cloud" exclusive="false">    
             <location country="Unspecified" latitude="29.72327" longitude="-95.34269"/>    
+            <sliver_type name="EC2C1Medium"/>    
             <sliver_type name="XOMedium"/>    
-            <sliver_type name="EucaC1XLarge"/>    
-            <sliver_type name="EucaC1Medium"/>    
             <sliver_type name="EC2M1Small"/>    
             <sliver_type name="XOLarge"/>    
+            <sliver_type name="EucaC1XLarge"/>    
+            <sliver_type name="EucaM1Large"/>    
+            <sliver_type name="EucaM1XLarge"/>    
+            <sliver_type name="EucaC1Medium"/>    
+            <sliver_type name="EC2M1XLarge"/>    
             <sliver_type name="XOXlarge"/>    
+            <sliver_type name="EucaM1Small"/>    
             <sliver_type name="XOSmall"/>    
             <sliver_type name="EC2M1Large"/>    
-            <sliver_type name="EC2C1Medium"/>    
-            <sliver_type name="EucaM1XLarge"/>    
-            <sliver_type name="EucaM1Small"/>    
-            <sliver_type name="EC2M1XLarge"/>    
-            <sliver_type name="EucaM1Large"/>    
             <hardware_type name="orca-vm-cloud">      
                   <ns3:node_type type_slots="112"/>      
             </hardware_type>    
             <available now="true"/>    
-            <interface component_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:ExoGeni:TenGigabitEthernet:1:ethernet" role="experimental"/>    
             <interface component_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:ExoGeni:TengigabitEthernet:2:ethernet" role="experimental"/>    
+            <interface component_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:ExoGeni:TenGigabitEthernet:1:ethernet" role="experimental"/>    
       </node>  
-      <ns2:stitching lastUpdateTime="Thu Sep 05 17:55:54 EDT 2013">    
+      <ns2:stitching lastUpdateTime="Mon Sep 23 19:24:59 UTC 2013">    
             <ns2:aggregate id="urn:publicid:IDN+exogeni.net:uhNet+authority+am" url="http://geni.renci.org:11443/orca/xmlrpc">      
                   <ns2:aggregatetype>orca</ns2:aggregatetype>      
                   <ns2:stitchingmode>tree</ns2:stitchingmode>      

@@ -70,6 +70,14 @@ if (isset($slice_expired) && $slice_expired == 't') {
 
 $header = "Status of Slivers on slice: $slice_name";
 
+// String to disable button or other active element
+$disabled = "disabled = " . '"' . "disabled" . '"'; 
+
+$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
+						   CS_CONTEXT_TYPE::SLICE, $slice_id);
+$get_slice_credential_disable_buttons = "";
+if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
+
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 if (! isset($am_id) or is_null($am_id)) {
@@ -110,11 +118,15 @@ if ($amcnt >= 2) {
   $amcntstr = "all aggregates";
 }
         
+
 //echo "<div class='aggregate'>Querying status of resources at " . $amcntstr . "...</div>";
 print "<div class='aggregate' id='prettyxml'>";
 print "<p id='query' style='display:block;'><i>Querying aggregates for status of resources...</i></p>";
 
-print "<p id='summary' style='display:none;'><i>Queried resources at <span id='numagg'>0</span> aggregates. </i></p>";
+print "<p id='summary' style='display:none;'><i>Queried resources at <span id='numagg'>0</span> aggregates. </i><br/>";
+print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
+
+//print "<p><button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh Status</button></p>";
 
 print "</p>";
 print "</div>\n";
@@ -131,7 +143,7 @@ if (isset($am_id) && $am_id ) {
 }
 
 
-print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a>";
+print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a></p>";
 print "<hr/>";
 print "<p><a href='slices.php'>Back to All slices</a>";
 print "<br/>";

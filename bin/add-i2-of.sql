@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
      'Internet2 OpenFlow',
       -- URN
-     'urn:publicid:IDN+ion.internet2.edu+authority+cm'
+     'urn:publicid:IDN+openflow:foam:foam.net.internet2.edu+authority+am'
     );
 
 insert into service_registry

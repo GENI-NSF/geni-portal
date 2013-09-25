@@ -182,11 +182,11 @@ if ($pretty) {
     $am_id_str = "";
   }
 
-  print "<a href='listresources.php?pretty=False&slice_id=" . $slice_id . $am_id_str . "' target='_blank'>Raw Resource Specification</a>";
+  print "<p><a href='listresources.php?pretty=False&slice_id=" . $slice_id . $am_id_str . "' target='_blank'>Raw Resource Specification</a></p>";
 }
 
-print "<hr/>";
-print "<p><a href='slices.php'>Back to All slices</a>";
+print "<hr/><p>";
+print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 include("footer.php");

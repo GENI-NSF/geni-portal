@@ -13,5 +13,5 @@ else
     else
         export PGPASSFILE="/usr/local/etc/psql_password"
     fi
-    echo "COPY (select  '||', first_name, '||',  last_name, '||', email, '||', username_requested, '||', phone, '||{{{', password_hash, '}}}||', '||', '||', '||',  organization, '||', title, '||', '||',  reason, '||', '||', '||' from idp_account_request where created_ts is null order by id) TO STDOUT;" | psql -U portal -h localhost portal
+    echo "COPY (select  '||', first_name, '||',  last_name, '||', email, '||', username_requested, '||', phone, '||', '\`' || password_hash || '\`', '||', '||', '||', '||',  organization, '||', title, '||', '||',  reason, '||', '||', '||' from idp_account_request where created_ts is null order by id) TO STDOUT;" | psql -U portal -h localhost portal
 fi

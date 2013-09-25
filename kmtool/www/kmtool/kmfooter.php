@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -27,6 +27,7 @@
 </div>
 <hr/>
 <div id="footer">
+   <small>Copyright &copy; 2013 Raytheon BBN Technologies, All Rights Reserved - NSF Award CNS-0714770</small><br/>
   <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="https://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo" height="25" width="25"> National Science Foundation</a></i></small>
 </div>
 </body>
