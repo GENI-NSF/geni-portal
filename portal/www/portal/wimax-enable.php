@@ -80,18 +80,18 @@ function get_ldif_for_project($ldif_project_name, $ldif_project_description) {
     . "objectclass: organizationalUnit\n";
 }
 
-function get_ldif_for_project_lead($ldif_project_name, $ldif_lead_username) {
+function get_ldif_for_project_lead($ldif_project_name, $ldif_lead_username, $ldif_lead_groupname) {
   return "\n# LDIF for the project lead\n"
     . "dn: cn=admin,ou=$ldif_project_name,dc=ch,dc=geni,dc=net\n"
     . "cn: admin\n"
     . "objectclass: top\n"
     . "objectclass: organizationalRole\n"
-    . "roleoccupant: uid=$ldif_lead_username,ou=$ldif_project_name,dc=ch,dc=geni,dc=net\n";
+    . "roleoccupant: uid=$ldif_lead_username,ou=$ldif_lead_groupname,dc=ch,dc=geni,dc=net\n";
 }
 
-function get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, $comment) {
+function get_ldif_for_user_string($ldif_user_username, $ldif_user_groupname, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, $comment) {
   $ldif_string = "# LDIF for user ($comment)\n"
-    . "dn: uid=$ldif_user_username,ou=$ldif_project_name,dc=ch,dc=geni,dc=net\n"
+    . "dn: uid=$ldif_user_username,ou=$ldif_user_groupname,dc=ch,dc=geni,dc=net\n"
     . "cn: $ldif_user_pretty_name\n"
     . "givenname: $ldif_user_given_name\n"
     . "mail: $ldif_user_email\n"
@@ -266,12 +266,12 @@ if (array_key_exists('project_id', $_REQUEST))
 	// PREPARE FULL LDIF
 	$ldif_string = get_ldif_for_project($ldif_project_name, $ldif_project_description);
 
-	$ldif_string .= "\n" . get_ldif_for_project_lead($ldif_project_name, $ldif_user_username);
+	$ldif_string .= "\n" . get_ldif_for_project_lead($ldif_project_name, $ldif_user_username, $ldif_project_name); // FIXME: supply leads group
 
 	$ldif_string .= "\n";
       } // else just send the ldif for this user
 
-      $ldif_string .= get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project lead");  
+      $ldif_string .= get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project lead");  // FIXME: Instead of project name, use users groupname
     }
     
     // if you're not the project lead, determine if project is even allowed to request WiMAX resources
@@ -281,7 +281,7 @@ if (array_key_exists('project_id', $_REQUEST))
       if($enabled) {
 	
 	// PREPARE PARTIAL LDIF
-	$ldif_string = get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "member of project");
+	$ldif_string = get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "member of project"); // FIXME: Instead of project name, use users groupname
       }
       
       // WiMAX hasn't been enabled, so this is an error; redirect
