@@ -120,7 +120,7 @@ if (count($my_slice_objects) > 0) {
   }
 
   function cmp($a,$b) {
-    return strcmp($a['slice_name'],$b['slice_name']);
+    return strcmp(strtolower($a['slice_name']),strtolower($b['slice_name']));
   }
 
   usort($my_slice_objects,"cmp");
