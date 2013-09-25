@@ -40,7 +40,7 @@ $public_rspecs = array();
 $me = $user->account_id;
 
 function cmp($a,$b) {
-  return strcmp($a['name'],$b['name']);
+  return strcmp(strtolower($a['name']),strtolower($b['name']));
 }
 
 // Generate a list of my RSpecs and a list of public RSpecs
@@ -51,8 +51,9 @@ foreach ($all_rspecs as $rspec) {
     usort($my_rspecs,"cmp");
 
   } else {
-    usort($my_rspecs,"cmp");
     $public_rspecs[] = $rspec;
+    usort($public_rspecs,"cmp");
+
   }
 }
 

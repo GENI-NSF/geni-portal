@@ -6,19 +6,19 @@
   <rspec type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:ns2="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" xmlns:ns3="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd">  
       <node component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+node+orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am" component_name="orca-vm-cloud" exclusive="false">    
             <location country="Unspecified" latitude="42.38974" longitude="-71.14751"/>    
+            <sliver_type name="EucaM1Large"/>    
             <sliver_type name="XOMedium"/>    
-            <sliver_type name="EucaC1XLarge"/>    
-            <sliver_type name="EucaC1Medium"/>    
             <sliver_type name="EC2M1Small"/>    
-            <sliver_type name="XOLarge"/>    
+            <sliver_type name="EucaC1XLarge"/>    
             <sliver_type name="XOXlarge"/>    
+            <sliver_type name="EC2C1Medium"/>    
+            <sliver_type name="XOLarge"/>    
+            <sliver_type name="EucaM1XLarge"/>    
+            <sliver_type name="EucaC1Medium"/>    
             <sliver_type name="XOSmall"/>    
             <sliver_type name="EC2M1Large"/>    
-            <sliver_type name="EC2C1Medium"/>    
-            <sliver_type name="EucaM1XLarge"/>    
             <sliver_type name="EucaM1Small"/>    
             <sliver_type name="EC2M1XLarge"/>    
-            <sliver_type name="EucaM1Large"/>    
             <hardware_type name="orca-vm-cloud">      
                   <ns3:node_type type_slots="112"/>      
             </hardware_type>    
@@ -38,9 +38,9 @@
                   <ns3:node_type type_slots="10"/>      
             </hardware_type>    
             <available now="true"/>    
-            <interface component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" role="experimental"/>    
-            <interface component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet" role="experimental"/>    
             <interface component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet" role="experimental"/>    
+            <interface component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet" role="experimental"/>    
+            <interface component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" role="experimental"/>    
             <interface component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet" role="experimental"/>    
       </node>  
       <external_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:BBN:Cisco:6509:TenGigabitEthernet:1:2:ethernet" component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am"/>  
@@ -85,7 +85,7 @@
             <component_manager name="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"/>    
             <link_type name="ethernet"/>    
       </link>  
-      <ns2:stitching lastUpdateTime="Thu Sep 05 17:56:17 EDT 2013">    
+      <ns2:stitching lastUpdateTime="Mon Sep 23 15:24:36 EDT 2013">    
             <ns2:aggregate id="urn:publicid:IDN+exogeni.net:bbnNet+authority+am" url="https://bbn-hn.exogeni.net:11443/xmlrpc">      
                   <ns2:aggregatetype>orca</ns2:aggregatetype>      
                   <ns2:stitchingmode>tree</ns2:stitchingmode>      
@@ -106,7 +106,7 @@
                                           <ns2:switchingCapabilitySpecificInfo>                
                                                 <ns2:switchingCapabilitySpecificInfo_L2sc>                  
                                                       <ns2:capability>consumer</ns2:capability>                  
-                                                      <ns2:vlanRangeAvailability>2601-2610,3741,3736-3739</ns2:vlanRangeAvailability>                  
+                                                      <ns2:vlanRangeAvailability>3736-3739,2601-2610,3741</ns2:vlanRangeAvailability>                  
                                                       <ns2:vlanTranslation>false</ns2:vlanTranslation>                  
                                                 </ns2:switchingCapabilitySpecificInfo_L2sc>                
                                           </ns2:switchingCapabilitySpecificInfo>              
@@ -127,7 +127,7 @@
                                           <ns2:switchingCapabilitySpecificInfo>                
                                                 <ns2:switchingCapabilitySpecificInfo_L2sc>                  
                                                       <ns2:capability>consumer</ns2:capability>                  
-                                                      <ns2:vlanRangeAvailability>2601-2610,3741,3736-3739</ns2:vlanRangeAvailability>                  
+                                                      <ns2:vlanRangeAvailability>3736-3739,2601-2610,3741</ns2:vlanRangeAvailability>                  
                                                       <ns2:vlanTranslation>false</ns2:vlanTranslation>                  
                                                 </ns2:switchingCapabilitySpecificInfo_L2sc>                
                                           </ns2:switchingCapabilitySpecificInfo>              
@@ -148,7 +148,7 @@
                                           <ns2:switchingCapabilitySpecificInfo>                
                                                 <ns2:switchingCapabilitySpecificInfo_L2sc>                  
                                                       <ns2:capability>consumer</ns2:capability>                  
-                                                      <ns2:vlanRangeAvailability>2601-2610,3741,3736-3739</ns2:vlanRangeAvailability>                  
+                                                      <ns2:vlanRangeAvailability>3736-3739,2601-2610,3741</ns2:vlanRangeAvailability>                  
                                                       <ns2:vlanTranslation>false</ns2:vlanTranslation>                  
                                                 </ns2:switchingCapabilitySpecificInfo_L2sc>                
                                           </ns2:switchingCapabilitySpecificInfo>              

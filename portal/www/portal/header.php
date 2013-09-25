@@ -243,7 +243,7 @@ function show_header($title, $active_tab = '', $load_user=1)
     if ($in_maintenance_mode) {
       echo "<li><b>*** Maintenance Mode ***</b></li>";
     }
-    echo '<li>Logged in as <b>' . $user->prettyName() . '</b></li>';
+    echo '<li>Logged in as <b>' . $user->prettyName() . '</b> (' . $user->username . ')</li>';
     $logout_url = relative_url("dologout.php");
     echo '<li style="border-right: none"><a href="' . $logout_url . '">Logout</a></li>';
     echo '</ul>';

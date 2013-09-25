@@ -136,9 +136,10 @@ def main(argv=None):
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    operation = "remove_project_member"
+    operation = "modify_project_membership"
     logger = logging.getLogger()
-    args = dict(project_id=project_id, member_id=member_id)
+    args = dict(project_id=project_id, members_to_remove=[member_id])
+    args
     result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
     # print "%r" % (result)
     if not 'code' in result:
