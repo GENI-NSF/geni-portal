@@ -4,6 +4,7 @@
 
 == 2.3 ==
    * Fix geni-remove-from-project script (#715)
+   * Fix creation/deletion timestamps in monitoring (#817)
    * Fix up link selection when printing rspec (#818)
 
 == 2.2 ==
