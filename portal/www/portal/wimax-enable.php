@@ -71,6 +71,15 @@ function check_membership_of_project($ids, $my_id) {
   return false;
 }
 
+function get_name_of_project($project_id, $user, $sa_url) {
+  $project_info = lookup_project($sa_url, $user, $project_id);
+  if (! is_null($project_info) and is_array($project_info) and array_key_exists($project_info, PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME)) {
+    return $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  } else {
+    return "";
+  }
+}
+
 function get_ldif_for_project($ldif_project_name, $ldif_project_description) {
   return "# LDIF for a project\n"
     . "dn: ou=$ldif_project_name,dc=ch,dc=geni,dc=net\n"
@@ -191,6 +200,8 @@ if (array_key_exists('project_id', $_REQUEST))
     $_SESSION['lasterror'] = 'You are not a member of the project that you specified.';
     relative_redirect('wimax-enable.php');
   }
+
+  $enable_project_only = False;
   
   // If PIs cannot change and user is enabled for wimax on a project and is lead of that project, then bail out
   if (! $pi_can_change_project and isset($user->ma_member->enable_wimax)) {
@@ -198,7 +209,8 @@ if (array_key_exists('project_id', $_REQUEST))
     $my_project = $user->ma_member->enable_wimax;
 
     // Is this user lead of that project
-    $project_info = lookup_project($sa_url, $user, $my_project);  
+    $project_info = lookup_project($sa_url, $user, $my_project);
+    $ldif_user_groupname = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id) {
       $project_attributes = lookup_project_attributes($sa_url, $user, $my_project);
       $enabled = 0;
@@ -211,11 +223,9 @@ if (array_key_exists('project_id', $_REQUEST))
 	// FIXME: How is that possible? The project should have been enabled
 	error_log("wimax-enable: " . $user->prettyName() . " is marked as in project " . $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " for wimax but that project is not marked wimax enabled");
       }
-      error_log("wimax-enable: " . $user->prettyName() . " is marked as lead for project " . $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " that is wimax enabled, so cannot change");
+      error_log("wimax-enable: " . $user->prettyName() . " is marked as lead for project " . $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " that is wimax enabled, so cannot change, but can enable the other project");
 
-      // Regardless, user cannot change their project
-      $_SESSION['lasterror'] = 'You are already lead of project ' . $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . ' and project leads cannot change their WiMAX project.';
-      relative_redirect('wimax-enable.php');
+      $enable_project_only = True;
     } // end block if this user is lead of their current wimax project
   } // end block to handle pi_can_change_project
 
@@ -245,6 +255,12 @@ if (array_key_exists('project_id', $_REQUEST))
   $ldif_user_given_name = $user->givenName;
   $ldif_user_email = $user->mail;
   $ldif_user_sn = $user->sn;
+  if ($enable_project_only and ! isset($ldif_user_groupname)) {
+    error_log("Got no user groupname but only enabling project!");
+  }
+  if (! isset($ldif_user_groupname)) {
+    $ldif_user_groupname = $ldif_project_name;
+  }
   $usernameTaken = True;
 
   $project_attributes = lookup_project_attributes($sa_url, $user, $project_id);
@@ -266,12 +282,16 @@ if (array_key_exists('project_id', $_REQUEST))
 	// PREPARE FULL LDIF
 	$ldif_string = get_ldif_for_project($ldif_project_name, $ldif_project_description);
 
-	$ldif_string .= "\n" . get_ldif_for_project_lead($ldif_project_name, $ldif_user_username, $ldif_project_name); // FIXME: supply leads group
+	$ldif_string .= "\n" . get_ldif_for_project_lead($ldif_project_name, $ldif_user_username, $ldif_user_groupname);
 
-	$ldif_string .= "\n";
+	if (! $enable_project_only) {
+	  $ldif_string .= "\n";
+	}
       } // else just send the ldif for this user
 
-      $ldif_string .= get_ldif_for_user_string($ldif_user_username, $ldif_project_name, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project lead");  // FIXME: Instead of project name, use users groupname
+      if (! $enable_project_only) {
+	$ldif_string .= get_ldif_for_user_string($ldif_user_username, $ldif_user_groupname, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project lead"); 
+      }
     }
     
     // if you're not the project lead, determine if project is even allowed to request WiMAX resources
