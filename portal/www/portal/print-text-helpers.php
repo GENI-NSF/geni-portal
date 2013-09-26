@@ -245,10 +245,12 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     // There may be multiple component managers
     $link_has_this_cm = False;
     foreach ($comp_mgrs as $cm) {
-      if (is_array($cm) and array_key_exists($cm, 'name') and $cm['name'] == $componentMgrURN) {
+      if ($cm['name'] == $componentMgrURN) {
 	$link_has_this_cm = True;
-	error_log("Link is for this CM based on array of CMs. " . $client_id . " has cm name " . $cm['name'] . " that matches AM URN " . $componentMgrURN);
+	//	error_log("Link is for this CM based on array of CMs. " . $client_id . " has cm name " . $cm['name'] . " that matches AM URN");
 	break;
+	//      } else {
+	//	error_log("CM not this AM: " . $cm['name'] . " != " . $componentMgrURN);
       }
     }
     if ($filterToAM and !$link_has_this_cm){
@@ -256,9 +258,9 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       $sliver_auth = get_auth_from_urn($sliver_id);
       $compMgrAuth = get_auth_from_urn($componentMgrURN);
       if ($sliver_auth == $compMgrAuth) {
-	error_log("Link '" . $client_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+	//	error_log("Link '" . $client_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
       } else {
-	error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . count($comp_mgrs) . " of them) != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
+	error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . $comp_mgrs->count() . " of them) != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
 	continue;
       }
     }
