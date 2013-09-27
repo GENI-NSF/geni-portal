@@ -1051,7 +1051,6 @@ function modify_project_membership($args, $message)
   global $cs_url;
   global $mysigner;
 
-  error_log(print_r($args,true));
   // Unpack arguments
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $members_to_add = $args[PA_ARGUMENT::MEMBERS_TO_ADD];
@@ -1183,7 +1182,7 @@ function modify_project_membership($args, $message)
   // Can't remove project lead directly
   // Need to demote them and then remove them
   if (array_key_exists($project_lead, $members_to_remove)) {
-    return generate_respponse(RESPONSE_ERROR::ARGS, null,
+    return generate_response(RESPONSE_ERROR::ARGS, null,
 			      "Cannot remove lead from project. " . 
 			      "Replace first.");
   }
@@ -1270,7 +1269,7 @@ function modify_project_membership($args, $message)
 }
 
 /* update lead_id of given project.
-*  To be called only be SA/PA local functions */
+*  To be called only by SA/PA local functions */
 function change_project_lead($project_id, $new_project_lead)
 {
   global $PA_PROJECT_TABLENAME;
@@ -2772,7 +2771,7 @@ function create_slice($args, $message)
     } else {
       $admins = $admins_res[RESPONSE_ARGUMENT::VALUE];
       if (is_null($admins) || count($admins) <= 0) {
-	error_log("Create slice: No project admins found in project " . $project_name);
+	//	error_log("Create slice: No project admins found in project " . $project_name);
 	$admins = array();
       }
     }
