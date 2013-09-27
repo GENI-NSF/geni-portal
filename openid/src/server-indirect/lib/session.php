@@ -9,8 +9,10 @@ require_once "Auth/OpenID/Server.php";
  */
 function init()
 {
+  if (! session_id()) {
     session_name('openid_server');
     session_start();
+  }
 }
 
 /**
