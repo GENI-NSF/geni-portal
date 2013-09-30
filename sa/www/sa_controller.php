@@ -293,6 +293,7 @@ class SAGuardFactory implements GuardFactory
 	    // This should be only project lead or admin (or operator)
 	    // FIXME: Does this work?
 	    "add_project_attribute" => array('project_guard'),
+	    "remove_project_attribute" => array('project_guard'),
 	    'add_project_lead_to_slices' => array('FalseGuard'),
 	    'remove_project_member_from_slices' => array('FalseGuard'),
 	    //
