@@ -311,7 +311,7 @@ $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close
 In order to use <code>omni</code> or other command line tools you will need to generate an SSL certificate. <br/>
 <?php if (!$has_certificate): ?>
 
-<button onClick="window.location='<?php print $create_url?>'">Generate an SSL certificate</button>.
+<button onClick="window.open('<?php print $create_url?>')">Generate an SSL certificate</button>.
 <?php else: ?>
 <b>Good! You have already generated an SSL certificate.</b>
 <?php endif; ?>

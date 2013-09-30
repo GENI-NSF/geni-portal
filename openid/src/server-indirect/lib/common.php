@@ -60,7 +60,6 @@ function doAuth($info, $trusted=null, $fail_cancels=false,
         // Answer with some sample Simple Registration data.
         global $portal_cert_file;
         global $portal_private_key_file;
-        error_log("openid-indirect: portal cert file is $portal_cert_file");
         $geni_user = geni_loadUser();
         $sreg_data = array();
         if ($geni_user) {
