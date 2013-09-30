@@ -82,6 +82,15 @@ function compare_members_by_role($mem1, $mem2)
   
 }
 
+function compare_last_names($mem1,$mem2)
+{
+  $parts1 = explode(" ",$mem1);
+  $name1 = array_pop($parts1);
+  $parts2 = explode(" ",$mem2);
+  $name2 = array_pop($parts2);
+  return strcmp($name1,$name2);
+}
+
 
 function build_agg_table_on_slicepg() 
 {
@@ -434,23 +443,40 @@ print "<h2>Slice Members</h2>";
 	</tr>
 	<?php
 usort($members, 'compare_members_by_role');
+// Write each row in the project member table
+// Sort alphabetically by role
+
+$member_lists = array();
+$member_lists[1] = array();
+$member_lists[2] = array();
+$member_lists[3] = array();
+$member_lists[4] = array();
+
 foreach($members as $member) {
-
-
 
   $member_id = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
   //  error_log("MEMBER = " . print_r($member_user, true));
   $member_name = $member_names[$member_id];
+  $member_ids[$member_name] = $member_id;
   $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
   $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
+  $member_lists[$member_role_index][] = $member_name;
+}
+
+foreach ($member_lists as $member_role_index => $member_names) {
+  usort($member_names, 'compare_last_names');
+  foreach ($member_names as $member_name) {
+    $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
+    $member_id = $member_ids[$member_name];
   // FIXME: Make this a mailto link
-  print "<tr><td>$member_name</td>" . 
-    "<td>$member_role</td></tr>\n";
-  /*
-  print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
-    "&member_id=$member_id\">$member_name</a></td>" . 
-    "<td>$member_role</td></tr>\n";
-  */
+    print "<tr><td>$member_name</td>" . 
+      "<td>$member_role</td></tr>\n";
+    /*
+      print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
+      "&member_id=$member_id\">$member_name</a></td>" . 
+      "<td>$member_role</td></tr>\n";
+    */
+  }
 }
 	?>
 </table>
