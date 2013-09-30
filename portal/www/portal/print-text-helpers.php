@@ -183,6 +183,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       echo "<td>(not specified)</td>\n";
     }
     echo "</tr>\n";
+    $hadLogins = false;
     foreach ($logins as $login) {	
       $ssh_user = $login['username'];
       $ssh_host = $login['hostname'];
@@ -191,10 +192,14 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       if ($ssh_port and $ssh_port != 22) {
         $ssh_url .= ":$ssh_port";
       }
-
-      echo "<tr>\n";    
-      echo "<th colspan='2'>Login</th>\n";
-      echo "<td colspan='3' class='login' id='login_".$client_id."'>";
+      if (! $hadLogins) {
+	$hadLogins = true;
+	echo "<tr>\n";    
+	echo "<th colspan='2'>Login</th>\n";
+	echo "<td colspan='3' class='login' id='login_".$client_id."'>";
+      } else {
+	echo "<br/>\n";
+      }
       echo "<a href='$ssh_url' target='_blank'>";
       echo "ssh ", $login['username'],"@",$login['hostname'];
       if ($ssh_port and $ssh_port != 22) {
@@ -204,6 +209,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       if (!$manifestOnly){
       	 echo "<span class='status_msg'><i>Querying for more login information... </i></span>\n";      
       }
+    }
+    if ($hadLogins) {
       echo "</td>\n";
       echo "</tr>\n";
     }
