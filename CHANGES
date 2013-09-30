@@ -8,6 +8,7 @@
    * Fix creation/deletion timestamps in monitoring (#817)
    * Fix up link selection when printing rspec (#818)
    * Alphabetize member lists for project and slice (#811)
+   * Show one big "Login" box for exogeni consistent with instageni (#823)
 
 == 2.2 ==
   * Display fingerprints of SSH keys (#695)
