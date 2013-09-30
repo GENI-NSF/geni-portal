@@ -225,7 +225,7 @@ function ma_lookup_members($ma_url, $signer, $lookup_attrs)
   $msg[MA_ARGUMENT::ATTRIBUTES] = $attrs;
   $members = put_message($ma_url, $msg,
           $signer->certificate(), $signer->privateKey());
-  // Somegtimes we get the whole record, not just value, 
+  // Sometimes we get the whole record, not just value, 
   // depending on the controller
   if (array_key_exists(RESPONSE_ARGUMENT::CODE, $members)) {
     if ($members[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
