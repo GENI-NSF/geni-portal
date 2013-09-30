@@ -24,7 +24,7 @@ require_once "user.php";
 header('Cache-Control: no-cache');
 header('Pragma: no-cache');
 
-define('page_template',
+define('server_page_template',
 '<html>
   <head>
     <meta http-equiv="cache-control" content="no-cache"/>
@@ -58,7 +58,7 @@ function action_show_trust() {
   $trust_root = htmlspecialchars($info->trust_root);
   $title = 'GENI OpenID Trust';
   $authorize_url = buildURL('authorize', true);
-  $text = sprintf(page_template, $title, $trust_root, $trust_root,
+  $text = sprintf(server_page_template, $title, $trust_root, $trust_root,
                   $authorize_url);
   $headers = array();
   return array($headers, $text);

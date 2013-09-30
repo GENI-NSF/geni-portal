@@ -1269,7 +1269,7 @@ function modify_project_membership($args, $message)
 }
 
 /* update lead_id of given project.
-*  To be called only be SA/PA local functions */
+*  To be called only by SA/PA local functions */
 function change_project_lead($project_id, $new_project_lead)
 {
   global $PA_PROJECT_TABLENAME;
@@ -2771,7 +2771,7 @@ function create_slice($args, $message)
     } else {
       $admins = $admins_res[RESPONSE_ARGUMENT::VALUE];
       if (is_null($admins) || count($admins) <= 0) {
-	error_log("Create slice: No project admins found in project " . $project_name);
+	//	error_log("Create slice: No project admins found in project " . $project_name);
 	$admins = array();
       }
     }
