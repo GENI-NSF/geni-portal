@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.3 ==
+   * Add LabWiki buttons (#825)
    * Clean up OpenID logging and sessions (#670)
    * Pass slice and project info via OpenID attribute exchange (#813)
    * Fix geni-remove-from-project script (#715)
