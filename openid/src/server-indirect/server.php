@@ -155,6 +155,19 @@ function send_geni_user($server, $info) {
 
   $sreg_response->toMessage($response->fields);
 
+  /*
+   * Attribute Exchange (AX) is an OpenID extension to pass additional
+   * attributes. This code was derived by looking at some client
+   * examples and the AX code. No server-side examples of PHP OpenID
+   * AX were found.
+   *
+   * AX seems to be fragile. Small changes to the code below can
+   * result in authentication failures.
+   *
+   * The user URN has '+' characters but these consistently caused
+   * authentication failures in testing. Replacing the '+' with '|'
+   * worked, so that is a necessary transformation below.
+   */
   $ax_request = Auth_OpenID_AX_FetchRequest::fromOpenIDRequest($info);
   if ($ax_request) {
     /* error_log("received AX request: " . print_r($ax_request, true)); */
