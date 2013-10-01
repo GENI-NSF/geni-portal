@@ -73,9 +73,7 @@ include("tool-slices.php");
 
 <?php
 /* ------------------------------------------------------------
- * Other tools
- *
- * For now there is only one listed tool, GEMINI.
+ * Other tools: GENI Desktop (GEMINI), LabWiki (GIMI), WiMAX
  * ------------------------------------------------------------
  */
 $gemini_url = relative_url("gemini.php");
@@ -84,6 +82,11 @@ $gemini_url = relative_url("gemini.php");
   print "<p>";
   print "<button onClick=\"window.open('$gemini_url')\">";
   print "<b>GENI Desktop</b></button> ";
+
+/* LabWiki */
+$labwiki_url = 'http://emmy9.casa.umass.edu:4000';
+print "<button onClick=\"window.open('$labwiki_url')\">";
+print "<b>LabWiki</b></button> ";
 
   if ($user->hasAttribute('enable_wimax_button')) {
     $wimax_url = relative_url("wimax-enable.php");

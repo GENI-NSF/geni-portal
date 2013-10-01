@@ -22,6 +22,9 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once 'pa_client.php';
+require_once 'sa_client.php';
+
 function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=False)
 {
   $member_ids = array();

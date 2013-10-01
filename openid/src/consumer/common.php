@@ -29,6 +29,11 @@ function doIncludes() {
     require_once "Auth/OpenID/SReg.php";
 
     /**
+     * Require the Simple Registration extension API.
+     */
+    require_once "Auth/OpenID/AX.php";
+
+    /**
      * Require the PAPE extension module.
      */
     require_once "Auth/OpenID/PAPE.php";
