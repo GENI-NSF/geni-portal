@@ -20,6 +20,7 @@ if (!$try_include) {
 /* Bring in some GENI code. */
 require_once "settings.php";
 require_once "user.php";
+require_once "proj_slice_member.php";
 
 header('Cache-Control: no-cache');
 header('Pragma: no-cache');
@@ -92,6 +93,43 @@ function send_cancel($info)
 }
 
 
+function add_project_slice_info($user, &$projects, &$slices) {
+  $projects = array();
+  $slices = array();
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  $retVal  = get_project_slice_member_info($sa_url, $ma_url, $user, True);
+  $project_objects = $retVal[0];
+  $slice_objects = $retVal[1];
+  $member_objects = $retVal[2];
+  $project_slice_map = $retVal[3];
+  $project_activeslice_map = $retVal[4];
+
+  foreach ($project_slice_map as $project_id => $proj_slices) {
+    $proj = $project_objects[$project_id];
+    $expired = $proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+    if ($expired == 't') {
+      continue;
+    }
+    $pval = "$project_id";
+    $pval .= "|" . $proj['project_name'];
+    $projects[] = $pval;
+    /* error_log("project $project_id: " . print_r($project_objects, true)); */
+    foreach ($proj_slices as $slice_id) {
+      //error_log("OpenID found slice $slice_id in project $project_id");
+      $slice = $slice_objects[$slice_id];
+      $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
+      if ($expired == 't') {
+        continue;
+      }
+      $sval = "$slice_id|$project_id";
+      $sval .= "|" . $slice['slice_name'];
+      $slices[] = $sval;
+    }
+  }
+}
+
+
 function send_geni_user($server, $info) {
   $geni_user = geni_loadUser();
   $req_url = idURL($geni_user->username);
@@ -116,6 +154,35 @@ function send_geni_user($server, $info) {
                                                              $sreg_data);
 
   $sreg_response->toMessage($response->fields);
+
+  $ax_request = Auth_OpenID_AX_FetchRequest::fromOpenIDRequest($info);
+  if ($ax_request) {
+    /* error_log("received AX request: " . print_r($ax_request, true)); */
+    $ax_response = new Auth_OpenID_AX_FetchResponse();
+    add_project_slice_info($geni_user, $projects, $slices);
+    foreach ($ax_request->iterTypes() as $ax_req_type) {
+      switch ($ax_req_type) {
+      case 'http://geni.net/projects':
+        $ax_response->setValues($ax_req_type, $projects);
+        break;
+      case 'http://geni.net/slices':
+        $ax_response->setValues($ax_req_type, $slices);
+        break;
+      case 'http://geni.net/user/urn':
+        $urn = $geni_user->urn();
+        $urn = str_replace('+', '|', $urn);
+        $ax_response->addValue('http://geni.net/user/urn', $urn);
+        break;
+      case 'http://geni.net/user/prettyname':
+        $ax_response->addValue($ax_req_type, $geni_user->prettyName());
+        break;
+      }
+    }
+    $ax_response->toMessage($response->fields);
+  } else {
+    error_log("did not receive AX request: " . print_r($ax_request, true));
+  }
+
 
   // Generate a response to send to the user agent.
   $webresponse =& $server->encodeResponse($response);
