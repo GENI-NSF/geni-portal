@@ -10,6 +10,7 @@
    * Alphabetize member lists for project and slice (#811)
    * Show one big "Login" box for exogeni consistent with instageni (#823)
    * Add instructions for naming on create slice page (#821)
+   * Renew a slice for the end of the day (#796)
 
 == 2.2 ==
   * Display fingerprints of SSH keys (#695)
