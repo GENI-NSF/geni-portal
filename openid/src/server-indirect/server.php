@@ -189,6 +189,16 @@ function send_geni_user($server, $info) {
       case 'http://geni.net/user/prettyname':
         $ax_response->addValue($ax_req_type, $geni_user->prettyName());
         break;
+      case 'http://geni.net/wimax/username':
+        $wimax_name = null;
+        if(isset($geni_user->ma_member->wimax_username)) {
+          $wimax_name = $geni_user->ma_member->wimax_username;
+        }
+        /* Only send wimax name if it exists. */
+        if ($wimax_name) {
+          $ax_response->addValue($ax_req_type, $wimax_name);
+        }
+        break;
       }
     }
     $ax_response->toMessage($response->fields);

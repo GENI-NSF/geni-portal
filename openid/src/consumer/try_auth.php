@@ -45,6 +45,9 @@ function run() {
                                                  1, 1, 'urn');
     $attribute[] = Auth_OpenID_AX_AttrInfo::make('http://geni.net/user/prettyname',
                                                  1, 1, 'prettyname');
+    $attribute[] = Auth_OpenID_AX_AttrInfo::make('http://geni.net/wimax/username',
+                                                 1, 1, 'wimax');
+
 
     // Create AX fetch request
     $ax = new Auth_OpenID_AX_FetchRequest;
