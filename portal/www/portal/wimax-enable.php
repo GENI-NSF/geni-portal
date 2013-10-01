@@ -221,6 +221,7 @@ function gen_new_username($oldUsername, $usernameBase) {
 }
 
 function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
+  global $wimax_server_deluser_url;
   // https://www.orbit-lab.org/login/deleteUser?user=<userDN>
   // Cannot do this if user is admin of any group
   // Do some checks?
@@ -247,6 +248,7 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
 }
 
 function wimax_delete_group($ldif_project_name) {
+  global $wimax_server_delgroup_url;
   // https://www.orbit-lab.org/login/deleteProject?project=<userDN>
   // deletes all members too
   // stops if any members are admins
@@ -272,6 +274,7 @@ function wimax_delete_group($ldif_project_name) {
 }
 
 function wimax_make_group_admin($ldif_project_name, $ldif_user_username, $ldif_user_groupname) {
+  global $wimax_server_changeadmin_url;
   // https://www.orbit-lab.org/login/changeLeader?user=<userDN>&project=<projectDN>
   // deletes all members too
   // stops if any members are admins
@@ -295,12 +298,13 @@ function wimax_make_group_admin($ldif_project_name, $ldif_user_username, $ldif_u
 }
 
 function wimax_change_group($ldif_project_name, $ldif_user_username, $ldif_user_groupname) {
+  global $wimax_server_changegroup_url;
   // https://www.orbit-lab.org/login/changeProject?user=<userDN>&project=<projectDN>
   $res = my_curl_get(array("user" => get_user_dn($ldif_user_username, $ldif_user_groupname), "project" => get_project_dn($ldif_project_name)), $wimax_server_changegroup_url);
   error_log("Changing WiMAX group to " . $ldif_project_name . " for $ldif_user_username at " . $wimax_server_changegroup_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
-    error_log("wimax-enable curl get changeGroup: Page $wimax_server_changeadmin_url Not Found");
+    error_log("wimax-enable curl get changeGroup: Page $wimax_server_changegroup_url Not Found");
     //    return false;
     return "Internal Error: WiMAX server not found";
   } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) != false) {
@@ -341,7 +345,7 @@ $num_projects = count($project_ids);
 if (isset($user->ma_member->enable_wimax)) {
   $ldif_user_group_id = $user->ma_member->enable_wimax;
   $user_is_wimax_enabled = True;
-  
+  error_log("User object says $ldif_user_pretty_name is wimax enabled in project " . $ldif_user_group_id);
   // If this user is not in the project, then delete the user
   if(!(check_membership_of_project($project_ids, $ldif_user_group_id))) {
     error_log("wimax-enable: $ldif_user_pretty_name lists WiMAX group $ldif_user_group_id, but the user is not in that project. Delete the WiMAX account");
@@ -358,10 +362,10 @@ if (isset($user->ma_member->enable_wimax)) {
       // FIXME
     }
   } else { // users group is one of their projects
-    
+    error_log("user is a member of the project which they list as their group");
     $user_group_project_info = lookup_project($sa_url, $user, $ldif_user_group_id);
-    $ldif_user_groupname = $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    
+    $ldif_user_groupname = $user_group_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    error_log("users group is project $ldif_user_groupname");
     if (project_is_expired($user_group_project_info)) {
       error_log("User $ldif_user_username's group's project $ldif_user_groupname is expired - must delete the group!");
       // delete group
@@ -391,6 +395,7 @@ if (isset($user->ma_member->enable_wimax)) {
       $ldif_user_groupname = null;
       $ldif_user_group_id = null;
     } else { // project not expired
+      error_log("project not expired");
       $project_attributes = lookup_project_attributes($sa_url, $user, $ldif_user_group_id);
       $enabled = false;
       foreach($project_attributes as $attribute) {
@@ -399,8 +404,8 @@ if (isset($user->ma_member->enable_wimax)) {
 	  $ldif_user_group_project_group_admin = $attribute[PA_ATTRIBUTE::VALUE];
 	  // Is the listed admin also the lead of the project?
 	  // If not, must fix!
-	  if ($user_group_project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] != $ldif_user_group_project_group_admin) {
-	    error_log("wimax: user " . $user-prettyName() . "'s group " . $ldif_user_groupname . "'s admin is not same as the matching project's lead.");
+	  if ($user_group_project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] !== $ldif_user_group_project_group_admin) {
+	    error_log("wimax: user " . $user->prettyName() . "'s group " . $ldif_user_groupname . "'s admin is not same as the matching project's lead: " . $user_group_project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] . "!=" . $ldif_user_group_project_group_admin);
 	    $ldif_project_lead_id = $user_group_project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 	    $ldif_project_id = $ldif_user_group_id;
 	    $ldif_project_name = $ldif_user_groupname;
@@ -423,7 +428,7 @@ if (isset($user->ma_member->enable_wimax)) {
 	      
 	      error_log("Changing admin for wimax group $ldif_project_name to $project_lead_username");
 	      
-	      $res = wimax_change_lead($ldif_project_name, $project_lead_username, $project_lead_groupname);
+	      $res = wimax_make_group_admin($ldif_project_name, $project_lead_username, $project_lead_groupname);
 	      if (true === $res) {
 		// Change relevant PA attribute, local vars
 		remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
@@ -482,6 +487,7 @@ if (array_key_exists('project_id', $_REQUEST))
   $ldif_project_id = $_REQUEST['project_id'];
   if ($ldif_project_id == $ldif_user_group_id) {
     $project_is_user_group = True;
+    error_log("DEBUG: Users group is requested preojct: $ldif_project_id");
   }
   if(!(check_membership_of_project($project_ids, $ldif_project_id))) {
     error_log("User $ldif_user_username specified a project $ldif_project_id that they do not belong to");
@@ -497,23 +503,30 @@ if (array_key_exists('project_id', $_REQUEST))
   $ldif_project_lead_id = $project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
   if($ldif_project_lead_id == $user->account_id) {
     $user_is_project_lead = True;
+    error_log("DEBUG: User is lead of requested project $ldif_project_name");
   }
 
   $project_attributes = lookup_project_attributes($sa_url, $user, $ldif_project_id);
-  $project_enabled = True; // Is this project wimax enabled
+  $project_enabled = FALSE; // Is this project wimax enabled
   $ldif_project_group_admin_id = null;
   foreach($project_attributes as $attribute) {
     if($attribute[PA_ATTRIBUTE::NAME] == PA_ATTRIBUTE_NAME::ENABLE_WIMAX) {
-      $project_enabled = False;
+      $project_enabled = True;
+      error_log("DEBUG: $ldif_project_name is wimax enabled");
       $ldif_project_group_admin_id = $attribute[PA_ATTRIBUTE::VALUE];
       if ($ldif_project_group_admin_id == $user->account_id) {
 	$user_is_group_admin = True;
+	error_log("DEBUG: User is the wimax group admin");
       }
       break;
     }
   }
 
-  error_log("DEBUG: Project $ldif_project_name is enabled: $project_enabled");
+  if ($project_enabled) {
+    error_log("DEBUG: Project $ldif_project_name is enabled");
+  } else {
+    error_log("Project $ldif_project_name is NOT WiMAX enabled");
+  }
   error_log("DEBUG: user_lead: $user_is_project_lead. user_admin: $user_is_group_admin");
 
   if ($project_enabled) {
@@ -541,11 +554,11 @@ if (array_key_exists('project_id', $_REQUEST))
       // Return Error
       $_SESSION['lasterror'] = "Project $ldif_project_name is expired";
       relative_redirect('wimax-enable.php');
-    }
+    } // end check enabled project is expired
 
     // If group admin != lead then change wimax group admin and continue, resetting vars as necessary
-    if($ldif_project_lead_id != $ldif_project_group_admin_id) {
-      error_log("Project $ldif_project_name has diff lead than wimax group");
+    if($ldif_project_lead_id !== $ldif_project_group_admin_id) {
+      error_log("Project $ldif_project_name has diff lead ($ldif_project_lead_id) than wimax group ($ldif_project_group_admin_id)");
       // Look up the user who is the lead on this project. Get their wimax username, wimax group ID, name of that project
       $project_lead_username = "";
       $project_lead_groupname = "";
@@ -566,7 +579,7 @@ if (array_key_exists('project_id', $_REQUEST))
 
 	error_log("Changing admin for wimax group $ldif_project_name to $project_lead_username");
       
-	$res = wimax_change_lead($ldif_project_name, $project_lead_username, $project_lead_groupname);
+	$res = wimax_make_group_admin($ldif_project_name, $project_lead_username, $project_lead_groupname);
 	if (true === $res) {
 	  // Change relevant PA attribute, local vars
 	  remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
@@ -595,7 +608,7 @@ if (array_key_exists('project_id', $_REQUEST))
   if ($user_is_project_lead) {
     if ($project_enabled) {
       // If the user leads the requested project and it is enabled, then only action is to delete it
-      error_log("$ldif_user_usrename is lead of $ldif_project_name: delete the WiMAX group");
+      error_log("$ldif_user_username is lead of $ldif_project_name: delete the WiMAX group");
       $res = wimax_delete_group($ldif_project_name);
       if (true === $res) {
 	// mark project as not wimax enabled
@@ -781,7 +794,7 @@ if (array_key_exists('project_id', $_REQUEST))
       remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
       
       // add user as someone using WiMAX for given project
-      add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $project_id, 't');
+      add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $ldif_project_id, 't');
       
       // If we enabled wimax under a variant of the username, record that
       add_member_attribute($ma_url, $user, $user->account_id, 'wimax_username', $ldif_user_username, 't');
@@ -789,8 +802,8 @@ if (array_key_exists('project_id', $_REQUEST))
       error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name . " with username " . $ldif_user_username);
       
       // if user is the project lead and the project is not enabled, enable the project for WiMAX
-      if($project_info[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user->account_id and ! $enabled) {
-	add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $user->account_id);
+      if($ldif_project_lead_id == $user->account_id and ! $project_enabled) {
+	add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $user->account_id);
 	error_log($user->prettyName() . " enabled project " . $ldif_project_name . " for WiMAX use");
       }
       
@@ -960,7 +973,7 @@ Get user's projects (expired or not)
 	  $lead_project_info = lookup_project($sa_url, $user, $project_lead_group_id);
 	  $project_lead_groupname = $lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	  
-	  $res = wimax_change_lead($proj_name, $project_lead_username, $project_lead_groupname);
+	  $res = wimax_make_group_admin($proj_name, $project_lead_username, $project_lead_groupname);
 	  if (true === $res) {
 	    // Change relevant PA attribute, local vars
 	    remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
@@ -1101,14 +1114,14 @@ P7
       if (count($projects_admin) > 0) {
 	echo "<p>You are the WiMAX group admin for these projects that you lead: ";
 	$cnt = 0;
-	for ($projects_admin as $p) {
+	foreach ($projects_admin as $p) {
 	  if ($cnt > 0) {
 	    echo ", ";
 	  }
 	  $cnt++;
 	  echo $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	}
-	echo "</p>";
+	echo ".</p>";
       }
     } else {
       echo "<p>You have not enabled WiMAX on any of your projects. ";
@@ -1147,12 +1160,12 @@ P7
 	// Case 1
 	if ($enabled and isset($ldif_user_group_id) and $ldif_user_group_id === $proj_id) {
 	  // Label this: Project is WiMAX enabled and this is your WiMAX group
-	  echo "<b>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} is enabled for WiMAX and is your WiMAX project</b>";
+	  echo "<b>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} is enabled for WiMAX and is your WiMAX project</b><br/>";
 	  //     Actions (debug: radio: Disable and delete member accounts, including yours)
 	  echo "<input type='radio' name='project_id' value='" . $proj_id . "'> Disable project for WiMAX and delete member WiMAX accounts, including yours";
 	}
 	// case 2
-	else if ($enabled and isset($ldif_user_group_id) and $ldif_user_group_id !=== $proj_id) {
+	else if ($enabled and isset($ldif_user_group_id) and $ldif_user_group_id !== $proj_id) {
 	  // Label this: Project is WiMAX enabled but is not your WiMAX group
 	  echo "<b>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} is enabled for WiMAX but is not your WiMAX project</b>";
 	  // Action: (debug: radio: Disable and delete member accounts)
@@ -1171,9 +1184,11 @@ P7
 	  // Action: WiMAX Enabled and Request Login
           echo "<input type='radio' name='project_id' value='" . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]
 	    . "' > Enable project {$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} for WiMAX and select it as your WiMAX project";
+	} else {
+	  // Other logical cases can't happen: proj enabled but lead is not wimax enabled,
+	  // or project not enbled and lead is and is enabled for this project
+	  error_log("huh? Got case in projects I lead that shouldn't happen. enabled=$enabled, ldif_user_group_id=$ldif_user_group_id, proj_id=$proj_id. Proj name: $proj_name");
 	}
-	// Other logical cases can't happen: proj enabled but lead is not wimax enabled,
-	// or project not enbled and lead is and is enabled for this project
 
         echo "</td>";
         echo "</tr>";
@@ -1185,9 +1200,11 @@ P7
     // For projects I belong to that are enabled
     if($projects_non_lead_count > 0) {
       echo "<h2>Request WiMAX Login Information</h2>";
+      $disabled = "";
       if (! $is_group_admin) {
 	echo "<p>You can <b>request WiMAX login information</b> for the following projects:</p>";
       } else {
+	$disabled = "disabled";
 	echo "<p>You cannot change your WiMAX project as you are a WiMAX group admin. Projects include:</p>";
       }
       
@@ -1219,7 +1236,7 @@ P7
 	// Case 2: This is not your project
 	else {
 	  //   Actions (radio: Change to this WiMAX Group)
-	  echo "<input type='radio' name='project_id' value='$proj_id'> Use WiMAX in this project";
+	  echo "<input type='radio' name='project_id' value='$proj_id' $disabled> Use WiMAX in this project";
 	}
         echo "</td>";
         echo "</tr>";
