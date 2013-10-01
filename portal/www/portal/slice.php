@@ -221,7 +221,6 @@ $labwiki_url = 'http://emmy9.casa.umass.edu:4000/?slice_id=' . $slice_id;
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
-$addnote_url = 'add-slice-note.php?slice_id='.$slice_id;
 $edit_slice_members_url = 'edit-slice-member.php?slice_id='.$slice_id."&project_id=".$slice_project_id;
 
 // String to disable button or other active element
@@ -303,13 +302,6 @@ if (isset($slice_expired) && $slice_expired == 't' ) {
    print "<p class='warn'>This slice is expired!</p>\n";
 }
 
-$add_note_disabled = "";
-if ($in_lockdown_mode or ($in_maintenance_mode &&
-    !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
-		      null))) {
-  $add_note_disabled = "disabled";
-}
-
 // FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
 // FIXME: Disable launch flack if in lockdown mode?
 
@@ -327,7 +319,6 @@ print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $dis
 
 print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
 print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
-print "<button $add_note_disabled $add_slivers_disabled onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
 print "</td>\n";

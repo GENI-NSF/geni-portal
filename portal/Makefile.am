@@ -54,8 +54,6 @@ dist_svcweb_DATA = \
 	www/portal/abac-key.php \
 	www/portal/abac.php \
 	www/portal/accept-project-invite.php \
-	www/portal/add-project-note.php \
-	www/portal/add-slice-note.php \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
 	www/portal/am_map.php \
