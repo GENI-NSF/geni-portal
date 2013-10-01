@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.3 ==
+   * Remove note feature from projects and slices (#728)
    * Add LabWiki buttons (#825)
    * Add WiMAX OpenID support (#809)
    * Clean up OpenID logging and sessions (#670)

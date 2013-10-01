@@ -337,9 +337,5 @@ if (is_array($entries)) {
 </table>
 
 <?php
-$disable_add_note = "";
-if ($in_lockdown_mode) $disable_add_note = $disabled;
-$addnote_url = 'add-project-note.php?project_id='.$project_id;
-print "<p><button $disable_add_note onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button></p>\n";
 include("footer.php");
 ?>
