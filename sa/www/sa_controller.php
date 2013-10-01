@@ -2392,15 +2392,15 @@ function remove_project_attribute($args)
 {
   global $PA_PROJECT_ATTRIBUTE_TABLENAME;
 
-  if (! array_key_exists(PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::PROJECT_ID, $args) or
-      $args[PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::PROJECT_ID] == '') {
+  if (! array_key_exists(PA_ATTRIBUTE::PROJECT_ID, $args) or
+      $args[PA_ATTRIBUTE::PROJECT_ID] == '') {
     error_log("Missing project_id arg to remove_project_attribute");
     return generate_response(RESPONSE_ERROR::ARGS, null,
 			     "Project ID is missing");
   }
 
-  if (! array_key_exists(PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::NAME, $args) or
-      $args[PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::NAME] == '') {
+  if (! array_key_exists(PA_ATTRIBUTE::NAME, $args) or
+      $args[PA_ATTRIBUTE::NAME] == '') {
     error_log("Missing name arg to remove_project_attribute");
     return generate_response(RESPONSE_ERROR::ARGS, null,
 			     "Name is missing");
@@ -2409,14 +2409,14 @@ function remove_project_attribute($args)
   $conn = db_conn();
 
   // define variables
-  $project_id = $args[PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::PROJECT_ID];
-  $name = $args[PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::NAME];
+  $project_id = $args[PA_ATTRIBUTE::PROJECT_ID];
+  $name = $args[PA_ATTRIBUTE::NAME];
 
   // insert
   $sql = ("delete from " . $PA_PROJECT_ATTRIBUTE_TABLENAME . " WHERE "
-          . PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::PROJECT_ID . " = "
+          . PA_ATTRIBUTE::PROJECT_ID . " = "
           . $conn->quote($project_id, 'text') . " AND " 
-          . PA_PROJECT_ATTRIBUTE_TABLE_FIELDNAME::NAME . " = "
+          . PA_ATTRIBUTE::NAME . " = "
           . $conn->quote($name, 'text'));
   $result = db_execute_statement($sql);
   return $result;
