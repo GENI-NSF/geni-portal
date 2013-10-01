@@ -359,6 +359,7 @@ if (isset($user->ma_member->enable_wimax)) {
     if ($res === true) {
       // Change relevant MA attribute, local vars
       remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+      remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
       $user->ma_member->enable_wimax = False;
       $user_is_wimax_enabled = False;
       $ldif_user_groupname = null;
@@ -382,6 +383,7 @@ if (isset($user->ma_member->enable_wimax)) {
 	
 	// mark user as not wimax enabled
 	remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
 	$user->ma_member->enable_wimax = False;
 	$user_is_wimax_enabled = False;
 	$ldif_user_groupname = null;
@@ -396,6 +398,7 @@ if (isset($user->ma_member->enable_wimax)) {
       $res = wimax_delete_user($ldif_user_username, $ldif_user_groupname);
       // Change relevant MA attribute, local vars
       remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+      remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
       $user->ma_member->enable_wimax = False;
       $user_is_wimax_enabled = False;
       $ldif_user_groupname = null;
@@ -460,6 +463,7 @@ if (isset($user->ma_member->enable_wimax)) {
 	if (true === $res) {
 	  // Change relevant MA attribute, local vars
 	  remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
 	  $user->ma_member->enable_wimax = False;
 	  $user_is_wimax_enabled = False;
 	  $ldif_user_groupname = null;
@@ -548,6 +552,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	if ($ldif_user_group_id == $ldif_project_id) {
 	  // mark user as not wimax enabled
 	  remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
 	  $user->ma_member->enable_wimax = False;
 	  $user_is_wimax_enabled = False;
 	  $ldif_user_groupname = null;
@@ -624,6 +629,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	if ($ldif_user_group_id == $ldif_project_id) {
 	  // mark user as not wimax enabled
 	  remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
 	  $user->ma_member->enable_wimax = False;
 	  $user_is_wimax_enabled = False;
 	  $ldif_user_groupname = null;
@@ -670,6 +676,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	if (true === $res) {
 	  // Change relevant MA attribute, local vars
 	  remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
 	  $user->ma_member->enable_wimax = False;
 	  $user_is_wimax_enabled = False;
 	  $ldif_user_groupname = null;
@@ -796,26 +803,39 @@ if (array_key_exists('project_id', $_REQUEST))
       // FIXME: Was this user enabled for wimax before? And for that project, is this user the lead?
       // If so, should that wimax project no longer be wimax enabled? Do I need to send new LDIF?
       
-      // Remove any existing attribute for enabling wimax - we are changing the project we are enabled for
-      remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
-      
-      // add user as someone using WiMAX for given project
-      add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $ldif_project_id, 't');
-      
-      // If we enabled wimax under a variant of the username, record that
-      add_member_attribute($ma_url, $user, $user->account_id, 'wimax_username', $ldif_user_username, 't');
-      
-      error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name . " with username " . $ldif_user_username);
+      if ($enable_user) {
+	// Remove any existing attribute for enabling wimax - we are changing the project we are enabled for
+	remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
+	
+	// add user as someone using WiMAX for given project
+	add_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax', $ldif_project_id, 't');
+	
+	// If we enabled wimax under a variant of the username, record that
+	add_member_attribute($ma_url, $user, $user->account_id, 'wimax_username', $ldif_user_username, 't');
+	
+	error_log($user->prettyName() . " enabled for WiMAX in project " . $ldif_project_name . " with username " . $ldif_user_username);
+      }
       
       // if user is the project lead and the project is not enabled, enable the project for WiMAX
-      if($ldif_project_lead_id == $user->account_id and ! $project_enabled) {
+      if($enable_project and $ldif_project_lead_id == $user->account_id and ! $project_enabled) {
+	remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
 	add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $user->account_id);
 	error_log($user->prettyName() . " enabled project " . $ldif_project_name . " for WiMAX use");
       }
-      
-      $result_string = "<p><b>Success</b>: You have enabled and/or requested your account and/or changed your WiMAX project.</p>";
-      $result_string = $result_string . "<p>Your WiMAX username is '$ldif_user_username' for project '$ldif_project_name'. Check your email ({$user->mail}) for login information.</p>";
 
+      if ($enable_user and ! $enable_project) {
+	$result_string = "<p><b>Success</b>: You have requested your account and/or changed your WiMAX project.</p>";
+	$result_string = $result_string . "<p>Your WiMAX username is '$ldif_user_username' for project '$ldif_project_name'. Check your email ({$user->mail}) for login information.</p>";
+      } else if ($enable_user and $enable_project) {
+	$result_string = "<p><b>Success</b>: You have enabled WiMAX in project '$ldif_project_name' and requested your account and/or changed your WiMAX project.</p>";
+	$result_string = $result_string . "<p>Your WiMAX username is '$ldif_user_username' for project '$ldif_project_name'. Check your email ({$user->mail}) for login information.</p>";
+	$result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
+      } else if (! $enable_user and $enable_project) {
+	$result_string = "<p><b>Success</b>: You have enabled WiMAX in project '$ldif_project_name'. Your WiMAX username remains '$ldif_user_usrename'.</p>";
+	$result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
+      }
+      
     } else {
   
       $is_error = True;
@@ -951,6 +971,7 @@ Get user's projects (expired or not)
 	    if (isset($ldif_user_group_id) and $ldif_user_group_id == $proj_id) {
 	      // mark user as not wimax enabled
 	      remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	      remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
 	      $user->ma_member->enable_wimax = False;
 	      $user_is_wimax_enabled = False;
 	      $ldif_user_groupname = null;
@@ -1027,6 +1048,7 @@ Get user's projects (expired or not)
 	    if (true === $res) {
 	      // Change relevant MA attribute
 	      remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
+	      remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
 	    } else {
 	      // FIXME: WiMAX has the user, we want them deleted.
 	      // FIXME FIXME Use $res
@@ -1131,7 +1153,7 @@ P7
 	    echo ", ";
 	  }
 	  $cnt++;
-	  echo $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+	  echo $p[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	}
 	echo ".</p>";
       }
@@ -1187,6 +1209,7 @@ P7
 	  if (true === $res) {
 	    // Change relevant MA attribute
 	    remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	    remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
 	    $ldif_user_group_id = null;
 	  } else {
 	    // FIXME: WiMAX has the user, we want them deleted.
