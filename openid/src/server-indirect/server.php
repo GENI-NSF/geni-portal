@@ -194,7 +194,6 @@ function send_geni_user($server, $info) {
         if(isset($geni_user->ma_member->wimax_username)) {
           $wimax_name = $geni_user->ma_member->wimax_username;
         }
-        error_log('wimax name = ' . print_r($wimax_name, true));
         /* Only send wimax name if it exists. */
         if ($wimax_name) {
           $ax_response->addValue($ax_req_type, $wimax_name);
