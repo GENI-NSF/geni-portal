@@ -232,11 +232,17 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
     error_log("wimax-enable curl get deleteUser: Page $wimax_server_deluser_url Not Found");
     //    return false;
     return "Internal Error: WiMAX server not found";
-  } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) !== false) {
     error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username - user not known: $res");
     // Treat as success
     return true;
-  } else if (strpos(strtolower($res), strtolower("ERROR 6: User is a admin for")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 6: User is a admin for")) !== false) {
+    error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username - user is an admin: $res");
+    // FIXME: Return the project they are admin for?
+    // You need to make someone else the admin of that project first. Or maybe delete that project
+    //    return false;
+    return "Internal Error: $res";
+  } else if (strpos(strtolower($res), strtolower("ERROR 6: Cannot delete user: User is a admin for")) !== false) {
     error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username - user is an admin: $res");
     // FIXME: Return the project they are admin for?
     // You need to make someone else the admin of that project first. Or maybe delete that project
@@ -259,11 +265,11 @@ function wimax_delete_group($ldif_project_name) {
     error_log("wimax-enable curl get deleteGroup: Page $wimax_server_delgroup_url Not Found");
     //    return false;
     return "Internal Error: WiMAX server not found";
-  } else if (strpos(strtolower($res), strtolower("ERROR 7: Project DN not known")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 7: Project DN not known")) !== false) {
     error_log("wimax-enable curl get deleteGroup: Error deleting group $ldif_project_name - project not known: $res");
     // Treat as success
     return True;
-  } else if (strpos(strtolower($res), strtolower("ERROR 8: Project not deleted because it contains admin")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 8: Project not deleted because it contains admin")) !== false) {
     error_log("wimax-enable curl get deleteGroup: Error deleting group $ldif_project_name - project contains an admin: $res");
     // FIXME: Return that admin DN? Delete that admin DN?
     // Need to move that admin to another group or change the admin for the group they are an admin for, then you can delete them, so only then will the delete group succeed
@@ -285,11 +291,11 @@ function wimax_make_group_admin($ldif_project_name, $ldif_user_username, $ldif_u
     error_log("wimax-enable curl get changeLeader: Page $wimax_server_changeadmin_url Not Found");
     //    return false;
     return "Internal Error: WiMAX server not found";
-  } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) !== false) {
     error_log("wimax-enable curl get changeLeader: Error changing group $ldif_project_name lead to $ldif_user_username: New Lead not a known user: $res");
     //    return false;
     return "Internal Error: WiMAX User $ldif_user_username not known";
-  } else if (strpos(strtolower($res), strtolower("ERROR 7: Project DN not known")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 7: Project DN not known")) !== false) {
     error_log("wimax-enable curl get changeLeader: Error changing group $ldif_project_name lead to $ldif_user_username: Project not known: $res");
     //    return false;
     return "Internal Error: WiMAX group $ldif_project_name not known";
@@ -307,11 +313,11 @@ function wimax_change_group($ldif_project_name, $ldif_user_username, $ldif_user_
     error_log("wimax-enable curl get changeGroup: Page $wimax_server_changegroup_url Not Found");
     //    return false;
     return "Internal Error: WiMAX server not found";
-  } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) !== false) {
     error_log("wimax-enable curl get changeGroup: Error changing to group $ldif_project_name for $ldif_user_username: Not a known user: $res");
     //    return false;
     return "Internal Error: WiMAX user $ldif_user_username not found";
-  } else if (strpos(strtolower($res), strtolower("ERROR 7: Project DN not known")) != false) {
+  } else if (strpos(strtolower($res), strtolower("ERROR 7: Project DN not known")) !== false) {
     error_log("wimax-enable curl get changeGroup: Error changing to group $ldif_project_name fpr $ldif_user_username: Project not known: $res");
     //    return false;
     return "Internal Error: WiMAX group $ldif_project_name not found";
@@ -639,8 +645,8 @@ if (array_key_exists('project_id', $_REQUEST))
 	error_log("Project $ldif_project_name is not yet WiMAX enabled, but user $ldif_user_username is. Just enable the project");
 	$enable_project = True;
       } else {
-	// FIXME: enable this group and join it
-	error_log("Project $ldif_project_name is not yet WiMAX enabled, not user $ldif_user_username. Enable project and put user in project as group admin");
+	// enable this group and join it
+	error_log("Project $ldif_project_name is not yet WiMAX enabled, nor user $ldif_user_username. Enable project and put user in project as group admin");
 	$ldif_user_groupname = $ldif_project_name;
 	$enable_project = True;
 	$enable_user = True;
@@ -824,6 +830,7 @@ if (array_key_exists('project_id', $_REQUEST))
   // Now display the page with the result for the user
 
   show_header('GENI Portal: WiMAX Setup', $TAB_PROFILE);
+  include('tool-breadcrumbs.php');
   include("tool-showmessage.php");
 
   echo "<h1>WiMAX</h1>";
@@ -832,6 +839,10 @@ if (array_key_exists('project_id', $_REQUEST))
     echo "<h2>Error</h2>";
   }
   echo $result_string;
+
+  // include link to main WiMAX page
+  echo "<p><a href='wimax-enable.php'>Back to main WiMAX page</a></p>";
+
 }
 
 /* PAGE 1 */
@@ -1064,6 +1075,7 @@ Get user's projects (expired or not)
   // Now show the page
 
   show_header('GENI Portal: WiMAX Setup', $TAB_PROFILE);
+  include('tool-breadcrumbs.php');
   include("tool-showmessage.php");
 
   echo "<h1>WiMAX</h1>\n";
@@ -1156,6 +1168,32 @@ P7
         echo "<td>";
         $enabled = $proj["enabled"];
 
+	if ($enabled and ! isset($ldif_user_group_id)) {
+	  error_log("Project enabled but user has no group? Delete Wimax Group");
+	  $res = wimax_delete_group($proj_name);
+	    if (true === $res) {
+	      // mark project as not wimax enabled
+	      remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
+	      $enabled = False;
+	    } else {
+	      // Failed to delete WiMAX user whose portal project is expired
+	      // FIXME FIXME
+	      // Could go back to the wimax-enable page with an internal error message, using $res?
+	    }
+	}
+	if (! $enabled and isset($ldif_user_group_id) and $ldif_user_group_id==$proj_id) {
+	  error_log("Proj $proj_name not enabled but user lists that proj_id as their WiMAX group - delete user");
+	  $res = wimax_delete_user($ldif_user_username, $proj_name);
+	  if (true === $res) {
+	    // Change relevant MA attribute
+	    remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	    $ldif_user_group_id = null;
+	  } else {
+	    // FIXME: WiMAX has the user, we want them deleted.
+	    // FIXME FIXME Use $res
+	  }
+	}
+
 	// Now write buttons/actions.
 	// Case 1
 	if ($enabled and isset($ldif_user_group_id) and $ldif_user_group_id === $proj_id) {
@@ -1167,7 +1205,7 @@ P7
 	// case 2
 	else if ($enabled and isset($ldif_user_group_id) and $ldif_user_group_id !== $proj_id) {
 	  // Label this: Project is WiMAX enabled but is not your WiMAX group
-	  echo "<b>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} is enabled for WiMAX but is not your WiMAX project</b>";
+	  echo "<b>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} is enabled for WiMAX but is not your WiMAX project</b><br/>";
 	  // Action: (debug: radio: Disable and delete member accounts)
 	  echo "<input type='radio' name='project_id' value='" . $proj_id . "'> Disable project for WiMAX and delete member WiMAX accounts";
 	}
@@ -1189,7 +1227,6 @@ P7
 	  // or project not enbled and lead is and is enabled for this project
 	  error_log("huh? Got case in projects I lead that shouldn't happen. enabled=$enabled, ldif_user_group_id=$ldif_user_group_id, proj_id=$proj_id. Proj name: $proj_name");
 	}
-
         echo "</td>";
         echo "</tr>";
       }
@@ -1228,7 +1265,7 @@ P7
 	  echo $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " is your WiMAX project</b>";
 	  if (!$is_group_admin) {
 	    //   Actions (debug: radio: Delete your member account)
-	    echo "<input type='radio' name='project_id' value='$proj_id'> Delete your WiMAX account";
+	    echo "<br/><input type='radio' name='project_id' value='$proj_id'> Delete your WiMAX account";
 	  } else {
 	    // label, no action
 	  }
