@@ -217,6 +217,7 @@ $slice_own_url = "mailto:$owner_email";
 $omni_url = "tool-omniconfig.php";
 $flack_url = "flack.php?slice_id=".$slice_id;
 $gemini_url = "gemini.php?slice_id=" . $slice_id;
+$labwiki_url = 'http://emmy9.casa.umass.edu:4000/?slice_id=' . $slice_id;
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
@@ -378,6 +379,8 @@ $hostname = $_SERVER['SERVER_NAME'];
 print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/><b>Launch Flack</b> </button>\n";
 
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>\n";
+
+  print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>\n";
 
 print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Use omni</b></button>\n";
 //print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
