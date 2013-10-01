@@ -74,6 +74,8 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 if (array_key_exists('sliver_expiration', $_GET)) {
   // what we got asked for
   $desired_expiration = $_GET['sliver_expiration'];
+  // renew for the end of the day
+  $desired_expiration = $desired_expiration . " 23:59:59";
   // what to send to the AM(s)
   $rfc3339_expiration = rfc3339Format($desired_expiration);
   // what to display to the user

@@ -9,6 +9,7 @@ require_once "lib/render/trust.php";
 
 require_once "Auth/OpenID/Server.php";
 require_once "Auth/OpenID/SReg.php";
+require_once "Auth/OpenID/AX.php";
 
 /* Bring in some GENI code. */
 require_once "settings.php";
