@@ -74,7 +74,7 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 			    $signer->certificate(), $signer->privateKey());
 
   // All new projects get an irods group
-  irods_create_group($project_id, $project_name, $signer);
+  irods_create_group($project_id, $project_name, $lead_id, $signer);
 
   return $project_id;
 }

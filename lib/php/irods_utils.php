@@ -278,7 +278,7 @@ $IRODS_ERROR_NAMES = array("Success",
 			   "User (already) in group",
 			   "User not in group");
 
-function irods_create_group($project_id, $project_name, $user) {
+function irods_create_group($project_id, $project_name, $lead_id, $user) {
   // Note this function must bail if project_id is not a project but an error of some kind
   error_log("irods asked to create group for project $project_name with id $project_id");
   if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
@@ -315,6 +315,10 @@ function irods_create_group($project_id, $project_name, $user) {
     $portal_irods_user = 'rods'; // FIXME: Testing value
     $portal_irods_pw = 'rods'; // FIXME: Testing value
   }
+
+  // must get project name and then groupname
+  $group_name = group_name($project_name);
+  addToGroup($project_id, $group_name, $lead_id, $user);
 }
 
 function irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $user, $result) {
