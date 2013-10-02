@@ -46,200 +46,8 @@ require_once('portal.php');
 require_once('settings.php');
 require_once('sr_client.php');
 include_once('/etc/geni-ch/settings.php');
+include_once('irods_utils.php');
 
-class PermFailException extends Exception{}
-
-// Do a BasicAuth protected get of the given URL
-function doGET($url, $user, $password, $serverroot=null) {
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
-  if (! is_null($serverroot)) {
-    curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
-  } else {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
-  }
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
-
-  // Now do it
-  $result = curl_exec($ch);
-  $meta = curl_getinfo($ch);
-  $error = curl_error($ch);
-  curl_close($ch);
-
-  if ($result === false) {
-    error_log("GET of " . $url . " failed (no result): " . $error);
-    $code = "";
-    $perm = false;
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      $code = "HTTP error " . $meta['http_code'] . ": ";
-      //      if ($meta['http_code'] < 200 || $meta['http_code'] > 299)
-      if ($meta['http_code'] == 0) 
-	$perm = true;
-    }
-    if ($perm)
-      throw new PermFailException("GET " . $url . " failed: " . $code . $error);
-
-    throw new Exception("GET " . $url . " failed: " . $code . $error);
-  } else {
-    // FIXME: Comment this out when ready
-    //    error_log("GET of " . $url . " result: " . print_r($result, true));
-  }
-  if ($meta === false) {
-    error_log("GET of " . $url . " error (no meta): " . $error);
-    $code = "";
-    throw new Exception("GET " . $url . " failed: " . $code . $error);
-  } else {
-    //error_log("GET meta: " . print_r($meta, true));
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      if ($meta["http_code"] != 200) {
-	error_log("GET of " . $url . " got error return code " . $meta["http_code"]);
-	// code ??? means user not found - raise a different exception?
-	// then if I don't get that and don't get the real result I show the error 
-	// and don't try to do the PUT?
-	$codestr = "HTTP Error " . $meta["http_code"];
-	if (is_null($error) || $error === "") {
-	  $error = $codestr . ": \"" . $result . '"';
-	} else {
-	  $error = $codestr . ": \"" . $error . '"';
-	} 
-	throw new Exception($error);
-	//	throw new PermFailException($error);
-      }
-    }
-  }
-  if (! is_null($error) && $error != '')
-    error_log("GET of " . $url . " error: " . print_r($error, true));
-  return $result;
-}
-
-function doPUT($url, $user, $password, $data, $content_type="application/json", $serverroot=null) {
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $url);
-  $headers = array();
-  $headers[] = "Content-Type: " . $content_type;
-  $headers[] = "Content-Length: " . strlen($data);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-  curl_setopt($ch, CURLOPT_HEADER, 1);
-  curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
-  if (! is_null($serverroot)) {
-    curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
-  } else {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
-  }
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
-
-  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-  // Now do it
-  $result = curl_exec($ch);
-  $meta = curl_getinfo($ch);
-  $error = curl_error($ch);
-  curl_close($ch);
-
-  if ($result === false) {
-    error_log("PUT to " . $url . " failed (no result): " . $error);
-    $code = "";
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      $code = "HTTP error " . $meta['http_code'] . ": ";
-    }
-    throw new Exception("PUT to " . $url . " failed: " . $code . $error);
-  } else {
-    // FIXME: Comment this out when ready
-    //    error_log("PUT to " . $url . " result: " . print_r($result, true));
-  }
-  if ($meta === false) {
-    error_log("PUT to " . $url . " error (no meta): " . $error);
-    $code = "";
-    throw new Exception("PUT to " . $url . " failed: " . $code . $error);
-  } else {
-    //error_log("PUT to " . $url . " meta: " . print_r($meta, true));
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      if ($meta["http_code"] != 200) {
-	error_log("PUT got error return code " . $meta["http_code"]);
-	$codestr = "HTTP Error " . $meta["http_code"];
-	if (is_null($error) || $error === "") {
-	  $error = $codestr . ": \"" . $result . '"';
-	} else {
-	  $error = $codestr . ": \"" . $error . '"';
-	}
-	throw new Exception($error);
-      }
-    }
-  }
-  if (! is_null($error) && $error != '')
-    error_log("PUT to " . $url . " error: " . print_r($error, true));
-  return $result;
-}
-
-// Create a unique username from the given base, where latest is what we tried that failed
-function derive_username($baseusername, $latestname=null) {
-  $ind = 1;
-  if (! is_null($latestname)) {
-    $ind = intval(substr($latestname, strlen($baseusername)));
-    $ind = $ind + 1;
-  }
-  if ($ind > 20) {
-    error_log($ind . " usernames like " . $baseusername . "? Really?");
-  }
-  return $baseusername . $ind;
-}
-
-/* iRods Constants */
-const IRODS_USER_NAME = 'userName';
-const IRODS_USER_PASSWORD = 'tempPassword';
-const IRODS_USER_DN = 'distinguishedName';
-const IRODS_ADD_RESPONSE_DESCRIPTION = 'userAddActionResponse';
-const IRODS_ADD_RESPONSE_CODE = 'userAddActionResponseNumericCode';
-const IRODS_MESSAGE = 'message';
-const IRODS_GET_USER_URI = '/user/';
-const IRODS_PUT_USER_URI = '/user';
-const IRODS_SEND_JSON = '?contentType=application/json';
-const IRODS_CREATE_TIME = 'createTime';
-const IRODS_ZONE = "zone";
-const IRODS_USERDN = "userDN";
-const IRODS_URL = "webAccessURL";
-const IRODS_ENV = "irodsEnv";
-
-/*
-0 - Success (user can log in with that username/password)
-1 - Username is taken
-2 - Temporary error, try again
-3 - S/MIME signature invalid
-4 - Failed to decrypt S/MIME message
-5 - Failed to parse message
-6 - Attributes missing
-7 - Internal Error
-*/
-
-/* iRods error codes */
-class IRODS_ERROR
-{
-  const SUCCESS = 0;
-  const USERNAME_TAKEN = 1;
-  const TRY_AGAIN = 2;
-  const SMIME_SIG = 3;
-  const SMIME_DECRYPT = 4;
-  const PARSE = 5;
-  const ATTRIBUTE_MISSING = 6;
-  const INTERNAL_ERROR = 7;
-}
-
-$IRODS_ERROR_NAMES = array("Success",
-			   "Username taken / exists",
-			   "Temporary error - try again",
-			   "S/MIME Signature invalid",
-			   "Failed to decrypt S/MIME message",
-			   "Failed to parse message",
-			   "Attribute(s) missing",
-			   "Internal error");
 
 if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -249,37 +57,10 @@ if (! isset($ma_url)) {
   }
 }
 
-// This is just the default - otherwise it comes from the SR
-// Test server
-$irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-
-// Production server
-// $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-
-/* TODO put these in the service registry or similar */
-$irods_host = "irods_hostname"; // FIXME
-$irods_port = 1247; // FIXME: Always right?
-$irods_resource = "demoResc"; // FIXME: Always right?
-$default_zone = "tempZone";
-
-// Get the irods server cert for smime purposes
-$irods_cert = null;
-$irods_svrs = get_services_of_type(SR_SERVICE_TYPE::IRODS);
-if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && count($irods_svrs) > 0) {
-  $irod = $irods_svrs[0];
-  $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
-  $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
-}
 
 if (! isset($irods_url) || is_null($irods_url) || $irods_url == '') {
   error_log("Found no iRODS server in SR!");
   relative_redirect("error-text.php?error=" . urlencode("No iRODS servers configured."));
-}
-
-/* Get this from /etc/geni-ch/settings.php */
-if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
-  $portal_irods_user = 'rods'; // FIXME: Testing value
-  $portal_irods_pw = 'rods'; // FIXME: Testing value
 }
 
 if (!isset($user)) {
@@ -295,9 +76,7 @@ if (! $user->hasAttribute('enable_irods')) {
   relative_redirect('profile.php');
 }
 
-$userPrefix = "geni-"; // FIXME: Make this an HRN but with hyphens? No prefix?
-//$userPrefix = "";
-$username = $userPrefix . $user->username;
+$username = base_username($user);
 $baseusername = $username;
 
 $certStruct = openssl_x509_parse($user->certificate());

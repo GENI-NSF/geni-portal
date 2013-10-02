@@ -54,6 +54,7 @@ if(!isset($project_cache)) {
 // matters related to project, and documentation purpose of project
 function create_project($sa_url, $signer, $project_name, $lead_id, $project_purpose, $expiration)
 {
+  include_once('irods_utils.php');
   $create_project_message['operation'] = 'create_project';
   $create_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
   $create_project_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
@@ -71,6 +72,10 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 
   $project_id = put_message($sa_url, $create_project_message, 
 			    $signer->certificate(), $signer->privateKey());
+
+  // All new projects get an irods group
+  irods_create_group($project_id, $project_name, $signer);
+
   return $project_id;
 }
 
@@ -178,6 +183,7 @@ function modify_project_membership($sa_url, $signer, $project_id,
 				 $members_to_change_role, 
 				 $members_to_remove)
 {
+  include_once('irods_utils.php');
   $modify_project_membership_msg['operation'] = 'modify_project_membership';
   $modify_project_membership_msg[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_ADD] = $members_to_add;
@@ -185,6 +191,10 @@ function modify_project_membership($sa_url, $signer, $project_id,
   $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_REMOVE] = $members_to_remove;
   $result = put_message($sa_url, $modify_project_membership_msg,
                        $signer->certificate(), $signer->privateKey());
+
+  // Whenever we add/remove members from a project, do same for the matching irods group
+  irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $signer, $result);
+
   return $result;
   
 }
