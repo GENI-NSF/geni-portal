@@ -3,6 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.4 ==
+   * Fix geni-revoke-member-privileges script (#716)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
