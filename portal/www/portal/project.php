@@ -59,6 +59,15 @@ function compare_members_by_role($mem1, $mem2)
   
 }
 
+function compare_last_names($mem1,$mem2)
+{
+  $parts1 = explode(" ",$mem1);
+  $name1 = array_pop($parts1);
+  $parts2 = explode(" ",$mem2);
+  $name2 = array_pop($parts2);
+  return strcmp($name1,$name2);
+}
+
 $project_id = "None";
 $project = null;
 $project_name = "None";
@@ -243,20 +252,38 @@ $my_role = CS_ATTRIBUTE_TYPE::AUDITOR;
   }
 
 // Write each row in the project member table
+// Sort alphabetically by role
+
+$member_lists = array();
+$member_lists[1] = array();
+$member_lists[2] = array();
+$member_lists[3] = array();
+$member_lists[4] = array();
+
+
   foreach($members as $member) {
      $member_id = $member['member_id'];
      $member_name = $member_names[$member_id];
+     $member_ids[$member_name] = $member_id;
      // FIXME: It'd be nice to add email address here - but we're
      //     currently not looking that up, for efficiency
      //     $member_email = $member_user->email();
      $member_role_index = $member['role'];
-     $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
-     //     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
-     print "<tr><td><a href=\"project-member.php?project_id="
-     . $project_id
-       . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td>";
+     $member_lists[$member_role_index][] = $member_name;
+  }
 
-     print "</tr>\n";
+foreach ($member_lists as $member_role_index => $member_names) {
+  usort($member_names, 'compare_last_names');
+  foreach ($member_names as $member_name) {
+    $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
+    $member_id = $member_ids[$member_name];
+    //     error_log("ACC = " . $member_id . " ROLE = " . $member_role);
+    print "<tr><td><a href=\"project-member.php?project_id="
+      . $project_id
+      . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td>";
+
+    print "</tr>\n";
+  }
   }
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
 //   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Project Lead</td></tr>\n";
@@ -310,9 +337,5 @@ if (is_array($entries)) {
 </table>
 
 <?php
-$disable_add_note = "";
-if ($in_lockdown_mode) $disable_add_note = $disabled;
-$addnote_url = 'add-project-note.php?project_id='.$project_id;
-print "<p><button $disable_add_note onClick=\"window.location='$addnote_url'\"><b>Add Note</b></button></p>\n";
 include("footer.php");
 ?>

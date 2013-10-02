@@ -71,17 +71,6 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
-if (array_key_exists('sliver_expiration', $_GET)) {
-  // what we got asked for
-  $desired_expiration = $_GET['sliver_expiration'];
-  // what to send to the AM(s)
-  $rfc3339_expiration = rfc3339Format($desired_expiration);
-  // what to display to the user
-  $ui_expiration = dateUIFormat($desired_expiration);
-} else {
-  no_time_error();
-}
-
 if (array_key_exists('renew', $_GET)) {
   $renew = $_GET['renew'];
   if ($renew == 'slice'){
@@ -95,42 +84,71 @@ if (array_key_exists('renew', $_GET)) {
      $renew_sliver = true;
   }
 }
+if (array_key_exists('sliver_expiration', $_GET)) {
+  // what we got asked for
+  $desired_expiration = $_GET['sliver_expiration'];
+
+  $desired_obj = new DateTime($desired_expiration);
+  if ($renew_sliver and !$renew_slice and $desired_obj > new DateTime($slice[SA_ARGUMENT::EXPIRATION])) {
+    // If you try to renew past the slice expiration, limit it
+    $desired_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+  } else {
+    // If you didn't specify a time, use min of end of day, slice expiration
+    $desired_array = date_parse($desired_expiration);
+    if ($desired_array["hour"] == 0 and $desired_array["minute"] == 0 and $desired_array["second"] == 0 and $desired_array["fraction"] == 0) {
+      $sliceexp_array = date_parse($slice[SA_ARGUMENT::EXPIRATION]);
+      if ($renew_sliver and ! $renew_slice and $desired_array["year"] == $sliceexp_array["year"] and $desired_array["month"] == $sliceexp_array["month"] and $desired_array["day"] == $sliceexp_array["day"]) {
+	$desired_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+      } else {
+	// renew for the end of the day
+	$desired_expiration = $desired_expiration . " 23:59:59";
+      }
+    }
+  }
+
+  // what to send to the AM(s)
+  $rfc3339_expiration = rfc3339Format($desired_expiration);
+  // what to display to the user
+  $ui_expiration = dateUIFormat($desired_expiration);
+} else {
+  no_time_error();
+}
+
 if ($renew_slice){
    $res = renew_slice($sa_url, $user, $slice_id, $desired_expiration);
 
-//error_log("Renew Slice output = " . $res);
+   //error_log("Renew Slice output = " . $res);
 
-if (!$res) {
-  $res = "FAILed to renew slice (requested $desired_expiration, was $old_slice_expiration)";
-  $slice_expiration = $old_slice_expiration;
-} else {
-  $renewed_slice = true;
-  // get the new slice expiration
-  $res = "Renewed slice (requested $desired_expiration, was $old_slice_expiration)";
-  unset($slice);
-  $slice = lookup_slice($sa_url, $user, $slice_id);
-  $slice_expiration = dateUIFormat($slice[SA_ARGUMENT::EXPIRATION]);
-
-}
-$res = $res . " - slice expiration is now: <b>$slice_expiration</b>\n";
+   if (!$res) {
+     $res = "FAILed to renew slice (requested $desired_expiration, was $old_slice_expiration)";
+     $slice_expiration = $old_slice_expiration;
+   } else {
+     $renewed_slice = true;
+     // get the new slice expiration
+     $res = "Renewed slice (requested $desired_expiration, was $old_slice_expiration)";
+     unset($slice);
+     $slice = lookup_slice($sa_url, $user, $slice_id);
+     $slice_expiration = dateUIFormat($slice[SA_ARGUMENT::EXPIRATION]);
+     
+   }
+   $res = $res . " - slice expiration is now: <b>$slice_expiration</b>\n";
 }
 
 if ($renew_sliver and (($renew_slice and $renewed_slice) or !$renew_slice)) {
-      // Takes an arg am_id which may have multiple values. Each is treated
-      // as the ID from the DB of an AM which should be queried
-      // If no such arg is given, then query the DB and query all registered AMs
-
-if (! isset($ams) || is_null($ams)) {
-  // Didnt get an array of AMs
-  if (! isset($am) || is_null($am)) {
-    // Nor a single am
-    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  } else {
-    $ams = array();
-    $ams[] = $am;
-  }
-}
-
+  // Takes an arg am_id which may have multiple values. Each is treated
+  // as the ID from the DB of an AM which should be queried
+  // If no such arg is given, then query the DB and query all registered AMs
+  
+  if (! isset($ams) || is_null($ams)) {
+    // Didnt get an array of AMs
+    if (! isset($am) || is_null($am)) {
+      // Nor a single am
+      $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+    } else {
+      $ams = array();
+      $ams[] = $am;
+    }
+  } 
 }
 
 $header = "Renewing ";
@@ -189,7 +207,7 @@ print "<hr/>";
 print "<p><a href='slices.php'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
-include("footer.php");
 
+include("footer.php");
 
 ?>

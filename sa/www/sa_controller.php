@@ -293,6 +293,7 @@ class SAGuardFactory implements GuardFactory
 	    // This should be only project lead or admin (or operator)
 	    // FIXME: Does this work?
 	    "add_project_attribute" => array('project_guard'),
+	    "remove_project_attribute" => array('project_guard'),
 	    'add_project_lead_to_slices' => array('FalseGuard'),
 	    'remove_project_member_from_slices' => array('FalseGuard'),
 	    //
@@ -1182,7 +1183,7 @@ function modify_project_membership($args, $message)
   // Can't remove project lead directly
   // Need to demote them and then remove them
   if (array_key_exists($project_lead, $members_to_remove)) {
-    return generate_respponse(RESPONSE_ERROR::ARGS, null,
+    return generate_response(RESPONSE_ERROR::ARGS, null,
 			      "Cannot remove lead from project. " . 
 			      "Replace first.");
   }
@@ -1269,7 +1270,7 @@ function modify_project_membership($args, $message)
 }
 
 /* update lead_id of given project.
-*  To be called only be SA/PA local functions */
+*  To be called only by SA/PA local functions */
 function change_project_lead($project_id, $new_project_lead)
 {
   global $PA_PROJECT_TABLENAME;
@@ -2384,8 +2385,42 @@ function add_project_attribute($args)
 
 }
 
+/* remove attribute name/value pair from project
+   Requires project_id, name
+*/
+function remove_project_attribute($args)
+{
+  global $PA_PROJECT_ATTRIBUTE_TABLENAME;
 
+  if (! array_key_exists(PA_ATTRIBUTE::PROJECT_ID, $args) or
+      $args[PA_ATTRIBUTE::PROJECT_ID] == '') {
+    error_log("Missing project_id arg to remove_project_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Project ID is missing");
+  }
 
+  if (! array_key_exists(PA_ATTRIBUTE::NAME, $args) or
+      $args[PA_ATTRIBUTE::NAME] == '') {
+    error_log("Missing name arg to remove_project_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Name is missing");
+  }
+
+  $conn = db_conn();
+
+  // define variables
+  $project_id = $args[PA_ATTRIBUTE::PROJECT_ID];
+  $name = $args[PA_ATTRIBUTE::NAME];
+
+  // insert
+  $sql = ("delete from " . $PA_PROJECT_ATTRIBUTE_TABLENAME . " WHERE "
+          . PA_ATTRIBUTE::PROJECT_ID . " = "
+          . $conn->quote($project_id, 'text') . " AND " 
+          . PA_ATTRIBUTE::NAME . " = "
+          . $conn->quote($name, 'text'));
+  $result = db_execute_statement($sql);
+  return $result;
+}
 
 
 /*----------------------------------------------------------------------
@@ -2771,7 +2806,7 @@ function create_slice($args, $message)
     } else {
       $admins = $admins_res[RESPONSE_ARGUMENT::VALUE];
       if (is_null($admins) || count($admins) <= 0) {
-	error_log("Create slice: No project admins found in project " . $project_name);
+	//	error_log("Create slice: No project admins found in project " . $project_name);
 	$admins = array();
       }
     }

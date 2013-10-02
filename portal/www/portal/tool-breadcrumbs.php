@@ -79,8 +79,6 @@ $parents = array("profile.php" => "home.php",
 		 "do-renew-slice.php" => "slice.php",
 		 "sliverdelete.php" => "slice.php",
 		 "sliverstatus.php" => "slice.php",
-		 "add-slice-note.php" => "slice.php",
-		 "add-project-note.php" => "project.php",
 		 "downloadkeycert.php" => "profile.php",
 		 "invite-to-geni.php" => "home.php",
 		 "invite-to-project.php" => "project.php",
@@ -106,6 +104,7 @@ $parents = array("profile.php" => "home.php",
         "rspecs.php" => "profile.php",
                  "omni-bundle.php" => "profile.php",
 		 "irods.php" => "profile.php",
+		 "wimax-enable.php" => "home.php",
                  "gemini.php" => "slice.php");
 
 // Array from script name to a pretty name
@@ -137,8 +136,6 @@ $names = array("home.php" => $TAB_HOME,
 		 "sliceresource.php" => "Add resources to Slice %slice_name",
 		 "sliverdelete.php" => "Delete Sliver from %slice_name",
 		 "sliverstatus.php" => "Sliver Status for %slice_name",
-		 "add-slice-note.php" => "Add Note on %slice_name",
-		 "add-project-note.php" => "Add Note on %project_name",
 		 "do-renew.php" => "Renew Sliver on %slice_name",
 		 "do-renew-slice.php" => "Renew Slice %slice_name",
 	         "downloadkeycert.php" => "Download Certificate and Key",
@@ -166,6 +163,7 @@ $names = array("home.php" => $TAB_HOME,
         "rspecs.php" => "Manage RSpecs",
         "omni-bundle.php" => "Omni Bundle",
 	       "irods.php" => "iRODS Account",
+	       "wimax-enable.php" => "Enable WiMAX",
         "gemini.php" => "GENI Desktop");
 
 // Look up in the 2 arrays above

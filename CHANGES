@@ -2,6 +2,33 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.3 ==
+   * Remove note feature from projects and slices (#728)
+   * Add LabWiki buttons (#825)
+   * Add WiMAX OpenID support with new attribute http://geni.net/wimax/username (#809)
+   * Clean up OpenID logging and sessions (#670)
+   * Pass slice and project info via OpenID attribute exchange (#813)
+   * Fix geni-remove-from-project script (#715)
+   * Fix creation/deletion timestamps in monitoring (#817)
+   * Fix up link selection when printing rspec (#818)
+   * Alphabetize member lists for project and slice (#811)
+   * Show one big "Login" box for exogeni consistent with instageni (#823)
+   * Add instructions for naming on create slice page (#821)
+   * Renew a slice for the end of the day. Slivers to not past the (new) slice expiration, 
+   else end of the requested day. (#796)
+   * Support more integration with WiMAX: Use new URL (#771), allow
+   users to change the project they use with WiMAX (#774), handle
+   duplicate usernames (#776), support the agreed upon error codes
+   (#777), allow deleting group members - like when they are removed
+   from a project (#805), allow deleting groups (like when the project
+   is expired or the project lead no longer endorses using WiMAX with
+   the project (#806), allow project leads to enable multiple projects
+   for WiMAX (#807), and suport changing the lead of a project
+   (#808). For all these cases, the changes take effect when a project
+   member - preferably the new project lead - loads the WiMAX
+   page. Note that the WiMAX button remains limited visibility.
+   * Make the 'Generate SSL cert' button open in a new tab (#822)
+
 == 2.2 ==
   * Display fingerprints of SSH keys (#695)
   * Added version information to GENI portal (#789)

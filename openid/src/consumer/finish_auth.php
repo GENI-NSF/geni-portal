@@ -57,6 +57,27 @@ function run() {
                 "'.";
         }
 
+        // Show all the registration data
+        $success .= '<h2>SReg Data</h2>';
+        $success .= PHP_EOL . '<pre>';
+        $success .= print_r(@$sreg, true);
+        $success .= '</pre>' . PHP_EOL;
+
+        $ax = new Auth_OpenID_AX_FetchResponse();
+        $obj = $ax->fromSuccessResponse($response);
+
+        $success .= '<h2>AX Data</h2>';
+        if ($obj) {
+          $success .= PHP_EOL . '<pre>';
+          $success .= print_r($obj->data, true);
+          $success .= '</pre>' . PHP_EOL;
+        } else {
+          $success .= PHP_EOL . '<pre>';
+          $success .= PHP_EOL . 'Type is ' . gettype($obj) . PHP_EOL;
+          $success .= print_r($obj, true);
+          $success .= '</pre>' . PHP_EOL;
+        }
+
 	$pape_resp = Auth_OpenID_PAPE_Response::fromSuccessResponse($response);
 
 	if ($pape_resp) {

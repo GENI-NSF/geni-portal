@@ -50,6 +50,20 @@ def init_logging(options):
         level = logging.DEBUG
     logging.basicConfig(level=level)
 
+def check_result(result):
+    if not 'code' in result:
+        msg = "Invalid response from server: %r" % (result)
+        sys.stderr.write(msg + "\n")
+        return 1
+    status = result['code']
+    if not status == 0:
+        if 'output' in result:
+            msg = "Error: %s" % (result['output'])
+        else:
+            msg = "Error %d, no reason given" % (status)
+        sys.stderr.write(msg + "\n")
+    return status
+
 def parse_args(argv):
     parser = optparse.OptionParser()
     parser.add_option("--debug", action="store_true", default=False,
@@ -58,11 +72,12 @@ def parse_args(argv):
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="authority URL")
+    parser.add_option("-s", "--saurl", help="slice authority URL")
+    parser.add_option("-u", "--csurl", help="credential store URL")
     parser.add_option("-p", "--project", help="project id (UUID) or name")
     parser.add_option("-m", "--member", help="member id (UUID)")
     options,args = parser.parse_args()
-    if not (options.keyfile and options.certfile and options.url
+    if not (options.keyfile and options.certfile and options.saurl and options.csurl
             and options.project and options.member):
         parser.print_usage()
         raise Exception("Missing some required arguments")
@@ -128,32 +143,72 @@ def main(argv=None):
     try:
         options,args = parse_args(argv)
         init_logging(options)
-        url = verify_url(options.url)
+        saurl = verify_url(options.saurl)
+        csurl = verify_url(options.csurl)
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
-        project_id = load_project_id(options.project, url, cert, pkey)
+        project_id = load_project_id(options.project, saurl, cert, pkey)
         member_id = load_member_id(options.member)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    operation = "remove_project_member"
+
     logger = logging.getLogger()
-    args = dict(project_id=project_id, member_id=member_id)
-    result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
-    # print "%r" % (result)
-    if not 'code' in result:
-        msg = "Invalid response from server: %r" % (result)
-        sys.stderr.write(msg + "\n")
-        return 1
-    status = result['code']
-    if not status == 0:
-        if 'output' in result:
-            msg = "Error: %s" % (result['output'])
+    #first check if the member to remove is project lead
+    operation = "get_project_members"
+    args = dict(project_id=project_id)
+    result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
+    ret = check_result(result)
+    if not ret==0:
+        return ret
+
+    lead = False
+    for mem in result['value']:
+        if mem['role'] == "1":
+            if member_id == mem['member_id']:
+                sys.stderr.write( "Member %s is project lead.\n" % mem['member_id'] )
+                lead = True
+                break
+
+    #if member to remove is lead, look for an admin who is authorized to be lead
+    if lead:
+        auth_admin = None
+        for mem in result['value']:
+            if mem['role'] == "2":
+                # is this admin authorized to be lead?
+                args = dict(principal=mem['member_id'],action="create_project",context_type=3)
+                auth_result = ch.invokeCH(csurl,"request_authorization",logger,args,[cert],pkey)
+                ret = check_result(auth_result)
+                if not ret==0:
+                    return ret
+
+                if auth_result['value']:
+                    auth_admin = mem['member_id']
+                    break
+
+        if auth_admin:
+            sys.stderr.write("Changing authorized administrator %s to project lead.\n" %auth_admin)
+            operation = "modify_project_membership"
+            change_role = {}
+            change_role[member_id] = 3
+            change_role[auth_admin] = 1
+            args = dict(project_id=project_id, members_to_remove=[], members_to_add=[],members_to_change_role = change_role)
+            result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)                    
+            ret = check_result(result)
+            if not ret==0:
+                return ret
         else:
-            msg = "Error %d, no reason given" % (status)
-        sys.stderr.write(msg + "\n")
-        return status
-    return 0
+            sys.stderr.write("Can't remove lead from project unless there is an authorized administrator to take the lead role.\n");
+            return(2) 
+
+    operation = "modify_project_membership"
+    args = dict(project_id=project_id, members_to_remove=[member_id], members_to_add=[],members_to_change_role = [])
+    result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
+    ret = check_result(result)
+    if ret==0:
+        sys.stderr.write("Removed member from project.\n" %member_id);
+    return ret
+
 
 if __name__ == "__main__":
     sys.exit(main())
