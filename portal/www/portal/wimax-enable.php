@@ -233,7 +233,7 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
     //    return false;
     return "Internal Error: WiMAX server not found";
   } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) !== false) {
-    error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username - user not known: $res");
+    error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username in group $ldif_user_groupname - user not known: $res");
     // Treat as success
     return true;
   } else if (strpos(strtolower($res), strtolower("ERROR 6: User is a admin for")) !== false) {
@@ -247,6 +247,9 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
     // FIXME: Return the project they are admin for?
     // You need to make someone else the admin of that project first. Or maybe delete that project
     //    return false;
+    return "Internal Error: $res";
+  } else if (strpos(strtolower($res), strtolower("User dn not correct")) !== false) {
+    error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username in group $ldif_user_groupname: $res");
     return "Internal Error: $res";
   }
 
@@ -274,6 +277,9 @@ function wimax_delete_group($ldif_project_name) {
     // FIXME: Return that admin DN? Delete that admin DN?
     // Need to move that admin to another group or change the admin for the group they are an admin for, then you can delete them, so only then will the delete group succeed
     //    return false;
+    return "Internal Error: $res";
+  } else if (strpos(strtolower($res), strtolower("User dn not correct")) !== false) {
+    error_log("wimax-enable curl get deleteProject: Error deleting project $ldif_project_name: $res");
     return "Internal Error: $res";
   }
   return true;
@@ -438,7 +444,11 @@ if (isset($user->ma_member->enable_wimax)) {
 	      // $is_error = True;
 	      // $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $ldif_project_name";
 	    } else {
-	      $project_lead_username = $lead->ma_member->wimax_username;
+	      if (isset($lead->ma_member->wimax_username)) {
+		$project_lead_username = $lead->ma_member->wimax_username;
+	      } else {
+		$project_lead_username = gen_username_base($lead);
+	      }
 	      $project_lead_group_id = $lead->ma_member->enable_wimax;
 	      $lead_project_info = lookup_project($sa_url, $user, $project_lead_group_id);
 	      $project_lead_groupname = $lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -594,7 +604,11 @@ if (array_key_exists('project_id', $_REQUEST))
 	// $is_error = True;
 	// $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $ldif_project_name";
       } else {
-	$project_lead_username = $lead->ma_member->wimax_username;
+	if (isset($lead->ma_member->wimax_username)) {
+	  $project_lead_username = $lead->ma_member->wimax_username;
+	} else {
+	  $project_lead_username = gen_username_base($lead);
+	}
 	$project_lead_group_id = $lead->ma_member->enable_wimax;
 	$lead_project_info = lookup_project($sa_url, $user, $project_lead_group_id);
 	$project_lead_groupname = $lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -1037,7 +1051,11 @@ Get user's projects (expired or not)
 	    // $is_error = True;
 	    // $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $ldif_project_name";
 	  } else {
-	    $project_lead_username = $lead->ma_member->wimax_username;
+	    if (isset($lead->ma_member->wimax_username)) {
+	      $project_lead_username =$lead->ma_member->wimax_username;
+	    } else {
+	      $project_lead_username = gen_username_base($lead);
+	    }
 	    $project_lead_group_id = $lead->ma_member->enable_wimax;
 	    $lead_project_info = lookup_project($sa_url, $user, $project_lead_group_id);
 	    $project_lead_groupname = $lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];

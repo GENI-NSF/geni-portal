@@ -2,6 +2,8 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.4 ==
+
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
    * Add LabWiki buttons (#825)
@@ -14,7 +16,8 @@
    * Alphabetize member lists for project and slice (#811)
    * Show one big "Login" box for exogeni consistent with instageni (#823)
    * Add instructions for naming on create slice page (#821)
-   * Renew a slice for the end of the day (#796)
+   * Renew a slice for the end of the day. Slivers to not past the (new) slice expiration, 
+   else end of the requested day. (#796)
    * Support more integration with WiMAX: Use new URL (#771), allow
    users to change the project they use with WiMAX (#774), handle
    duplicate usernames (#776), support the agreed upon error codes
@@ -27,6 +30,7 @@
    member - preferably the new project lead - loads the WiMAX
    page. Note that the WiMAX button remains limited visibility.
    * Make the 'Generate SSL cert' button open in a new tab (#822)
+   * Handle error getting openid AX request (#827)
 
 == 2.2 ==
   * Display fingerprints of SSH keys (#695)

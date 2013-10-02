@@ -169,7 +169,7 @@ function send_geni_user($server, $info) {
    * worked, so that is a necessary transformation below.
    */
   $ax_request = Auth_OpenID_AX_FetchRequest::fromOpenIDRequest($info);
-  if ($ax_request) {
+  if ($ax_request and ! Auth_OpenID_AX::isError($ax_request)) {
     /* error_log("received AX request: " . print_r($ax_request, true)); */
     $ax_response = new Auth_OpenID_AX_FetchResponse();
     add_project_slice_info($geni_user, $projects, $slices);
