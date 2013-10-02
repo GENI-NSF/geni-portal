@@ -28,6 +28,7 @@
    member - preferably the new project lead - loads the WiMAX
    page. Note that the WiMAX button remains limited visibility.
    * Make the 'Generate SSL cert' button open in a new tab (#822)
+   * Handle error getting openid AX request (#827)
 
 == 2.2 ==
   * Display fingerprints of SSH keys (#695)
