@@ -14,7 +14,8 @@
    * Alphabetize member lists for project and slice (#811)
    * Show one big "Login" box for exogeni consistent with instageni (#823)
    * Add instructions for naming on create slice page (#821)
-   * Renew a slice for the end of the day (#796)
+   * Renew a slice for the end of the day. Slivers to not past the (new) slice expiration, 
+   else end of the requested day. (#796)
    * Support more integration with WiMAX: Use new URL (#771), allow
    users to change the project they use with WiMAX (#774), handle
    duplicate usernames (#776), support the agreed upon error codes
