@@ -144,6 +144,95 @@ function doGET($url, $user, $password, $serverroot=null) {
   return $result;
 }
 
+// Do a BasicAuth protected delete of the given URL
+function doDELETE($url, $user, $password, $serverroot=null) {
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
+  if (false and ! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
+    curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
+  } else {
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
+  }
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
+
+  // FIXME: Do I need CURLOPT_POSTFIELDS?
+
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+
+  /* // For debugging */
+  /* curl_setopt($ch, CURLOPT_VERBOSE, True); */
+  /* curl_setopt($ch, CURLOPT_HEADER, True); */
+  /* $errorFile = fopen("/tmp/wimax-curl-delete-errors.log", 'a'); */
+  /* curl_setopt($ch, CURLOPT_STDERR, $errorFile); */
+  /* // End of debugging stuff */
+
+  // Now do it
+  $result = curl_exec($ch);
+  $meta = curl_getinfo($ch);
+  $error = curl_error($ch);
+  curl_close($ch);
+
+  /* // More debugging stuff */
+  /* fflush($errorFile); */
+  /* fclose($errorFile); */
+  /* // End of debugging stuff */
+
+  if ($result === false) {
+    error_log("DELETE of " . $url . " failed (no result): " . $error);
+    $code = "";
+    $perm = false;
+    if (is_array($meta) && array_key_exists("http_code", $meta)) {
+      $code = "HTTP error " . $meta['http_code'] . ": ";
+      //      if ($meta['http_code'] < 200 || $meta['http_code'] > 299)
+      if ($meta['http_code'] == 0) 
+	$perm = true;
+    }
+    if ($perm)
+      throw new PermFailException("DELETE " . $url . " failed: " . $code . $error);
+
+    throw new Exception("DELETE " . $url . " failed: " . $code . $error);
+  } else {
+    //    error_log("DELETE of " . $url . " result: " . print_r($result, true));
+  }
+  if ($meta === false) {
+    error_log("DELETE of " . $url . " error (no meta): " . $error);
+    $code = "";
+    throw new Exception("DELETE " . $url . " failed: " . $code . $error);
+  } else {
+    //error_log("DELETE meta: " . print_r($meta, true));
+    if (is_array($meta) && array_key_exists("http_code", $meta)) {
+      if ($meta["http_code"] != 200) {
+	error_log("DELETE of " . $url . " got error return code " . $meta["http_code"]);
+	// code ??? means user not found - raise a different exception?
+	// then if I don't get that and don't get the real result I show the error 
+	// and don't try to do the PUT?
+
+	// Code 401 - Authorization error - seems common...
+
+	$codestr = "HTTP Error " . $meta["http_code"];
+	if (is_null($error) || $error === "") {
+	  $error = $codestr . ": \"" . $result . '"';
+	} else {
+	  $error = $codestr . ": \"" . $error . '"';
+	}
+	if ($meta["http_code"] == 401) {
+	  throw new PermFailException($error);
+	} else {
+	  throw new Exception($error);
+	}
+	//	throw new PermFailException($error);
+      }
+    }
+  }
+  if (! is_null($error) && $error != '')
+    error_log("DELETE of " . $url . " error: " . print_r($error, true));
+  return $result;
+}
+
 function doPUT($url, $user, $password, $data, $content_type="application/json", $serverroot=null) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
@@ -180,7 +269,6 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
     }
     throw new Exception("PUT to " . $url . " failed: " . $code . $error);
   } else {
-    // FIXME: Comment this out when ready
     //    error_log("PUT to " . $url . " result: " . print_r($result, true));
   }
   if ($meta === false) {
@@ -239,6 +327,9 @@ const IRODS_MESSAGE = 'message';
 const IRODS_GET_USER_URI = '/user/'; // to query for a user
 const IRODS_PUT_USER_URI = '/user'; // to create a user
 const IRODS_PUT_USER_GROUP_URI = '/user_group/user'; // to add a user to a group
+const IRODS_REMOVE_USER_URI1 = '/user_group/'; // to remove user from group. next is groupname
+const IRODS_REMOVE_USER_URI2 = '/user/'; // comes after groupname, before username
+const IRODS_PUT_GROUP_URI = '/user_group/'; // to create a group
 const IRODS_SEND_JSON = '?contentType=application/json';
 const IRODS_CREATE_TIME = 'createTime';
 const IRODS_ZONE = "zone";
@@ -330,6 +421,46 @@ function irods_create_group($project_id, $project_name, $lead_id, $user) {
 
   // must get project name and then groupname
   $group_name = group_name($project_name);
+
+  $irods_info = array();
+  $irods_info[IRODS_GROUP] = $group_name;
+  $irods_info[IRODS_ZONE] = $default_zone;
+
+  // Note: in PHP 5.4, use JSON_UNESCAPED_SLASHES.
+  //   we have PHP 5.3, so we have to remove those manually.
+  $irods_json = json_encode($irods_info);
+  $irods_json = str_replace('\\/','/', $irods_json);
+  
+  // FIXME: Take this out when ready
+  error_log("Trying to add group to iRODS with values: " . $irods_json);
+
+  ///* Sign the data with the portal certificate (Is that correct?) */
+  //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
+  
+  ///* Encrypt the signed data for the iRODS SSL certificate */
+  //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
+  
+  try {
+    $addstruct = doPUT($irods_url . IRODS_PUT_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
+
+    // look for (\r or \n or \r\n){2} and move past that
+    preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
+    if (! array_key_exists(2, $m)) {
+      error_log("Malformed PUT result to iRODS - error? Got: " . $addstruct);
+      throw new Exception("Failed to add iRODS group - server error: " . $addstruct);
+    }
+
+    // FIXME: Comment this out when ready
+    error_log("PUT result content: " . $m[2]);
+    
+    $addjson = json_decode($m[2], true);
+    // FIXME: Parse the json return
+    error_log("add group result: " . print_r($addjson, true));
+  } catch (Exception $e) {
+    error_log("Error doing iRODS put to add group: " . $e->getMessage());
+  }
+
+  // Now add the lead to the new group
   addToGroup($project_id, $group_name, $lead_id, $user);
 }
 
@@ -494,6 +625,26 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
   if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
     $portal_irods_user = 'rods'; // FIXME: Testing value
     $portal_irods_pw = 'rods'; // FIXME: Testing value
+  }
+
+  try {
+    $rmstruct = doDELETE($irods_url . IRODS_REMOVE_USER_URI1 . $group_name . IRODS_REMOVE_USER_URI2 . $username, $portal_irods_user, $portal_irods_pw, $irods_cert);
+
+    // look for (\r or \n or \r\n){2} and move past that
+    preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);
+    if (! array_key_exists(2, $m)) {
+      error_log("Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
+      throw new Exception("Failed to remove member from iRODS group - server error: " . $rmtruct);
+    }
+
+    // FIXME: Comment this out when ready
+    error_log("DELETE result content: " . $m[2]);
+    
+    $rmjson = json_decode($m[2], true);
+    // FIXME: Parse the json return
+    error_log("remove user from group result: " . print_r($rmjson, true));
+  } catch (Exception $e) {
+    error_log("Error doing iRODS delete to remove member from group: " . $e->getMessage());
   }
 
 }
