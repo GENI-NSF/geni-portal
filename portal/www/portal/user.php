@@ -163,6 +163,14 @@ class GeniUser
     /* return the value of the 'mail' attribute from the IdP. */
     return $this->attributes['mail'];
   }
+
+  function phone() {
+    /* return the value of the 'mail' attribute from the IdP. */
+    if (isset($this->attributes['telephoneNumber'])
+	return $this->attributes['telephoneNumber'];
+    else
+      return "";
+  }
   
   // Produce a pretty email name/address for sending like '"My Name" <my email>'
   function prettyEmailAddress() {
