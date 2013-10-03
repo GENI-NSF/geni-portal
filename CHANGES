@@ -4,6 +4,7 @@
 
 == 2.4 ==
    * Fix geni-revoke-member-privileges script (#716)
+   * Quiet some logging in printing rspecs (#836)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
