@@ -166,8 +166,10 @@ class GeniUser
 
   function phone() {
     /* return the value of the 'mail' attribute from the IdP. */
-    if (isset($this->attributes['telephoneNumber'])
-	return $this->attributes['telephoneNumber'];
+    $member_attrs = $this->attributes['ma_member'];
+    error_log("MEMBER ATTRS: " . print_r($member_attrs,true));
+    if (isset($member_attrs->telephone_number))
+      return $member_attrs->telephone_number;
     else
       return "";
   }

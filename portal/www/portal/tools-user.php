@@ -240,11 +240,12 @@ print "<h2>Account Summary</h2>\n";
 print "<table>\n";
 print "<tr><th>Name</th><td>" . $user->prettyName() . "</td></tr>\n";
 print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
-print "<tr><th>Telephone Number</th><td>" . $user->phone() . "</td></tr>\n";
 print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
 print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
 print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
 print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
+if ($user->phone() != "")
+  print "<tr><th>Telephone Number</th><td>" . $user->phone() . "</td></tr>\n";
 // FIXME: Project count? Slice count?
 // FIXME: Other attributes?
 // FIXME: Permissions
