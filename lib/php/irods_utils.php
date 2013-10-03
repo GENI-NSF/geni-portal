@@ -66,18 +66,30 @@ function doGET($url, $user, $password, $serverroot=null) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
-  if (false and ! is_null($serverroot)) { // while cert is expired, must do this....
+  if (false and ! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
   }
   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
 
+  /* // For debugging */
+  /* curl_setopt($ch, CURLOPT_VERBOSE, True); */
+  /* curl_setopt($ch, CURLOPT_HEADER, True); */
+  /* $errorFile = fopen("/tmp/wimax-curl-get-errors.log", 'a'); */
+  /* curl_setopt($ch, CURLOPT_STDERR, $errorFile); */
+  /* // End of debugging stuff */
+
   // Now do it
   $result = curl_exec($ch);
   $meta = curl_getinfo($ch);
   $error = curl_error($ch);
   curl_close($ch);
+
+  /* // More debugging stuff */
+  /* fflush($errorFile); */
+  /* fclose($errorFile); */
+  /* // End of debugging stuff */
 
   if ($result === false) {
     error_log("GET of " . $url . " failed (no result): " . $error);
@@ -144,7 +156,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 30);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
-  if (false and ! is_null($serverroot)) { // while server cert is expired....
+  if (false and ! is_null($serverroot)) { // FIXME: while server cert is expired....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
