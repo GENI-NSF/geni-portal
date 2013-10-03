@@ -165,13 +165,13 @@ class GeniUser
   }
 
   function phone() {
-    /* return the value of the 'mail' attribute from the IdP. */
-    $member_attrs = $this->attributes['ma_member'];
-    error_log("MEMBER ATTRS: " . print_r($member_attrs,true));
-    if (isset($member_attrs->telephone_number))
-      return $member_attrs->telephone_number;
+    /* return the value of the telephone number attribute from the IdP. */
+    if (isset($this->ma_member->telephone_number))
+      $phone = $this->ma_member->telephone_number;
     else
-      return "";
+      $phone = "";
+    return $phone;
+
   }
   
   // Produce a pretty email name/address for sending like '"My Name" <my email>'

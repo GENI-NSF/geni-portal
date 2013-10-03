@@ -77,7 +77,6 @@ END;
 // BEGIN SSH tab
 echo "<div id='ssh'>";
 print "<h2>SSH Keys</h2>\n";
-error_log(print_r($user,true));
 $keys = $user->sshKeys();
 
 $disable_ssh_keys = "";
