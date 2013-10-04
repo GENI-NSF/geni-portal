@@ -24,15 +24,8 @@
 
 require_once("settings.php");
 require_once("user.php");
-require_once("header.php");
 require_once 'geni_syslog.php';
 require_once 'db-util.php';
-
-
-$user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
-}
 
 $all_rspecs = fetchRSpecMetaData($user);
 $my_rspecs = array();
@@ -59,9 +52,6 @@ foreach ($all_rspecs as $rspec) {
 
 
 /* Display starts here. */
-show_header('GENI Portal: Profile', $TAB_PROFILE);
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
 print("<h1>Manage Resource Specifications (RSpecs)</h1>\n");
 print("<h2>Manage My RSpecs</h2>\n");
 print "<p>You can ";
@@ -70,7 +60,7 @@ print "<button onClick=\"window.location='rspecupload.php'\">"
 print " or edit your existing RSpecs.</p>";
 
 /* Show the table of existing private RSpecs. */
-print "<h3>My Private Rspecs</h3>\n";
+print "<h3>My Private RSpecs</h3>\n";
 rspec_table_header();
 foreach ($my_rspecs as $rspec) {
   if ($rspec['visibility'] === "private")
@@ -79,7 +69,7 @@ foreach ($my_rspecs as $rspec) {
 rspec_table_footer();
 
 /* Show the table of existing public but editable RSpecs. */
-print "<h3>My Public Rspecs</h3>\n";
+print "<h3>My Public RSpecs</h3>\n";
 rspec_table_header();
 foreach ($my_rspecs as $rspec) {
   if ($rspec['visibility'] === "public")
@@ -98,7 +88,7 @@ foreach ($public_rspecs as $rspec) {
 }
 rspec_table_footer();
 
-include("footer.php");
+//include("footer.php");
 
 /* ---------- */
 function rspec_table_header($public=False) {
