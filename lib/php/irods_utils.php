@@ -402,7 +402,7 @@ $IRODS_ERROR_NAMES = array("Success",
 
 function irods_create_group($project_id, $project_name, $user) {
   // Note this function must bail if project_id is not a project but an error of some kind
-  error_log("irods asked to create group for project $project_name with id $project_id");
+  error_log("iRODS: will create group for project $project_name with id $project_id");
   if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("irods_create_group: not a valid project ID. Nothing to do. $project_id");
     return -1;
@@ -541,7 +541,7 @@ function irods_create_group($project_id, $project_name, $user) {
 }
 
 function irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $user, $result) {
-  error_log("irods asked to modify group members for project $project_id");
+  //  error_log("irods asked to modify group members for project $project_id");
   // Note this function must bail if result suggests an error of some kind
   //  $result is a triple
   if (isset($result) and is_array($result) and array_key_exists(RESPONSE_ARGUMENT::CODE, $result) and $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
@@ -700,8 +700,8 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 	  $added = 1;
 	  error_log("iRODS User $username already in group $group_name");
 	} elseif ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
-	  if ($groupCmdStatus === IRODS_STATUS_INVALID_USER) {
-	    error_log("irods: user $username has no iRODS account yet. Cannot add group $group_name. ($groupCmdStatus: '$msg')");
+	  if ($groupCmdStatus === IRODS_STATUS_BAD_USER) {
+	    error_log("irods: user $username has no iRODS account yet. Cannot add to group $group_name. ($groupCmdStatus: '$msg')");
 	    // FIXME: Email someone?
 	  } else {
 	    error_log("irods failed to add user $username to group $group_name: $groupCmdStatus: '$msg'");
@@ -786,7 +786,7 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);
     if (! array_key_exists(2, $m)) {
       error_log("Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
-      throw new Exception("Failed to remove member from iRODS group - server error: " . $rmtruct);
+      throw new Exception("Failed to remove member from iRODS group - server error: " . $rmstruct);
     }
 
     //    error_log("DELETE result content: " . $m[2]);
@@ -816,7 +816,7 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
       if (array_key_exists(IRODS_USER_GROUP_COMMAND_STATUS, $rmjson)) {
 	$groupCmdStatus = $rmjson[IRODS_USER_GROUP_COMMAND_STATUS];
 	if ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
-	  if ($groupCmdStatus === IRODS_STATUS_INVALID_USER) {
+	  if ($groupCmdStatus === IRODS_STATUS_BAD_USER) {
 	    error_log("irods: user $username was not in group $group_name to delete. ($groupCmdStatus: '$msg')");
 	  } else {
 	    error_log("irods failed to remove $username from group $group_name: $groupCmdStatus: '$msg'");
@@ -895,7 +895,7 @@ function removeGroup($project_id, $group_name, $user) {
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);
     if (! array_key_exists(2, $m)) {
       error_log("Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
-      throw new Exception("Failed to remove iRODS group - server error: " . $rmtruct);
+      throw new Exception("Failed to remove iRODS group - server error: " . $rmstruct);
     }
 
     // FIXME: Comment this out when ready
@@ -925,7 +925,7 @@ function removeGroup($project_id, $group_name, $user) {
       if (array_key_exists(IRODS_USER_GROUP_COMMAND_STATUS, $rmjson)) {
 	$groupCmdStatus = $rmjson[IRODS_USER_GROUP_COMMAND_STATUS];
 	if ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
-	  if ($groupCmdStatus === IRODS_STATUS_INVALID_GROUP) {
+	  if ($groupCmdStatus === IRODS_STATUS_BAD_GROUP) {
 	    error_log("irods: group $group_name not there to delete. ($groupCmdStatus: '$msg')");
 	  } else {
 	    error_log("irods failed to remove group $group_name: $groupCmdStatus: '$msg'");
