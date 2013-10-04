@@ -202,10 +202,7 @@ function send_geni_user($server, $info) {
       }
     }
     $ax_response->toMessage($response->fields);
-  } else {
-    error_log("did not receive AX request: " . print_r($ax_request, true));
   }
-
 
   // Generate a response to send to the user agent.
   $webresponse =& $server->encodeResponse($response);

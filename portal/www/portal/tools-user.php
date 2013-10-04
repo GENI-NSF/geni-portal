@@ -262,13 +262,8 @@ echo "<div id='rspecs'>";
  * RSpecs
  *----------------------------------------------------------------------
  */
-print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
-
-$disable_manage_rspecs = "";
-if ($in_lockdown_mode) $disable_manage_rspecs = "disabled";
-
-print "<p><button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
-  . "Manage RSpecs</button></p>\n";
+if (!$in_lockdown_mode)
+  include("tool-rspec.php");
 
 // END rspecs tab
 echo "</div>";

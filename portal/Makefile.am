@@ -152,7 +152,6 @@ dist_svcweb_DATA = \
 	www/portal/request_test.php \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
-	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
 	www/portal/sa_controller_test.php \
@@ -180,6 +179,7 @@ dist_svcweb_DATA = \
 	www/portal/tool-lookupids.php \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-projects.php \
+	www/portal/tool-rspecs.php \
 	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.php \
 	www/portal/tools-admin.php \
