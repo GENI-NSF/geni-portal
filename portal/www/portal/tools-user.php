@@ -262,9 +262,9 @@ echo "<div id='rspecs'>";
  * RSpecs
  *----------------------------------------------------------------------
  */
-if (!$in_lockdown_mode)
-  include("tool-rspec.php");
-
+if (!$in_lockdown_mode) {
+  include("tool-rspecs.php");
+}
 // END rspecs tab
 echo "</div>";
 ?>

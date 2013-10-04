@@ -175,7 +175,7 @@ if (count($keys) == 0) {
   print "<br/>\n";
 }
 
-print "<p><button onClick=\"window.location='tool-rspecs.php'\">"
+print "<p><button onClick=\"window.location='rspecs.php'\">"
     . "View Available RSpecs</button></p>\n";
 
 
