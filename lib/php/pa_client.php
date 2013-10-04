@@ -279,7 +279,7 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
   return $results2;
 }
 
-// Routines to invite and accept invivations for members to projects
+// Routines to invite and accept invitations for members to projects
 
 // Generate an invitation for a (not yet identified) member
 // to join a project
@@ -330,7 +330,17 @@ function add_project_attribute($sa_url, $signer, $project_id, $name, $value)
   return $results;
 }
 
-
+// Remove attribute (name) from a given project
+function remove_project_attribute($sa_url, $signer, $project_id, $name)
+{
+  global $user;
+  $remove_project_attribute_message['operation'] = 'remove_project_attribute';
+  $remove_project_attribute_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  $remove_project_attribute_message[PA_ATTRIBUTE::NAME] = $name;
+  $results = put_message($sa_url, $remove_project_attribute_message, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
 
 
 ?>

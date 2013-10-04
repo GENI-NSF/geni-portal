@@ -340,8 +340,8 @@ class Auth_OpenID_NamespaceMap {
 
         if (($current_namespace_uri !== null) &&
             ($current_namespace_uri != $namespace_uri)) {
-            Auth_OpenID::log('Cannot map "%s" because previous mapping exists',
-                            $namespace_uri);
+            /* Auth_OpenID::log('Cannot map "%s" because previous mapping exists', */
+            /*                 $namespace_uri); */
             return null;
         }
 

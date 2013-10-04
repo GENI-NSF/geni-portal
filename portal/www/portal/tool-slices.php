@@ -112,6 +112,7 @@ if (count($my_slice_objects) > 0) {
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
+  $labwiki_base_url = 'http://emmy9.casa.umass.edu:4000/?';
   $num_slices = count($my_slice_objects);
   if ($num_slices==1) {
       print "<p><i>You have access to <b>1</b> slice.</i></p>";
@@ -120,7 +121,7 @@ if (count($my_slice_objects) > 0) {
   }
 
   function cmp($a,$b) {
-    return strcmp($a['slice_name'],$b['slice_name']);
+    return strcmp(strtolower($a['slice_name']),strtolower($b['slice_name']));
   }
 
   usort($my_slice_objects,"cmp");
@@ -154,6 +155,7 @@ if (count($my_slice_objects) > 0) {
     $expiration = dateUIFormat($expiration_db);
     $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
     $gemini_url = $gemini_base_url . $query;
+    $labwiki_url = $labwiki_base_url . $query;
 
     // Determine privileges to this slice for this user
     $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
@@ -210,6 +212,8 @@ if (count($my_slice_objects) > 0) {
     print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
 
       print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
+
+      print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>";
 
     print "</td>";
     if ($portal_enable_abac) {

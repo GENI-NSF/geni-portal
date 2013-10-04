@@ -50,6 +50,20 @@ def init_logging(options):
         level = logging.DEBUG
     logging.basicConfig(level=level)
 
+def check_result(result):
+    if not 'code' in result:
+        msg = "Invalid response from server: %r" % (result)
+        sys.stderr.write(msg + "\n")
+        return 1
+    status = result['code']
+    if not status == 0:
+        if 'output' in result:
+            msg = "Error: %s" % (result['output'])
+        else:
+            msg = "Error %d, no reason given" % (status)
+        sys.stderr.write(msg + "\n")
+    return status
+
 def parse_args(argv):
     parser = optparse.OptionParser()
     parser.add_option("--debug", action="store_true", default=False,
@@ -58,7 +72,7 @@ def parse_args(argv):
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="authority URL")
+    parser.add_option("-u", "--url", help="base URL")
     parser.add_option("-o", "--operator",  action="store_true", default=False,
                       help="remove operator privilege")
     parser.add_option("-l", "--lead",  action="store_true", default=False,
@@ -134,7 +148,9 @@ def main(argv=None):
     try:
         options,args = parse_args(argv)
         init_logging(options)
-        url = verify_url(options.url)
+        saurl = verify_url("%s/sa/sa_controller.php" %options.url)
+        csurl = verify_url("%s/cs/cs_controller.php"  %options.url)
+        maurl = verify_url("%s/ma/ma_controller.php"  %options.url)
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
     except Exception as e:
@@ -142,30 +158,73 @@ def main(argv=None):
         return 1
 
     logger = logging.getLogger()
-    member_id = find_member_id(options.member, url, logger, cert, pkey)
-    operation = "revoke_member_privilege"
+    member_id = find_member_id(options.member, saurl, logger, cert, pkey)
     if options.operator:
         # This matches ma_privilege values
         privilege_id = 2
     elif options.lead:
         # This matches ma_privilege values
         privilege_id = 1
+
+    # if removing lead privileges, first find all projects for which member is lead
+        operation = "get_projects"
+        args = dict(lead_id=member_id)
+        result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
+        ret = check_result(result)
+        if not ret==0:
+            return ret
+        # for each project, find an admin who is authorized to be lead 
+        # change the admin to lead and the lead to admin 
+        # if there is not an authorized admin for a project, exit
+        for project_id in result['value']:
+            auth_admin = None
+        # get project members
+            operation = "get_project_members"
+            args = dict(project_id=project_id)
+            mem_result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
+            ret = check_result(mem_result)
+            if not ret==0:
+                return ret
+
+            for mem in mem_result['value']:
+                auth_admin = None
+                if mem['role'] == "2":
+                    # is this admin authorized to be lead?
+                    args = dict(principal=mem['member_id'],action="create_project",context_type=3)
+                    auth_result = ch.invokeCH(csurl,"request_authorization",logger,args,[cert],pkey)
+                    ret = check_result(auth_result)
+                    if not ret==0:
+                        return ret
+                    if auth_result['value']:
+                        auth_admin = mem['member_id']
+                        break
+
+            if auth_admin != None:
+                sys.stderr.write("Changing authorized administrator %s to project lead for project %s.\n" %(auth_admin, project_id))
+                sys.stderr.write("Changing project lead %s to member for project %s.\n" %(auth_admin,project_id))
+                operation = "modify_project_membership"
+                change_role = {}
+                change_role[member_id] = 3
+                change_role[auth_admin] = 1
+                args = dict(project_id=project_id, members_to_remove=[], members_to_add=[],members_to_change_role = change_role)
+                result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)                    
+                ret = check_result(result)
+                if not ret==0:
+                    return ret
+            else:
+                sys.stderr.write("Can't remove lead from project %s unless there is an authorized administrator to take the lead role.\n" %project_id)
+                return(2) 
+
+   
+    operation = "revoke_member_privilege"
+
     args = dict(member_id=member_id, privilege_id=privilege_id)
-    result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
-    print "%r" % (result)
-    if not 'code' in result:
-        msg = "Invalid response from server: %r" % (result)
-        sys.stderr.write(msg + "\n")
-        return 1
-    status = result['code']
-    if not status == 0:
-        if 'output' in result:
-            msg = "Error: %s" % (result['output'])
-        else:
-            msg = "Error %d, no reason given" % (status)
-        sys.stderr.write(msg + "\n")
-        return status
-    return 0
+    result = ch.invokeCH(maurl, operation, logger, args, [cert], pkey)
+    ret = check_result(result)
+    if not ret==0:
+        return ret
+    else:
+        sys.stderr.write("Revoked privilege]\n");
 
 if __name__ == "__main__":
     sys.exit(main())

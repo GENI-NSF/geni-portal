@@ -52,13 +52,12 @@ END;
 
   <div id='tablist'>
 		<ul class='tabs'>
-			<li><a href='#ssh'>SSH Keys</a></li>
-			<li><a href='#accountdetails'>Account Details</a></li>
-			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
 			<li><a href='#accountsummary'>Account Summary</a></li>
-			<li><a href='#rspecs'title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#ssh'>SSH Keys</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
-			<li style="border-right: none"><a href='#other'>Other</a></li>
+			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#tools'>Tools</a></li>
+			<li style="border-right: none"><a href='#outstandingrequests'>Outstanding Requests</a></li>
 		</ul>
   </div>
 		
@@ -104,6 +103,25 @@ else
     print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
           . "<th>Edit</th><th>Delete</th></tr>\n";
     foreach ($keys as $key) {
+      // generate key's fingerprint
+        $fingerprint_key = NULL;
+        $fingerprint_key = $key['public_key'];
+        // write key to temp file
+        $fingerprint_key_filename = tempnam(sys_get_temp_dir(), 'fingerprint');
+        $fingerprint_key_file = fopen($fingerprint_key_filename, "w");
+        fwrite($fingerprint_key_file, $fingerprint_key);
+        fclose($fingerprint_key_file);
+        // get fingerprint
+        $cmd_array = array('/usr/bin/ssh-keygen',
+                         '-lf',
+                         $fingerprint_key_filename,
+                         );
+        $command = implode(" ", $cmd_array);
+        $result = exec($command, $output, $status);
+        $fingerprint_array = explode(' ', $result);
+        $fingerprint = $fingerprint_array[1]; // store fingerprint
+        unlink($fingerprint_key_filename);
+      
       $args['id'] = $key['id'];
       $query = http_build_query($args);
       if (is_null($key['private_key'])) {
@@ -123,7 +141,7 @@ else
                 . $delete_sshkey_url . $query
                 . "')\">Delete</button>");
       print "<tr>"
-      . "<td>" . htmlentities($key['filename']) . "</td>"
+      . "<td>" . htmlentities($key['filename']) . "<br><small>" . $fingerprint . "</small>" . "</td>"
       . "<td>" . htmlentities($key['description']) . "</td>"
       . '<td>' . $public_key_download_cell . '</td>'
       . '<td>' . $pkey_cell . '</td>'
@@ -143,21 +161,6 @@ else
   }
 
 // END SSH tab
-echo "</div>";
-
-// BEGIN account details tab
-echo "<div id='accountdetails'>";
-$disable_account_details = "";
-$disable_authorize_tools = "";
-if($in_lockdown_mode) {
-  $disable_account_details = "disabled";
-  $disable_authorize_tools = "disabled";
-}
-print "<h2>Edit Account Details</h2>";
-print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
-print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
-
-// END account details tab
 echo "</div>";
 
 // BEGIN outstand requests tab
@@ -225,20 +228,28 @@ echo "</div>";
 
 // BEGIN account summary tab
 echo "<div id='accountsummary'>";
+$disable_account_details = "";
+if($in_lockdown_mode) {
+  $disable_account_details = "disabled";
+}
+
 print "<h2>Account Summary</h2>\n";
 // Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
 // Put this in a nice table
 print "<table>\n";
 print "<tr><th>Name</th><td>" . $user->prettyName() . "</td></tr>\n";
 print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
+print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
+print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
 print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
 print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
-print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
-print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
+if ($user->phone() != "")
+  print "<tr><th>Telephone Number</th><td>" . $user->phone() . "</td></tr>\n";
 // FIXME: Project count? Slice count?
 // FIXME: Other attributes?
 // FIXME: Permissions
 print "</table>\n";
+print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
 
 // END account summary tab
 echo "</div>";
@@ -251,14 +262,9 @@ echo "<div id='rspecs'>";
  * RSpecs
  *----------------------------------------------------------------------
  */
-print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
-
-$disable_manage_rspecs = "";
-if ($in_lockdown_mode) $disable_manage_rspecs = "disabled";
-
-print "<p><button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
-  . "Manage RSpecs</button></p>\n";
-
+if (!$in_lockdown_mode) {
+  include("tool-rspecs.php");
+}
 // END rspecs tab
 echo "</div>";
 ?>
@@ -282,31 +288,44 @@ $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close
 ?>
 
 <h2>Configure <code>omni</code></h2>
-<p><a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>omni</code></a> is a command line tool.
-It is intended for more advanced users. In order to use <code>omni</code> or other command line tools you will need to
-<?php if ($has_certificate): ?>
-<a href="<?php print $download_url?>" target="_blank">download your SSL certificate</a>.
-<?php else: ?>
-<a href="<?php print $create_url?>" target="_blank">create an SSL certificate</a>.
-<?php endif; ?>
+<p><a href='http://trac.gpolab.bbn.com/gcf/wiki/Omni'><code>omni</code></a> is a command line tool intended for experienced users. 
 </p>
 
 <h3>Option 1: Automatic <code>omni</code> configuration</h3>
-<p>Use <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a>
-to generate a configuration file for you:</p>
+<p>To configure <code>omni</code>, use the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a> script distributed with <code>omni</code> as described below.</p>
   <ol>
-    <li>Make sure you are running <b>omni 2.3.1</b> or later. 
-       <ul>
-         <li>To determine the version of an existing <code>omni</code> installation, run:
-	<pre>omni.py --version</pre>
-	 </li>
-         <li>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of <code>omni</code>.</li>
+    <li>
+In order to use <code>omni</code> or other command line tools you will need to generate an SSL certificate. <br/>
+<?php if (!$has_certificate): ?>
 
-       </ul>
+<button onClick="window.open('<?php print $create_url?>')">Generate an SSL certificate</button>.
+<?php else: ?>
+<b>Good! You have already generated an SSL certificate.</b>
+<?php endif; ?>
+
     </li>
-    <li>Download your <a href='omni-bundle.php'>customized configuration data</a>.</li>
-    <li>Follow the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code> instructions</a>.</li>
+    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni-bundle.zip</code>):<br/>
+    		 <button onClick="window.location='omni-bundle.php'">Download your omni data</button>
+    </li>
+    <li>Generate an <code>omni_config</code> by running the following command in a terminal: <pre>omni-configure.py</pre></li>
+    <li>Test your setup by running the following command in a terminal: <pre>omni.py -a ig-gpo getversion</pre>
+    The output should look similar to this <a href='http://trac.gpolab.bbn.com/gcf/attachment/wiki/OmniConfigure/Automatic/getversion.out'>example output</a>.
+</li>
   </ol>
+
+  <table id='tip'>
+    <tr>
+       <td rowspan=3><img id='tipimg' src="http://groups.geni.net/geni/attachment/wiki/GENIExperimenter/Tutorials/Graphics/Symbols-Tips-icon-clear.png?format=raw" width="75" height="75" alt="Tip"></td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
+    </tr>
+       <tr><td>To determine the version of an existing <code>omni</code> installation, run:
+	            <pre>omni.py --version</pre>
+       </td></tr>
+        <tr><td>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of <code>omni</code>.</td></tr>
+
+  </table>
+
+<p>Complete <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code> instructions</a> are available.</p>
 
 <h3>Option 2: Manual <code>omni</code> configuration</h3>
 <p><a href='tool-omniconfig.php'>Download and customize a template <code>omni</code> configuration file</a>.</p>
@@ -332,8 +351,8 @@ echo "</div>";
 </table>
 -->
 <?php
-// BEGIN other tab
-echo "<div id='other'>";
+// BEGIN tools tab
+echo "<div id='tools'>";
 /*----------------------------------------------------------------------
  * ABAC (if enabled)
  *----------------------------------------------------------------------
@@ -344,14 +363,20 @@ if ($portal_enable_abac)
     print "<button onClick=\"window.location='abac-id.php'\">Download your ABAC ID</button><br/>\n";
     print "<button onClick=\"window.location='abac-key.php'\">Download your ABAC private key</button>\n";
   }
+$disable_authorize_tools = "";
+if($in_lockdown_mode) {
+  $disable_authorize_tools = "disabled";
+}
+
+print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
 
 
-     print '<h2>iRODS</h2>';
+print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
 if ($user->hasAttribute('enable_irods'))
   $irodsdisabled = "";
 print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
-// END other tab
+// END tools tab
 echo "</div>";
 
   // END the tabContent class

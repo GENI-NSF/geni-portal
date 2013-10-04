@@ -140,12 +140,19 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $comp_mgr_id = $node['component_manager_id'];
     if ($filterToAM and ($comp_mgr_id!=$componentMgrURN)){
       $sliver_id = $node['sliver_id'];
+      if (! isset($sliver_id) or is_null($sliver_id) or $sliver_id === '') {
+	// This is expected if this node was not for the AM that we submitted it to.
+	// And the converse is true: We absolutly expect this to be filled in if this node is for this AM
+	//	error_log("print-rspec-pretty skipping node '" . $comp_id . "' (client_id '" . $client_id . "') with no sliver_id, and comp_mgr_id $comp_mgr_id != AM URN $componentMgrURN");
+	continue;
+      }
       $sliver_auth = get_auth_from_urn($sliver_id);
       $compMgrAuth = get_auth_from_urn($componentMgrURN);
       if ($sliver_auth == $compMgrAuth) {
-	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+	error_log("Node '" . $comp_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
       } else {
-       continue;
+	error_log("print-rspec-pretty skipping node '" . $comp_id . "' (client_id '" . $client_id . "'): its comp_mgr " . $comp_mgr_id . " != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
+	continue;
       }
     }
     $node_num = $node_num+1;
@@ -182,6 +189,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       echo "<td>(not specified)</td>\n";
     }
     echo "</tr>\n";
+    $hadLogins = false;
     foreach ($logins as $login) {	
       $ssh_user = $login['username'];
       $ssh_host = $login['hostname'];
@@ -190,10 +198,14 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       if ($ssh_port and $ssh_port != 22) {
         $ssh_url .= ":$ssh_port";
       }
-
-      echo "<tr>\n";    
-      echo "<th colspan='2'>Login</th>\n";
-      echo "<td colspan='3' class='login' id='login_".$client_id."'>";
+      if (! $hadLogins) {
+	$hadLogins = true;
+	echo "<tr>\n";    
+	echo "<th colspan='2'>Login</th>\n";
+	echo "<td colspan='3' class='login' id='login_".$client_id."'>";
+      } else {
+	echo "<br/>\n";
+      }
       echo "<a href='$ssh_url' target='_blank'>";
       echo "ssh ", $login['username'],"@",$login['hostname'];
       if ($ssh_port and $ssh_port != 22) {
@@ -203,6 +215,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       if (!$manifestOnly){
       	 echo "<span class='status_msg'><i>Querying for more login information... </i></span>\n";      
       }
+    }
+    if ($hadLogins) {
       echo "</td>\n";
       echo "</tr>\n";
     }
@@ -240,14 +254,30 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   $link_num = 1;
   foreach ($links as $link) {
     $comp_mgrs = $link->component_manager;
-    $componentMgrName = $comp_mgrs['name'];		      
-    if ($filterToAM and ($componentMgrName!=$componentMgrURN)){
+    $client_id = $link['client_id'];
+    // There may be multiple component managers
+    $link_has_this_cm = False;
+    foreach ($comp_mgrs as $cm) {
+      if ($cm['name'] == $componentMgrURN) {
+	$link_has_this_cm = True;
+	//	error_log("Link is for this CM based on array of CMs. " . $client_id . " has cm name " . $cm['name'] . " that matches AM URN");
+	break;
+	//      } else {
+	//	error_log("CM not this AM: " . $cm['name'] . " != " . $componentMgrURN);
+      }
+    }
+    if ($filterToAM and !$link_has_this_cm){
       $sliver_id = $link['sliver_id'];
       $sliver_auth = get_auth_from_urn($sliver_id);
       $compMgrAuth = get_auth_from_urn($componentMgrURN);
       if ($sliver_auth == $compMgrAuth) {
-	error_log("Component " . $comp_id . " is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+	//	error_log("Link '" . $client_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+      } else if (! isset($sliver_id) or is_null($sliver_id) or $sliver_id === '') {
+	// Links often don't have a sliver_id
+	//	error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . $comp_mgrs->count() . " of them) != requested " . $componentMgrURN . " and sliver id not given");
+	continue;
       } else {
+	error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . $comp_mgrs->count() . " of them) != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
 	continue;
       }
     }

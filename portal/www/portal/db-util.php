@@ -277,6 +277,7 @@ function fetchRSpecMetaData($user) {
   $sql .= " where owner_id = ";
   $sql .= $conn->quote($user->account_id, 'text');
   $sql .= " AND visibility = 'private'";
+  $sql .= " ORDER BY name";
   $rows = db_fetch_rows($sql, "fetchRSpecMetaData");
   $private_rspecs = $rows[RESPONSE_ARGUMENT::VALUE];
   // List private RSpecs first.

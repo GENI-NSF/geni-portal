@@ -72,6 +72,7 @@ INSERT INTO cs_action (name, privilege, context_type) values ('lookup_project', 
 INSERT INTO cs_action (name, privilege, context_type) values ('lookup_projects', 2, 3);
 INSERT INTO cs_action (name, privilege, context_type) values ('update_project', 3, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('add_project_attribute', 3, 1);
+INSERT INTO cs_action (name, privilege, context_type) values ('remove_project_attribute', 3, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('change_lead', 1, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('modify_project_membership', 1, 1);
 INSERT INTO cs_action (name, privilege, context_type) values ('add_project_member', 1, 1);

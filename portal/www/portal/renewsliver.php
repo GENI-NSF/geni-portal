@@ -93,6 +93,24 @@ if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 if (array_key_exists('sliver_expiration', $_GET)) {
   // what we got asked for
   $desired_expiration = $_GET['sliver_expiration'];
+  $desired_obj = new DateTime($desired_expiration);
+  if ($desired_obj > new DateTime($slice[SA_ARGUMENT::EXPIRATION])) {
+    // If you try to renew past teh slice expiration, limit it
+    $desired_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+  } else {
+    // If you didn't specify a time, use min of end of day, slice expiration
+    $desired_array = date_parse($desired_expiration);
+    if ($desired_array["hour"] == 0 and $desired_array["minute"] == 0 and $desired_array["second"] == 0 and $desired_array["fraction"]== 0) {
+      $sliceexp_array = date_parse($slice[SA_ARGUMENT::EXPIRATION]);
+      if ($desired_array["year"] == $sliceexp_array["year"] and $desired_array["month"] == $sliceexp_array["month"] and $desired_array["day"] == $sliceexp_array["day"]) {
+	$desired_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+      } else {
+	// renew for the end of the day
+	$desired_expiration = $desired_expiration . " 23:59:59";
+      }
+    }
+  }
+
   // what to send to the AM(s)
   $rfc3339_expiration = rfc3339Format($desired_expiration);
   // what to display to the user
@@ -100,7 +118,6 @@ if (array_key_exists('sliver_expiration', $_GET)) {
 } else {
   no_time_error();
 }
-
 
 // Takes an arg am_id which may have multiple values. Each is treated
 // as the ID from the DB of an AM which should be queried

@@ -2,7 +2,43 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.4 ==
+   * Fix geni-revoke-member-privileges script (#716)
+   * Quiet some logging in printing rspecs (#836)
+   * Rearrange Profile tab (#812)
+   * Remove debug log message in OpenID server (#828)
+   * Remove "Manage RSpecs" button from profile tab (#810)
+
+== 2.3 ==
+   * Remove note feature from projects and slices (#728)
+   * Add LabWiki buttons (#825)
+   * Add WiMAX OpenID support with new attribute http://geni.net/wimax/username (#809)
+   * Clean up OpenID logging and sessions (#670)
+   * Pass slice and project info via OpenID attribute exchange (#813)
+   * Fix geni-remove-from-project script (#715)
+   * Fix creation/deletion timestamps in monitoring (#817)
+   * Fix up link selection when printing rspec (#818)
+   * Alphabetize member lists for project and slice (#811)
+   * Show one big "Login" box for exogeni consistent with instageni (#823)
+   * Add instructions for naming on create slice page (#821)
+   * Renew a slice for the end of the day. Slivers to not past the (new) slice expiration, 
+   else end of the requested day. (#796)
+   * Support more integration with WiMAX: Use new URL (#771), allow
+   users to change the project they use with WiMAX (#774), handle
+   duplicate usernames (#776), support the agreed upon error codes
+   (#777), allow deleting group members - like when they are removed
+   from a project (#805), allow deleting groups (like when the project
+   is expired or the project lead no longer endorses using WiMAX with
+   the project (#806), allow project leads to enable multiple projects
+   for WiMAX (#807), and suport changing the lead of a project
+   (#808). For all these cases, the changes take effect when a project
+   member - preferably the new project lead - loads the WiMAX
+   page. Note that the WiMAX button remains limited visibility.
+   * Make the 'Generate SSL cert' button open in a new tab (#822)
+   * Handle error getting openid AX request (#827)
+
 == 2.2 ==
+  * Display fingerprints of SSH keys (#695)
   * Added version information to GENI portal (#789)
   * Comment out call to error log in MA causing PHP warning (#790)
   * Change some mail links to help@geni.net (#572)
@@ -20,6 +56,15 @@
   * Fix "already a member" message to include member and project names instead of id numbers (#617)
   * Check if slice is expired before querying for status (#675)
   * Alphabetize slices in slice list (#788)
+  * Comment out a debug (#798)
+  * Log if the pretty RSpec printer is skipping a node as not for this AM (#803)
+  * Handle bulk upload file with 0 valid email addresses (#802)
+  * Use the word "Portal" on the portal landing page (#733)
+  * Reconcile the use of the phrase "omni-bundle" (#752)
+  * Rephrase Omni Configuration instructions (#753)
+  * Label private and public rspecs in list and alphabetize (#761)
+  * Add GENI usernames to header and make more prominent on Profile page (#797)
+  * Update gcf to 2.4 final (#794)
 
 == 2.1 ==
   * Revise handling of Google Analytics (#742)

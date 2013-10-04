@@ -16,7 +16,6 @@ require_once "Auth/OpenID.php";
  */
 function action_default()
 {
-    error_log("OpenID-Direct: in action_default");
     header('X-XRDS-Location: '.buildURL('idpXrds'));
 
     $server =& getServer();
@@ -36,8 +35,6 @@ function action_default()
 
     setRequestInfo($request);
 
-    error_log("OpenID-Direct mode = " . $request->mode);
-
     if (in_array($request->mode,
                  array('checkid_immediate', 'checkid_setup'))) {
       // Redirect to indirect server here with a 307 code to redirect
@@ -52,10 +49,8 @@ function action_default()
         // which uses a ruby openid client.
         $new_location .= '?' . $_SERVER['QUERY_STRING'];
       } else if ($method == 'POST') {
-        /* error_log("About to translate POST: " . print_r($_POST, true)); */
         $query = Auth_OpenID::getQuery();
         $new_location .= '?' . http_build_query($query);
-        /* error_log("OpenID-Direct POST redirecting to $new_location"); */
       }
       header('Location: ' . $new_location, true, 307);
 	exit;

@@ -37,6 +37,29 @@ function run() {
         $auth_request->addExtension($sreg_request);
     }
 
+    $attribute[] = Auth_OpenID_AX_AttrInfo::make('http://geni.net/projects',
+                                                 'unlimited', 1, 'projects');
+    $attribute[] = Auth_OpenID_AX_AttrInfo::make('http://geni.net/slices',
+                                                 'unlimited', 1, 'slices');
+    $attribute[] = Auth_OpenID_AX_AttrInfo::make('http://geni.net/user/urn',
+                                                 1, 1, 'urn');
+    $attribute[] = Auth_OpenID_AX_AttrInfo::make('http://geni.net/user/prettyname',
+                                                 1, 1, 'prettyname');
+    $attribute[] = Auth_OpenID_AX_AttrInfo::make('http://geni.net/wimax/username',
+                                                 1, 1, 'wimax');
+
+
+    // Create AX fetch request
+    $ax = new Auth_OpenID_AX_FetchRequest;
+
+    // Add attributes to AX fetch request
+    foreach($attribute as $attr){
+      $ax->add($attr);
+    }
+
+    // Add AX fetch request to authentication request
+    $auth_request->addExtension($ax);
+
 	$policy_uris = null;
 	if (isset($_GET['policies'])) {
     	$policy_uris = $_GET['policies'];
