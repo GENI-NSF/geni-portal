@@ -75,6 +75,7 @@ $parents = array("profile.php" => "home.php",
 		 "sliceabac.php" => "slice.php",
 		 "slicecred.php" => "slice.php",
 		 "sliceresource.php" => "slice.php",
+		 "rspecs.php" => "slice.php",
 		 "do-renew.php" => "slice.php",
 		 "do-renew-slice.php" => "slice.php",
 		 "sliverdelete.php" => "slice.php",
@@ -159,12 +160,12 @@ $names = array("home.php" => $TAB_HOME,
 	       "edit-project-member.php" => "Edit Project Membership: %project_name", 
 	       "upload-project-members.php" => "Upload Project Members : %project_name",
 	       "accept-project-invite.php" => "Accept Project Invite : %project_name",
-        "rspecupload.php" => "Upload Resource Specification",
-        "tool-rspecs.php" => "Manage RSpecs",
-        "omni-bundle.php" => "Omni Bundle",
+	       "rspecupload.php" => "Upload Resource Specification",
+	       "rspecs.php" => "Manage RSpecs",
+	       "omni-bundle.php" => "Omni Bundle",
 	       "irods.php" => "iRODS Account",
 	       "wimax-enable.php" => "Enable WiMAX",
-        "gemini.php" => "GENI Desktop");
+	       "gemini.php" => "GENI Desktop");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
