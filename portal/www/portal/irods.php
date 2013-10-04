@@ -216,8 +216,7 @@ if (! $permError && ! $userExisted) {
       $irods_json = json_encode($irods_info);
       $irods_json = str_replace('\\/','/', $irods_json);
 
-      // FIXME: Take this out when ready
-      error_log("Trying to create iRODS account with values: " . $irods_json);
+      //      error_log("Trying to create iRODS account with values: " . $irods_json);
 
       ///* Sign the data with the portal certificate (Is that correct?) */
       //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
@@ -236,8 +235,7 @@ if (! $permError && ! $userExisted) {
 	throw new Exception("Failed to create iRODS account - server error: " . $addstruct);
       }
 
-      // FIXME: Comment this out when ready
-      error_log("PUT result content: " . $m[2]);
+      //      error_log("PUT result content: " . $m[2]);
 
       $addjson = json_decode($m[2], true);
 
@@ -246,7 +244,6 @@ if (! $permError && ! $userExisted) {
       if (! is_null($addjson) && is_array($addjson) && array_key_exists(IRODS_ADD_RESPONSE_CODE, $addjson)) {
 	if ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::SUCCESS) {
 	  $didCreate = True;
-	  // FIXME: Redo the GET so I can show the zone et al?
 	  if (array_key_exists(IRODS_ENV, $addjson)) 
 	    $irodsEnv = $addjson[IRODS_ENV];
 	  if (array_key_exists(IRODS_URL, $addjson)) 
@@ -290,7 +287,7 @@ if (! $permError && ! $userExisted) {
 
 // Now that the user has an account, make sure there is an irods group for all their projects and they are in those groups
 // FIXME: In future take out that $userExisted piece. That is just to help bootstrap group creation but slow and not needed in the long run
-if (True or $didCreate or $userExisted) {
+if ($didCreate or $userExisted) {
   if (! isset($sa_url)) {
     $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
     if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
@@ -305,15 +302,23 @@ if (True or $didCreate or $userExisted) {
   // for each project
   foreach ($project_ids as $project_id) {
     $project = lookup_project($sa_url, $user, $project_id);
+    if (convert_boolean($project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED])) {
+      // Don't create groups and members for expired projects
+      continue;
+    }
+
+    // FIXME: If I had attributes, I could skip trying to recreate the group here if it already exists
+
     // create group
-    // FIXME: When this method returns something, log if we just created the group
     $created = irods_create_group($project_id, $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME], $user);
     $group_name = group_name($project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]);
     if ($created === 0) {
       error_log("irods.php created group for already existing project $group_name cause of page load by " . $user->prettyName());
     }
 
-    if (True or $created === 0 or ($created === 1 and $didCreate)) {
+    // If the group was created, then this user was added
+    // But if the group already existed and we just created their iRODS account, then we must add them to the group
+    if ($created === 1 and $didCreate) {
       // add user to group
       $added = addToGroup($project_id, $group_name, $user->account_id, $user);
       if ($added === -1) {
@@ -328,12 +333,12 @@ if (True or $didCreate or $userExisted) {
 show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-// FIXME
+
 ?>
 <h1>iRODS Account</h1>
 <p>iRODS is a server for storing data about your experiments. It is used by the GIMI and GEMINI Instrumentation and Measurement systems.</p>
 <?php
-// FIXME: URL for iRODS? Other stuff?
+
 if ($didCreate) {
   print "<p>Your GENI iRODS account has been created.</p>";
   print "<table><tr><td class='label'><b>Username</b></td><td>$username</td></tr>\n";
@@ -401,7 +406,6 @@ if ($didCreate) {
   print "<p class='warn'>There was an error talking to iRODS.<br/><br/>";
   print "$irodsError</p>\n";
   print "</div>\n";
-  // FIXME: Do more?
 }
 include("footer.php");
 ?>

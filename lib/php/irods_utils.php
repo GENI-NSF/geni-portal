@@ -32,7 +32,8 @@ class PermFailException extends Exception{}
 
 // This is just the default - otherwise it comes from the SR
 // Test server
-$irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+$irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
+//$irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
 
 // Production server
 // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
@@ -66,7 +67,7 @@ function doGET($url, $user, $password, $serverroot=null) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (false and ! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
+  if (! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
@@ -106,7 +107,6 @@ function doGET($url, $user, $password, $serverroot=null) {
 
     throw new Exception("GET " . $url . " failed: " . $code . $error);
   } else {
-    // FIXME: Comment this out when ready
     //    error_log("GET of " . $url . " result: " . print_r($result, true));
   }
   if ($meta === false) {
@@ -148,18 +148,23 @@ function doGET($url, $user, $password, $serverroot=null) {
 function doDELETE($url, $user, $password, $serverroot=null) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
+
+  // To tell the server that I know it is sending JSON result
+  $headers = array();
+  $headers[] = "Accept: " . "application/json";
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_HEADER, 1);
+
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (false and ! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
+  if (! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
   }
   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
-
-  // FIXME: Do I need CURLOPT_POSTFIELDS?
 
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
@@ -245,7 +250,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (false and ! is_null($serverroot)) { // FIXME: while server cert is expired....
+  if (! is_null($serverroot)) { // FIXME: while server cert is expired....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
@@ -329,7 +334,7 @@ const IRODS_PUT_USER_URI = '/user'; // to create a user
 const IRODS_PUT_USER_GROUP_URI = '/user_group/user'; // to add a user to a group
 const IRODS_REMOVE_USER_URI1 = '/user_group/'; // to remove user from group. next is groupname
 const IRODS_REMOVE_USER_URI2 = '/user/'; // comes after groupname, before username
-const IRODS_PUT_GROUP_URI = '/user_group/'; // to create a group
+const IRODS_PUT_GROUP_URI = '/user_group'; // to create a group
 const IRODS_SEND_JSON = '?contentType=application/json';
 const IRODS_CREATE_TIME = 'createTime';
 const IRODS_ZONE = "zone";
@@ -337,9 +342,20 @@ const IRODS_USERDN = "userDN";
 const IRODS_URL = "webAccessURL";
 const IRODS_ENV = "irodsEnv";
 const IRODS_GROUP = "userGroup"; // group name
+const IRODS_GROUP_NEW = "userGroupName"; // group name
+// Next 2 possible values for STATUS field
 const IRODS_STATUS_ERROR = "ERROR"; // command failed
-const IRODS_STATUS_SUCCESS = "SUCCESS"; // command succeeded
+const IRODS_STATUS_SUCCESS = "OK"; // command succeeded
+
+// the name of teh detailed status field
+const IRODS_USER_GROUP_COMMAND_STATUS = "userGroupCommandStatus"; // details on what happened with adding a group
+
+// possible errors for teh detailed status field. success is as before
 const IRODS_STATUS_BAD_GROUP = "INVALID_GROUP"; // group doesn't exist
+const IRODS_STATUS_DUPLICATE_GROUP = "DUPLICATE_GROUP";
+const IRODS_STATUS_DUPLICATE_USER = "DUPLICATE_USER";
+const IRODS_STATUS_BAD_USER = "INVALID_USER";
+
 
 /*
 0 - Success (user can log in with that username/password)
@@ -400,7 +416,8 @@ function irods_create_group($project_id, $project_name, $user) {
 
   // This is just the default - otherwise it comes from the SR
   // Test server
-  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
   
   // Production server
   // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
@@ -430,7 +447,7 @@ function irods_create_group($project_id, $project_name, $user) {
   $group_name = group_name($project_name);
 
   $irods_info = array();
-  $irods_info[IRODS_GROUP] = $group_name;
+  $irods_info[IRODS_GROUP_NEW] = $group_name;
   $irods_info[IRODS_ZONE] = $default_zone;
 
   // Note: in PHP 5.4, use JSON_UNESCAPED_SLASHES.
@@ -438,8 +455,7 @@ function irods_create_group($project_id, $project_name, $user) {
   $irods_json = json_encode($irods_info);
   $irods_json = str_replace('\\/','/', $irods_json);
   
-  // FIXME: Take this out when ready
-  error_log("Trying to add group to iRODS with values: " . $irods_json);
+  //  error_log("Trying to add group to iRODS with values: " . $irods_json);
 
   ///* Sign the data with the portal certificate (Is that correct?) */
   //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
@@ -458,20 +474,18 @@ function irods_create_group($project_id, $project_name, $user) {
       throw new Exception("Failed to add iRODS group - server error: " . $addstruct);
     }
 
-    // FIXME: Comment this out when ready
-    error_log("PUT result content: " . $m[2]);
+    //    error_log("PUT result content: " . $m[2]);
     
     $addjson = json_decode($m[2], true);
-    // FIXME: Parse the json return
-    error_log("add group result: " . print_r($addjson, true));
-    // FIXME: Return 0 if created the group, 1 if group already existed, -1 on error
+    //    error_log("add group result: " . print_r($addjson, true));
+
     if (is_array($addjson)) {
       $status = null;
       $msg = null;
       $groupCmdStatus = null;
       if (array_key_exists("status", $addjson)) {
 	$status = $addjson["status"];
-	// FIXME: Return true if 0 if added the group, 1 if group existed, -1 on error
+	// Return 0 if added the group, 1 if group existed, -1 on error
 	if ($status == IRODS_STATUS_ERROR) {
 	  $created = -1;
 	} elseif ($status == IRODS_STATUS_SUCCESS) {
@@ -480,10 +494,21 @@ function irods_create_group($project_id, $project_name, $user) {
       }
       if (array_key_exists("message", $addjson)) {
 	$msg = $addjson["message"];
-	error_log("createGroup result: $msg");
+      }
+      if (array_key_exists(IRODS_USER_GROUP_COMMAND_STATUS, $addjson)) {
+	$groupCmdStatus = $addjson[IRODS_USER_GROUP_COMMAND_STATUS];
+	if ($groupCmdStatus == IRODS_STATUS_DUPLICATE_GROUP) {
+	  $created = 1;
+	  error_log("iRODS Group $group_name already existed");
+	} elseif ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
+	  error_log("irods failed to create group $group_name: $groupCmdStatus: '$msg'");
+	}
+      } elseif ($created !== 0) {
+	error_log("irods failed to create group $group_name: '$msg'");
       }
     } else {
-      $created = 0;
+      error_log("malformed return");
+      $created = -1;
     }
   } catch (Exception $e) {
     error_log("Error doing iRODS put to add group: " . $e->getMessage());
@@ -506,6 +531,9 @@ function irods_create_group($project_id, $project_name, $user) {
     // for each member of the project
     foreach ($members as $m) {
       $added = addToGroup($project_id, $group_name, $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID], $user);
+      /* if ($added === -1) { */
+      /* 	error_log("Couldn't add member " . $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID] . " to new irods group $group_name: probably they don't have an irods account yet."); */
+      /* } */
     }
   }
 
@@ -578,7 +606,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   // On 9, do createGroup
   // On 10, maybe email someone? Just log?
   // Log errors
-  error_log("addToGroup $group_name member $member_id with username $username");
+  error_log("iRODS will addToGroup $group_name member $member_id with username $username");
 
   // PUT to <base>/user_group/user
   // JSON like this: {"userName":"test2","userGroup":"jargonTestUg","zone":"test1"}
@@ -588,7 +616,8 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 
   // This is just the default - otherwise it comes from the SR
   // Test server
-  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
   
   // Production server
   // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
@@ -624,8 +653,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   $irods_json = json_encode($irods_info);
   $irods_json = str_replace('\\/','/', $irods_json);
   
-  // FIXME: Take this out when ready
-  error_log("Trying to add member to iRODS group with values: " . $irods_json);
+  //  error_log("Trying to add member to iRODS group with values: " . $irods_json);
 
   ///* Sign the data with the portal certificate (Is that correct?) */
   //$irods_signed = smime_sign_message($irods_json, $portal_cert, $portal_key);
@@ -644,19 +672,18 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
       throw new Exception("Failed to add member to iRODS group - server error: " . $addstruct);
     }
 
-    // FIXME: Comment this out when ready
-    error_log("PUT result content: " . $m[2]);
+    //    error_log("PUT result content: " . $m[2]);
     
     $addjson = json_decode($m[2], true);
-    // FIXME: Parse the json return
-    error_log("add user to group result: " . print_r($addjson, true));
+    //    error_log("add user to group result: " . print_r($addjson, true));
+
     if (is_array($addjson)) {
       $status = null;
       $msg = null;
       $groupCmdStatus = null;
       if (array_key_exists("status", $addjson)) {
 	$status = $addjson["status"];
-	// FIXME: Return true if 0 if added the user, 1 if user already in the group, -1 on error
+	// Return 0 if added the user, 1 if user already in the group, -1 on error
 	if ($status == IRODS_STATUS_ERROR) {
 	  $added = -1;
 	} elseif ($status == IRODS_STATUS_SUCCESS) {
@@ -665,17 +692,35 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
       }
       if (array_key_exists("message", $addjson)) {
 	$msg = $addjson["message"];
-	error_log("addToGroup result: $msg");
+      }
+      
+      if (array_key_exists(IRODS_USER_GROUP_COMMAND_STATUS, $addjson)) {
+	$groupCmdStatus = $addjson[IRODS_USER_GROUP_COMMAND_STATUS];
+	if ($groupCmdStatus == IRODS_STATUS_DUPLICATE_USER) {
+	  $added = 1;
+	  error_log("iRODS User $username already in group $group_name");
+	} elseif ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
+	  if ($groupCmdStatus === IRODS_STATUS_INVALID_USER) {
+	    error_log("irods: user $username has no iRODS account yet. Cannot add group $group_name. ($groupCmdStatus: '$msg')");
+	    // FIXME: Email someone?
+	  } else {
+	    error_log("irods failed to add user $username to group $group_name: $groupCmdStatus: '$msg'");
+	  }
+	  // If it is INVALID_GROUP then we still need to do createGroup. I don't think that should happen
+	}
+      } elseif ($added !== 0) {
+	error_log("irods failed to add user $username to group $group_name: '$msg'");
       }
     } else {
-      $added = 0;
+      $added = -1;
+      error_log("malformed return from addUserToGroup");
     }
   } catch (Exception $e) {
     error_log("Error doing iRODS put to add member to group: " . $e->getMessage());
     $added = -1;
   }
 
-  // FIXME: Return true if 0 if added the user, 1 if user already in the group, -1 on error
+  // Return 0 if added the user, 1 if user already in the group, -1 on error
   return $added;
 }
 
@@ -699,13 +744,14 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
   // then call the new REST API, checking the return for the error codes. 0 or 12 counts as success.
   // On 9, do createGroup
   // Log errors
-  error_log("removeFromGroup $group_name member $member_id with username $username");
+  error_log("iRODS will removeFromGroup $group_name member $member_id with username $username");
 
   // FIXME: How come I can't rely on this from top of file?
 
   // This is just the default - otherwise it comes from the SR
   // Test server
-  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
   
   // Production server
   // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
@@ -743,13 +789,11 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
       throw new Exception("Failed to remove member from iRODS group - server error: " . $rmtruct);
     }
 
-    // FIXME: Comment this out when ready
-    error_log("DELETE result content: " . $m[2]);
+    //    error_log("DELETE result content: " . $m[2]);
     
     $rmjson = json_decode($m[2], true);
-    // FIXME: Parse the json return
-    error_log("remove user from group result: " . print_r($rmjson, true));
-    // FIXME: Return true if 0 if removed the user, 1 if user already not in the group, -1 on error
+    // Parse the json return
+    //    error_log("remove user from group result: " . print_r($rmjson, true));
 
     if (is_array($rmjson)) {
       $status = null;
@@ -757,7 +801,7 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
       $groupCmdStatus = null;
       if (array_key_exists("status", $rmjson)) {
 	$status = $rmjson["status"];
-	// FIXME: Return true if 0 if removed the user, 1 if user wasnt in the group, -1 on error
+	// Return true if 0 if removed the user, 1 if user wasnt in the group, -1 on error
 	if ($status == IRODS_STATUS_ERROR) {
 	  $removed = -1;
 	} elseif ($status == IRODS_STATUS_SUCCESS) {
@@ -765,19 +809,143 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
 	}
       }
       if (array_key_exists("message", $rmjson)) {
-	$msg = $addjson["message"];
-	error_log("removeFromGroup result: $msg");
+	$msg = $rmjson["message"];
+	//	error_log("removeFromGroup result: '$msg'");
+      }
+      // Mike C says delete when either the group or user doesn't exist returns SUCCESS
+      if (array_key_exists(IRODS_USER_GROUP_COMMAND_STATUS, $rmjson)) {
+	$groupCmdStatus = $rmjson[IRODS_USER_GROUP_COMMAND_STATUS];
+	if ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
+	  if ($groupCmdStatus === IRODS_STATUS_INVALID_USER) {
+	    error_log("irods: user $username was not in group $group_name to delete. ($groupCmdStatus: '$msg')");
+	  } else {
+	    error_log("irods failed to remove $username from group $group_name: $groupCmdStatus: '$msg'");
+	  }
+	}
+      } elseif ($removed !== 0) {
+	error_log("irods failed to remove user $username from group $group_name: '$msg'");
       }
     } else {
-      $removed = 0;
+      $removed = -1;
+      error_log("malformed return from removeUserFromGroup");
     }
   } catch (Exception $e) {
     error_log("Error doing iRODS delete to remove member from group: " . $e->getMessage());
     $removed = -1;
   }
 
-  // FIXME: Return true if 0 if removed the user, 1 if user already not in the group, -1 on error
+  // Return 0 if removed the user, 1 if user already not in the group, -1 on error
   return $removed;
 }
 
+// This function is not used currently as we don't want to delete user's data
+// It might be useful for debugging though?
+function removeGroup($project_id, $group_name, $user) {
+  if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
+    error_log("irods removeGroup: not a valid project ID. Nothing to do. $project_id");
+    return -1;
+  }
+  if (! isset($group_name) || is_null($group_name) || $group_name === '') {
+    error_log("irods removeGroup: not a valid group name. Nothing to do. $project_id, $group_name");
+    return -1;
+  }
+
+  // then call the new REST API, checking the return for the error codes. 0 or 12 counts as success.
+  // On 9, do createGroup
+  // Log errors
+  error_log("iRODS will removeGroup $group_name");
+
+  // FIXME: How come I can't rely on this from top of file?
+
+  // This is just the default - otherwise it comes from the SR
+  // Test server
+  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
+  
+  // Production server
+  // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
+  
+  /* TODO put these in the service registry or similar */
+  $irods_host = "irods_hostname"; // FIXME
+  $irods_port = 1247; // FIXME: Always right?
+  $irods_resource = "demoResc"; // FIXME: Always right?
+  $default_zone = "tempZone";
+  
+  // Get the irods server cert for smime purposes
+  $irods_cert = null;
+  $irods_svrs = get_services_of_type(SR_SERVICE_TYPE::IRODS);
+  if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && count($irods_svrs) > 0) {
+    $irod = $irods_svrs[0];
+    $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
+  }
+  
+  /* Get this from /etc/geni-ch/settings.php */
+  if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
+    $portal_irods_user = 'rods'; // FIXME: Testing value
+    $portal_irods_pw = 'rods'; // FIXME: Testing value
+  }
+
+  $removed = -1;
+
+  try {
+    $rmstruct = doDELETE($irods_url . IRODS_REMOVE_USER_URI1 . $group_name, $portal_irods_user, $portal_irods_pw, $irods_cert);
+
+    // look for (\r or \n or \r\n){2} and move past that
+    preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);
+    if (! array_key_exists(2, $m)) {
+      error_log("Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
+      throw new Exception("Failed to remove iRODS group - server error: " . $rmtruct);
+    }
+
+    // FIXME: Comment this out when ready
+    error_log("DELETE result content: " . $m[2]);
+    
+    $rmjson = json_decode($m[2], true);
+    error_log("remove group result: " . print_r($rmjson, true));
+
+    if (is_array($rmjson)) {
+      $status = null;
+      $msg = null;
+      $groupCmdStatus = null;
+      if (array_key_exists("status", $rmjson)) {
+	$status = $rmjson["status"];
+	// Return true = 0 if removed the group, -1 on error
+	if ($status == IRODS_STATUS_ERROR) {
+	  $removed = -1;
+	} elseif ($status == IRODS_STATUS_SUCCESS) {
+	  $removed = 0;
+	}
+      }
+      if (array_key_exists("message", $rmjson)) {
+	$msg = $rmjson["message"];
+	//	error_log("removeGroup result: '$msg'");
+      }
+      // Mike C says delete when the group doesn't exist returns SUCCESS
+      if (array_key_exists(IRODS_USER_GROUP_COMMAND_STATUS, $rmjson)) {
+	$groupCmdStatus = $rmjson[IRODS_USER_GROUP_COMMAND_STATUS];
+	if ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
+	  if ($groupCmdStatus === IRODS_STATUS_INVALID_GROUP) {
+	    error_log("irods: group $group_name not there to delete. ($groupCmdStatus: '$msg')");
+	  } else {
+	    error_log("irods failed to remove group $group_name: $groupCmdStatus: '$msg'");
+	  }
+	}
+      } elseif ($removed !== 0) {
+	error_log("irods failed to remove group $group_name: '$msg'");
+      }
+    } else {
+      $removed = -1;
+      error_log("malformed return from removeGroup");
+    }
+  } catch (Exception $e) {
+    error_log("Error doing iRODS delete to remove group: " . $e->getMessage());
+    $removed = -1;
+  }
+
+  // Return 0 if removed the group, -1 on error
+  return $removed;
+}
+
+?>
 ?>

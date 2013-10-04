@@ -73,11 +73,14 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
   $project_id = put_message($sa_url, $create_project_message, 
 			    $signer->certificate(), $signer->privateKey());
 
+  /****   iRODS Support ****/
   // All new projects get an irods group
   $created = irods_create_group($project_id, $project_name, $signer);
   if ($created === -1) {
     error_log("FAILED to create iRODS group for new project $project_name");
   }
+  /**** End of iRODS Support ***/
+
   return $project_id;
 }
 
@@ -194,11 +197,12 @@ function modify_project_membership($sa_url, $signer, $project_id,
   $result = put_message($sa_url, $modify_project_membership_msg,
                        $signer->certificate(), $signer->privateKey());
 
+  /****   iRODS Support ****/
   // Whenever we add/remove members from a project, do same for the matching irods group
   irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $signer, $result);
+  /****   End of iRODS Support ****/
 
-  return $result;
-  
+  return $result;  
 }
 
 // Modify project lead, make previous into an admin
