@@ -99,7 +99,6 @@ foreach ($public_rspecs as $rspec) {
 rspec_table_footer();
 
 include("footer.php");
-exit();
 
 /* ---------- */
 function rspec_table_header($public=False) {
