@@ -74,8 +74,10 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 			    $signer->certificate(), $signer->privateKey());
 
   // All new projects get an irods group
-  irods_create_group($project_id, $project_name, $lead_id, $signer);
-
+  $created = irods_create_group($project_id, $project_name, $signer);
+  if ($created === -1) {
+    error_log("FAILED to create iRODS group for new project $project_name");
+  }
   return $project_id;
 }
 

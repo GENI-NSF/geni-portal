@@ -64,8 +64,8 @@ function doGET($url, $user, $password, $serverroot=null) {
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
   if (false and ! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
@@ -150,8 +150,8 @@ function doDELETE($url, $user, $password, $serverroot=null) {
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
   if (false and ! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
@@ -243,8 +243,8 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   curl_setopt($ch, CURLOPT_HEADER, 1);
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
   if (false and ! is_null($serverroot)) { // FIXME: while server cert is expired....
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
@@ -337,6 +337,9 @@ const IRODS_USERDN = "userDN";
 const IRODS_URL = "webAccessURL";
 const IRODS_ENV = "irodsEnv";
 const IRODS_GROUP = "userGroup"; // group name
+const IRODS_STATUS_ERROR = "ERROR"; // command failed
+const IRODS_STATUS_SUCCESS = "SUCCESS"; // command succeeded
+const IRODS_STATUS_BAD_GROUP = "INVALID_GROUP"; // group doesn't exist
 
 /*
 0 - Success (user can log in with that username/password)
@@ -381,12 +384,16 @@ $IRODS_ERROR_NAMES = array("Success",
 			   "User (already) in group",
 			   "User not in group");
 
-function irods_create_group($project_id, $project_name, $lead_id, $user) {
+function irods_create_group($project_id, $project_name, $user) {
   // Note this function must bail if project_id is not a project but an error of some kind
   error_log("irods asked to create group for project $project_name with id $project_id");
-  if ($project_id == "-1" || ! uuid_is_valid($project_id)) {
-    error_log("but that's not a valid project ID. Nothing to do. $project_id");
-    return;
+  if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
+    error_log("irods_create_group: not a valid project ID. Nothing to do. $project_id");
+    return -1;
+  }
+  if (! isset($project_name) || is_null($project_name) || $project_name === '') {
+    error_log("irods_create_group: not a valid project name. Nothing to do. $project_id, $project_name");
+    return -1;
   }
 
   // FIXME: How come I can't rely on this from top of file?
@@ -440,6 +447,7 @@ function irods_create_group($project_id, $project_name, $lead_id, $user) {
   ///* Encrypt the signed data for the iRODS SSL certificate */
   //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
   
+  $created = -1;
   try {
     $addstruct = doPUT($irods_url . IRODS_PUT_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
 
@@ -456,12 +464,52 @@ function irods_create_group($project_id, $project_name, $lead_id, $user) {
     $addjson = json_decode($m[2], true);
     // FIXME: Parse the json return
     error_log("add group result: " . print_r($addjson, true));
+    // FIXME: Return 0 if created the group, 1 if group already existed, -1 on error
+    if (is_array($addjson)) {
+      $status = null;
+      $msg = null;
+      $groupCmdStatus = null;
+      if (array_key_exists("status", $addjson)) {
+	$status = $addjson["status"];
+	// FIXME: Return true if 0 if added the group, 1 if group existed, -1 on error
+	if ($status == IRODS_STATUS_ERROR) {
+	  $created = -1;
+	} elseif ($status == IRODS_STATUS_SUCCESS) {
+	  $created = 0;
+	}
+      }
+      if (array_key_exists("message", $addjson)) {
+	$msg = $addjson["message"];
+	error_log("createGroup result: $msg");
+      }
+    } else {
+      $created = 0;
+    }
   } catch (Exception $e) {
     error_log("Error doing iRODS put to add group: " . $e->getMessage());
+    $created = -1;
   }
 
-  // Now add the lead to the new group
-  addToGroup($project_id, $group_name, $lead_id, $user);
+  if ($created === 0) {
+    // Bootstrapping: for previously existing project, there may be other members of the project to add
+    // Rely on the fact that we can move on if the user doesn't exist
+    // Do this block only if we actually created the irods group just now
+
+    if (! isset($sa_url)) {
+      $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+      if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+	error_log("Found no SA in SR!'");
+      }
+    }
+
+    $members = get_project_members($sa_url, $user, $project_id);
+    // for each member of the project
+    foreach ($members as $m) {
+      $added = addToGroup($project_id, $group_name, $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID], $user);
+    }
+  }
+
+  return $created;
 }
 
 function irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $user, $result) {
@@ -474,6 +522,11 @@ function irods_modify_group_members($project_id, $members_to_add, $members_to_re
   }
   if ((! isset($members_to_add) or ! is_array($members_to_add) or count($members_to_add) == 0) and (! isset($members_to_remove) or ! is_array($members_to_remove) or count($members_to_remove) == 0)) {
     error_log("0 members to add or remove. nothing to do.");
+    return;
+  }
+
+  if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
+    error_log("irods_modify_group_members: not a valid project ID. Nothing to do. $project_id");
     return;
   }
 
@@ -493,18 +546,31 @@ function irods_modify_group_members($project_id, $members_to_add, $members_to_re
 //     dictionaries of {member_id => role, ....}
   if (isset($members_to_add)) {
     foreach (array_keys($members_to_add) as $member_id) {
-      addToGroup($project_id, $group_name, $member_id, $user);
+      $added = addToGroup($project_id, $group_name, $member_id, $user);
     }
   }
 
   if (isset($members_to_remove)) {
     foreach ($members_to_remove as $member_id) {
-      removeFromGroup($project_id, $group_name, $member_id, $user);
+      $removed = removeFromGroup($project_id, $group_name, $member_id, $user);
     }
   }
 }
 
 function addToGroup($project_id, $group_name, $member_id, $user) {
+  if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
+    error_log("irods addToGroup: not a valid project ID. Nothing to do. $project_id");
+    return -1;
+  }
+  if (! isset($group_name) || is_null($group_name) || $group_name === '') {
+    error_log("irods addToGroup: not a valid group name. Nothing to do. $project_id, $group_name");
+    return -1;
+  }
+  if (! isset($member_id) || $member_id == "-1" || ! uuid_is_valid($member_id)) {
+    error_log("irods addToGroup: not a valid member ID. Nothing to do. $member_id");
+    return -1;
+  }
+
   // must get member username
   $member = geni_load_user_by_member_id($member_id);
   $username = base_username($member);
@@ -567,6 +633,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   ///* Encrypt the signed data for the iRODS SSL certificate */
   //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
   
+  $added = -1;
   try {
     $addstruct = doPUT($irods_url . IRODS_PUT_USER_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
 
@@ -583,12 +650,49 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
     $addjson = json_decode($m[2], true);
     // FIXME: Parse the json return
     error_log("add user to group result: " . print_r($addjson, true));
+    if (is_array($addjson)) {
+      $status = null;
+      $msg = null;
+      $groupCmdStatus = null;
+      if (array_key_exists("status", $addjson)) {
+	$status = $addjson["status"];
+	// FIXME: Return true if 0 if added the user, 1 if user already in the group, -1 on error
+	if ($status == IRODS_STATUS_ERROR) {
+	  $added = -1;
+	} elseif ($status == IRODS_STATUS_SUCCESS) {
+	  $added = 0;
+	}
+      }
+      if (array_key_exists("message", $addjson)) {
+	$msg = $addjson["message"];
+	error_log("addToGroup result: $msg");
+      }
+    } else {
+      $added = 0;
+    }
   } catch (Exception $e) {
     error_log("Error doing iRODS put to add member to group: " . $e->getMessage());
+    $added = -1;
   }
+
+  // FIXME: Return true if 0 if added the user, 1 if user already in the group, -1 on error
+  return $added;
 }
 
 function removeFromGroup($project_id, $group_name, $member_id, $user) {
+  if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
+    error_log("irods removeFromGroup: not a valid project ID. Nothing to do. $project_id");
+    return -1;
+  }
+  if (! isset($group_name) || is_null($group_name) || $group_name === '') {
+    error_log("irods removeFromGroup: not a valid group name. Nothing to do. $project_id, $group_name");
+    return -1;
+  }
+  if (! isset($member_id) || $member_id == "-1" || ! uuid_is_valid($member_id)) {
+    error_log("irods removeFromGroup: not a valid member ID. Nothing to do. $member_id");
+    return -1;
+  }
+
   // must get member username
   $member = geni_load_user_by_member_id($member_id);
   $username = base_username($member);
@@ -627,6 +731,8 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
     $portal_irods_pw = 'rods'; // FIXME: Testing value
   }
 
+  $removed = -1;
+
   try {
     $rmstruct = doDELETE($irods_url . IRODS_REMOVE_USER_URI1 . $group_name . IRODS_REMOVE_USER_URI2 . $username, $portal_irods_user, $portal_irods_pw, $irods_cert);
 
@@ -643,10 +749,35 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
     $rmjson = json_decode($m[2], true);
     // FIXME: Parse the json return
     error_log("remove user from group result: " . print_r($rmjson, true));
+    // FIXME: Return true if 0 if removed the user, 1 if user already not in the group, -1 on error
+
+    if (is_array($rmjson)) {
+      $status = null;
+      $msg = null;
+      $groupCmdStatus = null;
+      if (array_key_exists("status", $rmjson)) {
+	$status = $rmjson["status"];
+	// FIXME: Return true if 0 if removed the user, 1 if user wasnt in the group, -1 on error
+	if ($status == IRODS_STATUS_ERROR) {
+	  $removed = -1;
+	} elseif ($status == IRODS_STATUS_SUCCESS) {
+	  $removed = 0;
+	}
+      }
+      if (array_key_exists("message", $rmjson)) {
+	$msg = $addjson["message"];
+	error_log("removeFromGroup result: $msg");
+      }
+    } else {
+      $removed = 0;
+    }
   } catch (Exception $e) {
     error_log("Error doing iRODS delete to remove member from group: " . $e->getMessage());
+    $removed = -1;
   }
 
+  // FIXME: Return true if 0 if removed the user, 1 if user already not in the group, -1 on error
+  return $removed;
 }
 
 ?>

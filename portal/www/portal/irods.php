@@ -288,6 +288,41 @@ if (! $permError && ! $userExisted) {
   }
 }
 
+// Now that the user has an account, make sure there is an irods group for all their projects and they are in those groups
+// FIXME: In future take out that $userExisted piece. That is just to help bootstrap group creation but slow and not needed in the long run
+if (True or $didCreate or $userExisted) {
+  if (! isset($sa_url)) {
+    $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+    if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+      error_log("Found no SA in SR!'");
+    }
+  }
+
+  // Use $username
+  // Get users projects
+  $project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
+  $num_projects = count($project_ids);
+  // for each project
+  foreach ($project_ids as $project_id) {
+    $project = lookup_project($sa_url, $user, $project_id);
+    // create group
+    // FIXME: When this method returns something, log if we just created the group
+    $created = irods_create_group($project_id, $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME], $user);
+    $group_name = group_name($project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]);
+    if ($created === 0) {
+      error_log("irods.php created group for already existing project $group_name cause of page load by " . $user->prettyName());
+    }
+
+    if (True or $created === 0 or ($created === 1 and $didCreate)) {
+      // add user to group
+      $added = addToGroup($project_id, $group_name, $user->account_id, $user);
+      if ($added === -1) {
+	error_log("FAILed to add $username to iRODS group $group_name");
+      }
+    }
+  }
+}
+
 // Now show a page with the result
 
 show_header('GENI Portal: Profile', $TAB_PROFILE);
