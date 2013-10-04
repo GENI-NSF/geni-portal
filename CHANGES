@@ -7,6 +7,7 @@
    * Quiet some logging in printing rspecs (#836)
    * Rearrange Profile tab (#812)
    * Remove debug log message in OpenID server (#828)
+   * Remove "Manage RSpecs" button from profile tab (#810)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
