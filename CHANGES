@@ -17,6 +17,8 @@
    some delay in creating projects or adding/removing members from
    projects. Note that the iRODS button itself is still only visible
    to select portal users. (#829, #830, #831, #832)
+   * Clearing or extending project expiration now un-expires the
+   project if applicable. (#841)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
