@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 
 include_once('/etc/geni-ch/settings.php');
+include_once('settings.php');
 
 /*
   Functions for interacting with the iRODS REST interfaces
@@ -62,10 +63,25 @@ if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
   $portal_irods_pw = 'rods'; // FIXME: Testing value
 }
 
-// Do a BasicAuth protected get of the given URL
-function doGET($url, $user, $password, $serverroot=null) {
+// Do a BasicAuth protected get or delete or put of the given URL, json data
+function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="application/json", $serverroot=null) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
+
+  if ($op == "DELETE") {
+    // To tell the server that I know it is sending JSON result
+    $headers = array();
+    $headers[] = "Accept: " . "application/json";
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+  } elseif ($op == "PUT") {
+    $headers = array();
+    $headers[] = "Content-Type: " . $content_type;
+    $headers[] = "Content-Length: " . strlen($data);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+  }
+
   curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
@@ -77,10 +93,18 @@ function doGET($url, $user, $password, $serverroot=null) {
   }
   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
 
+  if ($op == "DELETE") {
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+  } elseif ($op == "PUT") {
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+  }
+
   /* // For debugging */
   /* curl_setopt($ch, CURLOPT_VERBOSE, True); */
   /* curl_setopt($ch, CURLOPT_HEADER, True); */
-  /* $errorFile = fopen("/tmp/wimax-curl-get-errors.log", 'a'); */
+  /* $fname = "/tmp/wimax-curl-$op-errors.log"; */
+  /* $errorFile = fopen($fname, 'a'); */
   /* curl_setopt($ch, CURLOPT_STDERR, $errorFile); */
   /* // End of debugging stuff */
 
@@ -96,7 +120,7 @@ function doGET($url, $user, $password, $serverroot=null) {
   /* // End of debugging stuff */
 
   if ($result === false) {
-    error_log("GET of " . $url . " failed (no result): " . $error);
+    error_log("$op of " . $url . " failed (no result): " . $error);
     $code = "";
     $perm = false;
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
@@ -106,115 +130,21 @@ function doGET($url, $user, $password, $serverroot=null) {
 	$perm = true;
     }
     if ($perm)
-      throw new PermFailException("GET " . $url . " failed: " . $code . $error);
+      throw new PermFailException("$op " . $url . " failed: " . $code . $error);
 
-    throw new Exception("GET " . $url . " failed: " . $code . $error);
+    throw new Exception("$op " . $url . " failed: " . $code . $error);
   } else {
-    //    error_log("GET of " . $url . " result: " . print_r($result, true));
+    //    error_log("$op of " . $url . " result: " . print_r($result, true));
   }
   if ($meta === false) {
-    error_log("GET of " . $url . " error (no meta): " . $error);
+    error_log("$op of " . $url . " error (no meta): " . $error);
     $code = "";
-    throw new Exception("GET " . $url . " failed: " . $code . $error);
+    throw new Exception("$op " . $url . " failed: " . $code . $error);
   } else {
-    //error_log("GET meta: " . print_r($meta, true));
+    //error_log("$op meta: " . print_r($meta, true));
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       if ($meta["http_code"] != 200) {
-	error_log("GET of " . $url . " got error return code " . $meta["http_code"]);
-	// code ??? means user not found - raise a different exception?
-	// then if I don't get that and don't get the real result I show the error 
-	// and don't try to do the PUT?
-
-	// Code 401 - Authorization error - seems common...
-
-	$codestr = "HTTP Error " . $meta["http_code"];
-	if (is_null($error) || $error === "") {
-	  $error = $codestr . ": \"" . $result . '"';
-	} else {
-	  $error = $codestr . ": \"" . $error . '"';
-	}
-	if ($meta["http_code"] == 401) {
-	  throw new PermFailException($error);
-	} else {
-	  throw new Exception($error);
-	}
-	//	throw new PermFailException($error);
-      }
-    }
-  }
-  if (! is_null($error) && $error != '')
-    error_log("GET of " . $url . " error: " . print_r($error, true));
-  return $result;
-}
-
-// Do a BasicAuth protected delete of the given URL
-function doDELETE($url, $user, $password, $serverroot=null) {
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $url);
-
-  // To tell the server that I know it is sending JSON result
-  $headers = array();
-  $headers[] = "Accept: " . "application/json";
-  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-  curl_setopt($ch, CURLOPT_HEADER, 1);
-
-  curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (! is_null($serverroot)) {
-    curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
-  } else {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
-  }
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
-
-  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-
-  /* // For debugging */
-  /* curl_setopt($ch, CURLOPT_VERBOSE, True); */
-  /* curl_setopt($ch, CURLOPT_HEADER, True); */
-  /* $errorFile = fopen("/tmp/wimax-curl-delete-errors.log", 'a'); */
-  /* curl_setopt($ch, CURLOPT_STDERR, $errorFile); */
-  /* // End of debugging stuff */
-
-  // Now do it
-  $result = curl_exec($ch);
-  $meta = curl_getinfo($ch);
-  $error = curl_error($ch);
-  curl_close($ch);
-
-  /* // More debugging stuff */
-  /* fflush($errorFile); */
-  /* fclose($errorFile); */
-  /* // End of debugging stuff */
-
-  if ($result === false) {
-    error_log("DELETE of " . $url . " failed (no result): " . $error);
-    $code = "";
-    $perm = false;
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      $code = "HTTP error " . $meta['http_code'] . ": ";
-      //      if ($meta['http_code'] < 200 || $meta['http_code'] > 299)
-      if ($meta['http_code'] == 0) 
-	$perm = true;
-    }
-    if ($perm)
-      throw new PermFailException("DELETE " . $url . " failed: " . $code . $error);
-
-    throw new Exception("DELETE " . $url . " failed: " . $code . $error);
-  } else {
-    //    error_log("DELETE of " . $url . " result: " . print_r($result, true));
-  }
-  if ($meta === false) {
-    error_log("DELETE of " . $url . " error (no meta): " . $error);
-    $code = "";
-    throw new Exception("DELETE " . $url . " failed: " . $code . $error);
-  } else {
-    //error_log("DELETE meta: " . print_r($meta, true));
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      if ($meta["http_code"] != 200) {
-	error_log("DELETE of " . $url . " got error return code " . $meta["http_code"]);
+	error_log("$op of " . $url . " got error return code " . $meta["http_code"]);
 
 	$codestr = "HTTP Error " . $meta["http_code"];
 	if (is_null($error) || $error === "") {
@@ -233,70 +163,7 @@ function doDELETE($url, $user, $password, $serverroot=null) {
     }
   }
   if (! is_null($error) && $error != '')
-    error_log("DELETE of " . $url . " error: " . print_r($error, true));
-  return $result;
-}
-
-// Do a BasicAuth protected PUT of the given json data to the given URL
-function doPUT($url, $user, $password, $data, $content_type="application/json", $serverroot=null) {
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $url);
-  $headers = array();
-  $headers[] = "Content-Type: " . $content_type;
-  $headers[] = "Content-Length: " . strlen($data);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-  curl_setopt($ch, CURLOPT_HEADER, 1);
-  curl_setopt($ch, CURLOPT_USERPWD, $user . ":" . $password);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (! is_null($serverroot)) {
-    curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
-  } else {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
-  }
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
-
-  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-  // Now do it
-  $result = curl_exec($ch);
-  $meta = curl_getinfo($ch);
-  $error = curl_error($ch);
-  curl_close($ch);
-
-  if ($result === false) {
-    error_log("PUT to " . $url . " failed (no result): " . $error);
-    $code = "";
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      $code = "HTTP error " . $meta['http_code'] . ": ";
-    }
-    throw new Exception("PUT to " . $url . " failed: " . $code . $error);
-  } else {
-    //    error_log("PUT to " . $url . " result: " . print_r($result, true));
-  }
-  if ($meta === false) {
-    error_log("PUT to " . $url . " error (no meta): " . $error);
-    $code = "";
-    throw new Exception("PUT to " . $url . " failed: " . $code . $error);
-  } else {
-    //error_log("PUT to " . $url . " meta: " . print_r($meta, true));
-    if (is_array($meta) && array_key_exists("http_code", $meta)) {
-      if ($meta["http_code"] != 200) {
-	error_log("PUT got error return code " . $meta["http_code"]);
-	$codestr = "HTTP Error " . $meta["http_code"];
-	if (is_null($error) || $error === "") {
-	  $error = $codestr . ": \"" . $result . '"';
-	} else {
-	  $error = $codestr . ": \"" . $error . '"';
-	}
-	throw new Exception($error);
-      }
-    }
-  }
-  if (! is_null($error) && $error != '')
-    error_log("PUT to " . $url . " error: " . print_r($error, true));
+    error_log("$op of " . $url . " error: " . print_r($error, true));
   return $result;
 }
 
@@ -415,6 +282,12 @@ function irods_create_group($project_id, $project_name, $user) {
     return -1;
   }
 
+  global $disable_irods;
+  if (isset($disable_irods)) {
+    error_log("irodsCreateGroup: disable_irods was set. Doing nothing.");
+    return -1;
+  }
+
   // FIXME: How come I can't rely on this from top of file?
 
   // This is just the default - otherwise it comes from the SR
@@ -470,7 +343,7 @@ function irods_create_group($project_id, $project_name, $user) {
   
   $created = -1; // Was the group created? -1=error, 0=success, 1=group was already there
   try {
-    $addstruct = doPUT($irods_url . IRODS_PUT_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
+    $addstruct = doRESTCall($irods_url . IRODS_PUT_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, "PUT", $irods_json, "application/json", $irods_cert);
 
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
@@ -565,6 +438,12 @@ function irods_modify_group_members($project_id, $members_to_add, $members_to_re
     return;
   }
 
+  global $disable_irods;
+  if (isset($disable_irods)) {
+    error_log("irodsModifyGroupMembers: disable_irods was set. Doing nothing.");
+    return -1;
+  }
+
   if (! isset($sa_url)) {
     $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
     if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
@@ -603,6 +482,12 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   }
   if (! isset($member_id) || $member_id == "-1" || ! uuid_is_valid($member_id)) {
     error_log("irods addToGroup: not a valid member ID. Nothing to do. $member_id");
+    return -1;
+  }
+
+  global $disable_irods;
+  if (isset($disable_irods)) {
+    error_log("irods addToGroup: disable_irods was set. Doing nothing.");
     return -1;
   }
 
@@ -664,7 +549,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   
   $added = -1; // Was the user added to the group? -1=Error, 0=Success, 1=Member already in group
   try {
-    $addstruct = doPUT($irods_url . IRODS_PUT_USER_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
+    $addstruct = doRESTCall($irods_url . IRODS_PUT_USER_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, "PUT", $irods_json, "application/json", $irods_cert);
 
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
@@ -754,6 +639,12 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
     return -1;
   }
 
+  global $disable_irods;
+  if (isset($disable_irods)) {
+    error_log("irods removeFromGroup: disable_irods was set. Doing nothing.");
+    return -1;
+  }
+
   // must get member username
   $member = geni_load_user_by_member_id($member_id);
   $username = base_username($member);
@@ -795,7 +686,8 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
   $removed = -1; // -1=Error, 0=Success, 1=Already gone
 
   try {
-    $rmstruct = doDELETE($irods_url . IRODS_REMOVE_USER_URI1 . $group_name . IRODS_REMOVE_USER_URI2 . $username, $portal_irods_user, $portal_irods_pw, $irods_cert);
+    // Note the method is called doRESTCall, but the op arg tells the real method
+    $rmstruct = doRESTCall($irods_url . IRODS_REMOVE_USER_URI1 . $group_name . IRODS_REMOVE_USER_URI2 . $username, $portal_irods_user, $portal_irods_pw, "DELETE", "", "", $irods_cert);
 
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);
@@ -903,7 +795,7 @@ function removeGroup($project_id, $group_name, $user) {
   $removed = -1; // -1=Error, 0=Success, 1=Already gone
 
   try {
-    $rmstruct = doDELETE($irods_url . IRODS_REMOVE_USER_URI1 . $group_name, $portal_irods_user, $portal_irods_pw, $irods_cert);
+    $rmstruct = doRESTCall($irods_url . IRODS_REMOVE_USER_URI1 . $group_name, $portal_irods_user, $portal_irods_pw, "DELETE", "", "", $irods_cert);
 
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);

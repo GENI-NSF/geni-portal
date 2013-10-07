@@ -108,7 +108,7 @@ $permError = false;
 // First we try to GET the username: if there, the user already has an account. Remind them.
 try {
   while(True) {
-    $userxml = doGET($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw, $irods_cert);
+    $userxml = doRESTCall($irods_url . IRODS_GET_USER_URI . $username, $portal_irods_user, $portal_irods_pw, "GET", "", "", $irods_cert);
     //  error_log(print_r($pestget->last_response, TRUE));
     //  error_log("Got userxml: " . $userxml);
     if (! isset($userxml) || strncmp($userxml, "<?xml", 5)) {
@@ -225,7 +225,7 @@ if (! $permError && ! $userExisted) {
       //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
 
 
-      $addstruct = doPUT($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
+      $addstruct = doRESTCall($irods_url . IRODS_PUT_USER_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, "PUT", $irods_json, "application/json", $irods_cert);
       //error_log("PUT raw result: " . print_r($addstruct, true));
 
       // look for (\r or \n or \r\n){2} and move past that
