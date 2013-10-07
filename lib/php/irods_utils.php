@@ -152,8 +152,9 @@ function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="
 	  $error = $codestr . ": \"" . $error . '"';
 	}
 	// Code 401 - Authorization error - seems common...
+	// Unfortunately this is also a symptom of the iRODS server underneath the REST interface being down
 	if ($meta["http_code"] == 401) {
-	  throw new PermFailException($error);
+	  throw new PermFailException("Failed to contact iRODS server (is it down?): $error");
 	} else {
 	  throw new Exception($error);
 	}
