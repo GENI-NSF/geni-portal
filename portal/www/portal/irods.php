@@ -351,7 +351,7 @@ if ($didCreate) {
   if (! is_null($irodsWebURL))
     print "<p>To act on your iRODS account, go to <a href=\"$irodsWebURL\">$irodsWebURL</a>.</p>\n";
   print "<p>To learn more about using iRODS, go to <a href=\"http://groups.geni.net/geni/wiki/HowToUseiRODS\">http://groups.geni.net/geni/wiki/HowToUseiRODS</a>.</p>\n";
-  print "To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
+  print "<p>To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':\n";
   if ($zone === "")
     $zone = $default_zone;
   if (is_null($irodsEnv)) {
@@ -363,9 +363,10 @@ if ($didCreate) {
       print "irodsUserName=$username\n";
       print "irodsZone=$zone</pre>\n";
     } else {
-      $irodsEnv = preg_replace("/\n/", "<br/>\n", $irodsEnv);
-      print "<p>$irodsEnv</p\n";
+      $irodsEnv = preg_replace("/\n/", "\n", $irodsEnv);
+      print "<pre>$irodsEnv</pre>\n";
     }
+  print "</p>";
 } elseif ($userExisted) {
   $isDiffDN = false;
   print "<p>Your GENI iRODS account has already been created.</p>";
@@ -386,7 +387,7 @@ if ($didCreate) {
   if (! is_null($irodsWebURL))
     print "<p>To act on your iRODS account, go to <a href=\"$irodsWebURL\">$irodsWebURL</a>.</p>\n";
   print "<p>To learn more about using iRODS, go to <a href=\"http://groups.geni.net/geni/wiki/HowToUseiRODS\">http://groups.geni.net/geni/wiki/HowToUseiRODS</a>.</p>\n";
-  print "To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':<br/>\n";
+  print "<p>To use iRODS tools you will need the following data. For commandline tools you will need to create the file '~/.irods/.irodsEnv':</p>\n";
   if ($zone === "")
     $zone = $default_zone;
   if (is_null($irodsEnv)) {
@@ -398,8 +399,8 @@ if ($didCreate) {
       print "irodsUserName=$username\n";
       print "irodsZone=$zone</pre>\n";
     } else {
-      $irodsEnv = preg_replace("/\n/", "<br/>\n", $irodsEnv);
-      print "<p>$irodsEnv</p\n";
+      $irodsEnv = preg_replace("/\n/", "\n", $irodsEnv);
+      print "<pre>$irodsEnv</pre>\n";
     }
 } else {
   // Some kind of error
