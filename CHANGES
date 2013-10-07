@@ -11,6 +11,7 @@
    on RSpecs page(#810)
    * Clearing or extending project expiration now un-expires the
    project if applicable. (#841)
+   * Fix revocation of operator privileges (#668)
    * iRODS Support: Create an iRODS group for each new project. When
    adding/removing a project member, add/remove them from the iRODS
    group. When loading the iRODS page, ensure there is an iRODS group
