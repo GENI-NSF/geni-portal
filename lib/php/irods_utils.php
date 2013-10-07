@@ -32,7 +32,6 @@ include_once('settings.php');
 // A call to the REST APIs permanently failed
 class PermFailException extends Exception{}
 
-
 /* *** Set up some basic variables for accessing iRODS *** */
 // This is just the default - otherwise it comes from the SR
 // Test server
@@ -288,38 +287,11 @@ function irods_create_group($project_id, $project_name, $user) {
     return -1;
   }
 
-  // FIXME: How come I can't rely on this from top of file?
-
-  // This is just the default - otherwise it comes from the SR
-  // Test server
-  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  // Production server
-  // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  /* TODO put these in the service registry or similar */
-  $irods_host = "irods_hostname"; // FIXME
-  $irods_port = 1247; // FIXME: Always right?
-  $irods_resource = "demoResc"; // FIXME: Always right?
-  $default_zone = "tempZone";
-  
-  // Get the irods server cert for smime purposes
-  $irods_cert = null;
-  $irods_svrs = get_services_of_type(SR_SERVICE_TYPE::IRODS);
-  if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && count($irods_svrs) > 0) {
-    $irod = $irods_svrs[0];
-    $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
-    $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
-  }
-  
-  /* Get this from /etc/geni-ch/settings.php */
-  if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
-    $portal_irods_user = 'rods'; // FIXME: Testing value
-    $portal_irods_pw = 'rods'; // FIXME: Testing value
-  }
-
-  // End of stuff that really should just come from the top of the file
+  global $irods_url;
+  global $default_zone;
+  global $irods_cert;
+  global $portal_irods_user;
+  global $portal_irods_pw;
 
   // must get project name and then groupname
   $group_name = group_name($project_name);
@@ -496,38 +468,11 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   $username = base_username($member);
   error_log("iRODS addToGroup $group_name member $member_id with username $username");
 
-  // FIXME: How come I can't rely on this from top of file?
-
-  // This is just the default - otherwise it comes from the SR
-  // Test server
-  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  // Production server
-  // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  /* TODO put these in the service registry or similar */
-  $irods_host = "irods_hostname"; // FIXME
-  $irods_port = 1247; // FIXME: Always right?
-  $irods_resource = "demoResc"; // FIXME: Always right?
-  $default_zone = "tempZone";
-  
-  // Get the irods server cert for smime purposes
-  $irods_cert = null;
-  $irods_svrs = get_services_of_type(SR_SERVICE_TYPE::IRODS);
-  if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && count($irods_svrs) > 0) {
-    $irod = $irods_svrs[0];
-    $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
-    $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
-  }
-  
-  /* Get this from /etc/geni-ch/settings.php */
-  if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
-    $portal_irods_user = 'rods'; // FIXME: Testing value
-    $portal_irods_pw = 'rods'; // FIXME: Testing value
-  }
-
-  // End of stuff I wish I could just re-use from the top of the file
+  global $irods_url;
+  global $default_zone;
+  global $portal_irods_user;
+  global $portal_irods_pw;
+  global $irods_cert;
 
   $irods_info = array();
   $irods_info[IRODS_USER_NAME] = $username;
@@ -650,38 +595,10 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
   $username = base_username($member);
   error_log("iRODS removeFromGroup $group_name member $member_id with username $username");
 
-  // FIXME: How come I can't rely on this from top of file?
-
-  // This is just the default - otherwise it comes from the SR
-  // Test server
-  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  // Production server
-  // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  /* TODO put these in the service registry or similar */
-  $irods_host = "irods_hostname"; // FIXME
-  $irods_port = 1247; // FIXME: Always right?
-  $irods_resource = "demoResc"; // FIXME: Always right?
-  $default_zone = "tempZone";
-  
-  // Get the irods server cert for smime purposes
-  $irods_cert = null;
-  $irods_svrs = get_services_of_type(SR_SERVICE_TYPE::IRODS);
-  if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && count($irods_svrs) > 0) {
-    $irod = $irods_svrs[0];
-    $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
-    $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
-  }
-  
-  /* Get this from /etc/geni-ch/settings.php */
-  if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
-    $portal_irods_user = 'rods'; // FIXME: Testing value
-    $portal_irods_pw = 'rods'; // FIXME: Testing value
-  }
-
-  // End of stuff I wish I could just re-use from the top of the file
+  global $irods_url;
+  global $portal_irods_user;
+  global $portal_irods_pw;
+  global $irods_cert;
 
   $removed = -1; // -1=Error, 0=Success, 1=Already gone
 
@@ -759,38 +676,10 @@ function removeGroup($project_id, $group_name, $user) {
 
   error_log("iRODS removeGroup $group_name");
 
-  // FIXME: How come I can't rely on this from top of file?
-
-  // This is just the default - otherwise it comes from the SR
-  // Test server
-  //  $irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  // Production server
-  // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
-  
-  /* TODO put these in the service registry or similar */
-  $irods_host = "irods_hostname"; // FIXME
-  $irods_port = 1247; // FIXME: Always right?
-  $irods_resource = "demoResc"; // FIXME: Always right?
-  $default_zone = "tempZone";
-  
-  // Get the irods server cert for smime purposes
-  $irods_cert = null;
-  $irods_svrs = get_services_of_type(SR_SERVICE_TYPE::IRODS);
-  if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && count($irods_svrs) > 0) {
-    $irod = $irods_svrs[0];
-    $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
-    $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
-  }
-  
-  /* Get this from /etc/geni-ch/settings.php */
-  if (! isset($portal_irods_user) || is_null($portal_irods_user)) {
-    $portal_irods_user = 'rods'; // FIXME: Testing value
-    $portal_irods_pw = 'rods'; // FIXME: Testing value
-  }
-
-  // End of code I should be able to re-use from the top of the file
+  global $irods_url;
+  global $portal_irods_user;
+  global $portal_irods_pw;
+  global $irods_cert;
 
   $removed = -1; // -1=Error, 0=Success, 1=Already gone
 
