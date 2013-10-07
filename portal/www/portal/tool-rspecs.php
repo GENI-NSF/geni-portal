@@ -52,14 +52,18 @@ foreach ($all_rspecs as $rspec) {
 
 
 /* Display starts here. */
-print("<h1>Manage Resource Specifications (RSpecs)</h1>\n");
-print("<h2>Manage My RSpecs</h2>\n");
-print "<p>You can ";
-print "<button onClick=\"window.location='rspecupload.php'\">"
-    . "upload a new RSpec</button>\n";
-print " or edit your existing RSpecs.</p>";
-
+print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
+print("<p>From this page you can ");
+print '<a href="rspecupload.php">upload a new RSpec</a>';
+print ", ";
+print '<a href="#privateRSpecs">manage RSpecs</a>';
+print " you have uploaded to the portal, and ";
+print '<a href="#publicRSpecs">view RSpecs</a>';
+print " that other users have publicly shared.</p>";
+print "<p>Currently you can not edit existing RSpecs, if you would like to change one ";
+print "of your existing RSpecs please delete it and upload a new version.</p>";
 /* Show the table of existing private RSpecs. */
+print '<a name="privateRSpecs"></a>';
 print "<h3>My Private RSpecs</h3>\n";
 rspec_table_header();
 foreach ($my_rspecs as $rspec) {
@@ -77,9 +81,8 @@ foreach ($my_rspecs as $rspec) {
 }
 rspec_table_footer();
 
-
-print("<h2>View Public RSpecs</h2>\n");
-print "<p>You can view or download existing public RSpecs.</p>";
+print '<a name="publicRSpecs"></a>';
+print("<h3>Public RSpecs that other users have shared</h3>\n");
 
 /* Show the table of public RSpecs. */
 rspec_table_header(True);
