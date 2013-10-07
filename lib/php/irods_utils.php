@@ -402,7 +402,7 @@ $IRODS_ERROR_NAMES = array("Success",
 
 function irods_create_group($project_id, $project_name, $user) {
   // Note this function must bail if project_id is not a project but an error of some kind
-  error_log("iRODS: will create group for project $project_name with id $project_id");
+  error_log("iRODS: creating group for project $project_name with id $project_id");
   if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("irods_create_group: not a valid project ID. Nothing to do. $project_id");
     return -1;
@@ -470,7 +470,7 @@ function irods_create_group($project_id, $project_name, $user) {
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
     if (! array_key_exists(2, $m)) {
-      error_log("Malformed PUT result to iRODS - error? Got: " . $addstruct);
+      error_log("irods createGroup: Malformed PUT result to iRODS - error? Got: " . $addstruct);
       throw new Exception("Failed to add iRODS group - server error: " . $addstruct);
     }
 
@@ -499,15 +499,15 @@ function irods_create_group($project_id, $project_name, $user) {
 	$groupCmdStatus = $addjson[IRODS_USER_GROUP_COMMAND_STATUS];
 	if ($groupCmdStatus == IRODS_STATUS_DUPLICATE_GROUP) {
 	  $created = 1;
-	  error_log("iRODS Group $group_name already existed");
+	  error_log("iRODS group $group_name already existed");
 	} elseif ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
-	  error_log("irods failed to create group $group_name: $groupCmdStatus: '$msg'");
+	  error_log("iRODS failed to create group $group_name: $groupCmdStatus: '$msg'");
 	}
       } elseif ($created !== 0) {
-	error_log("irods failed to create group $group_name: '$msg'");
+	error_log("iRODS failed to create group $group_name: '$msg'");
       }
     } else {
-      error_log("malformed return");
+      error_log("iRODS: malformed return from createGroup: " . print_r($addjson, true));
       $created = -1;
     }
   } catch (Exception $e) {
@@ -523,7 +523,7 @@ function irods_create_group($project_id, $project_name, $user) {
     if (! isset($sa_url)) {
       $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
       if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
-	error_log("Found no SA in SR!'");
+	error_log("iRODS Found no SA in SR!'");
       }
     }
 
@@ -545,11 +545,11 @@ function irods_modify_group_members($project_id, $members_to_add, $members_to_re
   // Note this function must bail if result suggests an error of some kind
   //  $result is a triple
   if (isset($result) and is_array($result) and array_key_exists(RESPONSE_ARGUMENT::CODE, $result) and $result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
-    error_log("Result of modify_membership suggests an error. Nothing to do. Got result: " . print_r($result, true));
+    error_log("iRODS: Result of modify_membership suggests an error. Nothing to do. Got result: " . print_r($result, true));
     return;
   }
   if ((! isset($members_to_add) or ! is_array($members_to_add) or count($members_to_add) == 0) and (! isset($members_to_remove) or ! is_array($members_to_remove) or count($members_to_remove) == 0)) {
-    error_log("0 members to add or remove. nothing to do.");
+    error_log("iRODS: 0 members to add or remove. nothing to do.");
     return;
   }
 
@@ -561,7 +561,7 @@ function irods_modify_group_members($project_id, $members_to_add, $members_to_re
   if (! isset($sa_url)) {
     $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
     if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
-      error_log("Found no SA in SR!'");
+      error_log("iRODS Found no SA in SR!'");
     }
   }
 
@@ -606,7 +606,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   // On 9, do createGroup
   // On 10, maybe email someone? Just log?
   // Log errors
-  error_log("iRODS will addToGroup $group_name member $member_id with username $username");
+  error_log("iRODS addToGroup $group_name member $member_id with username $username");
 
   // PUT to <base>/user_group/user
   // JSON like this: {"userName":"test2","userGroup":"jargonTestUg","zone":"test1"}
@@ -668,7 +668,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $addstruct, $m);
     if (! array_key_exists(2, $m)) {
-      error_log("Malformed PUT result to iRODS - error? Got: " . $addstruct);
+      error_log("iRODS addToGroup Malformed PUT result to iRODS - error? Got: " . $addstruct);
       throw new Exception("Failed to add member to iRODS group - server error: " . $addstruct);
     }
 
@@ -698,22 +698,36 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 	$groupCmdStatus = $addjson[IRODS_USER_GROUP_COMMAND_STATUS];
 	if ($groupCmdStatus == IRODS_STATUS_DUPLICATE_USER) {
 	  $added = 1;
-	  error_log("iRODS User $username already in group $group_name");
+	  error_log("iRODS user $username already in group $group_name");
 	} elseif ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
 	  if ($groupCmdStatus === IRODS_STATUS_BAD_USER) {
-	    error_log("irods: user $username has no iRODS account yet. Cannot add to group $group_name. ($groupCmdStatus: '$msg')");
+	    error_log("iRODS: user $username has no iRODS account yet. Cannot add to group $group_name. ($groupCmdStatus: '$msg')");
 	    // FIXME: Email someone?
+	  } elseif ($groupCmdStatus === IRODS_STATUS_BAD_GROUP) {
+	    error_log("iRODS: Group $group_name doesn't exist yet, so cannot add user $username. Try to create the group... ($groupCmdStatus: '$msg')");
+	    if (! isset($sa_url)) {
+	      $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+	      if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+		error_log("iRODS Found no SA in SR!'");
+	      }
+	    }
+	    $project = lookup_project($sa_url, $user, $project_id);
+	    $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+	    $groupCreated = irods_create_group($project_id, $project_name, $user);
+	    if ($groupCreated != -1) {
+	      $added = 0;
+	    }
 	  } else {
-	    error_log("irods failed to add user $username to group $group_name: $groupCmdStatus: '$msg'");
+	    error_log("iRODS failed to add user $username to group $group_name: $groupCmdStatus: '$msg'");
 	  }
 	  // If it is INVALID_GROUP then we still need to do createGroup. I don't think that should happen
 	}
       } elseif ($added !== 0) {
-	error_log("irods failed to add user $username to group $group_name: '$msg'");
+	error_log("iRODS failed to add user $username to group $group_name: '$msg'");
       }
     } else {
       $added = -1;
-      error_log("malformed return from addUserToGroup");
+      error_log("iRODS: malformed return from addUserToGroup: " . print_r($addjson, true));
     }
   } catch (Exception $e) {
     error_log("Error doing iRODS put to add member to group: " . $e->getMessage());
@@ -726,15 +740,15 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 
 function removeFromGroup($project_id, $group_name, $member_id, $user) {
   if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
-    error_log("irods removeFromGroup: not a valid project ID. Nothing to do. $project_id");
+    error_log("iRODS removeFromGroup: not a valid project ID. Nothing to do. $project_id");
     return -1;
   }
   if (! isset($group_name) || is_null($group_name) || $group_name === '') {
-    error_log("irods removeFromGroup: not a valid group name. Nothing to do. $project_id, $group_name");
+    error_log("iRODS removeFromGroup: not a valid group name. Nothing to do. $project_id, $group_name");
     return -1;
   }
   if (! isset($member_id) || $member_id == "-1" || ! uuid_is_valid($member_id)) {
-    error_log("irods removeFromGroup: not a valid member ID. Nothing to do. $member_id");
+    error_log("iRODS removeFromGroup: not a valid member ID. Nothing to do. $member_id");
     return -1;
   }
 
@@ -744,7 +758,7 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
   // then call the new REST API, checking the return for the error codes. 0 or 12 counts as success.
   // On 9, do createGroup
   // Log errors
-  error_log("iRODS will removeFromGroup $group_name member $member_id with username $username");
+  error_log("iRODS removeFromGroup $group_name member $member_id with username $username");
 
   // FIXME: How come I can't rely on this from top of file?
 
@@ -785,7 +799,7 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);
     if (! array_key_exists(2, $m)) {
-      error_log("Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
+      error_log("irods removeFromGroup: Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
       throw new Exception("Failed to remove member from iRODS group - server error: " . $rmstruct);
     }
 
@@ -817,17 +831,17 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
 	$groupCmdStatus = $rmjson[IRODS_USER_GROUP_COMMAND_STATUS];
 	if ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
 	  if ($groupCmdStatus === IRODS_STATUS_BAD_USER) {
-	    error_log("irods: user $username was not in group $group_name to delete. ($groupCmdStatus: '$msg')");
+	    error_log("iRODS: user $username was not in group $group_name to delete. ($groupCmdStatus: '$msg')");
 	  } else {
-	    error_log("irods failed to remove $username from group $group_name: $groupCmdStatus: '$msg'");
+	    error_log("iRODS failed to remove $username from group $group_name: $groupCmdStatus: '$msg'");
 	  }
 	}
       } elseif ($removed !== 0) {
-	error_log("irods failed to remove user $username from group $group_name: '$msg'");
+	error_log("iRODS failed to remove user $username from group $group_name: '$msg'");
       }
     } else {
       $removed = -1;
-      error_log("malformed return from removeUserFromGroup");
+      error_log("iRODS malformed return from removeUserFromGroup: " . print_r($rmjson, true));
     }
   } catch (Exception $e) {
     error_log("Error doing iRODS delete to remove member from group: " . $e->getMessage());
@@ -842,18 +856,18 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
 // It might be useful for debugging though?
 function removeGroup($project_id, $group_name, $user) {
   if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
-    error_log("irods removeGroup: not a valid project ID. Nothing to do. $project_id");
+    error_log("iRODS removeGroup: not a valid project ID. Nothing to do. $project_id");
     return -1;
   }
   if (! isset($group_name) || is_null($group_name) || $group_name === '') {
-    error_log("irods removeGroup: not a valid group name. Nothing to do. $project_id, $group_name");
+    error_log("iRODS removeGroup: not a valid group name. Nothing to do. $project_id, $group_name");
     return -1;
   }
 
   // then call the new REST API, checking the return for the error codes. 0 or 12 counts as success.
   // On 9, do createGroup
   // Log errors
-  error_log("iRODS will removeGroup $group_name");
+  error_log("iRODS removeGroup $group_name");
 
   // FIXME: How come I can't rely on this from top of file?
 
@@ -894,7 +908,7 @@ function removeGroup($project_id, $group_name, $user) {
     // look for (\r or \n or \r\n){2} and move past that
     preg_match("/(\r|\n|\r\n){2}([^\r\n].+)$/", $rmstruct, $m);
     if (! array_key_exists(2, $m)) {
-      error_log("Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
+      error_log("iRODS removeGroup: Malformed DELETE result from iRODS - error? Got: " . $rmstruct);
       throw new Exception("Failed to remove iRODS group - server error: " . $rmstruct);
     }
 
@@ -902,6 +916,7 @@ function removeGroup($project_id, $group_name, $user) {
     error_log("DELETE result content: " . $m[2]);
     
     $rmjson = json_decode($m[2], true);
+    // FIXME: Comment this out when ready
     error_log("remove group result: " . print_r($rmjson, true));
 
     if (is_array($rmjson)) {
@@ -926,26 +941,26 @@ function removeGroup($project_id, $group_name, $user) {
 	$groupCmdStatus = $rmjson[IRODS_USER_GROUP_COMMAND_STATUS];
 	if ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
 	  if ($groupCmdStatus === IRODS_STATUS_BAD_GROUP) {
-	    error_log("irods: group $group_name not there to delete. ($groupCmdStatus: '$msg')");
+	    error_log("iRODS: group $group_name not there to delete. ($groupCmdStatus: '$msg')");
+	    $removed = 1;
 	  } else {
-	    error_log("irods failed to remove group $group_name: $groupCmdStatus: '$msg'");
+	    error_log("iRODS failed to remove group $group_name: $groupCmdStatus: '$msg'");
 	  }
 	}
-      } elseif ($removed !== 0) {
-	error_log("irods failed to remove group $group_name: '$msg'");
+      } elseif ($removed === -1) {
+	error_log("iRODS failed to remove group $group_name: '$msg'");
       }
     } else {
       $removed = -1;
-      error_log("malformed return from removeGroup");
+      error_log("iRODS malformed return from removeGroup: " . print_r($rmjson, true));
     }
   } catch (Exception $e) {
     error_log("Error doing iRODS delete to remove group: " . $e->getMessage());
     $removed = -1;
   }
 
-  // Return 0 if removed the group, -1 on error
+  // Return 0 if removed the group, -1 on error, 1 if no such group
   return $removed;
 }
 
-?>
 ?>

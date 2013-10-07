@@ -244,6 +244,7 @@ if (! $permError && ! $userExisted) {
       if (! is_null($addjson) && is_array($addjson) && array_key_exists(IRODS_ADD_RESPONSE_CODE, $addjson)) {
 	if ($addjson[IRODS_ADD_RESPONSE_CODE] == IRODS_ERROR::SUCCESS) {
 	  $didCreate = True;
+	  error_log("irods.php: Created account with username $username for " . $user->prettyName());
 	  if (array_key_exists(IRODS_ENV, $addjson)) 
 	    $irodsEnv = $addjson[IRODS_ENV];
 	  if (array_key_exists(IRODS_URL, $addjson)) 
