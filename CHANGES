@@ -11,6 +11,7 @@
    on RSpecs page(#810)
    * Clearing or extending project expiration now un-expires the
    project if applicable. (#841)
+   * Fix revocation of operator privileges (#668)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
