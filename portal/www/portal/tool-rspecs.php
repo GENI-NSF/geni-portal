@@ -82,7 +82,7 @@ foreach ($my_rspecs as $rspec) {
 rspec_table_footer();
 
 print '<a name="publicRSpecs"></a>';
-print("<h3>Public RSpecs that other users of shared</h3>\n");
+print("<h3>Public RSpecs that other users have shared</h3>\n");
 
 /* Show the table of public RSpecs. */
 rspec_table_header(True);
