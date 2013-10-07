@@ -7,7 +7,8 @@
    * Quiet some logging in printing rspecs (#836)
    * Rearrange Profile tab (#812)
    * Remove debug log message in OpenID server (#828)
-   * Remove "Manage RSpecs" button from profile tab (#810)
+   * Remove "Manage RSpecs" button from profile tab and improve headers and links
+   on RSpecs page(#810)
    * Clearing or extending project expiration now un-expires the
    project if applicable. (#841)
    * iRODS Support: Create an iRODS group for each new project. When
