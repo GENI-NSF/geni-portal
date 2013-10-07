@@ -21,13 +21,13 @@
 export NOW=`date +%m_%d_%Y+%H_%m_%S`
 export FILENAME="/tmp/migrate_$NOW.sql"
 echo "insert into ma_member_attribute (member_id, name, value, self_asserted)" > $FILENAME
-echo " select principal, 'project_lead', 'true', 'f' from cs_assertion " >>$FILENAME
+echo " select principal, 'PROJECT_LEAD', 'true', 'f' from cs_assertion " >>$FILENAME
 echo " where context is null and attribute = 1 and context_type = 3;" >>$FILENAME
 
 # Move all OPERATOR (ATT = 5, CT = 3) assertions into MA_MEMBER_ATTRIBUTE
 # as 'operator: true' attribute
 echo "insert into ma_member_attribute (member_id, name, value, self_asserted)" >> $FILENAME
-echo " select principal, 'operator', 'true', 'f' from cs_assertion " >>$FILENAME
+echo " select principal, 'OPERATOR', 'true', 'f' from cs_assertion " >>$FILENAME
 echo " where context is null and attribute = 5 and context_type = 3;" >>$FILENAME
 psql -U portal -h localhost portal < $FILENAME
 

@@ -23,7 +23,7 @@ INNER JOIN ma_member_attribute AS who
 ON who.member_id = role.member_id
 WHERE who.name = 'username'
   AND who.value = '$PERSON'
-  AND role.name = 'operator'
+  AND role.name = 'OPERATOR'
   AND role.value = 'true'
   AND ma_privilege.privilege = upper(role.name)
   AND cs_policy.attribute = 5
@@ -37,7 +37,7 @@ INNER JOIN ma_member_attribute AS who
 ON who.member_id = role.member_id
 WHERE who.name = 'username'
   AND who.value = '$PERSON'
-  AND role.name = 'project_lead'
+  AND role.name = 'PROJECT_LEAD'
   AND role.value = 'true'
   AND ma_privilege.privilege = upper(role.name)
   AND cs_policy.attribute = 3

@@ -19,7 +19,7 @@ INNER JOIN ma_member_attribute AS who
 ON who.member_id = role.member_id
 WHERE who.name = 'username'
   AND who.value = '$PERSON'
-  AND role.name in ('operator', 'project_lead')
+  AND role.name in ('OPERATOR', 'PROJECT_LEAD')
   AND role.value = 'true';
 EOF
 
