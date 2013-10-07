@@ -28,8 +28,11 @@ include_once('/etc/geni-ch/settings.php');
   Functions for interacting with the iRODS REST interfaces
 */
 
+// A call to the REST APIs permanently failed
 class PermFailException extends Exception{}
 
+
+/* *** Set up some basic variables for accessing iRODS *** */
 // This is just the default - otherwise it comes from the SR
 // Test server
 $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
@@ -67,7 +70,7 @@ function doGET($url, $user, $password, $serverroot=null) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
+  if (! is_null($serverroot)) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
@@ -159,7 +162,7 @@ function doDELETE($url, $user, $password, $serverroot=null) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (! is_null($serverroot)) { // FIXME: while cert is expired, must do this....
+  if (! is_null($serverroot)) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
@@ -212,11 +215,6 @@ function doDELETE($url, $user, $password, $serverroot=null) {
     if (is_array($meta) && array_key_exists("http_code", $meta)) {
       if ($meta["http_code"] != 200) {
 	error_log("DELETE of " . $url . " got error return code " . $meta["http_code"]);
-	// code ??? means user not found - raise a different exception?
-	// then if I don't get that and don't get the real result I show the error 
-	// and don't try to do the PUT?
-
-	// Code 401 - Authorization error - seems common...
 
 	$codestr = "HTTP Error " . $meta["http_code"];
 	if (is_null($error) || $error === "") {
@@ -224,6 +222,7 @@ function doDELETE($url, $user, $password, $serverroot=null) {
 	} else {
 	  $error = $codestr . ": \"" . $error . '"';
 	}
+	// Code 401 - Authorization error - seems common...
 	if ($meta["http_code"] == 401) {
 	  throw new PermFailException($error);
 	} else {
@@ -238,6 +237,7 @@ function doDELETE($url, $user, $password, $serverroot=null) {
   return $result;
 }
 
+// Do a BasicAuth protected PUT of the given json data to the given URL
 function doPUT($url, $user, $password, $data, $content_type="application/json", $serverroot=null) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
@@ -250,7 +250,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (! is_null($serverroot)) { // FIXME: while server cert is expired....
+  if (! is_null($serverroot)) {
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
@@ -300,6 +300,7 @@ function doPUT($url, $user, $password, $data, $content_type="application/json", 
   return $result;
 }
 
+// What are usernames usually?
 function base_username($user) {
   $userPrefix = "geni-"; // FIXME: Make this an HRN but with hyphens? No prefix?
   return $userPrefix . $user->username;
@@ -318,6 +319,7 @@ function derive_username($baseusername, $latestname=null) {
   return $baseusername . $ind;
 }
 
+// What is the iRODS group name, given the project name?
 function group_name($project_name) {
   return "geni-" . $project_name;
 }
@@ -347,10 +349,10 @@ const IRODS_GROUP_NEW = "userGroupName"; // group name
 const IRODS_STATUS_ERROR = "ERROR"; // command failed
 const IRODS_STATUS_SUCCESS = "OK"; // command succeeded
 
-// the name of teh detailed status field
+// the name of the detailed status field
 const IRODS_USER_GROUP_COMMAND_STATUS = "userGroupCommandStatus"; // details on what happened with adding a group
 
-// possible errors for teh detailed status field. success is as before
+// possible errors for the detailed status field. success is as before
 const IRODS_STATUS_BAD_GROUP = "INVALID_GROUP"; // group doesn't exist
 const IRODS_STATUS_DUPLICATE_GROUP = "DUPLICATE_GROUP";
 const IRODS_STATUS_DUPLICATE_USER = "DUPLICATE_USER";
@@ -368,7 +370,7 @@ const IRODS_STATUS_BAD_USER = "INVALID_USER";
 7 - Internal Error
 */
 
-/* iRods error codes */
+/* iRODS error codes using in the GET/PUT for creating users */
 class IRODS_ERROR
 {
   const SUCCESS = 0;
@@ -400,6 +402,7 @@ $IRODS_ERROR_NAMES = array("Success",
 			   "User (already) in group",
 			   "User not in group");
 
+// Create an iRODS group for the project with the given ID, name. $user is who signs any CH messages
 function irods_create_group($project_id, $project_name, $user) {
   // Note this function must bail if project_id is not a project but an error of some kind
   error_log("iRODS: creating group for project $project_name with id $project_id");
@@ -443,6 +446,8 @@ function irods_create_group($project_id, $project_name, $user) {
     $portal_irods_pw = 'rods'; // FIXME: Testing value
   }
 
+  // End of stuff that really should just come from the top of the file
+
   // must get project name and then groupname
   $group_name = group_name($project_name);
 
@@ -463,7 +468,7 @@ function irods_create_group($project_id, $project_name, $user) {
   ///* Encrypt the signed data for the iRODS SSL certificate */
   //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
   
-  $created = -1;
+  $created = -1; // Was the group created? -1=error, 0=success, 1=group was already there
   try {
     $addstruct = doPUT($irods_url . IRODS_PUT_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
 
@@ -540,6 +545,8 @@ function irods_create_group($project_id, $project_name, $user) {
   return $created;
 }
 
+// Modify iRODS group members for the group matching this project. Add/Remove members as listed.
+// This is to be called from the pa_client modify_project_membership function
 function irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $user, $result) {
   //  error_log("irods asked to modify group members for project $project_id");
   // Note this function must bail if result suggests an error of some kind
@@ -570,8 +577,7 @@ function irods_modify_group_members($project_id, $members_to_add, $members_to_re
   $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
   $group_name = group_name($project_name);
 
-// $members_to_add and $members_to_change role are both
-//     dictionaries of {member_id => role, ....}
+  // $members_to_add is a dictionary of {member_id => role, ....}
   if (isset($members_to_add)) {
     foreach (array_keys($members_to_add) as $member_id) {
       $added = addToGroup($project_id, $group_name, $member_id, $user);
@@ -585,6 +591,7 @@ function irods_modify_group_members($project_id, $members_to_add, $members_to_re
   }
 }
 
+// Add the given member to the given project's group with the given name
 function addToGroup($project_id, $group_name, $member_id, $user) {
   if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("irods addToGroup: not a valid project ID. Nothing to do. $project_id");
@@ -602,15 +609,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   // must get member username
   $member = geni_load_user_by_member_id($member_id);
   $username = base_username($member);
-  // then call the new REST API, checking the return for the error codes. 0 or 11 counts as success.
-  // On 9, do createGroup
-  // On 10, maybe email someone? Just log?
-  // Log errors
   error_log("iRODS addToGroup $group_name member $member_id with username $username");
-
-  // PUT to <base>/user_group/user
-  // JSON like this: {"userName":"test2","userGroup":"jargonTestUg","zone":"test1"}
-  // Watch for exceptions. For now if it works it returns a JSON that says Status:OK
 
   // FIXME: How come I can't rely on this from top of file?
 
@@ -643,6 +642,8 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
     $portal_irods_pw = 'rods'; // FIXME: Testing value
   }
 
+  // End of stuff I wish I could just re-use from the top of the file
+
   $irods_info = array();
   $irods_info[IRODS_USER_NAME] = $username;
   $irods_info[IRODS_GROUP] = $group_name;
@@ -661,7 +662,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   ///* Encrypt the signed data for the iRODS SSL certificate */
   //$irods_blob = smime_encrypt($irods_signed, $irods_cert);
   
-  $added = -1;
+  $added = -1; // Was the user added to the group? -1=Error, 0=Success, 1=Member already in group
   try {
     $addstruct = doPUT($irods_url . IRODS_PUT_USER_GROUP_URI . IRODS_SEND_JSON, $portal_irods_user, $portal_irods_pw, $irods_json, "application/json", $irods_cert);
 
@@ -704,7 +705,8 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 	    error_log("iRODS: user $username has no iRODS account yet. Cannot add to group $group_name. ($groupCmdStatus: '$msg')");
 	    // FIXME: Email someone?
 	  } elseif ($groupCmdStatus === IRODS_STATUS_BAD_GROUP) {
-	    error_log("iRODS: Group $group_name doesn't exist yet, so cannot add user $username. Try to create the group... ($groupCmdStatus: '$msg')");
+	    // If it is INVALID_GROUP then we still need to do createGroup. I don't think that should happen. But in case...
+	    error_log("iRODS: group $group_name doesn't exist yet, so cannot add user $username. Try to create the group... ($groupCmdStatus: '$msg')");
 	    if (! isset($sa_url)) {
 	      $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 	      if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
@@ -720,7 +722,6 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 	  } else {
 	    error_log("iRODS failed to add user $username to group $group_name: $groupCmdStatus: '$msg'");
 	  }
-	  // If it is INVALID_GROUP then we still need to do createGroup. I don't think that should happen
 	}
       } elseif ($added !== 0) {
 	error_log("iRODS failed to add user $username to group $group_name: '$msg'");
@@ -738,6 +739,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
   return $added;
 }
 
+// Remove the given member from the given project with the given group name
 function removeFromGroup($project_id, $group_name, $member_id, $user) {
   if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("iRODS removeFromGroup: not a valid project ID. Nothing to do. $project_id");
@@ -755,9 +757,6 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
   // must get member username
   $member = geni_load_user_by_member_id($member_id);
   $username = base_username($member);
-  // then call the new REST API, checking the return for the error codes. 0 or 12 counts as success.
-  // On 9, do createGroup
-  // Log errors
   error_log("iRODS removeFromGroup $group_name member $member_id with username $username");
 
   // FIXME: How come I can't rely on this from top of file?
@@ -791,7 +790,9 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
     $portal_irods_pw = 'rods'; // FIXME: Testing value
   }
 
-  $removed = -1;
+  // End of stuff I wish I could just re-use from the top of the file
+
+  $removed = -1; // -1=Error, 0=Success, 1=Already gone
 
   try {
     $rmstruct = doDELETE($irods_url . IRODS_REMOVE_USER_URI1 . $group_name . IRODS_REMOVE_USER_URI2 . $username, $portal_irods_user, $portal_irods_pw, $irods_cert);
@@ -826,7 +827,6 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
 	$msg = $rmjson["message"];
 	//	error_log("removeFromGroup result: '$msg'");
       }
-      // Mike C says delete when either the group or user doesn't exist returns SUCCESS
       if (array_key_exists(IRODS_USER_GROUP_COMMAND_STATUS, $rmjson)) {
 	$groupCmdStatus = $rmjson[IRODS_USER_GROUP_COMMAND_STATUS];
 	if ($groupCmdStatus != IRODS_STATUS_SUCCESS) {
@@ -854,6 +854,7 @@ function removeFromGroup($project_id, $group_name, $member_id, $user) {
 
 // This function is not used currently as we don't want to delete user's data
 // It might be useful for debugging though?
+// Delete the iRODS group for the given project with the given name
 function removeGroup($project_id, $group_name, $user) {
   if (! isset($project_id) || $project_id == "-1" || ! uuid_is_valid($project_id)) {
     error_log("iRODS removeGroup: not a valid project ID. Nothing to do. $project_id");
@@ -864,9 +865,6 @@ function removeGroup($project_id, $group_name, $user) {
     return -1;
   }
 
-  // then call the new REST API, checking the return for the error codes. 0 or 12 counts as success.
-  // On 9, do createGroup
-  // Log errors
   error_log("iRODS removeGroup $group_name");
 
   // FIXME: How come I can't rely on this from top of file?
@@ -900,7 +898,9 @@ function removeGroup($project_id, $group_name, $user) {
     $portal_irods_pw = 'rods'; // FIXME: Testing value
   }
 
-  $removed = -1;
+  // End of code I should be able to re-use from the top of the file
+
+  $removed = -1; // -1=Error, 0=Success, 1=Already gone
 
   try {
     $rmstruct = doDELETE($irods_url . IRODS_REMOVE_USER_URI1 . $group_name, $portal_irods_user, $portal_irods_pw, $irods_cert);
