@@ -992,6 +992,23 @@ function update_project($args, $message)
   $result = db_execute_statement($sql);
   // FIXME: Check that this succeeded!
 
+  // un expire the project if necessary
+  $now_utc = new DateTime(null, new DateTimeZone('UTC'));
+  $sql2 = "UPDATE " . $PA_PROJECT_TABLENAME
+    . " SET "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED . " = FALSE WHERE " 
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . " = " . $conn->quote($project_id, 'text')
+    . " AND " . PA_PROJECT_TABLE_FIELDNAME::EXPIRED . " AND ("
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . " is null or "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . " > " 
+    . $conn->quote(db_date_format($now_utc), 'timestamp') . ")";
+
+  $result2 = db_execute_statement($sql2);
+  $unexpired = False;
+  if ($result2[RESPONSE_ARGUMENT::CODE] === RESPONSE_ERROR::NONE and $result2[RESPONSE_ARGUMENT::VALUE] == 1) {
+    $unexpired = True;
+  }
+
   global $log_url;
   global $mysigner;
   global $ma_url;
@@ -1022,8 +1039,11 @@ function update_project($args, $message)
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
 					  $project_id);
-  $msg = "$signer_name Updated project $project_name with purpose: " . 
-    "$project_purpose";
+  $msg = "$signer_name Updated project $project_name with purpose: '" . 
+    "$project_purpose'";
+  if ($unexpired) {
+    $msg = $msg . "; project no longer expired";
+  }
   log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
   geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 

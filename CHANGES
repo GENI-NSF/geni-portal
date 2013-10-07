@@ -8,6 +8,8 @@
    * Rearrange Profile tab (#812)
    * Remove debug log message in OpenID server (#828)
    * Remove "Manage RSpecs" button from profile tab (#810)
+   * Clearing or extending project expiration now un-expires the
+   project if applicable. (#841)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
