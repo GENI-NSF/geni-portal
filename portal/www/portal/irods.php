@@ -70,8 +70,8 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-// FIXME: Only let this page run for testers for now
-if (! $user->hasAttribute('enable_irods')) {
+// If we disable_irods, then only let this page run for testers
+if (isset($disable_irods) and ! $user->hasAttribute('enable_irods')) {
   error_log("User " . $user->prettyName() . " not enabled for iRODS");
   relative_redirect('profile.php');
 }
