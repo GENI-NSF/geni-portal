@@ -38,7 +38,9 @@ $toolurn = pem_cert_geni_urn($toolcert);
 /*
  * XXX FIXME: put the authorization service URL in a config file.
  */
-$auth_svc_js = 'https://tabletop.gpolab.bbn.com/xml-signer/geni-auth.js';
+$genilib_trusted_host = 'https://ch-tm.gpolab.bbn.com';
+$genilib_trusted_path = '/xml-signer/index.html';
+$auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -71,6 +73,8 @@ portal.authorize = function()
 {
   var tool_urn = '<?php echo $toolurn;?>';
   var tool_cert = document.getElementById('toolcert').innerHTML;
+  genilib.trustedHost = '<?php echo $genilib_trusted_host;?>';
+  genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
   genilib.authorize(tool_urn, tool_cert, portal.authZResponse);
   return false;
 }
