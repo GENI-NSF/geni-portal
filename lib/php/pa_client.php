@@ -43,6 +43,7 @@
 
 require_once('pa_constants.php');
 require_once('message_handler.php');
+include_once('irods_utils.php');
 
 // A cache of a user's detailed info indexed by member_id
 if(!isset($project_cache)) {
@@ -54,7 +55,6 @@ if(!isset($project_cache)) {
 // matters related to project, and documentation purpose of project
 function create_project($sa_url, $signer, $project_name, $lead_id, $project_purpose, $expiration)
 {
-  include_once('irods_utils.php');
   $create_project_message['operation'] = 'create_project';
   $create_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
   $create_project_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
@@ -188,7 +188,6 @@ function modify_project_membership($sa_url, $signer, $project_id,
 				 $members_to_change_role, 
 				 $members_to_remove)
 {
-  include_once('irods_utils.php');
   $modify_project_membership_msg['operation'] = 'modify_project_membership';
   $modify_project_membership_msg[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_ADD] = $members_to_add;

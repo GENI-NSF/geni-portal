@@ -57,7 +57,6 @@ if (! isset($ma_url)) {
   }
 }
 
-
 if (! isset($irods_url) || is_null($irods_url) || $irods_url == '') {
   error_log("Found no iRODS server in SR!");
   relative_redirect("error-text.php?error=" . urlencode("No iRODS servers configured."));
@@ -289,6 +288,19 @@ if (! $permError && ! $userExisted) {
 // Now that the user has an account, make sure there is an irods group for all their projects and they are in those groups
 // FIXME: In future take out that $userExisted piece. That is just to help bootstrap group creation but slow and not needed in the long run
 if ($didCreate or $userExisted) {
+  // Ensure we've saved the username in the local DB
+  if (! isset($ma_url)) {
+    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+    if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
+      error_log("Found no MA in SR!'");
+    }
+  }
+  if (isset($user->ma_member->irods_username)) {
+    remove_member_attribute($ma_url, $user, $user->account_id, 'irods_username'); // Race condition possible here, where another thread thinks the user has no account. The user would have to reload this page to fix things
+  }
+  add_member_attribute($ma_url, $user, $user->account_id, 'irods_username', $username, 't');
+  $user->ma_member->irods_username = $username;
+
   if (! isset($sa_url)) {
     $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
     if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {

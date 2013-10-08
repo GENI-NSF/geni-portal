@@ -52,8 +52,12 @@ $irods_cert = null;
 $irods_svrs = get_services_of_type(SR_SERVICE_TYPE::IRODS);
 if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && count($irods_svrs) > 0) {
   $irod = $irods_svrs[0];
-  $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
-  $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
+  if (is_null($irod[SR_TABLE_FIELDNAME::SERVICE_URL]) or trim($irod[SR_TABLE_FIELDNAME::SERVICE_URL]) == '') {
+    error_log("null or empty irods_url from DB");
+  } else {
+    $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
+  }
 }
 
 /* Get this from /etc/geni-ch/settings.php */
@@ -170,6 +174,9 @@ function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="
 // What are usernames usually?
 function base_username($user) {
   $userPrefix = "geni-"; // FIXME: Make this an HRN but with hyphens? No prefix?
+  if (isset($user->ma_member->irods_username)) {
+    return $user->ma_member->irods_username;
+  }
   return $userPrefix . $user->username;
 }
 
@@ -288,6 +295,29 @@ function irods_create_group($project_id, $project_name, $user) {
     return -1;
   }
 
+  // If pa_project_attribute has the irods_group_name attribute, then return 1
+  if (! isset($sa_url)) {
+    $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+    if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
+      error_log("iRODS Found no SA in SR!'");
+    }
+  }
+
+  $project_attributes = lookup_project_attributes($sa_url, $user, $project_id);
+  $group_name = null;
+  $att_group_name = null;
+  foreach($project_attributes as $attribute) {
+    if($attribute[PA_ATTRIBUTE::NAME] == PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME) {
+      $group_name = $attribute[PA_ATTRIBUTE::VALUE];
+      $att_group_name = $group_name;
+      break;
+    }
+  }
+  if (! is_null($group_name)) {
+    error_log("irodsCreateGroup: local attribute says group $group_name already exists for project $project_id");
+    return 1; // group already existed
+  }
+
   global $irods_url;
   global $default_zone;
   global $irods_cert;
@@ -366,17 +396,24 @@ function irods_create_group($project_id, $project_name, $user) {
     $created = -1;
   }
 
+  if ($created === 1) {
+    if (! isset($att_group_name)) {
+      // irods says the group exists, but our local attribute does not. Set it.
+      add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME, $group_name);
+    }
+  }
+
   if ($created === 0) {
+    // Save in local DB that we created the iRODS group
+    // Remove first ensures no duplicate rows
+    if (isset($att_group_name)) {
+      remove_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME);
+    }
+    add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME, $group_name);
+
     // Bootstrapping: for previously existing project, there may be other members of the project to add
     // Rely on the fact that we can move on if the user doesn't exist
     // Do this block only if we actually created the irods group just now
-
-    if (! isset($sa_url)) {
-      $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-      if (! isset($sa_url) || is_null($sa_url) || $sa_url == '') {
-	error_log("iRODS Found no SA in SR!'");
-      }
-    }
 
     $members = get_project_members($sa_url, $user, $project_id);
     // for each member of the project
@@ -466,6 +503,13 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 
   // must get member username
   $member = geni_load_user_by_member_id($member_id);
+
+  // Bail early if the local attribute says the user does not yet have an account
+  if (! isset($member->ma_member->irods_username)) {
+    error_log("iRODS addToGroup local attribute says member $member_id does not yet have an iRODS account. Cannot add to group $group_nme");
+    return -1;
+  }
+
   $username = base_username($member);
   error_log("iRODS addToGroup $group_name member $member_id with username $username");
 
