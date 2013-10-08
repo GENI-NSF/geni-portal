@@ -112,7 +112,7 @@ def main(argv=None):
     elif options.lead:
         privilege = "PROJECT_LEAD"
     proxy = chapi.make_proxy(url, cert, pkey)
-    result = proxy.add_member_privilege(member_id, privilege)
+    result = proxy.add_member_privilege(member_id, privilege, [], dict())
 
 
     print "%r" % (result)
