@@ -89,10 +89,10 @@ $labwiki_url = 'http://emmy9.casa.umass.edu:4000';
 print "<button onClick=\"window.open('$labwiki_url')\">";
 print "<b>LabWiki</b></button> ";
 
-// iRODS
-if (! isset($disable_irods) or $user->hasAttribute('enable_irods')) {
-  print "<button onClick=\"window.location='irods.php'\"><b>Create iRODS Account</b></button> ";
-}
+/* // iRODS */
+/* if (! isset($disable_irods) or $user->hasAttribute('enable_irods')) { */
+/*   print "<button onClick=\"window.location='irods.php'\"><b>Create iRODS Account</b></button> "; */
+/* } */
 
 // WiMAX
   if ($user->hasAttribute('enable_wimax_button')) {

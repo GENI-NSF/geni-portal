@@ -85,7 +85,7 @@ function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_TIMEOUT, 20);
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-  if (! is_null($serverroot)) {
+  if (! is_null($serverroot)) { // FIXME: If iRODS cert remains expired, make this if (false and...
     curl_setopt($ch, CURLOPT_CAINFO, $serverroot);
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
