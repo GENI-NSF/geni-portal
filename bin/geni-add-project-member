@@ -38,11 +38,7 @@ import logging
 import optparse
 from urlparse import urlparse
 import uuid
-
-# When gcf is properly installed, it should be in the sys.path. But we
-# don't do that yet, thus this unfortunate hard-coded path.
-sys.path.append('/usr/share/geni-ch/portal/gcf/src')
-import geni.util.ch_interface as ch
+import util.chapi
 
 def init_logging(options):
     level = logging.INFO
@@ -98,26 +94,6 @@ def load_private_key(certfile):
     # Or will that be taken care of downstream, by the ch_interface?
     return key
 
-def load_project_id(project, url, cert, pkey):
-    # Verify that it's a UUID.
-    # In the future, could convert project name to UUID
-    try:
-        uuid.UUID(project)
-        return project
-    except ValueError:
-        # Not a UUID. Try to resolve the project name
-        operation = "lookup_project"
-        logger = logging.getLogger()
-        args = dict(project_name=project)
-        result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
-        print "lookup_project = %r" % (result)
-        result_code = result['code']
-        result_value = result['value']
-        if result_code == 0 and result_value:
-            return result['value']['project_id']
-        else:
-            raise Exception("Invalid project id or name %r" % (project))
-
 def load_member_id(member):
     # Verify that it's a UUID.
     # In the future, could convert member email to UUID
@@ -141,17 +117,19 @@ def main(argv=None):
         url = verify_url(options.url)
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
-        project_id = load_project_id(options.project, url, cert, pkey)
-        member_id = load_member_id(options.member)
+        project_urn = find_project_urn(options.project, url, cert, pkey)
+        member_urn = find_member_urn(options.member, url, cert, pkey)
         role = convert_role(options.role)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-    operation = "add_project_member"
-    logger = logging.getLogger()
-    args = dict(project_id=project_id, member_id=member_id,
-                role_type=role)
-    result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
+    proxy = chapi.make_proxy(url, cert, pkey)
+    result = proxy.modify_project_membership(project_urn, [], {'members_to_add': [
+                {'PROJECT_MEMBER':member_urn,
+                 'PROJECT_ROLE':role
+                 }
+                ]})
+
     # print "%r" % (result)
     if not 'code' in result:
         msg = "Invalid response from server: %r" % (result)

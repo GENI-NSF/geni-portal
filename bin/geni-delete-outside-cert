@@ -39,11 +39,7 @@ import psycopg2
 import psycopg2.extras
 from urlparse import urlparse
 import uuid
-
-# When gcf is properly installed, it should be in the sys.path. But we
-# don't do that yet, thus this unfortunate hard-coded path.
-sys.path.append('/usr/share/geni-ch/portal/gcf/src')
-import geni.util.ch_interface as ch
+import util.chapi
 
 def init_logging(options):
     level = logging.INFO
@@ -111,29 +107,6 @@ def get_database_password(options):
         password = f.readlines()[0].strip()
         f.close()
         return password
-
-def find_member_id(member, url, logger, cert, pkey):
-    # Verify that it's a UUID.
-    try:
-        uuid.UUID(member)
-        return member
-    except ValueError:
-#        raise Exception("Invalid member id %r, must be a UUID" % (member))
-        pass
-    # In the future, try to figure out if 'member' is a URN or email address
-    args = dict(attributes=[dict(name='username', value=member)])
-    result = ch.invokeCH(url, 'lookup_members', logger, args, [cert], pkey)
-    # parse the result
-    # NOTE: Not enough error checking here.
-    if not 'code' in result:
-        return None
-    status = result['code']
-    if not status == 0:
-        return None
-    matches = result['value']
-    first_match = matches[0]
-    member_id = first_match['member_id']
-    return member_id
 
 def main(argv=None):
     if argv is None:
