@@ -66,6 +66,10 @@ if (! isset($slice)) {
 } else {
   $old_slice_expiration = dateUIFormat($slice[SA_ARGUMENT::EXPIRATION]);
 }
+if (! isset($project)) {
+  print "No project id specified.";
+  exit();
+} 
 
 if (!$user->isAllowed(SA_ACTION::RENEW_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
@@ -87,18 +91,26 @@ if (array_key_exists('renew', $_GET)) {
 if (array_key_exists('sliver_expiration', $_GET)) {
   // what we got asked for
   $desired_expiration = $_GET['sliver_expiration'];
-
   $desired_obj = new DateTime($desired_expiration);
-  if ($renew_sliver and !$renew_slice and $desired_obj > new DateTime($slice[SA_ARGUMENT::EXPIRATION])) {
-    // If you try to renew past the slice expiration, limit it
-    $desired_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+  //if you try to renew past the project expiration, limit it
+  $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  if ($project_expiration and $desired_obj > new DateTime($project_expiration)) {  
+    $desired_expiration = $project_expiration;
+  } elseif ($renew_sliver and !$renew_slice and $desired_obj > new DateTime($slice[SA_ARGUMENT::EXPIRATION])) {
+      // If you try to renew past the slice expiration, limit it
+      $desired_expiration = $slice[SA_ARGUMENT::EXPIRATION];
   } else {
-    // If you didn't specify a time, use min of end of day, slice expiration
+    // If you didn't specify a time, use min of end of day, slice expiration, project expiration
     $desired_array = date_parse($desired_expiration);
     if ($desired_array["hour"] == 0 and $desired_array["minute"] == 0 and $desired_array["second"] == 0 and $desired_array["fraction"] == 0) {
       $sliceexp_array = date_parse($slice[SA_ARGUMENT::EXPIRATION]);
+      if ($project_expiration) {
+	$projexp_array = date_parse($project_expiration);
+      }
       if ($renew_sliver and ! $renew_slice and $desired_array["year"] == $sliceexp_array["year"] and $desired_array["month"] == $sliceexp_array["month"] and $desired_array["day"] == $sliceexp_array["day"]) {
 	$desired_expiration = $slice[SA_ARGUMENT::EXPIRATION];
+      } elseif ($project_expiration and $desired_array["year"] == $projexp_array["year"] and $desired_array["month"] == $projexp_array["month"] and $desired_array["day"] == $projexp_array["day"]) {
+	$desired_expiration = $project_expiration;
       } else {
 	// renew for the end of the day
 	$desired_expiration = $desired_expiration . " 23:59:59";
