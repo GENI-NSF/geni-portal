@@ -17,6 +17,7 @@
    * Added SSL tab to Profile page with the ability to generate or
      download your SSL certificate (#708)
    * Limit slice renew request to project expiration time (#839)
+   * Remove account request pages (#837)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
