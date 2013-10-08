@@ -46,7 +46,7 @@ $irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
 $irods_host = "irods_hostname"; // FIXME
 $irods_port = 1247; // FIXME: Always right?
 $irods_resource = "demoResc"; // FIXME: Always right?
-$default_zone = "tempZone";
+$default_zone = "tempZone"; // This is only for the test server. The production server uses geniRenci
 
 // Get the irods server cert for smime purposes
 $irods_cert = null;
@@ -59,6 +59,14 @@ if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && cou
     $irods_url = $irod[SR_TABLE_FIELDNAME::SERVICE_URL];
     $irods_cert = $irod[SR_TABLE_FIELDNAME::SERVICE_CERT];
   }
+}
+
+// FIXME FIXME FIXME - see ticket #847
+// HACK
+// The production iRODS server uses a different zone. But we don't know it.
+// The right thing may be to put this in the SR or the settings file, but for now:
+if (strpos($irods_url, "geni-gimi") !== FALSE) {
+  $default_zone = "geniRenci";
 }
 
 /* Get this from /etc/geni-ch/settings.php */
