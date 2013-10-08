@@ -26,6 +26,7 @@
 require_once("user.php");
 require_once("cert_utils.php");
 require_once("rq_client.php");
+require_once("settings.php");
 ?>
 
 <?php
@@ -404,7 +405,7 @@ print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php
 
 print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
-if ($user->hasAttribute('enable_irods'))
+if (! isset($disable_irods) or $user->hasAttribute('enable_irods'))
   $irodsdisabled = "";
 print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
 // END tools tab
