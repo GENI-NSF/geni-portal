@@ -18,15 +18,15 @@
     download your SSL certificate (#708)
   * Limit slice renew request to project expiration time (#839)
   * Remove account request pages (#837)
-  * iRODS Support: Create an iRODS group for each new project. When
+  * iRODS Support: Enable iRODS page for all users.
+    Create an iRODS group for each new project. When
     adding/removing a project member, add/remove them from the iRODS
     group. When loading the iRODS page, ensure there is an iRODS group
     for each non-expired project. If the group gets created, all
     project members are added to the group. If the group existed and
     this user just got an iRODS account, add them. Note that this adds
     some delay in creating projects or adding/removing members from
-    projects. Note that the iRODS button itself is still only visible
-    to select portal users. (#829, #830, #831, #832)
+    projects. (#829, #830, #831, #832)
 
 == 2.3 ==
   * Remove note feature from projects and slices (#728)
