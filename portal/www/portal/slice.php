@@ -324,7 +324,14 @@ print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . 
 print "</td>\n";
 
 /* Renew */
+if ($project_expiration) {
+  $project_exp_print = dateUIFormat($project_expiration);
+  $project_line = "Project expires on <b>$project_exp_print</b><br>";
+} else {
+  $project_line = "Project does not have an expiration date<br>";
+}
 print "<td>\n";
+print $project_line;
 print "Slice expires on <b>$slice_expiration</b>";
 print "</td></tr>\n";
 
