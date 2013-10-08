@@ -24,6 +24,7 @@
 
 include_once('/etc/geni-ch/settings.php');
 include_once('settings.php');
+require_once('sr_client.php');
 
 /*
   Functions for interacting with the iRODS REST interfaces
@@ -399,17 +400,21 @@ function irods_create_group($project_id, $project_name, $user) {
   if ($created === 1) {
     if (! isset($att_group_name)) {
       // irods says the group exists, but our local attribute does not. Set it.
-      add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME, $group_name);
+      if ($user->isAllowed(PA_ACTION::ADD_PROJECT_ATTRIBUTE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+	add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME, $group_name);
+      }
     }
   }
 
   if ($created === 0) {
     // Save in local DB that we created the iRODS group
     // Remove first ensures no duplicate rows
-    if (isset($att_group_name)) {
-      remove_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME);
+    if ($user->isAllowed(PA_ACTION::ADD_PROJECT_ATTRIBUTE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+      if (isset($att_group_name)) {
+	remove_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME);
+      }
+      add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME, $group_name);
     }
-    add_project_attribute($sa_url, $user, $project_id, PA_ATTRIBUTE_NAME::IRODS_GROUP_NAME, $group_name);
 
     // Bootstrapping: for previously existing project, there may be other members of the project to add
     // Rely on the fact that we can move on if the user doesn't exist
@@ -506,7 +511,7 @@ function addToGroup($project_id, $group_name, $member_id, $user) {
 
   // Bail early if the local attribute says the user does not yet have an account
   if (! isset($member->ma_member->irods_username)) {
-    error_log("iRODS addToGroup local attribute says member $member_id does not yet have an iRODS account. Cannot add to group $group_nme");
+    error_log("iRODS addToGroup local attribute says member $member_id does not yet have an iRODS account. Cannot add to group $group_name");
     return -1;
   }
 
