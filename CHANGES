@@ -14,6 +14,7 @@
    * Fix revocation of operator privileges (#668)
    * Make slice member names be mailto links on slice page (#538)
    * Add project expiration time in the slice view (#838)
+   * Limit slice renew request to project expiration time (#839)
 
 == 2.3 ==
    * Remove note feature from projects and slices (#728)
