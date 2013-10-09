@@ -24,19 +24,36 @@
 # Library of tools for communicating with the GENI clearinghouse
 # (CHAPI) services via XML/RPC.
 # 
-# This solution based on https://groups.google.com/forum/#!topic/comp.lang.python/seSFYP0Y-o0
+# Client-side SSL authentication solution for xmlrpclib is inspired by the discussion
+# in https://groups.google.com/forum/#!topic/comp.lang.python/seSFYP0Y-o0
+#
 import xmlrpclib
+import uuid
+from tempfile import mkstemp
+import os
 
 class SafeTransportWithCert(xmlrpclib.SafeTransport):
-    _cert = None
-    _key = None
     def __init__(self, cert, key):
-        self._cert = cert
-        self._key = key
+        #xmlrpclib.SafeTransport.__init__(self)
+        xmlrpclib.Transport.__init__(self)
+        _, cert_file = mkstemp()
+        cfd = open(cert_file, "w")
+        cfd.write(cert)
+        cfd.close()
+        self._cert_file = cert_file
+        _, key_file = mkstemp()
+        kfd = open(key_file, "w")
+        kfd.write(key)
+        kfd.close()
+        self._key_file = key_file
+
+    def __del__(self):
+        os.remove(self._cert_file)
+        os.remove(self._key_file)
 
     def make_connection(self,host):
-        host_with_cert = (host, { 'key_file'  :  self.__key_file,
-                                  'cert_file' :  self.__cert_file
+        host_with_cert = (host, { 'key_file'  :  self._key_file,
+                                  'cert_file' :  self._cert_file
                                   } )
         return xmlrpclib.SafeTransport.make_connection(self, host_with_cert)
 
@@ -54,7 +71,7 @@ def find_member_id(member, url, logger, cert, pkey):
     
     # TODO: In the future, try to figure out if 'member' is a URN or email address
     args = dict(attributes=[dict(name='username', value=member)])
-    proxy = chapi.make_proxy(url, cert, pkey)
+    proxy = make_proxy(url, cert, pkey)
     result = proxy.lookup_public_member_info([], { 'match': {'_GENI_USERNAME': member},
                                                    'filter': ['MEMBER_UID'] })
     if not 'code' in result:
@@ -81,7 +98,7 @@ def find_member_urn(member, url, logger, cert, pkey):
     
     # TODO: In the future, try to figure out if 'member' is a URN or email address
     args = dict(attributes=[dict(name='username', value=member)])
-    proxy = chapi.make_proxy(url, cert, pkey)
+    proxy = make_proxy(url, cert, pkey)
     result = proxy.lookup_public_member_info([], { 'match': {'_GENI_USERNAME': member},
                                                    'filter': ['MEMBER_URN'] })
     if not 'code' in result:
@@ -98,7 +115,7 @@ def find_member_urn(member, url, logger, cert, pkey):
     return member_urn
 
 def find_project_urn(project, url, cert, pkey):
-    proxy = chapi.make_proxy(url, cert, pkey)
+    proxy = make_proxy(url, cert, pkey)
     result = proxy.lookup_projects([], {'match': {'PROJECT_NAME': project}})
     print "lookup_project = %r" % (result)
     result_code = result['code']
@@ -109,7 +126,7 @@ def find_project_urn(project, url, cert, pkey):
         raise Exception("Invalid project id or name %r" % (project))
 
 def find_project_id(project, url, cert, pkey):
-    proxy = chapi.make_proxy(url, cert, pkey)
+    proxy = make_proxy(url, cert, pkey)
     result = proxy.lookup_projects([], {'match': {'PROJECT_NAME': project}})
     print "lookup_project = %r" % (result)
     result_code = result['code']
