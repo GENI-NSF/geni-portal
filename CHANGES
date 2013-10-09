@@ -3,7 +3,7 @@
 = GENI Clearinghouse and Portal Release Notes =
 
 == 2.5 ==
-
+  * Improve error reporting in geni-revoke-member-privilege (#853)
 
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)
