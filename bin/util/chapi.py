@@ -58,7 +58,7 @@ class SafeTransportWithCert(xmlrpclib.SafeTransport):
         return xmlrpclib.SafeTransport.make_connection(self, host_with_cert)
 
 def make_proxy(url, cert, key):
-    return xmlrpclib.ServerProxy(url, transport=SafeTransportWithCert(cert, key))
+    return xmlrpclib.ServerProxy(url, transport=SafeTransportWithCert(cert, key), allow_none=True)
 
 def find_member_id(member, url, logger, cert, pkey):
     # Verify that it's a UUID.
