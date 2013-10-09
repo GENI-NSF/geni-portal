@@ -26,6 +26,7 @@
 require_once("user.php");
 require_once("cert_utils.php");
 require_once("rq_client.php");
+require_once("settings.php");
 ?>
 
 <?php
@@ -52,13 +53,13 @@ END;
 
   <div id='tablist'>
 		<ul class='tabs'>
-			<li><a href='#ssh'>SSH Keys</a></li>
-			<li><a href='#accountdetails'>Account Details</a></li>
-			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
 			<li><a href='#accountsummary'>Account Summary</a></li>
-			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#ssh'>SSH Keys</a></li>
+			<li><a href='#ssl'>SSL</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
-			<li style="border-right: none"><a href='#other'>Other</a></li>
+			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#tools'>Tools</a></li>
+			<li style="border-right: none"><a href='#outstandingrequests'>Outstanding Requests</a></li>
 		</ul>
   </div>
 		
@@ -164,19 +165,34 @@ else
 // END SSH tab
 echo "</div>";
 
-// BEGIN account details tab
-echo "<div id='accountdetails'>";
-$disable_account_details = "";
-$disable_authorize_tools = "";
-if($in_lockdown_mode) {
-  $disable_account_details = "disabled";
-  $disable_authorize_tools = "disabled";
+/*----------------------------------------------------------------------
+ * SSL Cert
+ *----------------------------------------------------------------------
+ */
+// BEGIN SSL tab
+echo "<div id='ssl'>";
+print "<h2>SSL Certificate</h2>\n";
+print "<p>";
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
+    error_log("Found no MA in SR!'");
+  }
 }
-print "<h2>Edit Account Details</h2>";
-print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
-print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
 
-// END account details tab
+$result = ma_lookup_certificate($ma_url, $user, $user->account_id);
+$has_certificate = ! is_null($result);
+
+$kmcert_url = "kmcert.php?close=1";
+print "<button onClick=\"window.open('$kmcert_url')\">";
+if (! $has_certificate) {
+  print "Generate an SSL certificate";
+} else {
+  print "Download your SSL certificate";
+}
+print "</button>";
+print "</p>";
+// END SSL tab
 echo "</div>";
 
 // BEGIN outstand requests tab
@@ -244,6 +260,11 @@ echo "</div>";
 
 // BEGIN account summary tab
 echo "<div id='accountsummary'>";
+$disable_account_details = "";
+if($in_lockdown_mode) {
+  $disable_account_details = "disabled";
+}
+
 print "<h2>Account Summary</h2>\n";
 // Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
 // Put this in a nice table
@@ -254,10 +275,13 @@ print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
 print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
 print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
 print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
+if ($user->phone() != "")
+  print "<tr><th>Telephone Number</th><td>" . $user->phone() . "</td></tr>\n";
 // FIXME: Project count? Slice count?
 // FIXME: Other attributes?
 // FIXME: Permissions
 print "</table>\n";
+print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
 
 // END account summary tab
 echo "</div>";
@@ -270,14 +294,9 @@ echo "<div id='rspecs'>";
  * RSpecs
  *----------------------------------------------------------------------
  */
-print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
-
-$disable_manage_rspecs = "";
-if ($in_lockdown_mode) $disable_manage_rspecs = "disabled";
-
-print "<p><button $disable_manage_rspecs onClick=\"window.location='rspecs.php'\">"
-  . "Manage RSpecs</button></p>\n";
-
+if (!$in_lockdown_mode) {
+  include("tool-rspecs.php");
+}
 // END rspecs tab
 echo "</div>";
 ?>
@@ -285,7 +304,7 @@ echo "</div>";
 
 <?php
 /*----------------------------------------------------------------------
- * SSL key management
+ * SSL Cert management
  *----------------------------------------------------------------------
  */
 
@@ -364,8 +383,8 @@ echo "</div>";
 </table>
 -->
 <?php
-// BEGIN other tab
-echo "<div id='other'>";
+// BEGIN tools tab
+echo "<div id='tools'>";
 /*----------------------------------------------------------------------
  * ABAC (if enabled)
  *----------------------------------------------------------------------
@@ -376,14 +395,20 @@ if ($portal_enable_abac)
     print "<button onClick=\"window.location='abac-id.php'\">Download your ABAC ID</button><br/>\n";
     print "<button onClick=\"window.location='abac-key.php'\">Download your ABAC private key</button>\n";
   }
+$disable_authorize_tools = "";
+if($in_lockdown_mode) {
+  $disable_authorize_tools = "disabled";
+}
+
+print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
 
 
-     print '<h2>iRODS</h2>';
+print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
-if ($user->hasAttribute('enable_irods'))
+if (! isset($disable_irods) or $user->hasAttribute('enable_irods'))
   $irodsdisabled = "";
 print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
-// END other tab
+// END tools tab
 echo "</div>";
 
   // END the tabContent class

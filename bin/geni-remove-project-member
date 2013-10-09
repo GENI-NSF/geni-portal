@@ -72,12 +72,11 @@ def parse_args(argv):
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-s", "--saurl", help="slice authority URL")
-    parser.add_option("-u", "--csurl", help="credential store URL")
+    parser.add_option("-u", "--url", help="base URL")
     parser.add_option("-p", "--project", help="project id (UUID) or name")
     parser.add_option("-m", "--member", help="member id (UUID)")
     options,args = parser.parse_args()
-    if not (options.keyfile and options.certfile and options.saurl and options.csurl
+    if not (options.keyfile and options.certfile and options.url
             and options.project and options.member):
         parser.print_usage()
         raise Exception("Missing some required arguments")
@@ -143,8 +142,8 @@ def main(argv=None):
     try:
         options,args = parse_args(argv)
         init_logging(options)
-        saurl = verify_url(options.saurl)
-        csurl = verify_url(options.csurl)
+        saurl = verify_url("%s/sa/sa_controller.php" %options.url)
+        csurl = verify_url("%s/cs/cs_controller.php"  %options.url)
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
         project_id = load_project_id(options.project, saurl, cert, pkey)
@@ -181,7 +180,6 @@ def main(argv=None):
                 ret = check_result(auth_result)
                 if not ret==0:
                     return ret
-
                 if auth_result['value']:
                     auth_admin = mem['member_id']
                     break
@@ -206,7 +204,7 @@ def main(argv=None):
     result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
     ret = check_result(result)
     if ret==0:
-        sys.stderr.write("Removed member from project.\n" %member_id);
+        sys.stderr.write("Removed member from project.\n");
     return ret
 
 

@@ -265,9 +265,15 @@ function query_assertions($args)
           . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE . " = "
           . $conn->quote($context_type, 'integer'));
   if (is_context_type_specific($context_type)) {
-    $sql .= (" AND " . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT
+    if ($context == null) {
+      $sql .= (" AND " . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT
+            . " is null");
+    } else {
+      $sql .= (" AND " . CS_ASSERTION_TABLE_FIELDNAME::CONTEXT
             . " = " . $conn->quote($context, 'text'));
+    }
   }
+  //  error_log("SQL: " . $sql);
   geni_syslog(GENI_SYSLOG_PREFIX::CS, $sql);
   $rows = db_fetch_rows($sql);
   return $rows;
