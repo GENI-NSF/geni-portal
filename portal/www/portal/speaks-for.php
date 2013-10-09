@@ -38,7 +38,7 @@ $toolurn = pem_cert_geni_urn($toolcert);
 /*
  * XXX FIXME: put the authorization service URL in a config file.
  */
-$genilib_trusted_host = 'https://ch-tm.gpolab.bbn.com';
+$genilib_trusted_host = 'https://ch.geni.net';
 $genilib_trusted_path = '/xml-signer/index.html';
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
