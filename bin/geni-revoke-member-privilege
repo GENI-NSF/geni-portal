@@ -222,6 +222,7 @@ def main(argv=None):
     ret = check_result(result)
     print("%r" %result)
     print("\nRevoked privilege\n")
+    return ret
 
 if __name__ == "__main__":
     sys.exit(main())

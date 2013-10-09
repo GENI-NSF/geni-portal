@@ -200,6 +200,7 @@ def main(argv=None):
     ret = check_result(result)
     if ret==0:
         sys.stderr.write("Removed member from project.\n");
+    return ret
 
 if __name__ == "__main__":
     sys.exit(main())
