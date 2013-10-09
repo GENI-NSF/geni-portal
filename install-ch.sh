@@ -90,6 +90,9 @@ sleep 10
 sudo /usr/bin/apt-get install -y --allow-unauthenticated geni-pgch
 sleep 10
 
+sudo /usr/bin/apt-get install -y --allow-unauthenticated xml-signer
+sleep 10
+
 # This install process always updates the apache config files, regardless
 # of whether portal/CH config files are being installed
 sudo sed -i -e 's/^#PROTOCH//' $APACHE_HTTPS_CH

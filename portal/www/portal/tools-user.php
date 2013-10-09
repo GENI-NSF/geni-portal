@@ -26,6 +26,7 @@
 require_once("user.php");
 require_once("cert_utils.php");
 require_once("rq_client.php");
+require_once("settings.php");
 ?>
 
 <?php
@@ -54,6 +55,7 @@ END;
 		<ul class='tabs'>
 			<li><a href='#accountsummary'>Account Summary</a></li>
 			<li><a href='#ssh'>SSH Keys</a></li>
+			<li><a href='#ssl'>SSL</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
 			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
 			<li><a href='#tools'>Tools</a></li>
@@ -161,6 +163,36 @@ else
   }
 
 // END SSH tab
+echo "</div>";
+
+/*----------------------------------------------------------------------
+ * SSL Cert
+ *----------------------------------------------------------------------
+ */
+// BEGIN SSL tab
+echo "<div id='ssl'>";
+print "<h2>SSL Certificate</h2>\n";
+print "<p>";
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+  if (! isset($ma_url) || is_null($ma_url) || $ma_url == '') {
+    error_log("Found no MA in SR!'");
+  }
+}
+
+$result = ma_lookup_certificate($ma_url, $user, $user->account_id);
+$has_certificate = ! is_null($result);
+
+$kmcert_url = "kmcert.php?close=1";
+print "<button onClick=\"window.open('$kmcert_url')\">";
+if (! $has_certificate) {
+  print "Generate an SSL certificate";
+} else {
+  print "Download your SSL certificate";
+}
+print "</button>";
+print "</p>";
+// END SSL tab
 echo "</div>";
 
 // BEGIN outstand requests tab
@@ -272,7 +304,7 @@ echo "</div>";
 
 <?php
 /*----------------------------------------------------------------------
- * SSL key management
+ * SSL Cert management
  *----------------------------------------------------------------------
  */
 
@@ -373,7 +405,7 @@ print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php
 
 print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
-if ($user->hasAttribute('enable_irods'))
+if (! isset($disable_irods) or $user->hasAttribute('enable_irods'))
   $irodsdisabled = "";
 print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
 // END tools tab

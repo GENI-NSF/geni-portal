@@ -324,7 +324,14 @@ print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . 
 print "</td>\n";
 
 /* Renew */
+if ($project_expiration) {
+  $project_exp_print = dateUIFormat($project_expiration);
+  $project_line = "Project expires on <b>$project_exp_print</b><br>";
+} else {
+  $project_line = "Project does not have an expiration date<br>";
+}
 print "<td>\n";
+print $project_line;
 print "Slice expires on <b>$slice_expiration</b>";
 print "</td></tr>\n";
 
@@ -455,6 +462,7 @@ foreach($members as $member) {
   $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
   $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
   $member_lists[$member_role_index][] = $member_name;
+
 }
 
 foreach ($member_lists as $member_role_index => $member_names) {
@@ -462,11 +470,14 @@ foreach ($member_lists as $member_role_index => $member_names) {
   foreach ($member_names as $member_name) {
     $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
     $member_id = $member_ids[$member_name];
-  // FIXME: Make this a mailto link
-    print "<tr><td>$member_name</td>" . 
-      "<td>$member_role</td></tr>\n";
+    $member_info = $user->fetchMember($member_id);
+    $member_email = $member_info->email();
+    $member_url = "mailto:$member_email";
+
+    print "<tr><td><a href=$member_url>$member_name</a></td><td>$member_role</td></tr>\n";
+
     /*
-      print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
+    print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
       "&member_id=$member_id\">$member_name</a></td>" . 
       "<td>$member_role</td></tr>\n";
     */
