@@ -38,7 +38,7 @@ import logging
 import optparse
 from urlparse import urlparse
 import uuid
-import util.chapi
+from util import chapi
 
 def init_logging(options):
     level = logging.INFO
@@ -117,8 +117,8 @@ def main(argv=None):
         url = verify_url(options.url)
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
-        project_urn = find_project_urn(options.project, url, cert, pkey)
-        member_urn = find_member_urn(options.member, url, cert, pkey)
+        project_urn = chapi.find_project_urn(options.project, url, cert, pkey)
+        member_urn = chapi.find_member_urn(options.member, url, cert, pkey)
         role = convert_role(options.role)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
