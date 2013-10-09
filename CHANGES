@@ -2,6 +2,9 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.5 ==
+
+
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)
   * Quiet some logging in printing rspecs (#836)
