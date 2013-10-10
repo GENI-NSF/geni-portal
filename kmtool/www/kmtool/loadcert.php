@@ -58,6 +58,14 @@ if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
+/*
+ * XXX FIXME: put the authorization service URL in a config file.
+ */
+$genilib_trusted_host = 'https://ch.geni.net';
+$genilib_trusted_path = '/xml-signer/index.html';
+$auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
+
+
 /*----------------------------------------------------------------------
  * Display happens below here.
  *----------------------------------------------------------------------
@@ -69,20 +77,22 @@ include("tool-showmessage.php");
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
 </script>
-<script src="https://tabletop.gpolab.bbn.com/xml-signer/geni-auth.js">
+<script src="<?php echo $auth_svc_js;?>">
 </script>
 <script type="text/plain" id="certificate"><?php echo $certificate;?></script>
 <script type="text/plain" id="privatekey"><?php echo $private_key;?></script>
-<script>
-function initialize()
-{
-  var userPrivateKey = document.getElementById('privatekey').innerHTML;
-  var userCert = document.getElementById('certificate').innerHTML;
-  genilib.sendCertificate(userPrivateKey + "\n" + userCert);
-}
-$(document).ready(initialize);
+<script type="text/javascript">
+/* Override the genilib defaults for our trusted host. */
+genilib.trustedHost = '<?php echo $genilib_trusted_host;?>';
+genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 </script>
+<script type="text/javascript" src="loadcert.js"></script>
 
+<form onsubmit="return false;">
+   <input id="loadcert"
+          type="submit"
+          value="Load my certificate"/>
+</form>
 <?php
   include("kmfooter.php");
 ?>
