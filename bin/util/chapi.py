@@ -89,14 +89,8 @@ def find_member_id(member, url, logger, cert, pkey):
     
     return member_id
 
-def find_member_urn(member, url, logger, cert, pkey):
-    # Verify that it's a UUID.
-    try:
-        uuid.UUID(member)
-        return member
-    except ValueError:
-        # raise Exception("Invalid member id %r, must be a UUID" % (member))
-        pass
+def find_member_urn(member, url, cert, pkey):
+    # TODO handle the urn case
     
     # TODO: In the future, try to figure out if 'member' is a URN or email address
     args = dict(attributes=[dict(name='username', value=member)])
@@ -111,10 +105,8 @@ def find_member_urn(member, url, logger, cert, pkey):
     matches = result['value']
     if not matches or len(matches) < 1:
         return None
-    first_match = matches[0]
     first_match = matches.values()[0]
     member_urn = first_match['MEMBER_URN'] #'member_id'
-    
     return member_urn
 
 def find_project_urn(project, url, cert, pkey):

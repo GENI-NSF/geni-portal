@@ -114,7 +114,7 @@ def main(argv=None):
         return 1
 
     logger = logging.getLogger()
-    member_urn = chapi.find_member_urn(options.member, url, logger, cert, pkey)
+    member_urn = chapi.find_member_urn(options.member, url, cert, pkey)
     if member_urn is None:
         print "ERROR: Member %s not found" % options.member
         return 1
