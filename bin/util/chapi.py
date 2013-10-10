@@ -31,6 +31,7 @@ import xmlrpclib
 import uuid
 from tempfile import mkstemp
 import os
+import sys
 
 class SafeTransportWithCert(xmlrpclib.SafeTransport):
     def __init__(self, cert, key):
@@ -72,17 +73,18 @@ def find_member_id(member, url, logger, cert, pkey):
     # TODO: In the future, try to figure out if 'member' is a URN or email address
     args = dict(attributes=[dict(name='username', value=member)])
     proxy = make_proxy(url, cert, pkey)
-    result = proxy.lookup_public_member_info([], { 'match': {'_GENI_USERNAME': member},
+    result = proxy.lookup_public_member_info([], { 'match': {'MEMBER_USERNAME': member},
                                                    'filter': ['MEMBER_UID'] })
     if not 'code' in result:
         return None
     status = result['code']
     if not status == 0:
+        sys.stderr.write(result['output']+"\n")
         return None
     matches = result['value']
     if not matches or len(matches) < 1:
         return None
-    first_match = matches[0]
+    first_match = matches.values()[0]
     member_id = first_match['MEMBER_UID'] #'member_id'
     
     return member_id
@@ -99,7 +101,7 @@ def find_member_urn(member, url, logger, cert, pkey):
     # TODO: In the future, try to figure out if 'member' is a URN or email address
     args = dict(attributes=[dict(name='username', value=member)])
     proxy = make_proxy(url, cert, pkey)
-    result = proxy.lookup_public_member_info([], { 'match': {'_GENI_USERNAME': member},
+    result = proxy.lookup_public_member_info([], { 'match': {'MEMBER_USERNAME': member},
                                                    'filter': ['MEMBER_URN'] })
     if not 'code' in result:
         return None
@@ -110,6 +112,7 @@ def find_member_urn(member, url, logger, cert, pkey):
     if not matches or len(matches) < 1:
         return None
     first_match = matches[0]
+    first_match = matches.values()[0]
     member_urn = first_match['MEMBER_URN'] #'member_id'
     
     return member_urn
@@ -117,11 +120,12 @@ def find_member_urn(member, url, logger, cert, pkey):
 def find_project_urn(project, url, cert, pkey):
     proxy = make_proxy(url, cert, pkey)
     result = proxy.lookup_projects([], {'match': {'PROJECT_NAME': project}})
-    print "lookup_project = %r" % (result)
     result_code = result['code']
     result_value = result['value']
-    if result_code == 0 and result_value:
-        return result['value']['PROJECT_URN']    #['project_id']
+    if result_code == 0 and result_value and len(result_value)>0:
+        result = result_value.values()[0]['PROJECT_URN']    #['project_id']
+        print "project_id = "+result
+        return result
     else:
         raise Exception("Invalid project id or name %r" % (project))
 
@@ -131,8 +135,9 @@ def find_project_id(project, url, cert, pkey):
     print "lookup_project = %r" % (result)
     result_code = result['code']
     result_value = result['value']
-    if result_code == 0 and result_value:
-        return result['value']['PROJECT_UID']    #['project_id']
+    if result_code == 0 and result_value and len(result_value)>0:
+        result = result_value.values()[0]['PROJECT_UID']    #['project_id']
+        return result
     else:
         raise Exception("Invalid project id or name %r" % (project))
 
