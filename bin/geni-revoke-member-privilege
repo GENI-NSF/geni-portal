@@ -107,6 +107,12 @@ def main(argv=None):
 
     logger = logging.getLogger()
     member_id = chapi.find_member_id(options.member, url, logger, cert, pkey)
+    if member_id is None:
+        sys.stderr.write('Could not find member "'+options.member+'"\n')
+        return -1
+
+    print 'member_id '+options.member+' = '+member_id
+
     if options.operator:
         privilege = "OPERATOR"
     elif options.lead:
