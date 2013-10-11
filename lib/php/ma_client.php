@@ -47,20 +47,11 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
 // Remove member attribute
 function remove_member_attribute($ma_url, $signer, $member_id, $name)
 {
-  /*
-  global $user;
-  $remove_member_attribute_message['operation'] = 'remove_member_attribute';
-  $remove_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] = $member_id;
-  $remove_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] = $name;
-  $results = put_message($ma_url, $remove_member_attribute_message, 
-			 $signer->certificate(), $signer->privateKey());
-  */
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $results = $client->add_member_attribute($member_urn, _portalkey_to_attkey($name), 
+  $results = $client->remove_member_attribute($member_urn, _portalkey_to_attkey($name), 
 					   $client->creds(), array());
   return $results;  // probably ignored
-
 }
 
 // Get list of all member_ids in repository
@@ -68,8 +59,7 @@ function get_member_ids($ma_url, $signer)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('filter' => array('MEMBER_UID', 'MEMBER_URN')); // match everything, select UID and URN
-  $recs = $client->lookup_public_member_info($client->creds(), 
-					     $options);
+  $recs = $client->lookup_public_member_info($client->creds(), $options);
   $result = array_map(function($x) { return $x['MEMBER_UID']; }, $recs);
   return $result;
 }
