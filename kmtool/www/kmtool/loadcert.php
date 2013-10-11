@@ -29,6 +29,10 @@
 require_once('km_utils.php');
 require_once('ma_client.php');
 
+/* Constants for the passphrase form */
+$PASSPHRASE_1 = 'passphrase1';
+$PASSPHRASE_2 = 'passphrase2';
+
 $member_id_key = 'eppn';
 $member_id_value = null;
 $members = array();
@@ -48,6 +52,35 @@ if (count($members) > 0) {
   $member_id = $member->member_id;
 }
 
+/*
+ * We may be receiving a passphrase via POST. If so, use that passphrase
+ * to encrypt the private key before proceeding.
+ */
+$method = $_SERVER['REQUEST_METHOD'];
+error_log("Got request method '$method'");
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  error_log("Processing put request");
+  error_log("_REQUEST = " . print_r($_REQUEST, true));
+  $passphrase1 = NULL;
+  $passphrase2 = NULL;
+  if (array_key_exists($PASSPHRASE_1, $_REQUEST)) {
+    $passphrase1 = $_REQUEST[$PASSPHRASE_1];
+  }
+  if (array_key_exists($PASSPHRASE_2, $_REQUEST)) {
+    $passphrase2 = $_REQUEST[$PASSPHRASE_2];
+  }
+  if ($passphrase1 && $passphrase2 && $passphrase1 == $passphrase2) {
+    error_log("would set passphrase here");
+  } else {
+    error_log("would not set passphrase. pp1=$passphrase1&pp2=$passphrase2");
+  }
+}
+
+
+/*
+ * Now we're done with the optional setting of the passphrase, so
+ * continue by retrieving the key and cert.
+ */
 $certificate = NULL;
 $private_key = NULL;
 $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
@@ -57,6 +90,38 @@ if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
 if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
+
+/*
+ * Does the user have a cert/key? If not, help them to create one.
+ */
+
+/*
+ * Does the private key have a passphrase? We can tell by
+ * looking for line like "^Proc-Type: 4,ENCRYPTED$"
+ *
+ * To add a passphrase:
+ *
+ *    openssl rsa -des3 -in open.key -out encrypted.key
+ */
+$add_passphrase = true;
+$passphrase_re = "/^Proc-Type: 4,ENCRYPTED$/";
+$match_result = preg_match($passphrase_re, $private_key);
+if ($match_result === 0) {
+  /* Key is not passphrase protected. Help the user add a passphrase. */
+  error_log("No passphrase on private key");
+  $add_passphrase = TRUE;
+} else if ($match_result === FALSE) {
+  /* An error occured. Log it. A warning has probably already been
+   * printed by preg_match.
+   */
+  error_log("Error checking private key against regex '$passphrase_re'");
+  /* XXX What do we do from here? */
+} else if ($match_result === 1) {
+  /* Success, already encrypted. */
+  $add_passphrase = FALSE;
+}
+
+
 
 /*
  * XXX FIXME: put the authorization service URL in a config file.
@@ -88,11 +153,35 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 </script>
 <script type="text/javascript" src="loadcert.js"></script>
 
+<?php if ($add_passphrase) { ?>
+<h2>Add a passphrase</h2>
+<p>
+Your private key does not have a passphrase, but requires one to work
+with the signing tool. Please add a passphrase to your private key below.
+</p>
+<p>
+<i>Note: The GPO Clearinghouse does not keep a copy of your passphrase.
+   You will need to remember this passphrase in order to use the signing
+   tool now and in the future. Please take steps now to record or
+   remember this passphrase.</i>
+</p>
+<form method="post">
+   <label class="input">Passphrase:
+   <input name="<?php echo $PASSPHRASE_1;?>" type="password"/></label>
+   <br/>
+   <label class="input">Re-type passphrase:
+   <input name="<?php echo $PASSPHRASE_2;?>" type="password"/></label>
+   <br/>
+   <button type="submit">Set passphrase</input>
+</form>
+<?php } else { ?>
 <form onsubmit="return false;">
    <input id="loadcert"
           type="submit"
           value="Load my certificate"/>
 </form>
+<?php } /* end if ($add_passphrase) */ ?>
+<br/>
 <?php
   include("kmfooter.php");
 ?>
