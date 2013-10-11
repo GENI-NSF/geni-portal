@@ -46,6 +46,26 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
   return $results;  // probably ignored
 }
 
+// Remove member attribute
+function remove_member_attribute($ma_url, $signer, $member_id, $name)
+{
+  /*
+  global $user;
+  $remove_member_attribute_message['operation'] = 'remove_member_attribute';
+  $remove_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::MEMBER_ID] = $member_id;
+  $remove_member_attribute_message[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::NAME] = $name;
+  $results = put_message($ma_url, $remove_member_attribute_message, 
+			 $signer->certificate(), $signer->privateKey());
+  */
+  $member_urn = get_member_urn($ma_url, $signer, $member_id);
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  $pairs = array(_portalkey_to_attkey($name)=>$value);
+  $results = $client->update_member_info($member_urn, $client->creds(), $pairs);
+
+
+  return $results;
+}
+
 // Get list of all member_ids in repository
 function get_member_ids($ma_url, $signer)
 {
@@ -294,7 +314,6 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
   if (array_key_exists($cache_key, $member_by_attribute_cache)) {
     return $member_by_attribute_cache[$cache_key];
   }
-
   $members = array();
 
   //error_log( " lookup_members_by_identifying = " . print_r($identifying_key, true) . " // ". print_r($identifying_value, true));

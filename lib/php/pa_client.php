@@ -45,6 +45,7 @@ require_once('pa_constants.php');
 require_once('cs_constants.php');
 require_once 'chapi.php';
 require_once('client_utils.php');
+include_once('irods_utils.php');
 
 // A cache of a user's detailed info indexed by member_id
 if(!isset($project_cache)) {
@@ -71,6 +72,14 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 		  'PROJECT_EXPIRATION'    => $expiration);
   $results = $client->create_project($client->creds(), array('fields'=>$fields));
   $project_id = $results['PROJECT_UID'];
+
+  /****   iRODS Support ****/
+  // All new projects get an irods group
+  $created = irods_create_group($project_id, $project_name, $signer);
+  if ($created === -1) {
+    error_log("FAILED to create iRODS group for new project $project_name");
+  }
+  /**** End of iRODS Support ***/
 
   return $project_id;
 }
@@ -284,6 +293,11 @@ function modify_project_membership($sa_url, $signer, $project_id,
   if (sizeof($members_to_change)>0) { $options['members_to_change'] = $members_to_change; }
   if (sizeof($members_to_remove)>0) { $options['members_to_remove'] = $members_to_remove; }
   $res = $client->modify_project_membership($project_urn, $client->creds(), $options);
+  /****   iRODS Support ****/
+  // Whenever we add/remove members from a project, do same for the matching irods group
+  irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $signer, $res);
+  /****   End of iRODS Support ****/
+
   return $res;
 }
 
@@ -478,7 +492,17 @@ function add_project_attribute($sa_url, $signer, $project_id, $name, $value)
   return $results;
 }
 
-
+// Remove attribute (name) from a given project
+function remove_project_attribute($sa_url, $signer, $project_id, $name)
+{
+  global $user;
+  $remove_project_attribute_message['operation'] = 'remove_project_attribute';
+  $remove_project_attribute_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  $remove_project_attribute_message[PA_ATTRIBUTE::NAME] = $name;
+  $results = put_message($sa_url, $remove_project_attribute_message, 
+			 $signer->certificate(), $signer->privateKey());
+  return $results;
+}
 
 
 ?>

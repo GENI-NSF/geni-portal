@@ -9,8 +9,10 @@ require_once "Auth/OpenID/Server.php";
  */
 function init()
 {
+  if (! session_id()) {
     session_name('openid_server');
     session_start();
+  }
 }
 
 /**
@@ -85,7 +87,6 @@ function getServer()
       //$server =& new Auth_OpenID_Server(getOpenIDStore(),
       //                                  buildURL());
       global $server_url;
-      error_log("getServer server_url = $server_url");
       $server =& new Auth_OpenID_Server(getOpenIDStore(),
                                         $server_url);
     }
@@ -162,7 +163,6 @@ function idURL($identity)
 {
     //return buildURL('idpage') . "?user=" . $identity;
   global $server_url;
-  error_log("idURL server_url = $server_url");
   return $server_url . "/idpage" . "?user=" . $identity;
 }
 

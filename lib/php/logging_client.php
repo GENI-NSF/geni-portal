@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('logging_constants.php');
+require_once('chapi.php');
 require_once('cs_constants.php');
 
 // Client side services for Logging of events within GENI clearinghouse
@@ -34,27 +34,15 @@ require_once('cs_constants.php');
 //    user_id (the writer of the log entry)
 function log_event($log_url, $signer, $message, $attributes, $user_id )
 {
-  $log_event_message['operation'] = 'log_event';
-  $log_event_message[LOGGING_ARGUMENT::EVENT_TIME] = time();
-  $log_event_message[LOGGING_ARGUMENT::MESSAGE] = $message;
-  $log_event_message[LOGGING_ARGUMENT::ATTRIBUTES] = $attributes;
-  $log_event_message[LOGGING_ARGUMENT::USER_ID] = $user_id;
-  //  error_log("LOG_EVENT : " . print_r($log_event_message, true));
-  //  error_log("LOG_URL : " . print_r($log_url, true));
-  $result = put_message($log_url, $log_event_message, 
-			$signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($log_url, $signer);
+  $client->log_event($message, $attributes, $user_id);
 }
 
 function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours=24)
 {
-  $get_log_entries_message['operation'] = 'get_log_entries_by_author';
-  $get_log_entries_message[LOGGING_ARGUMENT::EARLIEST_TIME] = time() - 3600*$num_hours;
-  $get_log_entries_message[LOGGING_ARGUMENT::USER_ID] = $user_id;
-  //  error_log("GET_LOG_ENTRIES : " . print_r($get_log_entries_message, true));
-  $result = put_message($log_url, $get_log_entries_message, 
-			$signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($log_url, $signer);
+  $entries = $client->get_log_entries_by_author($user_id, $num_hours);
+  return $entries;
 }
 
 // Helper function to turn context/context_id into attribute dictionary
@@ -68,33 +56,16 @@ function get_attribute_for_context($context_type, $context_id)
 
 function get_log_entries_for_context($log_url, $signer, $context_type, $context_id, $num_hours=24)
 {
-  $attribute_sets = 
-    array(get_attribute_for_context($context_type, $context_id));
-
-  //  error_log("GLEFC.AS = " . print_r($attribute_sets, true));
-
-  $result = get_log_entries_by_attributes($log_url, $signer, $attribute_sets, $num_hours);
-  return $result;
-}
-
-function get_log_entries_by_attributes($log_url, $signer, $attribute_sets, $num_hours=24)
-{
-
-  $get_log_entries_message['operation'] = 'get_log_entries_by_attributes';
-  $get_log_entries_message[LOGGING_ARGUMENT::EARLIEST_TIME] = time() - 3600*$num_hours;
-  $get_log_entries_message[LOGGING_ARGUMENT::ATTRIBUTE_SETS] = $attribute_sets;
-  $result = put_message($log_url, $get_log_entries_message, 
-			$signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($log_url, $signer);
+  $entries = $client->get_log_entries_for_context($context_type, $context_id, $num_hours);
+  return $entries;
 }
 
 function get_attributes_for_log_entry($log_url, $signer, $event_id)
 {
-  $get_attributes_message['operation'] = 'get_attributes_for_log_entry';
-  $get_attributes_message[LOGGING_ARGUMENT::EVENT_ID] = $event_id;
-  $result = put_message($log_url, $get_attributes_message, 
-			$signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($log_url, $signer);
+  $attribs = $client->get_attributes_for_log_entry($event_id);
+  return $attribs;
 }
 
 // This is a helper function to allow sorting lists of 

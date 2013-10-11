@@ -46,6 +46,21 @@ def init_logging(options):
         level = logging.DEBUG
     logging.basicConfig(level=level)
 
+def check_result(result):
+    if not 'code' in result:
+        msg = "Invalid response from server: %r" % (result)
+        sys.stderr.write(msg + "\n")
+        exit 1
+    status = result['code']
+    if not status == 0:
+        if 'output' in result:
+            msg = "Error: %s" % (result['output'])
+        else:
+            msg = "Error %d, no reason given" % (status)
+        sys.stderr.write(msg + "\n")
+        exit 1
+    return status
+
 def parse_args(argv):
     parser = optparse.OptionParser()
     parser.add_option("--debug", action="store_true", default=False,
@@ -127,10 +142,16 @@ def main(argv=None):
         if 'output' in result:
             msg = "Error: %s" % (result['output'])
         else:
-            msg = "Error %d, no reason given" % (status)
-        sys.stderr.write(msg + "\n")
-        return status
-    return 0
+            sys.stderr.write("Can't remove lead from project unless there is an authorized administrator to take the lead role.\n");
+            return(1) 
+
+    operation = "modify_project_membership"
+    args = dict(project_id=project_id, members_to_remove=[member_id], members_to_add=[],members_to_change_role = [])
+    result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
+    ret = check_result(result)
+    if ret==0:
+        sys.stderr.write("Removed member from project.\n");
+    return ret
 
 if __name__ == "__main__":
     sys.exit(main())

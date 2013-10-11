@@ -32,6 +32,7 @@ nobase_dist_svcdata_DATA = \
 	php/smime.php \
 	php/sr_client.php \
 	php/sr_constants.php \
-	php/util.php
+	php/util.php \
+	php/irods_utils.php
 
 cleandb:

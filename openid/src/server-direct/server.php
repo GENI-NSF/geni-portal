@@ -1,7 +1,5 @@
 <?php
 
-error_log("OpenID-Direct: in server.php");
-
 $path_extra = dirname(dirname(dirname(__FILE__)));
 $path = ini_get('include_path');
 $path = $path_extra . PATH_SEPARATOR . $path;
@@ -20,7 +18,6 @@ if (function_exists('getOpenIDStore')) {
     require_once 'lib/session.php';
     require_once 'lib/actions.php';
 
-    error_log("OpenID-Direct: loaded lib/actions.php");
     init();
 
     $action = getAction();
@@ -28,7 +25,6 @@ if (function_exists('getOpenIDStore')) {
         $action = 'action_default';
     }
 
-    error_log("OpenID-Direct: action = \"$action\"");
     $resp = $action();
 
     writeResponse($resp);
