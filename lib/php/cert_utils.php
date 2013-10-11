@@ -180,4 +180,5 @@ function make_urn($authority, $type, $name)
 {
   return "urn:publicid:IDN+$authority+$type+$name";
 }
+
 ?>
