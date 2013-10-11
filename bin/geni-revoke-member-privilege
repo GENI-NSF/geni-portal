@@ -202,7 +202,7 @@ def main(argv=None):
 
             if auth_admin != None:
                 sys.stderr.write("Changing authorized administrator %s to project lead for project %s.\n" %(auth_admin, project_id))
-                sys.stderr.write("Changing project lead %s to member for project %s.\n" %(auth_admin,project_id))
+                sys.stderr.write("Changing project lead %s to member for project %s.\n" %(member_id,project_id))
                 operation = "modify_project_membership"
                 change_role = {}
                 change_role[member_id] = 3
