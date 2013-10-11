@@ -23,6 +23,14 @@
 # IN THE WORK.
 #----------------------------------------------------------------------
 
+# The output of SLICE_GATHER_SCRIPT contains dates of the form
+#   YYYY-mm-dd HH:MM:SS
+# which are in UTC.
+# Set process timezone to UTC before doing anything else so python naive
+# date tools can parse these correctly.
+import os
+os.putenv('TZ', 'UTC')
+
 import csv
 import datetime
 import dateutil.parser

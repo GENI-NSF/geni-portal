@@ -87,7 +87,7 @@ GENI allows users to log in using their existing accounts via our partnership in
   using your usual username and password to activate
   your GENI account.
   </li><li>If you are not affiliated with an InCommon federated
-  institution, you may <a href="/idp/request.html">request a GENI-only login</a>.</li>
+  institution, you may <a href="https://shib-idp.geni.net/geni/request.html">request a GENI-only login</a>.</li>
 </ul>
 </p>
 
@@ -116,7 +116,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 <ul>
 <li>
 <b>... and don't have a login or can't login</b>,
-  <a href="/idp/request.html">request a GENI-only login</a>.
+  <a href="https://shib-idp.geni.net/geni/request.html">request a GENI-only login</a>.
 </li>
 </ul>
 

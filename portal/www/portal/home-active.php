@@ -33,6 +33,7 @@
 require_once("util.php");
 require_once('logging_constants.php');
 include("services.php");
+require_once("settings.php");
 
   // Actions / approvals required 
    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
@@ -73,9 +74,7 @@ include("tool-slices.php");
 
 <?php
 /* ------------------------------------------------------------
- * Other tools
- *
- * For now there is only one listed tool, GEMINI.
+ * Other tools: GENI Desktop (GEMINI), LabWiki (GIMI), WiMAX
  * ------------------------------------------------------------
  */
 $gemini_url = relative_url("gemini.php");
@@ -85,11 +84,24 @@ $gemini_url = relative_url("gemini.php");
   print "<button onClick=\"window.open('$gemini_url')\">";
   print "<b>GENI Desktop</b></button> ";
 
+/* LabWiki */
+$labwiki_url = 'http://emmy9.casa.umass.edu:4000';
+print "<button onClick=\"window.open('$labwiki_url')\">";
+print "<b>LabWiki</b></button> ";
+
+/* // iRODS */
+/* if (! isset($disable_irods) or $user->hasAttribute('enable_irods')) { */
+/*   print "<button onClick=\"window.location='irods.php'\"><b>Create iRODS Account</b></button> "; */
+/* } */
+
+// WiMAX
   if ($user->hasAttribute('enable_wimax_button')) {
     $wimax_url = relative_url("wimax-enable.php");
     print "<button onClick=\"window.open('$wimax_url')\">";
     print "<b>WiMAX</b></button>";
   }
+
+
   print "</p>";
 
 ?>

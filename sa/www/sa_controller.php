@@ -293,6 +293,7 @@ class SAGuardFactory implements GuardFactory
 	    // This should be only project lead or admin (or operator)
 	    // FIXME: Does this work?
 	    "add_project_attribute" => array('project_guard'),
+	    "remove_project_attribute" => array('project_guard'),
 	    'add_project_lead_to_slices' => array('FalseGuard'),
 	    'remove_project_member_from_slices' => array('FalseGuard'),
 	    //
@@ -991,6 +992,23 @@ function update_project($args, $message)
   $result = db_execute_statement($sql);
   // FIXME: Check that this succeeded!
 
+  // un expire the project if necessary
+  $now_utc = new DateTime(null, new DateTimeZone('UTC'));
+  $sql2 = "UPDATE " . $PA_PROJECT_TABLENAME
+    . " SET "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRED . " = FALSE WHERE " 
+    . PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID . " = " . $conn->quote($project_id, 'text')
+    . " AND " . PA_PROJECT_TABLE_FIELDNAME::EXPIRED . " AND ("
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . " is null or "
+    . PA_PROJECT_TABLE_FIELDNAME::EXPIRATION . " > " 
+    . $conn->quote(db_date_format($now_utc), 'timestamp') . ")";
+
+  $result2 = db_execute_statement($sql2);
+  $unexpired = False;
+  if ($result2[RESPONSE_ARGUMENT::CODE] === RESPONSE_ERROR::NONE and $result2[RESPONSE_ARGUMENT::VALUE] == 1) {
+    $unexpired = True;
+  }
+
   global $log_url;
   global $mysigner;
   global $ma_url;
@@ -1021,8 +1039,11 @@ function update_project($args, $message)
 
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
 					  $project_id);
-  $msg = "$signer_name Updated project $project_name with purpose: " . 
-    "$project_purpose";
+  $msg = "$signer_name Updated project $project_name with purpose: '" . 
+    "$project_purpose'";
+  if ($unexpired) {
+    $msg = $msg . "; project no longer expired";
+  }
   log_event($log_url, $mysigner, $msg, $attributes, $signer_id);
   geni_syslog(GENI_SYSLOG_PREFIX::PA, $msg);
 
@@ -1051,7 +1072,6 @@ function modify_project_membership($args, $message)
   global $cs_url;
   global $mysigner;
 
-  error_log(print_r($args,true));
   // Unpack arguments
   $project_id = $args[PA_ARGUMENT::PROJECT_ID];
   $members_to_add = $args[PA_ARGUMENT::MEMBERS_TO_ADD];
@@ -1183,7 +1203,7 @@ function modify_project_membership($args, $message)
   // Can't remove project lead directly
   // Need to demote them and then remove them
   if (array_key_exists($project_lead, $members_to_remove)) {
-    return generate_respponse(RESPONSE_ERROR::ARGS, null,
+    return generate_response(RESPONSE_ERROR::ARGS, null,
 			      "Cannot remove lead from project. " . 
 			      "Replace first.");
   }
@@ -1270,7 +1290,7 @@ function modify_project_membership($args, $message)
 }
 
 /* update lead_id of given project.
-*  To be called only be SA/PA local functions */
+*  To be called only by SA/PA local functions */
 function change_project_lead($project_id, $new_project_lead)
 {
   global $PA_PROJECT_TABLENAME;
@@ -2385,8 +2405,42 @@ function add_project_attribute($args)
 
 }
 
+/* remove attribute name/value pair from project
+   Requires project_id, name
+*/
+function remove_project_attribute($args)
+{
+  global $PA_PROJECT_ATTRIBUTE_TABLENAME;
 
+  if (! array_key_exists(PA_ATTRIBUTE::PROJECT_ID, $args) or
+      $args[PA_ATTRIBUTE::PROJECT_ID] == '') {
+    error_log("Missing project_id arg to remove_project_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Project ID is missing");
+  }
 
+  if (! array_key_exists(PA_ATTRIBUTE::NAME, $args) or
+      $args[PA_ATTRIBUTE::NAME] == '') {
+    error_log("Missing name arg to remove_project_attribute");
+    return generate_response(RESPONSE_ERROR::ARGS, null,
+			     "Name is missing");
+  }
+
+  $conn = db_conn();
+
+  // define variables
+  $project_id = $args[PA_ATTRIBUTE::PROJECT_ID];
+  $name = $args[PA_ATTRIBUTE::NAME];
+
+  // insert
+  $sql = ("delete from " . $PA_PROJECT_ATTRIBUTE_TABLENAME . " WHERE "
+          . PA_ATTRIBUTE::PROJECT_ID . " = "
+          . $conn->quote($project_id, 'text') . " AND " 
+          . PA_ATTRIBUTE::NAME . " = "
+          . $conn->quote($name, 'text'));
+  $result = db_execute_statement($sql);
+  return $result;
+}
 
 
 /*----------------------------------------------------------------------
@@ -2772,7 +2826,7 @@ function create_slice($args, $message)
     } else {
       $admins = $admins_res[RESPONSE_ARGUMENT::VALUE];
       if (is_null($admins) || count($admins) <= 0) {
-	error_log("Create slice: No project admins found in project " . $project_name);
+	//	error_log("Create slice: No project admins found in project " . $project_name);
 	$admins = array();
       }
     }
