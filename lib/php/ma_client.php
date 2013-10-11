@@ -35,14 +35,12 @@ if(!isset($member_cache)) {
 }
 
 // Add member attribute
-// CHAPI: ignores $self_asserted
 function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self_asserted)
 {
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
-
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $pairs = array(_portalkey_to_attkey($name)=>$value);
-  $results = $client->update_member_info($member_urn, $client->creds(), $pairs);
+  $results = $client->add_member_attribute($member_urn, _portalkey_to_attkey($name), 
+					   $value, $self_asserted, $client->creds(), array());
   return $results;  // probably ignored
 }
 
@@ -59,11 +57,10 @@ function remove_member_attribute($ma_url, $signer, $member_id, $name)
   */
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $pairs = array(_portalkey_to_attkey($name)=>$value);
-  $results = $client->update_member_info($member_urn, $client->creds(), $pairs);
+  $results = $client->add_member_attribute($member_urn, _portalkey_to_attkey($name), 
+					   $client->creds(), array());
+  return $results;  // probably ignored
 
-
-  return $results;
 }
 
 // Get list of all member_ids in repository
