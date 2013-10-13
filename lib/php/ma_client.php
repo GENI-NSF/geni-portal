@@ -72,12 +72,13 @@ function register_ssh_key($ma_url, $signer, $member_id, $filename,
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $pairs = array('_GENI_KEY_FILENAME' => $filename,
                  'KEY_DESCRIPTION' => $description,
-                 'KEY_PUBLIC' => $ssh_public_key);
+                 'KEY_PUBLIC' => $ssh_public_key,
+                 'KEY_MEMBER' => $member_urn);
   if (! is_null($ssh_private_key)) {
     $pairs['KEY_PRIVATE'] = $ssh_private_key;
   }
 
-  $client->create_key($member_urn, $client->creds(), array('fields' => $pairs));
+  $client->create_key($client->creds(), array('fields' => $pairs));
 }
 
 // Lookup public SSH keys associated with user
