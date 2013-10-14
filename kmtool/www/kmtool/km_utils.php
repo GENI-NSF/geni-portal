@@ -26,6 +26,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('signer.php');
 require_once('db_utils.php');
+require_once('file_utils.php');
 
 $sr_url = get_sr_url();
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -68,4 +69,71 @@ function get_asserted_attributes($eppn) {
   }
   return $value;
 }
+
+/**
+ * Set a passphrase on the member's private key.
+ *
+ * Probably to support the speaks-for signing tool.
+ *
+ * @param $in_key the clear key (no passphrase)
+ * @param $passphrase the passphrase to set on the key
+ * @param $out_key reference to variable where the
+ *                 passphrase-protected key should be stored on
+ *                 return.
+ */
+function set_key_passphrase($in_key, $passphrase, &$out_key) {
+  // Execute the openssl command to set the passphrase:
+  //  openssl rsa -des3 -in $tmpin.key -out $tmpout.key
+  // More:
+  //  Use "-passout file:$pp_file"
+  //   Where $pp_file is a temp file containing the desired passphrase
+  // Then read the resulting key from tmp file
+
+  // Write in_key to a tmp file
+  // Write passphrase to a tmp file.
+  // Grab a tmp file for writing out_key
+
+  /* $out_key will contain the passphrase protected key.
+   * Initialize it to NULL to avoid returning garbage.
+   */
+  $out_key = NULL;
+  $in_key_file = writeDataToTempFile($in_key, "passphrase-in-");
+  $passphrase_file = writeDataToTempFile($passphrase, "passphrase-");
+  $out_key_file = writeDataToTempFile('', "passphrase-out-");
+
+  $cmd_array = array('openssl', 'rsa', '-des3',
+                     '-in', $in_key_file,
+                     '-out', $out_key_file,
+                     '-passout', 'file:' . $passphrase_file);
+  $command = implode(" ", $cmd_array);
+  error_log("COMMAND = " . $command);
+
+  // openssl rsa -des3 -in /tmp/passphrase-in-4prbom
+  //         -out /tmp/passphrase-out-snVSxl
+  //         -passout file:/tmp/passphrase-3rU1XQ
+
+  exec($command, $rsa_output, $rsa_status);
+  error_log("openssl rsa status was $rsa_status");
+  if ($rsa_status == 0) {
+    $out_key = file_get_contents($out_key_file);
+    $result = TRUE;
+  } else {
+    // openssl command failed.
+    // XXX Signal Error
+    error_log("openssl command failed with status $rsa_status");
+    $result = FALSE;
+  }
+  //  unlink($in_key_file);
+  //  unlink($passphrase_file);
+  //  unlink($out_key_file);
+  return $result;
+}
+
+/**
+ * Store the given private key in the database for the given member.
+ *
+ */
+function store_private_key($member_id, $private_key) {
+}
+
 ?>
