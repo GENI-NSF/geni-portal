@@ -53,6 +53,20 @@ if (count($members) > 0) {
 }
 
 /*
+ * Now we're done with the optional setting of the passphrase, so
+ * continue by retrieving the key and cert.
+ */
+$certificate = NULL;
+$private_key = NULL;
+$result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
+if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
+  $certificate = $result[MA_ARGUMENT::CERTIFICATE];
+}
+if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
+  $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
+}
+
+/*
  * We may be receiving a passphrase via POST. If so, use that passphrase
  * to encrypt the private key before proceeding.
  */
@@ -70,26 +84,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $passphrase2 = $_REQUEST[$PASSPHRASE_2];
   }
   if ($passphrase1 && $passphrase2 && $passphrase1 == $passphrase2) {
-    error_log("would set passphrase here");
+    set_key_passphrase($private_key, $passphrase1, $new_key);
+    error_log("new_key = $new_key");
+    // XXX Store the $new_key in the database
+    $private_key = $new_key;
   } else {
     error_log("would not set passphrase. pp1=$passphrase1&pp2=$passphrase2");
   }
 }
 
-
-/*
- * Now we're done with the optional setting of the passphrase, so
- * continue by retrieving the key and cert.
- */
-$certificate = NULL;
-$private_key = NULL;
-$result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
-if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
-  $certificate = $result[MA_ARGUMENT::CERTIFICATE];
-}
-if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
-  $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
-}
 
 /*
  * Does the user have a cert/key? If not, help them to create one.
@@ -104,7 +107,7 @@ if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
  *    openssl rsa -des3 -in open.key -out encrypted.key
  */
 $add_passphrase = true;
-$passphrase_re = "/^Proc-Type: 4,ENCRYPTED$/";
+$passphrase_re = "/Proc-Type: 4,ENCRYPTED/";
 $match_result = preg_match($passphrase_re, $private_key);
 if ($match_result === 0) {
   /* Key is not passphrase protected. Help the user add a passphrase. */
