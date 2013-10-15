@@ -73,11 +73,25 @@ function get_services()
   return $converted_services;
 }
 
+/**
+ * Compare aggregates for sorting.
+ *
+ * Compare by service_name.
+ */
+function agg_cmp($a, $b) {
+  return strcmp($a['service_name'], $b['service_name']);
+}
+
 // Return all services in registry of given type
 function get_services_of_type($service_type)
 {
-  $services = get_services();
-  return select_services($services, $service_type);
+  $all_services = get_services();
+  $services = select_services($all_services, $service_type);
+  if ($service_type === SR_SERVICE_TYPE::AGGREGATE_MANAGER) {
+    // Sort the aggregates alphabetically by name
+    usort($services, "agg_cmp");
+  }
+  return $services;
 }
 
 // Get URL of first registered service of given service type
