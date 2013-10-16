@@ -323,7 +323,7 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
   foreach ($pubres as $urn => $pubrow) {
     //    error_log("   URN = " . $urn);
     //    error_log("   PUBROW = " . print_r($pubrow, true));
-    $id = $pubrow['_GENI_IDENTIFYING_MEMBER_UID'];
+    $id = $pubrow['MEMBER_UID'];
     $m = new Member($id);
     $m->init_from_record($pubrow);
     $m->init_from_record($idrow[$urn]);
