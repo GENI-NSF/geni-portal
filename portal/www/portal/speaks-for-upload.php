@@ -89,5 +89,6 @@ if (! $db_result) {
 }
 
 // All done. Signal success without passing any content.
+$_SESSION['lastmessage'] = "You succesfully authorized the GENI Portal";
 header('HTTP/1.1 204 No Content');
 ?>
