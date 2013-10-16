@@ -59,10 +59,10 @@ if (count($members) > 0) {
 $certificate = NULL;
 $private_key = NULL;
 $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
-if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
+if (isset($result) && key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
   $certificate = $result[MA_ARGUMENT::CERTIFICATE];
 }
-if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
+if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
@@ -86,17 +86,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($passphrase1 && $passphrase2 && $passphrase1 == $passphrase2) {
     set_key_passphrase($private_key, $passphrase1, $new_key);
     error_log("new_key = $new_key");
-    // XXX Store the $new_key in the database
+    /*
+     * NOTE: the newly protected key is *not* store in the database!
+     *
+     * There is concern in the experimenter support group about people
+     * remembering their passphrases. We use the passphrase protected
+     * key only for storing in the browser via the genilib JavaScript
+     * API. If a user forgets their password, they can delete the key
+     * via the signing tool, then create a new passphrase protected
+     * key. This seems to be the right balance for the start of
+     * speaks-for, but we may need to rethink it as we move forward.
+     */
     $private_key = $new_key;
   } else {
+    // XXX should really alert the user to the issue, but this works
+    // for now to reprompt them if the two do not match.
     error_log("would not set passphrase. pp1=$passphrase1&pp2=$passphrase2");
   }
 }
 
 
-/*
- * Does the user have a cert/key? If not, help them to create one.
- */
+/* URL for creating a certificate. */
+$server_name = $_SERVER['SERVER_NAME'];
+$create_url = "https://$server_name/secure/kmcert.php?close=1";
 
 /*
  * Does the private key have a passphrase? We can tell by
@@ -106,31 +118,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
  *
  *    openssl rsa -des3 -in open.key -out encrypted.key
  */
-$add_passphrase = true;
-$passphrase_re = "/Proc-Type: 4,ENCRYPTED/";
-$match_result = preg_match($passphrase_re, $private_key);
-if ($match_result === 0) {
-  /* Key is not passphrase protected. Help the user add a passphrase. */
-  error_log("No passphrase on private key");
-  $add_passphrase = TRUE;
-} else if ($match_result === FALSE) {
-  /* An error occured. Log it. A warning has probably already been
-   * printed by preg_match.
-   */
-  error_log("Error checking private key against regex '$passphrase_re'");
-  /* XXX What do we do from here? */
-} else if ($match_result === 1) {
-  /* Success, already encrypted. */
-  $add_passphrase = FALSE;
+if ($private_key) {
+  $add_passphrase = true;
+  $passphrase_re = "/Proc-Type: 4,ENCRYPTED/";
+  $match_result = preg_match($passphrase_re, $private_key);
+  if ($match_result === 0) {
+    /* Key is not passphrase protected. Help the user add a passphrase. */
+    error_log("No passphrase on private key");
+    $add_passphrase = TRUE;
+  } else if ($match_result === FALSE) {
+    /* An error occured. Log it. A warning has probably already been
+     * printed by preg_match.
+     */
+    error_log("Error checking private key against regex '$passphrase_re'");
+    /* XXX What do we do from here? */
+  } else if ($match_result === 1) {
+    /* Success, already encrypted. */
+    $add_passphrase = FALSE;
+  }
 }
 
-
-
-/*
- * XXX FIXME: put the authorization service URL in a config file.
- */
-$genilib_trusted_host = 'https://ch.geni.net';
-$genilib_trusted_path = '/xml-signer/index.html';
+/* XXX FIXME: put the signing tool host and URL in a config file. */
+if (! isset($genilib_trusted_host)) {
+  $genilib_trusted_host = 'https://ch.geni.net';
+  if (array_key_exists('SERVER_NAME', $_SERVER)) {
+    $server_name = $_SERVER['SERVER_NAME'];
+    $portal_prefix = 'portal-';
+    // Handle development hosts via their naming conventions.
+    // Currently named "portal-XX" and "ch-XX" where XX are the
+    // developer's initials.
+    if (strpos($server_name, $portal_prefix) === 0) {
+      // server name starts with 'portal-'. Replace 'portal-' with 'ch-'
+      // for name of ch host.
+      $ch_name = 'ch-' . substr($server_name, strlen($portal_prefix));
+      $genilib_trusted_host = 'https://' . $ch_name;
+    }
+  }
+}
+if (! isset($genilib_trusted_path)) {
+  $genilib_trusted_path = '/xml-signer/index.html';
+}
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
 
@@ -156,7 +183,23 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 </script>
 <script type="text/javascript" src="loadcert.js"></script>
 
-<?php if ($add_passphrase) { ?>
+<?php if (is_null($private_key) && $certificate) { ?>
+<h2>Instructions</h2>
+<p>
+You must paste your certificate and your private key into the signing tool.
+You can <a href="#" onClick="window.open('<?php print $create_url?>')">
+download your certificate</a> if you do not have a copy already. You
+must use the private key that you used to create your certificate.
+</p>
+<form onsubmit="return false;">
+   <input id="showtool"
+          type="submit"
+          value="Show signing tool"/>
+</form>
+<?php } else if (is_null($certificate)) { ?>
+<button onClick="window.open('<?php print $create_url?>')">
+   Generate an SSL certificate</button>.
+<?php } else if ($add_passphrase) { ?>
 <h2>Add a passphrase</h2>
 <p>
 Your private key does not have a passphrase, but requires one to work
