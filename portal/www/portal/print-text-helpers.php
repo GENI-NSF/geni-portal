@@ -149,7 +149,9 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       $sliver_auth = get_auth_from_urn($sliver_id);
       $compMgrAuth = get_auth_from_urn($componentMgrURN);
       if ($sliver_auth == $compMgrAuth) {
-	error_log("Node '" . $comp_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+	// For debugging
+	// This is expected for node reservations through the ExoSM
+	// error_log("Node '" . $comp_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
       } else {
 	error_log("print-rspec-pretty skipping node '" . $comp_id . "' (client_id '" . $client_id . "'): its comp_mgr " . $comp_mgr_id . " != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
 	continue;

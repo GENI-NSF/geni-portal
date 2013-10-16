@@ -4,6 +4,7 @@
 
 == 2.5 ==
   * Improve error reporting in geni-revoke-member-privilege (#853)
+  * Quiet a debug printing rspecs (#858)
 
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)
