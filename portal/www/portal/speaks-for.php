@@ -83,40 +83,17 @@ if ($cred === false) {
  */
 show_header('GENI Portal: Authorization');
 ?>
-
-<script src="<?php echo $auth_svc_js;?>"></script>
-<script type="text/plain" id="toolcert"><?php echo $toolcert;?></script>
-<script>
-var portal = {};
-portal.authorize = function()
-{
-  var tool_urn = '<?php echo $toolurn;?>';
-  var tool_cert = document.getElementById('toolcert').innerHTML;
-  genilib.trustedHost = '<?php echo $genilib_trusted_host;?>';
-  genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
-  genilib.authorize(tool_urn, tool_cert, portal.authZResponse);
-  return false;
-}
-portal.authZResponse = function(speaks_for_cred)
-{
-  // Called if the user authorizes us in the signing tool
-  alert('Response available from genilib.authorize');
-  $("#cred").text(speaks_for_cred).html();
-  var jqxhr = $.post('speaks-for-upload.php', speaks_for_cred);
-  jqxhr.done(function(data, textStatus, jqxhr) {
-      alert('got result: ' + textStatus);
-    })
-  .fail(function(data, textStatus, jqxhr) {
-      alert('got fail result: ' + textStatus);
-    });
-}
-portal.initialize = function()
-{
-  /* Add a click callback to the "authorize" button. */
-  $('#authorize').click(portal.authorize);
-}
-$(document).ready(portal.initialize);
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
 </script>
+<script src="<?php echo $auth_svc_js;?>"></script>
+<script type="text/plain" id="toolurn"><?php echo $toolurn;?></script>
+<script type="text/plain" id="toolcert"><?php echo $toolcert;?></script>
+<script type="text/javascript">
+/* Override the genilib defaults for our trusted host. */
+genilib.trustedHost = '<?php echo $genilib_trusted_host;?>';
+genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
+</script>
+<script type="text/javascript" src="speaks-for.js"></script>
 
 <?php
   /*
