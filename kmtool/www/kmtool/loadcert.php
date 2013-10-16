@@ -197,6 +197,12 @@ must use the private key that you used to create your certificate.
           value="Show signing tool"/>
 </form>
 <?php } else if (is_null($certificate)) { ?>
+<p>
+You do not have a GENI certificate yet. Before you can use the signing
+and authorization tool you must create a certificate. Please click
+below to do that, and then return to this window and
+<a href="#" onClick="location.reload(true)">refresh this window</a>.
+</p>
 <button onClick="window.open('<?php print $create_url?>')">
    Generate an SSL certificate</button>.
 <?php } else if ($add_passphrase) { ?>
