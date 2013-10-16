@@ -57,10 +57,6 @@ if (! isset($genilib_trusted_path)) {
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
-
-
-
-
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -103,20 +99,34 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
    * has disappeared.
    */
 ?>
-<div>
+<div hidden>
 <?php echo $cred_info; ?>
 </div>
 
+<h2>Portal Authorization</h2>
+  <p>
+  The GENI Experimenter Portal requires your authorization in order
+  to act on your behalf. This requires that you sign a credential
+  authorizing the portal to speak for you when interacting with GENI
+  services.
+  </p>
+  <p>
+  Without authorization the portal can do very little to help you use
+  GENI.
+  </p>
+
 <form onsubmit="return false;">
+   <center>
    <input id="authorize"
           type="submit"
-          value="Click here to authorize"/>
+          value="Authorize the portal"/>
+   </center>
 </form>
 <?php
   /* This div is for debugging only. */
 ?>
 <div>
-  <pre id="cred"/>
+  <pre id="cred" hidden/>
 </div>
 
 <?php

@@ -9,11 +9,11 @@ portal.authorize = function()
 portal.authZResponse = function(speaks_for_cred)
 {
   // Called if the user authorizes us in the signing tool
-  alert('Response available from genilib.authorize');
   $("#cred").text(speaks_for_cred).html();
   var jqxhr = $.post('speaks-for-upload.php', speaks_for_cred);
   jqxhr.done(function(data, textStatus, jqxhr) {
-      alert('got result: ' + textStatus);
+      //alert('got result: ' + textStatus);
+      window.location.href = "home.php";
     })
   .fail(function(data, textStatus, jqxhr) {
       alert('got fail result: ' + textStatus);
