@@ -5,6 +5,8 @@
 == 2.5 ==
   * Improve error reporting in geni-revoke-member-privilege (#853)
   * Quiet a debug printing rspecs (#858)
+  * In WiMAX, handle user swith no sn or givenName. Also fix a logic error
+    causing projects to seem not WiMAX enabled. (#859)
 
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)
