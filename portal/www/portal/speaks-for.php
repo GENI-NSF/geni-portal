@@ -35,12 +35,31 @@ $portal = Portal::getInstance();
 $toolcert = $portal->certificate();
 $toolurn = pem_cert_geni_urn($toolcert);
 
-/*
- * XXX FIXME: put the authorization service URL in a config file.
- */
-$genilib_trusted_host = 'https://ch.geni.net';
-$genilib_trusted_path = '/xml-signer/index.html';
+/* XXX FIXME: put the signing tool host and URL in a config file. */
+if (! isset($genilib_trusted_host)) {
+  $genilib_trusted_host = 'https://ch.geni.net';
+  if (array_key_exists('SERVER_NAME', $_SERVER)) {
+    $server_name = $_SERVER['SERVER_NAME'];
+    $portal_prefix = 'portal-';
+    // Handle development hosts via their naming conventions.
+    // Currently named "portal-XX" and "ch-XX" where XX are the
+    // developer's initials.
+    if (strpos($server_name, $portal_prefix) === 0) {
+      // server name starts with 'portal-'. Replace 'portal-' with 'ch-'
+      // for name of ch host.
+      $ch_name = 'ch-' . substr($server_name, strlen($portal_prefix));
+      $genilib_trusted_host = 'https://' . $ch_name;
+    }
+  }
+}
+if (! isset($genilib_trusted_path)) {
+  $genilib_trusted_path = '/xml-signer/index.html';
+}
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
+
+
+
+
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
