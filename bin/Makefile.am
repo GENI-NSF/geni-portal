@@ -2,7 +2,7 @@ pkgsysconfdir = $(sysconfdir)/geni-ch
 
 dist_sbin_SCRIPTS = geni-init-ca geni-init-services
 
-dist_bin_SCRIPTS = \
+nobase_dist_bin_SCRIPTS = \
 		assert_email.sh \
 		disable_lockdown.sh \
 		disable_sundown.sh \
@@ -11,6 +11,7 @@ dist_bin_SCRIPTS = \
 		enable_sundown.sh \
 		geni-add-member-privilege \
 		geni-delete-outside-cert \
+		geni-add-member-attribute \
 		geni-add-project-member \
 		geni-add-trusted-tool \
 		geni-manage-maintenance \
@@ -22,7 +23,8 @@ dist_bin_SCRIPTS = \
 		idp_user_created.sh \
 		report_genich_relations \
 		shib_idp_users \
-		geni-add-member-attribute
+		util/chapi.py \
+		util/__init__.py
 
 dist_pkgsysconf_DATA = geni-ch-githash
 
