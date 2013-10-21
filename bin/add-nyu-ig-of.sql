@@ -14,7 +14,7 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'https://foam.instageni.nyu.org:3626/foam/gapi/2',
+      'https://foam.genirack.nyu.edu:3626/foam/gapi/2',
       -- CERT
      '/usr/share/geni-ch/sr/certs/nyu-ig-of.pem',
       -- NAME
@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
      'NYU InstaGENI Rack OpenFlow',
       -- URN
-     'urn:publicid:IDN+openflow:foam:foam.instageni.nyu.org+authority+am'
+     'urn:publicid:IDN+openflow:foam:foam.genirack.nyu.edu+authority+am'
     );
 
 insert into service_registry

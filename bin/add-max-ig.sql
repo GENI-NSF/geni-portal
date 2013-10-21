@@ -14,7 +14,7 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'https://genirack.max.edu:12369/protogeni/xmlrpc/am/2.0'
+      'https://instageni.maxgigapop.net:12369/protogeni/xmlrpc/am/2.0'
       -- CERT
      '/usr/share/geni-ch/sr/certs/max-ig-cm.pem',
       -- NAME
@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
      'MAX InstaGENI Rack',
       -- URN
-     'urn:publicid:IDN+genirack.max.edu+authority+cm'
+     'urn:publicid:IDN+instageni.maxgigapop.net+authority+cm'
     );
 
 insert into service_registry

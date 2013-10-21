@@ -14,7 +14,7 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'https://foam.instageni.max.org:3626/foam/gapi/2',
+      'https://foam.instageni.maxgigapop.net:3626/foam/gapi/2',
       -- CERT
      '/usr/share/geni-ch/sr/certs/max-ig-of.pem',
       -- NAME
@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
      'MAX InstaGENI Rack OpenFlow',
       -- URN
-     'urn:publicid:IDN+openflow:foam:foam.instageni.max.org+authority+am'
+     'urn:publicid:IDN+openflow:foam:foam.instageni.maxgigapop.net+authority+am'
     );
 
 insert into service_registry
