@@ -2,6 +2,9 @@ svcdatadir = $(pkgdatadir)/sr
 
 cert_FILES = \
 	certs/Thawte_Premium_Server_CA.pem \
+	certs/clemson-ig-boss.pem \
+	certs/clemson-ig-cm.pem \
+	certs/clemson-ig-of.pem \
 	certs/exo-gpo-of.pem \
 	certs/exo-bbn-am.pem \
 	certs/exo-fiu-am.pem \
@@ -32,11 +35,17 @@ cert_FILES = \
 	certs/ig-utahddc-cm.pem \
 	certs/ig-utahddc-of.pem \
 	certs/kettering-ig-of.pem \
+	certs/max-ig-boss.pem \
+	certs/max-ig-cm.pem \
+	certs/max-ig-of.pem \
 	certs/nlr-of.pem \
 	certs/nysernet-ig-boss.pem \
 	certs/nysernet-ig-cm.pem \
 	certs/nysernet-ig-of.pem \
 	certs/nysernet-of.pem \
+	certs/nyu-ig-boss.pem \
+	certs/nyu-ig-cm.pem \
+	certs/nyu-ig-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/pgeni3-ca.pem \
