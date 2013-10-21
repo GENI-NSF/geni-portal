@@ -14,7 +14,7 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'https://instageni.clemson.edu:12369/protogeni/xmlrpc/am/2.0'
+      'https://instageni.clemson.edu:12369/protogeni/xmlrpc/am/2.0',
       -- CERT
      '/usr/share/geni-ch/sr/certs/clemson-ig-cm.pem',
       -- NAME
