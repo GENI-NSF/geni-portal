@@ -88,6 +88,11 @@ function lookup_public_ssh_keys($ma_url, $signer, $member_id)
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
   $res = $client->lookup_keys($client->creds(), $options);
+  if (count($res) > 0) {
+      $res = reset($res);
+  } else {
+      $res = array();
+  }
   $ssh_keys = array_map(function($x) { 
       return array('id' => $x['KEY_ID'],
 		   'public_key' => $x['KEY_PUBLIC'],
@@ -104,6 +109,11 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PRIVATE', 'KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
   $res = $client->lookup_keys($client->creds(), $options);
+  if (count($res) > 0) {
+      $res = reset($res);
+  } else {
+      $res = array();
+  }
   $ssh_keys = array_map(function($x) { 
       return array('id' => $x['KEY_ID'],
 		   'private_key' => $x['KEY_PRIVATE'],
