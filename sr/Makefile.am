@@ -32,6 +32,9 @@ cert_FILES = \
 	certs/ig-utahddc-cm.pem \
 	certs/ig-utahddc-of.pem \
 	certs/kettering-ig-of.pem \
+	certs/max-ig-boss.pem \
+	certs/max-ig-cm.pem \
+	certs/max-ig-of.pem \
 	certs/nlr-of.pem \
 	certs/nysernet-ig-boss.pem \
 	certs/nysernet-ig-cm.pem \
