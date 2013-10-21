@@ -2,6 +2,9 @@ svcdatadir = $(pkgdatadir)/sr
 
 cert_FILES = \
 	certs/Thawte_Premium_Server_CA.pem \
+	certs/clemson-ig-boss.pem \
+	certs/clemson-ig-cm.pem \
+	certs/clemson-ig-of.pem \
 	certs/exo-gpo-of.pem \
 	certs/exo-bbn-am.pem \
 	certs/exo-fiu-am.pem \
