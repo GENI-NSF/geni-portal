@@ -38,6 +38,9 @@ cert_FILES = \
 	certs/max-ig-boss.pem \
 	certs/max-ig-cm.pem \
 	certs/max-ig-of.pem \
+	certs/missouri-ig-boss.pem \
+	certs/missouri-ig-cm.pem \
+	certs/missouri-ig-of.pem \
 	certs/nlr-of.pem \
 	certs/nysernet-ig-boss.pem \
 	certs/nysernet-ig-cm.pem \
