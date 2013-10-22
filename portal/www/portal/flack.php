@@ -35,7 +35,7 @@ const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_22_FILENAME = "flackportal-22.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
 const URL_PREAMBLE = "https://www.emulab.net/protogeni/flack2/flack.swf?securitypreset=1&loadallmanagers=1&";
-const URL_PREAMBLE2 = "https://www.emulab.net/protogeni/flack2/flack.swf";
+const URL_PREAMBLE2 = "https://www.emulab.net/protogeni/flack3/flack.swf";
 // FIXME: Should not be hard-coded
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
