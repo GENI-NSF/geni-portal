@@ -21,6 +21,9 @@ nobase_dist_bin_SCRIPTS = \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		idp_user_created.sh \
+		list_assertions.sh \
+		list_privileges.sh \
+		list_requested_accounts.sh \
 		report_genich_relations \
 		shib_idp_users \
 		util/chapi.py \
