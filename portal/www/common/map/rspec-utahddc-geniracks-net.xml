@@ -3,7 +3,8 @@
 	URN: urn:publicid:IDN+utahddc.geniracks.net+authority+cm
 	URL: https://boss.utahddc.geniracks.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-09-23T19:25:03Z" generated="2013-09-23T19:25:03Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-22T17:48:35Z" generated="2013-10-22T17:48:35Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <external_ref component_id="urn:publicid:IDN+emulab.net+interface+procurve-pgeni-uen:2.22" component_manager_id="urn:publicid:IDN+emulab.net+authority+am"/>  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
       <available name="exclusive-openflow-1759"/>    
@@ -75,6 +76,9 @@
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:(null)">      
           <emulab:interface name="(null)"/>      
       </interface>    
+      <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:2.22">      
+          <emulab:interface name="2.22"/>      
+      </interface>    
       <emulab:fd name="real-switch" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc3" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc3" exclusive="false">    
@@ -91,10 +95,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -124,8 +128,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45349"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -134,6 +138,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc9" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc9" exclusive="false">    
       <hardware_type name="dl360">      
@@ -182,7 +188,7 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="45349"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -192,6 +198,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc19" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc19" exclusive="true">    
       <hardware_type name="dl360">      
@@ -228,7 +236,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc19:eth1" role="experimental">      
@@ -247,7 +255,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -263,8 +271,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -321,7 +333,7 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -331,6 +343,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc20" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc20" exclusive="true">    
       <hardware_type name="dl360">      
@@ -367,7 +381,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc20:eth1" role="experimental">      
@@ -386,7 +400,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -402,8 +416,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -448,7 +466,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc23:eth1" role="experimental">      
@@ -467,7 +485,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -483,8 +501,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -508,10 +530,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="97"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="97"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -541,8 +563,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45349"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44837"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -551,6 +573,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc25" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc25" exclusive="true">    
       <hardware_type name="dl360">      
@@ -587,7 +611,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc25:eth1" role="experimental">      
@@ -606,7 +630,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -622,8 +646,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -711,7 +739,7 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -727,8 +755,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -792,7 +824,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -808,8 +840,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -873,7 +909,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -889,8 +925,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -954,7 +994,7 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -970,8 +1010,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1016,7 +1060,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc30:ilo3">      
@@ -1035,8 +1079,8 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10007" weight="0"/>    
@@ -1051,8 +1095,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1076,10 +1124,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="99"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="99"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -1109,8 +1157,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -1119,6 +1167,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc8" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc8" exclusive="false">    
       <hardware_type name="dl360">      
@@ -1167,7 +1217,7 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1177,6 +1227,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc14" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc14" exclusive="true">    
       <hardware_type name="dl360">      
@@ -1232,7 +1284,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1248,8 +1300,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1294,7 +1350,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc32:ilo3">      
@@ -1313,7 +1369,7 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1329,8 +1385,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1394,7 +1454,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1410,8 +1470,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1457,7 +1521,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc31:eth1" role="experimental">      
@@ -1476,7 +1540,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1492,8 +1556,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1538,7 +1606,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc17:ilo3">      
@@ -1557,7 +1625,7 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1573,8 +1641,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1619,7 +1691,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc22:eth3" role="experimental">      
@@ -1638,7 +1710,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1654,8 +1726,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1719,7 +1795,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="45093"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1735,8 +1811,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1793,7 +1873,7 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1803,6 +1883,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc21" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc21" exclusive="true">    
       <hardware_type name="dl360">      
@@ -1839,7 +1921,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc21:ilo3">      
@@ -1858,7 +1940,7 @@
           <emulab:interface name="eth0"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1874,8 +1956,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1932,7 +2018,7 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -1942,6 +2028,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc5" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc5" exclusive="false">    
       <hardware_type name="dl360">      
@@ -1957,10 +2045,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="91"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="91"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -1990,8 +2078,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="43813"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -2000,6 +2088,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc13" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc13" exclusive="true">    
       <hardware_type name="dl360">      
@@ -2055,7 +2145,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -2071,8 +2161,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -2130,7 +2224,7 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -2140,6 +2234,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc2" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc2" exclusive="false">    
       <hardware_type name="dl360">      
@@ -2155,10 +2251,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2188,8 +2284,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -2198,6 +2294,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc29" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc29" exclusive="true">    
       <hardware_type name="dl360">      
@@ -2234,7 +2332,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc29:eth1" role="experimental">      
@@ -2253,7 +2351,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -2269,8 +2367,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -2294,10 +2396,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="84"/>      
+          <emulab:node_type type_slots="96"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="84"/>      
+          <emulab:node_type type_slots="96"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2327,8 +2429,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="42021"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45093"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -2337,6 +2439,8 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc15" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc15" exclusive="true">    
       <hardware_type name="dl360">      
@@ -2392,7 +2496,7 @@
           <emulab:interface name="ilo3"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -2408,8 +2512,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -2474,7 +2582,7 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -2490,8 +2598,12 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
+      <emulab:fd name="OS-10020-10027" weight="0"/>    
+      <emulab:fd name="OS-10020-10028" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
+      <emulab:fd name="OS-10028" weight="0"/>    
+      <emulab:fd name="OS-10029" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -3997,16 +4109,56 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <link component_id="urn:publicid:IDN+utahddc.geniracks.net+link+link-interconnect-uen:eth0-procurve2:(null)" component_name="link-interconnect-uen//eth0-procurve2//(null)">    
+  <link component_id="urn:publicid:IDN+emulab.net+link+utahemulab:utahddc.geniracks" component_name="utahemulab//utahddc.geniracks">    
     <component_manager name="urn:publicid:IDN+utahddc.geniracks.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+interconnect-uen:eth0"/>    
-      <interface_ref component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+utahddc.geniracks.net+interface+interconnect-uen:eth0"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+utahddc.geniracks.net+interface+interconnect-uen:eth0" latency="0" packet_loss="0" source_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:(null)"/>    
+    <component_manager name="urn:publicid:IDN+emulab.net+authority+am"/>    
+      <interface_ref component_id="urn:publicid:IDN+emulab.net+interface+procurve-pgeni-uen:2.22"/>    
+      <interface_ref component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:2.22"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:2.22" latency="0" packet_loss="0" source_id="urn:publicid:IDN+emulab.net+interface+procurve-pgeni-uen:2.22"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+emulab.net+interface+procurve-pgeni-uen:2.22" latency="0" packet_loss="0" source_id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:2.22"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-generic_1G"/>    
       <link_type name="ethernet-1000000"/>    
   </link>  
 
+  <stitching lastUpdateTime="2013-10-22T17:48:35Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+    <aggregate id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" url="https://www.utahddc.geniracks.net:12369/protogeni/xmlrpc/am">      
+      <aggregatetype>protogeni</aggregatetype>      
+      <stitchingmode>chainANDTree</stitchingmode>      
+      <scheduledservices>false</scheduledservices>      
+      <negotiatedservices>false</negotiatedservices>      
+      <lifetime id="life">        
+            <start type="time">2013-10-22T17:48:35Z</start>        
+            <end type="time">2013-10-22T17:48:35Z</end>        
+      </lifetime>      
+      <node id="urn:publicid:IDN+utahddc.geniracks.net+node+procurve2">        
+          <port id="urn:publicid:IDN+utahddc.geniracks.net+stitchport+procurve2:2.22">          
+              <capacity>1000000</capacity>          
+              <maximumReservableCapacity>1000000</maximumReservableCapacity>          
+              <minimumReservableCapacity>1000</minimumReservableCapacity>          
+              <granularity>1</granularity>          
+              <link id="urn:publicid:IDN+utahddc.geniracks.net+interface+procurve2:2.22">            
+                  <remoteLinkId>urn:publicid:IDN+emulab.net+interface+procurve-pgeni-uen:2.22</remoteLinkId>            
+                  <trafficEngineeringMetric>10</trafficEngineeringMetric>            
+                  <capacity>1000000</capacity>            
+                  <maximumReservableCapacity>1000000</maximumReservableCapacity>            
+                  <minimumReservableCapacity>1000</minimumReservableCapacity>            
+                  <granularity>1</granularity>            
+                  <switchingCapabilityDescriptor>              
+                      <switchingcapType>l2sc</switchingcapType>              
+                      <encodingType>ethernet</encodingType>              
+                      <switchingCapabilitySpecificInfo>                
+                         <switchingCapabilitySpecificInfo_L2sc>                  
+                            <interfaceMTU>9000</interfaceMTU>                  
+                            <vlanRangeAvailability>256-1000</vlanRangeAvailability>                  
+                            <vlanTranslation>false</vlanTranslation>                  
+                         </switchingCapabilitySpecificInfo_L2sc>                
+                      </switchingCapabilitySpecificInfo>              
+                  </switchingCapabilityDescriptor>            
+              </link>          
+          </port>        
+      </node>      
+    </aggregate>    
+  </stitching>  
 </rspec>
