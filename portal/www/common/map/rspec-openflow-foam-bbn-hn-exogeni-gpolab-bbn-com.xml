@@ -6,15 +6,30 @@
   
 <rspec type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:openflow="http://www.geni.net/resources/rspec/ext/openflow/3" xmlns:topology="http://geni.bssoftworks.com/rspec/ext/topo/1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.geni.net/resources/rspec/ext/openflow/3 http://www.geni.net/resources/rspec/ext/openflow/3/of-ad.xsd http://geni.bssoftworks.com/rspec/ext/topo/1 http://geni.bssoftworks.com/rspec/ext/topo/1">
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:bbn-hn.exogeni.gpolab.bbn.com+datapath+00:01:08:17:f4:b5:2a:00" component_manager_id="urn:publicid:IDN+openflow:foam:bbn-hn.exogeni.gpolab.bbn.com+authority+am" dpid="00:01:08:17:f4:b5:2a:00">
-    <openflow:port name="41" num="41"/>
-    <openflow:port name="42" num="42"/>
-    <openflow:port name="43" num="43"/>
-    <openflow:port name="44" num="44"/>
-    <openflow:port name="45" num="45"/>
-    <openflow:port name="46" num="46"/>
-    <openflow:port name="47" num="47"/>
-    <openflow:port name="48" num="48"/>
-    <openflow:port name="49" num="49"/>
+    <openflow:port name="41" num="41">
+      <topology:other desc="ORCA node bbn-w1[eth3]" remote-hostname="orca:bbn-w1" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="42" num="42">
+      <topology:other desc="ORCA node bbn-w2[eth3]" remote-hostname="orca:bbn-w2" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="43" num="43">
+      <topology:other desc="ORCA node bbn-w3[eth3]" remote-hostname="orca:bbn-w3" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="44" num="44">
+      <topology:other desc="ORCA node bbn-w4[eth3]" remote-hostname="orca:bbn-w4" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="45" num="45">
+      <topology:other desc="ORCA node bbn-w5[eth3]" remote-hostname="orca:bbn-w5" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="46" num="46">
+      <topology:other desc="ORCA node bbn-w6[eth3]" remote-hostname="orca:bbn-w6" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="47" num="47">
+      <topology:other desc="ORCA node bbn-w7[eth3]" remote-hostname="orca:bbn-w7" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="48" num="48">
+      <topology:other desc="ORCA node bbn-w8[eth3]" remote-hostname="orca:bbn-w8" remote-port-name="eth3"/>
+    </openflow:port>
     <openflow:port name="51" num="51"/>
     <openflow:port name="52" num="52"/>
     <openflow:port name="53" num="53"/>
@@ -24,9 +39,18 @@
     <openflow:port name="57" num="57"/>
     <openflow:port name="58" num="58"/>
     <openflow:port name="59" num="59"/>
-    <openflow:port name="60" num="60"/>
-    <openflow:port name="64" num="64"/>
-    <openflow:port name="50" num="50"/>
+    <openflow:port name="60" num="60">
+      <topology:other desc="shared vSwitch for VMs on kashyyyk" remote-hostname="kashyyyk.gpolab.bbn.com" remote-port-name="vmnic4"/>
+    </openflow:port>
+    <openflow:port name="64" num="64">
+      <topology:geni-of desc="poblano-1750" remote-component-id="urn:publicid:IDN+openflow:foam:foam.gpolab.bbn.com+datapath+06:d6:00:12:e2:b8:a5:d0" remote-port-name="GBE0/15"/>
+    </openflow:port>
+    <openflow:port name="49" num="49">
+      <topology:other desc="ORCA node bbn-w9[eth3]" remote-hostname="orca:bbn-w9" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="50" num="50">
+      <topology:other desc="ORCA node bbn-w10[eth3]" remote-hostname="orca:bbn-w10" remote-port-name="eth3"/>
+    </openflow:port>
   </openflow:datapath>
 </rspec>
 

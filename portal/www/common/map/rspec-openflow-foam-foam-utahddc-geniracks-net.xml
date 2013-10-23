@@ -8,10 +8,12 @@
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+datapath+06:d6:24:be:05:fe:43:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+authority+am" dpid="06:d6:24:be:05:fe:43:00">
     <openflow:port name="B22" num="46"/>
     <openflow:port name="local" num="65534"/>
-    <openflow:port name="D1" num="73"/>
-    <openflow:port name="B1" num="25"/>
     <openflow:port name="B13" num="37"/>
+    <openflow:port name="D1" num="73"/>
+    <openflow:port name="A7" num="7"/>
     <openflow:port name="D7" num="79"/>
+    <openflow:port name="A10" num="10"/>
+    <openflow:port name="B4" num="28"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+datapath+06:db:24:be:05:fe:43:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+authority+am" dpid="06:db:24:be:05:fe:43:00">
     <openflow:port name="B22" num="46"/>
