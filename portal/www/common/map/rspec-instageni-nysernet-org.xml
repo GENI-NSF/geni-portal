@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+instageni.nysernet.org+authority+cm
 	URL: https://instageni.nysernet.org:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-22T17:48:28Z" generated="2013-10-22T17:48:28Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-24T12:45:14Z" generated="2013-10-24T12:45:14Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
       <available name="exclusive-openflow-1755"/>    
@@ -197,7 +197,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="43.049957" longitude="-76.152849"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth99">      

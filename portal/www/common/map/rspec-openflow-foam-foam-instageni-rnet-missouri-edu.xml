@@ -10,7 +10,6 @@
     <openflow:port name="A17" num="17"/>
     <openflow:port name="local" num="65534"/>
     <openflow:port name="A19" num="19"/>
-    <openflow:port name="A1" num="1"/>
   </openflow:datapath>
 </rspec>
 
