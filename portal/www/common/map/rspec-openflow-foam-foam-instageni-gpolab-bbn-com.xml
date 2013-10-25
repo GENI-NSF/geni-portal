@@ -11,6 +11,7 @@
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
     <openflow:port name="local" num="65534"/>
+    <openflow:port name="E4" num="100"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:db:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:db:84:34:97:c6:c9:00">
     <openflow:port name="E23" num="119"/>
