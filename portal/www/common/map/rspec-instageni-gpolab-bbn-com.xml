@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm
 	URL: https://www.instageni.gpolab.bbn.com:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-24T12:44:30Z" generated="2013-10-24T12:44:30Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-25T12:22:28Z" generated="2013-10-25T12:22:28Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:bbn" component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am"/>  
   <external_ref component_id="urn:publicid:IDN+NLR+interface+BBNIFACE" component_manager_id="urn:publicid:IDN+NLR+authority+am"/>  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
@@ -174,6 +174,12 @@
       <emulab:fd name="OS-10035-10038" weight="0"/>    
       <emulab:fd name="OS-10035-10039" weight="0"/>    
       <emulab:fd name="OS-10035-10042" weight="0"/>    
+      <emulab:fd name="OS-10035-10043" weight="0"/>    
+      <emulab:fd name="OS-10035-10044" weight="0"/>    
+      <emulab:fd name="OS-10035-10045" weight="0"/>    
+      <emulab:fd name="OS-10043" weight="0"/>    
+      <emulab:fd name="OS-10044" weight="0"/>    
+      <emulab:fd name="OS-10045" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -189,10 +195,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="interconnect-vm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="96"/>      
       </hardware_type>    
       <hardware_type name="interconnect-vm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="96"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -223,10 +229,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="71"/>      
+          <emulab:node_type type_slots="63"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="71"/>      
+          <emulab:node_type type_slots="63"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -260,7 +266,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="37635"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="35587"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10035" weight="0.5"/>    
@@ -268,6 +274,9 @@
       <emulab:fd name="OS-10035-10038" weight="0"/>    
       <emulab:fd name="OS-10035-10039" weight="0"/>    
       <emulab:fd name="OS-10035-10042" weight="0"/>    
+      <emulab:fd name="OS-10035-10043" weight="0"/>    
+      <emulab:fd name="OS-10035-10044" weight="0"/>    
+      <emulab:fd name="OS-10035-10045" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+node+pc4" component_manager_id="urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm" component_name="pc4" exclusive="true">    
       <hardware_type name="dl360">      
@@ -355,6 +364,12 @@
       <emulab:fd name="OS-10035-10038" weight="0"/>    
       <emulab:fd name="OS-10035-10039" weight="0"/>    
       <emulab:fd name="OS-10035-10042" weight="0"/>    
+      <emulab:fd name="OS-10035-10043" weight="0"/>    
+      <emulab:fd name="OS-10035-10044" weight="0"/>    
+      <emulab:fd name="OS-10035-10045" weight="0"/>    
+      <emulab:fd name="OS-10043" weight="0"/>    
+      <emulab:fd name="OS-10044" weight="0"/>    
+      <emulab:fd name="OS-10045" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -379,10 +394,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="94"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="94"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -411,7 +426,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44419"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44547"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10016" weight="0.5"/>    
@@ -462,10 +477,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="93"/>      
+          <emulab:node_type type_slots="92"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="93"/>      
+          <emulab:node_type type_slots="92"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -494,7 +509,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44291"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44163"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10016" weight="0.5"/>    
@@ -567,8 +582,8 @@
     <component_manager name="urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc1:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc1:eth1"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc1:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)"/>    
+    <property capacity="999000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc1:eth1"/>    
+    <property capacity="999000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc1:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -603,8 +618,8 @@
     <component_manager name="urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc2:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc2:eth1"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)"/>    
+    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc2:eth1"/>    
+    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -760,8 +775,8 @@
     <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>    
       <interface_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:bbn"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24" latency="0" packet_loss="0" source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:bbn"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:bbn" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24"/>    
+    <property capacity="699000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24" latency="0" packet_loss="0" source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:bbn"/>    
+    <property capacity="699000" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:bbn" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-generic_1G"/>    
@@ -773,23 +788,23 @@
     <component_manager name="urn:publicid:IDN+NLR+authority+am"/>    
       <interface_ref component_id="urn:publicid:IDN+NLR+interface+BBNIFACE"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24" latency="0" packet_loss="0" source_id="urn:publicid:IDN+NLR+interface+BBNIFACE"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+NLR+interface+BBNIFACE" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24"/>    
+    <property capacity="699000" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24" latency="0" packet_loss="0" source_id="urn:publicid:IDN+NLR+interface+BBNIFACE"/>    
+    <property capacity="699000" dest_id="urn:publicid:IDN+NLR+interface+BBNIFACE" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-generic_1G"/>    
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-24T12:44:30Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-10-25T12:22:28Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm" url="https://boss.instageni.gpolab.bbn.com:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-24T12:44:30Z</start>        
-            <end type="time">2013-10-24T12:44:30Z</end>        
+            <start type="time">2013-10-25T12:22:28Z</start>        
+            <end type="time">2013-10-25T12:22:28Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+instageni.gpolab.bbn.com+node+procurve2">        
           <port id="urn:publicid:IDN+instageni.gpolab.bbn.com+stitchport+procurve2:5.24">          

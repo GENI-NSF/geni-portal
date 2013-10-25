@@ -231,6 +231,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-genirack-nyu-edu.xml \
 	www/common/map/rspec-instageni-clemson-edu.xml \
 	www/common/map/rspec-instageni-gpolab-bbn-com.xml \
+	www/common/map/rspec-instageni-illinois-edu.xml \
 	www/common/map/rspec-instageni-maxgigapop-net.xml \
 	www/common/map/rspec-instageni-northwestern-edu.xml \
 	www/common/map/rspec-instageni-nysernet-org.xml \
@@ -242,6 +243,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-openflow-foam-foam-genirack-nyu-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-clemson-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-illinois-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-maxgigapop-net.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-northwestern-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-nysernet-org.xml \

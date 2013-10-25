@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+uky.emulab.net+authority+cm
 	URL: https://www.uky.emulab.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-24T12:44:57Z" generated="2013-10-24T12:44:57Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-25T12:22:53Z" generated="2013-10-25T12:22:53Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*" component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am"/>  
   <rspec_opstate aggregate_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" start="geni_notready" xmlns="http://www.geni.net/resources/rspec/ext/opstate/1">    
       <sliver_type name="raw-pc"/>    
@@ -4701,13 +4701,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="2"/>      
+          <emulab:node_type type_slots="7"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="2"/>      
+          <emulab:node_type type_slots="7"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="2"/>      
+          <emulab:node_type type_slots="7"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -4733,7 +4733,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2816"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3456"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -4758,13 +4758,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -4790,7 +4790,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3328"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2944"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -6823,13 +6823,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="7"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="7"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="7"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -6855,7 +6855,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3456"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -12222,15 +12222,15 @@
       <link_type name="ethernet"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-24T12:44:57Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-10-25T12:22:53Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+uky.emulab.net+authority+cm" url="https://www.uky.emulab.net:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-24T12:44:57Z</start>        
-            <end type="time">2013-10-24T12:44:57Z</end>        
+            <start type="time">2013-10-25T12:22:53Z</start>        
+            <end type="time">2013-10-25T12:22:53Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+uky.emulab.net+node+cisco1">        
           <port id="urn:publicid:IDN+uky.emulab.net+stitchport+cisco1:1.2">          
