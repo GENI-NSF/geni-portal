@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+utah.geniracks.net+authority+cm
 	URL: https://www.utah.geniracks.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-25T12:22:59Z" generated="2013-10-25T12:22:59Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-27T19:01:04Z" generated="2013-10-27T19:01:04Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+emulab.net+interface+procurveA:3.19" component_manager_id="urn:publicid:IDN+emulab.net+authority+cm"/>  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="starlight-express"/>    
@@ -161,6 +161,7 @@
       <emulab:fd name="OS-10071-10082" weight="0"/>    
       <emulab:fd name="OS-10071-10083" weight="0"/>    
       <emulab:fd name="OS-10071-10093" weight="0"/>    
+      <emulab:fd name="OS-10071-10096" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utah.geniracks.net+node+pc5" component_manager_id="urn:publicid:IDN+utah.geniracks.net+authority+cm" component_name="pc5" exclusive="false">    
       <hardware_type name="dl360">      
@@ -377,6 +378,7 @@
       <emulab:fd name="OS-10071-10082" weight="0"/>    
       <emulab:fd name="OS-10071-10083" weight="0"/>    
       <emulab:fd name="OS-10071-10093" weight="0"/>    
+      <emulab:fd name="OS-10071-10096" weight="0"/>    
       <emulab:fd name="OS-10077" weight="0"/>    
       <emulab:fd name="OS-10077-10028" weight="0"/>    
       <emulab:fd name="OS-10077-10029" weight="0"/>    
@@ -416,10 +418,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -448,7 +450,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44803"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44419"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10034" weight="0.5"/>    
@@ -593,6 +595,7 @@
       <emulab:fd name="OS-10071-10082" weight="0"/>    
       <emulab:fd name="OS-10071-10083" weight="0"/>    
       <emulab:fd name="OS-10071-10093" weight="0"/>    
+      <emulab:fd name="OS-10071-10096" weight="0"/>    
       <emulab:fd name="OS-10077" weight="0"/>    
       <emulab:fd name="OS-10077-10028" weight="0"/>    
       <emulab:fd name="OS-10077-10029" weight="0"/>    
@@ -867,15 +870,15 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-25T12:22:59Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-10-27T19:01:06Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+utah.geniracks.net+authority+cm" url="https://boss.utah.geniracks.net:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-25T12:22:59Z</start>        
-            <end type="time">2013-10-25T12:22:59Z</end>        
+            <start type="time">2013-10-27T19:01:06Z</start>        
+            <end type="time">2013-10-27T19:01:06Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+utah.geniracks.net+node+procurve2">        
           <port id="urn:publicid:IDN+utah.geniracks.net+stitchport+procurve2:1.19">          

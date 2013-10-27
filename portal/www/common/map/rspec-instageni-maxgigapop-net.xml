@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+instageni.maxgigapop.net+authority+cm
 	URL: https://instageni.maxgigapop.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-25T12:22:26Z" generated="2013-10-25T12:22:26Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-27T19:00:18Z" generated="2013-10-27T19:00:18Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+dragon.maxgigapop.net+interface+clpk:1-1-2:*" component_manager_id="urn:publicid:IDN+dragon.maxgigapop.net+authority+am"/>  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
@@ -119,10 +119,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="82"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="82"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -153,7 +153,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="41509"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -233,6 +233,8 @@
       <emulab:fd name="OS-10015" weight="0"/>    
       <emulab:fd name="OS-10018" weight="0"/>    
       <emulab:fd name="OS-10018-10016" weight="0"/>    
+      <emulab:fd name="OS-10018-10023" weight="0"/>    
+      <emulab:fd name="OS-10018-10024" weight="0"/>    
       <emulab:fd name="OS-10020" weight="0"/>    
       <emulab:fd name="OS-10020-10008" weight="0"/>    
       <emulab:fd name="OS-10020-10009" weight="0"/>    
@@ -356,6 +358,8 @@
       <emulab:fd name="OS-10015" weight="0"/>    
       <emulab:fd name="OS-10018" weight="0"/>    
       <emulab:fd name="OS-10018-10016" weight="0"/>    
+      <emulab:fd name="OS-10018-10023" weight="0"/>    
+      <emulab:fd name="OS-10018-10024" weight="0"/>    
       <emulab:fd name="OS-10020" weight="0"/>    
       <emulab:fd name="OS-10020-10008" weight="0"/>    
       <emulab:fd name="OS-10020-10009" weight="0"/>    
@@ -424,6 +428,8 @@
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10018" weight="0.5"/>    
       <emulab:fd name="OS-10018-10016" weight="0"/>    
+      <emulab:fd name="OS-10018-10023" weight="0"/>    
+      <emulab:fd name="OS-10018-10024" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+instageni.maxgigapop.net+node+pc2" component_manager_id="urn:publicid:IDN+instageni.maxgigapop.net+authority+cm" component_name="pc2" exclusive="false">    
       <hardware_type name="dl360">      
@@ -473,6 +479,8 @@
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10018" weight="0.5"/>    
       <emulab:fd name="OS-10018-10016" weight="0"/>    
+      <emulab:fd name="OS-10018-10023" weight="0"/>    
+      <emulab:fd name="OS-10018-10024" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+instageni.maxgigapop.net+node+internet" component_manager_id="urn:publicid:IDN+instageni.maxgigapop.net+authority+cm" component_name="internet" exclusive="true">    
       <hardware_type name="ipv4">      
@@ -735,15 +743,15 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-25T12:22:26Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-10-27T19:00:19Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+instageni.maxgigapop.net+authority+cm" url="https://www.instageni.maxgigapop.net:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-25T12:22:26Z</start>        
-            <end type="time">2013-10-25T12:22:26Z</end>        
+            <start type="time">2013-10-27T19:00:19Z</start>        
+            <end type="time">2013-10-27T19:00:19Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+instageni.maxgigapop.net+node+procurve2">        
           <port id="urn:publicid:IDN+instageni.maxgigapop.net+stitchport+procurve2:1.22">          
