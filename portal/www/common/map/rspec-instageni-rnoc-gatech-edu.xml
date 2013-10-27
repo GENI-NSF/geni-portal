@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+instageni.rnoc.gatech.edu+authority+cm
 	URL: https://instageni.rnoc.gatech.edu:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-25T12:22:38Z" generated="2013-10-25T12:22:38Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-27T19:00:37Z" generated="2013-10-27T19:00:37Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="exclusive-openflow-1759"/>    
       <available name="exclusive-openflow-1758"/>    
@@ -203,10 +203,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="80"/>      
+          <emulab:node_type type_slots="88"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="80"/>      
+          <emulab:node_type type_slots="88"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -240,7 +240,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="39939"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="41987"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    

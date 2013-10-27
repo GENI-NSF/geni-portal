@@ -6,6 +6,7 @@
   
 <rspec type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:openflow="http://www.geni.net/resources/rspec/ext/openflow/3" xmlns:topology="http://geni.bssoftworks.com/rspec/ext/topo/1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.geni.net/resources/rspec/ext/openflow/3 http://www.geni.net/resources/rspec/ext/openflow/3/of-ad.xsd http://geni.bssoftworks.com/rspec/ext/topo/1 http://geni.bssoftworks.com/rspec/ext/topo/1">
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:ig-utah+datapath+06:d6:00:24:a8:5d:0b:00" component_manager_id="urn:publicid:IDN+openflow:foam:ig-utah+authority+am" dpid="06:d6:00:24:a8:5d:0b:00">
+    <openflow:location country="US" latitude="40.768652" longitude="-111.84581"/>
     <openflow:port name="A7" num="7">
       <topology:pg-host desc="PC1 eth1" remote-component-id="urn:publicid:IDN+utah.geniracks.net+interface+pc1:eth1"/>
     </openflow:port>
@@ -18,30 +19,35 @@
     </openflow:port>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:ig-utah+datapath+06:db:00:24:a8:5d:0b:00" component_manager_id="urn:publicid:IDN+openflow:foam:ig-utah+authority+am" dpid="06:db:00:24:a8:5d:0b:00">
+    <openflow:location country="US" latitude="40.768652" longitude="-111.84581"/>
     <openflow:port name="A19" num="19">
       <topology:geni-of desc="UEN" remote-component-id="urn:publicid:IDN+openflow:foam:foamyflow.chpc.utah.edu+datapath+06:db:ac:16:2d:f5:2d:00" remote-port-name="A21"/>
     </openflow:port>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:ig-utah+datapath+06:dc:00:24:a8:5d:0b:00" component_manager_id="urn:publicid:IDN+openflow:foam:ig-utah+authority+am" dpid="06:dc:00:24:a8:5d:0b:00">
+    <openflow:location country="US" latitude="40.768652" longitude="-111.84581"/>
     <openflow:port name="A19" num="19">
       <topology:geni-of desc="UEN" remote-component-id="urn:publicid:IDN+openflow:foam:foamyflow.chpc.utah.edu+datapath+06:dc:ac:16:2d:f5:2d:00" remote-port-name="A21"/>
     </openflow:port>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:ig-utah+datapath+06:dd:00:24:a8:5d:0b:00" component_manager_id="urn:publicid:IDN+openflow:foam:ig-utah+authority+am" dpid="06:dd:00:24:a8:5d:0b:00">
+    <openflow:location country="US" latitude="40.768652" longitude="-111.84581"/>
     <openflow:port name="A19" num="19">
       <topology:geni-of desc="UEN" remote-component-id="urn:publicid:IDN+openflow:foam:foamyflow.chpc.utah.edu+datapath+06:dd:ac:16:2d:f5:2d:00" remote-port-name="A21"/>
     </openflow:port>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:ig-utah+datapath+06:de:00:24:a8:5d:0b:00" component_manager_id="urn:publicid:IDN+openflow:foam:ig-utah+authority+am" dpid="06:de:00:24:a8:5d:0b:00">
+    <openflow:location country="US" latitude="40.768652" longitude="-111.84581"/>
     <openflow:port name="A19" num="19">
       <topology:geni-of desc="UEN" remote-component-id="urn:publicid:IDN+openflow:foam:foamyflow.chpc.utah.edu+datapath+06:de:ac:16:2d:f5:2d:00" remote-port-name="A21"/>
     </openflow:port>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:ig-utah+datapath+06:df:00:24:a8:5d:0b:00" component_manager_id="urn:publicid:IDN+openflow:foam:ig-utah+authority+am" dpid="06:df:00:24:a8:5d:0b:00">
+    <openflow:location country="US" latitude="40.768652" longitude="-111.84581"/>
     <openflow:port name="A19" num="19">
       <topology:geni-of desc="UEN" remote-component-id="urn:publicid:IDN+openflow:foam:foamyflow.chpc.utah.edu+datapath+06:df:ac:16:2d:f5:2d:00" remote-port-name="A21"/>
     </openflow:port>
