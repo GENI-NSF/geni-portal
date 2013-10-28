@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+uky.emulab.net+authority+cm
 	URL: https://www.uky.emulab.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-27T19:00:55Z" generated="2013-10-27T19:00:55Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-28T15:18:25Z" generated="2013-10-28T15:18:25Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*" component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am"/>  
   <rspec_opstate aggregate_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" start="geni_notready" xmlns="http://www.geni.net/resources/rspec/ext/opstate/1">    
       <sliver_type name="raw-pc"/>    
@@ -782,7 +782,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc30:eth4" public_ipv4="128.163.143.170" role="control">      
           <emulab:interface name="eth4"/>      
@@ -836,7 +836,6 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-psylocke" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
-      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc77" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc77" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -2814,13 +2813,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="10"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="10"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="10"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2846,7 +2845,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3840"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -2959,7 +2958,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="400000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc82:eth4" role="experimental">      
@@ -3528,7 +3527,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="400000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc81:eth1" role="experimental">      
@@ -3820,7 +3819,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="400000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc79:eth4" role="experimental">      
@@ -12194,15 +12193,15 @@
       <link_type name="ethernet"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-27T19:00:56Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-10-28T15:18:26Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+uky.emulab.net+authority+cm" url="https://www.uky.emulab.net:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-27T19:00:56Z</start>        
-            <end type="time">2013-10-27T19:00:56Z</end>        
+            <start type="time">2013-10-28T15:18:26Z</start>        
+            <end type="time">2013-10-28T15:18:26Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+uky.emulab.net+node+cisco1">        
           <port id="urn:publicid:IDN+uky.emulab.net+stitchport+cisco1:1.2">          

@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm
 	URL: https://instageni.rnet.missouri.edu:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-27T19:00:53Z" generated="2013-10-27T19:00:53Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-28T15:18:22Z" generated="2013-10-28T15:18:22Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
   </rspec_shared_vlan>  
@@ -110,10 +110,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="96"/>      
+          <emulab:node_type type_slots="90"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="96"/>      
+          <emulab:node_type type_slots="90"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -144,7 +144,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45093"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="43557"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -344,10 +344,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="95"/>      
+          <emulab:node_type type_slots="88"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="95"/>      
+          <emulab:node_type type_slots="88"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -373,7 +373,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45477"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44581"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10018" weight="0.5"/>    
@@ -419,10 +419,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="91"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="91"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -448,7 +448,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45989"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44965"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10018" weight="0.5"/>    
@@ -516,8 +516,8 @@
     <component_manager name="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth1"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth1"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -528,8 +528,8 @@
     <component_manager name="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth2"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth2"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
+    <property capacity="700000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth2"/>    
+    <property capacity="700000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc1:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -552,8 +552,8 @@
     <component_manager name="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth1"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
+    <property capacity="200000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth1"/>    
+    <property capacity="200000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -564,8 +564,8 @@
     <component_manager name="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth2"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth2"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth2"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc2:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -588,8 +588,8 @@
     <component_manager name="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth1"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth1"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -600,8 +600,8 @@
     <component_manager name="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth2"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth2"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
+    <property capacity="400000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth2"/>    
+    <property capacity="400000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -612,8 +612,8 @@
     <component_manager name="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth3"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth3"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
+    <property capacity="400000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth3"/>    
+    <property capacity="400000" dest_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+pc3:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.rnet.missouri.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
