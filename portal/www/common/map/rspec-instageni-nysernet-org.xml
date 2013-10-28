@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+instageni.nysernet.org+authority+cm
 	URL: https://instageni.nysernet.org:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-09-23T19:24:57Z" generated="2013-09-23T19:24:57Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-27T19:01:18Z" generated="2013-10-27T19:01:18Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
       <available name="exclusive-openflow-1755"/>    
@@ -115,10 +115,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="81"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="81"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -148,8 +148,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="41253"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45349"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -159,6 +159,7 @@
       <emulab:fd name="OS-10020-10014" weight="0"/>    
       <emulab:fd name="OS-10020-10019" weight="0"/>    
       <emulab:fd name="OS-10020-10021" weight="0"/>    
+      <emulab:fd name="OS-10020-10024" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+instageni.nysernet.org+node+pc5" component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="pc5" exclusive="true">    
       <hardware_type name="dl360">      
@@ -196,7 +197,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="43.049957" longitude="-76.152849"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth99">      
@@ -215,7 +216,7 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -236,6 +237,7 @@
       <emulab:fd name="OS-10020-10014" weight="0"/>    
       <emulab:fd name="OS-10020-10019" weight="0"/>    
       <emulab:fd name="OS-10020-10021" weight="0"/>    
+      <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -302,7 +304,7 @@
           <emulab:interface name="eth2"/>      
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
       <emulab:fd local_operator="+" name="ram" violatable="true" weight="46117"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
@@ -323,6 +325,7 @@
       <emulab:fd name="OS-10020-10014" weight="0"/>    
       <emulab:fd name="OS-10020-10019" weight="0"/>    
       <emulab:fd name="OS-10020-10021" weight="0"/>    
+      <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -348,10 +351,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="97"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="97"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -376,8 +379,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45733"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10018" weight="0.5"/>    
@@ -399,10 +402,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="97"/>      
+          <emulab:node_type type_slots="91"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="97"/>      
+          <emulab:node_type type_slots="91"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -427,8 +430,8 @@
       </interface>    
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
-      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45733"/>    
+      <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44965"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10018" weight="0.5"/>    
@@ -496,8 +499,8 @@
     <component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth1"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>    
+    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth1"/>    
+    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -532,8 +535,8 @@
     <component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth1"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth1"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    

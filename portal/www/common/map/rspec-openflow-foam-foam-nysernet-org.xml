@@ -10,21 +10,21 @@
     <openflow:port name="ge-1/1/13" num="13">
       <topology:other desc="NYC test host" remote-hostname="east.nysernet.org" remote-port-name="em1"/>
     </openflow:port>
+    <openflow:port name="te-1/1/50" num="50">
+      <topology:geni-of desc="nyc-3295 10GE to syr-3295" remote-component-id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+datapath+00:00:08:9e:01:62:d6:06" remote-port-name="te-1/1/50"/>
+    </openflow:port>
     <openflow:port name="ge-1/1/1" num="1">
       <topology:other desc="Internet2 ION" remote-hostname="NYSERNET.newy.ion.internet.edu" remote-port-name="n/a"/>
     </openflow:port>
     <openflow:port name="br0" num="65534"/>
-    <openflow:port name="te-1/1/50" num="50">
-      <topology:geni-of desc="nyc-3295 10GE to syr-3295" remote-component-id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+datapath+00:00:08:9e:01:62:d6:06" remote-port-name="te-1/1/50"/>
-    </openflow:port>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+datapath+00:00:08:9e:01:62:d6:06" component_manager_id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+authority+am" dpid="00:00:08:9e:01:62:d6:06">
-    <openflow:port name="ge-1/1/2" num="2"/>
     <openflow:port name="br0" num="65534"/>
     <openflow:port name="ge-1/1/24" num="24"/>
     <openflow:port name="te-1/1/50" num="50">
       <topology:geni-of desc="syr-3295 10GE to nyc-3295" remote-component-id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+datapath+00:00:04:7d:7b:6e:07:95" remote-port-name="te-1/1/50"/>
     </openflow:port>
+    <openflow:port name="ge-1/1/2" num="2"/>
   </openflow:datapath>
 </rspec>
 

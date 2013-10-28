@@ -8,8 +8,8 @@
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.geni.kettering.edu+datapath+06:d6:6c:3b:e5:69:c1:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.geni.kettering.edu+authority+am" dpid="06:d6:6c:3b:e5:69:c1:00">
     <openflow:port name="C24" num="72"/>
     <openflow:port name="local" num="65534"/>
-    <openflow:port name="C13" num="61"/>
     <openflow:port name="C1" num="49"/>
+    <openflow:port name="C13" num="61"/>
   </openflow:datapath>
 </rspec>
 
