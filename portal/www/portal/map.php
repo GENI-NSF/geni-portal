@@ -94,7 +94,7 @@ class GENIResource {
     $component_id = (string) $type_value->attributes()->component_id;
     $node->type = 'OpenFlow datapath';
     $node->am_id = $mgr_id;
-    $node->name = (string)$type_value->attributes()->component_name;
+    $node->name = (string)$type_value->attributes()->dpid;
     $node->id = $component_id;
 
     foreach ($type_value->children($openflow_ns) as $child) {
