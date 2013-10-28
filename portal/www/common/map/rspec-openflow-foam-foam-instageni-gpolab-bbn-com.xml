@@ -6,6 +6,7 @@
   
 <rspec type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:openflow="http://www.geni.net/resources/rspec/ext/openflow/3" xmlns:topology="http://geni.bssoftworks.com/rspec/ext/topo/1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.geni.net/resources/rspec/ext/openflow/3 http://www.geni.net/resources/rspec/ext/openflow/3/of-ad.xsd http://geni.bssoftworks.com/rspec/ext/topo/1 http://geni.bssoftworks.com/rspec/ext/topo/1">
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:d6:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:d6:84:34:97:c6:c9:00">
+    <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
     <openflow:port name="E1" num="97"/>
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
@@ -13,26 +14,31 @@
     <openflow:port name="E13" num="109"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:db:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:db:84:34:97:c6:c9:00">
+    <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:dc:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:dc:84:34:97:c6:c9:00">
+    <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:dd:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:dd:84:34:97:c6:c9:00">
+    <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:de:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:de:84:34:97:c6:c9:00">
+    <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
     <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:df:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:df:84:34:97:c6:c9:00">
+    <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
     <openflow:port name="local" num="65534"/>

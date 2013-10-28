@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+utahddc.geniracks.net+authority+cm
 	URL: https://boss.utahddc.geniracks.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-27T19:01:26Z" generated="2013-10-27T19:01:26Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-10-28T15:18:55Z" generated="2013-10-28T15:18:55Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+emulab.net+interface+procurve-pgeni-uen:2.22" component_manager_id="urn:publicid:IDN+emulab.net+authority+am"/>  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
@@ -4122,15 +4122,15 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-27T19:01:26Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-10-28T15:18:55Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" url="https://www.utahddc.geniracks.net:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-27T19:01:26Z</start>        
-            <end type="time">2013-10-27T19:01:26Z</end>        
+            <start type="time">2013-10-28T15:18:55Z</start>        
+            <end type="time">2013-10-28T15:18:55Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+utahddc.geniracks.net+node+procurve2">        
           <port id="urn:publicid:IDN+utahddc.geniracks.net+stitchport+procurve2:2.22">          
