@@ -54,7 +54,7 @@ def parse_args(argv):
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="authority URL, requires SA and MA")
+    parser.add_option("-u", "--url", help="base authority URL, requires SA and MA")
     parser.add_option("-p", "--project", help="project id (UUID) or name")
     parser.add_option("-m", "--member", help="member id (UUID)")
     parser.add_option("--role", type="choice",
@@ -116,8 +116,8 @@ def main(argv=None):
         options,args = parse_args(argv)
         init_logging(options)
         url = verify_url(options.url)
-        saurl = url+"/SA"
-        maurl = url+"/MA"
+        saurl = verify_url(chap.service_url(options.url, 'SA'))
+        maurl = verify_url(chap.service_url(options.url, 'MA'))
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
         project_urn = chapi.find_project_urn(options.project, saurl, cert, pkey)

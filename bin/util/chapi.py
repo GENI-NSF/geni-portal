@@ -61,20 +61,54 @@ class SafeTransportWithCert(xmlrpclib.SafeTransport):
 def make_proxy(url, cert, key):
     return xmlrpclib.ServerProxy(url, transport=SafeTransportWithCert(cert, key), allow_none=True)
 
-def find_member_id(member, url, logger, cert, pkey):
-    # Verify that it's a UUID.
+def service_url(url, suffix):
+    '''Make sure that the url has the right suffix'''
+    return url+'/'+suffix;
+
+def is_urn(s):
+    '''return the string IFF the passed string is a URN, else False'''
+    if s.startswith('urn:'):
+        return s
+    else:
+        return False
+
+def is_UUID(s):
+    '''return the string IFF the passed argument is a UUID, else False'''
     try:
-        uuid.UUID(member)
-        return member
+        uuid.UUID(s)
+        return s
     except ValueError:
-        # raise Exception("Invalid member id %r, must be a UUID" % (member))
-        pass
-    
-    # TODO: In the future, try to figure out if 'member' is a URN or email address
-    args = dict(attributes=[dict(name='username', value=member)])
+        return False
+
+def is_email(s):
+    '''return the string IFF the passed argument is an email address, else False'''
+    stuff = s.split('@')
+    if len(stuff) == 2:
+        return s
+    else:
+        return False
+
+def find_member_id(member, url, logger, cert, pkey):
+    if is_UUID(member):
+        return member
+
     proxy = make_proxy(url, cert, pkey)
-    result = proxy.lookup_public_member_info([], { 'match': {'MEMBER_USERNAME': member},
+
+    if is_urn(member):
+        result = proxy.lookup_public_member_info([],
+                                                 { 'match': {'MEMBER_URN': member},
                                                    'filter': ['MEMBER_UID'] })
+    elif is_email(member):
+        # in CHAPI, email is identifying, so this won't work unless we have ops rights
+        result = proxy.lookup_identifying_member_info([],
+                                                      { 'match': {'MEMBER_EMAIL': member},
+                                                        'filter': ['MEMBER_UID'] })
+    else:
+        # otherwise, assume a username
+        result = proxy.lookup_public_member_info([],
+                                                 { 'match': {'MEMBER_USERNAME': member},
+                                                   'filter': ['MEMBER_UID'] })
+
     if not 'code' in result:
         return None
     status = result['code']
@@ -90,13 +124,27 @@ def find_member_id(member, url, logger, cert, pkey):
     return member_id
 
 def find_member_urn(member, url, cert, pkey):
-    # TODO handle the urn case
+    if is_urn(member):
+        return member
     
     # TODO: In the future, try to figure out if 'member' is a URN or email address
-    args = dict(attributes=[dict(name='username', value=member)])
     proxy = make_proxy(url, cert, pkey)
-    result = proxy.lookup_public_member_info([], { 'match': {'MEMBER_USERNAME': member},
+
+    if is_UUID(member):
+        result = proxy.lookup_public_member_info([],
+                                                 { 'match': {'MEMBER_UID': member},
                                                    'filter': ['MEMBER_URN'] })
+    elif is_email(member):
+        # in CHAPI, email is identifying, so this won't work unless we have ops rights
+        result = proxy.lookup_identifying_member_info([],
+                                                      { 'match': {'MEMBER_EMAIL': member},
+                                                        'filter': ['MEMBER_URN'] })
+    else:
+        # otherwise, assume a username
+        result = proxy.lookup_public_member_info([],
+                                                 { 'match': {'MEMBER_USERNAME': member},
+                                                   'filter': ['MEMBER_URN'] })
+
     if not 'code' in result:
         return None
     status = result['code']
@@ -109,27 +157,49 @@ def find_member_urn(member, url, cert, pkey):
     member_urn = first_match['MEMBER_URN'] #'member_id'
     return member_urn
 
-def find_project_urn(project, url, cert, pkey):
+def find_project_param(project, url, cert, pkey, param):
+    if is_urn(project):
+        key = 'PROJECT_URN'
+    elif is_UUID(project):
+        key = 'PROJECT_UID'
+    else:
+        key = 'PROJECT_NAME'
+
+    # short circuit if it is already what we want
+    if key == param:
+        return project
+
     proxy = make_proxy(url, cert, pkey)
-    result = proxy.lookup_projects([], {'match': {'PROJECT_NAME': project}})
+    result = proxy.lookup_projects([], {'match': {key: project}})
     result_code = result['code']
     result_value = result['value']
     if result_code == 0 and result_value and len(result_value)>0:
-        result = result_value.values()[0]['PROJECT_URN']    #['project_id']
-        print "project_id = "+result
+        result = result_value.values()[0][param]
         return result
     else:
-        raise Exception("Invalid project id or name %r" % (project))
+        raise Exception("Invalid project identifier %r" % (project))
+
+def find_project_urn(project, url, cert, pkey):
+    return fine_project_param(project, url, cert, pkey, 'PROJECT_URN')
 
 def find_project_id(project, url, cert, pkey):
+    return fine_project_param(project, url, cert, pkey, 'PROJECT_UID')
+
+def find_slice_urn(slice, url, cert, pkey):
+    if is_urn(slice):
+        return slice
+    if is_UUID(slice):
+        key = 'SLICE_UID'
+    else:
+        key = 'SLICE_NAME'
     proxy = make_proxy(url, cert, pkey)
-    result = proxy.lookup_projects([], {'match': {'PROJECT_NAME': project}})
-    print "lookup_project = %r" % (result)
+    result = proxy.lookup_slices([], {'match': {key: slice}})
     result_code = result['code']
     result_value = result['value']
     if result_code == 0 and result_value and len(result_value)>0:
-        result = result_value.values()[0]['PROJECT_UID']    #['project_id']
+        result = result_value.values()[0]['SLICE_URN']    #['slice_id']
+        print "slice_id = "+result
         return result
     else:
-        raise Exception("Invalid project id or name %r" % (project))
+        raise Exception("Invalid slice name or uuid %r" % (slice))
 
