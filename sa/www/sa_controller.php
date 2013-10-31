@@ -2629,12 +2629,13 @@ function create_slice($args, $message)
     $exists = $exists_response[RESPONSE_ARGUMENT::VALUE];
     $exists = $exists['count'];
     if ($exists > 0) {
-      geni_syslog(GENI_SYSLOG_PREFIX::SA, 
-		  "Create slice error: slice name \"$slice_name\" " . 
-		  "already exists in another project.");
-      return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
-			       "Slice of name " . $slice_name . 
-			       " already exists in another project.");
+      error_log("Ticket #433: This would be blocked by PG...");
+      //      geni_syslog(GENI_SYSLOG_PREFIX::SA, 
+      //		  "Create slice error: slice name \"$slice_name\" " . 
+      //		  "already exists in another project.");
+      //      return generate_response(RESPONSE_ERROR::AUTHORIZATION, null,
+      //			       "Slice of name " . $slice_name . 
+      //			       " already exists in another project.");
     }
     // END OF HACK
 
