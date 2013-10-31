@@ -133,3 +133,15 @@ def find_project_id(project, url, cert, pkey):
     else:
         raise Exception("Invalid project id or name %r" % (project))
 
+def find_slice_urn(slice, url, cert, pkey):
+    proxy = make_proxy(url, cert, pkey)
+    result = proxy.lookup_slices([], {'match': {'SLICE_NAME': slice}})
+    result_code = result['code']
+    result_value = result['value']
+    if result_code == 0 and result_value and len(result_value)>0:
+        result = result_value.values()[0]['SLICE_URN']    #['slice_id']
+        print "slice_id = "+result
+        return result
+    else:
+        raise Exception("Invalid slice name %r" % (slice))
+
