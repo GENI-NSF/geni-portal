@@ -55,7 +55,7 @@ def parse_args(argv):
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
     parser.add_option("-u", "--url", help="authority URL, requires SA and MA")
-    parser.add_option("-s", "--slice", help="slice name")
+    parser.add_option("-s", "--slice", help="slice name or uuid or urn")
     parser.add_option("-e", "--expiration", help="new expiration time")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
