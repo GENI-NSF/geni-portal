@@ -45,6 +45,7 @@ require_once('pa_constants.php');
 require_once('cs_constants.php');
 require_once 'chapi.php';
 require_once('client_utils.php');
+
 include_once('irods_utils.php');
 
 // A cache of a user's detailed info indexed by member_id
@@ -468,12 +469,21 @@ function accept_invitation($sa_url, $signer, $invitation_id)
 // Look up all attributes of a given project
 function lookup_project_attributes($sa_url, $signer, $project_id)
 {
-  global $user;
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+  $options = array('match'=>array('PROJECT_UID'=>$project_id));
+  error_log("OPTIONS: " . print_r($options,true));
+  $res = $client->lookup_project_attributes($project_urn, $client->creds(), $options);
+  error_log("RES: " . print_r($res,true)); 
+  return $res;
+
+  /*  global $user;
   $lookup_project_attributes_message['operation'] = 'lookup_project_attributes';
   $lookup_project_attributes_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $results = put_message($sa_url, $lookup_project_attributes_message, 
 			 $signer->certificate(), $signer->privateKey());
   return $results;
+  */
 }
 
 // Add attribute (name/value pair) to a given project
