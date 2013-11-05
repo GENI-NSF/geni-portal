@@ -14,6 +14,7 @@
   * Add language to discourage people from randomly trying to join
     unknown projects, and to discourage leads from adding them. (#875)
   * Avoid double registration: do-register checks for existing account (#864)
+  * Sort projects on home page and projects page by name (#873)
 
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)
