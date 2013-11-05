@@ -33,6 +33,17 @@ require_once("cs_client.php");
 require_once("proj_slice_member.php");
 include("services.php");
 
+function project_name_compare($p1, $p2)
+{
+  $pn1 = $p1[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
+  $pn2 = $p2[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]; 
+  if ($pn1 == $pn2) {
+    return 0;
+  } else {
+    return ($pn1 < $pn2) ? -1 : 1;
+  }
+}
+
 if(!isset($project_objects) || !isset($slice_objects) || 
    !isset($member_objects) || !isset($project_slice_map)) 
 {
@@ -43,6 +54,8 @@ if(!isset($project_objects) || !isset($slice_objects) ||
   $project_slice_map = $retVal[3];
   $project_activeslice_map = $retVal[4];
 }
+
+usort($project_objects, "project_name_compare");
 
 /* foreach($project_objects as $project) { */
 /*   error_log("PROJ (orig) = " . print_r($project, true)); */
