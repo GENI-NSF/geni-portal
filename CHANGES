@@ -13,6 +13,8 @@
   * Undefined index when generating a cert from a bad CSR (#870)
   * Add language to discourage people from randomly trying to join
     unknown projects, and to discourage leads from adding them. (#875)
+  * Add language to clarify who can be a project lead and what the 
+    responsibilities are when requesting to be a lead. (#877)
 
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)
