@@ -10,6 +10,7 @@
   * Slice names are now unique only to the project, since ProtoGENI
   made a fix (#433)
   * Refer to scripts without the .py extension (#862)
+  * Undefined index when generating a cert from a bad CSR (#870)
 
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)

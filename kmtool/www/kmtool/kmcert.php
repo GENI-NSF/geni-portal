@@ -117,7 +117,7 @@ function handle_upload($ma_url, $km_signer, $member_id, &$error) {
       $command = implode(" ", $cmd_array);
       $result = exec($command, $output, $status);
       if ($status != 0) {
-        $fname = $_FILES['file']['name'];
+        $fname = $_FILES['csrfile']['tmp_name'];
         $error = "File $fname is not a valid certificate signing request.";
         return false;
       } else {
