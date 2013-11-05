@@ -117,6 +117,10 @@ if (isset($message) && ! is_null($message) && (!isset($error) || is_null($error)
   $message .= "To handle my request, go to the GENI Portal here:
 https://$hostname/secure/handle-project-request.php?project_id=$project_id&member_id=" . $user->account_id . "&request_id=$request_id
 
+Remember that when you approve this request, you agree to take
+responsibility for my use of GENI resources within the project. 
+You should not approve unsolicited requests to join your project.
+
 Thank you,\n" . $user->prettyName() . "\n";
 
 //  $message = substr_replace($message, "handle-project-request.php?project_id=" . $project_id . "&member_id=" . $user->account_id . "&request_id=" . $request_id, $ind, strlen("handle-project-request.php"));
@@ -190,6 +194,7 @@ print "That email will have a link to a page where the project lead can act on y
 print "When the project lead ($leadname) acts on your request, you will get an email " .
 "notifying you whether your request was approved.\n";
 print "Once approved, you can create a slice, or request to join an existing slice.</p>\n";
+print "<p>When you ask to join a project, you are requesting that the project lead take responsibility for your use of GENI resources within that project. You should only request to join a project if the project lead knows who you are and wishes for you to join his or her project.</p>\n";
 
 //- Show info on the project, lead
 print "<h3>Project <i>$project_name</i> details:</h3>\n";
@@ -221,6 +226,7 @@ $hostname = $_SERVER['SERVER_NAME'];
 print "<p><textarea name='message' cols='60' rows='5'>May I join GENI project '$project_name'?
 I think I need to do GENI research in your project.\n</textarea></p>\n";
 print "<h3>Message footer:</h3>\n";
+print "<p><i>Remember that when you approve this request, you agree to take responsibility for my use of GENI resources within the project. You should not approve unsolicited requests to join your project.</i></p>\n";
 print "<p><i>To handle my request, go to the GENI Portal here: <br/>
 https://$hostname/secure/handle-project-request.php<br/>
 <br/>

@@ -200,6 +200,12 @@ $project_details = lookup_project($sa_url, $user, $project_id);
 $project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 
 print "<h2>Handle Project Request: ". $project_name . "</h2>";
+print "<p> The following request(s) have been made to join your
+project. You may approve (add the member) or deny each request.</p>
+<p>You should only add people to your project that you
+know. Remember that when you approve a project join request, you agree
+that the project lead will be held responsible for all GENI actions this person
+takes in this project.</p>";
 
 print '<form method="POST" action="do-handle-project-request.php">';
 print '<table>';
