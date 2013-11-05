@@ -180,10 +180,10 @@ def find_project_param(project, url, cert, pkey, param):
         raise Exception("Invalid project identifier %r" % (project))
 
 def find_project_urn(project, url, cert, pkey):
-    return fine_project_param(project, url, cert, pkey, 'PROJECT_URN')
+    return find_project_param(project, url, cert, pkey, 'PROJECT_URN')
 
 def find_project_id(project, url, cert, pkey):
-    return fine_project_param(project, url, cert, pkey, 'PROJECT_UID')
+    return find_project_param(project, url, cert, pkey, 'PROJECT_UID')
 
 def find_slice_urn(slice, url, cert, pkey):
     if is_urn(slice):
