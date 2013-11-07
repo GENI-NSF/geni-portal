@@ -339,8 +339,8 @@ In order to use <code>omni</code> or other command line tools you will need to g
     <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni-bundle.zip</code>):<br/>
     		 <button onClick="window.location='omni-bundle.php'">Download your omni data</button>
     </li>
-    <li>Generate an <code>omni_config</code> by running the following command in a terminal: <pre>omni-configure.py</pre></li>
-    <li>Test your setup by running the following command in a terminal: <pre>omni.py -a ig-gpo getversion</pre>
+    <li>Generate an <code>omni_config</code> by running the following command in a terminal: <pre>omni-configure</pre></li>
+    <li>Test your setup by running the following command in a terminal: <pre>omni -a ig-gpo getversion</pre>
     The output should look similar to this <a href='http://trac.gpolab.bbn.com/gcf/attachment/wiki/OmniConfigure/Automatic/getversion.out'>example output</a>.
 </li>
   </ol>
@@ -351,7 +351,7 @@ In order to use <code>omni</code> or other command line tools you will need to g
        <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:
-	            <pre>omni.py --version</pre>
+	            <pre>omni --version</pre>
        </td></tr>
         <tr><td>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of <code>omni</code>.</td></tr>
 
@@ -376,7 +376,7 @@ echo "</div>";
   <td><a href='tool-omniconfig.php'>Get omni_config</a></td>
 </tr>
 <tr>
-  <td>omni_configure.py</td>
+  <td>omni_configure</td>
   <td>omni configuration tool</td>
   <td><a href='omni-bundle.php'>Get omni-bundle.zip</a></td>
 </tr>
