@@ -406,16 +406,23 @@ function ma_create_certificate($ma_url, $signer, $member_id, $csr=NULL)
   throw new Exception($msg);
 }
 
-// get '_GENI_MEMBER_SSL_PUBLIC_KEY' (which means certificate)
+// get '_GENI_MEMBER_SSL_PRIVATE_KEY' and "_GENI_MEMBER_SSL_CERTIFICATE'
 function ma_lookup_certificate($ma_url, $signer, $member_id)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $options = array('match'=> array('MEMBER_UID'=>$member_id),
-		   'filter'=>array('_GENI_MEMBER_SSL_PUBLIC_KEY'));
-  $res = $client->lookup_public_member_info($client->creds(), 
-					    $options);
-  $ssh_keys = array_map(function($x) { return $x['_GENI_MEMBER_SSL_PUBLIC_KEY']; }, $res);
-  return $ssh_keys;
+  $public_options = array('match'=> array('MEMBER_UID'=>$member_id),
+		   'filter'=>array('_GENI_MEMBER_SSL_CERTIFICATE'));
+  $public_res = $client->lookup_public_member_info($client->creds(), 
+					    $public_options);
+  $private_options = array('match'=> array('MEMBER_UID'=>$member_id),
+		   'filter'=>array('_GENI_MEMBER_SSL_PRIVATE_KEY'));
+  $member_urns = array_keys($public_res);
+  $member_urn = $member_urns[0];
+  $private_res = $client->lookup_private_member_info($client->creds(), 
+					    $private_options);
+  $cert_and_key = array('private_key' => $private_res[$member_urn]['_GENI_MEMBER_SSL_PRIVATE_KEY'], 
+			'certificate' => $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE']);
+  return $cert_and_key;
 }
 
 
