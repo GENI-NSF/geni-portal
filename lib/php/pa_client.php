@@ -425,7 +425,7 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('PROJECT_UID' => array_values($project_uuids)));
   $results = $client->lookup_projects($client->creds(), $options);
-    error_log("LPD.RESULTS = " . print_r($results, true));
+  //error_log("LPD.RESULTS = " . print_r($results, true));
   $converted_projects = array();
   foreach($results as $project) {
     $converted_project = project_details_chapi2portal($project);
