@@ -83,7 +83,7 @@ if ($slice_name) {
   if (! $result) {
     error_log("Create Slice failed for slice $slice_name");
     $_SESSION['lasterror'] = "Slice creation failed for slice $slice_name";
-    relative_redirecto('home.php');
+    relative_redirect('home.php');
   } else {
     /* $pretty_result = print_r($result, true); */
     /* error_log("sa_create_slice result: $pretty_result\n"); */
@@ -123,7 +123,7 @@ print "\n";
 print "<td><input type='text' name='slice_description' value='$slice_description'/></td>";
 print "</tr></table>\n";
 print '<p><b>Note</b>: Slice names must not contain whitespace. Use at most 19 alphanumeric characters or hyphen (no leading hyphen) : "a-zA-Z0-9-".</b></p>';
-echo '<p><b>Note: Slice names are public and must be unique across the GENI Clearinghouse</b></p>';
+echo '<p><b>Note: Slice names are public and must be unique across your project.</b></p>';
 print '<p><input type="submit" value="Create slice"/>';
 print "\n";
 print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/></p>\n";

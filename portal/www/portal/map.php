@@ -94,7 +94,7 @@ class GENIResource {
     $component_id = (string) $type_value->attributes()->component_id;
     $node->type = 'OpenFlow datapath';
     $node->am_id = $mgr_id;
-    $node->name = (string)$type_value->attributes()->component_name;
+    $node->name = (string)$type_value->attributes()->dpid;
     $node->id = $component_id;
 
     foreach ($type_value->children($openflow_ns) as $child) {
@@ -141,16 +141,26 @@ $files = array(
   $directory . 'rspec-exogeni-net-uhvmsite.xml',
   $directory . 'rspec-exogeni-net.xml',
   $directory . 'rspec-geni-kettering-edu.xml',
+  $directory . 'rspec-genirack-nyu-edu.xml',
+  $directory . 'rspec-instageni-clemson-edu.xml',
   $directory . 'rspec-instageni-gpolab-bbn-com.xml',
+  $directory . 'rspec-instageni-illinois-edu.xml',
+  $directory . 'rspec-instageni-maxgigapop-net.xml',
   $directory . 'rspec-instageni-northwestern-edu.xml',
   $directory . 'rspec-instageni-nysernet-org.xml',
+  $directory . 'rspec-instageni-rnet-missouri-edu.xml',
   $directory . 'rspec-instageni-rnoc-gatech-edu.xml',
   $directory . 'rspec-lan-sdn-uky-edu.xml',
   $directory . 'rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml',
   $directory . 'rspec-openflow-foam-foam-geni-kettering-edu.xml',
+  $directory . 'rspec-openflow-foam-foam-genirack-nyu-edu.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-clemson-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-gpolab-bbn-com.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-illinois-edu.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-maxgigapop-net.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-northwestern-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-nysernet-org.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-rnet-missouri-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml',
   $directory . 'rspec-openflow-foam-foam-lan-sdn-uky-edu.xml',
   $directory . 'rspec-openflow-foam-foam-nysernet-org.xml',
