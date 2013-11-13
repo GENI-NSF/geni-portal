@@ -5,6 +5,9 @@
 == 2.6 ==
   * Ensure WiMAX givenname is non empty (#885)
 
+== 2.5.1 ==
+  * Send only current projects, not expired, to GEMINI (#887)
+
 == 2.5 ==
   * Improve error reporting in geni-revoke-member-privilege (#853)
   * Quiet a debug printing rspecs (#858)
