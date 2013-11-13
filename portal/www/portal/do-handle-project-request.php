@@ -91,14 +91,15 @@ $num_members_rejected = 0;
 
 foreach($selections as $select_id => $attribs) {
   $attribs_parts = explode(',', $attribs);
-  $role = $attribs_parts[0];
-  $member_id = $attribs_parts[1];
-  if (! isset($member_id) or is_null($member_id)) {
-    error_log("Invalid member_id in do-handle-project_request: $member_id");
+  if (count($attribs_parts) < 4) {
+    error_log("Malformed selection row in do-handle-project-request: $select_id=$attribs");
     continue;
   }
+  $role = $attribs_parts[0];
+  $member_id = $attribs_parts[1];
   // FIXME: Validate that the member_id is reasonable
   $request_id = $attribs_parts[2];
+  // FIXME: Validate that the request_id is reasonable - still open, etc
   $email_address = $attribs_parts[3];
   // error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
   $resolution_status = RQ_REQUEST_STATUS::APPROVED;
@@ -137,7 +138,6 @@ foreach($selections as $select_id => $attribs) {
   mail($email_address, $email_subject, $email_message);
 
 }
-
 
 $_SESSION['lastmessage'] = "Added $num_members_added members; Rejected $num_members_rejected members"; 
 
