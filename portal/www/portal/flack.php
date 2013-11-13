@@ -73,7 +73,7 @@ if (! isset($slice_urn)) {
   exit();
 }
 
-if (isset($slice_expired) && $slice_expired == 't') {
+if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
     $slice_name = "";
   }
