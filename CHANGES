@@ -2,6 +2,22 @@
 
 = GENI Clearinghouse and Portal Release Notes =
 
+== 2.5 ==
+  * Improve error reporting in geni-revoke-member-privilege (#853)
+  * Quiet a debug printing rspecs (#858)
+  * In WiMAX, handle user swith no sn or givenName. Also fix a logic error
+    causing projects to seem not WiMAX enabled. (#859)
+  * Slice names are now unique only to the project, since ProtoGENI
+  made a fix (#433)
+  * Refer to scripts without the .py extension (#862)
+  * Undefined index when generating a cert from a bad CSR (#870)
+  * Add language to discourage people from randomly trying to join
+    unknown projects, and to discourage leads from adding them. (#875)
+  * Avoid double registration: do-register checks for existing account (#864)
+  * Sort projects on home page and projects page by name (#873)
+  * Add language to clarify who can be a project lead and what the 
+    responsibilities are when requesting to be a lead. (#877)
+
 == 2.4 ==
   * Fix geni-revoke-member-privileges script (#716)
   * Quiet some logging in printing rspecs (#836)

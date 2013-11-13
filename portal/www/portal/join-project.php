@@ -69,7 +69,10 @@ include("tool-breadcrumbs.php");
 
 print "<h1>Join a Project</h1>\n";
 
-print "<p>All GENI actions must be taken in the context of a project. On this page, you can request to join a project.</p>" 
+print "<p>All GENI actions must be taken in the context of a
+  project. On this page, you can request to join a project. You should
+  only request to join a project if the project lead knows you, as the
+  project lead is taking responsibility for your actions.</p>" 
   . "<p>The project lead will be sent an email, to approve or deny your request.\n";
 print "That email will have a link to a page where the lead can act on your request.\n";
 print "When the project lead acts on your request, you will get an email " .

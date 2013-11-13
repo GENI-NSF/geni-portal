@@ -54,7 +54,7 @@ def check_result(result):
     if not 'code' in result:
         msg = "Invalid response from server: %r" % (result)
         sys.stderr.write(msg + "\n")
-        return 1
+        exit(1)
     status = result['code']
     if not status == 0:
         if 'output' in result:
@@ -62,6 +62,7 @@ def check_result(result):
         else:
             msg = "Error %d, no reason given" % (status)
         sys.stderr.write(msg + "\n")
+        exit(1)
     return status
 
 def parse_args(argv):
@@ -116,11 +117,12 @@ def find_member_id(member, url, logger, cert, pkey):
         uuid.UUID(member)
         return member
     except ValueError:
-#        raise Exception("Invalid member id %r, must be a UUID" % (member))
-        pass
+        raise Exception("Invalid member id %r, must be a UUID" % (member))
+
     # In the future, try to figure out if 'member' is a URN or email address
     args = dict(attributes=[dict(name='username', value=member)])
     result = ch.invokeCH(url, 'lookup_members', logger, args, [cert], pkey)
+    sys.stderr.write("%s %s %s\n" %(result['code'],result['value'],result['output']))
     # parse the result
     # NOTE: Not enough error checking here.
     if not 'code' in result:
@@ -159,6 +161,11 @@ def main(argv=None):
 
     logger = logging.getLogger()
     member_id = find_member_id(options.member, saurl, logger, cert, pkey)
+    args = dict(member_id=member_id)
+    result = ch.invokeCH(maurl,"lookup_member_by_id",logger,args,[cert],pkey)
+    res = check_result(result)
+    if result['value']['attributes'] == None:
+        raise Exception("Invalid member id %r" %member_id)
     if options.operator:
         # This matches ma_privilege values
         privilege_id = 2
@@ -171,8 +178,6 @@ def main(argv=None):
         args = dict(lead_id=member_id)
         result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
         ret = check_result(result)
-        if not ret==0:
-            return ret
         # for each project, find an admin who is authorized to be lead 
         # change the admin to lead and the lead to admin 
         # if there is not an authorized admin for a project, exit
@@ -183,8 +188,6 @@ def main(argv=None):
             args = dict(project_id=project_id)
             mem_result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
             ret = check_result(mem_result)
-            if not ret==0:
-                return ret
 
             for mem in mem_result['value']:
                 auth_admin = None
@@ -193,15 +196,13 @@ def main(argv=None):
                     args = dict(principal=mem['member_id'],action="create_project",context_type=3)
                     auth_result = ch.invokeCH(csurl,"request_authorization",logger,args,[cert],pkey)
                     ret = check_result(auth_result)
-                    if not ret==0:
-                        return ret
                     if auth_result['value']:
                         auth_admin = mem['member_id']
                         break
 
             if auth_admin != None:
                 sys.stderr.write("Changing authorized administrator %s to project lead for project %s.\n" %(auth_admin, project_id))
-                sys.stderr.write("Changing project lead %s to member for project %s.\n" %(auth_admin,project_id))
+                sys.stderr.write("Changing project lead %s to member for project %s.\n" %(member_id,project_id))
                 operation = "modify_project_membership"
                 change_role = {}
                 change_role[member_id] = 3
@@ -209,11 +210,9 @@ def main(argv=None):
                 args = dict(project_id=project_id, members_to_remove=[], members_to_add=[],members_to_change_role = change_role)
                 result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)                    
                 ret = check_result(result)
-                if not ret==0:
-                    return ret
             else:
                 sys.stderr.write("Can't remove lead from project %s unless there is an authorized administrator to take the lead role.\n" %project_id)
-                return(2) 
+                return(1) 
 
    
     operation = "revoke_member_privilege"
@@ -221,10 +220,9 @@ def main(argv=None):
     args = dict(member_id=member_id, privilege_id=privilege_id)
     result = ch.invokeCH(maurl, operation, logger, args, [cert], pkey)
     ret = check_result(result)
-    if not ret==0:
-        return ret
-    else:
-        sys.stderr.write("Revoked privilege]\n");
+    print("%r" %result)
+    print("\nRevoked privilege\n")
+    return ret
 
 if __name__ == "__main__":
     sys.exit(main())
