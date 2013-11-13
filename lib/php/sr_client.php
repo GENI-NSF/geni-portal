@@ -207,7 +207,7 @@ function get_aggregates()
   $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
   $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
-  $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION');  // 'SERVICE_CERT' breaks it
+  $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT');  
   $options = array('filter' => $fields); 
   $services = array();
   $ags = $client->call(SR_XMLRPC_API::LOOKUP_AGGREGATES, $options);
@@ -228,7 +228,7 @@ function get_member_authorities()
   $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
   $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
-  $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION');  // 'SERVICE_CERT' breaks it
+  $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT'); 
   $options = array('filter' => $fields); 
   $services = array();
   $mas = $client->call(SR_XMLRPC_API::LOOKUP_MEMBER_AUTHORITIES, $options);
@@ -249,7 +249,7 @@ function get_slice_authorities()
   $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
   $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
-  $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION');  // 'SERVICE_CERT' breaks it
+  $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT');
   $options = array('filter' => $fields); 
   $services = array();
   $sas = $client->call(SR_XMLRPC_API::LOOKUP_SLICE_AUTHORITIES, $options);
