@@ -142,7 +142,10 @@ print "</ul>";
       print ">Make me ";
     }
 ?>
-a 'Project Lead' who can create projects.<br/>
+a 'Project Lead' who can create projects. I am a professor or senior
+technical staff (as indicated by my profile page supplied above). I
+want the ability to create projects, and I agree to take full
+responsibility for all GENI resource reservations made in my projects.<br/>
 </p>
 <p>
 <input type="submit" value="Modify Account"/>

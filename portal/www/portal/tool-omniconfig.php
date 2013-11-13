@@ -185,10 +185,10 @@ if ($num_projects > 1) {
   <li> When running omni:
     <ol>
       <li> Specify the path to the omni config file and the slice name or URN.  For example:
-        <pre>omni.py -c portal_omni_config sliverstatus &lt;slice name or URN&gt;</pre>
+        <pre>omni -c portal_omni_config sliverstatus &lt;slice name or URN&gt;</pre>
       </li>
       <li> Alternatively, you can specify a project with the <code>--project</code> option:
-        <pre>omni.py -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice name or URN&gt;</pre>
+        <pre>omni -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice name or URN&gt;</pre>
       </li>
       </ol>
   </li>
@@ -223,7 +223,7 @@ reservation tool.
   <li> When running omni:
     <ol>
       <li> Specify the path to the omni configuration file and the full slice URN. For example:
-        <ul><li><code>omni.py -c portal_omni_config sliverstatus &lt;slice URN&gt;</code></li></ul>
+        <ul><li><code>omni -c portal_omni_config sliverstatus &lt;slice URN&gt;</code></li></ul>
       </li>
       <li><i>Note: be sure to use the full slice URN when naming your slice, not just the slice name.</i>
         <ul><li>omni 2.2 (and newer) fixes this, by allowing you to specify the project in which your slice lives</li></ul>

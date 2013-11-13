@@ -110,6 +110,20 @@ foreach (array_keys($all_attrs) as $attr_name) {
   }
 }
 
+// Avoid double registration by checking if this is a valid
+// user before creating a new account. If this user is already
+// registered, redirect to the home page.
+$member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
+  //$attrs = array('eppn' => $eppn);
+  //$ma_members = ma_lookup_members($ma_url, Portal::getInstance(), $attrs);
+  //$count = count($ma_members);
+  //if ($count !== 0) {
+if (!is_null($member)) {
+  error_log("Attempted double registration by $eppn?");
+  // Existing account, go to home page
+  relative_redirect("home.php");
+}
+
 $email_address = filter_var($email_address, FILTER_SANITIZE_EMAIL);
 if (! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
   error_log("do-register got invalid email address! EPPN: " . $eppn . ", email: " . $email_address);
