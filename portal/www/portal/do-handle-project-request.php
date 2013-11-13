@@ -93,6 +93,11 @@ foreach($selections as $select_id => $attribs) {
   $attribs_parts = explode(',', $attribs);
   $role = $attribs_parts[0];
   $member_id = $attribs_parts[1];
+  if (! isset($member_id) or is_null($member_id)) {
+    error_log("Invalid member_id in do-handle-project_request: $member_id");
+    continue;
+  }
+  // FIXME: Validate that the member_id is reasonable
   $request_id = $attribs_parts[2];
   $email_address = $attribs_parts[3];
   // error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
@@ -128,7 +133,7 @@ foreach($selections as $select_id => $attribs) {
 
   // Send acceptance/rejection letter
   $email_message  = "Your request to join GENI project " . $project_name . 
-    " has been " . $resolution_status_label . " by " . $user->prettyName() . "\n\nGENI Portal Operations";
+    " has been " . $resolution_status_label . " by " . $user->prettyName() . ".\n\nGENI Portal Operations";
   mail($email_address, $email_subject, $email_message);
 
 }
