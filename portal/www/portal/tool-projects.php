@@ -67,7 +67,7 @@ foreach($project_objects as $project) {
   //  error_log("PROJ = " . print_r($project, true));
   $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
   $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-  if($expired == 't') 
+  if(convert_boolean($expired)) 
     $expired_projects[$project_id] = $project;
   else
     $unexpired_projects[$project_id] = $project;

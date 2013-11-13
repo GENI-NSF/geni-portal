@@ -73,7 +73,7 @@ $rows = $resultset->fetchall(MDB2_FETCHMODE_ASSOC);
 $rowcount = count($rows);
 $attrs = array();
 foreach ($rows as $row) {
-  if (strtolower($row['self_asserted']) == 't') {
+  if (convert_boolean($row['self_asserted'])) {
     // FIXME: attrs a list of name/value? so I can get it out ok....
     array_push($attrs, $row);
     //    print "Found self asserted " . $row['name'] . " = " . $row['value'] . "<br/>\n";
