@@ -298,9 +298,9 @@ function convert_boolean($db_value) {
    * a different database implementation by watching for values that
    * are not either "f" or "t".
    */
-  if (($db_value === "f") || ($db_value == 0)) {
+  if (($db_value === "f") || ($db_value === 0)) {
     return false;
-  } else if (($db_value === "t") || ($db_value == 1)) {
+  } else if (($db_value === "t") || ($db_value === 1)) {
     return true;
   } else {
     throw new Exception("Unknown value for DB boolean: "

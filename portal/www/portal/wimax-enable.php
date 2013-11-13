@@ -353,6 +353,9 @@ $ldif_user_email = $user->email();
 $ldif_user_given_name = '';
 if (array_key_exists('givenName', $user->attributes) and isset($user->attributes['givenName']) and ! is_null($user->attributes['givenName'])) {
   $ldif_user_given_name = $user->attributes['givenName'];
+} else {
+  // Must be non empty. user-username? Or else user->email()
+  $ldif_user_given_name = $user->email();
 }
 
 $ldif_user_sn = '';
