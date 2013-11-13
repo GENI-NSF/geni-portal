@@ -53,7 +53,7 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
 	$project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	//	error_log("PEXP = " . $project_id . " " . $project_name . 
 	//      " " . $project_expired);
-	if ($project_expired == 't')
+	if (convert_boolean($project_expired))
 	  continue;
 	$unexpired_project_objects[] = $project;
 	$unexpired_projects[] = $project_id;

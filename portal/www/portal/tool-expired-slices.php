@@ -101,7 +101,7 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     }
     $isSliceExpired = False;
     $disable_buttons_str = "";
-    if (isset($slice_expired) && $slice_expired == 't') {
+    if (isset($slice_expired) && convert_boolean($slice_expired)) {
       $isSliceExpired = True;
       $disable_buttons_str = " disabled";
     }
