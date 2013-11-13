@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -97,6 +97,7 @@ foreach($selections as $select_id => $attribs) {
   $email_address = $attribs_parts[3];
   // error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
   $resolution_status = RQ_REQUEST_STATUS::APPROVED;
+  // FIXME: Add the role name
   $resolution_status_label = "approved (see " . relative_url("project.php?project_id=".$project_id) . ")";
   $resolution_description = "";
   $email_subject = "Request to join GENI project $project_name";
@@ -121,7 +122,9 @@ foreach($selections as $select_id => $attribs) {
   resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, $request_id,
 			  $resolution_status, $resolution_description);
 
-  // FIXME: Do not send the rejection mail if the user is already in the project
+  // FIXME: Do not send the rejection mail if the user is already in the project - ticket #410
+  // FIXME: Allow the person rejecting your join request to edit/specify the email contents, so they can explain the rejection
+  // -- ticket #876
 
   // Send acceptance/rejection letter
   $email_message  = "Your request to join GENI project " . $project_name . 
