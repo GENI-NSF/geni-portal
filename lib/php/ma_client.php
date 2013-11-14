@@ -98,7 +98,7 @@ function lookup_public_ssh_keys($ma_url, $signer, $member_id)
 		   'public_key' => $x['KEY_PUBLIC'],
 		   'description' => $x['KEY_DESCRIPTION'],
 		   'member_id' => $x['_GENI_KEY_MEMBER_UID'],
-		   'filename' => $x['_GENI_KEY_FILENAME']); }, $res);
+		   'filename' => $x['_GENI_KEY_FILENAME']); }, $res); 
   return $ssh_keys;
 }
 
@@ -109,11 +109,6 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PRIVATE', 'KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
   $res = $client->lookup_keys($client->creds(), $options);
-  //  if (count($res) > 0) {
-  //      $res = reset($res);
-  //} else {
-  //    $res = array();
-  //}
 
   function mapkeys($x) 
   { 
@@ -124,8 +119,16 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
 		 'member_id' => $x['_GENI_KEY_MEMBER_UID'],
 		 'filename' => $x['_GENI_KEY_FILENAME']); 
   }
+  $ssh_keys=array();
+  foreach ($res as $keydict) {
+    foreach ($keydict as $key)  {
+      $keyarray = array();
+      $keyarray[] = $key;
+      $mapped_array = array_map("mapkeys",$keyarray);
+      $ssh_keys[] = $mapped_array[0];
+    }
+  }
 
-  $ssh_keys = array_map("mapkeys",$res);
   return $ssh_keys;
 }
 
