@@ -53,7 +53,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs for query-sliverstatus!");
   $slivers_output = "No AMs registered.";
 }
-if ($slice['expired'] === "t") {
+if (convert_boolean($slice['expired'])) {
   $msg = "Slice is expired";
   $good = false;
   $obj = array();
