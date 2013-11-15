@@ -440,10 +440,18 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $result = array();
   //  error_log("LMD : " . print_r($member_uuids, true));
-  foreach ($member_uuids as $uid) {
-    $pubdet = _lookup_public_member_details($client, $signer, $uid);
+
+  $pubdets = _lookup_public_members_details($client, $signer, $member_uuids);
+  $iddets = _lookup_identifying_members_details($client, $signer, $member_uuids);
+  //  error_log("PUB_DETS = " . print_r($pubdets, true));
+  //  error_log("ID_DETS = " . print_r($iddets, true));
+
+  foreach ($pubdets as $urn => $pubdet) {
+    $iddet = $iddets[$urn];
+    //  foreach ($member_uuids as $uid) {
+    //    $pubdet = _lookup_public_member_details($client, $signer, $uid);
     //error_log("LMD ".print_r($uid, True)." public=".print_r($pubdet, True));
-    $iddet = _lookup_identifying_member_details($client, $signer, $uid);
+    //    $iddet = _lookup_identifying_member_details($client, $signer, $uid);
     //error_log("LMD ".print_r($uid, True)." identifying=".print_r($iddet, True));
     $alldet = array_merge($pubdet,$iddet);
     //$alldet = $pubdet;
@@ -482,9 +490,23 @@ function _lookup_public_member_details($client, $signer, $uid)
   }
 }
 
+// lookup identifying details for one member
+function _lookup_identifying_member_details($client, $signer, $uid)
+{
+  $r = _lookup_identifying_members_details($client, $signer, array($uid));
+  if (sizeof($r)>0) {
+    $urns = array_keys($r);
+    $urn = $urns[0];
+    return $r[$urn];
+  } else {
+    return array();
+  }
+}
+
 function _lookup_public_members_details($client, $signer, $uid)
 {
   global $DETAILS_PUBLIC;
+  error_log("LPMD.UID = " . print_r($uid, true));
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_PUBLIC);
   $r = $client->lookup_public_member_info($client->creds(), 
@@ -502,20 +524,15 @@ $DETAILS_IDENTIFYING = array(
 			     "_GENI_MEMBER_EPPN",
 			     );
 
-function _lookup_identifying_member_details($client, $signer, $uid)
+function _lookup_identifying_members_details($client, $signer, $uid)
 {
   global $DETAILS_IDENTIFYING;
-  //error_log( " _limd = " . print_r($uid, true));
-  $r = $client->lookup_identifying_member_info($client->creds(),
-					       array('match'=>array('MEMBER_UID'=>$uid),
-						     'filter'=>$DETAILS_IDENTIFYING));
-  if (sizeof($r)>0) {
-    $urns = array_keys($r);
-    $urn = $urns[0];
-    return $r[$urn];
-  } else {
-    return array();
-  }
+  error_log("LIMD.UID = " . print_r($uid, true));
+  $options = array('match'=>array('MEMBER_UID'=>$uid),
+		   'filter'=>$DETAILS_IDENTIFYING);
+  $r = $client->lookup_identifying_member_info($client->creds(), 
+					       $options);
+  return $r;
 }
 
 
