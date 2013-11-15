@@ -113,9 +113,7 @@ def main(argv=None):
     try:
         options,args = parse_args(argv)
         init_logging(options)
-        saurl = verify_url(chapi.service_url(options.url, 'SA'))
-        csurl = verify_url(chapi.service_url(options.url, 'CS'))
-        maurl = verify_url(chapi.service_url(options.url, 'MA'))
+        url = verify_url(chapi.service_url(options.url, 'MA'))
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
     except Exception as e:
