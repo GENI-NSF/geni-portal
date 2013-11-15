@@ -174,6 +174,26 @@ class XMLRPCClient
   //
   function result_handler($result)
   {
+
+    $not_array = ($result == null) || !is_array($result);
+    $not_standard_result = $not_array ||
+      !array_key_exists(RESPONSE_ARGUMENT::CODE, $result) ||
+      !array_key_exists(RESPONSE_ARGUMENT::VALUE, $result) ||
+      !array_key_exists(RESPONSE_ARGUMENT::OUTPUT, $result);
+    $not_fault_result = $not_array || !isset($result['faultString']);
+
+//    error_log("NA = " . print_r($not_array, true));
+//    error_log("NSR = " . print_r($not_standard_result, true));
+//    error_log("NFR = " . print_r($not_fault_result, true));
+//    error_log("RESULT = " . print_r($result, true));
+
+    if ($not_standard_result && $not_fault_result) {
+      error_log("System error: Invalid response " . print_r($result, true));
+      relative_redirect('error-text.php' . 
+			"?system_error=1&error=Invalid result received from Clearinghouse API: " . 
+			urlencode(print_r($result, true)));
+    }
+
     // support the old functionality
     global $put_message_result_handler;
     if (isset($put_message_result_handler)) {
@@ -184,9 +204,11 @@ class XMLRPCClient
    
     // default handling
     if (isset($result['faultString'])) {
-      error_log("SCRIPT_NAME = " . $_SERVER['SCRIPT_NAME']);
-      error_log("ERROR.OUTPUT " . print_r($result['faultString'], true));
-      relative_redirect('error-text.php' . "?error=" . urlencode($result['faultString']));
+//      error_log("FS = " . $result['faultString']);
+//      error_log("FS.enc = " . urlencode($result['faultString']));
+//      error_log("SCRIPT_NAME = " . $_SERVER['SCRIPT_NAME']);
+//      error_log("ERROR.OUTPUT " . print_r($result['faultString'], true));
+      relative_redirect('error-text.php' . "?system_error=1&error=" . urlencode($result['faultString']));
     }
 
     if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
