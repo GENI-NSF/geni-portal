@@ -60,7 +60,7 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-if (isset($slice_expired) && $slice_expired == 't') {
+if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
     $slice_name = "";
   }

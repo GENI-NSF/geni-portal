@@ -47,7 +47,7 @@ if (is_null($slice) || $slice == '') {
   no_slice_error();
 }
 
-if (isset($slice_expired) && $slice_expired == 't') {
+if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
     $slice_name = "";
   }
