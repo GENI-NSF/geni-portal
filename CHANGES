@@ -7,6 +7,7 @@
   * Clean up the email on handling a project join request (#881)
   * Check for valid project_id in do-handle-project-join-request (#886)
   * Use convert_boolean when checking a boolean DB value (#888)
+  * Remove cruft line from kettering-ig-of cert (#890)
 
 == 2.5.1 ==
   * Send only current projects, not expired, to GEMINI (#887)
