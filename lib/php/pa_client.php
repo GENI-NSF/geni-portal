@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -42,7 +42,10 @@
 
 
 require_once('pa_constants.php');
-require_once('message_handler.php');
+require_once('cs_constants.php');
+require_once 'chapi.php';
+require_once('client_utils.php');
+
 include_once('irods_utils.php');
 
 // A cache of a user's detailed info indexed by member_id
@@ -55,23 +58,18 @@ if(!isset($project_cache)) {
 // matters related to project, and documentation purpose of project
 function create_project($sa_url, $signer, $project_name, $lead_id, $project_purpose, $expiration)
 {
-  $create_project_message['operation'] = 'create_project';
-  $create_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
-  $create_project_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
-  $create_project_message[PA_ARGUMENT::PROJECT_PURPOSE] = $project_purpose;
-  // Normalize expiration to an empty string, allowing the arg
-  // to be NULL, 0, etc.
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+
   if (! $expiration) {
     $expiration = "";
   }
-  $create_project_message[PA_ARGUMENT::EXPIRATION] = $expiration;
 
-  // error_log("CP.args = " . print_r($create_project_message, true) . " " . $create_project_message);
-
-  // FIXME: Disallow if project_name already taken!
-
-  $project_id = put_message($sa_url, $create_project_message, 
-			    $signer->certificate(), $signer->privateKey());
+  $fields = array('PROJECT_NAME'          => $project_name,
+		  '_GENI_PROJECT_OWNER' => $lead_id,
+		  'PROJECT_DESCRIPTION' => $project_purpose,
+		  'PROJECT_EXPIRATION'    => $expiration);
+  $results = $client->create_project($client->creds(), array('fields'=>$fields));
+  $project_id = $results['PROJECT_UID'];
 
   /****   iRODS Support ****/
   // All new projects get an irods group
@@ -87,40 +85,83 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 // return list of project ids
 function get_projects($sa_url, $signer)
 {
-  $get_projects_message['operation'] = 'get_projects';
-  $project_ids = put_message($sa_url, $get_projects_message, 
-			     $signer->certificate(), $signer->privateKey());
-  return $project_ids;
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('match'=>array(),
+		   'filter'=>array('PROJECT_UID'));
+  $res = $client->lookup_projects($client->creds(), $options);
+  return array_map(function($x) { return $x['PROJECT_UID']; }, $slices);
 }
 
 // return list of project ids
 function get_projects_by_lead($sa_url, $signer, $lead_id)
 {
-  //  error_log("GPBL.start " . $lead_id . " " . time());
-  $get_projects_message['operation'] = 'get_projects';
-  $get_projects_message[PA_ARGUMENT::LEAD_ID] = $lead_id;
-  $project_ids = put_message($sa_url, $get_projects_message, 
-			     $signer->certificate(), $signer->privateKey());
-  //  error_log("GPBL.end " . $lead_id . " " . time());
-  return $project_ids;
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('match'=>array('_GENI_PROJECT_LEAD'=>$lead_id),
+		   'filter'=>array('PROJECT_UID'));
+  $res = $client->lookup_projects($client->creds(), $options);
+  return array_map(function($x) { return $x['PROJECT_UID']; }, $slices);
+}
+
+$PACHAPI2PORTAL = array('PROJECT_UID'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID,
+			'PROJECT_NAME'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+			'_GENI_PROJECT_OWNER'=>PA_PROJECT_TABLE_FIELDNAME::LEAD_ID,
+			'_GENI_PROJECT_EMAIL'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL,
+			'PROJECT_CREATION'=>PA_PROJECT_TABLE_FIELDNAME::CREATION,
+			'PROJECT_DESCRIPTION'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE,
+			'PROJECT_EXPIRATION'=>PA_PROJECT_TABLE_FIELDNAME::EXPIRATION,
+			'PROJECT_EXPIRED'=>PA_PROJECT_TABLE_FIELDNAME::EXPIRED);
+
+$PAMEMBERCHAPI2PORTAL = array('PROJECT_ROLE' => PA_PROJECT_MEMBER_TABLE_FIELDNAME::ROLE, 
+			      'PROJECT_MEMBER_UID' => PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
+
+$PADETAILSKEYS = array('PROJECT_UID',
+		     'PROJECT_URN',
+		     'PROJECT_NAME',
+		     '_GENI_PROJECT_OWNER',
+		     '_GENI_PROJECT_EMAIL',
+		     'PROJECT_CREATION',
+		     'PROJECT_DESCRIPTION',
+		     'PROJECT_EXPIRATION',
+		     'PROJECT_EXPIRED');
+
+function project_member_chapi2portal($row)
+{
+  global $PAMEMBERCHAPI2PORTAL;
+  return convert_row($row, $PAMEMBERCHAPI2PORTAL);
+}
+
+function project_details_chapi2portal($row)
+{
+  global $PACHAPI2PORTAL;
+  return convert_row($row, $PACHAPI2PORTAL);
 }
 
 // Return project details
 function lookup_projects($sa_url, $signer, $lead_id=null)
 {
-  $lookup_projects['operation'] = 'lookup_projects';
-  if( $lead_id <> null) {
-    $lookup_projects[PA_ARGUMENT::LEAD_ID] = $lead_id;
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $match = array();
+  if ($lead_id <> null) {
+    $match['_GENI_PROJECT_LEAD']=$lead_id;
   }
-  $projects = put_message($sa_url, $lookup_projects, 
-			  $signer->certificate(), $signer->privateKey());
-  return $projects;
+  global $PADETAILSKEYS;
+  $options = array('match'=>$match,
+		   'filter'=>$PADETAILSKEYS);
+  $res = $client->lookup_projects($client->creds(), $options);
+  $results = array();
+
+  foreach ($res as $row) {
+    $results[] = project_details_chapi2portal($row);
+  }
+
+  return $results;
 }
 
 // Return project details
 function lookup_project($sa_url, $signer, $project_id)
 {
   global $project_cache;
+  global $PADETAILSKEYS;
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
   }
@@ -129,16 +170,24 @@ function lookup_project($sa_url, $signer, $project_id)
     //    error_log("CACHE HIT lookup_project " . $project_id);
     return $project_cache[$project_id];
   }
-  $cert = $signer->certificate();
-  $key = $signer->privateKey();
-  //  error_log("LP.start " . $project_id . " " . time());
-  $lookup_project_message['operation'] = 'lookup_project';
-  $lookup_project_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $details = put_message($sa_url, $lookup_project_message,
-			 $cert, $key, 
-			 $signer->certificate(), $signer->privateKey());
+
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('match'=>array('PROJECT_UID'=>$project_id),
+		   'filter'=>$PADETAILSKEYS);
+  $res = $client->lookup_projects($client->creds(), $options);
+  $details = array();
+
+  foreach ($res as $row) {
+    $details[] = project_details_chapi2portal($row);
+  }
   //  error_log("LP.end " . $project_id . " " . time());
-  // FIXME: Could be >1?
+  // return null if empty
+  if (sizeof($details)==0) {
+    return null;
+  }
+
+  // FIXME: Could be >1? 
+  $details = $details[0];  // just take the first match
   $project_cache[$project_id] = $details;
   
   return $details;
@@ -147,36 +196,78 @@ function lookup_project($sa_url, $signer, $project_id)
 // Return project details
 function lookup_project_by_name($sa_url, $signer, $project_name)
 {
+  global $project_cache;
+  global $PADETAILSKEYS;
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
   }
-  $cert = $signer->certificate();
-  $key = $signer->privateKey();
-  //  error_log("LP.start " . $project_name . " " . time());
-  $lookup_project_message['operation'] = 'lookup_project';
-  $lookup_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
-  $details = put_message($sa_url, $lookup_project_message,
-			 $cert, $key, 
-			 $signer->certificate(), $signer->privateKey());
+
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('match'=>array('PROJECT_NAME'=>$project_name),
+		   'filter'=>$PADETAILSKEYS);
+  $res = $client->lookup_projects($client->creds(), $options);
+  $details = array();
+
+  foreach ($res as $row) {
+    $details[] = project_details_chapi2portal($row);
+  }
   //  error_log("LP.end " . $project_id . " " . time());
-  // FIXME: Could be >1?
+  // return null if empty
+  if (sizeof($details)==0) {
+    return null;
+  }
+
+  // FIXME: Could be >1? 
+  $details = $details[0];  // just take the first match
+  
   return $details;
+}
+
+// find the project URN given the project UUID
+function get_project_urn($sa_url, $signer, $project_uid) {
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('match' => array('PROJECT_UID'=>$project_uid),
+		   'filter' => array('PROJECT_URN'));
+  $result = $client->lookup_projects($client->creds(), $options);
+  //  error_log("GET_PROJECT_URN : "  . print_r($result, true));
+  $urns = array_keys($result);
+  $urn = $urns[0];
+  return $result[$urn]['PROJECT_URN'];
 }
 
 // FIXME: lookup_projects_member(sa_url, member_id, is_member, role)
 // FIXME: lookup_projects_ids(sa_url, project_ids_list)
 
 function update_project($sa_url, $signer, $project_id, $project_name,
-        $project_purpose, $expiration)
+			$project_purpose, $expiration)
 {
-  $update_project_message['operation'] = 'update_project';
-  $update_project_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $update_project_message[PA_ARGUMENT::PROJECT_NAME] = $project_name;
-  $update_project_message[PA_ARGUMENT::PROJECT_PURPOSE] = $project_purpose;
-  $update_project_message[PA_ARGUMENT::EXPIRATION] = $expiration;
-  $results = put_message($sa_url, $update_project_message, 
-			 $signer->certificate(), $signer->privateKey());
+  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('fields'=>array('PROJECT_DESCRIPTION'=>$project_purpose,
+				   'PROJECT_EXPIRATION'=>$expiration));
+
+  $res = $client->update_project($project_urn, $client->creds(), $options);
+  $results = array();
   return $results;
+}
+
+
+function _conv_mid2urn($sa_url, $signer, $alist)
+{
+  return array_map(function ($mid) use ($sa_url, $signer) { return get_member_urn(sa_to_ma_url($sa_url), $signer, $mid); }, $alist);
+}
+
+function _conv_mid2urn_map($sa_url, $signer, $amap)
+{
+  global $CS_ATTRIBUTE_TYPE_NAME;
+  $narr = array();
+  foreach ($amap as $mid => $v) {
+    $murn = get_member_urn(sa_to_ma_url($sa_url), $signer, $mid);
+    $role = strtoupper($CS_ATTRIBUTE_TYPE_NAME[$v]);
+    $narr[] = array('PROJECT_MEMBER' => $murn, 'PROJECT_ROLE' => $role);
+  }
+  return $narr;
 }
 
 // Modify project membership according to given lists to add/change_role/remove
@@ -184,25 +275,30 @@ function update_project($sa_url, $signer, $project_id, $project_name,
 //     dictionaries of {member_id => role, ....}
 // $members_to_delete is a list of member_ids
 function modify_project_membership($sa_url, $signer, $project_id, 
-				 $members_to_add, 
-				 $members_to_change_role, 
-				 $members_to_remove)
+				   $members_to_add, 
+				   $members_to_change, 
+				   $members_to_remove)
 {
-  $modify_project_membership_msg['operation'] = 'modify_project_membership';
-  $modify_project_membership_msg[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_ADD] = $members_to_add;
-  $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_CHANGE_ROLE] = $members_to_change_role;
-  $modify_project_membership_msg[SA_ARGUMENT::MEMBERS_TO_REMOVE] = $members_to_remove;
-  $result = put_message($sa_url, $modify_project_membership_msg,
-                       $signer->certificate(), $signer->privateKey());
+  $project_urn = get_project_urn($sa_url, $signer, $project_id);
 
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $members_to_add = _conv_mid2urn_map($sa_url, $signer, $members_to_add);
+  $members_to_change = _conv_mid2urn_map($sa_url, $signer, $members_to_change);
+  $members_to_remove = _conv_mid2urn($sa_url, $signer, $members_to_remove);
+  
+  $options = array('_dummy' => null);
+  if (sizeof($members_to_add)>0)    { $options['members_to_add']    = $members_to_add; }
+  if (sizeof($members_to_change)>0) { $options['members_to_change'] = $members_to_change; }
+  if (sizeof($members_to_remove)>0) { $options['members_to_remove'] = $members_to_remove; }
+  $res = $client->modify_project_membership($project_urn, $client->creds(), $options);
   /****   iRODS Support ****/
   // Whenever we add/remove members from a project, do same for the matching irods group
-  irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $signer, $result);
+  irods_modify_group_members($project_id, $members_to_add, $members_to_remove, $signer, $res);
   /****   End of iRODS Support ****/
 
-  return $result;  
+  return $res;
 }
+
 
 // Modify project lead, make previous into an admin
 // Assumes lead is already a member
@@ -246,12 +342,23 @@ function change_member_role($sa_url, $signer, $project_id, $member_id, $role)
 // If role is provided, filter to members of given role
 function get_project_members($sa_url, $signer, $project_id, $role=null) 
 {
-  $get_project_members_message['operation'] = 'get_project_members';
-  $get_project_members_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $get_project_members_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $get_project_members_message, 
-			 $signer->certificate(), $signer->privateKey());
-  return $results;
+  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('_dummy' => null);
+  if (! is_null($role)) {
+    $options['match'] = array('PROJECT_ROLE' => $role);
+  }
+  $result = $client->lookup_project_members($project_urn, $client->creds(), $options);
+  //  error_log("GPM.result = " . print_r($result, true));
+  $converted_result = array();
+  foreach($result as $row) { 
+    $converted_row = project_member_chapi2portal($row);
+    $converted_row = convert_role($converted_row);
+    $converted_result[] = $converted_row;
+  }
+  return $converted_result;  
+
 }
 
 // Return list of project ID's for given member_id
@@ -265,36 +372,74 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
   }
-  $cert = $signer->certificate();
-  $key = $signer->privateKey();
-  $get_projects_message['operation'] = 'get_projects_for_member';
-  $get_projects_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
-  $get_projects_message[PA_ARGUMENT::IS_MEMBER] = $is_member;
-  $get_projects_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $results = put_message($sa_url, $get_projects_message,
-			 $cert, $key, 
-			 $signer->certificate(), $signer->privateKey());
-  return $results;
+  //  $cert = $signer->certificate();
+  //  $key = $signer->privateKey();
+  //  $get_projects_message['operation'] = 'get_projects_for_member';
+  //  $get_projects_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
+  //  $get_projects_message[PA_ARGUMENT::IS_MEMBER] = $is_member;
+  //  $get_projects_message[PA_ARGUMENT::ROLE_TYPE] = $role;
+  //  $results = put_message($sa_url, $get_projects_message,
+  //			 $cert, $key, 
+  //			 $signer->certificate(), $signer->privateKey());
+
+  global $user;
+  $options = array('_dummy' => null);
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $member_urn = $user->urn;
+  $rows = $client->lookup_projects_for_member($member_urn, $client->creds(), $options);
+  $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
+  if ($is_member) {
+    return $project_uuids;
+  }
+
+  //print "<p> privatekey ".print_r($signer->privateKey(), true)."<\p>\n";
+  //print "<p> cert ".print_r($signer->certificate(), true)."<\p>\n";
+  $options = array('filter' => array('PROJECT_UID'));
+  $rows = $client->lookup_projects($client->creds(), $options);
+  //print "<p>GPFM allrows=".print_r($rows, true)."</p>\n";
+
+  $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
+  return array_values(array_diff($all_uuids, $project_uuids));
 }
+
 
 function lookup_project_details($sa_url, $signer, $project_uuids)
 {
-  $cert = $signer->certificate;
-  $key = $signer->privateKey();
-  $get_projects_message['operation'] = 'lookup_project_details';
-  $get_projects_message[PA_ARGUMENT::PROJECT_UUIDS] = $project_uuids;
-  $results = put_message($sa_url, $get_projects_message,
-			 $cert, $key, 
-			 $signer->certificate(), $signer->privateKey());
-			 
-  $results2 = array();
-  foreach ($results as $project) {
-  	  $results2[ $project['project_id'] ] = $project;
-  }			 
-  return $results2;
+  //  $cert = $signer->certificate;
+  //  $key = $signer->privateKey();
+  //  $get_projects_message['operation'] = 'lookup_project_details';
+  //  $get_projects_message[PA_ARGUMENT::PROJECT_UUIDS] = $project_uuids;
+  //  $results = put_message($sa_url, $get_projects_message,
+  //			 $cert, $key, 
+  //			 $signer->certificate(), $signer->privateKey());
+  //			 
+  //  $results2 = array();
+  //  foreach ($results as $project) {
+  //  	  $results2[ $project['project_id'] ] = $project;
+  //  }			 
+  //  return $results2;
+
+  //  error_log("PIDS = " . print_r($project_uuids, true));
+
+  global $user;
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('match' => array('PROJECT_UID' => array_values($project_uuids)));
+  $results = $client->lookup_projects($client->creds(), $options);
+  //error_log("LPD.RESULTS = " . print_r($results, true));
+  $converted_projects = array();
+  foreach($results as $project) {
+    $converted_project = project_details_chapi2portal($project);
+    $project_id = $converted_project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+    $converted_projects[$project_id] = $converted_project;
+  }
+  $results = $converted_projects;
+  //  error_log("LPD.RESULTS = " . print_r($results, true));
+
+  return $results;
+
 }
 
-// Routines to invite and accept invitations for members to projects
+// Routines to invite and accept invivations for members to projects
 
 // Generate an invitation for a (not yet identified) member
 // to join a project
@@ -324,12 +469,21 @@ function accept_invitation($sa_url, $signer, $invitation_id)
 // Look up all attributes of a given project
 function lookup_project_attributes($sa_url, $signer, $project_id)
 {
-  global $user;
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+  $options = array('match'=>array('PROJECT_UID'=>$project_id));
+  error_log("OPTIONS: " . print_r($options,true));
+  $res = $client->lookup_project_attributes($project_urn, $client->creds(), $options);
+  error_log("RES: " . print_r($res,true)); 
+  return $res;
+
+  /*  global $user;
   $lookup_project_attributes_message['operation'] = 'lookup_project_attributes';
   $lookup_project_attributes_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
   $results = put_message($sa_url, $lookup_project_attributes_message, 
 			 $signer->certificate(), $signer->privateKey());
   return $results;
+  */
 }
 
 // Add attribute (name/value pair) to a given project

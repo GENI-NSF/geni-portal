@@ -1,1 +1,10 @@
 bin/geni-ch-githash
+
+# temporary/autosave editor files
+\#*#
+.#*
+*~
+
+# python temp/binary files
+*.pyc
+__pycache__

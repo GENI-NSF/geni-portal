@@ -38,11 +38,7 @@ import logging
 import optparse
 from urlparse import urlparse
 import uuid
-
-# When gcf is properly installed, it should be in the sys.path. But we
-# don't do that yet, thus this unfortunate hard-coded path.
-sys.path.append('/usr/share/geni-ch/portal/gcf/src')
-import geni.util.ch_interface as ch
+from util import chapi
 
 def init_logging(options):
     level = logging.INFO
@@ -54,7 +50,7 @@ def check_result(result):
     if not 'code' in result:
         msg = "Invalid response from server: %r" % (result)
         sys.stderr.write(msg + "\n")
-        exit 1
+        exit(1)
     status = result['code']
     if not status == 0:
         if 'output' in result:
@@ -62,7 +58,7 @@ def check_result(result):
         else:
             msg = "Error %d, no reason given" % (status)
         sys.stderr.write(msg + "\n")
-        exit 1
+        exit(1)
     return status
 
 def parse_args(argv):
@@ -73,7 +69,7 @@ def parse_args(argv):
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="base URL")
+    parser.add_option("-u", "--url", help="base authority URL, requires SA and MA")
     parser.add_option("-p", "--project", help="project id (UUID) or name")
     parser.add_option("-m", "--member", help="member id (UUID)")
     options,args = parser.parse_args()
@@ -87,7 +83,8 @@ def verify_url(url):
     parsed = urlparse(url)
     if (parsed.scheme in ('http', 'https')
         and parsed.netloc
-        and parsed.path):
+        #and parsed.path
+        ):
         return parsed.geturl()
     else:
         raise Exception("Invalid url %r" % (url))
@@ -108,26 +105,6 @@ def load_private_key(certfile):
     # Or will that be taken care of downstream, by the ch_interface?
     return key
 
-def load_project_id(project, url, cert, pkey):
-    # Verify that it's a UUID.
-    # In the future, could convert project name to UUID
-    try:
-        uuid.UUID(project)
-        return project
-    except ValueError:
-        # Not a UUID. Try to resolve the project name
-        operation = "lookup_project"
-        logger = logging.getLogger()
-        args = dict(project_name=project)
-        result = ch.invokeCH(url, operation, logger, args, [cert], pkey)
-        print "lookup_project = %r" % (result)
-        result_code = result['code']
-        result_value = result['value']
-        if result_code == 0 and result_value:
-            return result['value']['project_id']
-        else:
-            raise Exception("Invalid project id or name %r" % (project))
-
 def load_member_id(member):
     # Verify that it's a UUID.
     # In the future, could convert member email to UUID
@@ -143,64 +120,30 @@ def main(argv=None):
     try:
         options,args = parse_args(argv)
         init_logging(options)
-        saurl = verify_url("%s/sa/sa_controller.php" %options.url)
-        csurl = verify_url("%s/cs/cs_controller.php"  %options.url)
+        url = verify_url(options.url)
+        saurl = verify_url(chapi.service_url(options.url, 'SA'))
+        maurl = verify_url(chapi.service_url(options.url, 'MA'))
         cert = load_cert(options.certfile)
         pkey = load_private_key(options.keyfile)
-        project_id = load_project_id(options.project, saurl, cert, pkey)
-        member_id = load_member_id(options.member)
+        project_urn = chapi.find_project_urn(options.project, saurl, cert, pkey)
+        member_urn = chapi.find_member_urn(options.member, maurl, cert, pkey)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
-
-    logger = logging.getLogger()
-    #first check if the member to remove is project lead
-    operation = "get_project_members"
-    args = dict(project_id=project_id)
-    result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
-    ret = check_result(result)
-
-    lead = False
-    for mem in result['value']:
-        if mem['role'] == "1":
-            if member_id == mem['member_id']:
-                sys.stderr.write( "Member %s is project lead.\n" % mem['member_id'] )
-                lead = True
-                break
-
-    #if member to remove is lead, look for an admin who is authorized to be lead
-    if lead:
-        auth_admin = None
-        for mem in result['value']:
-            if mem['role'] == "2":
-                # is this admin authorized to be lead?
-                args = dict(principal=mem['member_id'],action="create_project",context_type=3)
-                auth_result = ch.invokeCH(csurl,"request_authorization",logger,args,[cert],pkey)
-                ret = check_result(auth_result)
-                if auth_result['value']:
-                    auth_admin = mem['member_id']
-                    break
-
-        if auth_admin:
-            sys.stderr.write("Changing authorized administrator %s to project lead.\n" %auth_admin)
-            operation = "modify_project_membership"
-            change_role = {}
-            change_role[member_id] = 3
-            change_role[auth_admin] = 1
-            args = dict(project_id=project_id, members_to_remove=[], members_to_add=[],members_to_change_role = change_role)
-            result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)                    
-            ret = check_result(result)
+    proxy = chapi.make_proxy(saurl, cert, pkey)
+    result = proxy.modify_project_membership(project_urn, [], {'members_to_remove': [member_urn]})
+    print "%r" % (result)
+    if not 'code' in result:
+        msg = "Invalid response from server: %r" % (result)
+        sys.stderr.write(msg + "\n")
+        return 1
+    status = result['code']
+    if not status == 0:
+        if 'output' in result:
+            msg = "Error: %s" % (result['output'])
         else:
             sys.stderr.write("Can't remove lead from project unless there is an authorized administrator to take the lead role.\n");
             return(1) 
-
-    operation = "modify_project_membership"
-    args = dict(project_id=project_id, members_to_remove=[member_id], members_to_add=[],members_to_change_role = [])
-    result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
-    ret = check_result(result)
-    if ret==0:
-        sys.stderr.write("Removed member from project.\n");
-    return ret
 
 if __name__ == "__main__":
     sys.exit(main())
