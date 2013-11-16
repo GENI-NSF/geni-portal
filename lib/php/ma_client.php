@@ -485,8 +485,7 @@ $DETAILS_PUBLIC = array(
 			"MEMBER_UID",
 			"MEMBER_USERNAME",
 			"_GENI_MEMBER_SSL_PUBLIC_KEY",
-			"_GENI_MEMBER_INSIDE_PUBLIC_KEY",
-			"_GENI_USER_CREDENTIAL",
+			"_GENI_MEMBER_INSIDE_PUBLIC_KEY"
 			);
 
 // lookup public details for one member
