@@ -387,17 +387,25 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $member_urn = $user->urn;
   $rows = $client->lookup_projects_for_member($member_urn, $client->creds(), $options);
+  $current = array();
+  foreach ($rows as $row) {
+    if ($row['EXPIRED'] == false) {
+      $current[] = $row;
+    }
+  }
   $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
+			     
   if ($is_member) {
     return $project_uuids;
   }
 
   //print "<p> privatekey ".print_r($signer->privateKey(), true)."<\p>\n";
   //print "<p> cert ".print_r($signer->certificate(), true)."<\p>\n";
-  $options = array('filter' => array('PROJECT_UID'));
+  $options = array('match'=>array('PROJECT_EXPIRED'=>"false"),
+		   'filter'=>array('PROJECT_UID'));
+
   $rows = $client->lookup_projects($client->creds(), $options);
   //print "<p>GPFM allrows=".print_r($rows, true)."</p>\n";
-
   $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
   return array_values(array_diff($all_uuids, $project_uuids));
 }
