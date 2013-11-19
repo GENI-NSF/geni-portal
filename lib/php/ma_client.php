@@ -564,14 +564,26 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('MEMBER_UID'=>$member_uuids),
 		   'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
-                                   '_GENI_MEMBER_DISPLAYNAME'));
+                                   '_GENI_MEMBER_DISPLAYNAME',
+                                   'MEMBER_FIRSTNAME',
+                                   'MEMBER_LASTNAME',
+                                   'MEMBER_EMAIL'));
   //error_log( " _lmns = " . print_r($member_uuids, true));
   $res = $client->lookup_identifying_member_info($client->creds(), $options);
   $ids = array();
   foreach($res as $member_urn => $member_info) {
     $member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
-    $member_name = $member_info['_GENI_MEMBER_DISPLAYNAME'];
-    $ids[$member_uuid] = $member_name;
+    $displayName = $member_info['_GENI_MEMBER_DISPLAYNAME'];
+    $lastName = $member_info['MEMBER_LASTNAME'];
+    $firstName = $member_info['MEMBER_FIRSTNAME'];
+    $email = $member_info['MEMBER_EMAIL'];
+    if ($displayName) {
+      $ids[$member_uuid] = $displayName;
+    } else if ($lastName && $firstName) {
+      $ids[$member_uuid] = "$firstName $lastName";
+    } else {
+      $ids[$member_uuid] = $email;
+    }
   }
   return $ids;
 }
