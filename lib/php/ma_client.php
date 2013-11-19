@@ -474,6 +474,7 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
       //error_log("LMD ".print_r($uid, True)." ".$k."(".$ak.") = ".print_r($v, True));
       // error_log("LMD attrs=".print_r($attrs, True));
     }
+    $uid = $pubdet['MEMBER_UID'];
     $result[$uid] = $attrs;
     //error_log("LMD final".print_r($uid, True)." attrs=".print_r($attrs, True));
   }
@@ -574,14 +575,15 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('MEMBER_UID'=>$member_uuids),
-		   'filter'=>array('MEMBER_UID', 'MEMBER_USERNAME'));
+		   'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
+                                   '_GENI_MEMBER_DISPLAYNAME'));
   //error_log( " _lmns = " . print_r($member_uuids, true));
-  $res = $client->lookup_public_member_info($client->creds(), $options);
+  $res = $client->lookup_identifying_member_info($client->creds(), $options);
   $ids = array();
   foreach($res as $member_urn => $member_info) {
-    $member_uuid = $member_info['MEMBER_UID'];
-    $member_username = $member_info['MEMBER_USERNAME'];
-    $ids[$member_uuid] = $member_username;
+    $member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
+    $member_name = $member_info['_GENI_MEMBER_DISPLAYNAME'];
+    $ids[$member_uuid] = $member_name;
   }
   return $ids;
 }
