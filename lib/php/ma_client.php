@@ -451,32 +451,20 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $result = array();
-  //  error_log("LMD : " . print_r($member_uuids, true));
 
   $pubdets = _lookup_public_members_details($client, $signer, $member_uuids);
-  $iddets = _lookup_identifying_members_details($client, $signer, $member_uuids);
-  //  error_log("PUB_DETS = " . print_r($pubdets, true));
-  //  error_log("ID_DETS = " . print_r($iddets, true));
-
+  $iddets = _lookup_identifying_members_details($client, $signer,
+                                                $member_uuids);
   foreach ($pubdets as $urn => $pubdet) {
     $iddet = $iddets[$urn];
-    //  foreach ($member_uuids as $uid) {
-    //    $pubdet = _lookup_public_member_details($client, $signer, $uid);
-    //error_log("LMD ".print_r($uid, True)." public=".print_r($pubdet, True));
-    //    $iddet = _lookup_identifying_member_details($client, $signer, $uid);
-    //error_log("LMD ".print_r($uid, True)." identifying=".print_r($iddet, True));
     $alldet = array_merge($pubdet,$iddet);
-    //$alldet = $pubdet;
     $attrs = array();
     foreach ($alldet as $k => $v) {
       $ak = _attkey_to_portalkey($k);
       $attrs[$ak] = $v;
-      //error_log("LMD ".print_r($uid, True)." ".$k."(".$ak.") = ".print_r($v, True));
-      // error_log("LMD attrs=".print_r($attrs, True));
     }
     $uid = $pubdet['MEMBER_UID'];
     $result[$uid] = $attrs;
-    //error_log("LMD final".print_r($uid, True)." attrs=".print_r($attrs, True));
   }
   return $result;
 }
