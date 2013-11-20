@@ -415,31 +415,69 @@ function ma_lookup_member_by_id($ma_url, $signer, $member_id)
   }
 }
 
-//CHAPI: error
+/**
+ * Ask the MA to create a certificate for the user.
+ *
+ * @param $csr optional certificate signing request
+ * @return boolean TRUE on success, FALSE otherwise.
+ */
 function ma_create_certificate($ma_url, $signer, $member_id, $csr=NULL)
 {
-  $msg = "ma_create_certificate is unimplemented";
-  error_log($msg);
-  throw new Exception($msg);
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  $member_urn = get_member_urn($ma_url, $signer, $member_id);
+  // Do we need credentials? If so, what?
+  $credentials = array();
+  // Start with no options. If there is a CSR, add it.
+  $options = array('_dummy' => NULL);
+  if (! is_null($csr)) {
+    $options['csr'] = $csr;
+  }
+  $result = $client->create_certificate($member_urn, $credentials, $options);
+  // Explicitly cast to a boolean to avoid issues with type juggling
+  // in lazy callers.
+  return (bool)$result;
 }
 
-// get '_GENI_MEMBER_SSL_PRIVATE_KEY' and "_GENI_MEMBER_SSL_CERTIFICATE'
+/**
+ * Get the outside cert and private key for member.
+ *
+ * @return Array containing certificate and private_key as key_value
+ *         pairs. If no private_key exists, that key will not be
+ *         included. If no outside certificate exists, return NULL
+ *         (instead of an array).
+ */
 function ma_lookup_certificate($ma_url, $signer, $member_id)
 {
+  $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $public_options = array('match'=> array('MEMBER_UID'=>$member_id),
-		   'filter'=>array('_GENI_MEMBER_SSL_CERTIFICATE'));
+  $public_options = array('match' => array('MEMBER_UID'=>$member_id),
+                          'filter' => array('_GENI_MEMBER_SSL_CERTIFICATE'));
   $public_res = $client->lookup_public_member_info($client->creds(), 
-					    $public_options);
+                                                   $public_options);
+  if (! array_key_exists($member_urn, $public_res)) {
+    error_log("No public member info available for $member_urn"
+              . " in ma_lookup_certificate");
+    return NULL;
+  }
+  $certificate = $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE'];
+  if ($certificate) {
+    $result = array(MA_ARGUMENT::CERTIFICATE => $certificate);
+  } else {
+    // If there is no certificate, return NULL.
+    return NULL;
+  }
+
   $private_options = array('match'=> array('MEMBER_UID'=>$member_id),
-		   'filter'=>array('_GENI_MEMBER_SSL_PRIVATE_KEY'));
-  $member_urns = array_keys($public_res);
-  $member_urn = $member_urns[0];
+                           'filter'=>array('_GENI_MEMBER_SSL_PRIVATE_KEY'));
   $private_res = $client->lookup_private_member_info($client->creds(), 
-					    $private_options);
-  $cert_and_key = array('private_key' => $private_res[$member_urn]['_GENI_MEMBER_SSL_PRIVATE_KEY'], 
-			'certificate' => $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE']);
-  return $cert_and_key;
+                                                     $private_options);
+  if (array_key_exists($member_urn, $private_res)) {
+    $private_key = $private_res[$member_urn]['_GENI_MEMBER_SSL_PRIVATE_KEY'];
+    if ($private_key) {
+      $result[MA_ARGUMENT::PRIVATE_KEY] = $private_key;
+    }
+  }
+  return $result;
 }
 
 
