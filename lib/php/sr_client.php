@@ -30,19 +30,25 @@ require_once('client_utils.php');
 require_once('chapi.php');
 
 const SERVICE_REGISTRY_CACHE_TAG = 'service_registry_cache';
-const SERVICE_REGISTRY_CACHE_TIMEOUT = 300;
 
-$SRCHAPI2PORTAL = array('_GENI_SERVICE_ID' => SR_TABLE_FIELDNAME::SERVICE_ID, 
-			'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE,
-			'SERVICE_URL' => SR_TABLE_FIELDNAME::SERVICE_URL, 
-			'SERVICE_URN' => SR_TABLE_FIELDNAME::SERVICE_URN, 
-			'_GENI_SERVICE_CERT_FILENAME' => SR_TABLE_FIELDNAME::SERVICE_CERT,
-			'SERVICE_CERT' => SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS,
-			'SERVICE_NAME' => SR_TABLE_FIELDNAME::SERVICE_NAME,
-			'SERVICE_DESCRIPTION' => SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION,
-			'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE);
+/**
+ * Translation table mapping CHAPI fields to legacy SR fields.
+ */
+$SRCHAPI2PORTAL =
+  array('_GENI_SERVICE_ID' => SR_TABLE_FIELDNAME::SERVICE_ID,
+        'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE,
+        'SERVICE_URL' => SR_TABLE_FIELDNAME::SERVICE_URL,
+        'SERVICE_URN' => SR_TABLE_FIELDNAME::SERVICE_URN,
+        '_GENI_SERVICE_CERT_FILENAME' => SR_TABLE_FIELDNAME::SERVICE_CERT,
+        'SERVICE_CERT' => SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS,
+        'SERVICE_NAME' => SR_TABLE_FIELDNAME::SERVICE_NAME,
+        'SERVICE_DESCRIPTION' => SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION,
+        'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE);
 
-
+/**
+ * Convert chapi services to legacy services.
+ * This is for backward compatibility.
+ */
 function service_chapi2portal($row) {
   global $SRCHAPI2PORTAL;
   $converted_row = convert_row($row, $SRCHAPI2PORTAL);
@@ -52,24 +58,21 @@ function service_chapi2portal($row) {
 // Return all services in registry
 function get_services()
 {
-  $cached = get_session_cached('get_services');
-
-  if (sizeof($cached)>0) {
+  $cached = get_session_cached(SERVICE_REGISTRY_CACHE_TAG);
+  if (count($cached) > 0) {
+    // If something is cached, return it.
     return $cached;
   }
-
+  // Nothing in the cache, fetch the services.
   $sr_url = get_sr_url();
-  //  error_log("SR_URL = " . $sr_url);
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $services = $client->get_services();
   $converted_services = array();
   foreach ($services as $service) {
     $converted_services[] = service_chapi2portal($service);
   }
-  set_session_cached('get_services', $converted_services);
-
+  error_log("Caching services in get_services()");
+  set_session_cached(SERVICE_REGISTRY_CACHE_TAG, $converted_services);
   return $converted_services;
 }
 
