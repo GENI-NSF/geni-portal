@@ -71,7 +71,6 @@ function get_services()
   foreach ($services as $service) {
     $converted_services[] = service_chapi2portal($service);
   }
-  error_log("Caching services in get_services()");
   set_session_cached(SERVICE_REGISTRY_CACHE_TAG, $converted_services);
   return $converted_services;
 }
@@ -82,7 +81,8 @@ function get_services()
  * Compare by service_name.
  */
 function agg_cmp($a, $b) {
-  return strcmp($a['service_name'], $b['service_name']);
+  return strcmp($a[SR_TABLE_FIELDNAME::SERVICE_NAME],
+                $b[SR_TABLE_FIELDNAME::SERVICE_NAME]);
 }
 
 // Return all services in registry of given type
@@ -102,18 +102,13 @@ function get_first_service_of_type($service_type)
 {
   global $SR_SERVICE_TYPE_NAMES;
   
-  $cache = get_session_cached('service_of_type');
-  if (array_key_exists($service_type, $cache)) {
-    return $cache[$service_type];
-  }
-
   $sot = get_services_of_type($service_type);
-  if (isset($sot) && ! is_null($sot) && is_array($sot) && count($sot) > 0) {
+  if (isset($sot) && is_array($sot) && count($sot) > 0) {
     $ans = $sot[0][SR_TABLE_FIELDNAME::SERVICE_URL];
-    $cache[$service_type] = $ans;
     return $ans;
   } else {
-    error_log("Got back 0 cached services of type " . $SR_SERVICE_TYPE_NAMES[$service_type]);
+    error_log("Got back 0 services of type "
+              . $SR_SERVICE_TYPE_NAMES[$service_type]);
     return null;
   }
 }
