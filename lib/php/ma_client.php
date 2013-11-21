@@ -544,7 +544,7 @@ function _lookup_identifying_member_details($client, $signer, $uid)
 function _lookup_public_members_details($client, $signer, $uid)
 {
   global $DETAILS_PUBLIC;
-  error_log("LPMD.UID = " . print_r($uid, true));
+  //error_log("LPMD.UID = " . print_r($uid, true));
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_PUBLIC);
   $r = $client->lookup_public_member_info($client->creds(), 
@@ -565,7 +565,7 @@ $DETAILS_IDENTIFYING = array(
 function _lookup_identifying_members_details($client, $signer, $uid)
 {
   global $DETAILS_IDENTIFYING;
-  error_log("LIMD.UID = " . print_r($uid, true));
+  //error_log("LIMD.UID = " . print_r($uid, true));
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_IDENTIFYING);
   $r = $client->lookup_identifying_member_info($client->creds(), 
