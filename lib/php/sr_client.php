@@ -30,19 +30,25 @@ require_once('client_utils.php');
 require_once('chapi.php');
 
 const SERVICE_REGISTRY_CACHE_TAG = 'service_registry_cache';
-const SERVICE_REGISTRY_CACHE_TIMEOUT = 300;
 
-$SRCHAPI2PORTAL = array('_GENI_SERVICE_ID' => SR_TABLE_FIELDNAME::SERVICE_ID, 
-			'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE,
-			'SERVICE_URL' => SR_TABLE_FIELDNAME::SERVICE_URL, 
-			'SERVICE_URN' => SR_TABLE_FIELDNAME::SERVICE_URN, 
-			'_GENI_SERVICE_CERT_FILENAME' => SR_TABLE_FIELDNAME::SERVICE_CERT,
-			'SERVICE_CERT' => SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS,
-			'SERVICE_NAME' => SR_TABLE_FIELDNAME::SERVICE_NAME,
-			'SERVICE_DESCRIPTION' => SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION,
-			'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE);
+/**
+ * Translation table mapping CHAPI fields to legacy SR fields.
+ */
+$SRCHAPI2PORTAL =
+  array('_GENI_SERVICE_ID' => SR_TABLE_FIELDNAME::SERVICE_ID,
+        'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE,
+        'SERVICE_URL' => SR_TABLE_FIELDNAME::SERVICE_URL,
+        'SERVICE_URN' => SR_TABLE_FIELDNAME::SERVICE_URN,
+        '_GENI_SERVICE_CERT_FILENAME' => SR_TABLE_FIELDNAME::SERVICE_CERT,
+        'SERVICE_CERT' => SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS,
+        'SERVICE_NAME' => SR_TABLE_FIELDNAME::SERVICE_NAME,
+        'SERVICE_DESCRIPTION' => SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION,
+        'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE);
 
-
+/**
+ * Convert chapi services to legacy services.
+ * This is for backward compatibility.
+ */
 function service_chapi2portal($row) {
   global $SRCHAPI2PORTAL;
   $converted_row = convert_row($row, $SRCHAPI2PORTAL);
@@ -52,24 +58,20 @@ function service_chapi2portal($row) {
 // Return all services in registry
 function get_services()
 {
-  $cached = get_session_cached('get_services');
-
-  if (sizeof($cached)>0) {
+  $cached = get_session_cached(SERVICE_REGISTRY_CACHE_TAG);
+  if (count($cached) > 0) {
+    // If something is cached, return it.
     return $cached;
   }
-
+  // Nothing in the cache, fetch the services.
   $sr_url = get_sr_url();
-  //  error_log("SR_URL = " . $sr_url);
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $services = $client->get_services();
   $converted_services = array();
   foreach ($services as $service) {
     $converted_services[] = service_chapi2portal($service);
   }
-  set_session_cached('get_services', $converted_services);
-
+  set_session_cached(SERVICE_REGISTRY_CACHE_TAG, $converted_services);
   return $converted_services;
 }
 
@@ -79,7 +81,8 @@ function get_services()
  * Compare by service_name.
  */
 function agg_cmp($a, $b) {
-  return strcmp($a['service_name'], $b['service_name']);
+  return strcmp($a[SR_TABLE_FIELDNAME::SERVICE_NAME],
+                $b[SR_TABLE_FIELDNAME::SERVICE_NAME]);
 }
 
 // Return all services in registry of given type
@@ -99,18 +102,13 @@ function get_first_service_of_type($service_type)
 {
   global $SR_SERVICE_TYPE_NAMES;
   
-  $cache = get_session_cached('service_of_type');
-  if (array_key_exists($service_type, $cache)) {
-    return $cache[$service_type];
-  }
-
   $sot = get_services_of_type($service_type);
-  if (isset($sot) && ! is_null($sot) && is_array($sot) && count($sot) > 0) {
+  if (isset($sot) && is_array($sot) && count($sot) > 0) {
     $ans = $sot[0][SR_TABLE_FIELDNAME::SERVICE_URL];
-    $cache[$service_type] = $ans;
     return $ans;
   } else {
-    error_log("Got back 0 cached services of type " . $SR_SERVICE_TYPE_NAMES[$service_type]);
+    error_log("Got back 0 services of type "
+              . $SR_SERVICE_TYPE_NAMES[$service_type]);
     return null;
   }
 }
@@ -128,84 +126,10 @@ function get_service_by_id($service_id)
   return null;
 }
 
-// Lookup services by sets of attributes ("OR OF ANDS"): Any one set must
-// match entirely
-//CHAPI: unsupported
-function get_services_by_attributes($attribute_sets)
-{
-  //  $sr_url = get_sr_url();
-  //  $message['operation'] = 'get_services_by_attributes';
-  //  $message[SR_ARGUMENT::SERVICE_ATTRIBUTE_SETS] = $attribute_sets;
-  //  $result = put_message($sr_url, $message);
-
-  error_log("CHAPI: unsupported");
-  $result = array();
-
-  return $result;
-}
-
-// Doesn't work over CHAPI?
-//CHAPI: unsupported
-function get_attributes_for_service($service_id)
-{
-  //$sr_url = get_sr_url();
-  //  $message['operation'] = 'get_attributes_for_service';
-  //  $message[SR_ARGUMENT::SERVICE_ID] = $service_id;
-  //  $result = put_message($sr_url, $message);
-  error_log("CHAPI: unsupported");
-  $result = array();
-  return $result;
-}
-
-// Register service of given type and URL with registry
-//CHAPI: unsupported
-function register_service($service_type, $service_url, $service_cert, 
-			  $service_name, $service_description, 
-			  $service_attributes)
-{
-  //  $sr_url = get_sr_url();
-  //  $message['operation'] = 'register_service';
-  //  $message[SR_ARGUMENT::SERVICE_TYPE] = $service_type;
-  //  $message[SR_ARGUMENT::SERVICE_URL] = $service_url;
-  //  $message[SR_ARGUMENT::SERVICE_CERT] = $service_cert;
-  //  $message[SR_ARGUMENT::SERVICE_NAME] = $service_name;
-  //  $message[SR_ARGUMENT::SERVICE_DESCRIPTION] = $service_description;
-  //  $message[SR_ARGUMENT::SERVICE_ATTRIBUTES] = $service_attributes;
-  //  $result = put_message($sr_url, $message);
-
-  //  // Refresh cache
-  //  session_cache_flush(SERVICE_REGISTRY_CACHE_TAG);
-
-  error_log("CHAPI: unsupported");
-  $result = array();
-  
-  return $result;
-}
-
-// Remove given service of given ID from registry
-//CHAPI: unsupported
-function remove_service($service_id)
-{
-  //  $sr_url = get_sr_url();
-  //  $message['operation'] = 'remove_service';
-  //  $message[SR_ARGUMENT::SERVICE_ID] = $service_id;
-  //  $result = put_message($sr_url, $message);
-  //
-  //  // Refresh cache
-  //  session_cache_flush(SERVICE_REGISTRY_CACHE_TAG);
-
-  error_log("CHAPI: unsupported");
-  $result = array();
-
-  return $result;
-}
-
 // Return all aggregates
 function get_aggregates()
 {
   $sr_url = get_sr_url();
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT');  
   $options = array('filter' => $fields); 
@@ -225,8 +149,6 @@ function get_aggregates()
 function get_member_authorities()
 {
   $sr_url = get_sr_url();
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT'); 
   $options = array('filter' => $fields); 
@@ -246,8 +168,6 @@ function get_member_authorities()
 function get_slice_authorities()
 {
   $sr_url = get_sr_url();
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT');
   $options = array('filter' => $fields); 
