@@ -28,6 +28,11 @@
 require_once("util.php");
 
 session_start();
+// On logout, clear the session. If you want to flush the cache,
+// simply logout and log back in again.
+foreach (array_keys($_SESSION) as $k) {
+  unset($_SESSION[$k]);
+}
 $_SESSION['lastmessage'] = "You logged out of the GENI Portal";
 session_write_close();
 
