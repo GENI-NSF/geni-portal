@@ -31,6 +31,13 @@ require_once 'geni_syslog.php';
 // requires php5-xmlrpc (as a .deb).
 //
 
+/**
+ * Maximum number of characters to pass to error-text.php. If the
+ * error output is too long, the browser can't display the error
+ * properly because the URL is too long.
+ */
+const MAX_ERROR_CHARS = 1500;
+
 // CH API XML/RPC client abstraction.
 // If $signer (also called user) is supplied, will use private key and cert to sign 
 // messages.
@@ -189,9 +196,11 @@ class XMLRPCClient
 
     if ($not_standard_result && $not_fault_result) {
       error_log("System error: Invalid response " . print_r($result, true));
-      relative_redirect('error-text.php' . 
-			"?system_error=1&error=Invalid result received from Clearinghouse API: " . 
-			urlencode(print_r($result, true)));
+      $short_string = 'Invalid result received from Clearinghouse API: ';
+      $short_string .= substr(print_r($result, true), 0,
+                             MAX_ERROR_CHARS);
+      relative_redirect('error-text.php?system_error=1&error='
+                        . urlencode($short_string));
     }
 
     // support the old functionality
@@ -208,7 +217,10 @@ class XMLRPCClient
 //      error_log("FS.enc = " . urlencode($result['faultString']));
 //      error_log("SCRIPT_NAME = " . $_SERVER['SCRIPT_NAME']);
 //      error_log("ERROR.OUTPUT " . print_r($result['faultString'], true));
-      relative_redirect('error-text.php' . "?system_error=1&error=" . urlencode($result['faultString']));
+      $short_string = substr($result['faultString'], 0,
+                             MAX_ERROR_CHARS);
+      relative_redirect('error-text.php?system_error=1&error='
+                        . urlencode($short_string));
     }
 
     if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
@@ -217,7 +229,9 @@ class XMLRPCClient
       error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));
       error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
       
-      relative_redirect('error-text.php' . "?error=" . urlencode($result[RESPONSE_ARGUMENT::OUTPUT]));
+      $short_string = substr($result[RESPONSE_ARGUMENT::OUTPUT], 0,
+                             MAX_ERROR_CHARS);
+      relative_redirect('error-text.php?error=' . urlencode($short_string));
     }
     return $result[RESPONSE_ARGUMENT::VALUE];
   }
