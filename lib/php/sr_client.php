@@ -131,84 +131,10 @@ function get_service_by_id($service_id)
   return null;
 }
 
-// Lookup services by sets of attributes ("OR OF ANDS"): Any one set must
-// match entirely
-//CHAPI: unsupported
-function get_services_by_attributes($attribute_sets)
-{
-  //  $sr_url = get_sr_url();
-  //  $message['operation'] = 'get_services_by_attributes';
-  //  $message[SR_ARGUMENT::SERVICE_ATTRIBUTE_SETS] = $attribute_sets;
-  //  $result = put_message($sr_url, $message);
-
-  error_log("CHAPI: unsupported");
-  $result = array();
-
-  return $result;
-}
-
-// Doesn't work over CHAPI?
-//CHAPI: unsupported
-function get_attributes_for_service($service_id)
-{
-  //$sr_url = get_sr_url();
-  //  $message['operation'] = 'get_attributes_for_service';
-  //  $message[SR_ARGUMENT::SERVICE_ID] = $service_id;
-  //  $result = put_message($sr_url, $message);
-  error_log("CHAPI: unsupported");
-  $result = array();
-  return $result;
-}
-
-// Register service of given type and URL with registry
-//CHAPI: unsupported
-function register_service($service_type, $service_url, $service_cert, 
-			  $service_name, $service_description, 
-			  $service_attributes)
-{
-  //  $sr_url = get_sr_url();
-  //  $message['operation'] = 'register_service';
-  //  $message[SR_ARGUMENT::SERVICE_TYPE] = $service_type;
-  //  $message[SR_ARGUMENT::SERVICE_URL] = $service_url;
-  //  $message[SR_ARGUMENT::SERVICE_CERT] = $service_cert;
-  //  $message[SR_ARGUMENT::SERVICE_NAME] = $service_name;
-  //  $message[SR_ARGUMENT::SERVICE_DESCRIPTION] = $service_description;
-  //  $message[SR_ARGUMENT::SERVICE_ATTRIBUTES] = $service_attributes;
-  //  $result = put_message($sr_url, $message);
-
-  //  // Refresh cache
-  //  session_cache_flush(SERVICE_REGISTRY_CACHE_TAG);
-
-  error_log("CHAPI: unsupported");
-  $result = array();
-  
-  return $result;
-}
-
-// Remove given service of given ID from registry
-//CHAPI: unsupported
-function remove_service($service_id)
-{
-  //  $sr_url = get_sr_url();
-  //  $message['operation'] = 'remove_service';
-  //  $message[SR_ARGUMENT::SERVICE_ID] = $service_id;
-  //  $result = put_message($sr_url, $message);
-  //
-  //  // Refresh cache
-  //  session_cache_flush(SERVICE_REGISTRY_CACHE_TAG);
-
-  error_log("CHAPI: unsupported");
-  $result = array();
-
-  return $result;
-}
-
 // Return all aggregates
 function get_aggregates()
 {
   $sr_url = get_sr_url();
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT');  
   $options = array('filter' => $fields); 
@@ -228,8 +154,6 @@ function get_aggregates()
 function get_member_authorities()
 {
   $sr_url = get_sr_url();
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT'); 
   $options = array('filter' => $fields); 
@@ -249,8 +173,6 @@ function get_member_authorities()
 function get_slice_authorities()
 {
   $sr_url = get_sr_url();
-  $ver = session_cache_lookup(SERVICE_REGISTRY_CACHE_TAG, SERVICE_REGISTRY_CACHE_TIMEOUT, $sr_url, 'get_version', null);
-  $fields = $ver['FIELDS'];
   $client = XMLRPCClient::get_client($sr_url);
   $fields = array('SERVICE_URN', 'SERVICE_URL','SERVICE_NAME','SERVICE_DESCRIPTION', 'SERVICE_CERT');
   $options = array('filter' => $fields); 
