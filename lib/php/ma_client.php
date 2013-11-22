@@ -250,6 +250,11 @@ $MEMBERALTKEYS = array("MEMBER_URN"=> "urn",
 		       "_GENI_MEMBER_EPPN"=> "eppn",
 		       "_GENI_MEMBER_INSIDE_PUBLIC_KEY"=> "certificate",
 		       "_GENI_MEMBER_INSIDE_PRIVATE_KEY"=> "private_key",
+		       "_GENI_ENABLE_WIMAX" => "enable_wimax",
+		       "_GENI_ENABLE_WIMAX_BUTTON" => "enable_wimax_button",
+		       "_GENI_ENABLE_IRODS" => "enable_irods",
+		       "_GENI_IRODS_USERNAME" => "irods_username",
+		       "_GENI_WIMAX_USERNAME" => "wimax_username",
 		       );
 
 function invert_array($ar) {
@@ -512,7 +517,10 @@ $DETAILS_PUBLIC = array(
 			"MEMBER_UID",
 			"MEMBER_USERNAME",
 			"_GENI_MEMBER_SSL_PUBLIC_KEY",
-			"_GENI_MEMBER_INSIDE_PUBLIC_KEY"
+			"_GENI_MEMBER_INSIDE_PUBLIC_KEY",
+			"_GENI_ENABLE_WIMAX",
+			"_GENI_ENABLE_WIMAX_BUTTON",
+			"_GENI_ENABLE_IRODS"
 			);
 
 // lookup public details for one member
@@ -560,6 +568,8 @@ $DETAILS_IDENTIFYING = array(
 			     "_GENI_MEMBER_PHONE_NUMBER",
 			     "_GENI_MEMBER_AFFILIATION",
 			     "_GENI_MEMBER_EPPN",
+			     "_GENI_IRODS_USERNAME",
+			     "_GENI_WIMAX_USERNAME",
 			     );
 
 function _lookup_identifying_members_details($client, $signer, $uid)
