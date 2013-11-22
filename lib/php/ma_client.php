@@ -89,22 +89,18 @@ function lookup_public_ssh_keys($ma_url, $signer, $member_id)
 		   'filter'=>array('KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
   $res = $client->lookup_keys($client->creds(), $options);
 
-  function mapkeys($x)
-  {
-    return array('id' => $x['KEY_ID'],
-		 'public_key' => $x['KEY_PUBLIC'],
-		 'description' => $x['KEY_DESCRIPTION'],
-		 'member_id' => $x['_GENI_KEY_MEMBER_UID'],
-		 'filename' => $x['_GENI_KEY_FILENAME']);
-  }
-  
   $ssh_keys=array();
   foreach ($res as $keydict) {
     foreach ($keydict as $key)  {
       $keyarray = array();
       $keyarray[] = $key;
-      $mapped_array = array_map("mapkeys",$keyarray);
-      $ssh_keys[] = $mapped_array[0];
+  $mapped_array = array_map(function($x) { return array('id' => $x['KEY_ID'],
+							'public_key' => $x['KEY_PUBLIC'],
+							'description' => $x['KEY_DESCRIPTION'],
+							'member_id' => $x['_GENI_KEY_MEMBER_UID'],
+							'filename' => $x['_GENI_KEY_FILENAME']);}
+    ,$keyarray);
+  $ssh_keys[] = $mapped_array[0];
     }
   }
   
@@ -119,7 +115,7 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
 		   'filter'=>array('KEY_PRIVATE', 'KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
   $res = $client->lookup_keys($client->creds(), $options);
 
-  function mapkeys($x) 
+  function privmapkeys($x) 
   { 
     return array('id' => $x['KEY_ID'],
 		 'private_key' => $x['KEY_PRIVATE'],
@@ -133,11 +129,17 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
     foreach ($keydict as $key)  {
       $keyarray = array();
       $keyarray[] = $key;
-      $mapped_array = array_map("mapkeys",$keyarray);
+      $mapped_array = array_map(function($x) {return array('id' => $x['KEY_ID'],
+							   'private_key' => $x['KEY_PRIVATE'],
+							   'public_key' => $x['KEY_PUBLIC'],
+							   'description' => $x['KEY_DESCRIPTION'],
+							   'member_id' => $x['_GENI_KEY_MEMBER_UID'],
+							   'filename' => $x['_GENI_KEY_FILENAME']);}
+	,$keyarray);
       $ssh_keys[] = $mapped_array[0];
     }
   }
-
+  
   return $ssh_keys;
 }
 
