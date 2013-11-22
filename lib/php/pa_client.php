@@ -497,26 +497,42 @@ function lookup_project_attributes($sa_url, $signer, $project_id)
 // Add attribute (name/value pair) to a given project
 function add_project_attribute($sa_url, $signer, $project_id, $name, $value)
 {
-  global $user;
-  $add_project_attribute_message['operation'] = 'add_project_attribute';
-  $add_project_attribute_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $add_project_attribute_message[PA_ATTRIBUTE::NAME] = $name;
-  $add_project_attribute_message[PA_ATTRIBUTE::VALUE] = $value;
-  $results = put_message($sa_url, $add_project_attribute_message, 
-			 $signer->certificate(), $signer->privateKey());
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+  $options = array('attr_name' => $name, 'attr_value' => $value);
+  error_log("APA.options = " . print_r($options, true));
+  $result = $client->add_project_attribute($project_urn, $client->creds(), $options);
+  error_log("APA.result = " . print_r($result, true));
   return $results;
+    
+  //   global $user; 
+  //   $add_project_attribute_message['operation'] = 'add_project_attribute'; 
+  //   $add_project_attribute_message[PA_ARGUMENT::PROJECT_ID] = $project_id; 
+  //   $add_project_attribute_message[PA_ATTRIBUTE::NAME] = $name; 
+  //   $add_project_attribute_message[PA_ATTRIBUTE::VALUE] = $value; 
+  //   $results = put_message($sa_url, $add_project_attribute_message,  
+  // 			 $signer->certificate(), $signer->privateKey()); 
+  //   return $results; 
 }
 
 // Remove attribute (name) from a given project
 function remove_project_attribute($sa_url, $signer, $project_id, $name)
 {
-  global $user;
-  $remove_project_attribute_message['operation'] = 'remove_project_attribute';
-  $remove_project_attribute_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $remove_project_attribute_message[PA_ATTRIBUTE::NAME] = $name;
-  $results = put_message($sa_url, $remove_project_attribute_message, 
-			 $signer->certificate(), $signer->privateKey());
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+  $options = array('attr_name' => $name);
+  error_log("RPA.options = " . print_r($options, true));
+  $result = $client->remove_project_attribute($project_urn, $client->creds(), $options);
+  error_log("RPA.result = " . print_r($result, true));
   return $results;
+
+  //  global $user;
+  //  $remove_project_attribute_message['operation'] = 'remove_project_attribute';
+  //  $remove_project_attribute_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  //  $remove_project_attribute_message[PA_ATTRIBUTE::NAME] = $name;
+  //  $results = put_message($sa_url, $remove_project_attribute_message, 
+  //			 $signer->certificate(), $signer->privateKey());
+  //  return $results;
 }
 
 

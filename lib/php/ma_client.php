@@ -40,7 +40,8 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->add_member_attribute($member_urn, _portalkey_to_attkey($name), 
-					   $value, $self_asserted, $client->creds(), array());
+					   $value, $self_asserted, $client->creds(), 
+					   array('_dummy' => null));
   return $results;  // probably ignored
 }
 
@@ -50,7 +51,7 @@ function remove_member_attribute($ma_url, $signer, $member_id, $name)
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->remove_member_attribute($member_urn, _portalkey_to_attkey($name), 
-					   $client->creds(), array());
+					   $client->creds(), array('_dummy' => null));
   return $results;  // probably ignored
 }
 
