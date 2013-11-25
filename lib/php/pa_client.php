@@ -480,9 +480,9 @@ function lookup_project_attributes($sa_url, $signer, $project_id)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $project_urn = get_project_urn($sa_url, $signer, $project_id);
   $options = array('match'=>array('PROJECT_UID'=>$project_id));
-  error_log("OPTIONS: " . print_r($options,true));
+  //  error_log("OPTIONS: " . print_r($options,true));
   $res = $client->lookup_project_attributes($project_urn, $client->creds(), $options);
-  error_log("RES: " . print_r($res,true)); 
+  //  error_log("RES: " . print_r($res,true)); 
   return $res;
 
   /*  global $user;
@@ -500,10 +500,10 @@ function add_project_attribute($sa_url, $signer, $project_id, $name, $value)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $project_urn = get_project_urn($sa_url, $signer, $project_id);
   $options = array('attr_name' => $name, 'attr_value' => $value);
-  error_log("APA.options = " . print_r($options, true));
+  //  error_log("APA.options = " . print_r($options, true));
   $result = $client->add_project_attribute($project_urn, $client->creds(), $options);
-  error_log("APA.result = " . print_r($result, true));
-  return $results;
+  //  error_log("APA.result = " . print_r($result, true));
+  return $result;
     
   //   global $user; 
   //   $add_project_attribute_message['operation'] = 'add_project_attribute'; 
@@ -521,10 +521,10 @@ function remove_project_attribute($sa_url, $signer, $project_id, $name)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $project_urn = get_project_urn($sa_url, $signer, $project_id);
   $options = array('attr_name' => $name);
-  error_log("RPA.options = " . print_r($options, true));
+  //  error_log("RPA.options = " . print_r($options, true));
   $result = $client->remove_project_attribute($project_urn, $client->creds(), $options);
-  error_log("RPA.result = " . print_r($result, true));
-  return $results;
+  //  error_log("RPA.result = " . print_r($result, true));
+  return $result;
 
   //  global $user;
   //  $remove_project_attribute_message['operation'] = 'remove_project_attribute';
