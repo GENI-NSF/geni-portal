@@ -37,6 +37,8 @@ cert_FILES = \
 	certs/illinois-ig-boss.pem \
 	certs/illinois-ig-cm.pem \
 	certs/illinois-ig-of.pem \
+	certs/irods.pem \
+	certs/irods-test.pem \
 	certs/kettering-ig-of.pem \
 	certs/max-ig-boss.pem \
 	certs/max-ig-cm.pem \
@@ -60,9 +62,7 @@ cert_FILES = \
 	certs/sox-of.pem \
 	certs/uen-of.pem \
 	certs/uky-ig-of.pem \
-	certs/utah-am.pem \
-	certs/irods.pem \
-	certs/irods-test.pem
+	certs/utah-am.pem
 
 www_FILES = www/sr_controller.php
 
