@@ -1095,7 +1095,6 @@ Get user's projects (expired or not)
 	// get all members with a wimax-enable attribute that lists this project ID
 
 	$proj_attributes = lookup_project_attributes($sa_url, $user, $proj_id);
-	error_log("Proj_attribs = " . print_r($proj_attributes, true));
 	$member_uuids_of_group = array();
 	foreach($proj_attributes as $proj_attrib) {
 	  if ($proj_attrib['name'] == 'enable_wimax') {
