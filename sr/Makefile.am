@@ -62,7 +62,10 @@ cert_FILES = \
 	certs/sox-of.pem \
 	certs/uen-of.pem \
 	certs/uky-ig-of.pem \
-	certs/utah-am.pem
+	certs/utah-am.pem \
+	certs/wisconsin-ig-boss.pem \
+	certs/wisconsin-ig-cm.pem \
+	certs/wisconsin-ig-of.pem
 
 www_FILES = www/sr_controller.php
 
