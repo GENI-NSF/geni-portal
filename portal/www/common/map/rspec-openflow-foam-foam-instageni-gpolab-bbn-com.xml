@@ -8,10 +8,12 @@
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:d6:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:d6:84:34:97:c6:c9:00">
     <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
     <openflow:port name="E1" num="97"/>
+    <openflow:port name="E4" num="100"/>
+    <openflow:port name="E13" num="109"/>
     <openflow:port name="E23" num="119"/>
     <openflow:port name="E24" num="120"/>
     <openflow:port name="local" num="65534"/>
-    <openflow:port name="E13" num="109"/>
+    <openflow:port name="E14" num="110"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+datapath+06:db:84:34:97:c6:c9:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.gpolab.bbn.com+authority+am" dpid="06:db:84:34:97:c6:c9:00">
     <openflow:location country="US" latitude="42.389806" longitude="-71.147599"/>
