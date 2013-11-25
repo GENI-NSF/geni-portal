@@ -8,9 +8,9 @@
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.maxgigapop.net+datapath+06:d6:6c:3b:e5:6d:0f:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.maxgigapop.net+authority+am" dpid="06:d6:6c:3b:e5:6d:0f:00">
     <openflow:location country="US" latitude="38.970941" longitude="-76.921971"/>
     <openflow:port name="A1" num="1"/>
+    <openflow:port name="A7" num="7"/>
     <openflow:port name="A24" num="24"/>
     <openflow:port name="local" num="65534"/>
-    <openflow:port name="A7" num="7"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.maxgigapop.net+datapath+06:db:6c:3b:e5:6d:0f:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.maxgigapop.net+authority+am" dpid="06:db:6c:3b:e5:6d:0f:00">
     <openflow:location country="US" latitude="38.970941" longitude="-76.921971"/>

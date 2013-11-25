@@ -19,11 +19,12 @@
     <openflow:port name="br0" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+datapath+00:00:08:9e:01:62:d6:06" component_manager_id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+authority+am" dpid="00:00:08:9e:01:62:d6:06">
-    <openflow:port name="br0" num="65534"/>
+    <openflow:port name="te-1/1/52" num="52"/>
     <openflow:port name="ge-1/1/24" num="24"/>
     <openflow:port name="te-1/1/50" num="50">
       <topology:geni-of desc="syr-3295 10GE to nyc-3295" remote-component-id="urn:publicid:IDN+openflow:foam:foam.nysernet.org+datapath+00:00:04:7d:7b:6e:07:95" remote-port-name="te-1/1/50"/>
     </openflow:port>
+    <openflow:port name="br0" num="65534"/>
     <openflow:port name="ge-1/1/2" num="2"/>
   </openflow:datapath>
 </rspec>
