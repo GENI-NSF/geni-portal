@@ -1094,15 +1094,8 @@ Get user's projects (expired or not)
 
 	// get all members with a wimax-enable attribute that lists this project ID
 
-	$proj_attributes = lookup_project_attributes($sa_url, $user, $proj_id);
-	$member_uuids_of_group = array();
-	foreach($proj_attributes as $proj_attrib) {
-	  if ($proj_attrib['name'] == 'enable_wimax') {
-	    $member_uuids_of_group[] = $proj_attrib['value'];
-	  }
-	}
 	$members_of_group = ma_lookup_members_by_identifying($ma_url, $user, 
-							     'MEMBER_UID', $member_uuids_of_group);
+							     '_GENI_ENABLE_WIMAX', $proj_id);
 	//	$members_of_group = ma_lookup_members($ma_url, $user, array("enable_wimax" => $proj_id));
 	$members_of_proj = get_project_members($sa_url, $user, $proj_id);
 	// for each:
