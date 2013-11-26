@@ -325,9 +325,10 @@ function get_slice_members($sa_url, $signer, $slice_id, $role=null)
   $slice_urn = get_slice_urn($sa_url, $signer, $slice_id);
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array('_dummy' => null);
   if (! is_null($role)) {
-    $options['match'] = array('SLICE_ROLE' => $role);
+    $options = array('match' => array('SLICE_UID' => $slice_id,'ROLE'=>$role));
+  } else {
+    $options = array('match' => array('SLICE_UID' => $slice_id));
   }
   $result = $client->lookup_slice_members($slice_urn, $client->creds(), $options);
   $converted_result = array();
@@ -336,7 +337,6 @@ function get_slice_members($sa_url, $signer, $slice_id, $role=null)
     $converted_result[] = $converted_row;
   }
   return $converted_result;  
-
 }
 
 // Return list of slice_id's, member ID's and roles associated with slice of a given project
@@ -406,7 +406,8 @@ function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=n
   $converted_results = array();
   foreach($results as $row) {
     $converted_row = array(SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID => $row['SLICE_UID'], 
-			   SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE => $row['SLICE_ROLE']);
+			   SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE => $row['SLICE_ROLE'],
+			   SA_SLICE_TABLE_FIELDNAME::EXPIRED => $row['EXPIRED']);
     $converted_row = convert_role($converted_row);
     $converted_results[] = $converted_row;
   }
