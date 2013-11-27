@@ -9,33 +9,33 @@
     <openflow:location country="US" latitude="34.678333" longitude="-82.839167"/>
     <openflow:port name="A4" num="4"/>
     <openflow:port name="A7" num="7"/>
-    <openflow:port name="local" num="65534"/>
     <openflow:port name="A24" num="24"/>
+    <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:db:6c:3b:e5:68:a6:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+authority+am" dpid="06:db:6c:3b:e5:68:a6:00">
     <openflow:location country="US" latitude="34.678333" longitude="-82.839167"/>
-    <openflow:port name="local" num="65534"/>
     <openflow:port name="A24" num="24"/>
+    <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:dc:6c:3b:e5:68:a6:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+authority+am" dpid="06:dc:6c:3b:e5:68:a6:00">
     <openflow:location country="US" latitude="34.678333" longitude="-82.839167"/>
-    <openflow:port name="local" num="65534"/>
     <openflow:port name="A24" num="24"/>
+    <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:dd:6c:3b:e5:68:a6:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+authority+am" dpid="06:dd:6c:3b:e5:68:a6:00">
     <openflow:location country="US" latitude="34.678333" longitude="-82.839167"/>
-    <openflow:port name="local" num="65534"/>
     <openflow:port name="A24" num="24"/>
+    <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:de:6c:3b:e5:68:a6:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+authority+am" dpid="06:de:6c:3b:e5:68:a6:00">
     <openflow:location country="US" latitude="34.678333" longitude="-82.839167"/>
-    <openflow:port name="local" num="65534"/>
     <openflow:port name="A24" num="24"/>
+    <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:df:6c:3b:e5:68:a6:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+authority+am" dpid="06:df:6c:3b:e5:68:a6:00">
     <openflow:location country="US" latitude="34.678333" longitude="-82.839167"/>
-    <openflow:port name="local" num="65534"/>
     <openflow:port name="A24" num="24"/>
+    <openflow:port name="local" num="65534"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:d7:6c:3b:e5:68:a6:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+authority+am" dpid="06:d7:6c:3b:e5:68:a6:00">
     <openflow:location country="US" latitude="34.678333" longitude="-82.839167"/>
