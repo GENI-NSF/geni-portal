@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+utahddc.geniracks.net+authority+cm
 	URL: https://boss.utahddc.geniracks.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-28T15:18:55Z" generated="2013-10-28T15:18:55Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-11-25T21:49:45Z" generated="2013-11-25T21:49:45Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+emulab.net+interface+procurve-pgeni-uen:2.22" component_manager_id="urn:publicid:IDN+emulab.net+authority+am"/>  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
@@ -138,8 +138,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc9" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc9" exclusive="false">    
       <hardware_type name="dl360">      
@@ -198,8 +200,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc19" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc19" exclusive="true">    
       <hardware_type name="dl360">      
@@ -271,12 +275,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -343,8 +352,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc20" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc20" exclusive="true">    
       <hardware_type name="dl360">      
@@ -416,12 +427,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -501,12 +517,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -530,10 +551,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="99"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="99"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -564,7 +585,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -573,8 +594,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc25" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc25" exclusive="true">    
       <hardware_type name="dl360">      
@@ -646,12 +669,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -755,12 +783,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -840,12 +873,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -925,12 +963,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1010,12 +1053,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1095,12 +1143,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1124,10 +1177,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="85"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="85"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -1158,7 +1211,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="42277"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -1167,8 +1220,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc8" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc8" exclusive="false">    
       <hardware_type name="dl360">      
@@ -1184,10 +1239,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -1218,7 +1273,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45349"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -1227,8 +1282,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc14" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc14" exclusive="true">    
       <hardware_type name="dl360">      
@@ -1300,12 +1357,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1385,12 +1447,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1470,12 +1537,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1556,12 +1628,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1606,7 +1683,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="US" latitude="40.750714" longitude="-111.893288"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+utahddc.geniracks.net+interface+pc17:ilo3">      
@@ -1641,12 +1718,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1726,12 +1808,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1811,12 +1898,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -1840,10 +1932,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -1874,7 +1966,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45349"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -1883,8 +1975,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc21" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc21" exclusive="true">    
       <hardware_type name="dl360">      
@@ -1956,12 +2050,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -2028,8 +2127,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc5" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc5" exclusive="false">    
       <hardware_type name="dl360">      
@@ -2045,10 +2146,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2079,7 +2180,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -2088,8 +2189,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc13" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc13" exclusive="true">    
       <hardware_type name="dl360">      
@@ -2161,12 +2264,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -2191,10 +2299,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="99"/>      
+          <emulab:node_type type_slots="98"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2225,7 +2333,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45861"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -2234,8 +2342,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc2" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc2" exclusive="false">    
       <hardware_type name="dl360">      
@@ -2251,10 +2361,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="98"/>      
+          <emulab:node_type type_slots="97"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2285,7 +2395,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2094"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45605"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45349"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10020" weight="0.5"/>    
@@ -2294,8 +2404,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc29" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc29" exclusive="true">    
       <hardware_type name="dl360">      
@@ -2367,12 +2479,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -2439,8 +2556,10 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+utahddc.geniracks.net+node+pc15" component_manager_id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" component_name="pc15" exclusive="true">    
       <hardware_type name="dl360">      
@@ -2512,12 +2631,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -2598,12 +2722,17 @@
       <emulab:fd name="OS-10020-10021" weight="0"/>    
       <emulab:fd name="OS-10020-10024" weight="0"/>    
       <emulab:fd name="OS-10020-10025" weight="0"/>    
-      <emulab:fd name="OS-10020-10027" weight="0"/>    
       <emulab:fd name="OS-10020-10028" weight="0"/>    
+      <emulab:fd name="OS-10020-10033" weight="0"/>    
+      <emulab:fd name="OS-10020-10034" weight="0"/>    
+      <emulab:fd name="OS-10020-10035" weight="0"/>    
       <emulab:fd name="OS-10021" weight="0"/>    
       <emulab:fd name="OS-10024" weight="0"/>    
       <emulab:fd name="OS-10028" weight="0"/>    
       <emulab:fd name="OS-10029" weight="0"/>    
+      <emulab:fd name="OS-10030" weight="0"/>    
+      <emulab:fd name="OS-10033" weight="0"/>    
+      <emulab:fd name="OS-10036" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
       <emulab:fd name="OS-10005" weight="0"/>    
@@ -4122,15 +4251,15 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-28T15:18:55Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-11-25T21:49:45Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+utahddc.geniracks.net+authority+cm" url="https://www.utahddc.geniracks.net:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-28T15:18:55Z</start>        
-            <end type="time">2013-10-28T15:18:55Z</end>        
+            <start type="time">2013-11-25T21:49:45Z</start>        
+            <end type="time">2013-11-25T21:49:45Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+utahddc.geniracks.net+node+procurve2">        
           <port id="urn:publicid:IDN+utahddc.geniracks.net+stitchport+procurve2:2.22">          

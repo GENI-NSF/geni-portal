@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+uky.emulab.net+authority+cm
 	URL: https://www.uky.emulab.net:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-28T15:18:25Z" generated="2013-10-28T15:18:25Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-11-25T21:49:08Z" generated="2013-11-25T21:49:08Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*" component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am"/>  
   <rspec_opstate aggregate_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" start="geni_notready" xmlns="http://www.geni.net/resources/rspec/ext/opstate/1">    
       <sliver_type name="raw-pc"/>    
@@ -237,6 +237,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -329,6 +331,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -404,6 +408,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc72" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc72" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -468,6 +473,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc70" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc70" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -483,13 +489,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="9"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="9"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="9"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -522,7 +528,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3328"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10125" weight="0.5"/>    
@@ -532,6 +538,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc80" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc80" exclusive="true">    
       <hardware_type name="pc2400">      
@@ -643,6 +650,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -734,6 +743,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -826,6 +837,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -900,6 +913,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc4" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc4" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -981,6 +995,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1038,7 +1054,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="300000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc8:eth4" public_ipv4="128.163.143.148" role="control">      
@@ -1088,6 +1104,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1098,7 +1116,6 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
-      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc32" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc32" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -1180,6 +1197,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1272,6 +1291,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1399,6 +1420,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1492,6 +1515,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1584,6 +1609,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1706,6 +1733,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1780,6 +1809,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc11" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc11" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -1817,7 +1847,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc11:eth4" public_ipv4="128.163.143.151" role="control">      
           <emulab:interface name="eth4"/>      
@@ -1861,6 +1891,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -1871,6 +1903,7 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
+      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc46" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc46" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -1952,6 +1985,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2000,7 +2035,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc13:eth4" public_ipv4="128.163.143.153" role="control">      
           <emulab:interface name="eth4"/>      
@@ -2044,6 +2079,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2054,6 +2091,7 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
+      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc67" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc67" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -2069,13 +2107,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="0"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="0"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="0"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2101,7 +2139,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2560"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -2192,6 +2230,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2218,13 +2258,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2250,7 +2290,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2816"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -2297,7 +2337,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc10:eth4" public_ipv4="128.163.143.150" role="control">      
           <emulab:interface name="eth4"/>      
@@ -2341,6 +2381,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2351,6 +2393,7 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
+      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc45" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc45" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -2432,6 +2475,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2480,7 +2525,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc40:eth4" public_ipv4="128.163.143.180" role="control">      
           <emulab:interface name="eth4"/>      
@@ -2524,6 +2569,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2534,7 +2581,6 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
-      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc33" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc33" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -2616,6 +2662,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2642,13 +2690,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="5"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="5"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="5"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2681,7 +2729,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2304"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10125" weight="0.5"/>    
@@ -2691,6 +2739,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc9" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc9" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -2737,7 +2786,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="300000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc9:eth4" public_ipv4="128.163.143.149" role="control">      
@@ -2787,6 +2836,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -2797,7 +2848,6 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
-      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc58" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc58" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -2813,13 +2863,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="10"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="10"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="10"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2845,7 +2895,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3840"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -2870,13 +2920,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -2902,7 +2952,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2816"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -2958,7 +3008,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="400000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc82:eth4" role="experimental">      
@@ -3005,6 +3055,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3029,13 +3081,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="10"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="10"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="10"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -3068,7 +3120,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3584"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10125" weight="0.5"/>    
@@ -3078,6 +3130,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc48" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc48" exclusive="true">    
       <hardware_type name="pc3000">      
@@ -3194,6 +3247,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3287,6 +3342,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3335,7 +3392,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc1:eth1" role="experimental">      
           <emulab:interface name="eth1"/>      
@@ -3379,6 +3436,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3389,6 +3448,7 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
+      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc43" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc43" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -3470,6 +3530,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3527,7 +3589,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="400000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc81:eth1" role="experimental">      
@@ -3574,6 +3636,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3664,6 +3728,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3756,6 +3822,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3819,7 +3887,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="400000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc79:eth4" role="experimental">      
@@ -3878,6 +3946,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -3969,6 +4039,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4017,7 +4089,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc12:eth4" public_ipv4="128.163.143.152" role="control">      
           <emulab:interface name="eth4"/>      
@@ -4061,6 +4133,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4071,6 +4145,7 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
+      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc56" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc56" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -4086,13 +4161,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="7"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="7"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="7"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -4118,7 +4193,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3456"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2944"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -4209,6 +4284,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4301,6 +4378,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4393,6 +4472,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4485,6 +4566,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4511,13 +4594,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -4543,7 +4626,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2816"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -4669,6 +4752,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4696,13 +4781,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="0"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="0"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="0"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -4728,7 +4813,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3328"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2560"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -4876,6 +4961,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -4968,6 +5055,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -5060,6 +5149,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -5086,13 +5177,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="9"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="9"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="9"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -5125,7 +5216,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3328"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10125" weight="0.5"/>    
@@ -5135,6 +5226,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc65" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc65" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -5150,13 +5242,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="11"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="11"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="11"/>      
+          <emulab:node_type type_slots="3"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -5182,7 +5274,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3968"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2944"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -5273,6 +5365,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -5299,13 +5393,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="6"/>      
+          <emulab:node_type type_slots="12"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -5338,7 +5432,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2560"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10125" weight="0.5"/>    
@@ -5348,6 +5442,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc50" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc50" exclusive="true">    
       <hardware_type name="pc3000">      
@@ -5464,6 +5559,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -5491,13 +5588,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="4"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="4"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="4"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -5523,7 +5620,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="3072"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -5597,6 +5694,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc14" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc14" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -5678,6 +5776,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -5805,6 +5905,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -5898,6 +6000,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -5990,6 +6094,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6082,6 +6188,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6209,6 +6317,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6302,6 +6412,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6394,6 +6506,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6486,6 +6600,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6543,7 +6659,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="300000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc7:eth4" public_ipv4="128.163.143.147" role="control">      
@@ -6593,6 +6709,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6603,7 +6721,6 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
-      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc21" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc21" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -6685,6 +6802,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6742,7 +6861,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="300000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc5:eth4" public_ipv4="128.163.143.145" role="control">      
@@ -6792,6 +6911,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -6802,7 +6923,6 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
-      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc66" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc66" exclusive="false">    
       <hardware_type name="pc2400">      
@@ -6818,13 +6938,13 @@
           <emulab:node_type type_slots="2"/>      
       </hardware_type>    
       <hardware_type name="pc2400-vm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="pcvm2400">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="12"/>      
+          <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="lan">      
           <emulab:node_type static="true" type_slots="unlimited"/>      
@@ -6850,7 +6970,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2400"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="4096"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="2688"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10112" weight="0.5"/>    
@@ -6971,6 +7091,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -7027,7 +7149,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version=""/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8"/>      
       </sliver_type>    
-      <available now="true"/>    
+      <available now="false"/>    
       <location country="USA" latitude="38.039828" longitude="-84.498014"/>    
       <emulab:trivial_bandwidth value="300000"/>    
       <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc6:eth4" public_ipv4="128.163.143.146" role="control">      
@@ -7077,6 +7199,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -7087,7 +7211,6 @@
       <emulab:fd name="OS-10141" weight="0"/>    
       <emulab:fd name="connected-to-polaris" weight="0.0"/>    
       <emulab:fd name="connected-to-cisco1" weight="0.0"/>    
-      <emulab:fd name="poweroff" weight="0.9"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc55" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc55" exclusive="true">    
       <hardware_type name="pc3000">      
@@ -7204,6 +7327,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -7297,6 +7422,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -7372,6 +7499,7 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+uky.emulab.net+node+pc15" component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc15" exclusive="true">    
       <hardware_type name="pc1500">      
@@ -7453,6 +7581,8 @@
       <emulab:fd name="OS-10125-10116" weight="0"/>    
       <emulab:fd name="OS-10125-10140" weight="0"/>    
       <emulab:fd name="OS-10125-10141" weight="0"/>    
+      <emulab:fd name="OS-10125-10143" weight="0"/>    
+      <emulab:fd name="OS-10143" weight="0"/>    
       <emulab:fd name="OS-10136" weight="0"/>    
       <emulab:fd name="OS-10138" weight="0"/>    
       <emulab:fd name="OS-10140" weight="0"/>    
@@ -10810,8 +10940,8 @@
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc56:eth4"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc56:eth4"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc56:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc56:eth4"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc56:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco3"/>    
       <link_type name="ethernet-em"/>    
@@ -10902,24 +11032,12 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc59:eth4-cisco4:(null)" component_name="link-pc59//eth4-cisco4//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth4"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco4"/>    
-      <link_type name="ethernet-em"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
   <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc59:eth1-cisco4:(null)" component_name="link-pc59//eth1-cisco4//(null)">    
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth1"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth1"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc59:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco4"/>    
       <link_type name="ethernet-sk"/>    
@@ -10950,36 +11068,12 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc60:eth4-cisco4:(null)" component_name="link-pc60//eth4-cisco4//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth4"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco4"/>    
-      <link_type name="ethernet-em"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc60:eth1-cisco4:(null)" component_name="link-pc60//eth1-cisco4//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth1"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth1"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco4"/>    
-      <link_type name="ethernet-sk"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
   <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc60:eth3-cisco4:(null)" component_name="link-pc60//eth3-cisco4//(null)">    
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth3"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth3"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth3"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc60:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco4"/>    
       <link_type name="ethernet-em"/>    
@@ -10998,36 +11092,12 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc61:eth4-cisco4:(null)" component_name="link-pc61//eth4-cisco4//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth4"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco4"/>    
-      <link_type name="ethernet-em"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc61:eth1-cisco4:(null)" component_name="link-pc61//eth1-cisco4//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth1"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth1"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco4"/>    
-      <link_type name="ethernet-sk"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
   <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc61:eth3-cisco4:(null)" component_name="link-pc61//eth3-cisco4//(null)">    
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth3"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth3"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth3"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc61:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco4"/>    
       <link_type name="ethernet-em"/>    
@@ -11082,24 +11152,12 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc63:eth4-cisco4:(null)" component_name="link-pc63//eth4-cisco4//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth4"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco4"/>    
-      <link_type name="ethernet-em"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
   <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc63:eth1-cisco4:(null)" component_name="link-pc63//eth1-cisco4//(null)">    
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth1"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth1"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc63:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco4"/>    
       <link_type name="ethernet-sk"/>    
@@ -11127,18 +11185,6 @@
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco4"/>    
       <link_type name="ethernet-sk"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc64:eth4-cisco4:(null)" component_name="link-pc64//eth4-cisco4//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc64:eth4"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc64:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc64:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco4:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco4"/>    
-      <link_type name="ethernet-em"/>    
       <link_type name="ethernet-1000000"/>    
   </link>  
 
@@ -11178,24 +11224,12 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
-  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc65:eth4-cisco5:(null)" component_name="link-pc65//eth4-cisco5//(null)">    
-    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth4"/>    
-      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
-      <link_type name="ethernet"/>    
-      <link_type name="ethernet-cisco5"/>    
-      <link_type name="ethernet-em"/>    
-      <link_type name="ethernet-1000000"/>    
-  </link>  
-
   <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc65:eth1-cisco5:(null)" component_name="link-pc65//eth1-cisco5//(null)">    
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth1"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
+    <property capacity="700000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth1"/>    
+    <property capacity="700000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc65:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco5"/>    
       <link_type name="ethernet-sk"/>    
@@ -11230,8 +11264,8 @@
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc66:eth4"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc66:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc66:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
+    <property capacity="400000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc66:eth4"/>    
+    <property capacity="400000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc66:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco5"/>    
       <link_type name="ethernet-em"/>    
@@ -11278,8 +11312,8 @@
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc67:eth4"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc67:eth4"/>    
-    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc67:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc67:eth4"/>    
+    <property capacity="100000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc67:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco5"/>    
       <link_type name="ethernet-em"/>    
@@ -11326,8 +11360,8 @@
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc68:eth4"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
-    <property capacity="700000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc68:eth4"/>    
-    <property capacity="700000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc68:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc68:eth4"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc68:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco5"/>    
       <link_type name="ethernet-em"/>    
@@ -11422,8 +11456,8 @@
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc70:eth4"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
-    <property capacity="700000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc70:eth4"/>    
-    <property capacity="700000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc70:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc70:eth4"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc70:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco5:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco5"/>    
       <link_type name="ethernet-em"/>    
@@ -11559,6 +11593,18 @@
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco6"/>    
       <link_type name="ethernet-sk"/>    
+      <link_type name="ethernet-1000000"/>    
+  </link>  
+
+  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc76:eth4-cisco6:(null)" component_name="link-pc76//eth4-cisco6//(null)">    
+    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
+      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc76:eth4"/>    
+      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco6:(null)"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco6:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc76:eth4"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc76:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco6:(null)"/>    
+      <link_type name="ethernet"/>    
+      <link_type name="ethernet-cisco6"/>    
+      <link_type name="ethernet-em"/>    
       <link_type name="ethernet-1000000"/>    
   </link>  
 
@@ -11742,6 +11788,18 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
+  <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc75:eth4-cisco6:(null)" component_name="link-pc75//eth4-cisco6//(null)">    
+    <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
+      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc75:eth4"/>    
+      <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco6:(null)"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco6:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+pc75:eth4"/>    
+    <property capacity="300000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc75:eth4" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco6:(null)"/>    
+      <link_type name="ethernet"/>    
+      <link_type name="ethernet-cisco6"/>    
+      <link_type name="ethernet-em"/>    
+      <link_type name="ethernet-1000000"/>    
+  </link>  
+
   <link component_id="urn:publicid:IDN+uky.emulab.net+link+link-pc75:eth1-cisco6:(null)" component_name="link-pc75//eth1-cisco6//(null)">    
     <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc75:eth1"/>    
@@ -11879,8 +11937,8 @@
     <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>    
       <interface_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*"/>    
       <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*"/>    
-    <property capacity="900000" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*" latency="0" packet_loss="0" source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-cisco1"/>    
       <link_type name="ethernet-bce"/>    
@@ -12193,15 +12251,15 @@
       <link_type name="ethernet"/>    
   </link>  
 
-  <stitching lastUpdateTime="2013-10-28T15:18:26Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
+  <stitching lastUpdateTime="2013-11-25T21:49:08Z" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">    
     <aggregate id="urn:publicid:IDN+uky.emulab.net+authority+cm" url="https://www.uky.emulab.net:12369/protogeni/xmlrpc/am">      
       <aggregatetype>protogeni</aggregatetype>      
       <stitchingmode>chainANDTree</stitchingmode>      
       <scheduledservices>false</scheduledservices>      
       <negotiatedservices>false</negotiatedservices>      
       <lifetime id="life">        
-            <start type="time">2013-10-28T15:18:26Z</start>        
-            <end type="time">2013-10-28T15:18:26Z</end>        
+            <start type="time">2013-11-25T21:49:08Z</start>        
+            <end type="time">2013-11-25T21:49:08Z</end>        
       </lifetime>      
       <node id="urn:publicid:IDN+uky.emulab.net+node+cisco1">        
           <port id="urn:publicid:IDN+uky.emulab.net+stitchport+cisco1:1.2">          

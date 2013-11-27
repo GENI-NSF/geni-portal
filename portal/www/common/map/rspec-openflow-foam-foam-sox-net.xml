@@ -11,12 +11,12 @@
     </openflow:port>
     <openflow:port name="Juniper" num="18"/>
     <openflow:port name="SoX" num="52"/>
+    <openflow:port name="Clemson" num="53">
+      <topology:geni-of desc="Clemson InstaGENI" remote-component-id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:d6:6c:3b:e5:68:a6:00" remote-port-name="24"/>
+    </openflow:port>
     <openflow:port name="iperf-10g.sox.n" num="63"/>
     <openflow:port name="GT" num="64">
       <topology:geni-of desc="GT InstaGENI" remote-component-id="urn:publicid:IDN+openflow:foam:foam.instageni.rnoc.gatech.edu+datapath+06:d6:6c:3b:e5:66:6b:00" remote-port-name="24"/>
-    </openflow:port>
-    <openflow:port name="Clemson" num="53">
-      <topology:geni-of desc="Clemson InstaGENI" remote-component-id="urn:publicid:IDN+openflow:foam:foam.instageni.clemson.edu+datapath+06:d6:6c:3b:e5:68:a6:00" remote-port-name="24"/>
     </openflow:port>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.sox.net+datapath+0f:fa:34:40:b5:03:14:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.sox.net+authority+am" dpid="0f:fa:34:40:b5:03:14:00"/>
