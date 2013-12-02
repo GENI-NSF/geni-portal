@@ -1,7 +1,7 @@
 svcdatadir = $(pkgdatadir)/sr
 
 cert_FILES = \
-	certs/Thawte_Premium_Server_CA.pem \
+	certs/InCommonServerCA.pem \
 	certs/clemson-ig-boss.pem \
 	certs/clemson-ig-cm.pem \
 	certs/clemson-ig-of.pem \
