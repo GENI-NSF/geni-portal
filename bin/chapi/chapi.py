@@ -23,7 +23,7 @@
 
 # Library of tools for communicating with the GENI clearinghouse
 # (CHAPI) services via XML/RPC.
-# 
+#
 # Client-side SSL authentication solution for xmlrpclib is inspired by the discussion
 # in https://groups.google.com/forum/#!topic/comp.lang.python/seSFYP0Y-o0
 #
@@ -120,13 +120,13 @@ def find_member_id(member, url, logger, cert, pkey):
         return None
     first_match = matches.values()[0]
     member_id = first_match['MEMBER_UID'] #'member_id'
-    
+
     return member_id
 
 def find_member_urn(member, url, cert, pkey):
     if is_urn(member):
         return member
-    
+
     # TODO: In the future, try to figure out if 'member' is a URN or email address
     proxy = make_proxy(url, cert, pkey)
 
@@ -202,4 +202,3 @@ def find_slice_urn(slice, url, cert, pkey):
         return result
     else:
         raise Exception("Invalid slice name or uuid %r" % (slice))
-
