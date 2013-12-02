@@ -354,7 +354,7 @@ if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
     $_SESSION['lasterror'] = 'GENI Portal not authorized: Could not find portal in list of available clients';
     relative_redirect('kmhome.php');
   }
-  $result = ma_authorize_client($ma_url, $km_signer, $member_id, $portal_urn, 'true');
+  $result = ma_authorize_client($ma_url, $km_signer, $member_id, $portal_urn, true);
   //  error_log("auth res = " . print_r($result, true));
   if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     relative_redirect('home.php');
