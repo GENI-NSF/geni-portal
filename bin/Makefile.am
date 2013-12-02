@@ -29,6 +29,6 @@ dist_pkgsysconf_DATA = geni-ch-githash
 # GPO Lab
 # Install in /usr/local/lib, not /usr/lib
 localpythondir = $(subst /usr/lib,/usr/local/lib,$(pythondir))
-nobase_dist_localpython_DATA = chapi/__init__.py chapi/chapi.py
+nobase_dist_localpython_DATA = chapiclient/__init__.py chapiclient/chapi.py
 
 cleandb:
