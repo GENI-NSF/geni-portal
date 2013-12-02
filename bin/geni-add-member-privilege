@@ -38,7 +38,7 @@ import logging
 import optparse
 from urlparse import urlparse
 import uuid
-from util import chapi
+import chapi
 
 def init_logging(options):
     level = logging.INFO

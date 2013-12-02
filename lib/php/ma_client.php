@@ -650,11 +650,12 @@ function lookup_members_by_email($ma_url, $signer, $member_emails)
   //error_log( " lmbe = " . print_r($member_emails, true));
   $res = $client->lookup_identifying_member_info($client->creds(), $options);
   $ret = array();
-  foreach ($res	as $vals) {
-    if (! $ret[$vals['MEMBER_EMAIL']]) {
-      $ret[$vals['MEMBER_EMAIL']] = array();
+  foreach ($res	as $urn => $vals) {
+    $email = $vals['MEMBER_EMAIL'];
+    if (!array_key_exists($email,  $ret)) {
+      $ret[$email] = array();
     }
-    $ret[$vals['MEMBER_EMAIL']][] = $vals['_GENI_IDENTIFYING_MEMBER_UID'];
+    $ret[$email][] = $vals['_GENI_IDENTIFYING_MEMBER_UID'];
   }
   return $ret;
 }
