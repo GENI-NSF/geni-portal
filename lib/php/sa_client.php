@@ -356,6 +356,17 @@ function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null
   $options = array('match' => array('_GENI_PROJECT_UID'=>$project_id));
   $tuples = $client->lookup_slices($client->creds(), $options);
 
+  $member_urn = $signer->urn;
+  $options = array('_dummy' => null);
+  $my_memberships = $client->lookup_slices_for_member($member_urn, $client->creds(), $options);
+
+  // Need to pull out the slice_urn's from $my_memerships
+  $my_slice_urns = array();
+  foreach ($my_memberships as $member_urn => $slice_info) {
+    $slice_urn = $slice_info['SLICE_URN'];
+    $my_slice_urns[$slice_urn] = $slice_urn;
+  }
+
   $results = array();
   $moptions = array('_dummy' => null);
   if (!is_null($role)) {
@@ -364,6 +375,15 @@ function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null
   foreach ($tuples as $stup) {
     $surn = $stup['SLICE_URN'];
     $sid = $stup['SLICE_UID'];
+    $sexp = $stup['SLICE_EXPIRED'];
+
+    // Exclude expired slices
+    if ($sexp)
+      continue;
+
+    // Exclude slices of which I'm not a member
+    if (!array_key_exists($surn, $my_slice_urns))
+      continue;
     
     $mems = $client->lookup_slice_members($surn, $client->creds(), $moptions);
     foreach ($mems as $mtup) {
