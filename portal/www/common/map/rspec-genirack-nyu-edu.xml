@@ -3,7 +3,7 @@
 	URN: urn:publicid:IDN+genirack.nyu.edu+authority+cm
 	URL: https://genirack.nyu.edu:12369/protogeni/xmlrpc/am/2.0
  -->
-  <rspec expires="2013-10-28T15:17:51Z" generated="2013-10-28T15:17:51Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
+  <rspec expires="2013-11-25T21:48:42Z" generated="2013-11-25T21:48:42Z" type="advertisement" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd ">  
   <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">    
       <available name="mesoscale-openflow"/>    
       <available name="exclusive-openflow-1755"/>    
@@ -15,7 +15,7 @@
       <available name="fia-ndn"/>    
       <available name="fia-xia"/>    
       <available name="reservedvlan1"/>    
-      <available name="reservedvlan2"/>    
+      <available name="wimax-multipoint"/>    
   </rspec_shared_vlan>  
   <rspec_opstate aggregate_manager_id="urn:publicid:IDN+genirack.nyu.edu+authority+cm" start="geni_notready" xmlns="http://www.geni.net/resources/rspec/ext/opstate/1">    
       <sliver_type name="raw-pc"/>    
@@ -96,10 +96,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="85"/>      
+          <emulab:node_type type_slots="77"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="85"/>      
+          <emulab:node_type type_slots="77"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -133,7 +133,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="41219"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="39171"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10017" weight="0.5"/>    
@@ -141,6 +141,9 @@
       <emulab:fd name="OS-10017-10018" weight="0"/>    
       <emulab:fd name="OS-10017-10019" weight="0"/>    
       <emulab:fd name="OS-10017-10023" weight="0"/>    
+      <emulab:fd name="OS-10017-10024" weight="0"/>    
+      <emulab:fd name="OS-10017-10025" weight="0"/>    
+      <emulab:fd name="OS-10017-10026" weight="0"/>    
   </node>  
   <node component_id="urn:publicid:IDN+genirack.nyu.edu+node+pc5" component_manager_id="urn:publicid:IDN+genirack.nyu.edu+authority+cm" component_name="pc5" exclusive="true">    
       <hardware_type name="dl360">      
@@ -181,7 +184,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+genirack.nyu.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+genirack.nyu.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="US" latitude="40.729371" longitude="-73.995906"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc5:eth99">      
@@ -201,7 +204,7 @@
       </interface>    
       <emulab:fd local_operator="+" name="virtpercent" violatable="true" weight="100"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44035"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="45059"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10007" weight="0"/>    
@@ -217,6 +220,9 @@
       <emulab:fd name="OS-10017-10018" weight="0"/>    
       <emulab:fd name="OS-10017-10019" weight="0"/>    
       <emulab:fd name="OS-10017-10023" weight="0"/>    
+      <emulab:fd name="OS-10017-10024" weight="0"/>    
+      <emulab:fd name="OS-10017-10025" weight="0"/>    
+      <emulab:fd name="OS-10017-10026" weight="0"/>    
       <emulab:fd name="OS-10018" weight="0"/>    
       <emulab:fd name="OS-10022" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
@@ -243,10 +249,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="75"/>      
+          <emulab:node_type type_slots="93"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="75"/>      
+          <emulab:node_type type_slots="93"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -275,7 +281,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="41859"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44163"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10016" weight="0.5"/>    
@@ -321,10 +327,10 @@
           <emulab:node_type type_slots="1"/>      
       </hardware_type>    
       <hardware_type name="dl360-vm">      
-          <emulab:node_type type_slots="85"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="pcvm">      
-          <emulab:node_type type_slots="85"/>      
+          <emulab:node_type type_slots="95"/>      
       </hardware_type>    
       <hardware_type name="dl360-G7">      
           <emulab:node_type type_slots="1"/>      
@@ -353,7 +359,7 @@
       <emulab:fd name="pcshared" violatable="true" weight="1.0"/>    
       <emulab:fd global_operator="FirstFree" name="spreadshared" weight="0.6"/>    
       <emulab:fd local_operator="+" name="cpu" violatable="true" weight="2666"/>    
-      <emulab:fd local_operator="+" name="ram" violatable="true" weight="43139"/>    
+      <emulab:fd local_operator="+" name="ram" violatable="true" weight="44419"/>    
       <emulab:fd local_operator="+" name="cpupercent" violatable="true" weight="92"/>    
       <emulab:fd local_operator="+" name="rampercent" violatable="true" weight="80"/>    
       <emulab:fd name="OS-10016" weight="0.5"/>    
@@ -424,7 +430,7 @@
       <disk_image description="Ubuntu 12.04 LTS" name="urn:publicid:IDN+genirack.nyu.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04"/>      
       <disk_image default="true" description="Generic osid for openvz virtual nodes." name="urn:publicid:IDN+genirack.nyu.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15"/>      
       </sliver_type>    
-      <available now="false"/>    
+      <available now="true"/>    
       <location country="US" latitude="40.729371" longitude="-73.995906"/>    
       <emulab:trivial_bandwidth value="1000000"/>    
       <interface component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc4:eth99">      
@@ -460,6 +466,9 @@
       <emulab:fd name="OS-10017-10018" weight="0"/>    
       <emulab:fd name="OS-10017-10019" weight="0"/>    
       <emulab:fd name="OS-10017-10023" weight="0"/>    
+      <emulab:fd name="OS-10017-10024" weight="0"/>    
+      <emulab:fd name="OS-10017-10025" weight="0"/>    
+      <emulab:fd name="OS-10017-10026" weight="0"/>    
       <emulab:fd name="OS-10018" weight="0"/>    
       <emulab:fd name="OS-10022" weight="0"/>    
       <emulab:fd name="OS-10008" weight="0"/>    
@@ -552,12 +561,36 @@
       <link_type name="ipv4"/>    
   </link>  
 
+  <link component_id="urn:publicid:IDN+genirack.nyu.edu+link+link-pc1:eth1-procurve2:(null)" component_name="link-pc1//eth1-procurve2//(null)">    
+    <component_manager name="urn:publicid:IDN+genirack.nyu.edu+authority+cm"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth1"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+    <property capacity="600000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth1"/>    
+    <property capacity="600000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+      <link_type name="ethernet"/>    
+      <link_type name="ethernet-procurve2"/>    
+      <link_type name="ethernet-bce"/>    
+      <link_type name="ethernet-1000000"/>    
+  </link>  
+
+  <link component_id="urn:publicid:IDN+genirack.nyu.edu+link+link-pc1:eth2-procurve2:(null)" component_name="link-pc1//eth2-procurve2//(null)">    
+    <component_manager name="urn:publicid:IDN+genirack.nyu.edu+authority+cm"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth2"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth2"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+      <link_type name="ethernet"/>    
+      <link_type name="ethernet-procurve2"/>    
+      <link_type name="ethernet-bce"/>    
+      <link_type name="ethernet-1000000"/>    
+  </link>  
+
   <link component_id="urn:publicid:IDN+genirack.nyu.edu+link+link-pc1:eth3-procurve2:(null)" component_name="link-pc1//eth3-procurve2//(null)">    
     <component_manager name="urn:publicid:IDN+genirack.nyu.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth3"/>    
       <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth3"/>    
-    <property capacity="800000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth3"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc1:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -568,8 +601,8 @@
     <component_manager name="urn:publicid:IDN+genirack.nyu.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc2:eth1"/>    
       <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
-    <property capacity="200000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc2:eth1"/>    
-    <property capacity="200000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+    <property capacity="800000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc2:eth1"/>    
+    <property capacity="800000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc2:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    
@@ -600,12 +633,36 @@
       <link_type name="ethernet-1000000"/>    
   </link>  
 
+  <link component_id="urn:publicid:IDN+genirack.nyu.edu+link+link-pc3:eth1-procurve2:(null)" component_name="link-pc3//eth1-procurve2//(null)">    
+    <component_manager name="urn:publicid:IDN+genirack.nyu.edu+authority+cm"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth1"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth1"/>    
+    <property capacity="900000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth1" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+      <link_type name="ethernet"/>    
+      <link_type name="ethernet-procurve2"/>    
+      <link_type name="ethernet-bce"/>    
+      <link_type name="ethernet-1000000"/>    
+  </link>  
+
+  <link component_id="urn:publicid:IDN+genirack.nyu.edu+link+link-pc3:eth2-procurve2:(null)" component_name="link-pc3//eth2-procurve2//(null)">    
+    <component_manager name="urn:publicid:IDN+genirack.nyu.edu+authority+cm"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth2"/>    
+      <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth2"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth2" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+      <link_type name="ethernet"/>    
+      <link_type name="ethernet-procurve2"/>    
+      <link_type name="ethernet-bce"/>    
+      <link_type name="ethernet-1000000"/>    
+  </link>  
+
   <link component_id="urn:publicid:IDN+genirack.nyu.edu+link+link-pc3:eth3-procurve2:(null)" component_name="link-pc3//eth3-procurve2//(null)">    
     <component_manager name="urn:publicid:IDN+genirack.nyu.edu+authority+cm"/>    
       <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth3"/>    
       <interface_ref component_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
-    <property capacity="200000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth3"/>    
-    <property capacity="200000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth3"/>    
+    <property capacity="1000000" dest_id="urn:publicid:IDN+genirack.nyu.edu+interface+pc3:eth3" latency="0" packet_loss="0" source_id="urn:publicid:IDN+genirack.nyu.edu+interface+procurve2:(null)"/>    
       <link_type name="ethernet"/>    
       <link_type name="ethernet-procurve2"/>    
       <link_type name="ethernet-bce"/>    

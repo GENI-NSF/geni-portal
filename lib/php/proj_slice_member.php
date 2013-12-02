@@ -35,7 +35,6 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
   $project_slice_map = array();
   $project_activeslice_map = array();
 
-
   // This is all project IDs the member belongs to, even expired
   $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);
   if (count($projects) > 0) {
@@ -71,12 +70,16 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
       get_slices_for_member($sa_url, $user, $user->account_id, True);
     $slice_member_ids = array();
     foreach($slice_member_role_ids as $slice_member_role_id) {
-      $slice_member_id = 
-	$slice_member_role_id[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
-      $slice_member_ids[] = $slice_member_id;
+      //NOTE: FOR NOW ONLY ALLOW UNEXPIRED SLICES
+      if (!$slice_member_role_id[SA_SLICE_TABLE_FIELDNAME::EXPIRED])
+	{
+	  $slice_member_id = 
+	    $slice_member_role_id[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+	  $slice_member_ids[] = $slice_member_id;
+	}
     }
-
-    // $slice_emmber_ids is the ID's of slices to which the member belongs
+    
+    // $slice_member_ids is the ID's of slices to which the member belongs
 
     // This is indexed by project_id, containing an array of slice data
     // CHAPI: this doesn't generally work any more, since non-members aren't allowed
@@ -137,9 +140,9 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
 	// Optionally filter out expired slices
         $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED]; 
 	//	error_log("EXP = " . print_r($expired, true) . " AEXP = " . print_r($allow_expired, true) . " SLICE = " . print_r($slice, true));
+
 	if(! convert_boolean($expired) || $allow_expired)
 	  $slice_objects[$slice_id] = $slice;
-
      }          
   }    
   if (count($member_ids) > 0) {
