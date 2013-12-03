@@ -473,7 +473,7 @@ function accept_invitation($sa_url, $signer, $invitation_id)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array("_dummy" => null);
   error_log("AI.signer = " . print_r($signer, true));
-  $member_id = $signer->certificate();
+  $member_id = $signer->account_id;
   $result = $client->accept_invitation($invitation_id, $member_id,
 				   $client->creds(), $options);
   return $result;
