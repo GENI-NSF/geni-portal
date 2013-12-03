@@ -26,6 +26,7 @@
 
 require_once('ma_constants.php');
 require_once('chapi.php');
+require_once('cert_utils.php');
 
 // A cache of a user's detailed info indexed by member_id
 if(!isset($member_cache)) {
@@ -632,8 +633,19 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
       $ids[$member_uuid] = $displayName;
     } else if ($lastName && $firstName) {
       $ids[$member_uuid] = "$firstName $lastName";
-    } else {
+    } else if ($email) {
       $ids[$member_uuid] = $email;
+    } else {
+      parse_urn($member_urn, $authority, $type, $username);
+      $ids[$member_uuid] = $username;
+    }
+  }
+  // Federation API apparently doesn't give a return entry for a UID it doesn't know about,
+  // since it can't make up a URN
+  // But clients expect some entry for each ID they query for
+  foreach ($member_uuids as $uuid) {
+    if (! array_key_exists($uuid, $ids)) {
+      $ids[$uuid] = "NONE";
     }
   }
   return $ids;
