@@ -65,9 +65,14 @@ class GeniUser
   }
 
   function init_from_member($member) {
+    $this->attributes = array();
     //  $this->identity_id = $row['identity_id'];
     //  $this->idp_url = $row['provider_url'];
     //  $this->affiliation = $row['affiliation'];
+    if (! isset($member) or is_null($member)) {
+      error_log("Null member to init a user - the MA?");
+      return;
+    }
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->username = $member->username;
