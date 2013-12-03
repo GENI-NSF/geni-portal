@@ -45,7 +45,7 @@ include("tool-lookupids.php");
 $cs_url = get_first_service_of_type(SR_SERVICE_TYPE::CREDENTIAL_STORE);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
-if ($project == "None") {
+if ($project == "None" or is_null($project)) {
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
   include("tool-breadcrumbs.php");
@@ -53,7 +53,7 @@ if ($project == "None") {
   include("footer.php");
   exit();
 }
-if ($member == "None") {
+if ($member == "None" or is_null($member) or $member_name == "NONE" or is_null($member_name)) {
   show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
   include("tool-breadcrumbs.php");
@@ -70,6 +70,7 @@ $project_members = get_project_members($sa_url, $user, $project_id, null);
 //$slice_attribs = get_attributes($cs_url, $user, $member_id, CS_CONTEXT_TYPE::SLICE, null);
 $slice_members = get_slice_members_for_project($sa_url, $user, $project_id, null);
 if (! is_null($slice_members) && count($slice_members) > 0) {
+  //  error_log("Got " . count($slice_members) . " slice members");
   $slices = lookup_slices($sa_url, $user, $project_id, null);
 }
 // error_log("SLICE_MEMBERS = " . print_r($slice_members, true));

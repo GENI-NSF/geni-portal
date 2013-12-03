@@ -393,8 +393,8 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
       $current[] = $row;
     }
   }
-  $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
-			     
+  $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($current));
+  
   if ($is_member) {
     return $project_uuids;
   }
@@ -405,7 +405,6 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
 		   'filter'=>array('PROJECT_UID'));
 
   $rows = $client->lookup_projects($client->creds(), $options);
-  //print "<p>GPFM allrows=".print_r($rows, true)."</p>\n";
   $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
   return array_values(array_diff($all_uuids, $project_uuids));
 }
@@ -473,7 +472,7 @@ function accept_invitation($sa_url, $signer, $invitation_id)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array("_dummy" => null);
   error_log("AI.signer = " . print_r($signer, true));
-  $member_id = $signer->certificate();
+  $member_id = $signer->account_id;
   $result = $client->accept_invitation($invitation_id, $member_id,
 				   $client->creds(), $options);
   return $result;

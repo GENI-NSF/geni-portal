@@ -281,10 +281,10 @@ foreach ($member_lists as $member_role_index => $member_names) {
     print "<tr><td><a href=\"project-member.php?project_id="
       . $project_id
       . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td>";
-
+    
     print "</tr>\n";
   }
-  }
+}
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
 //   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Project Lead</td></tr>\n";
 ?>
@@ -330,7 +330,12 @@ if (is_array($entries)) {
     $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
     $member_name = $entry_member_names[$member_id];
     //    error_log("ENTRY = " . print_r($entry, true));
-    print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+    // If the MA or other authority took the action, then there is no name and no user so don't show the project-member page
+    if ($member_name == "NONE") {
+      print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
+    } else {
+      print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+    }
   }
 }
 ?>
