@@ -78,8 +78,20 @@ if ($has_certificate) {
 }
 
 /* --------- PROJECTS ---------- */
-$project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
+$all_project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
+$num_projects = count($all_project_ids);
+$project_ids = array();
+// Filter out expired projects
+if ($num_projects >0) {
+  $projects = lookup_project_details($sa_url, $user, $all_project_ids);
+  foreach ($projects as $proj) {
+    if (!convert_boolean($proj[PA_PROJECT_TABLE_FIELDNAME::EXPIRED])) {
+      $project_ids[] = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+    }
+  }
+}
 $num_projects = count($project_ids);
+
 $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
 if ($num_projects > 0) {
   // If there are any projects, look up their details. We need the names
