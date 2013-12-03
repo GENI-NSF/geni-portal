@@ -454,24 +454,37 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
 // return the invitation ID and expiration, `
 function invite_member($sa_url, $signer, $project_id, $role)
 {
-  $invite_member_message['operation'] = 'invite_member';
-  $invite_member_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
-  $invite_member_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  $result = put_message($sa_url, $invite_member_message, 
-		       $signer->certificate(), $signer->privateKey());
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array("_dummy" => null);
+  $result = $client->invite_member($role, $project_id, 
+				   $client->creds(), $options);
   return $result;
+  //  $invite_member_message['operation'] = 'invite_member';
+  //  $invite_member_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
+  //  $invite_member_message[PA_ARGUMENT::ROLE_TYPE] = $role;
+  //  $result = put_message($sa_url, $invite_member_message, 
+  //		       $signer->certificate(), $signer->privateKey());
+  //  return $result;
 }
 
 // Accept an invitation
 function accept_invitation($sa_url, $signer, $invitation_id)
 {
-  global $user;
-  $accept_invitation_message['operation'] = 'accept_invitation';
-  $accept_invitation_message[PA_ARGUMENT::INVITATION_ID] = $invitation_id;
-  $accept_invitation_message[PA_ARGUMENT::MEMBER_ID] = $user->account_id;
-  $result = put_message($sa_url, $accept_invitation_message, 
-			$signer->certificate(), $signer->privateKey());
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array("_dummy" => null);
+  error_log("AI.signer = " . print_r($signer, true));
+  $member_id = $signer->certificate();
+  $result = $client->accept_invitation($invitation_id, $member_id,
+				   $client->creds(), $options);
   return $result;
+
+  //  global $user;
+  //  $accept_invitation_message['operation'] = 'accept_invitation';
+  //  $accept_invitation_message[PA_ARGUMENT::INVITATION_ID] = $invitation_id;
+  //  $accept_invitation_message[PA_ARGUMENT::MEMBER_ID] = $user->account_id;
+  //  $result = put_message($sa_url, $accept_invitation_message, 
+  //			$signer->certificate(), $signer->privateKey());
+  //   return $result;
 }
 
 // Look up all attributes of a given project
