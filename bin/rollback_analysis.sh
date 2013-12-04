@@ -32,7 +32,7 @@ echo "select principal, context, attribute from cs_assertion where context_type 
 
 echo "-- Changes in Project membership between pa_project_member and cs_assertion"
 
-python compute_rollback_sql.py  --new_file /tmp/all_project_members_maa.txt --old_file /tmp/all_project_members_cs.txt  --insert_template "insert into cs_assertion (principal, context, attribute, context_type) values ('%s', '%s', '%s', 1);" --delete_template "delete from cs_assertion where context = '%s' and principal = '%s' and attribute = '%s' and context_type = 1;"
+python compute_rollback_sql.py  --new_file /tmp/all_project_members_maa.txt --old_file /tmp/all_project_members_cs.txt  --insert_template "insert into cs_assertion (principal, context, attribute, context_type) values ('%s', '%s', '%s', 1);" --delete_template "delete from cs_assertion where principal = '%s' and context = '%s' and attribute = '%s' and context_type = 1;"
 
 
 echo "select member_id, slice_id, role from sa_slice_member where member_id is not null and slice_id is not null" | psql -U portal -t -h localhost portal | sort > /tmp/all_slice_members_maa.txt
@@ -41,7 +41,7 @@ echo "select principal, context, attribute from cs_assertion where context_type 
 
 echo "-- Changes in Slice membership between sa_slice_member and cs_assertion"
 
-python compute_rollback_sql.py  --new_file /tmp/all_slice_members_maa.txt --old_file /tmp/all_slice_members_cs.txt  --insert_template "insert into cs_assertion (principal, context, attribute, context_type) values ('%s', '%s', '%s', 2);" --delete_template "delete from cs_assertion where context = '%s' and principal = '%s' and attribute = '%s' and context_type = 2;"
+python compute_rollback_sql.py  --new_file /tmp/all_slice_members_maa.txt --old_file /tmp/all_slice_members_cs.txt  --insert_template "insert into cs_assertion (principal, context, attribute, context_type) values ('%s', '%s', '%s', 2);" --delete_template "delete from cs_assertion where principal = '%s' and context = '%s' and attribute = '%s' and context_type = 2;"
 
 
 
