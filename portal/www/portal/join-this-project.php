@@ -68,15 +68,20 @@ $lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
 // Get all the admins for this project, so we can email them as well
-$admins = get_project_members($sa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
 $admin_emails = array();
-if ($admins and count($admins) > 0) {
-  foreach ($admins as $admin_res) {
-    $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
-    $admin_emails[] = $admin->prettyEmailAddress();
-    //    error_log("Adding admin " . $admin->prettyName());
-  }
-}
+
+// FIXME: For now, we can't send emails to project admins
+//
+// $admins = get_project_members($sa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
+//
+//if ($admins and count($admins) > 0) {
+//  foreach ($admins as $admin_res) {
+//    $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
+//    $admin_emails[] = $admin->prettyEmailAddress();
+//    //    error_log("Adding admin " . $admin->prettyName());
+//  }
+//}
+//
 
 $error = null;
 $message = null;
