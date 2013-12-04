@@ -15,11 +15,31 @@ echo "select distinct principal from cs_assertion  where attribute = 5" | psql -
 
 echo "-- Changes in Operators between ma_member_attribute and cs_assertion"
 
-python compute_rollback_sql.py  --new_file /tmp/all_operators_maa.txt --old_file /tmp/all_operators_cs.txt  --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 1);" --delete_template "delete from cs_assertion where principal = '%s' and context_type = 1;"
-python compute_rollback_sql.py  --new_file /tmp/all_operators_maa.txt --old_file /tmp/all_operators_cs.txt  --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 2);" --delete_template "delete from cs_assertion where principal = '%s' and context_type = 2;"
-python compute_rollback_sql.py  --new_file /tmp/all_operators_maa.txt --old_file /tmp/all_operators_cs.txt  --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 3);" --delete_template "delete from cs_assertion where principal = '%s' and context_type = 3;"
-python compute_rollback_sql.py  --new_file /tmp/all_operators_maa.txt --old_file /tmp/all_operators_cs.txt  --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 4);" --delete_template "delete from cs_assertion where principal = '%s' and context_type = 4;"
-python compute_rollback_sql.py  --new_file /tmp/all_operators_maa.txt --old_file /tmp/all_operators_cs.txt  --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 5);" --delete_template "delete from cs_assertion where principal = '%s' and context_type = 5;"
+python compute_rollback_sql.py \
+   --new_file /tmp/all_operators_maa.txt \
+   --old_file /tmp/all_operators_cs.txt \
+   --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 1);" \
+   --delete_template "delete from cs_assertion where principal = '%s' and attribute = 5 and context_type = 1;"
+python compute_rollback_sql.py \
+   --new_file /tmp/all_operators_maa.txt \
+   --old_file /tmp/all_operators_cs.txt \
+   --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 2);" \
+   --delete_template "delete from cs_assertion where principal = '%s' and attribute = 5 and context_type = 2;"
+python compute_rollback_sql.py \
+   --new_file /tmp/all_operators_maa.txt \
+   --old_file /tmp/all_operators_cs.txt \
+   --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 3);" \
+   --delete_template "delete from cs_assertion where principal = '%s' and attribute = 5 and context_type = 3;"
+python compute_rollback_sql.py \
+   --new_file /tmp/all_operators_maa.txt \
+   --old_file /tmp/all_operators_cs.txt \
+   --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 4);" \
+   --delete_template "delete from cs_assertion where principal = '%s' and attribute = 5 and context_type = 4;"
+python compute_rollback_sql.py \
+   --new_file /tmp/all_operators_maa.txt \
+   --old_file /tmp/all_operators_cs.txt \
+   --insert_template "insert into cs_assertion (principal, attribute, context_type) values ('%s', 5, 5);" \
+   --delete_template "delete from cs_assertion where principal = '%s' and attribute = 5 and context_type = 5;"
 
 # Fix up ma_member_attribute table for operators
 python compute_rollback_sql.py \
