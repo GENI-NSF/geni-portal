@@ -106,6 +106,9 @@ def main(argv=None):
         return 1
     logger = logging.getLogger()
     member_id = chapi.find_member_id(options.member, url, logger, cert, pkey)
+    if member_id is None:
+        print "ERROR: Member %s not found" % options.member
+        return 1
 
     if options.operator:
         privilege = "OPERATOR"
@@ -128,6 +131,7 @@ def main(argv=None):
             msg = "Error %d, no reason given" % (status)
         sys.stderr.write(msg + "\n")
         return status
+    sys.stderr.write("Added %s privilege %s" % (options.member, privilege))
     return 0
 
 if __name__ == "__main__":

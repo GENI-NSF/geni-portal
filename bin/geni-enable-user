@@ -128,7 +128,7 @@ def main(argv=None):
     status = result['code']
     if not status == 0:
         raise Exception("Could not %s user %s" % (word, options.member))
-    
+    sys.stderr.write("Re-enabled user %s\n" % options.member)
     return 0
 
 if __name__ == "__main__":

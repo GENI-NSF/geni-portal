@@ -135,7 +135,7 @@ def main(argv=None):
     proxy = chapi.make_proxy(url, cert, pkey)
     result = proxy.revoke_member_privilege(member_id, privilege, [], dict())
 
-    print "%r" % (result)
+    print "Result: %r" % (result)
     if not 'code' in result:
         msg = "Invalid response from server: %r" % (result)
         sys.stderr.write(msg + "\n")
@@ -148,6 +148,7 @@ def main(argv=None):
             msg = "Error %d, no reason given" % (status)
         sys.stderr.write(msg + "\n")
         return status
+    sys.stderr.write("Revoked %s privilege %s" % (options.member, privilege))
     return 0
 
 if __name__ == "__main__":
