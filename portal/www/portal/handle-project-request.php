@@ -236,13 +236,9 @@ $member_names = lookup_member_names_for_rows($ma_url, $user,
 
 function get_attribute_named($member_detail, $attribute_name)
 {
-  $attribs = $member_detail['attributes'];
-  foreach($attribs as $attrib) {
-    $attrib_name = $attrib['name'];
-    $attrib_value = $attrib['value'];
-    if($attrib_name == $attribute_name)
-      return $attrib_value;
-  }
+  if (array_key_exists($attribute_name, $member_detail)) {
+    return $member_detail[$attribute_name];
+  } 
   return "";
 }
 
@@ -359,9 +355,10 @@ function compute_actions_for_member($member_id, $request_id, $email)
 foreach($requests as $request) {
   $member_id = $request['requestor'];
   $member_detail = $member_details[$member_id];
+  //  $member_name = compute_display_name($member_detail);
   $member_name = $member_names[$member_id];
   $request_id = $request['id'];
-  //  $member_name = get_attribute_named($member_detail, 'displayName');
+
   $email= get_attribute_named($member_detail, 'email_address');
   $actions = compute_actions_for_member($member_id, $request_id, $email);
   $select_actions = "<select name=\"$request_id\">$actions</select>";
