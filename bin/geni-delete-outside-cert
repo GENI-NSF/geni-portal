@@ -121,7 +121,10 @@ def main(argv=None):
         sys.stderr.write(str(e) + "\n")
         return 1
     logger = logging.getLogger()
-    member_id = find_member_id(options.member, url, logger, cert, pkey)
+    member_id = chapi.find_member_id(options.member, url, logger, cert, pkey)
+    if member_id is None:
+        print "ERROR: Member %s not found" % options.member
+        return 1
     password = get_database_password(options)
     conn = psycopg2.connect(database=options.database,
                             user=options.user,
