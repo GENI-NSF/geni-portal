@@ -26,16 +26,17 @@
 
 #----------------------------------------------------------------------
 #
-# Add a privilege to a GENI user: Make them a project lead or an operator
+# Remove an arbitrary attribute from the given member in the ma_member_attribute table
 #
-# Communicates with a GENI MEmber Authority via its public API
-# Status indicates success or failure.
+# Communicates with a GENI Member Authority via its public API
 #
 #----------------------------------------------------------------------
 
 import sys
 import logging
 import optparse
+import psycopg2
+import psycopg2.extras
 from urlparse import urlparse
 import uuid
 from chapiclient import chapi
@@ -54,15 +55,23 @@ def parse_args(argv):
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="authority URL")
-    parser.add_option("-o", "--operator",  action="store_true", default=False,
-                      help="add operator privilege")
-    parser.add_option("-l", "--lead",  action="store_true", default=False,
-                      help="add lead privilege")
+    parser.add_option("-l", "--url", help="base URL")
     parser.add_option("-m", "--member", help="member id (a UUID or username)")
+    parser.add_option("-d", "--database", default='portal',
+                      help="database name")
+    parser.add_option("--host", default='localhost',
+                      help="database host")
+    parser.add_option("-u", "--user", default='portal',
+                      help="database user")
+    parser.add_option("-p", "--password",
+                      help="database password")
+    parser.add_option("-P", "--password-file",
+                      help="file containing database password")
+    parser.add_option("-a", "--attribute", help="Name of attribute to remove")
+    parser.add_option("--value", help="Value of attribute to remove if important")
     options,args = parser.parse_args()
-    if not (options.keyfile and options.certfile and options.url
-            and options.member and (options.operator or options.lead)):
+    if not (options.keyfile and options.certfile and options.url and options.attribute
+            and options.member and (options.password or options.password_file)):
         parser.print_usage()
         raise Exception("Missing some required arguments")
     return options,args
@@ -92,6 +101,15 @@ def load_private_key(certfile):
     # Or will that be taken care of downstream, by the ch_interface?
     return key
 
+def get_database_password(options):
+    if options.password:
+        return options.password
+    if options.password_file:
+        f = open(options.password_file, 'r')
+        password = f.readlines()[0].strip()
+        f.close()
+        return password
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -109,29 +127,57 @@ def main(argv=None):
     if member_id is None:
         print "ERROR: Member %s not found" % options.member
         return 1
+    password = get_database_password(options)
+    conn = psycopg2.connect(database=options.database,
+                            user=options.user,
+                            password=password,
+                            host=options.host)
 
-    if options.operator:
-        privilege = "OPERATOR"
-    elif options.lead:
-        privilege = "PROJECT_LEAD"
-    proxy = chapi.make_proxy(url, cert, pkey)
-    result = proxy.add_member_privilege(member_id, privilege, [], dict())
+#    print "found member_id %s" % member_id
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    hasEntry = False
+    if options.value is not None:
+        selsql = "select * from ma_member_attribute where member_id = %s and name = %s and value = %s";
+        data = (member_id, options.attribute, options.value,)
+    else:
+        selsql = "select * from ma_member_attribute where member_id = %s and name = %s";
+        data = (member_id, options.attribute,)
+    try:
+        cur.execute(selsql, data)
+        #print "Did: %s" % cur.query
+        if cur.rowcount > 0:
+            hasEntry = True
+    except Exception, e:
+        print cur.query
+        print "ERROR: Doing  %s: Got %s: %s" % (selsql, e.pgcode, e.pgerror)
 
-
-    print "%r" % (result)
-    if not 'code' in result:
-        msg = "Invalid response from server: %r" % (result)
-        sys.stderr.write(msg + "\n")
-        return 1
-    status = result['code']
-    if not status == 0:
-        if 'output' in result:
-            msg = "Error: %s" % (result['output'])
+    if hasEntry:
+        if options.value is not None:
+            sql = "delete from ma_member_attribute where member_id = %s and name = %s and value = %s";
+            data = (member_id, options.attribute, options.value,)
         else:
-            msg = "Error %d, no reason given" % (status)
-        sys.stderr.write(msg + "\n")
-        return status
-    sys.stderr.write("Added %s privilege %s" % (options.member, privilege))
+            sql = "delete from ma_member_attribute where member_id = %s and name = %s";
+            data = (member_id, options.attribute,)
+        try:
+            cur.execute(sql, data)
+#            print "Did: %s" % cur.query
+            if options.value is not None:
+                print "For member %s removed attribute %s=%s" % (options.member, options.attribute, options.value)
+            else:
+                print "For member %s removed attribute %s" % (options.member, options.attribute)
+        except Exception, e:
+            print cur.query
+            print "ERROR: Doing  %s: Got %s: %s" % (sql, e.pgcode, e.pgerror)
+    else:
+        if options.value is not None:
+            print "User %s did not have attribute %s=%s" % (options.member, options.attribute, options.value)
+        else:
+            print "User %s did not have attribute %s" % (options.member, options.attribute)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
     return 0
 
 if __name__ == "__main__":

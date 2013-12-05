@@ -22,31 +22,32 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// base class representing a signer object which presents a cert and private key
-// for an object that can sign messages for packaging and sending to another service
+// Helper functions for the CHAPI-based client methods
 
-class Signer
+// Convert the keys of a given data object row from 'chapi' names to 'portal' names
+function convert_row($row, $mapping)
 {
-  function __construct($cert_file, $private_key_file) {
-    $this->cert_file = $cert_file;
-    $this->private_key_file = $private_key_file;
-    $this->certificate = NULL;
-    $this->private_key = NULL;
-    $this->combined = NULL;
+  $nrow = array();
+  foreach ($row as $k=>$v) {
+    if (array_key_exists($k, $mapping)) 
+      $nrow[$mapping[$k]] = $v;
   }
-
-  function certificate() {
-    if (is_null($this->certificate)) {
-      $this->certificate = file_get_contents($this->cert_file);
-    }
-    return $this->certificate;
-  }
-
-  function privateKey() {
-    if (is_null($this->private_key)) {
-      $this->private_key = file_get_contents($this->private_key_file);
-    }
-    return $this->private_key;
-  }
+  return $nrow;
 }
+
+$CHAPI_ROLE_TO_CS_ROLE = array("LEAD" => 1, "ADMIN" => 2, "MEMBER" => 3, "AUDITOR" => 4, "OPERATOR" => 5);
+
+function convert_role($row)
+{
+  global $CHAPI_ROLE_TO_CS_ROLE;
+  if (array_key_exists('role', $row)) {
+    $role = $row['role'];
+    $new_role = $CHAPI_ROLE_TO_CS_ROLE[$role];
+    $row['role'] = $new_role;
+  }
+  return $row;
+}
+
+
+
 ?>

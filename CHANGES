@@ -1,13 +1,29 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
-= GENI Clearinghouse and Portal Release Notes =
+= GENI Portal Release Notes =
+
+== 2.6.1 ==
+  * Ticket #915: Fix displaying email address in handle project request
+  * Ticket #914: Ensure scripts validate inputs, print something on success
+  * Ticket #917: Fix OpenID server
 
 == 2.6 ==
+  * Split out the clearinghouse implementation into the new `chapi`
+  repository. That new clearinghouse implements the
+  [http://groups.geni.net/geni/wiki/UniformClearinghouseAPI Uniform
+  Federation APIs] and uses XML-RPC over SSL instead of S/MIME, but
+  otherwise retains the funtionality of the previous clearinghouse
+  server. To support this change, the `*_client` library functions have
+  been re-written, but the portal UI pages remain largely
+  unchanged. From here on, this repository and release notes cover
+  only the portal client.
   * Ensure WiMAX givenname is non empty (#885)
   * Clean up the email on handling a project join request (#881)
   * Check for valid project_id in do-handle-project-join-request (#886)
   * Use convert_boolean when checking a boolean DB value (#888)
   * Remove cruft line from kettering-ig-of cert (#890)
+
+= GENI Portal and Clearinghouse Release Notes =
 
 == 2.5.1 ==
   * Send only current projects, not expired, to GEMINI (#887)

@@ -40,10 +40,6 @@ function dump_rows($rows)
       $row[SR_TABLE_FIELDNAME::SERVICE_URL] . " " .
       $row[SR_TABLE_FIELDNAME::SERVICE_NAME] . " " .
       $row[SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION];
-    $attributes = get_attributes_for_service($service_id);
-    foreach($attributes as $key => $value) {
-      error_log("   $key => $value");
-    }
     error_log("row[" . $index . "] = " . $row_image);
     $index = $index + 1;
   }
@@ -55,43 +51,6 @@ $rows = get_services();
 dump_rows($rows);
 
 $rows = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-dump_rows($rows);
-
-// type, url, cert, name, description, attributes
-
-$test_log_attributes['FOO'] = 'BAR';
-$test_log_attributes['FOO2'] = 'BAR2';
-
-$service_id = register_service(
-			   SR_SERVICE_TYPE::LOGGING_SERVICE, 
-			   'http://foo.bar', 'test_log_cert', 
-			   'test_log_service', 
-			   'test_log_description', 
-			   $test_log_attributes
-			   );
-$rows = get_services();
-dump_rows($rows);
-
-$attributes = get_attributes_for_service($service_id);
-error_log("ATTRS = " . print_r($attributes, true));
-
-error_log("get_services_by_attributes (full):");
-$attribute_sets = array($attributes);
-$rows = get_services_by_attributes($attribute_sets);
-dump_rows($rows);
-
-error_log("get_services_by_attributes (empty):");
-$attribute_sets = array();
-$rows = get_services_by_attributes($attribute_sets);
-dump_rows($rows);
-
-error_log("get_services_by_attributes (list of 1 empty):");
-$attribute_sets = array(array());
-$rows = get_services_by_attributes($attribute_sets);
-dump_rows($rows);
-
-$result = remove_service($service_id);
-$rows = get_services();
 dump_rows($rows);
 
 relative_redirect('debug');

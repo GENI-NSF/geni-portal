@@ -3,12 +3,15 @@ svcdatadir = $(pkgdatadir)/lib
 nobase_dist_svcdata_DATA = \
 	php/am_client.php \
 	php/cert_utils.php \
+	php/chapi.php \
+	php/client_utils.php \
 	php/cs_client.php \
 	php/cs_constants.php \
 	php/db_utils.php \
 	php/file_utils.php \
 	php/geni_syslog.php \
 	php/guard.php \
+	php/irods_utils.php \
 	php/json_util.php \
 	php/logging_client.php \
 	php/logging_constants.php \
@@ -32,7 +35,6 @@ nobase_dist_svcdata_DATA = \
 	php/smime.php \
 	php/sr_client.php \
 	php/sr_constants.php \
-	php/util.php \
-	php/irods_utils.php
+	php/util.php
 
 cleandb:
