@@ -2,6 +2,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.6.1 ==
+
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`
   repository. That new clearinghouse implements the
