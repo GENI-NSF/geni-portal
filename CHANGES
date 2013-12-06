@@ -8,6 +8,7 @@
   * Ticket #917: Fix OpenID server
   * Ticket #918: Clean up options in geni-enable-user and geni-disable-user
   * Ticket #919: Clean usage in scripts
+  * Ticket #920: Add a missing copyright
 
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`
