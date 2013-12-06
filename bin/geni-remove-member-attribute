@@ -48,14 +48,14 @@ def init_logging(options):
     logging.basicConfig(level=level)
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Remove given attribute with optionally specific value from given member")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-l", "--url", help="base URL")
+    parser.add_option("-l", "--url", help="base URL (https://chSOMETHING)")
     parser.add_option("-m", "--member", help="member id (a UUID or username)")
     parser.add_option("-d", "--database", default='portal',
                       help="database name")
@@ -132,6 +132,9 @@ def main(argv=None):
                             user=options.user,
                             password=password,
                             host=options.host)
+
+
+    # FIXME: Forbid removing the important attributes, or at least warn
 
 #    print "found member_id %s" % member_id
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)

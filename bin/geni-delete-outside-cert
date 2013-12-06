@@ -48,14 +48,14 @@ def init_logging(options):
     logging.basicConfig(level=level)
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Delete any outside cert for this member")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-l", "--url", help="base authority URL")
+    parser.add_option("-l", "--url", help="base authority URL (https://chsomething)")
     parser.add_option("-m", "--member", help="member id (a UUID or username)")
     parser.add_option("-d", "--database", default='portal',
                       help="database name")
@@ -125,6 +125,7 @@ def main(argv=None):
     if member_id is None:
         print "ERROR: Member %s not found" % options.member
         return 1
+
     password = get_database_password(options)
     conn = psycopg2.connect(database=options.database,
                             user=options.user,
@@ -140,6 +141,7 @@ def main(argv=None):
         print "Did: %s" % cur.query
         try:
             print "Result: %s" % cur.fetchone()
+            # FIXME: Based on fetchone can we tell if this really worked?
         except:
             pass
     except Exception, e:

@@ -48,14 +48,14 @@ def init_logging(options):
     logging.basicConfig(level=level)
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Add given attribute with optional specific value to the given member if not already present")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-l", "--url", help="base URL")
+    parser.add_option("-l", "--url", help="base URL (https://chSomething.something)")
     parser.add_option("-m", "--member", help="member id (a UUID or username)")
     parser.add_option("-d", "--database", default='portal',
                       help="database name")

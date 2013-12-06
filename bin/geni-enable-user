@@ -26,7 +26,7 @@
 
 #----------------------------------------------------------------------
 #
-# Add an arbitrary attribute to the given member in the ma_member_attribute table
+# Re enable a disabled GENI user
 #
 # Communicates with a GENI Member Authority via its public API
 #
@@ -48,14 +48,14 @@ def init_logging(options):
     logging.basicConfig(level=level)
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Re enable the given member")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="base authority URL")
+    parser.add_option("-u", "--url", help="base authority URL (https://chSOMETHING)")
     parser.add_option("-m", "--member", help="member id (a UUID or username)")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
