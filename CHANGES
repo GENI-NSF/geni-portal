@@ -6,6 +6,7 @@
   * Ticket #915: Fix displaying email address in handle project request
   * Ticket #914: Ensure scripts validate inputs, print something on success
   * Ticket #917: Fix OpenID server
+  * Ticket #918: Clean up options in geni-enable-user and geni-disable-user
 
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`
