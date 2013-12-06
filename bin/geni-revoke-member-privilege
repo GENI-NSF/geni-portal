@@ -148,7 +148,10 @@ def main(argv=None):
             msg = "Error %d, no reason given" % (status)
         sys.stderr.write(msg + "\n")
         return status
-    sys.stderr.write("Revoked %s privilege %s" % (options.member, privilege))
+    if result['value'] == False:
+        sys.stderr.write("%s didn't have privilege %s\n" % (options.member, privilege))
+    else:
+        sys.stderr.write("Revoked %s privilege %s\n" % (options.member, privilege))
     return 0
 
 if __name__ == "__main__":
