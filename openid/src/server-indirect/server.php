@@ -93,12 +93,24 @@ function send_cancel($info)
 }
 
 
-function add_project_slice_info($user, &$projects, &$slices) {
+
+function add_project_slice_info($geni_user, &$projects, &$slices) {
   $projects = array();
   $slices = array();
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-  $retVal  = get_project_slice_member_info($sa_url, $ma_url, $user, True);
+
+  /*
+   * Temporary fix to be compatible with the new
+   * get_projects_for_member which is invoked by
+   * get_project_slice_member_info
+   *
+   * See proto-ch ticket 917
+   */
+  global $user;
+  $user = $geni_user;
+
+  $retVal  = get_project_slice_member_info($sa_url, $ma_url, $geni_user, True);
   $project_objects = $retVal[0];
   $slice_objects = $retVal[1];
   $member_objects = $retVal[2];
