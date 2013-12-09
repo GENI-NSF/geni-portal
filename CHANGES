@@ -10,6 +10,7 @@
   * Clean usage in scripts (#919)
   * Add a missing copyright (#920)
   * Add ION aggregate (#922)
+  * geni-foo-member-attribute scripts should use the MA API (#923)
 
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`
