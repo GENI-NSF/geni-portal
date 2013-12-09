@@ -3,12 +3,13 @@
 = GENI Portal Release Notes =
 
 == 2.6.1 ==
-  * Ticket #915: Fix displaying email address in handle project request
-  * Ticket #914: Ensure scripts validate inputs, print something on success
-  * Ticket #917: Fix OpenID server
-  * Ticket #918: Clean up options in geni-enable-user and geni-disable-user
-  * Ticket #919: Clean usage in scripts
-  * Ticket #920: Add a missing copyright
+  * Fix displaying email address in handle project request (#915)
+  * Ensure scripts validate inputs, print something on success (#914)
+  * Fix OpenID server (#917)
+  * Clean up options in geni-enable-user and geni-disable-user (#918)
+  * Clean usage in scripts (#919)
+  * Add a missing copyright (#920)
+  * Add ION aggregate (#922)
 
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`
