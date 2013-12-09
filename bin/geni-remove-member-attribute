@@ -105,11 +105,11 @@ def main(argv=None):
         return 1
     logger = logging.getLogger()
     member_urn = chapi.find_member_urn(options.member, url, cert, pkey)
-    if member_id is None:
+    if member_urn is None:
         print "ERROR: Member %s not found" % options.member
         return 1
 
-    # FIXME: Forbid removing the important attributes, or at least warn
+    # Forbid removing the important attributes, or at least warn
     if options.attribute.strip == "":
         print "ERROR: Empty attribute name"
         return 1
@@ -118,8 +118,10 @@ def main(argv=None):
         return 1
     if options.attribute in ("username", "email_address", "eppn"):
         print "WARN: You are removing a core attribute!"
+        raw_input("Press enter to continue or Ctrl-C to cancel ....\n")
     if options.attribute in ("first_name", "last_name", "displayName"):
         print "WARN: You are removing a name attribute"
+        raw_input("Press enter to continue or Ctrl-C to cancel ....\n")
 
     proxy = chapi.make_proxy(url, cert, pkey)
     result = proxy.remove_member_attribute(member_urn,
@@ -144,11 +146,8 @@ def main(argv=None):
         else:
             print "User %s did not have attribute %s=%s" % (options.member, options.attribute, options.value)
     else:
-        if options.value is None:
-            print "Removed user %s attribute %s" % (options.member, options.attribute)
-        else:
-            print "Removed user %s attribute %s=%s" % (options.member,
-                                                       options.attribute, options.value)
+        print "Removed user %s attribute %s=%s" % (options.member,
+                                                   options.attribute, result['value'])
 
     return 0
 
