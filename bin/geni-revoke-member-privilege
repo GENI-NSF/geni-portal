@@ -28,7 +28,7 @@
 #
 # Remove a privilege from a GENI user: Make them NOT a project lead or an operator
 #
-# Communicates with a GENI MEmber Authority via its public API
+# Communicates with a GENI Member Authority via its public API
 # Status indicates success or failure.
 #
 #----------------------------------------------------------------------
@@ -62,24 +62,26 @@ def check_result(result):
     return status
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Revoke lead or operator privilege from given member")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="base URL")
+    parser.add_option("-u", "--url", help="base URL (https://chSOMETHING)")
     parser.add_option("-o", "--operator",  action="store_true", default=False,
                       help="remove operator privilege")
     parser.add_option("-l", "--lead",  action="store_true", default=False,
                       help="remove lead privilege")
-    parser.add_option("-m", "--member", help="member id (a UUID)")
+    parser.add_option("-m", "--member", help="member id (a UUID) or username")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
             and options.member and (options.operator or options.lead)):
         parser.print_usage()
         raise Exception("Missing some required arguments")
+    if options.operator and options.lead:
+        raise Exception("Specify _either_ operator _or_ lead privilege")
     return options,args
 
 def verify_url(url):
@@ -148,66 +150,12 @@ def main(argv=None):
             msg = "Error %d, no reason given" % (status)
         sys.stderr.write(msg + "\n")
         return status
-    sys.stderr.write("Revoked %s privilege %s" % (options.member, privilege))
+    if result['value'] == False:
+        sys.stderr.write("%s didn't have privilege %s\n" % (options.member, privilege))
+    else:
+        sys.stderr.write("Revoked %s privilege %s\n" % (options.member, privilege))
     return 0
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
-# We need to integrate this code in - MSB/MT
-#
-#         # This matches ma_privilege values
-#         privilege_id = 1
-
-#     # if removing lead privileges, first find all projects for which member is lead
-#         operation = "get_projects"
-#         args = dict(lead_id=member_id)
-#         result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
-#         ret = check_result(result)
-#         # for each project, find an admin who is authorized to be lead 
-#         # change the admin to lead and the lead to admin 
-#         # if there is not an authorized admin for a project, exit
-#         for project_id in result['value']:
-#             auth_admin = None
-#         # get project members
-#             operation = "get_project_members"
-#             args = dict(project_id=project_id)
-#             mem_result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)
-#             ret = check_result(mem_result)
-
-#             for mem in mem_result['value']:
-#                 auth_admin = None
-#                 if mem['role'] == "2":
-#                     # is this admin authorized to be lead?
-#                     args = dict(principal=mem['member_id'],action="create_project",context_type=3)
-#                     auth_result = ch.invokeCH(csurl,"request_authorization",logger,args,[cert],pkey)
-#                     ret = check_result(auth_result)
-#                     if auth_result['value']:
-#                         auth_admin = mem['member_id']
-#                         break
-
-#             if auth_admin != None:
-#                 sys.stderr.write("Changing authorized administrator %s to project lead for project %s.\n" %(auth_admin, project_id))
-#                 sys.stderr.write("Changing project lead %s to member for project %s.\n" %(auth_admin,project_id))
-#                 operation = "modify_project_membership"
-#                 change_role = {}
-#                 change_role[member_id] = 3
-#                 change_role[auth_admin] = 1
-#                 args = dict(project_id=project_id, members_to_remove=[], members_to_add=[],members_to_change_role = change_role)
-#                 result = ch.invokeCH(saurl, operation, logger, args, [cert], pkey)                    
-#                 ret = check_result(result)
-#             else:
-#                 sys.stderr.write("Can't remove lead from project %s unless there is an authorized administrator to take the lead role.\n" %project_id)
-#                 return(1) 
-
-   
-#     operation = "revoke_member_privilege"
-
-#     args = dict(member_id=member_id, privilege_id=privilege_id)
-#     result = ch.invokeCH(maurl, operation, logger, args, [cert], pkey)
-#     ret = check_result(result)
-#     print("%r" %result)
-#     print("\nRevoked privilege\n")
-#     return ret
 
