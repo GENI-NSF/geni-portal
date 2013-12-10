@@ -12,6 +12,7 @@
   * Add ION aggregate (#922)
   * geni-foo-member-attribute scripts should use the MA API (#923)
   * Ensure geni-* scripts are installed (#924)
+  * Add GPO lab dev server CA cert (#925)
 
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`
