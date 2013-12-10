@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('message_handler.php');
+require_once('chapi.php');
 
 // Service to support caching variables obtained by system services within the given session
 // Maintain values keyed by 'key' in the $_SESSION variable dictionary
@@ -61,7 +61,9 @@ function session_cache_lookup($key, $refresh_timeout, $refresh_url, $refresh_met
 	  $refresh_message[$arg_key] = $arg_val;
 	}
       }
-      $response = put_message($refresh_url, $refresh_message);
+      $client = XMLRPCClient::get_client($refresh_url);
+      $response = $client->$refresh_method();  // ignores args
+
       $_SESSION[$key] = $response;
       $_SESSION[$timeout_key] = $now;
       //      error_log("Refreshing cache for key $key : message = " . print_r($refresh_message, true) . " " . $key . " " . $_SESSION[$key] . " " . $timeout_key . " " . $_SESSION[$timeout_key] . " " . $now . " " . $refresh_timeout);
@@ -91,7 +93,8 @@ function session_cache_flush($key)
     return;
   }
 
-  $_SESSION[$timeout_key] = null;
+  $_SESSION[$timeout_key] = null;  // MIK: shouldn't this be unset($_SESSION[$timeout_key])?
+
 }
 
 ?>

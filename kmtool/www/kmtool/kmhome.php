@@ -84,12 +84,12 @@ if (array_key_exists("authorize_toolname", $_GET)) {
   $toolname_auth = $_GET["authorize_toolname"];
 }
 
-$sense = "false";
+$sense = false;
 if (array_key_exists("authorize_sense", $_GET)) {
   $sense = $_GET["authorize_sense"];
 }
 $sense_text = "authorized";
-if ($sense == "false") { $sense_text = "deauthorized"; }
+if ($sense == false) { $sense_text = "deauthorized"; }
 
 $toolurn_auth = "";
 if (array_key_exists("authorize_toolurn", $_GET)) {
@@ -169,10 +169,10 @@ foreach($candidate_tools as $toolname => $toolurn) {
 
   $authorize_url = "kmhome.php"; 
   $authorize_label = "Authorize";
-  $authorize_sense = "true";
+  $authorize_sense = true;
   if ($enabled) { 
     $authorize_label = "Deauthorize"; 
-    $authorize_sense = "false";
+    $authorize_sense = false;
   }
   if (isset($toolname_auth) && $toolname_auth == $toolname) {
     $authorize_label = "<b>$authorize_label</b>";

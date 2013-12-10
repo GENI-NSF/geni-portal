@@ -93,7 +93,7 @@ function show_tab_bar($active_tab = '', $load_user=true)
 
   echo '<div id="mainnav" class="nav">';
   echo '<ul>';
-  if (isset($user) && ! is_null($user) && $user->isActive()) {
+  if (!$load_user || (isset($user) && !is_null($user) && $user->isActive())) {
     foreach ($standard_tabs as $tab) {
       echo '<li';
       if ($active_tab == $tab['name']) {

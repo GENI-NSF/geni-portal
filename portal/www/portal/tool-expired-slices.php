@@ -61,7 +61,7 @@ function toggleDiv(id) {
    $("#"+id).toggle();
 }
 </script>
-<p><button type='button' onclick='toggleDiv("expired")'>Expired Slices</button></p>
+<p><button type='button' disabled onclick='toggleDiv("expired")'>Expired Slices</button></p>
 <div id="expired" style="display: none;">
 <h2>Expired Slices</h2>
 <?php
@@ -101,7 +101,8 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     }
     $isSliceExpired = False;
     $disable_buttons_str = "";
-    if (isset($slice_expired) && $slice_expired == 't') {
+    
+    if (isset($slice_expired) && convert_boolean($slice_expired)) {
       $isSliceExpired = True;
       $disable_buttons_str = " disabled";
     }

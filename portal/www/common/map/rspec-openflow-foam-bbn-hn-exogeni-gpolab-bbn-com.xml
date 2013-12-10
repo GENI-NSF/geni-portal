@@ -45,11 +45,11 @@
     <openflow:port name="64" num="64">
       <topology:geni-of desc="poblano-1750" remote-component-id="urn:publicid:IDN+openflow:foam:foam.gpolab.bbn.com+datapath+06:d6:00:12:e2:b8:a5:d0" remote-port-name="GBE0/15"/>
     </openflow:port>
-    <openflow:port name="49" num="49">
-      <topology:other desc="ORCA node bbn-w9[eth3]" remote-hostname="orca:bbn-w9" remote-port-name="eth3"/>
-    </openflow:port>
     <openflow:port name="50" num="50">
       <topology:other desc="ORCA node bbn-w10[eth3]" remote-hostname="orca:bbn-w10" remote-port-name="eth3"/>
+    </openflow:port>
+    <openflow:port name="49" num="49">
+      <topology:other desc="ORCA node bbn-w9[eth3]" remote-hostname="orca:bbn-w9" remote-port-name="eth3"/>
     </openflow:port>
   </openflow:datapath>
 </rspec>

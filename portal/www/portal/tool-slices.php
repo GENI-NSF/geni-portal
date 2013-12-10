@@ -64,10 +64,9 @@ if (isset($project_id)) {
 $expired_slices = array();
 $unexpired_slices = array();
 foreach($my_slice_objects as $slice) {
-  // error_log("SLICE = " . print_r($slice, true));
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
-  if($expired == 't') 
+  if(convert_boolean($expired)) 
     $expired_slices[$slice_id] = $slice;
   else
     $unexpired_slices[$slice_id] = $slice;
@@ -87,8 +86,6 @@ if (count($expired_slices) > 0) {
 
 $my_slice_objects = $unexpired_slices;
 $slice_owner_names = $unexpired_slice_owner_names;
-//error_log("expired_slices ".print_r($expired_slices, true));
-//error_log("unexpired_slices ".print_r($unexpired_slices, true));
 
 if (count($my_slice_objects) > 0) {
 
@@ -129,13 +126,12 @@ if (count($my_slice_objects) > 0) {
   foreach ($my_slice_objects as $slice) {
     $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
     $slice_expired = 'f';
-    //    error_log("SLICE = " . print_r($slice, true));
     if (array_key_exists(SA_SLICE_TABLE_FIELDNAME::EXPIRED, $slice)) {
       $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
     }
     $isSliceExpired = False;
     $disable_buttons_str = "";
-    if (isset($slice_expired) && $slice_expired == 't') {
+    if (isset($slice_expired) && convert_boolean($slice_expired)) {
       $isSliceExpired = True;
       $disable_buttons_str = " disabled";
     }

@@ -35,7 +35,6 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
   $project_slice_map = array();
   $project_activeslice_map = array();
 
-
   // This is all project IDs the member belongs to, even expired
   $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);
   if (count($projects) > 0) {
@@ -53,7 +52,7 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
 	$project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	//	error_log("PEXP = " . $project_id . " " . $project_name . 
 	//      " " . $project_expired);
-	if ($project_expired == 't')
+	if (convert_boolean($project_expired))
 	  continue;
 	$unexpired_project_objects[] = $project;
 	$unexpired_projects[] = $project_id;
@@ -71,20 +70,27 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
       get_slices_for_member($sa_url, $user, $user->account_id, True);
     $slice_member_ids = array();
     foreach($slice_member_role_ids as $slice_member_role_id) {
-      $slice_member_id = 
-	$slice_member_role_id[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
-      $slice_member_ids[] = $slice_member_id;
+      //NOTE: FOR NOW ONLY ALLOW UNEXPIRED SLICES
+      if (!$slice_member_role_id[SA_SLICE_TABLE_FIELDNAME::EXPIRED])
+	{
+	  $slice_member_id = 
+	    $slice_member_role_id[SA_SLICE_MEMBER_TABLE_FIELDNAME::SLICE_ID];
+	  $slice_member_ids[] = $slice_member_id;
+	}
     }
-
-    // $slice_emmber_ids is the ID's of slices to which the member belongs
+    
+    // $slice_member_ids is the ID's of slices to which the member belongs
 
     // This is indexed by project_id, containing an array of slice data
-    $slice_data = get_slices_for_projects($sa_url, $user, $projects, $allow_expired);
+    // CHAPI: this doesn't generally work any more, since non-members aren't allowed
+    // to get details for slices they aren't members of
+    //$slice_data = get_slices_for_projects($sa_url, $user, $projects, $allow_expired);
+    $slice_data = get_slices_in_projects($sa_url, $user, $slice_member_ids, $projects, $allow_expired);
+    
 
-
-    //    error_log("SLICE_MEMBER_IDS = " . print_r($slice_member_ids, true));
-    //    error_log("SLICE_DATA =  = " . print_r($slice_data, true));
-    //    error_log("PROJECTS = " . print_r($projects, true));
+    //error_log("SLICE_MEMBER_IDS = " . print_r($slice_member_ids, true));
+    //error_log("SLICE_DATA =  = " . print_r($slice_data, true));
+    //error_log("PROJECTS = " . print_r($projects, true));
     foreach ($project_objects as $project) {
       $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
       $proj_lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
@@ -97,15 +103,16 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
 	$proj_slice_id_expired = $proj_slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
 	if (!in_array($proj_slice_id, $slice_member_ids)) continue;
 	$proj_slice_ids[] = $proj_slice_id;
-	//	error_log("slice id = ". $proj_slice_id . " expired = " . $proj_slice_id_expired);
-	if ($proj_slice_id_expired=="f") {		
-	//	   error_log("Adding active slice to list ....");
-	   $proj_activeslice_ids[] = $proj_slice_id;		
+	//error_log("slice id = ". $proj_slice_id . " expired = " . $proj_slice_id_expired);
+	if (!$proj_slice_id_expired) {		
+	  //error_log("Adding active slice to list ....");
+	  $proj_activeslice_ids[] = $proj_slice_id;		
 	}
       }
       //	$proj_slice_ids = lookup_slice_ids($sa_url, $user, $project_id);  
       $project_slice_map[ $project_id ] = $proj_slice_ids;
       $project_activeslice_map[ $project_id ] = $proj_activeslice_ids;
+      //error_log("GPSMI: project ".$project_id." ids = ".print_r($proj_activeslice_ids,true));
       $slice_ids = array_merge( $slice_ids, $proj_slice_ids ); // is this ok
     }	      
   }
@@ -133,9 +140,9 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
 	// Optionally filter out expired slices
         $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED]; 
 	//	error_log("EXP = " . print_r($expired, true) . " AEXP = " . print_r($allow_expired, true) . " SLICE = " . print_r($slice, true));
-	if($expired != 't' || $allow_expired) 
-	  $slice_objects[$slice_id] = $slice;
 
+	if(! convert_boolean($expired) || $allow_expired)
+	  $slice_objects[$slice_id] = $slice;
      }          
   }    
   if (count($member_ids) > 0) {
@@ -183,7 +190,7 @@ function get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id) 
 	// initialize members
 	$member = new Member();
 	$member->init_from_record($slice_member);
-	//	error_log("Member = " . print_r($member, TRUE));	
+	//error_log("Member = " . print_r($member, TRUE));	
 	// now as users 
 	$slice_user = new GeniUser();     
    	$slice_user->init_from_member($member);

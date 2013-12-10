@@ -50,7 +50,7 @@ include("tool-lookupids.php");
 
 $disable_buttons_str = "";
 
-if (isset($slice_expired) && $slice_expired == 't' ) {
+if (isset($slice_expired) && convert_boolean($slice_expired) ) {
   $disable_buttons_str = " disabled";
 }
 
@@ -298,7 +298,7 @@ $(document).ready(build_agg_table_on_slicepg());
 <?php 
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
 
-if (isset($slice_expired) && $slice_expired == 't' ) {
+if (isset($slice_expired) && convert_boolean($slice_expired) ) {
    print "<p class='warn'>This slice is expired!</p>\n";
 }
 

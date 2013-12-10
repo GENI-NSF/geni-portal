@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2013 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -32,6 +32,7 @@ class Signer
     $this->private_key_file = $private_key_file;
     $this->certificate = NULL;
     $this->private_key = NULL;
+    $this->combined = NULL;
   }
 
   function certificate() {
@@ -47,6 +48,5 @@ class Signer
     }
     return $this->private_key;
   }
-
 }
 ?>

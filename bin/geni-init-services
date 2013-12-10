@@ -268,7 +268,7 @@ def sign_service_req(req_file, service, ca_config, options):
     # The authority URL for more info about the CA, I suppose.
     auth_url_tmpl = 'https://%s/cainfo.html'
     auth_url = auth_url_tmpl % (service.authority)
-    uuid_tmpl = 'URI:uuid:%s'
+    uuid_tmpl = 'URI:urn:uuid:%s'
     uuid = uuid_tmpl % (service.uuid)
     ext_name = 'v3_auth'
     (ext_fd, ext_file) = tempfile.mkstemp()
