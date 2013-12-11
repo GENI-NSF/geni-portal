@@ -112,10 +112,15 @@ def main(argv=None):
     result = proxy.enable_user(member_urn, False, [], dict())
 
     if not 'code' in result:
-        raise Exception("Could not disable user %s" % (options.member))
+        raise Exception("Could not disable user %s. Result: %s" %
+                        (options.member, result))
     status = result['code']
     if not status == 0:
-        raise Exception("Could not disable user %s" % (options.member))
+        if result.has_key('value'):
+            raise Exception("Could not disable user %s. Error %d: %s" %
+                            (options.member, result['code'], result['output']))
+        else:
+            raise Exception("Could not disable user %s" % (options.member))
     was = result['value']
     if was:
         sys.stderr.write("Disabled user %s\n" % options.member)
