@@ -13,12 +13,15 @@ dist_bin_SCRIPTS = \
 		geni-add-member-privilege \
 		geni-delete-outside-cert \
 		geni-add-member-attribute \
+		geni-remove-member-attribute \
 		geni-add-project-member \
 		geni-add-trusted-tool \
 		geni-manage-maintenance \
 		geni-ops-report \
 		geni-remove-project-member \
 		geni-revoke-member-privilege \
+		geni-enable-user \
+		geni-disable-user \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		idp_user_created.sh \
