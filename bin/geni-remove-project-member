@@ -62,16 +62,16 @@ def check_result(result):
     return status
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Remove given member from given project")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="base authority URL, requires SA and MA")
+    parser.add_option("-u", "--url", help="base authority URL, requires SA and MA (https://chSOMETHING)")
     parser.add_option("-p", "--project", help="project id (UUID) or name")
-    parser.add_option("-m", "--member", help="member id (UUID)")
+    parser.add_option("-m", "--member", help="member id (UUID) or username")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
             and options.project and options.member):
@@ -105,15 +105,6 @@ def load_private_key(certfile):
     # Or will that be taken care of downstream, by the ch_interface?
     return key
 
-def load_member_id(member):
-    # Verify that it's a UUID.
-    # In the future, could convert member email to UUID
-    try:
-        uuid.UUID(member)
-        return member
-    except ValueError:
-        raise Exception("Invalid member id %r, must be a UUID" % (member))
-
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -130,6 +121,12 @@ def main(argv=None):
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
+    if project_urn is None:
+        sys.stderr.write("Unknown project %s\n" % options.project)
+        return 1
+    if member_urn is None:
+        sys.stderr.write("Unknown member %s\n" % options.member)
+        return 1
     proxy = chapi.make_proxy(saurl, cert, pkey)
     result = proxy.modify_project_membership(project_urn, [], {'members_to_remove': [member_urn]})
     print "%r" % (result)
@@ -144,6 +141,8 @@ def main(argv=None):
         else:
             sys.stderr.write("Can't remove lead from project unless there is an authorized administrator to take the lead role.\n");
             return(1) 
+    sys.stderr.write("Removed %s from %s\n" % (options.member, options.project))
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

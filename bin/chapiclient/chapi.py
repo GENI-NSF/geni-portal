@@ -155,6 +155,8 @@ def find_member_urn(member, url, cert, pkey):
         return None
     first_match = matches.values()[0]
     member_urn = first_match['MEMBER_URN'] #'member_id'
+    if not is_urn(member_urn):
+        return None
     return member_urn
 
 def find_project_param(project, url, cert, pkey, param):

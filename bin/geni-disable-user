@@ -26,7 +26,7 @@
 
 #----------------------------------------------------------------------
 #
-# Add an arbitrary attribute to the given member in the ma_member_attribute table
+# Disable the given user so they can do no operations
 #
 # Communicates with a GENI Member Authority via its public API
 #
@@ -48,25 +48,15 @@ def init_logging(options):
     logging.basicConfig(level=level)
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Disable the given user")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-l", "--url", help="base authority URL")
+    parser.add_option("-u", "--url", help="base authority URL (https://chSOMETHING)")
     parser.add_option("-m", "--member", help="member id (a UUID or username)")
-    parser.add_option("-d", "--database", default='portal',
-                      help="database name")
-    parser.add_option("--host", default='localhost',
-                      help="database host")
-    parser.add_option("-u", "--user", default='portal',
-                      help="database user")
-    parser.add_option("-p", "--password",
-                      help="database password")
-    parser.add_option("-P", "--password-file",
-                      help="file containing database password")
     options,args = parser.parse_args()
     if not (options.keyfile and options.certfile and options.url
             and options.member):
@@ -122,11 +112,20 @@ def main(argv=None):
     result = proxy.enable_user(member_urn, False, [], dict())
 
     if not 'code' in result:
-        raise Exception("Could not disable user %s" % (options.member))
+        raise Exception("Could not disable user %s. Result: %s" %
+                        (options.member, result))
     status = result['code']
     if not status == 0:
-        raise Exception("Could not disable user %s" % (options.member))
-    
+        if result.has_key('value'):
+            raise Exception("Could not disable user %s. Error %d: %s" %
+                            (options.member, result['code'], result['output']))
+        else:
+            raise Exception("Could not disable user %s" % (options.member))
+    was = result['value']
+    if was:
+        sys.stderr.write("Disabled user %s\n" % options.member)
+    else:
+        sys.stderr.write("User %s already disabled\n" % options.member)
     return 0
 
 if __name__ == "__main__":

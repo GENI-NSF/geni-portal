@@ -2,6 +2,19 @@
 
 = GENI Portal Release Notes =
 
+== 2.6.1 ==
+  * Fix displaying email address in handle project request (#915)
+  * Ensure scripts validate inputs, print something on success (#914)
+  * Fix OpenID server (#917)
+  * Clean up options in geni-enable-user and geni-disable-user (#918)
+  * Clean usage in scripts (#919)
+  * Add a missing copyright (#920)
+  * Add ION aggregate (#922)
+  * geni-foo-member-attribute scripts should use the MA API (#923)
+  * Ensure geni-* scripts are installed (#924)
+  * Add GPO lab dev server CA cert (#925)
+  * Handle error returns in geni-enable-user and disable-user (#927)
+
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`
   repository. That new clearinghouse implements the

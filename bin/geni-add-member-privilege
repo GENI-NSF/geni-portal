@@ -28,7 +28,7 @@
 #
 # Add a privilege to a GENI user: Make them a project lead or an operator
 #
-# Communicates with a GENI MEmber Authority via its public API
+# Communicates with a GENI Member Authority via its public API
 # Status indicates success or failure.
 #
 #----------------------------------------------------------------------
@@ -47,14 +47,14 @@ def init_logging(options):
     logging.basicConfig(level=level)
 
 def parse_args(argv):
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(usage="Make given member an operator or project lead")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
     parser.add_option("-k", "--keyfile", metavar="FILE",
                       help="Invoker's private key")
     parser.add_option("-c", "--certfile", metavar="FILE",
                       help="Invoker's GENI certificate")
-    parser.add_option("-u", "--url", help="authority URL")
+    parser.add_option("-u", "--url", help="base URL (https://chsomething)")
     parser.add_option("-o", "--operator",  action="store_true", default=False,
                       help="add operator privilege")
     parser.add_option("-l", "--lead",  action="store_true", default=False,
@@ -65,6 +65,8 @@ def parse_args(argv):
             and options.member and (options.operator or options.lead)):
         parser.print_usage()
         raise Exception("Missing some required arguments")
+    if options.operator and options.lead:
+        raise Exception("Specify _either_ operator _or_ lead privilege")
     return options,args
 
 def verify_url(url):
@@ -106,6 +108,9 @@ def main(argv=None):
         return 1
     logger = logging.getLogger()
     member_id = chapi.find_member_id(options.member, url, logger, cert, pkey)
+    if member_id is None:
+        print "ERROR: Member %s not found" % options.member
+        return 1
 
     if options.operator:
         privilege = "OPERATOR"
@@ -128,6 +133,10 @@ def main(argv=None):
             msg = "Error %d, no reason given" % (status)
         sys.stderr.write(msg + "\n")
         return status
+    if result['value'] == False:
+        sys.stderr.write("%s already had privilege %s\n" % (options.member, privilege))
+    else:
+        sys.stderr.write("Added %s privilege %s\n" % (options.member, privilege))
     return 0
 
 if __name__ == "__main__":
