@@ -35,6 +35,8 @@ require_once 'ma_constants.php';
 require_once 'ma_client.php';
 require_once 'geni_syslog.php';
 require_once 'portal.php';
+require_once('maintenance_mode.php');
+require_once('cs_constants.php');
 
 const PERMISSION_MANAGER_TAG = 'permission_manager';
 const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
@@ -459,6 +461,7 @@ function geni_load_identity_by_eppn($eppn)
  */
 function geni_loadUser()
 {
+  global $in_maintenance_mode;
 
   // TODO: Look up in cache here
   if (! array_key_exists('eppn', $_SERVER)) {
@@ -472,6 +475,15 @@ function geni_loadUser()
   $identity = geni_load_identity_by_eppn($eppn);
   $user->init_from_identity($identity);
   // FIXME: Confirm that attributes we have in DB match attributes in the environment
+
+  // Non-operators can't use the portal while in maintenance: they go to the 'Maintenance" page
+  if ($in_maintenance_mode && 
+      !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
+			null)) 
+    {
+      error_log($user->prettyName() . " tried to access portal during maintenance");
+      relative_redirect("maintenance_redirect_page.php");
+    }
 
   // TODO: Insert user in cache here
   return $user;

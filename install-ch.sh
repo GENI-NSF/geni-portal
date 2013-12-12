@@ -113,7 +113,7 @@ if [ "${INSTALL_CONFIG_FILES}" = "yes" ]; then
 
   sudo sed -i -e "/^\$db_dsn =/s/=.*/= 'pgsql:\/\/portal:$PORTAL_PASSWORD@localhost\/portal';/" /etc/geni-ch/settings.php
   sudo sed -i -e "/^\$portal_admin_email =/s/=.*/= '$CH_EMAIL';/" /etc/geni-ch/settings.php
-  sudo sed -i -e "/^\$service_registry_url =/s/=.*/= 'https:\/\/$CH_HOST\/sr\/sr_controller.php';/" /etc/geni-ch/settings.php
+  sudo sed -i -e "/^\$service_registry_url =/s/=.*/= 'https:\/\/$CH_HOST\:8444/SR';/" /etc/geni-ch/settings.php
 else
   test -f /etc/geni-ch/settings.php
 fi

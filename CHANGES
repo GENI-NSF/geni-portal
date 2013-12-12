@@ -2,6 +2,15 @@
 
 = GENI Portal Release Notes =
 
+== 2.6.2 ==
+  * Calling CHAPI use cert and key straight from DB, without openssl conversion
+    that drops cert chain. (#931)
+  * Remind people to restart apache after changing privileges (#933)
+  * Label download whether the cert was portal generated (#840)
+  * Removed obsolete PHP files. Applying this upgrade requires running
+    tools/cleanphp.sh (#898)
+  * Enforce maintenance mode on all portal pages (#934)
+
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
   * Ensure scripts validate inputs, print something on success (#914)

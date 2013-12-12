@@ -162,9 +162,7 @@ class XMLRPCClient
   //   the name of the file written to.
   function _write_combined_credentials($file=null) {
     if (is_null($this->combined)) {
-      openssl_pkey_export($this->private_key, $pkx);
-      openssl_x509_export($this->certificate, $cx);
-      $this->combined = $pkx . $cx;
+      $this->combined = $this->private_key . $this->certificate;
     }
     if (is_null($file)) {
       $file = tempnam(sys_get_temp_dir(), "signer");
