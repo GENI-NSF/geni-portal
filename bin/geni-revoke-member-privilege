@@ -154,6 +154,7 @@ def main(argv=None):
         sys.stderr.write("%s didn't have privilege %s\n" % (options.member, privilege))
     else:
         sys.stderr.write("Revoked %s privilege %s\n" % (options.member, privilege))
+        sys.stderr.write(" *** Remember to restart apache\n")
     return 0
 
 if __name__ == "__main__":
