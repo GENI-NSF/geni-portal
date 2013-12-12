@@ -182,13 +182,18 @@ if (! isset($ma_url)) {
 
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
 $has_certificate = ! is_null($result);
+$has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $result);
 
 $kmcert_url = "kmcert.php?close=1";
 print "<button onClick=\"window.open('$kmcert_url')\">";
 if (! $has_certificate) {
   print "Generate an SSL certificate";
 } else {
-  print "Download your SSL certificate";
+  if ($has_key) {
+    print "Download your Portal generated SSL certificate and key";
+  } else {
+    print "Download your Portal signed SSL certificate";
+  }
 }
 print "</button>";
 print "</p>";
