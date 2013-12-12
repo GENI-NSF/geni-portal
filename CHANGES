@@ -7,6 +7,8 @@
     that drops cert chain. (#931)
   * Remind people to restart apache after changing privileges (#933)
   * Label download whether the cert was portal generated (#840)
+  * Removed obsolete PHP files. Applying this upgrade requires running
+    tools/cleanphp.sh (#898)
 
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
