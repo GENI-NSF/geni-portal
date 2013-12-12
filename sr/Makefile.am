@@ -68,10 +68,6 @@ cert_FILES = \
 	certs/wisconsin-ig-cm.pem \
 	certs/wisconsin-ig-of.pem
 
-www_FILES = www/sr_controller.php
-
-apache_FILES = apache2.conf
-
 db_FILES = \
 	db/postgresql/README.txt \
 	db/postgresql/data.sql \
@@ -80,7 +76,7 @@ db_FILES = \
 	db/postgresql/update-2.sql
 
 
-nobase_dist_svcdata_DATA = $(cert_FILES) $(www_FILES) $(apache_FILES) \
+nobase_dist_svcdata_DATA = $(cert_FILES) \
 				$(db_FILES)
 
 # To do: transition database initialization to a script using
