@@ -9,6 +9,7 @@
   * Label download whether the cert was portal generated (#840)
   * Removed obsolete PHP files. Applying this upgrade requires running
     tools/cleanphp.sh (#898)
+  * Enforce maintenance mode on all portal pages (#934)
 
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
