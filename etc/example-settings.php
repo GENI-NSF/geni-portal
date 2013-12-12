@@ -40,7 +40,7 @@ $portal_admin_email = 'portal-admin@example.com';
  * Bootstrap the service registry. All other services are discovered
  * via the service registry.
  */
-$service_registry_url = 'https://ch.example.com/sr/sr_controller.php';
+$service_registry_url = 'https://ch.example.com:8444/SR';
 
 /*
  * User/PW for an admin account on the iRODS Test server for use by

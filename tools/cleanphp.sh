@@ -25,3 +25,6 @@ rm -rf /usr/share/geni-ch/sa/www
 rm -rf /usr/share/geni-ch/sa/bin
 rm /usr/share/geni-ch/sr/apache2.conf
 rm -rf /usr/share/geni-ch/sr/www
+rm /var/www/secure/*_controller_test.php
+rm /var/www/secure/debug.php
+rm /var/www/secure/logging_test.php

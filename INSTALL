@@ -25,16 +25,15 @@ configuring the database (PostgreSQL).
     Add the following lines to /etc/apache2/sites-available/default-ssl:
 
       Include /usr/share/geni-ch/portal/apache2.conf
-      Include /usr/share/geni-ch/sa/apache2.conf
 
  6. Restart Apache.
 
       /usr/bin/sudo /usr/sbin/service apache2 restart
 
- 7. Test the slice authority. From the proto-ch/sa directory, run the
+FIXME OBE 7. Test the slice authority. From the proto-ch/sa directory, run the
     following command:
 
-      curl  -k -T sample.msg https://host.example.com/sa/sa_controller.php
+      curl  -k -T sample.msg https://host.example.com/SA
 
     That should output "created my slice 2" if everything is working
     properly. If no output is shown, look in

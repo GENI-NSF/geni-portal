@@ -55,32 +55,32 @@ key=%(datadir)s/sr/sr-key.pem
 cert=%(datadir)s/sa/sa-cert.pem
 key=%(datadir)s/sa/sa-key.pem
 ca=yes
-url=https://%(servicehost)s/sa/sa_controller.php
+url=https://%(servicehost)s/SA
 type=1
 
 [pa]
-cert=%(datadir)s/pa/pa-cert.pem
-key=%(datadir)s/pa/pa-key.pem
-url=https://%(servicehost)s/pa/pa_controller.php
+cert=%(datadir)s/sa/sa-cert.pem
+key=%(datadir)s/sa/sa-key.pem
+url=https://%(servicehost)s/SA
 type=2
 
 [ma]
 cert=%(datadir)s/ma/ma-cert.pem
 key=%(datadir)s/ma/ma-key.pem
 ca=yes
-url=https://%(servicehost)s/ma/ma_controller.php
+url=https://%(servicehost)s/MA
 type=3
 
 [logging]
 cert=%(datadir)s/logging/logging-cert.pem
 key=%(datadir)s/logging/logging-key.pem
-url=https://%(servicehost)s/logging/logging_controller.php
+url=https://%(servicehost)s/LOG
 type=5
 
 [cs]
 cert=%(datadir)s/cs/cs-cert.pem
 key=%(datadir)s/cs/cs-key.pem
-url=https://%(servicehost)s/cs/cs_controller.php
+url=https://%(servicehost)s/CS
 type=6
 
 [km]
