@@ -26,6 +26,7 @@
   * Ensure geni-* scripts are installed (#924)
   * Add GPO lab dev server CA cert (#925)
   * Handle error returns in geni-enable-user and disable-user (#927)
+  * Check if join project request is still pending before processing (#936)
 
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`

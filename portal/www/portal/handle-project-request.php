@@ -80,6 +80,11 @@ if (array_key_exists("request_id", $_REQUEST)) {
 } else {
   error_log("handle-project-request got no request_id");
 }
+// Make sure request is still pending
+if ($request['status'] != RQ_REQUEST_STATUS::PENDING) {
+  error_log ("handle-project-request: request is no longer pending");
+  relative_redirect('error-text.php?error=' . urlencode("REQUEST IS NO LONGER PENDING"));
+}
 
 // And the request_id should refer to a current request
 // And the user should be allowed to add a project member
@@ -145,7 +150,7 @@ if(!isset($requests)) {
 				   $project_id, RQ_REQUEST_STATUS::PENDING);
   error_log("Resetting requests");
   if (count($requests) == 0) {
-    error_log("No pending reuqests for this project, user");
+    error_log("No pending requests for this project, user");
     relative_redirect('home.php');
   }
 }
