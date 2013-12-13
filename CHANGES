@@ -10,6 +10,9 @@
   * Removed obsolete PHP files. Applying this upgrade requires running
     tools/cleanphp.sh (#898)
   * Enforce maintenance mode on all portal pages (#934)
+  * Say more when user logs out of portal about IdP sessions (#938)
+  * When the IdP doesn't provide EPPN and we redirect, also log the
+    user out from the portal so they can pick a different IdP. (#939)
 
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
