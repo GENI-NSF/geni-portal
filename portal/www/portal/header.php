@@ -122,10 +122,9 @@ function check_km_authorization($user)
   }
   if (! $user->portalIsAuthorized()) {
     $request_uri = $_SERVER['REQUEST_URI'];
-    $home = "home.php";
-    if (substr_compare($request_uri, $home, -strlen($home), strlen($home)) !== 0) {
-      relative_redirect($home);
-    }
+    //    $km_url = get_first_service_of_type(SR_SERVICE_TYPE::KEY_MANAGER);
+    $home = "kmhome.php";
+    relative_redirect($home);
   }
 }
 

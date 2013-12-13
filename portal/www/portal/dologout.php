@@ -31,7 +31,7 @@ require_once("user.php");
 $message = "You have logged out of the GENI " .
 "Portal. Note however that you are still logged in to your identity " .
 "provider (e.g. school) which may enable access to other sites. If this is a shared " .
-"computer, clear your browsing history (cookies in particular) to " .
+"computer, clear your cookies to " .
 "fully log out. (On Chrome, select 'Clear Browsing Data...' and on " .
 "Firefox select 'History->Clear Recent History...'.";
 clear_session_with_message($message);
