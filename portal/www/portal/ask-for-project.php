@@ -114,10 +114,14 @@ if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($er
   // Send the email
   $email = $user->email();
   $prettyEmail = $user->prettyEmailAddress();
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= "Reply-To: $email" . "\r\n" . "From: $prettyEmail"; 
+
   mail($requestee,
        "Please create me a GENI Project",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       $headers,
        "-f $email");
 
   // FIXME: Ticket #65: Put this as a request. Include the request ID in the email?

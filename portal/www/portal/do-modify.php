@@ -222,8 +222,10 @@ if ($removed_str !== '') {
 }
 include_once('/etc/geni-ch/settings.php');
 global $portal_admin_email;
+$headers = "Auto-Submitted: auto-generated\r\n";
+$headers .= "Precedence: bulk\r\n";
 mail($portal_admin_email, $subject,
-     $body);
+     $body, $headers);
 
 if ($pi_request and ! $is_pi) {
   // Email the experimenter that their request was received
@@ -231,9 +233,7 @@ if ($pi_request and ! $is_pi) {
   if (! is_null($newEmail) and $newEmail !== $user->email()) {
     $cc = "\r\nCc: " . $newEmail;
   }
-  $bcc = "Bcc: " . $portal_admin_email;
   $to = $user->prettyEmailAddress();
-  $replyto = "Reply-To: help@geni.net";
   //  $from = "From: GENI Portal <www-data@portal.geni.net>"; // FIXME!!!
   $subject = "Your GENI Project Lead request has been received";
   $body = "\nDear " . $user->prettyName() . ",\n";
@@ -241,8 +241,13 @@ if ($pi_request and ! $is_pi) {
   $body = $body . "\nIf you have any questions about your request or about using GENI in general, please email help@geni.net.\n";
   $body = $body . "\nThank you for your interest in GENI!\n";
   $body = $body . "\nSincerely,\n\nGENI Experimenter Support\nhelp@geni.net\n";
-  mail($to, $subject, $body,
-       $replyto . "\r\n" . $bcc . $cc);
+  $headers = "Reply-To: help@geni.net\r\n";
+  $headers .= "Bcc: " . $portal_admin_email . "\r\n";
+  $headers .= "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= $cc;
+
+  mail($to, $subject, $body, $headers);
 }
 
 //error_log("Request: " . print_r($_REQUEST, true));
