@@ -116,8 +116,13 @@ foreach($selections as $email_name => $attribs) {
     //    error_log("EMAIL_TEXT : $email_text");
     $userEmail = $user->email();
     $userPrettyEmail = $user->prettyEmailAddress();
+
+    $headers = "Auto-Submitted: auto-generated\r\n";
+    $headers .= "Precedence: bulk\r\n";
+    $headers .= "Reply-To: $userEmail" . "\r\n" . "From: $userPrettyEmail";
+
     mail($email, $email_subject, $email_text,
-	 "Reply-To: $userEmail" . "\r\n" . "From: $userPrettyEmail",
+	 $headers,
 	 "-f $userEmail");
     $num_members_invited = $num_members_invited + 1;
   }

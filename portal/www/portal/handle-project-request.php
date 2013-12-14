@@ -294,10 +294,14 @@ $reason
     $message = $message . "Thank you,
 $name\n";
 
+    $headers = "Auto-Submitted: auto-generated\r\n";
+    $headers .= "Precedence: bulk\r\n";
+    $headers .= "Reply-To: $email" . "\r\n" . "From: $name <$email>";
+
     mail($member_name . " <" . $member->email() . ">",
        "Added to GENI project $project_name",
-       $message,
-       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+	 $message, $headers);
+       
 
     $_SESSION['lastmessage'] = "Added $member_name to project $project_name as $rolestr";
 

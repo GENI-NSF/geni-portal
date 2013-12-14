@@ -135,7 +135,9 @@ foreach($selections as $select_id => $attribs) {
   // Send acceptance/rejection letter
   $email_message  = "Your request to join GENI project " . $project_name . 
     " has been " . $resolution_status_label . " by " . $user->prettyName() . ".\n\nGENI Portal Operations";
-  mail($email_address, $email_subject, $email_message);
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  mail($email_address, $email_subject, $email_message,$headers);
 
 }
 
