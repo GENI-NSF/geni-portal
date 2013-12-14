@@ -14,6 +14,7 @@
   * When the IdP doesn't provide EPPN and we redirect, also log the
     user out from the portal so they can pick a different IdP. (#939)
   * Move slice membership table above AM list (#819)
+  * Fix redirect to KM if portal is not authorized (#940)
 
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
