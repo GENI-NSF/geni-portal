@@ -166,9 +166,9 @@ if (count($success)) {
   $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
 						$slice['slice_id']);
   $log_attributes = array_merge($project_attributes, $slice_attributes);
-  log_event($log_url, Portal::getInstance(),
+  log_event($log_url, $user,
   		        "Deleted resources from slice " . $slice_name,
-          		$log_attributes, $slice['owner_id']);
+          		$log_attributes, $user->account_id);
 }
 
 unset($slice2);

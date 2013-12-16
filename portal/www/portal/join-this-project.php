@@ -147,7 +147,7 @@ Thank you,\n" . $user->prettyName() . "\n";
 
   $name = $user->prettyName();
   if (isset($log_url)) {
-    log_event($log_url, Portal::getInstance(),
+    log_event($log_url, $user,
 	      "$name requested to join project $project_name", 
 	      $attributes, $user->account_id);
   }
