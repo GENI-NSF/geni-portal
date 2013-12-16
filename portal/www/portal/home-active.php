@@ -118,7 +118,7 @@ print "<b>LabWiki</b></button> ";
 <table>
 <?php
    // FIXME: foreach project or slice where user is admin or lead, get log entries for that context
-   // and forach slice where user is ad
+   // and foreach slice where user is ad
 require_once('logging_client.php');
 require_once('sr_constants.php');
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
