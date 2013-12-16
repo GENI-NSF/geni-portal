@@ -38,6 +38,44 @@ require_once 'geni_syslog.php';
  */
 const MAX_ERROR_CHARS = 1500;
 
+// A non standard result handler, that does not redirect to the error-text page on error
+// Use this when making calls after starting the page header
+// Be sure to handle a null result carefully
+// To use this, set the global $put_message_result_handler='no_redirect_result_handler';
+// Be sure to unset that global when done
+function no_redirect_result_handler($result)
+{
+  $not_array = ($result == null) || !is_array($result);
+  $not_standard_result = $not_array ||
+    !array_key_exists(RESPONSE_ARGUMENT::CODE, $result) ||
+    !array_key_exists(RESPONSE_ARGUMENT::VALUE, $result) ||
+    !array_key_exists(RESPONSE_ARGUMENT::OUTPUT, $result);
+  $not_fault_result = $not_array || !isset($result['faultString']);
+
+  if ($not_standard_result && $not_fault_result) {
+    error_log("no_redirect got nonfatal error: System error: Invalid response " . print_r($result, true));
+    return null;
+  }
+
+  if (isset($result['faultString'])) {
+    $short_string = substr($result['faultString'], 0,
+			   MAX_ERROR_CHARS);
+    error_log("no_redirect got nonfatal error from: SCRIPT_NAME = " . $_SERVER['SCRIPT_NAME']);
+    error_log("faultString = " . $result["faultString"]);
+    return null;
+  }
+
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    error_log("no_redirect got nonfatal error from: SCRIPT_NAME = " . $_SERVER['SCRIPT_NAME']);
+    error_log("ERROR.CODE " . print_r($result[RESPONSE_ARGUMENT::CODE], true));
+    error_log("ERROR.VALUE " . print_r($result[RESPONSE_ARGUMENT::VALUE], true));
+    error_log("ERROR.OUTPUT " . print_r($result[RESPONSE_ARGUMENT::OUTPUT], true));
+
+    return null;
+  }
+  return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
 // CH API XML/RPC client abstraction.
 // If $signer (also called user) is supplied, will use private key and cert to sign 
 // messages.
@@ -171,7 +209,6 @@ class XMLRPCClient
     return $file;
   }
 
-
   // unpack the CHAPI results, retaining compatibilty with the 
   // old put_message functionality:  If $put_message_result_handler
   // is defined (and not null), invoke it to process the results
@@ -179,6 +216,13 @@ class XMLRPCClient
   //
   function result_handler($result)
   {
+    // allow a custom result handler
+    global $put_message_result_handler;
+    if (isset($put_message_result_handler)) {
+      if ($put_message_result_handler != null) {
+	return $put_message_result_handler($result);
+      }
+    }
 
     $not_array = ($result == null) || !is_array($result);
     $not_standard_result = $not_array ||
@@ -201,14 +245,6 @@ class XMLRPCClient
                         . urlencode($short_string));
     }
 
-    // support the old functionality
-    global $put_message_result_handler;
-    if (isset($put_message_result_handler)) {
-      if ($put_message_result_handler != null) {
-	return $put_message_result_handler($result);
-      }
-    }
-   
     // default handling
     if (isset($result['faultString'])) {
 //      error_log("FS = " . $result['faultString']);

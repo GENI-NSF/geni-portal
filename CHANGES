@@ -16,6 +16,8 @@
   * Move slice membership table above AM list (#819)
   * Fix redirect to KM if portal is not authorized (#940)
   * Set bulk headers in automated emails (#871)
+  * Avoid looking up null member IDs and do not redirect on error
+    looking up member names. (#935)
 
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
