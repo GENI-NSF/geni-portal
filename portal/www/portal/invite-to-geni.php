@@ -88,10 +88,14 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   }
   $email = $user->email();
   $prettyEmail = $user->prettyEmailAddress();
+
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= "Reply-To: $email" . "\r\n" . "From: $prettyEmail";
   mail($to,
        "Join GENI!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       $headers,
        "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
 
   // Put up a page saying we invited them.
