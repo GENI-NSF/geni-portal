@@ -89,17 +89,6 @@ $slice_owner_names = $unexpired_slice_owner_names;
 
 if (count($my_slice_objects) > 0) {
 
-  print "\n<table>\n";
-  print ("<tr><th>Slice Name</th>");
-  print ("<th>Project</th>");
-  print ("<th>Slice Expiration</th>");
-  print ("<th>Slice Owner</th>"
-         . "<th>Actions</th>");
-  if ($portal_enable_abac) {
-    print "<th>ABAC Credential</th>";
-  }
-  print "</tr>\n";
-
   $base_url = relative_url("slicecred.php?");
   $slice_base_url = relative_url("slice.php?");
   $listres_base_url = relative_url("listresources.php?");
@@ -110,6 +99,7 @@ if (count($my_slice_objects) > 0) {
   $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
   $labwiki_base_url = 'http://emmy9.casa.umass.edu:4000/?';
+
   $num_slices = count($my_slice_objects);
   if ($num_slices==1) {
       print "<p><i>You have access to <b>1</b> slice.</i></p>";
@@ -117,105 +107,60 @@ if (count($my_slice_objects) > 0) {
        print "<p><i>You have access to <b>".$num_slices."</b> slices.</i></p>";
   }
 
+  //separate slices for which $user is lead
+  $lead_slices = array();
+  $nonlead_slices = array();
+
+  foreach ($my_slice_objects as $slice) {
+    if ($slice['owner_id'] === $user->account_id) {
+      $lead_slices[] = $slice;
+    } else {
+      $nonlead_slices[] = $slice;
+    } 
+  }
+
   function cmp($a,$b) {
     return strcmp(strtolower($a['slice_name']),strtolower($b['slice_name']));
   }
 
-  usort($my_slice_objects,"cmp");
+  usort($lead_slices,"cmp");
+  usort($nonlead_slices,"cmp");
 
-  foreach ($my_slice_objects as $slice) {
-    $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-    $slice_expired = 'f';
-    if (array_key_exists(SA_SLICE_TABLE_FIELDNAME::EXPIRED, $slice)) {
-      $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
-    }
-    $isSliceExpired = False;
-    $disable_buttons_str = "";
-    if (isset($slice_expired) && convert_boolean($slice_expired)) {
-      $isSliceExpired = True;
-      $disable_buttons_str = " disabled";
-    }
-    $args['slice_id'] = $slice_id;
-    $query = http_build_query($args);
-    $query = $query;
-    $slicecred_url = $base_url . $query;
-    $slice_url = $slice_base_url . $query;
-    $sliceresource_url = $resource_base_url . $query;
-    $delete_sliver_url = $delete_sliver_base_url . $query;
-    $sliver_status_url = $sliver_status_base_url . $query;
-    $sliceabac_url = $abac_url . $query;
-    $sliceflack_url = $flack_url . $query;
-    $listres_url = $listres_base_url . $query;
-    $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-    $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
-    $expiration = dateUIFormat($expiration_db);
-    $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
-    $gemini_url = $gemini_base_url . $query;
-    $labwiki_url = $labwiki_base_url . $query;
-
-    // Determine privileges to this slice for this user
-    $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
-					      CS_CONTEXT_TYPE::SLICE, 
-					      $slice_id);
-    $add_slivers_disabled = "";
-    if(!$add_slivers_privilege or $isSliceExpired) { $add_slivers_disabled = $disabled; }
-    
-    $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
-						 CS_CONTEXT_TYPE::SLICE, 
-						 $slice_id);
-    $delete_slivers_disabled = "";
-    if(!$delete_slivers_privilege or $isSliceExpired) { $delete_slivers_disabled = $disabled; }
-
-    $renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE,
-					      CS_CONTEXT_TYPE::SLICE, 
-					      $slice_id);
-    $renew_disabled = "";
-    if(!$renew_slice_privilege or $isSliceExpired) { $renew_disabled = $disabled; }
-
-    // FIXME: Shouldn't we be using this?
-    //    $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
-    //					       CS_CONTEXT_TYPE::SLICE, 
-    //					       $slice_id);
-
-    $get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
-						       CS_CONTEXT_TYPE::SLICE, $slice_id);
-    $get_slice_credential_disable_buttons = "";
-    if(!$get_slice_credential_privilege or $isSliceExpired) {$get_slice_credential_disable_buttons = $disabled; }
-
-
-
-					       
-    // Lookup the project for this project ID
-    $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
-    $project = $project_objects[ $slice_project_id ];
-
-    $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
-    $slice_owner_name = $slice_owner_names[$slice_owner_id];
-    print "<tr>"
-      . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
-         . "</a></td>");
-    print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
-    print "<td>" . htmlentities($expiration) . "</td>";
-    // FIXME: Make this a mailto. Need to use member_objects to do init_from_record of a member and then retrieve the email address
-    print "<td>" . htmlentities($slice_owner_name) . "</td>";
-    //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
-    print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
-    print ("<button onClick=\"window.location='$sliver_status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
-    print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
-    print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
-    $hostname = $_SERVER['SERVER_NAME'];
-    print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
-
-      print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
-
-      print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>";
-
-    print "</td>";
+  if (count($lead_slices) > 0) {
+    print "<h3>Slices on which I am lead</h3>";
+    print "\n<table>\n";
+    print ("<tr><th>Slice Name</th>");
+    print ("<th>Project</th>");
+    print ("<th>Slice Expiration</th>");
+    print ("<th>Slice Lead</th>"
+	   . "<th>Actions</th>");
     if ($portal_enable_abac) {
-      print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";
+      print "<th>ABAC Credential</th>";
     }
     print "</tr>\n";
+
+    foreach ($lead_slices as $slice) {
+      list_slice($slice,$user);
+    }
+  }
+  print "</table>\n";
+
+  if (count($nonlead_slices) > 0) {
+    print "<h3>Slices on which I am not lead</h3>";
+    print "\n<table>\n";
+    print ("<tr><th>Slice Name</th>");
+    print ("<th>Project</th>");
+    print ("<th>Slice Expiration</th>");
+    print ("<th>Slice Lead</th>"
+	   . "<th>Actions</th>");
+    if ($portal_enable_abac) {
+      print "<th>ABAC Credential</th>";
+    }
+    print "</tr>\n";
+
+    foreach ($nonlead_slices as $slice) {
+      list_slice($slice,$user);
+    }
   }
   print "</table>\n";
 } else {
@@ -225,3 +170,101 @@ if (count($my_slice_objects) > 0) {
     print "<p><i>You do not have access to any slices.</i></p>\n";
   }
 }
+
+function list_slice($slice,$user) {
+  global $project_objects, $slice_owner_names, $portal_enable_abac;
+  global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
+  global $delete_sliver_base_url,$sliver_status_base_url, $abac_url, $flack_url;
+  global $gemini_base_url, $labwiki_base_url;
+
+  $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
+  $slice_expired = 'f';
+  if (array_key_exists(SA_SLICE_TABLE_FIELDNAME::EXPIRED, $slice)) {
+      $slice_expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
+  }
+  $isSliceExpired = False;
+  $disable_buttons_str = "";
+  if (isset($slice_expired) && convert_boolean($slice_expired)) {
+    $isSliceExpired = True;
+    $disable_buttons_str = " disabled";
+  }
+  $args['slice_id'] = $slice_id;
+  $query = http_build_query($args);
+  $query = $query;
+  $slicecred_url = $base_url . $query;
+  $slice_url = $slice_base_url . $query;
+  $sliceresource_url = $resource_base_url . $query;
+  $delete_sliver_url = $delete_sliver_base_url . $query;
+  $sliver_status_url = $sliver_status_base_url . $query;
+  $sliceabac_url = $abac_url . $query;
+  $sliceflack_url = $flack_url . $query;
+  $listres_url = $listres_base_url . $query;
+  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
+  $expiration = dateUIFormat($expiration_db);
+  $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
+  $gemini_url = $gemini_base_url . $query;
+  $labwiki_url = $labwiki_base_url . $query;
+  
+  // Determine privileges to this slice for this user
+  $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
+					    CS_CONTEXT_TYPE::SLICE, 
+					    $slice_id);
+  $add_slivers_disabled = "";
+  if(!$add_slivers_privilege or $isSliceExpired) { $add_slivers_disabled = $disabled; }
+  
+  $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
+					       CS_CONTEXT_TYPE::SLICE, 
+					       $slice_id);
+  $delete_slivers_disabled = "";
+  if(!$delete_slivers_privilege or $isSliceExpired) { $delete_slivers_disabled = $disabled; }
+  
+  $renew_slice_privilege = $user->isAllowed(SA_ACTION::RENEW_SLICE,
+					    CS_CONTEXT_TYPE::SLICE, 
+					    $slice_id);
+  $renew_disabled = "";
+  if(!$renew_slice_privilege or $isSliceExpired) { $renew_disabled = $disabled; }
+  
+  // FIXME: Shouldn't we be using this?
+  //    $lookup_slice_privilege = $user->isAllowed(SA_ACTION::LOOKUP_SLICE, 
+  //					       CS_CONTEXT_TYPE::SLICE, 
+  //					       $slice_id);
+
+  $get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
+						     CS_CONTEXT_TYPE::SLICE, $slice_id);
+  $get_slice_credential_disable_buttons = "";
+  if(!$get_slice_credential_privilege or $isSliceExpired) {$get_slice_credential_disable_buttons = $disabled; }
+					       
+  // Lookup the project for this project ID
+  $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+  $project = $project_objects[ $slice_project_id ];
+  
+  $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+  $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
+  $slice_owner_name = $slice_owner_names[$slice_owner_id];
+  print "<tr>"
+    . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
+       . "</a></td>");
+  print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
+  print "<td>" . htmlentities($expiration) . "</td>";
+  // FIXME: Make this a mailto. Need to use member_objects to do init_from_record of a member and then retrieve the email address
+  print "<td>" . htmlentities($slice_owner_name) . "</td>";
+  //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
+  print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
+  print ("<button onClick=\"window.location='$sliver_status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
+  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
+  print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
+  $hostname = $_SERVER['SERVER_NAME'];
+  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
+  
+  print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
+  
+  print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>";
+  
+  print "</td>";
+  if ($portal_enable_abac) {
+    print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";
+  }
+  print "</tr>\n";
+}
+
