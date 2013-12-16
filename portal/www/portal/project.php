@@ -160,7 +160,7 @@ include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 print "<h1>GENI Project: " . "<i>" . $project_name . "</i>" . "$result</h1>\n";
 if ($expired === True) {
-  print "<p>Project is Expired.</p>\n";
+  print "<p class='warn'>This project is expired!</p>\n";
 }
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
