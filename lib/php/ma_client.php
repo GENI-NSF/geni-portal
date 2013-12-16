@@ -86,6 +86,10 @@ function register_ssh_key($ma_url, $signer, $member_id, $filename,
 // Lookup public SSH keys associated with user
 function lookup_public_ssh_keys($ma_url, $signer, $member_id)
 {
+  if (! isset($member_id) || is_null($member_id) || count($member_id) == 0 || (count($member_id) == 1 && (! isset($member_id[0]) || is_null($member_id[0]) || $member_id[0] == ''))) {
+    error_log("Cannot lookup_public_ssh_keys on empty member ID: " . print_r($member_id, true));
+    return array();
+  }
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
@@ -112,6 +116,10 @@ function lookup_public_ssh_keys($ma_url, $signer, $member_id)
 // Lookup private SSH keys associated with user
 function lookup_private_ssh_keys($ma_url, $signer, $member_id)
 {
+  if (! isset($member_id) || is_null($member_id) || count($member_id) == 0 || (count($member_id) == 1 && (! isset($member_id[0]) || is_null($member_id[0]) || $member_id[0] == ''))) {
+    error_log("Cannot lookup_private_ssh_keys on empty member ID: " . print_r($member_id, true));
+    return array();
+  }
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PRIVATE', 'KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
@@ -192,6 +200,10 @@ function delete_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
 // Lookup inside keys/certs associated with a user UUID
 function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
 {
+  if (! isset($member_uuid) || is_null($member_uuid) || count($member_uuid) == 0 || (count($member_uuid) == 1 && (! isset($member_uuid[0]) || is_null($member_uuid[0]) || $member_uuid[0] == ''))) {
+    error_log("Cannot lookup_keys_and_certs on empty member ID: " . print_r($member_uuid, true));
+    return array();
+  }
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('MEMBER_UID'=>$member_uuid),
 		   'filter'=>array('_GENI_MEMBER_INSIDE_PRIVATE_KEY'));
@@ -290,7 +302,7 @@ function _attkey_to_portalkey($k) {
 }
 
 
-// member abstration class
+// member abstraction class
 class Member {
   function __construct($id=null) {
     $this->member_id = $id;
@@ -307,8 +319,12 @@ class Member {
       return $this->displayName;
     } elseif (isset($this->first_name, $this->last_name)) {
       return $this->first_name . " " . $this->last_name;
-    } else {
+    } elseif (isset($this->mail)) {
+      return $this->mail;
+    } elseif (isset($this->eppn)) {
       return $this->eppn;
+    } else {
+      return "NONE";
     }
   }
 }
@@ -340,6 +356,11 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
   }
   $members = array();
 
+  if ($identifying_key == "MEMBER_UID" && (! isset($identifying_value) || is_null($identifying_value) || count($identifying_value) == 0 || (count($identifying_value) == 1 && (! isset($identifying_value[0]) || is_null($identifying_value[0]) || $identifying_value[0] == '')))) {
+    error_log("Cannot ma_lookup_members_by_identifying by MEMBER_UID for empty id. Value: " . print_r($identifying_value, true));
+    return $members;
+  }
+
   //error_log( " lookup_members_by_identifying = " . print_r($identifying_key, true) . " // ". print_r($identifying_value, true));
 
   $client = XMLRPCClient::get_client($ma_url, $signer);
@@ -350,7 +371,10 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
   
   $ids = array();
   foreach ($pubres as $urn => $pubrow) {
-    $ids[] = $pubrow['MEMBER_UID'];
+    $uid = $pubrow['MEMBER_UID'];
+    if (isset($uid) && ! is_null($uid) && $uid != '') {
+      $ids[] = $uid;
+    }
   }
   $idrow = $client->lookup_identifying_member_info($client->creds(), 
 						   array('match' => array('MEMBER_UID'=>$ids)));
@@ -458,6 +482,10 @@ function ma_create_certificate($ma_url, $signer, $member_id, $csr=NULL)
 function ma_lookup_certificate($ma_url, $signer, $member_id)
 {
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
+  if (is_null($member_urn)) {
+    error_log("ma_lookup_cert: No member URN found for ID: " . $member_id);
+    return NULL;
+  }
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $public_options = array('match' => array('MEMBER_UID'=>$member_id),
                           'filter' => array('_GENI_MEMBER_SSL_CERTIFICATE'));
@@ -499,9 +527,15 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $result = array();
 
-  $pubdets = _lookup_public_members_details($client, $signer, $member_uuids);
+  $uids = array();
+  foreach($member_uuids as $uuid) {
+    if (isset($uuid) && ! is_null($uuid) && $uuid != '') {
+      $uids[] = $uuid;
+    }
+  }
+  $pubdets = _lookup_public_members_details($client, $signer, $uids);
   $iddets = _lookup_identifying_members_details($client, $signer,
-                                                $member_uuids);
+                                                $uids);
   foreach ($pubdets as $urn => $pubdet) {
     $iddet = $iddets[$urn];
     $alldet = array_merge($pubdet,$iddet);
@@ -513,6 +547,13 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
     $uid = $pubdet['MEMBER_UID'];
     $result[$uid] = $attrs;
   }
+
+  // Return a null if we didn't get a result for one ID??
+  //  foreach ($member_uuids as $uuid) {
+  //    if (! array_key_exists($uuid, $result)) {
+  //      $result[$uuid] = null;
+  //    }
+  //  }
   return $result;
 }
 
@@ -556,6 +597,10 @@ function _lookup_identifying_member_details($client, $signer, $uid)
 function _lookup_public_members_details($client, $signer, $uid)
 {
   global $DETAILS_PUBLIC;
+  if (! isset($uid) || is_null($uid) || count($uid) == 0 || (count($uid) == 1 && (! isset($uid[0]) || is_null($uid[0]) || $uid[0] == ''))) {
+    error_log("Cannot lookup_public_member_details for empty uid: " . print_r($uid, true));
+    return array();
+  }
   //error_log("LPMD.UID = " . print_r($uid, true));
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_PUBLIC);
@@ -580,6 +625,10 @@ function _lookup_identifying_members_details($client, $signer, $uid)
 {
   global $DETAILS_IDENTIFYING;
   //error_log("LIMD.UID = " . print_r($uid, true));
+  if (! isset($uid) || is_null($uid) || count($uid) == 0 || (count($uid) == 1 && (! isset($uid[0]) || is_null($uid[0]) || $uid[0] == ''))) {
+    error_log("Cannot lookup_identifying_member_details for empty uid: " . print_r($uid, true));
+    return array();
+  }
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_IDENTIFYING);
   $r = $client->lookup_identifying_member_info($client->creds(), 
@@ -614,32 +663,55 @@ function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
 function lookup_member_names($ma_url, $signer, $member_uuids)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $options = array('match'=> array('MEMBER_UID'=>$member_uuids),
+  // Exclude null/empty UIDS in member_uuids from our query
+  $uids = array();
+  foreach($member_uuids as $uuid) {
+    if (isset($uuid) && ! is_null($uuid) && $uuid != '') {
+      $uids[] = $uuid;
+      //    } else {
+      // Like when an authority is the actor in a logged event
+      //      error_log("lookup_member_names skipping an empty uid");
+    }
+  }
+  $options = array('match'=> array('MEMBER_UID'=>$uids),
 		   'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
                                    '_GENI_MEMBER_DISPLAYNAME',
                                    'MEMBER_FIRSTNAME',
                                    'MEMBER_LASTNAME',
                                    'MEMBER_EMAIL'));
   //error_log( " _lmns = " . print_r($member_uuids, true));
+
+  // Replace the default result handler with one that will not
+  // redirect to the error page on an error being returned.
+  // This way we can continue loading pages that use this
+  // Although we get a name of NONE for all members the user asked about
+  // on an error
+  global $put_message_result_handler;
+  $put_message_result_handler='no_redirect_result_handler';
   $res = $client->lookup_identifying_member_info($client->creds(), $options);
+  $put_message_result_handler = null;
+
   $ids = array();
-  foreach($res as $member_urn => $member_info) {
-    $member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
-    $displayName = $member_info['_GENI_MEMBER_DISPLAYNAME'];
-    $lastName = $member_info['MEMBER_LASTNAME'];
-    $firstName = $member_info['MEMBER_FIRSTNAME'];
-    $email = $member_info['MEMBER_EMAIL'];
-    if ($displayName) {
-      $ids[$member_uuid] = $displayName;
-    } else if ($lastName && $firstName) {
-      $ids[$member_uuid] = "$firstName $lastName";
-    } else if ($email) {
-      $ids[$member_uuid] = $email;
-    } else {
-      parse_urn($member_urn, $authority, $type, $username);
-      $ids[$member_uuid] = $username;
+  if (isset($res) && ! is_null($res)) {
+    foreach($res as $member_urn => $member_info) {
+      $member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
+      $displayName = $member_info['_GENI_MEMBER_DISPLAYNAME'];
+      $lastName = $member_info['MEMBER_LASTNAME'];
+      $firstName = $member_info['MEMBER_FIRSTNAME'];
+      $email = $member_info['MEMBER_EMAIL'];
+      if ($displayName) {
+	$ids[$member_uuid] = $displayName;
+      } else if ($lastName && $firstName) {
+	$ids[$member_uuid] = "$firstName $lastName";
+      } else if ($email) {
+	$ids[$member_uuid] = $email;
+      } else {
+	parse_urn($member_urn, $authority, $type, $username);
+	$ids[$member_uuid] = $username;
+      }
     }
   }
+
   // Federation API apparently doesn't give a return entry for a UID it doesn't know about,
   // since it can't make up a URN
   // But clients expect some entry for each ID they query for
@@ -678,6 +750,10 @@ function get_member_urn($ma_url, $signer, $id) {
   if (array_key_exists($id, $cache)) {
       return $cache[$id];
   } else {
+    if (! isset($id) || is_null($id) || count($id) == 0 || (count($id) == 1 && (! isset($id[0]) || is_null($id[0]) || $id[0] == ''))) {
+      error_log("Cannot get_member_urn for empty id: " . print_r($id, true));
+      return null;
+    }
     $client = XMLRPCClient::get_client($ma_url, $signer);
     $options = array('match'=>array('MEMBER_UID'=>$id),
 		     'filter'=>array('MEMBER_URN'));
