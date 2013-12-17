@@ -87,11 +87,11 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
     $to = preg_replace("/, $/", "", $to);
   }
   $email = $user->email();
-  $prettyEmail = $user->prettyEmailAddress();
+  $name = $user->prettyName();
 
   $headers = "Auto-Submitted: auto-generated\r\n";
   $headers .= "Precedence: bulk\r\n";
-  $headers .= "Reply-To: $email" . "\r\n" . "From: $prettyEmail";
+  $headers .= "Reply-To: $email" . "\r\n" . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>"; 
   mail($to,
        "Join GENI!",
        $message,

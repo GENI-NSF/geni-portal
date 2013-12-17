@@ -19,6 +19,7 @@
   * Avoid looking up null member IDs and do not redirect on error
     looking up member names. (#935)
   * Organize slices by whether I'm lead (#710)
+  * Don't impersonate user email (#879)
 
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
