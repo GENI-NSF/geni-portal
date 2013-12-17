@@ -299,6 +299,25 @@ class GeniUser
     return $keys;
   }
 
+  // Retrieve a list of user objecs for a list member UIDs
+  // Don't pull information from identity tables
+  function fetchMembersNoIdentity($member_ids)
+  {
+    $members = array();
+    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+    $other_member_ids = array();
+    foreach($member_ids as $member_id) {
+      if ($member_id != $this->account_id) {
+	$other_member_ids[] = $member_id;
+      } else {
+	$members[] = $this->ma_member;
+      }
+    }
+    $other_members = ma_lookup_members_by_identifying($ma_url, $this, 'MEMBER_UID', $other_member_ids);
+    $members = array_merge($members, $other_members);
+    return $members;
+  }
+
   function fetchMember($member_id)
   {
     if ($this->account_id == $member_id) return $this;
@@ -335,39 +354,6 @@ class GeniUser
 
 } // End of class GeniUser
 
-function clear_session_with_message($message) {
-  session_start();
-  // On logout, clear the session. If you want to flush the cache,
-  // simply logout and log back in again.
-  foreach (array_keys($_SESSION) as $k) {
-    unset($_SESSION[$k]);
-  }
-  if (isset($message) && ! is_null($message) && trim($message) != "")
-  {
-    $_SESSION['lastmessage'] = $message;
-  }
-  session_write_close();
-}
-
-function get_incommon_redirect_url()
-{
-  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
-  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
-  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
-  $query = http_build_query($params);
-  return $error_service_url . $query;
-}
-
-function get_logout_url() {
-  $protocol = "http";
-  if (array_key_exists('HTTPS', $_SERVER)) {
-    $protocol = "https";
-  }
-  $host  = $_SERVER['SERVER_NAME'];
-  
-  return "$protocol://$host/Shibboleth.sso/Logout";
-}
-
 /* Insufficient attributes were released.
  * Funnel this back through the incommon
  * service to help the user understand.
@@ -375,13 +361,13 @@ function get_logout_url() {
  */
 function incommon_attribute_redirect()
 {
-  $url = get_incommon_redirect_url();
-  clear_session_with_message(null);
-  $shib_logout_url = get_logout_url();
-  $encoded_redir_url = urlencode($url);
-  $logout_and_error_url = "$shib_logout_url?return=$encoded_redir_url";
-  error_log("Insufficient attributes. Redirecting to $logout_and_error_url");
-  header("Location: $logout_and_error_url");
+  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
+  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+  $query = http_build_query($params);
+  $url = $error_service_url . $query;
+  error_log("Insufficient attributes. Redirecting to $url");
+  header("Location: $url");
   exit;
 }
 
@@ -398,9 +384,6 @@ function send_attribute_fail_email()
   global $portal_admin_email;
   $server_host = $_SERVER['SERVER_NAME'];
   $body = "An access attempt on $server_host failed";
-  if (array_key_exists("Shib-Identity-Provider", $_SERVER)) {
-    $body .= " from " . $_SERVER["Shib-Identity-Provider"];
-  }
   $body .= " due to insufficient attributes.";
   $body .= "\n\nServer environment:\n";
   // Put the entire HTTP environement in the email
@@ -503,7 +486,7 @@ function geni_loadUser()
 
   // TODO: Look up in cache here
   if (! array_key_exists('eppn', $_SERVER)) {
-    // Required attributes were not found - redirect to a gentle error page
+    // Requird attributes were not found - redirect to a gentle error page
     send_attribute_fail_email();
     incommon_attribute_redirect();
   }
