@@ -97,11 +97,10 @@ Thank you,\n" . $user->prettyName() . "\n";
   }
   $email = $user->email();
   $name = $user->prettyName();
-  $prettyEmail = $user->prettyEmailAddress();
 
   $headers = "Auto-Submitted: auto-generated\r\n";
   $headers .= "Precedence: bulk\r\n";
-  $headers .= "Reply-To: $email" . "\r\n" . "From: $prettyEmail";
+  $headers .= "Reply-To: $email" . "\r\n" . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>"; 
 
 
   mail($to,
