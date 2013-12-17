@@ -63,6 +63,8 @@ if (! array_key_exists('project_id', $_REQUEST)) {
   relative_redirect("home.php");
 }
 $project_id = $_REQUEST['project_id'];
+
+
 unset($_REQUEST['project_id']);
 
 if (array_key_exists('project_name', $_REQUEST)) {
@@ -81,6 +83,12 @@ if (! isset($project_details) or is_null($project_details)) {
 }
 
 $project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+
+if (! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+  error_log("User " . $user->prettyName() . " not allowed to handle project requests on this project " . $project_name);
+  relative_redirect("home.php");
+}
+
 $lead_id = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 
 $lead_name = lookup_member_names($ma_url, $user, array($lead_id));
@@ -99,8 +107,40 @@ foreach($selections as $select_id => $attribs) {
   $member_id = $attribs_parts[1];
   // FIXME: Validate that the member_id is reasonable
   $request_id = $attribs_parts[2];
-  // FIXME: Validate that the request_id is reasonable - still open, etc
+
+  // Validate that the request_id is reasonable - still open, etc
+
+  $request = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
+  if ($request['context_id'] != $project_id) {
+    error_log("do-handle-project-request: request $request_id not for this project $project_id");
+    continue;
+  }
+
+  // Make sure request is still pending
+  if ($request['status'] != RQ_REQUEST_STATUS::PENDING) {
+    $status = "rejected";
+    if ($request['status'] == RQ_REQUEST_STATUS::APPROVED) {
+      $status = "approved";
+    } elseif ($request['status'] == RQ_REQUEST_STATUS::CANCELLED) {
+      $status = "cancelled";
+    }
+    error_log ("handle-project-request: request $request_id is no longer pending - it is $status");
+    continue;
+    //  relative_redirect('error-text.php?error=' . urlencode("Request was " . $status));
+  }
+
+  $req_member_id = $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR];
+  if ($req_member_id != $member_id) {
+    error_log("do-handle-proj-request: request $request_id member $req_member_id for diff member than $member_id expected");
+    continue;
+  }
+  if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN) {
+    error_log("do-handle-proj-request: request $request_id is not a project join request");
+    continue;
+  }
+
   $email_address = $attribs_parts[3];
+  // FIXME: Get a pretty member name here for the email message
   // error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
   $resolution_status = RQ_REQUEST_STATUS::APPROVED;
   // FIXME: Add the role name
@@ -122,6 +162,8 @@ foreach($selections as $select_id => $attribs) {
     // This is an 'add' selection
     // Add member 
     add_project_member($sa_url, $user, $project_id, $member_id, $role);
+    // I _believe_ we'll have been redirected to the error page if the add fails
+
     // and send acceptance letter
   }
   // Resolve pending request
@@ -133,13 +175,22 @@ foreach($selections as $select_id => $attribs) {
   // -- ticket #876
 
   // Send acceptance/rejection letter
+  $hostname = $_SERVER['SERVER_NAME'];
   $email_message  = "Your request to join GENI project " . $project_name . 
-    " has been " . $resolution_status_label . " by " . $user->prettyName() . ".\n\nGENI Portal Operations";
+    " has been " . $resolution_status_label . " by " . $user->prettyName() . ".\n\n";
+  if (isset($reason) && $reason != '') {
+    $email_message = $email_message . "Reason:
+$reason
+
+  ";
+  }
+  $email_message = $email_message . "GENI Portal Operations";
+
   $headers = "Auto-Submitted: auto-generated\r\n";
   $headers .= "Precedence: bulk\r\n";
   mail($email_address, $email_subject, $email_message,$headers);
 
-}
+} // end of loop over rows to process
 
 $_SESSION['lastmessage'] = "Added $num_members_added members; Rejected $num_members_rejected members"; 
 
