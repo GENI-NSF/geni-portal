@@ -120,6 +120,13 @@ GENI allows users to log in using their existing accounts via our partnership in
 </li>
 </ul>
 
+<h3>If your account is with the GENI Identity Provider but you have forgotten your password...</h3>
+<ul>
+<li>
+... Go <a href="https://shib-idp.geni.net/geni/request.html">here</a> and submit an account request using the same username and email address that you used last time, provide a new password, and be sure to check the 'Password Change Request' box.
+</li>
+</ul>
+
 <h3>For all other issues...</h3>
 <ul>
 <li>

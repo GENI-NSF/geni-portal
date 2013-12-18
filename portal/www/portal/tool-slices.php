@@ -176,6 +176,7 @@ function list_slice($slice,$user) {
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
   global $delete_sliver_base_url,$sliver_status_base_url, $abac_url, $flack_url;
   global $gemini_base_url, $labwiki_base_url;
+  global $disabled;
 
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $slice_expired = 'f';
@@ -266,5 +267,6 @@ function list_slice($slice,$user) {
     print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";
   }
   print "</tr>\n";
-}
+} // end of list_slice function
+
 
