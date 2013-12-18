@@ -18,6 +18,10 @@
   * Set bulk headers in automated emails (#871)
   * Avoid looking up null member IDs and do not redirect on error
     looking up member names. (#935)
+  * Organize slices by whether I'm lead (#710)
+  * Don't impersonate user email (#879)
+  * Parametrize Flack URL (#941)
+  * Disable most buttons on an expired project (#897)
 
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)

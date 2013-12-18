@@ -336,7 +336,9 @@ class GeniUser
 } // End of class GeniUser
 
 function clear_session_with_message($message) {
-  session_start();
+  if (session_id() == '') {
+    session_start();
+  }
   // On logout, clear the session. If you want to flush the cache,
   // simply logout and log back in again.
   foreach (array_keys($_SESSION) as $k) {

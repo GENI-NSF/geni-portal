@@ -61,7 +61,7 @@ if (isset($slice) && $slice != "None") {
 }
 
 /* Set up defaults, override if AM is specified. */
-$am_name = None;
+$am_name = null;
 $confirm_msg = 'Delete all reserved resources at all aggregates?';
 $edit_url = "sliverdelete.php?slice_id=$slice_id";
 if (isset($am_id) && $am_id) {
