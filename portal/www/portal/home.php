@@ -27,20 +27,10 @@ require_once('portal.php');
 require_once('cs_constants.php');
 require_once('maintenance_mode.php');
 
-
-
 /* $GENI_TITLE = "GENI Portal Home"; */
 /* $ACTIVE_TAB = "Home"; */
 require_once("header.php");
 $user = geni_loadUser();
-
-// Non-operators can't use the portal: they go to the 'Maintenance" page
-if ($in_maintenance_mode && 
-    !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
-		      null)) 
-{
-  relative_redirect("maintenance_redirect_page.php");
-}
 
 show_header('GENI Portal Home', $TAB_HOME);
 ?>

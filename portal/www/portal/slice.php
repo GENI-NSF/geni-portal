@@ -400,34 +400,6 @@ print "</table>\n";
 
 print "<p>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p>";
 
-// ----
-// Now show slice / sliver status
-
-print "<h2>Slice Status</h2>\n";
-
-  $slice_status='';
-
-  print "<div id='status_table_div'/>\n";
-  print build_agg_table_on_slicepg();
-  print "</div>\n";
-// --- End of Slice and Sliver Status table
-
-// Slice Identifers table
-print "<table>\n";
-print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
-print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
-print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
-print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
-print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
-print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
-echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
-print "</td></tr>\n";
-print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
-//print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-print "</table>\n";
-// ---
-
 print "<h2>Slice Members</h2>";
 ?>
 
@@ -492,6 +464,34 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slic
   $edit_members_disabled = $disabled;
 }
 echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button></p>";
+
+// ----
+// Now show slice / sliver status
+
+print "<h2>Slice Status</h2>\n";
+
+  $slice_status='';
+
+  print "<div id='status_table_div'/>\n";
+  print build_agg_table_on_slicepg();
+  print "</div>\n";
+// --- End of Slice and Sliver Status table
+
+// Slice Identifers table
+print "<table>\n";
+print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
+print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
+print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
+print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
+print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
+echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+print "</td></tr>\n";
+print "<tr><th colspan='2'>Contact Information</th></tr>\n";
+print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
+//print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "</table>\n";
+// ---
 ?>
 
 

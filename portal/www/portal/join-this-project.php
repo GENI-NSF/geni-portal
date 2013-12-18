@@ -161,11 +161,14 @@ Thank you,\n" . $user->prettyName() . "\n";
   } else {
     $cc = ""; // FIXME: Include portal-dev-admin?
   }
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= "Reply-To: $email" . "\r\n" . $cc . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>"; 
   
   mail($lead->prettyEmailAddress(),
        "Join GENI project $project_name?",
-       $message,
-       "Reply-To: $email" . "\r\n" . $cc . "From: $prettyEmail");
+       $message, $headers);
+       
   // We could supply the -f arg to make bounces go back to this portal user,
   // but we probably want to know if the lead's email address is bouncing.
        //       "-f $email");

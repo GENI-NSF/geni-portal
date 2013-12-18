@@ -2,6 +2,27 @@
 
 = GENI Portal Release Notes =
 
+== 2.6.2 ==
+  * Calling CHAPI use cert and key straight from DB, without openssl conversion
+    that drops cert chain. (#931)
+  * Remind people to restart apache after changing privileges (#933)
+  * Label download whether the cert was portal generated (#840)
+  * Removed obsolete PHP files. Applying this upgrade requires running
+    tools/cleanphp.sh (#898)
+  * Enforce maintenance mode on all portal pages (#934)
+  * Say more when user logs out of portal about IdP sessions (#938)
+  * When the IdP doesn't provide EPPN and we redirect, also log the
+    user out from the portal so they can pick a different IdP. (#939)
+  * Move slice membership table above AM list (#819)
+  * Fix redirect to KM if portal is not authorized (#940)
+  * Set bulk headers in automated emails (#871)
+  * Avoid looking up null member IDs and do not redirect on error
+    looking up member names. (#935)
+  * Organize slices by whether I'm lead (#710)
+  * Don't impersonate user email (#879)
+  * Parametrize Flack URL (#941)
+  * Disable most buttons on an expired project (#897)
+
 == 2.6.1 ==
   * Fix displaying email address in handle project request (#915)
   * Ensure scripts validate inputs, print something on success (#914)
@@ -14,6 +35,7 @@
   * Ensure geni-* scripts are installed (#924)
   * Add GPO lab dev server CA cert (#925)
   * Handle error returns in geni-enable-user and disable-user (#927)
+  * Check if join project request is still pending before processing (#936)
 
 == 2.6 ==
   * Split out the clearinghouse implementation into the new `chapi`

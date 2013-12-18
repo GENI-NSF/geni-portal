@@ -26,15 +26,17 @@
 // logout page.
 
 require_once("util.php");
+require_once("user.php");
 
-session_start();
-// On logout, clear the session. If you want to flush the cache,
-// simply logout and log back in again.
-foreach (array_keys($_SESSION) as $k) {
-  unset($_SESSION[$k]);
-}
-$_SESSION['lastmessage'] = "You logged out of the GENI Portal";
-session_write_close();
+$message = "You have logged out of the GENI " .
+"Portal. <br/>Note however that you are still logged in to your identity " .
+"provider (e.g. school) which may enable access to other sites. If this is a shared " .
+"computer, log out of your identity provider if possible, or clear your cookies to " .
+"fully log out. (On Chrome to clear your cookies, select 'Clear Browsing Data...' and on " .
+"Firefox select 'History->Clear Recent History...'.)";
+clear_session_with_message($message);
+
+$shib_logout_url = get_logout_url();
 
 $protocol = "http";
 if (array_key_exists('HTTPS', $_SERVER)) {
@@ -42,7 +44,6 @@ if (array_key_exists('HTTPS', $_SERVER)) {
 }
 $host  = $_SERVER['SERVER_NAME'];
 
-$shib_logout_url = "$protocol://$host/Shibboleth.sso/Logout";
 $logout_dest = "$protocol://$host";
 $encoded_dest = urlencode($logout_dest);
 $redirect_url = "$shib_logout_url?return=$encoded_dest";

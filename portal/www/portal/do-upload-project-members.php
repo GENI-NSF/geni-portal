@@ -115,9 +115,14 @@ foreach($selections as $email_name => $attribs) {
     //    error_log("EMAIL_SUBJECT : $email_subject");
     //    error_log("EMAIL_TEXT : $email_text");
     $userEmail = $user->email();
-    $userPrettyEmail = $user->prettyEmailAddress();
+    $name = $user->prettyName();
+    
+    $headers = "Auto-Submitted: auto-generated\r\n";
+    $headers .= "Precedence: bulk\r\n";
+    $headers .= "Reply-To: $userEmail" . "\r\n" . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>";
+
     mail($email, $email_subject, $email_text,
-	 "Reply-To: $userEmail" . "\r\n" . "From: $userPrettyEmail",
+	 $headers,
 	 "-f $userEmail");
     $num_members_invited = $num_members_invited + 1;
   }

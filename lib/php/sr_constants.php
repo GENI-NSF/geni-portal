@@ -113,7 +113,7 @@ function get_sr_url()
   } else {
     /* If no setting above, assume this host as SR. */
     $http_host = $_SERVER['SERVER_NAME'];
-    $sr_url = "https://" . $http_host . ":8001/CH";
+    $sr_url = "https://" . $http_host . ":8444/SR";
     return $sr_url;
   }
 }
