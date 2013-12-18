@@ -181,8 +181,12 @@ if (! isset($ma_url)) {
 }
 
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
-$has_certificate = ! is_null($result);
-$has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $result);
+$has_certificate = False;
+$has_key = False;
+if (! is_null($result)) {
+  $has_certificate = True;
+  $has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $result);
+}
 
 $kmcert_url = "kmcert.php?close=1";
 print "<button onClick=\"window.open('$kmcert_url')\">";

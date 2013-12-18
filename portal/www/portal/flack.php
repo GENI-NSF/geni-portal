@@ -27,6 +27,7 @@ require_once('user.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once('db-util.php');
+require_once('settings.php');
 
 // Utilities to generate page for embedding flack in the portal for a given slice
 
@@ -34,8 +35,8 @@ const FLACK_1_FILENAME = "flackportal-1.html";
 const FLACK_2_FILENAME = "flackportal-2.html";
 const FLACK_22_FILENAME = "flackportal-22.html";
 const FLACK_3_FILENAME = "flackportal-3.html";
-const URL_PREAMBLE = "https://www.emulab.net/protogeni/flack2/flack.swf?securitypreset=1&loadallmanagers=1&";
-const URL_PREAMBLE2 = "https://www.emulab.net/protogeni/flack3/flack.swf";
+//$URL_PREAMBLE = $flack_url . "?securitypreset=1&loadallmanagers=1&";
+//$URL_PREAMBLE2 = $flack_url;
 // FIXME: Should not be hard-coded
 const SA_URN = "urn:publicid:IDN+geni:gpo:portal+authority+sa";
 
@@ -97,7 +98,7 @@ exit();
 function generate_flack_page_internal($slice_urn, $ch_url, $sa_url, 
 				      $user_cert, $user_key, $am_root_cert_bundle)
 {
-
+  global $flack_url;
   $slice_urn = urlencode($slice_urn);
   $sa_urn = urlencode(SA_URN);
 
@@ -117,7 +118,8 @@ function generate_flack_page_internal($slice_urn, $ch_url, $sa_url,
   $chvar = '          flashvars.churl = "' . urlencode($ch_url) . '";' . "\n";
   $url_params = "sliceurn=$slice_urn&saurl=$sa_url&saurn=" . $sa_urn. "&churl=$ch_url";
 
-  $content = $content_1 . $set_commands . $content_2 . $savars . $slicevar . $chvar . $content_22 . '"' . URL_PREAMBLE2 . $content_3;
+  $content = $content_1 . $set_commands . $content_2 . $savars . $slicevar . $chvar . $content_22 . '"' . $flack_url . $content_3;
+  //  $content = $content_1 . $set_commands . $content_2 . $savars . $slicevar . $chvar . $content_22 . '"' . URL_PREAMBLE2 . $content_3;
   //  $content = $content_1 . $set_commands . $content_2 . '"' . URL_PREAMBLE . $url_params . $content_3;
   return $content;
 }
