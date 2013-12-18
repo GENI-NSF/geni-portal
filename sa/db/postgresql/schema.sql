@@ -13,16 +13,17 @@ DROP TABLE IF EXISTS sa_slice CASCADE;
 
 create TABLE sa_slice (
   id SERIAL,
-  slice_id UUID, 
-  owner_id UUID,
-  project_id UUID,
+  slice_id UUID UNIQUE, 
+  owner_id UUID NOT NULL REFERENCES ma_member (member_id),
+  project_id UUID NOT NULL REFERENCES pa_project (project_id),
   creation TIMESTAMP,
   expiration TIMESTAMP,
   expired BOOLEAN NOT NULL DEFAULT 'FALSE',
-  slice_name VARCHAR,
+  slice_name VARCHAR NOT NULL,
   slice_urn VARCHAR,
   slice_email VARCHAR,
   certificate VARCHAR,
+  private_key VARCHAR
   slice_description VARCHAR,
   PRIMARY KEY (id)
 );
@@ -32,8 +33,8 @@ CREATE INDEX sa_slice_expired ON sa_slice (expired);
 DROP TABLE IF EXISTS sa_slice_member CASCADE;
 CREATE TABLE sa_slice_member (
   id SERIAL,
-  slice_id UUID,
-  member_id UUID,
+  slice_id UUID NOT NULL REFERENCES sa_slice (slice_id),
+  member_id UUID NOT NULL REFERENCES ma_member (member_id),
   role int,
   PRIMARY KEY (id)
 );
@@ -50,19 +51,19 @@ CREATE TABLE sa_slice_member (
 -- Create tables for requests relative to membership on slices
 drop TABLE IF EXISTS sa_slice_member_request;
 create table sa_slice_member_request (
-       id SERIAL,
-       context_type  INT, 
-       context_id UUID,
+       id SERIAL PRIMARY KEY,
+       context_type  INT NOT NULL, 
+       context_id UUID NOT NULL,
        request_text VARCHAR, 
         -- 0 = JOIN, 1 = UPDATE_ATTRIBUTES, 2 = .... [That's all for now]
        request_type INT,
        -- This is a JSON string with a dictionary of requested attributes 
        -- for the case of a user wanting a change to his attributes
        request_details VARCHAR, 
-       requestor UUID,
+       requestor UUID NOT NULL REFERENCES ma_member (member_id),
        status INT, -- 0 = PENDING, 1 = APPROVED, 2 = CANCELED, 3 = REJECTED
        creation_timestamp TIMESTAMP,
-       resolver UUID,
+       resolver UUID NOT NULL,
        resolution_timestamp TIMESTAMP,
        resolution_description VARCHAR
 );
