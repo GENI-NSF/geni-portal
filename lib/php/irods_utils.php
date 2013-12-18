@@ -123,6 +123,10 @@ function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="
   /* $fname = "/tmp/irods-curl-$op-errors.log"; */
   /* $errorFile = fopen($fname, 'a'); */
   /* curl_setopt($ch, CURLOPT_STDERR, $errorFile); */
+  /* if ($op == "PUT") { */
+  /*   $putdatafile = "/tmp/irods-curl-put-data.txt"; */
+  /*   file_put_contents($putdatafile, $data . "\n\n", FILE_APPEND); */
+  /* } */
   /* // End of debugging stuff */
 
   // Now do it
