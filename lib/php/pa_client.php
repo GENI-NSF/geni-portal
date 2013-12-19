@@ -104,6 +104,7 @@ function get_projects_by_lead($sa_url, $signer, $lead_id)
 
 $PACHAPI2PORTAL = array('PROJECT_UID'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID,
 			'PROJECT_NAME'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+			'PROJECT_URN'=>'project_urn',
 			'_GENI_PROJECT_OWNER'=>PA_PROJECT_TABLE_FIELDNAME::LEAD_ID,
 			'_GENI_PROJECT_EMAIL'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL,
 			'PROJECT_CREATION'=>PA_PROJECT_TABLE_FIELDNAME::CREATION,
@@ -340,9 +341,11 @@ function change_member_role($sa_url, $signer, $project_id, $member_id, $role)
 
 // Return list of member ID's and roles associated with given project
 // If role is provided, filter to members of given role
-function get_project_members($sa_url, $signer, $project_id, $role=null) 
+function get_project_members($sa_url, $signer, $project_id, 
+			     $role=null, $project_urn = null) 
 {
-  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+  if(is_null($project_urn))
+    $project_urn = get_project_urn($sa_url, $signer, $project_id);
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('_dummy' => null);
