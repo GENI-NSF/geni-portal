@@ -669,7 +669,7 @@ function _lookup_public_identifying_members_details($client, $signer, $uids)
 // If there is no member other than the signer, don't make the query
 function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
 {
-  if (sizeof($rows) == 0) return;
+  if (sizeof($rows) == 0) return array();
   $member_uuids = array();
   foreach($rows as $row) {
     $member_id = $row[$field];
@@ -682,6 +682,7 @@ function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
   if (count($member_uuids) > 0) {
     $names_by_id = lookup_member_names($ma_url, $signer, $member_uuids);
   }
+
   $names_by_id[$signer->account_id] = $signer->prettyName();
   return $names_by_id;
 }
@@ -701,46 +702,44 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
     }
   }
 
-  if (is_null($uids) || sizeof($uids) == 0) {
-    return array();
-  }
-
-
-  $options = array('match'=> array('MEMBER_UID'=>$uids),
-		   'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
-                                   '_GENI_MEMBER_DISPLAYNAME',
-                                   'MEMBER_FIRSTNAME',
-                                   'MEMBER_LASTNAME',
-                                   'MEMBER_EMAIL'));
-  //error_log( " _lmns = " . print_r($member_uuids, true));
-
-  // Replace the default result handler with one that will not
-  // redirect to the error page on an error being returned.
-  // This way we can continue loading pages that use this
-  // Although we get a name of NONE for all members the user asked about
-  // on an error
-  global $put_message_result_handler;
-  $put_message_result_handler='no_redirect_result_handler';
-  $res = $client->lookup_identifying_member_info($client->creds(), $options);
-  $put_message_result_handler = null;
-
   $ids = array();
-  if (isset($res) && ! is_null($res)) {
-    foreach($res as $member_urn => $member_info) {
-      $member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
-      $displayName = $member_info['_GENI_MEMBER_DISPLAYNAME'];
-      $lastName = $member_info['MEMBER_LASTNAME'];
-      $firstName = $member_info['MEMBER_FIRSTNAME'];
-      $email = $member_info['MEMBER_EMAIL'];
-      if ($displayName) {
-	$ids[$member_uuid] = $displayName;
-      } else if ($lastName && $firstName) {
-	$ids[$member_uuid] = "$firstName $lastName";
-      } else if ($email) {
-	$ids[$member_uuid] = $email;
-      } else {
-	parse_urn($member_urn, $authority, $type, $username);
-	$ids[$member_uuid] = $username;
+  if (sizeof($uids) > 0) {
+
+    $options = array('match'=> array('MEMBER_UID'=>$uids),
+		     'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
+				     '_GENI_MEMBER_DISPLAYNAME',
+				     'MEMBER_FIRSTNAME',
+				     'MEMBER_LASTNAME',
+				     'MEMBER_EMAIL'));
+    //error_log( " _lmns = " . print_r($member_uuids, true));
+
+    // Replace the default result handler with one that will not
+    // redirect to the error page on an error being returned.
+    // This way we can continue loading pages that use this
+    // Although we get a name of NONE for all members the user asked about
+    // on an error
+    global $put_message_result_handler;
+    $put_message_result_handler='no_redirect_result_handler';
+    $res = $client->lookup_identifying_member_info($client->creds(), $options);
+    $put_message_result_handler = null;
+
+    if (isset($res) && ! is_null($res)) {
+      foreach($res as $member_urn => $member_info) {
+	$member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
+	$displayName = $member_info['_GENI_MEMBER_DISPLAYNAME'];
+	$lastName = $member_info['MEMBER_LASTNAME'];
+	$firstName = $member_info['MEMBER_FIRSTNAME'];
+	$email = $member_info['MEMBER_EMAIL'];
+	if ($displayName) {
+	  $ids[$member_uuid] = $displayName;
+	} else if ($lastName && $firstName) {
+	  $ids[$member_uuid] = "$firstName $lastName";
+	} else if ($email) {
+	  $ids[$member_uuid] = $email;
+	} else {
+	  parse_urn($member_urn, $authority, $type, $username);
+	  $ids[$member_uuid] = $username;
+	}
       }
     }
   }
