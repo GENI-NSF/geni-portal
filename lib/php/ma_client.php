@@ -264,8 +264,9 @@ $MEMBERALTKEYS = array("MEMBER_URN"=> "urn",
 		       "_GENI_MEMBER_PHONE_NUMBER"=> "telephone_number",
 		       "_GENI_MEMBER_AFFILIATION"=> "affiliation",
 		       "_GENI_MEMBER_EPPN"=> "eppn",
-		       "_GENI_MEMBER_INSIDE_PUBLIC_KEY"=> "certificate",
+		       "_GENI_MEMBER_INSIDE_PUBLIC_KEY"=> "public_key",
 		       "_GENI_MEMBER_INSIDE_PRIVATE_KEY"=> "private_key",
+		       "_GENI_MEMBER_INSIDE_CERTIFICATE" => "certificate",
 		       "_GENI_ENABLE_WIMAX" => "enable_wimax",
 		       "_GENI_ENABLE_WIMAX_BUTTON" => "enable_wimax_button",
 		       "_GENI_ENABLE_IRODS" => "enable_irods",
@@ -333,10 +334,25 @@ class Member {
 //   return a member object or null
 function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
 {
-  //error_log( " lookup_member_by_eppn = " . print_r($eppn, true));
-  $res =  ma_lookup_members_by_identifying($ma_url, $signer, '_GENI_MEMBER_EPPN', $eppn);
-  if ($res) {
-    return $res[0];
+  global $DETAILS_PUBLIC;
+  global $DETAILS_IDENTIFYING;
+;
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  $options = array('match'=>array('_GENI_MEMBER_EPPN' => $eppn),
+		   'filter'=> array_merge(
+			       array('MEMBER_UID',
+				     '_GENI_MEMBER_INSIDE_PRIVATE_KEY', 
+				     '_GENI_MEMBER_INSIDE_CERTIFICATE'),
+			       array_merge($DETAILS_PUBLIC,
+					   $DETAILS_IDENTIFYING)));
+  $login_info = $client->lookup_login_info($client->creds(), $options);
+  if ($login_info) {
+    $urns = array_keys($login_info);
+    $urn = $urns[0];
+    $row = $login_info[$urn];
+    $member = new Member();
+    $member->init_from_record($row);
+    return $member;
   } else {
     return null;
   }
@@ -533,18 +549,14 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
       $uids[] = $uuid;
     }
   }
-  $pubdets = _lookup_public_members_details($client, $signer, $uids);
-  $iddets = _lookup_identifying_members_details($client, $signer,
-                                                $uids);
-  foreach ($pubdets as $urn => $pubdet) {
-    $iddet = $iddets[$urn];
-    $alldet = array_merge($pubdet,$iddet);
+  $pubiddets = _lookup_public_identifying_members_details($client, $signer, $uids);
+  foreach ($pubiddets as $urn => $alldet) {
     $attrs = array();
     foreach ($alldet as $k => $v) {
       $ak = _attkey_to_portalkey($k);
       $attrs[$ak] = $v;
     }
-    $uid = $pubdet['MEMBER_UID'];
+    $uid = $alldet['MEMBER_UID'];
     $result[$uid] = $attrs;
   }
 
@@ -633,6 +645,19 @@ function _lookup_identifying_members_details($client, $signer, $uid)
 		   'filter'=>$DETAILS_IDENTIFYING);
   $r = $client->lookup_identifying_member_info($client->creds(), 
 					       $options);
+  return $r;
+}
+
+function _lookup_public_identifying_members_details($client, $signer, $uids)
+{
+  global $DETAILS_IDENTIFYING;
+  global $DETAILS_PUBLIC;
+  $options = array('match'=> array('MEMBER_UID'=>$uids),
+		   'filter' => array_merge($DETAILS_IDENTIFYING, 
+					   $DETAILS_PUBLIC));
+				  
+  $r = $client->lookup_public_identifying_member_info($client->creds(),
+							 $options);
   return $r;
 }
 

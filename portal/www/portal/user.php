@@ -97,6 +97,13 @@ class GeniUser
     if (isset($member->affiliation)) {
       $this->affiliation = $member->affiliation;
     }
+    if (isset($member->certificate)) {
+      $this->certificate = $member->certificate;
+    }
+    if (isset($member->private_key)) {
+      $this->private_key = $member->private_key;
+    }
+
     // FIXME: MA should maintain a member status
     $this->status = 'active';
     /* Store the MA member to read arbitrary properties
@@ -257,6 +264,9 @@ class GeniUser
   }
 
   private function getInsideKeyPair() {
+
+    error_log("GIKP : " . print_r($this, true));
+    error_log("GIKP : " . $this->certificate . " " . $this->private_key);
 
     // We only do this for the currently logged in user
     if(strtolower($_SERVER['eppn']) != $this->eppn) {
