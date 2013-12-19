@@ -85,12 +85,14 @@ if (array_key_exists("result", $_GET)) {
   }
 }
 
+
 include("tool-lookupids.php");
 if (! is_null($project) && $project != "None") {
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $creation_db = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $creation = dateUIFormat($creation_db);
   $expiration_db = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  $project_urn = $project['project_urn'];
   $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
   if ($expiration_db) {
     $expiration = dateUIFormat($expiration_db);
@@ -111,7 +113,8 @@ if (! is_null($project) && $project != "None") {
 }
 
 // Fill in members of project member table
-$members = get_project_members($sa_url, $user, $project_id);
+$members = get_project_members($sa_url, $user, $project_id, null, $project_urn);
+
 
 /*------------------------------------------------------------
  * Does this user have privileges on this project?
@@ -153,6 +156,7 @@ $actdisabled = '';
 if ($expired === True) {
   $actdisabled = $disabled;
 }
+
 
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
@@ -226,12 +230,15 @@ print "</table>\n";
 // FIXME: If user is not a member of the project, don't show the tool-slices stuff - it will get
 // a permission error on lookup_slices
 
+
+
 ?>
 <h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");
 ?>
+
 
 <h2>Project Members</h2>
 
