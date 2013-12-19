@@ -25,7 +25,9 @@
 require_once 'pa_client.php';
 require_once 'sa_client.php';
 
-function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=False)
+function get_project_slice_member_info($sa_url, $ma_url, $user, 
+				       $allow_expired=False,
+				       $project_id = null)
 {
   $member_ids = array();
   $slice_ids = array();
@@ -35,8 +37,14 @@ function get_project_slice_member_info($sa_url, $ma_url, $user, $allow_expired=F
   $project_slice_map = array();
   $project_activeslice_map = array();
 
-  // This is all project IDs the member belongs to, even expired
-  $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);
+  if(!is_null($project_id)) {
+    $projects = array($project_id);
+  } else {
+    // This is all project IDs the member belongs to, even expired
+    $projects = get_projects_for_member($sa_url, $user, 
+					$user->account_id, true);
+  } 
+
   if (count($projects) > 0) {
     // These are the details of these projects 
     $project_objects = lookup_project_details($sa_url, $user, $projects);
