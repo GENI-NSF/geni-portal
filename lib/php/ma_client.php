@@ -394,8 +394,8 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
   }
   $idrow = $client->lookup_identifying_member_info($client->creds(), 
 						   array('match' => array('MEMBER_UID'=>$ids)));
-  //    error_log("   ID = " . print_r($id, true));
-  //    error_log("   IDROW = " . print_r($idrow, true));
+  //  error_log("   ID = " . print_r($id, true));
+  //  error_log("   IDROW = " . print_r($idrow, true));
   foreach ($pubres as $urn => $pubrow) {
     //    error_log("   URN = " . $urn);
     //    error_log("   PUBROW = " . print_r($pubrow, true));
@@ -636,13 +636,14 @@ $DETAILS_IDENTIFYING = array(
 function _lookup_identifying_members_details($client, $signer, $uid)
 {
   global $DETAILS_IDENTIFYING;
-  //error_log("LIMD.UID = " . print_r($uid, true));
+  //  error_log("LIMD.UID = " . print_r($uid, true));
   if (! isset($uid) || is_null($uid) || count($uid) == 0 || (count($uid) == 1 && (! isset($uid[0]) || is_null($uid[0]) || $uid[0] == ''))) {
     error_log("Cannot lookup_identifying_member_details for empty uid: " . print_r($uid, true));
     return array();
   }
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_IDENTIFYING);
+  //  error_log("LIMD.OPTIONS = " . print_r($options, true));
   $r = $client->lookup_identifying_member_info($client->creds(), 
 					       $options);
   return $r;
@@ -668,6 +669,7 @@ function _lookup_public_identifying_members_details($client, $signer, $uids)
 // If there is no member other than the signer, don't make the query
 function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
 {
+  if (sizeof($rows) == 0) return;
   $member_uuids = array();
   foreach($rows as $row) {
     $member_id = $row[$field];
@@ -698,6 +700,12 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
       //      error_log("lookup_member_names skipping an empty uid");
     }
   }
+
+  if (is_null($uids) || sizeof($uids) == 0) {
+    return array();
+  }
+
+
   $options = array('match'=> array('MEMBER_UID'=>$uids),
 		   'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
                                    '_GENI_MEMBER_DISPLAYNAME',
