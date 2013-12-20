@@ -122,9 +122,12 @@ print "<b>LabWiki</b></button> ";
 require_once('logging_client.php');
 require_once('sr_constants.php');
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, Portal::getInstance(), 
+$entries = get_log_entries_for_context($log_url, 
+				       $user, // Portal::getInstance(), 
 				       CS_CONTEXT_TYPE::MEMBER, $user->account_id);
-$new_entries = get_log_entries_by_author($log_url, Portal::getInstance(), $user->account_id);
+$new_entries = get_log_entries_by_author($log_url, 
+					 $user, // Portal::getInstance(), 
+					 $user->account_id);
 $entries = array_merge($entries, $new_entries);
 
 $messages = array();
