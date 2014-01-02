@@ -2,6 +2,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.6.3 ==
+
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
     that drops cert chain. (#931)
