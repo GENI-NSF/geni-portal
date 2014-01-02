@@ -3,6 +3,7 @@
 = GENI Portal Release Notes =
 
 == 2.6.3 ==
+   * Add text box to project bulk add page (#516)
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
