@@ -126,9 +126,16 @@ if ($error != NULL || count($_POST) == 0) {
   echo "$error";
   echo "</div>\n";
   print "<h2>Upload Project Members</h2>";
-  print "<p>Upload a CSV (comma-separated-values) file of candidates members for your project.</p>";
+  print "<p>You can upload a CSV (comma-separated-values) file of candidates members for your project or enter candidate information in the text box below. Use the following format:</p>";
+  print "<p>";
+  print "Format:</p>";
+  print "<pre style='margin-left:80px;'>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</pre>";
+  print "<p>Example:</p>";
+  print "<pre style='margin-left:80px;'>jsmith@geni.net, Joe Smith, Admin\n";
+  print "mbrown@geni.net, Mary Brown</pre>";
+
   print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
-  print '  <p><b><label for="file">CSV File:</label></b>';
+  print '  <p><b><label for="file">Upload CSV File:</label></b>';  
   print '  <input type="file" name="file" id="file" />';
   print '  </p>';
   print '  <p><input type="submit" name="submit" value="Upload"/></p>';
@@ -136,16 +143,20 @@ if ($error != NULL || count($_POST) == 0) {
   print '</form>';
 
   print "<p>";
-  print "File format:</p>";
-  print "<pre style='margin-left:80px;'>candidate_email, candidate_name, [optional: role = Admin, Member (default), Auditor]</pre>";
-  print "<p>Example:</p>";
-  print "<pre style='margin-left:80px;'>jsmith@geni.net, Joe Smith, Admin\n";
-  print "mbrown@geni.net, Mary Brown</pre>";
+  print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
+  print '  <p><b><label>Or enter candidates to add:</label></b>';
+  print "<p><textarea name='candidates' cols=\"60\" rows=\"4\"></textarea></p>\n";
+  print '  </p>';
+
+  print "<p><button type=\"submit\" value=\"submit\"><b>Add</b></button>\n";
+  print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/></p>\n";
+  print "</form>\n";
+
   include("footer.php");
   exit;
 }
-
 $error = NULL;
+$content = NULL;
 if (array_key_exists('file', $_FILES)) {
   $errorcode = $_FILES['file']['error'];
   if ($errorcode != 0) {
@@ -156,6 +167,8 @@ if (array_key_exists('file', $_FILES)) {
       $error = "Unknown upload error (code = $errorcode).";
     }
   } else {
+    $actual_filename = $_FILES['file']['tmp_name'];
+    $contents = file_get_contents($actual_filename);
     /*
      * Upload was successful, do some basic checks on the contents.
      */
@@ -164,6 +177,8 @@ if (array_key_exists('file', $_FILES)) {
      * Is it a request RSpec (not ad or manifest)?
      */
   }
+} else if (array_key_exists('candidates',$_REQUEST)) {
+  $contents = $_REQUEST['candidates'];
 }
 
 // show_header('GENI Portal: Project', $TAB_PROJECT, 0); // 
@@ -174,8 +189,6 @@ if (array_key_exists('file', $_FILES)) {
   print "<b>Add as ...</b> Candidates who already use the portal will be added to your project with the specified role immediately.<br/>";
   print "<b>Invite as ...</b> Others will receive an invitation email with instructions on joining your project.";
 
-$actual_filename = $_FILES['file']['tmp_name'];
-$contents = file_get_contents($actual_filename);
 
 $project_members = get_project_members($sa_url, $user, $project_id);
 $project_member_ids = array();
