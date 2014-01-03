@@ -4,6 +4,7 @@
 
 == 2.6.3 ==
    * Add text box to project bulk add page (#516)
+   * Add iRODS username and zone to OpenID data exchange (#937)
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
