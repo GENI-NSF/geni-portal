@@ -811,4 +811,12 @@ function removeGroup($project_id, $group_name, $user) {
   return $removed;
 }
 
+/**
+ * Return the default iRODS zone.
+ */
+function irods_default_zone() {
+  global $default_zone;
+  return $default_zone;
+}
+
 ?>
