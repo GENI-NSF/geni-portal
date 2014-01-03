@@ -6,6 +6,7 @@
    * Add text box to project bulk add page (#516)
    * Add iRODS username and zone to OpenID data exchange (#937)
    * Remove unnecessary reliance on a global variable (#917)
+   * Handle case where someone invites another person to join a project twice (#380)
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
