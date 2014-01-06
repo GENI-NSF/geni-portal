@@ -21,6 +21,7 @@ if (!$try_include) {
 require_once "settings.php";
 require_once "user.php";
 require_once "proj_slice_member.php";
+require_once "irods_utils.php";
 
 header('Cache-Control: no-cache');
 header('Pragma: no-cache');
@@ -99,17 +100,6 @@ function add_project_slice_info($geni_user, &$projects, &$slices) {
   $slices = array();
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
-
-  /*
-   * Temporary fix to be compatible with the new
-   * get_projects_for_member which is invoked by
-   * get_project_slice_member_info
-   *
-   * See proto-ch ticket 917
-   */
-  global $user;
-  $user = $geni_user;
-
   $retVal  = get_project_slice_member_info($sa_url, $ma_url, $geni_user, True);
   $project_objects = $retVal[0];
   $slice_objects = $retVal[1];
@@ -209,6 +199,37 @@ function send_geni_user($server, $info) {
         /* Only send wimax name if it exists. */
         if ($wimax_name) {
           $ax_response->addValue($ax_req_type, $wimax_name);
+        }
+        break;
+      case 'http://geni.net/irods/username':
+        /* Get the iRODS username. Do we need to respect the
+         * 'irods_enabled' flag?
+         */
+        $irods_username = null;
+        if(isset($geni_user->ma_member->irods_username)) {
+          $irods_username = $geni_user->ma_member->irods_username;
+        }
+        /* Only send it if it exists. */
+        if ($irods_username) {
+          error_log("Returning iRODS username $irods_username for user "
+                    . $geni_user->urn());
+          $ax_response->addValue($ax_req_type, $irods_username);
+        } else {
+          error_log("No iRODS username in OpenID for user "
+                    . $geni_user->urn());
+        }
+        break;
+      case 'http://geni.net/irods/zone':
+        /* Get the IRods zone for this user. */
+        $irods_zone = irods_default_zone();
+        /* Only send it if it exists. */
+        if ($irods_zone) {
+          error_log("Returning iRODS zone $irods_zone for user "
+                    . $geni_user->urn());
+          $ax_response->addValue($ax_req_type, $irods_zone);
+        } else {
+          error_log("No iRODS zone in OpenID for user "
+                    . $geni_user->urn());
         }
         break;
       }
