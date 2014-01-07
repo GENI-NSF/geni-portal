@@ -42,7 +42,7 @@ require_once('settings.php');
     echo "GENI Portal Version $portal_version<br/>";
   }
 ?>
-  Copyright &copy; 2013 Raytheon BBN Technologies<br>
+  Copyright &copy; 2014 Raytheon BBN Technologies<br>
   All Rights Reserved - NSF Award CNS-0714770<br>
   <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"> National Science Foundation</a>
 
