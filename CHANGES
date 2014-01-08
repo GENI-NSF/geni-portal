@@ -9,6 +9,7 @@
    * Handle case where someone invites another person to join a project twice (#380)
    * Update copyright notices to 2014 (#945)
    * User is caller of log service in most cases, not portal (#568)
+   * Update to latest iRODS server cert (#947)
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
