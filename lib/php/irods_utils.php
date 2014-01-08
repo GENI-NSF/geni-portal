@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2013 Raytheon BBN Technologies
+// Copyright (c) 2013-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -123,6 +123,10 @@ function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="
   /* $fname = "/tmp/irods-curl-$op-errors.log"; */
   /* $errorFile = fopen($fname, 'a'); */
   /* curl_setopt($ch, CURLOPT_STDERR, $errorFile); */
+  /* if ($op == "PUT") { */
+  /*   $putdatafile = "/tmp/irods-curl-put-data.txt"; */
+  /*   file_put_contents($putdatafile, $data . "\n\n", FILE_APPEND); */
+  /* } */
   /* // End of debugging stuff */
 
   // Now do it
@@ -805,6 +809,14 @@ function removeGroup($project_id, $group_name, $user) {
 
   // Return 0 if removed the group, -1 on error, 1 if no such group
   return $removed;
+}
+
+/**
+ * Return the default iRODS zone.
+ */
+function irods_default_zone() {
+  global $default_zone;
+  return $default_zone;
 }
 
 ?>
