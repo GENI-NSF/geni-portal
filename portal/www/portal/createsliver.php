@@ -114,19 +114,10 @@ $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slic
 
 // Call create sliver at the AM
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
-                               $slice_urn, $rspec_file);
+			$slice_urn, $rspec_file, $slice['slice_id']);
 unlink($rspec_file);
 error_log("CreateSliver output = " . print_r($retVal, TRUE));
 
-$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
-						$slice['project_id']);
-$slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
-					$slice['slice_id']);
-$log_attributes = array_merge($project_attributes, $slice_attributes);
-log_event($log_url, $user,
-	  "Added resources to slice " . $slice_name,
-          $log_attributes, $user->account_id);
 
 
 $header = "Created Sliver on slice: $slice_name";
@@ -137,6 +128,19 @@ if ( count($retVal) == 2 ) {
 } else {
    $msg = $retVal;
    $obj = "";
+}
+
+// Only log this if the create appears successful
+if ($obj != "") {
+   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+   $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+						   $slice['project_id']);
+   $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
+						 $slice['slice_id']);
+   $log_attributes = array_merge($project_attributes, $slice_attributes);
+   log_event($log_url, $user,
+	  "Added resources to slice " . $slice_name . " at " . $AM_name,
+          $log_attributes, $user->account_id);
 }
 
 unset($slice2);

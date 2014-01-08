@@ -120,7 +120,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   }
   // Call list resources at the AM
   $retVal = list_resources_on_slice($am_urls, $user, $slice_credential,
-				    $slice_urn);
+				    $slice_urn, $slice_id);
   
   //  error_log("ListResources output = " . $retVal);
 
