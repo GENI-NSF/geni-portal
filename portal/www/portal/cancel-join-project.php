@@ -191,7 +191,7 @@ if (isset($submit)) {
 					     $member_id);
       $attributes = array_merge($project_attributes, $member_attributes);
       $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-      log_event($log_url, $user,
+      log_event($log_url, Portal::getInstance(),
 		"Canceled join request: $member_name in project $project_name", $attributes,
 		$user->account_id);
     } else {
@@ -207,7 +207,7 @@ if (isset($submit)) {
 						   $member_id);
     $attributes = array_merge($project_attributes, $member_attributes);
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-    log_event($log_url, $user,
+    log_event($log_url, Portal::getInstance(),
 	      "Canceled join request: $member_name in project $project_name", $attributes,
 	      $user->account_id);
   } else {

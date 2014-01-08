@@ -141,13 +141,13 @@ Thank you,\n" . $user->prettyName() . "\n";
   if (! isset($log_url)) {
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     if (! isset($log_url) || is_null($log_url) || $log_url == '') {
-      error_log("Found no Log Service in SR!'", Portal::getInstance());
+      error_log("Found no Log Service in SR!'");
     }
   }
 
   $name = $user->prettyName();
   if (isset($log_url)) {
-    log_event($log_url, $user,
+    log_event($log_url, Portal::getInstance(),
 	      "$name requested to join project $project_name", 
 	      $attributes, $user->account_id);
   }
