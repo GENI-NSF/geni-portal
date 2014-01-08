@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -26,6 +26,7 @@ require_once("user.php");
 require_once("header.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
+require_once("ma_client.php");
 require_once('logging_client.php');
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -35,6 +36,10 @@ include("tool-lookupids.php");
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
+
+if (! isset($ma_url)) {
+  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+}
 
 //Invite to Join a Project
 //Generic page to 1+ GENI members with a link to the join-this-project
@@ -46,6 +51,7 @@ $invitees = null;
 $error = null;
 $message = '';
 $skips = "";
+$in_projects = '';
 if (array_key_exists("to", $_REQUEST)) {
   $invitee_string = $_REQUEST["to"];
   // split on ,;
@@ -60,7 +66,27 @@ if (array_key_exists("to", $_REQUEST)) {
       $skips = $skips . $invitees[$i];
       $invitees[$i] = null;
     }
-    // FIXME: See http://www.linuxjournal.com/article/9585
+    //Now check if invitee is already in project
+    $members_by_email = lookup_members_by_email($ma_url, $user, $invitees);
+    $members_by_email = array_change_key_case($members_by_email,CASE_LOWER);
+
+    $project_members = get_project_members($sa_url, $user, $project_id);
+    $project_member_ids = array();
+    foreach($project_members as $project_member) {
+      $project_member_id = $project_member[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+      $project_member_ids[] = $project_member_id;
+    }
+    foreach($members_by_email as $member_array) {
+      $member_id = $member_array[0];
+      $is_member = ($member_id != null && in_array($member_id, $project_member_ids));
+      if ($is_member) {
+	if ($in_projects !== "")
+	  $in_projects = $in_projects . ", ";
+	$in_projects = $in_projects . $invitees[$i];
+	$invitees[$i] = null;
+      }
+      // FIXME: See http://www.linuxjournal.com/article/9585
+    }
   }
   if (array_key_exists("message", $_REQUEST)) {
     $message = $_REQUEST["message"];
@@ -95,6 +121,15 @@ Thank you,\n" . $user->prettyName() . "\n";
   if (preg_match("/, $/", $to)) {
     $to = preg_replace("/, $/", "", $to);
   }
+  if ($to === "") {
+    if ($in_projects !== "") {
+      print "<p class='warn'>Skipped email addresses of project members: $in_projects</p>\n";
+    }
+    if ($skips !== "") {
+      print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
+    }
+    exit();
+  }
   $email = $user->email();
   $name = $user->prettyName();
 
@@ -120,6 +155,9 @@ Thank you,\n" . $user->prettyName() . "\n";
   print "<b>Sent</b> Project $project_name invitation to:<br/>\n" . "$to.</p>\n";
   if ($skips !== "") {
     print "<p class='warn'>Skipped invalid email addresses: $skips</p>\n";
+  }
+  if ($in_projects !== "") {
+    print "<p class='warn'>Skipped email addresses of project members: $in_projects</p>\n";
   }
   $lines = explode("\r\n", $message);
   print "<p><b>Message</b>: </p><pre style='margin-left:80px;'>\n";
