@@ -141,7 +141,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   if (! isset($log_url)) {
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     if (! isset($log_url) || is_null($log_url) || $log_url == '') {
-      error_log("Found no Log Service in SR!'", Portal::getInstance());
+      error_log("Found no Log Service in SR!'");
     }
   }
 

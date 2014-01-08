@@ -503,9 +503,8 @@ print "</table>\n";
 		<th>Member</th>
 		<?php
 		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, 
-				       $user, //  Portal::getInstance(),
-				       CS_CONTEXT_TYPE::SLICE, $slice_id);
+                $entries = get_log_entries_for_context($log_url, $user,
+						       CS_CONTEXT_TYPE::SLICE, $slice_id);
                 $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
 								   LOGGING_TABLE_FIELDNAME::USER_ID);
 
