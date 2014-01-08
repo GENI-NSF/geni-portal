@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -555,7 +555,7 @@ echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_slice_m
 		<th>Member</th>
 		<?php
 		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-                $entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+                $entries = get_log_entries_for_context($log_url, $user,
 						       CS_CONTEXT_TYPE::SLICE, $slice_id);
                 $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
 								   LOGGING_TABLE_FIELDNAME::USER_ID);

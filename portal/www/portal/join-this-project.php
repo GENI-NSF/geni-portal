@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -141,7 +141,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   if (! isset($log_url)) {
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     if (! isset($log_url) || is_null($log_url) || $log_url == '') {
-      error_log("Found no Log Service in SR!'", Portal::getInstance());
+      error_log("Found no Log Service in SR!'");
     }
   }
 

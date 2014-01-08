@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -204,12 +204,12 @@ if ($pi_request and ! $is_pi) {
   $msg = $user->prettyName() . " requested to be a Project Lead";
   $subject = "New GENI CH Project Lead request";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, Portal::getInstance(), $msg, $member_attributes, $user->account_id);
+  log_event($log_url, $user, $msg, $member_attributes, $user->account_id);
 } else if (! $pi_request and $is_pi) {
   $body .= "\t\t**** Requesting to NOT be a Project Lead. ****\n";
   $msg = $user->prettyName() . " requested to NOT be a Project Lead";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, Portal::getInstance(), $msg, $member_attributes, $user->account_id);
+  log_event($log_url, $user, $msg, $member_attributes, $user->account_id);
 }
 if ($changed_str !== '') {
   $body .= "Changes: \n$changed_str\n";
