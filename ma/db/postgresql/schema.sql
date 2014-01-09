@@ -102,6 +102,7 @@ CREATE TABLE ma_ssh_key (
   description VARCHAR,
   public_key VARCHAR NOT NULL,
   private_key VARCHAR,
+  key_type VARCHAR,
   PRIMARY KEY (id)
 );
 CREATE INDEX ma_ssh_key_member_id ON ma_ssh_key (member_id);
