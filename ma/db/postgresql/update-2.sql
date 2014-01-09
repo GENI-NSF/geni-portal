@@ -1,6 +1,7 @@
 
 -- -------------------------------------------------------------------
--- Add an OPERATOR privilege
+-- Add key_type to the ma_ssh_key table
 -- -------------------------------------------------------------------
 
-INSERT INTO ma_privilege (id, privilege) values (2, 'OPERATOR');
+ALTER TABLE ma_ssh_key ADD COLUMN key_type VARCHAR;
+
