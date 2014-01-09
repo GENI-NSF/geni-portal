@@ -172,7 +172,7 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
                         $filename, $description)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $member_urn = get_member_urn($ma_url, $signer, $member_id);
+  //  $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $pairs = array();
   if ($filename || $filename == '') {
     $pairs['_GENI_KEY_FILENAME'] = $filename;
@@ -181,7 +181,7 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
     $pairs['KEY_DESCRIPTION'] = $description;
   }
   if (sizeof($pairs) > 0) {
-    $client->update_key($member_urn, $ssh_key_id, $client->creds(),
+    $client->update_key($ssh_key_id, $client->creds(),
                       array('fields' => $pairs));
   }
 
@@ -192,8 +192,8 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
 function delete_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $member_urn = get_member_urn($ma_url, $signer, $member_id);
-  $client->delete_key($member_urn, $ssh_key_id, $client->creds(),
+  //  $member_urn = get_member_urn($ma_url, $signer, $member_id);
+  $client->delete_key($ssh_key_id, $client->creds(),
                       array('_dummy' => null));
 }
 
