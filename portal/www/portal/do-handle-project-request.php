@@ -108,6 +108,11 @@ foreach($selections as $select_id => $attribs) {
   // FIXME: Validate that the member_id is reasonable
   $request_id = $attribs_parts[2];
 
+  if ($role == 0) {
+    error_log("do-handle-p-r not acting on request " . $request_id);
+    continue;
+  }
+
   // Validate that the request_id is reasonable - still open, etc
 
   $request = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
@@ -152,6 +157,7 @@ foreach($selections as $select_id => $attribs) {
   if ($role <= 0) {
     // This is a 'do not add' selection
     // Send rejection letter 
+    // FIXME: Allow custom deny letter
     $num_members_rejected = $num_members_rejected + 1;
     $resolution_description = "Request rejected";
     $resolution_status_label = "rejected";

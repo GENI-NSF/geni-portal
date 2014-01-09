@@ -33,9 +33,9 @@ require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
 require_once("pa_constants.php");
-require_once("pa_client.php");
 require_once('rq_client.php');
-require_once("cs_constants.php");
+require_once('rq_constants.php');
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -43,7 +43,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 include("tool-lookupids.php");
 
 
-// Handle a single project request
+// Handle project join requests
 // This is the page the PI is pointed to via email
 // Show details on the requestor
 // Show details on the project
@@ -51,9 +51,11 @@ include("tool-lookupids.php");
 // provide drop-down of Role
 // Provide text explaining different roles
 // Provide text box of reason
-// 3 buttons: 'Accept, Deny' Cancel (put off handling)
+// 3 buttons: Accept, Deny, Cancel (put off handling)
 
 // The email from the PI supplied project_id, member_id, request_id
+// Other links only provide the request ID
+// Try to allow this page to handle multiple requests at once
 
 // Get the sa_url for accessing request information
 if (!isset($sa_url)) {
@@ -71,48 +73,60 @@ if (!isset($ma_url)) {
   }
 }
 
-// We should have a request_id
+// We should have (at least one) request_id
 if (array_key_exists("request_id", $_REQUEST)) {
   $request_id = $_REQUEST["request_id"];
-  $request = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
-  $project_id = $request['context_id'];
-  $requests = array($request);
-} else {
-  error_log("handle-project-request got no request_id");
+  if (is_array($request_id)) {
+    //    error_log("handle-p-r got array of request ids");
+    $request_ids = $request_id;
+    $project_id = NULL;
+    foreach ($request_ids as $request_id) {
+      $nr = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
+      if (! isset($nr) || is_null($nr)) {
+	error_log("handle-p-r skipping unknown request id " . $request_id);
+	continue;
+      }
+      if (is_null($project_id)) {
+	$project_id = $nr[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
+      } elseif ($project_id != $nr[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]) {
+	error_log("handle-p-r got requests for 2+ different projects. Skipping 2nd+ projects so skipping request " . $request_id);
+	continue;
+      }
+      $requests[] = $nr;
+    }
+    error_log("handle-p-r: Got " . count($requests) . " requests from request ids");
+    $request = $requests[0];
+    $request_id = $request_ids[0];
+  } else {
+    //    error_log("handle-p-r got 1 request ID: " . print_r($_REQUEST, True));
+    $request = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
+    $requests = array($request);
+    $request_ids = array($request_id);
+    $project_id = $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
+  }
 }
 
 // And the request_id should refer to a current request
 // And the user should be allowed to add a project member
 if (! isset($request) || is_null($request)) {
-  error_log("No request from request_id");
-  if (isset($member_id) && isset($project_id)) {
+  error_log("handle-p-req: No request from request_ids");
+  if(isset($project_id)) {
     if (! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-      error_log("User not allowed to handle project requests on this project");
-      relative_redirect("home.php");
-    }
-
-    // Get requests for the given member_id on the given project
-    $requests = get_requests_by_user($sa_url, $user, $member_id, CS_CONTEXT_TYPE::PROJECT, $project_id, RQ_REQUEST_STATUS::PENDING);
-    if (isset($requests) && count($requests) > 0) {
-      if (count($requests) > 1) {
-	error_log("handle-p-reqs: Got " . count($requests) . " pending requests on same project for same member");
-      }
-      $request = $requests[0];
-      $request_id = $request['id'];
-    } else {
-      error_log("handle-p-reqs: no pending reqs for this project, user");
-    }
-  } elseif(isset($project_id)) {
-    if (! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-      error_log("User not allowed to handle project requests on this project");
+      error_log("User " . $user->prettyName() . " not allowed to handle project requests on this project: " . $project_id);
       relative_redirect("home.php");
     }
 
     // Get requests that this member can handle on the given project
     $requests = get_pending_requests_for_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     if (isset($requests) && count($requests) > 0) {
+      if (count($requests) > 1) {
+	error_log("handle-p-req got just a project ID. Got " . count($requests) . " requests for this project");
+      }
       $request = $requests[0];
-      $request_id = $request['id'];
+      $request_id = $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+      foreach ($requests as $r) {
+	$request_ids[] = $r[RQ_REQUEST_TABLE_FIELDNAME::ID];
+      }
     } else {
       error_log("handle-p-reqs: no pending reqs for this project, user");
     }
@@ -125,16 +139,10 @@ if (! isset($request) || is_null($request)) {
   include("tool-breadcrumbs.php");
   print "<h2>Error handling project request</h2>\n";
   if (isset($request_id)) {
-    print "Unknown request ID $request_id<br/>\n";
+    print "Unknown request ID(s) " . print_r($request_id) . "<br/>\n";
   }
-  if (isset($member_id) && isset($project_id)) {
-    print "No outstanding requests by member ";
-    if (isset($member)) {
-      print $member->prettyName();
-    } else {
-      print $member_id;
-    }
-    print " to join project ";
+  if (isset($project_id)) {
+    print "No outstanding requests for project ";
     if (isset($project_name)) {
       print $project_name;
     } else {
@@ -142,7 +150,7 @@ if (! isset($request) || is_null($request)) {
     }
     print "<br/>\n";
   } else {
-    print "No member specified to look up that way.<br/>\n";
+    print "No project specified either.<br/>\n";
   }
   
   print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
@@ -151,52 +159,94 @@ if (! isset($request) || is_null($request)) {
   
 }
 
-// Make sure request is still pending
-if ($request['status'] != RQ_REQUEST_STATUS::PENDING) {
-  $status = "rejected";
-  if ($request['status'] == RQ_REQUEST_STATUS::APPROVED) {
-    $status = "approved";
-  } elseif ($request['status'] == RQ_REQUEST_STATUS::CANCELLED) {
-    $status = "cancelled";
+$newrs = array();
+$rcnt = count($requests);
+foreach ($requests as $request) {
+  // Make sure request is still pending
+  if ($request['status'] != RQ_REQUEST_STATUS::PENDING) {
+    $status = "rejected";
+    if ($request['status'] == RQ_REQUEST_STATUS::APPROVED) {
+      $status = "approved";
+    } elseif ($request['status'] == RQ_REQUEST_STATUS::CANCELLED) {
+      $status = "cancelled";
+    }
+    error_log ("handle-project-request: request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " is no longer pending. It is " . $status);
+    if ($rcnt == 1) {
+      relative_redirect('error-text.php?error=' . urlencode("Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " was already " . $status));
+    }
+    continue;
   }
-  error_log ("handle-project-request: request is no longer pending");
-  relative_redirect('error-text.php?error=' . urlencode("Request was " . $status));
+  // Only join requests
+  if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN) {
+    error_log("handle-p-req: Non join request in request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . ": " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
+    if ($rcnt == 1) {
+      show_header('GENI Portal: Projects', $TAB_PROJECTS);
+      include("tool-breadcrumbs.php");
+      print "<h2>Error handling project request</h2>\n";
+      print "Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " is not a join request, but a " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] . "<br/>\n";
+      // FIXME: Print other request details
+      print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+      include("footer.php");
+      exit();
+    }
+    continue;
+  }
+
+  if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] != CS_CONTEXT_TYPE::PROJECT) {
+    error_log("handle-p-req: Not a project request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]);
+    if ($rcnt == 1) {
+      show_header('GENI Portal: Projects', $TAB_PROJECTS);
+      include("tool-breadcrumbs.php");
+      print "<h2>Error handling project request</h2>\n";
+      print "Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " not a project join request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] . "<br/>\n";
+      // FIXME: Print other request details
+      print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
+      include("footer.php");
+      exit();
+    }
+    continue;
+  }
+
+  // This shouldn't happen because of above checks...
+  if (isset($project_id) && $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] != $project_id) {
+    error_log("handle-p-req: Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " project != given project: " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] . " != " . $project_id);
+    continue;
+  }
+
+  // If the member for this request is already a member of the given project, then cancel this request
+  $members = get_project_members($sa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+
+  $user_is_project_member = false;
+  foreach ($members as $m) {
+    if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] == $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID]) {
+      $user_is_project_member = true;
+      break;
+    }
+  }
+  if ($user_is_project_member) {
+    error_log("handle-p-req found open request for member to join a project they are already in. Request" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " in project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+    resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
+					 $request[RQ_REQUEST_TABLE_FIELDNAME::ID], RQ_REQUEST_STATUS::CANCELLED, "User already in this project");
+    continue;
+  }
+
+  // If we already have in newrs a request by the same member to join the same project, then cancel this request
+  foreach ($newrs as $newr) {
+    if (($newr[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] == $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]) && 
+	($newr[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] == $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID])) {
+      error_log("handle-p-req found duplicate request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " == older request " . $newr[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " to join project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
+			      $request[RQ_REQUEST_TABLE_FIELDNAME::ID], RQ_REQUEST_STATUS::CANCELLED, "Duplicate of request " . $newr[RQ_REQUEST_TABLE_FIELDNAME::ID]);
+      continue;
+    }
+  }
+  $newrs[] = $request;
+}
+$requests = $newrs;
+if (count($requests) == 0) {
+  relative_redirect('error-text.php?error=' . urlencode("All requests are invalid: only pending project join requests are handled here."));
 }
 
-
-$member_id = $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR];
-$member = $user->fetchMember($member_id);
-$member_name = $member->prettyName();
-
-if ($request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] != RQ_REQUEST_TYPE::JOIN) {
-  error_log("handle-p-req: Non join request in request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . ": " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE]);
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
-  include("tool-breadcrumbs.php");
-  print "<h2>Error handling project request</h2>\n";
-  print "Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " is not a join request, but a " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TYPE] . "<br/>\n";
-  // FIXME: Print other request details
-  print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
-  include("footer.php");
-  exit();
-}
-
-if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] != CS_CONTEXT_TYPE::PROJECT) {
-  error_log("handle-p-req: Not a project, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE]);
-  show_header('GENI Portal: Projects', $TAB_PROJECTS);
-  include("tool-breadcrumbs.php");
-  print "<h2>Error handling project request</h2>\n";
-  print "Request not a project request, but " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] . "<br/>\n";
-  // FIXME: Print other request details
-  print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
-  include("footer.php");
-  exit();
-}
-
-if (isset($project_id) && $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] != $project_id) {
-  error_log("handle-p-req: Request project != given project: " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] . " != " . $project_id);
-}
-
-$project_id = $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
 $project = lookup_project($sa_url, $user, $project_id);
 $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 
@@ -205,38 +255,10 @@ if (! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, 
   relative_redirect("home.php");
 }
 
-$lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-$lead = $user->fetchMember($lead_id);
-$leadname = $lead->prettyName();
-$request_id = $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
-
 // OK, inputs validated
 
 // At this point, we should be able to bring up the table of all pending
 // requests (or only that one if that is what is asked for)
-
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
-include("tool-breadcrumbs.php");
-
-$project_details = lookup_project($sa_url, $user, $project_id);
-// error_log("PD = " . print_r($project_details, true));
-$project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-
-print "<h2>Handle Project Request: ". $project_name . "</h2>";
-print "<p> The following request(s) have been made to join your
-project. You may approve (add the member) or deny each request.</p>
-<p>You should only add people to your project that you
-know. Remember that when you approve a project join request, you agree
-that the project lead will be held responsible for all GENI actions this person
-takes in this project.</p>";
-
-print '<form method="POST" action="do-handle-project-request.php">';
-print '<table>';
-print '<tr><th>Candidate Name</th><th>Candidate Email</th>';
-// <th>Can Add <br/>Immediately?</th>
-print '<th>Action</th></tr>';
-print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
-print "<input type=\"hidden\" name=\"project_name\" value=\"$project_name\"/>\n";
 
 // Get ID's of all member to be added by pending request for this project
 $all_requestors = array();
@@ -256,6 +278,28 @@ $member_names = lookup_member_names_for_rows($ma_url, $user,
 					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 // error_log("MEMBER_NAMES = " . print_r($member_names, true));
 
+// FIXME: Allow per request deny text from here?
+
+show_header('GENI Portal: Projects', $TAB_PROJECTS);
+include("tool-breadcrumbs.php");
+
+print "<h2>Handle Project Request: ". $project_name . "</h2>";
+print "<p> The following request(s) have been made to join your
+project. You may approve (add the member) or deny each request.</p>
+<p>You should only add people to your project that you
+know. Remember that when you approve a project join request, you agree
+that the project lead will be held responsible for all GENI actions this person
+takes in this project.</p>";
+
+print '<form method="POST" action="do-handle-project-request.php">';
+print '<table>';
+print '<tr><th>Candidate Name</th><th>Candidate Email</th>';
+print '<th>Request Text</th>';
+// <th>Can Add <br/>Immediately?</th>
+print '<th>Action</th></tr>';
+print "<input type=\"hidden\" name=\"project_id\" value=\"$project_id\"/>\n";
+print "<input type=\"hidden\" name=\"project_name\" value=\"$project_name\"/>\n";
+
 
 function get_attribute_named($member_detail, $attribute_name)
 {
@@ -271,17 +315,15 @@ function compute_actions_for_member($member_id, $request_id, $email)
   global $CS_ATTRIBUTE_TYPE_NAME;
 
   $actions = "";
-  $actions = $actions . "<option value=0,$member_id,$request_id,$email>Do not add</option>";
+  $actions = $actions . "<option value=-1,$member_id,$request_id,$email>Deny</option>";
+  $actions = $actions . "<option selected value=0,$member_id,$request_id,$email>Ignore (no action)</option>";
   foreach($CS_ATTRIBUTE_TYPE_NAME as $role_index => $role_label) {
     $selected = "";
     if ($role_index == CS_ATTRIBUTE_TYPE::LEAD || 
 	$role_index == CS_ATTRIBUTE_TYPE::OPERATOR) 
       continue;
-    if ($role_index == CS_ATTRIBUTE_TYPE::MEMBER)
-      $selected = "selected";
     $action = "<option $selected value=$role_index,$member_id,$request_id,$email>Add as $role_label</option>";
     $actions = $actions . $action;
-
   }
   return $actions;
 }
@@ -289,14 +331,16 @@ function compute_actions_for_member($member_id, $request_id, $email)
 foreach($requests as $request) {
   $member_id = $request['requestor'];
   $member_detail = $member_details[$member_id];
-  //  $member_name = compute_display_name($member_detail);
   $member_name = $member_names[$member_id];
-  $request_id = $request['id'];
+  $request_id = $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+  $request_text = $request[RQ_REQUEST_TABLE_FIELDNAME::REQUEST_TEXT];
 
   $email= get_attribute_named($member_detail, 'email_address');
   $actions = compute_actions_for_member($member_id, $request_id, $email);
   $select_actions = "<select name=\"$request_id\">$actions</select>";
-  print "<tr><td>$member_name</td><td>$email<td>$select_actions</td></tr>";
+  print "<tr><td>$member_name</td><td>$email</td>";
+  print "<td>$request_text</td>";
+  print "<td>$select_actions</td></tr>";
   //  error_log("REQ = " . print_r($request, true));
 }
 print '</table>';
