@@ -2,7 +2,7 @@
 # -*- mode:python -*-
 
 #----------------------------------------------------------------------
-# Copyright (c) 2013 Raytheon BBN Technologies
+# Copyright (c) 2013-2014 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and/or hardware specification (the "Work") to
@@ -111,10 +111,9 @@ def all_member_attrs(conn):
     return [r[0] for r in rows]
 
 def mark_project_leads(conn):
-    query = ("select member_id, privilege"
-             + " from ma_member_privilege m, ma_privilege p"
-             + " where m.privilege_id = p.id"
-             + " and privilege = 'PROJECT_LEAD'"
+    query = ("select member_id, value"
+             + " from ma_member_attribute"
+             + " where name = 'PROJECT_LEAD'"
              + " order by member_id")
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute(query)
@@ -128,10 +127,9 @@ def mark_project_leads(conn):
     cur.close()
 
 def mark_operators(conn):
-    query = ("select member_id, privilege"
-             + " from ma_member_privilege m, ma_privilege p"
-             + " where m.privilege_id = p.id"
-             + " and privilege = 'OPERATOR'"
+    query = ("select member_id, value"
+             + " from ma_member_attribute"
+             + " where name = 'OPERATOR'"
              + " order by member_id")
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute(query)

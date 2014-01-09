@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -354,7 +354,7 @@ if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
     $_SESSION['lasterror'] = 'GENI Portal not authorized: Could not find portal in list of available clients';
     relative_redirect('kmhome.php');
   }
-  $result = ma_authorize_client($ma_url, $km_signer, $member_id, $portal_urn, 'true');
+  $result = ma_authorize_client($ma_url, $km_signer, $member_id, $portal_urn, true);
   //  error_log("auth res = " . print_r($result, true));
   if ($result[RESPONSE_ARGUMENT::CODE] == RESPONSE_ERROR::NONE) {
     relative_redirect('home.php');

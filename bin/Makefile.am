@@ -4,6 +4,7 @@ dist_sbin_SCRIPTS = geni-init-ca geni-init-services
 
 dist_bin_SCRIPTS = \
 		assert_email.sh \
+		compute_rollback_sql.py \
 		disable_lockdown.sh \
 		disable_sundown.sh \
 		do-make-install.sh \
@@ -11,19 +12,28 @@ dist_bin_SCRIPTS = \
 		enable_sundown.sh \
 		geni-add-member-privilege \
 		geni-delete-outside-cert \
+		geni-add-member-attribute \
+		geni-remove-member-attribute \
 		geni-add-project-member \
 		geni-add-trusted-tool \
 		geni-manage-maintenance \
 		geni-ops-report \
 		geni-remove-project-member \
 		geni-revoke-member-privilege \
+		geni-enable-user \
+		geni-disable-user \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		idp_user_created.sh \
 		report_genich_relations \
-		shib_idp_users \
-		geni-add-member-attribute
+		rollback_analysis.sh \
+		shib_idp_users
 
 dist_pkgsysconf_DATA = geni-ch-githash
+
+# GPO Lab
+# Install in /usr/local/lib, not /usr/lib
+localpythondir = $(subst /usr/lib,/usr/local/lib,$(pythondir))
+nobase_dist_localpython_DATA = chapiclient/__init__.py chapiclient/chapi.py
 
 cleandb:

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologiesc
+// Copyright (c) 2012-2014 Raytheon BBN Technologiesc
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -126,7 +126,7 @@ $slice_id = "None";
 $slice_name = "None";
 include("tool-lookupids.php");
 
-if (isset($slice_expired) && $slice_expired == 't') {
+if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
     $slice_name = "";
   }

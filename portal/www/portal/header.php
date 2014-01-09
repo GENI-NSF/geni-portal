@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -93,7 +93,7 @@ function show_tab_bar($active_tab = '', $load_user=true)
 
   echo '<div id="mainnav" class="nav">';
   echo '<ul>';
-  if (isset($user) && ! is_null($user) && $user->isActive()) {
+  if (!$load_user || (isset($user) && !is_null($user) && $user->isActive())) {
     foreach ($standard_tabs as $tab) {
       echo '<li';
       if ($active_tab == $tab['name']) {
@@ -122,10 +122,9 @@ function check_km_authorization($user)
   }
   if (! $user->portalIsAuthorized()) {
     $request_uri = $_SERVER['REQUEST_URI'];
-    $home = "home.php";
-    if (substr_compare($request_uri, $home, -strlen($home), strlen($home)) !== 0) {
-      relative_redirect($home);
-    }
+    //    $km_url = get_first_service_of_type(SR_SERVICE_TYPE::KEY_MANAGER);
+    $home = "kmhome.php";
+    relative_redirect($home);
   }
 }
 

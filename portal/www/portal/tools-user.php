@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -181,14 +181,23 @@ if (! isset($ma_url)) {
 }
 
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
-$has_certificate = ! is_null($result);
+$has_certificate = False;
+$has_key = False;
+if (! is_null($result)) {
+  $has_certificate = True;
+  $has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $result);
+}
 
 $kmcert_url = "kmcert.php?close=1";
 print "<button onClick=\"window.open('$kmcert_url')\">";
 if (! $has_certificate) {
   print "Generate an SSL certificate";
 } else {
-  print "Download your SSL certificate";
+  if ($has_key) {
+    print "Download your Portal generated SSL certificate and key";
+  } else {
+    print "Download your Portal signed SSL certificate";
+  }
 }
 print "</button>";
 print "</p>";

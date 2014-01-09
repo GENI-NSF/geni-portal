@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -67,7 +67,7 @@ foreach($project_objects as $project) {
   //  error_log("PROJ = " . print_r($project, true));
   $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
   $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-  if($expired == 't') 
+  if(convert_boolean($expired)) 
     $expired_projects[$project_id] = $project;
   else
     $unexpired_projects[$project_id] = $project;

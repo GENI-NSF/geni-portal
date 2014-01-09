@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -214,18 +214,17 @@ if (! isset($member_id)) {
 
 $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
 if (! is_null($result)) {
+  $msg = "Download Your Portal Generated Certificate and Private Key";
   // User has an outside cert. Show the download screen.
-  if (key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)
-          && $result[MA_ARGUMENT::PRIVATE_KEY]) {
-    $key_msg = " and Private Key";
-  } else {
-    $key_msg = "";
+  if (! key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)
+      || ! $result[MA_ARGUMENT::PRIVATE_KEY]) {
+    $msg = "Download your Portal Signed Certificate";
   }
 ?>
-<h4>Download Your Certificate<?php print $key_msg;?>:</h4>
+<h4><?php print $msg;?>:</h4>
 <form name="download" action="kmcert.php" method="post">
 <input type="hidden" name="<?php print $download_key ?>" value="y"/>
-<input type="submit" name="submit" value="Download Certificate<?php print $key_msg;?>"/>
+<input type="submit" name="submit" value="<?php print $msg;?>"/>
 </form>
 <?php
   show_close_button();

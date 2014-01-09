@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -57,40 +57,58 @@ if (! isset($ma_url)) {
 
 // error_log("REQUEST = " . print_r($_REQUEST, true));
 
+if (! array_key_exists('project_id', $_REQUEST)) {
+  // Error
+  error_log("do-handle-project-request called without project_id");
+  relative_redirect("home.php");
+}
 $project_id = $_REQUEST['project_id'];
 unset($_REQUEST['project_id']);
 
-$project_name = $_REQUEST['project_name'];
-unset($_REQUEST['project_name']);
+if (array_key_exists('project_name', $_REQUEST)) {
+  unset($_REQUEST['project_name']);
+}
 
 $selections = $_REQUEST;
 
 // error_log("SELECTIONS = " . print_r($selections, true));
 
 $project_details = lookup_project($sa_url, $user, $project_id);
+if (! isset($project_details) or is_null($project_details)) {
+  error_log("Couldn't find project by ID in do-handle-project-request: $project_id");
+  //  $_SESSION['lasterror'] = "Project $project_id unknown";
+  relative_redirect("home.php");
+}
+
 $project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 $lead_id = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 
 $lead_name = lookup_member_names($ma_url, $user, array($lead_id));
 $lead_name = $lead_name[$lead_id];
 
-$selections = $_REQUEST;
-
 $num_members_added = 0;
 $num_members_rejected = 0;
 
 foreach($selections as $select_id => $attribs) {
   $attribs_parts = explode(',', $attribs);
+  if (count($attribs_parts) < 4) {
+    error_log("Malformed selection row in do-handle-project-request: $select_id=$attribs");
+    continue;
+  }
   $role = $attribs_parts[0];
   $member_id = $attribs_parts[1];
+  // FIXME: Validate that the member_id is reasonable
   $request_id = $attribs_parts[2];
+  // FIXME: Validate that the request_id is reasonable - still open, etc
   $email_address = $attribs_parts[3];
   // error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
   $resolution_status = RQ_REQUEST_STATUS::APPROVED;
-  $resolution_status_label = "approved";
+  // FIXME: Add the role name
+  $resolution_status_label = "approved (see " . relative_url("project.php?project_id=".$project_id) . ")";
   $resolution_description = "";
-  $email_subject = "Request " . print_r($request_id, true) . 
-    " to join project " . $project_name;
+  $email_subject = "Request to join GENI project $project_name";
+  //  $email_subject = "GENI Request " . print_r($request_id, true) . 
+  //    " to join project " . $project_name;
   if ($role <= 0) {
     // This is a 'do not add' selection
     // Send rejection letter 
@@ -110,13 +128,18 @@ foreach($selections as $select_id => $attribs) {
   resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, $request_id,
 			  $resolution_status, $resolution_description);
 
+  // FIXME: Do not send the rejection mail if the user is already in the project - ticket #410
+  // FIXME: Allow the person rejecting your join request to edit/specify the email contents, so they can explain the rejection
+  // -- ticket #876
+
   // Send acceptance/rejection letter
-  $email_message  = "Your request to join project " . $project_name . 
-    " has been " . $resolution_status_label;
-  mail($email_address, $email_subject, $email_message);
+  $email_message  = "Your request to join GENI project " . $project_name . 
+    " has been " . $resolution_status_label . " by " . $user->prettyName() . ".\n\nGENI Portal Operations";
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  mail($email_address, $email_subject, $email_message,$headers);
 
 }
-
 
 $_SESSION['lastmessage'] = "Added $num_members_added members; Rejected $num_members_rejected members"; 
 

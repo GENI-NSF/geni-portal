@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -118,13 +118,16 @@ print "<b>LabWiki</b></button> ";
 <table>
 <?php
    // FIXME: foreach project or slice where user is admin or lead, get log entries for that context
-   // and forach slice where user is ad
+   // and foreach slice where user is ad
 require_once('logging_client.php');
 require_once('sr_constants.php');
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, Portal::getInstance(), 
+$entries = get_log_entries_for_context($log_url, 
+				       $user, // Portal::getInstance(), 
 				       CS_CONTEXT_TYPE::MEMBER, $user->account_id);
-$new_entries = get_log_entries_by_author($log_url, Portal::getInstance(), $user->account_id);
+$new_entries = get_log_entries_by_author($log_url, 
+					 $user, // Portal::getInstance(), 
+					 $user->account_id);
 $entries = array_merge($entries, $new_entries);
 
 $messages = array();

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -204,12 +204,12 @@ if ($pi_request and ! $is_pi) {
   $msg = $user->prettyName() . " requested to be a Project Lead";
   $subject = "New GENI CH Project Lead request";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, Portal::getInstance(), $msg, $member_attributes, $user->account_id);
+  log_event($log_url, $user, $msg, $member_attributes, $user->account_id);
 } else if (! $pi_request and $is_pi) {
   $body .= "\t\t**** Requesting to NOT be a Project Lead. ****\n";
   $msg = $user->prettyName() . " requested to NOT be a Project Lead";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, Portal::getInstance(), $msg, $member_attributes, $user->account_id);
+  log_event($log_url, $user, $msg, $member_attributes, $user->account_id);
 }
 if ($changed_str !== '') {
   $body .= "Changes: \n$changed_str\n";
@@ -222,8 +222,10 @@ if ($removed_str !== '') {
 }
 include_once('/etc/geni-ch/settings.php');
 global $portal_admin_email;
+$headers = "Auto-Submitted: auto-generated\r\n";
+$headers .= "Precedence: bulk\r\n";
 mail($portal_admin_email, $subject,
-     $body);
+     $body, $headers);
 
 if ($pi_request and ! $is_pi) {
   // Email the experimenter that their request was received
@@ -231,9 +233,7 @@ if ($pi_request and ! $is_pi) {
   if (! is_null($newEmail) and $newEmail !== $user->email()) {
     $cc = "\r\nCc: " . $newEmail;
   }
-  $bcc = "Bcc: " . $portal_admin_email;
   $to = $user->prettyEmailAddress();
-  $replyto = "Reply-To: help@geni.net";
   //  $from = "From: GENI Portal <www-data@portal.geni.net>"; // FIXME!!!
   $subject = "Your GENI Project Lead request has been received";
   $body = "\nDear " . $user->prettyName() . ",\n";
@@ -241,8 +241,13 @@ if ($pi_request and ! $is_pi) {
   $body = $body . "\nIf you have any questions about your request or about using GENI in general, please email help@geni.net.\n";
   $body = $body . "\nThank you for your interest in GENI!\n";
   $body = $body . "\nSincerely,\n\nGENI Experimenter Support\nhelp@geni.net\n";
-  mail($to, $subject, $body,
-       $replyto . "\r\n" . $bcc . $cc);
+  $headers = "Reply-To: help@geni.net\r\n";
+  $headers .= "Bcc: " . $portal_admin_email . "\r\n";
+  $headers .= "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= $cc;
+
+  mail($to, $subject, $body, $headers);
 }
 
 //error_log("Request: " . print_r($_REQUEST, true));

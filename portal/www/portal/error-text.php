@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,7 +22,12 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 ?>
+
 <?php
+
+// error_log('$_GET = ' . print_r($_GET, true));
+
+
  require_once("header.php");
 
 // If referer is ?register? then include the 0 to not load the user
@@ -31,19 +36,31 @@ $referer = "";
 if (key_exists($referer_key, $_SERVER)) {
   $referer = $_SERVER[$referer_key];
 }
+
+$system_error = false;
+$load_user_on_show_header = false;
+if (key_exists("system_error", $_GET)) {
+  $system_error = true;
+  $load_user_on_show_header = false;
+}
+//error_log("ET.SYSTEM_ERROR = " . print_r($system_error, true));
+
 if (strpos($referer, 'register') !== false or strpos($referer, 'activate') !== false) {
-  show_header('GENI Portal: Home',  $TAB_SLICES, 0);
+  show_header('GENI Portal: Home',  $TAB_SLICES, false);
 } else {
-  show_header('GENI Portal: Home',  $TAB_SLICES);
+  show_header('GENI Portal: Home',  $TAB_SLICES, $load_user_on_show_header);
 }
 $header = "Error";
 print "<h1>$header</h1>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";
 
-// error_log('$_GET = ' . print_r($_GET, true));
-
 if (key_exists("error", $_GET)) {
-  echo "<p class='warn'>" . urldecode($_GET["error"]) . "</p><br/>\n";
+  $error_text = urldecode($_GET["error"]);
+//  error_log("ET = " . $error_text);
+  if ($system_error) {
+    $error_text = htmlentities($error_text);
+  }
+  echo "<p class='warn'>" . $error_text . "</p><br/>\n";
 } else {
   // error_log('$_SERVER = ' . print_r($_SERVER, true));
   

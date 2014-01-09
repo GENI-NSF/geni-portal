@@ -1,7 +1,7 @@
 svcdatadir = $(pkgdatadir)/sr
 
 cert_FILES = \
-	certs/Thawte_Premium_Server_CA.pem \
+	certs/InCommonServerCA.pem \
 	certs/clemson-ig-boss.pem \
 	certs/clemson-ig-cm.pem \
 	certs/clemson-ig-of.pem \
@@ -37,6 +37,9 @@ cert_FILES = \
 	certs/illinois-ig-boss.pem \
 	certs/illinois-ig-cm.pem \
 	certs/illinois-ig-of.pem \
+	certs/ion.pem \
+	certs/irods.pem \
+	certs/irods-test.pem \
 	certs/kettering-ig-of.pem \
 	certs/max-ig-boss.pem \
 	certs/max-ig-cm.pem \
@@ -61,12 +64,9 @@ cert_FILES = \
 	certs/uen-of.pem \
 	certs/uky-ig-of.pem \
 	certs/utah-am.pem \
-	certs/irods.pem \
-	certs/irods-test.pem
-
-www_FILES = www/sr_controller.php
-
-apache_FILES = apache2.conf
+	certs/wisconsin-ig-boss.pem \
+	certs/wisconsin-ig-cm.pem \
+	certs/wisconsin-ig-of.pem
 
 db_FILES = \
 	db/postgresql/README.txt \
@@ -76,7 +76,7 @@ db_FILES = \
 	db/postgresql/update-2.sql
 
 
-nobase_dist_svcdata_DATA = $(cert_FILES) $(www_FILES) $(apache_FILES) \
+nobase_dist_svcdata_DATA = $(cert_FILES) \
 				$(db_FILES)
 
 # To do: transition database initialization to a script using

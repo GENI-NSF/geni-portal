@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -101,14 +101,13 @@ function compute_permission_manager($rows)
   foreach($rows as $row)
     {
       /*
-	FIXME: New CHAPI wants this code
-      $permission = $row[0];
-      $context_type = $row[1];
-      $context = $row[2];
-      */
       $permission = $row['name'];
       $context_type = $row[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT_TYPE];
       $context = $row[CS_ASSERTION_TABLE_FIELDNAME::CONTEXT];
+      */
+      $permission = $row[0];
+      $context_type = $row[1];
+      $context = $row[2];
       $pm->add($permission, $context_type, $context);
     }
   //  error_log("CPM = " . $pm);

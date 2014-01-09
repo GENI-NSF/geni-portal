@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -75,6 +75,7 @@ $creation = "";
 $purpose = "";
 $leademail = "";
 $leadname = "";
+$expired = False;
 
 $result = "";
 if (array_key_exists("result", $_GET)) {
@@ -90,6 +91,7 @@ if (! is_null($project) && $project != "None") {
   $creation_db = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $creation = dateUIFormat($creation_db);
   $expiration_db = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
   if ($expiration_db) {
     $expiration = dateUIFormat($expiration_db);
   } else {
@@ -144,14 +146,23 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 }
 
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+$entries = get_log_entries_for_context($log_url, 
+				       $user, // Portal::getInstance(),
 				       CS_CONTEXT_TYPE::PROJECT, $project_id);
+
+$actdisabled = '';
+if ($expired === True) {
+  $actdisabled = $disabled;
+}
 
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 print "<h1>GENI Project: " . "<i>" . $project_name . "</i>" . "$result</h1>\n";
+if ($expired === True) {
+  print "<p class='warn'>This project is expired!</p>\n";
+}
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
 
@@ -168,7 +179,7 @@ if (isset($project_id)) {
     /* Create a new slice*/
     print "<button onClick=\"window.location='";
     print relative_url("createslice?project_id=$project_id'");
-    print "\"><b>Create Slice</b></button>";
+    print "\"$actdisabled><b>Create Slice</b></button>";
   }
   if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
     $putBut = True;
@@ -194,7 +205,7 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
       $requestor = $user->fetchMember($request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]);
       $created_db = $request[RQ_REQUEST_TABLE_FIELDNAME::CREATION_TIMESTAMP];
       $created = dateUIFormat($created_db);
-      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . "'\"><b>Handle Request</b></button>";
+      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . "'\"$actdisabled><b>Handle Request</b></button>";
       print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
     }
     print "</table><br/>\n";
@@ -281,10 +292,10 @@ foreach ($member_lists as $member_role_index => $member_names) {
     print "<tr><td><a href=\"project-member.php?project_id="
       . $project_id
       . "&member_id=$member_id\">$member_name</a></td><td>$member_role</td>";
-
+    
     print "</tr>\n";
   }
-  }
+}
    // FIXME: See project-member.php. Replace all that with a table or 2 here?
 //   print "<tr><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$leadid\">$leadname</a></td><td>Project Lead</td></tr>\n";
 ?>
@@ -293,7 +304,7 @@ foreach ($member_lists as $member_role_index => $member_names) {
 <?php
 
 $edit_members_disabled = "";
-if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+if (!$user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id) || $expired) {
   $edit_members_disabled = $disabled;
 }
 echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_project_members_url'\"><b>Edit Current Project Membership</b></button></p>";
@@ -302,12 +313,12 @@ echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_project
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   $upload_project_members_url = "upload-project-members.php?project_id=".$project_id;
   print "<h3>Add New Project Members</h3>";
-  print "<p><button onClick=\"window.location='$upload_project_members_url'\"><b>Bulk Add New Members</b></button>";
+  print "<p><button onClick=\"window.location='$upload_project_members_url'\"$actdisabled><b>Bulk Add New Members</b></button>";
 
   //  print "<br/><h3>Invite new project members</h3>\n";
   print " <button onClick=\"window.location='";
   print relative_url("invite-to-project.php?project_id=$project_id'");
-  print "\"><b>Invite New Members</b></button></p>\n";
+  print "\"$actdisabled><b>Invite New Members</b></button></p>\n";
   
   if (! isset($reqs) || is_null($reqs) || count($reqs) < 1) {
     print "<div class='announce'><p>No outstanding project join requests.</p></div>\n";
@@ -330,7 +341,12 @@ if (is_array($entries)) {
     $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
     $member_name = $entry_member_names[$member_id];
     //    error_log("ENTRY = " . print_r($entry, true));
-    print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+    // If the MA or other authority took the action, then there is no name and no user so don't show the project-member page
+    if ($member_name == "NONE") {
+      print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
+    } else {
+      print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+    }
   }
 }
 ?>

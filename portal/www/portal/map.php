@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2013 Raytheon BBN Technologies
+// Copyright (c) 2013-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -150,6 +150,7 @@ $files = array(
   $directory . 'rspec-instageni-nysernet-org.xml',
   $directory . 'rspec-instageni-rnet-missouri-edu.xml',
   $directory . 'rspec-instageni-rnoc-gatech-edu.xml',
+  $directory . 'rspec-instageni-wisc-edu.xml',
   $directory . 'rspec-lan-sdn-uky-edu.xml',
   $directory . 'rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml',
   $directory . 'rspec-openflow-foam-foam-geni-kettering-edu.xml',
@@ -161,6 +162,7 @@ $files = array(
   $directory . 'rspec-openflow-foam-foam-instageni-northwestern-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-nysernet-org.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-rnet-missouri-edu.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-wisc-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml',
   $directory . 'rspec-openflow-foam-foam-lan-sdn-uky-edu.xml',
   $directory . 'rspec-openflow-foam-foam-nysernet-org.xml',

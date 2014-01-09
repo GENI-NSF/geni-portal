@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -27,6 +27,7 @@
 // to the status of another (joining slices or projects, approving accounts, changing attributes)
 
 require_once('rq_constants.php');
+require_once('chapi.php');
 
 /*
  * The interface is as follows:
@@ -72,16 +73,11 @@ function create_request($url, $signer,
 			$context_type, $context_id, $request_type, 
 			$request_text, $request_details = '')
 {
-  // FIXME: Check inputs - here an all following methods in this file
-  $request_message['operation'] = 'create_request';
-  $request_message[RQ_ARGUMENTS::CONTEXT_TYPE] = $context_type;
-  $request_message[RQ_ARGUMENTS::CONTEXT_ID] = $context_id;
-  $request_message[RQ_ARGUMENTS::REQUEST_TYPE] = $request_type;
-  $request_message[RQ_ARGUMENTS::REQUEST_TEXT] = $request_text;
-  $request_message[RQ_ARGUMENTS::REQUESTOR] = $signer->account_id;
-  $request_message[RQ_ARGUMENTS::REQUEST_DETAILS] = $request_details;
-  $result = put_message($url, $request_message, $signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($url, $signer);
+  $options = array('_dummy' => null);
+  return $client->create_request($context_type, $context_id, $request_type, 
+				 $request_text, $request_details, 
+				 $client->creds(), $options);
 }
 
 // Set disposition of pending request to APPROVED, REJECTED or CANCELED (see rq_constants.RQ_REQUEST_STATUS)
@@ -91,14 +87,12 @@ function resolve_pending_request($url, $signer,
 				 $request_id, 
 				 $resolution_status, $resolution_description)
 {
-  $request_message['operation'] = 'resolve_pending_request';
-  $request_message[RQ_ARGUMENTS::REQUEST_ID] = $request_id;
-  $request_message[RQ_ARGUMENTS::CONTEXT_TYPE] = $context_type;
-  $request_message[RQ_ARGUMENTS::RESOLVER] = $signer->account_id;
-  $request_message[RQ_ARGUMENTS::RESOLUTION_STATUS] = $resolution_status;
-  $request_message[RQ_ARGUMENTS::RESOLUTION_DESCRIPTION] = $resolution_description;
-  $result = put_message($url, $request_message, $signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($url, $signer);
+  $options = array('_dummy' => null);
+  return $client->resolve_pending_request($context_type, 
+					  $request_id, 
+					  $resolution_status, $resolution_description, 
+					  $client->creds(), $options);
 }
 
 // Get list of requests for given context
@@ -106,14 +100,12 @@ function resolve_pending_request($url, $signer,
 function get_requests_for_context($url, $signer, 
 				  $context_type, $context_id, $status=null)
 {
-  $request_message['operation'] = 'get_requests_for_context';
-  $request_message[RQ_ARGUMENTS::CONTEXT_TYPE] = $context_type;
-  $request_message[RQ_ARGUMENTS::CONTEXT_ID] = $context_id;
-  if (isset($status) and ! is_null($status)) {
-    $request_message[RQ_ARGUMENTS::RESOLUTION_STATUS] = $status;
-  }
-  $result = put_message($url, $request_message, $signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($url, $signer);
+  $options = array('_dummy' => null);
+  return $client->get_requests_for_context($context_type, 
+					   $context_id,
+					   $status, 
+					   $client->creds(), $options);
 }
 
 // Get list of requests made by given user (account_id)
@@ -122,15 +114,13 @@ function get_requests_for_context($url, $signer,
 function get_requests_by_user($url, $signer, 
 			      $account_id, $context_type, $context_id=null, $status=null)
 {
-  $request_message['operation'] = 'get_requests_by_user';
-  $request_message[RQ_ARGUMENTS::ACCOUNT_ID] = $account_id;
-  $request_message[RQ_ARGUMENTS::CONTEXT_TYPE] = $context_type;
-  $request_message[RQ_ARGUMENTS::CONTEXT_ID] = $context_id;
-  if (isset($status) and ! is_null($status)) {
-    $request_message[RQ_ARGUMENTS::RESOLUTION_STATUS] = $status;
-  }
-  $result = put_message($url, $request_message, $signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($url, $signer);
+  $options = array('_dummy' => null);
+  return $client->get_requests_by_user($account_id, 
+				       $context_type, 
+				       $context_id, 
+				       $status, 
+				       $client->creds(), $options);
 }
 
 // Get list of requests pending which the given user can handle (account is that of a lead/admin)
@@ -139,12 +129,12 @@ function get_pending_requests_for_user($url, $signer,
 				       $account_id, 
 				       $context_type, $context_id=null)
 {
-  $request_message['operation'] = 'get_pending_requests_for_user';
-  $request_message[RQ_ARGUMENTS::ACCOUNT_ID] = $account_id;
-  $request_message[RQ_ARGUMENTS::CONTEXT_TYPE] = $context_type;
-  $request_message[RQ_ARGUMENTS::CONTEXT_ID] = $context_id;
-  $result = put_message($url, $request_message, $signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($url, $signer);
+  $options = array('_dummy' => null);
+  return $client->get_pending_requests_for_user($account_id, 
+					   $context_type, 
+					   $context_id, 
+					   $client->creds(), $options);
 }
 
 // Get number of pending requests for a given user to handle. That is, requests that
@@ -154,23 +144,23 @@ function get_number_of_pending_requests_for_user($url, $signer,
 						 $account_id, 
 						 $context_type, $context_id=null)
 {
-  $request_message['operation'] = 'get_number_of_pending_requests_for_user';
-  $request_message[RQ_ARGUMENTS::ACCOUNT_ID] = $account_id;
-  $request_message[RQ_ARGUMENTS::CONTEXT_TYPE] = $context_type;
-  $request_message[RQ_ARGUMENTS::CONTEXT_ID] = $context_id;
-  $result = put_message($url, $request_message, $signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($url, $signer);
+  $options = array('_dummy' => null);
+  return $client->get_number_of_pending_requests_for_user($account_id, 
+							  $context_type, 
+							  $context_id, 
+							  $client->creds(), 
+							  $options);
 }
 
 // Get request info for a single request id
 function get_request_by_id($url, $signer, $request_id, $context_type)
 {
-  $request_message['operation'] = 'get_request_by_id';
-  $request_message[RQ_ARGUMENTS::REQUEST_ID] = $request_id;
-  $request_message[RQ_ARGUMENTS::CONTEXT_TYPE] = $context_type;
-  $result = put_message($url, $request_message, $signer->certificate(), $signer->privateKey());
-  return $result;
+  $client = XMLRPCClient::get_client($url, $signer);
+  $options = array('_dummy' => null);
+  return $client->get_request_by_id($request_id, 
+				    $context_type, 
+				    $client->creds(), $options);
 }
 
 ?>
-

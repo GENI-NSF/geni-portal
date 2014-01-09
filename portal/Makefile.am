@@ -66,10 +66,8 @@ dist_svcweb_DATA = \
 	www/portal/confirm-sliverdelete.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
-	www/portal/cs_controller_test.php \
 	www/portal/db-util.php \
 	www/portal/db_error_test.php \
-	www/portal/debug.php \
 	www/portal/debug_clearcache.php \
 	www/portal/deletesliver.php \
 	www/portal/deletesshkey.php \
@@ -128,14 +126,11 @@ dist_svcweb_DATA = \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \
 	www/portal/listresources_plain.php \
-	www/portal/logging_test.php \
-	www/portal/ma_controller_test.php \
 	www/portal/maintenance_redirect_page.php \
 	www/portal/map.html \
 	www/portal/map.php \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
-	www/portal/pa_controller_test.php \
 	www/portal/permission_manager_test.php \
 	www/portal/portal.php \
 	www/portal/portal_omni_config.php \
@@ -155,7 +150,6 @@ dist_svcweb_DATA = \
 	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
-	www/portal/sa_controller_test.php \
 	www/portal/services.php \
 	www/portal/settings.php \
 	www/portal/slice-add-resources.js \
@@ -240,6 +234,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-instageni-nysernet-org.xml \
 	www/common/map/rspec-instageni-rnet-missouri-edu.xml \
 	www/common/map/rspec-instageni-rnoc-gatech-edu.xml \
+	www/common/map/rspec-instageni-wisc-edu.xml \
 	www/common/map/rspec-lan-sdn-uky-edu.xml \
 	www/common/map/rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml \
 	www/common/map/rspec-openflow-foam-foam-geni-kettering-edu.xml \
@@ -251,6 +246,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-openflow-foam-foam-instageni-northwestern-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-nysernet-org.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-rnet-missouri-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-wisc-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-lan-sdn-uky-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-nysernet-org.xml \

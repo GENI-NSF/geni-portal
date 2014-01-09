@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2013 Raytheon BBN Technologies
+// Copyright (c) 2013-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -36,14 +36,15 @@ class PermFailException extends Exception{}
 /* *** Set up some basic variables for accessing iRODS *** */
 // This is just the default - otherwise it comes from the SR
 // Test server
-$irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
+$irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-test/rest';
+//$irods_url = 'http://iren-web.renci.org:8080/irods-rest-0.0.1-SNAPSHOT/rest';
 //$irods_url = 'https://iren-web.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
 
 // Production server
 // $irods_url = 'https://geni-gimi.renci.org:8443/irods-rest-0.0.1-SNAPSHOT/rest';
 
 /* TODO put these in the service registry or similar */
-$irods_host = "irods_hostname"; // FIXME
+$irods_host = "emmy9.casa.umass.edu"; // FIXME
 $irods_port = 1247; // FIXME: Always right?
 $irods_resource = "demoResc"; // FIXME: Always right?
 $default_zone = "tempZone"; // This is only for the test server. The production server uses geniRenci
@@ -65,8 +66,12 @@ if (isset($irods_svrs) && ! is_null($irods_svrs) && is_array($irods_svrs) && cou
 // HACK
 // The production iRODS server uses a different zone. But we don't know it.
 // The right thing may be to put this in the SR or the settings file, but for now:
-if (strpos($irods_url, "geni-gimi") !== FALSE) {
+if (strpos($irods_url, "geni-gimi") !== FALSE and strpos($irods_url, "irods-rest-0.0.1-SNAP") !== FALSE) {
+  // production server has a different zone
   $default_zone = "geniRenci";
+} else if (strpos($irods_url, "irods-rest-test") !== FALSE) {
+  // Test server has different port
+  $irods_port = 1248;
 }
 
 /* Get this from /etc/geni-ch/settings.php */
@@ -115,9 +120,13 @@ function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="
   /* // For debugging */
   /* curl_setopt($ch, CURLOPT_VERBOSE, True); */
   /* curl_setopt($ch, CURLOPT_HEADER, True); */
-  /* $fname = "/tmp/wimax-curl-$op-errors.log"; */
+  /* $fname = "/tmp/irods-curl-$op-errors.log"; */
   /* $errorFile = fopen($fname, 'a'); */
   /* curl_setopt($ch, CURLOPT_STDERR, $errorFile); */
+  /* if ($op == "PUT") { */
+  /*   $putdatafile = "/tmp/irods-curl-put-data.txt"; */
+  /*   file_put_contents($putdatafile, $data . "\n\n", FILE_APPEND); */
+  /* } */
   /* // End of debugging stuff */
 
   // Now do it
@@ -800,6 +809,14 @@ function removeGroup($project_id, $group_name, $user) {
 
   // Return 0 if removed the group, -1 on error, 1 if no such group
   return $removed;
+}
+
+/**
+ * Return the default iRODS zone.
+ */
+function irods_default_zone() {
+  global $default_zone;
+  return $default_zone;
 }
 
 ?>

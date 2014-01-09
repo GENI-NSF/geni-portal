@@ -2,7 +2,7 @@
 # -*- Mode: python -*-
 
 #----------------------------------------------------------------------
-# Copyright (c) 2013 Raytheon BBN Technologies
+# Copyright (c) 2013-2014 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and/or hardware specification (the "Work") to
@@ -82,17 +82,22 @@ def main(argv=None):
     password = get_database_password(options)
     if password:
         connect_args['password'] = password
+
+    # FIXME: Is this entry already in the DB? Then bail
+
     query = 'INSERT INTO ma_client (client_name, client_urn) VALUES (%s, %s)'
     try:
         conn = psycopg2.connect(**connect_args)
         cur = conn.cursor()
         cur.execute(query, (client_name, client_urn))
+        # FIXME: Check: did this do an insert?
         cur.close()
         conn.commit()
     except psycopg2.Error as e:
-        msg = "Database error: %s\n" % (str(e))
+        msg = "Trusted tool NOT added. Database error: %s\n" % (str(e))
         sys.stderr.write(msg)
         return 1
+    sys.stderr.write("Added %s as a trusted tool\n" % client_name)
     return 0
 
 if __name__ == "__main__":

@@ -8,34 +8,34 @@
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+datapath+06:d6:2c:59:e5:5d:cd:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am" dpid="06:d6:2c:59:e5:5d:cd:00">
     <openflow:location country="US" latitude="43.049957" longitude="-76.152849"/>
     <openflow:port name="A1" num="1"/>
-    <openflow:port name="A24" num="24"/>
     <openflow:port name="local" num="65534"/>
     <openflow:port name="A7" num="7"/>
+    <openflow:port name="A24" num="24"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+datapath+06:db:2c:59:e5:5d:cd:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am" dpid="06:db:2c:59:e5:5d:cd:00">
     <openflow:location country="US" latitude="43.049957" longitude="-76.152849"/>
-    <openflow:port name="A24" num="24"/>
     <openflow:port name="local" num="65534"/>
+    <openflow:port name="A24" num="24"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+datapath+06:dc:2c:59:e5:5d:cd:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am" dpid="06:dc:2c:59:e5:5d:cd:00">
     <openflow:location country="US" latitude="43.049957" longitude="-76.152849"/>
-    <openflow:port name="A24" num="24"/>
     <openflow:port name="local" num="65534"/>
+    <openflow:port name="A24" num="24"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+datapath+06:dd:2c:59:e5:5d:cd:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am" dpid="06:dd:2c:59:e5:5d:cd:00">
     <openflow:location country="US" latitude="43.049957" longitude="-76.152849"/>
-    <openflow:port name="A24" num="24"/>
     <openflow:port name="local" num="65534"/>
+    <openflow:port name="A24" num="24"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+datapath+06:de:2c:59:e5:5d:cd:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am" dpid="06:de:2c:59:e5:5d:cd:00">
     <openflow:location country="US" latitude="43.049957" longitude="-76.152849"/>
-    <openflow:port name="A24" num="24"/>
     <openflow:port name="local" num="65534"/>
+    <openflow:port name="A24" num="24"/>
   </openflow:datapath>
   <openflow:datapath component_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+datapath+06:df:2c:59:e5:5d:cd:00" component_manager_id="urn:publicid:IDN+openflow:foam:foam.instageni.nysernet.org+authority+am" dpid="06:df:2c:59:e5:5d:cd:00">
     <openflow:location country="US" latitude="43.049957" longitude="-76.152849"/>
-    <openflow:port name="A24" num="24"/>
     <openflow:port name="local" num="65534"/>
+    <openflow:port name="A24" num="24"/>
   </openflow:datapath>
 </rspec>
 

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -109,15 +109,18 @@ Thank you,\n" . $user->prettyName() . "\n";
   $message .= "\r\n----\r\nRequested Project Name: " . $project_name . "\r\n";
   $message .= "Requested Project Purpose: " . $project_purpose . "\r\n";
 }
-
 if (isset($requestee) && ! is_null($requestee) && (!isset($error) || is_null($error))) {
   // Send the email
   $email = $user->email();
-  $prettyEmail = $user->prettyEmailAddress();
+  $name = $user->prettyName();
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= "Reply-To: $email" . "\r\n" . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>";  
+
   mail($requestee,
        "Please create me a GENI Project",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       $headers,
        "-f $email");
 
   // FIXME: Ticket #65: Put this as a request. Include the request ID in the email?

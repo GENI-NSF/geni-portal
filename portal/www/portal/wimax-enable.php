@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2013 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -353,6 +353,9 @@ $ldif_user_email = $user->email();
 $ldif_user_given_name = '';
 if (array_key_exists('givenName', $user->attributes) and isset($user->attributes['givenName']) and ! is_null($user->attributes['givenName'])) {
   $ldif_user_given_name = $user->attributes['givenName'];
+} else {
+  // Must be non empty. user-username? Or else user->email()
+  $ldif_user_given_name = $user->email();
 }
 
 $ldif_user_sn = '';
@@ -1090,7 +1093,10 @@ Get user's projects (expired or not)
 	} // end of block to handle group has wrong admin
 
 	// get all members with a wimax-enable attribute that lists this project ID
-	$members_of_group = ma_lookup_members($ma_url, $user, array("enable_wimax" => $proj_id));
+
+	$members_of_group = ma_lookup_members_by_identifying($ma_url, $user, 
+							     '_GENI_ENABLE_WIMAX', $proj_id);
+	//	$members_of_group = ma_lookup_members($ma_url, $user, array("enable_wimax" => $proj_id));
 	$members_of_proj = get_project_members($sa_url, $user, $proj_id);
 	// for each:
 	foreach ($members_of_group as $member) {

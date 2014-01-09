@@ -1,8 +1,6 @@
 svcdatadir = $(pkgdatadir)/logging
 
 nobase_dist_svcdata_DATA = \
-	apache2.conf \
-	www/logging_controller.php \
 	db/postgresql/data.sql \
 	db/postgresql/schema.sql
 

@@ -1,8 +1,6 @@
 svcdatadir = $(pkgdatadir)/cs
 
 nobase_dist_svcdata_DATA = \
-	apache2.conf \
-	www/cs_controller.php \
 	db/postgresql/data.sql \
 	db/postgresql/schema.sql \
 	db/postgresql/update-1.sql \

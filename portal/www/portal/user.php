@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -35,6 +35,8 @@ require_once 'ma_constants.php';
 require_once 'ma_client.php';
 require_once 'geni_syslog.php';
 require_once 'portal.php';
+require_once('maintenance_mode.php');
+require_once('cs_constants.php');
 
 const PERMISSION_MANAGER_TAG = 'permission_manager';
 const PERMISSION_MANAGER_TIMESTAMP_TAG = 'permission_manager_timestamp';
@@ -65,9 +67,14 @@ class GeniUser
   }
 
   function init_from_member($member) {
+    $this->attributes = array();
     //  $this->identity_id = $row['identity_id'];
     //  $this->idp_url = $row['provider_url'];
     //  $this->affiliation = $row['affiliation'];
+    if (! isset($member) or is_null($member)) {
+      error_log("Null member to init a user - the MA?");
+      return;
+    }
     $this->eppn = $member->eppn;
     $this->account_id = $member->member_id;
     $this->username = $member->username;
@@ -328,6 +335,41 @@ class GeniUser
 
 } // End of class GeniUser
 
+function clear_session_with_message($message) {
+  if (session_id() == '') {
+    session_start();
+  }
+  // On logout, clear the session. If you want to flush the cache,
+  // simply logout and log back in again.
+  foreach (array_keys($_SESSION) as $k) {
+    unset($_SESSION[$k]);
+  }
+  if (isset($message) && ! is_null($message) && trim($message) != "")
+  {
+    $_SESSION['lastmessage'] = $message;
+  }
+  session_write_close();
+}
+
+function get_incommon_redirect_url()
+{
+  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
+  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+  $query = http_build_query($params);
+  return $error_service_url . $query;
+}
+
+function get_logout_url() {
+  $protocol = "http";
+  if (array_key_exists('HTTPS', $_SERVER)) {
+    $protocol = "https";
+  }
+  $host  = $_SERVER['SERVER_NAME'];
+  
+  return "$protocol://$host/Shibboleth.sso/Logout";
+}
+
 /* Insufficient attributes were released.
  * Funnel this back through the incommon
  * service to help the user understand.
@@ -335,13 +377,13 @@ class GeniUser
  */
 function incommon_attribute_redirect()
 {
-  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
-  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
-  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
-  $query = http_build_query($params);
-  $url = $error_service_url . $query;
-  error_log("Insufficient attributes. Redirecting to $url");
-  header("Location: $url");
+  $url = get_incommon_redirect_url();
+  clear_session_with_message(null);
+  $shib_logout_url = get_logout_url();
+  $encoded_redir_url = urlencode($url);
+  $logout_and_error_url = "$shib_logout_url?return=$encoded_redir_url";
+  error_log("Insufficient attributes. Redirecting to $logout_and_error_url");
+  header("Location: $logout_and_error_url");
   exit;
 }
 
@@ -358,6 +400,9 @@ function send_attribute_fail_email()
   global $portal_admin_email;
   $server_host = $_SERVER['SERVER_NAME'];
   $body = "An access attempt on $server_host failed";
+  if (array_key_exists("Shib-Identity-Provider", $_SERVER)) {
+    $body .= " from " . $_SERVER["Shib-Identity-Provider"];
+  }
   $body .= " due to insufficient attributes.";
   $body .= "\n\nServer environment:\n";
   // Put the entire HTTP environement in the email
@@ -366,9 +411,11 @@ function send_attribute_fail_email()
   foreach ($array as $var => $value) {
     $body .= "$var = $value\n";
   }
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
   mail($portal_admin_email,
           "Portal access failure on $server_host",
-          $body);
+       $body, $headers);
 }
 
 function geni_load_user_by_eppn($eppn)
@@ -454,10 +501,11 @@ function geni_load_identity_by_eppn($eppn)
  */
 function geni_loadUser()
 {
+  global $in_maintenance_mode;
 
   // TODO: Look up in cache here
   if (! array_key_exists('eppn', $_SERVER)) {
-    // Requird attributes were not found - redirect to a gentle error page
+    // Required attributes were not found - redirect to a gentle error page
     send_attribute_fail_email();
     incommon_attribute_redirect();
   }
@@ -467,6 +515,15 @@ function geni_loadUser()
   $identity = geni_load_identity_by_eppn($eppn);
   $user->init_from_identity($identity);
   // FIXME: Confirm that attributes we have in DB match attributes in the environment
+
+  // Non-operators can't use the portal while in maintenance: they go to the 'Maintenance" page
+  if ($in_maintenance_mode && 
+      !$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, 
+			null)) 
+    {
+      error_log($user->prettyName() . " tried to access portal during maintenance");
+      relative_redirect("maintenance_redirect_page.php");
+    }
 
   // TODO: Insert user in cache here
   return $user;

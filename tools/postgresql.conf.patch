@@ -1,0 +1,19 @@
+--- postgresql.conf.orig	2013-12-06 10:01:54.028063083 -0500
++++ postgresql.conf	2013-12-06 10:04:11.437065386 -0500
+@@ -76,7 +76,7 @@
+ # - Security and Authentication -
+ 
+ #authentication_timeout = 1min		# 1s-600s
+-ssl = true				# (change requires restart)
++ssl = false				# (change requires restart)
+ #ssl_ciphers = 'ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH'	# allowed SSL ciphers
+ 					# (change requires restart)
+ #ssl_renegotiation_limit = 512MB	# amount of data between renegotiations
+@@ -445,6 +445,7 @@
+ #extra_float_digits = 0			# min -15, max 2
+ #client_encoding = sql_ascii		# actually, defaults to database
+ 					# encoding
++client_encoding = utf8
+ 
+ # These settings are initialized by initdb, but they can be changed.
+ lc_messages = 'C'			# locale for system error message

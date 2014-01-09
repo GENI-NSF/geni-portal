@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -120,6 +120,13 @@ GENI allows users to log in using their existing accounts via our partnership in
 </li>
 </ul>
 
+<h3>If your account is with the GENI Identity Provider but you have forgotten your password...</h3>
+<ul>
+<li>
+... Go <a href="https://shib-idp.geni.net/geni/request.html">here</a> and submit an account request using the same username and email address that you used last time, provide a new password, and be sure to check the 'Password Change Request' box.
+</li>
+</ul>
+
 <h3>For all other issues...</h3>
 <ul>
 <li>
@@ -138,7 +145,7 @@ GENI allows users to log in using their existing accounts via our partnership in
   <a href="http://groups.geni.net/geni">GENI Wiki</a> -->
 </div>
 <div id="footer-right">
-  Copyright &copy; 2013 BBN Technologies<br>
+  Copyright &copy; 2014 BBN Technologies<br>
   All Rights Reserved - NSF Award CNS-0714770<br>
   <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"> National Science Foundation</a>
 </div>

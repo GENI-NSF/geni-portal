@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -80,6 +80,11 @@ if (array_key_exists("request_id", $_REQUEST)) {
 } else {
   error_log("handle-project-request got no request_id");
 }
+// Make sure request is still pending
+if ($request['status'] != RQ_REQUEST_STATUS::PENDING) {
+  error_log ("handle-project-request: request is no longer pending");
+  relative_redirect('error-text.php?error=' . urlencode("REQUEST IS NO LONGER PENDING"));
+}
 
 // And the request_id should refer to a current request
 // And the user should be allowed to add a project member
@@ -145,7 +150,7 @@ if(!isset($requests)) {
 				   $project_id, RQ_REQUEST_STATUS::PENDING);
   error_log("Resetting requests");
   if (count($requests) == 0) {
-    error_log("No pending reuqests for this project, user");
+    error_log("No pending requests for this project, user");
     relative_redirect('home.php');
   }
 }
@@ -236,13 +241,9 @@ $member_names = lookup_member_names_for_rows($ma_url, $user,
 
 function get_attribute_named($member_detail, $attribute_name)
 {
-  $attribs = $member_detail['attributes'];
-  foreach($attribs as $attrib) {
-    $attrib_name = $attrib['name'];
-    $attrib_value = $attrib['value'];
-    if($attrib_name == $attribute_name)
-      return $attrib_value;
-  }
+  if (array_key_exists($attribute_name, $member_detail)) {
+    return $member_detail[$attribute_name];
+  } 
   return "";
 }
 
@@ -293,10 +294,14 @@ $reason
     $message = $message . "Thank you,
 $name\n";
 
+    $headers = "Auto-Submitted: auto-generated\r\n";
+    $headers .= "Precedence: bulk\r\n";
+    $headers .= "Reply-To: $email" . "\r\n" . "From: $name <$email>";
+
     mail($member_name . " <" . $member->email() . ">",
        "Added to GENI project $project_name",
-       $message,
-       "Reply-To: $email" . "\r\n" . "From: $name <$email>");
+	 $message, $headers);
+       
 
     $_SESSION['lastmessage'] = "Added $member_name to project $project_name as $rolestr";
 
@@ -359,9 +364,10 @@ function compute_actions_for_member($member_id, $request_id, $email)
 foreach($requests as $request) {
   $member_id = $request['requestor'];
   $member_detail = $member_details[$member_id];
+  //  $member_name = compute_display_name($member_detail);
   $member_name = $member_names[$member_id];
   $request_id = $request['id'];
-  //  $member_name = get_attribute_named($member_detail, 'displayName');
+
   $email= get_attribute_named($member_detail, 'email_address');
   $actions = compute_actions_for_member($member_id, $request_id, $email);
   $select_actions = "<select name=\"$request_id\">$actions</select>";

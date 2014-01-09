@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -68,15 +68,20 @@ $lead = $user->fetchMember($lead_id);
 $leadname = $lead->prettyName();
 
 // Get all the admins for this project, so we can email them as well
-$admins = get_project_members($sa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
 $admin_emails = array();
-if ($admins and count($admins) > 0) {
-  foreach ($admins as $admin_res) {
-    $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
-    $admin_emails[] = $admin->prettyEmailAddress();
-    //    error_log("Adding admin " . $admin->prettyName());
-  }
-}
+
+// FIXME: For now, we can't send emails to project admins
+//
+// $admins = get_project_members($sa_url, $user, $project_id, CS_ATTRIBUTE_TYPE::ADMIN);
+//
+//if ($admins and count($admins) > 0) {
+//  foreach ($admins as $admin_res) {
+//    $admin = $user->fetchMember($admin_res[PA_PROJECT_MEMBER_TABLE_FIELDNAME::MEMBER_ID]);
+//    $admin_emails[] = $admin->prettyEmailAddress();
+//    //    error_log("Adding admin " . $admin->prettyName());
+//  }
+//}
+//
 
 $error = null;
 $message = null;
@@ -136,7 +141,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   if (! isset($log_url)) {
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     if (! isset($log_url) || is_null($log_url) || $log_url == '') {
-      error_log("Found no Log Service in SR!'", Portal::getInstance());
+      error_log("Found no Log Service in SR!'");
     }
   }
 
@@ -156,11 +161,14 @@ Thank you,\n" . $user->prettyName() . "\n";
   } else {
     $cc = ""; // FIXME: Include portal-dev-admin?
   }
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= "Reply-To: $email" . "\r\n" . $cc . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>"; 
   
   mail($lead->prettyEmailAddress(),
        "Join GENI project $project_name?",
-       $message,
-       "Reply-To: $email" . "\r\n" . $cc . "From: $prettyEmail");
+       $message, $headers);
+       
   // We could supply the -f arg to make bounces go back to this portal user,
   // but we probably want to know if the lead's email address is bouncing.
        //       "-f $email");

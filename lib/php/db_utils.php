@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -298,9 +298,9 @@ function convert_boolean($db_value) {
    * a different database implementation by watching for values that
    * are not either "f" or "t".
    */
-  if (($db_value === "f") || ($db_value == 0)) {
+  if (($db_value === false) || ($db_value === "f") || ($db_value === 0)) {
     return false;
-  } else if (($db_value === "t") || ($db_value == 1)) {
+  } else if (($db_value === true) || ($db_value === "t") || ($db_value === 1)) {
     return true;
   } else {
     throw new Exception("Unknown value for DB boolean: "

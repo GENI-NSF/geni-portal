@@ -1,6 +1,72 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
 
-= GENI Clearinghouse and Portal Release Notes =
+= GENI Portal Release Notes =
+
+== 2.6.3 ==
+   * Add text box to project bulk add page (#516)
+   * Add iRODS username and zone to OpenID data exchange (#937)
+   * Remove unnecessary reliance on a global variable (#917)
+   * Handle case where someone invites another person to join a project twice (#380)
+   * Update copyright notices to 2014 (#945)
+   * User is caller of log service in most cases, not portal (#568)
+   * Update to latest iRODS server cert (#947)
+   * Fix URN of ION AM in Service Registry (#948)
+
+== 2.6.2 ==
+  * Calling CHAPI use cert and key straight from DB, without openssl conversion
+    that drops cert chain. (#931)
+  * Remind people to restart apache after changing privileges (#933)
+  * Label download whether the cert was portal generated (#840)
+  * Removed obsolete PHP files. Applying this upgrade requires running
+    tools/cleanphp.sh (#898)
+  * Enforce maintenance mode on all portal pages (#934)
+  * Say more when user logs out of portal about IdP sessions (#938)
+  * When the IdP doesn't provide EPPN and we redirect, also log the
+    user out from the portal so they can pick a different IdP. (#939)
+  * Move slice membership table above AM list (#819)
+  * Fix redirect to KM if portal is not authorized (#940)
+  * Set bulk headers in automated emails (#871)
+  * Avoid looking up null member IDs and do not redirect on error
+    looking up member names. (#935)
+  * Organize slices by whether I'm lead (#710)
+  * Don't impersonate user email (#879)
+  * Parametrize Flack URL (#941)
+  * Disable most buttons on an expired project (#897)
+
+== 2.6.1 ==
+  * Fix displaying email address in handle project request (#915)
+  * Ensure scripts validate inputs, print something on success (#914)
+  * Fix OpenID server (#917)
+  * Clean up options in geni-enable-user and geni-disable-user (#918)
+  * Clean usage in scripts (#919)
+  * Add a missing copyright (#920)
+  * Add ION aggregate (#922)
+  * geni-foo-member-attribute scripts should use the MA API (#923)
+  * Ensure geni-* scripts are installed (#924)
+  * Add GPO lab dev server CA cert (#925)
+  * Handle error returns in geni-enable-user and disable-user (#927)
+  * Check if join project request is still pending before processing (#936)
+
+== 2.6 ==
+  * Split out the clearinghouse implementation into the new `chapi`
+  repository. That new clearinghouse implements the
+  [http://groups.geni.net/geni/wiki/UniformClearinghouseAPI Uniform
+  Federation APIs] and uses XML-RPC over SSL instead of S/MIME, but
+  otherwise retains the funtionality of the previous clearinghouse
+  server. To support this change, the `*_client` library functions have
+  been re-written, but the portal UI pages remain largely
+  unchanged. From here on, this repository and release notes cover
+  only the portal client.
+  * Ensure WiMAX givenname is non empty (#885)
+  * Clean up the email on handling a project join request (#881)
+  * Check for valid project_id in do-handle-project-join-request (#886)
+  * Use convert_boolean when checking a boolean DB value (#888)
+  * Remove cruft line from kettering-ig-of cert (#890)
+
+= GENI Portal and Clearinghouse Release Notes =
+
+== 2.5.1 ==
+  * Send only current projects, not expired, to GEMINI (#887)
 
 == 2.5 ==
   * Improve error reporting in geni-revoke-member-privilege (#853)

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -53,7 +53,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs for query-sliverstatus!");
   $slivers_output = "No AMs registered.";
 }
-if ($slice['expired'] === "t") {
+if (convert_boolean($slice['expired'])) {
   $msg = "Slice is expired";
   $good = false;
   $obj = array();

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -113,9 +113,17 @@ function get_sr_url()
   } else {
     /* If no setting above, assume this host as SR. */
     $http_host = $_SERVER['SERVER_NAME'];
-    $sr_url = "https://" . $http_host . "/sr/sr_controller.php";
+    $sr_url = "https://" . $http_host . ":8444/SR";
     return $sr_url;
   }
 }
+
+class SR_XMLRPC_API {
+  const LOOKUP_VERSION = "get_version";
+  const LOOKUP_SLICE_AUTHORITIES = "get_slice_authorities";
+  const LOOKUP_MEMBER_AUTHORITIES = "get_member_authorities";
+  const LOOKUP_AGGREGATES = "get_aggregates";
+}
+
 
 ?>

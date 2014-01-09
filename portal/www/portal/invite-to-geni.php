@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -87,11 +87,15 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
     $to = preg_replace("/, $/", "", $to);
   }
   $email = $user->email();
-  $prettyEmail = $user->prettyEmailAddress();
+  $name = $user->prettyName();
+
+  $headers = "Auto-Submitted: auto-generated\r\n";
+  $headers .= "Precedence: bulk\r\n";
+  $headers .= "Reply-To: $email" . "\r\n" . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>"; 
   mail($to,
        "Join GENI!",
        $message,
-       "Reply-To: $email" . "\r\n" . "From: $prettyEmail",
+       $headers,
        "-f $email"); // This tells sendmail directly to resend the envelope-sender, so the portal users gets bounces
 
   // Put up a page saying we invited them.
