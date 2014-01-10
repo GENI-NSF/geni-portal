@@ -38,6 +38,7 @@ insert into cs_policy (attribute, context_type, privilege) values ('4', '2','2')
 insert into cs_policy (attribute, context_type, privilege) values ('5', '2','2');
 insert into cs_policy (attribute, context_type, privilege) values ('5', '2','3');
 insert into cs_policy (attribute, context_type, privilege) values ('5', '2','4');
+insert into cs_policy (attribute, context_type, privilege) values ('1', '3','3');
 insert into cs_policy (attribute, context_type, privilege) values ('5', '3','1');
 insert into cs_policy (attribute, context_type, privilege) values ('5', '3','2');
 insert into cs_policy (attribute, context_type, privilege) values ('5', '3','3');
