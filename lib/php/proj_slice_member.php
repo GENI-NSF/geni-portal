@@ -135,33 +135,6 @@ function get_project_slice_member_info($sa_url, $ma_url, $user,
       $slice_ids = array_merge( $slice_ids, $proj_slice_ids ); // is this ok
     }
 
-  // $slice_ids is all ID's of slices of projects to which user belongs
-  // BUT NOT NECESSARILY that the member belongs to the slices themselves
-
-    //  // This should filter out the slices by those who are expired
-    //  // And those to whom the member doesn't belong
-    //  if (count($slice_ids) > 0) {
-    //     $all_slice_objects = lookup_slice_details($sa_url, $user, $slice_ids);
-    //     foreach ($all_slice_objects as $slice) {
-    //
-    //        $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
-    //
-    //       // Don't include slices who don't belong to any project
-    //	if(!in_array($slice_id, $slice_member_ids)) continue;
-    //
-    //        $owner_id = $slice[SA_SLICE_TABLE_FIELDNAME::OWNER_ID];
-    //	if(!in_array($owner_id, $member_ids)) {
-    //	  $member_ids[] = $owner_id;
-    //	}
-    //
-    //	// Optionally filter out expired slices
-    //        $expired = $slice[SA_SLICE_TABLE_FIELDNAME::EXPIRED];
-    //	//	error_log("EXP = " . print_r($expired, true) . " AEXP = " . print_r($allow_expired, true) . " SLICE = " . print_r($slice, true));
-    //
-    //	if(! convert_boolean($expired) || $allow_expired)
-    //	  $slice_objects[$slice_id] = $slice;
-    //     }
-
   }
 
   if (count($member_ids) > 0) {
@@ -187,7 +160,7 @@ function get_project_slice_member_info($sa_url, $ma_url, $user,
   // member_objects
   //    all the members who are leads of slices or projects in previous lists
   return array( $project_objects, $slice_objects, $member_objects, $project_slice_map, $project_activeslice_map );
-  }
+}
 
 
 // for a given slice, find all of the members on the slice and 
@@ -226,7 +199,4 @@ function get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id) 
    return $slice_users;
 }
 
-
-
 ?>
-
