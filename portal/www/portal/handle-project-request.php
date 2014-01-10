@@ -231,14 +231,19 @@ foreach ($requests as $request) {
   }
 
   // If we already have in newrs a request by the same member to join the same project, then cancel this request
+  $dupid = NULL;
   foreach ($newrs as $newr) {
     if (($newr[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] == $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]) && 
 	($newr[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] == $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID])) {
       error_log("handle-p-req found duplicate request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " == older request " . $newr[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " to join project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
-      resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
-			      $request[RQ_REQUEST_TABLE_FIELDNAME::ID], RQ_REQUEST_STATUS::CANCELLED, "Duplicate of request " . $newr[RQ_REQUEST_TABLE_FIELDNAME::ID]);
-      continue;
+      $dupid = $newr[RQ_REQUEST_TABLE_FIELDNAME::ID];
+      break;
     }
+  }
+  if (! is_null($dupid)) {
+    resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
+			    $request[RQ_REQUEST_TABLE_FIELDNAME::ID], RQ_REQUEST_STATUS::CANCELLED, "Duplicate of request " . $dupid);
+    continue;
   }
   $newrs[] = $request;
 }
