@@ -199,6 +199,10 @@ print "</tr></table>\n";
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
     print "<h3>Approve new project members</h3>\n";
+    if (count($reqs) > 1) {
+      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?project_id=" . $project_id . "'\"$actdisabled><b>Handle All Requests</b></button>";
+      print "<p>$handle_button</p>\n";
+    }
     print "<table>\n";
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
     foreach ($reqs as $request) {
