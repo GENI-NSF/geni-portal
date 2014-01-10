@@ -11,6 +11,11 @@
    * User is caller of log service in most cases, not portal (#568)
    * Update to latest iRODS server cert (#947)
    * Fix URN of ION AM in Service Registry (#948)
+   * Code cleanup in handle-project-request: (#926)
+    * Check requests are valid, user not already in project, no duplicate requests 
+    * Support multiple requests on one page (#376)
+    * Add an Ignore option
+    * Add optional text for emails to added or rejected requests (#876)
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
