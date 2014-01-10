@@ -400,34 +400,6 @@ print "</table>\n";
 
 print "<p>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p>";
 
-// ----
-// Now show slice / sliver status
-
-print "<h2>Slice Status</h2>\n";
-
-  $slice_status='';
-
-  print "<div id='status_table_div'/>\n";
-  print build_agg_table_on_slicepg();
-  print "</div>\n";
-// --- End of Slice and Sliver Status table
-
-// Slice Identifers table
-print "<table>\n";
-print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
-print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
-print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
-print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
-print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
-print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
-echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
-print "</td></tr>\n";
-print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
-//print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-print "</table>\n";
-// ---
-
 print "<h2>Slice Members</h2>";
 ?>
 
@@ -505,37 +477,7 @@ foreach ($member_lists as $member_role_index => $member_names) {
   }
 }
 
-/*
-foreach($members as $member) {
-
-  $member_id = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
-  //  error_log("MEMBER = " . print_r($member_user, true));
-  $member_name = $member_names[$member_id];
-  $member_ids[$member_name] = $member_id;
-  $member_role_index = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE];
-  $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
-  $member_lists[$member_role_index][] = $member_name;
-
-}
-
-foreach ($member_lists as $member_role_index => $member_names) {
-  usort($member_names, 'compare_last_names');
-  foreach ($member_names as $member_name) {
-    $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
-    $member_id = $member_ids[$member_name];
-    $member_info = $user->fetchMember($member_id);
-    $member_email = $member_info->email();
-    $member_url = "mailto:$member_email";
-
-    print "<tr><td><a href=$member_url>$member_name</a></td><td>$member_role</td></tr>\n";
-
-//    print "<tr><td><a href=\"slice-member.php?slice_id=" . $slice_id . 
-//      "&member_id=$member_id\">$member_name</a></td>" . 
-//      "<td>$member_role</td></tr>\n";
-  }
-}
-*/
-	?>
+?>
 </table>
 
 <?php
@@ -544,6 +486,35 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slic
   $edit_members_disabled = $disabled;
 }
 echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button></p>";
+
+// ----
+// Now show slice / sliver status
+
+print "<h2>Slice Status</h2>\n";
+
+  $slice_status='';
+
+  print "<div id='status_table_div'/>\n";
+  print build_agg_table_on_slicepg();
+  print "</div>\n";
+// --- End of Slice and Sliver Status table
+
+// Slice Identifers table
+print "<table>\n";
+print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
+print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
+print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
+print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
+print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
+echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+print "</td></tr>\n";
+print "<tr><th colspan='2'>Contact Information</th></tr>\n";
+print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
+//print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
+print "</table>\n";
+// ---
+
 ?>
 
 
