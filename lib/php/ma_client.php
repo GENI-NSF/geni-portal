@@ -656,7 +656,7 @@ function _lookup_public_identifying_members_details($client, $signer, $uids)
   $options = array('match'=> array('MEMBER_UID'=>$uids),
 		   'filter' => array_merge($DETAILS_IDENTIFYING, 
 					   $DETAILS_PUBLIC));
-				  
+
   $r = $client->lookup_public_identifying_member_info($client->creds(),
 							 $options);
   return $r;
