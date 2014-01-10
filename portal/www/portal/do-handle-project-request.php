@@ -98,6 +98,9 @@ $num_members_added = 0;
 $num_members_rejected = 0;
 
 foreach($selections as $select_id => $attribs) {
+  if ($select_id == 'yesmessage' or $select_id == 'nomessage') {
+    continue;
+  }
   $attribs_parts = explode(',', $attribs);
   if (count($attribs_parts) < 4) {
     error_log("Malformed selection row in do-handle-project-request: $select_id=$attribs");
@@ -162,9 +165,21 @@ foreach($selections as $select_id => $attribs) {
     $resolution_description = "Request rejected";
     $resolution_status_label = "rejected";
     $resolution_status = RQ_REQUEST_STATUS::REJECTED;
+    if (array_key_exists('nomessage', $_REQUEST)) {
+      $nom = $_REQUEST['nomessage'];
+      if (! is_null($nom)) {
+	$reason = $nom;
+      }
+    }
   } else {
     $num_members_added = $num_members_added + 1;
     $resolution_description = "Added as " . $CS_ATTRIBUTE_TYPE_NAME[$role];
+    if (array_key_exists('yesmessage', $_REQUEST)) {
+      $yesm = $_REQUEST['yesmessage'];
+      if (! is_null($yesm)) {
+	$reason = $yesm;
+      }
+    }
     // This is an 'add' selection
     // Add member 
     add_project_member($sa_url, $user, $project_id, $member_id, $role);
@@ -185,15 +200,16 @@ foreach($selections as $select_id => $attribs) {
   $email_message  = "Your request to join GENI project " . $project_name . 
     " has been " . $resolution_status_label . " by " . $user->prettyName() . ".\n\n";
   if (isset($reason) && $reason != '') {
-    $email_message = $email_message . "Reason:
+    $email_message = $email_message . "
 $reason
 
-  ";
+";
   }
   $email_message = $email_message . "GENI Portal Operations";
 
   $headers = "Auto-Submitted: auto-generated\r\n";
   $headers .= "Precedence: bulk\r\n";
+  $headers .= "Cc: " . $user->prettyEmailAddress() . "\r\n";
   mail($email_address, $email_subject, $email_message,$headers);
 
 } // end of loop over rows to process

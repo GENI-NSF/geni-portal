@@ -348,6 +348,10 @@ foreach($requests as $request) {
 }
 print '</table>';
 print "<br/>\n";
+print "<p><i>Optional</i>: Custom message to send to all new project members</p>\n";
+print "<p><textarea name='yesmessage' cols='50' rows='4'></textarea></p>\n";
+print "<p><i>Optional</i>: Custom message to send to all members whose request you are rejecting</p>\n";
+print "<p><textarea name='nomessage' cols='50' rows='4'></textarea></p>\n";
 print "<input type=\"submit\" value=\"Handle Requests\"/>\n";
 print "<input type=\"button\" value=\"Cancel\" onclick=\"history.back(-1)\"/>\n";
 print '</form>';
