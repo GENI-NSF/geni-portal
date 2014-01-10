@@ -224,7 +224,7 @@ foreach ($requests as $request) {
   if ($user_is_project_member) {
     error_log("handle-p-req canceling open request for member to join a project they are already in. Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " to join project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
     resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
-					 $request[RQ_REQUEST_TABLE_FIELDNAME::ID], RQ_REQUEST_STATUS::CANCELLED, "User already in this project");
+			    $request[RQ_REQUEST_TABLE_FIELDNAME::ID], RQ_REQUEST_STATUS::CANCELLED, "User already in this project");
     continue;
   }
 

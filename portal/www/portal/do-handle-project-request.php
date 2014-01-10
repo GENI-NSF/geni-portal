@@ -97,6 +97,9 @@ $lead_name = $lead_name[$lead_id];
 $num_members_added = 0;
 $num_members_rejected = 0;
 
+// If the member for this request is already a member of the given project, then cancel this request
+$members = get_project_members($sa_url, $user, $project_id);
+
 foreach($selections as $select_id => $attribs) {
   if ($select_id == 'yesmessage' or $select_id == 'nomessage') {
     continue;
@@ -108,8 +111,24 @@ foreach($selections as $select_id => $attribs) {
   }
   $role = $attribs_parts[0];
   $member_id = $attribs_parts[1];
-  // FIXME: Validate that the member_id is reasonable
   $request_id = $attribs_parts[2];
+  $email_address = $attribs_parts[3];
+
+  // Validate that the member_id is reasonable
+  $inP = False;
+  foreach ($members as $m) {
+    if ($member_id == $m[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID]) {
+      error_log("do-handle-p-r: Member $member_id already in project $project_id - cancelling request $request_id");
+      // cancel request
+      resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, $request_id,
+			      RQ_REQUEST_STATUS::CANCELLED, "User already in project");
+      $inP = True;
+      break;
+    }
+  }
+  if ($inP == True) {
+    continue;
+  }
 
   if ($role == 0) {
     error_log("do-handle-p-r not acting on request " . $request_id);
@@ -119,7 +138,7 @@ foreach($selections as $select_id => $attribs) {
   // Validate that the request_id is reasonable - still open, etc
 
   $request = get_request_by_id($sa_url, $user, $request_id, CS_CONTEXT_TYPE::PROJECT);
-  if ($request['context_id'] != $project_id) {
+  if ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] != $project_id) {
     error_log("do-handle-project-request: request $request_id not for this project $project_id");
     continue;
   }
@@ -132,7 +151,7 @@ foreach($selections as $select_id => $attribs) {
     } elseif ($request['status'] == RQ_REQUEST_STATUS::CANCELLED) {
       $status = "cancelled";
     }
-    error_log ("handle-project-request: request $request_id is no longer pending - it is $status");
+    error_log ("do-handle-project-request: request $request_id is no longer pending - it is $status");
     continue;
     //  relative_redirect('error-text.php?error=' . urlencode("Request was " . $status));
   }
@@ -147,11 +166,10 @@ foreach($selections as $select_id => $attribs) {
     continue;
   }
 
-  $email_address = $attribs_parts[3];
   // FIXME: Get a pretty member name here for the email message
   // error_log("Email " . $email_address . " Attribs " . print_r($attribs, true));
   $resolution_status = RQ_REQUEST_STATUS::APPROVED;
-  // FIXME: Add the role name
+
   $resolution_status_label = "approved (see " . relative_url("project.php?project_id=".$project_id) . ")";
   $resolution_description = "";
   $email_subject = "Request to join GENI project $project_name";
