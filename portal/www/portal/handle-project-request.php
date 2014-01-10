@@ -109,7 +109,7 @@ if (array_key_exists("request_id", $_REQUEST)) {
 // And the request_id should refer to a current request
 // And the user should be allowed to add a project member
 if (! isset($request) || is_null($request)) {
-  error_log("handle-p-req: No request from request_ids");
+  //  error_log("handle-p-req: No request from request_ids");
   if(isset($project_id)) {
     if (! $user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
       error_log("User " . $user->prettyName() . " not allowed to handle project requests on this project: " . $project_id);
@@ -119,9 +119,7 @@ if (! isset($request) || is_null($request)) {
     // Get requests that this member can handle on the given project
     $requests = get_pending_requests_for_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, $project_id);
     if (isset($requests) && count($requests) > 0) {
-      if (count($requests) > 1) {
-	error_log("handle-p-req got just a project ID. Got " . count($requests) . " requests for this project");
-      }
+      error_log("handle-p-req got just a project ID. Got " . count($requests) . " request(s) for this project");
       $request = $requests[0];
       $request_id = $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
       foreach ($requests as $r) {
@@ -131,7 +129,7 @@ if (! isset($request) || is_null($request)) {
       error_log("handle-p-reqs: no pending reqs for this project, user");
     }
   } else {
-    error_log("handle-p-req: And no member id or project_id. Fail");
+    error_log("handle-p-req: No request or project_id specified. Fail");
   }
 }
 if (! isset($request) || is_null($request)) {
@@ -224,7 +222,7 @@ foreach ($requests as $request) {
     }
   }
   if ($user_is_project_member) {
-    error_log("handle-p-req found open request for member to join a project they are already in. Request" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " in project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+    error_log("handle-p-req canceling open request for member to join a project they are already in. Request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " to join project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
     resolve_pending_request($sa_url, $user, CS_CONTEXT_TYPE::PROJECT, 
 					 $request[RQ_REQUEST_TABLE_FIELDNAME::ID], RQ_REQUEST_STATUS::CANCELLED, "User already in this project");
     continue;
@@ -235,7 +233,7 @@ foreach ($requests as $request) {
   foreach ($newrs as $newr) {
     if (($newr[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] == $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]) && 
 	($newr[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID] == $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID])) {
-      error_log("handle-p-req found duplicate request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " == older request " . $newr[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " to join project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      error_log("handle-p-req canceling duplicate request " . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . " == older request " . $newr[RQ_REQUEST_TABLE_FIELDNAME::ID] . " for member " . $request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR] . " to join project " . $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $dupid = $newr[RQ_REQUEST_TABLE_FIELDNAME::ID];
       break;
     }
