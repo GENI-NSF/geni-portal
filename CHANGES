@@ -19,6 +19,14 @@
    * Change logging service calls to not pass the author account id. (#951)
    * Cache the portal's UID and avoid looking up the member name for that UID
      since that will fail. (#951)
+   * Optimize queries of the clearinghouse by consolidating redundant
+     calls and use some new custom calls. (#912)
+     * Requires an update to the CS database to simplify project/slice
+     permissions
+     * Use new more efficient queries for looking up member login
+     information and getting both public and identifying member
+     information at once.
+     * Simpler permission model means fewer permissions to look up
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
