@@ -192,8 +192,7 @@ if (isset($submit)) {
       $attributes = array_merge($project_attributes, $member_attributes);
       $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
       log_event($log_url, Portal::getInstance(),
-		"Canceled join request: $member_name in project $project_name", $attributes,
-		$user->account_id);
+		"Canceled join request: $member_name in project $project_name", $attributes);
     } else {
       $_SESSION['lasterror'] = "Failed to cancel request: " . $cancelres['output'];
     }
@@ -208,8 +207,7 @@ if (isset($submit)) {
     $attributes = array_merge($project_attributes, $member_attributes);
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
     log_event($log_url, Portal::getInstance(),
-	      "Canceled join request: $member_name in project $project_name", $attributes,
-	      $user->account_id);
+	      "Canceled join request: $member_name in project $project_name", $attributes);
   } else {
     error_log("cancel-p-req: malformed result from resolve_req: " . print_r($request));
     $_SESSION['lasterror'] = "Error cancelling request";

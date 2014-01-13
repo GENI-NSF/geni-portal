@@ -16,6 +16,9 @@
     * Support multiple requests on one page (#376)
     * Add an Ignore option
     * Add optional text for emails to added or rejected requests (#876)
+   * Change logging service calls to not pass the author account id. (#951)
+   * Cache the portal's UID and avoid looking up the member name for that UID
+     since that will fail. (#951)
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion

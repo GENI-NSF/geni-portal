@@ -687,6 +687,23 @@ function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
   return $names_by_id;
 }
 
+// Get the Portal's UUID from its cert, so we can avoid looking it up
+// This is important because the portal logs project join requests so loading 
+// a project page that has a join request causes this lookup, which fails on 
+// an unknown UID like that of the portal.
+// Value is cached on the session to avoid doing the openssl computations very often.
+function get_portal_uid() {
+  $cache = get_session_cached('portal_uid');
+  if (array_key_exists('id', $cache)) {
+    //    error_log("Got portal UID from cache");
+    return $cache['id'];
+  } else {
+    $cache['id'] = Portal::getUid();
+    set_session_cached('portal_uid', $cache);
+    return $cache['id'];
+  }
+}
+
 // Lookup the 'display name' for all members whose ID's are specified
 function lookup_member_names($ma_url, $signer, $member_uuids)
 {
@@ -695,6 +712,12 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
   $uids = array();
   foreach($member_uuids as $uuid) {
     if (isset($uuid) && ! is_null($uuid) && $uuid != '') {
+      // If this is the portal's ID, skip it
+      if ($uuid == get_portal_uid()) {
+	//	error_log("Not looking up name for portal UID");
+	continue;
+      }
+
       $uids[] = $uuid;
       //    } else {
       // Like when an authority is the actor in a logged event
