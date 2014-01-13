@@ -147,7 +147,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   $attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, $project_id);
   $msg = "$name invited people to project $project_name: $to";
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, $user, $msg, $attributes, $user->account_id);
+  log_event($log_url, $user, $msg, $attributes);
 
   // Put up a page saying we invited them.
   print "<h1>Invite Someone to Project $project_name</h1>\n";
