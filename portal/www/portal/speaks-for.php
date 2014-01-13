@@ -37,7 +37,7 @@ $toolurn = pem_cert_geni_urn($toolcert);
 
 /* XXX FIXME: put the signing tool host and URL in a config file. */
 if (! isset($genilib_trusted_host)) {
-  $genilib_trusted_host = 'https://ch.geni.net';
+  $genilib_trusted_host = 'https://ch.geni.net:8444';
   if (array_key_exists('SERVER_NAME', $_SERVER)) {
     $server_name = $_SERVER['SERVER_NAME'];
     $portal_prefix = 'portal-';
@@ -48,7 +48,7 @@ if (! isset($genilib_trusted_host)) {
       // server name starts with 'portal-'. Replace 'portal-' with 'ch-'
       // for name of ch host.
       $ch_name = 'ch-' . substr($server_name, strlen($portal_prefix));
-      $genilib_trusted_host = 'https://' . $ch_name;
+      $genilib_trusted_host = 'https://' . $ch_name . ':8444';
     }
   }
 }
