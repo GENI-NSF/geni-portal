@@ -27,6 +27,7 @@
      information and getting both public and identifying member
      information at once.
      * Simpler permission model means fewer permissions to look up
+   * Comment out debug error_log when querying empty list of UIDs (#954)
 
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
