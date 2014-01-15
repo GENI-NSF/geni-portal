@@ -57,12 +57,23 @@ if (! isset($genilib_trusted_path)) {
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
-$user = geni_loadUser();
-if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
+$key_token = NULL;
+if (array_key_exists('AUTH_TYPE', $_SERVER)
+    && strcmp($_SERVER['AUTH_TYPE'], 'shibboleth') == 0) {
+  /* Shibboleth authentication is present. Look for EPPN. */
+  if (array_key_exists('eppn', $_SERVER)) {
+    /* Our key token is the EPPN with shibboleth authentication. */
+    $key_token = $_SERVER['eppn'];
+  }
 }
 
-$cred = fetch_speaks_for($user, $expires);
+/* Bail out because no key token was found. */
+if (is_null($key_token)) {
+  header('Unauthorized', true, 401);
+  exit();
+}
+
+$cred = fetch_speaks_for($key_token, $expires);
 if ($cred === false) {
   // A database error occurred
   $cred_info = '<i>DB Error fetching credential</i><br/>';
@@ -77,7 +88,7 @@ if ($cred === false) {
  * Page display starts here
  *------------------------------------------------------------
  */
-show_header('GENI Portal: Authorization');
+show_header('GENI Portal: Authorization', '', FALSE);
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
 </script>

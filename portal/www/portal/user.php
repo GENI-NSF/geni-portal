@@ -60,10 +60,11 @@ class GeniUser
   public $attributes;
   public $raw_attrs;
 
-
   function __construct() {
     $this->certificate = NULL;
     $this->private_key = NULL;
+    $this->sf_cred = NULL;
+    $this->sf_expires = NULL;
   }
 
   function init_from_member($member) {
@@ -418,12 +419,13 @@ function send_attribute_fail_email()
        $body, $headers);
 }
 
-function geni_load_user_by_eppn($eppn)
+function geni_load_user_by_eppn($eppn, $sfcred)
 {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   //  $attrs = array('eppn' => $eppn);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
-  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
+  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn,
+                                     $sfcred);
   if (is_null($member)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");
@@ -432,6 +434,7 @@ function geni_load_user_by_eppn($eppn)
   }
   $user = new GeniUser();
   $user->init_from_member($member);
+  $user->sfcred = $sfcred;
   return $user;
 }
 
@@ -509,9 +512,19 @@ function geni_loadUser()
     send_attribute_fail_email();
     incommon_attribute_redirect();
   }
+
   // Load current user based on Shibboleth environment
   $eppn = strtolower($_SERVER['eppn']);
-  $user = geni_load_user_by_eppn($eppn);
+  $sfcred = fetch_speaks_for($eppn, $expires);
+  if ($sfcred === FALSE) {
+    /* A DB error occurred. */
+    return NULL;
+  } else if (is_null($sfcred)) {
+    error_log("No speaks for cred on file for eppn '$eppn'");
+    relative_redirect('speaks-for.php');
+  }
+
+  $user = geni_load_user_by_eppn($eppn, $sfcred);
   $identity = geni_load_identity_by_eppn($eppn);
   $user->init_from_identity($identity);
   // FIXME: Confirm that attributes we have in DB match attributes in the environment

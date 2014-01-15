@@ -11,14 +11,14 @@ DROP TABLE IF EXISTS speaks_for;
 
 CREATE TABLE speaks_for (
   id SERIAL,
-  member_id UUID NOT NULL,
-  member_urn VARCHAR NOT NULL,
+  token VARCHAR UNIQUE NOT NULL,
+  signer_urn VARCHAR UNIQUE NOT NULL,
   upload_ts timestamp NOT NULL,
   expires_ts timestamp NOT NULL,
   cred VARCHAR,
   PRIMARY KEY (id)
 );
-CREATE INDEX speaks_for_member_id ON speaks_for (member_id);
+CREATE INDEX speaks_for_token ON speaks_for (token);
 
 -- Update the schema version
 INSERT INTO schema_version

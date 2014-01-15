@@ -331,10 +331,12 @@ class Member {
 
 // lookup a member by EPPN.
 //   return a member object or null
-function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
+function ma_lookup_member_by_eppn($ma_url, $signer, $eppn, $sfcred=NULL)
 {
   //error_log( " lookup_member_by_eppn = " . print_r($eppn, true));
-  $res =  ma_lookup_members_by_identifying($ma_url, $signer, '_GENI_MEMBER_EPPN', $eppn);
+  $res =  ma_lookup_members_by_identifying($ma_url, $signer,
+                                           '_GENI_MEMBER_EPPN', $eppn,
+                                           $sfcred);
   if ($res) {
     return $res[0];
   } else {
@@ -345,7 +347,9 @@ function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
 // lookup one or more members by some identifying key/value.
 //   return an array of members (possibly empty)
 // replaces uses of ma_lookup_members
-function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $identifying_value)
+function ma_lookup_members_by_identifying($ma_url, $signer,
+                                          $identifying_key, $identifying_value,
+                                          $sfcred=NULL)
 {
   global $member_cache;
   global $member_by_attribute_cache;
@@ -365,8 +369,16 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
 
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array($identifying_key=>$identifying_value));
-  $pubres = $client->lookup_public_member_info($client->creds(), 
-					       $options);
+  $creds = array();
+  if ($sfcred) {
+    // Accept a sf-urn here, or create a speaks-for credential object
+    // which carries the cred, the urn, expiration, and can encode
+    // for the 'creds' argument.
+    $options['speaking-for'] = $sfcred->signerURN();
+    // Append speaks-for credential to creds array here
+    $creds[] = $sfcred->credentialForFedAPI();
+  }
+  $pubres = $client->lookup_public_member_info($creds, $options);
   //  error_log( " PUBRES = " . print_r($pubres, true));
   
   $ids = array();

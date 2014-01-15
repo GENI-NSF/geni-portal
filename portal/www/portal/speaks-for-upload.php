@@ -28,8 +28,18 @@
 require_once 'user.php';
 require_once 'db-util.php';
 
-$user = geni_loadUser();
-if (! $user) {
+$key_token = NULL;
+if (array_key_exists('AUTH_TYPE', $_SERVER)
+    && strcmp($_SERVER['AUTH_TYPE'], 'shibboleth') == 0) {
+  /* Shibboleth authentication is present. Look for EPPN. */
+  if (array_key_exists('eppn', $_SERVER)) {
+    /* Our key token is the EPPN with shibboleth authentication. */
+    $key_token = $_SERVER['eppn'];
+  }
+}
+
+/* Bail out because no key token was found. */
+if (is_null($key_token)) {
   header('Unauthorized', true, 401);
   exit();
 }
@@ -52,10 +62,13 @@ if ($parse_result === 0) {
   error_log("SpeaksFor upload failed: $error_msg");
   header('Bad Request', true, 400);
   exit();
+} else {
+  xml_parser_free($xml_parser);
 }
 
 class SF_TAG {
   const EXPIRES = 'expires';
+  const X509_CERTIFICATE = 'X509Certificate';
 }
 
 /*
@@ -82,7 +95,21 @@ $expires_node = $expires_nodes->item(0);
 $expires = $expires_node->nodeValue;
 //error_log('Expiration = ' . $expires_node->nodeValue);
 
-$db_result = store_speaks_for($user, $raw_cred, $expires);
+/* Now extract the URN of the user signing the credential. */
+$cert_nodes = $dom_document->getElementsByTagName(SF_TAG::X509_CERTIFICATE);
+if ($cert_nodes->length !== 1) {
+  header('HTTP/1.1 400 Invalid credential: ' . SF_TAG::X509_CERTIFICATE
+         . ' node count = ' . $cert_nodes->length);
+}
+
+$certNode = $cert_nodes->item(0);
+$pemCert = $certNode->nodeValue;
+$beginpem = "-----BEGIN CERTIFICATE-----\n";
+$endpem = "-----END CERTIFICATE-----\n";
+$signer_urn = pem_cert_geni_urn($beginpem . $pemCert . $endpem);
+
+/* Now put the credential in the database. */
+$db_result = store_speaks_for($key_token, $raw_cred, $signer_urn, $expires);
 if (! $db_result) {
   header('HTTP/1.1 500 Cannot store uploaded credential');
   exit();
