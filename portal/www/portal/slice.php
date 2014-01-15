@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -437,13 +437,34 @@ foreach($members as $member) {
 
 }
 
+// Keep member ID's by name (inverting $member_names array)
+$member_ids_by_name = array();
+foreach ($member_names as $member_id => $member_name) {
+  $member_ids_by_name[$member_name] = $member_id;
+}
+
+// Lookup all members by ID (getting MA Member objects back)
+$member_ids = array();
+foreach ($members as $member) {
+  $member_id = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+  $member_ids[] = $member_id;
+}
+$members_info = $user->fetchMembersNoIdentity($member_ids);
+
+// Keep member info by ID
+$members_info_by_id = array();
+foreach ($members_info as $member_info) {
+  $member_id = $member_info->member_id;
+  $members_info_by_id[$member_id] = $member_info;
+}
+
 foreach ($member_lists as $member_role_index => $member_names) {
   usort($member_names, 'compare_last_names');
   foreach ($member_names as $member_name) {
     $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
-    $member_id = $member_ids[$member_name];
-    $member_info = $user->fetchMember($member_id);
-    $member_email = $member_info->email();
+    $member_id = $member_ids_by_name[$member_name];
+    $member_info = $members_info_by_id[$member_id];
+    $member_email = $member_info->email_address;
     $member_url = "mailto:$member_email";
 
     print "<tr><td><a href=$member_url>$member_name</a></td><td>$member_role</td></tr>\n";
@@ -455,7 +476,8 @@ foreach ($member_lists as $member_role_index => $member_names) {
     */
   }
 }
-	?>
+
+?>
 </table>
 
 <?php
@@ -492,6 +514,7 @@ print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$
 //print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 // ---
+
 ?>
 
 
@@ -503,7 +526,7 @@ print "</table>\n";
 		<th>Member</th>
 		<?php
 		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-                $entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+                $entries = get_log_entries_for_context($log_url, $user,
 						       CS_CONTEXT_TYPE::SLICE, $slice_id);
                 $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
 								   LOGGING_TABLE_FIELDNAME::USER_ID);

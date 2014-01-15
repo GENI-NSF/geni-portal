@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -21,6 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
+
+require_once('cs_constants.php');
+require_once('sa_constants.php');
+require_once('pa_constants.php');
+require_once('ma_constants.php');
 
 /**
  * Classes to manage permissions of the current user
@@ -74,8 +79,28 @@ class PermissionManager {
   // Dictionary (name => array of context ID's) of function names allowed in particular context
   public $allowed_actions_in_context; 
 
+  public $action_mapping = array(
+			    CS_ACTION::ADMINISTER_MEMBERS => CS_ACTION::ADMINISTER_MEMBERS,
+			    PA_ACTION::ADD_PROJECT_ATTRIBUTE => "project_write",
+			    PA_ACTION::ADD_PROJECT_MEMBER => "project_write",
+			    PA_ACTION::CHANGE_LEAD => "project_write",
+			    PA_ACTION::CHANGE_MEMBER_ROLE => "project_write",
+			    PA_ACTION::CREATE_PROJECT => PA_ACTION::CREATE_PROJECT,
+			    PA_ACTION::REMOVE_PROJECT_MEMBER => 'project_write',
+			    PA_ACTION::UPDATE_PROJECT => "project_write",
+			    SA_ACTION::ADD_SLICE_MEMBER => 'slice_write',
+			    SA_ACTION::ADD_SLIVERS => "slice_use",
+			    SA_ACTION::CREATE_SLICE => "project_use",
+			    SA_ACTION::DELETE_SLIVERS => "slice_use",
+			    SA_ACTION::GET_SLICE_CREDENTIAL => "slice_use",
+			    SA_ACTION::LIST_RESOURCES => "slice_read",
+			    SA_ACTION::LOOKUP_SLICE => "slice_read",
+			    SA_ACTION::RENEW_SLICE => "slice_write"
+			    );
+
   // Is given permission allowed in given context?
   public function is_allowed($permission, $context_type, $context_id) {
+    $permission = $this->action_mapping[$permission]; // Transform permission to those supplied by CS
     $result = 0;
     if (!is_context_type_specific($context_type)) {
       $result = in_array($permission, $this->allowed_actions_no_context);

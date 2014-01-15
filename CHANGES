@@ -2,6 +2,33 @@
 
 = GENI Portal Release Notes =
 
+== 2.7 ==
+   * Add text box to project bulk add page (#516)
+   * Add iRODS username and zone to OpenID data exchange (#937)
+   * Remove unnecessary reliance on a global variable (#917)
+   * Handle case where someone invites another person to join a project twice (#380)
+   * Update copyright notices to 2014 (#945)
+   * User is caller of log service in most cases, not portal (#568)
+   * Update to latest iRODS server cert (#947)
+   * Fix URN of ION AM in Service Registry (#948)
+   * Code cleanup in handle-project-request: (#926)
+   * Check requests are valid, user not already in project, no duplicate requests  (#410)
+   * Support multiple requests on one page (#376)
+   * Add an Ignore option
+   * Add optional text for emails to added or rejected requests (#876)
+   * Change logging service calls to not pass the author account id. (#951)
+   * Cache the portal's UID and avoid looking up the member name for that UID
+     since that will fail. (#951)
+   * Optimize queries of the clearinghouse by consolidating redundant
+     calls and use some new custom calls. (#912)
+     * Requires an update to the CS database to simplify project/slice
+     permissions
+     * Use new more efficient queries for looking up member login
+     information and getting both public and identifying member
+     information at once.
+     * Simpler permission model means fewer permissions to look up
+   * Comment out debug error_log when querying empty list of UIDs (#954)
+
 == 2.6.2 ==
   * Calling CHAPI use cert and key straight from DB, without openssl conversion
     that drops cert chain. (#931)

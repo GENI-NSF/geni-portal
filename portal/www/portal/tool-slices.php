@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -37,7 +37,10 @@ $disabled = "disabled = " . '"' . "disabled" . '"';
 if(!isset($project_objects) || !isset($slice_objects) || 
    !isset($member_objects) || !isset($project_slice_map)) 
 {
-  $retVal  = get_project_slice_member_info($sa_url, $ma_url, $user, True);
+  $pid = null;
+  if(isset($project_id)) { $pid = $project_id;}
+  $retVal  = get_project_slice_member_info($sa_url, $ma_url, $user, 
+					   True, $pid);
   $project_objects = $retVal[0];
   $slice_objects = $retVal[1];
   $member_objects = $retVal[2];

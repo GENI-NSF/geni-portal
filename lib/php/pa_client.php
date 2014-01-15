@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2013 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -104,6 +104,7 @@ function get_projects_by_lead($sa_url, $signer, $lead_id)
 
 $PACHAPI2PORTAL = array('PROJECT_UID'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID,
 			'PROJECT_NAME'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME,
+			'PROJECT_URN'=>'project_urn',
 			'_GENI_PROJECT_OWNER'=>PA_PROJECT_TABLE_FIELDNAME::LEAD_ID,
 			'_GENI_PROJECT_EMAIL'=>PA_PROJECT_TABLE_FIELDNAME::PROJECT_EMAIL,
 			'PROJECT_CREATION'=>PA_PROJECT_TABLE_FIELDNAME::CREATION,
@@ -340,9 +341,11 @@ function change_member_role($sa_url, $signer, $project_id, $member_id, $role)
 
 // Return list of member ID's and roles associated with given project
 // If role is provided, filter to members of given role
-function get_project_members($sa_url, $signer, $project_id, $role=null) 
+function get_project_members($sa_url, $signer, $project_id, 
+			     $role=null, $project_urn = null) 
 {
-  $project_urn = get_project_urn($sa_url, $signer, $project_id);
+  if(is_null($project_urn))
+    $project_urn = get_project_urn($sa_url, $signer, $project_id);
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('_dummy' => null);
@@ -372,6 +375,10 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
   }
+  if (! ($signer instanceof GeniUser)) {
+    /* Signer must be a GeniUser because we need its URN. */
+    throw new InvalidArgumentException('Signer is not a GeniUser');
+  }
   //  $cert = $signer->certificate();
   //  $key = $signer->privateKey();
   //  $get_projects_message['operation'] = 'get_projects_for_member';
@@ -382,10 +389,9 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
   //			 $cert, $key, 
   //			 $signer->certificate(), $signer->privateKey());
 
-  global $user;
   $options = array('_dummy' => null);
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $member_urn = $user->urn;
+  $member_urn = $signer->urn;
   $rows = $client->lookup_projects_for_member($member_urn, $client->creds(), $options);
   if ($is_member) {    
     $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
@@ -428,7 +434,6 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
 
   //  error_log("PIDS = " . print_r($project_uuids, true));
 
-  global $user;
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('PROJECT_UID' => array_values($project_uuids)));
   $results = $client->lookup_projects($client->creds(), $options);
