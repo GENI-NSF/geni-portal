@@ -364,7 +364,14 @@ if ($renew_slice_privilege) {
   $(function() {
     // minDate = 1 will not allow today or earlier, only future dates.
     $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: max_slice_renewal_days  });
-    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
+<?php
+     foreach ($am_list as $am) {
+	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+            $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    //    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
+	    print "    $( \"#renew_field_$am_id\" ).datepicker({ dateFormat: \"yy-mm-dd\", minDate: 1,  maxDate: slice_date_expiration });\n";
+     }
+?>
   });
 </script>
 <?php
