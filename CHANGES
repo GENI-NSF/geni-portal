@@ -2,6 +2,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.8 ==
+
 == 2.7 ==
    * Add text box to project bulk add page (#516)
    * Add iRODS username and zone to OpenID data exchange (#937)
