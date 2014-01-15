@@ -3,6 +3,8 @@
 = GENI Portal Release Notes =
 
 == 2.8 ==
+   * Ensure max date in slice renew datepicker is by project expiration not slice expiration.
+     Also, make project expirations with no time be end of day not beginning. (#953)
 
 == 2.7 ==
    * Add text box to project bulk add page (#516)
