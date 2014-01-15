@@ -255,8 +255,9 @@ function list_slice($slice,$user) {
   print "<td>" . htmlentities($slice_owner_name) . "</td>";
   //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
   print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
-  print ("<button onClick=\"window.location='$sliver_status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
-  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
+  print ("<button onClick=\"window.location='tool-aggwarning.php?loc=$sliver_status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
+  //  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
+  print ("<button title='Login info, etc' onClick=\"window.location='tool-aggwarning.php?loc=$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button $delete_slivers_disabled onClick=\"window.location='$delete_sliver_url'\"><b>Delete Resources</b></button>");
   $hostname = $_SERVER['SERVER_NAME'];
   print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
