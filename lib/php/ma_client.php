@@ -373,7 +373,7 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
   $members = array();
 
   if ($identifying_key == "MEMBER_UID" && (! isset($identifying_value) || is_null($identifying_value) || count($identifying_value) == 0 || (count($identifying_value) == 1 && (! isset($identifying_value[0]) || is_null($identifying_value[0]) || $identifying_value[0] == '')))) {
-    error_log("Cannot ma_lookup_members_by_identifying by MEMBER_UID for empty id. Value: " . print_r($identifying_value, true));
+    //    error_log("Cannot ma_lookup_members_by_identifying by MEMBER_UID for empty id. Value: " . print_r($identifying_value, true));
     return $members;
   }
 
