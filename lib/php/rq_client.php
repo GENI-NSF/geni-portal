@@ -115,12 +115,12 @@ function get_requests_by_user($url, $signer,
 			      $account_id, $context_type, $context_id=null, $status=null)
 {
   $client = XMLRPCClient::get_client($url, $signer);
-  $options = array('_dummy' => null);
   return $client->get_requests_by_user($account_id, 
 				       $context_type, 
 				       $context_id, 
 				       $status, 
-				       $client->creds(), $options);
+				       $client->creds(),
+                                       $client->options());
 }
 
 // Get list of requests pending which the given user can handle (account is that of a lead/admin)
@@ -130,11 +130,11 @@ function get_pending_requests_for_user($url, $signer,
 				       $context_type, $context_id=null)
 {
   $client = XMLRPCClient::get_client($url, $signer);
-  $options = array('_dummy' => null);
   return $client->get_pending_requests_for_user($account_id, 
 					   $context_type, 
 					   $context_id, 
-					   $client->creds(), $options);
+					   $client->creds(),
+                                                $client->options());
 }
 
 // Get number of pending requests for a given user to handle. That is, requests that

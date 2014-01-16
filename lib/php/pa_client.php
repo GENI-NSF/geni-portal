@@ -386,10 +386,10 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
   //			 $cert, $key, 
   //			 $signer->certificate(), $signer->privateKey());
 
-  $options = array('_dummy' => null);
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $member_urn = $signer->urn;
-  $rows = $client->lookup_projects_for_member($member_urn, $client->creds(), $options);
+  $rows = $client->lookup_projects_for_member($member_urn, $client->creds(),
+                                              $client->options());
   if ($is_member) {    
     $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
     return $project_uuids;
@@ -433,6 +433,7 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('PROJECT_UID' => array_values($project_uuids)));
+  $options = array_merge($options, $client->options());
   $results = $client->lookup_projects($client->creds(), $options);
   //error_log("LPD.RESULTS = " . print_r($results, true));
   $converted_projects = array();

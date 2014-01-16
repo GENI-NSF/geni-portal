@@ -415,6 +415,7 @@ function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=n
     if (!is_null($role)) {
       $options = array('match'=>array('SLICE_ROLE'=>$role));
     }
+    $options = array_merge($options, $client->options());
     $results = $client->lookup_slices_for_member($member_urn, $client->creds(), $options);
   } else {
     // CHAPI: TODO: implement is_member = FALSE
@@ -441,6 +442,7 @@ function lookup_slice_details($sa_url, $signer, $slice_uuids)
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('SLICE_UID'=>$slice_uuids));
+  $options = array_merge($options, $client->options());
   $result = $client->lookup_slices($client->creds(), $options);
   $converted_slices = array();
   foreach ($result as $slice_uuid => $slice) {
@@ -468,6 +470,7 @@ function get_slices_in_projects($sa_url, $signer, $slice_uuids, $project_uuids, 
   //  error_log("GSFP.PROJECT_UUIDS = " . print_r($project_uuids, true));
   $options = array('match' => array('SLICE_UID' => $slice_uuids));
   //error_log("GSFP match = " . print_r($options, true));
+  $options = array_merge($options, $client->options());
   $slices = $client->lookup_slices($client->creds(), $options);
   $converted_slices = array();
   foreach( $slices as $slice) {

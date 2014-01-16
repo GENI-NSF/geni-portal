@@ -65,6 +65,7 @@ class GeniUser
     $this->private_key = NULL;
     $this->sf_cred = NULL;
     $this->sf_expires = NULL;
+    $this->portal = NULL;
   }
 
   function init_from_member($member) {
@@ -271,19 +272,30 @@ class GeniUser
     $this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
   }
 
+  /*------------------------------------------------------------
+   * Signer implementation
+   *------------------------------------------------------------*/
   function certificate() {
-    if (is_null($this->certificate)) {
-      $this->getInsideKeyPair();
+    if (is_null($this->portal)) {
+      $this->portal = Portal::getInstance();
     }
-    return $this->certificate;
+    return $this->portal->certificate();
   }
 
   function privateKey() {
-    if (is_null($this->private_key)) {
-      $this->getInsideKeyPair();
+    if (is_null($this->portal)) {
+      $this->portal = Portal::getInstance();
     }
-    return $this->private_key;
+    return $this->portal->privateKey();
   }
+
+  function speaksForCred() {
+    return $this->sfcred;
+  }
+
+  /*------------------------------------------------------------
+   * End Signer implementation
+   *------------------------------------------------------------*/
 
   /**
    * Fetch the user's public ssh keys.
@@ -424,8 +436,8 @@ function geni_load_user_by_eppn($eppn, $sfcred)
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   //  $attrs = array('eppn' => $eppn);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
-  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn,
-                                     $sfcred);
+  $signer = Portal::getInstance($sfcred);
+  $member = ma_lookup_member_by_eppn($ma_url, $signer, $eppn);
   if (is_null($member)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");

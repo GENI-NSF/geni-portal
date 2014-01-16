@@ -27,12 +27,12 @@
 
 class Signer
 {
-  function __construct($cert_file, $private_key_file) {
+  function __construct($cert_file, $private_key_file, $sfcred=NULL) {
     $this->cert_file = $cert_file;
     $this->private_key_file = $private_key_file;
+    $this->sfcred = $sfcred;
     $this->certificate = NULL;
     $this->private_key = NULL;
-    $this->combined = NULL;
   }
 
   function certificate() {
@@ -47,6 +47,17 @@ class Signer
       $this->private_key = file_get_contents($this->private_key_file);
     }
     return $this->private_key;
+  }
+
+  /**
+   * The speaks for credential if this signer is speaking for another
+   * actor.
+   *
+   * @return a SpeaksForCredential instance if "speaking for" another
+   * actor, NULL otherwise.
+   */
+  function speaksForCred() {
+    return $this->sfcred;
   }
 }
 ?>

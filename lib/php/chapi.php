@@ -273,9 +273,32 @@ class XMLRPCClient
   // get the "credentials" blob needed for various CHAPI service calls,
   // mainly in support of SPEAKS-FOR functionality.
   // Some future use will likely want to use $this->signer
-  // Note: this is creds() rather than get_credentials() because there is an sa->get_credentials()
+  // Note: this is creds() rather than get_credentials() because there
+  // is an sa->get_credentials()
   function creds() {
-    return array();
+    $sfcred = NULL;
+    if (! is_null($this->signer)) {
+      $sfcred = $this->signer->speaksForCred();
+    }
+    if (is_null($sfcred)) {
+      return array();
+    } else {
+      return array($sfcred->credentialForFedAPI());
+    }
+  }
+
+  function options() {
+    $sfcred = NULL;
+    if (! is_null($this->signer)) {
+      $sfcred = $this->signer->speaksForCred();
+    }
+    if (is_null($sfcred)) {
+      /* For options we have to return non-empty so that it gets sent
+       * as a dictionary through XML-RPC. */
+      return array('_dummy' => 'null');
+    } else {
+      return array('speaking-for' => $sfcred->signerURN());
+    }
   }
 }
 
