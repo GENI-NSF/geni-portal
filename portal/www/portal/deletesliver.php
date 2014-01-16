@@ -170,11 +170,11 @@ if (count($success)) {
   if (count($am_urls) == 1) {
     log_event($log_url, $user,
 	      "Deleted resources from slice " . $slice_name . " at " . $AM_name,
-	      $log_attributes, $user->account_id);
+	      $log_attributes);
   } else {
     log_event($log_url, $user,
 	      "Deleted resources from slice " . $slice_name,
-	      $log_attributes, $user->account_id);
+	      $log_attributes);
   }
 }
 

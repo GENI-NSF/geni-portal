@@ -267,8 +267,9 @@ $MEMBERALTKEYS = array("MEMBER_URN"=> "urn",
 		       "_GENI_MEMBER_PHONE_NUMBER"=> "telephone_number",
 		       "_GENI_MEMBER_AFFILIATION"=> "affiliation",
 		       "_GENI_MEMBER_EPPN"=> "eppn",
-		       "_GENI_MEMBER_INSIDE_PUBLIC_KEY"=> "certificate",
+		       "_GENI_MEMBER_INSIDE_PUBLIC_KEY"=> "public_key",
 		       "_GENI_MEMBER_INSIDE_PRIVATE_KEY"=> "private_key",
+		       "_GENI_MEMBER_INSIDE_CERTIFICATE" => "certificate",
 		       "_GENI_ENABLE_WIMAX" => "enable_wimax",
 		       "_GENI_ENABLE_WIMAX_BUTTON" => "enable_wimax_button",
 		       "_GENI_ENABLE_IRODS" => "enable_irods",
@@ -336,11 +337,25 @@ class Member {
 //   return a member object or null
 function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
 {
-  //error_log( " lookup_member_by_eppn = " . print_r($eppn, true));
-  $res =  ma_lookup_members_by_identifying($ma_url, $signer,
-                                           '_GENI_MEMBER_EPPN', $eppn);
-  if ($res) {
-    return $res[0];
+  global $DETAILS_PUBLIC;
+  global $DETAILS_IDENTIFYING;
+;
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  $options = array('match'=>array('_GENI_MEMBER_EPPN' => $eppn),
+		   'filter'=> array_merge(
+			       array('MEMBER_UID',
+				     '_GENI_MEMBER_INSIDE_PRIVATE_KEY', 
+				     '_GENI_MEMBER_INSIDE_CERTIFICATE'),
+			       array_merge($DETAILS_PUBLIC,
+					   $DETAILS_IDENTIFYING)));
+  $login_info = $client->lookup_login_info($client->creds(), $options);
+  if ($login_info) {
+    $urns = array_keys($login_info);
+    $urn = $urns[0];
+    $row = $login_info[$urn];
+    $member = new Member();
+    $member->init_from_record($row);
+    return $member;
   } else {
     return null;
   }
@@ -362,7 +377,7 @@ function ma_lookup_members_by_identifying($ma_url, $signer,
   $members = array();
 
   if ($identifying_key == "MEMBER_UID" && (! isset($identifying_value) || is_null($identifying_value) || count($identifying_value) == 0 || (count($identifying_value) == 1 && (! isset($identifying_value[0]) || is_null($identifying_value[0]) || $identifying_value[0] == '')))) {
-    error_log("Cannot ma_lookup_members_by_identifying by MEMBER_UID for empty id. Value: " . print_r($identifying_value, true));
+    //    error_log("Cannot ma_lookup_members_by_identifying by MEMBER_UID for empty id. Value: " . print_r($identifying_value, true));
     return $members;
   }
 
@@ -542,18 +557,14 @@ function lookup_member_details($ma_url, $signer, $member_uuids)
       $uids[] = $uuid;
     }
   }
-  $pubdets = _lookup_public_members_details($client, $signer, $uids);
-  $iddets = _lookup_identifying_members_details($client, $signer,
-                                                $uids);
-  foreach ($pubdets as $urn => $pubdet) {
-    $iddet = $iddets[$urn];
-    $alldet = array_merge($pubdet,$iddet);
+  $pubiddets = _lookup_public_identifying_members_details($client, $signer, $uids);
+  foreach ($pubiddets as $urn => $alldet) {
     $attrs = array();
     foreach ($alldet as $k => $v) {
       $ak = _attkey_to_portalkey($k);
       $attrs[$ak] = $v;
     }
-    $uid = $pubdet['MEMBER_UID'];
+    $uid = $alldet['MEMBER_UID'];
     $result[$uid] = $attrs;
   }
 
@@ -634,7 +645,7 @@ $DETAILS_IDENTIFYING = array(
 function _lookup_identifying_members_details($client, $signer, $uid)
 {
   global $DETAILS_IDENTIFYING;
-  //error_log("LIMD.UID = " . print_r($uid, true));
+  //  error_log("LIMD.UID = " . print_r($uid, true));
   if (! isset($uid) || is_null($uid) || count($uid) == 0 || (count($uid) == 1 && (! isset($uid[0]) || is_null($uid[0]) || $uid[0] == ''))) {
     error_log("Cannot lookup_identifying_member_details for empty uid: " . print_r($uid, true));
     return array();
@@ -647,6 +658,19 @@ function _lookup_identifying_members_details($client, $signer, $uid)
   return $r;
 }
 
+function _lookup_public_identifying_members_details($client, $signer, $uids)
+{
+  global $DETAILS_IDENTIFYING;
+  global $DETAILS_PUBLIC;
+  $options = array('match'=> array('MEMBER_UID'=>$uids),
+		   'filter' => array_merge($DETAILS_IDENTIFYING, 
+					   $DETAILS_PUBLIC));
+
+  $r = $client->lookup_public_identifying_member_info($client->creds(),
+							 $options);
+  return $r;
+}
+
 
 // Lookup the display name for all member_ids in a given set of 
 // rows, where the member_id is selected by given field name
@@ -654,6 +678,7 @@ function _lookup_identifying_members_details($client, $signer, $uid)
 // If there is no member other than the signer, don't make the query
 function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
 {
+  if (sizeof($rows) == 0) return array();
   $member_uuids = array();
   foreach($rows as $row) {
     $member_id = $row[$field];
@@ -666,8 +691,26 @@ function lookup_member_names_for_rows($ma_url, $signer, $rows, $field)
   if (count($member_uuids) > 0) {
     $names_by_id = lookup_member_names($ma_url, $signer, $member_uuids);
   }
+
   $names_by_id[$signer->account_id] = $signer->prettyName();
   return $names_by_id;
+}
+
+// Get the Portal's UUID from its cert, so we can avoid looking it up
+// This is important because the portal logs project join requests so loading 
+// a project page that has a join request causes this lookup, which fails on 
+// an unknown UID like that of the portal.
+// Value is cached on the session to avoid doing the openssl computations very often.
+function get_portal_uid() {
+  $cache = get_session_cached('portal_uid');
+  if (array_key_exists('id', $cache)) {
+    //    error_log("Got portal UID from cache");
+    return $cache['id'];
+  } else {
+    $cache['id'] = Portal::getUid();
+    set_session_cached('portal_uid', $cache);
+    return $cache['id'];
+  }
 }
 
 // Lookup the 'display name' for all members whose ID's are specified
@@ -678,48 +721,58 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
   $uids = array();
   foreach($member_uuids as $uuid) {
     if (isset($uuid) && ! is_null($uuid) && $uuid != '') {
+      // If this is the portal's ID, skip it
+      if ($uuid == get_portal_uid()) {
+	//	error_log("Not looking up name for portal UID");
+	continue;
+      }
+
       $uids[] = $uuid;
       //    } else {
       // Like when an authority is the actor in a logged event
       //      error_log("lookup_member_names skipping an empty uid");
     }
   }
-  $options = array('match'=> array('MEMBER_UID'=>$uids),
-		   'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
-                                   '_GENI_MEMBER_DISPLAYNAME',
-                                   'MEMBER_FIRSTNAME',
-                                   'MEMBER_LASTNAME',
-                                   'MEMBER_EMAIL'));
-  //error_log( " _lmns = " . print_r($member_uuids, true));
-
-  // Replace the default result handler with one that will not
-  // redirect to the error page on an error being returned.
-  // This way we can continue loading pages that use this
-  // Although we get a name of NONE for all members the user asked about
-  // on an error
-  global $put_message_result_handler;
-  $put_message_result_handler='no_redirect_result_handler';
-  $options = array_merge($options, $client->options());
-  $res = $client->lookup_identifying_member_info($client->creds(), $options);
-  $put_message_result_handler = null;
 
   $ids = array();
-  if (isset($res) && ! is_null($res)) {
-    foreach($res as $member_urn => $member_info) {
-      $member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
-      $displayName = $member_info['_GENI_MEMBER_DISPLAYNAME'];
-      $lastName = $member_info['MEMBER_LASTNAME'];
-      $firstName = $member_info['MEMBER_FIRSTNAME'];
-      $email = $member_info['MEMBER_EMAIL'];
-      if ($displayName) {
-	$ids[$member_uuid] = $displayName;
-      } else if ($lastName && $firstName) {
-	$ids[$member_uuid] = "$firstName $lastName";
-      } else if ($email) {
-	$ids[$member_uuid] = $email;
-      } else {
-	parse_urn($member_urn, $authority, $type, $username);
-	$ids[$member_uuid] = $username;
+  if (sizeof($uids) > 0) {
+
+    $options = array('match'=> array('MEMBER_UID'=>$uids),
+		     'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID',
+				     '_GENI_MEMBER_DISPLAYNAME',
+				     'MEMBER_FIRSTNAME',
+				     'MEMBER_LASTNAME',
+				     'MEMBER_EMAIL'));
+    //error_log( " _lmns = " . print_r($member_uuids, true));
+
+    // Replace the default result handler with one that will not
+    // redirect to the error page on an error being returned.
+    // This way we can continue loading pages that use this
+    // Although we get a name of NONE for all members the user asked about
+    // on an error
+    global $put_message_result_handler;
+    $put_message_result_handler='no_redirect_result_handler';
+    $options = array_merge($options, $client->options());
+    $res = $client->lookup_identifying_member_info($client->creds(), $options);
+    $put_message_result_handler = null;
+
+    if (isset($res) && ! is_null($res)) {
+      foreach($res as $member_urn => $member_info) {
+	$member_uuid = $member_info['_GENI_IDENTIFYING_MEMBER_UID'];
+	$displayName = $member_info['_GENI_MEMBER_DISPLAYNAME'];
+	$lastName = $member_info['MEMBER_LASTNAME'];
+	$firstName = $member_info['MEMBER_FIRSTNAME'];
+	$email = $member_info['MEMBER_EMAIL'];
+	if ($displayName) {
+	  $ids[$member_uuid] = $displayName;
+	} else if ($lastName && $firstName) {
+	  $ids[$member_uuid] = "$firstName $lastName";
+	} else if ($email) {
+	  $ids[$member_uuid] = $email;
+	} else {
+	  parse_urn($member_urn, $authority, $type, $username);
+	  $ids[$member_uuid] = $username;
+	}
       }
     }
   }

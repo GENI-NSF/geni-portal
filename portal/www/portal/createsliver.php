@@ -140,7 +140,7 @@ if ($obj != "") {
    $log_attributes = array_merge($project_attributes, $slice_attributes);
    log_event($log_url, $user,
 	  "Added resources to slice " . $slice_name . " at " . $AM_name,
-          $log_attributes, $user->account_id);
+          $log_attributes);
 }
 
 unset($slice2);

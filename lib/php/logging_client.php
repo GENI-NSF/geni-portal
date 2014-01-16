@@ -30,12 +30,11 @@ require_once('cs_constants.php');
 // Log an event to the logging service
 // Event consists of 
 //    message - Text of log message
-//    attributes - Dictionaary of name/value pairs by which to tag and retrieve mmessage
-//    user_id (the writer of the log entry)
-function log_event($log_url, $signer, $message, $attributes, $user_id )
+//    attributes - Dictionary of name/value pairs by which to tag and retrieve mmessage
+function log_event($log_url, $signer, $message, $attributes )
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
-  $client->log_event($message, $attributes, $user_id);
+  $client->log_event($message, $attributes);
 }
 
 function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours=24)

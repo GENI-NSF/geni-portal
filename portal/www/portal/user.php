@@ -99,6 +99,13 @@ class GeniUser
     if (isset($member->affiliation)) {
       $this->affiliation = $member->affiliation;
     }
+    if (isset($member->certificate)) {
+      $this->certificate = $member->certificate;
+    }
+    if (isset($member->private_key)) {
+      $this->private_key = $member->private_key;
+    }
+
     // FIXME: MA should maintain a member status
     $this->status = 'active';
     /* Store the MA member to read arbitrary properties
@@ -260,6 +267,9 @@ class GeniUser
 
   private function getInsideKeyPair() {
 
+    //    error_log("GIKP : " . print_r($this, true));
+    //    error_log("GIKP : " . $this->certificate . " " . $this->private_key);
+
     // We only do this for the currently logged in user
     if(strtolower($_SERVER['eppn']) != $this->eppn) {
       throw new Exception("Can't call getInsideKeyPair other than for current suer");
@@ -310,6 +320,25 @@ class GeniUser
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     $keys = lookup_private_ssh_keys($ma_url, $this, $this->account_id);
     return $keys;
+  }
+
+  // Retrieve a list of user objecs for a list member UIDs
+  // Don't pull information from identity tables
+  function fetchMembersNoIdentity($member_ids)
+  {
+    $members = array();
+    $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+    $other_member_ids = array();
+    foreach($member_ids as $member_id) {
+      if ($member_id != $this->account_id) {
+	$other_member_ids[] = $member_id;
+      } else {
+	$members[] = $this->ma_member;
+      }
+    }
+    $other_members = ma_lookup_members_by_identifying($ma_url, $this, 'MEMBER_UID', $other_member_ids);
+    $members = array_merge($members, $other_members);
+    return $members;
   }
 
   function fetchMember($member_id)
