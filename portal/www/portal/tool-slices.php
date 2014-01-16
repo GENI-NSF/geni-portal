@@ -99,7 +99,7 @@ if (count($my_slice_objects) > 0) {
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
-  $flack_url = relative_url("flack.php?");
+  $flack_url = relative_url("flack.php?source=stable&");
   $gemini_base_url = relative_url("gemini.php?");
   $labwiki_base_url = 'http://emmy9.casa.umass.edu:4000/?';
 

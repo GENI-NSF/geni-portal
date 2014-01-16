@@ -52,6 +52,16 @@ if (count( $pgchs ) != 1) {
 $SA_URL = $PGCH_URL;
 $CH_URL = $PGCH_URL;
 
+$sa_list = get_services_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+if (count($sa_list) != 1) {
+    error_log("flack must have exactly one SA service defined");
+    return("Should be exactly one SA.");
+} else {
+  $sa = $sa_list[0];
+  $SA_URN = $sa[SR_TABLE_FIELDNAME::SERVICE_URN];
+}
+
+
 // If have slice_urn then call generate_flack_page and print result
 // else if have slice_id then get slice_urn and call generate_flack_page
 // else error
@@ -90,8 +100,8 @@ if (count($keys) == 0) {
         "SSH keypair</a> to enable access to nodes."));
 }
 
-print generate_flack_page($slice_urn);
-exit();
+//print generate_flack_page($slice_urn);
+//exit();
 
 // Generate flack pages given all parameters
 // and return contents of generated page
@@ -180,4 +190,87 @@ function generate_flack_page($slice_urn)
 // $content = generate_flack_page_internal('111', '222', '333', '444', '555', '666');
 // print $content;
 
+
+$ca_services = get_services_of_type(SR_SERVICE_TYPE::CERTIFICATE_AUTHORITY);
+$am_root_cert_bundle = "";
+foreach($ca_services as $ca_service) {
+  $ca_cert = $ca_service[SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS];
+  $am_root_cert_bundle = $am_root_cert_bundle . $ca_cert;
+}
+
+$sa_url_parameter = $SA_URL;
+$sa_urn_parameter = $SA_URN;
+$ch_url_parameter = $CH_URL;
+$slice_urn_parameter = $slice_urn;
+$client_key_parameter = $user->privateKey();
+$client_cert_parameter = $user->certificate();
+$server_cert_parameter = $am_root_cert_bundle;
+
+/*----------------------------------------------------------------------
+ * Presentation below here
+ *----------------------------------------------------------------------*/
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>Flack</title>
+    <meta name="google" value="notranslate" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" style="text/css" href="flack.css">
+
+    <script type="text/javascript"
+       src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js">
+    </script>
+    <script type="text/javascript"
+            src="https://code.jquery.com/jquery-2.0.3.min.js">
+    </script>
+  </head>
+  <body>
+
+    <div id="flashContent">
+      <p>
+        To view this page ensure that Adobe Flash Player version
+        11.1.0 or greater is installed.
+      </p>
+      <a href='http://www.adobe.com/go/getflashplayer'>
+        <img src='https://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' />
+      </a>
+    </div>
+
+    <div id="socketPool">
+      <p>Could not load the flash SocketPool.</p>
+    </div>
+
+    <noscript>
+      <p>Flack requires that JavaScript be turned on~</p>
+    </noscript>
+
+    <script type="text/javascript"
+            src="https://www.emulab.net/protogeni/flack-stable/loader.js">
+    </script>
+
+    <!-- Put flack in portal mode always. -->
+    <script>isPortal=1;</script>
+    <script type="text/plain" id="sa-url-parameter">
+      <?php echo $sa_url_parameter;?>
+    </script>
+    <script type="text/plain" id="sa-urn-parameter">
+      <?php echo $sa_urn_parameter;?>
+    </script>
+    <script type="text/plain" id="ch-url-parameter">
+      <?php echo $ch_url_parameter;?>
+    </script>
+    <script type="text/plain" id="slice-urn-parameter">
+      <?php echo $slice_urn_parameter;?>
+    </script>
+    <script type="text/plain" id="client-key-parameter">
+      <?php echo $client_key_parameter;?>
+    </script>
+    <script type="text/plain" id="client-cert-parameter">
+      <?php echo $client_cert_parameter;?>
+    </script>
+    <script type="text/plain" id="server-cert-parameter">
+      <?php echo $server_cert_parameter;?>
+    </script>
+  </body>
+</html>

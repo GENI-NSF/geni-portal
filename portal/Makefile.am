@@ -97,6 +97,7 @@ dist_svcweb_DATA = \
 	www/portal/edit-slice.php \
 	www/portal/error-eppn.php \
 	www/portal/error-text.php \
+	www/portal/flack.css \
 	www/portal/flack.php \
 	www/portal/flack_orig.html \
 	www/portal/flack_test.php \
