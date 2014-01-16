@@ -17,10 +17,10 @@
    * Update to latest iRODS server cert (#947)
    * Fix URN of ION AM in Service Registry (#948)
    * Code cleanup in handle-project-request: (#926)
-   * Check requests are valid, user not already in project, no duplicate requests  (#410)
-   * Support multiple requests on one page (#376)
-   * Add an Ignore option
-   * Add optional text for emails to added or rejected requests (#876)
+    * Check requests are valid, user not already in project, no duplicate requests  (#410)
+    * Support multiple requests on one page (#376)
+    * Add an Ignore option
+    * Add optional text for emails to added or rejected requests (#876)
    * Change logging service calls to not pass the author account id. (#951)
    * Cache the portal's UID and avoid looking up the member name for that UID
      since that will fail. (#951)
