@@ -348,6 +348,7 @@ function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
 				     '_GENI_MEMBER_INSIDE_CERTIFICATE'),
 			       array_merge($DETAILS_PUBLIC,
 					   $DETAILS_IDENTIFYING)));
+  $options = array_merge($options, $client->options());
   $login_info = $client->lookup_login_info($client->creds(), $options);
   if ($login_info) {
     $urns = array_keys($login_info);
@@ -665,7 +666,7 @@ function _lookup_public_identifying_members_details($client, $signer, $uids)
   $options = array('match'=> array('MEMBER_UID'=>$uids),
 		   'filter' => array_merge($DETAILS_IDENTIFYING, 
 					   $DETAILS_PUBLIC));
-
+  $options = array_merge($options, $client->options());
   $r = $client->lookup_public_identifying_member_info($client->creds(),
 							 $options);
   return $r;
