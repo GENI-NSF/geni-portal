@@ -22,11 +22,9 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('file_utils.php');
 require_once('user.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
-require_once('db-util.php');
 require_once('settings.php');
 
 // If have slice_urn then call generate_flack_page and print result
