@@ -156,26 +156,18 @@ $server_cert_parameter = $am_root_cert_bundle;
 
     <!-- Put flack in portal mode always. -->
     <script>isPortal=1;</script>
-    <script type="text/plain" id="sa-url-parameter">
-      <?php echo $sa_url_parameter;?>
-    </script>
-    <script type="text/plain" id="sa-urn-parameter">
-      <?php echo $sa_urn_parameter;?>
-    </script>
-    <script type="text/plain" id="ch-url-parameter">
-      <?php echo $ch_url_parameter;?>
-    </script>
-    <script type="text/plain" id="slice-urn-parameter">
-      <?php echo $slice_urn_parameter;?>
-    </script>
+    <script type="text/plain" id="sa-url-parameter"><?php echo $sa_url_parameter;?></script>
+    <script type="text/plain" id="sa-urn-parameter"><?php echo $sa_urn_parameter;?></script>
+    <script type="text/plain" id="ch-url-parameter"><?php echo $ch_url_parameter;?></script>
+    <script type="text/plain" id="slice-urn-parameter"><?php echo $slice_urn_parameter;?></script>
     <script type="text/plain" id="client-key-parameter">
-      <?php echo $client_key_parameter;?>
+<?php echo $client_key_parameter;?>
     </script>
     <script type="text/plain" id="client-cert-parameter">
-      <?php echo $client_cert_parameter;?>
+<?php echo $client_cert_parameter;?>
     </script>
     <script type="text/plain" id="server-cert-parameter">
-      <?php echo $server_cert_parameter;?>
+<?php echo $server_cert_parameter;?>
     </script>
   </body>
 </html>
