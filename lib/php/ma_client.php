@@ -42,7 +42,7 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->add_member_attribute($member_urn, _portalkey_to_attkey($name), 
 					   $value, $self_asserted, $client->creds(), 
-					   array('_dummy' => null));
+					   $client->options());
   return $results;  // probably ignored
 }
 
@@ -52,7 +52,8 @@ function remove_member_attribute($ma_url, $signer, $member_id, $name)
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->remove_member_attribute($member_urn, _portalkey_to_attkey($name), 
-					   $client->creds(), array('_dummy' => null));
+					   $client->creds(),
+                                              $client->options());
   return $results;  // probably ignored
 }
 
@@ -82,7 +83,9 @@ function register_ssh_key($ma_url, $signer, $member_id, $filename,
     $pairs['KEY_PRIVATE'] = $ssh_private_key;
   }
 
-  $client->create_key($client->creds(), array('fields' => $pairs));
+  $options = array('fields' => $pairs);
+  $options = array_merge($options, $client->options());
+  $client->create_key($client->creds(), $options);
 }
 
 // Lookup public SSH keys associated with user
@@ -95,6 +98,7 @@ function lookup_public_ssh_keys($ma_url, $signer, $member_id)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_keys($client->creds(), $options);
 
   $ssh_keys=array();
@@ -125,6 +129,7 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PRIVATE', 'KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_keys($client->creds(), $options);
 
   function privmapkeys($x) 
@@ -183,8 +188,9 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
     $pairs['KEY_DESCRIPTION'] = $description;
   }
   if (sizeof($pairs) > 0) {
-    $client->update_key($member_urn, $ssh_key_id, $client->creds(),
-                      array('fields' => $pairs));
+    $options = array('fields' => $pairs);
+    $options = array_merge($options, $client->options());
+    $client->update_key($member_urn, $ssh_key_id, $client->creds(), $options);
   }
 
   //return $ssh_key;
@@ -196,7 +202,7 @@ function delete_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client->delete_key($member_urn, $ssh_key_id, $client->creds(),
-                      array('_dummy' => null));
+                      $client->options());
 }
 
 // Lookup inside keys/certs associated with a user UUID
@@ -209,6 +215,7 @@ function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('MEMBER_UID'=>$member_uuid),
 		   'filter'=>array('_GENI_MEMBER_INSIDE_PRIVATE_KEY'));
+  $options = array_merge($options, $client->options());
   $prires = $client->lookup_private_member_info($client->creds(), $options);
   //  error_log("PRIRES_OPTS = " . print_r($options, true));
   //  error_log("PRIRES = " . print_r($prires, true));
@@ -247,8 +254,8 @@ function ma_create_account($ma_url, $signer, $attrs, $self_asserted_attrs)
   }
 
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $options = array('_dummy' => null);
-  $results = $client->create_member($all_attrs, $client->creds(), $options);
+  $results = $client->create_member($all_attrs, $client->creds(),
+                                    $client->options());
   
 //  error_log("MA_CREATE_ACCOUNT.results = " . print_r($results, true));
   
@@ -484,10 +491,11 @@ function ma_create_certificate($ma_url, $signer, $member_id, $csr=NULL)
   // Do we need credentials? If so, what?
   $credentials = array();
   // Start with no options. If there is a CSR, add it.
-  $options = array('_dummy' => NULL);
+  $options = array();
   if (! is_null($csr)) {
     $options['csr'] = $csr;
   }
+  $options = array_merge($options, $client->options());
   $result = $client->create_certificate($member_urn, $credentials, $options);
   // Explicitly cast to a boolean to avoid issues with type juggling
   // in lazy callers.

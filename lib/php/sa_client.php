@@ -101,9 +101,8 @@ function get_slice_credential($sa_url, $signer, $slice_id, $cert=NULL)
     throw new Exception("Cannot get_slice_cred without a user cert");
   }
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array('_dummy' => null);
-
-  $result = $client->get_credentials($slice_urn, $client->creds(), $options);
+  $result = $client->get_credentials($slice_urn, $client->creds(),
+                                     $client->options());
   if (!is_array($result)) {
     return Null;
   }
@@ -120,14 +119,16 @@ function create_slice($sa_url, $signer, $project_id, $project_name, $slice_name,
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $lookup_project_urn_options = array('match' => array('PROJECT_UID' => $project_id), 'filter' => array('PROJECT_URN'));
-  $lookup_project_urn_return = $client->lookup_projects($client->creds(), $lookup_project_urn_options);
+  $options = array_merge($lookup_project_urn_options, $client->options());
+  $lookup_project_urn_return = $client->lookup_projects($client->creds(),
+                                                        $options);
   $project_urns = array_keys($lookup_project_urn_return);
   $project_urn = $project_urns[0];
   $options = array('fields' => 
 		   array('SLICE_NAME' => $slice_name,
 			 'SLICE_DESCRIPTION' => $description,
 			 'SLICE_PROJECT_URN' => $project_urn));
-
+  $options = array_merge($options, $client->options());
   $slice = $client->create_slice($client->creds(), $options); 
   $converted_slice = slice_details_chapi2portal($slice);
   // CHAPI: TODO reformat return arguments
@@ -140,6 +141,7 @@ function lookup_slice_ids($sa_url, $signer, $project_id)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('PROJECT_URN' => $project_id),
 		   'filter' => array('SLICE_UID'));
+  $options = array_merge($options, $client->options());
   $slices = $client->lookup_slices($client->creds(), $options);
 
   return array_map(function($x) { return $x['SLICE_UID']; }, $slices);
@@ -182,12 +184,13 @@ function lookup_slices($sa_url, $signer, $project_id, $member_id)  //
 
   if ($member_id) {
     $member_urn = get_member_urn(sa_to_ma_url($sa_url), $signer, $member_id);
-    $options = array('_dummy' => null);
-    $slices = $client->lookup_slices_for_member($member_urn, $client->creds(), $options);
+    $slices = $client->lookup_slices_for_member($member_urn, $client->creds(),
+                                                $client->options());
   } else {
     $match = array('_GENI_PROJECT_UID' => $project_id);
     $filter = array('SLICE_NAME', 'SLICE_URN', 'SLICE_UID', '_GENI_PROJECT_UID');
     $options = array('match' => $match);
+    $options = array_merge($options, $client->options());
     $slices = $client->lookup_slices($client->creds(), $options);
   }
 
@@ -204,6 +207,7 @@ function lookup_slice($sa_url, $signer, $slice_id)
   $options = array('match' => array('SLICE_UID' => $slice_id),
 		   // 'filter' => array('SLICE_URN')  // MIK: do we get everything if no filter specified?
 		   );
+  $options = array_merge($options, $client->options());
   $slices = $client->lookup_slices($client->creds(), $options);
   $urns = array_keys($slices);
   $urn = $urns[0];
@@ -222,6 +226,7 @@ function lookup_slice_by_urn($sa_url, $signer, $slice_urn)
   $options = array('match' => array('SLICE_URN' => $slice_urn),
 		   // 'filter' => array('SLICE_URN')  // MIK: do we get everything if no filter specified?
 		   );
+  $options = array_merge($options, $client->options());
   $slices = $client->lookup_slices($client->creds(), $options);
   $urns = array_keys($slices);
   $urn = $urns[0];
@@ -246,6 +251,7 @@ function renew_slice($sa_url, $signer, $slice_id, $expiration)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('fields' => array('SLICE_EXPIRATION' => $expiration),
 		   );
+  $options = array_merge($options, $client->options());
   $res = $client->update_slice($slice_urn, $client->creds(), $options);
   return $res;
 }
@@ -283,10 +289,11 @@ function modify_slice_membership($sa_url, $signer, $slice_id,
   $members_to_change = _conv_mid2urn_map_s($sa_url, $signer, $members_to_change);
   $members_to_remove = _conv_mid2urn_s($sa_url, $signer, $members_to_remove);
   
-  $options = array('_dummy' => null);
+  $options = array();
   if (sizeof($members_to_add)>0)    { $options['members_to_add']    = $members_to_add; }
   if (sizeof($members_to_change)>0) { $options['members_to_change'] = $members_to_change; }
   if (sizeof($members_to_remove)>0) { $options['members_to_remove'] = $members_to_remove; }
+  $options = array_merge($options, $client->options());
   $res = $client->modify_slice_membership($slice_urn, $client->creds(), $options);
   return $res;
 }
@@ -330,6 +337,7 @@ function get_slice_members($sa_url, $signer, $slice_id, $role=null)
   } else {
     $options = array('match' => array('SLICE_UID' => $slice_id));
   }
+  $options = array_merge($options, $client->options());
   $result = $client->lookup_slice_members($slice_urn, $client->creds(), $options);
   $converted_result = array();
   foreach($result as $row) { 
@@ -354,11 +362,13 @@ function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null
 
   // get all slices of project
   $options = array('match' => array('_GENI_PROJECT_UID'=>$project_id));
+  $options = array_merge($options, $client->options());
   $tuples = $client->lookup_slices($client->creds(), $options);
 
   $member_urn = $signer->urn;
-  $options = array('_dummy' => null);
-  $my_memberships = $client->lookup_slices_for_member($member_urn, $client->creds(), $options);
+  $my_memberships = $client->lookup_slices_for_member($member_urn,
+                                                      $client->creds(),
+                                                      $client->options());
 
   // Need to pull out the slice_urn's from $my_memerships
   $my_slice_urns = array();
@@ -368,7 +378,7 @@ function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null
   }
 
   $results = array();
-  $moptions = array('_dummy' => null);
+  $moptions = array();
   if (!is_null($role)) {
     $moptions['match'] = array('SLICE_ROLE'=>$role);
   }
@@ -385,7 +395,8 @@ function get_slice_members_for_project($sa_url, $signer, $project_id, $role=null
     if (!array_key_exists($surn, $my_slice_urns))
       continue;
     
-    $mems = $client->lookup_slice_members($surn, $client->creds(), $moptions);
+    $options = array_merge($moptions, $client->options());
+    $mems = $client->lookup_slice_members($surn, $client->creds(), $options);
     foreach ($mems as $mtup) {
       $slice_member = array(SA_SLICE_TABLE_FIELDNAME::SLICE_ID => $sid, 
 			    SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID => $mtup['SLICE_MEMBER_UID'], 
@@ -411,7 +422,7 @@ function get_slices_for_member($sa_url, $signer, $member_id, $is_member, $role=n
   $client = XMLRPCClient::get_client($sa_url, $signer);
 
   if ($is_member) {
-    $options = array('_dummy' => null);
+    $options = array();
     if (!is_null($role)) {
       $options = array('match'=>array('SLICE_ROLE'=>$role));
     }
@@ -503,6 +514,7 @@ function get_slice_urn($sa_url, $signer, $slice_uid) {
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('SLICE_UID'=>$slice_uid),
 		   'filter' => array('SLICE_URN'));
+  $options = array_merge($options, $client->options());
   $result = $client->lookup_slices($client->creds(), $options);
   $urns = array_keys($result);
   $urn = $urns[0];
