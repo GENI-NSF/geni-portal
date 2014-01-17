@@ -74,10 +74,9 @@ function create_request($url, $signer,
 			$request_text, $request_details = '')
 {
   $client = XMLRPCClient::get_client($url, $signer);
-  $options = array('_dummy' => null);
   return $client->create_request($context_type, $context_id, $request_type, 
 				 $request_text, $request_details, 
-				 $client->creds(), $options);
+				 $client->creds(), $client->options());
 }
 
 // Set disposition of pending request to APPROVED, REJECTED or CANCELED (see rq_constants.RQ_REQUEST_STATUS)
@@ -88,11 +87,10 @@ function resolve_pending_request($url, $signer,
 				 $resolution_status, $resolution_description)
 {
   $client = XMLRPCClient::get_client($url, $signer);
-  $options = array('_dummy' => null);
   return $client->resolve_pending_request($context_type, 
 					  $request_id, 
 					  $resolution_status, $resolution_description, 
-					  $client->creds(), $options);
+					  $client->creds(), $client->options());
 }
 
 // Get list of requests for given context
@@ -101,11 +99,11 @@ function get_requests_for_context($url, $signer,
 				  $context_type, $context_id, $status=null)
 {
   $client = XMLRPCClient::get_client($url, $signer);
-  $options = array('_dummy' => null);
   return $client->get_requests_for_context($context_type, 
 					   $context_id,
 					   $status, 
-					   $client->creds(), $options);
+					   $client->creds(),
+                                           $client->options());
 }
 
 // Get list of requests made by given user (account_id)
@@ -145,22 +143,20 @@ function get_number_of_pending_requests_for_user($url, $signer,
 						 $context_type, $context_id=null)
 {
   $client = XMLRPCClient::get_client($url, $signer);
-  $options = array('_dummy' => null);
   return $client->get_number_of_pending_requests_for_user($account_id, 
 							  $context_type, 
 							  $context_id, 
 							  $client->creds(), 
-							  $options);
+							  $client->options());
 }
 
 // Get request info for a single request id
 function get_request_by_id($url, $signer, $request_id, $context_type)
 {
   $client = XMLRPCClient::get_client($url, $signer);
-  $options = array('_dummy' => null);
   return $client->get_request_by_id($request_id, 
 				    $context_type, 
-				    $client->creds(), $options);
+				    $client->creds(), $client->options());
 }
 
 ?>

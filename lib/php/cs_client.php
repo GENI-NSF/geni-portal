@@ -38,9 +38,8 @@ if(!isset($permission_cache)) {
 function get_attributes($cs_url, $signer, $principal, $context_type, $context)
 {
   $client = XMLRPCClient::get_client($cs_url, $signer);
-  $options = array('_dummy' => null); // Force this to be a dictionary, not an array on other side
   return $client->get_attributes($principal, $context_type, $context, 
-				 $client->creds(), $options);
+				 $client->creds(), $client->options());
 
 }
 
