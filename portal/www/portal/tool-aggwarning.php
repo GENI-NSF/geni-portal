@@ -1,6 +1,7 @@
 <?php
+<?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2014 Raytheon BBN Technologies
+// Copyright (c) 2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -21,23 +22,22 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
+require_once("header.php");
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('sa_constants.php');
-require_once('sa_client.php');
-require_once('user.php');
+$location = $_GET['loc'];
 
-$sr_url = get_sr_url();
-$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-$user = geni_loadUser();
-$slices = lookup_slices($sa_url, $user, null, $user->account_id);
-$slice = $slices[0];
-$slice_urn = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
+print "<p class='warn'>";
+print 'This action will query all aggregates and take several minutes.';
+print '<br>Are you sure that you want to query all aggregates?';
 
-error_log("SLICE_URN = " . $slice_urn);
+//print "<button onClick=\"window.location=$location\"><b>YES</b></button><br/>\n";
+print "<form method='POST' action=\"$location\">";
+print '<input type="submit" value="YES" style="width:60px;height:30px"/>';
+print '<input type="button" value="CANCEL" onclick="history.back(-1)" style="width:60px;height:30px"/>';
+print "</form></p>";
 
-require_once('flack.php');
-$contents = generate_flack_page($slice_urn);
-print $contents;
+include("footer.php");
 ?>

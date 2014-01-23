@@ -55,7 +55,7 @@ function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL, $slice_id = 
     if ($rspec) {
       $attributes['rspec'] = $rspec;
     }
-    $result = log_event($log_url, $user, $msg, $attributes, $user_id);
+    $result = log_event($log_url, $user, $msg, $attributes);
   }
 }
 
