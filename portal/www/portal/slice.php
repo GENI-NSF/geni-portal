@@ -289,6 +289,19 @@ var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
 <?php include('status_constants_import.php'); ?>
+function confirmQuery() {
+  if ($("#sliceslivers").attr('checked')) {
+    var result = confirm("This action will renew resources at all aggregates and may take several minutes.");
+    console.log("result = " + result);
+    if (result) {
+      $("#renewform").submit();
+    }
+  } else {
+    console.log("sliceslivers not checked");
+    var myform = $("#renewform");
+    myform.submit();
+  }
+}
 </script>
 <script src="amstatus.js"></script>
 <!--<script>
@@ -338,13 +351,13 @@ print "</td></tr>\n";
 
 if ($renew_slice_privilege) {
   print "<tr><td id='renewcell'>\n";
-  print "<form method='GET' action=\"do-renew.php\">";
+  print "<form id='renewform' method='GET' action=\"do-renew.php\">";
   print "<table id='renewtable'><tr><td>";
   print "Renew ";
   print "</td><td>";
   print "<div>";
-  print "<input type='radio' name='renew' value='slice'>slice only<br>";
-  print "<input type='radio' name='renew' value='slice_sliver' checked>slice & all resources";
+  print "<input type='radio' id='sliceonly' name='renew' value='slice'>slice only<br>";
+  print "<input type='radio' id='sliceslivers' name='renew' value='slice_sliver' checked>slice & all resources";
   print "</div>";
   print "</td><td>";
   print " until <br/>";
@@ -354,7 +367,7 @@ if ($renew_slice_privilege) {
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   $size = strlen($slice_date_expiration) + 3;
   print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str/>\n";
+  print "<button type='button' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
   print "</td></tr></table>";
   print "</form>\n";
   print "</td></tr>\n";
