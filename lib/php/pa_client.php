@@ -295,7 +295,7 @@ function modify_project_membership($sa_url, $signer, $project_id,
   $members_to_change_new = _conv_mid2urn_map($sa_url, $signer, $members_to_change);
   $members_to_remove_new = _conv_mid2urn($sa_url, $signer, $members_to_remove);
   
-  $options = array('_dummy' => null);
+  $options = array();
   if (sizeof($members_to_add_new)>0)    { $options['members_to_add']    = $members_to_add_new; }
   if (sizeof($members_to_change_new)>0) { $options['members_to_change'] = $members_to_change_new; }
   if (sizeof($members_to_remove_new)>0) { $options['members_to_remove'] = $members_to_remove_new; }
@@ -357,7 +357,7 @@ function get_project_members($sa_url, $signer, $project_id,
     $project_urn = get_project_urn($sa_url, $signer, $project_id);
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array('_dummy' => null);
+  $options = array();
   if (! is_null($role)) {
     $options['match'] = array('PROJECT_ROLE' => $role);
   }
