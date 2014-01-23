@@ -31,6 +31,11 @@ require_once 'geni_syslog.php';
 // requires php5-xmlrpc (as a .deb).
 //
 
+class CHAPI_OPTION
+  const DUMMY = "_dummy";
+  const SPEAKING_FOR = "speaking_for";
+}
+
 /**
  * Maximum number of characters to pass to error-text.php. If the
  * error output is too long, the browser can't display the error
@@ -294,10 +299,10 @@ class XMLRPCClient
     }
     if (is_null($sfcred)) {
       /* For options we have to return non-empty so that it gets sent
-       * as a dictionary through XML-RPC. */
-      return array('_dummy' => 'null');
+       * as a dictionary through XML-RPC. Use a dummy key. */
+      return array(CHAPI_OPTION::DUMMY => 'null');
     } else {
-      return array('speaking-for' => $sfcred->signerURN());
+      return array(CHAPI_OPTION::SPEAKING_FOR => $sfcred->signerURN());
     }
   }
 }
