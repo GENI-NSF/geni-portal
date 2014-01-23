@@ -3,9 +3,13 @@
 = GENI Portal Release Notes =
 
 == 2.8 ==
-   * Ensure max date in slice renew datepicker is by project expiration not slice expiration.
-     Also, make project expirations with no time be end of day not beginning. (#953)
-   * On slice page, warn when acting on all aggregates (#959)
+   * Ensure max date in slice renew datepicker is by project
+     expiration not slice expiration. Also, make project expirations
+     with no time be end of day not beginning. (953)
+   * Use the new Flack loader to run Flack (955)
+   * On slice page, warn when acting on all aggregates (959)
+   * Add confirm dialog when renewing resources on a slice (963)
+   * Update copyright in tool-aggwarning.php (960)
 
 == 2.7 ==
    * Add text box to project bulk add page (#516)
