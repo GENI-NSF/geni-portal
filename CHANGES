@@ -9,6 +9,7 @@
    * Use the new Flack loader to run Flack (955)
    * On slice page, warn when acting on all aggregates (959)
    * Add confirm dialog when renewing resources on a slice (963)
+   * Update copyright in tool-aggwarning.php (960)
 
 == 2.7 ==
    * Add text box to project bulk add page (#516)
