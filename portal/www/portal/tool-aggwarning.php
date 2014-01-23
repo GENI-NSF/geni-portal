@@ -27,10 +27,8 @@ include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
 $location = $_GET['loc'];
-error_log("LOC: " . $location);
 
 print "<p class='warn'>";
-
 print 'This action will query all aggregates and take several minutes.';
 print '<br>Are you sure that you want to query all aggregates?';
 
