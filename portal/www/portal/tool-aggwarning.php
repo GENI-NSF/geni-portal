@@ -1,6 +1,7 @@
 <?php
+<?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -27,10 +28,8 @@ include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
 $location = $_GET['loc'];
-error_log("LOC: " . $location);
 
 print "<p class='warn'>";
-
 print 'This action will query all aggregates and take several minutes.';
 print '<br>Are you sure that you want to query all aggregates?';
 
