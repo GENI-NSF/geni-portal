@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,42 +22,51 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// base class representing a signer object which presents a cert and private key
-// for an object that can sign messages for packaging and sending to another service
+require_once 'chapi.php';
 
-class Signer
+class SpeaksForCredential
 {
-  function __construct($cert_file, $private_key_file, $sfcred=NULL) {
-    $this->cert_file = $cert_file;
-    $this->private_key_file = $private_key_file;
-    $this->sfcred = $sfcred;
-    $this->certificate = NULL;
-    $this->private_key = NULL;
-  }
-
-  function certificate() {
-    if (is_null($this->certificate)) {
-      $this->certificate = file_get_contents($this->cert_file);
-    }
-    return $this->certificate;
-  }
-
-  function privateKey() {
-    if (is_null($this->private_key)) {
-      $this->private_key = file_get_contents($this->private_key_file);
-    }
-    return $this->private_key;
+  public function __construct() {
+    $this->cred = NULL;
+    $this->expires = NULL;
+    $this->signer_urn = NULL;
   }
 
   /**
-   * The speaks for credential if this signer is speaking for another
-   * actor.
+   * Factory method to create an instance from pre-parsed
+   * information.
    *
-   * @return a SpeaksForCredential instance if "speaking for" another
-   * actor, NULL otherwise.
+   * Note: information is assumed to be correct and is not validated.
    */
-  function speaksForCred() {
-    return $this->sfcred;
+  public static function fromInfo($cred, $expires, $signer_urn) {
+    $sfcred = new SpeaksForCredential();
+    $sfcred->cred = $cred;
+    $sfcred->expires = $expires;
+    $sfcred->signer_urn = $signer_urn;
+    return $sfcred;
+  }
+
+  public function credential() {
+    return $this->cred;
+  }
+
+  public function expires() {
+    return $this->expires;
+  }
+
+  public function signerURN() {
+    return $this->signer_urn;
+  }
+
+  /**
+   * Return an map (key value pairs) representation of this credential
+   * suitable for passing via the Common Federation API.
+   */
+  public function credentialForFedAPI() {
+    $result = array('geni_type' => CHAPI_KEY::CREDENTIAL_TYPE_ABAC,
+                    'geni_version' => '1',
+                    'geni_value' => $this->cred);
+    return $result;
   }
 }
 ?>

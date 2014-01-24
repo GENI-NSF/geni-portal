@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,42 +22,36 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-// base class representing a signer object which presents a cert and private key
-// for an object that can sign messages for packaging and sending to another service
+/*
+ * Delete the user's speaks-for credential, deauthorizing the portal.
+ */
+require_once 'user.php';
+require_once 'db-util.php';
 
-class Signer
-{
-  function __construct($cert_file, $private_key_file, $sfcred=NULL) {
-    $this->cert_file = $cert_file;
-    $this->private_key_file = $private_key_file;
-    $this->sfcred = $sfcred;
-    $this->certificate = NULL;
-    $this->private_key = NULL;
-  }
-
-  function certificate() {
-    if (is_null($this->certificate)) {
-      $this->certificate = file_get_contents($this->cert_file);
-    }
-    return $this->certificate;
-  }
-
-  function privateKey() {
-    if (is_null($this->private_key)) {
-      $this->private_key = file_get_contents($this->private_key_file);
-    }
-    return $this->private_key;
-  }
-
-  /**
-   * The speaks for credential if this signer is speaking for another
-   * actor.
-   *
-   * @return a SpeaksForCredential instance if "speaking for" another
-   * actor, NULL otherwise.
-   */
-  function speaksForCred() {
-    return $this->sfcred;
+$key_token = NULL;
+if (array_key_exists('AUTH_TYPE', $_SERVER)
+    && strcmp($_SERVER['AUTH_TYPE'], 'shibboleth') == 0) {
+  /* Shibboleth authentication is present. Look for EPPN. */
+  if (array_key_exists('eppn', $_SERVER)) {
+    /* Our key token is the EPPN with shibboleth authentication. */
+    $key_token = $_SERVER['eppn'];
   }
 }
+
+/* Bail out because no key token was found. */
+if (is_null($key_token)) {
+  header('Unauthorized', true, 401);
+  exit();
+}
+
+$db_result = delete_speaks_for($key_token);
+
+if (! $db_result) {
+  header('HTTP/1.1 500 Cannot delete credential');
+  exit();
+}
+
+// All done. Signal success without passing any content.
+$_SESSION['lastmessage'] = "The GENI portal is no longer authorized.";
+header('HTTP/1.1 204 No Content');
 ?>
