@@ -31,7 +31,7 @@ require_once 'geni_syslog.php';
 // requires php5-xmlrpc (as a .deb).
 //
 
-class CHAPI_OPTION
+class CHAPI_OPTION {
   const DUMMY = "_dummy";
   const SPEAKING_FOR = "speaking_for";
 }
