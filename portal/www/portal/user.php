@@ -286,21 +286,45 @@ class GeniUser
    * Signer implementation
    *------------------------------------------------------------*/
   function certificate() {
-    if (is_null($this->portal)) {
-      $this->portal = Portal::getInstance();
+    global $speaks_for_enabled;
+    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+      if (is_null($this->portal)) {
+        $this->portal = Portal::getInstance();
+      }
+      return $this->portal->certificate();
+    } else {
+      /* Not using speaks for */
+      if (is_null($this->certificate)) {
+        $this->getInsideKeyPair();
+      }
+      return $this->certificate;
     }
-    return $this->portal->certificate();
   }
 
   function privateKey() {
-    if (is_null($this->portal)) {
-      $this->portal = Portal::getInstance();
+    global $speaks_for_enabled;
+    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+      if (is_null($this->portal)) {
+        $this->portal = Portal::getInstance();
+      }
+      return $this->portal->privateKey();
+    } else {
+      /* Not using speaks for */
+      if (is_null($this->private_key)) {
+        $this->getInsideKeyPair();
+      }
+      return $this->private_key;
     }
-    return $this->portal->privateKey();
   }
 
   function speaksForCred() {
-    return $this->sfcred;
+    global $speaks_for_enabled;
+    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+      return $this->sfcred;
+    } else {
+      /* Not using speaks for */
+      return NULL;
+    }
   }
 
   /*------------------------------------------------------------
@@ -556,15 +580,18 @@ function geni_loadUser()
 
   // Load current user based on Shibboleth environment
   $eppn = strtolower($_SERVER['eppn']);
-  $sfcred = fetch_speaks_for($eppn, $expires);
-  if ($sfcred === FALSE) {
-    /* A DB error occurred. */
-    return NULL;
-  } else if (is_null($sfcred)) {
-    error_log("No speaks for cred on file for eppn '$eppn'");
-    relative_redirect('speaks-for.php');
+  $sfcred = NULL;
+  global $speaks_for_enabled;
+  if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+    $sfcred = fetch_speaks_for($eppn, $expires);
+    if ($sfcred === FALSE) {
+      /* A DB error occurred. */
+      return NULL;
+    } else if (is_null($sfcred)) {
+      error_log("No speaks for cred on file for eppn '$eppn'");
+      relative_redirect('speaks-for.php');
+    }
   }
-
   $user = geni_load_user_by_eppn($eppn, $sfcred);
   $identity = geni_load_identity_by_eppn($eppn);
   $user->init_from_identity($identity);
