@@ -287,7 +287,7 @@ class GeniUser
    *------------------------------------------------------------*/
   function certificate() {
     global $speaks_for_enabled;
-    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+    if ($this->sfcred || (isset($speaks_for_enabled) && $speaks_for_enabled)) {
       if (is_null($this->portal)) {
         $this->portal = Portal::getInstance();
       }
@@ -303,7 +303,7 @@ class GeniUser
 
   function privateKey() {
     global $speaks_for_enabled;
-    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+    if ($this->sfcred || (isset($speaks_for_enabled) && $speaks_for_enabled)) {
       if (is_null($this->portal)) {
         $this->portal = Portal::getInstance();
       }
@@ -318,13 +318,7 @@ class GeniUser
   }
 
   function speaksForCred() {
-    global $speaks_for_enabled;
-    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
-      return $this->sfcred;
-    } else {
-      /* Not using speaks for */
-      return NULL;
-    }
+    return $this->sfcred;
   }
 
   /*------------------------------------------------------------
@@ -582,12 +576,14 @@ function geni_loadUser()
   $eppn = strtolower($_SERVER['eppn']);
   $sfcred = NULL;
   global $speaks_for_enabled;
-  if (isset($speaks_for_enabled) && $speaks_for_enabled) {
-    $sfcred = fetch_speaks_for($eppn, $expires);
-    if ($sfcred === FALSE) {
+  $sfcred = fetch_speaks_for($eppn, $expires);
+  if ($sfcred === FALSE) {
       /* A DB error occurred. */
+    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
       return NULL;
-    } else if (is_null($sfcred)) {
+    }
+  } else if (is_null($sfcred)) {
+    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
       error_log("No speaks for cred on file for eppn '$eppn'");
       relative_redirect('speaks-for.php');
     }
