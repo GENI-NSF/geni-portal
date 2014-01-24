@@ -36,6 +36,10 @@ class CHAPI_OPTION {
   const SPEAKING_FOR = "speaking_for";
 }
 
+class CHAPI_KEY {
+  const CREDENTIAL_TYPE_ABAC = "geni_abac";
+}
+
 /**
  * Maximum number of characters to pass to error-text.php. If the
  * error output is too long, the browser can't display the error

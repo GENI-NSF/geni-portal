@@ -22,6 +22,8 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once 'chapi.php';
+
 class SpeaksForCredential
 {
   public function __construct() {
@@ -71,7 +73,7 @@ class SpeaksForCredential
    * suitable for passing via the Common Federation API.
    */
   public function credentialForFedAPI() {
-    $result = array('geni_type' => 'ABAC',
+    $result = array('geni_type' => CHAPI_KEY::CREDENTIAL_TYPE_ABAC,
                     'geni_version' => '1',
                     'geni_value' => $this->cred);
     return $result;
