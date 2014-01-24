@@ -464,4 +464,20 @@ function fetch_speaks_for($token, &$expires) {
   }
 }
 
+function delete_speaks_for($token) {
+  $conn = portal_conn();
+  $q_token = $conn->quote($token, 'text');
+  $sql = 'DELETE FROM speaks_for';
+  $sql .= ' WHERE token = ' . $q_token;
+  /* print "Query = $sql<br/>"; */
+  $result = db_execute_statement($sql, "delete_speaks_for");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $msg = "delete_speaks_for: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+      error_log($msg);
+      return FALSE;
+  } else {
+    return TRUE;
+  }
+}
 ?>

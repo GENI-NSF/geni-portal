@@ -156,6 +156,7 @@ dist_svcweb_DATA = \
 	www/portal/sliverstatus.php \
 	www/portal/speaks-for.js \
 	www/portal/speaks-for.php \
+	www/portal/speaks-for-delete.php \
 	www/portal/speaks-for-upload.php \
 	www/portal/sshkeyedit.php \
 	www/portal/starter-status-bar.php \
@@ -173,6 +174,7 @@ dist_svcweb_DATA = \
 	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.php \
 	www/portal/tools-admin.php \
+	www/portal/tools-user.js \
 	www/portal/tools-user.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.html \
