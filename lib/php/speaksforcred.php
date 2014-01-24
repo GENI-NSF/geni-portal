@@ -33,16 +33,6 @@ class SpeaksForCredential
   }
 
   /**
-   * Factory method to create an instance from
-   * a credential.
-   */
-  public static function fromCred($cred) {
-    $sfcred = new SpeaksForCredential();
-    $sfcred->initCred($cred);
-    return $sfcred;
-  }
-
-  /**
    * Factory method to create an instance from pre-parsed
    * information.
    *
