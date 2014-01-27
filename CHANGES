@@ -12,6 +12,7 @@
    * On slice page, warn when acting on all aggregates (959)
    * Update copyright in tool-aggwarning.php (960)
    * Show project and slice names in proper case (961)
+   * Eliminate HTTP_HOST from map files by using relative URLs (962)
    * Add confirm dialog when renewing resources on a slice (963)
 
 == 2.7 ==

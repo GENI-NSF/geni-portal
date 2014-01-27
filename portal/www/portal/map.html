@@ -1,4 +1,5 @@
-<script type="text/javascript" src=<?php echo '"https://'; echo $_SERVER['HTTP_HOST']; echo "/common/map/OpenLayers-2.13/OpenLayers.js\"";?>></script>
+<script type="text/javascript"
+        src="/common/map/OpenLayers-2.13/OpenLayers.js"></script>
 <script type="text/javascript">
 
 // Adapted from http://acuriousanimal.com/code/animatedCluster/
@@ -67,7 +68,7 @@ window.onload = function init() {
   // currentSites: layer for current GENI resources
   var currentSites = new OpenLayers.Layer.Vector("GENI CH Resources", {
       protocol: new OpenLayers.Protocol.HTTP({
-          url: <?php echo '"https://'; echo $_SERVER['HTTP_HOST']; echo "/common/map/current.json\""; ?>,
+          url: "/common/map/current.json",
           format: new OpenLayers.Format.GeoJSON()
       }),
       strategies: [
