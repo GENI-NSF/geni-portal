@@ -1,4 +1,6 @@
 # Note: keep this file in wiki format for easy pasting to the proto-ch wiki
+# Note: keep milestone bullets in ticket numerical order for easier
+#       reconciliation at release time
 
 = GENI Portal Release Notes =
 
@@ -8,8 +10,9 @@
      with no time be end of day not beginning. (953)
    * Use the new Flack loader to run Flack (955)
    * On slice page, warn when acting on all aggregates (959)
-   * Add confirm dialog when renewing resources on a slice (963)
    * Update copyright in tool-aggwarning.php (960)
+   * Show project and slice names in proper case (961)
+   * Add confirm dialog when renewing resources on a slice (963)
 
 == 2.7 ==
    * Add text box to project bulk add page (#516)
