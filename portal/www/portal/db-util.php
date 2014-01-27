@@ -26,6 +26,7 @@
 require_once 'util.php';
 require_once 'db_utils.php';
 require_once 'response_format.php';
+require_once 'speaksforcred.php';
 
 function loadAccount($account_id) 
 {
@@ -396,4 +397,87 @@ function record_last_seen($user, $request_uri)
   }
 }
 
+function store_speaks_for($token, $cred, $signer_urn, $expires) {
+  $conn = portal_conn();
+  $q_cred = $conn->quote($cred, 'text');
+  $q_expires = $conn->quote($expires, 'timestamp');
+  $q_token = $conn->quote($token, 'text');
+  $q_signer_urn = $conn->quote($signer_urn, 'text');
+
+  $sql = "UPDATE speaks_for SET";
+  $sql .= " cred = " . $q_cred;
+  $sql .= ", upload_ts = now() at time zone 'utc'";
+  $sql .= ", expires_ts = " . $q_expires;
+  $sql .= " WHERE token = " . $q_token;
+  $sql .= "   AND signer_urn = " . $q_signer_urn;
+  $result = db_execute_statement($sql, "store_speaks_for update");
+  // geni_syslog("UPDATE result = " . print_r($result, true));
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "store_speaks_for update: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
+    return false;
+  } elseif ($result[RESPONSE_ARGUMENT::VALUE] == 0) {
+    // There was nothing to update, so do the insert
+    $sql = "INSERT INTO speaks_for";
+    $sql .= ' (cred, upload_ts, expires_ts, token, signer_urn)';
+    $sql .= " VALUES ($q_cred, now() at time zone 'utc', $q_expires,";
+    $sql .= "         $q_token, $q_signer_urn)";
+    //geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+    $result = db_execute_statement($sql, "record_last_seen insert");
+    if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $msg = "store_speaks_for insert: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+      error_log($msg);
+      return false;
+    }
+    return true;
+  } else {
+    // The update succeeded, return true
+    return true;
+  }
+}
+
+function fetch_speaks_for($token, &$expires) {
+  $expires = null;
+  $conn = portal_conn();
+  $q_token = $conn->quote($token, 'text');
+  $sql = 'SELECT signer_urn, expires_ts, cred FROM speaks_for';
+  $sql .= ' WHERE token = ' . $q_token;
+  /* print "Query = $sql<br/>"; */
+  $result = db_fetch_row($sql, "fetch_speaks_for");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $msg = "fetch_speaks_for: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+      error_log($msg);
+      return false;
+  } elseif (is_null($result[RESPONSE_ARGUMENT::VALUE])) {
+    // No credential in DB
+    return null;
+  } else {
+    $row = $result[RESPONSE_ARGUMENT::VALUE];
+    $signer_urn = $row['signer_urn'];
+    $expires = $row['expires_ts'];
+    $xml_cred = $row['cred'];
+    $result = SpeaksForCredential::fromInfo($xml_cred, $expires, $signer_urn);
+    return $result;
+  }
+}
+
+function delete_speaks_for($token) {
+  $conn = portal_conn();
+  $q_token = $conn->quote($token, 'text');
+  $sql = 'DELETE FROM speaks_for';
+  $sql .= ' WHERE token = ' . $q_token;
+  /* print "Query = $sql<br/>"; */
+  $result = db_execute_statement($sql, "delete_speaks_for");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+      $msg = "delete_speaks_for: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+      geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+      error_log($msg);
+      return FALSE;
+  } else {
+    return TRUE;
+  }
+}
 ?>
