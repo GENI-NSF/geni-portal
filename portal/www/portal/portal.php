@@ -27,9 +27,9 @@ require_once 'signer.php';
 
 class Portal extends Signer
 {
-  static function getInstance() {
+  static function getInstance($sfcred=NULL) {
     global $portal_cert_file, $portal_private_key_file;
-    return new Portal($portal_cert_file, $portal_private_key_file);
+    return new Portal($portal_cert_file, $portal_private_key_file, $sfcred);
   }
 
   // Get the UID for the Portal out of its cert, returning null on error.

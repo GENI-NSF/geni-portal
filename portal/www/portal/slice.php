@@ -289,6 +289,19 @@ var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
 <?php include('status_constants_import.php'); ?>
+function confirmQuery() {
+  if ($("#sliceslivers").attr('checked')) {
+    var result = confirm("This action will renew resources at all aggregates and may take several minutes.");
+    console.log("result = " + result);
+    if (result) {
+      $("#renewform").submit();
+    }
+  } else {
+    console.log("sliceslivers not checked");
+    var myform = $("#renewform");
+    myform.submit();
+  }
+}
 </script>
 <script src="amstatus.js"></script>
 <!--<script>
@@ -317,8 +330,8 @@ print "<td>\n";
 }
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
 
-print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
-print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
+print "<button onClick=\"window.location='tool-aggwarning.php?loc=$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
+print "<button title='Login info, etc' onClick=\"window.location='tool-aggwarning.php?loc=$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
 print "</td>\n";
@@ -338,13 +351,13 @@ print "</td></tr>\n";
 
 if ($renew_slice_privilege) {
   print "<tr><td id='renewcell'>\n";
-  print "<form method='GET' action=\"do-renew.php\">";
+  print "<form id='renewform' method='GET' action=\"do-renew.php\">";
   print "<table id='renewtable'><tr><td>";
   print "Renew ";
   print "</td><td>";
   print "<div>";
-  print "<input type='radio' name='renew' value='slice'>slice only<br>";
-  print "<input type='radio' name='renew' value='slice_sliver' checked>slice & all resources";
+  print "<input type='radio' id='sliceonly' name='renew' value='slice'>slice only<br>";
+  print "<input type='radio' id='sliceslivers' name='renew' value='slice_sliver' checked>slice & all resources";
   print "</div>";
   print "</td><td>";
   print " until <br/>";
@@ -354,7 +367,7 @@ if ($renew_slice_privilege) {
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   $size = strlen($slice_date_expiration) + 3;
   print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str/>\n";
+  print "<button type='button' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
   print "</td></tr></table>";
   print "</form>\n";
   print "</td></tr>\n";
@@ -364,7 +377,14 @@ if ($renew_slice_privilege) {
   $(function() {
     // minDate = 1 will not allow today or earlier, only future dates.
     $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: max_slice_renewal_days  });
-    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
+<?php
+     foreach ($am_list as $am) {
+	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+            $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    //    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
+	    print "    $( \"#renew_field_$am_id\" ).datepicker({ dateFormat: \"yy-mm-dd\", minDate: 1,  maxDate: slice_date_expiration });\n";
+     }
+?>
   });
 </script>
 <?php

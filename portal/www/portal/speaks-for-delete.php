@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2014 Raytheon BBN Technologies
+// Copyright (c) 2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,22 +22,36 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('sa_constants.php');
-require_once('sa_client.php');
-require_once('user.php');
+/*
+ * Delete the user's speaks-for credential, deauthorizing the portal.
+ */
+require_once 'user.php';
+require_once 'db-util.php';
 
-$sr_url = get_sr_url();
-$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
-$user = geni_loadUser();
-$slices = lookup_slices($sa_url, $user, null, $user->account_id);
-$slice = $slices[0];
-$slice_urn = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
+$key_token = NULL;
+if (array_key_exists('AUTH_TYPE', $_SERVER)
+    && strcmp($_SERVER['AUTH_TYPE'], 'shibboleth') == 0) {
+  /* Shibboleth authentication is present. Look for EPPN. */
+  if (array_key_exists('eppn', $_SERVER)) {
+    /* Our key token is the EPPN with shibboleth authentication. */
+    $key_token = $_SERVER['eppn'];
+  }
+}
 
-error_log("SLICE_URN = " . $slice_urn);
+/* Bail out because no key token was found. */
+if (is_null($key_token)) {
+  header('Unauthorized', true, 401);
+  exit();
+}
 
-require_once('flack.php');
-$contents = generate_flack_page($slice_urn);
-print $contents;
+$db_result = delete_speaks_for($key_token);
+
+if (! $db_result) {
+  header('HTTP/1.1 500 Cannot delete credential');
+  exit();
+}
+
+// All done. Signal success without passing any content.
+$_SESSION['lastmessage'] = "The GENI portal is no longer authorized.";
+header('HTTP/1.1 204 No Content');
 ?>

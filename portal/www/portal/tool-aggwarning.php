@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -21,43 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
+require_once("header.php");
+show_header('GENI Portal: Slices', $TAB_SLICES);
+include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
-// base class representing a signer object which presents a cert and private key
-// for an object that can sign messages for packaging and sending to another service
+$location = $_GET['loc'];
 
-class Signer
-{
-  function __construct($cert_file, $private_key_file, $sfcred=NULL) {
-    $this->cert_file = $cert_file;
-    $this->private_key_file = $private_key_file;
-    $this->sfcred = $sfcred;
-    $this->certificate = NULL;
-    $this->private_key = NULL;
-  }
+print "<p class='warn'>";
+print 'This action will query all aggregates and take several minutes.';
+print '<br>Are you sure that you want to query all aggregates?';
 
-  function certificate() {
-    if (is_null($this->certificate)) {
-      $this->certificate = file_get_contents($this->cert_file);
-    }
-    return $this->certificate;
-  }
+//print "<button onClick=\"window.location=$location\"><b>YES</b></button><br/>\n";
+print "<form method='POST' action=\"$location\">";
+print '<input type="submit" value="YES" style="width:60px;height:30px"/>';
+print '<input type="button" value="CANCEL" onclick="history.back(-1)" style="width:60px;height:30px"/>';
+print "</form></p>";
 
-  function privateKey() {
-    if (is_null($this->private_key)) {
-      $this->private_key = file_get_contents($this->private_key_file);
-    }
-    return $this->private_key;
-  }
-
-  /**
-   * The speaks for credential if this signer is speaking for another
-   * actor.
-   *
-   * @return a SpeaksForCredential instance if "speaking for" another
-   * actor, NULL otherwise.
-   */
-  function speaksForCred() {
-    return $this->sfcred;
-  }
-}
+include("footer.php");
 ?>
