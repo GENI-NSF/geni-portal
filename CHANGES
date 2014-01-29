@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.9 ==
+
 == 2.8 ==
    * Ensure max date in slice renew datepicker is by project
      expiration not slice expiration. Also, make project expirations
