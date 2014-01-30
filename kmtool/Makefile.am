@@ -14,7 +14,9 @@ dist_svcweb_DATA = \
 	www/kmtool/kmcert.php \
 	www/kmtool/kmheader.php \
 	www/kmtool/kmhome.php \
-	www/kmtool/kmnoemail.php
+	www/kmtool/kmnoemail.php \
+	www/kmtool/loadcert.js \
+	www/kmtool/loadcert.php
 
 dist_svccss_DATA = www/common/css/kmtool.css
 

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -106,7 +106,8 @@ $parents = array("profile.php" => "home.php",
                  "omni-bundle.php" => "profile.php",
 		 "irods.php" => "profile.php",
 		 "wimax-enable.php" => "home.php",
-                 "gemini.php" => "slice.php");
+                 "gemini.php" => "slice.php",
+		 "tool-aggwarning.php" => "slice.php");
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -165,7 +166,8 @@ $names = array("home.php" => $TAB_HOME,
 	       "omni-bundle.php" => "Omni Bundle",
 	       "irods.php" => "iRODS Account",
 	       "wimax-enable.php" => "Enable WiMAX",
-	       "gemini.php" => "GENI Desktop");
+	       "gemini.php" => "GENI Desktop",
+	       "tool-aggwarning.php" => "Query All Aggregates");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant

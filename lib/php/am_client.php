@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -32,8 +32,9 @@ require_once 'portal.php';
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once('cert_utils.php');
+require_once('cs_constants.php');
 
-function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
+function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL, $slice_id = NULL)
 {
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
   $user_id = $user->account_id;
@@ -47,12 +48,14 @@ function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL)
     $msg = "$op at $am";
     if ($slice) {
       $msg .= " on $slice";
-      $attributes['slice'] = $slice;
+      $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
+					$slice_id);
+      $attributes = array_merge($attributes, $slice_attributes);
     }
     if ($rspec) {
       $attributes['rspec'] = $rspec;
     }
-    $result = log_event($log_url, Portal::getInstance(), $msg, $attributes, $user_id);
+    $result = log_event($log_url, $user, $msg, $attributes);
   }
 }
 
@@ -398,7 +401,7 @@ function get_version($am_url, $user)
   $member_id = $user->account_id;
   $msg = "User $member_id calling GetVersion at $am_url";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  log_action("GetVersion", $user, $am_url);
+  log_action("Called GetVersion", $user, $am_url);
   $args = array('getversion');
   $output = invoke_omni_function($am_url, $user, $args);
   return $output;
@@ -418,14 +421,14 @@ function list_resources($am_url, $user)
   $member_id = $user->account_id;
   $msg = "User $member_id calling ListResources at $am_url";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  log_action("ListResources", $user, $am_url);
+  log_action("Called ListResources", $user, $am_url);
   $args = array('-t', 'GENI', '3', 'listresources');
   $output = invoke_omni_function($am_url, $user, $args);
   return $output;
 }
 
 // list resources at an AM
-function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
+function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn, $slice_id = NULL)
 {
   if (! isset($am_url) || is_null($am_url) ){
     if (!(is_array($am_url) || $am_url != '')) {
@@ -442,7 +445,8 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
   $member_id = $user->account_id;
   $msg = "User $member_id calling ListResources at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  log_action("ListResources", $user, $am_url, $slice_urn);
+  // Don't actually do this - it is simply too verbose I think
+  //  log_action("Called ListResources", $user, $am_url, $slice_urn, NULL, $slice_id);
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
@@ -458,7 +462,7 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn)
 
 
 // renewsliver at an AM
-function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
+function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $slice_id = NULL)
 {
   if (! isset($am_url) || is_null($am_url) ){
     if (!(is_array($am_url) || $am_url != '')) {
@@ -475,7 +479,8 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
   $member_id = $user->account_id;
   $msg = "User $member_id calling RenewSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  log_action("RenewSliver", $user, $am_url, $slice_urn);
+  // Don't actually do this as the caller logs when this succeeds
+  //  log_action("Called RenewSliver", $user, $am_url, $slice_urn, NULL, $slice_id);
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
@@ -491,7 +496,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time)
 
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
-                       $rspec_filename)
+                       $rspec_filename, $slice_id)
 {
   if (! isset($am_url) || is_null($am_url) ){
     if (!(is_array($am_url) || $am_url != '')) {
@@ -509,7 +514,8 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   $msg = "User $member_id calling CreateSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   $rspec = file_get_contents($rspec_filename);
-  log_action("CreateSliver", $user, $am_url, $slice_urn, $rspec);
+  // Don't log this: We already log from the caller if the allocation is successful
+  //  log_action("Called CreateSliver", $user, $am_url, $slice_urn, $rspec, $slice_id);
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile", 
 		$slice_credential_filename, 
@@ -542,7 +548,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
   // $member_id = $user->account_id;
   // $msg = "User $member_id calling SliverStatus at $am_url on $slice_urn";
   // geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  // log_action("SliverStatus", $user, $am_url, $slice_urn);
+  // log_action("Called SliverStatus", $user, $am_url, $slice_urn, NULL, $slice_id);
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
@@ -554,7 +560,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 }
 
 // Delete a sliver at an AM
-function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
+function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id = NULL)
 {
   if (! isset($am_url) || is_null($am_url) ){
     if (!(is_array($am_url) || $am_url != '')) {
@@ -571,7 +577,8 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn)
   $member_id = $user->account_id;
   $msg = "User $member_id calling DeleteSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  log_action("DeleteSliver", $user, $am_url, $slice_urn);
+  // Caller logs if the delete appeared successful, so don't bother doing this
+  //  log_action("Called DeleteSliver", $user, $am_url, $slice_urn, NULL, $slice_id);
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,

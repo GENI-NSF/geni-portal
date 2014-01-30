@@ -194,7 +194,6 @@ hr {
   margin-top: 30px;
   margin-bottom: 25px;
   margin-left: 0px;
-  font-variant: small-caps;
 }
 #content h2 {
   font-size: 1.4em;
@@ -612,7 +611,6 @@ hr {
 #welcome-right h1 {
   font-size: 2.5em;
   margin-bottom: 20px;
-  font-variant: small-caps;
   border-bottom: 1px solid #E17000;
   padding-bottom: 15px;
 }

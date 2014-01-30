@@ -15,7 +15,6 @@ gcf.d/example-gcf.ini:
 # These two must go. Installing in a hardcoded path is bad for
 # Automake/Autoconf, and installing in /var/www is bad for Ubuntu.
 svcwebdir = /var/www/secure
-svcwebforgedir = $(svcwebdir)/forge
 svcwebimagesdir = /var/www/images
 svcwebcommondir = /var/www/common
 svcwebcssdir = /var/www/common/css
@@ -50,6 +49,7 @@ dist_gcfsrc_SCRIPTS = \
 dist_gcfsrcgeni_DATA = 
 
 dist_svcweb_DATA = \
+	www/portal/SocketPool.swf \
 	www/portal/abac-id.php \
 	www/portal/abac-key.php \
 	www/portal/abac.php \
@@ -97,16 +97,8 @@ dist_svcweb_DATA = \
 	www/portal/edit-slice.php \
 	www/portal/error-eppn.php \
 	www/portal/error-text.php \
+	www/portal/flack.css \
 	www/portal/flack.php \
-	www/portal/flack_orig.html \
-	www/portal/flack_test.php \
-	www/portal/flackportal-1.html \
-	www/portal/flackportal-2.html \
-	www/portal/flackportal-22.html \
-	www/portal/flackportal-3.html \
-	www/portal/flackportal-A.html \
-	www/portal/flackportal-B.html \
-	www/portal/flackportal-C.html \
 	www/portal/footer.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
@@ -162,11 +154,16 @@ dist_svcweb_DATA = \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
+	www/portal/speaks-for.js \
+	www/portal/speaks-for.php \
+	www/portal/speaks-for-delete.php \
+	www/portal/speaks-for-upload.php \
 	www/portal/sshkeyedit.php \
 	www/portal/starter-status-bar.php \
 	www/portal/status_constants.php \
 	www/portal/status_constants_import.php \
 	www/portal/tabs.js \
+	www/portal/tool-aggwarning.php \
 	www/portal/tool-breadcrumbs.php \
 	www/portal/tool-expired-projects.php \
 	www/portal/tool-expired-slices.php \
@@ -177,16 +174,13 @@ dist_svcweb_DATA = \
 	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.php \
 	www/portal/tools-admin.php \
+	www/portal/tools-user.js \
 	www/portal/tools-user.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
 	www/portal/user.php \
-        www/portal/wimax-enable.php \
-	flack/playerProductInstall.swf
-
-
-dist_svcwebforge_DATA = flack/forge/SocketPool.swf
+        www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
 	www/images/UseGENI.png \

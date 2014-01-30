@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2013 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -38,9 +38,8 @@ if(!isset($permission_cache)) {
 function get_attributes($cs_url, $signer, $principal, $context_type, $context)
 {
   $client = XMLRPCClient::get_client($cs_url, $signer);
-  $options = array('_dummy' => null); // Force this to be a dictionary, not an array on other side
   return $client->get_attributes($principal, $context_type, $context, 
-				 $client->creds(), $options);
+				 $client->creds(), $client->options());
 
 }
 
@@ -54,9 +53,8 @@ function get_permissions($cs_url, $signer, $principal)
   }
 
   $client = XMLRPCClient::get_client($cs_url, $signer);
-  $options = array('_dummy' => 'null'); // Force this to be a dictionary, not an array on other side
-  $result =  $client->get_permissions($principal, $client->creds(), 
-				      $options);
+  $result =  $client->get_permissions($principal, $client->creds(),
+                                      $client->options());
   //  error_log("RESULT = " . print_r($result, true));
   
   $pm = compute_permission_manager($result);

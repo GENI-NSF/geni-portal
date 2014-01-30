@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -35,6 +35,7 @@ function js_delete_ssh_key() {
    *    * A javascript function to confirm the delete.
    */
   echo <<< END
+  <script type="text/javascript" src="tools-user.js"></script>
   <script type="text/javascript">
 function deleteSshKey(dest){
   var r=confirm("Are you sure you want to delete this ssh key?");
@@ -291,6 +292,23 @@ if ($user->phone() != "")
 // FIXME: Permissions
 print "</table>\n";
 print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
+
+$sfcred = $user->speaksForCred();
+if ($sfcred) {
+  $sf_expires = $sfcred->expires();
+?>
+  <p>Portal authorization expires: <?php echo $sf_expires; ?><br/>
+    <a onclick='deauthorizePortal()'>Deauthorize the portal</a>
+  </p>
+<?php
+} else if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS,
+                            CS_CONTEXT_TYPE::MEMBER, null)) {
+  /* If user is an operator... show the authorize link. */
+  /* This is really just for debugging/development at this time. */
+?>
+  <p><a href='speaks-for.php'>Authorize the portal</a></p>
+<?php
+}
 
 // END account summary tab
 echo "</div>";

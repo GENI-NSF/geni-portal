@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2013 Raytheon BBN Technologies
+// Copyright (c) 2013-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -30,6 +30,15 @@ require_once 'geni_syslog.php';
 //
 // requires php5-xmlrpc (as a .deb).
 //
+
+class CHAPI_OPTION {
+  const DUMMY = "_dummy";
+  const SPEAKING_FOR = "speaking_for";
+}
+
+class CHAPI_KEY {
+  const CREDENTIAL_TYPE_ABAC = "geni_abac";
+}
 
 /**
  * Maximum number of characters to pass to error-text.php. If the
@@ -273,9 +282,32 @@ class XMLRPCClient
   // get the "credentials" blob needed for various CHAPI service calls,
   // mainly in support of SPEAKS-FOR functionality.
   // Some future use will likely want to use $this->signer
-  // Note: this is creds() rather than get_credentials() because there is an sa->get_credentials()
+  // Note: this is creds() rather than get_credentials() because there
+  // is an sa->get_credentials()
   function creds() {
-    return array();
+    $sfcred = NULL;
+    if (! is_null($this->signer)) {
+      $sfcred = $this->signer->speaksForCred();
+    }
+    if (is_null($sfcred)) {
+      return array();
+    } else {
+      return array($sfcred->credentialForFedAPI());
+    }
+  }
+
+  function options() {
+    $sfcred = NULL;
+    if (! is_null($this->signer)) {
+      $sfcred = $this->signer->speaksForCred();
+    }
+    if (is_null($sfcred)) {
+      /* For options we have to return non-empty so that it gets sent
+       * as a dictionary through XML-RPC. Use a dummy key. */
+      return array(CHAPI_OPTION::DUMMY => 'null');
+    } else {
+      return array(CHAPI_OPTION::SPEAKING_FOR => $sfcred->signerURN());
+    }
   }
 }
 

@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
      'Internet2 ION - for stitching only',
       -- URN
-     'urn:publicid:IDN+ion:internet2:edu+authority+am'
+     'urn:publicid:IDN+ion.internet2.edu+authority+am'
     );
 
 insert into service_registry

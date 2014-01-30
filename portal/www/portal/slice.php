@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -289,6 +289,19 @@ var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
 <?php include('status_constants_import.php'); ?>
+function confirmQuery() {
+  if ($("#sliceslivers").attr('checked')) {
+    var result = confirm("This action will renew resources at all aggregates and may take several minutes.");
+    console.log("result = " + result);
+    if (result) {
+      $("#renewform").submit();
+    }
+  } else {
+    console.log("sliceslivers not checked");
+    var myform = $("#renewform");
+    myform.submit();
+  }
+}
 </script>
 <script src="amstatus.js"></script>
 <!--<script>
@@ -317,8 +330,8 @@ print "<td>\n";
 }
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
 
-print "<button onClick=\"window.location='$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
-print "<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
+print "<button onClick=\"window.location='tool-aggwarning.php?loc=$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
+print "<button title='Login info, etc' onClick=\"window.location='tool-aggwarning.php?loc=$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 
 print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
 print "</td>\n";
@@ -338,13 +351,13 @@ print "</td></tr>\n";
 
 if ($renew_slice_privilege) {
   print "<tr><td id='renewcell'>\n";
-  print "<form method='GET' action=\"do-renew.php\">";
+  print "<form id='renewform' method='GET' action=\"do-renew.php\">";
   print "<table id='renewtable'><tr><td>";
   print "Renew ";
   print "</td><td>";
   print "<div>";
-  print "<input type='radio' name='renew' value='slice'>slice only<br>";
-  print "<input type='radio' name='renew' value='slice_sliver' checked>slice & all resources";
+  print "<input type='radio' id='sliceonly' name='renew' value='slice'>slice only<br>";
+  print "<input type='radio' id='sliceslivers' name='renew' value='slice_sliver' checked>slice & all resources";
   print "</div>";
   print "</td><td>";
   print " until <br/>";
@@ -354,7 +367,7 @@ if ($renew_slice_privilege) {
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   $size = strlen($slice_date_expiration) + 3;
   print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
-  print "<input type='submit' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str/>\n";
+  print "<button type='button' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
   print "</td></tr></table>";
   print "</form>\n";
   print "</td></tr>\n";
@@ -364,7 +377,14 @@ if ($renew_slice_privilege) {
   $(function() {
     // minDate = 1 will not allow today or earlier, only future dates.
     $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: max_slice_renewal_days  });
-    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
+<?php
+     foreach ($am_list as $am) {
+	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+            $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    //    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
+	    print "    $( \"#renew_field_$am_id\" ).datepicker({ dateFormat: \"yy-mm-dd\", minDate: 1,  maxDate: slice_date_expiration });\n";
+     }
+?>
   });
 </script>
 <?php
@@ -437,13 +457,34 @@ foreach($members as $member) {
 
 }
 
+// Keep member ID's by name (inverting $member_names array)
+$member_ids_by_name = array();
+foreach ($member_names as $member_id => $member_name) {
+  $member_ids_by_name[$member_name] = $member_id;
+}
+
+// Lookup all members by ID (getting MA Member objects back)
+$member_ids = array();
+foreach ($members as $member) {
+  $member_id = $member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+  $member_ids[] = $member_id;
+}
+$members_info = $user->fetchMembersNoIdentity($member_ids);
+
+// Keep member info by ID
+$members_info_by_id = array();
+foreach ($members_info as $member_info) {
+  $member_id = $member_info->member_id;
+  $members_info_by_id[$member_id] = $member_info;
+}
+
 foreach ($member_lists as $member_role_index => $member_names) {
   usort($member_names, 'compare_last_names');
   foreach ($member_names as $member_name) {
     $member_role = $CS_ATTRIBUTE_TYPE_NAME[$member_role_index];
-    $member_id = $member_ids[$member_name];
-    $member_info = $user->fetchMember($member_id);
-    $member_email = $member_info->email();
+    $member_id = $member_ids_by_name[$member_name];
+    $member_info = $members_info_by_id[$member_id];
+    $member_email = $member_info->email_address;
     $member_url = "mailto:$member_email";
 
     print "<tr><td><a href=$member_url>$member_name</a></td><td>$member_role</td></tr>\n";
@@ -455,7 +496,8 @@ foreach ($member_lists as $member_role_index => $member_names) {
     */
   }
 }
-	?>
+
+?>
 </table>
 
 <?php
@@ -492,6 +534,7 @@ print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$
 //print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
 print "</table>\n";
 // ---
+
 ?>
 
 
@@ -503,7 +546,7 @@ print "</table>\n";
 		<th>Member</th>
 		<?php
 		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-                $entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+                $entries = get_log_entries_for_context($log_url, $user,
 						       CS_CONTEXT_TYPE::SLICE, $slice_id);
                 $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
 								   LOGGING_TABLE_FIELDNAME::USER_ID);

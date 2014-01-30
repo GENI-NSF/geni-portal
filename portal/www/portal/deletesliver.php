@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011 Raytheon BBN Technologies
+// Copyright (c) 2011-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -101,6 +101,8 @@ if (! isset($ams) || is_null($ams)) {
 $am_url = $am[SR_ARGUMENT::SERVICE_URL];
 $AM_name = am_name($am_url);
 
+$am_urls = array();
+
 if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   error_log("Found no AMs!");
   $slivers_output = "No AMs registered.";
@@ -113,7 +115,6 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   error_log("SLIVER_DELETE SLICE_URN = $slice_urn");
 
-  $am_urls = array();
   foreach ($ams as $am) {
     if (is_array($am)) {
       if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
@@ -131,7 +132,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   
   // Call delete sliver at the AM
   $retVal = delete_sliver($am_urls, $user, $slice_credential,
-			  $slice_urn);
+			  $slice_urn, $slice_id);
   //error_log("DeleteSliver output = " . $retVal);
 }
 
@@ -166,9 +167,15 @@ if (count($success)) {
   $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
 						$slice['slice_id']);
   $log_attributes = array_merge($project_attributes, $slice_attributes);
-  log_event($log_url, Portal::getInstance(),
-  		        "Deleted resources from slice " . $slice_name,
-          		$log_attributes, $slice['owner_id']);
+  if (count($am_urls) == 1) {
+    log_event($log_url, $user,
+	      "Deleted resources from slice " . $slice_name . " at " . $AM_name,
+	      $log_attributes);
+  } else {
+    log_event($log_url, $user,
+	      "Deleted resources from slice " . $slice_name,
+	      $log_attributes);
+  }
 }
 
 unset($slice2);

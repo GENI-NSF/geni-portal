@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -57,6 +57,14 @@ if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE, $_REQUEST)) {
 }
 if (array_key_exists(PA_PROJECT_TABLE_FIELDNAME::EXPIRATION, $_REQUEST)) {
   $expiration = $_REQUEST[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  if (isset($expiration) && ! is_null($expiration) && $expiration != "") {
+    $desired_array = date_parse($expiration);
+    // If you didn't specify a time for the project expiration
+    if ($desired_array["hour"] == 0 and $desired_array["minute"] == 0 and $desired_array["second"] == 0 and $desired_array["fraction"] == 0) {
+      // renew for the end of the day
+      $expiration = $expiration . " 23:59:59";
+    }
+  }
 }
 
 if (array_key_exists("newlead", $_REQUEST)) {

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -50,7 +50,7 @@ $portal_private_key_file = '/usr/share/geni-ch/portal/portal-key.pem';
 $portal_max_slice_renewal_days = 185;
 
 // Portal version
-$portal_version = "2.6.3";
+$portal_version = "2.9";
 
 // URL to the Flack SWF. Used in flack.php
 $flack_url = "https://www.emulab.net/protogeni/flack3/flack.swf";

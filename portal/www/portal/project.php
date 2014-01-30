@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -85,12 +85,14 @@ if (array_key_exists("result", $_GET)) {
   }
 }
 
+
 include("tool-lookupids.php");
 if (! is_null($project) && $project != "None") {
   $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
   $creation_db = $project[PA_PROJECT_TABLE_FIELDNAME::CREATION];
   $creation = dateUIFormat($creation_db);
   $expiration_db = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+  $project_urn = $project['project_urn'];
   $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
   if ($expiration_db) {
     $expiration = dateUIFormat($expiration_db);
@@ -111,7 +113,8 @@ if (! is_null($project) && $project != "None") {
 }
 
 // Fill in members of project member table
-$members = get_project_members($sa_url, $user, $project_id);
+$members = get_project_members($sa_url, $user, $project_id, null, $project_urn);
+
 
 /*------------------------------------------------------------
  * Does this user have privileges on this project?
@@ -146,13 +149,15 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 }
 
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, Portal::getInstance(),
+$entries = get_log_entries_for_context($log_url, 
+				       $user, // Portal::getInstance(),
 				       CS_CONTEXT_TYPE::PROJECT, $project_id);
 
 $actdisabled = '';
 if ($expired === True) {
   $actdisabled = $disabled;
 }
+
 
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 
@@ -198,6 +203,10 @@ print "</tr></table>\n";
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
     print "<h3>Approve new project members</h3>\n";
+    if (count($reqs) > 1) {
+      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?project_id=" . $project_id . "'\"$actdisabled><b>Handle All Requests</b></button>";
+      print "<p>$handle_button</p>\n";
+    }
     print "<table>\n";
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
     foreach ($reqs as $request) {
@@ -226,12 +235,15 @@ print "</table>\n";
 // FIXME: If user is not a member of the project, don't show the tool-slices stuff - it will get
 // a permission error on lookup_slices
 
+
+
 ?>
 <h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");
 ?>
+
 
 <h2>Project Members</h2>
 

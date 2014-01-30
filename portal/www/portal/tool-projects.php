@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -208,7 +208,7 @@ if (count($project_objects) > 0) {
 	$rid = $project_request_map[$project_id][0][RQ_REQUEST_TABLE_FIELDNAME::ID];
 	$handle_req_str = "(<b>$reqcnt</b> Join Request(s) to <a href=\"handle-project-request.php?request_id=$rid\">Handle</a>) ";
       } else {
-	$handle_req_str = "(<b>$reqcnt</b> Join Request(s) to <a href=\"project.php?project_id=$project_id\">Handle</a>) ";
+	$handle_req_str = "(<b>$reqcnt</b> Join Request(s) to <a href=\"handle-project-request.php?project_id=$project_id\">Handle</a>) ";
       }
     }
 
