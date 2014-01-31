@@ -26,7 +26,32 @@
 // logout page.
 
 require_once("util.php");
-require_once("user.php");
+
+function get_logout_url() {
+  $protocol = "http";
+  if (array_key_exists('HTTPS', $_SERVER)) {
+    $protocol = "https";
+  }
+  $host  = $_SERVER['SERVER_NAME'];
+
+  return "$protocol://$host/Shibboleth.sso/Logout";
+}
+
+function clear_session_with_message($message) {
+  if (session_id() == '') {
+    session_start();
+  }
+  // On logout, clear the session. If you want to flush the cache,
+  // simply logout and log back in again.
+  foreach (array_keys($_SESSION) as $k) {
+    unset($_SESSION[$k]);
+  }
+  if (isset($message) && ! is_null($message) && trim($message) != "")
+  {
+    $_SESSION['lastmessage'] = $message;
+  }
+  session_write_close();
+}
 
 $message = "You have logged out of the GENI " .
 "Portal. <br/>Note however that you are still logged in to your identity " .
