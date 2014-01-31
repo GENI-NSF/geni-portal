@@ -137,8 +137,6 @@ def main(argv=None):
         sys.stderr.write("%s already had privilege %s\n" % (options.member, privilege))
     else:
         sys.stderr.write("Added %s privilege %s\n" % (options.member, privilege))
-        if options.operator:
-            sys.stderr.write(" *** Remember to restart apache\n")
     return 0
 
 if __name__ == "__main__":
