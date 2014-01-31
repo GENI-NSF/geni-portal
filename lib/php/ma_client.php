@@ -42,7 +42,7 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->add_member_attribute($member_urn, _portalkey_to_attkey($name), 
 					   $value, $self_asserted, $client->creds(), 
-					   array('_dummy' => null));
+					   $client->options());
   return $results;  // probably ignored
 }
 
@@ -52,7 +52,8 @@ function remove_member_attribute($ma_url, $signer, $member_id, $name)
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->remove_member_attribute($member_urn, _portalkey_to_attkey($name), 
-					   $client->creds(), array('_dummy' => null));
+					   $client->creds(),
+                                              $client->options());
   return $results;  // probably ignored
 }
 
@@ -60,7 +61,9 @@ function remove_member_attribute($ma_url, $signer, $member_id, $name)
 function get_member_ids($ma_url, $signer)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $options = array('filter' => array('MEMBER_UID', 'MEMBER_URN')); // match everything, select UID and URN
+  // match everything, select UID and URN
+  $options = array('filter' => array('MEMBER_UID', 'MEMBER_URN'));
+  $options = array_merge($options, $client->options());
   $recs = $client->lookup_public_member_info($client->creds(), $options);
   $result = array_map(function($x) { return $x['MEMBER_UID']; }, $recs);
   return $result;
@@ -80,7 +83,9 @@ function register_ssh_key($ma_url, $signer, $member_id, $filename,
     $pairs['KEY_PRIVATE'] = $ssh_private_key;
   }
 
-  $client->create_key($client->creds(), array('fields' => $pairs));
+  $options = array('fields' => $pairs);
+  $options = array_merge($options, $client->options());
+  $client->create_key($client->creds(), $options);
 }
 
 // Lookup public SSH keys associated with user
@@ -93,6 +98,7 @@ function lookup_public_ssh_keys($ma_url, $signer, $member_id)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_keys($client->creds(), $options);
 
   $ssh_keys=array();
@@ -123,6 +129,7 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('_GENI_KEY_MEMBER_UID'=>$member_id),
 		   'filter'=>array('KEY_PRIVATE', 'KEY_PUBLIC', '_GENI_KEY_FILENAME', 'KEY_DESCRIPTION', 'KEY_ID', '_GENI_KEY_MEMBER_UID'));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_keys($client->creds(), $options);
 
   function privmapkeys($x) 
@@ -181,8 +188,9 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
     $pairs['KEY_DESCRIPTION'] = $description;
   }
   if (sizeof($pairs) > 0) {
-    $client->update_key($ssh_key_id, $client->creds(),
-                      array('fields' => $pairs));
+    $options = array('fields' => $pairs);
+    $options = array_merge($options, $client->options());
+    $client->update_key($ssh_key_id, $client->creds(), $options);
   }
 
   //return $ssh_key;
@@ -192,9 +200,8 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
 function delete_ssh_key($ma_url, $signer, $member_id, $ssh_key_id)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  //  $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client->delete_key($ssh_key_id, $client->creds(),
-                      array('_dummy' => null));
+                      $client->options());
 }
 
 // Lookup inside keys/certs associated with a user UUID
@@ -207,6 +214,7 @@ function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array('MEMBER_UID'=>$member_uuid),
 		   'filter'=>array('_GENI_MEMBER_INSIDE_PRIVATE_KEY'));
+  $options = array_merge($options, $client->options());
   $prires = $client->lookup_private_member_info($client->creds(), $options);
   //  error_log("PRIRES_OPTS = " . print_r($options, true));
   //  error_log("PRIRES = " . print_r($prires, true));
@@ -216,6 +224,7 @@ function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
     $private_key = $prires[$urn]['_GENI_MEMBER_INSIDE_PRIVATE_KEY'];
     $puboptions = array('match'=> array('MEMBER_UID'=>$member_uuid),
 			'filter'=>array('_GENI_MEMBER_INSIDE_CERTIFICATE'));
+    $puboptions = array_merge($puboptions, $client->options());
     $pubres = $client->lookup_public_member_info($client->creds(), 
 						 $puboptions);
     if (sizeof($pubres)>0) {
@@ -244,8 +253,8 @@ function ma_create_account($ma_url, $signer, $attrs, $self_asserted_attrs)
   }
 
   $client = XMLRPCClient::get_client($ma_url, $signer);
-  $options = array('_dummy' => null);
-  $results = $client->create_member($all_attrs, $client->creds(), $options);
+  $results = $client->create_member($all_attrs, $client->creds(),
+                                    $client->options());
   
 //  error_log("MA_CREATE_ACCOUNT.results = " . print_r($results, true));
   
@@ -345,6 +354,7 @@ function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
 				     '_GENI_MEMBER_INSIDE_CERTIFICATE'),
 			       array_merge($DETAILS_PUBLIC,
 					   $DETAILS_IDENTIFYING)));
+  $options = array_merge($options, $client->options());
   $login_info = $client->lookup_login_info($client->creds(), $options);
   if ($login_info) {
     $urns = array_keys($login_info);
@@ -361,7 +371,8 @@ function ma_lookup_member_by_eppn($ma_url, $signer, $eppn)
 // lookup one or more members by some identifying key/value.
 //   return an array of members (possibly empty)
 // replaces uses of ma_lookup_members
-function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $identifying_value)
+function ma_lookup_members_by_identifying($ma_url, $signer,
+                                          $identifying_key, $identifying_value)
 {
   global $member_cache;
   global $member_by_attribute_cache;
@@ -381,8 +392,8 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
 
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $options = array('match'=> array($identifying_key=>$identifying_value));
-  $pubres = $client->lookup_public_member_info($client->creds(), 
-					       $options);
+  $options = array_merge($options, $client->options());
+  $pubres = $client->lookup_public_member_info($client->creds(), $options);
   //  error_log( " PUBRES = " . print_r($pubres, true));
   
   $ids = array();
@@ -392,10 +403,12 @@ function ma_lookup_members_by_identifying($ma_url, $signer, $identifying_key, $i
       $ids[] = $uid;
     }
   }
-  $idrow = $client->lookup_identifying_member_info($client->creds(), 
-						   array('match' => array('MEMBER_UID'=>$ids)));
-  //  error_log("   ID = " . print_r($id, true));
-  //  error_log("   IDROW = " . print_r($idrow, true));
+
+  $options = array('match' => array('MEMBER_UID'=>$ids));
+  $options = array_merge($options, $client->options());
+  $idrow = $client->lookup_identifying_member_info($client->creds(), $options);
+  //    error_log("   ID = " . print_r($id, true));
+  //    error_log("   IDROW = " . print_r($idrow, true));
   foreach ($pubres as $urn => $pubrow) {
     //    error_log("   URN = " . $urn);
     //    error_log("   PUBROW = " . print_r($pubrow, true));
@@ -477,10 +490,11 @@ function ma_create_certificate($ma_url, $signer, $member_id, $csr=NULL)
   // Do we need credentials? If so, what?
   $credentials = array();
   // Start with no options. If there is a CSR, add it.
-  $options = array('_dummy' => NULL);
+  $options = array();
   if (! is_null($csr)) {
     $options['csr'] = $csr;
   }
+  $options = array_merge($options, $client->options());
   $result = $client->create_certificate($member_urn, $credentials, $options);
   // Explicitly cast to a boolean to avoid issues with type juggling
   // in lazy callers.
@@ -505,6 +519,7 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $public_options = array('match' => array('MEMBER_UID'=>$member_id),
                           'filter' => array('_GENI_MEMBER_SSL_CERTIFICATE'));
+  $public_options = array_merge($public_options, $client->options());
   $public_res = $client->lookup_public_member_info($client->creds(), 
                                                    $public_options);
   if (! array_key_exists($member_urn, $public_res)) {
@@ -522,6 +537,7 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
 
   $private_options = array('match'=> array('MEMBER_UID'=>$member_id),
                            'filter'=>array('_GENI_MEMBER_SSL_PRIVATE_KEY'));
+  $private_options = array_merge($private_options, $client->options());
   $private_res = $client->lookup_private_member_info($client->creds(), 
                                                      $private_options);
   if (array_key_exists($member_urn, $private_res)) {
@@ -616,6 +632,7 @@ function _lookup_public_members_details($client, $signer, $uid)
   //error_log("LPMD.UID = " . print_r($uid, true));
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_PUBLIC);
+  $options = array_merge($options, $client->options());
   $r = $client->lookup_public_member_info($client->creds(), 
 					  $options);
   return $r;
@@ -643,7 +660,7 @@ function _lookup_identifying_members_details($client, $signer, $uid)
   }
   $options = array('match'=>array('MEMBER_UID'=>$uid),
 		   'filter'=>$DETAILS_IDENTIFYING);
-  //  error_log("LIMD.OPTIONS = " . print_r($options, true));
+  $options = array_merge($options, $client->options());
   $r = $client->lookup_identifying_member_info($client->creds(), 
 					       $options);
   return $r;
@@ -656,7 +673,7 @@ function _lookup_public_identifying_members_details($client, $signer, $uids)
   $options = array('match'=> array('MEMBER_UID'=>$uids),
 		   'filter' => array_merge($DETAILS_IDENTIFYING, 
 					   $DETAILS_PUBLIC));
-
+  $options = array_merge($options, $client->options());
   $r = $client->lookup_public_identifying_member_info($client->creds(),
 							 $options);
   return $r;
@@ -743,6 +760,7 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
     // on an error
     global $put_message_result_handler;
     $put_message_result_handler='no_redirect_result_handler';
+    $options = array_merge($options, $client->options());
     $res = $client->lookup_identifying_member_info($client->creds(), $options);
     $put_message_result_handler = null;
 
@@ -787,6 +805,7 @@ function lookup_members_by_email($ma_url, $signer, $member_emails)
                    'filter'=>array('_GENI_IDENTIFYING_MEMBER_UID', 'MEMBER_EMAIL'));
 
   //error_log( " lmbe = " . print_r($member_emails, true));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_identifying_member_info($client->creds(), $options);
   $ret = array();
   foreach ($res	as $urn => $vals) {
@@ -812,6 +831,7 @@ function get_member_urn($ma_url, $signer, $id) {
     $client = XMLRPCClient::get_client($ma_url, $signer);
     $options = array('match'=>array('MEMBER_UID'=>$id),
 		     'filter'=>array('MEMBER_URN'));
+    $options = array_merge($options, $client->options());
     $r = $client->lookup_public_member_info($client->creds(), 
 					    $options);
 

@@ -60,10 +60,12 @@ class GeniUser
   public $attributes;
   public $raw_attrs;
 
-
   function __construct() {
     $this->certificate = NULL;
     $this->private_key = NULL;
+    $this->sf_cred = NULL;
+    $this->sf_expires = NULL;
+    $this->portal = NULL;
   }
 
   function init_from_member($member) {
@@ -280,19 +282,48 @@ class GeniUser
     $this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
   }
 
+  /*------------------------------------------------------------
+   * Signer implementation
+   *------------------------------------------------------------*/
   function certificate() {
-    if (is_null($this->certificate)) {
-      $this->getInsideKeyPair();
+    global $speaks_for_enabled;
+    if ($this->sfcred || (isset($speaks_for_enabled) && $speaks_for_enabled)) {
+      if (is_null($this->portal)) {
+        $this->portal = Portal::getInstance();
+      }
+      return $this->portal->certificate();
+    } else {
+      /* Not using speaks for */
+      if (is_null($this->certificate)) {
+        $this->getInsideKeyPair();
+      }
+      return $this->certificate;
     }
-    return $this->certificate;
   }
 
   function privateKey() {
-    if (is_null($this->private_key)) {
-      $this->getInsideKeyPair();
+    global $speaks_for_enabled;
+    if ($this->sfcred || (isset($speaks_for_enabled) && $speaks_for_enabled)) {
+      if (is_null($this->portal)) {
+        $this->portal = Portal::getInstance();
+      }
+      return $this->portal->privateKey();
+    } else {
+      /* Not using speaks for */
+      if (is_null($this->private_key)) {
+        $this->getInsideKeyPair();
+      }
+      return $this->private_key;
     }
-    return $this->private_key;
   }
+
+  function speaksForCred() {
+    return $this->sfcred;
+  }
+
+  /*------------------------------------------------------------
+   * End Signer implementation
+   *------------------------------------------------------------*/
 
   /**
    * Fetch the user's public ssh keys.
@@ -364,41 +395,6 @@ class GeniUser
 
 } // End of class GeniUser
 
-function clear_session_with_message($message) {
-  if (session_id() == '') {
-    session_start();
-  }
-  // On logout, clear the session. If you want to flush the cache,
-  // simply logout and log back in again.
-  foreach (array_keys($_SESSION) as $k) {
-    unset($_SESSION[$k]);
-  }
-  if (isset($message) && ! is_null($message) && trim($message) != "")
-  {
-    $_SESSION['lastmessage'] = $message;
-  }
-  session_write_close();
-}
-
-function get_incommon_redirect_url()
-{
-  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
-  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
-  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
-  $query = http_build_query($params);
-  return $error_service_url . $query;
-}
-
-function get_logout_url() {
-  $protocol = "http";
-  if (array_key_exists('HTTPS', $_SERVER)) {
-    $protocol = "https";
-  }
-  $host  = $_SERVER['SERVER_NAME'];
-  
-  return "$protocol://$host/Shibboleth.sso/Logout";
-}
-
 /* Insufficient attributes were released.
  * Funnel this back through the incommon
  * service to help the user understand.
@@ -406,13 +402,15 @@ function get_logout_url() {
  */
 function incommon_attribute_redirect()
 {
-  $url = get_incommon_redirect_url();
-  clear_session_with_message(null);
-  $shib_logout_url = get_logout_url();
-  $encoded_redir_url = urlencode($url);
-  $logout_and_error_url = "$shib_logout_url?return=$encoded_redir_url";
-  error_log("Insufficient attributes. Redirecting to $logout_and_error_url");
-  header("Location: $logout_and_error_url");
+  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
+  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+  $query = http_build_query($params);
+  $url = $error_service_url . $query;
+  error_log("Insufficient attributes from identity provider with entityID = \""
+            . $params['idp_entityID']
+            . "\". Redirecting to InCommon federated error handling service.");
+  header("Location: $url");
   exit;
 }
 
@@ -447,12 +445,13 @@ function send_attribute_fail_email()
        $body, $headers);
 }
 
-function geni_load_user_by_eppn($eppn)
+function geni_load_user_by_eppn($eppn, $sfcred)
 {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   //  $attrs = array('eppn' => $eppn);
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
-  $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
+  $signer = Portal::getInstance($sfcred);
+  $member = ma_lookup_member_by_eppn($ma_url, $signer, $eppn);
   if (is_null($member)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");
@@ -461,6 +460,7 @@ function geni_load_user_by_eppn($eppn)
   }
   $user = new GeniUser();
   $user->init_from_member($member);
+  $user->sfcred = $sfcred;
   return $user;
 }
 
@@ -538,9 +538,24 @@ function geni_loadUser()
     send_attribute_fail_email();
     incommon_attribute_redirect();
   }
+
   // Load current user based on Shibboleth environment
   $eppn = strtolower($_SERVER['eppn']);
-  $user = geni_load_user_by_eppn($eppn);
+  $sfcred = NULL;
+  global $speaks_for_enabled;
+  $sfcred = fetch_speaks_for($eppn, $expires);
+  if ($sfcred === FALSE) {
+      /* A DB error occurred. */
+    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+      return NULL;
+    }
+  } else if (is_null($sfcred)) {
+    if (isset($speaks_for_enabled) && $speaks_for_enabled) {
+      error_log("No speaks for cred on file for eppn '$eppn'");
+      relative_redirect('speaks-for.php');
+    }
+  }
+  $user = geni_load_user_by_eppn($eppn, $sfcred);
   $identity = geni_load_identity_by_eppn($eppn);
   $user->init_from_identity($identity);
   // FIXME: Confirm that attributes we have in DB match attributes in the environment

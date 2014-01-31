@@ -68,7 +68,9 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 		  '_GENI_PROJECT_OWNER' => $lead_id,
 		  'PROJECT_DESCRIPTION' => $project_purpose,
 		  'PROJECT_EXPIRATION'    => $expiration);
-  $results = $client->create_project($client->creds(), array('fields'=>$fields));
+  $options = array('fields' => $fields);
+  $options = array_merge($options, $client->options());
+  $results = $client->create_project($client->creds(), $options);
   $project_id = $results['PROJECT_UID'];
 
   /****   iRODS Support ****/
@@ -88,6 +90,7 @@ function get_projects($sa_url, $signer)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match'=>array(),
 		   'filter'=>array('PROJECT_UID'));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
   return array_map(function($x) { return $x['PROJECT_UID']; }, $slices);
 }
@@ -98,6 +101,7 @@ function get_projects_by_lead($sa_url, $signer, $lead_id)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match'=>array('_GENI_PROJECT_LEAD'=>$lead_id),
 		   'filter'=>array('PROJECT_UID'));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
   return array_map(function($x) { return $x['PROJECT_UID']; }, $slices);
 }
@@ -148,6 +152,7 @@ function lookup_projects($sa_url, $signer, $lead_id=null)
   global $PADETAILSKEYS;
   $options = array('match'=>$match,
 		   'filter'=>$PADETAILSKEYS);
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
   $results = array();
 
@@ -175,6 +180,7 @@ function lookup_project($sa_url, $signer, $project_id)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match'=>array('PROJECT_UID'=>$project_id),
 		   'filter'=>$PADETAILSKEYS);
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
   $details = array();
 
@@ -206,6 +212,7 @@ function lookup_project_by_name($sa_url, $signer, $project_name)
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match'=>array('PROJECT_NAME'=>$project_name),
 		   'filter'=>$PADETAILSKEYS);
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_projects($client->creds(), $options);
   $details = array();
 
@@ -229,6 +236,7 @@ function get_project_urn($sa_url, $signer, $project_uid) {
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('PROJECT_UID'=>$project_uid),
 		   'filter' => array('PROJECT_URN'));
+  $options = array_merge($options, $client->options());
   $result = $client->lookup_projects($client->creds(), $options);
   //  error_log("GET_PROJECT_URN : "  . print_r($result, true));
   $urns = array_keys($result);
@@ -247,7 +255,7 @@ function update_project($sa_url, $signer, $project_id, $project_name,
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('fields'=>array('PROJECT_DESCRIPTION'=>$project_purpose,
 				   'PROJECT_EXPIRATION'=>$expiration));
-
+  $options = array_merge($options, $client->options());
   $res = $client->update_project($project_urn, $client->creds(), $options);
   $results = array();
   return $results;
@@ -287,10 +295,11 @@ function modify_project_membership($sa_url, $signer, $project_id,
   $members_to_change_new = _conv_mid2urn_map($sa_url, $signer, $members_to_change);
   $members_to_remove_new = _conv_mid2urn($sa_url, $signer, $members_to_remove);
   
-  $options = array('_dummy' => null);
+  $options = array();
   if (sizeof($members_to_add_new)>0)    { $options['members_to_add']    = $members_to_add_new; }
   if (sizeof($members_to_change_new)>0) { $options['members_to_change'] = $members_to_change_new; }
   if (sizeof($members_to_remove_new)>0) { $options['members_to_remove'] = $members_to_remove_new; }
+  $options = array_merge($options, $client->options());
   $res = $client->modify_project_membership($project_urn, $client->creds(), $options);
   /****   iRODS Support ****/
   // Whenever we add/remove members from a project, do same for the matching irods group
@@ -348,10 +357,11 @@ function get_project_members($sa_url, $signer, $project_id,
     $project_urn = get_project_urn($sa_url, $signer, $project_id);
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array('_dummy' => null);
+  $options = array();
   if (! is_null($role)) {
     $options['match'] = array('PROJECT_ROLE' => $role);
   }
+  $options = array_merge($options, $client->options());
   $result = $client->lookup_project_members($project_urn, $client->creds(), $options);
   //  error_log("GPM.result = " . print_r($result, true));
   $converted_result = array();
@@ -389,10 +399,10 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
   //			 $cert, $key, 
   //			 $signer->certificate(), $signer->privateKey());
 
-  $options = array('_dummy' => null);
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $member_urn = $signer->urn;
-  $rows = $client->lookup_projects_for_member($member_urn, $client->creds(), $options);
+  $rows = $client->lookup_projects_for_member($member_urn, $client->creds(),
+                                              $client->options());
   if ($is_member) {    
     $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
     return $project_uuids;
@@ -409,7 +419,7 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
   //print "<p> cert ".print_r($signer->certificate(), true)."<\p>\n";
   $options = array('match'=>array('PROJECT_EXPIRED'=>"false"),
 		   'filter'=>array('PROJECT_UID'));
-
+  $options = array_merge($options, $client->options());
   $rows = $client->lookup_projects($client->creds(), $options);
   $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
   return array_values(array_diff($all_uuids, $project_uuids));
@@ -436,6 +446,7 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $options = array('match' => array('PROJECT_UID' => array_values($project_uuids)));
+  $options = array_merge($options, $client->options());
   $results = $client->lookup_projects($client->creds(), $options);
   //error_log("LPD.RESULTS = " . print_r($results, true));
   $converted_projects = array();
@@ -459,9 +470,8 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
 function invite_member($sa_url, $signer, $project_id, $role)
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array("_dummy" => null);
   $result = $client->invite_member($role, $project_id, 
-				   $client->creds(), $options);
+				   $client->creds(), $client->options());
   return $result;
   //  $invite_member_message['operation'] = 'invite_member';
   //  $invite_member_message[PA_ARGUMENT::PROJECT_ID] = $project_id;
@@ -475,11 +485,10 @@ function invite_member($sa_url, $signer, $project_id, $role)
 function accept_invitation($sa_url, $signer, $invitation_id)
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $options = array("_dummy" => null);
   //  error_log("AI.signer = " . print_r($signer, true));
   $member_id = $signer->account_id;
   $result = $client->accept_invitation($invitation_id, $member_id,
-				   $client->creds(), $options);
+                                       $client->creds(), $client->options());
   return $result;
 
   //  global $user;
@@ -498,6 +507,7 @@ function lookup_project_attributes($sa_url, $signer, $project_id)
   $project_urn = get_project_urn($sa_url, $signer, $project_id);
   $options = array('match'=>array('PROJECT_UID'=>$project_id));
   //  error_log("OPTIONS: " . print_r($options,true));
+  $options = array_merge($options, $client->options());
   $res = $client->lookup_project_attributes($project_urn, $client->creds(), $options);
   //  error_log("RES: " . print_r($res,true)); 
   return $res;
@@ -518,6 +528,7 @@ function add_project_attribute($sa_url, $signer, $project_id, $name, $value)
   $project_urn = get_project_urn($sa_url, $signer, $project_id);
   $options = array('attr_name' => $name, 'attr_value' => $value);
   //  error_log("APA.options = " . print_r($options, true));
+  $options = array_merge($options, $client->options());
   $result = $client->add_project_attribute($project_urn, $client->creds(), $options);
   //  error_log("APA.result = " . print_r($result, true));
   return $result;
@@ -539,6 +550,7 @@ function remove_project_attribute($sa_url, $signer, $project_id, $name)
   $project_urn = get_project_urn($sa_url, $signer, $project_id);
   $options = array('attr_name' => $name);
   //  error_log("RPA.options = " . print_r($options, true));
+  $options = array_merge($options, $client->options());
   $result = $client->remove_project_attribute($project_urn, $client->creds(), $options);
   //  error_log("RPA.result = " . print_r($result, true));
   return $result;

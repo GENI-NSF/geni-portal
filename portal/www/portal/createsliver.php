@@ -51,7 +51,7 @@ function no_rspec_error() {
     $rspec_id = $_REQUEST['rspec_id'];
     print "Invalid resource specification id \"$rspec_id\" specified.";
   } else {
-    print 'No rexource specification specified.';
+    print 'No resource specification specified.';
   }
   exit();
 }
