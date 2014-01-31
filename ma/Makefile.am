@@ -3,7 +3,8 @@ svcdatadir = $(pkgdatadir)/ma
 nobase_dist_svcdata_DATA = \
 	db/postgresql/data.sql \
 	db/postgresql/schema.sql \
-	db/postgresql/update-1.sql
+	db/postgresql/update-1.sql \
+	db/postgresql/update-2.sql
 
 # To do: transition database initialization to a script using
 # the installed schema and data SQL files.
