@@ -25,11 +25,10 @@
 
 <?php
 
-// error_log('$_GET = ' . print_r($_GET, true));
+error_log('$_GET = ' . print_r($_GET, true));
 
 
  require_once("header.php");
-
 // If referer is ?register? then include the 0 to not load the user
 $referer_key = 'HTTP_REFERER';
 $referer = "";
@@ -70,7 +69,16 @@ if (key_exists("error", $_GET)) {
     echo $text . "<br />\n";
   }
 }
+$email_text=gmdate("Y-m-d H:i");
+$email_text .= "%0D%0A";
+$email_text .= $error_text . "\r\n";
+$email_text .= "%0D%0A";
+$email_text .= "HTTP REFERER: " . $referer . "\r\n";
+$email_text .= "%0D%0A";
 
+
+print "<a href='mailto:portal-help@geni.net?subject=Portal Error&body=$email_text'>Need help? Report a problem?</a>";
+print "<br />";
 print "<br/>\n";
 print "<form method=\"GET\" action=\"back\">";
 print "\n";
