@@ -282,6 +282,28 @@ class GeniUser
     $this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
   }
 
+  /**
+   * Get the inside certificate for this user. For use when the inside
+   * key/cert is the only way to go.
+   */
+  function insideCertificate() {
+    if (is_null($this->certificate)) {
+      $this->getInsideKeyPair();
+    }
+    return $this->certificate;
+  }
+
+  /**
+   * Get the inside private key for this user. For use when the inside
+   * key/cert is the only way to go.
+   */
+  function insidePrivateKey() {
+    if (is_null($this->private_key)) {
+      $this->getInsideKeyPair();
+    }
+    return $this->private_key;
+  }
+
   /*------------------------------------------------------------
    * Signer implementation
    *------------------------------------------------------------*/
