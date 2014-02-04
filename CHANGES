@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.9 ==
+ * Remove hardcoded URNs (#10)
  * Undo changes that caused a logout on insufficient attributes (#939)
  * Add mailto link for help on error-text page (#921)
  * Support speaks-for in logging API (#966)
