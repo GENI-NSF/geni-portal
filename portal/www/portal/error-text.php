@@ -25,31 +25,22 @@
 
 <?php
 
-// error_log('$_GET = ' . print_r($_GET, true));
+error_log('$_GET = ' . print_r($_GET, true));
 
 
  require_once("header.php");
-
-// If referer is ?register? then include the 0 to not load the user
 $referer_key = 'HTTP_REFERER';
 $referer = "";
 if (key_exists($referer_key, $_SERVER)) {
   $referer = $_SERVER[$referer_key];
 }
-
+error_log("SERVER: " . print_r($_SERVER,true)); 
 $system_error = false;
-$load_user_on_show_header = false;
 if (key_exists("system_error", $_GET)) {
   $system_error = true;
-  $load_user_on_show_header = false;
 }
-//error_log("ET.SYSTEM_ERROR = " . print_r($system_error, true));
 
-if (strpos($referer, 'register') !== false or strpos($referer, 'activate') !== false) {
-  show_header('GENI Portal: Home',  $TAB_SLICES, false);
-} else {
-  show_header('GENI Portal: Home',  $TAB_SLICES, $load_user_on_show_header);
-}
+show_header('GENI Portal: Home',  $TAB_SLICES, false);
 $header = "Error";
 print "<h1>$header</h1>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";
@@ -70,7 +61,22 @@ if (key_exists("error", $_GET)) {
     echo $text . "<br />\n";
   }
 }
+$email_text=gmdate("Y-m-d H:i");
+$email_text .= "%0D%0A";
+$email_text .= $error_text;
+$email_text .= "%0D%0A";
+$email_text .= "HTTP REFERER: " . $referer;
+$email_text .= "%0D%0A";
+$email_text .= "%0D%0A";
+$email_text .= "User email: " . $_SERVER['mail'] ;
+$email_text .= "%0D%0A";
+$email_text .= "User eppn: " . $_SERVER['eppn'] ;
+$email_text .= "%0D%0A";
+$email_text .= "%0D%0A";
+$email_text .= "User questions or comments (please add): ";
 
+print "<a href='mailto:portal-help@geni.net?subject=Portal Error&body=$email_text'>Need help? Report a problem?</a>";
+print "<br />";
 print "<br/>\n";
 print "<form method=\"GET\" action=\"back\">";
 print "\n";
