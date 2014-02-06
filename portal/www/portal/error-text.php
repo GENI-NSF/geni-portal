@@ -43,6 +43,7 @@ $header = "Error";
 print "<h1>$header</h1>\n";
 // print "Project name: <b>$slice_project_name</b><br/>\n";
 
+$error_text = "";
 if (key_exists("error", $_GET)) {
   $error_text = urldecode($_GET["error"]);
 //  error_log("ET = " . $error_text);
