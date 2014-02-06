@@ -267,6 +267,16 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
   // Does the given URL handle speaks-for?
   $handles_speaks_for = 
     lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+
+  /*
+    If an aggregate doesn't handle speaks-for, 
+    we use the inside cert and key of the user
+    If an aggregate DOES handle speaks-for and the
+    user has a speaks-for credential, 
+    portal's cert and key and pass along the geni_speaking_for option
+   */
+  $speaks_for_invokation = false;
+  $certificate = null;
   error_log("HSF = " . print_r($handles_speaks_for, true));
     $username = $user->username;
     $urn = $user->urn();
