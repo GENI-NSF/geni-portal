@@ -61,29 +61,40 @@ if (key_exists("error", $_GET)) {
     echo $text . "<br />\n";
   }
 }
-$email_text=gmdate("Y-m-d H:i");
-$email_text .= "%0D%0A";
-$email_text .= $error_text;
-$email_text .= "%0D%0A";
-$email_text .= "HTTP REFERER: " . $referer;
-$email_text .= "%0D%0A";
-$email_text .= "%0D%0A";
-$email_text .= "User email: " . $_SERVER['mail'] ;
-$email_text .= "%0D%0A";
-$email_text .= "User eppn: " . $_SERVER['eppn'] ;
-$email_text .= "%0D%0A";
-$email_text .= "%0D%0A";
-$email_text .= "User questions or comments (please add): ";
 
-print "<a href='mailto:portal-help@geni.net?subject=Portal Error&body=$email_text'>Need help? Report a problem?</a>";
-print "<br />";
+/* Get the user email if available. */
+$user_email = 'Not Available';
+if (array_key_exists('mail', $_SERVER)) {
+  $user_email = $_SERVER['mail'];
+}
+/* Get the user eppn if available. */
+$user_eppn = 'Not Available';
+if (array_key_exists('eppn', $_SERVER)) {
+  $user_eppn = $_SERVER['eppn'];
+}
+/* Use ISO 8601 formatting for date */
+$error_date = gmdate("c");
+
+$email_text = "Date: $error_date\n";
+$email_text .= "Error: $error_text\n";
+$email_text .= "HTTP REFERER: $referer\n";
+$email_text .= "User email: $user_email\n";
+$email_text .= "User eppn: $user_eppn\n";
+$email_text .= "\nUser questions or comments (please add):\n";
+$mailto_params = array('subject' => 'Portal Error',
+                       'body' => $email_text);
+$mailto_query_string = http_build_query($mailto_params);
+/* In PHP 5.4 http_build_query can do this translation for us via
+   RFC3986 encoding. */
+$mailto_query_string = str_replace('+', '%20', $mailto_query_string);
+
+print "<a href='mailto:portal-help@geni.net?$mailto_query_string'>";
+print "Need help? Report a problem?</a>\n";
 print "<br/>\n";
-print "<form method=\"GET\" action=\"back\">";
-print "\n";
+print "<br/>\n";
+print "<form method=\"GET\" action=\"back\">\n";
 print "<input type=\"button\" value=\"Back\" onClick=\"history.back(-1)\"/>\n";
-print "\n";
-print "</form>";
-print "\n";
+print "</form>\n";
 
 include("footer.php");
 ?>
