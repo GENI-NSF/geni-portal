@@ -206,9 +206,9 @@ function write_omni_config($user)
     parse_urn($urn, $authority, $type, $name);
 
     /* Write key and credential files. */
-    $cert = $user->certificate();
+    $cert = $user->insideCertificate();
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
-    $private_key = $user->privateKey();
+    $private_key = $user->insidePrivateKey();
     $key_file = writeDataToTempFile($private_key, "$username-key-");
 
     /* Write ssh keys to tmp files. */
@@ -305,8 +305,8 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Write key and credential files */
-    $cert = $user->certificate();
-    $private_key = $user->privateKey();
+    $cert = $user->insideCertificate();
+    $private_key = $user->insidePrivateKey();
     $tmp_version_cache = tempnam(sys_get_temp_dir(),
             'omniVersionCache');
     $tmp_agg_cache = tempnam(sys_get_temp_dir(),
