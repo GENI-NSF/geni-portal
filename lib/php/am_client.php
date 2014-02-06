@@ -28,6 +28,7 @@ require_once('file_utils.php');
 require_once 'geni_syslog.php';
 require_once 'logging_client.php';
 require_once 'sr_client.php';
+require_once 'sr_constants.php';
 require_once 'portal.php';
 require_once("pa_client.php");
 require_once("pa_constants.php");
@@ -237,6 +238,25 @@ function write_omni_config($user)
     return $result;
 }
 
+// Lookup any attributes of aggregate associated with given AM URL
+// Return null if no attribute for that name defined
+function lookup_attribute($am_url, $attr_name)
+{
+  $services = get_services();
+  $am_service = null;
+  foreach($services as $service) {
+    if(array_key_exists(SR_ARGUMENT::SERVICE_URL, $service) && 
+       $service[SR_ARGUMENT::SERVICE_URL] == $am_url[0]) {
+      $am_service = $service;
+      break;
+    }
+  }
+  if($am_service)
+    return lookup_service_attribute($am_service, $attr_name);
+  else
+    return null;
+}
+
 // Generic invocation of omni function 
 // Args:
 //    $am_url: URL of AM to which to connect
@@ -244,6 +264,10 @@ function write_omni_config($user)
 //    $args: list of arguments (including the method itself) included
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
+  // Does the given URL handle speaks-for?
+  $handles_speaks_for = 
+    lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+  error_log("HSF = " . print_r($handles_speaks_for, true));
     $username = $user->username;
     $urn = $user->urn();
     // Get the authority from the user's URN

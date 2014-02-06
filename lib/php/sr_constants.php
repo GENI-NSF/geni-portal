@@ -125,5 +125,14 @@ class SR_XMLRPC_API {
   const LOOKUP_AGGREGATES = "get_aggregates";
 }
 
+// Tag for looking up attributes in a service record dictionary
+const SERVICE_ATTRIBUTE_TAG = 'service_attributes';
+
+// Defined Service Attributes
+const SERVICE_ATTRIBUTE_AM_API_VERSION = "AM_API_VERSION";
+const SERVICE_ATTRIBUTE_SPEAKS_FOR = "SPEAKS_FOR";
+
+
+
 
 ?>
