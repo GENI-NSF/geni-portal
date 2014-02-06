@@ -275,8 +275,17 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     user has a speaks-for credential, 
     portal's cert and key and pass along the geni_speaking_for option
    */
-  $speaks_for_invokation = false;
-  $certificate = null;
+  $speaks_for_invocation = false;
+  $cert = $user->insideCertificate();
+  $private_key = $user->insidePrivateKey();
+  $speaks_for_cred = $user->speaksForCred();
+
+  if ($handles_speaks_for and $speaks_for_cred) {
+      $speaks_for_invocation = true;
+      $cert = $user->certificate();
+      $private_key = $user->privateKey();
+    }
+
   error_log("HSF = " . print_r($handles_speaks_for, true));
     $username = $user->username;
     $urn = $user->urn();
@@ -305,8 +314,6 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Write key and credential files */
-    $cert = $user->insideCertificate();
-    $private_key = $user->insidePrivateKey();
     $tmp_version_cache = tempnam(sys_get_temp_dir(),
             'omniVersionCache');
     $tmp_agg_cache = tempnam(sys_get_temp_dir(),
@@ -379,6 +386,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       $cmd_array[]=$am_url;
     }
 
+    if ($speaks_for_invocation) {
+      $cmd_array[] = "--speaksfor=" . $user->urn;
+      $speaks_for_cred_filename = 
+	writeDataToTempfile($speaks_for_cred, "$username-sfcred-");
+      $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
+    }
+
     for($i = 0; $i < count($args); $i++) {
       $cmd_array[] = $args[$i];
     }
@@ -402,6 +416,9 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      unlink($tmp_agg_cache);
      foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
+     }
+     if ($speaks_for_invocation) {
+       unlink($speaks_for_cred_filename);
      }
 
      $output2 = json_decode($output, True);
