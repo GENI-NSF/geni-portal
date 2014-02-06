@@ -25,7 +25,6 @@
 
 <?php
 
-error_log('$_GET = ' . print_r($_GET, true));
 
 
  require_once("header.php");
@@ -34,7 +33,6 @@ $referer = "";
 if (key_exists($referer_key, $_SERVER)) {
   $referer = $_SERVER[$referer_key];
 }
-error_log("SERVER: " . print_r($_SERVER,true)); 
 $system_error = false;
 if (key_exists("system_error", $_GET)) {
   $system_error = true;
