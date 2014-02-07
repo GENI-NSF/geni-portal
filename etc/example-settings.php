@@ -48,4 +48,20 @@ $service_registry_url = 'https://ch.example.com:8444/SR';
  */
 $portal_irods_user = 'rods';
 $portal_irods_pw = 'rods';
+
+/*
+ * Enable google analytics when set to true.
+ */
+$portal_analytics_enable = true;
+
+/*
+ * The google analytics tracking ID.
+ */
+$portal_analytics_string = "ga('create', 'UA-000000-01', 'example.com');";
+
+/*
+ * Base URL for xml-signer tool genilib JavaScript code.
+ */
+$genilib_trusted_host = 'https://ch.example.com:8444'
+
 ?>
