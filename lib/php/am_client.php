@@ -246,7 +246,7 @@ function lookup_attribute($am_url, $attr_name)
   $am_service = null;
   foreach($services as $service) {
     if(array_key_exists(SR_ARGUMENT::SERVICE_URL, $service) && 
-       $service[SR_ARGUMENT::SERVICE_URL] == $am_url[0]) {
+       $service[SR_ARGUMENT::SERVICE_URL] == $am_url) {
       $am_service = $service;
       break;
     }
@@ -286,7 +286,6 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       $private_key = $user->privateKey();
     }
 
-  error_log("HSF = " . print_r($handles_speaks_for, true));
     $username = $user->username;
     $urn = $user->urn();
     // Get the authority from the user's URN
@@ -389,7 +388,8 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     if ($speaks_for_invocation) {
       $cmd_array[] = "--speaksfor=" . $user->urn;
       $speaks_for_cred_filename = 
-	writeDataToTempfile($speaks_for_cred, "$username-sfcred-");
+	writeDataToTempfile($speaks_for_cred->credential(), 
+			    "$username-sfcred-");
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
 
