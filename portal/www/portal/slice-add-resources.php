@@ -186,7 +186,7 @@ print "<p><button onClick=\"window.location='rspecs.php'\">"
 
 print '<form id="f1" action="sliceresource.php" method="post" enctype="multipart/form-data">';
 show_rspec_chooser($user);
-print  '<p><label for="file">or select RSpec file:</label>';
+print  '<p><label for="file">or import RSpec from file:</label>';
 print  '<input type="file" name="rspec_selection" id="rspec_selection" /></p>';
 print "<p><i>Note: This RSpec selection is for this reservation only and will not be saved by the portal.</i></p>";
 show_am_chooser();
