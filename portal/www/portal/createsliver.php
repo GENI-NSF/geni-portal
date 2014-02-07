@@ -84,7 +84,7 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 if(array_key_exists("rspec_file", $_REQUEST)) {
-  error_log("createsliver.REQUEST = " . print_r($_REQUEST, true));
+  //  error_log("createsliver.REQUEST = " . print_r($_REQUEST, true));
   $temp_rspec_file = trim($_REQUEST['rspec_file']);
   if(strlen($temp_rspec_file) > 0) {
     $rspec = file_get_contents($temp_rspec_file);
