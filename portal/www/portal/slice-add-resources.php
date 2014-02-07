@@ -149,7 +149,12 @@ function validateSubmit()
   f1 = document.getElementById("f1");
   rspec = document.getElementById("rspec_select");
   am = document.getElementById("agg_chooser");
+  rspec2 = document.getElementById("rspec_selection");
+  
   if (rspec.value && am.value) {
+    f1.submit();
+    return true;
+  } else if (rspec2.value && am.value) {
     f1.submit();
     return true;
   } else if (rspec.value) {
@@ -179,8 +184,10 @@ print "<p><button onClick=\"window.location='rspecs.php'\">"
     . "View Available RSpecs</button></p>\n";
 
 
-print '<form id="f1" action="sliceresource.php" method="post">';
+print '<form id="f1" action="sliceresource.php" method="post" enctype="multipart/form-data">';
 show_rspec_chooser($user);
+print  '<p><label for="file">or select RSpec file:</label>';
+print  '<input type="file" name="rspec_selection" id="rspec_selection" /></p>';
 show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
