@@ -143,6 +143,7 @@ dist_svcweb_DATA = \
 	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
+	www/portal/selectrspec.html \
 	www/portal/services.php \
 	www/portal/settings.php \
 	www/portal/slice-add-resources.js \

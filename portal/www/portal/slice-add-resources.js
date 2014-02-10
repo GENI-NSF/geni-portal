@@ -54,4 +54,9 @@ function rspec_onchange()
 	//	console.log("DISABLING");
     }
 
+    // Clear the "rspec_selection" file chooser
+    var rspec_file_chooser = $('#rspec_selection');
+    $('#rspec_selection').val('');
+    //    console.log("CLEARING = " + rspec_file_chooser);
+
 }
