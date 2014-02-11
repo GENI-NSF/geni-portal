@@ -191,6 +191,23 @@ if (isset($error)) {
   unset($error);
 }
 
+if (isset($_SESSION['xml-signer'])) {
+  /* Special key when working with the xml-signer tool.
+     This means we're in the flow of putting a cert/key into the tool, so
+     redirect back there if this key exists in the session.
+  */
+  $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
+  if (! is_null($result)) {
+    /* If the user has an outside certificate, redirect back to the
+       certificate loading page.
+    */
+    $loc = $_SESSION['xml-signer'];
+    unset($_SESSION['xml-signer']);
+    relative_redirect($loc);
+    exit();
+  }
+}
+
 include('kmheader.php');
 ?>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>

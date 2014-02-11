@@ -66,6 +66,17 @@ if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
+/* If no certificate, we're doing to pass off to another page to help
+   the user create a certificate. Put a note in the session that the
+   user is in the process of loading a certificate into the signing
+   tool so that the certificate creation process can redirect back to
+   here.
+ */
+session_start();
+$_SESSION['xml-signer']='loadcert.php';
+session_write_close();
+
+
 /*
  * We may be receiving a passphrase via POST. If so, use that passphrase
  * to encrypt the private key before proceeding.
@@ -199,12 +210,8 @@ must use the private key that you used to create your certificate.
 <?php } else if (is_null($certificate)) { ?>
 <p>
 You do not have a GENI certificate yet. Before you can use the signing
-and authorization tool you must create a certificate. Please click
-below to do that, and then return to this window and
-<a href="#" onClick="location.reload(true)">refresh this window</a>.
-</p>
-<button onClick="window.open('<?php print $create_url?>')">
-   Generate an SSL certificate</button>.
+and authorization tool you must
+<a href="<?php print $create_url?>">create a certificate</a>.
 <?php } else if ($add_passphrase) { ?>
 <h2>Add a passphrase</h2>
 <p>
