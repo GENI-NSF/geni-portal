@@ -39,6 +39,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No slice id specified.';
@@ -78,6 +79,16 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
+if(array_key_exists('rspec_selection', $_FILES)) {
+  $local_rspec_file = $_FILES['rspec_selection']['tmp_name'];
+  $local_rspec_file = trim($local_rspec_file);
+  $temp_rspec_file = null;
+  if(strlen($local_rspec_file) > 0) {
+    $rspec = file_get_contents($local_rspec_file);
+    $temp_rspec_file = writeDataToTempFile($rspec, 'rspec-');
+  }
+}
+
 if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
     $slice_name = "";
@@ -108,9 +119,10 @@ include("tool-breadcrumbs.php");
 var slice= "<?php echo $slice_id ?>";
 var am_id= "<?php echo $am_id ?>";
 var rspec_id= "<?php echo $rspec_id ?>";
+var rspec_file = "<?php echo $temp_rspec_file ?>";
 function build_pretty_xml() 
 {
-    $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, am_id:am_id } );
+  $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, am_id:am_id, rspec_file:rspec_file } );
 }
 </script>
 <script>

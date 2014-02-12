@@ -5,6 +5,9 @@ cert_FILES = \
 	certs/clemson-ig-boss.pem \
 	certs/clemson-ig-cm.pem \
 	certs/clemson-ig-of.pem \
+	certs/cornell-ig-boss.pem \
+	certs/cornell-ig-cm.pem \
+	certs/cornell-ig-of.pem \
 	certs/exo-gpo-of.pem \
 	certs/exo-bbn-am.pem \
 	certs/exo-fiu-am.pem \

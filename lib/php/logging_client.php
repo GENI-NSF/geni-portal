@@ -28,19 +28,23 @@ require_once('cs_constants.php');
 // Client side services for Logging of events within GENI clearinghouse
 
 // Log an event to the logging service
-// Event consists of 
+// Event consists of
 //    message - Text of log message
-//    attributes - Dictionary of name/value pairs by which to tag and retrieve mmessage
+//    attributes - Dictionary of name/value pairs by which to tag
+//                 and retrieve mmessage
 function log_event($log_url, $signer, $message, $attributes )
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
-  $client->log_event($message, $attributes);
+  $client->log_event($message, $attributes, $client->creds(),
+                     $client->options());
 }
 
 function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours=24)
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
-  $entries = $client->get_log_entries_by_author($user_id, $num_hours);
+  $entries = $client->get_log_entries_by_author($user_id, $num_hours,
+                                                $client->creds(),
+                                                $client->options());
   return $entries;
 }
 
@@ -53,21 +57,25 @@ function get_attribute_for_context($context_type, $context_id)
   return $attribute;
 }
 
-function get_log_entries_for_context($log_url, $signer, $context_type, $context_id, $num_hours=24)
+function get_log_entries_for_context($log_url, $signer, $context_type,
+                                     $context_id, $num_hours=24)
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
-  $entries = $client->get_log_entries_for_context($context_type, $context_id, $num_hours);
+  $entries = $client->get_log_entries_for_context($context_type, $context_id,
+                                                  $num_hours, $client->creds(),
+                                                  $client->options());
   return $entries;
 }
 
 function get_attributes_for_log_entry($log_url, $signer, $event_id)
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
-  $attribs = $client->get_attributes_for_log_entry($event_id);
+  $attribs = $client->get_attributes_for_log_entry($event_id, $client->creds(),
+                                                   $client->options());
   return $attribs;
 }
 
-// This is a helper function to allow sorting lists of 
+// This is a helper function to allow sorting lists of
 // log entries by event_time - new entries first
 function compare_log_entries($ent1, $ent2)
 {

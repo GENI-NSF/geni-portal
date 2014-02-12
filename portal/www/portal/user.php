@@ -282,6 +282,28 @@ class GeniUser
     $this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
   }
 
+  /**
+   * Get the inside certificate for this user. For use when the inside
+   * key/cert is the only way to go.
+   */
+  function insideCertificate() {
+    if (is_null($this->certificate)) {
+      $this->getInsideKeyPair();
+    }
+    return $this->certificate;
+  }
+
+  /**
+   * Get the inside private key for this user. For use when the inside
+   * key/cert is the only way to go.
+   */
+  function insidePrivateKey() {
+    if (is_null($this->private_key)) {
+      $this->getInsideKeyPair();
+    }
+    return $this->private_key;
+  }
+
   /*------------------------------------------------------------
    * Signer implementation
    *------------------------------------------------------------*/
@@ -395,41 +417,6 @@ class GeniUser
 
 } // End of class GeniUser
 
-function clear_session_with_message($message) {
-  if (session_id() == '') {
-    session_start();
-  }
-  // On logout, clear the session. If you want to flush the cache,
-  // simply logout and log back in again.
-  foreach (array_keys($_SESSION) as $k) {
-    unset($_SESSION[$k]);
-  }
-  if (isset($message) && ! is_null($message) && trim($message) != "")
-  {
-    $_SESSION['lastmessage'] = $message;
-  }
-  session_write_close();
-}
-
-function get_incommon_redirect_url()
-{
-  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
-  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
-  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
-  $query = http_build_query($params);
-  return $error_service_url . $query;
-}
-
-function get_logout_url() {
-  $protocol = "http";
-  if (array_key_exists('HTTPS', $_SERVER)) {
-    $protocol = "https";
-  }
-  $host  = $_SERVER['SERVER_NAME'];
-  
-  return "$protocol://$host/Shibboleth.sso/Logout";
-}
-
 /* Insufficient attributes were released.
  * Funnel this back through the incommon
  * service to help the user understand.
@@ -437,13 +424,15 @@ function get_logout_url() {
  */
 function incommon_attribute_redirect()
 {
-  $url = get_incommon_redirect_url();
-  clear_session_with_message(null);
-  $shib_logout_url = get_logout_url();
-  $encoded_redir_url = urlencode($url);
-  $logout_and_error_url = "$shib_logout_url?return=$encoded_redir_url";
-  error_log("Insufficient attributes. Redirecting to $logout_and_error_url");
-  header("Location: $logout_and_error_url");
+  $error_service_url = 'https://ds.incommon.org/FEH/sp-error.html?';
+  $params['sp_entityID'] = "https://panther.gpolab.bbn.com/shibboleth";
+  $params['idp_entityID'] = $_SERVER['Shib-Identity-Provider'];
+  $query = http_build_query($params);
+  $url = $error_service_url . $query;
+  error_log("Insufficient attributes from identity provider with entityID = \""
+            . $params['idp_entityID']
+            . "\". Redirecting to InCommon federated error handling service.");
+  header("Location: $url");
   exit;
 }
 

@@ -37,6 +37,7 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-3.sql \
 	db/postgresql/update-4.sql \
 	db/postgresql/update-5.sql \
+	db/postgresql/update-6.sql \
 	gcf.d/example-gcf.ini
 
 #----------------------------------------------------
@@ -142,6 +143,7 @@ dist_svcweb_DATA = \
 	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
+	www/portal/selectrspec.html \
 	www/portal/services.php \
 	www/portal/settings.php \
 	www/portal/slice-add-resources.js \

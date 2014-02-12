@@ -76,7 +76,7 @@ function show_rspec_chooser($user) {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
-  print "<br>or <a href=\"rspecupload.php\">upload your own RSpec</a>.";
+  print "<br>or <a href=\"rspecupload.php\">upload your own RSpec to the above list</a>.";
 //  print " or <button onClick=\"window.location='rspecupload.php'\">";
 //  print "upload your own RSpec</button>.";
   // RSpec entry area
@@ -149,7 +149,12 @@ function validateSubmit()
   f1 = document.getElementById("f1");
   rspec = document.getElementById("rspec_select");
   am = document.getElementById("agg_chooser");
+  rspec2 = document.getElementById("rspec_selection");
+  
   if (rspec.value && am.value) {
+    f1.submit();
+    return true;
+  } else if (rspec2.value && am.value) {
     f1.submit();
     return true;
   } else if (rspec.value) {
@@ -179,8 +184,11 @@ print "<p><button onClick=\"window.location='rspecs.php'\">"
     . "View Available RSpecs</button></p>\n";
 
 
-print '<form id="f1" action="sliceresource.php" method="post">';
+print '<form id="f1" action="sliceresource.php" method="post" enctype="multipart/form-data">';
 show_rspec_chooser($user);
+print  '<p><label for="file">or import RSpec from file:</label>';
+print  '<input type="file" name="rspec_selection" id="rspec_selection" /></p>';
+print "<p><i>Note: This RSpec selection is for this reservation only and will not be saved by the portal.</i></p>";
 show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
