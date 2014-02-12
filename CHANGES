@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.10 ==
+
 == 2.9 ==
  * Remove hardcoded URNs (#10)
  * Add mailto link for help on error-text page (#921)
