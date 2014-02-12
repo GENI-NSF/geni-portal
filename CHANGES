@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.10 ==
+ * Pass a default MA to the xml-signer tool (#972)
 
 == 2.9 ==
  * Remove hardcoded URNs (#10)
