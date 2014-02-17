@@ -337,6 +337,14 @@ if ($portal_enable_abac) {
 // if portal=portal, then authorize the portal.
 // FIXME: Really this should be in a util in the km area for code
 // cleanliness. Minor point though.
+
+/* Where to send the user to authorize the portal. */
+$authorize_portal_page = 'kmhome.php';
+if ($speaks_for_enabled) {
+  /* In speaks-for, go to the cert page */
+  $authorize_portal_page = 'kmcert.php';
+}
+
 if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
   require_once("km_utils.php");
   // get portal tool URN
@@ -352,7 +360,7 @@ if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
     error_log("KM: Error authorizing portal for $username: Couldn't find portal in list of KM clients");
     $_SESSION['lastmessage'] = 'Your GENI account is active.';
     $_SESSION['lasterror'] = 'GENI Portal not authorized: Could not find portal in list of available clients';
-    relative_redirect('kmhome.php');
+    relative_redirect($authorize_portal_page);
   }
   $result = ma_authorize_client($ma_url, $km_signer, $member_id, $portal_urn, true);
   //  error_log("auth res = " . print_r($result, true));
@@ -363,13 +371,15 @@ if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
     error_log("KM: Error authorizing portal for $username: " . $auth_error);
     $_SESSION['lastmessage'] = 'Your GENI account is active.';
     $_SESSION['lasterror'] = 'GENI Portal not authorized: error authorizing: $auth_error';
-    relative_redirect('kmhome.php');
+    relative_redirect($authorize_portal_page);
   }
 } else {
   // portal not authorized
   $_SESSION['lastmessage'] = 'Your GENI account is active.';
-  $_SESSION['lasterror'] = 'GENI Portal not authorized.';
-  relative_redirect('kmhome.php');
+  if (! $speaks_for_enabled) {
+    $_SESSION['lasterror'] = 'GENI Portal not authorized.';
+  }
+  relative_redirect($authorize_portal_page);
 }
 
 /* <?php */

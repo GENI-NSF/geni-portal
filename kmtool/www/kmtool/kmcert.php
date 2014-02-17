@@ -224,7 +224,8 @@ print "<h2>GENI Certificate Management</h2>\n";
 include("tool-showmessage.php");
 
 if (! isset($member_id)) {
-  print "You must first activate your GENI account <a href=\"kmactivate.php\">here</a>.<br\>\n";
+  print "Please <a href=\"kmactivate.php\">activate your GENI account</a>.\n";
+  print "<br\>\n";
   include("kmfooter.php");
   return;
 }
