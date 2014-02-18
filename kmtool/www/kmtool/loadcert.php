@@ -171,6 +171,11 @@ if (! isset($genilib_trusted_path)) {
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
+if (is_null($certificate)) {
+  /* No certificate so redirect to the create/download page. */
+  header("Location: $create_url");
+  exit;
+}
 
 /*----------------------------------------------------------------------
  * Display happens below here.

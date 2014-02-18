@@ -208,6 +208,14 @@ if (isset($_SESSION['xml-signer'])) {
   }
 }
 
+/* Auto-redirect to KM activate page if there's no member id. */
+if (! isset($member_id)) {
+  relative_redirect("kmactivate.php");
+  exit;
+}
+
+
+
 include('kmheader.php');
 ?>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
