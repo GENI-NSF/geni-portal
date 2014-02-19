@@ -6,6 +6,8 @@
 
 == 2.10 ==
  * Pass a default MA to the xml-signer tool (#972)
+ * Pass the `--alap` option to omni calls
+   (requires Omni 2.5) (#969)
 
 == 2.9 ==
  * Remove hardcoded URNs (#10)
