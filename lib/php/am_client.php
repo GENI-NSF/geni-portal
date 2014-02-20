@@ -288,19 +288,45 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Create OMNI config file */
+
+    if (! isset($sa_url)) {
+       $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);	
+    }
+    if (! isset($ma_url)) {
+       $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);	
+    }
+
     $omni_config = "[omni]\n"
-      . "default_cf = my_gcf\n"
+      . "default_cf = my_chapi\n"
       . "users = "
       . implode(", ", $username_array)
       . "\n";
     if (is_array($am_url)){
       $omni_config = $omni_config.$aggregates."\n";
     }
+
+    // FIXME: add AM nicknames for the AMs, or else start using an agg
+    // nick cache. But for that, do we have to worry about multiple
+    // concurrent readers? Or is the problem more that 2 copies of
+    // Omni might try to write / refresh the file at the same time, or
+    // one refresh while another reads. Sounds like we want a separate
+    // cron job to refresh the nick cahe and this code uses it.
+    // We want to keep the nicknames up to date. We don't have the
+    // nicknames in our SR DB.
+    // maybe copy gcfdir/agg_nick_cache.base to a tmpname and use that
+
+    global $portal_gcf_dir;
+    if (!copy($portal_gcf_dir . '/agg_nick_cache.base', $tmp_agg_cache)) {
+      error_log("Failed to copy Agg Nick Cache from " . $portal_gcf_dir . '/agg_nick_cache.base to ' . $tmp_agg_cache);
+    }
+
     $omni_config = $omni_config
-      . "[my_gcf]\n"
-      . "type=gcf\n"
+      . "[my_chapi]\n"
+      . "type=chapi\n"
       . "authority=$authority\n"
-      . "ch=https://localhost:8000\n"
+      . "ch=https://$authority:8444/CH\n"
+      . "sa=$sa_url\n"
+      . "ma=$ma_url\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n";
 
@@ -320,13 +346,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
 
     /* Call OMNI */
-    global $portal_gcf_dir;
 
     $omni_log_file = tempnam(sys_get_temp_dir(), $username . "-omni-log-");
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
 		       $omni_file,
+		       //		       '--debug',
 		       '-l',
 		       $portal_gcf_dir . '/src/logging.conf',
 		       '--logoutput', $omni_log_file,
