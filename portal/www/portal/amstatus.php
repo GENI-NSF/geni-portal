@@ -96,6 +96,13 @@ foreach ($obj as $am_url => $am_status) {
        } else {
               $geni_expires = 'unknown';
        }
+       if ($geni_expires != 'unknown') {
+         error_log("GENI_EXPIRES = . " print_r($geni_expires, true));
+         error_log("GENI_EXPIRES = . " print_r(rfc3339Format($geni_expires), true));
+         error_log("GENI_EXPIRES = . " print_r(dateOnlyUIFormat($geni_expires), true));
+         error_log("GENI_EXPIRES = . " print_r(dateUIFormat($geni_expires), true));
+         error_log("GENI_EXPIRES = . " print_r(date_parse($geni_expires), true));
+       }
        $status_item['geni_expires'] = $geni_expires;	     
        // slice URN
        $status_item['slice_urn'] = $am_status['geni_urn'];
