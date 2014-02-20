@@ -6,6 +6,8 @@
 
 == 2.10 ==
  * Pass a default MA to the xml-signer tool (#972)
+ * Pass the `--alap` option to omni calls
+   (requires Omni 2.5) (#969)
  * Use the chapi framework / interface from Omni 2.5. (#974)
    * Use the gcf configured agg_nick_cache.base 
      (we should update it as needed)

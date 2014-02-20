@@ -244,6 +244,11 @@ function write_omni_config($user)
 //    $args: list of arguments (including the method itself) included
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
+
+  // We seem to get $am_url sometimes as a string, sometimes as an array
+  // Should always talk to single AM
+  if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
+
     $username = $user->username;
     $urn = $user->urn();
     // Get the authority from the user's URN
@@ -508,6 +513,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
+		"--alap",
 		'renewsliver',
 		$slice_urn,
 		$time);
