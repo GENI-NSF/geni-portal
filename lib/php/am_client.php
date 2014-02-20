@@ -305,20 +305,18 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       $omni_config = $omni_config.$aggregates."\n";
     }
 
-    // FIXME: add AM nicknames for the AMs, or else start using an agg
-    // nick cache. But for that, do we have to worry about multiple
-    // concurrent readers? Or is the problem more that 2 copies of
-    // Omni might try to write / refresh the file at the same time, or
-    // one refresh while another reads. Sounds like we want a separate
-    // cron job to refresh the nick cahe and this code uses it.
-    // We want to keep the nicknames up to date. We don't have the
-    // nicknames in our SR DB.
-    // maybe copy gcfdir/agg_nick_cache.base to a tmpname and use that
-
+    // FIXME: If SR had AM nicknames, we could write a nickname to the
+    // omni_config here. Or all known nicknames in the SR. That's
+    // likely better than relying on the shared agg nick cache. For
+    // now, copy a fixed file to a temp place (avoiding 1 omni
+    // downloading a new copy while another reads, or 2 readers
+    // conflicting somehow)
     global $portal_gcf_dir;
     if (!copy($portal_gcf_dir . '/agg_nick_cache.base', $tmp_agg_cache)) {
       error_log("Failed to copy Agg Nick Cache from " . $portal_gcf_dir . '/agg_nick_cache.base to ' . $tmp_agg_cache);
     }
+
+    // FIXME: Get the /CH URL from a portal/www/portal/settings.php entry?
 
     $omni_config = $omni_config
       . "[my_chapi]\n"
