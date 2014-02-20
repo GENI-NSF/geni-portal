@@ -8,6 +8,11 @@
  * Pass a default MA to the xml-signer tool (#972)
  * Pass the `--alap` option to omni calls
    (requires Omni 2.5) (#969)
+ * Use the chapi framework / interface from Omni 2.5. (#974)
+   * Use the gcf configured agg_nick_cache.base 
+     (we should update it as needed)
+   * Hard codes the CH URL based on the authority name
+   * Fix the gcf logging config to allow debug logs to the log file
 
 == 2.9 ==
  * Remove hardcoded URNs (#10)
