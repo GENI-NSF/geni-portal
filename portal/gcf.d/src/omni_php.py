@@ -25,7 +25,7 @@
 
 import string
 import sys
-import omni
+import gcf.oscript as omni
 import os.path
 from optparse import OptionParser
 import json
