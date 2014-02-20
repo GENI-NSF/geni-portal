@@ -66,6 +66,16 @@ function print_xml( $xml ){
 function get_name_from_urn( $urn ){
   $urn_pieces = explode( "+", $urn );
   $name = end($urn_pieces);
+  // In the case of EXOGeni, we want the name of the node, 
+  // which is located as the subauthority of the URN
+  // E.g. for component ID 
+  // urn:publicid:IDN+exogeni.net:osfvmsite+node+orca-vm-cloud
+  // We want to return the name 'osfvmsite', not 'orca-vm-cloud'
+  if(strpos($urn, "+exogeni.net:")) {
+    $authority = $urn_pieces[1];
+    $authority_pieces = explode(":", $authority);
+    $name = $authority_pieces[1];
+  }
   return $name;
 }
 
