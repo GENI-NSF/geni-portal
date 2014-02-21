@@ -115,11 +115,18 @@ policies:<br/>
 <br/>
 <form method="POST" action="do-register.php">
 <input type="checkbox" name="agree" value="agree">I agree to the GENI policies.<br/>
+<?php
+  /* Do not provide the checkbox in the speaks-for world. */
+  if (!$speaks_for_enabled) {
+?>
 <br>
 If authorized to do so, the GENI portal can help you reserve and
 manage GENI resources, and is recommended for most GENI users.<br/><br/>
 <input type="checkbox" name="portal" value="portal" checked="checked">I authorize the GENI Portal to act on my behalf in GENI.<br/>
 <br/>
+<?php
+  }
+?>
 <input type="submit" value="Activate"/>
 </form>
 <?php

@@ -427,8 +427,12 @@ if($in_lockdown_mode) {
   $disable_authorize_tools = "disabled";
 }
 
-print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
-
+/* Only show the tools authorization page if we're not in full
+ * speaks-for mode.
+ */
+if (!$speaks_for_enabled) {
+  print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
+}
 
 print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
