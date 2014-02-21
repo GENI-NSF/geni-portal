@@ -28,6 +28,7 @@ require_once('file_utils.php');
 require_once 'geni_syslog.php';
 require_once 'logging_client.php';
 require_once 'sr_client.php';
+require_once 'sr_constants.php';
 require_once 'portal.php';
 require_once("pa_client.php");
 require_once("pa_constants.php");
@@ -237,6 +238,25 @@ function write_omni_config($user)
     return $result;
 }
 
+// Lookup any attributes of aggregate associated with given AM URL
+// Return null if no attribute for that name defined
+function lookup_attribute($am_url, $attr_name)
+{
+  $services = get_services();
+  $am_service = null;
+  foreach($services as $service) {
+    if(array_key_exists(SR_ARGUMENT::SERVICE_URL, $service) && 
+       $service[SR_ARGUMENT::SERVICE_URL] == $am_url) {
+      $am_service = $service;
+      break;
+    }
+  }
+  if($am_service)
+    return lookup_service_attribute($am_service, $attr_name);
+  else
+    return null;
+}
+
 // Generic invocation of omni function 
 // Args:
 //    $am_url: URL of AM to which to connect
@@ -244,6 +264,32 @@ function write_omni_config($user)
 //    $args: list of arguments (including the method itself) included
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
+  // We seem to get $am_url sometimes as a string, sometimes as an array
+  // Should always talk to single AM
+  if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
+
+  // Does the given URL handle speaks-for?
+  $handles_speaks_for = 
+    lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+
+  /*
+    If an aggregate doesn't handle speaks-for, 
+    we use the inside cert and key of the user
+    If an aggregate DOES handle speaks-for and the
+    user has a speaks-for credential, 
+    portal's cert and key and pass along the geni_speaking_for option
+   */
+  $speaks_for_invocation = false;
+  $cert = $user->insideCertificate();
+  $private_key = $user->insidePrivateKey();
+  $speaks_for_cred = $user->speaksForCred();
+
+  if ($handles_speaks_for and $speaks_for_cred) {
+      $speaks_for_invocation = true;
+      $cert = $user->certificate();
+      $private_key = $user->privateKey();
+    }
+
     $username = $user->username;
     $urn = $user->urn();
     // Get the authority from the user's URN
@@ -271,8 +317,6 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Write key and credential files */
-    $cert = $user->insideCertificate();
-    $private_key = $user->insidePrivateKey();
     $tmp_version_cache = tempnam(sys_get_temp_dir(),
             'omniVersionCache');
     $tmp_agg_cache = tempnam(sys_get_temp_dir(),
@@ -288,19 +332,43 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Create OMNI config file */
+
+    if (! isset($sa_url)) {
+       $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);	
+    }
+    if (! isset($ma_url)) {
+       $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);	
+    }
+
     $omni_config = "[omni]\n"
-      . "default_cf = my_gcf\n"
+      . "default_cf = my_chapi\n"
       . "users = "
       . implode(", ", $username_array)
       . "\n";
     if (is_array($am_url)){
       $omni_config = $omni_config.$aggregates."\n";
     }
+
+    // FIXME: If SR had AM nicknames, we could write a nickname to the
+    // omni_config here. Or all known nicknames in the SR. That's
+    // likely better than relying on the shared agg nick cache. For
+    // now, copy a fixed file to a temp place (avoiding 1 omni
+    // downloading a new copy while another reads, or 2 readers
+    // conflicting somehow)
+    global $portal_gcf_dir;
+    if (!copy($portal_gcf_dir . '/agg_nick_cache.base', $tmp_agg_cache)) {
+      error_log("Failed to copy Agg Nick Cache from " . $portal_gcf_dir . '/agg_nick_cache.base to ' . $tmp_agg_cache);
+    }
+
+    // FIXME: Get the /CH URL from a portal/www/portal/settings.php entry?
+
     $omni_config = $omni_config
-      . "[my_gcf]\n"
-      . "type=gcf\n"
+      . "[my_chapi]\n"
+      . "type=chapi\n"
       . "authority=$authority\n"
-      . "ch=https://localhost:8000\n"
+      . "ch=https://$authority:8444/CH\n"
+      . "sa=$sa_url\n"
+      . "ma=$ma_url\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n";
 
@@ -320,13 +388,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
 
     /* Call OMNI */
-    global $portal_gcf_dir;
 
     $omni_log_file = tempnam(sys_get_temp_dir(), $username . "-omni-log-");
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
 		       $omni_file,
+		       //		       '--debug',
 		       '-l',
 		       $portal_gcf_dir . '/src/logging.conf',
 		       '--logoutput', $omni_log_file,
@@ -343,6 +411,14 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     if (!is_array($am_url)){
       $cmd_array[]='-a';
       $cmd_array[]=$am_url;
+    }
+
+    if ($speaks_for_invocation) {
+      $cmd_array[] = "--speaksfor=" . $user->urn;
+      $speaks_for_cred_filename = 
+	writeDataToTempfile($speaks_for_cred->credential(), 
+			    "$username-sfcred-");
+      $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
 
     for($i = 0; $i < count($args); $i++) {
@@ -368,6 +444,9 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      unlink($tmp_agg_cache);
      foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
+     }
+     if ($speaks_for_invocation) {
+       unlink($speaks_for_cred_filename);
      }
 
      $output2 = json_decode($output, True);
@@ -484,6 +563,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
+		"--alap",
 		'renewsliver',
 		$slice_urn,
 		$time);

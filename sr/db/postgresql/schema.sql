@@ -23,9 +23,10 @@ CREATE TABLE service_registry (
 );
 
 CREATE TABLE service_registry_attribute (
+ id SERIAL PRIMARY KEY,
  service_id INT,
- attribute_name VARCHAR,
- attribute_value VARCHAR
+ name VARCHAR,
+ value VARCHAR
 );
 
 

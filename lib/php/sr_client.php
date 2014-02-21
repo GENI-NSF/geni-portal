@@ -43,6 +43,7 @@ $SRCHAPI2PORTAL =
         'SERVICE_CERT' => SR_TABLE_FIELDNAME::SERVICE_CERT_CONTENTS,
         'SERVICE_NAME' => SR_TABLE_FIELDNAME::SERVICE_NAME,
         'SERVICE_DESCRIPTION' => SR_TABLE_FIELDNAME::SERVICE_DESCRIPTION,
+	'_GENI_SERVICE_ATTRIBUTES' => SERVICE_ATTRIBUTE_TAG,
         'SERVICE_TYPE' => SR_TABLE_FIELDNAME::SERVICE_TYPE);
 
 /**
@@ -214,6 +215,19 @@ function select_services($services, $service_type)
     }
   }
   return $selected;
+}
+
+// Return attribute value of givewn name for given service. 
+// Return null if no attribute of that name defined
+function lookup_service_attribute($service, $name)
+{
+  if(!array_key_exists(SERVICE_ATTRIBUTE_TAG, $service))
+    return null;
+  $attributes = $service[SERVICE_ATTRIBUTE_TAG];
+  if(!array_key_exists($name, $attributes))
+    return null;
+  return $attributes[$name];
+			
 }
 
 ?>
