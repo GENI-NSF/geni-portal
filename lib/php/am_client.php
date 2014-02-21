@@ -196,6 +196,7 @@ function get_template_omni_config($user, $version, $default_project=null)
  * name.
  *
  * N.B. the caller is responsible for removing the file (via unlink()).
+ * FIXME: This is only used by ready_to_login which is not used
  */
 function write_omni_config($user)
 {
@@ -620,6 +621,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
   return $output;
 }
 
+// Called from portal/www/porta/readyToLogin.php, which is unused
 function ready_to_login($am_url, $user, $slice_cred, $slice_urn)
 {
   global $portal_gcf_dir;
