@@ -70,6 +70,24 @@ function show_close_button() {
   }
 }
 
+/**
+ * If in xml-signer context, show a way to continue
+ * signing thread.
+ */
+function show_xml_signer_button() {
+  if (isset($_SESSION['xml-signer'])) {
+    /* We're in the thread of the xml-signer tool. Put up a continue
+     * button to go to loadcert page.
+     */
+    $loc = $_SESSION['xml-signer'];
+    unset($_SESSION['xml-signer']);
+    print "<br/>\n";
+    print ("<button onclick=\"window.location='$loc';\">"
+           . "<b>Continue to signing tool</b>"
+           . "</button>\n");
+  }
+}
+
 function download_cert($ma_url, $km_signer, $member) {
   $member_id = $member->member_id;
   $username = $member->username;
@@ -194,11 +212,11 @@ if (isset($error)) {
 if (isset($_SESSION['xml-signer'])) {
   /* Special key when working with the xml-signer tool.
      This means we're in the flow of putting a cert/key into the tool, so
-     redirect back there if this key exists in the session.
+     maybe HTTP redirect there if this key exists in the session.
   */
   $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
-  if (! is_null($result)) {
-    /* If the user has an outside certificate, redirect back to the
+  if (! is_null($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
+    /* If the user has an outside certificate AND key, redirect back to the
        certificate loading page.
     */
     $loc = $_SESSION['xml-signer'];
@@ -254,6 +272,7 @@ if (! is_null($result)) {
 </form>
 <?php
   show_close_button();
+  show_xml_signer_button();
   include("kmfooter.php");
   return;
 }

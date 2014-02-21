@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 /* URL for creating a certificate. */
 $server_name = $_SERVER['SERVER_NAME'];
-$create_url = "https://$server_name/secure/kmcert.php?close=1";
+$create_url = "https://$server_name/secure/kmcert.php";
 
 /*
  * Does the private key have a passphrase? We can tell by
@@ -203,7 +203,7 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 <h2>Instructions</h2>
 <p>
 You must paste your certificate and your private key into the signing tool.
-You can <a href="#" onClick="window.open('<?php print $create_url?>')">
+You can <a href="<?php print $create_url?>">
 download your certificate</a> if you do not have a copy already. You
 must use the private key that you used to create your certificate.
 </p>
