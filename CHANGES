@@ -4,11 +4,23 @@
 
 = GENI Portal Release Notes =
 
+== 2.10 ==
+ * Pass a default MA to the xml-signer tool (#972)
+ * Pass the `--alap` option to omni calls
+   (requires Omni 2.5) (#969)
+ * Use the chapi framework / interface from Omni 2.5. (#974)
+   * Use the gcf configured agg_nick_cache.base 
+     (we should update it as needed)
+   * Hard codes the CH URL based on the authority name
+   * Fix the gcf logging config to allow debug logs to the log file
+
 == 2.9 ==
  * Remove hardcoded URNs (#10)
- * Undo changes that caused a logout on insufficient attributes (#939)
  * Add mailto link for help on error-text page (#921)
+ * Undo changes that caused a logout on insufficient attributes (#939)
+ * Allow anonymous RSpecs (#957)
  * Support speaks-for in logging API (#966)
+ * Support Federation API v2 (#967)
 
 == 2.8 ==
    * Ensure max date in slice renew datepicker is by project

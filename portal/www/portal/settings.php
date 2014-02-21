@@ -50,7 +50,7 @@ $portal_private_key_file = '/usr/share/geni-ch/portal/portal-key.pem';
 $portal_max_slice_renewal_days = 185;
 
 // Portal version
-$portal_version = "2.9";
+$portal_version = "2.10";
 
 // URL to the Flack SWF. Used in flack.php
 $flack_url = "https://www.emulab.net/protogeni/flack3/flack.swf";
