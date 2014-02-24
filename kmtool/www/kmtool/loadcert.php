@@ -66,6 +66,17 @@ if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
+/* If no certificate, we're doing to pass off to another page to help
+   the user create a certificate. Put a note in the session that the
+   user is in the process of loading a certificate into the signing
+   tool so that the certificate creation process can redirect back to
+   here.
+ */
+session_start();
+$_SESSION['xml-signer']='loadcert.php';
+session_write_close();
+
+
 /*
  * We may be receiving a passphrase via POST. If so, use that passphrase
  * to encrypt the private key before proceeding.
@@ -108,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 /* URL for creating a certificate. */
 $server_name = $_SERVER['SERVER_NAME'];
-$create_url = "https://$server_name/secure/kmcert.php?close=1";
+$create_url = "https://$server_name/secure/kmcert.php";
 
 /*
  * Does the private key have a passphrase? We can tell by
@@ -160,6 +171,11 @@ if (! isset($genilib_trusted_path)) {
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
+if (is_null($certificate)) {
+  /* No certificate so redirect to the create/download page. */
+  header("Location: $create_url");
+  exit;
+}
 
 /*----------------------------------------------------------------------
  * Display happens below here.
@@ -187,7 +203,7 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 <h2>Instructions</h2>
 <p>
 You must paste your certificate and your private key into the signing tool.
-You can <a href="#" onClick="window.open('<?php print $create_url?>')">
+You can <a href="<?php print $create_url?>">
 download your certificate</a> if you do not have a copy already. You
 must use the private key that you used to create your certificate.
 </p>
@@ -199,12 +215,8 @@ must use the private key that you used to create your certificate.
 <?php } else if (is_null($certificate)) { ?>
 <p>
 You do not have a GENI certificate yet. Before you can use the signing
-and authorization tool you must create a certificate. Please click
-below to do that, and then return to this window and
-<a href="#" onClick="location.reload(true)">refresh this window</a>.
-</p>
-<button onClick="window.open('<?php print $create_url?>')">
-   Generate an SSL certificate</button>.
+and authorization tool you must
+<a href="<?php print $create_url?>">create a certificate</a>.
 <?php } else if ($add_passphrase) { ?>
 <h2>Add a passphrase</h2>
 <p>
