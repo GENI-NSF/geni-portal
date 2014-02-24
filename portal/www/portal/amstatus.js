@@ -366,7 +366,7 @@ function add_agg_row_to_details_table(am_id, numagg) {
 	 }
 	 $("div#details").append( output );
 	 output = "";
-	 if (pretty=="true") {
+	 if (pretty=="true" && am) {
 	     add_one_login(am_id, slice);
 	 }
      }
