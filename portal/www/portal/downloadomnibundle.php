@@ -80,12 +80,16 @@ if (key_exists(MA_ARGUMENT::CERTIFICATE, $result)) {
 $omni_version = "2.3.1";
 $omni_config = get_template_omni_config($user, $omni_version, $default_project);
 
+$omni_version = "2.5";
+$omni_config_chapi = get_template_omni_config($user, $omni_version, $default_project);
+
 $zip = new ZipArchive();
 $filename = tempnam(sys_get_temp_dir(), 'omnibundle');
 
 // Zip will open and overwrite the file, rather than try to read it.
 $zip->open($filename, ZipArchive::OVERWRITE);
 $zip->addFromString('omni_config', $omni_config);
+$zip->addFromString('omni_config_chapi', $omni_config_chapi);
 $zip->addFromString('geni_cert.pem', $geni_cert_pem);
 add_ssh_keys_to_zip($keys, $zip);
 $zip->close();

@@ -153,6 +153,7 @@ function get_template_omni_config($user, $version, $default_project=null)
     $omni_config .= "\n"
       . "[chapi]\n"
       . "# For use with the Uniform Federation API\n"
+      . "# NOTE: Only works with Omni 2.5 or newer\n"
       . "type = chapi\n"
       . "# Authority part of the control framework's URN\n"
       . "authority=$authority\n"

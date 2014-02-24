@@ -152,8 +152,6 @@ foreach ($warnings22 as $warning) {
   echo $warning;
 }
 ?>
-<p><i>Note: The portal can only be used with omni 2.3.1 or newer.</i></p>
-
 <p>
 Download and use a template omni_config file for use with the
 <a href="http://trac.gpolab.bbn.com/gcf/wiki">Omni</a> command line resource
@@ -176,10 +174,12 @@ if ($num_projects > 1) {
 ?>
 
   <li>Download this
-      <a id='configlink' href='<?php echo $config_link; ?>'>
-          omni_config
-      </a>
-      and save it to a file named <code>portal_omni_config</code>.</li>
+      <a id='configlink' href='<?php echo $config_link; ?>&version=2.5'>omni_config</a>
+      and save it to a file named <code>portal_omni_config</code>.
+      <ul>
+      <li>If you are running a version of omni older than 2.5, download this <a id='configlink' href='<?php echo $config_link; ?>&version=2.3.1'>omni_config</a> instead.</li>
+      </ul>
+</li>
   <li><a href="<?php print $download_url; ?>" target="_blank">
         <?php echo $download_text; ?>
       </a>, noting the path.
@@ -205,6 +205,19 @@ if ($num_projects > 1) {
       </ol>
   </li>
 </ol>
+
+  <table id='tip'>
+    <tr>
+       <td rowspan=3><img id='tipimg' src="http://groups.geni.net/geni/attachment/wiki/GENIExperimenter/Tutorials/Graphics/Symbols-Tips-icon-clear.png?format=raw" width="75" height="75" alt="Tip"></td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
+    </tr>
+       <tr><td>To determine the version of an existing <code>omni</code> installation, run:
+	            <pre>omni --version</pre>
+       </td></tr>
+        <tr><td>If necessary, <a href="http://trac.gpolab.bbn.com/gcf/wiki#GettingStarted" target='_blank'>download</a> and <a href="http://trac.gpolab.bbn.com/gcf/wiki/QuickStart" target='_blank'>install</a> the latest version of <code>omni</code>.</td></tr>
+
+  </table>
+
 <p/>
 </div>
 
@@ -217,7 +230,7 @@ Download and use a template omni_config file for use with the
 reservation tool.
 <br/>
 <ol>
-  <li>Download this <a href='portal_omni_config.php?version=2.3.1'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>
+  <li>Download this <a href='portal_omni_config.php?version=2.1'>omni_config</a> and save it to a file named <code>portal_omni_config</code>.</li>
   <li><a href="<?php print $download_url; ?>" target="_blank">
         <?php echo $download_text; ?>
       </a>, noting the path.
