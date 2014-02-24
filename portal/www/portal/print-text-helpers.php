@@ -74,7 +74,7 @@ function get_name_from_urn( $urn ){
   if(strpos($urn, "+exogeni.net:")) {
     $authority = $urn_pieces[1];
     $authority_pieces = explode(":", $authority);
-    $name = $authority_pieces[1];
+    $name = $authority_pieces[1] . ":" . $name;
   }
   return $name;
 }
