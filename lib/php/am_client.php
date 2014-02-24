@@ -28,6 +28,7 @@ require_once('file_utils.php');
 require_once 'geni_syslog.php';
 require_once 'logging_client.php';
 require_once 'sr_client.php';
+require_once 'sr_constants.php';
 require_once 'portal.php';
 require_once("pa_client.php");
 require_once("pa_constants.php");
@@ -83,10 +84,10 @@ function write_ssh_keys($for_user, $as_user)
 
 function get_template_omni_config($user, $version, $default_project=null)
 {
-  $legal_versions = array("2.3.1");
+  $legal_versions = array("2.3.1","2.5");
   if (! in_array($version, $legal_versions)) {
-    /* If $version is not understood, default to omni 2.3.1. */
-    $version = "2.3.1";
+    /* If $version is not understood, default to omni 2.5. */
+    $version = "2.5";
   }
 
     /* Create OMNI config file */
@@ -94,30 +95,6 @@ function get_template_omni_config($user, $version, $default_project=null)
     $urn = $user->urn();
     // Get the authority from the user's URN
     parse_urn($urn, $authority, $type, $name);
-
-    // Add shortcuts for all known AMs?
-    // Note this makes the config long in the extreme case....
-    require_once("sr_client.php");
-    require_once("sr_constants.php");
-    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-    $nicknames = "";
-    foreach ($ams as $am) {
-      $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
-      $url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-      if (! isset($name) || is_null($name) || trim($name) == '') {
-        continue;
-      }
-      // skip AMs running on localhost as they aren't accessible anywhere else
-      if (strpos($url, '://localhost') !== false ) {
-        continue;
-      }
-
-      $name = str_replace(' ', '-', $name);
-      $name = str_replace(',', '', $name);
-      $name = str_replace('=', '', $name);
-      $name = strtolower($name);
-      $nicknames .= "$name=,$url\n";
-    }
 
     $pgchs = get_services_of_type(SR_SERVICE_TYPE::PGCH);
     if (count( $pgchs ) != 1) {
@@ -129,17 +106,24 @@ function get_template_omni_config($user, $version, $default_project=null)
     }
 
     $omni_config = '# This omni configuration file is for use with omni version ';
-    if ($version == '2.3.1') {
-      $omni_config .= '2.3.1 or higher';
-    }
+    $omni_config .= $version . ' or higher';
     $omni_config .= "\n";
-    $omni_config .= "[omni]\n"
-      . "default_cf = portal\n"
-      . "# 'users' is a comma separated list of users which should be added to a slice.\n"
-      . "# Each user is defined in a separate section below.\n"
-      . "users = $username\n";
+    $omni_config .= "[omni]\n";
 
-    if ($version == '2.3.1') {
+    if ($version == "2.5") {
+      $omni_config .= "default_cf = chapi\n";
+    }
+   
+    if ($version == "2.3.1") {
+      $omni_config .= "default_cf = portal\n";
+    }
+
+    $omni_config .= "# 'users' is a comma separated list of users which should be added to a slice.\n"
+      . "# Each user is defined in a separate section below.\n"
+      . "users = $username\n"
+      . "# Over-ride the commandline setting of --useSliceMembers to force it True\n"
+      . "useslicemembers = True\n";
+
      $omni_config = $omni_config		
       . "# 'default_project' is the name of the project that will be assumed\n"
       . "# unless '--project' is specified on the command line.\n"
@@ -147,6 +131,9 @@ function get_template_omni_config($user, $version, $default_project=null)
 
     if (! isset($sa_url)) {
        $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);	
+    }
+    if (! isset($ma_url)) {
+       $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);	
     }
     $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);	
     if (count($projects) > 0 && is_null($default_project)) {
@@ -162,31 +149,45 @@ function get_template_omni_config($user, $version, $default_project=null)
         $omni_config .= "#default_project = $proj_name\n";
       }
     }
-    }
-    $omni_config = $omni_config
-      . "\n"
-      . "[portal]\n";
 
-    if ($version == "2.3.1") {
-      $omni_config .= "type = pgch\n";
-    }
+    $omni_config .= "\n"
+      . "[chapi]\n"
+      . "# For use with the Uniform Federation API\n"
+      . "# NOTE: Only works with Omni 2.5 or newer\n"
+      . "type = chapi\n"
+      . "# Authority part of the control framework's URN\n"
+      . "authority=$authority\n"
+      . "# Where the CH API server's Clearinghouse service is listening.\n"
+      . "# This will be used to find the MA and SA\n"
+      . "ch=https://$authority:8444/CH\n"
+      . "# Optionally you may explicitly specify where the MA and SA are\n"
+      . "#  running, in which case the Clearinghouse service is not used\n"
+      . "#  to find them\n"
+      . "ma = $ma_url\n"
+      . "sa = $sa_url\n"
+      . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
+      . "key = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
+      . "# For debugging\n"
+      . "verbose=false\n"
+      . "\n";
 
-    $omni_config = $omni_config
+    $omni_config .= "\n"
+      . "[portal]\n"
+      . "type = pgch\n"
       . "authority=$authority\n"
       . "ch = $PGCH_URL\n"
       . "sa = $PGCH_URL\n"
       . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
       . "key = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
-      . "\n"
-      . "[$username]\n"
+      . "\n";
+
+    $omni_config .= "[$username]\n"
       . "urn = $urn\n"
       . "# 'keys' is a comma separated list of ssh public keys which should be added to this user's account.\n"
       . "keys = /PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
-      . "\n"
-      . "[aggregate_nicknames]\n"
-      . $nicknames;
+      . "\n";
 
     return $omni_config;
 }
@@ -238,6 +239,25 @@ function write_omni_config($user)
     return $result;
 }
 
+// Lookup any attributes of aggregate associated with given AM URL
+// Return null if no attribute for that name defined
+function lookup_attribute($am_url, $attr_name)
+{
+  $services = get_services();
+  $am_service = null;
+  foreach($services as $service) {
+    if(array_key_exists(SR_ARGUMENT::SERVICE_URL, $service) && 
+       $service[SR_ARGUMENT::SERVICE_URL] == $am_url) {
+      $am_service = $service;
+      break;
+    }
+  }
+  if($am_service)
+    return lookup_service_attribute($am_service, $attr_name);
+  else
+    return null;
+}
+
 // Generic invocation of omni function 
 // Args:
 //    $am_url: URL of AM to which to connect
@@ -245,10 +265,31 @@ function write_omni_config($user)
 //    $args: list of arguments (including the method itself) included
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
-
   // We seem to get $am_url sometimes as a string, sometimes as an array
   // Should always talk to single AM
   if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
+
+  // Does the given URL handle speaks-for?
+  $handles_speaks_for = 
+    lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+
+  /*
+    If an aggregate doesn't handle speaks-for, 
+    we use the inside cert and key of the user
+    If an aggregate DOES handle speaks-for and the
+    user has a speaks-for credential, 
+    portal's cert and key and pass along the geni_speaking_for option
+   */
+  $speaks_for_invocation = false;
+  $cert = $user->insideCertificate();
+  $private_key = $user->insidePrivateKey();
+  $speaks_for_cred = $user->speaksForCred();
+
+  if ($handles_speaks_for and $speaks_for_cred) {
+      $speaks_for_invocation = true;
+      $cert = $user->certificate();
+      $private_key = $user->privateKey();
+    }
 
     $username = $user->username;
     $urn = $user->urn();
@@ -277,8 +318,6 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Write key and credential files */
-    $cert = $user->insideCertificate();
-    $private_key = $user->insidePrivateKey();
     $tmp_version_cache = tempnam(sys_get_temp_dir(),
             'omniVersionCache');
     $tmp_agg_cache = tempnam(sys_get_temp_dir(),
@@ -375,6 +414,14 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       $cmd_array[]=$am_url;
     }
 
+    if ($speaks_for_invocation) {
+      $cmd_array[] = "--speaksfor=" . $user->urn;
+      $speaks_for_cred_filename = 
+	writeDataToTempfile($speaks_for_cred->credential(), 
+			    "$username-sfcred-");
+      $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
+    }
+
     for($i = 0; $i < count($args); $i++) {
       $cmd_array[] = $args[$i];
     }
@@ -398,6 +445,9 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      unlink($tmp_agg_cache);
      foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
+     }
+     if ($speaks_for_invocation) {
+       unlink($speaks_for_cred_filename);
      }
 
      $output2 = json_decode($output, True);
