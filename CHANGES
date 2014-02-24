@@ -14,6 +14,7 @@
      (we should update it as needed)
    * Hard codes the CH URL based on the authority name
    * Fix the gcf logging config to allow debug logs to the log file
+ * Have omni-bundle.zip and omni_config include ability to use chapi (#975)
 
 == 2.9 ==
  * Remove hardcoded URNs (#10)
