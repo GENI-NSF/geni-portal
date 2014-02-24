@@ -58,6 +58,7 @@ dist_svcweb_DATA = \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
 	www/portal/am_map.php \
+	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
 	www/portal/approve.php \
@@ -134,6 +135,7 @@ dist_svcweb_DATA = \
 	www/portal/project.php \
 	www/portal/projects.php \
 	www/portal/query-sliverstatus.php \
+	www/portal/query-details.php \
 	www/portal/raw-sliverstatus.php \
 	www/portal/readyToLogin.php \
 	www/portal/renewsliver.php \
