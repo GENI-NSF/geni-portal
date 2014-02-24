@@ -6,9 +6,10 @@
 
 == 2.10 ==
  * Support service attributes in portal and database (#968)
- * Pass a default MA to the xml-signer tool (#972)
  * Pass the `--alap` option to omni calls
    (requires Omni 2.5) (#969)
+ * Use explicit time zone in renew dates (#971)
+ * Pass a default MA to the xml-signer tool (#972)
  * Use the chapi framework / interface from Omni 2.5. (#974)
    * Use the gcf configured agg_nick_cache.base 
      (we should update it as needed)

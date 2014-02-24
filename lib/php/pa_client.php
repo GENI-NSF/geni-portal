@@ -60,14 +60,13 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
 
-  if (! $expiration) {
-    $expiration = "";
-  }
-
   $fields = array('PROJECT_NAME'          => $project_name,
 		  '_GENI_PROJECT_OWNER' => $lead_id,
-		  'PROJECT_DESCRIPTION' => $project_purpose,
-		  'PROJECT_EXPIRATION'    => $expiration);
+		  'PROJECT_DESCRIPTION' => $project_purpose);
+  if ($expiration && ($expiration != "")) {
+    $fields['PROJECT_EXPIRATION'] = $expiration;
+  }
+
   $options = array('fields' => $fields);
   $options = array_merge($options, $client->options());
   $results = $client->create_project($client->creds(), $options);
