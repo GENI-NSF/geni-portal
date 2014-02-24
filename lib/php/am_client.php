@@ -111,7 +111,7 @@ function get_template_omni_config($user, $version, $default_project=null)
     $omni_config .= "[omni]\n";
 
     if ($version == "2.5") {
-      $omni_config .= "default_cf = chapi\n";
+      $omni_config .= "default_cf = portal_chapi\n";
     }
    
     if ($version == "2.3.1") {
@@ -120,9 +120,11 @@ function get_template_omni_config($user, $version, $default_project=null)
 
     $omni_config .= "# 'users' is a comma separated list of users which should be added to a slice.\n"
       . "# Each user is defined in a separate section below.\n"
-      . "users = $username\n"
-      . "# Over-ride the commandline setting of --useSliceMembers to force it True\n"
+      . "users = $username\n";
+    if ($version == "2.5") {
+    $omni_config .= "# Over-ride the commandline setting of --useSliceMembers to force it True\n"
       . "useslicemembers = True\n";
+    }
 
      $omni_config = $omni_config		
       . "# 'default_project' is the name of the project that will be assumed\n"
@@ -151,7 +153,7 @@ function get_template_omni_config($user, $version, $default_project=null)
     }
 
     $omni_config .= "\n"
-      . "[chapi]\n"
+      . "[portal_chapi]\n"
       . "# For use with the Uniform Federation API\n"
       . "# NOTE: Only works with Omni 2.5 or newer\n"
       . "type = chapi\n"
