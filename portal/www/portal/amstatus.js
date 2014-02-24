@@ -341,6 +341,7 @@ function build_details_table()
 function add_agg_row_to_details_table(am_id, numagg) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amdetails.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61&pretty=False
+    // amdetails.php returns HTML (not JSON) since there was already php code to generate the needed text
     $.get("amdetails.php", { am_id:am_id, slice_id:slice, pretty:pretty },function(responseTxt,statusTxt,xhr){
       var json_am, am, numAttempt;
       var geni_urn, geni_status, agg_name, geni_resources, colspan;
@@ -368,47 +369,36 @@ function add_agg_row_to_details_table(am_id, numagg) {
 	 if (pretty=="true") {
 	     add_one_login(am_id, slice);
 	 }
-
-// 	 } else {
-//              if ( $("table#slivererror").children().length == 0 ) {
-// 		 output += "<tr><th>Aggregate</th><th>Message</th></tr>";
-// 	     }
-// 	     output += "<tr>";
-// 	     output += "<td>"+agg_name+"</td>";
-// 	     output += "<td>"+geni_status+"</td>";
-// 	     output += "</tr>";
-// 	     output += "</table>";
-	     
-//              $("table#slivererror").append( output );
-// 	     count++;
-// 	     if (count == numagg) {
-// 		 $("#query").css('display','none');
-// 		 $("#summary").css( 'display', 'block');
-// 	     }
-	     
-// 	 }  
      }
-      if(statusTxt=="error") {
-	  am_error = am['geni_error'];
-	  /* output += "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
-	  if ( $("table#slivererror").children().length == 0 ) {
-	      //$("table#slivererror").before( "<div><p>No resources on the following aggregates:</p></div>" );
-	      output += "<tr><th>Aggregate</th><th>Message</th></tr>";
-	  }
-	  output += "<tr>";
-	  output += "<td>"+agg_name+"</td>";
-	  output += "<td>"+geni_status+"</td>";
-	  //output += "<td>Error</td>";
-	  output += "</tr>";
-	  output += "</table>";
 
-	  $("table#slivererror").append( output );
-	  count++;
-	  if (count == numagg) {
-	      $("#query").css('display','none');
-	      $("#summary").css( 'display', 'block');
-	  }
-      }
+     if (numAttempt == numagg) {
+	 if ( $("div#details").children().length == 0 ) {
+	     $("#noresources").css( 'display', 'block');
+	 }
+     }
+
+
+//       if(statusTxt=="error") {
+// 	  am_error = am['geni_error'];
+// 	  /* output += "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
+// 	  if ( $("table#slivererror").children().length == 0 ) {
+// 	      //$("table#slivererror").before( "<div><p>No resources on the following aggregates:</p></div>" );
+// 	      output += "<tr><th>Aggregate</th><th>Message</th></tr>";
+// 	  }
+// 	  output += "<tr>";
+// 	  output += "<td>"+agg_name+"</td>";
+// 	  output += "<td>"+geni_status+"</td>";
+// 	  //output += "<td>Error</td>";
+// 	  output += "</tr>";
+// 	  output += "</table>";
+
+// 	  $("table#slivererror").append( output );
+// 	  count++;
+// 	  if (count == numagg) {
+// 	      $("#query").css('display','none');
+// 	      $("#summary").css( 'display', 'block');
+// 	  }
+//       }
   });  
 }
 

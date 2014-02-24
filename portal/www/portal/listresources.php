@@ -160,13 +160,12 @@ print "<div class='aggregate' id='prettyxml'>";
 print "<p id='query' style='display:block;'><i>Querying aggregates for details about resources...</i></p>";
 
 print "<p id='summary' style='display:none;'><i>Queried <span id='numagg'>0</span> of <span id='total'>0</span> aggregates. </i><br/>";
+print "<p id='noresources' style='display:none;'><i>You have no resources</i><br/>";
 // print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh</button></p>";
 print "</p>";
 print "</div>\n";
 
 echo "<div id='details'>
-<table id='details'>
-</table>
 </div>";	
 
 print "<div id='slivererror'>";
