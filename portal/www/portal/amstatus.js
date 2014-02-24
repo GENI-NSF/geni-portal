@@ -321,6 +321,98 @@ function add_agg_row_on_sliverstatuspg(am_id, numagg) {
 }
 
 
+
+function build_details_table() 
+{
+   // (1) query the server for all a list of aggregates
+    $.getJSON("aggregates.php", { am_id:am_id }, function(responseTxt,statusTxt,xhr){
+	var json_agg, numAgg;
+	var count;
+	json_agg = responseTxt;
+	// update the displayed count of number of aggregates contacting 
+	numAgg = Object.keys(json_agg).length;
+        $("#total").text( numAgg );
+	for (var tmp_am_id in json_agg ) {
+	    add_agg_row_to_details_table(tmp_am_id, numAgg);
+	}
+   });
+}
+
+function add_agg_row_to_details_table(am_id, numagg) {
+  // This queries for the json file at (for example):
+  // https://sergyar.gpolab.bbn.com/secure/amdetails.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61&pretty=False
+    $.get("amdetails.php", { am_id:am_id, slice_id:slice, pretty:pretty },function(responseTxt,statusTxt,xhr){
+      var json_am, am, numAttempt;
+      var geni_urn, geni_status, agg_name, geni_resources, colspan;
+      var resource, firstrow, num_rsc, rsc_urn, rsc_status, rsc_error;
+      var output=""; 
+
+      $("#query").css('display','none');
+      $("#summary").css( 'display', 'block');
+      // update displayed count of number aggregates contacted
+      numAttempt = parseInt($("#numagg").text());
+      numAttempt += 1;
+      $("#numagg").text( numAttempt );
+     if(statusTxt=="success") 
+     {
+         am = responseTxt;
+	 if (am == null) {
+	     output +=  "<tr><td></td><td>"+"ERROR"+"</td></tr>";
+	     $("table#slivererror").append( output);
+	     return;
+	 } else {
+	     output = am;
+	 }
+	 $("div#details").append( output );
+	 output = "";
+	 if (pretty=="true") {
+	     add_one_login(am_id, slice);
+	 }
+
+// 	 } else {
+//              if ( $("table#slivererror").children().length == 0 ) {
+// 		 output += "<tr><th>Aggregate</th><th>Message</th></tr>";
+// 	     }
+// 	     output += "<tr>";
+// 	     output += "<td>"+agg_name+"</td>";
+// 	     output += "<td>"+geni_status+"</td>";
+// 	     output += "</tr>";
+// 	     output += "</table>";
+	     
+//              $("table#slivererror").append( output );
+// 	     count++;
+// 	     if (count == numagg) {
+// 		 $("#query").css('display','none');
+// 		 $("#summary").css( 'display', 'block');
+// 	     }
+	     
+// 	 }  
+     }
+      if(statusTxt=="error") {
+	  am_error = am['geni_error'];
+	  /* output += "<div>Returned status of slivers on ".$n." of ".$m." aggregates.</div>"; */
+	  if ( $("table#slivererror").children().length == 0 ) {
+	      //$("table#slivererror").before( "<div><p>No resources on the following aggregates:</p></div>" );
+	      output += "<tr><th>Aggregate</th><th>Message</th></tr>";
+	  }
+	  output += "<tr>";
+	  output += "<td>"+agg_name+"</td>";
+	  output += "<td>"+geni_status+"</td>";
+	  //output += "<td>Error</td>";
+	  output += "</tr>";
+	  output += "</table>";
+
+	  $("table#slivererror").append( output );
+	  count++;
+	  if (count == numagg) {
+	      $("#query").css('display','none');
+	      $("#summary").css( 'display', 'block');
+	  }
+      }
+  });  
+}
+
+
 function add_all_logins_to_manifest_table() 
 {
    // (1) query the server for all a list of aggregates
@@ -332,6 +424,9 @@ function add_all_logins_to_manifest_table()
      }
    });
 }
+
+
+
 
 
 function add_one_login(am_id, slice_id) 

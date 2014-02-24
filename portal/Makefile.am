@@ -58,6 +58,7 @@ dist_svcweb_DATA = \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
 	www/portal/am_map.php \
+	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
 	www/portal/approve.php \
@@ -134,6 +135,7 @@ dist_svcweb_DATA = \
 	www/portal/project.php \
 	www/portal/projects.php \
 	www/portal/query-sliverstatus.php \
+	www/portal/query-details.php \
 	www/portal/raw-sliverstatus.php \
 	www/portal/readyToLogin.php \
 	www/portal/renewsliver.php \
@@ -216,6 +218,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-exogeni-net-rcivmsite.xml \
 	www/common/map/rspec-exogeni-net-uhvmsite.xml \
 	www/common/map/rspec-exogeni-net.xml \
+	www/common/map/rspec-geni-it-cornell-edu.xml \
 	www/common/map/rspec-geni-kettering-edu.xml \
 	www/common/map/rspec-genirack-nyu-edu.xml \
 	www/common/map/rspec-instageni-clemson-edu.xml \
@@ -229,6 +232,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-instageni-wisc-edu.xml \
 	www/common/map/rspec-lan-sdn-uky-edu.xml \
 	www/common/map/rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-foam-geni-it-cornell-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-geni-kettering-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-genirack-nyu-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-clemson-edu.xml \
