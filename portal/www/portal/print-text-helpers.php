@@ -367,10 +367,13 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 
     /* If pretty, keep output clean by only printing RSpec for
        aggregates which have a slice (ie code!=12 or code !==2).
+       Also don't print if no code was returned (ie code!=-1) because
+       something catastrophic happened.
        -- unless there are no aggregates with resources, in which case
        we print the error.
     */
-    if (!(($code == 12 or $code == 2) and $pretty and $amc >= 1)){
+    // error_log("Aggregate listresources code is " . $code); 
+    if (!(($code == -1 or $code == 12 or $code == 2) and $pretty)){ 
       print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
       print "<div class='resources' id='agg_" . $am_id ."'>";
       if ($code == 0){
