@@ -273,9 +273,10 @@ $('#omni21').hide();
 function update_link() {
   var baseURL = "<?php echo $config_url; ?>";
   var projName = $('#pselect').val();
-  var fullURL = baseURL + "?project=" + projName;
+  var fullURL = baseURL + "?project=" + projName + "&version=2.5";
+  var fullURL2 = baseURL + "?project=" + projName + "&version=2.3.1";
   $('#configlink').attr("href", fullURL);
-  $('#configlink2').attr("href", fullURL);
+  $('#configlink2').attr("href", fullURL2);
 }
 </script>
 
