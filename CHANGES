@@ -6,6 +6,11 @@
 
 == 2.11 ==
 
+== 2.10.1 ==
+ * Fix tool-omniconfigure for downloading just your Omni config
+   file to preserve the requested version number in the URL,
+   allowing you to get a config file for Omni 2.5. (#980)
+
 == 2.10 ==
  * Support service attributes in portal and database (#968)
  * Pass the `--alap` option to omni calls
