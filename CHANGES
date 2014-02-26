@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.11 ==
+
 == 2.10 ==
  * Support service attributes in portal and database (#968)
  * Pass the `--alap` option to omni calls
