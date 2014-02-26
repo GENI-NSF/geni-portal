@@ -66,6 +66,16 @@ function print_xml( $xml ){
 function get_name_from_urn( $urn ){
   $urn_pieces = explode( "+", $urn );
   $name = end($urn_pieces);
+  // In the case of EXOGeni, we want the name of the node, 
+  // which is located as the subauthority of the URN
+  // E.g. for component ID 
+  // urn:publicid:IDN+exogeni.net:osfvmsite+node+orca-vm-cloud
+  // We want to return the name 'osfvmsite', not 'orca-vm-cloud'
+  if(strpos($urn, "+exogeni.net:")) {
+    $authority = $urn_pieces[1];
+    $authority_pieces = explode(":", $authority);
+    $name = $authority_pieces[1] . ":" . $name;
+  }
   return $name;
 }
 
@@ -357,10 +367,13 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 
     /* If pretty, keep output clean by only printing RSpec for
        aggregates which have a slice (ie code!=12 or code !==2).
+       Also don't print if no code was returned (ie code!=-1) because
+       something catastrophic happened.
        -- unless there are no aggregates with resources, in which case
        we print the error.
     */
-    if (!(($code == 12 or $code == 2) and $pretty and $amc >= 1)){
+    // error_log("Aggregate listresources code is " . $code); 
+    if (!(($code == -1 or $code == 12 or $code == 2) and $pretty)){ 
       print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
       print "<div class='resources' id='agg_" . $am_id ."'>";
       if ($code == 0){

@@ -4,6 +4,20 @@
 
 = GENI Portal Release Notes =
 
+== 2.10 ==
+ * Support service attributes in portal and database (#968)
+ * Pass the `--alap` option to omni calls
+   (requires Omni 2.5) (#969)
+ * Use explicit time zone in renew dates (#971)
+ * Pass a default MA to the xml-signer tool (#972)
+ * Use the chapi framework / interface from Omni 2.5. (#974)
+   * Use the gcf configured agg_nick_cache.base 
+     (we should update it as needed)
+   * Hard codes the CH URL based on the authority name
+   * Fix the gcf logging config to allow debug logs to the log file
+ * Have omni-bundle.zip and omni_config include ability to use chapi (#975)
+ * Have Details page querying aggregates one at a time (#465)
+
 == 2.9 ==
  * Remove hardcoded URNs (#10)
  * Add mailto link for help on error-text page (#921)

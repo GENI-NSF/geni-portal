@@ -144,8 +144,9 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 <script>
 var slice= "<?php echo $slice_id ?>";
 var am_id= "<?php echo $am_id ?>";
-
-$(document).ready(add_all_logins_to_manifest_table);
+var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
+$(document).ready(build_details_table);
+//$(document).ready(add_all_logins_to_manifest_table);
 </script>
 
 <?php
@@ -153,29 +154,25 @@ $(document).ready(add_all_logins_to_manifest_table);
 include("tool-breadcrumbs.php");
 
 
-
-
 print "<h2>$header</h2>\n";
 
-if (isset($obj) && $obj && is_array($obj)) {
-  $filterToAM = True;
-  print_rspec( $obj, $pretty, $filterToAM );
-} else {
-  // FIXME: $obj might be an error message?
-  print "<i>No resources found.</i><br/>\n";
-}
+print "<div class='aggregate' id='prettyxml'>";
+print "<p id='query' style='display:block;'><i>Querying aggregates for details about resources...</i></p>";
 
-if (isset($msg) && $msg && $msg != '') {
-  error_log("ListResources message: " . $msg);
-}
+print "<p id='summary' style='display:none;'><i>Queried <span id='numagg'>0</span> of <span id='total'>0</span> aggregates. </i><br/>";
+print "<p id='noresources' style='display:none;'><i>You have no resources</i><br/>";
+// print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh</button></p>";
+print "</p>";
+print "</div>\n";
 
-if ($slivers_output) {
-  print "$slivers_output<br/>\n";
-}
+echo "<div id='details'>
+</div>";	
+
+print "<div id='slivererror'>";
+print "<table id='slivererror'></table>
+</div>";
 
 if ($pretty) {
-
-
   if (isset($am_id) && $am_id ){
     $am_id_str = "&am_id=$am_id";
   } else {
