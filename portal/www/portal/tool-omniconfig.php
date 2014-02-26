@@ -177,7 +177,7 @@ if ($num_projects > 1) {
       <a id='configlink' href='<?php echo $config_link; ?>&version=2.5'>omni_config</a>
       and save it to a file named <code>portal_omni_config</code>.
       <ul>
-      <li>If you are running a version of omni older than 2.5, download this <a id='configlink' href='<?php echo $config_link; ?>&version=2.3.1'>omni_config</a> instead.</li>
+      <li>If you are running a version of omni older than 2.5, download this <a id='configlink2' href='<?php echo $config_link; ?>&version=2.3.1'>omni_config</a> instead.</li>
       </ul>
 </li>
   <li><a href="<?php print $download_url; ?>" target="_blank">
@@ -275,6 +275,7 @@ function update_link() {
   var projName = $('#pselect').val();
   var fullURL = baseURL + "?project=" + projName;
   $('#configlink').attr("href", fullURL);
+  $('#configlink2').attr("href", fullURL);
 }
 </script>
 
