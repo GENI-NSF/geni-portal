@@ -146,7 +146,7 @@ if (is_array($entries) && count($entries) > 0) {
   krsort($logs);
   foreach ($logs as $msg => $entry) {
     $rawtime = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+    $message = utf8_decode($entry[LOGGING_TABLE_FIELDNAME::MESSAGE]);
     $time = dateUIFormat($rawtime);
     print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
   }
