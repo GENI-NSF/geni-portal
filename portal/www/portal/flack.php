@@ -105,9 +105,17 @@ $sa_url_parameter = $SA_URL;
 $sa_urn_parameter = $SA_URN;
 $ch_url_parameter = $CH_URL;
 $slice_urn_parameter = $slice_urn;
-$client_key_parameter = $user->privateKey();
-$client_cert_parameter = $user->certificate();
 $server_cert_parameter = $am_root_cert_bundle;
+
+/*
+ * NOTE: Flack must use the inside cert & key. Flack does not know how
+ * to do speaks-for, so cannot use the portal cert/key to talk to PGCH
+ * or aggregates with a speaks-for credential.
+ *
+ * Use the inside cert and key here.
+ */
+$client_key_parameter = $user->insidePrivateKey();
+$client_cert_parameter = $user->insideCertificate();
 
 /*----------------------------------------------------------------------
  * Presentation below here
