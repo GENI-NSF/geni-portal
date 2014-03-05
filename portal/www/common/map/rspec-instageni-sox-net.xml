@@ -4,7 +4,7 @@
 	URL: https://instageni.sox.net:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-05T15:24:00Z" expires="2014-03-05T15:24:00Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-05T16:09:06Z" expires="2014-03-05T16:09:06Z" >
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
   <available name="mesoscale-openflow"/>
   <available name="exclusive-openflow-1755"/>
@@ -74,7 +74,7 @@
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <available now="true" />
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+procurve2:(null)" >
     <emulab:interface name="(null)"/>
   </interface>
@@ -94,7 +94,7 @@
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <available now="true" />
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+interconnect-geni-core:eth0" role="experimental" >
     <emulab:interface name="eth0"/>
   </interface>
@@ -134,7 +134,7 @@
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
   <available now="true" />
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+pc3:eth99" >
     <emulab:interface name="eth99"/>
@@ -208,7 +208,7 @@
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
   <available now="false" />
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+pc5:eth99" >
     <emulab:interface name="eth99"/>
@@ -310,7 +310,7 @@
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
   <available now="false" />
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+pc4:eth99" >
     <emulab:interface name="eth99"/>
@@ -395,7 +395,7 @@
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <available now="true" />
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+pc1:eth99" >
     <emulab:interface name="eth99"/>
@@ -444,7 +444,7 @@
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <available now="true" />
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+pc2:eth99" >
     <emulab:interface name="eth99"/>
@@ -479,7 +479,7 @@
   <interface component_id="urn:publicid:IDN+instageni.sox.net+interface+internet:border" >
     <emulab:interface name="border"/>
   </interface>
-  <location country="US" longitude="-111.84581" latitude="40.768652" />
+  <location country="US" longitude="-84.390140" latitude="33.754523" />
 </node>
 <link component_name="link-pc4//eth0-internet//border" component_id="urn:publicid:IDN+instageni.sox.net+link+link-pc4:eth0-internet:border" >
 <component_manager name="urn:publicid:IDN+instageni.sox.net+authority+cm" />
