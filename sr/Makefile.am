@@ -2,6 +2,7 @@ svcdatadir = $(pkgdatadir)/sr
 
 cert_FILES = \
 	certs/InCommonServerCA.pem \
+	certs/cenic-of.pem \
 	certs/clemson-ig-boss.pem \
 	certs/clemson-ig-cm.pem \
 	certs/clemson-ig-of.pem \
@@ -66,6 +67,7 @@ cert_FILES = \
 	certs/pgeni3-ca.pem \
 	certs/pgeni3.pem \
 	certs/renci-eg-of.pem \
+	certs/sl-of.pem \
 	certs/sox-ig-boss.pem \
 	certs/sox-ig-cm.pem \
 	certs/sox-ig-of.pem \
