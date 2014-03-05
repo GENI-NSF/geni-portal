@@ -157,6 +157,7 @@ $files = array(
   $directory . 'rspec-instageni-wisc-edu.xml',
   $directory . 'rspec-lan-sdn-uky-edu.xml',
   $directory . 'rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml',
+  $directory . 'rspec-openflow-foam-foam-cenic-net.xml',
   $directory . 'rspec-openflow-foam-foam-geni-it-cornell-edu.xml',
   $directory . 'rspec-openflow-foam-foam-geni-kettering-edu.xml',
   $directory . 'rspec-openflow-foam-foam-genirack-nyu-edu.xml',
@@ -178,6 +179,7 @@ $files = array(
   $directory . 'rspec-openflow-foam-foam-utahddc-geniracks-net.xml',
   $directory . 'rspec-openflow-foam-ig-utah.xml',
   $directory . 'rspec-openflow-foam-rci-hn-exogeni-gpolab-bbn-com.xml',
+  $directory . 'rspec-openflow-foam-sl-geni-northwestern-edu.xml',
   $directory . 'rspec-uky-emulab-net.xml',
   $directory . 'rspec-utah-geniracks-net.xml',
   $directory . 'rspec-utahddc-geniracks-net.xml'
