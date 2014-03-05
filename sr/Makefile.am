@@ -43,6 +43,9 @@ cert_FILES = \
 	certs/ion.pem \
 	certs/irods.pem \
 	certs/irods-test.pem \
+	certs/kansas-ig-boss.pem \
+	certs/kansas-ig-cm.pem \
+	certs/kansas-ig-of.pem \
 	certs/kettering-ig-of.pem \
 	certs/max-ig-boss.pem \
 	certs/max-ig-cm.pem \
@@ -63,7 +66,13 @@ cert_FILES = \
 	certs/pgeni3-ca.pem \
 	certs/pgeni3.pem \
 	certs/renci-eg-of.pem \
+	certs/sox-ig-boss.pem \
+	certs/sox-ig-cm.pem \
+	certs/sox-ig-of.pem \
 	certs/sox-of.pem \
+	certs/stanford-ig-boss.pem \
+	certs/stanford-ig-cm.pem \
+	certs/stanford-ig-of.pem \
 	certs/uen-of.pem \
 	certs/uky-ig-of.pem \
 	certs/utah-am.pem \
