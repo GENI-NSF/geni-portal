@@ -134,6 +134,7 @@ $directory = "../common/map/";
  *
  */
 $files = array(
+  $directory . 'rspec-dragon-maxgigapop-net.xml',
   $directory . 'rspec-emulab-net.xml',
   $directory . 'rspec-exogeni-net-bbnvmsite.xml',
   $directory . 'rspec-exogeni-net-fiuvmsite.xml',
@@ -155,6 +156,7 @@ $files = array(
   $directory . 'rspec-instageni-sox-net.xml',
   $directory . 'rspec-instageni-stanford-edu.xml',
   $directory . 'rspec-instageni-wisc-edu.xml',
+  $directory . 'rspec-ion-internet2-edu.xml',
   $directory . 'rspec-lan-sdn-uky-edu.xml',
   $directory . 'rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml',
   $directory . 'rspec-openflow-foam-foam-cenic-net.xml',
@@ -208,7 +210,11 @@ foreach($files as $file) {
       // determine AM's name
       // default: regex the AM URN to get important information
       $am = (string)$type_value->attributes()->component_manager_id;
-      preg_match("/IDN\+(.*)\+authority/", $am, $matches);
+      $result = preg_match("/IDN\+(.*)\+authority/", $am, $matches);
+      if (!$result) {
+        /* No match or an error occurred */
+        continue;
+      }
       $node->am = $matches[1];
       // better source of information: service registry
       foreach($am_services as $am_service) {

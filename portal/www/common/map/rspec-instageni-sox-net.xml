@@ -4,7 +4,7 @@
 	URL: https://instageni.sox.net:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-05T16:09:06Z" expires="2014-03-05T16:09:06Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-07T19:54:08Z" expires="2014-03-07T19:54:08Z" >
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
   <available name="mesoscale-openflow"/>
   <available name="exclusive-openflow-1755"/>
@@ -118,16 +118,15 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="90" />
+    <emulab:node_type type_slots="98" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="90" />
+    <emulab:node_type type_slots="98" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -154,11 +153,10 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="43557"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45605"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10021" weight="0.5" />
-  <emulab:fd name="OS-10021-10008" weight="0" />
   <emulab:fd name="OS-10021-10009" weight="0" />
   <emulab:fd name="OS-10021-10013" weight="0" />
   <emulab:fd name="OS-10021-10014" weight="0" />
@@ -201,7 +199,6 @@
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -238,8 +235,9 @@
   <emulab:fd name="OS-10015" weight="0" />
   <emulab:fd name="OS-10018" weight="0" />
   <emulab:fd name="OS-10018-10016" weight="0" />
+  <emulab:fd name="OS-10018-10025" weight="0" />
+  <emulab:fd name="OS-10018-10026" weight="0" />
   <emulab:fd name="OS-10020" weight="0" />
-  <emulab:fd name="OS-10020-10008" weight="0" />
   <emulab:fd name="OS-10020-10009" weight="0" />
   <emulab:fd name="OS-10020-10013" weight="0" />
   <emulab:fd name="OS-10020-10014" weight="0" />
@@ -248,7 +246,6 @@
   <emulab:fd name="OS-10020-10023" weight="0" />
   <emulab:fd name="OS-10020-10024" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
-  <emulab:fd name="OS-10021-10008" weight="0" />
   <emulab:fd name="OS-10021-10009" weight="0" />
   <emulab:fd name="OS-10021-10013" weight="0" />
   <emulab:fd name="OS-10021-10014" weight="0" />
@@ -303,7 +300,6 @@
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.sox.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -340,8 +336,9 @@
   <emulab:fd name="OS-10015" weight="0" />
   <emulab:fd name="OS-10018" weight="0" />
   <emulab:fd name="OS-10018-10016" weight="0" />
+  <emulab:fd name="OS-10018-10025" weight="0" />
+  <emulab:fd name="OS-10018-10026" weight="0" />
   <emulab:fd name="OS-10020" weight="0" />
-  <emulab:fd name="OS-10020-10008" weight="0" />
   <emulab:fd name="OS-10020-10009" weight="0" />
   <emulab:fd name="OS-10020-10013" weight="0" />
   <emulab:fd name="OS-10020-10014" weight="0" />
@@ -350,7 +347,6 @@
   <emulab:fd name="OS-10020-10023" weight="0" />
   <emulab:fd name="OS-10020-10024" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
-  <emulab:fd name="OS-10021-10008" weight="0" />
   <emulab:fd name="OS-10021-10009" weight="0" />
   <emulab:fd name="OS-10021-10013" weight="0" />
   <emulab:fd name="OS-10021-10014" weight="0" />
@@ -420,6 +416,8 @@
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
   <emulab:fd name="OS-10018-10016" weight="0" />
+  <emulab:fd name="OS-10018-10025" weight="0" />
+  <emulab:fd name="OS-10018-10026" weight="0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+instageni.sox.net+authority+cm" component_name="pc2"  component_id="urn:publicid:IDN+instageni.sox.net+node+pc2"  exclusive="false" >
   <hardware_type name="dl360">
@@ -469,6 +467,8 @@
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
   <emulab:fd name="OS-10018-10016" weight="0" />
+  <emulab:fd name="OS-10018-10025" weight="0" />
+  <emulab:fd name="OS-10018-10026" weight="0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+instageni.sox.net+authority+cm" component_name="internet"  component_id="urn:publicid:IDN+instageni.sox.net+node+internet"  exclusive="true" >
   <hardware_type name="ipv4">
