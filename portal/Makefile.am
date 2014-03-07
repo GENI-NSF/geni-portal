@@ -212,6 +212,7 @@ dist_svcwebcss_DATA =  \
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
 	www/common/map/map-small.html \
+	www/common/map/rspec-dragon-maxgigapop-net.xml \
 	www/common/map/rspec-emulab-net.xml \
 	www/common/map/rspec-exogeni-net-bbnvmsite.xml \
 	www/common/map/rspec-exogeni-net-fiuvmsite.xml \
@@ -233,6 +234,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-instageni-sox-net.xml \
 	www/common/map/rspec-instageni-stanford-edu.xml \
 	www/common/map/rspec-instageni-wisc-edu.xml \
+	www/common/map/rspec-ion-internet2-edu.xml \
 	www/common/map/rspec-lan-sdn-uky-edu.xml \
 	www/common/map/rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml \
 	www/common/map/rspec-openflow-foam-foam-cenic-net.xml \

@@ -4,7 +4,7 @@
 	URL: https://instageni.clemson.edu:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-02-24T15:42:57Z" expires="2014-02-24T15:42:57Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-07T19:54:11Z" expires="2014-03-07T19:54:11Z" >
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
   <available name="mesoscale-openflow"/>
   <available name="exclusive-openflow-1755"/>
@@ -118,10 +118,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="82" />
+    <emulab:node_type type_slots="75" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="82" />
+    <emulab:node_type type_slots="75" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -130,7 +130,6 @@
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -157,11 +156,10 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="40451"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="38659"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10029" weight="0.5" />
-  <emulab:fd name="OS-10029-10008" weight="0" />
   <emulab:fd name="OS-10029-10009" weight="0" />
   <emulab:fd name="OS-10029-10013" weight="0" />
   <emulab:fd name="OS-10029-10022" weight="0" />
@@ -212,13 +210,12 @@
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
-  <available now="true" />
+  <available now="false" />
   <location country="US" longitude="-82.839167" latitude="34.678333" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc5:eth99" >
@@ -252,6 +249,7 @@
   <emulab:fd name="OS-10016-10030" weight="0" />
   <emulab:fd name="OS-10016-10034" weight="0" />
   <emulab:fd name="OS-10016-10035" weight="0" />
+  <emulab:fd name="OS-10016-10038" weight="0" />
   <emulab:fd name="OS-10019" weight="0" />
   <emulab:fd name="OS-10019-10013" weight="0" />
   <emulab:fd name="OS-10019-10022" weight="0" />
@@ -267,11 +265,11 @@
   <emulab:fd name="OS-10020" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
   <emulab:fd name="OS-10022" weight="0" />
+  <emulab:fd name="OS-10039" weight="0" />
   <emulab:fd name="OS-10024" weight="0" />
   <emulab:fd name="OS-10026" weight="0" />
   <emulab:fd name="OS-10027" weight="0" />
   <emulab:fd name="OS-10029" weight="0" />
-  <emulab:fd name="OS-10029-10008" weight="0" />
   <emulab:fd name="OS-10029-10009" weight="0" />
   <emulab:fd name="OS-10029-10013" weight="0" />
   <emulab:fd name="OS-10029-10022" weight="0" />
@@ -333,13 +331,12 @@
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
 <disk_image name="urn:publicid:IDN+instageni.clemson.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
-  <available now="true" />
+  <available now="false" />
   <location country="US" longitude="-82.839167" latitude="34.678333" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc4:eth99" >
@@ -373,6 +370,7 @@
   <emulab:fd name="OS-10016-10030" weight="0" />
   <emulab:fd name="OS-10016-10034" weight="0" />
   <emulab:fd name="OS-10016-10035" weight="0" />
+  <emulab:fd name="OS-10016-10038" weight="0" />
   <emulab:fd name="OS-10019" weight="0" />
   <emulab:fd name="OS-10019-10013" weight="0" />
   <emulab:fd name="OS-10019-10022" weight="0" />
@@ -388,11 +386,11 @@
   <emulab:fd name="OS-10020" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
   <emulab:fd name="OS-10022" weight="0" />
+  <emulab:fd name="OS-10039" weight="0" />
   <emulab:fd name="OS-10024" weight="0" />
   <emulab:fd name="OS-10026" weight="0" />
   <emulab:fd name="OS-10027" weight="0" />
   <emulab:fd name="OS-10029" weight="0" />
-  <emulab:fd name="OS-10029-10008" weight="0" />
   <emulab:fd name="OS-10029-10009" weight="0" />
   <emulab:fd name="OS-10029-10013" weight="0" />
   <emulab:fd name="OS-10029-10022" weight="0" />
@@ -432,10 +430,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="93" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="93" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -464,7 +462,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="44035"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="44163"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10016" weight="0.5" />
@@ -474,6 +472,7 @@
   <emulab:fd name="OS-10016-10030" weight="0" />
   <emulab:fd name="OS-10016-10034" weight="0" />
   <emulab:fd name="OS-10016-10035" weight="0" />
+  <emulab:fd name="OS-10016-10038" weight="0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+instageni.clemson.edu+authority+cm" component_name="interconnect-campus"  component_id="urn:publicid:IDN+instageni.clemson.edu+node+interconnect-campus"  exclusive="false" >
   <hardware_type name="interconnect">
@@ -513,10 +512,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="97" />
+    <emulab:node_type type_slots="87" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="97" />
+    <emulab:node_type type_slots="87" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -545,7 +544,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="44675"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="43395"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10016" weight="0.5" />
@@ -555,6 +554,7 @@
   <emulab:fd name="OS-10016-10030" weight="0" />
   <emulab:fd name="OS-10016-10034" weight="0" />
   <emulab:fd name="OS-10016-10035" weight="0" />
+  <emulab:fd name="OS-10016-10038" weight="0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+instageni.clemson.edu+authority+cm" component_name="internet"  component_id="urn:publicid:IDN+instageni.clemson.edu+node+internet"  exclusive="true" >
   <hardware_type name="ipv4">
@@ -648,24 +648,12 @@
   <link_type name="ethernet-1000000" />
 </link>
 
-<link component_name="link-pc2//eth1-procurve2//(null)" component_id="urn:publicid:IDN+instageni.clemson.edu+link+link-pc2:eth1-procurve2:(null)" >
-<component_manager name="urn:publicid:IDN+instageni.clemson.edu+authority+cm" />
-  <interface_ref component_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth1"/>
-  <interface_ref component_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth1" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"  capacity="300000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth1"  capacity="300000" latency="0" packet_loss="0" />
-  <link_type name="ethernet" />
-  <link_type name="ethernet-procurve2" />
-  <link_type name="ethernet-bce" />
-  <link_type name="ethernet-1000000" />
-</link>
-
 <link component_name="link-pc2//eth2-procurve2//(null)" component_id="urn:publicid:IDN+instageni.clemson.edu+link+link-pc2:eth2-procurve2:(null)" >
 <component_manager name="urn:publicid:IDN+instageni.clemson.edu+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth2"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth2" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth2"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth2" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"  capacity="800000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc2:eth2"  capacity="800000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />
@@ -688,8 +676,8 @@
 <component_manager name="urn:publicid:IDN+instageni.clemson.edu+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc3:eth2"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc3:eth2" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"  capacity="900000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc3:eth2"  capacity="900000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc3:eth2" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)"  capacity="200000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.clemson.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.clemson.edu+interface+pc3:eth2"  capacity="200000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />

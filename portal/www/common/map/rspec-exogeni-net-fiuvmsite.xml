@@ -7,19 +7,19 @@
 <rspec type="advertisement" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd" xmlns:ns2="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" xmlns="http://www.geni.net/resources/rspec/3" xmlns:ns3="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+node+orca-vm-cloud">
         <location latitude="25.757292" longitude="-80.37404" country="Unspecified"/>
+        <sliver_type name="EucaM1Large"/>
         <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="XOLarge"/>
         <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EucaM1Large"/>
-        <sliver_type name="EC2C1Medium"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -46,6 +46,6 @@
         <component_manager name="urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"/>
         <link_type name="ethernet"/>
     </link>
-    <ns2:stitching lastUpdateTime="Mon Feb 24 15:43:25 UTC 2014"/>
+    <ns2:stitching lastUpdateTime="Fri Mar 07 14:54:42 EST 2014"/>
 </rspec>
 

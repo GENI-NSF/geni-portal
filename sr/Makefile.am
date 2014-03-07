@@ -48,6 +48,7 @@ cert_FILES = \
 	certs/kansas-ig-cm.pem \
 	certs/kansas-ig-of.pem \
 	certs/kettering-ig-of.pem \
+	certs/max.pem \
 	certs/max-ig-boss.pem \
 	certs/max-ig-cm.pem \
 	certs/max-ig-of.pem \
