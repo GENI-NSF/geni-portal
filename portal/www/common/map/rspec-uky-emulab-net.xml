@@ -4,7 +4,7 @@
 	URL: https://www.uky.emulab.net:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-07T19:54:34Z" expires="2014-03-07T19:54:34Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-10T14:11:45Z" expires="2014-03-10T14:11:45Z" >
 <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*"
   component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" />
 <rspec_opstate xmlns="http://www.geni.net/resources/rspec/ext/opstate/1"
@@ -495,13 +495,13 @@
     <emulab:node_type type_slots="2" />
   </hardware_type>
   <hardware_type name="pc2400-vm">
-    <emulab:node_type type_slots="12" />
+    <emulab:node_type type_slots="11" />
   </hardware_type>
   <hardware_type name="pcvm2400">
-    <emulab:node_type type_slots="12" />
+    <emulab:node_type type_slots="11" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="12" />
+    <emulab:node_type type_slots="11" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -535,7 +535,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2400"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="4096"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="3840"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10145" weight="0.5" />
@@ -1364,7 +1364,7 @@
 <disk_image name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
 <disk_image name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
-  <available now="false" />
+  <available now="true" />
   <location country="USA" longitude="-84.498014" latitude="38.039828" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc51:eth4" role="control" public_ipv4="128.163.143.191" >
@@ -1435,6 +1435,7 @@
   <emulab:fd name="OS-10117" weight="0" />
   <emulab:fd name="connected-to-psylocke" weight="0.0" />
   <emulab:fd name="connected-to-cisco2" weight="0.0" />
+  <emulab:fd name="poweroff" weight="0.9" />
 </node>
 <node component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc31"  component_id="urn:publicid:IDN+uky.emulab.net+node+pc31"  exclusive="true" >
   <hardware_type name="pc1500">
@@ -2823,13 +2824,13 @@
     <emulab:node_type type_slots="2" />
   </hardware_type>
   <hardware_type name="pc2400-vm">
-    <emulab:node_type type_slots="6" />
+    <emulab:node_type type_slots="8" />
   </hardware_type>
   <hardware_type name="pcvm2400">
-    <emulab:node_type type_slots="6" />
+    <emulab:node_type type_slots="8" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="6" />
+    <emulab:node_type type_slots="8" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -2855,7 +2856,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2400"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="3328"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="3584"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10112" weight="0.5" />
@@ -4726,7 +4727,7 @@
 <disk_image name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
 <disk_image name="urn:publicid:IDN+uky.emulab.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="8" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
-  <available now="false" />
+  <available now="true" />
   <location country="USA" longitude="-84.498014" latitude="38.039828" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+uky.emulab.net+interface+pc52:eth4" role="control" public_ipv4="128.163.143.192" >
@@ -4797,6 +4798,7 @@
   <emulab:fd name="OS-10117" weight="0" />
   <emulab:fd name="connected-to-psylocke" weight="0.0" />
   <emulab:fd name="connected-to-cisco2" weight="0.0" />
+  <emulab:fd name="poweroff" weight="0.9" />
 </node>
 <node component_manager_id="urn:publicid:IDN+uky.emulab.net+authority+cm" component_name="pc64"  component_id="urn:publicid:IDN+uky.emulab.net+node+pc64"  exclusive="false" >
   <hardware_type name="pc2400">
@@ -7409,13 +7411,13 @@
     <emulab:node_type type_slots="2" />
   </hardware_type>
   <hardware_type name="pc2400-vm">
-    <emulab:node_type type_slots="9" />
+    <emulab:node_type type_slots="8" />
   </hardware_type>
   <hardware_type name="pcvm2400">
-    <emulab:node_type type_slots="9" />
+    <emulab:node_type type_slots="8" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="9" />
+    <emulab:node_type type_slots="8" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -7449,7 +7451,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2400"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="3328"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="3072"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10145" weight="0.5" />
@@ -10949,8 +10951,8 @@
 <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth4"/>
   <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"/>
-<property source_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth4" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"  capacity="600000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth4"  capacity="600000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth4" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"  capacity="700000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth4"  capacity="700000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-cisco3" />
   <link_type name="ethernet-em" />
@@ -10961,8 +10963,8 @@
 <component_manager name="urn:publicid:IDN+uky.emulab.net+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth1"/>
   <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"/>
-<property source_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth1" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"  capacity="700000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth1"  capacity="700000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth1" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)"  capacity="800000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco3:(null)" dest_id="urn:publicid:IDN+uky.emulab.net+interface+pc58:eth1"  capacity="800000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-cisco3" />
   <link_type name="ethernet-sk" />
@@ -11946,8 +11948,8 @@
 <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am" />
   <interface_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*"/>
   <interface_ref component_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2"/>
-<property source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2"  capacity="760000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*"  capacity="760000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*" dest_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2"  capacity="860000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+uky.emulab.net+interface+cisco1:1.2" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*"  capacity="860000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-cisco1" />
   <link_type name="ethernet-bce" />
@@ -12260,15 +12262,15 @@
   <link_type name="ethernet" />
 </link>
 
-<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-07T19:54:34Z" >
+<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-10T14:11:46Z" >
 <aggregate id="urn:publicid:IDN+uky.emulab.net+authority+cm" url="https://www.uky.emulab.net:12369/protogeni/xmlrpc/am">
 <aggregatetype>protogeni</aggregatetype>
 <stitchingmode>chainANDTree</stitchingmode>
 <scheduledservices>false</scheduledservices>
 <negotiatedservices>false</negotiatedservices>
 <lifetime id="life">
-    <start type="time">2014-03-07T19:54:34Z</start>
-    <end type="time">2014-03-07T19:54:34Z</end>
+    <start type="time">2014-03-10T14:11:46Z</start>
+    <end type="time">2014-03-10T14:11:46Z</end>
 </lifetime>
 <node id="urn:publicid:IDN+uky.emulab.net+node+cisco1">
   <port id="urn:publicid:IDN+uky.emulab.net+stitchport+cisco1:1.2">
