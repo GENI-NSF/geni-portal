@@ -4,7 +4,7 @@
 	URL: https://instageni.illinois.edu:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-07T19:54:49Z" expires="2014-03-07T19:54:49Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-10T14:12:01Z" expires="2014-03-10T14:12:01Z" >
 <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.chic:et-10/0/0:illinois-ig"
   component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" />
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
@@ -219,10 +219,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="91" />
+    <emulab:node_type type_slots="72" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="91" />
+    <emulab:node_type type_slots="72" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -254,7 +254,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="43813"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="38949"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10029" weight="0.5" />
@@ -435,10 +435,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="96" />
+    <emulab:node_type type_slots="99" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="96" />
+    <emulab:node_type type_slots="99" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -464,7 +464,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="45605"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45989"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
@@ -513,10 +513,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="93" />
+    <emulab:node_type type_slots="96" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="93" />
+    <emulab:node_type type_slots="96" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -542,7 +542,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="45221"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45605"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
@@ -758,8 +758,8 @@
 <component_manager name="urn:publicid:IDN+instageni.illinois.edu+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc1:eth1"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc1:eth1" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"  capacity="500000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc1:eth1"  capacity="500000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc1:eth1" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc1:eth1"  capacity="1000000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />
@@ -794,8 +794,8 @@
 <component_manager name="urn:publicid:IDN+instageni.illinois.edu+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc2:eth1"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc2:eth1" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"  capacity="690000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc2:eth1"  capacity="690000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc2:eth1" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"  capacity="990000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc2:eth1"  capacity="990000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />
@@ -830,8 +830,8 @@
 <component_manager name="urn:publicid:IDN+instageni.illinois.edu+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc3:eth1"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc3:eth1" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"  capacity="100000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc3:eth1"  capacity="100000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc3:eth1" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)"  capacity="400000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.illinois.edu+interface+pc3:eth1"  capacity="400000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />
@@ -971,15 +971,15 @@
   <link_type name="ethernet-1000000" />
 </link>
 
-<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-07T19:54:49Z" >
+<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-10T14:12:01Z" >
 <aggregate id="urn:publicid:IDN+instageni.illinois.edu+authority+cm" url="https://www.instageni.illinois.edu:12369/protogeni/xmlrpc/am">
 <aggregatetype>protogeni</aggregatetype>
 <stitchingmode>chainANDTree</stitchingmode>
 <scheduledservices>false</scheduledservices>
 <negotiatedservices>false</negotiatedservices>
 <lifetime id="life">
-    <start type="time">2014-03-07T19:54:49Z</start>
-    <end type="time">2014-03-07T19:54:49Z</end>
+    <start type="time">2014-03-10T14:12:01Z</start>
+    <end type="time">2014-03-10T14:12:01Z</end>
 </lifetime>
 <node id="urn:publicid:IDN+instageni.illinois.edu+node+procurve2">
   <port id="urn:publicid:IDN+instageni.illinois.edu+stitchport+procurve2:2.4:ion.chic.et-10_0_0">

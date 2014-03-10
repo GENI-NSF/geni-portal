@@ -24,19 +24,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uflvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflvmsite+node+orca-vm-cloud">
         <location latitude="29.64171" longitude="-82.346214" country="Unspecified"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="XOLarge"/>
         <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="EC2M1Large"/>
         <sliver_type name="XOSmall"/>
         <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EucaC1XLarge"/>
         <sliver_type name="XOXlarge"/>
         <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EC2M1Large"/>
         <sliver_type name="XOMedium"/>
         <sliver_type name="EucaM1Large"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -151,19 +151,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+node+orca-vm-cloud">
         <location latitude="42.38974" longitude="-71.14751" country="Unspecified"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EucaC1XLarge"/>
         <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EucaM1Small"/>
         <sliver_type name="EC2M1Large"/>
         <sliver_type name="XOLarge"/>
         <sliver_type name="EC2M1Small"/>
         <sliver_type name="XOSmall"/>
-        <sliver_type name="EucaM1Large"/>
         <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="EC2C1Medium"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -341,19 +341,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+node+orca-vm-cloud">
         <location latitude="29.64171" longitude="-82.346214" country="Unspecified"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaM1Large"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="XOMedium"/>
-        <sliver_type name="XOLarge"/>
         <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaM1Large"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -474,19 +474,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+node+orca-vm-cloud">
         <location latitude="52.354843" longitude="4.955346" country="Unspecified"/>
+        <sliver_type name="EucaM1Large"/>
         <sliver_type name="EC2M1Small"/>
         <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EC2M1Large"/>
         <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="XOXlarge"/>
         <sliver_type name="EC2C1Medium"/>
         <sliver_type name="XOLarge"/>
-        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EucaM1Small"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="78"/>
         </hardware_type>
@@ -503,25 +503,25 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:slvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+node+orca-vm-cloud">
         <location latitude="42.05286" longitude="-87.681564" country="Unspecified"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EucaC1XLarge"/>
         <sliver_type name="EC2M1Small"/>
         <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EucaC1XLarge"/>
         <sliver_type name="XOMedium"/>
         <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="XOSmall"/>
         <sliver_type name="EucaM1Small"/>
-        <sliver_type name="EC2C1Medium"/>
         <sliver_type name="EucaM1Large"/>
-        <sliver_type name="EucaM1XLarge"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
         <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
     </node>
     <link component_id="urn:publicid:IDN+exogeni.net:slvmsite+link+SL:ExoGeni:TengigabitEthernet:2:ethernet_slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet">
         <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
@@ -727,19 +727,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:nictavmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:nictavmsite+node+orca-vm-cloud">
         <location latitude="-33.89533" longitude="151.19708" country="Unspecified"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="XOSmall"/>
         <sliver_type name="EucaM1Large"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="EC2M1Small"/>
-        <sliver_type name="XOMedium"/>
+        <sliver_type name="EC2M1Large"/>
         <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="XOSmall"/>
         <sliver_type name="EucaM1Small"/>
         <sliver_type name="EucaC1Medium"/>
         <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOLarge"/>
         <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOMedium"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="36"/>
         </hardware_type>
@@ -928,19 +928,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:osfvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:osfvmsite+node+orca-vm-cloud">
         <location latitude="37.87631" longitude="-122.25003" country="Unspecified"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="EC2M1Small"/>
         <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EC2M1XLarge"/>
         <sliver_type name="EucaM1Large"/>
-        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="XOMedium"/>
         <sliver_type name="EucaM1Small"/>
-        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EC2C1Medium"/>
         <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EC2M1Small"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -951,18 +951,18 @@
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uhvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhvmsite+node+orca-vm-cloud">
         <location latitude="29.72327" longitude="-95.34269" country="Unspecified"/>
         <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaM1Large"/>
         <sliver_type name="XOMedium"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EucaM1Small"/>
         <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
         <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="XOXlarge"/>
         <sliver_type name="XOSmall"/>
         <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EC2M1Large"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -1091,19 +1091,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:rcivmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:rcivmsite+node+orca-vm-cloud">
         <location latitude="35.939518" longitude="-79.017426" country="Unspecified"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EucaC1XLarge"/>
         <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EC2M1XLarge"/>
         <sliver_type name="EC2M1Large"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="EC2M1Small"/>
         <sliver_type name="XOSmall"/>
         <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1XLarge"/>
         <sliver_type name="XOXlarge"/>
-        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="XOMedium"/>
         <sliver_type name="EucaM1Small"/>
         <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EucaM1Large"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="116"/>
         </hardware_type>
@@ -1157,19 +1157,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+node+orca-vm-cloud">
         <location latitude="25.757292" longitude="-80.37404" country="Unspecified"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="XOMedium"/>
         <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="XOXlarge"/>
         <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="EucaM1Large"/>
         <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EC2M1Large"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -1229,7 +1229,7 @@
         <component_manager name="urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"/>
         <link_type name="ethernet"/>
     </link>
-    <ns2:stitching lastUpdateTime="Fri Mar 07 19:54:26 UTC 2014">
+    <ns2:stitching lastUpdateTime="Mon Mar 10 10:11:34 EDT 2014">
         <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:osfNet+authority+am">
             <ns2:aggregatetype>orca</ns2:aggregatetype>
             <ns2:stitchingmode>tree</ns2:stitchingmode>

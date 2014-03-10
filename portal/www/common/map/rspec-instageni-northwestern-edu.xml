@@ -4,7 +4,7 @@
 	URL: https://boss.instageni.northwestern.edu:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-07T19:54:59Z" expires="2014-03-07T19:54:59Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-10T14:12:11Z" expires="2014-03-10T14:12:11Z" >
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
   <available name="mesoscale-openflow"/>
   <available name="vlan-3792"/>
@@ -243,10 +243,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="77" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="77" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -281,7 +281,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="39939"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="36099"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10029" weight="0.5" />
@@ -342,7 +342,7 @@
 <disk_image name="urn:publicid:IDN+instageni.northwestern.edu+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
 <disk_image name="urn:publicid:IDN+instageni.northwestern.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
-  <available now="false" />
+  <available now="true" />
   <location country="US" longitude="-87.619418" latitude=" 41.89508" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc4:eth99" >
@@ -362,7 +362,7 @@
   </interface>
   <emulab:fd name="virtpercent" weight="100"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="44547"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45059"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10007" weight="0" />
@@ -437,10 +437,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="94" />
+    <emulab:node_type type_slots="96" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="94" />
+    <emulab:node_type type_slots="96" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -469,7 +469,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="44291"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="44547"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10016" weight="0.5" />
@@ -519,10 +519,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="88" />
+    <emulab:node_type type_slots="91" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="88" />
+    <emulab:node_type type_slots="91" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -551,7 +551,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="43523"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="43907"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10016" weight="0.5" />
@@ -623,8 +623,8 @@
 <component_manager name="urn:publicid:IDN+instageni.northwestern.edu+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc1:eth1"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc1:eth1" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"  capacity="700000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc1:eth1"  capacity="700000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc1:eth1" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc1:eth1"  capacity="1000000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />
@@ -649,6 +649,18 @@
   <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"/>
 <property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc1:eth3" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
 <property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc1:eth3"  capacity="1000000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-bce" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<link component_name="link-pc2//eth1-procurve2//(null)" component_id="urn:publicid:IDN+instageni.northwestern.edu+link+link-pc2:eth1-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.northwestern.edu+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc2:eth1"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc2:eth1" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"  capacity="300000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc2:eth1"  capacity="300000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />
@@ -745,6 +757,18 @@
   <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"/>
 <property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc4:eth3" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
 <property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc4:eth3"  capacity="1000000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-bce" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<link component_name="link-pc5//eth1-procurve2//(null)" component_id="urn:publicid:IDN+instageni.northwestern.edu+link+link-pc5:eth1-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.northwestern.edu+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc5:eth1"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc5:eth1" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)"  capacity="300000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.northwestern.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.northwestern.edu+interface+pc5:eth1"  capacity="300000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />

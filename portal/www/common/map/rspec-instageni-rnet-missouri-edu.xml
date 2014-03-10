@@ -4,7 +4,7 @@
 	URL: https://instageni.rnet.missouri.edu:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-07T19:54:31Z" expires="2014-03-07T19:54:31Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-10T14:11:40Z" expires="2014-03-10T14:11:40Z" >
 <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.kans:xe-0/0/3:missouri-ig"
   component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" />
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
@@ -94,10 +94,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="72" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="72" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -129,7 +129,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="44069"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="38949"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10026" weight="0.5" />
@@ -376,10 +376,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="96" />
+    <emulab:node_type type_slots="95" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="96" />
+    <emulab:node_type type_slots="95" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -405,7 +405,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="45605"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45477"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
@@ -824,15 +824,15 @@
   <link_type name="ethernet-1000000" />
 </link>
 
-<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-07T19:54:31Z" >
+<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-10T14:11:40Z" >
 <aggregate id="urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm" url="https://www.instageni.rnet.missouri.edu:12369/protogeni/xmlrpc/am">
 <aggregatetype>protogeni</aggregatetype>
 <stitchingmode>chainANDTree</stitchingmode>
 <scheduledservices>false</scheduledservices>
 <negotiatedservices>false</negotiatedservices>
 <lifetime id="life">
-    <start type="time">2014-03-07T19:54:31Z</start>
-    <end type="time">2014-03-07T19:54:31Z</end>
+    <start type="time">2014-03-10T14:11:40Z</start>
+    <end type="time">2014-03-10T14:11:40Z</end>
 </lifetime>
 <node id="urn:publicid:IDN+instageni.rnet.missouri.edu+node+procurve2">
   <port id="urn:publicid:IDN+instageni.rnet.missouri.edu+stitchport+procurve2:1.19">
