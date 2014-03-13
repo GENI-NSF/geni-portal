@@ -2,6 +2,11 @@
 # -*- Mode: Python -*-
 
 # A script to find and report on stale omni processes
+#
+# Written hastily before GEC 19. If this lives on, perhaps rename it
+# to geni-watch-omni, add it to the Makefile for installation, and add
+# few parameters like how many minutes before a process is considered
+# stale?
 
 import ConfigParser
 import datetime
@@ -26,8 +31,8 @@ def get_admin_email():
 
 def send_report(stale_pids, stale_report):
     """Email the stale omni report."""
-#    if not stale_pids:
-#        return
+    if not stale_pids:
+        return
 
     msg = "Found %d stale omni processes\n" % (len(stale_pids))
     msg = msg + "\n"
@@ -36,8 +41,6 @@ def send_report(stale_pids, stale_report):
     # Join the pids into a string
     msg = msg + "sudo kill %s" % (' '.join([str(p) for p in stale_pids]))
     msg = msg + "\n"
-    if not stale_pids:
-        msg = msg + "Relax, you won't get these empty reports much longer.\n"
 
     # Create a text/plain message
     mime_msg = MIMEText(msg)
