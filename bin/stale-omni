@@ -3,13 +3,59 @@
 
 # A script to find and report on stale omni processes
 
+import ConfigParser
 import datetime
+import getpass
 import time
+import smtplib
+from email.mime.text import MIMEText
 import psutil
 
-# 10 minutes for now
-STALE_LIMIT_SECONDS = 10 * 60
-#STALE_LIMIT_SECONDS = 0
+# 5 minutes for now
+STALE_LIMIT_SECONDS = 5 * 60
+
+def get_admin_email():
+    config = ConfigParser.RawConfigParser()
+    config.read('/etc/geni-chapi/chapi.ini')
+    sec = 'chapi'
+    opt = 'portal_admin_email'
+    if config.has_option(sec, opt):
+        return config.get(sec, opt)
+    else:
+        return 'portal-sandbox-admin'
+
+def send_report(stale_pids, stale_report):
+    """Email the stale omni report."""
+#    if not stale_pids:
+#        return
+
+    msg = "Found %d stale omni processes\n" % (len(stale_pids))
+    msg = msg + "\n"
+    msg = msg + '\n'.join(stale_report)
+    msg = msg + "\n"
+    # Join the pids into a string
+    msg = msg + "sudo kill %s" % (' '.join([str(p) for p in stale_pids]))
+    msg = msg + "\n"
+    if not stale_pids:
+        msg = msg + "Relax, you won't get these empty reports much longer.\n"
+
+    # Create a text/plain message
+    mime_msg = MIMEText(msg)
+
+    # me == the sender's email address
+    me = getpass.getuser()
+    # you == the recipient's email address
+    you = get_admin_email()
+    mime_msg['Subject'] = 'stale omni report'
+    mime_msg['From'] = me
+    mime_msg['To'] = you
+
+    # Send the message via our own SMTP server, but don't include the
+    # envelope header.
+    s = smtplib.SMTP('localhost')
+    s.sendmail(me, [you], mime_msg.as_string())
+    s.quit()
+
 
 # If launch time was before stale_launch_time,
 # the process is stale
@@ -44,11 +90,4 @@ for pid in allpids:
         stale_report.append('%s %s %s' % (p.pid, launch_time, agg))
         stale_pids.append(p.pid)
 
-if stale_pids:
-    print "Found %d stale omni processes" % (len(stale_pids))
-    print ""
-    for r in stale_report:
-        print r
-    print ""
-    # Join the pids into a string
-    print "sudo kill %s" % (' '.join([str(p) for p in stale_pids]))
+send_report(stale_pids, stale_report)
