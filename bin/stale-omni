@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+# -*- Mode: Python -*-
+
+# A script to find and report on stale omni processes
+
+import datetime
+import time
+import psutil
+
+# 10 minutes for now
+STALE_LIMIT_SECONDS = 10 * 60
+#STALE_LIMIT_SECONDS = 0
+
+# If launch time was before stale_launch_time,
+# the process is stale
+stale_launch_time = time.time() - STALE_LIMIT_SECONDS
+
+# A list of stale omni pids
+stale_pids = []
+
+# A list of strings to report
+stale_report = []
+
+# For later version of psutil use 'psutil.pids()'
+allpids = psutil.get_pid_list()
+for pid in allpids:
+    try:
+        p = psutil.Process(pid)
+    except psutil.error.NoSuchProcess:
+        continue
+    # For later version of psutil use 'p.cmdline()'
+    cmd = p.cmdline
+    if (len(cmd) > 1
+        and cmd[0] == '/usr/bin/python'
+        and 'omni_php.py' in cmd[1]
+        # For later version of psutil use 'p.create_time()'
+        and p.create_time < stale_launch_time):
+        # We have a stale omni process
+        agg = None
+        if '-a' in cmd:
+            agg = cmd[cmd.index('-a') + 1]
+        launch_dt = datetime.datetime.fromtimestamp(int(p.create_time))
+        launch_time = launch_dt.isoformat()
+        stale_report.append('%s %s %s' % (p.pid, launch_time, agg))
+        stale_pids.append(p.pid)
+
+if stale_pids:
+    print "Found %d stale omni processes" % (len(stale_pids))
+    print ""
+    for r in stale_report:
+        print r
+    print ""
+    # Join the pids into a string
+    print "sudo kill %s" % (' '.join([str(p) for p in stale_pids]))
