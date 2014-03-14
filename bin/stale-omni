@@ -75,22 +75,26 @@ allpids = psutil.get_pid_list()
 for pid in allpids:
     try:
         p = psutil.Process(pid)
+        # For later version of psutil use 'p.create_time()'
+        create_time = int(p.create_time)
+        # For later version of psutil use 'p.cmdline()'
+        cmd = p.cmdline
+        pid = p.pid
     except psutil.error.NoSuchProcess:
+        # Sometimes the process goes away since we got allpids
+        # Continue to next pid
         continue
-    # For later version of psutil use 'p.cmdline()'
-    cmd = p.cmdline
     if (len(cmd) > 1
         and cmd[0] == '/usr/bin/python'
         and 'omni_php.py' in cmd[1]
-        # For later version of psutil use 'p.create_time()'
-        and p.create_time < stale_launch_time):
+        and create_time < stale_launch_time):
         # We have a stale omni process
         agg = None
         if '-a' in cmd:
             agg = cmd[cmd.index('-a') + 1]
-        launch_dt = datetime.datetime.fromtimestamp(int(p.create_time))
+        launch_dt = datetime.datetime.fromtimestamp(create_time)
         launch_time = launch_dt.isoformat()
-        stale_report.append('%s %s %s' % (p.pid, launch_time, agg))
-        stale_pids.append(p.pid)
+        stale_report.append('%s %s %s' % (pid, launch_time, agg))
+        stale_pids.append(pid)
 
 send_report(stale_pids, stale_report)
