@@ -14,7 +14,7 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'http://max-myplc.dragon.maxgigapop.net:12346',
+      'https://max-myplc.dragon.maxgigapop.net:12346',
       -- CERT
      '/usr/share/geni-ch/sr/certs/max.pem',
       -- NAME
