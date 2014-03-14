@@ -84,6 +84,10 @@ for pid in allpids:
         # Sometimes the process goes away since we got allpids
         # Continue to next pid
         continue
+    except IOError:
+        # A process that has finished may also exhibit an
+        # IOError when reading the /proc filesystem
+        continue
     if (len(cmd) > 1
         and cmd[0] == '/usr/bin/python'
         and 'omni_php.py' in cmd[1]
