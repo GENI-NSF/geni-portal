@@ -27,6 +27,8 @@ import os
 import sys
 import subprocess
 import tempfile
+import datetime
+import OpenSSL
 
 # Helper functions
 # Get contents of file
@@ -152,10 +154,20 @@ class UserCertGenerator:
         os.remove(csr_file)
 
 
+def cert_expiration(pemcert):
+    cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM,
+                                           pemcert)
+    not_after = cert.get_notAfter()
+    expires = datetime.datetime.strptime(not_after, '%Y%m%d%H%M%SZ')
+    return expires
+
 # Update user certificate in database table
 def update_certificate(user_id, table_name, user_cert, ma_cert):
     new_cert = user_cert + ma_cert
-    sql = "update %s set certificate = '%s' where member_id = '%s'" % (table_name, new_cert, user_id)
+    expiration = cert_expiration(user_cert)
+    sql = ("update %s set certificate = '%s', expiration = '%s'"
+           + " where member_id = '%s'")
+    sql = sql % (table_name, new_cert, expiration, user_id)
     run_sql(sql)
 
 # Class to update all certificates in a given database in ma_inside_key and ma_outside_cert tables
