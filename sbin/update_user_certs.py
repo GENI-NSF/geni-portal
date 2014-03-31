@@ -134,8 +134,11 @@ class UserCertGenerator:
                         '-keyfile', signer_key_file, \
                         '-subj', subject]
 #        print "CMD = " + " ".join(sign_cmd)
-        subprocess.call(sign_cmd)
-        os.remove(ext_file)
+        retcode = subprocess.call(sign_cmd)
+        if retcode == 0:
+            os.remove(ext_file)
+        else:
+            print "sign command failed. ext file is %s" % (ext_file)
 
     # Create a cert with the user's URN, UUID and email signed by
     # Signed by the user's private key and then certified by signer's signature
@@ -257,6 +260,8 @@ class UserCertificateUpdater:
             sql = "select value from ma_member_attribute where member_id = '%s' and name = 'email_address'" % user_uuid
             addresses = run_sql(sql).split('\n')
             user_email = addresses[0].strip()
+            if not user_email:
+                continue
 
             sql = "select value from ma_member_attribute where member_id = '%s' and name = 'urn'" \
                 % user_uuid
