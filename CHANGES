@@ -7,6 +7,7 @@
 == 2.11 ==
  * Explicitly use the inside cert/key when launching Flack (#982)
  * Update GENI citation policy on account activation (#983)
+ * Add expiration column to certificate tables (#985)
  * Update to latest iRODS server cert (#986)
 
 == 2.10.1 ==
