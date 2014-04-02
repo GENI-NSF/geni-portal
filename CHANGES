@@ -6,6 +6,7 @@
 
 == 2.11 ==
  * Explicitly use the inside cert/key when launching Flack (#982)
+ * Add GRAM aggregate (#984)
 
 == 2.10.1 ==
  * Fix tool-omniconfigure for downloading just your Omni config
