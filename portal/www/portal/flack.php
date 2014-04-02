@@ -153,12 +153,8 @@ $client_cert_parameter = $user->insideCertificate();
     </div>
 
     <noscript>
-      <p>Flack requires that JavaScript be turned on~</p>
+      <p>Flack requires that JavaScript be turned on</p>
     </noscript>
-
-    <script type="text/javascript"
-            src="https://www.emulab.net/protogeni/flack-stable/loader.js">
-    </script>
 
     <!-- Put flack in portal mode always. -->
     <script>isPortal=1;</script>
@@ -174,6 +170,10 @@ $client_cert_parameter = $user->insideCertificate();
     </script>
     <script type="text/plain" id="server-cert-parameter">
 <?php echo $server_cert_parameter;?>
+    </script>
+    <!-- Run the loader after its variables are set above. -->
+    <script type="text/javascript"
+            src="https://www.emulab.net/protogeni/flack-stable/loader.js">
     </script>
   </body>
 </html>
