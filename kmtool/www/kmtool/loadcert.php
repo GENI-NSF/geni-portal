@@ -72,7 +72,11 @@ if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
    tool so that the certificate creation process can redirect back to
    here.
  */
-session_start();
+
+/* this is how to check for a started session on PHP < 5.4 */
+if (session_id() == '') {
+    session_start();
+}
 $_SESSION['xml-signer']='loadcert.php';
 session_write_close();
 
@@ -82,10 +86,10 @@ session_write_close();
  * to encrypt the private key before proceeding.
  */
 $method = $_SERVER['REQUEST_METHOD'];
-error_log("Got request method '$method'");
+//error_log("Got request method '$method'");
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  error_log("Processing put request");
-  error_log("_REQUEST = " . print_r($_REQUEST, true));
+  //error_log("Processing put request");
+  //error_log("_REQUEST = " . print_r($_REQUEST, true));
   $passphrase1 = NULL;
   $passphrase2 = NULL;
   if (array_key_exists($PASSPHRASE_1, $_REQUEST)) {
@@ -96,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
   if ($passphrase1 && $passphrase2 && $passphrase1 == $passphrase2) {
     set_key_passphrase($private_key, $passphrase1, $new_key);
-    error_log("new_key = $new_key");
+    //error_log("new_key = $new_key");
     /*
      * NOTE: the newly protected key is *not* store in the database!
      *
@@ -135,7 +139,7 @@ if ($private_key) {
   $match_result = preg_match($passphrase_re, $private_key);
   if ($match_result === 0) {
     /* Key is not passphrase protected. Help the user add a passphrase. */
-    error_log("No passphrase on private key");
+    //error_log("No passphrase on private key");
     $add_passphrase = TRUE;
   } else if ($match_result === FALSE) {
     /* An error occured. Log it. A warning has probably already been
