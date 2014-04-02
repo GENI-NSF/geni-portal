@@ -8,6 +8,7 @@
  * Quiet debug output in KM (#981)
  * Explicitly use the inside cert/key when launching Flack (#982)
  * Update GENI citation policy on account activation (#983)
+ * Add GRAM aggregate (#984)
  * Add expiration column to certificate tables (#985)
  * Update to latest iRODS server cert (#986)
  * Fix occasional flack loading errors (#987)
