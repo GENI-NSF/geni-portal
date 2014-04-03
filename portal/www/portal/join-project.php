@@ -48,7 +48,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 include("tool-lookupids.php");
 
-$mpids = get_projects_for_member($sa_url, $user, $user->account_id, false, null);
+$mpids = get_projects_for_member($sa_url, $user, $user->account_id, false);
 
 // Filter out projects for which this user has not already requested to join (nothing pending)
 $rs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
