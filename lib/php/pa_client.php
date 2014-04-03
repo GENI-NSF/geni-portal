@@ -391,7 +391,8 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member)
   $rows = $client->lookup_projects_for_member($member_urn, $client->creds(),
                                               $client->options());
   if ($is_member) {    
-    $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
+    $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; },
+                               array_values($rows));
     return $project_uuids;
   }
   // if not a member 
@@ -401,14 +402,16 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member)
       $current[] = $row;
     }
   }
-  $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($current));
+  $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; },
+                             array_values($current));
   //print "<p> privatekey ".print_r($signer->privateKey(), true)."<\p>\n";
   //print "<p> cert ".print_r($signer->certificate(), true)."<\p>\n";
   $options = array('match'=>array('PROJECT_EXPIRED'=>"false"),
 		   'filter'=>array('PROJECT_UID'));
   $options = array_merge($options, $client->options());
   $rows = $client->lookup_projects($client->creds(), $options);
-  $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
+  $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; },
+                         array_values($rows));
   return array_values(array_diff($all_uuids, $project_uuids));
 }
 
