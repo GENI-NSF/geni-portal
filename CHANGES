@@ -12,6 +12,7 @@
  * Add expiration column to certificate tables (#985)
  * Update to latest iRODS server cert (#986)
  * Fix occasional flack loading errors (#987)
+ * Add 2nd GRAM aggregate (#989)
 
 == 2.10.1 ==
  * Fix tool-omniconfigure for downloading just your Omni config
