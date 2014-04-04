@@ -34,5 +34,7 @@ km.initialize = function() {
   /* Add a click callback to the "authorize" button. */
   $('#loadcert').click(km.sendcert);
   $('#showtool').click(km.showtool);
+  /* Autoclick the loadcert button to streamline the UI. */
+  $('#loadcert').trigger('click');
 }
 $(document).ready(km.initialize);
