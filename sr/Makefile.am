@@ -20,6 +20,8 @@ cert_FILES = \
         certs/gpo-of.pem \
         certs/gr-bbn1-am.pem \
         certs/gr-bbn1-ch.pem \
+        certs/gr-bbncam-am.pem \
+        certs/gr-bbncam-ch.pem \
 	certs/i2-of.pem \
 	certs/ig-gatech-boss.pem \
 	certs/ig-gatech-cm.pem \
@@ -67,8 +69,6 @@ cert_FILES = \
 	certs/nyu-ig-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
-	certs/pgeni3-ca.pem \
-	certs/pgeni3.pem \
 	certs/renci-eg-of.pem \
 	certs/sl-of.pem \
 	certs/sox-ig-boss.pem \
