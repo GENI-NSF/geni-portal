@@ -187,7 +187,6 @@ if (is_null($certificate)) {
  */
 
 include('kmheader.php');
-print "<h2>GENI Certificate Loader</h2>\n";
 include("tool-showmessage.php");
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
@@ -222,25 +221,28 @@ You do not have a GENI certificate yet. Before you can use the signing
 and authorization tool you must
 <a href="<?php print $create_url?>">create a certificate</a>.
 <?php } else if ($add_passphrase) { ?>
-<h2>Add a passphrase</h2>
+<h2>Create a passphrase</h2>
 <p>
-Your private key does not have a passphrase, but requires one to work
-with the signing tool. Please add a passphrase to your private key below.
+The GENI Authorization Tool requires that private keys be protected
+by a passphrase. Please create a passphrase for your private key below.
+Type in the same passphrase when prompted by the GENI Authorization Tool.
 </p>
 <p>
-<i>Note: The GPO Clearinghouse does not keep a copy of your passphrase.
-   You will need to remember this passphrase in order to use the signing
-   tool now and in the future. Please take steps now to record or
-   remember this passphrase.</i>
+<i><small>
+   Note: The GPO Member Authority does not keep a copy of your passphrase.
+   You will need to remember this passphrase in order to use the GENI
+   Authorization tool. Please take steps to record or remember this
+   passphrase.
+</small></i>
 </p>
 <form method="post">
    <label class="input">Passphrase:
    <input name="<?php echo $PASSPHRASE_1;?>" type="password"/></label>
    <br/>
-   <label class="input">Re-type passphrase:
+   <label class="input">Confirm Passphrase:
    <input name="<?php echo $PASSPHRASE_2;?>" type="password"/></label>
    <br/>
-   <button type="submit">Set passphrase</input>
+   <button type="submit">Send certificate to signing tool</button>
 </form>
 <?php } else { ?>
 <form onsubmit="return false;">
