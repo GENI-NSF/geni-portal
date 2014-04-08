@@ -135,7 +135,7 @@ Thank you,\n" . $user->prettyName() . "\n";
 
   $headers = "Auto-Submitted: auto-generated\r\n";
   $headers .= "Precedence: bulk\r\n";
-  $headers .= "Reply-To: $email" . "\r\n" . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>"; 
+  $headers .= "Reply-To: $email" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>"; 
 
 
   mail($to,

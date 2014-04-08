@@ -119,7 +119,7 @@ foreach($selections as $email_name => $attribs) {
     
     $headers = "Auto-Submitted: auto-generated\r\n";
     $headers .= "Precedence: bulk\r\n";
-    $headers .= "Reply-To: $userEmail" . "\r\n" . "From: $name (via the GENI Portal) <www-data@gpolab.bbn.com>";
+    $headers .= "Reply-To: $userEmail" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
 
     mail($email, $email_subject, $email_text,
 	 $headers,
