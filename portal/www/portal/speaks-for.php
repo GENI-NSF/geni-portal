@@ -116,6 +116,7 @@ genilib.trustedHost = '<?php echo $genilib_trusted_host;?>';
 genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 </script>
 <script type="text/javascript" src="speaks-for.js"></script>
+<link rel="stylesheet" type="text/css" href="speaks-for.css" />
 
 <?php
   /*
@@ -148,6 +149,14 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
           value="Authorize the portal"/>
    </center>
 </form>
+
+  <div class="windowOpen hidden">
+    <div class="alert alert-success">
+      <h5 class="panel-title">Please continue in popup window.</h5>
+    </div>
+  </div>
+
+
 <?php
   /* This div is for debugging only. */
 ?>
