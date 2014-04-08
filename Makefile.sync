@@ -47,6 +47,9 @@ syncs: bin/geni-ch-githash
 synct: bin/geni-ch-githash
 	$(RSYNC) $(RSYNC_ARGS) ../proto-ch tau-ceti.gpolab.bbn.com:
 
+synctop: bin/geni-ch-githash
+	$(RSYNC) $(RSYNC_ARGS) ../proto-ch tabletop.gpolab.bbn.com:
+
 syncp: bin/geni-ch-githash
 	$(RSYNC) $(RSYNC_ARGS) ../proto-ch panther.gpolab.bbn.com:
 
