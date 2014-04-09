@@ -4,7 +4,7 @@
 	URL: https://boss.lan.sdn.uky.edu:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-02-24T15:42:54Z" expires="2014-02-24T15:42:54Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-10T14:11:14Z" expires="2014-03-10T14:11:14Z" >
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
   <available name="mesoscale-openflow"/>
   <available name="exclusive-openflow-1755"/>
@@ -116,13 +116,12 @@
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
   </sliver_type>
-  <available now="false" />
+  <available now="true" />
   <location country="US" longitude="-84.498135" latitude=" 38.039324" />
   <emulab:trivial_bandwidth value="1000000" />
   <interface component_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+pc3:eth99" >
@@ -142,7 +141,7 @@
   </interface>
   <emulab:fd name="virtpercent" weight="100"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="44291"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45059"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10007" weight="0" />
@@ -161,7 +160,6 @@
   <emulab:fd name="OS-10016-10056" weight="0" />
   <emulab:fd name="OS-10016-10057" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
-  <emulab:fd name="OS-10021-10008" weight="0" />
   <emulab:fd name="OS-10021-10013" weight="0" />
   <emulab:fd name="OS-10021-10022" weight="0" />
   <emulab:fd name="OS-10021-10023" weight="0" />
@@ -175,10 +173,12 @@
   <emulab:fd name="OS-10021-10053" weight="0" />
   <emulab:fd name="OS-10021-10054" weight="0" />
   <emulab:fd name="OS-10021-10055" weight="0" />
+  <emulab:fd name="OS-10021-10058" weight="0" />
+  <emulab:fd name="OS-10021-10059" weight="0" />
+  <emulab:fd name="OS-10021-10060" weight="0" />
   <emulab:fd name="OS-10022" weight="0" />
   <emulab:fd name="OS-10024" weight="0" />
   <emulab:fd name="OS-10029" weight="0" />
-  <emulab:fd name="OS-10029-10008" weight="0" />
   <emulab:fd name="OS-10029-10009" weight="0" />
   <emulab:fd name="OS-10029-10013" weight="0" />
   <emulab:fd name="OS-10029-10022" weight="0" />
@@ -198,6 +198,9 @@
   <emulab:fd name="OS-10029-10053" weight="0" />
   <emulab:fd name="OS-10029-10054" weight="0" />
   <emulab:fd name="OS-10029-10055" weight="0" />
+  <emulab:fd name="OS-10029-10058" weight="0" />
+  <emulab:fd name="OS-10029-10059" weight="0" />
+  <emulab:fd name="OS-10029-10060" weight="0" />
   <emulab:fd name="OS-10032" weight="0" />
   <emulab:fd name="OS-10036" weight="0" />
   <emulab:fd name="OS-10053" weight="0" />
@@ -227,10 +230,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="40" />
+    <emulab:node_type type_slots="66" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="40" />
+    <emulab:node_type type_slots="66" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -239,7 +242,6 @@
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -266,11 +268,10 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="27395"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="34051"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10029" weight="0.5" />
-  <emulab:fd name="OS-10029-10008" weight="0" />
   <emulab:fd name="OS-10029-10009" weight="0" />
   <emulab:fd name="OS-10029-10013" weight="0" />
   <emulab:fd name="OS-10029-10022" weight="0" />
@@ -290,6 +291,9 @@
   <emulab:fd name="OS-10029-10053" weight="0" />
   <emulab:fd name="OS-10029-10054" weight="0" />
   <emulab:fd name="OS-10029-10055" weight="0" />
+  <emulab:fd name="OS-10029-10058" weight="0" />
+  <emulab:fd name="OS-10029-10059" weight="0" />
+  <emulab:fd name="OS-10029-10060" weight="0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+lan.sdn.uky.edu+authority+cm" component_name="pc4"  component_id="urn:publicid:IDN+lan.sdn.uky.edu+node+pc4"  exclusive="true" >
   <hardware_type name="dl360">
@@ -327,7 +331,6 @@
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+lan.sdn.uky.edu+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -372,7 +375,6 @@
   <emulab:fd name="OS-10016-10056" weight="0" />
   <emulab:fd name="OS-10016-10057" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
-  <emulab:fd name="OS-10021-10008" weight="0" />
   <emulab:fd name="OS-10021-10013" weight="0" />
   <emulab:fd name="OS-10021-10022" weight="0" />
   <emulab:fd name="OS-10021-10023" weight="0" />
@@ -386,10 +388,12 @@
   <emulab:fd name="OS-10021-10053" weight="0" />
   <emulab:fd name="OS-10021-10054" weight="0" />
   <emulab:fd name="OS-10021-10055" weight="0" />
+  <emulab:fd name="OS-10021-10058" weight="0" />
+  <emulab:fd name="OS-10021-10059" weight="0" />
+  <emulab:fd name="OS-10021-10060" weight="0" />
   <emulab:fd name="OS-10022" weight="0" />
   <emulab:fd name="OS-10024" weight="0" />
   <emulab:fd name="OS-10029" weight="0" />
-  <emulab:fd name="OS-10029-10008" weight="0" />
   <emulab:fd name="OS-10029-10009" weight="0" />
   <emulab:fd name="OS-10029-10013" weight="0" />
   <emulab:fd name="OS-10029-10022" weight="0" />
@@ -409,6 +413,9 @@
   <emulab:fd name="OS-10029-10053" weight="0" />
   <emulab:fd name="OS-10029-10054" weight="0" />
   <emulab:fd name="OS-10029-10055" weight="0" />
+  <emulab:fd name="OS-10029-10058" weight="0" />
+  <emulab:fd name="OS-10029-10059" weight="0" />
+  <emulab:fd name="OS-10029-10060" weight="0" />
   <emulab:fd name="OS-10032" weight="0" />
   <emulab:fd name="OS-10036" weight="0" />
   <emulab:fd name="OS-10053" weight="0" />
@@ -462,10 +469,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="81" />
+    <emulab:node_type type_slots="86" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="81" />
+    <emulab:node_type type_slots="86" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -494,7 +501,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="42627"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="43267"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10016" weight="0.5" />
@@ -547,10 +554,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="93" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="92" />
+    <emulab:node_type type_slots="93" />
   </hardware_type>
   <hardware_type name="dl360-G7">
     <emulab:node_type type_slots="1" />
@@ -579,7 +586,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2666"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="44035"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="44163"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10016" weight="0.5" />
@@ -798,8 +805,8 @@
 <component_manager name="urn:publicid:IDN+lan.sdn.uky.edu+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+pc5:eth1"/>
   <interface_ref component_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+pc5:eth1" dest_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+procurve2:(null)"  capacity="100000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+pc5:eth1"  capacity="100000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+pc5:eth1" dest_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+procurve2:(null)"  capacity="600000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+procurve2:(null)" dest_id="urn:publicid:IDN+lan.sdn.uky.edu+interface+pc5:eth1"  capacity="600000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />

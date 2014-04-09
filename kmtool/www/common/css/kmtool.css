@@ -37,7 +37,9 @@ div#header {
 }
 
 div#header h1 {
- color:black;
+  display:inline-block;
+  vertical-align:text-bottom;
+  margin-left:30px;
 }
 
 div#header div {

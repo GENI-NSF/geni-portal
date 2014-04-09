@@ -4,6 +4,17 @@
 
 = GENI Portal Release Notes =
 
+== 2.11 ==
+ * Quiet debug output in KM (#981)
+ * Explicitly use the inside cert/key when launching Flack (#982)
+ * Update GENI citation policy on account activation (#983)
+ * Add GRAM aggregate (#984)
+ * Add expiration column to certificate tables (#985)
+ * Update to latest iRODS server cert (#986)
+ * Fix occasional flack loading errors (#987)
+ * Add 2nd GRAM aggregate (#989)
+ * Use an overlay to help speaks-for flow (#991)
+
 == 2.10.1 ==
  * Fix tool-omniconfigure for downloading just your Omni config
    file to preserve the requested version number in the URL,

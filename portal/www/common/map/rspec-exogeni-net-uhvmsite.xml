@@ -18,19 +18,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uhvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhvmsite+node+orca-vm-cloud">
         <location latitude="29.72327" longitude="-95.34269" country="Unspecified"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EucaM1Large"/>
         <sliver_type name="XOXlarge"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="XOSmall"/>
         <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1Small"/>
         <sliver_type name="XOMedium"/>
         <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
         <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOSmall"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -54,6 +54,6 @@
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:ExoGeni:TengigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:ExoGeni:TengigabitEthernet:2:ethernet"/>
     </link>
-    <ns2:stitching lastUpdateTime="Mon Feb 24 15:44:57 UTC 2014"/>
+    <ns2:stitching lastUpdateTime="Mon Mar 10 10:12:31 EDT 2014"/>
 </rspec>
 

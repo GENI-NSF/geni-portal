@@ -158,6 +158,7 @@ dist_svcweb_DATA = \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
+	www/portal/speaks-for.css \
 	www/portal/speaks-for.js \
 	www/portal/speaks-for.php \
 	www/portal/speaks-for-delete.php \
@@ -212,6 +213,7 @@ dist_svcwebcss_DATA =  \
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
 	www/common/map/map-small.html \
+	www/common/map/rspec-dragon-maxgigapop-net.xml \
 	www/common/map/rspec-emulab-net.xml \
 	www/common/map/rspec-exogeni-net-bbnvmsite.xml \
 	www/common/map/rspec-exogeni-net-fiuvmsite.xml \
@@ -224,24 +226,32 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-instageni-clemson-edu.xml \
 	www/common/map/rspec-instageni-gpolab-bbn-com.xml \
 	www/common/map/rspec-instageni-illinois-edu.xml \
+	www/common/map/rspec-instageni-ku-gpeni-net.xml \
 	www/common/map/rspec-instageni-maxgigapop-net.xml \
 	www/common/map/rspec-instageni-northwestern-edu.xml \
 	www/common/map/rspec-instageni-nysernet-org.xml \
 	www/common/map/rspec-instageni-rnet-missouri-edu.xml \
 	www/common/map/rspec-instageni-rnoc-gatech-edu.xml \
+	www/common/map/rspec-instageni-sox-net.xml \
+	www/common/map/rspec-instageni-stanford-edu.xml \
 	www/common/map/rspec-instageni-wisc-edu.xml \
+	www/common/map/rspec-ion-internet2-edu.xml \
 	www/common/map/rspec-lan-sdn-uky-edu.xml \
 	www/common/map/rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-foam-cenic-net.xml \
 	www/common/map/rspec-openflow-foam-foam-geni-it-cornell-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-geni-kettering-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-genirack-nyu-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-clemson-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-gpolab-bbn-com.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-illinois-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-ku-gpeni-net.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-maxgigapop-net.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-northwestern-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-nysernet-org.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-rnet-missouri-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-sox-net.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-stanford-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-wisc-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-lan-sdn-uky-edu.xml \
@@ -250,6 +260,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-openflow-foam-foam-utahddc-geniracks-net.xml \
 	www/common/map/rspec-openflow-foam-ig-utah.xml \
 	www/common/map/rspec-openflow-foam-rci-hn-exogeni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-sl-geni-northwestern-edu.xml \
 	www/common/map/rspec-uky-emulab-net.xml \
 	www/common/map/rspec-utah-geniracks-net.xml \
 	www/common/map/rspec-utahddc-geniracks-net.xml

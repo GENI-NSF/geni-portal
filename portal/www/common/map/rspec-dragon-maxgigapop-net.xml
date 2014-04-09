@@ -1,0 +1,175 @@
+<rspec type="advertisement" expires="1969-12-31T19:00:00.000-05:00" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:stitch="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd"><node component_id="urn:publicid:IDN+dragon.maxgigapop.net+node+planetlab2" component_manager_id="urn:publicid:IDN+dragon.maxgigapop.net+authority+am" exclusive="true"><hardware_type name="plab-pc"/><hardware_type name="pc"/><sliver_type name="plab-vserver"/><location country="US" latitude="38.970691" longitude="-76.922132"/><interface component_id="urn:publicid:IDN+dragon.maxgigapop.net+interface+planetlab2:eth1"></interface></node><node component_id="urn:publicid:IDN+dragon.maxgigapop.net+node+planetlab3" component_manager_id="urn:publicid:IDN+dragon.maxgigapop.net+authority+am" exclusive="true"><hardware_type name="plab-pc"/><hardware_type name="pc"/><sliver_type name="plab-vserver"/><location country="US" latitude="38.970691" longitude="-76.922132"/><interface component_id="urn:publicid:IDN+dragon.maxgigapop.net+interface+planetlab3:eth1"></interface></node><node component_id="urn:publicid:IDN+dragon.maxgigapop.net+node+planetlab4" component_manager_id="urn:publicid:IDN+dragon.maxgigapop.net+authority+am" exclusive="true"><hardware_type name="plab-pc"/><hardware_type name="pc"/><sliver_type name="plab-vserver"/><location country="US" latitude="38.970691" longitude="-76.922132"/><interface component_id="urn:publicid:IDN+dragon.maxgigapop.net+interface+planetlab4:eth1"></interface></node><node component_id="urn:publicid:IDN+dragon.maxgigapop.net+node+planetlab5" component_manager_id="urn:publicid:IDN+dragon.maxgigapop.net+authority+am" exclusive="true"><hardware_type name="plab-pc"/><hardware_type name="pc"/><sliver_type name="plab-vserver"/><location country="US" latitude="38.970691" longitude="-76.922132"/><interface component_id="urn:publicid:IDN+dragon.maxgigapop.net+interface+planetlab5:eth1"></interface></node><stitching lastUpdateTime="20130112:09:30:21" xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/">
+<aggregate id="urn:publicid:IDN+dragon.maxgigapop.net+authority+am" url="http://max-myplc.dragon.maxgigapop.net:12346">
+ <aggregatetype>sfa</aggregatetype>
+ <stitchingmode>tree</stitchingmode>
+ <scheduledservices>false</scheduledservices>
+ <negotiatedservices>false</negotiatedservices>
+ <lifetime id="1">
+   <start type="ISO-8601">2013-01-12T21:30:53Z</start>
+   <end type="ISO-8601">2013-12-31T00:00:00Z</end>
+ </lifetime>
+
+<node id="urn:publicid:IDN+dragon.maxgigapop.net+node+mcln">
+  <port id="urn:publicid:IDN+dragon.maxgigapop.net+stitchport+mcln:1-2-2">
+    <capacity>5000000</capacity>
+    <maximumReservableCapacity>5000000</maximumReservableCapacity>
+    <minimumReservableCapacity>1000</minimumReservableCapacity>
+    <granularity>1000</granularity>
+    <link id="urn:publicid:IDN+dragon.maxgigapop.net+interface+mcln:1-2-2:*">
+      <remoteLinkId>urn:publicid:IDN+dragon.maxgigapop.net+interface+*:*:*</remoteLinkId>
+      <trafficEngineeringMetric>10</trafficEngineeringMetric>
+      <capacity>50000000</capacity>
+      <maximumReservableCapacity>50000000</maximumReservableCapacity>
+      <minimumReservableCapacity>1000</minimumReservableCapacity>
+      <granularity>1000</granularity>
+      <switchingCapabilityDescriptor>
+        <switchingcapType>l2sc</switchingcapType>
+        <encodingType>ethernet</encodingType>
+        <switchingCapabilitySpecificInfo>
+          <switchingCapabilitySpecificInfo_L2sc>
+           <interfaceMTU>9000</interfaceMTU>
+           <vlanRangeAvailability>3020-3030,3100-3109,3200-3219</vlanRangeAvailability>
+           <vlanTranslation>false</vlanTranslation>
+          </switchingCapabilitySpecificInfo_L2sc>
+        </switchingCapabilitySpecificInfo>
+      </switchingCapabilityDescriptor>
+    </link>
+  </port>
+
+  <port id="urn:publicid:IDN+dragon.maxgigapop.net+stitchport+mcln:1-3-1">
+    <capacity>5000000</capacity>
+    <maximumReservableCapacity>5000000</maximumReservableCapacity>
+    <minimumReservableCapacity>1000</minimumReservableCapacity>
+    <granularity>1000</granularity>
+    <link id="urn:publicid:IDN+dragon.maxgigapop.net+interface+mcln:1-3-1:*">
+      <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+rtr.wash:xe-0/1/0:*</remoteLinkId>
+      <trafficEngineeringMetric>10</trafficEngineeringMetric>
+      <capacity>50000000</capacity>
+      <maximumReservableCapacity>50000000</maximumReservableCapacity>
+      <minimumReservableCapacity>1000</minimumReservableCapacity>
+      <granularity>1000</granularity>
+      <switchingCapabilityDescriptor>
+        <switchingcapType>l2sc</switchingcapType>
+        <encodingType>ethernet</encodingType>
+        <switchingCapabilitySpecificInfo>
+          <switchingCapabilitySpecificInfo_L2sc>
+           <interfaceMTU>9000</interfaceMTU>
+           <vlanRangeAvailability>3020-3030,3100-3109,3200-3219</vlanRangeAvailability>
+           <vlanTranslation>false</vlanTranslation>
+          </switchingCapabilitySpecificInfo_L2sc>
+        </switchingCapabilitySpecificInfo>
+      </switchingCapabilityDescriptor>
+    </link>
+  </port>
+
+  <port id="urn:publicid:IDN+dragon.maxgigapop.net+stitchport+mcln:*">
+    <capacity>100000</capacity>
+    <maximumReservableCapacity>100000</maximumReservableCapacity>
+    <minimumReservableCapacity>1000</minimumReservableCapacity>
+    <granularity>1000</granularity>
+    <link id="urn:publicid:IDN+dragon.maxgigapop.net+interface+mcln:*:*">
+      <remoteLinkId>urn:publicid:IDN+dragon.maxgigapop.net+interface+*:*:*</remoteLinkId>
+      <trafficEngineeringMetric>10</trafficEngineeringMetric>
+      <capacity>5000000</capacity>
+      <maximumReservableCapacity>5000000</maximumReservableCapacity>
+      <minimumReservableCapacity>1000</minimumReservableCapacity>
+      <granularity>1000</granularity>
+      <switchingCapabilityDescriptor>
+        <switchingcapType>l2sc</switchingcapType>
+        <encodingType>ethernet</encodingType>
+        <switchingCapabilitySpecificInfo>
+          <switchingCapabilitySpecificInfo_L2sc>
+           <interfaceMTU>9000</interfaceMTU>
+           <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+           <vlanTranslation>false</vlanTranslation>
+          </switchingCapabilitySpecificInfo_L2sc>
+        </switchingCapabilitySpecificInfo>
+      </switchingCapabilityDescriptor>
+    </link>
+  </port>
+</node>
+
+<node id="urn:publicid:IDN+dragon.maxgigapop.net+node+clpk">
+  <port id="urn:publicid:IDN+dragon.maxgigapop.net+stitchport+clpk:1-1-2">
+    <capacity>5000000</capacity>
+    <maximumReservableCapacity>5000000</maximumReservableCapacity>
+    <minimumReservableCapacity>1000</minimumReservableCapacity>
+    <granularity>1000</granularity>
+    <link id="urn:publicid:IDN+dragon.maxgigapop.net+interface+clpk:1-1-2:*">
+      <remoteLinkId>urn:publicid:IDN+instageni.maxgigapop.net+interface+procurve2:1.22</remoteLinkId>
+      <trafficEngineeringMetric>10</trafficEngineeringMetric>
+      <capacity>5000000</capacity>
+      <maximumReservableCapacity>5000000</maximumReservableCapacity>
+      <minimumReservableCapacity>1000</minimumReservableCapacity>
+      <granularity>1000</granularity>
+      <switchingCapabilityDescriptor>
+        <switchingcapType>l2sc</switchingcapType>
+        <encodingType>ethernet</encodingType>
+        <switchingCapabilitySpecificInfo>
+          <switchingCapabilitySpecificInfo_L2sc>
+           <interfaceMTU>9000</interfaceMTU>
+           <vlanRangeAvailability>550-569,3020-3030,3100-3109,3200-3219</vlanRangeAvailability>
+           <vlanTranslation>false</vlanTranslation>
+          </switchingCapabilitySpecificInfo_L2sc>
+        </switchingCapabilitySpecificInfo>
+      </switchingCapabilityDescriptor>
+    </link>
+  </port>
+  <port id="urn:publicid:IDN+dragon.maxgigapop.net+stitchport+clpk:*">
+    <capacity>100000</capacity>
+    <maximumReservableCapacity>100000</maximumReservableCapacity>
+    <minimumReservableCapacity>1000</minimumReservableCapacity>
+    <granularity>1000</granularity>
+    <link id="urn:publicid:IDN+dragon.maxgigapop.net+interface+clpk:*:*">
+      <remoteLinkId>urn:publicid:IDN+dragon.maxgigapop.net+interface+*:*:*</remoteLinkId>
+      <trafficEngineeringMetric>10</trafficEngineeringMetric>
+      <capacity>5000000</capacity>
+      <maximumReservableCapacity>5000000</maximumReservableCapacity>
+      <minimumReservableCapacity>1000</minimumReservableCapacity>
+      <granularity>1000</granularity>
+      <switchingCapabilityDescriptor>
+        <switchingcapType>l2sc</switchingcapType>
+        <encodingType>ethernet</encodingType>
+        <switchingCapabilitySpecificInfo>
+          <switchingCapabilitySpecificInfo_L2sc>
+           <interfaceMTU>9000</interfaceMTU>
+           <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+           <vlanTranslation>false</vlanTranslation>
+          </switchingCapabilitySpecificInfo_L2sc>
+        </switchingCapabilitySpecificInfo>
+      </switchingCapabilityDescriptor>
+    </link>
+  </port>
+</node>
+
+<node id="urn:publicid:IDN+dragon.maxgigapop.net+node+max">
+  <port id="urn:publicid:IDN+dragon.maxgigapop.net+stitchport+max:*">
+    <capacity>100000</capacity>
+    <maximumReservableCapacity>100000</maximumReservableCapacity>
+    <minimumReservableCapacity>1000</minimumReservableCapacity>
+    <granularity>1000</granularity>
+    <link id="urn:publicid:IDN+dragon.maxgigapop.net+interface+max:*:*">
+      <remoteLinkId>urn:publicid:IDN+dragon.maxgigapop.net+interface+*:*:*</remoteLinkId>
+      <trafficEngineeringMetric>10</trafficEngineeringMetric>
+      <capacity>5000000</capacity>
+      <maximumReservableCapacity>5000000</maximumReservableCapacity>
+      <minimumReservableCapacity>1000</minimumReservableCapacity>
+      <granularity>1000</granularity>
+      <switchingCapabilityDescriptor>
+        <switchingcapType>l2sc</switchingcapType>
+        <encodingType>ethernet</encodingType>
+        <switchingCapabilitySpecificInfo>
+          <switchingCapabilitySpecificInfo_L2sc>
+           <interfaceMTU>9000</interfaceMTU>
+           <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+           <vlanTranslation>false</vlanTranslation>
+          </switchingCapabilitySpecificInfo_L2sc>
+        </switchingCapabilitySpecificInfo>
+      </switchingCapabilityDescriptor>
+    </link>
+  </port>
+</node>
+
+</aggregate>
+</stitching>
+</rspec>

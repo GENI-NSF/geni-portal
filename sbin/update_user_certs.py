@@ -27,6 +27,8 @@ import os
 import sys
 import subprocess
 import tempfile
+import datetime
+import OpenSSL
 
 # Helper functions
 # Get contents of file
@@ -132,8 +134,11 @@ class UserCertGenerator:
                         '-keyfile', signer_key_file, \
                         '-subj', subject]
 #        print "CMD = " + " ".join(sign_cmd)
-        subprocess.call(sign_cmd)
-        os.remove(ext_file)
+        retcode = subprocess.call(sign_cmd)
+        if retcode == 0:
+            os.remove(ext_file)
+        else:
+            print "sign command failed. ext file is %s" % (ext_file)
 
     # Create a cert with the user's URN, UUID and email signed by
     # Signed by the user's private key and then certified by signer's signature
@@ -152,10 +157,20 @@ class UserCertGenerator:
         os.remove(csr_file)
 
 
+def cert_expiration(pemcert):
+    cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM,
+                                           pemcert)
+    not_after = cert.get_notAfter()
+    expires = datetime.datetime.strptime(not_after, '%Y%m%d%H%M%SZ')
+    return expires
+
 # Update user certificate in database table
 def update_certificate(user_id, table_name, user_cert, ma_cert):
     new_cert = user_cert + ma_cert
-    sql = "update %s set certificate = '%s' where member_id = '%s'" % (table_name, new_cert, user_id)
+    expiration = cert_expiration(user_cert)
+    sql = ("update %s set certificate = '%s', expiration = '%s'"
+           + " where member_id = '%s'")
+    sql = sql % (table_name, new_cert, expiration, user_id)
     run_sql(sql)
 
 # Class to update all certificates in a given database in ma_inside_key and ma_outside_cert tables
@@ -245,6 +260,8 @@ class UserCertificateUpdater:
             sql = "select value from ma_member_attribute where member_id = '%s' and name = 'email_address'" % user_uuid
             addresses = run_sql(sql).split('\n')
             user_email = addresses[0].strip()
+            if not user_email:
+                continue
 
             sql = "select value from ma_member_attribute where member_id = '%s' and name = 'urn'" \
                 % user_uuid
