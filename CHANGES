@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.12 ==
+
 == 2.11 ==
  * Quiet debug output in KM (#981)
  * Explicitly use the inside cert/key when launching Flack (#982)
