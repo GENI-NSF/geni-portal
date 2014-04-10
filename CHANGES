@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.12 ==
+ * Show each GENI site on map (#995)
 
 == 2.11 ==
  * Quiet debug output in KM (#981)
