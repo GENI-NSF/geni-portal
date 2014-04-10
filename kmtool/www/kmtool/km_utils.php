@@ -123,9 +123,9 @@ function set_key_passphrase($in_key, $passphrase, &$out_key) {
     error_log("openssl command failed with status $rsa_status");
     $result = FALSE;
   }
-  //  unlink($in_key_file);
-  //  unlink($passphrase_file);
-  //  unlink($out_key_file);
+  unlink($in_key_file);
+  unlink($passphrase_file);
+  unlink($out_key_file);
   return $result;
 }
 
