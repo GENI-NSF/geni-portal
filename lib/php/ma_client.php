@@ -535,9 +535,13 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
     // If there is no certificate, return NULL.
     return NULL;
   }
-  $expiration = $public_res[$member_urn]['_GENI_MEMBER_SSL_EXPIRATION'];
-  $result[MA_ARGUMENT::EXPIRATION] = $expiration;
-
+  if (array_key_exists('_GENI_MEMBER_SSL_EXPIRATION',
+                       $public_res[$member_urn])) {
+    // Convert expiration to DateTime from string
+    $expiration = $public_res[$member_urn]['_GENI_MEMBER_SSL_EXPIRATION'];
+    $expiration = new DateTime($expiration);
+    $result[MA_ARGUMENT::EXPIRATION] = $expiration;
+  }
   $private_options = array('match'=> array('MEMBER_UID'=>$member_id),
                            'filter'=>array('_GENI_MEMBER_SSL_PRIVATE_KEY'));
   $private_options = array_merge($private_options, $client->options());
