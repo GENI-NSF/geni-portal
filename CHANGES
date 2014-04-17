@@ -9,6 +9,7 @@
  * Show each GENI site on map (#995)
  * Remove unused readyToLogin page (#996)
  * Delete unused script geni-renew-slice (#997)
+ * Install new GENI Desktop certificate (#1001)
 
 == 2.11 ==
  * Quiet debug output in KM (#981)
