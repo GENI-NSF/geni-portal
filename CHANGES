@@ -6,6 +6,10 @@
 
 == 2.12 ==
  * Delete temporary km files (#979)
+ * Emails sent from portal on behalf of experimenter need
+   the from address quoted, specifically where the name of the 
+   experimenter is an email address because no better name 
+   is available. (#988)
  * Show each GENI site on map (#995)
  * Remove unused readyToLogin page (#996)
  * Delete unused script geni-renew-slice (#997)
