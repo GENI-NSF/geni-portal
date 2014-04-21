@@ -15,6 +15,7 @@
  * Delete unused script geni-renew-slice (#997)
  * Install new GENI Desktop certificate (#1001)
  * Avoid errors generating Omni config for users with no project (#1002)
+ * Quote RSpec name/description in RSpec upload error messages (#1003)
 
 == 2.11 ==
  * Quiet debug output in KM (#981)
