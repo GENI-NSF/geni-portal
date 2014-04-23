@@ -123,13 +123,14 @@ if ($has_private_key) {
 /* ---------- Set up the omni config link. ---------- */
 $config_url = 'portal_omni_config.php';
 $config_link = $config_url;
+$proj_name = "";
 if ($num_projects > 0) {
   // if there is a project, set the link to the default
   // project, which is the first in the list
   $proj = $projects[$project_ids[0]];
   $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  $config_link .= "?project=$proj_name";
 }
+$config_link .= "?project=$proj_name";
 
 /* ---------- PAGE OUTPUT STARTS HERE ---------- */
 show_header('GENI Portal: Profile', $TAB_PROFILE);

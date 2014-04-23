@@ -137,7 +137,6 @@ dist_svcweb_DATA = \
 	www/portal/query-sliverstatus.php \
 	www/portal/query-details.php \
 	www/portal/raw-sliverstatus.php \
-	www/portal/readyToLogin.php \
 	www/portal/renewsliver.php \
 	www/portal/request_test.php \
 	www/portal/rspecdelete.php \
@@ -193,6 +192,7 @@ dist_svcwebimages_DATA = \
 	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
+	www/images/site-icon.png \
 	www/images/staticmap.png \
 	www/images/header-home.jpg \
 	www/images/geni_globe.png \
