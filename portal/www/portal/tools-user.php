@@ -50,8 +50,6 @@ END;
 
 <h1>Profile</h1>
 
-<?php include "tabs.js"; ?>
-
   <div id='tablist'>
 		<ul class='tabs'>
 			<li><a href='#accountsummary'>Account Summary</a></li>
@@ -446,3 +444,4 @@ echo "</div>";
   echo "</div>";
 
 ?>
+<?php include "tabs.js"; ?>
