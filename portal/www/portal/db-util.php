@@ -289,13 +289,13 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
 		      $schema_version, $visibility, $is_bound, $is_stitch, $am_urns)
 {
   if (! isset($description) or is_null($description) or $description == '') {
-    $msg = "Description missing for RSpec $name";
+    $msg = "Description missing for RSpec '$name'";
     error_log($msg);
     relative_redirect('error-text.php' . "?error=" . urlencode($msg));
     return false;
   }
   if (! isset($name) or is_null($name) or $name == '') {
-    $msg = "Name missing for RSpec with description $description";
+    $msg = "Name missing for RSpec with description '$description'";
     error_log($msg);
     relative_redirect('error-text.php' . "?error=" . urlencode($msg));
     return false;
