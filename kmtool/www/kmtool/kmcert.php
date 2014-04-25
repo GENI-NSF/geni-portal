@@ -309,7 +309,15 @@ if (!$renew && $has_cert && (! $expired)) {
 <p>In order to use some GENI tools (like
 <a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need a signed SSL user certificate.
 </p><p>
-There are two options for creating this:
+There are two options for
+<?php
+if ($renew) {
+  echo 'renewing';
+} else {
+  echo 'creating';
+}
+?>
+ a certificate:
 <ol>
 <li>Have it generated for you.  This is the easiest option. <b>If in doubt, use this option.</b></li>
 <li>Have the SSL certificate generated for you based on a private key you keep locally. This is the most secure option.  For advanced users only.</li>
