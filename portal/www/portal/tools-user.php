@@ -50,8 +50,6 @@ END;
 
 <h1>Profile</h1>
 
-<?php include "tabs.js"; ?>
-
   <div id='tablist'>
 		<ul class='tabs'>
 			<li><a href='#accountsummary'>Account Summary</a></li>
@@ -190,18 +188,31 @@ if (! is_null($result)) {
 }
 
 $kmcert_url = "kmcert.php?close=1";
-print "<button onClick=\"window.open('$kmcert_url')\">";
-if (! $has_certificate) {
-  print "Generate an SSL certificate";
-} else {
-  if ($has_key) {
-    print "Download your Portal generated SSL certificate and key";
-  } else {
-    print "Download your Portal signed SSL certificate";
-  }
+$button1_label = 'Create an SSL certificate';
+if ($has_certificate && $has_key) {
+  $button1_label = 'Download your SSL certificate and key';
+} else if ($has_certificate) {
+  $button1_label = 'Download your SSL certificate';
 }
+print "<button onClick=\"window.open('$kmcert_url')\">";
+print $button1_label;
 print "</button>";
 print "</p>";
+
+// Display a renew link
+if ($has_certificate) {
+  $expiration_key = 'expiration';
+  print '<p>';
+  if (array_key_exists($expiration_key, $result)) {
+    print 'Your SSL certificate expires on ';
+    print dateUIFormat($result[$expiration_key]);
+    print '.';
+  }
+  print ' You can <a href="kmcert.php?close=1&renew=1" target="_blank">';
+  print 'renew your SSL certifcate</a> any time';
+  print '</p>';
+}
+
 // END SSL tab
 echo "</div>";
 
@@ -446,3 +457,4 @@ echo "</div>";
   echo "</div>";
 
 ?>
+<?php include "tabs.js"; ?>
