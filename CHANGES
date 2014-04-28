@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.13 ==
+ * Provide UI for renewing certificates (#241)
 
 == 2.12 ==
  * Delete temporary km files (#979)
