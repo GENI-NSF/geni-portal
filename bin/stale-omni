@@ -16,8 +16,8 @@ import smtplib
 from email.mime.text import MIMEText
 import psutil
 
-# 5 minutes for now
-STALE_LIMIT_SECONDS = 5 * 60
+# Notify on processes older than STALE_LIMIT_SECONDS
+STALE_LIMIT_SECONDS = 10 * 60
 
 def get_admin_email():
     config = ConfigParser.RawConfigParser()
