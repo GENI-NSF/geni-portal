@@ -180,32 +180,52 @@ if (! isset($ma_url)) {
 }
 
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
+$expiration_key = 'expiration';
 $has_certificate = False;
 $has_key = False;
+$expired = False;
+$expiration = NULL;
 if (! is_null($result)) {
   $has_certificate = True;
   $has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $result);
+  if (array_key_exists($expiration_key, $result)) {
+    $expiration = $result[$expiration_key];
+    $now = new DateTime('now', new DateTimeZone("UTC"));
+    $expired = ($expiration < $now);
+  }
 }
 
 $kmcert_url = "kmcert.php?close=1";
 $button1_label = 'Create an SSL certificate';
-if ($has_certificate && $has_key) {
-  $button1_label = 'Download your SSL certificate and key';
-} else if ($has_certificate) {
-  $button1_label = 'Download your SSL certificate';
-}
-print "<button onClick=\"window.open('$kmcert_url')\">";
-print $button1_label;
-print "</button>";
-print "</p>";
+if (! $has_certificate) {
+  /* No certificate, so show the create button. */
+  print "<button onClick=\"window.open('$kmcert_url')\">";
+  print $button1_label;
+  print "</button>";
+  print "</p>";
+} else if ($expired) {
+  /* Have an expired certificate, just renew it. */
+  print 'Your SSL certificate has expired. Please';
+  print ' <a href="kmcert.php?close=1&renew=1" target="_blank">';
+  print 'renew your SSL certifcate</a> now';
+  print '</p>';
+} else {
+  /* Have a current certificate */
+  if ($has_key) {
+    $button1_label = 'Download your SSL certificate and key';
+  } else if ($has_certificate) {
+    $button1_label = 'Download your SSL certificate';
+  }
+  print "<button onClick=\"window.open('$kmcert_url')\">";
+  print $button1_label;
+  print "</button>";
+  print "</p>";
 
-// Display a renew link
-if ($has_certificate) {
-  $expiration_key = 'expiration';
+  // Display a renew link
   print '<p>';
-  if (array_key_exists($expiration_key, $result)) {
+  if ($expiration) {
     print 'Your SSL certificate expires on ';
-    print dateUIFormat($result[$expiration_key]);
+    print dateUIFormat($expiration);
     print '.';
   }
   print ' You can <a href="kmcert.php?close=1&renew=1" target="_blank">';
