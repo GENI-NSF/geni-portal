@@ -243,7 +243,7 @@ $expiring = false;
 if (array_key_exists('expiration', $result)) {
   // Is expiration real soon or in the past?
   $expiration = $result['expiration'];
-  $now = new DateTime();
+  $now = new DateTime('now', new DateTimeZone("UTC"));
   $diff = $now->diff($expiration);
   $days = $diff->days;
   $expired = ($days < 1);
