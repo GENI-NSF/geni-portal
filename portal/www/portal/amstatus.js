@@ -196,16 +196,28 @@ function build_agg_table_on_sliverstatuspg()
 {
       $("#query").css( 'display', 'block');
    // (1) query the server for all a list of aggregates
-    $.getJSON("aggregates.php", { am_id:am_id }, function(responseTxt,statusTxt,xhr){
-     var json_agg;
-     count = 0;
-     json_agg = responseTxt;
-     numagg = Object.keys(json_agg).length;
-     for (var tmp_am_id in json_agg ) {
+      var jqxhr = $.getJSON("aggregates.php", { am_id:am_id }, function(responseTxt,statusTxt,xhr){
+      var json_agg;
+      count = 0;
+      json_agg = responseTxt;
+      numagg = Object.keys(json_agg).length;
+      console.log("func success " + numagg);
+      for (var tmp_am_id in json_agg ) {
+	 console.log("func success 1 " + numagg);
 	 add_agg_row_on_sliverstatuspg(tmp_am_id, numagg);
+	 console.log("func success 1 return from add_agg_row_on_sliverstatuspg" + numagg);
      }
-    $("span#numagg").text( numagg );
-   });
+     $("span#numagg").text( numagg );
+     })
+     .done(function() {
+        console.log( "second success");
+      })
+     .fail(function() {
+        console.log( "error" );
+	 })
+     .always(function() {
+        console.log( "complete" );
+     })
 }
 
 
@@ -213,16 +225,19 @@ function build_agg_table_on_sliverstatuspg()
 function add_agg_row_on_sliverstatuspg(am_id, numagg) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
-  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+      $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
       var json_am, am;
       var geni_urn, geni_status, agg_name, geni_resources, colspan;
       var resource, firstrow, num_rsc, rsc_urn, rsc_status, rsc_error;
       var output=""; 
 
+     console.log("statusTxt " + statusTxt);
      if(statusTxt=="success") 
      {
+	 console.log("add_agg_row success");
          json_am = responseTxt;
 	 if (Object.keys(json_am).length == 0) {
+	     console.log("add_agg_row success json return length = 0");
 	     return;
 	 }
          am = json_am[am_id];	   
@@ -317,7 +332,21 @@ function add_agg_row_on_sliverstatuspg(am_id, numagg) {
 	      $("#summary").css( 'display', 'block');
 	  }
       }
-  });  
+  })
+     .done(function() {
+        console.log( "agg second success");
+      })
+     .fail(function() {
+	var output=""; 
+        console.log( "agg error");
+	output +=  "<tr><td></td><td>"+"ERROR"+"</td></tr>";
+	$("table#slivererror").append( output);
+	$("#query").css('display','none');
+	$("#summary").css( 'display', 'block');
+	 })
+     .always(function() {
+        console.log( "agg complete" );
+     });  
 }
 
 
