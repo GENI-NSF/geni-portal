@@ -400,8 +400,8 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      $outchunk = fread($pipes[1], $bufsiz);
 
      $now = time();
-     $kill_time = $now + (60 * 7);
-     //$kill_time = $now + (1);
+     //$kill_time = $now + (60 * 7);
+     $kill_time = $now + (1);
 
      while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
        if ($outchunk != null)
@@ -435,7 +435,9 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 	// Timeout error
 	//$output = '{"geni_code" : "8" , "output" : "Terminated"}';
 	//$output = '["Terminated Output\n", {})]';  //why does the extra ) populate values
-	$output = '["Terminated", {}]';
+//	$output = '["Terminated", {}]';
+	$output = "Terminated communication";
+//	$output = array("Terminated", array($am_url => ""));
      }
 
      unlink($cert_file);
@@ -450,7 +452,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        unlink($speaks_for_cred_filename);
      }
 
-     error_log("am_client output " .  print_r($output, True));
+     //error_log("am_client output " .  print_r($output, True));
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
        error_log("am_client invoke_omni_function:"
@@ -466,7 +468,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
        unlink($omni_log_file);
      }
-     error_log("Returning output2 : " . print_r($output2, True));
+     //error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 
@@ -573,6 +575,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
   $output = invoke_omni_function($am_url, $user, $args);
   // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
+  //error_log("in renew_sliver after omni " . print_r($output, True));
   return $output;
 }
 
@@ -638,15 +641,8 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 		'sliverstatus',
 		$slice_urn);
   $output = invoke_omni_function($am_url, $user, $args);
-  error_log("in sliver_status after omni " . print_r($output, True));
+  //error_log("in sliver_status after omni " . print_r($output, True));
   unlink($slice_credential_filename);
-
-  error_log("in sliver_statut [0] $output[0]");
-  if(preg_match("/Terminated/", $output[0]) == 1) {
-     error_log("TERMINATED PROCESS\n");
-     $output = "Terminated";
-  }
-  error_log("in sliver_status pre $output return " . print_r($output, True));
   return $output;
 }
 
@@ -678,6 +674,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
   // Note that this AM no longer has resources
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
+  //error_log("in delete_sliver pre $output return " . print_r($output, True));
   return $output;
 }
 

@@ -663,7 +663,16 @@ function add_agg_row_to_renew_table(am_id, sliver_expiration) {
       }
       if(statusTxt=="error")
           alert("Error: "+xhr.status+": "+xhr.statusText);
-  });  
+  })
+  .done(function() {
+     console.log( "renew second success");
+   })
+  .fail(function() {
+     console.log( "renew error" );
+   })
+   .always(function() {
+     console.log( "renew complete" );
+    })
 }
 
 

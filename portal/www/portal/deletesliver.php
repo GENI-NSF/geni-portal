@@ -160,6 +160,7 @@ if ( count($retVal) == 2 ) {
 $success = $obj[0];
 $fail = $obj[1];
 
+//error_log("deletesliver count for sucess = " . count($success));
 if (count($success)) {
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
   $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
@@ -176,6 +177,14 @@ if (count($success)) {
 	      "Deleted resources from slice " . $slice_name,
 	      $log_attributes);
   }
+}
+
+//error_log("deletesliver msg = " . $msg . " obj " . print_r($obj, true));
+//if we terminated communication - append am_url to failed list
+if(preg_match("/Terminated/", $msg) == 1) {
+    $rrht = $obj[1];			      
+    $rrht[] = am_name($am_url);
+    $obj[1] = $rrht;
 }
 
 unset($slice2);

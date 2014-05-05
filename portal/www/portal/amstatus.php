@@ -74,6 +74,7 @@ $GENI_MESSAGES_REV = array(
 		       STATUS_MSG::GENI_BUSY => STATUS_INDEX::GENI_BUSY);
 
 foreach ($obj as $am_url => $am_status) {
+    //error_log("amstatus - am_url " . $am_url . " am_status " . $am_status);
     $status_item = Array();
     // AM url
     $status_item['url'] = $am_url;
@@ -193,7 +194,9 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
     $loginInfo = Array();
     $pgKeyList = Array();
 
+    //error_log("getInfoFromSliverStatusPG - input status_array" . print_r($status_array, True));
     foreach ($obj as $am_url => $am_item) {
+        //error_log("getInfoFromSliverStatusPG - am_url " . $am_url . " am_item " . $am_item);
         $status_item = Array();
     	// AM url
     	$status_item['url'] = $am_url;
@@ -201,14 +204,17 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
     	$status_item['am_name'] = am_name($am_url);
 
     	if (!$am_item){
+	 //error_log("getInfoFromSliverStatusPG - empty sliver status!");
       	// "ERROR: empty sliver status!"
 	   continue;
     	}
     	if (! array_key_exists("users", $am_item )){
+	// error_log("getInfoFromSliverStatusPG - no users!");
       	//    "ERROR: No 'users' key in sliver status!"
 	      continue;
     	}
     	if (! array_key_exists('geni_resources', $am_item)){
+	// error_log("getInfoFromSliverStatusPG - no resources!");
       	// "ERROR: Sliver Status lists no resources"
 	   continue;
     	}
@@ -291,6 +297,7 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
    }
 
    }
+   //error_log("getInfoFromSliverStatusPG - ret status_array" . print_r($status_array, True));
    return $status_array; 
 }
 

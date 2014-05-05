@@ -88,16 +88,24 @@ $msg = $statRet[0];
 $obj = $statRet[1];
 // $good = $statRet[2];
 
+//error_log("amdetails after query_details msg " .  print_r($msg, True));
+//error_log("amdetails after query_details obj " .  print_r($obj, True));
+//error_log("amdetails after query_details count " .  count($obj));
 $status_array = Array();
+
 
 if (count($obj)>0) {
 // if (isset($obj) && $obj && is_array($obj)) {
    // fill in sliver details for each agg 
+  if(preg_match("/Terminated/", $msg) == 1) {
+    //error_log("amdetails 1");
+    print "<i>No response from aggregate ".am_name(key($obj))." </i><br/>\n";
+  }
   $filterToAM = True;
   print_rspec( $obj, $pretty, $filterToAM );
 } else {
   // FIXME: $obj might be an error message?
-  print "<i>No resources found.</i><br/>\n";
+    print "<i>No resources found.</i><br/>\n";
 }
 
 if (isset($msg) && $msg && $msg != '') {

@@ -179,6 +179,7 @@ $obj = array();
 $obj[] = $s;
 $obj[] = $f;
 
+//error_log("RenewSliver count($retVal) " . count($retVal));
 if ( count($retVal) == 2 ) {
    $msg = $retVal[0];
    $obj1 = $retVal[1];
@@ -220,6 +221,15 @@ $slice2 = lookup_slice($sa_url, $user, $slice_id);
 $slice_expiration_db = $slice2[SA_ARGUMENT::EXPIRATION];
 $slice_expiration = dateUIFormat($slice_expiration_db);
 
+//if terminated obj[1] is failed nodes; so on terminated want to append the AM to $obj[1]
+//error_log("RenewSliver msg = " . $msg . " obj " . print_r($obj, true));
+if(preg_match("/Terminated/", $msg) == 1) {
+    $rrht = $obj[1];			      
+    $rrht[] = am_name($am_url);
+    $obj[1] = $rrht;
+}
+
+//error_log("RenewSliver msg = " . $msg . " obj " . print_r($obj, true));
 // Set headers for download
 header("Cache-Control: public");
 header("Content-Type: application/json");
