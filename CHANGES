@@ -6,6 +6,7 @@
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
+ * Remove slice expiration from sliver renewal entry (#1010)
 
 == 2.12 ==
  * Delete temporary km files (#979)
