@@ -267,7 +267,11 @@ function toggleDiv(divId) {
 </script>
 
 <?php
-print "<h2>GENI Certificate Management</h2>\n";
+$page_header = "GENI Certificate Management";
+if ($renew) {
+  $page_header = "GENI Certificate Renewal";
+}
+print "<h2>$page_header</h2>\n";
 include("tool-showmessage.php");
 
 if (! isset($member_id)) {
