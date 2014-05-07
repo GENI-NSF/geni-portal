@@ -14,7 +14,7 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'https://128.89.72.107:5002',
+      'https://128.89.118.100:5002',
       -- CERT
       '/usr/share/geni-ch/sr/certs/gr-bbncam-am.pem',
       -- NAME
