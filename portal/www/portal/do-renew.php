@@ -88,7 +88,8 @@ if (array_key_exists('renew', $_GET)) {
      $renew_sliver = true;
   }
 }
-if (array_key_exists('sliver_expiration', $_GET)) {
+if (array_key_exists('sliver_expiration', $_GET)
+    && $_GET['sliver_expiration']) {
   // what we got asked for
   $desired_expiration = $_GET['sliver_expiration'];
   $desired_obj = new DateTime($desired_expiration);
