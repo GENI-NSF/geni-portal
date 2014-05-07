@@ -145,7 +145,7 @@ function build_agg_table_on_slicepg()
 		$output .= "<input type=\"hidden\" name=\"renew\" value=\"sliver\"/>\n";
 		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration' ";
 		$size = strlen($slice_date_expiration) + 3;
-		$output .= "size=\"$size\" value=\"".$slice_date_expiration."\"/>\n";
+		$output .= "size=\"$size\"/>\n";
 		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
 		$output .= "</form>";
 	    }		

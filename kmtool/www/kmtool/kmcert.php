@@ -63,6 +63,8 @@ if (array_key_exists('displayName', $_SERVER)) {
   $username = $_REQUEST["username"];
 }
 
+$renew = (key_exists('renew', $_REQUEST) && $_REQUEST['renew']);
+
 function show_close_button() {
   if (key_exists("close", $_REQUEST)) {
     print "<br/>\n";
@@ -232,7 +234,26 @@ if (! isset($member_id)) {
   exit;
 }
 
+$result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
+$has_cert = (! is_null($result));
+// Has the certificate expired?
+$expired = false;
+// Will the certificate expire soon?
+$expiring = false;
+if (array_key_exists('expiration', $result)) {
+  // Is expiration real soon or in the past?
+  $expiration = $result['expiration'];
+  $now = new DateTime('now', new DateTimeZone("UTC"));
+  $diff = $now->diff($expiration);
+  $days = $diff->days;
+  $expired = ($days < 1);
+  $expiring = ($days < 31);
+}
 
+
+//----------------------------------------------------------------------
+// Mostly display after this point.
+//----------------------------------------------------------------------
 
 include('kmheader.php');
 ?>
@@ -246,7 +267,11 @@ function toggleDiv(divId) {
 </script>
 
 <?php
-print "<h2>GENI Certificate Management</h2>\n";
+$page_header = "GENI Certificate Management";
+if ($renew) {
+  $page_header = "GENI Certificate Renewal";
+}
+print "<h2>$page_header</h2>\n";
 include("tool-showmessage.php");
 
 if (! isset($member_id)) {
@@ -257,12 +282,18 @@ if (! isset($member_id)) {
 }
 
 $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
-if (! is_null($result)) {
+if (!$renew && $has_cert && (! $expired)) {
   $msg = "Download Your Portal Generated Certificate and Private Key";
   // User has an outside cert. Show the download screen.
   if (! key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)
       || ! $result[MA_ARGUMENT::PRIVATE_KEY]) {
     $msg = "Download your Portal Signed Certificate";
+  }
+  if ($expiring) {
+    print '<p>';
+    print "Your certificate will expire in $days days.";
+    print ' <a href="kmcert.php?renew=1">Renew now</a>.';
+    print '</p>';
   }
 ?>
 <h4><?php print $msg;?>:</h4>
@@ -282,7 +313,15 @@ if (! is_null($result)) {
 <p>In order to use some GENI tools (like
 <a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need a signed SSL user certificate.
 </p><p>
-There are two options for creating this:
+There are two options for
+<?php
+if ($renew) {
+  echo 'renewing';
+} else {
+  echo 'creating';
+}
+?>
+ a certificate:
 <ol>
 <li>Have it generated for you.  This is the easiest option. <b>If in doubt, use this option.</b></li>
 <li>Have the SSL certificate generated for you based on a private key you keep locally. This is the most secure option.  For advanced users only.</li>

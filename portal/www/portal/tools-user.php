@@ -50,8 +50,6 @@ END;
 
 <h1>Profile</h1>
 
-<?php include "tabs.js"; ?>
-
   <div id='tablist'>
 		<ul class='tabs'>
 			<li><a href='#accountsummary'>Account Summary</a></li>
@@ -182,26 +180,59 @@ if (! isset($ma_url)) {
 }
 
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
+$expiration_key = 'expiration';
 $has_certificate = False;
 $has_key = False;
+$expired = False;
+$expiration = NULL;
 if (! is_null($result)) {
   $has_certificate = True;
   $has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $result);
+  if (array_key_exists($expiration_key, $result)) {
+    $expiration = $result[$expiration_key];
+    $now = new DateTime('now', new DateTimeZone("UTC"));
+    $expired = ($expiration < $now);
+  }
 }
 
 $kmcert_url = "kmcert.php?close=1";
-print "<button onClick=\"window.open('$kmcert_url')\">";
+$button1_label = 'Create an SSL certificate';
 if (! $has_certificate) {
-  print "Generate an SSL certificate";
+  /* No certificate, so show the create button. */
+  print "<button onClick=\"window.open('$kmcert_url')\">";
+  print $button1_label;
+  print "</button>";
+  print "</p>";
+} else if ($expired) {
+  /* Have an expired certificate, just renew it. */
+  print 'Your SSL certificate has expired. Please';
+  print ' <a href="kmcert.php?close=1&renew=1" target="_blank">';
+  print 'renew your SSL certifcate</a> now';
+  print '</p>';
 } else {
+  /* Have a current certificate */
   if ($has_key) {
-    print "Download your Portal generated SSL certificate and key";
-  } else {
-    print "Download your Portal signed SSL certificate";
+    $button1_label = 'Download your SSL certificate and key';
+  } else if ($has_certificate) {
+    $button1_label = 'Download your SSL certificate';
   }
+  print "<button onClick=\"window.open('$kmcert_url')\">";
+  print $button1_label;
+  print "</button>";
+  print "</p>";
+
+  // Display a renew link
+  print '<p>';
+  if ($expiration) {
+    print 'Your SSL certificate expires on ';
+    print dateUIFormat($expiration);
+    print '.';
+  }
+  print ' You can <a href="kmcert.php?close=1&renew=1" target="_blank">';
+  print 'renew your SSL certifcate</a> any time';
+  print '</p>';
 }
-print "</button>";
-print "</p>";
+
 // END SSL tab
 echo "</div>";
 
@@ -446,3 +477,4 @@ echo "</div>";
   echo "</div>";
 
 ?>
+<?php include "tabs.js"; ?>

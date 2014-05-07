@@ -518,7 +518,8 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
   }
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $public_options = array('match' => array('MEMBER_UID'=>$member_id),
-                          'filter' => array('_GENI_MEMBER_SSL_CERTIFICATE'));
+                          'filter' => array('_GENI_MEMBER_SSL_CERTIFICATE',
+                                            '_GENI_MEMBER_SSL_EXPIRATION'));
   $public_options = array_merge($public_options, $client->options());
   $public_res = $client->lookup_public_member_info($client->creds(), 
                                                    $public_options);
@@ -534,7 +535,13 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
     // If there is no certificate, return NULL.
     return NULL;
   }
-
+  if (array_key_exists('_GENI_MEMBER_SSL_EXPIRATION',
+                       $public_res[$member_urn])) {
+    // Convert expiration to DateTime from string
+    $expiration = $public_res[$member_urn]['_GENI_MEMBER_SSL_EXPIRATION'];
+    $expiration = new DateTime($expiration);
+    $result[MA_ARGUMENT::EXPIRATION] = $expiration;
+  }
   $private_options = array('match'=> array('MEMBER_UID'=>$member_id),
                            'filter'=>array('_GENI_MEMBER_SSL_PRIVATE_KEY'));
   $private_options = array_merge($private_options, $client->options());
