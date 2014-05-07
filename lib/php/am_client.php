@@ -35,6 +35,14 @@ require_once("pa_constants.php");
 require_once('cert_utils.php');
 require_once('cs_constants.php');
 
+//Constants defined for proc_open
+//String used for msg to return - in some UI - this is the message that is displayed
+define("AM_CLIENT_TIMED_OUT_MSG", "Operation timed out", true);
+//how long to wait before to time out omni process (in seconds) - try 12 minutes
+define("AM_CLIENT_OMNI_KILL_TIME", 720);
+//if want to test early omni termination
+//define("AM_CLIENT_OMNI_KILL_TIME", 1);
+
 function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL, $slice_id = NULL)
 {
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -399,9 +407,10 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      $output= '';
      $outchunk = fread($pipes[1], $bufsiz);
 
+     //time to terminate omni process
      $now = time();
-     //$kill_time = $now + (60 * 7);
-     $kill_time = $now + (1);
+     $kill_time = $now + AM_CLIENT_OMNI_KILL_TIME;
+
 
      while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
        if ($outchunk != null)
@@ -419,25 +428,18 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
         fclose($pipes[0]);
      	fclose($pipes[1]);
 	$return_value = $status['exitcode'];
-	//echo "command returned $return_value\n";
-	//echo "-----\n";
 	proc_close($handle);
      }  else {
     // Still running, terminate it.
     // See https://bugs.php.net/bug.php?id=39992, for problems
     // terminating child processes and a workaround involving posix_setpgid()
-       // echo "Terminating process\n";
 	fclose($pipes[0]);
 	fclose($pipes[1]);
 	$term_result = proc_terminate($handle);
-	//echo "Termination result = $term_result\n";
-	//$output = "{}";
-	// Timeout error
-	//$output = '{"geni_code" : "8" , "output" : "Terminated"}';
-	//$output = '["Terminated Output\n", {})]';  //why does the extra ) populate values
-//	$output = '["Terminated", {}]';
-	$output = "Terminated communication";
-//	$output = array("Terminated", array($am_url => ""));
+	// Omni is taking too long to respond so
+	// assign Timeout error message to output and this message may show up in UI
+	//msg constant defined above
+	$output = AM_CLIENT_TIMED_OUT_MSG;
      }
 
      unlink($cert_file);
@@ -452,7 +454,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        unlink($speaks_for_cred_filename);
      }
 
-     //error_log("am_client output " .  print_r($output, True));
+     error_log("am_client output " .  print_r($output, True));
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
        error_log("am_client invoke_omni_function:"
@@ -468,7 +470,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
        unlink($omni_log_file);
      }
-     //error_log("Returning output2 : " . print_r($output2, True));
+     error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 
@@ -575,7 +577,6 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
   $output = invoke_omni_function($am_url, $user, $args);
   // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
-  //error_log("in renew_sliver after omni " . print_r($output, True));
   return $output;
 }
 
@@ -641,7 +642,6 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 		'sliverstatus',
 		$slice_urn);
   $output = invoke_omni_function($am_url, $user, $args);
-  //error_log("in sliver_status after omni " . print_r($output, True));
   unlink($slice_credential_filename);
   return $output;
 }
@@ -674,7 +674,6 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
   // Note that this AM no longer has resources
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
-  //error_log("in delete_sliver pre $output return " . print_r($output, True));
   return $output;
 }
 

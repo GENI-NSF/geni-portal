@@ -81,7 +81,6 @@ $agg_array = get_am_array($ams);
 // Set headers for json
 header("Cache-Control: public");
 header("Content-Type: application/json");
-//error_log("aggregates responseTxt - ". json_encode($agg_array));
 print json_encode($agg_array);
 
 ?>
