@@ -35,6 +35,14 @@ require_once("pa_constants.php");
 require_once('cert_utils.php');
 require_once('cs_constants.php');
 
+//Constants defined for proc_open
+//String used for msg to return - in some UI - this is the message that is displayed
+define("AM_CLIENT_TIMED_OUT_MSG", "Operation timed out", true);
+//how long to wait before to time out omni process (in seconds) - try 12 minutes
+define("AM_CLIENT_OMNI_KILL_TIME", 720);
+//if want to test early omni termination
+//define("AM_CLIENT_OMNI_KILL_TIME", 1);
+
 function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL, $slice_id = NULL)
 {
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -364,6 +372,15 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 		       //                       defines no AM nicknames
 		       $tmp_agg_cache);
 
+    $descriptor_spec = array(
+                         // stdin is a pipe that the child will read from
+                         0 => array("pipe", "r"),
+                         // stdout is a pipe that the child will write to
+                         1 => array("pipe", "w"),
+                          // stderr is a file to write to
+                         2 => array("file", "/tmp/error-output.txt", "a"));
+
+
     if (!is_array($am_url)){
       $cmd_array[]='-a';
       $cmd_array[]=$am_url;
@@ -383,16 +400,48 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $command = implode(" ", $cmd_array);
 
      error_log("am_client invoke_omni_function COMMAND = " . $command);
-     $handle = popen($command . " 2>&1", "r");
+     $handle = proc_open($command, $descriptor_spec, $pipes);
+
+     stream_set_blocking($pipes[1], 0);
+     $bufsiz = 1024;
      $output= '';
-     $read = fread($handle, 1024);
-     while($read != null) {
-       if ($read != null)
-	 $output = $output . $read;
-       $read = fread($handle, 1024);
+     $outchunk = fread($pipes[1], $bufsiz);
+
+     //time to terminate omni process
+     $now = time();
+     $kill_time = $now + AM_CLIENT_OMNI_KILL_TIME;
+
+
+     while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
+       if ($outchunk != null)
+	 $output = $output . $outchunk;
+       $outchunk = fread($pipes[1], $bufsiz);
+       $now = time();
      }
-     pclose($handle);
-  
+
+     //fclose($pipes[0]);
+     //fclose($pipes[1]);
+     //proc_close($handle);
+
+     $status = proc_get_status($handle);
+     if (!$status['running']) {
+        fclose($pipes[0]);
+     	fclose($pipes[1]);
+	$return_value = $status['exitcode'];
+	proc_close($handle);
+     }  else {
+    // Still running, terminate it.
+    // See https://bugs.php.net/bug.php?id=39992, for problems
+    // terminating child processes and a workaround involving posix_setpgid()
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	$term_result = proc_terminate($handle);
+	// Omni is taking too long to respond so
+	// assign Timeout error message to output and this message may show up in UI
+	//msg constant defined above
+	$output = AM_CLIENT_TIMED_OUT_MSG;
+     }
+
      unlink($cert_file);
      unlink($key_file);
      unlink($omni_file);
@@ -405,6 +454,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        unlink($speaks_for_cred_filename);
      }
 
+     error_log("am_client output " .  print_r($output, True));
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
        error_log("am_client invoke_omni_function:"
@@ -420,6 +470,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
        unlink($omni_log_file);
      }
+     error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 

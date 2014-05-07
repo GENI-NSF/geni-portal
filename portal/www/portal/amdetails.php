@@ -93,6 +93,9 @@ $status_array = Array();
 if (count($obj)>0) {
 // if (isset($obj) && $obj && is_array($obj)) {
    // fill in sliver details for each agg 
+  if(preg_match("/".AM_CLIENT_TIMED_OUT_MSG."/", $msg) == 1) {
+    print "<i>No response from aggregate ".am_name(key($obj))." </i><br/>\n";
+  }
   $filterToAM = True;
   print_rspec( $obj, $pretty, $filterToAM );
 } else {
