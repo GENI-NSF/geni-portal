@@ -14,7 +14,7 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'https://geni-am.net.internet2.edu:12346',
+      'http://geni-am.net.internet2.edu:12346',
       -- CERT
      '/usr/share/geni-ch/sr/certs/ion.pem',
       -- NAME
