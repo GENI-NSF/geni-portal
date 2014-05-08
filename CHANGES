@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.14 ==
+ * Update ION AM SSL certificate (#1012)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
