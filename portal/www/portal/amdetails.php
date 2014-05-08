@@ -110,7 +110,7 @@ if (count($obj)>0) {
   $filterToAM = True;
   print_rspec( $obj, $pretty, $filterToAM );
   if ($jacks) {
-  	$xmlRspec = get_rspec_json( $obj, $pretty, $filterToAM );
+  	$xmlRspec = get_rspec_xml( $obj, $pretty, $filterToAM );
   	if ($xmlRspec != "null") {
   		print "<div id='jacksContainer' class='jacks resources' style='background-color: white'></div>";
   	}
@@ -122,7 +122,7 @@ if (count($obj)>0) {
   		thisInstance = new window.Jacks({
         mode: 'viewer',
         source: 'rspec',
-        size: { x: 757, y: 400},
+        size: { x: 756, y: 400},
         root: '#jacksContainer',
         readyCallback: function (input, output) {
           input.trigger('change-topology',

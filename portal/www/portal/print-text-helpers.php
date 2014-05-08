@@ -419,7 +419,7 @@ function print_return( $obj, $topLevel ) {
   }
 }
 
-function get_rspec_json( $obj, $pretty, $filterToAM ) {
+function get_rspec_xml( $obj, $pretty, $filterToAM ) {
   $args = array_keys( $obj );
 
   // How many AMs reported actual results
