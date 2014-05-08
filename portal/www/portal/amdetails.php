@@ -75,6 +75,17 @@ if (array_key_exists("pretty", $_REQUEST)){
   $pretty=True;
 }
 
+if (array_key_exists("jacks", $_REQUEST)){
+  $jacks = $_REQUEST['jacks'];
+  if (strtolower($jacks) == "true") {
+    $jacks = True;
+  } else {
+    $jacks = False;
+  }
+} else {
+  $jacks=False;
+}
+
 
 // Close the session here to allow multiple AJAX requests to run
 // concurrently. If the session is left open, it holds the session
@@ -98,6 +109,30 @@ if (count($obj)>0) {
   }
   $filterToAM = True;
   print_rspec( $obj, $pretty, $filterToAM );
+  if ($jacks) {
+  	$xmlRspec = get_rspec_json( $obj, $pretty, $filterToAM );
+  	if ($xmlRspec != "null") {
+  		print "<div id='jacksContainer' class='jacks resources' style='background-color: white'></div>";
+  	}
+
+  	print "<script>
+    $(document).ready(function() {
+  	var xml = \"$xmlRspec\";
+  	if (xml !== 'null') {
+  		thisInstance = new window.Jacks({
+        mode: 'viewer',
+        source: 'rspec',
+        size: { x: 757, y: 400},
+        root: '#jacksContainer',
+        readyCallback: function (input, output) {
+          input.trigger('change-topology',
+                        [{ rspec: xml }]);
+        }
+    	});
+  	}
+  });
+  	</script>";
+  }
 } else {
   // FIXME: $obj might be an error message?
   print "<i>No resources found.</i><br/>\n";

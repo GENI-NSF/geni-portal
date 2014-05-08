@@ -70,6 +70,17 @@ if (array_key_exists("pretty", $_REQUEST)){
   $pretty=True;
 }
 
+if (array_key_exists("jacks", $_REQUEST)){
+  $jacks = $_REQUEST['jacks'];
+  if (strtolower($jacks) == "true") {
+    $jacks = True;
+  } else {
+    $jacks = False;
+  }
+} else {
+  $jacks=False;
+}
+
 $text = "";
 // Takes an arg am_id which may have multiple values. Each is treated
 // as the ID from the DB of an AM which should be queried
@@ -140,11 +151,14 @@ if (! is_array($retVal) or count($retVal) == 1) {
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 ?>
 
+<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
 <script src="amstatus.js"></script>
 <script>
+var thisInstance;
 var slice= "<?php echo $slice_id ?>";
 var am_id= "<?php echo $am_id ?>";
 var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
+var jacks = "<?php echo $jacks ? 'true' : 'false';?>";
 $(document).ready(build_details_table);
 //$(document).ready(add_all_logins_to_manifest_table);
 </script>

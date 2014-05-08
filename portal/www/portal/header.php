@@ -190,7 +190,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '</title>';
 
   /* Javascript stuff. */
-  echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>';
+  echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
   echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>';
 
   foreach ($extra_js as $js_url) {
