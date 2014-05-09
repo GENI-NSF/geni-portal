@@ -109,29 +109,31 @@ if (count($obj)>0) {
   }
   $filterToAM = True;
   print_rspec( $obj, $pretty, $filterToAM );
+
   if ($jacks) {
+    // Get the rspec in xml format without HTML clutter
   	$xmlRspec = get_rspec_xml( $obj, $pretty, $filterToAM );
-  	if ($xmlRspec != "null") {
+  	if ($xmlRspec && $xmlRspec != "null") {
   		print "<div id='jacksContainer' class='jacks resources' style='background-color: white'></div>";
+
+      print "<script>
+              $(document).ready(function() {
+              var xml = \"$xmlRspec\";
+                thisInstance = new window.Jacks({
+                  mode: 'viewer',
+                  source: 'rspec',
+                  size: { x: 756, y: 400},
+                  root: '#jacksContainer',
+                  readyCallback: function (input, output) {
+                    input.trigger('change-topology',
+                                  [{ rspec: xml }]);
+                  }
+                });
+              });
+            </script>";
   	}
 
-  	print "<script>
-    $(document).ready(function() {
-  	var xml = \"$xmlRspec\";
-  	if (xml !== 'null') {
-  		thisInstance = new window.Jacks({
-        mode: 'viewer',
-        source: 'rspec',
-        size: { x: 756, y: 400},
-        root: '#jacksContainer',
-        readyCallback: function (input, output) {
-          input.trigger('change-topology',
-                        [{ rspec: xml }]);
-        }
-    	});
-  	}
-  });
-  	</script>";
+  	
   }
 } else {
   // FIXME: $obj might be an error message?

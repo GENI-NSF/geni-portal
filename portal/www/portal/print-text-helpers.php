@@ -463,10 +463,9 @@ function get_rspec_xml( $obj, $pretty, $filterToAM ) {
     if (!(($code == -1 or $code == 12 or $code == 2) and $pretty)){ 
 
       if ($code == 0){
-	      /* Parse xml into json format */
+	      /* Ensure xml is in parsable format,  */
         $xml = str_replace(array("\n", "\r", "\t"), '', $xml);
         $xml = trim(str_replace('"', "'", $xml));
-        $simpleXml = simplexml_load_string($xml);
 
 	  	  return $xml;
       } else {
