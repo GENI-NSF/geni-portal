@@ -6,6 +6,7 @@
 
 == 2.14 ==
  * Update ION AM SSL certificate (#1012)
+ * Use HTTPS URLs for map data to avoid mixed content warning (#1014)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)

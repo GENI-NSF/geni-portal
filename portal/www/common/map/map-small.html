@@ -9,11 +9,12 @@ window.onload = function init() {
 
   // create map and add OSM as base
   var map1 = new OpenLayers.Map("map1");
-  //var osm1 = new OpenLayers.Layer.OSM();
-  var osm1 = new OpenLayers.Layer.OSM("Mapnik",
-  ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-   "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-   "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"]);
+  // Explicitly use HTTPS URLs to avoid a mixed content warning
+  // from web browsers. The default tile URLs use HTTP.
+  var tileURLs = ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                  "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                  "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"];
+  var osm1 = new OpenLayers.Layer.OSM("OpenStreetMap", tileURLs);
   map1.addLayer(osm1);
   
   // Initial view location
