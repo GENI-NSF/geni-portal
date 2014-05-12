@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.14 ==
+ * Add Jacks viewer to details page (#1011)
  * Update ION AM SSL certificate (#1012)
  * Use HTTPS URLs for map data to avoid mixed content warning (#1014)
 
