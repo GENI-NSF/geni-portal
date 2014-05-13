@@ -476,7 +476,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
        unlink($omni_log_file);
      }
-     error_log("Returning output2 : " . print_r($output2, True));
+     //     error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 

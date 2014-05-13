@@ -13,6 +13,7 @@
    set to 12 minutes. Be sure to propagate the 'failed' message back
    to client calls when the call times out. (#863)
  * Avoid busy waits and failing to read all output from spawned Omni calls. (#1016)
+ * Remove old non-AJAX listresources call from details page. Only call it once. (#1017)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
