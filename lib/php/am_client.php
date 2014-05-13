@@ -405,18 +405,24 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      stream_set_blocking($pipes[1], 0);
      $bufsiz = 1024;
      $output= '';
-     $outchunk = fread($pipes[1], $bufsiz);
+     $outchunk = null;
 
      //time to terminate omni process
      $now = time();
      $kill_time = $now + AM_CLIENT_OMNI_KILL_TIME;
 
-
      while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
-       if ($outchunk != null)
-	 $output = $output . $outchunk;
        $outchunk = fread($pipes[1], $bufsiz);
+       if ($outchunk != null && $outchunk !== FALSE) {
+	 $output = $output . $outchunk;
+       }
+       sleep(1); // Avoid a busy wait that makes the page hit the PGP 30secs max execution time
        $now = time();
+     }
+     // Catch any final output after timeout
+     $outchunk = fread($pipes[1], $bufsiz);
+     if ($outchunk != null && $outchunk !== FALSE) {
+       $output = $output . $outchunk;
      }
 
      //fclose($pipes[0]);
