@@ -8,6 +8,11 @@
  * Add Jacks viewer to details page (#1011)
  * Update ION AM SSL certificate (#1012)
  * Use HTTPS URLs for map data to avoid mixed content warning (#1014)
+ * Use proc_open not popen to spawn omni calls, allowing us
+   to watch the output and timeout long running calls. Current timeout
+   set to 12 minutes. Be sure to propagate the 'failed' message back
+   to client calls when the call times out. (#863)
+ * Avoid busy waits and failing to read all output from spawned Omni calls. (#1016)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
