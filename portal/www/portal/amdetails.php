@@ -64,28 +64,6 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-if (array_key_exists("pretty", $_REQUEST)){
-  $pretty = $_REQUEST['pretty'];
-  if (strtolower($pretty) == "false") {
-    $pretty = False;
-  } else {
-    $pretty = True;
-  }
-} else {
-  $pretty=True;
-}
-
-if (array_key_exists("jacks", $_REQUEST)){
-  $jacks = $_REQUEST['jacks'];
-  if (strtolower($jacks) == "true") {
-    $jacks = True;
-  } else {
-    $jacks = False;
-  }
-} else {
-  $jacks=False;
-}
-
 
 // Close the session here to allow multiple AJAX requests to run
 // concurrently. If the session is left open, it holds the session
@@ -108,13 +86,12 @@ if (count($obj)>0) {
     print "<i>".AM_CLIENT_TIMED_OUT_MSG." at aggregate ".am_name(key($obj))." </i><br/>\n";
   }
   $filterToAM = True;
-  print_rspec( $obj, $pretty, $filterToAM );
 
-  if ($jacks) {
+  print_rspec( $obj, True, $filterToAM );
     // Get the rspec in xml format without HTML clutter
-  	$xmlRspec = get_rspec_xml( $obj, $pretty, $filterToAM );
-  	if ($xmlRspec && $xmlRspec != "null") {
-  		print "<div id='jacksContainer' class='jacks resources' style='background-color: white'></div>";
+    $xmlRspec = get_rspec_xml( $obj, $pretty, $filterToAM );
+    if ($xmlRspec && $xmlRspec != "null") {
+      print "<div id='jacksContainer' class='jacks resources' style='background-color: white'></div>";
 
       print "<script>
               $(document).ready(function() {
@@ -131,10 +108,10 @@ if (count($obj)>0) {
                 });
               });
             </script>";
-  	}
-
-  	
-  }
+    }
+  print '<div class="rawRSpec" style="display: none;">';
+  print_rspec( $obj, False, $filterToAM );
+  print '</div>';
 } else {
   // FIXME: $obj might be an error message?
   print "<i>No resources found.</i><br/>\n";
