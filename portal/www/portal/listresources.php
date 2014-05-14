@@ -70,17 +70,6 @@ if (array_key_exists("pretty", $_REQUEST)){
   $pretty=True;
 }
 
-if (array_key_exists("jacks", $_REQUEST)){
-  $jacks = $_REQUEST['jacks'];
-  if (strtolower($jacks) == "true") {
-    $jacks = True;
-  } else {
-    $jacks = False;
-  }
-} else {
-  $jacks=False;
-}
-
 $header = "Resources on slice: $slice_name";
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
@@ -89,13 +78,21 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 <script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
 <script src="amstatus.js"></script>
 <script>
-var thisInstance;
-var slice= "<?php echo $slice_id ?>";
-var am_id= "<?php echo $am_id ?>";
-var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
-var jacks = "<?php echo $jacks ? 'true' : 'false';?>";
-$(document).ready(build_details_table);
-//$(document).ready(add_all_logins_to_manifest_table);
+  var thisInstance;
+  var slice= "<?php echo $slice_id ?>";
+  var am_id= "<?php echo $am_id ?>";
+  var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
+  var jacks = "<?php echo $jacks ? 'true' : 'false';?>";
+  $(document).ready(build_details_table);
+  //$(document).ready(add_all_logins_to_manifest_table);
+  $(document).ready(function() {
+  	$('#rawResource').click(function() {
+      $('.rawRSpec').each(function() {
+        $(this).attr('style', '');
+      });
+      $(this).attr('style', 'display: none;');
+    });
+  });
 </script>
 
 <?php
@@ -128,7 +125,7 @@ if ($pretty) {
     $am_id_str = "";
   }
 
-  print "<p><a href='listresources.php?pretty=False&jacks=True&slice_id=" . $slice_id . $am_id_str . "' target='_blank'>Raw Resource Specification</a></p>";
+  print "<p><a id='rawResource' style='cursor: pointer;'>Raw Resource Specification</a></p>";
 }
 
 print "<hr/><p>";
