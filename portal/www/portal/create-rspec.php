@@ -131,11 +131,13 @@ function postRspec(rspec)
 <?php
 $rspec = '<rspec></rspec>';
 
-print "<script>console.log('$rspec');</script>";
-$rspec = fetchRSpecById($rspec_id);
-$rspec = str_replace(array("\n", "\r", "\t"), '', $rspec);
-$rspec = trim(str_replace('"', "'", $rspec));
 
+if (array_key_exists('rspec_id', $_REQUEST)) {
+  $rspec = fetchRSpecById($rspec_id);
+  $rspec = str_replace(array("\n", "\r", "\t"), '', $rspec);
+  $rspec = trim(str_replace('"', "'", $rspec));
+
+}
 print "<script>var rspec=\"$rspec\"; console.log(rspec);</script>";
 
 include("tool-breadcrumbs.php");

@@ -76,7 +76,7 @@ function show_rspec_chooser($user) {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
-  print '<br><button onClick="sendRspecToJacks();">Edit Selected RSpec With Jacks</button>.';
+  print '<br><button onClick="sendRspecToJacks();">Edit Selected RSpec With Jacks</button>';
   print "<br>or <a href=\"rspecupload.php\">upload your own RSpec to the above list</a>.";
 //  print " or <button onClick=\"window.location='rspecupload.php'\">";
 //  print "upload your own RSpec</button>.";
