@@ -5,17 +5,20 @@
 = GENI Portal Release Notes =
 
 == 2.14 ==
- * Add Jacks viewer to details page (#1011)
- * Update ION AM SSL certificate (#1012)
- * Use HTTPS URLs for map data to avoid mixed content warning (#1014)
  * Use proc_open not popen to spawn omni calls, allowing us
    to watch the output and timeout long running calls. Current timeout
    set to 12 minutes. Be sure to propagate the 'failed' message back
    to client calls when the call times out. (#863)
- * Avoid busy waits and failing to read all output from spawned Omni calls. (#1016)
- * Remove old non-AJAX listresources call from details page. Only call it once. (#1017)
+ * Add Jacks viewer to details page (#1011)
+ * Update ION AM SSL certificate (#1012)
  * Add beta Jacks RSpec editor for adding resources. (#1013)
- * Refactor listresources so that only one call is made and Jacks is shown by defualt.
+ * Use HTTPS URLs for map data to avoid mixed content warning (#1014)
+ * Avoid busy waits and failing to read all output from spawned Omni
+   calls. (#1016)
+ * Remove old non-AJAX listresources call from details page. Only call
+   it once. (#1017)
+ * Refactor listresources so that only one call is made and Jacks is
+   shown by defualt. (#1020)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
