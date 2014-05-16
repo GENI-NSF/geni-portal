@@ -153,6 +153,11 @@ if ($private_key) {
   }
 }
 
+/* Setting $add_passphrase to FALSE here allows the certificate and
+   private key to be sent to the signing tool with no user
+   interaction. */
+$add_passphrase = FALSE;
+
 /* XXX FIXME: put the signing tool host and URL in a config file. */
 if (! isset($genilib_trusted_host)) {
   $genilib_trusted_host = 'https://ch.geni.net:8444';
@@ -245,11 +250,15 @@ Type in the same passphrase when prompted by the GENI Authorization Tool.
    <button type="submit">Send certificate to signing tool</button>
 </form>
 <?php } else { ?>
-<form onsubmit="return false;">
+<form onsubmit="return false;" hidden>
    <input id="loadcert"
           type="submit"
           value="Load my certificate"/>
 </form>
+<center>
+<progress id="progress-bar" value="0" max="3"></progress>
+<p id="progress-text"></p>
+</center>
 <?php } /* end if ($add_passphrase) */ ?>
 <br/>
 <?php
