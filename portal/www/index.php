@@ -79,6 +79,8 @@ function show_last_message() {
   </a>
 <h2>Find out more about using GENI</h2>
 <ul><li>
+   <a href="http://groups.geni.net/geni/wiki/GeniNewcomersWelcome">New to GENI?</a>
+</li><li>
    <a href="http://www.geni.net/experiment">Information for GENI experimenters</a>
 </li><li>
   <a
