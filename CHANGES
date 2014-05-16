@@ -9,6 +9,7 @@
    to watch the output and timeout long running calls. Current timeout
    set to 12 minutes. Be sure to propagate the 'failed' message back
    to client calls when the call times out. (#863)
+ * Add a New to GENI? link on landing page (#994)
  * Add Jacks viewer to details page (#1011)
  * Update ION AM SSL certificate (#1012)
  * Add beta Jacks RSpec editor for adding resources. (#1013)
