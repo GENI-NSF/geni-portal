@@ -28,7 +28,8 @@ require_once 'geni_syslog.php';
 require_once 'db-util.php';
 
 $all_rspecs = fetchRSpecMetaData($user);
-$my_rspecs = array();
+$my_public = array();
+$my_private = array();
 $public_rspecs = array();
 $public_owners = array();
 $me = $user->account_id;
@@ -41,7 +42,11 @@ function cmp($a,$b) {
 foreach ($all_rspecs as $rspec) {
   $owner = $rspec['owner_id'];
   if ($owner == $me) {
-    $my_rspecs[] = $rspec;
+    if ($rspec['visibility'] === 'private') {
+      $my_private[] = $rspec;
+    } else if ($rspec['visibility'] === 'public') {
+      $my_public[] = $rspec;
+    }
   } else {
     $public_rspecs[] = $rspec;
     $public_owners[] = $owner;
@@ -49,7 +54,8 @@ foreach ($all_rspecs as $rspec) {
 }
 
 /* Sort the rspecs by name */
-usort($my_rspecs,"cmp");
+usort($my_private,"cmp");
+usort($my_public,"cmp");
 usort($public_rspecs,"cmp");
 $public_owners = array_unique($public_owners);
 
@@ -77,21 +83,26 @@ print "of your existing RSpecs please delete it and upload a new version.</p>";
 /* Show the table of existing private RSpecs. */
 print '<a name="privateRSpecs"></a>';
 print "<h3>My Private RSpecs</h3>\n";
-rspec_table_header();
-foreach ($my_rspecs as $rspec) {
-  if ($rspec['visibility'] === "private")
+if (count($my_private) > 0) {
+  rspec_table_header();
+  foreach ($my_private as $rspec) {
     display_rspec($rspec, $owners);
+  }
+  rspec_table_footer();
+} else {
+  print "<p><i>None</i></p>\n";
 }
-rspec_table_footer();
-
 /* Show the table of existing public but editable RSpecs. */
 print "<h3>My Public RSpecs</h3>\n";
-rspec_table_header();
-foreach ($my_rspecs as $rspec) {
-  if ($rspec['visibility'] === "public")
+if (count($my_public) > 0) {
+  rspec_table_header();
+  foreach ($my_public as $rspec) {
     display_rspec($rspec, $owners);
+  }
+  rspec_table_footer();
+} else {
+  print "<p><i>None</i></p>\n";
 }
-rspec_table_footer();
 
 print '<a name="publicRSpecs"></a>';
 print("<h3>Public RSpecs that other users have shared</h3>\n");
