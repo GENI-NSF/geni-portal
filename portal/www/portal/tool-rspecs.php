@@ -41,15 +41,14 @@ foreach ($all_rspecs as $rspec) {
   $owner = $rspec['owner_id'];
   if ($owner == $me) {
     $my_rspecs[] = $rspec;
-    usort($my_rspecs,"cmp");
-
   } else {
     $public_rspecs[] = $rspec;
-    usort($public_rspecs,"cmp");
-
   }
 }
 
+/* Sort the rspecs by name */
+usort($my_rspecs,"cmp");
+usort($public_rspecs,"cmp");
 
 /* Display starts here. */
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
