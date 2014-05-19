@@ -109,11 +109,10 @@ rspec_table_footer();
 function rspec_table_header($public=False) {
   print "<table>\n";
   if ($public) {
-     $columns = array("Name", "Description", "Owner", "View",
-          "Download");
+     $columns = array("Name", "Description", "Owner", "&nbsp;", "&nbsp;");
   } else {
-     $columns = array("Name", "Description", "Edit", "View",
-     	  "Download", "Delete");
+     $columns = array("Name", "Description", "&nbsp;", "&nbsp;", "&nbsp;",
+                      "&nbsp;");
   }
   print "<tr>";
   foreach ($columns as $c) {
