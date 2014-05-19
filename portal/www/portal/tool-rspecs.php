@@ -30,6 +30,7 @@ require_once 'db-util.php';
 $all_rspecs = fetchRSpecMetaData($user);
 $my_rspecs = array();
 $public_rspecs = array();
+$public_owners = array();
 $me = $user->account_id;
 
 function cmp($a,$b) {
@@ -43,12 +44,24 @@ foreach ($all_rspecs as $rspec) {
     $my_rspecs[] = $rspec;
   } else {
     $public_rspecs[] = $rspec;
+    $public_owners[] = $owner;
   }
 }
 
 /* Sort the rspecs by name */
 usort($my_rspecs,"cmp");
 usort($public_rspecs,"cmp");
+$public_owners = array_unique($public_owners);
+
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+/* Find member info for public rspecs */
+$details = lookup_member_details($ma_url, $user, $public_owners);
+$owners = array();
+foreach ($details as $member_id => $record) {
+  $member = new Member($member_id);
+  $member->init_from_record($record);
+  $owners[$member_id] = $member;
+}
 
 /* Display starts here. */
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
@@ -67,7 +80,7 @@ print "<h3>My Private RSpecs</h3>\n";
 rspec_table_header();
 foreach ($my_rspecs as $rspec) {
   if ($rspec['visibility'] === "private")
-    display_rspec($rspec);
+    display_rspec($rspec, $owners);
 }
 rspec_table_footer();
 
@@ -76,7 +89,7 @@ print "<h3>My Public RSpecs</h3>\n";
 rspec_table_header();
 foreach ($my_rspecs as $rspec) {
   if ($rspec['visibility'] === "public")
-    display_rspec($rspec);
+    display_rspec($rspec, $owners);
 }
 rspec_table_footer();
 
@@ -86,7 +99,7 @@ print("<h3>Public RSpecs that other users have shared</h3>\n");
 /* Show the table of public RSpecs. */
 rspec_table_header(True);
 foreach ($public_rspecs as $rspec) {
-  display_rspec($rspec, True);
+  display_rspec($rspec, $owners, True);
 }
 rspec_table_footer();
 
@@ -96,10 +109,10 @@ rspec_table_footer();
 function rspec_table_header($public=False) {
   print "<table>\n";
   if ($public) {
-     $columns = array("Name", "Description", "Visibility", "View",
+     $columns = array("Name", "Description", "Owner", "View",
           "Download");
   } else {
-     $columns = array("Name", "Description", "Visibility", "Edit", "View",
+     $columns = array("Name", "Description", "Edit", "View",
      	  "Download", "Delete");
   }
   print "<tr>";
@@ -108,7 +121,7 @@ function rspec_table_header($public=False) {
   }
   print "</tr>\n";
 }
-function display_rspec($rspec, $public=False) {
+function display_rspec($rspec, $owners, $public=False) {
   // Customize these with the RSpec id.
   $id = $rspec['id'];
   if (! $public){
@@ -123,15 +136,24 @@ function display_rspec($rspec, $public=False) {
      $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
   }
   if ($public) {
+    $owner_id = $rspec['owner_id'];
+    if (array_key_exists($owner_id, $owners)) {
+      $owner = $owners[$owner_id];
+      $mailto = ('<a href="mailto:' . $owner->email_address . '">'
+                 . $owner->prettyName() . '</a>');
+    } else {
+      /* Some rspecs have no owner because they were pre-loaded at the
+         advent of the portal. Mark these as owned by GENI. */
+      $mailto = '<a href="mailto:help@geni.net">help@geni.net</a>';
+    }
     $columns = array($rspec['name'],
           $rspec['description'],
-          $rspec['visibility'],
+          $mailto,
           $view_btn,
           $download_btn);
   } else {
     $columns = array($rspec['name'],
           $rspec['description'],
-          $rspec['visibility'],
           $edit_btn,
           $view_btn,
           $download_btn,
