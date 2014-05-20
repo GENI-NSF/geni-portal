@@ -290,7 +290,7 @@ var all_ams= '<?php echo json_encode($all_ams) ?>';
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
 <?php include('status_constants_import.php'); ?>
 function confirmQuery() {
-  if ($("#sliceslivers").attr('checked')) {
+  if ($("#sliceslivers").is(':checked')) {
     var result = confirm("This action will renew resources at all aggregates and may take several minutes.");
     console.log("result = " + result);
     if (result) {
