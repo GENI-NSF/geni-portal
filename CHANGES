@@ -25,6 +25,7 @@
  * Incorporate xml-signer 0.7 (#1022)
  * Update wording on join project page (#1023)
  * Update wording on SSH keys page (#1024)
+ * Changed listresources page to allow multiple Jacks windows (#1025)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
