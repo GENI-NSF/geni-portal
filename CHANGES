@@ -23,6 +23,7 @@
    shown by defualt. (#1020)
  * Remove PUBLIC_KEYs from DETAILS_PUBLIC (#1021)
  * Incorporate xml-signer 0.7 (#1022)
+ * Update wording on join project page (#1023)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
