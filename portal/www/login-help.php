@@ -46,7 +46,7 @@ function show_last_message() {
   echo "Troubleshooting logging into GENI";
   echo '</title>';
   /* Stylesheet(s) */
-  echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
+  echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
   /* Close the "head" */

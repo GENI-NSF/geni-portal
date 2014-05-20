@@ -9,6 +9,8 @@
    to watch the output and timeout long running calls. Current timeout
    set to 12 minutes. Be sure to propagate the 'failed' message back
    to client calls when the call times out. (#863)
+ * Add a New to GENI? link on landing page (#994)
+ * Remove obsolete scripts (#999)
  * Add Jacks viewer to details page (#1011)
  * Update ION AM SSL certificate (#1012)
  * Add beta Jacks RSpec editor for adding resources. (#1013)
@@ -20,6 +22,9 @@
  * Refactor listresources so that only one call is made and Jacks is
    shown by defualt. (#1020)
  * Remove PUBLIC_KEYs from DETAILS_PUBLIC (#1021)
+ * Incorporate xml-signer 0.7 (#1022)
+ * Update wording on join project page (#1023)
+ * Update wording on SSH keys page (#1024)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)

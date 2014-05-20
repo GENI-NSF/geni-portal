@@ -46,7 +46,7 @@ function show_last_message() {
   echo "Welcome to the GENI Experimenter Portal";
   echo '</title>';
   /* Stylesheet(s) */
-  echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
+  echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
   echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
   /* Close the "head" */
@@ -79,6 +79,8 @@ function show_last_message() {
   </a>
 <h2>Find out more about using GENI</h2>
 <ul><li>
+   <a href="http://groups.geni.net/geni/wiki/GeniNewcomersWelcome">New to GENI?</a>
+</li><li>
    <a href="http://www.geni.net/experiment">Information for GENI experimenters</a>
 </li><li>
   <a
