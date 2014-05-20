@@ -70,15 +70,16 @@ include("tool-breadcrumbs.php");
 print "<h1>Join a Project</h1>\n";
 
 print "<p>All GENI actions must be taken in the context of a
-  project. On this page, you can request to join a project. You should
-  only request to join a project if the project lead knows you, as the
-  project lead is taking responsibility for your actions.</p>" 
-  . "<p>The project lead will be sent an email, to approve or deny your request.\n";
-print "That email will have a link to a page where the lead can act on your request.\n";
-print "When the project lead acts on your request, you will get an email " .
-"notifying you whether your request was approved.\n";
-print "Once approved, you can create a slice, or request to join an existing slice.</p>\n";
+  project. On this page, you can request to join a project.</p>";
 
+print "<p><b>You should only request to join a project if the project
+ lead knows you, as the  project lead is taking responsibility for
+ your actions. Abuse of this functionality may result in revocation
+ of your GENI account.</b></p>";
+
+print "<p>Once the project lead makes a decision about your request you
+ will be notified through email. Once you are a member of a project,
+ you can create a slice, or request to join an existing slice.";
 
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
@@ -91,6 +92,9 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 } else {
 
   print "<h2>Select a project to join</h2>\n";
+  print "<p><i>Please do not try to join arbitrary projects, abuse of
+   this functionality may result in revocation of your GENI account.
+   </i></p>";
   print "<table>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
