@@ -78,8 +78,6 @@ print '<a href="#privateRSpecs">manage RSpecs</a>';
 print " you have uploaded to the portal, and ";
 print '<a href="#publicRSpecs">view RSpecs</a>';
 print " that other users have publicly shared.</p>";
-print "<p>Currently you can not edit existing RSpecs, if you would like to change one ";
-print "of your existing RSpecs please delete it and upload a new version.</p>";
 /* Show the table of existing private RSpecs. */
 print '<a name="privateRSpecs"></a>';
 print "<h3>My Private RSpecs</h3>\n";
@@ -138,29 +136,32 @@ function display_rspec($rspec, $owners, $public=False) {
   $view_btn = ("<button onClick=\"window.location='$view_url'\">View</button>");
   $download_url = "rspecdownload.php?id=$id";
   $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
-  if (! $public){
-    $edit_url = "rspecedit.php?id=$id";
-    $edit_btn = "<button onClick=\"window.location='$edit_url'\">Edit</button>";
-    $delete_url = "rspecdelete.php?id=$id";
-    $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
-  }
   if ($public) {
     $owner_id = $rspec['owner_id'];
     if (array_key_exists($owner_id, $owners)) {
       $owner = $owners[$owner_id];
-      $mailto = ('<a href="mailto:' . $owner->email_address . '">'
-                 . $owner->prettyName() . '</a>');
+      $addr = $owner->email_address;
+      $pretty_name = $owner->prettyName();
     } else {
       /* Some rspecs have no owner because they were pre-loaded at the
          advent of the portal. Mark these as owned by GENI. */
-      $mailto = '<a href="mailto:help@geni.net">help@geni.net</a>';
+      $addr = 'help@geni.net';
+      $pretty_name = 'help@geni.net';
     }
+    $rspec_name = $rspec['name'];
+    $subject = 'About GENI Portal rspec: ' . $rspec['name'];
+    $addr = $addr . '?subject=' . $subject;
+    $mailto = '<a href="mailto:' . $addr . '">' . $pretty_name . '</a>';
     $columns = array($rspec['name'],
           $rspec['description'],
           $mailto,
           $view_btn,
           $download_btn);
   } else {
+    $edit_url = "rspecedit.php?id=$id";
+    $edit_btn = "<button onClick=\"window.location='$edit_url'\">Edit</button>";
+    $delete_url = "rspecdelete.php?id=$id";
+    $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
     $columns = array($rspec['name'],
           $rspec['description'],
           $edit_btn,
