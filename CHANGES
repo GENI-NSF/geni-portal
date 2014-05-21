@@ -29,6 +29,7 @@
  * Update wording on join project page (#1023)
  * Update wording on SSH keys page (#1024)
  * Changed listresources page to allow multiple Jacks windows (#1025)
+ * Allow multiple Jacks canvases on the list resources page (#1027)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
