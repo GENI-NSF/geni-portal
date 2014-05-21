@@ -134,16 +134,15 @@ function rspec_table_header($public=False) {
 function display_rspec($rspec, $owners, $public=False) {
   // Customize these with the RSpec id.
   $id = $rspec['id'];
-  if (! $public){
-      $edit_btn = '<button disabled="disabled">Edit</button>';
-  } 
   $view_url = "rspecview.php?id=$id";
   $view_btn = ("<button onClick=\"window.location='$view_url'\">View</button>");
   $download_url = "rspecdownload.php?id=$id";
   $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
   if (! $public){
-     $delete_url = "rspecdelete.php?id=$id";
-     $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
+    $edit_url = "rspecedit.php?id=$id";
+    $edit_btn = "<button onClick=\"window.location='$edit_url'\">Edit</button>";
+    $delete_url = "rspecdelete.php?id=$id";
+    $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
   }
   if ($public) {
     $owner_id = $rspec['owner_id'];
