@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.15 ==
+ * Allow editing rspec proprties (#226)
  * Update dragon.maxgigapop SSL cert (#1033)
 
 == 2.14 ==

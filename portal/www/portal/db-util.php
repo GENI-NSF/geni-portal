@@ -242,6 +242,44 @@ function storeAbacAssertion($assertion,
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
+function fetchRSpec($id) {
+  $conn = portal_conn();
+  $sql = "SELECT * FROM rspec where rspec.id = "
+    . $conn->quote($id, 'integer');
+  /* print "Query = $sql<br/>"; */
+  $result = db_fetch_row($sql, "fetchRSpecById($id)");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
+  return $row;
+}
+
+function updateRSpec($id, $name, $desc, $vis, &$error_msg) {
+  if ($vis !== 'public' && $vis !== 'private') {
+    $error_msg = "Invalid RSpec visibility: $vis."
+      . " Must be 'public' or 'private'.";
+    return false;
+  }
+
+  $conn = portal_conn();
+  $sql = 'UPDATE rspec'
+    . ' SET name = '
+    . $conn->quote($name, 'text')
+    . ', description = '
+    . $conn->quote($desc, 'text')
+    . ', visibility = '
+    . $conn->quote($vis, 'text')
+    . ' WHERE id = '
+    . $conn->quote($id, 'integer');
+  $result = db_execute_statement($sql, "update rspec");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $error_msg = "Database error: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $error_msg);
+    error_log($error_msg);
+    return false;
+  } else {
+    return true;
+  }
+}
+
 function fetchRSpecById($id) {
   $conn = portal_conn();
   $sql = "SELECT rspec.rspec FROM rspec where rspec.id = "

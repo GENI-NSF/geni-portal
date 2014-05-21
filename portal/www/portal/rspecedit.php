@@ -69,23 +69,32 @@ if ($rspec['visibility'] === 'public') {
 }
 
 ?>
-<h1>Edit Resource Specification</h1>
-<p>
+<h1>Edit RSpec Information</h1>
+<p>You can edit the name and description of the RSpec show below. You can also change the visibility. Public RSpecs can be viewed and used by other GENI experimenters. Private RSpecs can only be viewed and used by you.
+</p>
 <form id="edit1" action="rspechandleedit.php">
 <input type="hidden" name="id" value="<?php echo $rspec_id; ?>">
-Name: <input type="text" name="name" width="120"
-             value="<?php echo $rspec['name'];?>"><br>
-Description: <input type="text" name="description" width="180"
-                    value="<?php echo $rspec['description'];?>"><br>
-Visibility:
+<table>
+<tr><td>Name</td><td><input type="text" name="name" width="120"
+             value="<?php echo $rspec['name'];?>"></td></tr>
+<tr><td>Description</td><td><input type="text" name="description" width="180"
+                    value="<?php echo $rspec['description'];?>"></td></tr>
+<tr><td>Visibility</td><td>
   <input type="radio" name="visibility" value="public"
-         <?php echo $public_selected;?>>Public
+         <?php echo $public_selected;?>>Public<br/>
   <input type="radio" name="visibility" value="private"
-         <?php echo $private_selected;?>>Private<br/>
+         <?php echo $private_selected;?>>Private</td></tr>
+</table>
 </form>
+<p>
 <button onclick="$('#edit1').submit()">Submit</button>
 <button onclick="window.location='profile.php#rspecs'">Cancel</button>
 </p>
+
+<h2>Raw RSpec</h2>
+<pre style="height: 15pc; overflow-y: scroll">
+  <?php echo htmlentities($rspec['rspec']);?>
+</pre>
 
 <?php
 include("footer.php");

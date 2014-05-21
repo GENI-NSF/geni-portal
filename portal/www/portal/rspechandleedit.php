@@ -33,10 +33,18 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-$rspec_id = NULL;
-if (array_key_exists('id', $_REQUEST)) {
-  $rspec_id = $_REQUEST['id'];
+function from_request($request_var, $default_value) {
+  if (array_key_exists($request_var, $_REQUEST)) {
+    return $_REQUEST[$request_var];
+  } else {
+    return $default_value;
+  }
 }
+
+$rspec_id = from_request('id', NULL);
+$rspec_name = from_request('name', NULL);
+$rspec_desc = from_request('description', NULL);
+$rspec_vis = from_request('visibility', NULL);
 
 if (is_null($rspec_id)) {
   relative_redirect('home.php');
@@ -55,16 +63,11 @@ if (! $owner === $user->account_id) {
   relative_redirect('home.php');
 }
 
-?>
-<h1>would edit rspec</h1>
-<pre>
-<?php print_r($_REQUEST); ?>
-</pre>
+$result = updateRSpec($rspec_id, $rspec_name, $rspec_desc, $rspec_vis,
+                      $error_msg);
+// Was there an error? Display it.
+if (! $result) {
+  $_SESSION['lasterror'] = $error_msg;
+}
 
-<?php
- /*
-  * add db function to update row
-  * call it
-  * redirect to profile.php#rspecs
-  */
-?>
+relative_redirect('profile.php#rspecs');
