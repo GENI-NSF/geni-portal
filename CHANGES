@@ -5,7 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.15 ==
-
+ * Update dragon.maxgigapop SSL cert (#1033)
 
 == 2.14 ==
  * Use proc_open not popen to spawn omni calls, allowing us
