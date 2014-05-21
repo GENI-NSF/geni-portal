@@ -460,7 +460,9 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        unlink($speaks_for_cred_filename);
      }
 
-     error_log("am_client output " .  print_r($output, True));
+     // Good for debugging but verbose
+     //     error_log("am_client output " .  print_r($output, True));
+
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
        error_log("am_client invoke_omni_function:"
