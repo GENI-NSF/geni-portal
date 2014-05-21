@@ -87,10 +87,23 @@ if (count($keys) == 0)
   {
     // No ssh keys are present.
     print "<p>No SSH keys have been uploaded. ";
-    print "SSH keys are required to log in to reserved compute resources.</p>\n";
-    print "<p>You can <button $disable_ssh_keys onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button> ";
-    print "or <button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>, if you have one you want to use.</p>\n";
-    print "<p>If you're not sure what to do, choose 'Generate'.</p>\n";
+    print "SSH keys are required to log in to reserved compute resources.
+      You have two options:</p>\n";
+    $generate_btn = "<button $disable_ssh_keys
+      onClick=\"window.location='generatesshkey.php'\">
+      generate and download an SSH keypair</button>";
+    print '<ol type="i">';
+    print "<li>$generate_btn";
+    print "The private key (but not the passphrase that protects it) might
+      be shared with other GENI entities. If you choose this option do not
+      reuse this key pair outside of GENI, or</li>\n";
+    print "<li><button $disable_ssh_keys
+      onClick=\"window.location='uploadsshkey.php'\">
+      upload an SSH public key</button>, if you have one you want to use.
+      If you only choose this option then some GENI tools might not
+      work properly</p>\n";
+    print "</ol>\n";
+    print "<p>If you're not sure what to do, choose $generate_btn</p>\n";
 
   }
 else
