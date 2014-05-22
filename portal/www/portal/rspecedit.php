@@ -50,7 +50,7 @@ if (is_null($rspec)) {
 }
 
 /* If I'm not the owner of the rspec, bail. */
-$owner = $rspec['owner'];
+$owner = $rspec['owner_id'];
 if (! $owner === $user->account_id) {
   relative_redirect('home.php');
 }
