@@ -132,7 +132,12 @@ const SERVICE_ATTRIBUTE_TAG = 'service_attributes';
 const SERVICE_ATTRIBUTE_AM_API_VERSION = "AM_API_VERSION";
 const SERVICE_ATTRIBUTE_SPEAKS_FOR = "SPEAKS_FOR";
 
-
+// For HTML Aggregate Displays
+const SERVICE_ATTRIBUTE_AM_TYPE = "UI_AM_TYPE";
+const SERVICE_ATTRIBUTE_INSTAGENI_AM = "ui_instageni_am";
+const SERVICE_ATTRIBUTE_EXOGENI_AM = "ui_exogeni_am";
+const SERVICE_ATTRIBUTE_FOAM_AM = "ui_foam_am";
+const SERVICE_ATTRIBUTE_OTHER_AM = "ui_other_am";
 
 
 ?>

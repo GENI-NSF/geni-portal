@@ -80,7 +80,7 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 <script>
   var thisInstance;
   var slice= "<?php echo $slice_id ?>";
-  var am_id= "<?php echo $am_id ?>";
+  var am_id= <?php echo json_encode($am_ids) ?>;
   var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
   var jacks = "<?php echo $jacks ? 'true' : 'false';?>";
   $(document).ready(build_details_table);

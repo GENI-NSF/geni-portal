@@ -40,6 +40,7 @@ require_once('logging_client.php');
 require_once('am_map.php');
 require_once('status_constants.php');
 require_once('maintenance_mode.php');
+require_once('am_client.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -118,16 +119,25 @@ function build_agg_table_on_slicepg()
      // (2) create an HTML table with one row for each aggregate
      $output = "<table id='status_table'>";
      //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
-     $output .= "<tr>";
+     $output .= "<style>";
+     $output .= "#status_table .hidden { display:none; }";
+     $output .= "</style>";
+
+     $output .= "<tbody><tr>";
      $output .= "<th id='status'>";
      $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()' $get_slice_credential_disable_buttons>Get All</button>";
      $output .= "</th><th>Aggregate</th>";
      //      output .= "<th>&nbsp;</th>";
      $output .= "<th>Renew</th>";
      $output .= "<th>Actions</th></tr>\n";
+//     $output .= "<tr><td>ExoGENI<input id='exogenibox' type='checkbox' checked=''></td><td>FOAM<input id='foambox' type='checkbox' checked=''></td><td>InstaGENI<input id='instagenibox' type='checkbox' checked=''></td><td>Other<input id='otherbox' type='checkbox' checked=''></td></tbody>\n";
+       //replace with above for checkboxes
+     $output .= "</tbody>\n";
      foreach ($am_list as $am) {
 	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
             $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+            $am_type = lookup_attribute($am[SR_TABLE_FIELDNAME::SERVICE_URL], SERVICE_ATTRIBUTE_AM_TYPE);
+            $output .= "<tbody id='t_".$am_id."' class='".$am_type."'>";
             $output .= "<tr id='".$am_id."'>";
 	    $output .= "<td id='status_".$am_id."' class='notqueried'>";	
 	    $output .= $initial_text;
@@ -159,7 +169,7 @@ function build_agg_table_on_slicepg()
 
 
 
-	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $get_slice_credential_disable_buttons>Get Status</button></td></tr>";
+	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $get_slice_credential_disable_buttons>Get Status</button></td></tr></tbody>";
 
 
 
@@ -288,6 +298,10 @@ var slice_name= "<?php echo $slice_name?>";
 var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
+var ui_exogeni_am = "<?php echo SERVICE_ATTRIBUTE_EXOGENI_AM ?>";
+var ui_foam_am = "<?php echo SERVICE_ATTRIBUTE_FOAM_AM ?>";
+var ui_instageni_am = "<?php echo SERVICE_ATTRIBUTE_INSTAGENI_AM ?>";
+var ui_other_am = "<?php echo SERVICE_ATTRIBUTE_OTHER_AM ?>";
 <?php include('status_constants_import.php'); ?>
 function confirmQuery() {
   if ($("#sliceslivers").is(':checked')) {
@@ -308,6 +322,21 @@ function confirmQuery() {
 $(document).ready(build_agg_table_on_slicepg());
 </script>
 -->
+
+<!--// deals with the checkboxes to display which aggregates we want to see
+    // use a javascript class selector (".class") - looks funny because I
+    // am concatenating a js constant to create the class name
+    // there is a function for every checkbox
+-->
+<script>
+$(document).ready(function() {
+    $('#instagenibox').change(function() {hide_agg_row('instagenibox', ui_instageni_am)});
+    $('#exogenibox').change(function() {hide_agg_row('exogenibox', ui_exogeni_am)});
+    $('#foambox').change(function() {hide_agg_row('foambox', ui_foam_am)});
+    $('#otherbox').change(function() {hide_agg_row('otherbox', ui_other_am)});
+});
+</script>
+
 <?php 
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
 
