@@ -109,14 +109,79 @@ function build_agg_table()
 }
 
 
+//RRH - 5-22
+//refresh_all_agg_rows, hid_agg_row, and do_action_on_picked_aggs all
+//have to deal with managing the aggregate table on the slice page
+//need to re check when Keith puts in his UI changes to the slice page
 
+//do_on_picked_aggs_from_pg(page_url) could be an alternate to do_action_on_picked_aggs
+//looking at jquery to return the AMs to act on - also UI interaction dependent
+//RRH
+
+//refresh_all_agg_rows - called on status - what AMs to call on status and redisplay
 function refresh_all_agg_rows() {
     var s = all_ams;
     var all_am_obj = JSON.parse(s);
     for (var tmp_am_id in all_am_obj ) {
+	//for Keith to consider in this code - we'd have to figure out
+       // which rows to display
+       //if(!($('#t_' + tmp_am_id)).hasClass('hidden')) {
        refresh_agg_row(tmp_am_id);
     }
 }
+
+//this relies on checkboxes which do not currently exist on the slice page
+//contingent on the slice page UI
+function hide_agg_row(am_check_box, am_type) {
+   if($('#' + am_check_box).is(':checked')) {
+        $('.' + am_type).each(function() {
+            $(this).removeClass('hidden');           					  
+        });
+    }
+    else {
+        $('.' + am_type).each(function() {
+            $(this).addClass('hidden');           					  
+         });
+   }
+}
+
+//called to do a particular action from the slice page
+//page_url is a string referring to a page, current examples are:
+//listresources.php, confirm-sliverdelete.php, sliverstatus.php
+//do_action_on_picked_aggs("sliverstatus.php")
+function do_action_on_picked_aggs(page_url) {
+    var s = all_ams;
+    var all_am_obj = JSON.parse(s);
+    var am_str = "";
+    var new_url = page_url;
+    //could probably do this with the $(".class").each from the page
+    for (var tmp_am_id in all_am_obj ) {
+       if(!($('#t_' + tmp_am_id)).hasClass('hidden')) {
+           am_str += "&am_id[]=" + tmp_am_id;
+       }
+    }
+    new_url += "?slice_id=" + slice + am_str;
+    console.log(new_url);
+    window.location=new_url;
+}
+
+function do_on_picked_aggs_from_pg(page_url) {
+    var s = all_ams;
+    var all_am_obj = JSON.parse(s);
+    var am_str = "";
+    var new_url = page_url;
+
+    //we'd want to pick the classes where not hidden
+    //have to ask Keith about picking the right ones
+    // not sufficient because there are other tbody in the table
+    $('tbody:not(.hidden)').each(function() {
+       am_str += "&am_id[]=" + $(this).attr('id');
+     });
+    new_url += "?slice_id=" + slice + am_str;
+    console.log(new_url);
+    //    window.location=new_url;
+}
+
 
 function refresh_agg_row(am_id) {
     geni_status = "updating"

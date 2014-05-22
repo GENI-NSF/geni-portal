@@ -22,6 +22,7 @@ nobase_dist_svcdata_DATA = \
 	src/server-direct/setup.php \
 	src/server-indirect/config.php \
 	src/server-indirect/index.php \
+	src/server-indirect/kmactivate.php \
 	src/server-indirect/lib/actions.php \
 	src/server-indirect/lib/common.php \
 	src/server-indirect/lib/render/about.php \
