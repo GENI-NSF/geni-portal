@@ -7,6 +7,7 @@
 == 2.15 ==
  * Allow editing rspec proprties (#226)
  * backend changes to support managing aggregates on slice page (#339)
+ * Display OpenID URL on profile page (#290)
  * Allow new users to activate via OpenID (#1029)
  * Update dragon.maxgigapop SSL cert (#1033)
 
