@@ -61,13 +61,7 @@ $public_owners = array_unique($public_owners);
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 /* Find member info for public rspecs */
-$details = lookup_member_details($ma_url, $user, $public_owners);
-$owners = array();
-foreach ($details as $member_id => $record) {
-  $member = new Member($member_id);
-  $member->init_from_record($record);
-  $owners[$member_id] = $member;
-}
+$owners = ma_lookup($ma_url, $user, $public_owners);
 
 /* Display starts here. */
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
@@ -147,6 +141,10 @@ function display_rspec($rspec, $owners, $public=False) {
          advent of the portal. Mark these as owned by GENI. */
       $addr = 'help@geni.net';
       $pretty_name = 'help@geni.net';
+    }
+    if (! $addr) {
+      /* If owner email is not available, use help */
+      $addr = 'help@geni.net';
     }
     $rspec_name = $rspec['name'];
     $subject = 'About GENI Portal rspec: ' . $rspec['name'];
