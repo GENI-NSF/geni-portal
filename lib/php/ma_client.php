@@ -852,7 +852,7 @@ function ma_lookup($ma_url, $signer, $member_uuids)
           /* If no info is available, do not include it in the result. */
           continue;
         }
-	$member_uuid = $member_info['MEMBER_UID'];
+        $member_uuid = $member_info['MEMBER_UID'];
         $member = new Member($member_uuid);
         $member->init_from_record($member_info);
         $ids[$member_uuid] = $member;
