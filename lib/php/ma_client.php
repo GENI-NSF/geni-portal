@@ -331,6 +331,8 @@ class Member {
       return $this->first_name . " " . $this->last_name;
     } elseif (isset($this->mail)) {
       return $this->mail;
+    } elseif (isset($this->username)) {
+      return $this->username;
     } elseif (isset($this->eppn)) {
       return $this->eppn;
     } else {
