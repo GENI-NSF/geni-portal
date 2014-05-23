@@ -9,6 +9,7 @@
  * Backend changes to support managing aggregates on slice page (#339)
  * Allow new users to activate via OpenID (#1029)
  * Update dragon.maxgigapop SSL cert (#1033)
+ * Remove disabled users from geni-ops-report (#1037)
 
 == 2.14 ==
  * Use proc_open not popen to spawn omni calls, allowing us
