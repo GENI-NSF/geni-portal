@@ -52,6 +52,21 @@ function make_uuid() {
   return $uuid;
 }
 
+// Class to hold a list of files and unlink them in destructor
+class FileManager {
+  function __construct() {
+    $this->filenames = array();
+  }
+
+  function add($filename) { $this->filenames[]=$filename; }
+
+  function __destruct() {
+    foreach($this->filenames as $filename) {
+      unlink($filename);
+    }
+  }
+}
+
 
 
 ?>
