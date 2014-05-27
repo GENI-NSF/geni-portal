@@ -240,7 +240,7 @@ $has_cert = (! is_null($result));
 $expired = false;
 // Will the certificate expire soon?
 $expiring = false;
-if (array_key_exists('expiration', $result)) {
+if ($has_cert && array_key_exists('expiration', $result)) {
   // Is expiration real soon or in the past?
   $expiration = $result['expiration'];
   $now = new DateTime('now', new DateTimeZone("UTC"));
