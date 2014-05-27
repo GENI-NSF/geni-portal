@@ -13,6 +13,7 @@
  * Assure cleanup of tempfiles from invoke_omni_function (#978)
  * Ensure that operators and non-operators get the kmactivate page when 
   in maintenance mode and tool is deauthorized (#944)
+ * Ensure that new user registrations is not allowed during maintenance (#965)
 
 == 2.14 ==
  * Use proc_open not popen to spawn omni calls, allowing us
