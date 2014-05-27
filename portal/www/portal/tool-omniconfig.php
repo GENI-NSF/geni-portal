@@ -90,14 +90,10 @@ if ($num_projects >0) {
     }
   }
 }
+// Update the count to only the active projects
 $num_projects = count($project_ids);
 
 $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
-if ($num_projects > 0) {
-  // If there are any projects, look up their details. We need the names
-  // in order to set up a default project in the config file.
-  $projects = lookup_project_details($sa_url, $user, $project_ids);
-}
 if ($num_projects == 0) {
   // warn that the user has no projects
   $warn = '<p class="warn">You are not a member of any projects.'
@@ -163,8 +159,8 @@ reservation tool.
 if ($num_projects > 1) {
   echo '<li>Choose project as omni default: ';
   echo '<select id="pselect" name="project" onchange="update_link()">\n';
-  foreach ($projects as $proj) {
-    $proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+  foreach ($project_ids as $proj_id) {
+    $proj = $projects[$proj_id];
     $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $proj_desc = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     echo "<option value=\"$proj_name\" title=\"$proj_desc\">$proj_name</option>\n";
