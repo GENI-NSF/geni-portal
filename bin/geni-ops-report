@@ -43,6 +43,10 @@ class Member(object):
         return cls.members[id]
 
     @classmethod
+    def delete_member(cls, id):
+        del cls.members[id]
+
+    @classmethod
     def all_members(cls):
         return cls.members.values()
 
@@ -79,11 +83,13 @@ def note_last_seen(conn):
     rows = cur.fetchmany(fetchsize)
     while rows:
         for r in rows:
-            m = Member.find(r['member_id'])
-            m.last_seen = r['ts']
-            # last_seen is a datetime.datetime.
-            # Remove the microsecond, we don't care
-            m.last_seen = m.last_seen.replace(microsecond=0)
+            mid = r['member_id']
+            if mid in Member.members:
+                m = Member.find(r['member_id'])
+                m.last_seen = r['ts']
+                # last_seen is a datetime.datetime.
+                # Remove the microsecond, we don't care
+                m.last_seen = m.last_seen.replace(microsecond=0)
         rows = cur.fetchmany(fetchsize)
     cur.close()
 
@@ -99,6 +105,10 @@ def load_members(conn):
             setattr(m, r['name'], r['value'])
         rows = cur.fetchmany(fetchsize)
     cur.close()
+    # Remove members who have been disabled from this report
+    disabled_ids = [mem.id for mem in Member.members.values() \
+                        if mem.member_enabled == 'n']
+    for disabled_id in disabled_ids: Member.delete_member(disabled_id)
     # Get the last seen timestamp for each member
     note_last_seen(conn)
 
@@ -121,8 +131,10 @@ def mark_project_leads(conn):
     rows = cur.fetchmany(fetchsize)
     while rows:
         for r in rows:
-            m = Member.find(r['member_id'])
-            m.project_lead = True
+            mid = r['member_id']
+            if mid in Member.members:
+                m = Member.find(mid)
+                m.project_lead = True
         rows = cur.fetchmany(fetchsize)
     cur.close()
 
@@ -137,8 +149,10 @@ def mark_operators(conn):
     rows = cur.fetchmany(fetchsize)
     while rows:
         for r in rows:
-            m = Member.find(r['member_id'])
-            m.operator = True
+            mid = r['member_id']
+            if mid in Member.members:
+                m = Member.find(mid)
+                m.operator = True
         rows = cur.fetchmany(fetchsize)
     cur.close()
 

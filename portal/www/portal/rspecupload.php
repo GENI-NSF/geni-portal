@@ -175,7 +175,7 @@ if ($error != NULL || count($_POST) == 0) {
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
   include("tool-showmessage.php");
-  print("<h1>Upload experiment Resource Specification (RSpec)</h1>\n");
+  print("<h1 style=\"line-height: 1.2em\">Upload experiment Resource Specification (RSpec)</h1>\n");
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";

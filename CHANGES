@@ -10,6 +10,10 @@
  * Display OpenID URL on profile page (#290)
  * Allow new users to activate via OpenID (#1029)
  * Update dragon.maxgigapop SSL cert (#1033)
+ * Remove disabled users from geni-ops-report (#1037)
+ * Assure cleanup of tempfiles from invoke_omni_function (#978)
+ * Ensure that operators and non-operators get the kmactivate page when 
+  in maintenance mode and tool is deauthorized (#944)
 
 == 2.14 ==
  * Use proc_open not popen to spawn omni calls, allowing us
