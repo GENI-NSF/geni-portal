@@ -534,7 +534,11 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
               . " in ma_lookup_certificate");
     return NULL;
   }
-  $certificate = $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE'];
+  $certificate = NULL;
+  if (array_key_exists('_GENI_MEMBER_SSL_CERTIFICATE',
+                       $public_res[$member_urn])) {
+    $certificate = $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE'];
+  }
   if ($certificate) {
     $result = array(MA_ARGUMENT::CERTIFICATE => $certificate);
   } else {
