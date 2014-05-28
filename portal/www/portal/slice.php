@@ -362,8 +362,8 @@ $(document).ready(function() {
 }
 #content #portalhelp {
   position: absolute;
-  top: 74px;
-  right: 30px;
+  top: -56px;
+  right: 0px;
 }
 #content {
   padding: 20px 30px 30px;
@@ -380,6 +380,9 @@ $(document).ready(function() {
 }
 #content table table td {
   border-top: 0;
+}
+#content #renewtable td {
+  border-bottom: 0;
 }
 #content #renewcell {
   padding: 0;
@@ -525,7 +528,7 @@ $(document).ready(function() {
 
 <?php 
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
-
+print "<div style='position:relative'><p id='portalhelp'>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p></div>";
 if (isset($slice_expired) && convert_boolean($slice_expired) ) {
    print "<p class='warn'>This slice is expired!</p>\n";
 }
@@ -640,9 +643,6 @@ print "</table>\n";
 /* print "<table>\n"; */
 /* print "<tr><td><b>Slice data</b></td><td><a href='https://gmoc-db.grnoc.iu.edu/protected-openid/index.pl?method=slice_details;slice=".$slice_urn."'>Slice $slice_name</a></td></tr>\n"; */
 /* print "</table>\n"; */
-
-
-print "<p id='portalhelp'>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p>";
 
 
 // ----
