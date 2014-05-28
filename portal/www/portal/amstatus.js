@@ -821,8 +821,14 @@ function prepareEvents() {
 function doOnChecked(baseURL) {
   var finalURL = baseURL;
   $('#am_names').find('.inner:checkbox:checked').each(function() {
-    finalURL = finalURL.contains('?') ? finalURL + '&' : finalURL + '?';
-    finalURL += 'am_id[]='+$(this).attr('id').substring(4);
+    finalURL += '&am_id[]='+$(this).attr('id').substring(4);
   });
   window.open(finalURL);
+}
+
+function doOnRenew(baseURL) {
+  var tempURL = baseURL;
+  var slice_expiration = $('#renew_field_check').val();
+  tempURL += '&sliver_expiration='+slice_expiration;
+  doOnChecked(tempURL);
 }

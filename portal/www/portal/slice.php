@@ -118,7 +118,7 @@ function build_agg_table_on_slicepg()
 
      $output .= "<table id='actions_table'>";
      $output .= "<tr><th colspan='3'>Manage Resources</th></tr>";
-     $output .= "<tr><td><button onClick=\"selectAll()\">Select All</button>";
+     $output .= "<tr class='statusButtons'><td><button onClick=\"selectAll()\">Select All</button>";
      $output .= "<button onClick=\"deselectAll()\">Deselect All</button></td>";
      $output .= "<td colspan='2'>";
      $output .= "<button onClick=\"getCheckedStatus();\"><b>Get Status</b></button>";
@@ -136,17 +136,14 @@ function build_agg_table_on_slicepg()
      $output .= "</select>";
      $output .= "</td>";
      $output .= "<td colspan='2'>";
-     if ($renew_slice_privilege) {
-    $output .= "<form  method='GET' action=\"do-renew.php\">";
-    $output .= "<input type=\"hidden\" name=\"slice_id\" value=\"\"/>\n";
-    $output .= "<input type=\"hidden\" name=\"am_id\" value=\"\"/>\n";
-    $output .= "<input type=\"hidden\" name=\"renew\" value=\"sliver\"/>\n";
-    $output .= "<input id='renew_field_' class='date' type='text' name='sliver_expiration' ";
-    $size = strlen($slice_date_expiration) + 3;
-    $output .= "size=\"$size\"/>\n";
-    $output .= "<input id='renew_button_' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
-    $output .= "</form>";
-      }
+    if ($renew_slice_privilege) {
+      $output .= "<input id='renew_field_check' class='date' type='text' name='sliver_expiration' ";
+      $size = strlen($slice_date_expiration) + 3;
+      $output .= "size=\"$size\"/>\n";
+      $output .= "<button id='renew_button_check' title='Renew resource reservation at this aggregate until the specified date' ";
+      $output .= "onClick=\"doOnRenew('do-renew.php?slice_id=".$slice_id."&renew=sliver&Renew=Renew');\""; 
+      $output .= "$disable_buttons_str><b>Renew</b></button>\n";
+    }
      $output .= "</td></tr>\n";
 
        $output .= "<tr><td id='am_name_list'><ul id='am_names'>";
@@ -390,15 +387,15 @@ $(document).ready(function() {
   border-bottom: 0;
 }
 
-#content #am_name_list {
-  width: 230px;
+#content .statusButtons td {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 
-
-
 #content #am_name_list {
-  margin-top:15px;
+  width: 230px;
   vertical-align: top;
+  border-right: 1px solid white;
 }
 
 #content #status_table .hidden {
@@ -409,6 +406,10 @@ $(document).ready(function() {
   display: block;
   overflow-y: scroll;
   height: 550px;
+}
+
+#content #sliceActions button {
+  margin-right: 5px;
 }
 
 #am_names {
@@ -456,7 +457,7 @@ $(document).ready(function() {
 #status_table .hide > div {
   visibility: hidden;
 }
-#status_table tbody:hover .hide > div {
+#status_table tbody:hover .hide > div, #status_table tbody.activeBody .hide > div {
   visibility: visible;
 }
 #status_table .notqueried .expireText, #status_table .updating .expireText, #status_table .noresources .expireText, #status_table .busy .expireText, #status_table .failed .expireText {
@@ -491,6 +492,7 @@ $(document).ready(function() {
 
 #status_table button, #status_table input[type="submit"], #status_table input[type="button"] {
   font-size: 0.85em;
+  font-weight: 700;
   margin: 0 1px 1px;
   padding: 0 2px;
 }
@@ -518,7 +520,7 @@ if (isset($slice_expired) && convert_boolean($slice_expired) ) {
 // FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
 // FIXME: Disable launch flack if in lockdown mode?
 
-print "<table cols='4'>\n";
+print "<table id='sliceActions' cols='4'>\n";
 print "<tr><th colspan='4'>Slice Actions</th></tr>\n";
 print "<tr><td colspan='4'>\n";
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
@@ -576,17 +578,26 @@ print "</tr>\n";
 ?>
 <script>
   $(function() {
+    function focusParent(am_id) {
+      $('#t_'+am_id.data['am_id']).addClass('activeBody');
+    }
+    function removeActiveBodies(a, b) {
+      $('tbody.activeBody').removeClass('activeBody')
+    }
     // minDate = 1 will not allow today or earlier, only future dates.
-    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: max_slice_renewal_days  });
+    $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: max_slice_renewal_days });
+    $( "#renew_field_check" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1, maxDate: slice_date_expiration });
 <?php
      foreach ($am_list as $am) {
       $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
             $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
     //    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
-      print "    $( \"#renew_field_$am_id\" ).datepicker({ dateFormat: \"yy-mm-dd\", minDate: 1,  maxDate: slice_date_expiration });\n";
+      print "    $( \"#renew_field_$am_id\" ).datepicker({ dateFormat: \"yy-mm-dd\", minDate: 1,  maxDate: slice_date_expiration, onClose: removeActiveBodies });\n";
+      print "    $( \"#status_table #renew_field_$am_id\" ).bind('click', { am_id: '$am_id' }, focusParent);\n";
      }
 ?>
   });
+
 </script>
 <?php
 
