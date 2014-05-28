@@ -228,6 +228,8 @@ function lookup_attribute($am_url, $attr_name)
 //    $args: list of arguments (including the method itself) included
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
+  $file_manager = new FileManager(); // Hold onto all allocated filenames
+
   // We seem to get $am_url sometimes as a string, sometimes as an array
   // Should always talk to single AM
   if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
@@ -285,9 +287,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
             'omniVersionCache');
     $tmp_agg_cache = tempnam(sys_get_temp_dir(),
             'omniAggCache');
+    $file_manager->add($tmp_version_cache);
+    $file_manager->add($tmp_agg_cache);
 
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
+    $file_manager->add($cert_file);
     $key_file = writeDataToTempFile($private_key, "$username-key-");
+    $file_manager->add($key_file);
 
     $slice_users = $slice_users + array($user);
     $username_array = array();
@@ -349,11 +355,19 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       	     . "keys=$all_key_files\n";
     }
 
+    foreach($all_ssh_key_files as $ssh_key_file) {
+      $file_manager->add($ssh_key_file);
+    }
+
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
+    $file_manager->add($omni_file);
 
     /* Call OMNI */
 
     $omni_log_file = tempnam(sys_get_temp_dir(), $username . "-omni-log-");
+    $omni_stderr_file = tempnam(sys_get_temp_dir(), $username . "-omni-stderr-");
+    $file_manager->add($omni_stderr_file);
+
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
@@ -378,7 +392,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
                          // stdout is a pipe that the child will write to
                          1 => array("pipe", "w"),
                           // stderr is a file to write to
-                         2 => array("file", "/tmp/error-output.txt", "a"));
+                         2 => array("file", $omni_stderr_file, "a"));
 
 
     if (!is_array($am_url)){
@@ -391,6 +405,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       $speaks_for_cred_filename = 
 	writeDataToTempfile($speaks_for_cred->credential(), 
 			    "$username-sfcred-");
+      $file_manager->add($speaks_for_cred_filename);
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
 
@@ -448,6 +463,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 	$output = AM_CLIENT_TIMED_OUT_MSG;
      }
 
+     /*
      unlink($cert_file);
      unlink($key_file);
      unlink($omni_file);
@@ -459,8 +475,11 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if ($speaks_for_invocation) {
        unlink($speaks_for_cred_filename);
      }
+     */
 
-     error_log("am_client output " .  print_r($output, True));
+     // Good for debugging but verbose
+     //     error_log("am_client output " .  print_r($output, True));
+
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
        error_log("am_client invoke_omni_function:"

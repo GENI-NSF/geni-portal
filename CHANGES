@@ -4,6 +4,19 @@
 
 = GENI Portal Release Notes =
 
+== 2.15 ==
+ * Display OpenID URL on profile page (#290)
+ * Backend changes to support managing aggregates on slice page (#339)
+ * Ensure that operators and non-operators get the kmactivate page
+   when in maintenance mode and tool is deauthorized (#944)
+ * Assure cleanup of tempfiles from invoke_omni_function (#978)
+ * Ensure that new user registrations is not allowed during
+   maintenance (#965)
+ * Make default project match link on manual omni config page (#1005)
+ * Allow new users to activate via OpenID (#1029)
+ * Update dragon.maxgigapop SSL cert (#1033)
+ * Remove disabled users from geni-ops-report (#1037)
+
 == 2.14 ==
  * Use proc_open not popen to spawn omni calls, allowing us
    to watch the output and timeout long running calls. Current timeout
@@ -26,6 +39,7 @@
  * Update wording on join project page (#1023)
  * Update wording on SSH keys page (#1024)
  * Changed listresources page to allow multiple Jacks windows (#1025)
+ * Allow multiple Jacks canvases on the list resources page (#1027)
 
 == 2.13 ==
  * Provide UI for renewing certificates (#241)
