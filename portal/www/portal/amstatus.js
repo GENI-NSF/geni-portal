@@ -1,4 +1,4 @@
-var updating_text = "...updating...";
+var updating_text = "Updating status...";
 var UNKNOWN = 'unknown';
 var NOT_APPLICABLE = "not applicable";
 var NOT_RETRIEVED = "not retrieved";
@@ -130,21 +130,6 @@ function refresh_all_agg_rows() {
     }
 }
 
-//this relies on checkboxes which do not currently exist on the slice page
-//contingent on the slice page UI
-function hide_agg_row(am_check_box, am_type) {
-   if($('#' + am_check_box).is(':checked')) {
-        $('.' + am_type).each(function() {
-            $(this).removeClass('hidden');           					  
-        });
-    }
-    else {
-        $('.' + am_type).each(function() {
-            $(this).addClass('hidden');           					  
-         });
-   }
-}
-
 //called to do a particular action from the slice page
 //page_url is a string referring to a page, current examples are:
 //listresources.php, confirm-sliverdelete.php, sliverstatus.php
@@ -184,9 +169,10 @@ function do_on_picked_aggs_from_pg(page_url) {
 
 
 function refresh_agg_row(am_id) {
-    geni_status = "updating"
+    geni_status = "updating";
     $("td#status_"+am_id).text( updating_text);
     $("td#status_"+am_id).attr( "class", geni_status );
+    $("td#status_"+am_id).parent().attr( "class", geni_status );
     update_agg_row(am_id);
 }
 
@@ -232,6 +218,7 @@ function update_agg_row(am_id) {
 	}
         $("td#status_"+am_id).text( output );
         $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
+        $("td#status_"+am_id).parent().attr( "class", GENI_CLASSES[ status_code ] );
         $("span#renew_sliver_"+am_id).text( sliver_expiration );
 
 	$("button#reload_button_"+am_id).prop( "disabled", false ); 
@@ -704,3 +691,138 @@ function add_agg_row_to_renew_table(am_id, sliver_expiration) {
 
 
 
+// Functions needed to make the AM list run
+function prepareList() {
+  $('#status_table > tbody').each(function() {
+    var className = $(this).attr('class');
+    var targetParent = className.substring(3,className.length-3);
+    var parentHTML = $('#am_names #g_'+targetParent+' ul').html();
+    $('#am_names #g_'+targetParent+' ul').html(parentHTML+'<li><input type="checkbox" id="box-'+$(this).attr('id').substring(2)+'" class="inner" checked="checked">'+$(this).find('.am_name_field').text()+'</li>');
+  });
+  $('#am_names').find('.am_group .collapsable')
+    .click( function(event) {
+      if (this == event.target) {
+        $(this).parent().toggleClass('expanded');
+        $(this).parent().children('ul').toggle();
+      }
+      return false;
+    })
+    .parent().addClass('collapsed expanded');
+    $('#am_names .outer').each(function() {
+      $(this).prop('checked',true);
+    });
+  };
+
+function selectAll() {
+  $('#am_names .outer').each(function() {
+    $(this).parent().find('.inner').each(function() {
+      var targetID = $(this).attr('id').substring(4);
+      $('#status_table #t_'+targetID).removeClass('hidden');
+      $(this).prop('checked', true);
+    });
+    $(this).prop('checked', true);
+    $(this).prop('indeterminate', false);
+    $('#checkGroups').val(' ');
+  });
+}
+
+function deselectAll() {
+  $('#am_names .outer').each(function() {
+    $(this).parent().find('.inner').each(function() {
+      var targetID = $(this).attr('id').substring(4);
+      $('#status_table #t_'+targetID).addClass('hidden');
+      $(this).prop('checked', false);
+    });
+    $(this).prop('checked', false);
+    $(this).prop('indeterminate', false);
+    $('#checkGroups').val(' ');
+  });
+}
+
+function checkBoxes(that, resetSelect) {
+    var targetID = $(that).attr('id').substring(4);
+    
+    if ($(that).is(':checked')) {
+      $('#status_table #t_'+targetID).removeClass('hidden');
+    }
+    else {
+      $('#status_table #t_'+targetID).addClass('hidden');
+    }
+
+    if ($(that).parents('.am_group').find('.inner:checkbox:checked').length == $(that).parent().siblings().length+1) {
+      $(that).parents('.am_group').find('.outer').prop('indeterminate', false);
+      $(that).parents('.am_group').find('.outer').prop('checked', true);
+    }
+    else if ($(that).parents('.am_group').find('.inner:checkbox:checked').length > 0) {
+      $(that).parents('.am_group').find('.outer').prop('indeterminate', true);
+      $(that).parents('.am_group').find('.outer').prop('checked', true);
+    }
+    else {
+      $(that).parents('.am_group').find('.outer').prop('indeterminate', false);
+      $(that).parents('.am_group').find('.outer').prop('checked', false);
+    }
+    if (resetSelect) {
+      $('#checkGroups').val(' ');
+    }
+}
+
+function getCheckedStatus() {
+  $('#am_names').find('.inner:checkbox:checked').each(function() {
+    refresh_agg_row($(this).attr('id').substring(4));
+  });
+}
+
+function prepareEvents() {
+  $('#am_names .inner').each(function() {
+    $(this).click(function() {
+      checkBoxes(this, true);
+    });
+  });
+
+  $('#am_names .outer').each(function() {
+    $(this).click(function(event) {
+      if ($(this).is(':checked')) {
+        $(this).parent().find('.inner').each(function() {
+          var targetID = $(this).attr('id').substring(4);
+          $('#status_table #t_'+targetID).removeClass('hidden');
+          $(this).prop('checked', true);
+        });
+      }
+      else {
+        $(this).parent().find('.inner').each(function() {
+          var targetID = $(this).attr('id').substring(4);
+          $('#status_table #t_'+targetID).addClass('hidden');
+          $(this).prop('checked', false);
+        });
+      }
+      $('#checkGroups').val(' ');
+    });
+  });
+
+  $('#checkGroups').change(function() {
+    var flag = $(this).find('option:selected').attr('class');
+    if (flag != undefined) {
+      flag = flag.substring(3);
+      $('#am_names .inner').each(function() {
+        var target = $('#status_table #t_'+$(this).attr('id').substring(4)).hasClass(flag);
+        if (target && !$(this).is(':checked')) {
+          $(this).prop('checked',true);
+          checkBoxes(this, false);
+        }
+        else if (!target && $(this).is(':checked')) {
+          $(this).prop('checked',false);
+          checkBoxes(this, false);
+        }
+      });
+    }
+  });
+}
+
+function doOnChecked(baseURL) {
+  var finalURL = baseURL;
+  $('#am_names').find('.inner:checkbox:checked').each(function() {
+    finalURL = finalURL.contains('?') ? finalURL + '&' : finalURL + '?';
+    finalURL += 'am_id[]='+$(this).attr('id').substring(4);
+  });
+  window.open(finalURL);
+}

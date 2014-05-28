@@ -113,71 +113,94 @@ function build_agg_table_on_slicepg()
      $status_url = 'sliverstatus.php?slice_id='.$slice_id;
      $listres_url = 'listresources.php?slice_id='.$slice_id;
 
-     $updating_text = "...updating...";
-     $initial_text = "not retrieved";
+     $updating_text = "Updating status...";
+     $initial_text = "Status not retrieved";
 
+     $output .= "<table id='actions_table'>";
+     $output .= "<tr><th colspan='3'>Manage Resources</th></tr>";
+     $output .= "<tr><td><button onClick=\"selectAll()\">Select All</button>";
+     $output .= "<button onClick=\"deselectAll()\">Deselect All</button></td>";
+     $output .= "<td colspan='2'>";
+     $output .= "<button onClick=\"getCheckedStatus();\"><b>Get Status</b></button>";
+     $output .= "<button title='Login info, etc' onClick=\"doOnChecked('$listres_url');\"><b>Resource Details</b></button>";
+     $output .= "<button onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
+     $output .= "<button onClick=\"doOnChecked('confirm-sliverdelete.php?slice_id=" . $slice_id . "')\"><b>Delete Resources</b></button>";
+     $output .= "</td></tr>\n";
+
+     $output .= "<tr><td><span>Select Only: </span><select id='checkGroups'>";
+     $output .= "<option style='display:none;'> </option>";
+     $output .= "<option class='op_".ui_exogeni_am."'>ExoGENI</option>";
+     $output .= "<option class='op_".ui_foam_am."'>Foam</option>";
+     $output .= "<option class='op_".ui_instageni_am."'>InstaGENI</option>";
+     $output .= "<option class='op_".ui_other_am."'>Other</option>";
+     $output .= "</select>";
+     $output .= "</td>";
+     $output .= "<td colspan='2'>";
+     if ($renew_slice_privilege) {
+    $output .= "<form  method='GET' action=\"do-renew.php\">";
+    $output .= "<input type=\"hidden\" name=\"slice_id\" value=\"\"/>\n";
+    $output .= "<input type=\"hidden\" name=\"am_id\" value=\"\"/>\n";
+    $output .= "<input type=\"hidden\" name=\"renew\" value=\"sliver\"/>\n";
+    $output .= "<input id='renew_field_' class='date' type='text' name='sliver_expiration' ";
+    $size = strlen($slice_date_expiration) + 3;
+    $output .= "size=\"$size\"/>\n";
+    $output .= "<input id='renew_button_' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
+    $output .= "</form>";
+      }
+     $output .= "</td></tr>\n";
+
+       $output .= "<tr><td id='am_name_list'><ul id='am_names'>";
+        $output .= "<li id='g_exogeni' class='am_group'><div class='collapsable'></div><input type='checkbox' id='exogenibox' class='outer' checked='checked'>ExoGENI<ul></ul></li>";
+        $output .= "<li id='g_foam' class='am_group'><div class='collapsable'></div><input type='checkbox' id='foambox' class='outer' checked='checked'>Foam<ul></ul></li>";
+        $output .= "<li id='g_instageni' class='am_group'><div class='collapsable'></div><input type='checkbox' id='instagenibox' class='outer' checked='checked'>InstaGENI<ul></ul></li>";
+        $output .= "<li id='g_other' class='am_group'><div class='collapsable'></div><input type='checkbox' id='otherbox' class='outer' checked='checked'>Other<ul></ul></li>";
+       $output .= "</ul>";
+     $output .= "</td>";
+     
      // (2) create an HTML table with one row for each aggregate
-     $output = "<table id='status_table'>";
-     //  output .=  "<tr><th>StatusXXX</th><th colspan='2'>Slice</th><th>Creation</th><th>Expiration</th><th>Actions</th></tr>\n";
-     $output .= "<style>";
-     $output .= "#status_table .hidden { display:none; }";
-     $output .= "</style>";
-
-     $output .= "<tbody><tr>";
-     $output .= "<th id='status'>";
-     $output .= "Status<br/><button id='reload_all_button' type='button' onclick='refresh_all_agg_rows()' $get_slice_credential_disable_buttons>Get All</button>";
-     $output .= "</th><th>Aggregate</th>";
-     //      output .= "<th>&nbsp;</th>";
-     $output .= "<th>Renew</th>";
-     $output .= "<th>Actions</th></tr>\n";
-//     $output .= "<tr><td>ExoGENI<input id='exogenibox' type='checkbox' checked=''></td><td>FOAM<input id='foambox' type='checkbox' checked=''></td><td>InstaGENI<input id='instagenibox' type='checkbox' checked=''></td><td>Other<input id='otherbox' type='checkbox' checked=''></td></tbody>\n";
-       //replace with above for checkboxes
-     $output .= "</tbody>\n";
+     $output .= "<td colspan='2'><div id='status_table_cont'><table id='status_table' cols='3'>";
+     
      foreach ($am_list as $am) {
 	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
             $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
             $am_type = lookup_attribute($am[SR_TABLE_FIELDNAME::SERVICE_URL], SERVICE_ATTRIBUTE_AM_TYPE);
             $output .= "<tbody id='t_".$am_id."' class='".$am_type."'>";
             $output .= "<tr id='".$am_id."'>";
-	    $output .= "<td id='status_".$am_id."' class='notqueried'>";	
-	    $output .= $initial_text;
-	    $output .= "</td>";
-	    $output .= "<td rowspan='2'>";	
-	    $output .= $name;
-	    $output .= "</td>";	
-	    // sliver expiration
-            $output .= "<td rowspan='2'>";
-	    $output .= "Expires on <b><span class='renew_date' id='renew_sliver_".$am_id."'>".$initial_text."</span></b>";
-	    if ($renew_slice_privilege) {
-		$output .= "<form  method='GET' action=\"do-renew.php\">";
-		$output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice_id."\"/>\n";
-		$output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
-		$output .= "<input type=\"hidden\" name=\"renew\" value=\"sliver\"/>\n";
-		$output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration' ";
-		$size = strlen($slice_date_expiration) + 3;
-		$output .= "size=\"$size\"/>\n";
-		$output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
-		$output .= "</form>";
-	    }		
-	    $output .= "</td>\n";
-	    // sliver actions
-	    $output .= "<td rowspan='2'>";
-	    $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>";
+	    $output .= "<td colspan='1' class='am_name_field'>";  
+      $output .= $name;
+      $output .= "</td>"; // sliver expiration
+      $output .= "<td colspan='2' class='hide status_buttons'><div>";
+      $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete Resources</b></button>\n";
-	    $output .= "</td></tr>";
+      $output .= "</div></td></tr>";
+      
 
+      $output .= "<tr class='notqueried'><td colspan='1' id='status_".$am_id."' class='notqueried'>";  
+      $output .= $initial_text;
+      $output .= "</td>";
+      $output .= "<td class='hide' colspan='2'><div>";
+      $output .= "<button id='reload_button_".$am_id."' type='button' onclick='refresh_agg_row(".$am_id.")' class='getButton' $get_slice_credential_disable_buttons>Get Status</button>";
+      $output .= "<div class='renewForm'><div class='expireText'>Expires on <b><span class='renew_date' id='renew_sliver_".$am_id."'>".$initial_text."</span></b></div>";
+      if ($renew_slice_privilege) {
+        $output .= "<form  method='GET' action=\"do-renew.php\">";
+        $output .= "<input type=\"hidden\" name=\"slice_id\" value=\"".$slice_id."\"/>\n";
+        $output .= "<input type=\"hidden\" name=\"am_id\" value=\"".$am_id."\"/>\n";
+        $output .= "<input type=\"hidden\" name=\"renew\" value=\"sliver\"/>\n";
+        $output .= "<input id='renew_field_".$am_id."' class='date' type='text' name='sliver_expiration' ";
+        $size = strlen($slice_date_expiration) + 3;
+        $output .= "size=\"$size\"/>\n";
+        $output .= "<input id='renew_button_".$am_id."' type='submit' name= 'Renew' value='Renew' title='Renew resource reservation at this aggregate until the specified date' $disable_buttons_str/>\n";
+        $output .= "</form></div>";
+      }   
 
-
-	    $output .= "<tr><td class='status_buttons'><button id='reload_button_'".$am_id." type='button' onclick='refresh_agg_row(".$am_id.")' $get_slice_credential_disable_buttons>Get Status</button></td></tr></tbody>";
-
-
-
+      $output .= "</div></td></tr>";
 
             // (3) Get the status for this slice at this aggregate
 //	    update_agg_row( am_id );
      }	
-     $output .= "</table>";
+     $output .= "</table></td>";
+     $output .= "</tr></table>";
      return $output;
 }
 
@@ -330,12 +353,160 @@ $(document).ready(build_agg_table_on_slicepg());
 -->
 <script>
 $(document).ready(function() {
-    $('#instagenibox').change(function() {hide_agg_row('instagenibox', ui_instageni_am)});
-    $('#exogenibox').change(function() {hide_agg_row('exogenibox', ui_exogeni_am)});
-    $('#foambox').change(function() {hide_agg_row('foambox', ui_foam_am)});
-    $('#otherbox').change(function() {hide_agg_row('otherbox', ui_other_am)});
+    prepareList();
+    prepareEvents();
+    $('#checkGroups').val(' ');
 });
 </script>
+
+<style>
+#header, #content-outer {
+  position: relative;
+}
+#content #portalhelp {
+  position: absolute;
+  top: 74px;
+  right: 30px;
+}
+#content {
+  padding: 20px 30px 30px;
+  position: relative;
+}
+#content table {
+  margin-left: 30px;
+  width: 795px;
+}
+#content table table {
+  margin: 0;
+  border: 0;
+  width: 100%;
+}
+#content table table td {
+  border-top: 0;
+}
+#content #renewcell {
+  padding: 0;
+  border-top: 0;
+  border-bottom: 0;
+}
+
+#content #am_name_list {
+  width: 230px;
+}
+
+
+
+#content #am_name_list {
+  margin-top:15px;
+  vertical-align: top;
+}
+
+#content #status_table .hidden {
+  display: none;
+}
+
+#content #status_table_cont {
+  display: block;
+  overflow-y: scroll;
+  height: 550px;
+}
+
+#am_names {
+  padding-left: 0;
+}
+#am_names > li {
+  margin-left: 0;
+}
+#am_names ul, li {
+    list-style: none;
+    margin:0;
+    padding:0;
+    position: relative;
+}
+#am_names p:hover {
+    background-color:#121212;
+}
+#am_names li {
+    line-height:140%;
+    text-indent:0px;
+    background-position: 1px 8px;
+    padding-left: 20px;
+    background-repeat: no-repeat;
+}
+ 
+#am_names .collapsable {
+  position: absolute;
+  cursor: pointer;
+  left: 3px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+}
+#am_names .collapsed .collapsable:after {
+  content: "+";
+  font-weight: bold;
+  position: absolute;
+  top:-2px;
+  left: 5px;
+}
+#am_names .expanded .collapsable:after {
+  content: "-";
+}
+
+#status_table .hide > div {
+  visibility: hidden;
+}
+#status_table tbody:hover .hide > div {
+  visibility: visible;
+}
+#status_table .notqueried .expireText, #status_table .updating .expireText, #status_table .noresources .expireText, #status_table .busy .expireText, #status_table .failed .expireText {
+	display: none;
+}
+
+#status_table .getButton {
+  float: left;
+}
+
+#status_table .renewForm {
+  float: left;
+  margin-left: 5px;
+}
+
+#status_table .ready .getButton {
+  margin: 10px 1px 1px;
+  text-transform: none;
+}
+
+#status_table .ready .exireText, #status_table .failed .getButton, #status_table .busy .getButton {
+  text-transform: none;
+}
+
+.notqueried, .configuring, .unknown, .busy, .ready, .failed {
+	text-align: left;
+}
+
+.configuring, .unknown, .busy, .ready, .failed {
+  text-align: left;
+}
+
+#status_table button, #status_table input[type="submit"], #status_table input[type="button"] {
+  font-size: 0.85em;
+  margin: 0 1px 1px;
+  padding: 0 2px;
+}
+
+#status_table td {
+  border-bottom: 0;
+  padding: 2px;
+}
+#status_table tbody tr:nth-child(2) td {
+  border-bottom: 1px solid #FFFFFF;
+  padding: 2px 0 6px;
+}
+#status_table tbody tr:nth-child(1) td {
+  padding: 6px 0 2px;
+}
+</style>
 
 <?php 
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
@@ -347,24 +518,17 @@ if (isset($slice_expired) && convert_boolean($slice_expired) ) {
 // FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
 // FIXME: Disable launch flack if in lockdown mode?
 
-print "<table>\n";
-print "<tr><th>Slice Actions</th><th>Renew</th></tr>\n";
-
-/* Slice Actions */
-print "<tr>";
-if ($renew_slice_privilege) {
-print "<td rowspan='2'>\n";
-} else {
-print "<td>\n";
-}
+print "<table cols='4'>\n";
+print "<tr><th colspan='4'>Slice Actions</th></tr>\n";
+print "<tr><td colspan='4'>\n";
 print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
+print "<a href='#manage' style='border-bottom:0;'><button><b>Manage Resources</b></button></a>\n";
+print "<a href=\"#members\" style=\"border-bottom:0;\"><button><b>Manage Slice Members</b></button></a>";
+print "</td></tr>\n";
 
-print "<button onClick=\"window.location='tool-aggwarning.php?loc=$status_url'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>\n";
-print "<button title='Login info, etc' onClick=\"window.location='tool-aggwarning.php?loc=$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
+print "<tr><th colspan='4'>Renew Slice</th></tr>\n";
 
-print "<button onClick=\"window.location='confirm-sliverdelete.php?slice_id=" . $slice_id . "'\" $delete_slivers_disabled $disable_buttons_str><b>Delete Resources</b></button>\n";
-print "</td>\n";
-
+print "<tr>\n";
 /* Renew */
 if ($project_expiration) {
   $project_exp_print = dateUIFormat($project_expiration);
@@ -372,14 +536,20 @@ if ($project_expiration) {
 } else {
   $project_line = "Project does not have an expiration date<br>";
 }
-print "<td>\n";
+if ($renew_slice_privilege) {
+  print "<td colspan='1' style=\"width:350px;\">\n";
+} else {
+  print "<td colspan='4'>\n";
+}
 print $project_line;
 print "Slice expires on <b>$slice_expiration</b>";
-print "</td></tr>\n";
+print "</td>\n";
+
+/* Ops Management */
 
 
 if ($renew_slice_privilege) {
-  print "<tr><td id='renewcell'>\n";
+  print "<td id='renewcell' colspan='3'>\n";
   print "<form id='renewform' method='GET' action=\"do-renew.php\">";
   print "<table id='renewtable'><tr><td>";
   print "Renew ";
@@ -390,8 +560,8 @@ if ($renew_slice_privilege) {
   print "</div>";
   print "</td><td>";
   print " until <br/>";
-  print "</td></tr><tr>";
-  print "<tr><td id='renewbutton' colspan=3>";
+  print "</td>";
+  print "<td id='renewbutton'>";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   $size = strlen($slice_date_expiration) + 3;
@@ -399,8 +569,10 @@ if ($renew_slice_privilege) {
   print "<button type='button' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
   print "</td></tr></table>";
   print "</form>\n";
-  print "</td></tr>\n";
+  print "</td>\n";
 }
+print "</tr>\n";
+
 ?>
 <script>
   $(function() {
@@ -408,36 +580,35 @@ if ($renew_slice_privilege) {
     $( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd", minDate: slice_date_expiration, maxDate: max_slice_renewal_days  });
 <?php
      foreach ($am_list as $am) {
-	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+      $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
             $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
     //    $( ".date" ).datepicker({ dateFormat: "yy-mm-dd", minDate: 1,  maxDate: slice_date_expiration });
-	    print "    $( \"#renew_field_$am_id\" ).datepicker({ dateFormat: \"yy-mm-dd\", minDate: 1,  maxDate: slice_date_expiration });\n";
+      print "    $( \"#renew_field_$am_id\" ).datepicker({ dateFormat: \"yy-mm-dd\", minDate: 1,  maxDate: slice_date_expiration });\n";
      }
 ?>
   });
 </script>
 <?php
 
-print "<tr><th>Tools</th><th>Ops Mgmt</th></tr>\n";
+
+
+print "<tr><th colspan='4'>Slice Tools</th></tr>\n";
 /* Tools */
-print "<tr><td>\n";
+print "<tr><td colspan='4'>\n";
 /* print "To use a command line tool:<br/>"; */
 $hostname = $_SERVER['SERVER_NAME'];
-print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/><b>Launch Flack</b> </button>\n";
+print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><b>Flack</b> </button>\n";
 
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>\n";
 
   print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>\n";
 
-print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Use omni</b></button>\n";
+print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Omni</b></button>\n";
 //print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
 print "</td>\n";
+print "</tr>\n";
 
-/* Ops Management */
-print "<td>\n";
-print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='disable-slice.php?slice_id=" . $slice_id . "'\"><b>Disable Slice</b></button>\n";
-print "<button title=\"not working yet\" disabled=\"disabled\" onClick=\"window.location='shutdown-slice.php?slice_id=" . $slice_id . "'\"><b>Shutdown Slice</b></button>\n";
-print "</td></tr>\n";
+
 
 print "</table>\n";
 
@@ -447,9 +618,22 @@ print "</table>\n";
 /* print "</table>\n"; */
 
 
-print "<p>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p>";
+print "<p id='portalhelp'>Confused? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p>";
 
-print "<h2>Slice Members</h2>";
+
+// ----
+// Now show slice / sliver status
+
+print "<h2 id='manage'>Slice Status</h2>\n";
+
+  $slice_status='';
+
+  print "<div id='status_table_div'/>\n";
+  print build_agg_table_on_slicepg();
+  print "</div>\n";
+// --- End of Slice and Sliver Status table
+
+print "<h2 id='members'>Slice Members</h2>";
 ?>
 
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
@@ -536,18 +720,7 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slic
 }
 echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button></p>";
 
-// ----
-// Now show slice / sliver status
-
-print "<h2>Slice Status</h2>\n";
-
-  $slice_status='';
-
-  print "<div id='status_table_div'/>\n";
-  print build_agg_table_on_slicepg();
-  print "</div>\n";
-// --- End of Slice and Sliver Status table
-
+print "<h2>Slice Identifiers</h2>";
 // Slice Identifers table
 print "<table>\n";
 print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
