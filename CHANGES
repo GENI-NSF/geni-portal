@@ -5,7 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.16 ==
-
+ * Update dragon.maxgigapop SSL cert (again). (#1040)
 
 == 2.15 ==
  * Display OpenID URL on profile page (#290)
