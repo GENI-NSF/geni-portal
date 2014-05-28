@@ -478,7 +478,7 @@ function geni_load_user_by_eppn($eppn, $sfcred)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
   $signer = Portal::getInstance($sfcred);
   $member = ma_lookup_member_by_eppn($ma_url, $signer, $eppn);
-  error_log("MEMBER = " . print_r($member, True));
+  //error_log("MEMBER = " . print_r($member, True));
   if (is_null($member) || !isset($member->certificate)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");

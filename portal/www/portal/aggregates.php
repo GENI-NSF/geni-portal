@@ -49,7 +49,7 @@ if (array_key_exists("am_id", $_REQUEST)) {
     foreach ($am_ids as $am_id) {
       $tmp_am = get_service_by_id($am_id);
       if ($tmp_am && $tmp_am['service_url']) {
-         error_log(": tmp_am['service_url']" . $tmp_am['service_url']);
+         //error_log(": tmp_am['service_url']" . $tmp_am['service_url']);
          $ams[] = $tmp_am;
       }	 
     }
