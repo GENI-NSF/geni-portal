@@ -127,7 +127,7 @@ function build_agg_table_on_slicepg()
      $output .= "<button onClick=\"doOnChecked('confirm-sliverdelete.php?slice_id=" . $slice_id . "')\"><b>Delete Resources</b></button>";
      $output .= "</td></tr>\n";
 
-     $output .= "<tr><td><span>Select Only: </span><select id='checkGroups'>";
+     $output .= "<tr><td><span style='margin: 0 5px;'>Select Only: </span><select id='checkGroups'>";
      $output .= "<option style='display:none;'> </option>";
      $output .= "<option class='op_".ui_exogeni_am."'>ExoGENI</option>";
      $output .= "<option class='op_".ui_foam_am."'>Foam</option>";
@@ -142,7 +142,7 @@ function build_agg_table_on_slicepg()
       $output .= "size=\"$size\"/>\n";
       $output .= "<button id='renew_button_check' title='Renew resource reservation at this aggregate until the specified date' ";
       $output .= "onClick=\"doOnRenew('do-renew.php?slice_id=".$slice_id."&renew=sliver&Renew=Renew');\""; 
-      $output .= "$disable_buttons_str><b>Renew</b></button>\n";
+      $output .= "$disable_buttons_str><b>Renew Resources</b></button>\n";
     }
      $output .= "</td></tr>\n";
 
@@ -163,9 +163,9 @@ function build_agg_table_on_slicepg()
             $am_type = lookup_attribute($am[SR_TABLE_FIELDNAME::SERVICE_URL], SERVICE_ATTRIBUTE_AM_TYPE);
             $output .= "<tbody id='t_".$am_id."' class='".$am_type."'>";
             $output .= "<tr id='".$am_id."'>";
-	    $output .= "<td colspan='1' class='am_name_field'>";  
+	    $output .= "<td colspan='1' class='am_name_field'><b>";  
       $output .= $name;
-      $output .= "</td>"; // sliver expiration
+      $output .= "</b></td>"; // sliver expiration
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
       $output .= "<button id='status_button_".$am_id."' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
@@ -431,14 +431,23 @@ $(document).ready(function() {
     line-height:140%;
     text-indent:0px;
     background-position: 1px 8px;
-    padding-left: 20px;
+    padding-left: 15px;
     background-repeat: no-repeat;
+}
+
+#am_names li ul {
+  border-left: 1px dotted #808080;
+  margin-left: 8px;
+}
+
+#am_names li ul li {
+  padding-left: 8px;
 }
  
 #am_names .collapsable {
   position: absolute;
   cursor: pointer;
-  left: 3px;
+  left: 0;
   top: 0;
   width: 16px;
   height: 16px;
@@ -452,6 +461,10 @@ $(document).ready(function() {
 }
 #am_names .expanded .collapsable:after {
   content: "-";
+}
+
+#checkGroups {
+  min-width: 100px;
 }
 
 #status_table .hide > div {
@@ -503,10 +516,10 @@ $(document).ready(function() {
 }
 #status_table tbody tr:nth-child(2) td {
   border-bottom: 1px solid #FFFFFF;
-  padding: 2px 0 6px;
+  padding: 2px 0 6px 15px;
 }
 #status_table tbody tr:nth-child(1) td {
-  padding: 6px 0 2px;
+  padding: 6px 0 2px 15px;
 }
 </style>
 
