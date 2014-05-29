@@ -31,7 +31,7 @@ include("tool-lookupids.php");
 print "<p class='warn'>";
 if (isset($am_id) && $am_id) {
 	print "This action will query ".count($ams)." aggregates and may take several minutes.";
-  print '<br>Are you sure that you want to query all '.count($ams).' aggregates?';
+  print '<br>Are you sure that you want to query these '.count($ams).' aggregates?';
   for ($i = 0; $i < count($ams); $i++) {
     $location = $location."&am_id[]=".$am_ids[$i];
   }
