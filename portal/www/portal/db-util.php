@@ -366,6 +366,50 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
+function db_update_rspec($rspec_id, $user, $name, $description,
+                         $rspec, $schema,
+                         $schema_version, $visibility, $is_bound,
+                         $is_stitch, $am_urns, $uploaded_rspec)
+{
+  if (! isset($description) or is_null($description) or $description == '') {
+    $msg = "Description missing for RSpec '$name'";
+    error_log($msg);
+    relative_redirect('error-text.php' . "?error=" . urlencode($msg));
+    return false;
+  }
+  if (! isset($name) or is_null($name) or $name == '') {
+    $msg = "Name missing for RSpec with description '$description'";
+    error_log($msg);
+    relative_redirect('error-text.php' . "?error=" . urlencode($msg));
+    return false;
+  }
+  $conn = portal_conn();
+  $sql = "UPDATE rspec SET ";
+  $sql .= "name = " . $conn->quote($name, 'text');
+  $sql .= ", description = " . $conn->quote($description, 'text');
+  $sql .= ", owner_id = " . $conn->quote($user->account_id, 'text');
+  $sql .= ", visibility = " . $conn->quote($visibility, 'text');
+  if($uploaded_rspec) {
+    $sql .= ", rspec = " . $conn->quote($rspec, 'text');
+    $sql .= ", schema = " . $conn->quote($schema, 'text');
+    $sql .= ", schema_version = " . $conn->quote($schema_version, 'text');
+    $sql .= ", bound = " . $conn->quote($is_bound, 'boolean');
+    $sql .= ", stitch = " . $conn->quote($is_stitch, 'boolean');
+    $sql .= ", am_urns = " . $conn->quote($am_urns, 'text');
+  }
+  $sql .= " where id = " . $rspec_id;
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  //  error_log($sql);                                                          
+  $result = db_execute_statement($sql, "db_update_rspec");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "db_add_rspec: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
+    return false;
+  }
+  return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
 function deleteRSpecById($id, $user)
 {
   $conn = portal_conn();

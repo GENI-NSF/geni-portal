@@ -156,7 +156,11 @@ function display_rspec($rspec, $owners, $public=False) {
           $view_btn,
           $download_btn);
   } else {
-    $edit_url = "rspecedit.php?id=$id";
+    //    $edit_url = "rspecedit.php?id=$id";
+    $sn = $rspec['name'];
+    $desc = $rspec['description'];
+    $visibility = $rspec['visibility'];
+    $edit_url = "rspecupload.php?rspec_id=$id&group1=$visibility&description=$desc&name=$sn";
     $edit_btn = "<button onClick=\"window.location='$edit_url'\">Edit</button>";
     $delete_url = "rspecdelete.php?id=$id";
     $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";

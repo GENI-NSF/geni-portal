@@ -28,6 +28,29 @@ require_once("header.php");
 require_once 'geni_syslog.php';
 require_once 'db-util.php';
 
+// This module is called in a number of contexts.
+// 1) It is called directly from profile.php
+//     a) To upload a new RSPEC
+//     b) To update an existing rspec
+// 2) It is called as a callback from this module when the form is submitted
+//     a) To upload a new RSPEC
+//     b) to update an existing RSPEC
+//
+// We can differentiate between these cases:
+//  1a) The module is invoked with empty $_REQUEST/$_POST arguments
+//  1b) The module is invoked with a full set of rspec_id, group1, 
+//       description, name $_REQUEST arguments (not $_POST)
+//       (on the URL rspecupload.php?rspec_id=x&....
+//  2a) The group1, description name fields are set in $_REQUEST and $_POST
+//      but the rspec_id is blank 
+//  2b) The group1, description name fields are set in $_REQUEST and $_POST
+//      and the rspec_id is set as well
+// Note, if the $_FILES variable contains no files 
+//    (an error = UPLOAD_ERR_NO_FILE, it is an error for uploading a new
+//    rspec but allowed for updating an existing rpsec 
+//    (leave the existing RSPEC alone)
+
+
 /**
  * Validate the uploaded RSpec.
  *
@@ -69,6 +92,12 @@ function validateRSpec($rspec_filename, &$error_msg)
 //    a list of AM URN's (component_manager_id's) of requested nodes
 function parseRequestRSpec($rspec_filename)
 {
+
+  // Handle case wherein no file provided (for update, not upload)
+  if ($rspec_filename == NULL || $rspec_filename == "") {
+    return array(NULL, False, False, array());
+  }
+
   $am_urns = array();
   $is_bound = false;
   $is_stitch = false;
@@ -134,6 +163,20 @@ function parseRequestRSpec($rspec_filename)
   return array($rspec, $is_bound, $is_stitch, $am_urns);
 }
 
+$rspec_id = "";
+$rspec_visibility = "";
+$rspec_desc = "";
+$rspec_sn = "";
+if (array_key_exists('rspec_id', $_REQUEST)) {
+  $rspec_id = $_REQUEST['rspec_id'];
+  $rspec_sn = $_REQUEST['name'];
+  $rspec_desc = $_REQUEST['description'];
+  $rspec_visibility = $_REQUEST['group1'];
+}
+
+//error_log("REQUEST = " . print_r($_REQUEST, True));
+//error_log("POST = " . print_r($_POST, True));
+//error_log("FILES = " . print_r($_FILES, True));
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -141,6 +184,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $error = NULL;
+$errorcode = 0;
 if (array_key_exists('file', $_FILES)) {
   $errorcode = $_FILES['file']['error'];
   if ($errorcode != 0) {
@@ -161,6 +205,13 @@ if (array_key_exists('file', $_FILES)) {
   }
 }
 
+/*
+ * If we weren't given a file but we're in update  mode (not upload a new rspec mode), there is no error
+ */
+if (($rspec_id != "") && ($errorcode == UPLOAD_ERR_NO_FILE)) {
+  $error = NULL;
+}
+
 /* Set up the referer, which is used to
  * redirect after upload.
  */
@@ -175,7 +226,12 @@ if ($error != NULL || count($_POST) == 0) {
   show_header('GENI Portal: Profile', $TAB_PROFILE, 0); // 0=Don't load user to show header
   include("tool-breadcrumbs.php");
   include("tool-showmessage.php");
-  print("<h1 style=\"line-height: 1.2em\">Upload experiment Resource Specification (RSpec)</h1>\n");
+
+  $msg = "Upload experiment Resource Specification (RSpec)";
+  if($rspec_id != "") 
+    $msg = "Update experiment Resource Specification (RSpec)";
+  print("<h1 style=\"line-height: 1.2em\">$msg</h1>\n");
+
   if ($error != NULL) {
     echo "<div id=\"error-message\""
       . " style=\"background: #dddddd;font-weight: bold\">\n";
@@ -183,19 +239,28 @@ if ($error != NULL || count($_POST) == 0) {
     echo "</div>\n";
   }
   echo '<form action="rspecupload.php" method="post" enctype="multipart/form-data">';
+  echo '  <input type="hidden" value="' . $rspec_id . '" name="rspec_id"/>';
   echo '  <p><label for="file">RSpec File:</label>';
   echo '  <input type="file" name="file" id="file" /></p>';
   echo '  <p>';
   echo '  <label for="file">Short Name:</label>';
-  echo '  <input type="text" name="name"/> - Required</p>';
+  echo '  <input type="text" name="name" value="' . $rspec_sn . '"/> - Required</p>';
+  $public_checked = "";
+  $private_checked = "checked";
+  if ($rspec_visibility == "public") {
+    $public_checked = "checked";
+    $private_checked = "";
+  }
   echo '  <p>Type: ';
-  echo '  <input type="radio" name="group1" value="public"> public';
-  echo '  <input type="radio" name="group1" value="private" checked> private</p>';
+  echo '  <input type="radio" name="group1" value="public" ' . $public_checked . '> public';
+  echo '  <input type="radio" name="group1" value="private" ' . $private_checked . '> private</p>';
   echo '  <p>';
   echo '  <label for="file">Description:</label>';
-  echo '  <input type="text" name="description"/> - Required</p>';
+  echo '  <input type="text" name="description" value="' . $rspec_desc . '"/> - Required</p>';
   echo '  <p>';
-  echo '  <input type="submit" name="submit" value="Upload"/>';
+  $button_label = "Upload";
+  if ($rspec_id != "") $button_label = "Update";
+  echo '  <input type="submit" name="submit" value="' . $button_label . '"/>';
   echo '  <input type="hidden" name="referer" value="' . $referer . '"/></p>';
   echo '</form>';
   include("footer.php");
@@ -215,6 +280,7 @@ $description = NULL;
 $name = $_POST["name"];
 $visibility = $_POST["group1"];
 $description = $_POST["description"];
+$rspec_id = $_POST['rspec_id'];
 
 $am_urns_image = "";
 foreach($am_urns as $am_urn) {
@@ -228,15 +294,25 @@ foreach($am_urns as $am_urn) {
 $schema = "GENI";
 $schema_version = "3";
 
-$result = db_add_rspec($user, $name, $description, $contents,
-		       $schema, $schema_version, $visibility, $is_bound,
-		       $is_stitch, $am_urns_image
-		       );
+if ($rspec_id != "") {
+  $uploaded_rspec = ($errorcode != UPLOAD_ERR_NO_FILE);
+  $result = db_update_rspec($rspec_id, $user, $name, $description, $contents,
+			    $schema, $schema_version, $visibility, $is_bound,
+			    $is_stitch, $am_urns_image, $uploaded_rspec
+			 );
+} else {
+  $result = db_add_rspec($user, $name, $description, $contents,
+			 $schema, $schema_version, $visibility, $is_bound,
+			 $is_stitch, $am_urns_image
+			 );
+}
 geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "db_add_rspec: " . print_r($result, true));
 //error_log("db_add_rspec: " . print_r($result, true));
 // FIXME: check result
 if (! $result) {
   $_SESSION['lasterror'] = "ERROR. Failed to upload Resource Specification " . $name;
+} elseif ($rspec_id != "") {
+  $_SESSION['lastmessage'] = "Updated Resource Specification " . $name;
 } else {
   $_SESSION['lastmessage'] = "Uploaded Resource Specification " . $name;
 }
