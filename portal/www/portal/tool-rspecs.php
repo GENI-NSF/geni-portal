@@ -132,9 +132,12 @@ function display_rspec($rspec, $owners, $public=False) {
   $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
   if ($public) {
     $owner_id = $rspec['owner_id'];
+    $addr = NULL;
     if (array_key_exists($owner_id, $owners)) {
       $owner = $owners[$owner_id];
-      $addr = $owner->email_address;
+      if (isset($owner->email_address)) {
+        $addr = $owner->email_address;
+      }
       $pretty_name = $owner->prettyName();
     } else {
       /* Some rspecs have no owner because they were pre-loaded at the
@@ -145,6 +148,7 @@ function display_rspec($rspec, $owners, $public=False) {
     if (! $addr) {
       /* If owner email is not available, use help */
       $addr = 'help@geni.net';
+      $pretty_name = 'help@geni.net';
     }
     $rspec_name = $rspec['name'];
     $subject = 'About GENI Portal rspec: ' . $rspec['name'];
