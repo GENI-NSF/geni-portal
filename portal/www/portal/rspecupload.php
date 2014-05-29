@@ -317,11 +317,5 @@ if (! $result) {
   $_SESSION['lastmessage'] = "Uploaded Resource Specification " . $name;
 }
 
-// redirect to referer if available.
-if (array_key_exists('referer', $_POST)) {
-  header("Location: " . $_POST['referer']);
-  exit;
-} else {
-  relative_redirect('profile');
-}
+relative_redirect('profile#rspecs');
 ?>
