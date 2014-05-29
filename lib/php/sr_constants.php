@@ -138,6 +138,9 @@ const SERVICE_ATTRIBUTE_INSTAGENI_AM = "ui_instageni_am";
 const SERVICE_ATTRIBUTE_EXOGENI_AM = "ui_exogeni_am";
 const SERVICE_ATTRIBUTE_FOAM_AM = "ui_foam_am";
 const SERVICE_ATTRIBUTE_OTHER_AM = "ui_other_am";
-
+const SERVICE_ATTRIBUTE_AM_CAT = "UI_AM_CAT";
+const SERVICE_ATTRIBUTE_DEV_CAT = "ui_dev_cat";
+const SERVICE_ATTRIBUTE_PROD_CAT = "ui_prod_cat";
+const SERVICE_ATTRIBUTE_PROV_CAT = "ui_prov_cat"; 
 
 ?>

@@ -694,16 +694,16 @@ function add_agg_row_to_renew_table(am_id, sliver_expiration) {
 // Functions needed to make the AM list run
 function prepareList() {
   $('#status_table > tbody').each(function() {
-    var className = $(this).attr('class');
+    var className = $(this).attr('class').split(' ')[0];
+    console.log(className);
     var targetParent = className.substring(3,className.length-3);
     var parentHTML = $('#am_names #g_'+targetParent+' ul').html();
-    $('#am_names #g_'+targetParent+' ul').html(parentHTML+'<li><input type="checkbox" id="box-'+$(this).attr('id').substring(2)+'" class="inner" checked="checked">'+$(this).find('.am_name_field').text()+'</li>');
+    $('#am_names #g_'+targetParent+' ul').html(parentHTML+'<li><input type="checkbox" id="box-'+$(this).attr('id').substring(2)+'" class="inner" checked="checked"><span class="checkSib">'+$(this).find('.am_name_field').text()+'</span></li>');
   });
   $('#am_names').find('.am_group .collapsable')
     .click( function(event) {
       if (this == event.target) {
-        $(this).parent().toggleClass('expanded');
-        $(this).parent().children('ul').toggle();
+        $(this).parent().toggleClass('expanded').children('ul').toggle();
       }
       return false;
     })
@@ -720,9 +720,13 @@ function selectAll() {
       $('#status_table #t_'+targetID).removeClass('hidden');
       $(this).prop('checked', true);
     });
-    $(this).prop('checked', true);
-    $(this).prop('indeterminate', false);
+    $(this).prop('checked', true).prop('indeterminate', false);
     $('#checkGroups').val(' ');
+    $('.am_group').each(function() {
+      if (!$(this).hasClass('expanded')) {
+        $(this).toggleClass('expanded').children('ul').toggle();
+      }
+    });
   });
 }
 
@@ -733,9 +737,13 @@ function deselectAll() {
       $('#status_table #t_'+targetID).addClass('hidden');
       $(this).prop('checked', false);
     });
-    $(this).prop('checked', false);
-    $(this).prop('indeterminate', false);
+    $(this).prop('checked', false).prop('indeterminate', false);
     $('#checkGroups').val(' ');
+    $('.am_group').each(function() {
+      if ($(this).hasClass('expanded')) {
+        $(this).toggleClass('expanded').children('ul').toggle();
+      }
+    });
   });
 }
 
@@ -748,18 +756,15 @@ function checkBoxes(that, resetSelect) {
     else {
       $('#status_table #t_'+targetID).addClass('hidden');
     }
-
+    var thatParent = $(that).parents('.am_group').find('.outer');
     if ($(that).parents('.am_group').find('.inner:checkbox:checked').length == $(that).parent().siblings().length+1) {
-      $(that).parents('.am_group').find('.outer').prop('indeterminate', false);
-      $(that).parents('.am_group').find('.outer').prop('checked', true);
+      thatParent.prop('indeterminate', false).prop('checked', true);
     }
     else if ($(that).parents('.am_group').find('.inner:checkbox:checked').length > 0) {
-      $(that).parents('.am_group').find('.outer').prop('indeterminate', true);
-      $(that).parents('.am_group').find('.outer').prop('checked', true);
+      thatParent.prop('indeterminate', true).prop('checked', true);
     }
     else {
-      $(that).parents('.am_group').find('.outer').prop('indeterminate', false);
-      $(that).parents('.am_group').find('.outer').prop('checked', false);
+      thatParent.prop('indeterminate', false).prop('checked', false);
     }
     if (resetSelect) {
       $('#checkGroups').val(' ');
@@ -777,11 +782,19 @@ function prepareEvents() {
     $(this).click(function() {
       checkBoxes(this, true);
     });
+    var that = this;
+    $(this).siblings('.checkSib').click(function() {
+      $(that).prop("checked", !$(that).prop("checked"));
+      checkBoxes(that, true);
+    });
   });
 
   $('#am_names .outer').each(function() {
     $(this).click(function(event) {
       if ($(this).is(':checked')) {
+        if (!$(this).parent().hasClass('expanded')) {
+          $(this).parent().toggleClass('expanded').children('ul').toggle();
+        }
         $(this).parent().find('.inner').each(function() {
           var targetID = $(this).attr('id').substring(4);
           $('#status_table #t_'+targetID).removeClass('hidden');
@@ -790,6 +803,28 @@ function prepareEvents() {
       }
       else {
         $(this).parent().find('.inner').each(function() {
+          var targetID = $(this).attr('id').substring(4);
+          $('#status_table #t_'+targetID).addClass('hidden');
+          $(this).prop('checked', false);
+        });
+      }
+      $('#checkGroups').val(' ');
+    });
+    var that = this;
+    $(this).siblings('.checkSib').click(function() {
+      $(that).prop("checked", !$(that).prop("checked"));
+      if ($(that).is(':checked')) {
+        if (!$(that).parent().hasClass('expanded')) {
+          $(that).parent().toggleClass('expanded').children('ul').toggle();
+        }
+        $(that).parent().find('.inner').each(function() {
+          var targetID = $(this).attr('id').substring(4);
+          $('#status_table #t_'+targetID).removeClass('hidden');
+          $(this).prop('checked', true);
+        });
+      }
+      else {
+        $(that).parent().find('.inner').each(function() {
           var targetID = $(this).attr('id').substring(4);
           $('#status_table #t_'+targetID).addClass('hidden');
           $(this).prop('checked', false);
@@ -813,6 +848,11 @@ function prepareEvents() {
           $(this).prop('checked',false);
           checkBoxes(this, false);
         }
+        $('.am_group').each(function() {
+          if (($(this).find('.inner:checkbox:checked').length > 0 && !($(this).hasClass('expanded'))) || ($(this).find('.inner:checkbox:checked').length == 0 && $(this).hasClass('expanded'))) {
+            $(this).toggleClass('expanded').children('ul').toggle();
+          }
+        });
       });
     }
   });
@@ -823,7 +863,7 @@ function doOnChecked(baseURL) {
   $('#am_names').find('.inner:checkbox:checked').each(function() {
     finalURL += '&am_id[]='+$(this).attr('id').substring(4);
   });
-  window.open(finalURL);
+  window.location = finalURL;
 }
 
 function doOnRenew(baseURL) {
