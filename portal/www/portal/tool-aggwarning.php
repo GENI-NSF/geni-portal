@@ -25,12 +25,21 @@ require_once("header.php");
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-
 $location = $_GET['loc'];
+include("tool-lookupids.php");
 
 print "<p class='warn'>";
-print 'This action will query all aggregates and take several minutes.';
-print '<br>Are you sure that you want to query all aggregates?';
+if (isset($am_id) && $am_id) {
+	print "This action will query ".count($ams)." aggregates and may take several minutes.";
+  print '<br>Are you sure that you want to query all '.count($ams).' aggregates?';
+  for ($i = 0; $i < count($ams); $i++) {
+    $location = $location."&am_id[]=".$am_ids[$i];
+  }
+}
+else {
+	print 'This action will query all aggregates and may take several minutes.';
+	print '<br>Are you sure that you want to query all aggregates?';
+}
 
 //print "<button onClick=\"window.location=$location\"><b>YES</b></button><br/>\n";
 print "<form method='POST' action=\"$location\">";

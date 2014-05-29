@@ -124,7 +124,7 @@ function build_agg_table_on_slicepg()
      $output .= "<button title='Get status for selected aggregates.' onClick=\"getCheckedStatus();\"><b>Get Status</b></button>";
      $output .= "<button title='Login info, etc. for resources at selected aggregates.' onClick=\"doOnChecked('$listres_url');\"><b>Resource Details</b></button>";
      $output .= "<button title='Status for resources at selected aggregates.' onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
-     $output .= "<button title='Delete resources at selected aggregates.' onClick=\"doOnChecked('confirm-sliverdelete.php?slice_id=" . $slice_id . "')\"><b>Delete Resources</b></button>";
+     $output .= "<button title='Delete resources at selected aggregates.' onClick=\"doOnChecked('confirm-sliverdelete.php?slice_id=" . $slice_id . "', true)\"><b>Delete Resources</b></button>";
      $output .= "</td></tr>\n";
 
      $output .= "<tr><td><span style='margin: 0 5px;'>Select Only: </span><select id='checkGroups'>";
@@ -148,10 +148,10 @@ function build_agg_table_on_slicepg()
      $output .= "</td></tr>\n";
 
        $output .= "<tr><td id='am_name_list'><ul id='am_names'>";
-        $output .= "<li id='g_exogeni' class='am_group'><div class='collapsable'></div><input type='checkbox' id='exogenibox' class='outer' checked='checked'><span class='checkSib'>ExoGENI</span><ul></ul></li>";
-        $output .= "<li id='g_foam' class='am_group'><div class='collapsable'></div><input type='checkbox' id='foambox' class='outer' checked='checked'><span class='checkSib'>Foam</span><ul></ul></li>";
-        $output .= "<li id='g_instageni' class='am_group'><div class='collapsable'></div><input type='checkbox' id='instagenibox' class='outer' checked='checked'><span class='checkSib'>InstaGENI</span><ul></ul></li>";
-        $output .= "<li id='g_other' class='am_group'><div class='collapsable'></div><input type='checkbox' id='otherbox' class='outer' checked='checked'><span class='checkSib'>Other</span><ul></ul></li>";
+        $output .= "<li id='g_exogeni' class='am_group'><div class='collapsable'></div><input type='checkbox' id='exogenibox' class='outer' checked='checked'><span class='checkSib'>ExoGENI</span><ul style='display:none;'></ul></li>";
+        $output .= "<li id='g_foam' class='am_group'><div class='collapsable'></div><input type='checkbox' id='foambox' class='outer' checked='checked'><span class='checkSib'>Foam</span><ul style='display:none;'></ul></li>";
+        $output .= "<li id='g_instageni' class='am_group'><div class='collapsable'></div><input type='checkbox' id='instagenibox' class='outer' checked='checked'><span class='checkSib'>InstaGENI</span><ul style='display:none;'></ul></li>";
+        $output .= "<li id='g_other' class='am_group'><div class='collapsable'></div><input type='checkbox' id='otherbox' class='outer' checked='checked'><span class='checkSib'>Other</span><ul style='display:none;'></ul></li>";
        $output .= "</ul>";
      $output .= "</td>";
      
@@ -340,12 +340,10 @@ var ui_prov_cat = "<?php echo SERVICE_ATTRIBUTE_PROV_CAT ?>";
 function confirmQuery() {
   if ($("#sliceslivers").is(':checked')) {
     var result = confirm("This action will renew resources at all aggregates and may take several minutes.");
-    console.log("result = " + result);
     if (result) {
       $("#renewform").submit();
     }
   } else {
-    console.log("sliceslivers not checked");
     var myform = $("#renewform");
     myform.submit();
   }

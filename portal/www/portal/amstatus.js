@@ -109,65 +109,6 @@ function build_agg_table()
 }
 
 
-//RRH - 5-22
-//refresh_all_agg_rows, hid_agg_row, and do_action_on_picked_aggs all
-//have to deal with managing the aggregate table on the slice page
-//need to re check when Keith puts in his UI changes to the slice page
-
-//do_on_picked_aggs_from_pg(page_url) could be an alternate to do_action_on_picked_aggs
-//looking at jquery to return the AMs to act on - also UI interaction dependent
-//RRH
-
-//refresh_all_agg_rows - called on status - what AMs to call on status and redisplay
-function refresh_all_agg_rows() {
-    var s = all_ams;
-    var all_am_obj = JSON.parse(s);
-    for (var tmp_am_id in all_am_obj ) {
-	//for Keith to consider in this code - we'd have to figure out
-       // which rows to display
-       //if(!($('#t_' + tmp_am_id)).hasClass('hidden')) {
-       refresh_agg_row(tmp_am_id);
-    }
-}
-
-//called to do a particular action from the slice page
-//page_url is a string referring to a page, current examples are:
-//listresources.php, confirm-sliverdelete.php, sliverstatus.php
-//do_action_on_picked_aggs("sliverstatus.php")
-function do_action_on_picked_aggs(page_url) {
-    var s = all_ams;
-    var all_am_obj = JSON.parse(s);
-    var am_str = "";
-    var new_url = page_url;
-    //could probably do this with the $(".class").each from the page
-    for (var tmp_am_id in all_am_obj ) {
-       if(!($('#t_' + tmp_am_id)).hasClass('hidden')) {
-           am_str += "&am_id[]=" + tmp_am_id;
-       }
-    }
-    new_url += "?slice_id=" + slice + am_str;
-    console.log(new_url);
-    window.location=new_url;
-}
-
-function do_on_picked_aggs_from_pg(page_url) {
-    var s = all_ams;
-    var all_am_obj = JSON.parse(s);
-    var am_str = "";
-    var new_url = page_url;
-
-    //we'd want to pick the classes where not hidden
-    //have to ask Keith about picking the right ones
-    // not sufficient because there are other tbody in the table
-    $('tbody:not(.hidden)').each(function() {
-       am_str += "&am_id[]=" + $(this).attr('id');
-     });
-    new_url += "?slice_id=" + slice + am_str;
-    console.log(new_url);
-    //    window.location=new_url;
-}
-
-
 function refresh_agg_row(am_id) {
     geni_status = "updating";
     $("td#status_"+am_id).text( updating_text);
@@ -695,7 +636,6 @@ function add_agg_row_to_renew_table(am_id, sliver_expiration) {
 function prepareList() {
   $('#status_table > tbody').each(function() {
     var className = $(this).attr('class').split(' ')[0];
-    console.log(className);
     var targetParent = className.substring(3,className.length-3);
     var parentHTML = $('#am_names #g_'+targetParent+' ul').html();
     $('#am_names #g_'+targetParent+' ul').html(parentHTML+'<li><input type="checkbox" id="box-'+$(this).attr('id').substring(2)+'" class="inner" checked="checked"><span class="checkSib">'+$(this).find('.am_name_field').text()+'</span></li>');
@@ -707,7 +647,7 @@ function prepareList() {
       }
       return false;
     })
-    .parent().addClass('collapsed expanded');
+    .parent().addClass('collapsed');
     $('#am_names .outer').each(function() {
       $(this).prop('checked',true);
     });
@@ -858,9 +798,14 @@ function prepareEvents() {
   });
 }
 
-function doOnChecked(baseURL) {
+function doOnChecked(baseURL, skipWarn) {
   var finalURL = baseURL;
-  $('#am_names').find('.inner:checkbox:checked').each(function() {
+  var checkedBoxes = $('#am_names').find('.inner:checkbox:checked');
+
+  if (!skipWarn && checkedBoxes.size() > 10) {
+    finalURL = 'tool-aggwarning.php?loc=' + finalURL;
+  }
+  checkedBoxes.each(function() {
     finalURL += '&am_id[]='+$(this).attr('id').substring(4);
   });
   window.location = finalURL;
