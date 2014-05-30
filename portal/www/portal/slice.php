@@ -105,11 +105,12 @@ function build_agg_table_on_slicepg()
      global $slice_name;
      global $disable_buttons_str;
      global $get_slice_credential_disable_buttons;
+     global $add_slivers_disabled;
 
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
 
-
+     $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
      $status_url = 'sliverstatus.php?slice_id='.$slice_id;
      $listres_url = 'listresources.php?slice_id='.$slice_id;
 
@@ -179,6 +180,7 @@ function build_agg_table_on_slicepg()
       $output .= $name;
       $output .= "</b></td>"; // sliver expiration
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
+      $output .= "<button  id='add_button_".$am_id."' title='Add resources at this aggregate.' onClick=\"window.location='".$add_url."&am_id=".$am_id."'\" $add_slivers_disabled $disable_buttons_str><b>Add</b></button>\n";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
       $output .= "<button id='status_button_".$am_id."' title='Details for resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
