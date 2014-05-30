@@ -38,9 +38,10 @@ if (! $user->hasAttribute('enable_wimax_button')) {
 }
 
 // FIXME: hard-coded url for Rutgers ORBIT
-// See tickets #772, #773
+// See tickets #772, #773, #1045
 $old_wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
-$wimax_server_base_url = "https://www.orbit-lab.org/login/"; // Sept, 2013
+//$wimax_server_base_url = "https://www.orbit-lab.org/login/"; // Sept, 2013
+$wimax_server_base_url = "https://www.orbit-lab.org/remoteAcc/"; // May, 2014
 
 $wimax_server_url = $wimax_server_base_url . "save";
 $wimax_server_deluser_url = $wimax_server_base_url . "deleteUser";

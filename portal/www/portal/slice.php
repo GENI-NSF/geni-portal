@@ -105,17 +105,19 @@ function build_agg_table_on_slicepg()
      global $slice_name;
      global $disable_buttons_str;
      global $get_slice_credential_disable_buttons;
+     global $add_slivers_disabled;
 
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
 
-
+     $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
      $status_url = 'sliverstatus.php?slice_id='.$slice_id;
      $listres_url = 'listresources.php?slice_id='.$slice_id;
 
      $updating_text = "Updating status...";
      $initial_text = "Status not retrieved";
 
+     $output = "";
      $output .= "<table id='actions_table'>";
      $output .= "<tr id='manage'><th colspan='3'>Manage Resources</th></tr>";
      $output .= "<tr class='statusButtons'><td><button onClick=\"selectAll()\">Select All</button>";
@@ -129,11 +131,11 @@ function build_agg_table_on_slicepg()
 
      $output .= "<tr><td><span style='margin: 0 5px;'>Select Only: </span><select id='checkGroups'>";
      $output .= "<option style='display:none;'> </option>";
-     $output .= "<option class='op_".ui_compute_cat."'>Compute</option>";
-     $output .= "<option class='op_".ui_network_cat."'>Network</option>";
-     $output .= "<option class='op_".ui_stitchable_cat."'>Stitchable</option>";
-     $output .= "<option class='op_".ui_prod_cat."'>Production</option>";
-     $output .= "<option class='op_".ui_dev_cat."'>Development</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_COMPUTE_CAT."'>Compute</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_NETWORK_CAT."'>Network</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_STITCHABLE_CAT."'>Stitchable</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_PROD_CAT."'>Production</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_DEV_CAT."'>Development</option>";
      $output .= "</select>";
      $output .= "</td>";
      $output .= "<td colspan='2'>";
@@ -166,7 +168,7 @@ function build_agg_table_on_slicepg()
               $output .= "<tbody id='t_".$am_id."' class='".$am_type;
             }
             else {
-              $output .= "<tbody id='t_".$am_id."' class='".ui_other_am;
+              $output .= "<tbody id='t_".$am_id."' class='ui_other_am";
             }
             $am_cat = lookup_attribute($am[SR_TABLE_FIELDNAME::SERVICE_URL], SERVICE_ATTRIBUTE_AM_CAT);
             if ($am_cat) {
@@ -178,6 +180,7 @@ function build_agg_table_on_slicepg()
       $output .= $name;
       $output .= "</b></td>"; // sliver expiration
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
+      $output .= "<button  id='add_button_".$am_id."' title='Add resources at this aggregate.' onClick=\"window.location='".$add_url."&am_id=".$am_id."'\" $add_slivers_disabled $disable_buttons_str><b>Add</b></button>\n";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
       $output .= "<button id='status_button_".$am_id."' title='Details for resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
@@ -333,9 +336,6 @@ var ui_exogeni_am = "<?php echo SERVICE_ATTRIBUTE_EXOGENI_AM ?>";
 var ui_foam_am = "<?php echo SERVICE_ATTRIBUTE_FOAM_AM ?>";
 var ui_instageni_am = "<?php echo SERVICE_ATTRIBUTE_INSTAGENI_AM ?>";
 var ui_other_am = "<?php echo SERVICE_ATTRIBUTE_OTHER_AM ?>";
-var ui_dev_cat = "<?php echo SERVICE_ATTRIBUTE_DEV_CAT ?>";
-var ui_prod_cat = "<?php echo SERVICE_ATTRIBUTE_PROD_CAT ?>";
-var ui_prov_cat = "<?php echo SERVICE_ATTRIBUTE_PROV_CAT ?>"; 
 <?php include('status_constants_import.php'); ?>
 function confirmQuery() {
   if ($('#datepicker').val()) {

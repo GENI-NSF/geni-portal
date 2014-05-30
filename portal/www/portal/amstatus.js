@@ -172,6 +172,9 @@ function update_agg_row(am_id) {
 	    $("#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
+      if (status_code == GENI_READY) {
+        $("button#add_button_"+am_id).prop("disabled", true);
+      }
 	    $("button#status_button_"+am_id).removeProp( "disabled"); 
 	    $("button#details_button_"+am_id).removeProp( "disabled"); 
 	    $("button#delete_button_"+am_id).removeProp( "disabled");
@@ -335,7 +338,7 @@ function add_agg_row_to_details_table(am_id, numagg) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amdetails.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61&pretty=False
     // amdetails.php returns HTML (not JSON) since there was already php code to generate the needed text
-    $.get("amdetails.php", { am_id:am_id, slice_id:slice, pretty:pretty, jacks:jacks },function(responseTxt,statusTxt,xhr){
+    $.get("amdetails.php", { am_id:am_id, slice_id:slice, pretty:pretty},function(responseTxt,statusTxt,xhr){
       var json_am, am, numAttempt;
       var geni_urn, geni_status, agg_name, geni_resources, colspan;
       var resource, firstrow, num_rsc, rsc_urn, rsc_status, rsc_error;
