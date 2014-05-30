@@ -783,13 +783,15 @@ function doOnChecked(baseURL, skipWarn) {
   var finalURL = baseURL;
   var checkedBoxes = $('#am_names').find('.inner:checkbox:checked');
 
-  if (!skipWarn && checkedBoxes.size() > 10) {
-    finalURL = 'tool-aggwarning.php?loc=' + finalURL;
+  if (checkedBoxes.size() > 0) {
+    if (!skipWarn && checkedBoxes.size() > 10) {
+      finalURL = 'tool-aggwarning.php?loc=' + finalURL;
+    }
+    checkedBoxes.each(function() {
+      finalURL += '&am_id[]='+$(this).attr('id').substring(4);
+    });
+    window.location = finalURL;
   }
-  checkedBoxes.each(function() {
-    finalURL += '&am_id[]='+$(this).attr('id').substring(4);
-  });
-  window.location = finalURL;
 }
 
 function doOnRenew(baseURL) {
