@@ -245,6 +245,28 @@ if (isset($slice)) {
   $members = get_slice_members($sa_url, $user, $slice_id);
   $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					       SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
+
+  //find only ams that slice has resources on
+  $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
+  //find aggregates to be able to return just am_id
+  $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $aggs_with_resources = Array();
+
+  //do the comparison and find ams
+  foreach($slivers as $sliver)
+  {
+    foreach($all_aggs as $agg)
+    {
+       if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
+       {
+          $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
+          break;
+       }
+    }
+  }
+  //return unique ids
+  $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
+
 } else {
   print "Unable to load slice<br/>\n";
   $_SESSION['lasterror'] = "Unable to load slice";
@@ -331,6 +353,7 @@ var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
 var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
+var slice_ams= <?php echo json_encode($slice_ams) ?>;
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
 var ui_exogeni_am = "<?php echo SERVICE_ATTRIBUTE_EXOGENI_AM ?>";
 var ui_foam_am = "<?php echo SERVICE_ATTRIBUTE_FOAM_AM ?>";
