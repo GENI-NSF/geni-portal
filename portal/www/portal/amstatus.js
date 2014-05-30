@@ -169,13 +169,13 @@ function update_agg_row(am_id) {
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
 	    $("button#delete_button_"+am_id).prop( "disabled", true );
 	    $("span#renew_sliver_"+am_id).text( NOT_APPLICABLE);  
-	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
+	    $("#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
 	    $("button#status_button_"+am_id).removeProp( "disabled"); 
 	    $("button#details_button_"+am_id).removeProp( "disabled"); 
 	    $("button#delete_button_"+am_id).removeProp( "disabled");
-	    $("input#renew_button_"+am_id).removeProp( "disabled");
+	    $("#renew_button_"+am_id).removeProp( "disabled");
 	    $("input#renew_field_"+am_id).removeProp( "disabled");
 	}
      } 
@@ -650,6 +650,7 @@ function prepareList() {
     .parent().addClass('collapsed');
     $('#am_names .outer').each(function() {
       $(this).prop('checked',true);
+      $(this).siblings('.checkSib').find('.countSelected').html(" ("+$(this).parents('.am_group').find('.inner:checkbox:checked').length+")");
     });
   };
 
@@ -663,9 +664,7 @@ function selectAll() {
     $(this).prop('checked', true).prop('indeterminate', false);
     $('#checkGroups').val(' ');
     $('.am_group').each(function() {
-      if (!$(this).hasClass('expanded')) {
-        $(this).toggleClass('expanded').children('ul').toggle();
-      }
+      $(this).find('.countSelected').html(" ("+$(this).find('.inner:checkbox:checked').length+")");
     });
   });
 }
@@ -680,9 +679,7 @@ function deselectAll() {
     $(this).prop('checked', false).prop('indeterminate', false);
     $('#checkGroups').val(' ');
     $('.am_group').each(function() {
-      if ($(this).hasClass('expanded')) {
-        $(this).toggleClass('expanded').children('ul').toggle();
-      }
+      $(this).find('.countSelected').html(" ("+$(this).find('.inner:checkbox:checked').length+")");
     });
   });
 }
@@ -706,6 +703,7 @@ function checkBoxes(that, resetSelect) {
     else {
       thatParent.prop('indeterminate', false).prop('checked', false);
     }
+    thatParent.siblings('.checkSib').find('.countSelected').html(" ("+$(that).parents('.am_group').find('.inner:checkbox:checked').length+")");
     if (resetSelect) {
       $('#checkGroups').val(' ');
     }
@@ -732,9 +730,6 @@ function prepareEvents() {
   $('#am_names .outer').each(function() {
     $(this).click(function(event) {
       if ($(this).is(':checked')) {
-        if (!$(this).parent().hasClass('expanded')) {
-          $(this).parent().toggleClass('expanded').children('ul').toggle();
-        }
         $(this).parent().find('.inner').each(function() {
           var targetID = $(this).attr('id').substring(4);
           $('#status_table #t_'+targetID).removeClass('hidden');
@@ -748,29 +743,12 @@ function prepareEvents() {
           $(this).prop('checked', false);
         });
       }
+      $(this).siblings('.checkSib').find('.countSelected').html(" ("+$(this).parents('.am_group').find('.inner:checkbox:checked').length+")");
       $('#checkGroups').val(' ');
     });
     var that = this;
     $(this).siblings('.checkSib').click(function() {
-      $(that).prop("checked", !$(that).prop("checked"));
-      if ($(that).is(':checked')) {
-        if (!$(that).parent().hasClass('expanded')) {
-          $(that).parent().toggleClass('expanded').children('ul').toggle();
-        }
-        $(that).parent().find('.inner').each(function() {
-          var targetID = $(this).attr('id').substring(4);
-          $('#status_table #t_'+targetID).removeClass('hidden');
-          $(this).prop('checked', true);
-        });
-      }
-      else {
-        $(that).parent().find('.inner').each(function() {
-          var targetID = $(this).attr('id').substring(4);
-          $('#status_table #t_'+targetID).addClass('hidden');
-          $(this).prop('checked', false);
-        });
-      }
-      $('#checkGroups').val(' ');
+      $(this).parent().toggleClass('expanded').children('ul').toggle();
     });
   });
 
@@ -789,7 +767,7 @@ function prepareEvents() {
           checkBoxes(this, false);
         }
         $('.am_group').each(function() {
-          if (($(this).find('.inner:checkbox:checked').length > 0 && !($(this).hasClass('expanded'))) || ($(this).find('.inner:checkbox:checked').length == 0 && $(this).hasClass('expanded'))) {
+          if ($(this).hasClass('expanded')) {
             $(this).toggleClass('expanded').children('ul').toggle();
           }
         });

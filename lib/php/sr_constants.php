@@ -141,6 +141,9 @@ const SERVICE_ATTRIBUTE_OTHER_AM = "ui_other_am";
 const SERVICE_ATTRIBUTE_AM_CAT = "UI_AM_CAT";
 const SERVICE_ATTRIBUTE_DEV_CAT = "ui_dev_cat";
 const SERVICE_ATTRIBUTE_PROD_CAT = "ui_prod_cat";
-const SERVICE_ATTRIBUTE_PROV_CAT = "ui_prov_cat"; 
+const SERVICE_ATTRIBUTE_COMPUTE_CAT = "ui_compute_cat";
+const SERVICE_ATTRIBUTE_NETWORK_CAT = "ui_network_cat";
+const SERVICE_ATTRIBUTE_STITCHABLE_CAT = "ui_stitchable_cat";
+
 
 ?>
