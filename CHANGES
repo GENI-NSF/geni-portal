@@ -11,6 +11,7 @@
  * Fixed php errors on listresources and slice pages (#1031)
  * Added Hide option for Raw Resource Specification on listresources (#1030)
  * Implemented Add button per aggregate on slice page (#1042)
+ * Added functionality for knowing what AMs the slice has resources at (#762)
  * Change WiMAX base URL (#1045)
 
 == 2.15 ==

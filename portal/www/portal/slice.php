@@ -131,6 +131,7 @@ function build_agg_table_on_slicepg()
 
      $output .= "<tr><td><span style='margin: 0 5px;'>Select Only: </span><select id='checkGroups'>";
      $output .= "<option style='display:none;'> </option>";
+     $output .= "<option value='op_my_slice' class='op_my_slice'>My Slice</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_COMPUTE_CAT."'>Compute</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_NETWORK_CAT."'>Network</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_STITCHABLE_CAT."'>Stitchable</option>";
@@ -140,7 +141,7 @@ function build_agg_table_on_slicepg()
      $output .= "</td>";
      $output .= "<td colspan='2'>";
     if ($renew_slice_privilege) {
-      $output .= "<input id='renew_field_check' class='date' type='text' name='sliver_expiration' ";
+      $output .= "<input id='renew_field_check' class='date' type='text' name='sliver_expiration' placeholder='Select Date...' ";
       $size = strlen($slice_date_expiration) + 3;
       $output .= "size=\"$size\"/>\n";
       $output .= "<button id='renew_button_check' title='Renew resource reservation at selected aggregates until the specified date' ";
@@ -158,7 +159,9 @@ function build_agg_table_on_slicepg()
      $output .= "</td>";
      
      // (2) create an HTML table with one row for each aggregate
-     $output .= "<td colspan='2'><div id='status_table_cont'><table id='status_table' cols='3'>";
+     $output .= "<td colspan='2'><div id='status_table_cont'>";
+     $output .= "<div id='none-selected'>You do not have any aggregates selected.<br /> Please select aggregates on the left.</div>";
+     $output .= "<table id='status_table' cols='3'>";
      
      foreach ($am_list as $am) {
 	    $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
@@ -183,7 +186,7 @@ function build_agg_table_on_slicepg()
       $output .= "<button  id='add_button_".$am_id."' title='Add resources at this aggregate.' onClick=\"window.location='".$add_url."&am_id=".$am_id."'\" $add_slivers_disabled $disable_buttons_str><b>Add</b></button>\n";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
       $output .= "<button id='status_button_".$am_id."' title='Details for resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
-	    $output .= "<button  id='delete_button_".$am_id."' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
+	    $output .= "<button  id='delete_button_".$am_id."' title='Delete resources at this aggregate.' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
       $output .= "</div></td></tr>";
       
 
@@ -191,7 +194,7 @@ function build_agg_table_on_slicepg()
       $output .= $initial_text;
       $output .= "</td>";
       $output .= "<td class='hide' colspan='2'><div>";
-      $output .= "<button id='reload_button_".$am_id."' type='button' onclick='refresh_agg_row(".$am_id.")' class='getButton' $get_slice_credential_disable_buttons>Ready?</button>";
+      $output .= "<button id='reload_button_".$am_id."' title='Check the status of resources at this aggregate.' type='button' onclick='refresh_agg_row(".$am_id.")' class='getButton' $get_slice_credential_disable_buttons>Ready?</button>";
       $output .= "<div class='renewForm'><div class='expireText'>Expires on <b><span class='renew_date' id='renew_sliver_".$am_id."'>".$initial_text."</span></b></div>";
       if ($renew_slice_privilege) {
         $output .= "<form  method='GET' action=\"do-renew.php\">";
@@ -245,6 +248,28 @@ if (isset($slice)) {
   $members = get_slice_members($sa_url, $user, $slice_id);
   $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					       SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
+
+  //find only ams that slice has resources on
+  $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
+  //find aggregates to be able to return just am_id
+  $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $aggs_with_resources = Array();
+
+  //do the comparison and find ams
+  foreach($slivers as $sliver)
+  {
+    foreach($all_aggs as $agg)
+    {
+       if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
+       {
+          $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
+          break;
+       }
+    }
+  }
+  //return unique ids
+  $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
+
 } else {
   print "Unable to load slice<br/>\n";
   $_SESSION['lasterror'] = "Unable to load slice";
@@ -331,12 +356,14 @@ var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
 var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
+var slice_ams= <?php echo json_encode($slice_ams) ?>;
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
 var ui_exogeni_am = "<?php echo SERVICE_ATTRIBUTE_EXOGENI_AM ?>";
 var ui_foam_am = "<?php echo SERVICE_ATTRIBUTE_FOAM_AM ?>";
 var ui_instageni_am = "<?php echo SERVICE_ATTRIBUTE_INSTAGENI_AM ?>";
 var ui_other_am = "<?php echo SERVICE_ATTRIBUTE_OTHER_AM ?>";
 <?php include('status_constants_import.php'); ?>
+
 function confirmQuery() {
   if ($('#datepicker').val()) {
     if ($("#sliceslivers").is(':checked')) {
@@ -379,7 +406,11 @@ $(document).ready(build_agg_table_on_slicepg());
 $(document).ready(function() {
     prepareList();
     prepareEvents();
-    $('#checkGroups').val(' ');
+    $.each(slice_ams, function(index, value) {
+      $('#t_'+value).addClass('my_slice');
+    });
+    $('.op_my_slice').attr('selected','selected');
+    $('#checkGroups').trigger('change');
 });
 </script>
 
@@ -434,7 +465,9 @@ $(document).ready(function() {
 
 #content #status_table_cont {
   display: block;
+  position: relative;
   overflow-y: scroll;
+  overflow-x: hidden;
   height: 540px;
 }
 
@@ -504,9 +537,26 @@ $(document).ready(function() {
   cursor: pointer;
 }
 
+#none-selected {
+  text-align: center;
+  position: absolute;
+  top: 10px;
+  left: 130px;
+  z-index: 1;
+}
+
+#status_table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background: none repeat scroll 0 0 #E5E5E5;
+}
+
 #status_table .hide > div {
   visibility: hidden;
   position: relative;
+  min-height: 26px;
 }
 #status_table tbody:hover .hide, #status_table tbody:focus .hide, #status_table tbody.activeBody .hide {
   border-left: 1px solid white;

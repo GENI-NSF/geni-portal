@@ -66,7 +66,7 @@ $confirm_msg = 'Delete all reserved resources at all aggregates?';
 $edit_url = "sliverdelete.php?slice_id=$slice_id";
 if (isset($am_id) && $am_id) {
   if (count($ams) > 1) {
-    $confirm_msg = "Delete all reserved resources at the following aggregates?<br /><br />";
+    $confirm_msg = "Delete all reserved resources at the following ".count($ams)." aggregates?<br /><br />";
     for ($i = 0; $i < count($ams); $i++) {
       $edit_url = $edit_url."&am_id[]=".$am_ids[$i];
       $am_name = $ams[$i][SR_ARGUMENT::SERVICE_NAME];
