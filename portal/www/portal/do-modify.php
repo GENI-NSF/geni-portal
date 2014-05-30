@@ -222,10 +222,8 @@ if ($removed_str !== '') {
 }
 include_once('/etc/geni-ch/settings.php');
 global $portal_admin_email;
-$headers = "Auto-Submitted: auto-generated\r\n";
-$headers .= "Precedence: bulk\r\n";
 mail($portal_admin_email, $subject,
-     $body, $headers);
+     $body);
 
 if ($pi_request and ! $is_pi) {
   // Email the experimenter that their request was received
@@ -243,8 +241,6 @@ if ($pi_request and ! $is_pi) {
   $body = $body . "\nSincerely,\n\nGENI Experimenter Support\nhelp@geni.net\n";
   $headers = "Reply-To: help@geni.net\r\n";
   $headers .= "Bcc: " . $portal_admin_email . "\r\n";
-  $headers .= "Auto-Submitted: auto-generated\r\n";
-  $headers .= "Precedence: bulk\r\n";
   $headers .= $cc;
 
   mail($to, $subject, $body, $headers);

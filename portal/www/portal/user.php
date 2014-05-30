@@ -464,11 +464,9 @@ function send_attribute_fail_email()
   foreach ($array as $var => $value) {
     $body .= "$var = $value\n";
   }
-  $headers = "Auto-Submitted: auto-generated\r\n";
-  $headers .= "Precedence: bulk\r\n";
   mail($portal_admin_email,
           "Portal access failure on $server_host",
-       $body, $headers);
+       $body);
 }
 
 function geni_load_user_by_eppn($eppn, $sfcred)

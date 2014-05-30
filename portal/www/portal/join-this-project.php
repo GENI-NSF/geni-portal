@@ -161,9 +161,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   } else {
     $cc = ""; // FIXME: Include portal-dev-admin?
   }
-  $headers = "Auto-Submitted: auto-generated\r\n";
-  $headers .= "Precedence: bulk\r\n";
-  $headers .= "Reply-To: $email" . "\r\n" . $cc . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>"; 
+  $headers = "Reply-To: $email" . "\r\n" . $cc . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
   
   mail($lead->prettyEmailAddress(),
        "Join GENI project $project_name?",
