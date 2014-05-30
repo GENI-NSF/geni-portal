@@ -256,7 +256,8 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input type="radio" name="group1" value="private" ' . $private_checked . '> private</p>';
   echo '  <p>';
   echo '  <label for="file">Description:</label>';
-  echo '  <input type="text" name="description" value="' . $rspec_desc . '"/> - Required</p>';
+  echo '  <textarea name="description">' . $rspec_desc . '</textarea>';
+  echo ' - Required</p>';
   echo '  <p>';
   $button_label = "Upload";
   if ($rspec_id != "") $button_label = "Update";
