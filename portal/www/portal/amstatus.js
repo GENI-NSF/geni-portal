@@ -172,6 +172,9 @@ function update_agg_row(am_id) {
 	    $("#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
+      if (status_code == GENI_READY) {
+        $("button#add_button_"+am_id).prop("disabled", true);
+      }
 	    $("button#status_button_"+am_id).removeProp( "disabled"); 
 	    $("button#details_button_"+am_id).removeProp( "disabled"); 
 	    $("button#delete_button_"+am_id).removeProp( "disabled");

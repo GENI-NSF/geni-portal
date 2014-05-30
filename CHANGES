@@ -6,9 +6,10 @@
 
 == 2.16 ==
  * Update dragon.maxgigapop SSL cert (again). (#1040)
- * Added in new slice page
- * Fixed php errors on listresources and slice pages
- * Added Hide option for Raw Resource Specification on listresources
+ * Added in new slice page (#1038)
+ * Fixed php errors on listresources and slice pages (#1031)
+ * Added Hide option for Raw Resource Specification on listresources (#1030)
+ * Implemented Add button per aggregate on slice page (#1042)
 
 == 2.15 ==
  * Display OpenID URL on profile page (#290)
