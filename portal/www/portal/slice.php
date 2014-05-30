@@ -123,15 +123,15 @@ function build_agg_table_on_slicepg()
      $output .= "<tr class='statusButtons'><td><button onClick=\"selectAll()\">Select All</button>";
      $output .= "<button onClick=\"deselectAll()\">Deselect All</button></td>";
      $output .= "<td colspan='2'>";
-     $output .= "<button title='Get status for selected aggregates.' onClick=\"getCheckedStatus();\"><b>Ready?</b></button>";
+     $output .= "<button title='Get summary status for resources at selected aggregates.' onClick=\"getCheckedStatus();\"><b>Ready?</b></button>";
      $output .= "<button title='Login info, etc. for resources at selected aggregates.' onClick=\"doOnChecked('$listres_url');\"><b>Resource Details</b></button>";
-     $output .= "<button title='Status for resources at selected aggregates.' onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
+     $output .= "<button title='Get status of individual resources at selected aggregates.' onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
      $output .= "<button title='Delete resources at selected aggregates.' onClick=\"doOnChecked('confirm-sliverdelete.php?slice_id=" . $slice_id . "', true)\"><b>Delete Resources</b></button>";
      $output .= "</td></tr>\n";
 
      $output .= "<tr><td><span style='margin: 0 5px;'>Select Only: </span><select id='checkGroups'>";
      $output .= "<option style='display:none;'> </option>";
-     $output .= "<option value='op_my_slice' class='op_my_slice'>My Slice</option>";
+     $output .= "<option value='op_my_slice' class='op_my_slice'>This Slice</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_COMPUTE_CAT."'>Compute</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_NETWORK_CAT."'>Network</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_STITCHABLE_CAT."'>Stitchable</option>";
@@ -185,7 +185,7 @@ function build_agg_table_on_slicepg()
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
       $output .= "<button  id='add_button_".$am_id."' title='Add resources at this aggregate.' onClick=\"window.location='".$add_url."&am_id=".$am_id."'\" $add_slivers_disabled $disable_buttons_str><b>Add</b></button>\n";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
-      $output .= "<button id='status_button_".$am_id."' title='Details for resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
+      $output .= "<button id='status_button_".$am_id."' title='Get status of individual resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' title='Delete resources at this aggregate.' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
       $output .= "</div></td></tr>";
       
@@ -194,7 +194,7 @@ function build_agg_table_on_slicepg()
       $output .= $initial_text;
       $output .= "</td>";
       $output .= "<td class='hide' colspan='2'><div>";
-      $output .= "<button id='reload_button_".$am_id."' title='Check the status of resources at this aggregate.' type='button' onclick='refresh_agg_row(".$am_id.")' class='getButton' $get_slice_credential_disable_buttons>Ready?</button>";
+      $output .= "<button id='reload_button_".$am_id."' title='Get summary status for resources at this aggregate.' type='button' onclick='refresh_agg_row(".$am_id.")' class='getButton' $get_slice_credential_disable_buttons>Ready?</button>";
       $output .= "<div class='renewForm'><div class='expireText'>Expires on <b><span class='renew_date' id='renew_sliver_".$am_id."'>".$initial_text."</span></b></div>";
       if ($renew_slice_privilege) {
         $output .= "<form  method='GET' action=\"do-renew.php\">";
@@ -744,7 +744,7 @@ print "</table>\n";
 // ----
 // Now show slice / sliver status
 
-print "<h2>Slice Resources</h2>\n";
+print "<h2></h2>\n";
 
   $slice_status='';
 
