@@ -8,6 +8,8 @@
  * Allow editing rspec proprties (#226)
  * Update dragon.maxgigapop SSL cert (again). (#1040)
  * Added in new slice page
+ * Fixed php errors on listresources and slice pages
+ * Added Hide option for Raw Resource Specification on listresources
 
 == 2.15 ==
  * backend changes to support managing aggregates on slice page (#339)
