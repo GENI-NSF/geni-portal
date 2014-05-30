@@ -1,4 +1,4 @@
-var updating_text = "...updating...";
+var updating_text = "Updating status...";
 var UNKNOWN = 'unknown';
 var NOT_APPLICABLE = "not applicable";
 var NOT_RETRIEVED = "not retrieved";
@@ -109,84 +109,11 @@ function build_agg_table()
 }
 
 
-//RRH - 5-22
-//refresh_all_agg_rows, hid_agg_row, and do_action_on_picked_aggs all
-//have to deal with managing the aggregate table on the slice page
-//need to re check when Keith puts in his UI changes to the slice page
-
-//do_on_picked_aggs_from_pg(page_url) could be an alternate to do_action_on_picked_aggs
-//looking at jquery to return the AMs to act on - also UI interaction dependent
-//RRH
-
-//refresh_all_agg_rows - called on status - what AMs to call on status and redisplay
-function refresh_all_agg_rows() {
-    var s = all_ams;
-    var all_am_obj = JSON.parse(s);
-    for (var tmp_am_id in all_am_obj ) {
-	//for Keith to consider in this code - we'd have to figure out
-       // which rows to display
-       //if(!($('#t_' + tmp_am_id)).hasClass('hidden')) {
-       refresh_agg_row(tmp_am_id);
-    }
-}
-
-//this relies on checkboxes which do not currently exist on the slice page
-//contingent on the slice page UI
-function hide_agg_row(am_check_box, am_type) {
-   if($('#' + am_check_box).is(':checked')) {
-        $('.' + am_type).each(function() {
-            $(this).removeClass('hidden');           					  
-        });
-    }
-    else {
-        $('.' + am_type).each(function() {
-            $(this).addClass('hidden');           					  
-         });
-   }
-}
-
-//called to do a particular action from the slice page
-//page_url is a string referring to a page, current examples are:
-//listresources.php, confirm-sliverdelete.php, sliverstatus.php
-//do_action_on_picked_aggs("sliverstatus.php")
-function do_action_on_picked_aggs(page_url) {
-    var s = all_ams;
-    var all_am_obj = JSON.parse(s);
-    var am_str = "";
-    var new_url = page_url;
-    //could probably do this with the $(".class").each from the page
-    for (var tmp_am_id in all_am_obj ) {
-       if(!($('#t_' + tmp_am_id)).hasClass('hidden')) {
-           am_str += "&am_id[]=" + tmp_am_id;
-       }
-    }
-    new_url += "?slice_id=" + slice + am_str;
-    console.log(new_url);
-    window.location=new_url;
-}
-
-function do_on_picked_aggs_from_pg(page_url) {
-    var s = all_ams;
-    var all_am_obj = JSON.parse(s);
-    var am_str = "";
-    var new_url = page_url;
-
-    //we'd want to pick the classes where not hidden
-    //have to ask Keith about picking the right ones
-    // not sufficient because there are other tbody in the table
-    $('tbody:not(.hidden)').each(function() {
-       am_str += "&am_id[]=" + $(this).attr('id');
-     });
-    new_url += "?slice_id=" + slice + am_str;
-    console.log(new_url);
-    //    window.location=new_url;
-}
-
-
 function refresh_agg_row(am_id) {
-    geni_status = "updating"
+    geni_status = "updating";
     $("td#status_"+am_id).text( updating_text);
     $("td#status_"+am_id).attr( "class", geni_status );
+    $("td#status_"+am_id).parent().attr( "class", geni_status );
     update_agg_row(am_id);
 }
 
@@ -232,6 +159,7 @@ function update_agg_row(am_id) {
 	}
         $("td#status_"+am_id).text( output );
         $("td#status_"+am_id).attr( "class", GENI_CLASSES[ status_code ] );
+        $("td#status_"+am_id).parent().attr( "class", GENI_CLASSES[ status_code ] );
         $("span#renew_sliver_"+am_id).text( sliver_expiration );
 
 	$("button#reload_button_"+am_id).prop( "disabled", false ); 
@@ -241,13 +169,13 @@ function update_agg_row(am_id) {
 	    $("button#details_button_"+am_id).prop( "disabled", true ); 
 	    $("button#delete_button_"+am_id).prop( "disabled", true );
 	    $("span#renew_sliver_"+am_id).text( NOT_APPLICABLE);  
-	    $("input#renew_button_"+am_id).prop( "disabled", true ); 
+	    $("#renew_button_"+am_id).prop( "disabled", true ); 
 	    $("input#renew_field_"+am_id).prop( "disabled", true ); 
 	} else {
 	    $("button#status_button_"+am_id).removeProp( "disabled"); 
 	    $("button#details_button_"+am_id).removeProp( "disabled"); 
 	    $("button#delete_button_"+am_id).removeProp( "disabled");
-	    $("input#renew_button_"+am_id).removeProp( "disabled");
+	    $("#renew_button_"+am_id).removeProp( "disabled");
 	    $("input#renew_field_"+am_id).removeProp( "disabled");
 	}
      } 
@@ -704,3 +632,166 @@ function add_agg_row_to_renew_table(am_id, sliver_expiration) {
 
 
 
+// Functions needed to make the AM list run
+function prepareList() {
+  $('#status_table > tbody').each(function() {
+    var className = $(this).attr('class').split(' ')[0];
+    var targetParent = className.substring(3,className.length-3);
+    var parentHTML = $('#am_names #g_'+targetParent+' ul').html();
+    $('#am_names #g_'+targetParent+' ul').html(parentHTML+'<li><input type="checkbox" id="box-'+$(this).attr('id').substring(2)+'" class="inner" checked="checked"><span class="checkSib">'+$(this).find('.am_name_field').text()+'</span></li>');
+  });
+  $('#am_names').find('.am_group .collapsable')
+    .click( function(event) {
+      if (this == event.target) {
+        $(this).parent().toggleClass('expanded').children('ul').toggle();
+      }
+      return false;
+    })
+    .parent().addClass('collapsed');
+    $('#am_names .outer').each(function() {
+      $(this).prop('checked',true);
+      $(this).siblings('.checkSib').find('.countSelected').html(" ("+$(this).parents('.am_group').find('.inner:checkbox:checked').length+")");
+    });
+  };
+
+function selectAll() {
+  $('#am_names .outer').each(function() {
+    $(this).parent().find('.inner').each(function() {
+      var targetID = $(this).attr('id').substring(4);
+      $('#status_table #t_'+targetID).removeClass('hidden');
+      $(this).prop('checked', true);
+    });
+    $(this).prop('checked', true).prop('indeterminate', false);
+    $('#checkGroups').val(' ');
+    $('.am_group').each(function() {
+      $(this).find('.countSelected').html(" ("+$(this).find('.inner:checkbox:checked').length+")");
+    });
+  });
+}
+
+function deselectAll() {
+  $('#am_names .outer').each(function() {
+    $(this).parent().find('.inner').each(function() {
+      var targetID = $(this).attr('id').substring(4);
+      $('#status_table #t_'+targetID).addClass('hidden');
+      $(this).prop('checked', false);
+    });
+    $(this).prop('checked', false).prop('indeterminate', false);
+    $('#checkGroups').val(' ');
+    $('.am_group').each(function() {
+      $(this).find('.countSelected').html(" ("+$(this).find('.inner:checkbox:checked').length+")");
+    });
+  });
+}
+
+function checkBoxes(that, resetSelect) {
+    var targetID = $(that).attr('id').substring(4);
+    
+    if ($(that).is(':checked')) {
+      $('#status_table #t_'+targetID).removeClass('hidden');
+    }
+    else {
+      $('#status_table #t_'+targetID).addClass('hidden');
+    }
+    var thatParent = $(that).parents('.am_group').find('.outer');
+    if ($(that).parents('.am_group').find('.inner:checkbox:checked').length == $(that).parent().siblings().length+1) {
+      thatParent.prop('indeterminate', false).prop('checked', true);
+    }
+    else if ($(that).parents('.am_group').find('.inner:checkbox:checked').length > 0) {
+      thatParent.prop('indeterminate', true).prop('checked', true);
+    }
+    else {
+      thatParent.prop('indeterminate', false).prop('checked', false);
+    }
+    thatParent.siblings('.checkSib').find('.countSelected').html(" ("+$(that).parents('.am_group').find('.inner:checkbox:checked').length+")");
+    if (resetSelect) {
+      $('#checkGroups').val(' ');
+    }
+}
+
+function getCheckedStatus() {
+  $('#am_names').find('.inner:checkbox:checked').each(function() {
+    refresh_agg_row($(this).attr('id').substring(4));
+  });
+}
+
+function prepareEvents() {
+  $('#am_names .inner').each(function() {
+    $(this).click(function() {
+      checkBoxes(this, true);
+    });
+    var that = this;
+    $(this).siblings('.checkSib').click(function() {
+      $(that).prop("checked", !$(that).prop("checked"));
+      checkBoxes(that, true);
+    });
+  });
+
+  $('#am_names .outer').each(function() {
+    $(this).click(function(event) {
+      if ($(this).is(':checked')) {
+        $(this).parent().find('.inner').each(function() {
+          var targetID = $(this).attr('id').substring(4);
+          $('#status_table #t_'+targetID).removeClass('hidden');
+          $(this).prop('checked', true);
+        });
+      }
+      else {
+        $(this).parent().find('.inner').each(function() {
+          var targetID = $(this).attr('id').substring(4);
+          $('#status_table #t_'+targetID).addClass('hidden');
+          $(this).prop('checked', false);
+        });
+      }
+      $(this).siblings('.checkSib').find('.countSelected').html(" ("+$(this).parents('.am_group').find('.inner:checkbox:checked').length+")");
+      $('#checkGroups').val(' ');
+    });
+    var that = this;
+    $(this).siblings('.checkSib').click(function() {
+      $(this).parent().toggleClass('expanded').children('ul').toggle();
+    });
+  });
+
+  $('#checkGroups').change(function() {
+    var flag = $(this).find('option:selected').attr('class');
+    if (flag != undefined) {
+      flag = flag.substring(3);
+      $('#am_names .inner').each(function() {
+        var target = $('#status_table #t_'+$(this).attr('id').substring(4)).hasClass(flag);
+        if (target && !$(this).is(':checked')) {
+          $(this).prop('checked',true);
+          checkBoxes(this, false);
+        }
+        else if (!target && $(this).is(':checked')) {
+          $(this).prop('checked',false);
+          checkBoxes(this, false);
+        }
+        $('.am_group').each(function() {
+          if ($(this).hasClass('expanded')) {
+            $(this).toggleClass('expanded').children('ul').toggle();
+          }
+        });
+      });
+    }
+  });
+}
+
+function doOnChecked(baseURL, skipWarn) {
+  var finalURL = baseURL;
+  var checkedBoxes = $('#am_names').find('.inner:checkbox:checked');
+
+  if (!skipWarn && checkedBoxes.size() > 10) {
+    finalURL = 'tool-aggwarning.php?loc=' + finalURL;
+  }
+  checkedBoxes.each(function() {
+    finalURL += '&am_id[]='+$(this).attr('id').substring(4);
+  });
+  window.location = finalURL;
+}
+
+function doOnRenew(baseURL) {
+  var tempURL = baseURL;
+  var slice_expiration = $('#renew_field_check').val();
+  tempURL += '&sliver_expiration='+slice_expiration;
+  doOnChecked(tempURL);
+}
