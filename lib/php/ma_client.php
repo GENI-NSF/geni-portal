@@ -221,14 +221,20 @@ function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
   if (sizeof($prires)>0) {
     $all_urns = array_keys($prires);
     $urn = $all_urns[0];
-    $private_key = $prires[$urn]['_GENI_MEMBER_INSIDE_PRIVATE_KEY'];
+    $private_key = NULL;
+    if (in_array("_GENI_MEMBER_INSIDE_PRIVATE_KEY", $prires[$urn])) {
+      $private_key = $prires[$urn]['_GENI_MEMBER_INSIDE_PRIVATE_KEY'];
+    }
     $puboptions = array('match'=> array('MEMBER_UID'=>$member_uuid),
 			'filter'=>array('_GENI_MEMBER_INSIDE_CERTIFICATE'));
     $puboptions = array_merge($puboptions, $client->options());
     $pubres = $client->lookup_public_member_info($client->creds(), 
 						 $puboptions);
     if (sizeof($pubres)>0) {
-      $certificate = $pubres[$urn]['_GENI_MEMBER_INSIDE_CERTIFICATE'];
+      $certificate = NULL;
+      if (in_array("_GENI_MEMBER_INSIDE_CERTIFICATE", $pubres[$urn])) {
+	$certificate = $pubres[$urn]['_GENI_MEMBER_INSIDE_CERTIFICATE'];
+      }
       return array(MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE => $certificate,
 		   MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY=> $private_key);
     }
@@ -528,7 +534,11 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
               . " in ma_lookup_certificate");
     return NULL;
   }
-  $certificate = $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE'];
+  $certificate = NULL;
+  if (array_key_exists('_GENI_MEMBER_SSL_CERTIFICATE',
+                       $public_res[$member_urn])) {
+    $certificate = $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE'];
+  }
   if ($certificate) {
     $result = array(MA_ARGUMENT::CERTIFICATE => $certificate);
   } else {

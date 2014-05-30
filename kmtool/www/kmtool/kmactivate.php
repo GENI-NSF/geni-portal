@@ -58,6 +58,13 @@ if($in_lockdown_mode) {
   return;
 }
 
+if ($in_maintenance_mode) {
+  print "This GENI Clearinghouse is currently in maintenance mode and cannot register new users.";
+  print "<br>";
+  print "<button onClick=\"history.back(-1)\"><b>Back</b></button>";
+  return;
+}
+
 
 
 // Get the EPPN now that we know it's there.
