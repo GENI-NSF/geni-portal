@@ -89,9 +89,7 @@ if (isset($invitees) && ! is_null($invitees) && (!isset($error) || is_null($erro
   $email = $user->email();
   $name = $user->prettyName();
 
-  $headers = "Auto-Submitted: auto-generated\r\n";
-  $headers .= "Precedence: bulk\r\n";
-  $headers .= "Reply-To: $email" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>"; 
+  $headers = "Reply-To: $email" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
   mail($to,
        "Join GENI!",
        $message,
