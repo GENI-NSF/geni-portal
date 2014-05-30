@@ -256,7 +256,16 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input type="radio" name="group1" value="private" ' . $private_checked . '> private</p>';
   echo '  <p>';
   echo '  <label for="file">Description:</label>';
-  echo '  <textarea name="description">' . $rspec_desc . '</textarea>';
+
+  // Use single quotes in the placeholder because double quotes cause
+  // malformed HTML.
+  $desc_placeholder = "E.g. '3 InstaGENI Xen VMs connected by an OVS switch'";
+  echo '<textarea name="description"';
+  echo ' placeholder="' . $desc_placeholder . '"';
+  echo ' cols="30"';
+  echo ' rows="2"';
+  echo '>';
+  echo $rspec_desc . '</textarea>';
   echo ' - Required</p>';
   echo '  <p>';
   $button_label = "Upload";
