@@ -189,6 +189,7 @@ dist_svcweb_DATA = \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
+	www/images/Symbols-Tips-icon-clear.png \
 	www/images/UseGENI.png \
 	www/images/geni.png \
 	www/images/pgfc-screenshot.jpg \
