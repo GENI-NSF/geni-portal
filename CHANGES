@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.16 ==
+ * Remove problematic mail headers (#1039)
  * Update dragon.maxgigapop SSL cert (again). (#1040)
  * Added in new slice page (#1038)
  * Fixed php errors on listresources and slice pages (#1031)
