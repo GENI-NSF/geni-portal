@@ -14,6 +14,7 @@
  * Added functionality for knowing what AMs the slice has resources at (#762)
  * Change WiMAX base URL (#1045)
  * Made a few fixes to the slice page (#1047)
+ * Make project names and ids match on wimax enable page (#1049)
 
 == 2.15 ==
  * Display OpenID URL on profile page (#290)
