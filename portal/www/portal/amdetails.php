@@ -100,6 +100,11 @@ if (count($obj)>0) {
                   mode: 'viewer',
                   source: 'rspec',
                   size: { x: 756, y: 400},
+                  show: {
+                  	rspec: false,
+                  	version: false
+                  },
+                  nodeSelect: false,
                   root: '#jacksContainer-".hash('ripemd160', am_name(key($obj)))."',
                   readyCallback: function (input, output) {
                     input.trigger('change-topology',
