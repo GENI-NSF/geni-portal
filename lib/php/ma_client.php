@@ -337,6 +337,8 @@ class Member {
       return $this->first_name . " " . $this->last_name;
     } elseif (isset($this->mail)) {
       return $this->mail;
+    } elseif (isset($this->username)) {
+      return $this->username;
     } elseif (isset($this->eppn)) {
       return $this->eppn;
     } else {
@@ -806,6 +808,62 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
   foreach ($member_uuids as $uuid) {
     if (! array_key_exists($uuid, $ids)) {
       $ids[$uuid] = "NONE";
+    }
+  }
+  return $ids;
+}
+
+/*
+ * Clean out cruft in UUID list. Sometimes we get an empty string or
+ * NULL depending on what table or data set UUIDs are extracted
+ * from. This function ensures that the list is fairly clean and does
+ * not include the portal's own UUID.
+ */
+function clean_uuids($dirty_uuids)
+{
+  $uids = array();
+  $portal_uuid = get_portal_uid();
+  foreach($dirty_uuids as $uuid) {
+    if (isset($uuid) && $uuid !== '' && $uuid !== $portal_uuid) {
+      $uids[] = $uuid;
+    }
+  }
+  return $uids;
+}
+
+function ma_lookup($ma_url, $signer, $member_uuids)
+{
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  // Exclude null/empty UIDS in member_uuids from our query
+  $uids = clean_uuids($member_uuids);
+
+  $ids = array();
+  if (sizeof($uids) > 0) {
+    /* Get any info clearinghouse is willing to provide */
+    $options = array('match'=> array('MEMBER_UID'=>$uids));
+
+    // Replace the default result handler with one that will not
+    // redirect to the error page on an error being returned.
+    // This way we can continue loading pages that use this
+    // Although we get a name of NONE for all members the user asked about
+    // on an error
+    global $put_message_result_handler;
+    $put_message_result_handler='no_redirect_result_handler';
+    $options = array_merge($options, $client->options());
+    $res = $client->lookup('MEMBER', $client->creds(), $options);
+    $put_message_result_handler = null;
+
+    if (isset($res) && ! is_null($res)) {
+      foreach($res as $member_urn => $member_info) {
+        if (! array_key_exists('MEMBER_UID', $member_info)) {
+          /* If no info is available, do not include it in the result. */
+          continue;
+        }
+        $member_uuid = $member_info['MEMBER_UID'];
+        $member = new Member($member_uuid);
+        $member->init_from_record($member_info);
+        $ids[$member_uuid] = $member;
+      }
     }
   }
   return $ids;

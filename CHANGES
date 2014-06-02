@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.16 ==
+ * Allow editing rspec proprties (#226)
  * Remove problematic mail headers (#1039)
  * Update dragon.maxgigapop SSL cert (again). (#1040)
  * Added in new slice page (#1038)
@@ -20,6 +21,7 @@
  * Cleaned up Jacks Viewer implementation on listresources (#1051)
 
 == 2.15 ==
+ * backend changes to support managing aggregates on slice page (#339)
  * Display OpenID URL on profile page (#290)
  * Backend changes to support managing aggregates on slice page (#339)
  * Ensure that operators and non-operators get the kmactivate page
