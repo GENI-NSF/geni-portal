@@ -782,7 +782,7 @@ print "<h2 id='members'>Slice Members</h2>";
 
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
 <ul>
- <li>The resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>
+ <li>The resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page) or using omni 2.5 or newer, and</li>
  <li>The slice member has uploaded an ssh public key.</li>
 </ul>
 
