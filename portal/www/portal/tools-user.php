@@ -418,7 +418,7 @@ In order to use <code>omni</code> or other command line tools you will need to g
 <?php endif; ?>
 
     </li>
-    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni-bundle.zip</code>):<br/>
+    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni.bundle</code> or <code>~/Downloads/omni-bundle.zip</code>):<br/>
     		 <button onClick="window.location='omni-bundle.php'">Download your omni data</button>
     </li>
     <li>Generate an <code>omni_config</code> by running the following command in a terminal: <pre>omni-configure</pre></li>
