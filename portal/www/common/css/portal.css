@@ -345,6 +345,10 @@ hr {
   font-weight: 700;
 }
 
+#content p.tiny{
+  font-size: 0.8em;
+  font-style: italic;
+}
 /*
   BREADCRUMB CONTAINER
 */

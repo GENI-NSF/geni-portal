@@ -406,10 +406,10 @@ $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close
 </p>
 
 <h3>Option 1: Automatic <code>omni</code> configuration</h3>
-<p>To configure <code>omni</code>, use the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a> script distributed with <code>omni</code> as described below.</p>
+<p>To automatically configure <code>omni</code>, use the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a> script distributed with <code>omni</code> as described below.</p>
   <ol>
     <li>
-In order to use <code>omni</code> or other command line tools you will need to generate an SSL certificate. <br/>
+In order to use <code>omni</code> you will need to generate an SSL certificate. <br/>
 <?php if (!$has_certificate): ?>
 
 <button onClick="window.open('<?php print $create_url?>')">Generate an SSL certificate</button>.
@@ -418,11 +418,11 @@ In order to use <code>omni</code> or other command line tools you will need to g
 <?php endif; ?>
 
     </li>
-    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni-bundle.zip</code>):<br/>
+    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni.bundle</code>):<br/>
     		 <button onClick="window.location='omni-bundle.php'">Download your omni data</button>
     </li>
-    <li>Generate an <code>omni_config</code> by running the following command in a terminal: <pre>omni-configure</pre></li>
-    <li>Test your setup by running the following command in a terminal: <pre>omni -a ig-gpo getversion</pre>
+    <li>Run the following command in a terminal to generate a configuration file for omni (<code>omni_config</code>): <pre>omni-configure</pre></li>
+    <li>Test your setup by running the following command in a terminal: <pre>omni -a gpo-ig getversion</pre>
     The output should look similar to this <a href='http://trac.gpolab.bbn.com/gcf/attachment/wiki/OmniConfigure/Automatic/getversion.out'>example output</a>.
 </li>
   </ol>
@@ -430,7 +430,7 @@ In order to use <code>omni</code> or other command line tools you will need to g
   <table id='tip'>
     <tr>
        <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"></td>
-       <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.5.3</b> or newer.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:
 	            <pre>omni --version</pre>

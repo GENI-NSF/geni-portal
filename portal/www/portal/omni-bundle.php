@@ -99,9 +99,11 @@ foreach ($warnings as $warning) {
 
 
 <p>
-Use the omni configuration data downloaded from this page, to automatically <a href="profile.php#omni">configure omni</a>.</p>
+Use the omni configuration data downloaded from this page, to automatically <a href="profile.php#omni">configure omni</a>.
+<br/>
+Save the customized <code>omni</code> configuration data in the default location.
+</p>
 <form id="f1" action="downloadomnibundle.php" method="post">
-
 <?php
 if ($num_projects >= 1) {
   echo '<p>Choose a default project to use with omni: ';
@@ -120,6 +122,14 @@ if ($num_projects >= 1) {
 } else {
   // No projects, so no default project
 }
+
+  echo '<p>Choose the version of <code>omni</code> you are using: ';
+  echo '<select name="file">\n';
+  echo "<option value=\"omni.bundle\">2.5.3 or newer</option>\n";
+  echo "<option value=\"omni-bundle.zip\">older</option>\n";
+  echo '</select></p>';
+  echo '<p class="tiny">To determine the version of your omni, run: <code>omni --version</code></p>';
+/* echo "<input type='hidden' value=\"$bundle_file\" name=\"file\"/>\n"; */
 ?>
 </form>
 <p><button onClick="document.getElementById('f1').submit();"
