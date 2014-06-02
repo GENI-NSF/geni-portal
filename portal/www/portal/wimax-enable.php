@@ -1261,12 +1261,12 @@ P7
       $lead_names = lookup_member_names_for_rows($ma_url, $user, $projects_lead, 
 					     PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
       foreach($projects_lead as $proj) {
-        echo "<tr>";
-        echo "<td><a href='project.php?project_id=$proj_id'>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]}</a></td>";
         $lead_id = $proj[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 	$proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
 	$proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
         $lead_name = $lead_names[$lead_id];
+        echo "<tr>";
+        echo "<td><a href='project.php?project_id=$proj_id'>{$proj_name}</a></td>";
         echo "<td>$lead_name</td>";
         echo "<td>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE]}</td>";
         echo "<td>";
