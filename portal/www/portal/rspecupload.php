@@ -245,13 +245,26 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <p>';
   echo '  <label for="file">Short Name:</label>';
   echo '  <input type="text" name="name" value="' . $rspec_sn . '"/> - Required</p>';
+  // Use single quotes in the placeholder because double quotes cause
+  // malformed HTML.
+  $desc_placeholder = "E.g. '3 InstaGENI Xen VMs connected by an OVS switch'";
+  echo '  <p>';
+  echo '  <label for="file">Description:</label>';
+  echo '<textarea name="description"';
+  echo ' placeholder="' . $desc_placeholder . '"';
+  echo ' cols="30"';
+  echo ' rows="2"';
+  echo '>';
+  echo $rspec_desc . '</textarea>';
+  echo ' - Required</p>';
+
   $public_checked = "";
   $private_checked = "checked";
   if ($rspec_visibility == "public") {
     $public_checked = "checked";
     $private_checked = "";
   }
-  echo '  <p>Type: ';
+  echo '  <p>Visibility: ';
   echo '  <input id="rb_public" type="radio" name="group1" value="public" '
     . $public_checked . '> public';
   echo '  <input id="rb_private" type="radio" name="group1" value="private" '
@@ -279,19 +292,6 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  </p>';
   echo '  </span>';
 
-  echo '  <p>';
-  echo '  <label for="file">Description:</label>';
-
-  // Use single quotes in the placeholder because double quotes cause
-  // malformed HTML.
-  $desc_placeholder = "E.g. '3 InstaGENI Xen VMs connected by an OVS switch'";
-  echo '<textarea name="description"';
-  echo ' placeholder="' . $desc_placeholder . '"';
-  echo ' cols="30"';
-  echo ' rows="2"';
-  echo '>';
-  echo $rspec_desc . '</textarea>';
-  echo ' - Required</p>';
   echo '  <p>';
   $button_label = "Upload";
   if ($rspec_id != "") $button_label = "Update";
