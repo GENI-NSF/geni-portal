@@ -16,6 +16,8 @@
  * Made a few fixes to the slice page (#1047)
  * Added Renew Slice and Known Resources to slice page (#1048)
  * Make project names and ids match on wimax enable page (#1049)
+ * Updated text under Slice Members on slice page (#1050)
+ * Cleaned up Jacks Viewer implementation on listresources (#1051)
 
 == 2.15 ==
  * Display OpenID URL on profile page (#290)
