@@ -257,28 +257,27 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input id="rb_private" type="radio" name="group1" value="private" '
     . $private_checked . '> private</p>';
 
-  // Uncomment this next section to show owner info. Works in
-  // conjunction with the javascript below to automatically show when
-  // public and hide when private.
-  /* echo '  <span id="owner_info">'; */
-  /* echo '  <p>'; */
-  /* echo '  <label for="owner_name">Owner Name:</label>'; */
-  /* echo '  <input type="text" name="owner_name" value="' */
-  /*   . $user->prettyName() . '" readonly/>'; */
-  /* echo ' <span style="font-size:0.6em; font-style:italic;">' */
-  /*   . 'Note: Your name will appear with this RSpec' */
-  /*   . '</span>'; */
-  /* echo '  </p>'; */
+  // These elements work in conjunction with the javascript below to
+  // automatically show when public and hide when private.
+  echo '  <span id="owner_info">';
+  echo '  <p>';
+  echo '  <label for="owner_name">Owner Name:</label>';
+  echo '  <input type="text" name="owner_name" value="'
+    . $user->prettyName() . '" readonly/>';
+  echo ' <span style="font-size:0.6em; font-style:italic;">'
+    . 'Note: Your name appears with RSpecs you make public'
+    . '</span>';
+  echo '  </p>';
 
-  /* echo '  <p>'; */
-  /* echo '  <label for="owner_name">Owner Email:</label>'; */
-  /* echo '  <input type="text" name="owner_email" value="' */
-  /*   . $user->email() . '" readonly/>'; */
-  /* echo ' <span style="font-size:0.6em; font-style:italic;">' */
-  /*   . 'Note: Your email address will appear with this RSpec' */
-  /*   . '</span>'; */
-  /* echo '  </p>'; */
-  /* echo '  </span>'; */
+  echo '  <p>';
+  echo '  <label for="owner_name">Owner Email:</label>';
+  echo '  <input type="text" name="owner_email" value="'
+    . $user->email() . '" readonly/>';
+  echo ' <span style="font-size:0.6em; font-style:italic;">'
+    . 'Note: Your email address appears with RSpecs you make public'
+    . '</span>';
+  echo '  </p>';
+  echo '  </span>';
 
   echo '  <p>';
   echo '  <label for="file">Description:</label>';

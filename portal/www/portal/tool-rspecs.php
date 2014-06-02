@@ -123,6 +123,43 @@ function rspec_table_header($public=False) {
   }
   print "</tr>\n";
 }
+
+/**
+ * Find owner information that is external to the RSpec record. In
+ * June, 2014 we are transitioning to storing owner information
+ * directly in the RSpec record. This function will no longer be
+ * needed once that transition is complete.
+ *
+ * Delete this after August, 2014 if it is no longer needed. That is,
+ * if all the records in the RSpec table have owner_name and
+ * owner_email set.
+ */
+function rspec_owner_info($rspec, $owners, &$addr, &$pretty_name) {
+  // Clear out the pass-by-reference values
+  $addr = NULL;
+  $pretty_name = NULL;
+  $owner_id = $rspec['owner_id'];
+  if (array_key_exists($owner_id, $owners)) {
+    $owner = $owners[$owner_id];
+    if (isset($owner->email_address)) {
+      $addr = $owner->email_address;
+    }
+    $pretty_name = $owner->prettyName();
+  } else {
+    /* Some rspecs have no owner because they were pre-loaded at the
+       advent of the portal. Mark these as owned by GENI. */
+    $addr = 'help@geni.net';
+    $pretty_name = 'help@geni.net';
+  }
+  if (! $addr) {
+    /* If owner email is not available, use help */
+    $addr = 'help@geni.net';
+    $pretty_name = 'help@geni.net';
+  }
+  // Return value is not important at this time.
+  return NULL;
+}
+
 function display_rspec($rspec, $owners, $public=False) {
   // Customize these with the RSpec id.
   $id = $rspec['id'];
@@ -131,25 +168,14 @@ function display_rspec($rspec, $owners, $public=False) {
   $download_url = "rspecdownload.php?id=$id";
   $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
   if ($public) {
-    $owner_id = $rspec['owner_id'];
-    $addr = NULL;
-    if (array_key_exists($owner_id, $owners)) {
-      $owner = $owners[$owner_id];
-      if (isset($owner->email_address)) {
-        $addr = $owner->email_address;
-      }
-      $pretty_name = $owner->prettyName();
-    } else {
-      /* Some rspecs have no owner because they were pre-loaded at the
-         advent of the portal. Mark these as owned by GENI. */
-      $addr = 'help@geni.net';
-      $pretty_name = 'help@geni.net';
+    $addr = $rspec['owner_email'];
+    $pretty_name = $rspec['owner_name'];
+    if (! ($pretty_name && $addr)) {
+      /* Either owner name or email is not set in the rspec table, access
+         user info via the member authority.*/
+      rspec_owner_info($rspec, $owners, $addr, $pretty_name);
     }
-    if (! $addr) {
-      /* If owner email is not available, use help */
-      $addr = 'help@geni.net';
-      $pretty_name = 'help@geni.net';
-    }
+
     $rspec_name = $rspec['name'];
     $subject = 'About GENI Portal rspec: ' . $rspec['name'];
     $addr = $addr . '?subject=' . $subject;
