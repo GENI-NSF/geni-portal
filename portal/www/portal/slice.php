@@ -366,12 +366,31 @@ var ui_other_am = "<?php echo SERVICE_ATTRIBUTE_OTHER_AM ?>";
 
 function confirmQuery() {
   if ($('#datepicker').val()) {
-    if ($("#sliceslivers").is(':checked')) {
-      var result = confirm("This action will renew resources at all aggregates and may take several minutes.");
+    var count = 0;
+    var i;
+
+    // .length doesn't work on objects, have to count manually
+    for (i in slice_ams) {
+      if (slice_ams.hasOwnProperty(i)) {
+        count++;
+      }
+    }
+
+    if ($("#sliceslivers").is(':checked') && count > 0) {
+      var result = true;
+      if (count > 10) {
+        result = confirm("This action will renew resources at "+slice_ams+" aggregates and may take several minutes.");
+      }
+
       if (result) {
-        $("#renewform").submit();
+        var myform = $("#renewform");
+        $.each(slice_ams, function(index, value) {
+          myform.html(myform.html()+'<input type="hidden" name="am_id[]" value="'+value+'"/>');
+        });
+        myform.submit();
       }
     } else {
+      $('#sliceonly').prop('checked',true);
       var myform = $("#renewform");
       myform.submit();
     }
@@ -407,6 +426,7 @@ $(document).ready(function() {
     prepareList();
     prepareEvents();
     $.each(slice_ams, function(index, value) {
+
       $('#t_'+value).addClass('my_slice');
     });
     $('.op_my_slice').attr('selected','selected');
@@ -414,6 +434,10 @@ $(document).ready(function() {
 });
 </script>
 
+<!--
+  Style for the slice redesign.
+  Should probably be merged into the css stylesheet, but this will change some elements on other pages.
+-->
 <style>
 #header, #content-outer {
   position: relative;
@@ -653,7 +677,7 @@ if ($project_expiration) {
   $project_line = "Project does not have an expiration date<br>";
 }
 if ($renew_slice_privilege) {
-  print "<td colspan='1' style=\"width:350px;\">\n";
+  print "<td colspan='1' style=\"width:320px;\">\n";
 } else {
   print "<td colspan='4'>\n";
 }
@@ -661,26 +685,26 @@ print $project_line;
 print "Slice expires on <b>$slice_expiration</b>";
 print "</td>\n";
 
-/* Ops Management */
-
 
 if ($renew_slice_privilege) {
   print "<td id='renewcell' colspan='3'>\n";
   print "<form id='renewform' method='GET' action=\"do-renew.php\">";
   print "<table id='renewtable'><tr><td>";
-
+  print "Renew ";
   print "</td><td>";
-  print "<div style='display:none;'>";
-  print "<input type='radio' id='sliceonly' name='renew' value='slice' checked>slice only<br>";
+  print "<div>";
+  print "<input type='radio' id='sliceonly' name='renew' value='slice'>slice only<br>";
+  print "<input type='radio' id='sliceslivers' name='renew' value='slice_sliver' checked>slice & known resources";
   print "</div>";
+  print "</td><td>";
+  print " until <br/>";
   print "</td>";
   print "<td id='renewbutton'>";
-  print "Renew slice until:";
   print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   $size = strlen($slice_date_expiration) + 3;
   print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
-  print "<button type='button' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew Slice</button>\n";
+  print "<button type='button' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
   print "</td></tr></table>";
   print "</form>\n";
   print "</td>\n";
