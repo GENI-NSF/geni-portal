@@ -21,6 +21,7 @@
  * Make project names and ids match on wimax enable page (#1049)
  * Updated text under Slice Members on slice page (#1050)
  * Cleaned up Jacks Viewer implementation on listresources (#1051)
+ * Rename omni-bundle.zip to omni.bundle (#929)
 
 == 2.15 ==
  * backend changes to support managing aggregates on slice page (#339)
