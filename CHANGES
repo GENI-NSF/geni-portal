@@ -14,6 +14,7 @@
   * Made a few fixes to the slice page (#1047)
   * Added `Renew Slice and Known Resources` to slice page (#1048)
   * Updated text under `Slice Members` on slice page (#1050)
+  * Fixed issue with table-level calendar showing under other elements (#1057)
  * Fix insecure content warning on profile page (#1026)
  * Added Hide option for `Raw Resource Specification` on listresources (#1030)
  * Fixed php errors on listresources and slice pages (#1031)
