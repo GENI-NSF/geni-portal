@@ -229,6 +229,9 @@ function show_header($title, $active_tab = '', $load_user=1)
     }
   }
 
+  /* datatables.net (for sortable/searchable tables) */
+  echo '<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>';
+
   /* Close the "head" */
   echo '</head>';
   echo '<body>';

@@ -879,3 +879,18 @@ table .notapply {
 img {
   border-style: none;
 }
+
+
+/* datatables.net */
+.dataTables_filter, .dataTables_info {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: right;
+  color: #5F584E;
+}
+
+/* add some space between search box and search text */
+.dataTables_filter input {
+  margin-left: 10px;
+}
