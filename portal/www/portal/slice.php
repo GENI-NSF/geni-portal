@@ -643,6 +643,9 @@ $(document).ready(function() {
 .am_name_field {
   width: 270px;
 }
+#ui-datepicker-div {
+  z-index: 10 !important;
+}
 </style>
 
 <?php 
