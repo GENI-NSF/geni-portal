@@ -5,27 +5,27 @@
 = GENI Portal Release Notes =
 
 == 2.16 ==
- * Allow editing rspec proprties (#226)
- * Added functionality for knowing what AMs the slice has resources at (#762)
- * Slice page: actions on selected aggregates only (#958)
+ * Allow editing RSpec properties (requires DB update). (#226)
+ * Revamped slice page with all new table of aggregates to act on and
+   action buttons only on that table. (#1038)
+  * Slice page: actions on selected aggregates only (#958)
+  * Support selecting aggregates where the slice has resources (#762)
+  * Implemented `Add` button per aggregate on slice page (#1042)
+  * Made a few fixes to the slice page (#1047)
+  * Added `Renew Slice and Known Resources` to slice page (#1048)
+  * Updated text under `Slice Members` on slice page (#1050)
  * Fix insecure content warning on profile page (#1026)
- * Added Hide option for Raw Resource Specification on listresources (#1030)
+ * Added Hide option for `Raw Resource Specification` on listresources (#1030)
  * Fixed php errors on listresources and slice pages (#1031)
- * Added in new slice page (#1038)
  * Remove problematic mail headers (#1039)
  * Update dragon.maxgigapop SSL cert (again). (#1040)
- * Implemented Add button per aggregate on slice page (#1042)
  * Change WiMAX base URL (#1045)
- * Made a few fixes to the slice page (#1047)
- * Added Renew Slice and Known Resources to slice page (#1048)
  * Make project names and ids match on wimax enable page (#1049)
- * Updated text under Slice Members on slice page (#1050)
  * Cleaned up Jacks Viewer implementation on listresources (#1051)
  * Rename omni-bundle.zip to omni.bundle (#929)
  * Fix variable name in WiMAX error messages. (#1053)
 
 == 2.15 ==
- * backend changes to support managing aggregates on slice page (#339)
  * Display OpenID URL on profile page (#290)
  * Backend changes to support managing aggregates on slice page (#339)
  * Ensure that operators and non-operators get the kmactivate page
@@ -43,7 +43,7 @@
    to watch the output and timeout long running calls. Current timeout
    set to 12 minutes. Be sure to propagate the 'failed' message back
    to client calls when the call times out. (#863)
- * Add a New to GENI? link on landing page (#994)
+ * Add a `New to GENI?` link on landing page (#994)
  * Remove obsolete scripts (#999)
  * Add Jacks viewer to details page (#1011)
  * Update ION AM SSL certificate (#1012)
