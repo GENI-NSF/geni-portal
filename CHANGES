@@ -25,6 +25,7 @@
  * Cleaned up Jacks Viewer implementation on listresources (#1051)
  * Rename omni-bundle.zip to omni.bundle (#929)
  * Fix variable name in WiMAX error messages. (#1053)
+ * Join a Project table must be sortable, searchable (#93)
 
 == 2.15 ==
  * Display OpenID URL on profile page (#290)

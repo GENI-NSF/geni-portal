@@ -92,10 +92,19 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 } else {
 
   print "<h2>Select a project to join</h2>\n";
-  print "<p><i>Please do not try to join arbitrary projects, abuse of
+  print "<p><i>Please do not try to join arbitrary projects. Abuse of
    this functionality may result in revocation of your GENI account.
    </i></p>";
-  print "<table>\n";
+   
+  /* datatables.net (for sortable/searchable tables) */
+  echo '<script type="text/javascript">';
+  echo '$(document).ready( function () {';
+  echo '  $(\'#projects\').DataTable({paging: false});';
+  echo '} );';
+  echo '</script>';
+   
+  print "<table id=\"projects\" class=\"display\">\n";
+  print "<thead>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
   $project_details = lookup_project_details($sa_url, $user, $pids);
@@ -107,6 +116,8 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 					       $project_details, 
 					       PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
   //  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
+
+  print "</thead><tbody>\n";
 
   foreach ($project_details as $project) {
     //    $project = lookup_project($sa_url, $user, $project_id);
@@ -123,6 +134,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
   }
+  print "</tbody>\n";
   print "</table>\n";
 }
 
