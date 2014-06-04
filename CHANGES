@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.17 ==
+ * Handle expiration time properly from GRAM AM (#1061)
 
 == 2.16.1 ===
  * Enable the WiMAX page for all users. (#1015)
