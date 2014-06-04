@@ -32,8 +32,9 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+// 6/2014: Open WiMAX to all.
 // If user isn't supposed to see the wimax stuff at all, stop now
-if (! $user->hasAttribute('enable_wimax_button')) {
+if (False && ! $user->hasAttribute('enable_wimax_button')) {
   relative_redirect('home.php');
 }
 

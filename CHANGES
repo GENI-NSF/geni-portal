@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.16.1 ===
+ * Enable the WiMAX page for all users. (#1015)
+
 == 2.16 ==
  * Allow editing RSpec properties (requires DB update). (#226)
  * Revamped slice page with all new table of aggregates to act on and
