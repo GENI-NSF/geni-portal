@@ -89,7 +89,7 @@ if (count($obj)>0) {
 
   print_rspec( $obj, True, $filterToAM );
     // Get the rspec in xml format without HTML clutter
-    $xmlRspec = get_rspec_xml( $obj, $pretty, $filterToAM );
+    $xmlRspec = get_rspec_xml( $obj, False, $filterToAM );
     if ($xmlRspec && $xmlRspec != "null") {
       print "<div id='jacksContainer-".hash('ripemd160', am_name(key($obj)))."' class='jacks resources' style='background-color: white'></div>";
 
@@ -100,6 +100,11 @@ if (count($obj)>0) {
                   mode: 'viewer',
                   source: 'rspec',
                   size: { x: 756, y: 400},
+                  show: {
+                  	rspec: false,
+                  	version: false
+                  },
+                  nodeSelect: false,
                   root: '#jacksContainer-".hash('ripemd160', am_name(key($obj)))."',
                   readyCallback: function (input, output) {
                     input.trigger('change-topology',

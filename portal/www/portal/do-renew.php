@@ -184,7 +184,7 @@ if (! isset($am_id) or is_null($am_id)) {
 <script src="amstatus.js"></script>
 <script>
 var slice= "<?php echo $slice_id ?>";
-var am_id= "<?php echo $am_id ?>";
+var am_id= <?php echo json_encode($am_ids) ?>;
 var sliver_expiration= "<?php echo $rfc3339_expiration ?>";
 
 <?php

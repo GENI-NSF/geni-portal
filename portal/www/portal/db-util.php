@@ -242,6 +242,44 @@ function storeAbacAssertion($assertion,
   return $result[RESPONSE_ARGUMENT::VALUE];
 }
 
+function fetchRSpec($id) {
+  $conn = portal_conn();
+  $sql = "SELECT * FROM rspec where rspec.id = "
+    . $conn->quote($id, 'integer');
+  /* print "Query = $sql<br/>"; */
+  $result = db_fetch_row($sql, "fetchRSpec($id)");
+  $row = $result[RESPONSE_ARGUMENT::VALUE];
+  return $row;
+}
+
+function updateRSpec($id, $name, $desc, $vis, &$error_msg) {
+  if ($vis !== 'public' && $vis !== 'private') {
+    $error_msg = "Invalid RSpec visibility: $vis."
+      . " Must be 'public' or 'private'.";
+    return false;
+  }
+
+  $conn = portal_conn();
+  $sql = 'UPDATE rspec'
+    . ' SET name = '
+    . $conn->quote($name, 'text')
+    . ', description = '
+    . $conn->quote($desc, 'text')
+    . ', visibility = '
+    . $conn->quote($vis, 'text')
+    . ' WHERE id = '
+    . $conn->quote($id, 'integer');
+  $result = db_execute_statement($sql, "update rspec");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $error_msg = "Database error: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $error_msg);
+    error_log($error_msg);
+    return false;
+  } else {
+    return true;
+  }
+}
+
 function fetchRSpecById($id) {
   $conn = portal_conn();
   $sql = "SELECT rspec.rspec FROM rspec where rspec.id = "
@@ -267,7 +305,8 @@ function fetchRSpecNameById($id) {
  * and all private RSpecs owned by the current user.
  */
 function fetchRSpecMetaData($user) {
-  $metadata_columns = "id, name, description, visibility, bound, owner_id";
+  $metadata_columns = ("id, name, description, visibility, bound, owner_id"
+                       . ", owner_name, owner_email");
   $conn = portal_conn();
   $sql = "SELECT $metadata_columns FROM rspec";
   $sql .= " where visibility = 'public'";
@@ -302,8 +341,8 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   }
   $conn = portal_conn();
   $sql = "INSERT INTO rspec";
-  $sql .= " (name, description, rspec, schema, schema_version";
-  $sql .= ", owner_id, visibility, bound, stitch, am_urns)";
+  $sql .= " (name, description, rspec, schema, schema_version, owner_id";
+  $sql .= ", owner_name, owner_email, visibility, bound, stitch, am_urns)";
   $sql .= " VALUES (";
   $sql .= $conn->quote($name, 'text');
   $sql .= ", " . $conn->quote($description, 'text');
@@ -311,6 +350,8 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   $sql .= ", " . $conn->quote($schema, 'text');
   $sql .= ", " . $conn->quote($schema_version, 'text');
   $sql .= ", " . $conn->quote($user->account_id, 'text');
+  $sql .= ", " . $conn->quote($user->prettyName(), 'text');
+  $sql .= ", " . $conn->quote($user->email(), 'text');
   $sql .= ", " . $conn->quote($visibility, 'text');
   $sql .= ", " . $conn->quote($is_bound, 'boolean');
   $sql .= ", " . $conn->quote($is_stitch, 'boolean');
@@ -319,6 +360,52 @@ function db_add_rspec($user, $name, $description, $rspec, $schema,
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
   //  error_log($sql);
   $result = db_execute_statement($sql, "db_add_rspec");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "db_add_rspec: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
+    return false;
+  }
+  return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
+function db_update_rspec($rspec_id, $user, $name, $description,
+                         $rspec, $schema,
+                         $schema_version, $visibility, $is_bound,
+                         $is_stitch, $am_urns, $uploaded_rspec)
+{
+  if (! isset($description) or is_null($description) or $description == '') {
+    $msg = "Description missing for RSpec '$name'";
+    error_log($msg);
+    relative_redirect('error-text.php' . "?error=" . urlencode($msg));
+    return false;
+  }
+  if (! isset($name) or is_null($name) or $name == '') {
+    $msg = "Name missing for RSpec with description '$description'";
+    error_log($msg);
+    relative_redirect('error-text.php' . "?error=" . urlencode($msg));
+    return false;
+  }
+  $conn = portal_conn();
+  $sql = "UPDATE rspec SET ";
+  $sql .= "name = " . $conn->quote($name, 'text');
+  $sql .= ", description = " . $conn->quote($description, 'text');
+  $sql .= ", owner_id = " . $conn->quote($user->account_id, 'text');
+  $sql .= ", owner_name = " . $conn->quote($user->prettyName(), 'text');
+  $sql .= ", owner_email = " . $conn->quote($user->email(), 'text');
+  $sql .= ", visibility = " . $conn->quote($visibility, 'text');
+  if($uploaded_rspec) {
+    $sql .= ", rspec = " . $conn->quote($rspec, 'text');
+    $sql .= ", schema = " . $conn->quote($schema, 'text');
+    $sql .= ", schema_version = " . $conn->quote($schema_version, 'text');
+    $sql .= ", bound = " . $conn->quote($is_bound, 'boolean');
+    $sql .= ", stitch = " . $conn->quote($is_stitch, 'boolean');
+    $sql .= ", am_urns = " . $conn->quote($am_urns, 'text');
+  }
+  $sql .= " where id = " . $rspec_id;
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  //  error_log($sql);                                                          
+  $result = db_execute_statement($sql, "db_update_rspec");
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
     $msg = "db_add_rspec: " . $result[RESPONSE_ARGUMENT::OUTPUT];
     geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);

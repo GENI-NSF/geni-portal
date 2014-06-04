@@ -82,7 +82,6 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
   var slice= "<?php echo $slice_id ?>";
   var am_id= <?php echo json_encode($am_ids) ?>;
   var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
-  var jacks = "<?php echo $jacks ? 'true' : 'false';?>";
   $(document).ready(build_details_table);
   //$(document).ready(add_all_logins_to_manifest_table);
   $(document).ready(function() {
@@ -90,7 +89,16 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
       $('.rawRSpec').each(function() {
         $(this).attr('style', '');
       });
-      $(this).attr('style', 'display: none;');
+      $(this).parent().attr('style', 'display: none;');
+      $('#hideRawResource').parent().attr('style', '');
+    });
+
+    $('#hideRawResource').click(function() {
+      $('.rawRSpec').each(function() {
+        $(this).attr('style', 'display: none;');
+      });
+      $(this).parent().attr('style', 'display: none;');
+      $('#rawResource').parent().attr('style', '');
     });
   });
 </script>
@@ -125,9 +133,10 @@ if ($pretty) {
     $am_id_str = "";
   }
 
-  print "<p><a id='rawResource' style='cursor: pointer;'>Raw Resource Specification</a></p>";
 }
 
+print "<p><a id='rawResource' style='cursor: pointer;'>Show Raw Resource Specification</a></p>";
+print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'>Hide Raw Resource Specification</a></p>";
 print "<hr/><p>";
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";

@@ -21,31 +21,53 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-require_once("header.php");
-show_header('GENI Portal: Slices', $TAB_SLICES);
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
-$location = $_GET['loc'];
-include("tool-lookupids.php");
 
-print "<p class='warn'>";
-if (isset($am_id) && $am_id) {
-	print "This action will query ".count($ams)." aggregates and may take several minutes.";
-  print '<br>Are you sure that you want to query these '.count($ams).' aggregates?';
-  for ($i = 0; $i < count($ams); $i++) {
-    $location = $location."&am_id[]=".$am_ids[$i];
+require_once("settings.php");
+require_once("user.php");
+require_once("header.php");
+require_once 'geni_syslog.php';
+require_once 'db-util.php';
+
+$user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+
+function from_request($request_var, $default_value) {
+  if (array_key_exists($request_var, $_REQUEST)) {
+    return $_REQUEST[$request_var];
+  } else {
+    return $default_value;
   }
 }
-else {
-	print 'This action will query all aggregates and may take several minutes.';
-	print '<br>Are you sure that you want to query all aggregates?';
+
+$rspec_id = from_request('id', NULL);
+$rspec_name = from_request('name', NULL);
+$rspec_desc = from_request('description', NULL);
+$rspec_vis = from_request('visibility', NULL);
+
+if (is_null($rspec_id)) {
+  relative_redirect('home.php');
 }
 
-//print "<button onClick=\"window.location=$location\"><b>YES</b></button><br/>\n";
-print "<form method='POST' action=\"$location\">";
-print '<input type="submit" value="YES" style="width:60px;height:30px"/>';
-print '<input type="button" value="CANCEL" onclick="history.back(-1)" style="width:60px;height:30px"/>';
-print "</form></p>";
+/* $rspec is the XML */
+$rspec = fetchRSpec($rspec_id);
 
-include("footer.php");
-?>
+if (is_null($rspec)) {
+  relative_redirect('home.php');
+}
+
+/* If I'm not the owner of the rspec, bail. */
+$owner = $rspec['owner_id'];
+if (! $owner === $user->account_id) {
+  relative_redirect('home.php');
+}
+
+$result = updateRSpec($rspec_id, $rspec_name, $rspec_desc, $rspec_vis,
+                      $error_msg);
+// Was there an error? Display it.
+if (! $result) {
+  $_SESSION['lasterror'] = $error_msg;
+}
+
+relative_redirect('profile.php#rspecs');

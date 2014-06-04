@@ -142,6 +142,8 @@ dist_svcweb_DATA = \
 	www/portal/request_test.php \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
+	www/portal/rspecedit.php \
+	www/portal/rspechandleedit.php \
 	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
@@ -189,6 +191,7 @@ dist_svcweb_DATA = \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
+	www/images/Symbols-Tips-icon-clear.png \
 	www/images/UseGENI.png \
 	www/images/geni.png \
 	www/images/pgfc-screenshot.jpg \

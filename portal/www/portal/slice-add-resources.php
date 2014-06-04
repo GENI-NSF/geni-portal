@@ -102,7 +102,7 @@ function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   print "<p><b>Choose Aggregate:</b> \n";
   print '<select name="am_id" id="agg_chooser">\n';
-  echo '<option value="" title = "Choose an Aggregate" selected="selected">Choose an Aggregate...</option>';
+  echo '<option value="" title = "Choose an Aggregate">Choose an Aggregate...</option>';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
     $aggname = $agg['service_name'];
@@ -189,7 +189,19 @@ show_rspec_chooser($user);
 print  '<p><label for="file">or import RSpec from file:</label>';
 print  '<input type="file" name="rspec_selection" id="rspec_selection" /></p>';
 print "<p><i>Note: This RSpec selection is for this reservation only and will not be saved by the portal.</i></p>";
+
 show_am_chooser();
+if ($am_ids == null) {
+  $am_id = "null";
+}
+?>
+<script>
+var am_id = <?php echo $am_id ?>;
+if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
+  $('#agg_chooser').val(am_id); 
+}
+</script>
+<?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
 
