@@ -36,8 +36,10 @@ if (!isset($user)) {
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
 $default_project = null;
+$dest_file = 'omni.bundle';
 if (array_key_exists('project', $_REQUEST)) {
   $default_project = $_REQUEST['project'];
+  $dest_file = $_REQUEST['file'];
 }
 
 // Add ssh keys to zip
@@ -99,7 +101,6 @@ $zip_bundle = file_get_contents($filename);
 /* Delete the temp file. */
 unlink($filename);
 
-$dest_file = 'omni-bundle.zip';
 $_SESSION['lastmessage'] = "Downloaded '$dest_file'";
 
 // Set headers for download

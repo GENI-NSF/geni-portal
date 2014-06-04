@@ -32,8 +32,9 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+// 6/2014: Open WiMAX to all.
 // If user isn't supposed to see the wimax stuff at all, stop now
-if (! $user->hasAttribute('enable_wimax_button')) {
+if (False && ! $user->hasAttribute('enable_wimax_button')) {
   relative_redirect('home.php');
 }
 
@@ -1045,11 +1046,11 @@ Get user's projects (expired or not)
 	      $ldif_user_group_id = null;
 	    }
 	    // return success of some kind
-	    $warnings[] = "<p>Disabled project $ldif_project_name for WiMAX</p>";
+	    $warnings[] = "<p>Disabled project $proj_name for WiMAX</p>";
 	  } else {
 	    // return error of some kind
 	    //$is_error = True;
-	    $warnings[] = "<p><b>Failed</b> to disable project $ldif_project_name for WiMAX: $res</p>"; // FIXME: What should user do?
+	    $warnings[] = "<p><b>Failed</b> to disable project $proj_name for WiMAX: $res</p>"; // FIXME: What should user do?
 	  }
 	  continue; // don't use this project
 	} // end of block to handle project expired and enabled
@@ -1065,7 +1066,7 @@ Get user's projects (expired or not)
 	    error_log("Project $proj_name has lead " . $lead->prettyName() . " who is not yet wimax enabled");
 	    // FIXME FIXME
 	    // $is_error = True;
-	    // $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $ldif_project_name";
+	    // $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $proj_name";
 	  } else {
 	    if (isset($lead->ma_member->wimax_username)) {
 	      $project_lead_username =$lead->ma_member->wimax_username;
@@ -1088,7 +1089,7 @@ Get user's projects (expired or not)
 	      error_log("Failed to change WiMAX group admin for project $proj_name to $project_lead_username: $res");
 	      // FIXME FIXME - Use $res
 	      // $is_error = True;
-	      // $return_string = "Failed to make " . $lead->prettyName() . " the admin of the $ldif_project_name WiMAX group";
+	      // $return_string = "Failed to make " . $lead->prettyName() . " the admin of the $proj_name WiMAX group";
 	    }
 	  }
 	} // end of block to handle group has wrong admin

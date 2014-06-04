@@ -138,7 +138,7 @@ class XMLRPCClient
   public function call($fun, $args)
   {
     $rawreturn = false;
-    if (strpos($fun, '_')==0) {
+    if (strpos($fun, '_') === 0) {
       $rawreturn = true;
       $fun = substr($fun, 1);
     }
