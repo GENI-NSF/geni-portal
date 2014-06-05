@@ -4,7 +4,102 @@
 
 = GENI Portal Release Notes =
 
+== 2.17 ==
+ * Handle expiration time properly from GRAM AM (#1061)
+
+== 2.16.2 ===
+ * Fix a timeout bug by increasing buffer and decreasing sleep (#1060)
+
+== 2.16.1 ===
+ * Enable the WiMAX page for all users. (#1015)
+
+== 2.16 ==
+ * Allow editing RSpec properties (requires DB update). (#226)
+ * Revamped slice page with all new table of aggregates to act on and
+   action buttons only on that table. (#1038)
+  * Slice page: actions on selected aggregates only (#958)
+  * Support selecting aggregates where the slice has resources (#762)
+  * Implemented `Add` button per aggregate on slice page (#1042)
+  * Made a few fixes to the slice page (#1047)
+  * Added `Renew Slice and Known Resources` to slice page (#1048)
+  * Updated text under `Slice Members` on slice page (#1050)
+  * Fixed issue with table-level calendar showing under other elements (#1057)
+ * Fix insecure content warning on profile page (#1026)
+ * Added Hide option for `Raw Resource Specification` on listresources (#1030)
+ * Fixed php errors on listresources and slice pages (#1031)
+ * Remove problematic mail headers (#1039)
+ * Update dragon.maxgigapop SSL cert (again). (#1040)
+ * Change WiMAX base URL (#1045)
+ * Make project names and ids match on wimax enable page (#1049)
+ * Cleaned up Jacks Viewer implementation on listresources (#1051)
+ * Rename omni-bundle.zip to omni.bundle (#929)
+ * Fix variable name in WiMAX error messages. (#1053)
+ * Join a Project table must be sortable, searchable (#93)
+
+== 2.15 ==
+ * Display OpenID URL on profile page (#290)
+ * Backend changes to support managing aggregates on slice page (#339)
+ * Ensure that operators and non-operators get the kmactivate page
+   when in maintenance mode and tool is deauthorized (#944)
+ * Assure cleanup of tempfiles from invoke_omni_function (#978)
+ * Ensure that new user registrations is not allowed during
+   maintenance (#965)
+ * Make default project match link on manual omni config page (#1005)
+ * Allow new users to activate via OpenID (#1029)
+ * Update dragon.maxgigapop SSL cert (#1033)
+ * Remove disabled users from geni-ops-report (#1037)
+
+== 2.14 ==
+ * Use proc_open not popen to spawn omni calls, allowing us
+   to watch the output and timeout long running calls. Current timeout
+   set to 12 minutes. Be sure to propagate the 'failed' message back
+   to client calls when the call times out. (#863)
+ * Add a `New to GENI?` link on landing page (#994)
+ * Remove obsolete scripts (#999)
+ * Add Jacks viewer to details page (#1011)
+ * Update ION AM SSL certificate (#1012)
+ * Add beta Jacks RSpec editor for adding resources. (#1013)
+ * Use HTTPS URLs for map data to avoid mixed content warning (#1014)
+ * Avoid busy waits and failing to read all output from spawned Omni
+   calls. (#1016)
+ * Remove old non-AJAX listresources call from details page. Only call
+   it once. (#1017)
+ * Refactor listresources so that only one call is made and Jacks is
+   shown by defualt. (#1020)
+ * Remove PUBLIC_KEYs from DETAILS_PUBLIC (#1021)
+ * Incorporate xml-signer 0.7 (#1022)
+ * Update wording on join project page (#1023)
+ * Update wording on SSH keys page (#1024)
+ * Changed listresources page to allow multiple Jacks windows (#1025)
+ * Allow multiple Jacks canvases on the list resources page (#1027)
+
+== 2.13 ==
+ * Provide UI for renewing certificates (#241)
+ * Remove slice expiration from sliver renewal entry (#1010)
+
+== 2.12 ==
+ * Delete temporary km files (#979)
+ * Emails sent from portal on behalf of experimenter need
+   the from address quoted, specifically where the name of the 
+   experimenter is an email address because no better name 
+   is available. (#988)
+ * Show each GENI site on map (#995)
+ * Remove unused readyToLogin page (#996)
+ * Delete unused script geni-renew-slice (#997)
+ * Install new GENI Desktop certificate (#1001)
+ * Avoid errors generating Omni config for users with no project (#1002)
+ * Quote RSpec name/description in RSpec upload error messages (#1003)
+
 == 2.11 ==
+ * Quiet debug output in KM (#981)
+ * Explicitly use the inside cert/key when launching Flack (#982)
+ * Update GENI citation policy on account activation (#983)
+ * Add GRAM aggregate (#984)
+ * Add expiration column to certificate tables (#985)
+ * Update to latest iRODS server cert (#986)
+ * Fix occasional flack loading errors (#987)
+ * Add 2nd GRAM aggregate (#989)
+ * Use an overlay to help speaks-for flow (#991)
 
 == 2.10.1 ==
  * Fix tool-omniconfigure for downloading just your Omni config

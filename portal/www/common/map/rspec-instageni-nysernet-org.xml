@@ -4,7 +4,7 @@
 	URL: https://instageni.nysernet.org:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-02-24T15:44:48Z" expires="2014-02-24T15:44:48Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-10T14:12:21Z" expires="2014-03-10T14:12:21Z" >
 <external_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:xe-0/2/0:nysernet-ig"
   component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" />
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
@@ -14,126 +14,211 @@
   <available name="exclusive-openflow-1757"/>
   <available name="exclusive-openflow-1758"/>
   <available name="exclusive-openflow-1759"/>
-  <available name="vts2000"/>
-  <available name="vts2001"/>
-  <available name="vts2002"/>
-  <available name="vts2003"/>
-  <available name="vts2004"/>
-  <available name="vts2005"/>
-  <available name="vts2006"/>
-  <available name="vts2007"/>
-  <available name="vts2008"/>
-  <available name="vts2009"/>
-  <available name="vts2010"/>
-  <available name="vts2011"/>
-  <available name="vts2012"/>
-  <available name="vts2013"/>
-  <available name="vts2014"/>
-  <available name="vts2015"/>
-  <available name="vts2016"/>
-  <available name="vts2017"/>
-  <available name="vts2018"/>
-  <available name="vts2019"/>
-  <available name="vts2020"/>
-  <available name="vts2021"/>
-  <available name="vts2022"/>
-  <available name="vts2023"/>
-  <available name="vts2024"/>
-  <available name="vts2025"/>
-  <available name="vts2026"/>
-  <available name="vts2027"/>
-  <available name="vts2028"/>
-  <available name="vts2029"/>
-  <available name="vts2030"/>
-  <available name="vts2031"/>
-  <available name="vts2032"/>
-  <available name="vts2033"/>
-  <available name="vts2034"/>
-  <available name="vts2035"/>
-  <available name="vts2036"/>
-  <available name="vts2037"/>
-  <available name="vts2038"/>
-  <available name="vts2039"/>
-  <available name="vts2040"/>
-  <available name="vts2041"/>
-  <available name="vts2042"/>
-  <available name="vts2043"/>
-  <available name="vts2044"/>
-  <available name="vts2045"/>
-  <available name="vts2046"/>
-  <available name="vts2047"/>
-  <available name="vts2048"/>
-  <available name="vts2049"/>
-  <available name="vts2050"/>
-  <available name="vts2051"/>
-  <available name="vts2052"/>
-  <available name="vts2053"/>
-  <available name="vts2054"/>
-  <available name="vts2055"/>
-  <available name="vts2056"/>
-  <available name="vts2057"/>
-  <available name="vts2058"/>
-  <available name="vts2059"/>
-  <available name="vts2060"/>
-  <available name="vts2061"/>
-  <available name="vts2062"/>
-  <available name="vts2063"/>
-  <available name="vts2064"/>
-  <available name="vts2065"/>
-  <available name="vts2066"/>
-  <available name="vts2067"/>
-  <available name="vts2068"/>
-  <available name="vts2069"/>
-  <available name="vts2070"/>
-  <available name="vts2071"/>
-  <available name="vts2072"/>
-  <available name="vts2073"/>
-  <available name="vts2074"/>
-  <available name="vts2075"/>
-  <available name="vts2076"/>
-  <available name="vts2077"/>
-  <available name="vts2078"/>
-  <available name="vts2079"/>
-  <available name="vts2080"/>
-  <available name="vts2081"/>
-  <available name="vts2082"/>
-  <available name="vts2083"/>
-  <available name="vts2084"/>
-  <available name="vts2085"/>
-  <available name="vts2086"/>
-  <available name="vts2087"/>
-  <available name="vts2088"/>
-  <available name="vts2089"/>
-  <available name="vts2090"/>
-  <available name="vts2091"/>
-  <available name="vts2092"/>
-  <available name="vts2093"/>
-  <available name="vts2094"/>
-  <available name="vts2095"/>
-  <available name="vts2096"/>
-  <available name="vts2097"/>
-  <available name="vts2098"/>
-  <available name="vts2099"/>
-  <available name="vts2100"/>
-  <available name="vts2101"/>
-  <available name="vts2102"/>
-  <available name="vts2103"/>
-  <available name="vts2104"/>
-  <available name="vts2105"/>
-  <available name="vts2106"/>
-  <available name="vts2107"/>
-  <available name="vts2108"/>
-  <available name="vts2109"/>
-  <available name="vts2110"/>
-  <available name="vts2111"/>
-  <available name="vts2112"/>
-  <available name="vts2113"/>
-  <available name="vts2114"/>
-  <available name="vts2115"/>
-  <available name="vts2116"/>
-  <available name="vts2117"/>
-  <available name="vts2118"/>
-  <available name="vts2119"/>
+  <available name="vts-2119"/>
+  <available name="vts-2118"/>
+  <available name="vts-2117"/>
+  <available name="vts-2116"/>
+  <available name="vts-2115"/>
+  <available name="vts-2114"/>
+  <available name="vts-2113"/>
+  <available name="vts-2112"/>
+  <available name="vts-2111"/>
+  <available name="vts-2110"/>
+  <available name="vts-2109"/>
+  <available name="vts-2108"/>
+  <available name="vts-2107"/>
+  <available name="vts-2106"/>
+  <available name="vts-2105"/>
+  <available name="vts-2104"/>
+  <available name="vts-2103"/>
+  <available name="vts-2102"/>
+  <available name="vts-2101"/>
+  <available name="vts-2100"/>
+  <available name="vts-2099"/>
+  <available name="vts-2098"/>
+  <available name="vts-2097"/>
+  <available name="vts-2096"/>
+  <available name="vts-2095"/>
+  <available name="vts-2094"/>
+  <available name="vts-2093"/>
+  <available name="vts-2092"/>
+  <available name="vts-2091"/>
+  <available name="vts-2090"/>
+  <available name="vts-2089"/>
+  <available name="vts-2088"/>
+  <available name="vts-2087"/>
+  <available name="vts-2086"/>
+  <available name="vts-2085"/>
+  <available name="vts-2084"/>
+  <available name="vts-2083"/>
+  <available name="vts-2082"/>
+  <available name="vts-2081"/>
+  <available name="vts-2080"/>
+  <available name="vts-2079"/>
+  <available name="vts-2078"/>
+  <available name="vts-2077"/>
+  <available name="vts-2076"/>
+  <available name="vts-2075"/>
+  <available name="vts-2074"/>
+  <available name="vts-2073"/>
+  <available name="vts-2072"/>
+  <available name="vts-2071"/>
+  <available name="vts-2070"/>
+  <available name="vts-2069"/>
+  <available name="vts-2068"/>
+  <available name="vts-2067"/>
+  <available name="vts-2066"/>
+  <available name="vts-2065"/>
+  <available name="vts-2064"/>
+  <available name="vts-2063"/>
+  <available name="vts-2062"/>
+  <available name="vts-2061"/>
+  <available name="vts-2060"/>
+  <available name="vts-2059"/>
+  <available name="vts-2058"/>
+  <available name="vts-2057"/>
+  <available name="vts-2056"/>
+  <available name="vts-2055"/>
+  <available name="vts-2054"/>
+  <available name="vts-2053"/>
+  <available name="vts-2052"/>
+  <available name="vts-2051"/>
+  <available name="vts-2050"/>
+  <available name="vts-2049"/>
+  <available name="vts-2048"/>
+  <available name="vts-2047"/>
+  <available name="vts-2046"/>
+  <available name="vts-2045"/>
+  <available name="vts-2044"/>
+  <available name="vts-2043"/>
+  <available name="vts-2042"/>
+  <available name="vts-2041"/>
+  <available name="vts-2040"/>
+  <available name="vts-2039"/>
+  <available name="vts-2038"/>
+  <available name="vts-2037"/>
+  <available name="vts-2036"/>
+  <available name="vts-2035"/>
+  <available name="vts-2034"/>
+  <available name="vts-2033"/>
+  <available name="vts-2032"/>
+  <available name="vts-2031"/>
+  <available name="vts-2030"/>
+  <available name="vts-2029"/>
+  <available name="vts-2028"/>
+  <available name="vts-2027"/>
+  <available name="vts-2026"/>
+  <available name="vts-2025"/>
+  <available name="vts-2024"/>
+  <available name="vts-2023"/>
+  <available name="vts-2022"/>
+  <available name="vts-2021"/>
+  <available name="vts-2020"/>
+  <available name="vts-2019"/>
+  <available name="vts-2018"/>
+  <available name="vts-2017"/>
+  <available name="vts-2016"/>
+  <available name="vts-2015"/>
+  <available name="vts-2014"/>
+  <available name="vts-2013"/>
+  <available name="vts-2012"/>
+  <available name="vts-2011"/>
+  <available name="vts-2010"/>
+  <available name="vts-2009"/>
+  <available name="vts-2008"/>
+  <available name="vts-2007"/>
+  <available name="vts-2006"/>
+  <available name="vts-2005"/>
+  <available name="vts-2004"/>
+  <available name="vts-2003"/>
+  <available name="vts-2002"/>
+  <available name="vts-2001"/>
+  <available name="vts-2000"/>
+  <available name="vts-2120"/>
+  <available name="vts-2121"/>
+  <available name="vts-2122"/>
+  <available name="vts-2123"/>
+  <available name="vts-2124"/>
+  <available name="vts-2125"/>
+  <available name="vts-2126"/>
+  <available name="vts-2127"/>
+  <available name="vts-2128"/>
+  <available name="vts-2129"/>
+  <available name="vts-2130"/>
+  <available name="vts-2131"/>
+  <available name="vts-2132"/>
+  <available name="vts-2133"/>
+  <available name="vts-2134"/>
+  <available name="vts-2135"/>
+  <available name="vts-2136"/>
+  <available name="vts-2137"/>
+  <available name="vts-2138"/>
+  <available name="vts-2139"/>
+  <available name="vts-2140"/>
+  <available name="vts-2141"/>
+  <available name="vts-2142"/>
+  <available name="vts-2143"/>
+  <available name="vts-2144"/>
+  <available name="vts-2145"/>
+  <available name="vts-2146"/>
+  <available name="vts-2147"/>
+  <available name="vts-2148"/>
+  <available name="vts-2149"/>
+  <available name="vts-2150"/>
+  <available name="vts-2151"/>
+  <available name="vts-2152"/>
+  <available name="vts-2153"/>
+  <available name="vts-2154"/>
+  <available name="vts-2155"/>
+  <available name="vts-2156"/>
+  <available name="vts-2157"/>
+  <available name="vts-2158"/>
+  <available name="vts-2159"/>
+  <available name="vts-2160"/>
+  <available name="vts-2161"/>
+  <available name="vts-2162"/>
+  <available name="vts-2163"/>
+  <available name="vts-2164"/>
+  <available name="vts-2165"/>
+  <available name="vts-2166"/>
+  <available name="vts-2167"/>
+  <available name="vts-2168"/>
+  <available name="vts-2169"/>
+  <available name="vts-2170"/>
+  <available name="vts-2171"/>
+  <available name="vts-2172"/>
+  <available name="vts-2173"/>
+  <available name="vts-2174"/>
+  <available name="vts-2175"/>
+  <available name="vts-2176"/>
+  <available name="vts-2177"/>
+  <available name="vts-2178"/>
+  <available name="vts-2179"/>
+  <available name="vts-2180"/>
+  <available name="vts-2181"/>
+  <available name="vts-2182"/>
+  <available name="vts-2183"/>
+  <available name="vts-2184"/>
+  <available name="vts-2185"/>
+  <available name="vts-2186"/>
+  <available name="vts-2187"/>
+  <available name="vts-2188"/>
+  <available name="vts-2189"/>
+  <available name="vts-2190"/>
+  <available name="vts-2191"/>
+  <available name="vts-2192"/>
+  <available name="vts-2193"/>
+  <available name="vts-2194"/>
+  <available name="vts-2195"/>
+  <available name="vts-2196"/>
+  <available name="vts-2197"/>
+  <available name="vts-2198"/>
+  <available name="vts-2199"/>
+  <available name="fia-mobilityfirst"/>
+  <available name="fia-ndn"/>
+  <available name="fia-xia"/>
+  <available name="reservedvlan1"/>
+  <available name="wimax-multipoint"/>
 </rspec_shared_vlan>
 <rspec_opstate xmlns="http://www.geni.net/resources/rspec/ext/opstate/1"
   aggregate_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm"
@@ -205,30 +290,6 @@
   </interface>
   <emulab:fd name="real-switch" weight="0" />
 </node>
-<node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="interconnect-geni-core"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+interconnect-geni-core"  exclusive="false" >
-  <hardware_type name="interconnect">
-    <emulab:node_type type_slots="1" />
-  </hardware_type>
-  <hardware_type name="interconnect-vm">
-    <emulab:node_type type_slots="100" />
-  </hardware_type>
-  <hardware_type name="interconnect-vm">
-    <emulab:node_type type_slots="100" />
-  </hardware_type>
-  <hardware_type name="lan">
-    <emulab:node_type type_slots="unlimited" static="true"/>
-  </hardware_type>
-  <available now="true" />
-  <location country="US" longitude="-76.152849" latitude="43.049957" />
-  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+interconnect-geni-core:eth0" role="experimental" >
-    <emulab:interface name="eth0"/>
-  </interface>
-  <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
-  <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
-  <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
-  <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
-  <emulab:fd name="OS-10011" weight="0.5" />
-</node>
 <node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="pc3"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+pc3"  exclusive="false" >
   <hardware_type name="dl360">
     <emulab:node_type type_slots="1" />
@@ -243,16 +304,15 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="74" />
+    <emulab:node_type type_slots="69" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="74" />
+    <emulab:node_type type_slots="69" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -279,11 +339,10 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="39461"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="37157"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10027" weight="0.5" />
-  <emulab:fd name="OS-10027-10008" weight="0" />
   <emulab:fd name="OS-10027-10009" weight="0" />
   <emulab:fd name="OS-10027-10013" weight="0" />
   <emulab:fd name="OS-10027-10014" weight="0" />
@@ -301,6 +360,9 @@
   <emulab:fd name="OS-10027-10036" weight="0" />
   <emulab:fd name="OS-10027-10037" weight="0" />
   <emulab:fd name="OS-10027-10038" weight="0" />
+  <emulab:fd name="OS-10027-10039" weight="0" />
+  <emulab:fd name="OS-10027-10040" weight="0" />
+  <emulab:fd name="OS-10027-10041" weight="0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="pc5"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+pc5"  exclusive="true" >
   <hardware_type name="dl360">
@@ -335,7 +397,6 @@
 <disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -378,7 +439,6 @@
   <emulab:fd name="OS-10018-10034" weight="0" />
   <emulab:fd name="OS-10018-10035" weight="0" />
   <emulab:fd name="OS-10020" weight="0" />
-  <emulab:fd name="OS-10020-10008" weight="0" />
   <emulab:fd name="OS-10020-10009" weight="0" />
   <emulab:fd name="OS-10020-10013" weight="0" />
   <emulab:fd name="OS-10020-10014" weight="0" />
@@ -392,9 +452,11 @@
   <emulab:fd name="OS-10020-10033" weight="0" />
   <emulab:fd name="OS-10020-10037" weight="0" />
   <emulab:fd name="OS-10020-10038" weight="0" />
+  <emulab:fd name="OS-10020-10039" weight="0" />
+  <emulab:fd name="OS-10020-10040" weight="0" />
+  <emulab:fd name="OS-10020-10041" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
   <emulab:fd name="OS-10027" weight="0" />
-  <emulab:fd name="OS-10027-10008" weight="0" />
   <emulab:fd name="OS-10027-10009" weight="0" />
   <emulab:fd name="OS-10027-10013" weight="0" />
   <emulab:fd name="OS-10027-10014" weight="0" />
@@ -412,8 +474,12 @@
   <emulab:fd name="OS-10027-10036" weight="0" />
   <emulab:fd name="OS-10027-10037" weight="0" />
   <emulab:fd name="OS-10027-10038" weight="0" />
+  <emulab:fd name="OS-10027-10039" weight="0" />
+  <emulab:fd name="OS-10027-10040" weight="0" />
+  <emulab:fd name="OS-10027-10041" weight="0" />
   <emulab:fd name="OS-10033" weight="0" />
   <emulab:fd name="OS-10038" weight="0" />
+  <emulab:fd name="OS-10041" weight="0" />
   <emulab:fd name="OS-10008" weight="0" />
   <emulab:fd name="OS-10005" weight="0" />
   <emulab:fd name="OS-10005" weight="0" />
@@ -429,10 +495,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="interconnect-vm">
-    <emulab:node_type type_slots="91" />
+    <emulab:node_type type_slots="96" />
   </hardware_type>
   <hardware_type name="interconnect-vm">
-    <emulab:node_type type_slots="91" />
+    <emulab:node_type type_slots="96" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -448,128 +514,6 @@
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10011" weight="0.5" />
-</node>
-<node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="pc4"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+pc4"  exclusive="true" >
-  <hardware_type name="dl360">
-    <emulab:node_type type_slots="1" />
-  </hardware_type>
-  <hardware_type name="pc">
-    <emulab:node_type type_slots="1" />
-  </hardware_type>
-  <hardware_type name="delay">
-    <emulab:node_type type_slots="1" />
-  </hardware_type>
-  <hardware_type name="delay-dl360">
-    <emulab:node_type type_slots="1" />
-  </hardware_type>
-  <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="100" />
-  </hardware_type>
-  <hardware_type name="pcvm">
-    <emulab:node_type type_slots="100" />
-  </hardware_type>
-  <hardware_type name="lan">
-    <emulab:node_type type_slots="unlimited" static="true"/>
-  </hardware_type>
-  <sliver_type name="raw-pc">
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" default="true" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" default="true" />
-  </sliver_type>
-  <sliver_type name="emulab-openvz">
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
-  </sliver_type>
-  <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
-<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
-  </sliver_type>
-  <available now="true" />
-  <location country="US" longitude="-76.152849" latitude="43.049957" />
-  <emulab:trivial_bandwidth value="1000000" />
-  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth99" >
-    <emulab:interface name="eth99"/>
-  </interface>
-  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth1" role="experimental" >
-    <emulab:interface name="eth1"/>
-  </interface>
-  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth3" role="experimental" >
-    <emulab:interface name="eth3"/>
-  </interface>
-  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth0" role="control" public_ipv4="199.109.64.23" >
-    <emulab:interface name="eth0"/>
-  </interface>
-  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth2" role="experimental" >
-    <emulab:interface name="eth2"/>
-  </interface>
-  <emulab:fd name="virtpercent" weight="100"  violatable="true"  local_operator="+" />
-  <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="46117"  violatable="true"  local_operator="+" />
-  <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
-  <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
-  <emulab:fd name="OS-10007" weight="0" />
-  <emulab:fd name="OS-10008" weight="0" />
-  <emulab:fd name="OS-10009" weight="0" />
-  <emulab:fd name="OS-10013" weight="0" />
-  <emulab:fd name="OS-10014" weight="0" />
-  <emulab:fd name="OS-10015" weight="0" />
-  <emulab:fd name="OS-10018" weight="0" />
-  <emulab:fd name="OS-10018-10016" weight="0" />
-  <emulab:fd name="OS-10018-10022" weight="0" />
-  <emulab:fd name="OS-10018-10023" weight="0" />
-  <emulab:fd name="OS-10018-10028" weight="0" />
-  <emulab:fd name="OS-10018-10034" weight="0" />
-  <emulab:fd name="OS-10018-10035" weight="0" />
-  <emulab:fd name="OS-10020" weight="0" />
-  <emulab:fd name="OS-10020-10008" weight="0" />
-  <emulab:fd name="OS-10020-10009" weight="0" />
-  <emulab:fd name="OS-10020-10013" weight="0" />
-  <emulab:fd name="OS-10020-10014" weight="0" />
-  <emulab:fd name="OS-10020-10019" weight="0" />
-  <emulab:fd name="OS-10020-10021" weight="0" />
-  <emulab:fd name="OS-10020-10024" weight="0" />
-  <emulab:fd name="OS-10020-10025" weight="0" />
-  <emulab:fd name="OS-10020-10026" weight="0" />
-  <emulab:fd name="OS-10020-10029" weight="0" />
-  <emulab:fd name="OS-10020-10030" weight="0" />
-  <emulab:fd name="OS-10020-10033" weight="0" />
-  <emulab:fd name="OS-10020-10037" weight="0" />
-  <emulab:fd name="OS-10020-10038" weight="0" />
-  <emulab:fd name="OS-10021" weight="0" />
-  <emulab:fd name="OS-10027" weight="0" />
-  <emulab:fd name="OS-10027-10008" weight="0" />
-  <emulab:fd name="OS-10027-10009" weight="0" />
-  <emulab:fd name="OS-10027-10013" weight="0" />
-  <emulab:fd name="OS-10027-10014" weight="0" />
-  <emulab:fd name="OS-10027-10015" weight="0" />
-  <emulab:fd name="OS-10027-10019" weight="0" />
-  <emulab:fd name="OS-10027-10021" weight="0" />
-  <emulab:fd name="OS-10027-10024" weight="0" />
-  <emulab:fd name="OS-10027-10025" weight="0" />
-  <emulab:fd name="OS-10027-10026" weight="0" />
-  <emulab:fd name="OS-10027-10029" weight="0" />
-  <emulab:fd name="OS-10027-10030" weight="0" />
-  <emulab:fd name="OS-10027-10031" weight="0" />
-  <emulab:fd name="OS-10027-10032" weight="0" />
-  <emulab:fd name="OS-10027-10033" weight="0" />
-  <emulab:fd name="OS-10027-10036" weight="0" />
-  <emulab:fd name="OS-10027-10037" weight="0" />
-  <emulab:fd name="OS-10027-10038" weight="0" />
-  <emulab:fd name="OS-10033" weight="0" />
-  <emulab:fd name="OS-10038" weight="0" />
-  <emulab:fd name="OS-10008" weight="0" />
-  <emulab:fd name="OS-10005" weight="0" />
-  <emulab:fd name="OS-10005" weight="0" />
-  <emulab:fd name="OS-10006" weight="0" />
-  <emulab:fd name="OS-10010" weight="0" />
-  <emulab:fd name="OS-10016" weight="0" />
-  <emulab:fd name="OS-10019" weight="0" />
-  <emulab:fd name="connected-to-procurve1" weight="0.0" />
-  <emulab:fd name="connected-to-procurve2" weight="0.0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="pc1"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+pc1"  exclusive="false" >
   <hardware_type name="dl360">
@@ -625,6 +569,42 @@
   <emulab:fd name="OS-10018-10034" weight="0" />
   <emulab:fd name="OS-10018-10035" weight="0" />
 </node>
+<node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="vtsbox"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+vtsbox"  exclusive="false" >
+  <hardware_type name="interconnect">
+    <emulab:node_type type_slots="1" />
+  </hardware_type>
+  <hardware_type name="interconnect-vm">
+    <emulab:node_type type_slots="100" />
+  </hardware_type>
+  <hardware_type name="interconnect-vm">
+    <emulab:node_type type_slots="100" />
+  </hardware_type>
+  <hardware_type name="lan">
+    <emulab:node_type type_slots="unlimited" static="true"/>
+  </hardware_type>
+  <available now="true" />
+  <location country="US" longitude="-76.152849" latitude="43.049957" />
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth4" role="experimental" >
+    <emulab:interface name="eth4"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth2" role="experimental" >
+    <emulab:interface name="eth2"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth3" role="experimental" >
+    <emulab:interface name="eth3"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth5" role="experimental" >
+    <emulab:interface name="eth5"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth6" role="experimental" >
+    <emulab:interface name="eth6"/>
+  </interface>
+  <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
+  <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
+  <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
+  <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
+  <emulab:fd name="OS-10011" weight="0.5" />
+</node>
 <node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="pc2"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+pc2"  exclusive="false" >
   <hardware_type name="dl360">
     <emulab:node_type type_slots="1" />
@@ -639,10 +619,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="98" />
+    <emulab:node_type type_slots="99" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="98" />
+    <emulab:node_type type_slots="99" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -668,7 +648,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="45861"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45989"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
@@ -678,6 +658,156 @@
   <emulab:fd name="OS-10018-10028" weight="0" />
   <emulab:fd name="OS-10018-10034" weight="0" />
   <emulab:fd name="OS-10018-10035" weight="0" />
+</node>
+<node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="interconnect-geni-core"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+interconnect-geni-core"  exclusive="false" >
+  <hardware_type name="interconnect">
+    <emulab:node_type type_slots="1" />
+  </hardware_type>
+  <hardware_type name="interconnect-vm">
+    <emulab:node_type type_slots="100" />
+  </hardware_type>
+  <hardware_type name="interconnect-vm">
+    <emulab:node_type type_slots="100" />
+  </hardware_type>
+  <hardware_type name="lan">
+    <emulab:node_type type_slots="unlimited" static="true"/>
+  </hardware_type>
+  <available now="true" />
+  <location country="US" longitude="-76.152849" latitude="43.049957" />
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+interconnect-geni-core:eth0" role="experimental" >
+    <emulab:interface name="eth0"/>
+  </interface>
+  <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
+  <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
+  <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
+  <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
+  <emulab:fd name="OS-10011" weight="0.5" />
+</node>
+<node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="pc4"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+pc4"  exclusive="true" >
+  <hardware_type name="dl360">
+    <emulab:node_type type_slots="1" />
+  </hardware_type>
+  <hardware_type name="pc">
+    <emulab:node_type type_slots="1" />
+  </hardware_type>
+  <hardware_type name="delay">
+    <emulab:node_type type_slots="1" />
+  </hardware_type>
+  <hardware_type name="delay-dl360">
+    <emulab:node_type type_slots="1" />
+  </hardware_type>
+  <hardware_type name="dl360-vm">
+    <emulab:node_type type_slots="100" />
+  </hardware_type>
+  <hardware_type name="pcvm">
+    <emulab:node_type type_slots="100" />
+  </hardware_type>
+  <hardware_type name="lan">
+    <emulab:node_type type_slots="unlimited" static="true"/>
+  </hardware_type>
+  <sliver_type name="raw-pc">
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" default="true" />
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" default="true" />
+  </sliver_type>
+  <sliver_type name="emulab-openvz">
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
+  </sliver_type>
+  <sliver_type name="emulab-xen">
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
+<disk_image name="urn:publicid:IDN+instageni.nysernet.org+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." default="true" />
+  </sliver_type>
+  <available now="true" />
+  <location country="US" longitude="-76.152849" latitude="43.049957" />
+  <emulab:trivial_bandwidth value="1000000" />
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth99" >
+    <emulab:interface name="eth99"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth1" role="experimental" >
+    <emulab:interface name="eth1"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth3" role="experimental" >
+    <emulab:interface name="eth3"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth0" role="control" public_ipv4="199.109.64.23" >
+    <emulab:interface name="eth0"/>
+  </interface>
+  <interface component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc4:eth2" role="experimental" >
+    <emulab:interface name="eth2"/>
+  </interface>
+  <emulab:fd name="virtpercent" weight="100"  violatable="true"  local_operator="+" />
+  <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="46117"  violatable="true"  local_operator="+" />
+  <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
+  <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
+  <emulab:fd name="OS-10007" weight="0" />
+  <emulab:fd name="OS-10008" weight="0" />
+  <emulab:fd name="OS-10009" weight="0" />
+  <emulab:fd name="OS-10013" weight="0" />
+  <emulab:fd name="OS-10014" weight="0" />
+  <emulab:fd name="OS-10015" weight="0" />
+  <emulab:fd name="OS-10018" weight="0" />
+  <emulab:fd name="OS-10018-10016" weight="0" />
+  <emulab:fd name="OS-10018-10022" weight="0" />
+  <emulab:fd name="OS-10018-10023" weight="0" />
+  <emulab:fd name="OS-10018-10028" weight="0" />
+  <emulab:fd name="OS-10018-10034" weight="0" />
+  <emulab:fd name="OS-10018-10035" weight="0" />
+  <emulab:fd name="OS-10020" weight="0" />
+  <emulab:fd name="OS-10020-10009" weight="0" />
+  <emulab:fd name="OS-10020-10013" weight="0" />
+  <emulab:fd name="OS-10020-10014" weight="0" />
+  <emulab:fd name="OS-10020-10019" weight="0" />
+  <emulab:fd name="OS-10020-10021" weight="0" />
+  <emulab:fd name="OS-10020-10024" weight="0" />
+  <emulab:fd name="OS-10020-10025" weight="0" />
+  <emulab:fd name="OS-10020-10026" weight="0" />
+  <emulab:fd name="OS-10020-10029" weight="0" />
+  <emulab:fd name="OS-10020-10030" weight="0" />
+  <emulab:fd name="OS-10020-10033" weight="0" />
+  <emulab:fd name="OS-10020-10037" weight="0" />
+  <emulab:fd name="OS-10020-10038" weight="0" />
+  <emulab:fd name="OS-10020-10039" weight="0" />
+  <emulab:fd name="OS-10020-10040" weight="0" />
+  <emulab:fd name="OS-10020-10041" weight="0" />
+  <emulab:fd name="OS-10021" weight="0" />
+  <emulab:fd name="OS-10027" weight="0" />
+  <emulab:fd name="OS-10027-10009" weight="0" />
+  <emulab:fd name="OS-10027-10013" weight="0" />
+  <emulab:fd name="OS-10027-10014" weight="0" />
+  <emulab:fd name="OS-10027-10015" weight="0" />
+  <emulab:fd name="OS-10027-10019" weight="0" />
+  <emulab:fd name="OS-10027-10021" weight="0" />
+  <emulab:fd name="OS-10027-10024" weight="0" />
+  <emulab:fd name="OS-10027-10025" weight="0" />
+  <emulab:fd name="OS-10027-10026" weight="0" />
+  <emulab:fd name="OS-10027-10029" weight="0" />
+  <emulab:fd name="OS-10027-10030" weight="0" />
+  <emulab:fd name="OS-10027-10031" weight="0" />
+  <emulab:fd name="OS-10027-10032" weight="0" />
+  <emulab:fd name="OS-10027-10033" weight="0" />
+  <emulab:fd name="OS-10027-10036" weight="0" />
+  <emulab:fd name="OS-10027-10037" weight="0" />
+  <emulab:fd name="OS-10027-10038" weight="0" />
+  <emulab:fd name="OS-10027-10039" weight="0" />
+  <emulab:fd name="OS-10027-10040" weight="0" />
+  <emulab:fd name="OS-10027-10041" weight="0" />
+  <emulab:fd name="OS-10033" weight="0" />
+  <emulab:fd name="OS-10038" weight="0" />
+  <emulab:fd name="OS-10041" weight="0" />
+  <emulab:fd name="OS-10008" weight="0" />
+  <emulab:fd name="OS-10005" weight="0" />
+  <emulab:fd name="OS-10005" weight="0" />
+  <emulab:fd name="OS-10006" weight="0" />
+  <emulab:fd name="OS-10010" weight="0" />
+  <emulab:fd name="OS-10016" weight="0" />
+  <emulab:fd name="OS-10019" weight="0" />
+  <emulab:fd name="connected-to-procurve1" weight="0.0" />
+  <emulab:fd name="connected-to-procurve2" weight="0.0" />
 </node>
 <node component_manager_id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" component_name="internet"  component_id="urn:publicid:IDN+instageni.nysernet.org+node+internet"  exclusive="true" >
   <hardware_type name="ipv4">
@@ -699,15 +829,6 @@
   <link_type name="ipv4" />
 </link>
 
-<link component_name="link-pc2//eth0-internet//border" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc2:eth0-internet:border" >
-<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
-  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth0"/>
-  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"/>
-<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth0" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"  capacity="100000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth0"  capacity="100000" latency="0" packet_loss="0" />
-  <link_type name="ipv4" />
-</link>
-
 <link component_name="link-pc3//eth0-internet//border" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc3:eth0-internet:border" >
 <component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth0"/>
@@ -717,21 +838,30 @@
   <link_type name="ipv4" />
 </link>
 
-<link component_name="link-pc5//eth0-internet//border" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc5:eth0-internet:border" >
-<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
-  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth0"/>
-  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"/>
-<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth0" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"  capacity="100000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth0"  capacity="100000" latency="0" packet_loss="0" />
-  <link_type name="ipv4" />
-</link>
-
 <link component_name="link-pc1//eth0-internet//border" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc1:eth0-internet:border" >
 <component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth0"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"/>
 <property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth0" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"  capacity="100000" latency="0" packet_loss="0" />
 <property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc1:eth0"  capacity="100000" latency="0" packet_loss="0" />
+  <link_type name="ipv4" />
+</link>
+
+<link component_name="link-pc2//eth0-internet//border" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc2:eth0-internet:border" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth0"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth0" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"  capacity="100000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc2:eth0"  capacity="100000" latency="0" packet_loss="0" />
+  <link_type name="ipv4" />
+</link>
+
+<link component_name="link-pc5//eth0-internet//border" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc5:eth0-internet:border" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth0"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth0" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border"  capacity="100000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+internet:border" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc5:eth0"  capacity="100000" latency="0" packet_loss="0" />
   <link_type name="ipv4" />
 </link>
 
@@ -807,12 +937,24 @@
   <link_type name="ethernet-1000000" />
 </link>
 
+<link component_name="link-pc3//eth1-procurve2//(null)" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc3:eth1-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth1"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth1" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="500000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth1"  capacity="500000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-bce" />
+  <link_type name="ethernet-1000000" />
+</link>
+
 <link component_name="link-pc3//eth2-procurve2//(null)" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-pc3:eth2-procurve2:(null)" >
 <component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
   <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth2"/>
   <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>
-<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth2" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="900000" latency="0" packet_loss="0" />
-<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth2"  capacity="900000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth2" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+pc3:eth2"  capacity="1000000" latency="0" packet_loss="0" />
   <link_type name="ethernet" />
   <link_type name="ethernet-procurve2" />
   <link_type name="ethernet-bce" />
@@ -915,15 +1057,88 @@
   <link_type name="ethernet-1000000" />
 </link>
 
-<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-02-24T15:44:48Z" >
+<link component_name="link-nysernet//procurve2//1.19-ion//rtr.newy//xe-0/2/0//nysernet-ig" component_id="urn:publicid:IDN+ion.internet2.edu+interface+link-nysernet:procurve2:1.19-ion:rtr.newy:xe-0/2/0:nysernet-ig" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+<component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am" />
+  <interface_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:xe-0/2/0:nysernet-ig"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:1.19:ion.newy.xe-0_2_0"/>
+<property source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:xe-0/2/0:nysernet-ig" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:1.19:ion.newy.xe-0_2_0"  capacity="600000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:1.19:ion.newy.xe-0_2_0" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:xe-0/2/0:nysernet-ig"  capacity="600000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-generic_1G" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<link component_name="link-vtsbox//eth2-procurve2//(null)" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-vtsbox:eth2-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth2"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth2" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth2"  capacity="1000000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-generic_1G" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<link component_name="link-vtsbox//eth3-procurve2//(null)" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-vtsbox:eth3-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth3"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth3" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth3"  capacity="1000000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-generic_1G" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<link component_name="link-vtsbox//eth4-procurve2//(null)" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-vtsbox:eth4-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth4"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth4" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth4"  capacity="1000000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-generic_1G" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<link component_name="link-vtsbox//eth5-procurve2//(null)" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-vtsbox:eth5-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth5"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth5" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth5"  capacity="1000000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-generic_1G" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<link component_name="link-vtsbox//eth6-procurve2//(null)" component_id="urn:publicid:IDN+instageni.nysernet.org+link+link-vtsbox:eth6-procurve2:(null)" >
+<component_manager name="urn:publicid:IDN+instageni.nysernet.org+authority+cm" />
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth6"/>
+  <interface_ref component_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"/>
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth6" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)"  capacity="1000000" latency="0" packet_loss="0" />
+<property source_id="urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:(null)" dest_id="urn:publicid:IDN+instageni.nysernet.org+interface+vtsbox:eth6"  capacity="1000000" latency="0" packet_loss="0" />
+  <link_type name="ethernet" />
+  <link_type name="ethernet-procurve2" />
+  <link_type name="ethernet-generic_1G" />
+  <link_type name="ethernet-1000000" />
+</link>
+
+<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-10T14:12:21Z" >
 <aggregate id="urn:publicid:IDN+instageni.nysernet.org+authority+cm" url="https://www.instageni.nysernet.org:12369/protogeni/xmlrpc/am">
 <aggregatetype>protogeni</aggregatetype>
 <stitchingmode>chainANDTree</stitchingmode>
 <scheduledservices>false</scheduledservices>
 <negotiatedservices>false</negotiatedservices>
 <lifetime id="life">
-    <start type="time">2014-02-24T15:44:48Z</start>
-    <end type="time">2014-02-24T15:44:48Z</end>
+    <start type="time">2014-03-10T14:12:21Z</start>
+    <end type="time">2014-03-10T14:12:21Z</end>
 </lifetime>
 <node id="urn:publicid:IDN+instageni.nysernet.org+node+procurve2">
   <port id="urn:publicid:IDN+instageni.nysernet.org+stitchport+procurve2:1.19:ion.newy.xe-0_2_0">
@@ -943,7 +1158,7 @@
         <encodingType>ethernet</encodingType>
         <switchingCapabilitySpecificInfo>
          <switchingCapabilitySpecificInfo_L2sc>
-          <interfaceMTU>9000</interfaceMTU>
+          <interfaceMTU>1500</interfaceMTU>
           <vlanRangeAvailability>1700-1719</vlanRangeAvailability>
           <vlanTranslation>false</vlanTranslation>
          </switchingCapabilitySpecificInfo_L2sc>

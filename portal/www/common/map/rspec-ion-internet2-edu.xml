@@ -1,0 +1,1023 @@
+<rspec type="advertisement" expires="1970-01-01T00:00:00.000Z" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:stitch="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd"><stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="20130112:09:30:21">
+	<aggregate id="urn:publicid:IDN+ion.internet2.edu+authority+am" url="http://geni-am.net.internet2.edu:12346">
+		<aggregatetype>sfa</aggregatetype>
+		<stitchingmode>chainANDTree</stitchingmode>
+		<scheduledservices>false</scheduledservices>
+		<negotiatedservices>true</negotiatedservices>
+		<lifetime id="ion.internet2.edu-ad-20130112:09:30:21">
+			<start type="rfc3339">2013-01-12T20:57:53Z</start>
+			<end type="rfc3339">2013-12-30T20:57:53Z</end>
+		</lifetime>
+		<node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.kans">
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.kans:ge-10/2/9">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.kans:ge-10/2/9:protogeni">
+					<remoteLinkId>urn:publicid:IDN+emulab.net+node+procurve-pgeni-kans:3.12</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.kans:xe-0/0/3">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.kans:xe-0/0/3:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>3900-4000</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+	                        <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.kans:xe-0/0/3:missouri-ig">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>1150-1160</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.kans:*">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.kans:*:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+		</node>
+		<node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.wash">
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.wash:ge-10/3/1">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.wash:ge-10/3/1:protogeni">
+					<remoteLinkId>urn:publicid:IDN+emulab.net+interface+procurve-pgeni-wash:1.24</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.wash:et-9/0/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.wash:et-9/0/0:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>3900-4000</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.wash:xe-0/1/0">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.wash:xe-0/1/0:*">
+					<remoteLinkId>urn:publicid:IDN+dragon.maxgigapop.net+interface+mcln:1-3-1:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>3020-3030,3100-3109,3200-3219</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.wash:*">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.wash:*:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+		</node>
+		<node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.losa">
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.losa:ge-10/3/0">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.losa:ge-10/3/0:protogeni">
+					<remoteLinkId>urn:publicid:IDN+emulab.net+interface+procurve-pgeni-losa:3.31</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.losa:xe-0/1/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.losa:xe-0/1/0:*">
+                                        <remoteLinkId>urn:publicid:IDN+stanford.edu+interface+dummyswitch:dummyport:gec17</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.losa:et-10/0/0">
+<!-- Can probably be bumped to 100G capacity -->
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.losa:et-10/0/0:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>3900-4000</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.losa:*">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.losa:*:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+		</node>
+		<node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.hous">
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.hous:ge-10/1/2">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.hous:ge-10/1/2:protogeni">
+					<remoteLinkId>urn:publicid:IDN+emulab.net+interface+procurve-pgeni-hous:3.24</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.hous:xe-0/1/3">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.hous:xe-0/1/3:al2s">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.hous:xe-7/1/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.hous:xe-7/1/0:*">
+                                        <remoteLinkId>urn:publicid:IDN+loni.org+interface+loni-dcn-e1:0-1-4:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.hous:*">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.hous:*:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+		</node>
+		<node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.atla">
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.atla:ge-10/3/2">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:ge-10/3/2:protogeni">
+					<remoteLinkId>urn:publicid:IDN+emulab.net+interface+procurve-pgeni-atla:3.21</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.atla:xe-0/1/3">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/1/3:*">
+                                        <remoteLinkId>urn:publicid:IDN+*+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.atla:xe-0/3/0">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/3/0:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+*+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/3/0:clemson-gr">
+                                        <remoteLinkId>urn:publicid:IDN+clemson-clemson-control-1.clemson.edu+interface+procurve2:16</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>3000-3009</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:xe-0/3/0:*">
+					<remoteLinkId>urn:publicid:IDN+*+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.atla:*">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.atla:*:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+		</node>
+                <node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.chic">
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.chic:*">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.chic:*:*">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+<!-- can probably be raised to 100G capacity -->
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.chic:et-10/0/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.chic:et-10/0/0:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+*+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.chic:et-10/0/0:illinois-ig">
+                                        <remoteLinkId>urn:publicid:IDN+instageni.illinois.edu+interface+procurve2:2.4:ion.chic.et-10_0_0</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>1760-1769</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.chic:et-8/0/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.chic:et-8/0/0:wisconsin-ig">
+                                        <remoteLinkId>urn:publicid:IDN+*+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>930-939</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+		</node>
+                <node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.clev">
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.clev:*">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.clev:*:*">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+<!-- can probably be raised to 100G capacity -->
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.clev:et-5/0/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.clev:et-5/0/0:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+*+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+                </node>
+		<node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.salt">
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.salt:ge-10/2/7">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.salt:ge-10/2/7:protogeni">
+					<remoteLinkId>urn:publicid:IDN+emulab.net+interface+procurve-pgeni-salt:3.21</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.salt:xe-0/1/1">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.salt:xe-0/1/1:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.salt:xe-0/1/1:stanford-ig">
+                                        <remoteLinkId>urn:publicid:IDN+instageni.stanford.edu+interface+procurve2:1.24.ion.salt.xe-0_1_1</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>1630-1639</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.salt:*">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.salt:*:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+		</node>
+                <node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.seat">
+<!-- Can probably bump to 100G capacity -->
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.seat:et-5/0/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.seat:et-5/0/0:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+		</node>
+		<node id="urn:publicid:IDN+ion.internet2.edu+node+rtr.newy">
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.newy:xe-0/1/1">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:xe-0/1/1:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>3020-3030,3100-3109,3200-3219</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.newy:xe-0/2/0">
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:xe-0/2/0:nysernet-ig">
+                                        <remoteLinkId>urn:publicid:IDN+instageni.nysernet.org+interface+procurve2:1.19:ion.newy.xe-0_2_0</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>1700-1719</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+                        <port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.newy:et-5/0/0">
+<!-- Can probably bump to 100G capacity -->
+                                <capacity>1000000</capacity>
+                                <maximumReservableCapacity>1000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:et-5/0/0:al2s">
+                                        <remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>10000000</capacity>
+                                        <maximumReservableCapacity>10000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>3900-4000</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.newy:xe-0/2/2">
+                                <capacity>2000000</capacity>
+                                <maximumReservableCapacity>2000000</maximumReservableCapacity>
+                                <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                <granularity>1000</granularity>
+                                <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:xe-0/2/2:*">
+                                        <remoteLinkId>urn:publicid:IDN+wall2.ilabt.iminds.be+interface+c300b:0.12</remoteLinkId>
+                                        <trafficEngineeringMetric>10</trafficEngineeringMetric>
+                                        <capacity>20000000</capacity>
+                                        <maximumReservableCapacity>2000000</maximumReservableCapacity>
+                                        <minimumReservableCapacity>1000</minimumReservableCapacity>
+                                        <granularity>1000</granularity>
+                                        <switchingCapabilityDescriptor>
+                                                <switchingcapType>l2sc</switchingcapType>
+                                                <encodingType>ethernet</encodingType>
+                                                <switchingCapabilitySpecificInfo>
+                                                        <switchingCapabilitySpecificInfo_L2sc>
+                                                                <interfaceMTU>9000</interfaceMTU>
+                                                                <vlanRangeAvailability>2-15,17-101,103,105-106,121-155,157-455,457-2129,2131-3902,3904-4094</vlanRangeAvailability>
+                                                                <vlanTranslation>true</vlanTranslation>
+                                                        </switchingCapabilitySpecificInfo_L2sc>
+                                                </switchingCapabilitySpecificInfo>
+                                        </switchingCapabilityDescriptor>
+                                </link>
+                        </port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.newy:ae0">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:bbn">
+					<remoteLinkId>urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.ion.newy.ae0</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>670,3706-3750</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+				<!-- <link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg">
+					<remoteLinkId>urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>670,3726-3750</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+				-->
+<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg">
+<remoteLinkId>urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet</remoteLinkId>
+<trafficEngineeringMetric>10</trafficEngineeringMetric>
+<capacity>10000000</capacity>
+<maximumReservableCapacity>10000000</maximumReservableCapacity>
+<minimumReservableCapacity>1000</minimumReservableCapacity>
+<granularity>1000</granularity>
+<switchingCapabilityDescriptor>
+<switchingcapType>l2sc</switchingcapType>
+<encodingType>ethernet</encodingType>
+<switchingCapabilitySpecificInfo>
+<switchingCapabilitySpecificInfo_L2sc>
+<interfaceMTU>9000</interfaceMTU>
+<vlanRangeAvailability>3736-3739,3741</vlanRangeAvailability>
+<vlanTranslation>true</vlanTranslation>
+</switchingCapabilitySpecificInfo_L2sc>
+</switchingCapabilitySpecificInfo>
+</switchingCapabilityDescriptor>
+</link>
+			</port>
+			<port id="urn:publicid:IDN+ion.internet2.edu+stitchport+rtr.newy:*">
+				<capacity>1000000</capacity>
+				<maximumReservableCapacity>1000000</maximumReservableCapacity>
+				<minimumReservableCapacity>1000</minimumReservableCapacity>
+				<granularity>1000</granularity>
+				<link id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:*:*">
+					<remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+*:*:*</remoteLinkId>
+					<trafficEngineeringMetric>10</trafficEngineeringMetric>
+					<capacity>10000000</capacity>
+					<maximumReservableCapacity>10000000</maximumReservableCapacity>
+					<minimumReservableCapacity>1000</minimumReservableCapacity>
+					<granularity>1000</granularity>
+					<switchingCapabilityDescriptor>
+						<switchingcapType>l2sc</switchingcapType>
+						<encodingType>ethernet</encodingType>
+						<switchingCapabilitySpecificInfo>
+							<switchingCapabilitySpecificInfo_L2sc>
+								<interfaceMTU>9000</interfaceMTU>
+								<vlanRangeAvailability>2-4094</vlanRangeAvailability>
+								<vlanTranslation>true</vlanTranslation>
+							</switchingCapabilitySpecificInfo_L2sc>
+						</switchingCapabilitySpecificInfo>
+					</switchingCapabilityDescriptor>
+				</link>
+			</port>
+		</node>
+	</aggregate>
+</stitching>
+
+</rspec>

@@ -88,6 +88,14 @@ if(array_key_exists('rspec_selection', $_FILES)) {
     $temp_rspec_file = writeDataToTempFile($rspec, 'rspec-');
   }
 }
+else if(array_key_exists('rspec_jacks', $_REQUEST)) {
+	$temp_rspec_file = null;
+  $local_rspec_file = $_REQUEST['rspec_jacks'];
+  if(strlen($local_rspec_file) > 0) {
+    $rspec = $local_rspec_file;
+    $temp_rspec_file = writeDataToTempFile($rspec, 'rspec-');
+  }
+}
 
 if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {

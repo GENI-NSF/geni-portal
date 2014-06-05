@@ -94,8 +94,9 @@ print "<b>LabWiki</b></button> ";
 /*   print "<button onClick=\"window.location='irods.php'\"><b>Create iRODS Account</b></button> "; */
 /* } */
 
+// 6/2014: Open up WiMAX to all
 // WiMAX
-  if ($user->hasAttribute('enable_wimax_button')) {
+  if (True || $user->hasAttribute('enable_wimax_button')) {
     $wimax_url = relative_url("wimax-enable.php");
     print "<button onClick=\"window.open('$wimax_url')\">";
     print "<b>WiMAX</b></button>";

@@ -70,83 +70,37 @@ if (array_key_exists("pretty", $_REQUEST)){
   $pretty=True;
 }
 
-$text = "";
-// Takes an arg am_id which may have multiple values. Each is treated
-// as the ID from the DB of an AM which should be queried
-// If no such arg is given, then query the DB and query all registered AMs
-
-if (! isset($ams) || is_null($ams)) {
-  // Didnt get an array of AMs
-  if (! isset($am) || is_null($am)) {
-    // Nor a single am
-    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  } else {
-    $ams = array();
-    $ams[] = $am;
-  }
-}
-
-
-
-
-
-$slivers_output = '';
-if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
-  error_log("Found no AMs!");
-  $slivers_output = "No AMs registered.";
-} else {
-  $slivers_output = "";
-
-  // Get the slice credential from the SA
-  $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
-  
-  // Get the slice URN via the SA
-  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-
-  $am_urls = array();
-  foreach ($ams as $am) {
-    if (is_array($am)) {
-      if (array_key_exists(SR_TABLE_FIELDNAME::SERVICE_URL, $am)) {
-	$am_url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-	//	error_log("Got am_url $am_url");
-      } else {
-	error_log("Malformed array of AM URLs?");
-	continue;
-      }
-    } else {
-      $am_url = $am;
-    }
-    $am_urls[] = $am_url; 
-  }
-  // Call list resources at the AM
-  $retVal = list_resources_on_slice($am_urls, $user, $slice_credential,
-				    $slice_urn, $slice_id);
-  
-  //  error_log("ListResources output = " . $retVal);
-
-}
-
-
-
 $header = "Resources on slice: $slice_name";
-if (! is_array($retVal) or count($retVal) == 1) {
-  $msg = $retVal;
-  $obj = null;
-} else {
-  $msg = $retVal[0];
-  $obj = $retVal[1];
-}
 
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 ?>
 
+<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
 <script src="amstatus.js"></script>
 <script>
-var slice= "<?php echo $slice_id ?>";
-var am_id= "<?php echo $am_id ?>";
-var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
-$(document).ready(build_details_table);
-//$(document).ready(add_all_logins_to_manifest_table);
+  var thisInstance;
+  var slice= "<?php echo $slice_id ?>";
+  var am_id= <?php echo json_encode($am_ids) ?>;
+  var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
+  $(document).ready(build_details_table);
+  //$(document).ready(add_all_logins_to_manifest_table);
+  $(document).ready(function() {
+  	$('#rawResource').click(function() {
+      $('.rawRSpec').each(function() {
+        $(this).attr('style', '');
+      });
+      $(this).parent().attr('style', 'display: none;');
+      $('#hideRawResource').parent().attr('style', '');
+    });
+
+    $('#hideRawResource').click(function() {
+      $('.rawRSpec').each(function() {
+        $(this).attr('style', 'display: none;');
+      });
+      $(this).parent().attr('style', 'display: none;');
+      $('#rawResource').parent().attr('style', '');
+    });
+  });
 </script>
 
 <?php
@@ -179,9 +133,10 @@ if ($pretty) {
     $am_id_str = "";
   }
 
-  print "<p><a href='listresources.php?pretty=False&slice_id=" . $slice_id . $am_id_str . "' target='_blank'>Raw Resource Specification</a></p>";
 }
 
+print "<p><a id='rawResource' style='cursor: pointer;'>Show Raw Resource Specification</a></p>";
+print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'>Hide Raw Resource Specification</a></p>";
 print "<hr/><p>";
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";

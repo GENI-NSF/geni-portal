@@ -5,101 +5,6 @@
  -->
   
 <rspec type="advertisement" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd" xmlns:ns2="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" xmlns="http://www.geni.net/resources/rspec/3" xmlns:ns3="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:bbnNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnNet+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="10"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet"/>
-    </node>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:bbnNet+link+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:bbnNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:bbnNet+link+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:bbnNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:bbnNet+link+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet" source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:bbnNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:bbnNet+link+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:bbnNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:bbnNet+link+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:bbnNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <link component_id="urn:publicid:IDN+exogeni.net:nictavmsite+link+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet_NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:nictavmsite+authority+am"/>
-        <link_type name="ethernet"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet"/>
-        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-    </link>
-    <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:slvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+node+orca-xcat-cloud">
-        <location latitude="42.05286" longitude="-87.681564" country="Unspecified"/>
-        <sliver_type name="ExoGENI-M4"/>
-        <hardware_type name="orca-xcat-cloud">
-            <ns3:node_type type_slots="2"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet"/>
-    </node>
-    <link component_id="urn:publicid:IDN+exogeni.net:slvmsite+link+SL:BareMetal:TenGigabitEthernet:2:ethernet_slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:slvmsite+authority+am"/>
-        <link_type name="ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet"/>
-    </link>
-    <link component_id="urn:publicid:IDN+exogeni.net:slvmsite+link+SL:BareMetal:TenGigabitEthernet:1:ethernet_slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:slvmsite+authority+am"/>
-        <link_type name="ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet"/>
-    </link>
     <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+node+orca-xcat-cloud">
         <location latitude="25.757292" longitude="-80.37404" country="Unspecified"/>
         <sliver_type name="ExoGENI-M4"/>
@@ -119,18 +24,18 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uflvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflvmsite+node+orca-vm-cloud">
         <location latitude="29.64171" longitude="-82.346214" country="Unspecified"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="XOSmall"/>
         <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EucaC1Medium"/>
         <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOSmall"/>
         <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1XLarge"/>
         <sliver_type name="EC2C1Medium"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
@@ -155,39 +60,6 @@
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:ExoGeni:TengigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:ExoGeni:TengigabitEthernet:2:ethernet"/>
     </link>
-    <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+node+unknown">
-        <location latitude="52.354843" longitude="4.955346" country="Unspecified"/>
-        <hardware_type/>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
-    </node>
-    <link component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+link+Uva-nl:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009_Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:3:ethernet:VLAN:1009">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:3:ethernet:VLAN:1009"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:nictavmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:nictavmsite+node+orca-vm-cloud">
-        <location latitude="-33.89533" longitude="151.19708" country="Unspecified"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="EucaM1Large"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <hardware_type name="orca-vm-cloud">
-            <ns3:node_type type_slots="36"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-    </node>
     <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:osfNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:osfNet+node+orca-transit-net-vlan">
         <hardware_type name="orca-transit-net-vlan">
             <ns3:node_type type_slots="10"/>
@@ -269,52 +141,90 @@
         <available now="true"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet"/>
     </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+link+Bbn:ExoGeni:TengigabitEthernet:2:ethernet_BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet"/>
+    </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+node+orca-vm-cloud">
         <location latitude="42.38974" longitude="-71.14751" country="Unspecified"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="XOXlarge"/>
         <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOXlarge"/>
         <sliver_type name="EucaM1Large"/>
-        <sliver_type name="XOSmall"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EucaM1Small"/>
         <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EucaC1Medium"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
         <available now="true"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet"/>
     </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+link+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet_BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </link>
     <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:ion+authority+am" component_id="urn:publicid:IDN+exogeni.net:ion+node+orca-transit-net-vlan">
         <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="10"/>
+            <ns3:node_type type_slots="100"/>
         </hardware_type>
         <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:UH:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:UFLNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:Uva-nlNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:Cenic:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:FIU:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:StarLight:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:DD:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:BBN:Juniper:MX:TenGigabitEthernet:1:2:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:NictaNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:3:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:UCDNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:UFLNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:DD:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:BBN:Juniper:MX:TenGigabitEthernet:1:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:Uva-nlNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:WVNNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:UH:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:FIU:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:Cenic:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:StarLight:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
     </node>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:ion+link+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
     <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:1:fiber"/>
     <link component_id="urn:publicid:IDN+exogeni.net:ion+link+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber_internet2-ion">
         <interface_ref component_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
         <interface_ref component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:1:fiber"/>
         <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber" source_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:1:fiber"/>
         <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:1:fiber" source_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:ion+link+ION:UCDNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.sunn.net.internet2.edu:port=e5/1:link=*"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.sunn.net.internet2.edu:port=e5/1:link=*" source_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" source_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.sunn.net.internet2.edu:port=e5/1:link=*"/>
         <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
@@ -329,16 +239,6 @@
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
     </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:ion+link+AL2S:UH:Cisco:6509:TenGigabitEthernet:1:1:ethernet_internet2-ion">
-        <interface_ref component_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*" source_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" source_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
     <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:mass+interface+UMass:Cisco:6509:TenGigabitEthernet:1:1:ethernet"/>
     <link component_id="urn:publicid:IDN+exogeni.net:ion+link+ION:BBN:Juniper:MX:TenGigabitEthernet:1:2:ethernet_internet2-ion">
         <interface_ref component_id="urn:ogf:network:domain=ion.internet2.edu:node=rtr.newy:port=ae0:link=bbn"/>
@@ -349,12 +249,12 @@
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
     </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:ion+link+AL2S:FIU:Cisco:6509:TenGigabitEthernet:1:1:ethernet_internet2-ion">
-        <interface_ref component_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*" source_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" source_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*"/>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:ion+link+AL2S:UH:Cisco:6509:TenGigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*" source_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" source_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*"/>
         <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
@@ -365,6 +265,16 @@
         <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:1:ethernet"/>
         <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:DD:Cisco:6509:TenGigabitEthernet:1:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:1:ethernet"/>
         <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:ion+interface+ION:DD:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:ion+link+AL2S:FIU:Cisco:6509:TenGigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*" source_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet" source_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*"/>
         <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
@@ -419,13 +329,430 @@
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
     </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:wvnNet+interface+wvnNet:Cisco:UCSFI:TenGigabitEthernet:0:1:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:ion+link+ION:WVNNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.clev.net.internet2.edu:port=e3/2:link=*"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:wvnNet+interface+wvnNet:Cisco:UCSFI:TenGigabitEthernet:0:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.clev.net.internet2.edu:port=e3/2:link=*" source_id="urn:publicid:IDN+exogeni.net:wvnNet+interface+wvnNet:Cisco:UCSFI:TenGigabitEthernet:0:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:wvnNet+interface+wvnNet:Cisco:UCSFI:TenGigabitEthernet:0:1:ethernet" source_id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.clev.net.internet2.edu:port=e3/2:link=*"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ion+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+node+orca-vm-cloud">
+        <location latitude="29.64171" longitude="-82.346214" country="Unspecified"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaM1Large"/>
+        <hardware_type name="orca-vm-cloud">
+            <ns3:node_type type_slots="112"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TengigabitEthernet:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+link+UCD:ExoGeni:TenGigabitEthernet:1:ethernet_ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </link>
+    <link component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+link+UCD:ExoGeni:TengigabitEthernet:2:ethernet_ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TengigabitEthernet:2:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TengigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:ExoGeni:TengigabitEthernet:2:ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:fiuNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuNet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="10"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+    </node>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:fiuNet+link+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:fiuNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:fiuNet+link+FiuNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:fiuNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:uflvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflvmsite+node+unknown">
+        <hardware_type/>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
+    </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:uflvmsite+link+UFL:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009_UFLNet:IBM:G8052:TenGigabitEthernet:3:ethernet:VLAN:1009">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:uflvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+node+orca-xcat-cloud">
+        <location latitude="29.64171" longitude="-82.346214" country="Unspecified"/>
+        <sliver_type name="ExoGENI-M4"/>
+        <hardware_type name="orca-xcat-cloud">
+            <ns3:node_type type_slots="2"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:1:ethernet"/>
+    </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+link+UCD:BareMetal:TenGigabitEthernet:1:ethernet_ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:1:ethernet"/>
+    </link>
+    <link component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+link+UCD:BareMetal:TenGigabitEthernet:2:ethernet_ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:2:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:ucdvmsite+interface+UCD:BareMetal:TenGigabitEthernet:2:ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:esnet+authority+am" component_id="urn:publicid:IDN+exogeni.net:esnet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="100"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
+    </node>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:esnet+link+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber" source_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber" source_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:esnet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:esnet+link+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber" source_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber" source_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:esnet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+node+orca-vm-cloud">
+        <location latitude="52.354843" longitude="4.955346" country="Unspecified"/>
+        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EucaM1Small"/>
+        <hardware_type name="orca-vm-cloud">
+            <ns3:node_type type_slots="78"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+link+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet_Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:slvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+node+orca-vm-cloud">
+        <location latitude="42.05286" longitude="-87.681564" country="Unspecified"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EucaM1Large"/>
+        <hardware_type name="orca-vm-cloud">
+            <ns3:node_type type_slots="112"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:slvmsite+link+SL:ExoGeni:TengigabitEthernet:2:ethernet_slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:slvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
+    </link>
+    <link component_id="urn:publicid:IDN+exogeni.net:slvmsite+link+SL:ExoGeni:TenGigabitEthernet:1:ethernet_slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:slvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:slNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:slNet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="9"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet"/>
+    </node>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:nictaNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:nictaNet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="5"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet"/>
+    </node>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:nictaNet+link+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:nictaNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:nlr+authority+am" component_id="urn:publicid:IDN+exogeni.net:nlr+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="240"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
+    </node>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:nlr+link+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber" source_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:nlr+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:nlr+link+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet"/>
+        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:nlr+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:nlr+link+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber" source_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:nlr+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:nlr+link+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber" source_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:nlr+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:bbnNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnNet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="10"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet"/>
+    </node>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:bbnNet+link+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg"/>
+        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet" source_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg"/>
+        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:bbnNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg"/>
+    <link component_id="urn:publicid:IDN+exogeni.net:bbnNet+link+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet_internet2-ion">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet"/>
+        <interface_ref component_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg"/>
+        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg"/>
+        <property capacity="1000000kbps" dest_id="urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg" source_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:bbnNet+authority+am"/>
+        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:slvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+node+orca-xcat-cloud">
+        <location latitude="42.05286" longitude="-87.681564" country="Unspecified"/>
+        <sliver_type name="ExoGENI-M4"/>
+        <hardware_type name="orca-xcat-cloud">
+            <ns3:node_type type_slots="2"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet"/>
+    </node>
+    <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+node+unknown">
+        <location latitude="52.354843" longitude="4.955346" country="Unspecified"/>
+        <hardware_type/>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
+    </node>
+    <link component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+link+Uva-nl:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009_Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:3:ethernet:VLAN:1009">
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
+        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:3:ethernet:VLAN:1009"/>
+        <component_manager name="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am"/>
+        <link_type name="ethernet"/>
+    </link>
+    <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:nictavmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:nictavmsite+node+orca-vm-cloud">
+        <location latitude="-33.89533" longitude="151.19708" country="Unspecified"/>
+        <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="XOMedium"/>
+        <hardware_type name="orca-vm-cloud">
+            <ns3:node_type type_slots="36"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+    </node>
     <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:ben+authority+am" component_id="urn:publicid:IDN+exogeni.net:ben+node+orca-transit-net-vlan">
         <hardware_type name="orca-transit-net-vlan">
             <ns3:node_type type_slots="100"/>
         </hardware_type>
         <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:4:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Duke:Cisco:6509:TenGigabitEthernet:gB:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:4:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:3:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Duke:Cisco:6509:TenGigabitEthernet:2:4:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+UNC:Cisco:6509:TenGigabitEthernet:3:3:ethernet"/>
@@ -557,16 +884,6 @@
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
     </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:ben-6509+link+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber" source_id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:ben+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
     <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:rcivmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:rcivmsite+node+unknown">
         <location latitude="35.939518" longitude="-79.017426" country="Unspecified"/>
         <hardware_type/>
@@ -579,6 +896,10 @@
         <component_manager name="urn:publicid:IDN+exogeni.net:rcivmsite+authority+am"/>
         <link_type name="ethernet"/>
     </link>
+    <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:ucdvmsite+node+unknown">
+        <hardware_type/>
+        <available now="true"/>
+    </node>
     <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uhvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhvmsite+node+orca-xcat-cloud">
         <location latitude="29.72327" longitude="-95.34269" country="Unspecified"/>
         <sliver_type name="ExoGENI-M4"/>
@@ -605,40 +926,21 @@
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:BareMetal:TenGigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uhvmsite+interface+UH:BareMetal:TenGigabitEthernet:2:ethernet"/>
     </link>
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:fiuNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuNet+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="10"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-    </node>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:fiuNet+link+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:fiuNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:osfvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:osfvmsite+node+orca-vm-cloud">
         <location latitude="37.87631" longitude="-122.25003" country="Unspecified"/>
-        <sliver_type name="EucaC1XLarge"/>
         <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="EC2M1Small"/>
         <sliver_type name="EucaM1Large"/>
-        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EC2M1XLarge"/>
         <sliver_type name="XOMedium"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="XOXlarge"/>
         <sliver_type name="EC2C1Medium"/>
         <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EC2M1Small"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -648,19 +950,19 @@
     </node>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uhvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhvmsite+node+orca-vm-cloud">
         <location latitude="29.72327" longitude="-95.34269" country="Unspecified"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="XOLarge"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="XOLarge"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="EC2M1Small"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EucaC1Medium"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
@@ -704,16 +1006,6 @@
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
     </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:uvanlNet+link+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:uvanlNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
     <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:FourtyGigabitEthernet:1:ethernet"/>
     <link component_id="urn:publicid:IDN+exogeni.net:uvanlNet+link+Uva-nlNet:Force10:S4810:FourtyGigabitEthernet:1:ethernet_internet2-ion">
         <interface_ref component_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:FourtyGigabitEthernet:1:ethernet"/>
@@ -722,17 +1014,6 @@
         <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:FourtyGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:FourtyGigabitEthernet:1:ethernet"/>
         <component_manager name="urn:publicid:IDN+exogeni.net:uvanlNet+authority+am"/>
         <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:uflvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflvmsite+node+unknown">
-        <hardware_type/>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
-    </node>
-    <link component_id="urn:publicid:IDN+exogeni.net:uflvmsite+link+UFL:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009_UFLNet:IBM:G8052:TenGigabitEthernet:3:ethernet:VLAN:1009">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:uflvmsite+authority+am"/>
         <link_type name="ethernet"/>
     </link>
     <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:osfvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:osfvmsite+node+orca-xcat-cloud">
@@ -745,6 +1026,17 @@
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:osfvmsite+interface+OSF:BareMetal:TenGigabitEthernet:2:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:osfvmsite+interface+OSF:BareMetal:TenGigabitEthernet:1:ethernet"/>
     </node>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:ucdNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:ucdNet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="10"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+    </node>
     <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+node+unknown">
         <location latitude="42.38974" longitude="-71.14751" country="Unspecified"/>
         <hardware_type/>
@@ -755,34 +1047,6 @@
         <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:3:ethernet:VLAN:1009"/>
         <interface_ref component_id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:3:ethernet:VLAN:1009"/>
         <component_manager name="urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:esnet+authority+am" component_id="urn:publicid:IDN+exogeni.net:esnet+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="100"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
-    </node>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:esnet+link+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber" source_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber" source_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:esnet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:esnet+link+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber" source_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber" source_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:esnet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
         <link_type name="ethernet"/>
     </link>
     <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:slvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+node+unknown">
@@ -827,19 +1091,19 @@
     </link>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:rcivmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:rcivmsite+node+orca-vm-cloud">
         <location latitude="35.939518" longitude="-79.017426" country="Unspecified"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EucaM1Large"/>
         <sliver_type name="EC2C1Medium"/>
         <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2M1Large"/>
+        <sliver_type name="XOSmall"/>
+        <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="XOXlarge"/>
+        <sliver_type name="EucaC1XLarge"/>
+        <sliver_type name="EC2M1Small"/>
         <sliver_type name="XOLarge"/>
+        <sliver_type name="XOMedium"/>
+        <sliver_type name="EucaM1Small"/>
+        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EucaM1Large"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="116"/>
         </hardware_type>
@@ -854,6 +1118,17 @@
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:rcivmsite+interface+Rci:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:rciNet+interface+RciNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:rciNet+interface+RciNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:rcivmsite+interface+Rci:ExoGeni:TenGigabitEthernet:1:ethernet"/>
     </link>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:uhNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhNet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="10"/>
+        </hardware_type>
+        <available now="true"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+    </node>
     <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uflvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflvmsite+node+orca-xcat-cloud">
         <location latitude="29.64171" longitude="-82.346214" country="Unspecified"/>
         <sliver_type name="ExoGENI-M4"/>
@@ -880,69 +1155,38 @@
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:BareMetal:TenGigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
         <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:uflvmsite+interface+UFL:BareMetal:TenGigabitEthernet:2:ethernet"/>
     </link>
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:uhNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhNet+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="10"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
-    </node>
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:uflNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflNet+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="5"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
-    </node>
     <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+node+orca-vm-cloud">
         <location latitude="25.757292" longitude="-80.37404" country="Unspecified"/>
-        <sliver_type name="XOMedium"/>
         <sliver_type name="EucaC1XLarge"/>
         <sliver_type name="EucaC1Medium"/>
+        <sliver_type name="XOMedium"/>
         <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2M1Small"/>
         <sliver_type name="XOXlarge"/>
         <sliver_type name="XOLarge"/>
-        <sliver_type name="EucaM1XLarge"/>
+        <sliver_type name="EC2M1Small"/>
         <sliver_type name="EucaM1Small"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EucaM1XLarge"/>
         <sliver_type name="EucaM1Large"/>
+        <sliver_type name="EC2M1XLarge"/>
+        <sliver_type name="EC2C1Medium"/>
+        <sliver_type name="EC2M1Large"/>
         <hardware_type name="orca-vm-cloud">
             <ns3:node_type type_slots="112"/>
         </hardware_type>
         <available now="true"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet"/>
     </node>
-    <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+node+orca-vm-cloud">
-        <location latitude="52.354843" longitude="4.955346" country="Unspecified"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="EC2M1Large"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EucaM1Large"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="EucaM1Small"/>
-        <hardware_type name="orca-vm-cloud">
-            <ns3:node_type type_slots="78"/>
+    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:uflNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:uflNet+node+orca-transit-net-vlan">
+        <hardware_type name="orca-transit-net-vlan">
+            <ns3:node_type type_slots="10"/>
         </hardware_type>
         <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:BareMetal:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:ExoGeni:1:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:BareMetal:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:ExoGeni:2:ethernet"/>
+        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet"/>
     </node>
     <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:uhvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uhvmsite+node+unknown">
         <hardware_type/>
@@ -964,44 +1208,6 @@
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:rciNet+interface+RciNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:rciNet+interface+RciNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet"/>
     </node>
-    <node exclusive="false" component_name="orca-vm-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:slvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:slvmsite+node+orca-vm-cloud">
-        <location latitude="42.05286" longitude="-87.681564" country="Unspecified"/>
-        <sliver_type name="EucaM1Large"/>
-        <sliver_type name="EC2C1Medium"/>
-        <sliver_type name="EucaM1XLarge"/>
-        <sliver_type name="EC2M1XLarge"/>
-        <sliver_type name="XOLarge"/>
-        <sliver_type name="EucaM1Small"/>
-        <sliver_type name="XOMedium"/>
-        <sliver_type name="EC2M1Small"/>
-        <sliver_type name="XOXlarge"/>
-        <sliver_type name="EucaC1XLarge"/>
-        <sliver_type name="XOSmall"/>
-        <sliver_type name="EucaC1Medium"/>
-        <sliver_type name="EC2M1Large"/>
-        <hardware_type name="orca-vm-cloud">
-            <ns3:node_type type_slots="112"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-    </node>
-    <link component_id="urn:publicid:IDN+exogeni.net:slvmsite+link+SL:ExoGeni:TengigabitEthernet:2:ethernet_slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:slvmsite+authority+am"/>
-        <link_type name="ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TengigabitEthernet:2:ethernet"/>
-    </link>
-    <link component_id="urn:publicid:IDN+exogeni.net:slvmsite+link+SL:ExoGeni:TenGigabitEthernet:1:ethernet_slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:slvmsite+authority+am"/>
-        <link_type name="ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:ExoGeni:TenGigabitEthernet:1:ethernet"/>
-    </link>
     <node exclusive="false" component_name="orca-xcat-cloud" component_manager_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+node+orca-xcat-cloud">
         <location latitude="52.354843" longitude="4.955346" country="Unspecified"/>
         <sliver_type name="ExoGENI-M4"/>
@@ -1010,58 +1216,6 @@
         </hardware_type>
         <available now="true"/>
         <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:2:ethernet"/>
-    </node>
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:slNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:slNet+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="50"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:ExoGeni:2:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet"/>
-    </node>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:slNet+link+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet" source_id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:slNet+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:nictaNet+authority+am" component_id="urn:publicid:IDN+exogeni.net:nictaNet+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="5"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:0:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet"/>
     </node>
     <node exclusive="false" component_name="unknown" component_manager_id="urn:publicid:IDN+exogeni.net:osfvmsite+authority+am" component_id="urn:publicid:IDN+exogeni.net:osfvmsite+node+unknown">
         <location latitude="37.87631" longitude="-122.25003" country="Unspecified"/>
@@ -1075,161 +1229,7 @@
         <component_manager name="urn:publicid:IDN+exogeni.net:osfvmsite+authority+am"/>
         <link_type name="ethernet"/>
     </link>
-    <node exclusive="false" component_name="orca-transit-net-vlan" component_manager_id="urn:publicid:IDN+exogeni.net:nlr+authority+am" component_id="urn:publicid:IDN+exogeni.net:nlr+node+orca-transit-net-vlan">
-        <hardware_type name="orca-transit-net-vlan">
-            <ns3:node_type type_slots="240"/>
-        </hardware_type>
-        <available now="true"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:1:ethernet"/>
-        <interface role="experimental" component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
-    </node>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:nlr+link+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber" source_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:nlr+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:nlr+link+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet" source_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet"/>
-        <property capacity="10000000kbps" dest_id="urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:nlr+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <external_ref component_manager_id="urn:publicid:IDN+ion.internet2.edu+authority+am" component_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
-    <link component_id="urn:publicid:IDN+exogeni.net:nlr+link+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber_internet2-ion">
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
-        <interface_ref component_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber" source_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
-        <property capacity="0kbps" dest_id="urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber" source_id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber"/>
-        <component_manager name="urn:publicid:IDN+exogeni.net:nlr+authority+am"/>
-        <component_manager name="urn:publicid:IDN+ion.internet2.edu+authority+am"/>
-        <link_type name="ethernet"/>
-    </link>
-    <ns2:stitching lastUpdateTime="Mon Feb 24 10:43:09 EST 2014">
-        <ns2:aggregate url="https://bbn-hn.exogeni.net:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:bbnNet+authority+am">
-            <ns2:aggregatetype>orca</ns2:aggregatetype>
-            <ns2:stitchingmode>tree</ns2:stitchingmode>
-            <ns2:scheduledservices>true</ns2:scheduledservices>
-            <ns2:negotiatedservices>false</ns2:negotiatedservices>
-            <ns2:node id="urn:publicid:IDN+exogeni.net:bbnNet+node+orca-transit-net-vlan">
-                <ns2:port id="urn:publicid:IDN+exogeni.net:bbnNet+stitchport+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet">
-                    <ns2:capacity>1000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>1000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>2601-2610</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:bbnNet+stitchport+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet">
-                    <ns2:capacity>10000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:2:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TengigabitEthernet:2:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>10000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>3736-3739,2601-2610,2400-2500,3741</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:bbnNet+stitchport+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet">
-                    <ns2:capacity>1000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>1000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>3741,3736-3739</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:bbnNet+stitchport+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet">
-                    <ns2:capacity>1000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>1000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>2400-2500</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:bbnNet+stitchport+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet">
-                    <ns2:capacity>10000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:bbnvmsite+interface+Bbn:ExoGeni:TenGigabitEthernet:1:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>10000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>3736-3739,2601-2610,2400-2500,3741</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-            </ns2:node>
-        </ns2:aggregate>
+    <ns2:stitching lastUpdateTime="Mon Mar 10 10:11:34 EDT 2014">
         <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:osfNet+authority+am">
             <ns2:aggregatetype>orca</ns2:aggregatetype>
             <ns2:stitchingmode>tree</ns2:stitchingmode>
@@ -1366,22 +1366,11 @@
             <ns2:scheduledservices>true</ns2:scheduledservices>
             <ns2:negotiatedservices>false</ns2:negotiatedservices>
             <ns2:node id="urn:publicid:IDN+exogeni.net:ion+node+orca-transit-net-vlan">
-                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber">
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:1:fiber</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo/>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+ION:StarLight:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet">
                     <ns2:capacity>10000000kbps</ns2:capacity>
                     <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.star.net.internet2.edu:port=e5/2:link=*">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:1:ethernet</ns2:remoteLinkId>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:ion+interface+AL2S:BBN:Juniper:MX:TenGigabitEthernet:1:1:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
                         <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
                         <ns2:capacity>10000000kbps</ns2:capacity>
                         <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
@@ -1398,11 +1387,37 @@
                         </ns2:switchingCapabilityDescriptor>
                     </ns2:link>
                 </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+AL2S:UH:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber">
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:ion+interface+ION:ESNET:Cisco:6509:TenGigabitEthernet:1:1:fiber">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:1:fiber</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+ION:UCDNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
                     <ns2:capacity>10000000kbps</ns2:capacity>
                     <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
+                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.sunn.net.internet2.edu:port=e5/1:link=*">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:ucdNet+interface+ucdNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+ION:StarLight:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.star.net.internet2.edu:port=e5/2:link=*">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:1:ethernet</ns2:remoteLinkId>
                         <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
                         <ns2:capacity>10000000kbps</ns2:capacity>
                         <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
@@ -1436,11 +1451,11 @@
                         </ns2:switchingCapabilityDescriptor>
                     </ns2:link>
                 </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+AL2S:FIU:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+AL2S:UH:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
                     <ns2:capacity>10000000kbps</ns2:capacity>
                     <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
+                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.houh.net.internet2.edu:port=e7/1:link=*">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:uhNet+interface+UHNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
                         <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
                         <ns2:capacity>10000000kbps</ns2:capacity>
                         <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
@@ -1461,6 +1476,27 @@
                     <ns2:link id="urn:publicid:IDN+exogeni.net:ion+interface+ION:DD:Cisco:6509:TenGigabitEthernet:1:2:ethernet">
                         <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:1:ethernet</ns2:remoteLinkId>
                         <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>201-301</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+AL2S:FIU:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.jack.net.internet2.edu:port=e1/2:link=*">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
                         <ns2:switchingCapabilityDescriptor>
                             <ns2:switchingcapType>l2sc</ns2:switchingcapType>
                             <ns2:encodingType>ethernet</ns2:encodingType>
@@ -1543,6 +1579,351 @@
                                 <ns2:switchingCapabilitySpecificInfo_L2sc>
                                     <ns2:capability>consumer</ns2:capability>
                                     <ns2:vlanRangeAvailability>3195,3198,3199,3197,3196</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:ion+stitchport+ION:WVNNet:Cisco:6509:TenGigabitEthernet:1:1:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:ogf:network:domain=al2s.net.internet2.edu:node=sdn-sw.clev.net.internet2.edu:port=e3/2:link=*">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:wvnNet+interface+wvnNet:Cisco:UCSFI:TenGigabitEthernet:0:1:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+            </ns2:node>
+        </ns2:aggregate>
+        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:fiuNet+authority+am">
+            <ns2:aggregatetype>orca</ns2:aggregatetype>
+            <ns2:stitchingmode>tree</ns2:stitchingmode>
+            <ns2:scheduledservices>true</ns2:scheduledservices>
+            <ns2:negotiatedservices>false</ns2:negotiatedservices>
+            <ns2:node id="urn:publicid:IDN+exogeni.net:fiuNet+node+orca-transit-net-vlan">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:fiuNet+stitchport+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>1760-1769,1440-1449</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:fiuNet+stitchport+FiuNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:uflNet+interface+UFLNet:IBM:G8052:TenGigabitEthernet:0:0:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>1440-1449</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+            </ns2:node>
+        </ns2:aggregate>
+        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:esnet+authority+am">
+            <ns2:aggregatetype>orca</ns2:aggregatetype>
+            <ns2:stitchingmode>tree</ns2:stitchingmode>
+            <ns2:scheduledservices>true</ns2:scheduledservices>
+            <ns2:negotiatedservices>false</ns2:negotiatedservices>
+            <ns2:node id="urn:publicid:IDN+exogeni.net:esnet+node+orca-transit-net-vlan">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:esnet+stitchport+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber">
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:esnet+stitchport+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber">
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+            </ns2:node>
+        </ns2:aggregate>
+        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:slNet+authority+am">
+            <ns2:aggregatetype>orca</ns2:aggregatetype>
+            <ns2:stitchingmode>tree</ns2:stitchingmode>
+            <ns2:scheduledservices>true</ns2:scheduledservices>
+            <ns2:negotiatedservices>false</ns2:negotiatedservices>
+            <ns2:node id="urn:publicid:IDN+exogeni.net:slNet+node+orca-transit-net-vlan">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>2400-2500</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:2:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:2:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>2400-2500,1921-1922,1700-1708</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet">
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>1921-1922</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:BareMetal:1:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:slvmsite+interface+SL:BareMetal:TenGigabitEthernet:1:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>2400-2500,1921-1922,1700-1708</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>1700-1708</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+            </ns2:node>
+        </ns2:aggregate>
+        <ns2:aggregate url="https://geni.renci.org:11443/orca/xmlrpc,https://nicta-hn.exogeni.net:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:nictaNet+authority+am">
+            <ns2:aggregatetype>orca</ns2:aggregatetype>
+            <ns2:stitchingmode>tree</ns2:stitchingmode>
+            <ns2:scheduledservices>true</ns2:scheduledservices>
+            <ns2:negotiatedservices>false</ns2:negotiatedservices>
+            <ns2:node id="urn:publicid:IDN+exogeni.net:nictaNet+node+orca-transit-net-vlan">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:nictaNet+stitchport+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet">
+                    <ns2:capacity>1000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:nictaNet+interface+NictaNet:Pronto:3290:TenGigabitEthernet:1:1:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:nictavmsite+interface+Nicta:ExoGeni:TenGigabitEthernet:1:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>1000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>3195-3199</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+            </ns2:node>
+        </ns2:aggregate>
+        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:nlr+authority+am">
+            <ns2:aggregatetype>orca</ns2:aggregatetype>
+            <ns2:stitchingmode>tree</ns2:stitchingmode>
+            <ns2:scheduledservices>true</ns2:scheduledservices>
+            <ns2:negotiatedservices>false</ns2:negotiatedservices>
+            <ns2:node id="urn:publicid:IDN+exogeni.net:nlr+node+orca-transit-net-vlan">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:nlr+stitchport+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber">
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:nlr+stitchport+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet">
+                    <ns2:capacity>10000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>10000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>727-731</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:nlr+stitchport+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber">
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:nlr+stitchport+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber">
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber">
+                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo/>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+            </ns2:node>
+        </ns2:aggregate>
+        <ns2:aggregate url="https://bbn-hn.exogeni.net:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:bbnNet+authority+am">
+            <ns2:aggregatetype>orca</ns2:aggregatetype>
+            <ns2:stitchingmode>tree</ns2:stitchingmode>
+            <ns2:scheduledservices>true</ns2:scheduledservices>
+            <ns2:negotiatedservices>false</ns2:negotiatedservices>
+            <ns2:node id="urn:publicid:IDN+exogeni.net:bbnNet+node+orca-transit-net-vlan">
+                <ns2:port id="urn:publicid:IDN+exogeni.net:bbnNet+stitchport+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet">
+                    <ns2:capacity>1000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:2:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+ion.internet2.edu+interface+rtr.newy:ae0:gpo-eg</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>1000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>3741,3736-3739</ns2:vlanRangeAvailability>
+                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
+                                </ns2:switchingCapabilitySpecificInfo_L2sc>
+                            </ns2:switchingCapabilitySpecificInfo>
+                        </ns2:switchingCapabilityDescriptor>
+                    </ns2:link>
+                </ns2:port>
+                <ns2:port id="urn:publicid:IDN+exogeni.net:bbnNet+stitchport+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet">
+                    <ns2:capacity>1000000kbps</ns2:capacity>
+                    <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
+                    <ns2:link id="urn:publicid:IDN+exogeni.net:bbnNet+interface+BbnNet:IBM:G8052:GigabitEthernet:1:1:ethernet">
+                        <ns2:remoteLinkId>urn:publicid:IDN+instageni.gpolab.bbn.com+interface+procurve2:5.24.gpo-eg</ns2:remoteLinkId>
+                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
+                        <ns2:capacity>1000000kbps</ns2:capacity>
+                        <ns2:maximumReservableCapacity>1000000kbps</ns2:maximumReservableCapacity>
+                        <ns2:switchingCapabilityDescriptor>
+                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
+                            <ns2:encodingType>ethernet</ns2:encodingType>
+                            <ns2:switchingCapabilitySpecificInfo>
+                                <ns2:switchingCapabilitySpecificInfo_L2sc>
+                                    <ns2:capability>consumer</ns2:capability>
+                                    <ns2:vlanRangeAvailability>2400-2500</ns2:vlanRangeAvailability>
                                     <ns2:vlanTranslation>false</ns2:vlanTranslation>
                                 </ns2:switchingCapabilitySpecificInfo_L2sc>
                             </ns2:switchingCapabilitySpecificInfo>
@@ -1809,46 +2190,6 @@
                         </ns2:switchingCapabilityDescriptor>
                     </ns2:link>
                 </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:ben-6509+stitchport+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber">
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:ben-6509+interface+Renci:Cisco:6509:TenGigabitEthernet:3:2:fiber">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:nlr+interface+NLR:DD:Juniper:QFX3500:xe:0:0:0:fiber</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo/>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-            </ns2:node>
-        </ns2:aggregate>
-        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:fiuNet+authority+am">
-            <ns2:aggregatetype>orca</ns2:aggregatetype>
-            <ns2:stitchingmode>tree</ns2:stitchingmode>
-            <ns2:scheduledservices>true</ns2:scheduledservices>
-            <ns2:negotiatedservices>false</ns2:negotiatedservices>
-            <ns2:node id="urn:publicid:IDN+exogeni.net:fiuNet+node+orca-transit-net-vlan">
-                <ns2:port id="urn:publicid:IDN+exogeni.net:fiuNet+stitchport+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet">
-                    <ns2:capacity>10000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:fiuNet+interface+FiuNet:IBM:G8052:TenGigabitEthernet:1:1:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:fiuvmsite+interface+Fiu:ExoGeni:TenGigabitEthernet:1:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>10000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>1760-1769</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
             </ns2:node>
         </ns2:aggregate>
         <ns2:aggregate url="https://geni.renci.org:11443/orca/xmlrpc,https://uva-nl-hn.exogeni.net:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:uvanlNet+authority+am">
@@ -1862,27 +2203,6 @@
                     <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
                     <ns2:link id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:2:ethernet">
                         <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:2:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>10000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>3200-3210,1921-1929</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:uvanlNet+stitchport+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet">
-                    <ns2:capacity>10000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:uvanlNet+interface+Uva-nlNet:Force10:S4810:TenGigabitEthernet:1:1:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:uvanlvmsite+interface+Uva-nl:ExoGeni:TenGigabitEthernet:1:ethernet</ns2:remoteLinkId>
                         <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
                         <ns2:capacity>10000000kbps</ns2:capacity>
                         <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
@@ -1918,35 +2238,12 @@
                 </ns2:port>
             </ns2:node>
         </ns2:aggregate>
-        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:esnet+authority+am">
+        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:ucdNet+authority+am">
             <ns2:aggregatetype>orca</ns2:aggregatetype>
             <ns2:stitchingmode>tree</ns2:stitchingmode>
             <ns2:scheduledservices>true</ns2:scheduledservices>
             <ns2:negotiatedservices>false</ns2:negotiatedservices>
-            <ns2:node id="urn:publicid:IDN+exogeni.net:esnet+node+orca-transit-net-vlan">
-                <ns2:port id="urn:publicid:IDN+exogeni.net:esnet+stitchport+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber">
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:TenGigabitEthernet:1:2:fiber">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Cisco:6509:TenGigabitEthernet:4:1:fiber</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo/>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:esnet+stitchport+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber">
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:NerscNet:Cisco:6509:TenGigabitEthernet:1:2:fiber">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:nerscNet+interface+NerscNet:Juniper:1600:TenGigabitEthernet:1:0:fiber</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo/>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-            </ns2:node>
+            <ns2:node id="urn:publicid:IDN+exogeni.net:ucdNet+node+orca-transit-net-vlan"/>
         </ns2:aggregate>
         <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:uhNet+authority+am">
             <ns2:aggregatetype>orca</ns2:aggregatetype>
@@ -1968,131 +2265,6 @@
             <ns2:scheduledservices>true</ns2:scheduledservices>
             <ns2:negotiatedservices>false</ns2:negotiatedservices>
             <ns2:node id="urn:publicid:IDN+exogeni.net:rciNet+node+orca-transit-net-vlan"/>
-        </ns2:aggregate>
-        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:slNet+authority+am">
-            <ns2:aggregatetype>orca</ns2:aggregatetype>
-            <ns2:stitchingmode>tree</ns2:stitchingmode>
-            <ns2:scheduledservices>true</ns2:scheduledservices>
-            <ns2:negotiatedservices>false</ns2:negotiatedservices>
-            <ns2:node id="urn:publicid:IDN+exogeni.net:slNet+node+orca-transit-net-vlan">
-                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet">
-                    <ns2:capacity>10000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:GigabitEthernet:1:0:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:instageni+interface+InstaGeni:SL:Cisco:6509:GigabitEthernet:1:1:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>10000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>2400-2500</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet">
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:FoutyGigabitEthernet:1:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:esnet+interface+ESNET:StarLight:Cisco:6509:FourtyGigabitEthernet:1:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>1921-1929</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:slNet+stitchport+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet">
-                    <ns2:capacity>10000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:slNet+interface+slNet:IBM:G8264:TenGigabitEthernet:1:0:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:4:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>10000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>1700-1749</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-            </ns2:node>
-        </ns2:aggregate>
-        <ns2:aggregate url="https://geni.renci.org:11443/orca/xmlrpc,https://nicta-hn.exogeni.net:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:nictaNet+authority+am">
-            <ns2:aggregatetype>orca</ns2:aggregatetype>
-            <ns2:stitchingmode>tree</ns2:stitchingmode>
-            <ns2:scheduledservices>true</ns2:scheduledservices>
-            <ns2:negotiatedservices>false</ns2:negotiatedservices>
-            <ns2:node id="urn:publicid:IDN+exogeni.net:nictaNet+node+orca-transit-net-vlan"/>
-        </ns2:aggregate>
-        <ns2:aggregate url="http://geni.renci.org:11443/orca/xmlrpc" id="urn:publicid:IDN+exogeni.net:nlr+authority+am">
-            <ns2:aggregatetype>orca</ns2:aggregatetype>
-            <ns2:stitchingmode>tree</ns2:stitchingmode>
-            <ns2:scheduledservices>true</ns2:scheduledservices>
-            <ns2:negotiatedservices>false</ns2:negotiatedservices>
-            <ns2:node id="urn:publicid:IDN+exogeni.net:nlr+node+orca-transit-net-vlan">
-                <ns2:port id="urn:publicid:IDN+exogeni.net:nlr+stitchport+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber">
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:StarLight:Cisco:6509:TenGigabitEthernet:1:3:fiber">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:starlight+interface+StarLight:Juniper:QFX3500:TenGigabitEthernet:0:0:0:fiber</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo/>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:nlr+stitchport+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet">
-                    <ns2:capacity>10000000kbps</ns2:capacity>
-                    <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:NCSU:Cisco:6509:TenGigabitEthernet:1:2:ethernet">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:ncsuNet+interface+NCSUNet:Cisco:UCSFI:TenGigabitEthernet:1:0:ethernet</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:capacity>10000000kbps</ns2:capacity>
-                        <ns2:maximumReservableCapacity>10000000kbps</ns2:maximumReservableCapacity>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo>
-                                <ns2:switchingCapabilitySpecificInfo_L2sc>
-                                    <ns2:capability>consumer</ns2:capability>
-                                    <ns2:vlanRangeAvailability>727-731</ns2:vlanRangeAvailability>
-                                    <ns2:vlanTranslation>false</ns2:vlanTranslation>
-                                </ns2:switchingCapabilitySpecificInfo_L2sc>
-                            </ns2:switchingCapabilitySpecificInfo>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-                <ns2:port id="urn:publicid:IDN+exogeni.net:nlr+stitchport+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber">
-                    <ns2:link id="urn:publicid:IDN+exogeni.net:nlr+interface+NLR:Houston:Cisco:6509:TenGigabitEthernet:1:1:fiber">
-                        <ns2:remoteLinkId>urn:publicid:IDN+exogeni.net:learn+interface+Learn:NLR:Cisco:6509:TenGigabitEthernet:1:1:fiber</ns2:remoteLinkId>
-                        <ns2:trafficEngineeringMetric>10</ns2:trafficEngineeringMetric>
-                        <ns2:switchingCapabilityDescriptor>
-                            <ns2:switchingcapType>l2sc</ns2:switchingcapType>
-                            <ns2:encodingType>ethernet</ns2:encodingType>
-                            <ns2:switchingCapabilitySpecificInfo/>
-                        </ns2:switchingCapabilityDescriptor>
-                    </ns2:link>
-                </ns2:port>
-            </ns2:node>
         </ns2:aggregate>
     </ns2:stitching>
 </rspec>

@@ -4,7 +4,7 @@
 	URL: https://instageni.maxgigapop.net:12369/protogeni/xmlrpc/am/2.0
  -->
   
-<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-02-24T15:42:49Z" expires="2014-02-24T15:42:49Z" >
+<rspec xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xsi:schemaLocation="http://www.geni.net/resources/rspec/3 http://www.geni.net/resources/rspec/3/ad.xsd http://www.protogeni.net/resources/rspec/ext/emulab/1 http://www.protogeni.net/resources/rspec/ext/emulab/1/ptop_extension.xsd http://hpn.east.isi.edu/rspec/ext/stitch/0.1/ http://hpn.east.isi.edu/rspec/ext/stitch/0.1/stitch-schema.xsd http://www.geni.net/resources/rspec/ext/shared-vlan/1 http://www.geni.net/resources/rspec/ext/shared-vlan/1/ad.xsd http://www.geni.net/resources/rspec/ext/opstate/1 http://www.geni.net/resources/rspec/ext/opstate/1/ad.xsd " type="advertisement" generated="2014-03-10T14:11:05Z" expires="2014-03-10T14:11:05Z" >
 <external_ref component_id="urn:publicid:IDN+dragon.maxgigapop.net+interface+clpk:1-1-2:*"
   component_manager_id="urn:publicid:IDN+dragon.maxgigapop.net+authority+am" />
 <rspec_shared_vlan xmlns="http://www.geni.net/resources/rspec/ext/shared-vlan/1">
@@ -14,6 +14,132 @@
   <available name="exclusive-openflow-1757"/>
   <available name="exclusive-openflow-1758"/>
   <available name="exclusive-openflow-1759"/>
+  <available name="vts-1039"/>
+  <available name="vts-1040"/>
+  <available name="vts-1041"/>
+  <available name="vts-1042"/>
+  <available name="vts-1043"/>
+  <available name="vts-1044"/>
+  <available name="vts-1045"/>
+  <available name="vts-1046"/>
+  <available name="vts-1047"/>
+  <available name="vts-1048"/>
+  <available name="vts-1049"/>
+  <available name="vts-1050"/>
+  <available name="vts-1051"/>
+  <available name="vts-1052"/>
+  <available name="vts-1053"/>
+  <available name="vts-1054"/>
+  <available name="vts-1055"/>
+  <available name="vts-1056"/>
+  <available name="vts-1057"/>
+  <available name="vts-1058"/>
+  <available name="vts-1059"/>
+  <available name="vts-1060"/>
+  <available name="vts-1061"/>
+  <available name="vts-1062"/>
+  <available name="vts-1063"/>
+  <available name="vts-1064"/>
+  <available name="vts-1065"/>
+  <available name="vts-1066"/>
+  <available name="vts-1067"/>
+  <available name="vts-1068"/>
+  <available name="vts-1069"/>
+  <available name="vts-1070"/>
+  <available name="vts-1071"/>
+  <available name="vts-1072"/>
+  <available name="vts-1073"/>
+  <available name="vts-1074"/>
+  <available name="vts-1075"/>
+  <available name="vts-1076"/>
+  <available name="vts-1077"/>
+  <available name="vts-1078"/>
+  <available name="vts-1079"/>
+  <available name="vts-1080"/>
+  <available name="vts-1081"/>
+  <available name="vts-1082"/>
+  <available name="vts-1083"/>
+  <available name="vts-1084"/>
+  <available name="vts-1085"/>
+  <available name="vts-1086"/>
+  <available name="vts-1087"/>
+  <available name="vts-1088"/>
+  <available name="vts-1089"/>
+  <available name="vts-1090"/>
+  <available name="vts-1091"/>
+  <available name="vts-1092"/>
+  <available name="vts-1093"/>
+  <available name="vts-1094"/>
+  <available name="vts-1095"/>
+  <available name="vts-1096"/>
+  <available name="vts-1097"/>
+  <available name="vts-1098"/>
+  <available name="vts-1099"/>
+  <available name="vts-1100"/>
+  <available name="vts-1101"/>
+  <available name="vts-1102"/>
+  <available name="vts-1103"/>
+  <available name="vts-1104"/>
+  <available name="vts-1105"/>
+  <available name="vts-1106"/>
+  <available name="vts-1107"/>
+  <available name="vts-1108"/>
+  <available name="vts-1109"/>
+  <available name="vts-1110"/>
+  <available name="vts-1111"/>
+  <available name="vts-1112"/>
+  <available name="vts-1113"/>
+  <available name="vts-1114"/>
+  <available name="vts-1115"/>
+  <available name="vts-1116"/>
+  <available name="vts-1117"/>
+  <available name="vts-1118"/>
+  <available name="vts-1119"/>
+  <available name="vts-1120"/>
+  <available name="vts-1121"/>
+  <available name="vts-1122"/>
+  <available name="vts-1123"/>
+  <available name="vts-1124"/>
+  <available name="vts-1125"/>
+  <available name="vts-1126"/>
+  <available name="vts-1127"/>
+  <available name="vts-1128"/>
+  <available name="vts-1129"/>
+  <available name="vts-1130"/>
+  <available name="vts-1131"/>
+  <available name="vts-1132"/>
+  <available name="vts-1133"/>
+  <available name="vts-1134"/>
+  <available name="vts-1135"/>
+  <available name="vts-1136"/>
+  <available name="vts-1137"/>
+  <available name="vts-1138"/>
+  <available name="vts-1139"/>
+  <available name="vts-1140"/>
+  <available name="vts-1141"/>
+  <available name="vts-1142"/>
+  <available name="vts-1143"/>
+  <available name="vts-1144"/>
+  <available name="vts-1145"/>
+  <available name="vts-1146"/>
+  <available name="vts-1147"/>
+  <available name="vts-1148"/>
+  <available name="vts-1149"/>
+  <available name="vts-1150"/>
+  <available name="vts-1151"/>
+  <available name="vts-1152"/>
+  <available name="vts-1153"/>
+  <available name="vts-1154"/>
+  <available name="vts-1155"/>
+  <available name="vts-1156"/>
+  <available name="vts-1157"/>
+  <available name="vts-1158"/>
+  <available name="vts-1159"/>
+  <available name="vts-1160"/>
+  <available name="vts-1161"/>
+  <available name="vts-1162"/>
+  <available name="vts-1163"/>
+  <available name="vts-1164"/>
 </rspec_shared_vlan>
 <rspec_opstate xmlns="http://www.geni.net/resources/rspec/ext/opstate/1"
   aggregate_manager_id="urn:publicid:IDN+instageni.maxgigapop.net+authority+cm"
@@ -123,16 +249,15 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="74" />
+    <emulab:node_type type_slots="82" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="74" />
+    <emulab:node_type type_slots="82" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
   </hardware_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -159,11 +284,10 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="39461"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="41509"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10027" weight="0.5" />
-  <emulab:fd name="OS-10027-10008" weight="0" />
   <emulab:fd name="OS-10027-10009" weight="0" />
   <emulab:fd name="OS-10027-10013" weight="0" />
   <emulab:fd name="OS-10027-10014" weight="0" />
@@ -214,7 +338,6 @@
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -240,7 +363,7 @@
   </interface>
   <emulab:fd name="virtpercent" weight="100"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="45605"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="46117"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10007" weight="0" />
@@ -257,7 +380,6 @@
   <emulab:fd name="OS-10018-10032" weight="0" />
   <emulab:fd name="OS-10018-10033" weight="0" />
   <emulab:fd name="OS-10020" weight="0" />
-  <emulab:fd name="OS-10020-10008" weight="0" />
   <emulab:fd name="OS-10020-10009" weight="0" />
   <emulab:fd name="OS-10020-10013" weight="0" />
   <emulab:fd name="OS-10020-10014" weight="0" />
@@ -275,7 +397,6 @@
   <emulab:fd name="OS-10020-10037" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
   <emulab:fd name="OS-10027" weight="0" />
-  <emulab:fd name="OS-10027-10008" weight="0" />
   <emulab:fd name="OS-10027-10009" weight="0" />
   <emulab:fd name="OS-10027-10013" weight="0" />
   <emulab:fd name="OS-10027-10014" weight="0" />
@@ -361,7 +482,6 @@
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:OPENVZ-STD" os="Fedora" version="15" description="Generic osid for openvz virtual nodes." />
   </sliver_type>
   <sliver_type name="emulab-xen">
-<disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:FEDORA15-STD" os="Fedora" version="15" description="Standard 32-bit Fedora 15 image" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:FBSD82-STD" os="FreeBSD" version="8.2" description="FreeBSD 8.2 32-bit version" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:UBUNTU12-64-STD" os="Linux" version="12.04" description="Ubuntu 12.04 LTS" />
 <disk_image name="urn:publicid:IDN+instageni.maxgigapop.net+image+emulab-ops:Ubuntu12-64-OVS" os="Linux" version="12.04" description="Ubuntu 12.04 with OVS for ProtoGeni (by Niky)" />
@@ -404,7 +524,6 @@
   <emulab:fd name="OS-10018-10032" weight="0" />
   <emulab:fd name="OS-10018-10033" weight="0" />
   <emulab:fd name="OS-10020" weight="0" />
-  <emulab:fd name="OS-10020-10008" weight="0" />
   <emulab:fd name="OS-10020-10009" weight="0" />
   <emulab:fd name="OS-10020-10013" weight="0" />
   <emulab:fd name="OS-10020-10014" weight="0" />
@@ -422,7 +541,6 @@
   <emulab:fd name="OS-10020-10037" weight="0" />
   <emulab:fd name="OS-10021" weight="0" />
   <emulab:fd name="OS-10027" weight="0" />
-  <emulab:fd name="OS-10027-10008" weight="0" />
   <emulab:fd name="OS-10027-10009" weight="0" />
   <emulab:fd name="OS-10027-10013" weight="0" />
   <emulab:fd name="OS-10027-10014" weight="0" />
@@ -465,10 +583,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="98" />
+    <emulab:node_type type_slots="99" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="98" />
+    <emulab:node_type type_slots="99" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -494,7 +612,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="45861"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="45989"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
@@ -519,10 +637,10 @@
     <emulab:node_type type_slots="1" />
   </hardware_type>
   <hardware_type name="dl360-vm">
-    <emulab:node_type type_slots="95" />
+    <emulab:node_type type_slots="100" />
   </hardware_type>
   <hardware_type name="pcvm">
-    <emulab:node_type type_slots="95" />
+    <emulab:node_type type_slots="100" />
   </hardware_type>
   <hardware_type name="lan">
     <emulab:node_type type_slots="unlimited" static="true"/>
@@ -548,7 +666,7 @@
   <emulab:fd name="pcshared" weight="1.0"  violatable="true" />
   <emulab:fd name="spreadshared" weight="0.6"  global_operator="FirstFree" />
   <emulab:fd name="cpu" weight="2094"  violatable="true"  local_operator="+" />
-  <emulab:fd name="ram" weight="45477"  violatable="true"  local_operator="+" />
+  <emulab:fd name="ram" weight="46117"  violatable="true"  local_operator="+" />
   <emulab:fd name="cpupercent" weight="92"  violatable="true"  local_operator="+" />
   <emulab:fd name="rampercent" weight="80"  violatable="true"  local_operator="+" />
   <emulab:fd name="OS-10018" weight="0.5" />
@@ -820,15 +938,15 @@
   <link_type name="ethernet-1000000" />
 </link>
 
-<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-02-24T15:42:49Z" >
+<stitching xmlns="http://hpn.east.isi.edu/rspec/ext/stitch/0.1/" lastUpdateTime="2014-03-10T14:11:05Z" >
 <aggregate id="urn:publicid:IDN+instageni.maxgigapop.net+authority+cm" url="https://www.instageni.maxgigapop.net:12369/protogeni/xmlrpc/am">
 <aggregatetype>protogeni</aggregatetype>
 <stitchingmode>chainANDTree</stitchingmode>
 <scheduledservices>false</scheduledservices>
 <negotiatedservices>false</negotiatedservices>
 <lifetime id="life">
-    <start type="time">2014-02-24T15:42:49Z</start>
-    <end type="time">2014-02-24T15:42:49Z</end>
+    <start type="time">2014-03-10T14:11:05Z</start>
+    <end type="time">2014-03-10T14:11:05Z</end>
 </lifetime>
 <node id="urn:publicid:IDN+instageni.maxgigapop.net+node+procurve2">
   <port id="urn:publicid:IDN+instageni.maxgigapop.net+stitchport+procurve2:1.22">
@@ -848,7 +966,7 @@
         <encodingType>ethernet</encodingType>
         <switchingCapabilitySpecificInfo>
          <switchingCapabilitySpecificInfo_L2sc>
-          <interfaceMTU>9000</interfaceMTU>
+          <interfaceMTU>1500</interfaceMTU>
           <vlanRangeAvailability>550-569,3020-3030,3100-3109,3200-3219</vlanRangeAvailability>
           <vlanTranslation>false</vlanTranslation>
          </switchingCapabilitySpecificInfo_L2sc>

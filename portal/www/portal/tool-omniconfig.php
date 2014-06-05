@@ -90,14 +90,10 @@ if ($num_projects >0) {
     }
   }
 }
+// Update the count to only the active projects
 $num_projects = count($project_ids);
 
 $is_project_lead = $user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null);
-if ($num_projects > 0) {
-  // If there are any projects, look up their details. We need the names
-  // in order to set up a default project in the config file.
-  $projects = lookup_project_details($sa_url, $user, $project_ids);
-}
 if ($num_projects == 0) {
   // warn that the user has no projects
   $warn = '<p class="warn">You are not a member of any projects.'
@@ -123,13 +119,14 @@ if ($has_private_key) {
 /* ---------- Set up the omni config link. ---------- */
 $config_url = 'portal_omni_config.php';
 $config_link = $config_url;
+$proj_name = "";
 if ($num_projects > 0) {
   // if there is a project, set the link to the default
   // project, which is the first in the list
   $proj = $projects[$project_ids[0]];
   $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  $config_link .= "?project=$proj_name";
 }
+$config_link .= "?project=$proj_name";
 
 /* ---------- PAGE OUTPUT STARTS HERE ---------- */
 show_header('GENI Portal: Profile', $TAB_PROFILE);
@@ -162,8 +159,8 @@ reservation tool.
 if ($num_projects > 1) {
   echo '<li>Choose project as omni default: ';
   echo '<select id="pselect" name="project" onchange="update_link()">\n';
-  foreach ($projects as $proj) {
-    $proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+  foreach ($project_ids as $proj_id) {
+    $proj = $projects[$proj_id];
     $proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
     $proj_desc = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
     echo "<option value=\"$proj_name\" title=\"$proj_desc\">$proj_name</option>\n";
@@ -208,7 +205,7 @@ if ($num_projects > 1) {
 
   <table id='tip'>
     <tr>
-       <td rowspan=3><img id='tipimg' src="http://groups.geni.net/geni/attachment/wiki/GENIExperimenter/Tutorials/Graphics/Symbols-Tips-icon-clear.png?format=raw" width="75" height="75" alt="Tip"></td>
+       <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"></td>
        <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:

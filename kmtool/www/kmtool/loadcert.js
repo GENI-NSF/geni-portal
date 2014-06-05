@@ -23,16 +23,34 @@
  */
 var km = {};
 km.sendcert = function() {
-    var userPrivateKey = document.getElementById('privatekey').innerHTML;
-    var userCert = document.getElementById('certificate').innerHTML;
-    genilib.sendCertificate(userPrivateKey + "\n" + userCert);
+    var sfcredElement = document.getElementById('sfcred');
+    if (sfcredElement) {
+        genilib.sendCredential(sfcredElement.innerHTML);
+    } else {
+        var userPrivateKey = document.getElementById('privatekey').innerHTML;
+        var userCert = document.getElementById('certificate').innerHTML;
+        genilib.sendCertificate(userPrivateKey + "\n" + userCert);
+    }
 }
 km.showtool = function() {
     genilib.sendCertificate("");
+}
+km.showprogress = function(text, val) {
+    $('#progress-text').text(text);
+    $('#progress-bar').val(val);
 }
 km.initialize = function() {
   /* Add a click callback to the "authorize" button. */
   $('#loadcert').click(km.sendcert);
   $('#showtool').click(km.showtool);
+  /* The certificate is immediately ready to send, but if we send it
+   * immediately the user sees our window flash too quickly to
+   * see. Instead, let them see progress and then send the
+   * certificate. */
+  window.setTimeout("km.showprogress('Preparing certificate...', 1);", 100);
+  window.setTimeout("km.showprogress('Sending certificate...', 2);", 1000);
+  window.setTimeout("km.showprogress('Done.', 3);", 1500);
+  /* Autoclick the loadcert button to streamline the UI. */
+  window.setTimeout("$('#loadcert').trigger('click');", 2000);
 }
 $(document).ready(km.initialize);

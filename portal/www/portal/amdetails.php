@@ -64,17 +64,6 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-if (array_key_exists("pretty", $_REQUEST)){
-  $pretty = $_REQUEST['pretty'];
-  if (strtolower($pretty) == "false") {
-    $pretty = False;
-  } else {
-    $pretty = True;
-  }
-} else {
-  $pretty=True;
-}
-
 
 // Close the session here to allow multiple AJAX requests to run
 // concurrently. If the session is left open, it holds the session
@@ -93,8 +82,41 @@ $status_array = Array();
 if (count($obj)>0) {
 // if (isset($obj) && $obj && is_array($obj)) {
    // fill in sliver details for each agg 
+  if(preg_match("/".AM_CLIENT_TIMED_OUT_MSG."/", $msg) == 1) {
+    print "<i>".AM_CLIENT_TIMED_OUT_MSG." at aggregate ".am_name(key($obj))." </i><br/>\n";
+  }
   $filterToAM = True;
-  print_rspec( $obj, $pretty, $filterToAM );
+
+  print_rspec( $obj, True, $filterToAM );
+    // Get the rspec in xml format without HTML clutter
+    $xmlRspec = get_rspec_xml( $obj, False, $filterToAM );
+    if ($xmlRspec && $xmlRspec != "null") {
+      print "<div id='jacksContainer-".hash('ripemd160', am_name(key($obj)))."' class='jacks resources' style='background-color: white'></div>";
+
+      print "<script>
+              $(document).ready(function() {
+              var xml = \"$xmlRspec\";
+                thisInstance = new window.Jacks({
+                  mode: 'viewer',
+                  source: 'rspec',
+                  size: { x: 756, y: 400},
+                  show: {
+                  	rspec: false,
+                  	version: false
+                  },
+                  nodeSelect: false,
+                  root: '#jacksContainer-".hash('ripemd160', am_name(key($obj)))."',
+                  readyCallback: function (input, output) {
+                    input.trigger('change-topology',
+                                  [{ rspec: xml }]);
+                  }
+                });
+              });
+            </script>";
+    }
+  print '<div class="rawRSpec" style="display: none;">';
+  print_rspec( $obj, False, $filterToAM );
+  print '</div>';
 } else {
   // FIXME: $obj might be an error message?
   print "<i>No resources found.</i><br/>\n";

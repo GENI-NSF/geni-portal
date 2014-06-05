@@ -50,8 +50,6 @@ END;
 
 <h1>Profile</h1>
 
-<?php include "tabs.js"; ?>
-
   <div id='tablist'>
 		<ul class='tabs'>
 			<li><a href='#accountsummary'>Account Summary</a></li>
@@ -89,10 +87,23 @@ if (count($keys) == 0)
   {
     // No ssh keys are present.
     print "<p>No SSH keys have been uploaded. ";
-    print "SSH keys are required to log in to reserved compute resources.</p>\n";
-    print "<p>You can <button $disable_ssh_keys onClick=\"window.location='generatesshkey.php'\">generate and download an SSH keypair</button> ";
-    print "or <button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">upload an SSH public key</button>, if you have one you want to use.</p>\n";
-    print "<p>If you're not sure what to do, choose 'Generate'.</p>\n";
+    print "SSH keys are required to log in to reserved compute resources.
+      You have two options:</p>\n";
+    $generate_btn = "<button $disable_ssh_keys
+      onClick=\"window.location='generatesshkey.php'\">
+      generate and download an SSH keypair</button>";
+    print '<ol type="i">';
+    print "<li>$generate_btn";
+    print "The private key (but not the passphrase that protects it) might
+      be shared with other GENI entities. If you choose this option do not
+      reuse this key pair outside of GENI, or</li>\n";
+    print "<li><button $disable_ssh_keys
+      onClick=\"window.location='uploadsshkey.php'\">
+      upload an SSH public key</button>, if you have one you want to use.
+      If you only choose this option then some GENI tools might not
+      work properly</p>\n";
+    print "</ol>\n";
+    print "<p>If you're not sure what to do, choose $generate_btn</p>\n";
 
   }
 else
@@ -182,26 +193,59 @@ if (! isset($ma_url)) {
 }
 
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
+$expiration_key = 'expiration';
 $has_certificate = False;
 $has_key = False;
+$expired = False;
+$expiration = NULL;
 if (! is_null($result)) {
   $has_certificate = True;
   $has_key = array_key_exists(MA_ARGUMENT::PRIVATE_KEY, $result);
+  if (array_key_exists($expiration_key, $result)) {
+    $expiration = $result[$expiration_key];
+    $now = new DateTime('now', new DateTimeZone("UTC"));
+    $expired = ($expiration < $now);
+  }
 }
 
 $kmcert_url = "kmcert.php?close=1";
-print "<button onClick=\"window.open('$kmcert_url')\">";
+$button1_label = 'Create an SSL certificate';
 if (! $has_certificate) {
-  print "Generate an SSL certificate";
+  /* No certificate, so show the create button. */
+  print "<button onClick=\"window.open('$kmcert_url')\">";
+  print $button1_label;
+  print "</button>";
+  print "</p>";
+} else if ($expired) {
+  /* Have an expired certificate, just renew it. */
+  print 'Your SSL certificate has expired. Please';
+  print ' <a href="kmcert.php?close=1&renew=1" target="_blank">';
+  print 'renew your SSL certifcate</a> now';
+  print '</p>';
 } else {
+  /* Have a current certificate */
   if ($has_key) {
-    print "Download your Portal generated SSL certificate and key";
-  } else {
-    print "Download your Portal signed SSL certificate";
+    $button1_label = 'Download your SSL certificate and key';
+  } else if ($has_certificate) {
+    $button1_label = 'Download your SSL certificate';
   }
+  print "<button onClick=\"window.open('$kmcert_url')\">";
+  print $button1_label;
+  print "</button>";
+  print "</p>";
+
+  // Display a renew link
+  print '<p>';
+  if ($expiration) {
+    print 'Your SSL certificate expires on ';
+    print dateUIFormat($expiration);
+    print '.';
+  }
+  print ' You can <a href="kmcert.php?close=1&renew=1" target="_blank">';
+  print 'renew your SSL certifcate</a> any time';
+  print '</p>';
 }
-print "</button>";
-print "</p>";
+
 // END SSL tab
 echo "</div>";
 
@@ -275,6 +319,16 @@ if($in_lockdown_mode) {
   $disable_account_details = "disabled";
 }
 
+/* Determine OpenID URL */
+$protocol = "http";
+if (array_key_exists('HTTPS', $_SERVER)) {
+  $protocol = "https";
+}
+$host  = $_SERVER['SERVER_NAME'];
+$openid_url = ("$protocol://$host/server/server.php/idpage?user="
+               . $user->username);
+
+
 print "<h2>Account Summary</h2>\n";
 // Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
 // Put this in a nice table
@@ -282,6 +336,7 @@ print "<table>\n";
 print "<tr><th>Name</th><td>" . $user->prettyName() . "</td></tr>\n";
 print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
 print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
+print "<tr><th>GENI OpenID URL</th><td>" . $openid_url . "</td></tr>\n";
 print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
 print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
 print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
@@ -351,10 +406,10 @@ $download_url = "https://" . $_SERVER['SERVER_NAME'] . "/secure/kmcert.php?close
 </p>
 
 <h3>Option 1: Automatic <code>omni</code> configuration</h3>
-<p>To configure <code>omni</code>, use the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a> script distributed with <code>omni</code> as described below.</p>
+<p>To automatically configure <code>omni</code>, use the <a href='http://trac.gpolab.bbn.com/gcf/wiki/OmniConfigure/Automatic'><code>omni-configure</code></a> script distributed with <code>omni</code> as described below.</p>
   <ol>
     <li>
-In order to use <code>omni</code> or other command line tools you will need to generate an SSL certificate. <br/>
+In order to use <code>omni</code> you will need to generate an SSL certificate. <br/>
 <?php if (!$has_certificate): ?>
 
 <button onClick="window.open('<?php print $create_url?>')">Generate an SSL certificate</button>.
@@ -363,19 +418,19 @@ In order to use <code>omni</code> or other command line tools you will need to g
 <?php endif; ?>
 
     </li>
-    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni-bundle.zip</code>):<br/>
+    <li>Download your customized <code>omni</code> configuration data and save it in the default location (<code>~/Downloads/omni.bundle</code>):<br/>
     		 <button onClick="window.location='omni-bundle.php'">Download your omni data</button>
     </li>
-    <li>Generate an <code>omni_config</code> by running the following command in a terminal: <pre>omni-configure</pre></li>
-    <li>Test your setup by running the following command in a terminal: <pre>omni -a ig-gpo getversion</pre>
+    <li>Run the following command in a terminal to generate a configuration file for omni (<code>omni_config</code>): <pre>omni-configure</pre></li>
+    <li>Test your setup by running the following command in a terminal: <pre>omni -a gpo-ig getversion</pre>
     The output should look similar to this <a href='http://trac.gpolab.bbn.com/gcf/attachment/wiki/OmniConfigure/Automatic/getversion.out'>example output</a>.
 </li>
   </ol>
 
   <table id='tip'>
     <tr>
-       <td rowspan=3><img id='tipimg' src="http://groups.geni.net/geni/attachment/wiki/GENIExperimenter/Tutorials/Graphics/Symbols-Tips-icon-clear.png?format=raw" width="75" height="75" alt="Tip"></td>
-       <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
+       <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"></td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.5.3</b> or newer.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:
 	            <pre>omni --version</pre>
@@ -446,3 +501,4 @@ echo "</div>";
   echo "</div>";
 
 ?>
+<?php include "tabs.js"; ?>

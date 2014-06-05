@@ -130,6 +130,7 @@ if (array_key_exists("rspec_id", $_REQUEST)) {
 
 // May be 1 or more am_id arguments. Instantiate them all, if many given
 // To give many, name the arg am_id[]
+$am_ids = null;
 if (array_key_exists("am_id", $_REQUEST)) {
   $am_id = $_REQUEST['am_id'];
   if (is_array($am_id)) {
@@ -143,6 +144,7 @@ if (array_key_exists("am_id", $_REQUEST)) {
     $am = get_service_by_id($am_id);
     $ams = array();
     $ams[] = $am;
+    $am_ids[] = $am_id;
   }
   if (is_null($am)) {
     if ($am_id != '') {

@@ -278,8 +278,12 @@ class GeniUser
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
     $row = lookup_keys_and_certs($ma_url, Portal::getInstance(),
             $this->account_id);
-    $this->certificate = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE];
-    $this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
+    if ($row != null) {
+      if (in_array(MA_INSICE_KEY_TABLE_FIELDNAME::CERTIFICATE, $row))
+	$this->certificate = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE];
+      if (in_array(MA_INSICE_KEY_TABLE_FIELDNAME::PRIVATE_KEY, $row))
+	$this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
+    }
   }
 
   /**
@@ -460,11 +464,9 @@ function send_attribute_fail_email()
   foreach ($array as $var => $value) {
     $body .= "$var = $value\n";
   }
-  $headers = "Auto-Submitted: auto-generated\r\n";
-  $headers .= "Precedence: bulk\r\n";
   mail($portal_admin_email,
           "Portal access failure on $server_host",
-       $body, $headers);
+       $body);
 }
 
 function geni_load_user_by_eppn($eppn, $sfcred)
@@ -474,7 +476,8 @@ function geni_load_user_by_eppn($eppn, $sfcred)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "Looking up EPPN " . $eppn);
   $signer = Portal::getInstance($sfcred);
   $member = ma_lookup_member_by_eppn($ma_url, $signer, $eppn);
-  if (is_null($member)) {
+  //error_log("MEMBER = " . print_r($member, True));
+  if (is_null($member) || !isset($member->certificate)) {
     // New identity, go to activation page
     relative_redirect("kmactivate.php");
   } else {

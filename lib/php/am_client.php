@@ -35,6 +35,14 @@ require_once("pa_constants.php");
 require_once('cert_utils.php');
 require_once('cs_constants.php');
 
+//Constants defined for proc_open
+//String used for msg to return - in some UI - this is the message that is displayed
+define("AM_CLIENT_TIMED_OUT_MSG", "Operation timed out", true);
+//how long to wait before to time out omni process (in seconds) - try 12 minutes
+define("AM_CLIENT_OMNI_KILL_TIME", 720);
+//if want to test early omni termination
+//define("AM_CLIENT_OMNI_KILL_TIME", 1);
+
 function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL, $slice_id = NULL)
 {
   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -194,53 +202,6 @@ function get_template_omni_config($user, $version, $default_project=null)
     return $omni_config;
 }
 
-/**
- * Create a temporary omni config file for $user and return the file
- * name.
- *
- * N.B. the caller is responsible for removing the file (via unlink()).
- * FIXME: This is only used by ready_to_login which is not used
- */
-function write_omni_config($user)
-{
-    $username = $user->username;
-    $urn = $user->urn();
-    // Get the authority from the user's URN
-    parse_urn($urn, $authority, $type, $name);
-
-    /* Write key and credential files. */
-    $cert = $user->insideCertificate();
-    $cert_file = writeDataToTempFile($cert, "$username-cert-");
-    $private_key = $user->insidePrivateKey();
-    $key_file = writeDataToTempFile($private_key, "$username-key-");
-
-    /* Write ssh keys to tmp files. */
-    $ssh_key_files = write_ssh_keys($user, $user);
-    $all_key_files = implode(',', $ssh_key_files);
-
-    /* Create OMNI config file */
-    $omni_config = "[omni]\n"
-      . "default_cf = my_gcf\n"
-      . "users = $username\n"
-      . "[my_gcf]\n"
-      . "type=gcf\n"
-      . "authority=$authority\n"
-      . "ch=https://localhost:8000\n"
-      . "cert=$cert_file\n"
-      . "key=$key_file\n"
-      . "[$username]\n"
-      . "urn=$urn\n"
-      . "keys=$all_key_files\n";
-
-    $omni_file = writeDataToTempFile($omni_config, "$username-omni-");
-
-    $result = array($omni_file, $cert_file, $key_file);
-    foreach ($ssh_key_files as $f) {
-      $result[] = $f;
-    }
-    return $result;
-}
-
 // Lookup any attributes of aggregate associated with given AM URL
 // Return null if no attribute for that name defined
 function lookup_attribute($am_url, $attr_name)
@@ -267,6 +228,8 @@ function lookup_attribute($am_url, $attr_name)
 //    $args: list of arguments (including the method itself) included
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
+  $file_manager = new FileManager(); // Hold onto all allocated filenames
+
   // We seem to get $am_url sometimes as a string, sometimes as an array
   // Should always talk to single AM
   if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
@@ -324,9 +287,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
             'omniVersionCache');
     $tmp_agg_cache = tempnam(sys_get_temp_dir(),
             'omniAggCache');
+    $file_manager->add($tmp_version_cache);
+    $file_manager->add($tmp_agg_cache);
 
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
+    $file_manager->add($cert_file);
     $key_file = writeDataToTempFile($private_key, "$username-key-");
+    $file_manager->add($key_file);
 
     $slice_users = $slice_users + array($user);
     $username_array = array();
@@ -388,11 +355,19 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       	     . "keys=$all_key_files\n";
     }
 
+    foreach($all_ssh_key_files as $ssh_key_file) {
+      $file_manager->add($ssh_key_file);
+    }
+
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
+    $file_manager->add($omni_file);
 
     /* Call OMNI */
 
     $omni_log_file = tempnam(sys_get_temp_dir(), $username . "-omni-log-");
+    $omni_stderr_file = tempnam(sys_get_temp_dir(), $username . "-omni-stderr-");
+    $file_manager->add($omni_stderr_file);
+
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
@@ -411,6 +386,15 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 		       //                       defines no AM nicknames
 		       $tmp_agg_cache);
 
+    $descriptor_spec = array(
+                         // stdin is a pipe that the child will read from
+                         0 => array("pipe", "r"),
+                         // stdout is a pipe that the child will write to
+                         1 => array("pipe", "w"),
+                          // stderr is a file to write to
+                         2 => array("file", $omni_stderr_file, "a"));
+
+
     if (!is_array($am_url)){
       $cmd_array[]='-a';
       $cmd_array[]=$am_url;
@@ -421,6 +405,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       $speaks_for_cred_filename = 
 	writeDataToTempfile($speaks_for_cred->credential(), 
 			    "$username-sfcred-");
+      $file_manager->add($speaks_for_cred_filename);
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
 
@@ -430,16 +415,62 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $command = implode(" ", $cmd_array);
 
      error_log("am_client invoke_omni_function COMMAND = " . $command);
-     $handle = popen($command . " 2>&1", "r");
+     $handle = proc_open($command, $descriptor_spec, $pipes);
+
+     stream_set_blocking($pipes[1], 0);
+     // 1 MB
+     $bufsiz = 1024 * 1024;
      $output= '';
-     $read = fread($handle, 1024);
-     while($read != null) {
-       if ($read != null)
-	 $output = $output . $read;
-       $read = fread($handle, 1024);
+     $outchunk = null;
+
+     //time to terminate omni process
+     $now = time();
+     $kill_time = $now + AM_CLIENT_OMNI_KILL_TIME;
+
+     while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
+       $outchunk = fread($pipes[1], $bufsiz);
+       if ($outchunk != null && $outchunk !== FALSE) {
+	 $output = $output . $outchunk;
+         $usleep = 0;
+       } else {
+         // 0.25 seconds
+         $usleep = 250000;
+       }
+       // If we got data, don't sleep, see if there's more ($usleep = 0)
+       // If no data, sleep for a little while then check again.
+       usleep($usleep);
+       $now = time();
      }
-     pclose($handle);
-  
+     // Catch any final output after timeout
+     $outchunk = fread($pipes[1], $bufsiz);
+     if ($outchunk != null && $outchunk !== FALSE) {
+       $output = $output . $outchunk;
+     }
+
+     //fclose($pipes[0]);
+     //fclose($pipes[1]);
+     //proc_close($handle);
+
+     $status = proc_get_status($handle);
+     if (!$status['running']) {
+        fclose($pipes[0]);
+     	fclose($pipes[1]);
+	$return_value = $status['exitcode'];
+	proc_close($handle);
+     }  else {
+    // Still running, terminate it.
+    // See https://bugs.php.net/bug.php?id=39992, for problems
+    // terminating child processes and a workaround involving posix_setpgid()
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	$term_result = proc_terminate($handle);
+	// Omni is taking too long to respond so
+	// assign Timeout error message to output and this message may show up in UI
+	//msg constant defined above
+	$output = AM_CLIENT_TIMED_OUT_MSG;
+     }
+
+     /*
      unlink($cert_file);
      unlink($key_file);
      unlink($omni_file);
@@ -451,6 +482,10 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if ($speaks_for_invocation) {
        unlink($speaks_for_cred_filename);
      }
+     */
+
+     // Good for debugging but verbose
+     //     error_log("am_client output " .  print_r($output, True));
 
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
@@ -467,6 +502,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
        unlink($omni_log_file);
      }
+     //     error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 
@@ -670,44 +706,6 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
   // Note that this AM no longer has resources
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
-  return $output;
-}
-
-// Called from portal/www/porta/readyToLogin.php, which is unused
-function ready_to_login($am_url, $user, $slice_cred, $slice_urn)
-{
-  global $portal_gcf_dir;
-
-  $tmp_files = write_omni_config($user);
-  $omni_config = $tmp_files[0];
-
-  $slice_cred_file = writeDataToTempFile($slice_cred, $user->username . "-cred-");
-  $tmp_files[] = $slice_cred_file;
-
-  $cmd_array = array($portal_gcf_dir . '/examples/readyToLogin.py',
-                     '-c', $omni_config,
-                     '-a', $am_url,
-                     '--slicecredfile', $slice_cred_file,
-                     $slice_urn);
-  $command = implode(" ", $cmd_array);
-
-  error_log("COMMAND = " . $command);
-  putenv("PYTHONPATH=$portal_gcf_dir/src");
-  $handle = popen($command . " 2>&1", "r");
-  $output= '';
-  $read = fread($handle, 1024);
-  while($read != null) {
-    if ($read != null)
-      $output = $output . $read;
-    $read = fread($handle, 1024);
-  }
-  pclose($handle);
-
-  /* Now delete all the tmp files. */
-  foreach ($tmp_files as $f) {
-    unlink($f);
-  }
-
   return $output;
 }
 

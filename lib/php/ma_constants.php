@@ -42,6 +42,7 @@ class MA_ARGUMENT {
   const PRIVILEGE_ID = "privilege_id";
   const CSR = "csr";
   const CERTIFICATE = "certificate";
+  const EXPIRATION = "expiration";
   const PRIVATE_KEY = "private_key";
   const MEMBER_UUIDS = "member_uuids";
   const MEMBER_EMAILS = "member_emails";

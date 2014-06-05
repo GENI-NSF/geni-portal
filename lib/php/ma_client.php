@@ -221,14 +221,20 @@ function lookup_keys_and_certs($ma_url, $signer, $member_uuid)
   if (sizeof($prires)>0) {
     $all_urns = array_keys($prires);
     $urn = $all_urns[0];
-    $private_key = $prires[$urn]['_GENI_MEMBER_INSIDE_PRIVATE_KEY'];
+    $private_key = NULL;
+    if (in_array("_GENI_MEMBER_INSIDE_PRIVATE_KEY", $prires[$urn])) {
+      $private_key = $prires[$urn]['_GENI_MEMBER_INSIDE_PRIVATE_KEY'];
+    }
     $puboptions = array('match'=> array('MEMBER_UID'=>$member_uuid),
 			'filter'=>array('_GENI_MEMBER_INSIDE_CERTIFICATE'));
     $puboptions = array_merge($puboptions, $client->options());
     $pubres = $client->lookup_public_member_info($client->creds(), 
 						 $puboptions);
     if (sizeof($pubres)>0) {
-      $certificate = $pubres[$urn]['_GENI_MEMBER_INSIDE_CERTIFICATE'];
+      $certificate = NULL;
+      if (in_array("_GENI_MEMBER_INSIDE_CERTIFICATE", $pubres[$urn])) {
+	$certificate = $pubres[$urn]['_GENI_MEMBER_INSIDE_CERTIFICATE'];
+      }
       return array(MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE => $certificate,
 		   MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY=> $private_key);
     }
@@ -331,6 +337,8 @@ class Member {
       return $this->first_name . " " . $this->last_name;
     } elseif (isset($this->mail)) {
       return $this->mail;
+    } elseif (isset($this->username)) {
+      return $this->username;
     } elseif (isset($this->eppn)) {
       return $this->eppn;
     } else {
@@ -518,7 +526,8 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
   }
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $public_options = array('match' => array('MEMBER_UID'=>$member_id),
-                          'filter' => array('_GENI_MEMBER_SSL_CERTIFICATE'));
+                          'filter' => array('_GENI_MEMBER_SSL_CERTIFICATE',
+                                            '_GENI_MEMBER_SSL_EXPIRATION'));
   $public_options = array_merge($public_options, $client->options());
   $public_res = $client->lookup_public_member_info($client->creds(), 
                                                    $public_options);
@@ -527,14 +536,24 @@ function ma_lookup_certificate($ma_url, $signer, $member_id)
               . " in ma_lookup_certificate");
     return NULL;
   }
-  $certificate = $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE'];
+  $certificate = NULL;
+  if (array_key_exists('_GENI_MEMBER_SSL_CERTIFICATE',
+                       $public_res[$member_urn])) {
+    $certificate = $public_res[$member_urn]['_GENI_MEMBER_SSL_CERTIFICATE'];
+  }
   if ($certificate) {
     $result = array(MA_ARGUMENT::CERTIFICATE => $certificate);
   } else {
     // If there is no certificate, return NULL.
     return NULL;
   }
-
+  if (array_key_exists('_GENI_MEMBER_SSL_EXPIRATION',
+                       $public_res[$member_urn])) {
+    // Convert expiration to DateTime from string
+    $expiration = $public_res[$member_urn]['_GENI_MEMBER_SSL_EXPIRATION'];
+    $expiration = new DateTime($expiration);
+    $result[MA_ARGUMENT::EXPIRATION] = $expiration;
+  }
   $private_options = array('match'=> array('MEMBER_UID'=>$member_id),
                            'filter'=>array('_GENI_MEMBER_SSL_PRIVATE_KEY'));
   $private_options = array_merge($private_options, $client->options());
@@ -589,8 +608,6 @@ $DETAILS_PUBLIC = array(
 			"MEMBER_URN",
 			"MEMBER_UID",
 			"MEMBER_USERNAME",
-			"_GENI_MEMBER_SSL_PUBLIC_KEY",
-			"_GENI_MEMBER_INSIDE_PUBLIC_KEY",
 			"_GENI_ENABLE_WIMAX",
 			"_GENI_ENABLE_WIMAX_BUTTON",
 			"_GENI_ENABLE_IRODS"
@@ -791,6 +808,62 @@ function lookup_member_names($ma_url, $signer, $member_uuids)
   foreach ($member_uuids as $uuid) {
     if (! array_key_exists($uuid, $ids)) {
       $ids[$uuid] = "NONE";
+    }
+  }
+  return $ids;
+}
+
+/*
+ * Clean out cruft in UUID list. Sometimes we get an empty string or
+ * NULL depending on what table or data set UUIDs are extracted
+ * from. This function ensures that the list is fairly clean and does
+ * not include the portal's own UUID.
+ */
+function clean_uuids($dirty_uuids)
+{
+  $uids = array();
+  $portal_uuid = get_portal_uid();
+  foreach($dirty_uuids as $uuid) {
+    if (isset($uuid) && $uuid !== '' && $uuid !== $portal_uuid) {
+      $uids[] = $uuid;
+    }
+  }
+  return $uids;
+}
+
+function ma_lookup($ma_url, $signer, $member_uuids)
+{
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  // Exclude null/empty UIDS in member_uuids from our query
+  $uids = clean_uuids($member_uuids);
+
+  $ids = array();
+  if (sizeof($uids) > 0) {
+    /* Get any info clearinghouse is willing to provide */
+    $options = array('match'=> array('MEMBER_UID'=>$uids));
+
+    // Replace the default result handler with one that will not
+    // redirect to the error page on an error being returned.
+    // This way we can continue loading pages that use this
+    // Although we get a name of NONE for all members the user asked about
+    // on an error
+    global $put_message_result_handler;
+    $put_message_result_handler='no_redirect_result_handler';
+    $options = array_merge($options, $client->options());
+    $res = $client->lookup('MEMBER', $client->creds(), $options);
+    $put_message_result_handler = null;
+
+    if (isset($res) && ! is_null($res)) {
+      foreach($res as $member_urn => $member_info) {
+        if (! array_key_exists('MEMBER_UID', $member_info)) {
+          /* If no info is available, do not include it in the result. */
+          continue;
+        }
+        $member_uuid = $member_info['MEMBER_UID'];
+        $member = new Member($member_uuid);
+        $member->init_from_record($member_info);
+        $ids[$member_uuid] = $member;
+      }
     }
   }
   return $ids;

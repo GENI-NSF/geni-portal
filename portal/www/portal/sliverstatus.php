@@ -88,7 +88,7 @@ if (! isset($am_id) or is_null($am_id)) {
 <script src="amstatus.js"></script>
 <script>
 var slice= "<?php echo $slice_id ?>";
-var am_id= "<?php echo $am_id ?>";
+var am_id= <?php echo json_encode($am_ids) ?>;
 
 <?php include('status_constants_import.php'); ?>
 

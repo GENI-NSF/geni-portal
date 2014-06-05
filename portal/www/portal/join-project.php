@@ -48,7 +48,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 include("tool-lookupids.php");
 
-$mpids = get_projects_for_member($sa_url, $user, $user->account_id, false, null);
+$mpids = get_projects_for_member($sa_url, $user, $user->account_id, false);
 
 // Filter out projects for which this user has not already requested to join (nothing pending)
 $rs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
@@ -70,15 +70,16 @@ include("tool-breadcrumbs.php");
 print "<h1>Join a Project</h1>\n";
 
 print "<p>All GENI actions must be taken in the context of a
-  project. On this page, you can request to join a project. You should
-  only request to join a project if the project lead knows you, as the
-  project lead is taking responsibility for your actions.</p>" 
-  . "<p>The project lead will be sent an email, to approve or deny your request.\n";
-print "That email will have a link to a page where the lead can act on your request.\n";
-print "When the project lead acts on your request, you will get an email " .
-"notifying you whether your request was approved.\n";
-print "Once approved, you can create a slice, or request to join an existing slice.</p>\n";
+  project. On this page, you can request to join a project.</p>";
 
+print "<p><b>You should only request to join a project if the project
+ lead knows you, as the  project lead is taking responsibility for
+ your actions. Abuse of this functionality may result in revocation
+ of your GENI account.</b></p>";
+
+print "<p>Once the project lead makes a decision about your request you
+ will be notified through email. Once you are a member of a project,
+ you can create a slice, or request to join an existing slice.";
 
 // FIXME: Replace these 2 calls with 1 call that gets the project details the first time
 
@@ -91,7 +92,19 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 } else {
 
   print "<h2>Select a project to join</h2>\n";
-  print "<table>\n";
+  print "<p><i>Please do not try to join arbitrary projects. Abuse of
+   this functionality may result in revocation of your GENI account.
+   </i></p>";
+   
+  /* datatables.net (for sortable/searchable tables) */
+  echo '<script type="text/javascript">';
+  echo '$(document).ready( function () {';
+  echo '  $(\'#projects\').DataTable({paging: false});';
+  echo '} );';
+  echo '</script>';
+   
+  print "<table id=\"projects\" class=\"display\">\n";
+  print "<thead>\n";
   print "<tr><th>Project</th><th>Purpose</th><th>Project Lead</th><th>Join</th></tr>\n";
   $jointhis_url = "join-this-project.php?project_id=";
   $project_details = lookup_project_details($sa_url, $user, $pids);
@@ -103,6 +116,8 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
 					       $project_details, 
 					       PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
   //  error_log("MEMBER_DETAILS = " . print_r($member_names, true));
+
+  print "</thead><tbody>\n";
 
   foreach ($project_details as $project) {
     //    $project = lookup_project($sa_url, $user, $project_id);
@@ -119,6 +134,7 @@ if (! isset($pids) || is_null($pids) || count($pids) < 1) {
     $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
     print "</td><td><button onClick=\"window.location='" . $jointhis_url . $project_id . "'\"><b>Join</b></button></td></tr>\n";
   }
+  print "</tbody>\n";
   print "</table>\n";
 }
 
