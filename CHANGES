@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.16.3 ==
+ * Put up an Orbit logo on the WiMAX page for people to use their new WiMAX account. (#1062)
+
 == 2.16.2 ===
  * Fix a timeout bug by increasing buffer and decreasing sleep (#1060)
 
