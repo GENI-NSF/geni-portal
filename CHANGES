@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.16.2 ===
+ * Fix a timeout bug by increasing buffer and decreasing sleep (#1060)
+
 == 2.16.1 ===
  * Enable the WiMAX page for all users. (#1015)
 
