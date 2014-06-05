@@ -418,7 +418,8 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      $handle = proc_open($command, $descriptor_spec, $pipes);
 
      stream_set_blocking($pipes[1], 0);
-     $bufsiz = 1024;
+     // 1 MB
+     $bufsiz = 1024 * 1024;
      $output= '';
      $outchunk = null;
 
@@ -430,8 +431,14 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
        $outchunk = fread($pipes[1], $bufsiz);
        if ($outchunk != null && $outchunk !== FALSE) {
 	 $output = $output . $outchunk;
+         $usleep = 0;
+       } else {
+         // 0.25 seconds
+         $usleep = 250000;
        }
-       sleep(1); // Avoid a busy wait that makes the page hit the PGP 30secs max execution time
+       // If we got data, don't sleep, see if there's more ($usleep = 0)
+       // If no data, sleep for a little while then check again.
+       usleep($usleep);
        $now = time();
      }
      // Catch any final output after timeout
