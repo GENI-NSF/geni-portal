@@ -201,7 +201,8 @@ dist_svcwebimages_DATA = \
 	www/images/staticmap.png \
 	www/images/header-home.jpg \
 	www/images/geni_globe.png \
-	www/images/geni_globe_small.png
+	www/images/geni_globe_small.png \
+	www/images/orbit_banner.png
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
