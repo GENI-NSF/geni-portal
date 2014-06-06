@@ -7,6 +7,9 @@
 == 2.17 ==
  * Handle expiration time properly from GRAM AM (#1061)
 
+== 2.16.4 ==
+ * Fix bug on slice page where the date picker would reset to the default date. (#1064)
+
 == 2.16.3 ==
  * Put up an Orbit logo on the WiMAX page for people to use their new WiMAX account. (#1062)
 
