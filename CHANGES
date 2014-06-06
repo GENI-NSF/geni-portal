@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.16.5 ==
+ * Band-aid for sliver status failure. Partial fix for (#1000)
+
 == 2.16.4 ==
  * Fix bug on slice page where the date picker would reset to the default date. (#1064)
 
