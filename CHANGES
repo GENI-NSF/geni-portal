@@ -7,6 +7,9 @@
 == 2.17 ==
  * Handle expiration time properly from GRAM AM (#1061)
 
+== 2.16.6 ==
+ * Fix for slice page not defaulting to This Slice on Safari (#1067)
+
 == 2.16.5 ==
  * Band-aid for sliver status failure. Partial fix for (#1000)
 
