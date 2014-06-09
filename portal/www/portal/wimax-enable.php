@@ -32,15 +32,17 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+// 6/2014: Open WiMAX to all.
 // If user isn't supposed to see the wimax stuff at all, stop now
-if (! $user->hasAttribute('enable_wimax_button')) {
+if (False && ! $user->hasAttribute('enable_wimax_button')) {
   relative_redirect('home.php');
 }
 
 // FIXME: hard-coded url for Rutgers ORBIT
-// See tickets #772, #773
+// See tickets #772, #773, #1045
 $old_wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
-$wimax_server_base_url = "https://www.orbit-lab.org/login/"; // Sept, 2013
+//$wimax_server_base_url = "https://www.orbit-lab.org/login/"; // Sept, 2013
+$wimax_server_base_url = "https://www.orbit-lab.org/remoteAcc/"; // May, 2014
 
 $wimax_server_url = $wimax_server_base_url . "save";
 $wimax_server_deluser_url = $wimax_server_base_url . "deleteUser";
@@ -925,6 +927,10 @@ if (array_key_exists('project_id', $_REQUEST))
   }
   echo $result_string;
 
+  if (! $is_error and ($enable_user or $enable_project)) {
+    echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit WiMAX resources.</p></a>";
+  }
+
   // include link to main WiMAX page
   echo "<p><a href='wimax-enable.php'>Back to main WiMAX page</a></p>";
 
@@ -1044,11 +1050,11 @@ Get user's projects (expired or not)
 	      $ldif_user_group_id = null;
 	    }
 	    // return success of some kind
-	    $warnings[] = "<p>Disabled project $ldif_project_name for WiMAX</p>";
+	    $warnings[] = "<p>Disabled project $proj_name for WiMAX</p>";
 	  } else {
 	    // return error of some kind
 	    //$is_error = True;
-	    $warnings[] = "<p><b>Failed</b> to disable project $ldif_project_name for WiMAX: $res</p>"; // FIXME: What should user do?
+	    $warnings[] = "<p><b>Failed</b> to disable project $proj_name for WiMAX: $res</p>"; // FIXME: What should user do?
 	  }
 	  continue; // don't use this project
 	} // end of block to handle project expired and enabled
@@ -1064,7 +1070,7 @@ Get user's projects (expired or not)
 	    error_log("Project $proj_name has lead " . $lead->prettyName() . " who is not yet wimax enabled");
 	    // FIXME FIXME
 	    // $is_error = True;
-	    // $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $ldif_project_name";
+	    // $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $proj_name";
 	  } else {
 	    if (isset($lead->ma_member->wimax_username)) {
 	      $project_lead_username =$lead->ma_member->wimax_username;
@@ -1087,7 +1093,7 @@ Get user's projects (expired or not)
 	      error_log("Failed to change WiMAX group admin for project $proj_name to $project_lead_username: $res");
 	      // FIXME FIXME - Use $res
 	      // $is_error = True;
-	      // $return_string = "Failed to make " . $lead->prettyName() . " the admin of the $ldif_project_name WiMAX group";
+	      // $return_string = "Failed to make " . $lead->prettyName() . " the admin of the $proj_name WiMAX group";
 	    }
 	  }
 	} // end of block to handle group has wrong admin
@@ -1224,7 +1230,8 @@ P7
       echo "<p>You have elected to use WiMAX on project " 
         . "<a href='project.php?project_id=" 
         . $ldif_user_group_id 
-        . "'>" . $ldif_user_groupname . "</a> with username '$ldif_user_username'. ";
+        . "'>" . $ldif_user_groupname . "</a> with username '$ldif_user_username'. </p>";
+      echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit WiMAX resources.</p></a>";
       if (count($projects_admin) > 0) {
 	echo "<p>You are the WiMAX group admin for these projects that you lead: ";
 	$cnt = 0;
@@ -1260,12 +1267,12 @@ P7
       $lead_names = lookup_member_names_for_rows($ma_url, $user, $projects_lead, 
 					     PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
       foreach($projects_lead as $proj) {
-        echo "<tr>";
-        echo "<td><a href='project.php?project_id=$proj_id'>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]}</a></td>";
         $lead_id = $proj[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
 	$proj_id = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
 	$proj_name = $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
         $lead_name = $lead_names[$lead_id];
+        echo "<tr>";
+        echo "<td><a href='project.php?project_id=$proj_id'>{$proj_name}</a></td>";
         echo "<td>$lead_name</td>";
         echo "<td>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE]}</td>";
         echo "<td>";

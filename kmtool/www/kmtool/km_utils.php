@@ -106,14 +106,14 @@ function set_key_passphrase($in_key, $passphrase, &$out_key) {
                      '-out', $out_key_file,
                      '-passout', 'file:' . $passphrase_file);
   $command = implode(" ", $cmd_array);
-  error_log("COMMAND = " . $command);
+  //error_log("COMMAND = " . $command);
 
   // openssl rsa -des3 -in /tmp/passphrase-in-4prbom
   //         -out /tmp/passphrase-out-snVSxl
   //         -passout file:/tmp/passphrase-3rU1XQ
 
   exec($command, $rsa_output, $rsa_status);
-  error_log("openssl rsa status was $rsa_status");
+  //error_log("openssl rsa status was $rsa_status");
   if ($rsa_status == 0) {
     $out_key = file_get_contents($out_key_file);
     $result = TRUE;
@@ -123,9 +123,9 @@ function set_key_passphrase($in_key, $passphrase, &$out_key) {
     error_log("openssl command failed with status $rsa_status");
     $result = FALSE;
   }
-  //  unlink($in_key_file);
-  //  unlink($passphrase_file);
-  //  unlink($out_key_file);
+  unlink($in_key_file);
+  unlink($passphrase_file);
+  unlink($out_key_file);
   return $result;
 }
 

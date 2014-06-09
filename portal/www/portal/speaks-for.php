@@ -34,6 +34,8 @@ require_once 'db-util.php';
 $portal = Portal::getInstance();
 $toolcert = $portal->certificate();
 $toolurn = pem_cert_geni_urn($toolcert);
+$ma_url = 'https://portal.geni.net/secure/loadcert.php';
+$ma_name = 'GPO Member Authority';
 
 /* XXX FIXME: put the signing tool host and URL in a config file. */
 if (! isset($genilib_trusted_host)) {
@@ -56,6 +58,17 @@ if (! isset($genilib_trusted_path)) {
   $genilib_trusted_path = '/xml-signer/index.html';
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
+
+/* Establish a local MA if appropriate. */
+if (array_key_exists('SERVER_NAME', $_SERVER)) {
+  $server_name = $_SERVER['SERVER_NAME'];
+  if (strpos($server_name, 'gpolab.bbn.com')) {
+    /* This is a GPO lab host, so configure a local MA. */
+    $ma_url = "https://$server_name/secure/loadcert.php";
+    $ma_name = "$server_name Member Authority";
+  }
+}
+
 
 $key_token = NULL;
 if (array_key_exists('AUTH_TYPE', $_SERVER)
@@ -95,12 +108,15 @@ show_header('GENI Portal: Authorization', '', FALSE);
 <script src="<?php echo $auth_svc_js;?>"></script>
 <script type="text/plain" id="toolurn"><?php echo $toolurn;?></script>
 <script type="text/plain" id="toolcert"><?php echo $toolcert;?></script>
+<script type="text/plain" id="ma_url"><?php echo $ma_url;?></script>
+<script type="text/plain" id="ma_name"><?php echo $ma_name;?></script>
 <script type="text/javascript">
 /* Override the genilib defaults for our trusted host. */
 genilib.trustedHost = '<?php echo $genilib_trusted_host;?>';
 genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 </script>
 <script type="text/javascript" src="speaks-for.js"></script>
+<link rel="stylesheet" type="text/css" href="speaks-for.css" />
 
 <?php
   /*
@@ -133,6 +149,14 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
           value="Authorize the portal"/>
    </center>
 </form>
+
+  <div class="windowOpen hidden">
+    <div class="alert alert-success">
+      <h5 class="panel-title">Please continue in popup window.</h5>
+    </div>
+  </div>
+
+
 <?php
   /* This div is for debugging only. */
 ?>

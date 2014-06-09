@@ -26,7 +26,28 @@ portal.authorize = function()
 {
   var tool_urn = document.getElementById('toolurn').innerHTML;
   var tool_cert = document.getElementById('toolcert').innerHTML;
-  genilib.authorize(tool_urn, tool_cert, portal.authZResponse);
+  var ma_url_elem = document.getElementById('ma_url');
+  var ma_name_elem = document.getElementById('ma_name');
+  default_ma = null;
+  if (ma_url_elem && ma_name_elem) {
+      default_ma = {};
+      default_ma.url = ma_url_elem.innerHTML;
+      default_ma.name = ma_name_elem.innerHTML;
+  }
+  certWindow = genilib.authorize(tool_urn, tool_cert, portal.authZResponse,
+                                 default_ma);
+  $(certWindow.document).ready(function() {
+      $('.windowOpen').removeClass('hidden');
+      $(certWindow).focus();
+
+      var interv = window.setInterval(function() {
+          if (certWindow.closed !== false) {
+              window.clearInterval(interv);
+              $('.windowOpen').addClass('hidden');
+          }
+      }, 250);
+  });
+
   return false;
 }
 portal.authZResponse = function(speaks_for_cred)

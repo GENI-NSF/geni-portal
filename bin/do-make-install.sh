@@ -8,6 +8,7 @@ fi
 set -e
 cd ~/proto-ch
 autoreconf --install
-./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin --sbindir=/usr/local/sbin
+./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
+    --sbindir=/usr/local/sbin --mandir=/usr/local/man
 make
 sudo make install

@@ -225,9 +225,7 @@ $reason
   }
   $email_message = $email_message . "GENI Portal Operations";
 
-  $headers = "Auto-Submitted: auto-generated\r\n";
-  $headers .= "Precedence: bulk\r\n";
-  $headers .= "Cc: " . $user->prettyEmailAddress() . "\r\n";
+  $headers = "Cc: " . $user->prettyEmailAddress() . "\r\n";
   mail($email_address, $email_subject, $email_message,$headers);
 
 } // end of loop over rows to process

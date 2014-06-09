@@ -125,5 +125,25 @@ class SR_XMLRPC_API {
   const LOOKUP_AGGREGATES = "get_aggregates";
 }
 
+// Tag for looking up attributes in a service record dictionary
+const SERVICE_ATTRIBUTE_TAG = 'service_attributes';
+
+// Defined Service Attributes
+const SERVICE_ATTRIBUTE_AM_API_VERSION = "AM_API_VERSION";
+const SERVICE_ATTRIBUTE_SPEAKS_FOR = "SPEAKS_FOR";
+
+// For HTML Aggregate Displays
+const SERVICE_ATTRIBUTE_AM_TYPE = "UI_AM_TYPE";
+const SERVICE_ATTRIBUTE_INSTAGENI_AM = "ui_instageni_am";
+const SERVICE_ATTRIBUTE_EXOGENI_AM = "ui_exogeni_am";
+const SERVICE_ATTRIBUTE_FOAM_AM = "ui_foam_am";
+const SERVICE_ATTRIBUTE_OTHER_AM = "ui_other_am";
+const SERVICE_ATTRIBUTE_AM_CAT = "UI_AM_CAT";
+const SERVICE_ATTRIBUTE_DEV_CAT = "ui_dev_cat";
+const SERVICE_ATTRIBUTE_PROD_CAT = "ui_prod_cat";
+const SERVICE_ATTRIBUTE_COMPUTE_CAT = "ui_compute_cat";
+const SERVICE_ATTRIBUTE_NETWORK_CAT = "ui_network_cat";
+const SERVICE_ATTRIBUTE_STITCHABLE_CAT = "ui_stitchable_cat";
+
 
 ?>

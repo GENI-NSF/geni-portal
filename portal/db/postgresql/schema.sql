@@ -199,6 +199,8 @@ CREATE TABLE rspec (
   description VARCHAR NOT NULL,
   rspec VARCHAR NOT NULL,
   owner_id UUID,
+  owner_name VARCHAR,
+  owner_email VARCHAR,
   visibility rspec_visibility NOT NULL,
   bound boolean,
   stitch boolean,

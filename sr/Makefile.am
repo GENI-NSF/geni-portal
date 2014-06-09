@@ -2,9 +2,13 @@ svcdatadir = $(pkgdatadir)/sr
 
 cert_FILES = \
 	certs/InCommonServerCA.pem \
+	certs/cenic-of.pem \
 	certs/clemson-ig-boss.pem \
 	certs/clemson-ig-cm.pem \
 	certs/clemson-ig-of.pem \
+	certs/cornell-ig-boss.pem \
+	certs/cornell-ig-cm.pem \
+	certs/cornell-ig-of.pem \
 	certs/exo-gpo-of.pem \
 	certs/exo-bbn-am.pem \
 	certs/exo-fiu-am.pem \
@@ -14,6 +18,10 @@ cert_FILES = \
 	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
         certs/gpo-of.pem \
+        certs/gr-bbn1-am.pem \
+        certs/gr-bbn1-ch.pem \
+        certs/gr-bbncam-am.pem \
+        certs/gr-bbncam-ch.pem \
 	certs/i2-of.pem \
 	certs/ig-gatech-boss.pem \
 	certs/ig-gatech-cm.pem \
@@ -40,7 +48,11 @@ cert_FILES = \
 	certs/ion.pem \
 	certs/irods.pem \
 	certs/irods-test.pem \
+	certs/kansas-ig-boss.pem \
+	certs/kansas-ig-cm.pem \
+	certs/kansas-ig-of.pem \
 	certs/kettering-ig-of.pem \
+	certs/max.pem \
 	certs/max-ig-boss.pem \
 	certs/max-ig-cm.pem \
 	certs/max-ig-of.pem \
@@ -57,10 +69,15 @@ cert_FILES = \
 	certs/nyu-ig-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
-	certs/pgeni3-ca.pem \
-	certs/pgeni3.pem \
 	certs/renci-eg-of.pem \
+	certs/sl-of.pem \
+	certs/sox-ig-boss.pem \
+	certs/sox-ig-cm.pem \
+	certs/sox-ig-of.pem \
 	certs/sox-of.pem \
+	certs/stanford-ig-boss.pem \
+	certs/stanford-ig-cm.pem \
+	certs/stanford-ig-of.pem \
 	certs/uen-of.pem \
 	certs/uky-ig-of.pem \
 	certs/utah-am.pem \

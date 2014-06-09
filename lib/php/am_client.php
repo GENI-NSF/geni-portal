@@ -28,11 +28,20 @@ require_once('file_utils.php');
 require_once 'geni_syslog.php';
 require_once 'logging_client.php';
 require_once 'sr_client.php';
+require_once 'sr_constants.php';
 require_once 'portal.php';
 require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once('cert_utils.php');
 require_once('cs_constants.php');
+
+//Constants defined for proc_open
+//String used for msg to return - in some UI - this is the message that is displayed
+define("AM_CLIENT_TIMED_OUT_MSG", "Operation timed out", true);
+//how long to wait before to time out omni process (in seconds) - try 12 minutes
+define("AM_CLIENT_OMNI_KILL_TIME", 720);
+//if want to test early omni termination
+//define("AM_CLIENT_OMNI_KILL_TIME", 1);
 
 function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL, $slice_id = NULL)
 {
@@ -83,10 +92,10 @@ function write_ssh_keys($for_user, $as_user)
 
 function get_template_omni_config($user, $version, $default_project=null)
 {
-  $legal_versions = array("2.3.1");
+  $legal_versions = array("2.3.1","2.5");
   if (! in_array($version, $legal_versions)) {
-    /* If $version is not understood, default to omni 2.3.1. */
-    $version = "2.3.1";
+    /* If $version is not understood, default to omni 2.5. */
+    $version = "2.5";
   }
 
     /* Create OMNI config file */
@@ -94,30 +103,6 @@ function get_template_omni_config($user, $version, $default_project=null)
     $urn = $user->urn();
     // Get the authority from the user's URN
     parse_urn($urn, $authority, $type, $name);
-
-    // Add shortcuts for all known AMs?
-    // Note this makes the config long in the extreme case....
-    require_once("sr_client.php");
-    require_once("sr_constants.php");
-    $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-    $nicknames = "";
-    foreach ($ams as $am) {
-      $name = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
-      $url = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-      if (! isset($name) || is_null($name) || trim($name) == '') {
-        continue;
-      }
-      // skip AMs running on localhost as they aren't accessible anywhere else
-      if (strpos($url, '://localhost') !== false ) {
-        continue;
-      }
-
-      $name = str_replace(' ', '-', $name);
-      $name = str_replace(',', '', $name);
-      $name = str_replace('=', '', $name);
-      $name = strtolower($name);
-      $nicknames .= "$name=,$url\n";
-    }
 
     $pgchs = get_services_of_type(SR_SERVICE_TYPE::PGCH);
     if (count( $pgchs ) != 1) {
@@ -129,17 +114,26 @@ function get_template_omni_config($user, $version, $default_project=null)
     }
 
     $omni_config = '# This omni configuration file is for use with omni version ';
-    if ($version == '2.3.1') {
-      $omni_config .= '2.3.1 or higher';
-    }
+    $omni_config .= $version . ' or higher';
     $omni_config .= "\n";
-    $omni_config .= "[omni]\n"
-      . "default_cf = portal\n"
-      . "# 'users' is a comma separated list of users which should be added to a slice.\n"
+    $omni_config .= "[omni]\n";
+
+    if ($version == "2.5") {
+      $omni_config .= "default_cf = portal_chapi\n";
+    }
+   
+    if ($version == "2.3.1") {
+      $omni_config .= "default_cf = portal\n";
+    }
+
+    $omni_config .= "# 'users' is a comma separated list of users which should be added to a slice.\n"
       . "# Each user is defined in a separate section below.\n"
       . "users = $username\n";
+    if ($version == "2.5") {
+    $omni_config .= "# Over-ride the commandline setting of --useSliceMembers to force it True\n"
+      . "useslicemembers = True\n";
+    }
 
-    if ($version == '2.3.1') {
      $omni_config = $omni_config		
       . "# 'default_project' is the name of the project that will be assumed\n"
       . "# unless '--project' is specified on the command line.\n"
@@ -147,6 +141,9 @@ function get_template_omni_config($user, $version, $default_project=null)
 
     if (! isset($sa_url)) {
        $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);	
+    }
+    if (! isset($ma_url)) {
+       $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);	
     }
     $projects = get_projects_for_member($sa_url, $user, $user->account_id, true);	
     if (count($projects) > 0 && is_null($default_project)) {
@@ -162,79 +159,66 @@ function get_template_omni_config($user, $version, $default_project=null)
         $omni_config .= "#default_project = $proj_name\n";
       }
     }
-    }
-    $omni_config = $omni_config
-      . "\n"
-      . "[portal]\n";
 
-    if ($version == "2.3.1") {
-      $omni_config .= "type = pgch\n";
-    }
+    $omni_config .= "\n"
+      . "[portal_chapi]\n"
+      . "# For use with the Uniform Federation API\n"
+      . "# NOTE: Only works with Omni 2.5 or newer\n"
+      . "type = chapi\n"
+      . "# Authority part of the control framework's URN\n"
+      . "authority=$authority\n"
+      . "# Where the CH API server's Clearinghouse service is listening.\n"
+      . "# This will be used to find the MA and SA\n"
+      . "ch=https://$authority:8444/CH\n"
+      . "# Optionally you may explicitly specify where the MA and SA are\n"
+      . "#  running, in which case the Clearinghouse service is not used\n"
+      . "#  to find them\n"
+      . "ma = $ma_url\n"
+      . "sa = $sa_url\n"
+      . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
+      . "key = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
+      . "# For debugging\n"
+      . "verbose=false\n"
+      . "\n";
 
-    $omni_config = $omni_config
+    $omni_config .= "\n"
+      . "[portal]\n"
+      . "type = pgch\n"
       . "authority=$authority\n"
       . "ch = $PGCH_URL\n"
       . "sa = $PGCH_URL\n"
       . "cert = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
       . "key = /PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/geni-$username.pem\n"
-      . "\n"
-      . "[$username]\n"
+      . "\n";
+
+    $omni_config .= "[$username]\n"
       . "urn = $urn\n"
       . "# 'keys' is a comma separated list of ssh public keys which should be added to this user's account.\n"
       . "keys = /PATH/TO/SSH/PUBLIC/KEY.pub\n";
 
     $omni_config = $omni_config
-      . "\n"
-      . "[aggregate_nicknames]\n"
-      . $nicknames;
+      . "\n";
 
     return $omni_config;
 }
 
-/**
- * Create a temporary omni config file for $user and return the file
- * name.
- *
- * N.B. the caller is responsible for removing the file (via unlink()).
- */
-function write_omni_config($user)
+// Lookup any attributes of aggregate associated with given AM URL
+// Return null if no attribute for that name defined
+function lookup_attribute($am_url, $attr_name)
 {
-    $username = $user->username;
-    $urn = $user->urn();
-    // Get the authority from the user's URN
-    parse_urn($urn, $authority, $type, $name);
-
-    /* Write key and credential files. */
-    $cert = $user->certificate();
-    $cert_file = writeDataToTempFile($cert, "$username-cert-");
-    $private_key = $user->privateKey();
-    $key_file = writeDataToTempFile($private_key, "$username-key-");
-
-    /* Write ssh keys to tmp files. */
-    $ssh_key_files = write_ssh_keys($user, $user);
-    $all_key_files = implode(',', $ssh_key_files);
-
-    /* Create OMNI config file */
-    $omni_config = "[omni]\n"
-      . "default_cf = my_gcf\n"
-      . "users = $username\n"
-      . "[my_gcf]\n"
-      . "type=gcf\n"
-      . "authority=$authority\n"
-      . "ch=https://localhost:8000\n"
-      . "cert=$cert_file\n"
-      . "key=$key_file\n"
-      . "[$username]\n"
-      . "urn=$urn\n"
-      . "keys=$all_key_files\n";
-
-    $omni_file = writeDataToTempFile($omni_config, "$username-omni-");
-
-    $result = array($omni_file, $cert_file, $key_file);
-    foreach ($ssh_key_files as $f) {
-      $result[] = $f;
+  $services = get_services();
+  $am_service = null;
+  foreach($services as $service) {
+    if(array_key_exists(SR_ARGUMENT::SERVICE_URL, $service) && 
+       $service[SR_ARGUMENT::SERVICE_URL] == $am_url) {
+      $am_service = $service;
+      break;
     }
-    return $result;
+  }
+  if($am_service)
+    return lookup_service_attribute($am_service, $attr_name);
+  else
+    return null;
 }
 
 // Generic invocation of omni function 
@@ -244,6 +228,34 @@ function write_omni_config($user)
 //    $args: list of arguments (including the method itself) included
 function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 {
+  $file_manager = new FileManager(); // Hold onto all allocated filenames
+
+  // We seem to get $am_url sometimes as a string, sometimes as an array
+  // Should always talk to single AM
+  if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
+
+  // Does the given URL handle speaks-for?
+  $handles_speaks_for = 
+    lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+
+  /*
+    If an aggregate doesn't handle speaks-for, 
+    we use the inside cert and key of the user
+    If an aggregate DOES handle speaks-for and the
+    user has a speaks-for credential, 
+    portal's cert and key and pass along the geni_speaking_for option
+   */
+  $speaks_for_invocation = false;
+  $cert = $user->insideCertificate();
+  $private_key = $user->insidePrivateKey();
+  $speaks_for_cred = $user->speaksForCred();
+
+  if ($handles_speaks_for and $speaks_for_cred) {
+      $speaks_for_invocation = true;
+      $cert = $user->certificate();
+      $private_key = $user->privateKey();
+    }
+
     $username = $user->username;
     $urn = $user->urn();
     // Get the authority from the user's URN
@@ -271,15 +283,17 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Write key and credential files */
-    $cert = $user->certificate();
-    $private_key = $user->privateKey();
     $tmp_version_cache = tempnam(sys_get_temp_dir(),
             'omniVersionCache');
     $tmp_agg_cache = tempnam(sys_get_temp_dir(),
             'omniAggCache');
+    $file_manager->add($tmp_version_cache);
+    $file_manager->add($tmp_agg_cache);
 
     $cert_file = writeDataToTempFile($cert, "$username-cert-");
+    $file_manager->add($cert_file);
     $key_file = writeDataToTempFile($private_key, "$username-key-");
+    $file_manager->add($key_file);
 
     $slice_users = $slice_users + array($user);
     $username_array = array();
@@ -288,19 +302,43 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
 
     /* Create OMNI config file */
+
+    if (! isset($sa_url)) {
+       $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);	
+    }
+    if (! isset($ma_url)) {
+       $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);	
+    }
+
     $omni_config = "[omni]\n"
-      . "default_cf = my_gcf\n"
+      . "default_cf = my_chapi\n"
       . "users = "
       . implode(", ", $username_array)
       . "\n";
     if (is_array($am_url)){
       $omni_config = $omni_config.$aggregates."\n";
     }
+
+    // FIXME: If SR had AM nicknames, we could write a nickname to the
+    // omni_config here. Or all known nicknames in the SR. That's
+    // likely better than relying on the shared agg nick cache. For
+    // now, copy a fixed file to a temp place (avoiding 1 omni
+    // downloading a new copy while another reads, or 2 readers
+    // conflicting somehow)
+    global $portal_gcf_dir;
+    if (!copy($portal_gcf_dir . '/agg_nick_cache.base', $tmp_agg_cache)) {
+      error_log("Failed to copy Agg Nick Cache from " . $portal_gcf_dir . '/agg_nick_cache.base to ' . $tmp_agg_cache);
+    }
+
+    // FIXME: Get the /CH URL from a portal/www/portal/settings.php entry?
+
     $omni_config = $omni_config
-      . "[my_gcf]\n"
-      . "type=gcf\n"
+      . "[my_chapi]\n"
+      . "type=chapi\n"
       . "authority=$authority\n"
-      . "ch=https://localhost:8000\n"
+      . "ch=https://$authority:8444/CH\n"
+      . "sa=$sa_url\n"
+      . "ma=$ma_url\n"
       . "cert=$cert_file\n"
       . "key=$key_file\n";
 
@@ -317,16 +355,24 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       	     . "keys=$all_key_files\n";
     }
 
+    foreach($all_ssh_key_files as $ssh_key_file) {
+      $file_manager->add($ssh_key_file);
+    }
+
     $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
+    $file_manager->add($omni_file);
 
     /* Call OMNI */
-    global $portal_gcf_dir;
 
     $omni_log_file = tempnam(sys_get_temp_dir(), $username . "-omni-log-");
+    $omni_stderr_file = tempnam(sys_get_temp_dir(), $username . "-omni-stderr-");
+    $file_manager->add($omni_stderr_file);
+
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
 		       '-c',
 		       $omni_file,
+		       //		       '--debug',
 		       '-l',
 		       $portal_gcf_dir . '/src/logging.conf',
 		       '--logoutput', $omni_log_file,
@@ -340,9 +386,27 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 		       //                       defines no AM nicknames
 		       $tmp_agg_cache);
 
+    $descriptor_spec = array(
+                         // stdin is a pipe that the child will read from
+                         0 => array("pipe", "r"),
+                         // stdout is a pipe that the child will write to
+                         1 => array("pipe", "w"),
+                          // stderr is a file to write to
+                         2 => array("file", $omni_stderr_file, "a"));
+
+
     if (!is_array($am_url)){
       $cmd_array[]='-a';
       $cmd_array[]=$am_url;
+    }
+
+    if ($speaks_for_invocation) {
+      $cmd_array[] = "--speaksfor=" . $user->urn;
+      $speaks_for_cred_filename = 
+	writeDataToTempfile($speaks_for_cred->credential(), 
+			    "$username-sfcred-");
+      $file_manager->add($speaks_for_cred_filename);
+      $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
 
     for($i = 0; $i < count($args); $i++) {
@@ -351,16 +415,62 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $command = implode(" ", $cmd_array);
 
      error_log("am_client invoke_omni_function COMMAND = " . $command);
-     $handle = popen($command . " 2>&1", "r");
+     $handle = proc_open($command, $descriptor_spec, $pipes);
+
+     stream_set_blocking($pipes[1], 0);
+     // 1 MB
+     $bufsiz = 1024 * 1024;
      $output= '';
-     $read = fread($handle, 1024);
-     while($read != null) {
-       if ($read != null)
-	 $output = $output . $read;
-       $read = fread($handle, 1024);
+     $outchunk = null;
+
+     //time to terminate omni process
+     $now = time();
+     $kill_time = $now + AM_CLIENT_OMNI_KILL_TIME;
+
+     while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
+       $outchunk = fread($pipes[1], $bufsiz);
+       if ($outchunk != null && $outchunk !== FALSE) {
+	 $output = $output . $outchunk;
+         $usleep = 0;
+       } else {
+         // 0.25 seconds
+         $usleep = 250000;
+       }
+       // If we got data, don't sleep, see if there's more ($usleep = 0)
+       // If no data, sleep for a little while then check again.
+       usleep($usleep);
+       $now = time();
      }
-     pclose($handle);
-  
+     // Catch any final output after timeout
+     $outchunk = fread($pipes[1], $bufsiz);
+     if ($outchunk != null && $outchunk !== FALSE) {
+       $output = $output . $outchunk;
+     }
+
+     //fclose($pipes[0]);
+     //fclose($pipes[1]);
+     //proc_close($handle);
+
+     $status = proc_get_status($handle);
+     if (!$status['running']) {
+        fclose($pipes[0]);
+     	fclose($pipes[1]);
+	$return_value = $status['exitcode'];
+	proc_close($handle);
+     }  else {
+    // Still running, terminate it.
+    // See https://bugs.php.net/bug.php?id=39992, for problems
+    // terminating child processes and a workaround involving posix_setpgid()
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	$term_result = proc_terminate($handle);
+	// Omni is taking too long to respond so
+	// assign Timeout error message to output and this message may show up in UI
+	//msg constant defined above
+	$output = AM_CLIENT_TIMED_OUT_MSG;
+     }
+
+     /*
      unlink($cert_file);
      unlink($key_file);
      unlink($omni_file);
@@ -369,6 +479,13 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      foreach ($all_ssh_key_files as $tmpfile) {
        unlink($tmpfile);
      }
+     if ($speaks_for_invocation) {
+       unlink($speaks_for_cred_filename);
+     }
+     */
+
+     // Good for debugging but verbose
+     //     error_log("am_client output " .  print_r($output, True));
 
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
@@ -385,6 +502,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
        unlink($omni_log_file);
      }
+     //     error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 
@@ -484,6 +602,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
   $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
   $args = array("--slicecredfile",
 		$slice_credential_filename,
+		"--alap",
 		'renewsliver',
 		$slice_urn,
 		$time);
@@ -587,43 +706,6 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
   // Note that this AM no longer has resources
   $output = invoke_omni_function($am_url, $user, $args);
   unlink($slice_credential_filename);
-  return $output;
-}
-
-function ready_to_login($am_url, $user, $slice_cred, $slice_urn)
-{
-  global $portal_gcf_dir;
-
-  $tmp_files = write_omni_config($user);
-  $omni_config = $tmp_files[0];
-
-  $slice_cred_file = writeDataToTempFile($slice_cred, $user->username . "-cred-");
-  $tmp_files[] = $slice_cred_file;
-
-  $cmd_array = array($portal_gcf_dir . '/examples/readyToLogin.py',
-                     '-c', $omni_config,
-                     '-a', $am_url,
-                     '--slicecredfile', $slice_cred_file,
-                     $slice_urn);
-  $command = implode(" ", $cmd_array);
-
-  error_log("COMMAND = " . $command);
-  putenv("PYTHONPATH=$portal_gcf_dir/src");
-  $handle = popen($command . " 2>&1", "r");
-  $output= '';
-  $read = fread($handle, 1024);
-  while($read != null) {
-    if ($read != null)
-      $output = $output . $read;
-    $read = fread($handle, 1024);
-  }
-  pclose($handle);
-
-  /* Now delete all the tmp files. */
-  foreach ($tmp_files as $f) {
-    unlink($f);
-  }
-
   return $output;
 }
 

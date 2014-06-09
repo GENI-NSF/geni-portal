@@ -105,9 +105,17 @@ $sa_url_parameter = $SA_URL;
 $sa_urn_parameter = $SA_URN;
 $ch_url_parameter = $CH_URL;
 $slice_urn_parameter = $slice_urn;
-$client_key_parameter = $user->privateKey();
-$client_cert_parameter = $user->certificate();
 $server_cert_parameter = $am_root_cert_bundle;
+
+/*
+ * NOTE: Flack must use the inside cert & key. Flack does not know how
+ * to do speaks-for, so cannot use the portal cert/key to talk to PGCH
+ * or aggregates with a speaks-for credential.
+ *
+ * Use the inside cert and key here.
+ */
+$client_key_parameter = $user->insidePrivateKey();
+$client_cert_parameter = $user->insideCertificate();
 
 /*----------------------------------------------------------------------
  * Presentation below here
@@ -145,12 +153,8 @@ $server_cert_parameter = $am_root_cert_bundle;
     </div>
 
     <noscript>
-      <p>Flack requires that JavaScript be turned on~</p>
+      <p>Flack requires that JavaScript be turned on</p>
     </noscript>
-
-    <script type="text/javascript"
-            src="https://www.emulab.net/protogeni/flack-stable/loader.js">
-    </script>
 
     <!-- Put flack in portal mode always. -->
     <script>isPortal=1;</script>
@@ -166,6 +170,10 @@ $server_cert_parameter = $am_root_cert_bundle;
     </script>
     <script type="text/plain" id="server-cert-parameter">
 <?php echo $server_cert_parameter;?>
+    </script>
+    <!-- Run the loader after its variables are set above. -->
+    <script type="text/javascript"
+            src="https://www.emulab.net/protogeni/flack-stable/loader.js">
     </script>
   </body>
 </html>

@@ -66,15 +66,30 @@ if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
+/* If no certificate, we're doing to pass off to another page to help
+   the user create a certificate. Put a note in the session that the
+   user is in the process of loading a certificate into the signing
+   tool so that the certificate creation process can redirect back to
+   here.
+ */
+
+/* this is how to check for a started session on PHP < 5.4 */
+if (session_id() == '') {
+    session_start();
+}
+$_SESSION['xml-signer']='loadcert.php';
+session_write_close();
+
+
 /*
  * We may be receiving a passphrase via POST. If so, use that passphrase
  * to encrypt the private key before proceeding.
  */
 $method = $_SERVER['REQUEST_METHOD'];
-error_log("Got request method '$method'");
+//error_log("Got request method '$method'");
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  error_log("Processing put request");
-  error_log("_REQUEST = " . print_r($_REQUEST, true));
+  //error_log("Processing put request");
+  //error_log("_REQUEST = " . print_r($_REQUEST, true));
   $passphrase1 = NULL;
   $passphrase2 = NULL;
   if (array_key_exists($PASSPHRASE_1, $_REQUEST)) {
@@ -85,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
   if ($passphrase1 && $passphrase2 && $passphrase1 == $passphrase2) {
     set_key_passphrase($private_key, $passphrase1, $new_key);
-    error_log("new_key = $new_key");
+    //error_log("new_key = $new_key");
     /*
      * NOTE: the newly protected key is *not* store in the database!
      *
@@ -108,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 /* URL for creating a certificate. */
 $server_name = $_SERVER['SERVER_NAME'];
-$create_url = "https://$server_name/secure/kmcert.php?close=1";
+$create_url = "https://$server_name/secure/kmcert.php";
 
 /*
  * Does the private key have a passphrase? We can tell by
@@ -124,7 +139,7 @@ if ($private_key) {
   $match_result = preg_match($passphrase_re, $private_key);
   if ($match_result === 0) {
     /* Key is not passphrase protected. Help the user add a passphrase. */
-    error_log("No passphrase on private key");
+    //error_log("No passphrase on private key");
     $add_passphrase = TRUE;
   } else if ($match_result === FALSE) {
     /* An error occured. Log it. A warning has probably already been
@@ -137,6 +152,11 @@ if ($private_key) {
     $add_passphrase = FALSE;
   }
 }
+
+/* Setting $add_passphrase to FALSE here allows the certificate and
+   private key to be sent to the signing tool with no user
+   interaction. */
+$add_passphrase = FALSE;
 
 /* XXX FIXME: put the signing tool host and URL in a config file. */
 if (! isset($genilib_trusted_host)) {
@@ -160,6 +180,11 @@ if (! isset($genilib_trusted_path)) {
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
+if (is_null($certificate)) {
+  /* No certificate so redirect to the create/download page. */
+  header("Location: $create_url");
+  exit;
+}
 
 /*----------------------------------------------------------------------
  * Display happens below here.
@@ -167,7 +192,6 @@ $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
  */
 
 include('kmheader.php');
-print "<h2>GENI Certificate Loader</h2>\n";
 include("tool-showmessage.php");
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
@@ -187,7 +211,7 @@ genilib.trustedPath = '<?php echo $genilib_trusted_path;?>';
 <h2>Instructions</h2>
 <p>
 You must paste your certificate and your private key into the signing tool.
-You can <a href="#" onClick="window.open('<?php print $create_url?>')">
+You can <a href="<?php print $create_url?>">
 download your certificate</a> if you do not have a copy already. You
 must use the private key that you used to create your certificate.
 </p>
@@ -199,39 +223,42 @@ must use the private key that you used to create your certificate.
 <?php } else if (is_null($certificate)) { ?>
 <p>
 You do not have a GENI certificate yet. Before you can use the signing
-and authorization tool you must create a certificate. Please click
-below to do that, and then return to this window and
-<a href="#" onClick="location.reload(true)">refresh this window</a>.
-</p>
-<button onClick="window.open('<?php print $create_url?>')">
-   Generate an SSL certificate</button>.
+and authorization tool you must
+<a href="<?php print $create_url?>">create a certificate</a>.
 <?php } else if ($add_passphrase) { ?>
-<h2>Add a passphrase</h2>
+<h2>Create a passphrase</h2>
 <p>
-Your private key does not have a passphrase, but requires one to work
-with the signing tool. Please add a passphrase to your private key below.
+The GENI Authorization Tool requires that private keys be protected
+by a passphrase. Please create a passphrase for your private key below.
+Type in the same passphrase when prompted by the GENI Authorization Tool.
 </p>
 <p>
-<i>Note: The GPO Clearinghouse does not keep a copy of your passphrase.
-   You will need to remember this passphrase in order to use the signing
-   tool now and in the future. Please take steps now to record or
-   remember this passphrase.</i>
+<i><small>
+   Note: The GPO Member Authority does not keep a copy of your passphrase.
+   You will need to remember this passphrase in order to use the GENI
+   Authorization tool. Please take steps to record or remember this
+   passphrase.
+</small></i>
 </p>
 <form method="post">
    <label class="input">Passphrase:
    <input name="<?php echo $PASSPHRASE_1;?>" type="password"/></label>
    <br/>
-   <label class="input">Re-type passphrase:
+   <label class="input">Confirm Passphrase:
    <input name="<?php echo $PASSPHRASE_2;?>" type="password"/></label>
    <br/>
-   <button type="submit">Set passphrase</input>
+   <button type="submit">Send certificate to signing tool</button>
 </form>
 <?php } else { ?>
-<form onsubmit="return false;">
+<form onsubmit="return false;" hidden>
    <input id="loadcert"
           type="submit"
           value="Load my certificate"/>
 </form>
+<center>
+<progress id="progress-bar" value="0" max="3"></progress>
+<p id="progress-text"></p>
+</center>
 <?php } /* end if ($add_passphrase) */ ?>
 <br/>
 <?php

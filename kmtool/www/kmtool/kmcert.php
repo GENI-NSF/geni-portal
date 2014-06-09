@@ -63,10 +63,30 @@ if (array_key_exists('displayName', $_SERVER)) {
   $username = $_REQUEST["username"];
 }
 
+$renew = (key_exists('renew', $_REQUEST) && $_REQUEST['renew']);
+
 function show_close_button() {
   if (key_exists("close", $_REQUEST)) {
     print "<br/>\n";
     print "<button onclick=\"window.close();return false;\"><b>Close</b></button>\n";
+  }
+}
+
+/**
+ * If in xml-signer context, show a way to continue
+ * signing thread.
+ */
+function show_xml_signer_button() {
+  if (isset($_SESSION['xml-signer'])) {
+    /* We're in the thread of the xml-signer tool. Put up a continue
+     * button to go to loadcert page.
+     */
+    $loc = $_SESSION['xml-signer'];
+    unset($_SESSION['xml-signer']);
+    print "<br/>\n";
+    print ("<button onclick=\"window.location='$loc';\">"
+           . "<b>Continue to signing tool</b>"
+           . "</button>\n");
   }
 }
 
@@ -191,6 +211,50 @@ if (isset($error)) {
   unset($error);
 }
 
+if (isset($_SESSION['xml-signer'])) {
+  /* Special key when working with the xml-signer tool.
+     This means we're in the flow of putting a cert/key into the tool, so
+     maybe HTTP redirect there if this key exists in the session.
+  */
+  $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
+  if (! is_null($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
+    /* If the user has an outside certificate AND key, redirect back to the
+       certificate loading page.
+    */
+    $loc = $_SESSION['xml-signer'];
+    unset($_SESSION['xml-signer']);
+    relative_redirect($loc);
+    exit();
+  }
+}
+
+/* Auto-redirect to KM activate page if there's no member id. */
+if (! isset($member_id)) {
+  relative_redirect("kmactivate.php");
+  exit;
+}
+
+$result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
+$has_cert = (! is_null($result));
+// Has the certificate expired?
+$expired = false;
+// Will the certificate expire soon?
+$expiring = false;
+if ($has_cert && array_key_exists('expiration', $result)) {
+  // Is expiration real soon or in the past?
+  $expiration = $result['expiration'];
+  $now = new DateTime('now', new DateTimeZone("UTC"));
+  $diff = $now->diff($expiration);
+  $days = $diff->days;
+  $expired = ($days < 1);
+  $expiring = ($days < 31);
+}
+
+
+//----------------------------------------------------------------------
+// Mostly display after this point.
+//----------------------------------------------------------------------
+
 include('kmheader.php');
 ?>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
@@ -203,22 +267,33 @@ function toggleDiv(divId) {
 </script>
 
 <?php
-print "<h2>GENI Certificate Management</h2>\n";
+$page_header = "GENI Certificate Management";
+if ($renew) {
+  $page_header = "GENI Certificate Renewal";
+}
+print "<h2>$page_header</h2>\n";
 include("tool-showmessage.php");
 
 if (! isset($member_id)) {
-  print "You must first activate your GENI account <a href=\"kmactivate.php\">here</a>.<br\>\n";
+  print "Please <a href=\"kmactivate.php\">activate your GENI account</a>.\n";
+  print "<br\>\n";
   include("kmfooter.php");
   return;
 }
 
 $result = ma_lookup_certificate($ma_url, $km_signer, $member_id);
-if (! is_null($result)) {
+if (!$renew && $has_cert && (! $expired)) {
   $msg = "Download Your Portal Generated Certificate and Private Key";
   // User has an outside cert. Show the download screen.
   if (! key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)
       || ! $result[MA_ARGUMENT::PRIVATE_KEY]) {
     $msg = "Download your Portal Signed Certificate";
+  }
+  if ($expiring) {
+    print '<p>';
+    print "Your certificate will expire in $days days.";
+    print ' <a href="kmcert.php?renew=1">Renew now</a>.';
+    print '</p>';
   }
 ?>
 <h4><?php print $msg;?>:</h4>
@@ -228,6 +303,7 @@ if (! is_null($result)) {
 </form>
 <?php
   show_close_button();
+  show_xml_signer_button();
   include("kmfooter.php");
   return;
 }
@@ -237,7 +313,15 @@ if (! is_null($result)) {
 <p>In order to use some GENI tools (like
 <a href="http://trac.gpolab.bbn.com/gcf/wiki/Omni">omni</a>) you need a signed SSL user certificate.
 </p><p>
-There are two options for creating this:
+There are two options for
+<?php
+if ($renew) {
+  echo 'renewing';
+} else {
+  echo 'creating';
+}
+?>
+ a certificate:
 <ol>
 <li>Have it generated for you.  This is the easiest option. <b>If in doubt, use this option.</b></li>
 <li>Have the SSL certificate generated for you based on a private key you keep locally. This is the most secure option.  For advanced users only.</li>

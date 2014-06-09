@@ -22,16 +22,18 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+// This gets used for both the page title and the page header
+$title = 'GPO Member Authority';
+
   echo '<!DOCTYPE HTML>';
   echo '<html>';
   echo '<head>';
   echo '<title>';
-echo "GENI Key Management Tool"; // FIXME: Make title configurable?
+  echo "$title";
   echo '</title>';
 
   /* Stylesheet(s) */
   echo '<link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>';
-//print '<link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>';
 
   /* Close the "head" */
   echo '</head>';
@@ -40,7 +42,7 @@ echo "GENI Key Management Tool"; // FIXME: Make title configurable?
   echo '<a href="http://www.geni.net" target="_blank">';
   echo '<img src="/images/geni.png" width="88" height="75" alt="GENI"/>';
   echo '</a>';
-// FIXME: Need a Key Management Tool .png
-//  echo '<img src="/images/portal.png" width="205" height="72" alt="Portal"/>';
-
+  echo "<h1>$title</h1>";
+  echo '<hr/>';
+  echo '</div>';
 ?>

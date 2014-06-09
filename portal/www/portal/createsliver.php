@@ -83,9 +83,20 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
+if(array_key_exists("rspec_file", $_REQUEST)) {
+  //  error_log("createsliver.REQUEST = " . print_r($_REQUEST, true));
+  $temp_rspec_file = trim($_REQUEST['rspec_file']);
+  if(strlen($temp_rspec_file) > 0) {
+    $rspec = file_get_contents($temp_rspec_file);
+    unlink($temp_rspec_file);
+  //  error_log("createsliver.RSPEC = " . print_r($rspec, true));
+  }
+}
+
 if (! isset($rspec) || is_null($rspec)) {
-  //  no_rspec_error();
-  $rspec = fetchRSpecById(1);
+  error_log("RSPEC is not set or null");
+  no_rspec_error();
+  //  $rspec = fetchRSpecById(1);
 }
 if (! isset($am) || is_null($am)) {
   no_am_error();
@@ -116,9 +127,6 @@ $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slic
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 			$slice_urn, $rspec_file, $slice['slice_id']);
 unlink($rspec_file);
-error_log("CreateSliver output = " . print_r($retVal, TRUE));
-
-
 
 $header = "Created Sliver on slice: $slice_name";
 

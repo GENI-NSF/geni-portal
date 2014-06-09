@@ -66,6 +66,16 @@ function print_xml( $xml ){
 function get_name_from_urn( $urn ){
   $urn_pieces = explode( "+", $urn );
   $name = end($urn_pieces);
+  // In the case of EXOGeni, we want the name of the node, 
+  // which is located as the subauthority of the URN
+  // E.g. for component ID 
+  // urn:publicid:IDN+exogeni.net:osfvmsite+node+orca-vm-cloud
+  // We want to return the name 'osfvmsite', not 'orca-vm-cloud'
+  if(strpos($urn, "+exogeni.net:")) {
+    $authority = $urn_pieces[1];
+    $authority_pieces = explode(":", $authority);
+    $name = $authority_pieces[1] . ":" . $name;
+  }
   return $name;
 }
 
@@ -357,10 +367,13 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 
     /* If pretty, keep output clean by only printing RSpec for
        aggregates which have a slice (ie code!=12 or code !==2).
+       Also don't print if no code was returned (ie code!=-1) because
+       something catastrophic happened.
        -- unless there are no aggregates with resources, in which case
        we print the error.
     */
-    if (!(($code == 12 or $code == 2) and $pretty and $amc >= 1)){
+    // error_log("Aggregate listresources code is " . $code); 
+    if (!(($code == -1 or $code == 12 or $code == 2) and $pretty)){ 
       print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
       print "<div class='resources' id='agg_" . $am_id ."'>";
       if ($code == 0){
@@ -379,6 +392,8 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
     }
   }
 }
+
+
 
 function print_return( $obj, $topLevel ) {
   if (!$topLevel){
@@ -401,6 +416,63 @@ function print_return( $obj, $topLevel ) {
   }
   if (!$topLevel){
     print "</ul>";
+  }
+}
+
+function get_rspec_xml( $obj, $pretty, $filterToAM ) {
+  $args = array_keys( $obj );
+
+  // How many AMs reported actual results
+  $amc = 0;
+  foreach ($args as $arg) {
+    if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg]) and array_key_exists('code', $obj[$arg]) and is_array($obj[$arg]['code']) and array_key_exists('geni_code', $obj[$arg]['code']) and $obj[$arg]['code']['geni_code'] == 0) {
+      $amc = $amc + 1;
+    }
+  }
+
+  foreach ($args as $arg) {
+    $arg_url = $arg;
+    $am_id = am_id( $arg_url );
+    $arg_name = am_name($arg_url);
+    $arg_urn = am_urn($arg_url);
+    if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg])) {
+        $xml = $obj[$arg]['value'];
+    } else {
+        $xml = "";
+    }
+    $code = -1;
+    if (is_array($obj[$arg]) and array_key_exists('code', $obj[$arg]) and is_array($obj[$arg]['code']) and array_key_exists('geni_code', $obj[$arg]['code'])) {
+      $code = $obj[$arg]['code']['geni_code'];
+    }
+    if (is_array($obj[$arg]) and array_key_exists('output', $obj[$arg])) {
+      $output = $obj[$arg]['output'];
+    } else if (! is_array($obj[$arg]) or ! array_key_exists('code', $obj[$arg])) {
+      $output = (string)($obj[$arg]);
+    } else {
+      $output = "";
+    }
+
+    /* If pretty, keep output clean by only printing RSpec for
+       aggregates which have a slice (ie code!=12 or code !==2).
+       Also don't print if no code was returned (ie code!=-1) because
+       something catastrophic happened.
+       -- unless there are no aggregates with resources, in which case
+       we print the error.
+    */
+    // error_log("Aggregate listresources code is " . $code); 
+    if (!(($code == -1 or $code == 12 or $code == 2) and $pretty)){ 
+
+      if ($code == 0){
+	      /* Ensure xml is in parsable format,  */
+        $xml = str_replace(array("\n", "\r", "\t"), '', $xml);
+        $xml = trim(str_replace('"', "'", $xml));
+
+	  	  return $xml;
+      } else {
+		    return "null";
+      }
+
+    }
   }
 }
 

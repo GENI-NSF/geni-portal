@@ -76,7 +76,7 @@ function show_rspec_chooser($user) {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
-  print "<br>or <a href=\"rspecupload.php\">upload your own RSpec</a>.";
+  print "<br>or <a href=\"rspecupload.php\">upload your own RSpec to the above list</a>.";
 //  print " or <button onClick=\"window.location='rspecupload.php'\">";
 //  print "upload your own RSpec</button>.";
   // RSpec entry area
@@ -102,7 +102,7 @@ function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   print "<p><b>Choose Aggregate:</b> \n";
   print '<select name="am_id" id="agg_chooser">\n';
-  echo '<option value="" title = "Choose an Aggregate" selected="selected">Choose an Aggregate...</option>';
+  echo '<option value="" title = "Choose an Aggregate">Choose an Aggregate...</option>';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
     $aggname = $agg['service_name'];
@@ -149,7 +149,12 @@ function validateSubmit()
   f1 = document.getElementById("f1");
   rspec = document.getElementById("rspec_select");
   am = document.getElementById("agg_chooser");
+  rspec2 = document.getElementById("rspec_selection");
+  
   if (rspec.value && am.value) {
+    f1.submit();
+    return true;
+  } else if (rspec2.value && am.value) {
     f1.submit();
     return true;
   } else if (rspec.value) {
@@ -179,9 +184,24 @@ print "<p><button onClick=\"window.location='rspecs.php'\">"
     . "View Available RSpecs</button></p>\n";
 
 
-print '<form id="f1" action="sliceresource.php" method="post">';
+print '<form id="f1" action="sliceresource.php" method="post" enctype="multipart/form-data">';
 show_rspec_chooser($user);
+print  '<p><label for="file">or import RSpec from file:</label>';
+print  '<input type="file" name="rspec_selection" id="rspec_selection" /></p>';
+print "<p><i>Note: This RSpec selection is for this reservation only and will not be saved by the portal.</i></p>";
+
 show_am_chooser();
+if ($am_ids == null) {
+  $am_id = "null";
+}
+?>
+<script>
+var am_id = <?php echo $am_id ?>;
+if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
+  $('#agg_chooser').val(am_id); 
+}
+</script>
+<?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '</form>';
 

@@ -37,6 +37,7 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-3.sql \
 	db/postgresql/update-4.sql \
 	db/postgresql/update-5.sql \
+	db/postgresql/update-6.sql \
 	gcf.d/example-gcf.ini
 
 #----------------------------------------------------
@@ -57,6 +58,7 @@ dist_svcweb_DATA = \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
 	www/portal/am_map.php \
+	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
 	www/portal/approve.php \
@@ -64,6 +66,7 @@ dist_svcweb_DATA = \
 	www/portal/cancel-join-project.php \
 	www/portal/certificate.php \
 	www/portal/confirm-sliverdelete.php \
+	www/portal/create-rspec.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
 	www/portal/db-util.php \
@@ -133,19 +136,23 @@ dist_svcweb_DATA = \
 	www/portal/project.php \
 	www/portal/projects.php \
 	www/portal/query-sliverstatus.php \
+	www/portal/query-details.php \
 	www/portal/raw-sliverstatus.php \
-	www/portal/readyToLogin.php \
 	www/portal/renewsliver.php \
 	www/portal/request_test.php \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
+	www/portal/rspecedit.php \
+	www/portal/rspechandleedit.php \
 	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
+	www/portal/selectrspec.html \
 	www/portal/services.php \
 	www/portal/settings.php \
 	www/portal/slice-add-resources.js \
 	www/portal/slice-add-resources.php \
+	www/portal/slice-add-resources-jacks.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
 	www/portal/sliceabac.php \
@@ -154,6 +161,7 @@ dist_svcweb_DATA = \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
+	www/portal/speaks-for.css \
 	www/portal/speaks-for.js \
 	www/portal/speaks-for.php \
 	www/portal/speaks-for-delete.php \
@@ -183,15 +191,18 @@ dist_svcweb_DATA = \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
+	www/images/Symbols-Tips-icon-clear.png \
 	www/images/UseGENI.png \
 	www/images/geni.png \
 	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
+	www/images/site-icon.png \
 	www/images/staticmap.png \
 	www/images/header-home.jpg \
 	www/images/geni_globe.png \
-	www/images/geni_globe_small.png
+	www/images/geni_globe_small.png \
+	www/images/orbit_banner.png
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
@@ -208,34 +219,45 @@ dist_svcwebcss_DATA =  \
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
 	www/common/map/map-small.html \
+	www/common/map/rspec-dragon-maxgigapop-net.xml \
 	www/common/map/rspec-emulab-net.xml \
 	www/common/map/rspec-exogeni-net-bbnvmsite.xml \
 	www/common/map/rspec-exogeni-net-fiuvmsite.xml \
 	www/common/map/rspec-exogeni-net-rcivmsite.xml \
 	www/common/map/rspec-exogeni-net-uhvmsite.xml \
 	www/common/map/rspec-exogeni-net.xml \
+	www/common/map/rspec-geni-it-cornell-edu.xml \
 	www/common/map/rspec-geni-kettering-edu.xml \
 	www/common/map/rspec-genirack-nyu-edu.xml \
 	www/common/map/rspec-instageni-clemson-edu.xml \
 	www/common/map/rspec-instageni-gpolab-bbn-com.xml \
 	www/common/map/rspec-instageni-illinois-edu.xml \
+	www/common/map/rspec-instageni-ku-gpeni-net.xml \
 	www/common/map/rspec-instageni-maxgigapop-net.xml \
 	www/common/map/rspec-instageni-northwestern-edu.xml \
 	www/common/map/rspec-instageni-nysernet-org.xml \
 	www/common/map/rspec-instageni-rnet-missouri-edu.xml \
 	www/common/map/rspec-instageni-rnoc-gatech-edu.xml \
+	www/common/map/rspec-instageni-sox-net.xml \
+	www/common/map/rspec-instageni-stanford-edu.xml \
 	www/common/map/rspec-instageni-wisc-edu.xml \
+	www/common/map/rspec-ion-internet2-edu.xml \
 	www/common/map/rspec-lan-sdn-uky-edu.xml \
 	www/common/map/rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-foam-cenic-net.xml \
+	www/common/map/rspec-openflow-foam-foam-geni-it-cornell-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-geni-kettering-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-genirack-nyu-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-clemson-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-gpolab-bbn-com.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-illinois-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-ku-gpeni-net.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-maxgigapop-net.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-northwestern-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-nysernet-org.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-rnet-missouri-edu.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-sox-net.xml \
+	www/common/map/rspec-openflow-foam-foam-instageni-stanford-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-wisc-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml \
 	www/common/map/rspec-openflow-foam-foam-lan-sdn-uky-edu.xml \
@@ -244,6 +266,7 @@ dist_svcwebmap_DATA =  \
 	www/common/map/rspec-openflow-foam-foam-utahddc-geniracks-net.xml \
 	www/common/map/rspec-openflow-foam-ig-utah.xml \
 	www/common/map/rspec-openflow-foam-rci-hn-exogeni-gpolab-bbn-com.xml \
+	www/common/map/rspec-openflow-foam-sl-geni-northwestern-edu.xml \
 	www/common/map/rspec-uky-emulab-net.xml \
 	www/common/map/rspec-utah-geniracks-net.xml \
 	www/common/map/rspec-utahddc-geniracks-net.xml

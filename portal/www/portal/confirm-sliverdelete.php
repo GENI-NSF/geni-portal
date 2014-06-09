@@ -65,9 +65,20 @@ $am_name = null;
 $confirm_msg = 'Delete all reserved resources at all aggregates?';
 $edit_url = "sliverdelete.php?slice_id=$slice_id";
 if (isset($am_id) && $am_id) {
-  $edit_url = "sliverdelete.php?slice_id=$slice_id&am_id=$am_id";
-  $am_name = $ams[0][SR_ARGUMENT::SERVICE_NAME];
-  $confirm_msg = "Delete all reserved resources at $am_name?";
+  if (count($ams) > 1) {
+    $confirm_msg = "Delete all reserved resources at the following ".count($ams)." aggregates?<br /><br />";
+    for ($i = 0; $i < count($ams); $i++) {
+      $edit_url = $edit_url."&am_id[]=".$am_ids[$i];
+      $am_name = $ams[$i][SR_ARGUMENT::SERVICE_NAME];
+      $confirm_msg = $confirm_msg."<b>$am_name</b><br />";
+    }
+    $confirm_msg = $confirm_msg."<br />";
+  }
+  else {
+    $edit_url = "sliverdelete.php?slice_id=$slice_id&am_id=$am_id";
+    $am_name = $ams[0][SR_ARGUMENT::SERVICE_NAME];
+    $confirm_msg = "Delete all reserved resources at $am_name?";
+  }
 }
 
 show_header('GENI Portal: Slices', $TAB_SLICES);

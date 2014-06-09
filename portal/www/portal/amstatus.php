@@ -96,6 +96,13 @@ foreach ($obj as $am_url => $am_status) {
        } else {
               $geni_expires = 'unknown';
        }
+       // If the expiration doesn't have TZ set, make it explicitly UTC (Z=Zulu)
+       if ($geni_expires != 'unknown') {
+	 $date_details = date_parse($geni_expires);
+         if(!(array_key_exists('tz_id', $date_details) || array_key_exists('zone', $date_details))) {
+	   $geni_expires = $geni_expires . "Z";
+	 }
+       }
        $status_item['geni_expires'] = $geni_expires;	     
        // slice URN
        $status_item['slice_urn'] = $am_status['geni_urn'];

@@ -528,4 +528,21 @@ function sa_to_ma_url($sa_url) {
   return preg_replace("/SA$/", "MA", $sa_url);
 }
 
+function lookup_sliver_info_by_slice($sa_url, $signer, $slice_urn) {
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $options = array('match' => array('SLIVER_INFO_SLICE_URN'=>$slice_urn));
+  $options = array_merge($options, $client->options());
+  $result = $client->lookup_sliver_info($client->creds(), $options);
+  // results are structs by sliver_urn
+  //         - SLIVER_INFO_URN
+  //         - SLIVER_INFO_SLICE_URN
+  //         - SLIVER_INFO_AGGREGATE_URN
+  //         - SLIVER_INFO_CREATOR_URN
+  //         - SLIVER_INFO_EXPIRATION
+  //         - SLIVER_INFO_CREATION
+  return $result;
+
+}
+
+
 ?>

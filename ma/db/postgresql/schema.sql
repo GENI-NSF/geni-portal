@@ -86,6 +86,7 @@ CREATE TABLE ma_inside_key (
   member_id UUID REFERENCES ma_member (member_id),
   private_key VARCHAR,
   certificate VARCHAR,
+  expiration TIMESTAMP,
   UNIQUE (client_urn, member_id)
 );
 
@@ -102,6 +103,7 @@ CREATE TABLE ma_ssh_key (
   description VARCHAR,
   public_key VARCHAR NOT NULL,
   private_key VARCHAR,
+  key_type VARCHAR,
   PRIMARY KEY (id)
 );
 CREATE INDEX ma_ssh_key_member_id ON ma_ssh_key (member_id);
@@ -114,7 +116,8 @@ CREATE TABLE ma_outside_cert (
   id SERIAL PRIMARY KEY,
   member_id UUID REFERENCES ma_member (member_id) NOT NULL,
   certificate VARCHAR NOT NULL,
-  private_key VARCHAR
+  private_key VARCHAR,
+  expiration TIMESTAMP
 );
 
 CREATE INDEX ma_outside_cert_index_member_id ON ma_outside_cert (member_id);

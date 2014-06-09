@@ -8,7 +8,12 @@ window.onload = function init() {
 
   // create map and add OSM as base
   var map1 = new OpenLayers.Map("map1");
-  var osm1 = new OpenLayers.Layer.OSM();
+  // Explicitly use HTTPS URLs to avoid a mixed content warning
+  // from web browsers. The default tile URLs use HTTP.
+  var tileURLs = ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                  "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                  "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"];
+  var osm1 = new OpenLayers.Layer.OSM("OpenStreetMap", tileURLs);
   map1.addLayer(osm1);
   
   // Initial view location
@@ -35,31 +40,24 @@ window.onload = function init() {
               sum = sum + feature.cluster[i].attributes.resources;
             }
             if(sum < 10) {
-              return 10;
+              return 16;
             }
             else if (sum < 100) {
-              return 14;
+              return 24;
             }
             else {
-              return 22;
+              return 36;
             }
           }
-          
+
       }, 
         
       rules: [new OpenLayers.Rule({
       symbolizer: {
-          fillColor: '#E17000',
-          fillOpacity: 0.75, 
-          strokeColor: '#5F584E',
-          strokeOpacity: 1,
-          strokeWidth: 2,
-          pointRadius: "${radius}",
-          label: "${resourceCount}",
-          labelOutlineWidth: 1,
-          fontColor: "#ffffff",
-          fontFamily: 'Arial',
-          fontSize: "12px"
+          externalGraphic: "/images/site-icon.png",
+          graphicWidth: "${radius}",
+          graphicHeight: "${radius}",
+          graphicOpacity: 1.0
       }
   })]
       
@@ -73,7 +71,7 @@ window.onload = function init() {
       }),
       strategies: [
           new OpenLayers.Strategy.Fixed(),
-          new OpenLayers.Strategy.Cluster()
+          new OpenLayers.Strategy.Cluster({distance:1})
       ],
       styleMap:  new OpenLayers.StyleMap(style)
       
@@ -82,6 +80,16 @@ window.onload = function init() {
   // add GENI current resources to map
   map1.addLayer(currentSites);
   
+  /*
+    resourceString
+      returns list of resources
+  */
+  function resourceString(feature) {
+    var sum = feature.cluster[0].attributes.component_id;
+    for(var i = 1; i < feature.cluster.length; i++) {
+        sum = sum + ", " + feature.cluster[i].attributes.component_id;
+    }
+    return sum;
   /*
     resourceCount
       returns number of resources
@@ -94,16 +102,6 @@ window.onload = function init() {
     return sum;
   }
   
-  /*
-    resourceString
-      returns list of resources
-  */
-  function resourceString(feature) {
-    var sum = feature.cluster[0].attributes.component_id;
-    for(var i = 1; i < feature.cluster.length; i++) {
-        sum = sum + ", " + feature.cluster[i].attributes.component_id;
-    }
-    return sum;
   }
 
   /* 

@@ -30,7 +30,7 @@
 //   update_project(sa_url, project_name, project_id, project_email, project_purpose, expiration);
 //   change_lead(sa_url, project_id, previous_lead_id, new_lead_id);
 //   get_project_members(sa_url, project_id, role=null) // null => Any
-//   get_projects_for_member(sa_url, member_id, is_member, role=null)
+//   get_projects_for_member(sa_url, signer, member_id, is_member)
 //   lookup_project_details(sa_url, project_uuids)
 //   modify_project_membership(sa_url, signer, project_id, 
 //			 members_to_add, members_to_change_role, members_to_remove)
@@ -60,14 +60,13 @@ function create_project($sa_url, $signer, $project_name, $lead_id, $project_purp
 {
   $client = XMLRPCClient::get_client($sa_url, $signer);
 
-  if (! $expiration) {
-    $expiration = "";
-  }
-
   $fields = array('PROJECT_NAME'          => $project_name,
 		  '_GENI_PROJECT_OWNER' => $lead_id,
-		  'PROJECT_DESCRIPTION' => $project_purpose,
-		  'PROJECT_EXPIRATION'    => $expiration);
+		  'PROJECT_DESCRIPTION' => $project_purpose);
+  if ($expiration && ($expiration != "")) {
+    $fields['PROJECT_EXPIRATION'] = $expiration;
+  }
+
   $options = array('fields' => $fields);
   $options = array_merge($options, $client->options());
   $results = $client->create_project($client->creds(), $options);
@@ -377,10 +376,7 @@ function get_project_members($sa_url, $signer, $project_id,
 // Return list of project ID's for given member_id
 // If is_member is true, return projects for which member is a member
 // If is_member is false, return projects for which member is NOT a member
-// If role is provided, filter on projects 
-//    for which member has given role (is_member = true)
-//    for which member does NOT have given role (is_member = false)
-function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role=null)
+function get_projects_for_member($sa_url, $signer, $member_id, $is_member)
 {
   if (! is_object($signer)) {
     throw new InvalidArgumentException('Null signer');
@@ -389,22 +385,14 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
     /* Signer must be a GeniUser because we need its URN. */
     throw new InvalidArgumentException('Signer is not a GeniUser');
   }
-  //  $cert = $signer->certificate();
-  //  $key = $signer->privateKey();
-  //  $get_projects_message['operation'] = 'get_projects_for_member';
-  //  $get_projects_message[PA_ARGUMENT::MEMBER_ID] = $member_id;
-  //  $get_projects_message[PA_ARGUMENT::IS_MEMBER] = $is_member;
-  //  $get_projects_message[PA_ARGUMENT::ROLE_TYPE] = $role;
-  //  $results = put_message($sa_url, $get_projects_message,
-  //			 $cert, $key, 
-  //			 $signer->certificate(), $signer->privateKey());
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
   $member_urn = $signer->urn;
   $rows = $client->lookup_projects_for_member($member_urn, $client->creds(),
                                               $client->options());
   if ($is_member) {    
-    $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
+    $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; },
+                               array_values($rows));
     return $project_uuids;
   }
   // if not a member 
@@ -414,14 +402,16 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member, $role
       $current[] = $row;
     }
   }
-  $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($current));
+  $project_uuids = array_map(function ($row) { return $row['PROJECT_UID']; },
+                             array_values($current));
   //print "<p> privatekey ".print_r($signer->privateKey(), true)."<\p>\n";
   //print "<p> cert ".print_r($signer->certificate(), true)."<\p>\n";
   $options = array('match'=>array('PROJECT_EXPIRED'=>"false"),
 		   'filter'=>array('PROJECT_UID'));
   $options = array_merge($options, $client->options());
   $rows = $client->lookup_projects($client->creds(), $options);
-  $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; }, array_values($rows));
+  $all_uuids = array_map(function ($row) { return $row['PROJECT_UID']; },
+                         array_values($rows));
   return array_values(array_diff($all_uuids, $project_uuids));
 }
 

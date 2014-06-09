@@ -134,34 +134,45 @@ $directory = "../common/map/";
  *
  */
 $files = array(
+  $directory . 'rspec-dragon-maxgigapop-net.xml',
   $directory . 'rspec-emulab-net.xml',
   $directory . 'rspec-exogeni-net-bbnvmsite.xml',
   $directory . 'rspec-exogeni-net-fiuvmsite.xml',
   $directory . 'rspec-exogeni-net-rcivmsite.xml',
   $directory . 'rspec-exogeni-net-uhvmsite.xml',
   $directory . 'rspec-exogeni-net.xml',
+  $directory . 'rspec-geni-it-cornell-edu.xml',
   $directory . 'rspec-geni-kettering-edu.xml',
   $directory . 'rspec-genirack-nyu-edu.xml',
   $directory . 'rspec-instageni-clemson-edu.xml',
   $directory . 'rspec-instageni-gpolab-bbn-com.xml',
   $directory . 'rspec-instageni-illinois-edu.xml',
+  $directory . 'rspec-instageni-ku-gpeni-net.xml',
   $directory . 'rspec-instageni-maxgigapop-net.xml',
   $directory . 'rspec-instageni-northwestern-edu.xml',
   $directory . 'rspec-instageni-nysernet-org.xml',
   $directory . 'rspec-instageni-rnet-missouri-edu.xml',
   $directory . 'rspec-instageni-rnoc-gatech-edu.xml',
+  $directory . 'rspec-instageni-sox-net.xml',
+  $directory . 'rspec-instageni-stanford-edu.xml',
   $directory . 'rspec-instageni-wisc-edu.xml',
+  $directory . 'rspec-ion-internet2-edu.xml',
   $directory . 'rspec-lan-sdn-uky-edu.xml',
   $directory . 'rspec-openflow-foam-bbn-hn-exogeni-gpolab-bbn-com.xml',
+  $directory . 'rspec-openflow-foam-foam-cenic-net.xml',
+  $directory . 'rspec-openflow-foam-foam-geni-it-cornell-edu.xml',
   $directory . 'rspec-openflow-foam-foam-geni-kettering-edu.xml',
   $directory . 'rspec-openflow-foam-foam-genirack-nyu-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-clemson-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-gpolab-bbn-com.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-illinois-edu.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-ku-gpeni-net.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-maxgigapop-net.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-northwestern-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-nysernet-org.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-rnet-missouri-edu.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-sox-net.xml',
+  $directory . 'rspec-openflow-foam-foam-instageni-stanford-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-wisc-edu.xml',
   $directory . 'rspec-openflow-foam-foam-instageni-rnoc-gatech-edu.xml',
   $directory . 'rspec-openflow-foam-foam-lan-sdn-uky-edu.xml',
@@ -170,6 +181,7 @@ $files = array(
   $directory . 'rspec-openflow-foam-foam-utahddc-geniracks-net.xml',
   $directory . 'rspec-openflow-foam-ig-utah.xml',
   $directory . 'rspec-openflow-foam-rci-hn-exogeni-gpolab-bbn-com.xml',
+  $directory . 'rspec-openflow-foam-sl-geni-northwestern-edu.xml',
   $directory . 'rspec-uky-emulab-net.xml',
   $directory . 'rspec-utah-geniracks-net.xml',
   $directory . 'rspec-utahddc-geniracks-net.xml'
@@ -198,7 +210,11 @@ foreach($files as $file) {
       // determine AM's name
       // default: regex the AM URN to get important information
       $am = (string)$type_value->attributes()->component_manager_id;
-      preg_match("/IDN\+(.*)\+authority/", $am, $matches);
+      $result = preg_match("/IDN\+(.*)\+authority/", $am, $matches);
+      if (!$result) {
+        /* No match or an error occurred */
+        continue;
+      }
       $node->am = $matches[1];
       // better source of information: service registry
       foreach($am_services as $am_service) {
