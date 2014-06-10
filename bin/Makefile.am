@@ -16,6 +16,8 @@ dist_bin_SCRIPTS = \
 		geni-revoke-member-privilege \
 		geni-enable-user \
 		geni-disable-user \
+		geni-get-ad-rspecs \
+		geni-parse-map-data \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		report_genich_relations

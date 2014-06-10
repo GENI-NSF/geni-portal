@@ -1,0 +1,232 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+#
+#----------------------------------------------------------------------
+# Copyright (c) 2014 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the "Work") to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+#----------------------------------------------------------------------
+
+#----------------------------------------------------------------------
+#
+# Generate GeoJSON map data from parsing advertisement RSpecs
+#
+#----------------------------------------------------------------------
+
+# Example:
+# ./geni-parse-map-data -c ~/.gcf/omni_config -s ~/saved_rspecs/ -o ~/current.json
+
+import sys
+import logging
+import optparse
+import psycopg2
+import psycopg2.extras
+import json
+import re
+import string
+import gcf.oscript as omni
+from gcf.omnilib.util.omnierror import OmniError
+from gcf.omnilib.util.files import *
+from xml.dom import minidom
+import glob
+import shutil
+
+TEMP_DIR = "/tmp/rspecs/"
+logger = logging.getLogger()
+
+# class for a GENI resource
+class GENIResource:
+    def __init__(self):
+        self.am = ""
+        self.am_id = ""
+        self.type = "unknown"
+        self.name = ""
+        self.id = ""
+        self.latitude = "0.0"
+        self.longitude = "0.0"
+
+# classes for GeoJSON
+class Feature:
+    def __init__(self):
+        self.type = "Feature"
+        self.properties = Properties()
+        self.geometry = Geometry()
+class Properties:
+    def __init__(self):
+        self.component_id = ""
+        self.resources = ""
+        self.am = ""
+        self.am_id = ""
+        self.type = ""
+class Geometry:
+    def __init__(self):
+        self.type = "Point"
+        self.coordinates = []
+
+def init_logging(options):
+    level = logging.INFO
+    if options.debug:
+        level = logging.DEBUG
+    logging.basicConfig(level=level)
+
+def parse_args(argv):
+    parser = optparse.OptionParser(usage="Generate GeoJSON map data from parsing advertisement RSpecs")
+    parser.add_option("--debug", action="store_true", default=False,
+                       help="enable debugging output")
+    parser.add_option("-c", "--configfile", metavar="FILE",
+                      help="Filename for `omni_config` (required)")
+    parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
+                      help="Directory of saved ad RSpecs (default is `./`)")
+    parser.add_option("-o", "--output", default='current.json',
+                      help="Filename for JSON output (default is `current.json`)")
+    parser.add_option("-d", "--database", default='portal',
+                      help="database name (default is `portal`)")
+    parser.add_option("--host", default='localhost',
+                      help="database host (default is `localhost`)")
+    parser.add_option("-u", "--user", default='portal',
+                      help="database user (default is `portal`)")
+    options,args = parser.parse_args()
+    if not (options.configfile):
+        parser.print_usage()
+        raise Exception("Missing some required arguments")
+    return options,args
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    try:
+        options,args = parse_args(argv)
+        init_logging(options)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
+        return 1
+    
+    # connect to the service registry
+    conn = psycopg2.connect(database=options.database,
+                            user=options.user,
+                            host=options.host)
+    logger.debug("Connected to database '%s' on %s" % (options.database, options.host))
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    
+    resources = []
+    
+    # for each .xml file in user-specified directory
+    for filepath in glob.glob(options.save + "*.xml"):
+        
+        # do a check to see if file is really XML and an rspec
+        try:
+            xmlfile = minidom.parse(filepath)
+            rspecs = xmlfile.getElementsByTagName('rspec')
+        except Exception as e:
+            logger.info("Could not parse %s" % filepath)
+            #sys.stderr.write(str(e) + "\n")
+            continue
+        
+        logger.info("Starting parse of %s" % filepath)
+        
+        # should only be one <rspec...> in most files
+        for rspec in rspecs:
+            children = rspec.childNodes
+            
+            # potential <node...> or <openflow:datapath...> elemenets
+            for child in children:
+                if (child.nodeType == minidom.Node.ELEMENT_NODE and 
+                    (child.tagName == 'node' or child.tagName == 'openflow:datapath')):
+                    
+                    # instantiate a resource
+                    resource = GENIResource()
+                    
+                    # resource and AM URNs
+                    resource.am_id = child.getAttribute('component_manager_id')
+                    resource.id = child.getAttribute('component_id')
+                    
+                    # resource name
+                    if child.tagName == 'openflow:datapath':
+                        resource.name = child.getAttribute('dpid')
+                    else:
+                        resource.name = child.getAttribute('component_name')
+                    
+                    # resource location
+                    if child.tagName == 'openflow:datapath':
+                        locations = child.getElementsByTagName('openflow:location')
+                    else:
+                        locations = child.getElementsByTagName('location')
+                    for location in locations:
+                        resource.latitude = location.getAttribute('latitude')
+                        resource.longitude = location.getAttribute('longitude')
+                    
+                    # resource type (best guess)
+                    if 'pc' in resource.name:
+                        resource.type = 'pc'
+                    elif 'pg' in resource.name:
+                        resource.type = 'pc'
+                    elif 'compute' in resource.name:
+                        resource.type = 'pc'
+                    elif 'procurve' in resource.name:
+                        resource.type = 'switch'
+                    elif 'cisco' in resource.name:
+                        resource.type = 'switch'
+                    elif child.tagName == 'openflow:datapath':
+                        resource.type = 'datapath'
+                        
+                    # aggregate manager name 
+                    if resource.am_id:
+                        # parse from component_manager_id attribute first
+                        result = re.search(r'IDN\+(.*)\+authority', resource.am_id)
+                        if result and result.group(1):
+                            resource.am = result.group(1)
+                        # but if it's in the service registry, use this
+                        select_sql = 'SELECT * FROM service_registry WHERE service_urn like \'' + resource.am_id + '\' LIMIT 1';
+                        cur.execute(select_sql)
+                        record = cur.fetchone()
+                        if record and record['service_name']:
+                            resource.am = record['service_name']
+                    
+                    # append resource to list of resources if 'component_id' and 
+                    # 'component_manager_id' exist at minimum
+                    # FIXME: Should undefined locations be included as resources?
+                    if(resource.id and resource.am_id):
+                        resources.append(resource)
+                        
+    # JSON stuff
+    JSONarray = {'type':'FeatureCollection', 'features':[]}
+    for resource in resources:
+        feature = Feature()
+        feature.properties.component_id = resource.name
+        feature.properties.resources = 1
+        feature.properties.am = resource.am
+        feature.properties.am_id = resource.am_id
+        feature.properties.type = resource.type
+        feature.geometry.coordinates.append(resource.longitude)
+        feature.geometry.coordinates.append(resource.latitude)
+        JSONarray['features'].append(feature)
+    
+    # serialize JSON
+    # source: http://stackoverflow.com/questions/3768895/python-how-to-make-a-class-json-serializable
+    f = open(options.output, "w")
+    f.write(json.dumps(JSONarray, default=lambda o: o.__dict__, indent=4))
+    f.close()
+    
+    cur.close()
+    conn.close()
+    logger.debug("Closing connection to database '%s' on %s" % (options.database, options.host))
+
+if __name__ == "__main__":
+    sys.exit(main())
