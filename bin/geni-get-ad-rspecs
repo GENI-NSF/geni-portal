@@ -43,7 +43,6 @@ import logging
 import optparse
 import psycopg2
 import psycopg2.extras
-import json
 import re
 import string
 import gcf.oscript as omni

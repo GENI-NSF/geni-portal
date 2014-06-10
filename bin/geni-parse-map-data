@@ -46,9 +46,7 @@ from gcf.omnilib.util.omnierror import OmniError
 from gcf.omnilib.util.files import *
 from xml.dom import minidom
 import glob
-import shutil
 
-TEMP_DIR = "/tmp/rspecs/"
 logger = logging.getLogger()
 
 # class for a GENI resource
