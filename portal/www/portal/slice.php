@@ -432,7 +432,7 @@ $(document).ready(function() {
 
       $('#t_'+value).addClass('my_slice');
     });
-    $('.op_my_slice').attr('selected','selected');
+    $('.op_my_slice').prop('selected',true);
     $('#checkGroups').trigger('change');
 });
 </script>

@@ -198,7 +198,9 @@ function build_agg_table_on_sliverstatuspg()
      json_agg = responseTxt;
      numagg = Object.keys(json_agg).length;
      for (var tmp_am_id in json_agg ) {
-	 add_agg_row_on_sliverstatuspg(tmp_am_id, numagg);
+         var am = json_agg[tmp_am_id];
+         am.id = tmp_am_id;
+         add_agg_row_on_sliverstatuspg(am, numagg);
      }
     $("span#numagg").text( numagg );
    });
@@ -206,9 +208,10 @@ function build_agg_table_on_sliverstatuspg()
 
 
 
-function add_agg_row_on_sliverstatuspg(am_id, numagg) {
+function add_agg_row_on_sliverstatuspg(am, numagg) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
+  var am_id = am.id;
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
       var json_am, am;
       var geni_urn, geni_status, agg_name, geni_resources, colspan;
@@ -312,6 +315,26 @@ function add_agg_row_on_sliverstatuspg(am_id, numagg) {
 	      $("#query").css('display','none');
 	      $("#summary").css( 'display', 'block');
 	  }
+      }
+  })
+  .fail(function(responseTxt, statusTxt, xhr) {
+      var output="";
+      var agg_name = am.name;
+      var geni_status = 'Error determining status';
+      if ( $("table#slivererror").children().length == 0 ) {
+	  output += "<tr><th>Aggregate</th><th>Message</th></tr>";
+      }
+      output += "<tr>";
+      output += "<td>"+agg_name+"</td>";
+      output += "<td>"+geni_status+"</td>";
+      output += "</tr>";
+      output += "</table>";
+
+      $("table#slivererror").append( output );
+      count++;
+      if (count == numagg) {
+	  $("#query").css('display','none');
+	  $("#summary").css( 'display', 'block');
       }
   });  
 }
