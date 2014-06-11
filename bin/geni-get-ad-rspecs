@@ -35,37 +35,39 @@
 #
 #----------------------------------------------------------------------
 
-# Example:
-# ./geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/saved_rspecs/
-
 import sys
 import logging
 import optparse
 import psycopg2
 import psycopg2.extras
-import re
-import string
 import gcf.oscript as omni
 from gcf.omnilib.util.omnierror import OmniError
 from gcf.omnilib.util.files import *
 from xml.dom import minidom
 import glob
-import shutil
+import tempfile
 
-TEMP_DIR = "/tmp/rspecs/"
+TEMP_DIR = tempfile.gettempdir() + "/rspecs/"
 AM_SERVICE_TYPE = "0"
 logger = logging.getLogger()
 
 def init_logging(options):
-    level = logging.INFO
-    if options.debug:
+    if options.silent:
+        level = logging.ERROR
+    elif options.debug:
         level = logging.DEBUG
+    else:
+        level = logging.INFO
     logging.basicConfig(level=level)
 
 def parse_args(argv):
     parser = optparse.OptionParser(usage="Query all AMs in the SR for advertisement RSpecs")
     parser.add_option("--debug", action="store_true", default=False,
                        help="enable debugging output")
+    parser.add_option("--silent", action="store_true", default=False,
+                       help="enable silent mode (only show errors)")
+    parser.add_option("--cleanup", action="store_true", default=False,
+                       help="delete invalid RSpecs at the end")
     parser.add_option("-c", "--configfile", metavar="FILE",
                       help="Filename for `omni_config` (required)")
     parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
@@ -88,35 +90,102 @@ def rspec_has_contents(filepath):
     try:
         xmlfile = minidom.parse(filepath)
     except Exception as e:
-        sys.stderr.write(str(e) + "\n")
+        logger.error("Couldn't parse %s" % filepath)
         return False
     # check that <rspec...> occurs somewhere
     rspecs = xmlfile.getElementsByTagName('rspec')
     if rspecs:
-        logger.info("Found rspec element(s) in %s" % filepath)
+        logger.debug("Found rspec element(s) in %s" % filepath)
         return True
     else:
-        logger.info("Couldn't find rspec element(s) in %s" % filepath)
+        logger.error("Couldn't find rspec element(s) in %s" % filepath)
         return False
     
 # move RSpec from temporary location to permanent location
 # if new RSpec has contents, overwrite (or write new) file; else, do nothing
-def move_rspec(temp_filepath, filepath):
-    if rspec_has_contents(temp_filepath):
+def move_rspec(movefrom, moveto):
+    if rspec_has_contents(movefrom):
         try:
-            shutil.copy(temp_filepath, filepath)
-        except shutil.Error as e:
-            print('Couldn\'t copy %s to %s: %s' % (temp_filepath, filepath, e))
-            return False;
+            if not os.path.exists(os.path.dirname(moveto)):
+                os.makedirs(os.path.dirname(moveto))
+            os.rename(movefrom, moveto)
         except IOError as e:
-            print('Couldn\'t copy %s to %s: %s' % (temp_filepath, filepath, e.strerror))
-            return False;
+            logger.error('Couldn\'t move %s to %s: %s' % (movefrom, moveto, e))
         else:
-            logger.info("Copied %s to %s" % (temp_filepath, filepath))
-            return True;
+            logger.debug("Moved %s to %s" % (movefrom, moveto))
     else:
-        logger.info("Couldn't copy %s to %s" % (temp_filepath, filepath))
-        return False;
+        logger.error("Couldn't move %s to %s" % (movefrom, moveto))
+
+# delete all XML files in a given directory
+def clean_directory(directory):
+    for xmlfile in glob.glob(directory + "*.xml"):
+        if os.path.isfile(xmlfile):
+            os.remove(xmlfile)
+            logger.debug("Deleted %s" % xmlfile)
+
+# attempt to connect to database
+# returns connection and cursor variables
+def connect_to_database(database, user, host):
+    try:
+        conn = psycopg2.connect(database=database,
+                                user=user,
+                                host=host)
+    except:
+        raise Exception("Could not connect to database.")
+    logger.info("Established connection to database '%s' on %s." 
+            % (database, host))
+    return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
+
+# close database connection
+def disconnect_from_database(conn, cur):
+    cur.close()
+    conn.close()
+    logger.info("Closed connection to database.")
+
+# query the service registry for list of URLs of AMs
+def query_sr_for_ams(cur):
+    select_sql = 'SELECT * FROM service_registry WHERE service_type = %s'
+    cur.execute(select_sql, (AM_SERVICE_TYPE))
+    records = cur.fetchall()
+    if len(records) == 0:
+        raise Exception("Found no AMs in the service registry.")
+    return records
+
+# download each AM's ad RSpec to TEMP_DIR
+def download_rspecs(records, omni_config_file, save_directory):
+    logger.info("Starting downloading of RSpecs.")
+    for record in records:
+        service_url = record['service_url']
+        service_urn = record['service_urn']
+        prefix = save_directory + "ad"
+        omniargs = ['-c', omni_config_file, '-a', service_url, '-o', 
+                '-V2', 'listresources', '-p', prefix]
+        logger.debug("Calling omni using the arguments: %s" % (omniargs))
+        try:
+            text, retItem = omni.call(omniargs, None)
+            # if item exists, if it's of type dictionary, and one key is returned
+            if retItem and isinstance(retItem, dict) and len(retItem.keys()) == 1:
+                rspec = retItem[retItem.keys()[0]]
+                logger.debug("RSpec returned from %s." % service_urn)
+            else:
+                logger.error("No RSpec returned from %s." % service_urn)
+        except OmniError as oe:
+            logger.error("Omni call failed when trying %s: %s" % 
+                    (service_urn,oe))
+    logger.info("Downloading complete.")
+
+# verify downloaded data is legitimate
+# only move over files to user specified directory that are valid
+def verify_downloaded_rspecs(movefrom_directory, moveto_directory):
+    logger.info("Starting verification of downloaded RSpecs.")
+    for movefrom_filepath in glob.glob(movefrom_directory + "*.xml"):
+        movefrom_filename = os.path.basename(movefrom_filepath)
+        moveto_filepath = moveto_directory + movefrom_filename
+        if not os.path.exists(moveto_directory):
+            os.makedirs(moveto_directory)
+        # verification done here
+        move_rspec(movefrom_filepath, moveto_filepath)
+    logger.info("Verification complete.")
 
 def main(argv=None):
     if argv is None:
@@ -128,66 +197,14 @@ def main(argv=None):
         sys.stderr.write(str(e) + "\n")
         return 1
     
-    # connect to the service registry
-    conn = psycopg2.connect(database=options.database,
-                            user=options.user,
-                            host=options.host)
-    logger.debug("Connected to database '%s' on %s" % (options.database, options.host))
-    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    
-    # query for a list of all AMs
-    select_sql = 'SELECT * FROM service_registry WHERE service_type = \'' + AM_SERVICE_TYPE + '\'';
-    cur.execute(select_sql)
-    records = cur.fetchall()
-    
-    if len(records) == 0:
-        raise Exception("Found no AMs in the service registry")
-    
-    # clean up any previous rspecs left in TEMP_DIR
-    try:
-        shutil.rmtree(TEMP_DIR)
-    except OSError:
-        logger.info("Couldn't delete %s" % TEMP_DIR)
-
-    # download each AM's ad RSpec to TEMP_DIR
-    for record in records:
-    
-        service_url = record['service_url']
-        service_urn = record['service_urn']
-        
-        # call omni's listresources
-        # write the ad RSpecs to a user-defined directory
-        prefix = TEMP_DIR + "ad"
-        omniargs = ['-c', options.configfile, '-a', service_url, '-o', '-V2', 'listresources', '-p', prefix]
-        
-        logger.debug("Calling omni using the arguments: %s" % (omniargs))
-        
-        try:
-            text, retItem = omni.call(omniargs, None)
-            # if item exists, if it's of type dictionary, and one key is returned
-            if retItem and isinstance(retItem, dict) and len(retItem.keys()) == 1:
-                rspec = retItem[retItem.keys()[0]]
-                logger.debug("RSpec returned from %s" % service_urn)
-            else:
-                # FIXME: Huh. No rspec returned. log an error of some kind and move on
-                logger.debug("No RSpec returned from %s" % service_urn)
-                pass
-        except OmniError, oe:
-            # FIXME: Don't exit, handle 1 AM has an error and another might work
-            sys.exit("\nOmni call failed: %s" % oe)
-    
-    # verify downloaded data is legitimate
-    num_downloaded_rspecs = len(glob.glob(TEMP_DIR + "*.xml"))
-    for temp_filepath in glob.glob(TEMP_DIR + "*.xml"):
-        temp_filename = os.path.basename(temp_filepath)
-        filepath = options.save + temp_filename
-        if not os.path.exists(options.save):
-            os.makedirs(options.save)
-        move_rspec(temp_filepath, filepath)
-    
-    cur.close()
-    conn.close()
-    logger.debug("Closing connection to database '%s' on %s" % (options.database, options.host))
+    (conn, cur) = connect_to_database(options.database, 
+            options.user, options.host)
+    clean_directory(TEMP_DIR)
+    download_rspecs(query_sr_for_ams(cur), options.configfile, TEMP_DIR)
+    verify_downloaded_rspecs(TEMP_DIR, options.save)
+    disconnect_from_database(conn, cur)
+    if options.cleanup:
+        clean_directory(TEMP_DIR)
 
 if __name__ == "__main__":
     sys.exit(main())
