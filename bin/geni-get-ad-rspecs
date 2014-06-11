@@ -40,12 +40,15 @@ import logging
 import optparse
 import psycopg2
 import psycopg2.extras
-import gcf.oscript as omni
-from gcf.omnilib.util.omnierror import OmniError
-from gcf.omnilib.util.files import *
 from xml.dom import minidom
 import glob
 import tempfile
+
+sys.path.append('/usr/local/bin/gcf/src')
+sys.path.append('/usr/share/geni-ch/gcf/src')
+import gcf.oscript as omni
+from gcf.omnilib.util.omnierror import OmniError
+from gcf.omnilib.util.files import *
 
 TEMP_DIR = tempfile.gettempdir() + "/rspecs/"
 AM_SERVICE_TYPE = "0"
