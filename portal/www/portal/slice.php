@@ -368,6 +368,8 @@ function confirmQuery() {
   if ($('#datepicker').val()) {
     var count = 0;
     var i;
+    // Modifying the form html resets the values to default. Need this saved for later.
+    var dateVal = $('#datepicker').val();
 
     // .length doesn't work on objects, have to count manually
     for (i in slice_ams) {
@@ -386,6 +388,7 @@ function confirmQuery() {
         var myform = $("#renewform");
         $.each(slice_ams, function(index, value) {
           myform.html(myform.html()+'<input type="hidden" name="am_id[]" value="'+value+'"/>');
+          $('#datepicker').val(dateVal);
         });
         myform.submit();
       }
@@ -429,7 +432,7 @@ $(document).ready(function() {
 
       $('#t_'+value).addClass('my_slice');
     });
-    $('.op_my_slice').attr('selected','selected');
+    $('.op_my_slice').prop('selected',true);
     $('#checkGroups').trigger('change');
 });
 </script>
