@@ -45,12 +45,12 @@ import glob
 import tempfile
 
 sys.path.append('/usr/local/bin/gcf/src')
-sys.path.append('/usr/share/geni-ch/gcf/src')
+sys.path.append('/usr/share/geni-ch/portal/gcf/src')
 import gcf.oscript as omni
 from gcf.omnilib.util.omnierror import OmniError
 from gcf.omnilib.util.files import *
 
-TEMP_DIR = tempfile.gettempdir() + "/rspecs/"
+TEMP_DIR = os.path.join(tempfile.gettempdir(), "rspecs")
 AM_SERVICE_TYPE = "0"
 logger = logging.getLogger()
 
@@ -121,7 +121,7 @@ def move_rspec(movefrom, moveto):
 
 # delete all XML files in a given directory
 def clean_directory(directory):
-    for xmlfile in glob.glob(directory + "*.xml"):
+    for xmlfile in glob.glob(os.path.join(directory, "*.xml")):
         if os.path.isfile(xmlfile):
             os.remove(xmlfile)
             logger.debug("Deleted %s" % xmlfile)
@@ -160,7 +160,7 @@ def download_rspecs(records, omni_config_file, save_directory):
     for record in records:
         service_url = record['service_url']
         service_urn = record['service_urn']
-        prefix = save_directory + "ad"
+        prefix = os.path.join(save_directory, "ad")
         omniargs = ['-c', omni_config_file, '-a', service_url, '-o', 
                 '-V2', 'listresources', '-p', prefix]
         logger.debug("Calling omni using the arguments: %s" % (omniargs))
@@ -181,12 +181,12 @@ def download_rspecs(records, omni_config_file, save_directory):
 # only move over files to user specified directory that are valid
 def verify_downloaded_rspecs(movefrom_directory, moveto_directory):
     logger.info("Starting verification of downloaded RSpecs.")
-    for movefrom_filepath in glob.glob(movefrom_directory + "*.xml"):
+    for movefrom_filepath in glob.glob(os.path.join(movefrom_directory, "*.xml")):
         movefrom_filename = os.path.basename(movefrom_filepath)
-        moveto_filepath = moveto_directory + movefrom_filename
+        moveto_filepath = os.path.join(moveto_directory, movefrom_filename)
         if not os.path.exists(moveto_directory):
             os.makedirs(moveto_directory)
-        # verification done here
+        # verification done in move_rspec()
         move_rspec(movefrom_filepath, moveto_filepath)
     logger.info("Verification complete.")
 
