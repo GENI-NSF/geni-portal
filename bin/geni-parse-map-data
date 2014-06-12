@@ -37,10 +37,8 @@ import psycopg2
 import psycopg2.extras
 import json
 import re
-import string
 from xml.dom import minidom
 import glob
-import pprint
 
 sys.path.append('/usr/local/bin/gcf/src')
 sys.path.append('/usr/share/geni-ch/portal/gcf/src')
@@ -139,7 +137,7 @@ def write_to_geojson_file(resources, output_file):
     except IOError as e:
         logger.error("Could not write output to %s: %s" % (output_file, e))
     else:
-        logger.info("Wrote GeoJSON output to %s" % output_file)
+        logger.info("Wrote GeoJSON output to %s." % output_file)
 
 # make a best guess about the resource type
 def determine_resource_type(name):
@@ -217,6 +215,8 @@ def add_to_geni_resources(resource, resources):
         resources.append(resource)
     else:
         logger.error("Could not add GENIResource; missing minimum information.")
+        logger.error("  resource.id: %s" % resource.id)
+        logger.error("  resource.am_id: %s" % resource.am_id)
 
 # look through all RSpecs in a directory for GENI resources
 def search_rspecs_for_resources(rspecs_directory, cur):

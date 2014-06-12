@@ -1,0 +1,96 @@
+.TH GENI-PARSE-MAP-DATA 1 "June 10, 2014"
+.SH NAME
+geni-parse-map-data \- generate GeoJSON map data from parsing RSpecs
+.SH SYNOPSIS
+.B geni-parse-map-data
+\fB-c \fICONFIG\fR
+[\fB-s \fIDIRECTORY\fR]
+[\fB-o \fIOUTPUT\fR]
+[\fB-d \fIDATABASE\fR]
+[\fB--host \fIHOST\fR]
+[\fB-u \fIUSER\fR]
+[\fB--debug\fR]
+[\fB--silent\fR]
+.SH DESCRIPTION
+.B geni-parse-map-data
+generates a GeoJSON-compatible file based on the location information given
+in advertisement RSpecs of various aggregate managers (AMs). The GeoJSON file
+can be used for displaying a map of all GENI resources on the portal webpage.
+
+The parser looks for all valid ad RSpecs in a user-defined directory and
+attempts to collect various attributes about each GENI resource in those RSpecs,
+including (fields from \fB<node>\fR or \fB<openflow:datapath>\fR elements
+included for reference):
+.IP \(em 4
+resource's name (parsed from \fBcomponent_id\fR)
+.IP \(em 4
+resource's URN (\fBcomponent_id\fR)
+.IP \(em 4
+resource's type (guessed from parsing \fBcomponent_id\fR)
+.IP \(em 4
+resource's location (\fBlatitude\fR and \fBlongitude\fR)
+.IP \(em 4
+resource's AM's name (parsed from \fBcomponent_manager_id\fR or queried from
+the service registry if available)
+.IP \(em 4
+resource's AM's URN (\fBcomponent_manager_id\fR)
+.LP
+At minimum, a resource must have a URN and an AM URN to be added to the
+GeoJSON file. When location information isn't present, the resource gets a
+default latitude/longitude of 0.0, 0.0.
+
+Errors are displayed when a file cannot be parsed or when a resource cannot be
+added to the GeoJSON file. The program terminates if a connection cannot be made
+to the database or if no resources were found in the specified directory.
+
+The user is assumed to have a \fB.pgpass\fR file to access the PostgreSQL
+database.
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--configfile \fICONFIG
+Path of omni configuration file (required)
+.TP
+\fB-s\fR, \fB--save \fIDIRECTORY
+Path of directory to search for saved RSpecs (default is './')
+.TP
+\fB-o\fR, \fB--output \fIOUTPUT
+Path of directory to save the output GeoJSON file (default is 'current.json')
+.TP
+\fB-d\fR, \fB--database \fIDATABASE
+Database name (default is 'portal')
+.TP
+\fB--host \fIHOST
+Database hostname (default is 'localhost')
+.TP
+\fB-u\fR, \fB--user \fIUSER
+Database user (default is 'portal')
+.TP
+\fB--debug
+Show verbose debugging information.
+.TP
+\fB--silent
+Silence all info and debug messages but show errors.
+.SH EXAMPLES
+Parse all RSpecs in the directory \fBmy_rspecs\fR and save output to
+\fBcurrent.json\fR in the working directory:
+
+    geni-parse-map-data -c ~/.gcf/omni_config -s my_rspecs
+        
+Parse all RSpecs in the directory \fBmy_rspecs\fR and save output to
+\fBpath/to/my/output.json\fR:
+
+    geni-parse-map-data -c ~/.gcf/omni_config -s my_rspecs \\
+        -o path/to/my/output.json
+
+Run silently but show errors if they occur:
+
+    geni-parse-map-data -c ~/.gcf/omni_config -s path/to/my/rspecs \\
+        -o my_output.json --silent
+
+Get verbose output of what's going on:
+
+    geni-parse-map-data -c ~/.gcf/omni_config -s path/to/my/rspecs \\
+        -o my_output.json --debug
+
+.SH AUTHOR
+geni-parse-map-data was written by Raytheon BBN Technologies.

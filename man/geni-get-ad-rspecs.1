@@ -29,7 +29,7 @@ database.
 .SH OPTIONS
 .TP
 \fB-c\fR, \fB--configfile \fICONFIG
-Path of omni configuration file
+Path of omni configuration file (required)
 .TP
 \fB-s\fR, \fB--save \fIDIRECTORY
 Path of directory to save ad RSpecs (default is './')
@@ -55,21 +55,21 @@ RSpecs) when completed.
 .SH EXAMPLES
 Query all AMs of a service registry running on the local machine:
 
-    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs/
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs
     
 Query all AMs of a service registry running on an external machine:
 
-    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs/ \\
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
         --host ch.geni.net
 
 Run silently but show errors if they occur:
 
-    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs/ \\
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
         --silent
 
 Run silently and remove invalid RSpecs at the end:
 
-    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs/ \\
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
         --silent --cleanup
         
 .SH AUTHOR
