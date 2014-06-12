@@ -150,7 +150,7 @@ def query_sr_for_ams(cur):
     select_sql = 'SELECT * FROM service_registry WHERE service_type = %s'
     cur.execute(select_sql, (AM_SERVICE_TYPE))
     records = cur.fetchall()
-    if len(records) == 0:
+    if not records:
         raise Exception("Found no AMs in the service registry.")
     return records
 

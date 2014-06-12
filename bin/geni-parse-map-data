@@ -245,7 +245,7 @@ def search_rspecs_for_resources(rspecs_directory, cur):
                     resource = populate_geni_resource(child, cur)
                     add_to_geni_resources(resource, resources)
 
-    if len(resources) == 0:
+    if not resources:
         raise Exception("No resources found in %s. Quitting." % rspecs_directory)
 
     return resources
