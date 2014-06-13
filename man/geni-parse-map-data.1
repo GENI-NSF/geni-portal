@@ -17,10 +17,10 @@ generates a GeoJSON-compatible file based on the location information given
 in advertisement RSpecs of various aggregate managers (AMs). The GeoJSON file
 can be used for displaying a map of all GENI resources on the portal webpage.
 
-The parser looks for all valid ad RSpecs in a user-defined directory and
-attempts to collect various attributes about each GENI resource in those RSpecs,
-including (fields from \fB<node>\fR or \fB<openflow:datapath>\fR elements
-included for reference):
+The parser looks for all valid ad RSpecs ending in \fB.xml\fR in a user-defined
+directory and attempts to collect various attributes about each GENI resource 
+in those RSpecs, including (fields from \fB<node>\fR or
+\fB<openflow:datapath>\fR elements included for reference):
 .IP \(em 4
 resource's name (parsed from \fBcomponent_id\fR)
 .IP \(em 4

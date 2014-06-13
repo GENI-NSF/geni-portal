@@ -46,6 +46,7 @@ import gcf.oscript as omni
 from gcf.omnilib.util.omnierror import OmniError
 from gcf.omnilib.util.files import *
 
+AM_SERVICE_TYPE = "0"
 logger = logging.getLogger()
 
 # class for a GENI resource
@@ -155,20 +156,18 @@ def determine_resource_type(name):
         return 'unknown'
 
 # do a regex on the AM ID or search in SR to get the AM name
-def determine_am_name(am_id, cur):
-    # parse from component_manager_id attribute first
-    result = re.search(r'IDN\+(.*)\+authority', am_id)
-    if result and result.group(1):
-        am_name = result.group(1)
-    # but if it's in the service registry, use this      
-    select_sql = 'SELECT * FROM service_registry WHERE service_urn = %s LIMIT 1'
-    logger.debug("Querying from SR: %s", cur.mogrify(select_sql, (am_id,)))
-    cur.execute(select_sql, (am_id,))
-    record = cur.fetchone()
-    if record and record['service_name']:
-        am_name = record['service_name']
-        logger.debug("Found %s in SR as %s", am_id, am_name)
-    return am_name
+def determine_am_name(am_id, ams_dictionary):
+    # first attempt to see if AM ID is in dictionary
+    if am_id in ams_dictionary:
+        return ams_dictionary[am_id]
+    # if not, parse from component_manager_id attribute
+    try:
+        result = re.search(r'IDN\+(.*)\+authority', am_id)
+        return result.group(1)
+    except AttributeError as e:
+        logger.info("Could not parse AM name from AM URN %s. "
+                "Defaulting to None." % am_id)
+        return None
 
 # get the resource short name
 def determine_resource_name(element):
@@ -194,7 +193,7 @@ def determine_resource_location(element):
     return (longitude, latitude)
 
 # instantiate and add attributes to a GENIResource()
-def populate_geni_resource(element, cur):
+def populate_geni_resource(element, ams_dictionary):
     logger.debug("Instantiating new GENIResource.")
     resource = GENIResource()
     resource.am_id = element.getAttribute('component_manager_id')
@@ -203,7 +202,7 @@ def populate_geni_resource(element, cur):
     (resource.longitude, resource.latitude) = determine_resource_location(element)
     resource.type = determine_resource_type(resource.name)      
     if resource.am_id:
-        resource.am = determine_am_name(resource.am_id, cur)
+        resource.am = determine_am_name(resource.am_id, ams_dictionary)
     return resource
 
 # do some checking before adding the resource to list of resources
@@ -218,10 +217,26 @@ def add_to_geni_resources(resource, resources):
         logger.error("  resource.id: %s" % resource.id)
         logger.error("  resource.am_id: %s" % resource.am_id)
 
+# open connection to DB once to get all AM URN/name data as key/value pairs
+def get_am_names(cur):
+    dictionary = {}
+    select_sql = 'SELECT service_urn, service_name FROM service_registry WHERE service_type = %s'
+    logger.debug("Querying from SR: %s", cur.mogrify(select_sql, (AM_SERVICE_TYPE)))
+    logger.info("Starting database search for AM URNs and names.")
+    cur.execute(select_sql, (AM_SERVICE_TYPE))
+    records = cur.fetchall()
+    if not records:
+        logger.error("Found no AMs in the service registry.")
+    else:
+        for record in records:
+            dictionary.update({record['service_urn']:record['service_name']})
+    return dictionary
+
 # look through all RSpecs in a directory for GENI resources
 def search_rspecs_for_resources(rspecs_directory, cur):
 
     resources = []
+    ams_dictionary = get_am_names(cur)
     
     for filepath in glob.glob(os.path.join(rspecs_directory, "*.xml")):
         try:
@@ -242,7 +257,7 @@ def search_rspecs_for_resources(rspecs_directory, cur):
                 if (child.nodeType == minidom.Node.ELEMENT_NODE and 
                     (child.tagName == 'node' or child.tagName == 'openflow:datapath')):
                     
-                    resource = populate_geni_resource(child, cur)
+                    resource = populate_geni_resource(child, ams_dictionary)
                     add_to_geni_resources(resource, resources)
 
     if not resources:
@@ -263,8 +278,8 @@ def main(argv=None):
     (conn, cur) = connect_to_database(options.database, 
             options.user, options.host)
     resources = search_rspecs_for_resources(options.save, cur)
-    write_to_geojson_file(resources, options.output)
     disconnect_from_database(conn, cur)
+    write_to_geojson_file(resources, options.output)
 
 if __name__ == "__main__":
     sys.exit(main())
