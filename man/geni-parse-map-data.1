@@ -3,7 +3,6 @@
 geni-parse-map-data \- generate GeoJSON map data from parsing RSpecs
 .SH SYNOPSIS
 .B geni-parse-map-data
-\fB-c \fICONFIG\fR
 [\fB-s \fIDIRECTORY\fR]
 [\fB-o \fIOUTPUT\fR]
 [\fB-d \fIDATABASE\fR]
@@ -47,9 +46,6 @@ The user is assumed to have a \fB.pgpass\fR file to access the PostgreSQL
 database.
 .SH OPTIONS
 .TP
-\fB-c\fR, \fB--configfile \fICONFIG
-Path of omni configuration file (required)
-.TP
 \fB-s\fR, \fB--save \fIDIRECTORY
 Path of directory to search for saved RSpecs (default is './')
 .TP
@@ -74,23 +70,20 @@ Silence all info and debug messages but show errors.
 Parse all RSpecs in the directory \fBmy_rspecs\fR and save output to
 \fBcurrent.json\fR in the working directory:
 
-    geni-parse-map-data -c ~/.gcf/omni_config -s my_rspecs
+    geni-parse-map-data -s my_rspecs
         
 Parse all RSpecs in the directory \fBmy_rspecs\fR and save output to
 \fBpath/to/my/output.json\fR:
 
-    geni-parse-map-data -c ~/.gcf/omni_config -s my_rspecs \\
-        -o path/to/my/output.json
+    geni-parse-map-data -s my_rspecs -o path/to/my/output.json
 
 Run silently but show errors if they occur:
 
-    geni-parse-map-data -c ~/.gcf/omni_config -s path/to/my/rspecs \\
-        -o my_output.json --silent
+    geni-parse-map-data -s path/to/my/rspecs -o my_output.json --silent
 
 Get verbose output of what's going on:
 
-    geni-parse-map-data -c ~/.gcf/omni_config -s path/to/my/rspecs \\
-        -o my_output.json --debug
+    geni-parse-map-data -s path/to/my/rspecs -o my_output.json --debug
 
 .SH AUTHOR
 geni-parse-map-data was written by Raytheon BBN Technologies.

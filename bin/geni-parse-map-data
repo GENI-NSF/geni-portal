@@ -31,6 +31,7 @@
 #----------------------------------------------------------------------
 
 import sys
+import os
 import logging
 import optparse
 import psycopg2
@@ -39,12 +40,6 @@ import json
 import re
 from xml.dom import minidom
 import glob
-
-sys.path.append('/usr/local/bin/gcf/src')
-sys.path.append('/usr/share/geni-ch/portal/gcf/src')
-import gcf.oscript as omni
-from gcf.omnilib.util.omnierror import OmniError
-from gcf.omnilib.util.files import *
 
 AM_SERVICE_TYPE = "0"
 logger = logging.getLogger()
@@ -90,8 +85,6 @@ def parse_args(argv):
                        help="enable debugging output")
     parser.add_option("--silent", action="store_true", default=False,
                        help="enable silent mode (only show errors)")
-    parser.add_option("-c", "--configfile", metavar="FILE",
-                      help="Filename for `omni_config` (required)")
     parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
                       help="Directory of saved ad RSpecs (default is `./`)")
     parser.add_option("-o", "--output", default='current.json',
@@ -103,9 +96,6 @@ def parse_args(argv):
     parser.add_option("-u", "--user", default='portal',
                       help="database user (default is `portal`)")
     options,args = parser.parse_args()
-    if not (options.configfile):
-        parser.print_usage()
-        raise Exception("Missing some required arguments")
     return options,args
 
 # attempt to connect to database
