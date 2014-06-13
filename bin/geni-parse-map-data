@@ -161,13 +161,15 @@ def determine_am_name(am_id, ams_dictionary):
     if am_id in ams_dictionary:
         return ams_dictionary[am_id]
     # if not, parse from component_manager_id attribute
-    try:
-        result = re.search(r'IDN\+(.*)\+authority', am_id)
-        return result.group(1)
-    except AttributeError as e:
+    result = re.search(r'IDN\+(.*)\+authority', am_id)
+    if result is None:
         logger.info("Could not parse AM name from AM URN %s. "
                 "Defaulting to None." % am_id)
         return None
+    else:
+        # cache result in dictionary
+        ams_dictionary[am_id] = result.group(1)
+        return result.group(1)
 
 # get the resource short name
 def determine_resource_name(element):
@@ -229,7 +231,7 @@ def get_am_names(cur):
         logger.error("Found no AMs in the service registry.")
     else:
         for record in records:
-            dictionary.update({record['service_urn']:record['service_name']})
+            dictionary[record['service_urn']] = record['service_name']
     return dictionary
 
 # look through all RSpecs in a directory for GENI resources
