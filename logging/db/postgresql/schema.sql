@@ -6,6 +6,9 @@ set client_min_messages='WARNING';
 \set ON_ERROR_STOP 1
 
 -- Drop table to recreate
+DROP INDEX IF EXISTS logging_entry_event_time;
+DROP INDEX IF EXISTS logging_entry_attribute_event_id;
+
 DROP TABLE IF EXISTS logging_entry;
 DROP TABLE IF EXISTS logging_entry_context;
 DROP TABLE IF EXISTS logging_entry_attribute;
@@ -21,12 +24,16 @@ CREATE TABLE logging_entry (
   PRIMARY KEY (id)
 );
 
+CREATE INDEX logging_entry_event_time ON logging_entry(event_time);
+
 CREATE TABLE logging_entry_attribute (
   event_id INT,
   attribute_name VARCHAR,
   attribute_value VARCHAR
 );
 
+CREATE INDEX logging_entry_attribute_event_id 
+      ON logging_entry_attribute(event_id);
 
 -- Now create the table
 CREATE TABLE logging_entry_old (

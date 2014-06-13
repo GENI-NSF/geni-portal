@@ -38,7 +38,7 @@ CREATE TABLE sa_slice_member (
   PRIMARY KEY (id)
 );
 
-
+CREATE INDEX sa_slice_member_member_id on sa_slice_member(member_id);
 
 -- These match our common queries, but in my simple tests my DB doesn't use these
 -- CREATE INDEX sa_slice_index_name_project ON sa_slice (slice_name, project_id);
