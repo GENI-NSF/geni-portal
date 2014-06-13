@@ -45,7 +45,7 @@ import glob
 import tempfile
 
 sys.path.append('/usr/local/bin/gcf/src')
-sys.path.append('/usr/share/geni-ch/portal/gcf/src')
+sys.path.append('@pkgdatadir@/portal/gcf/src')
 import gcf.oscript as omni
 from gcf.omnilib.util.omnierror import OmniError
 from gcf.omnilib.util.files import *

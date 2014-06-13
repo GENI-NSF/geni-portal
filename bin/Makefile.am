@@ -1,3 +1,18 @@
+edit = sed \
+	-e 's|@bindir[@]|$(bindir)|g' \
+	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+	-e 's|@prefix[@]|$(prefix)|g'
+
+geni-get-ad-rspecs: Makefile
+	rm -f $@ $@.tmp
+	srcdir=''; \
+	  test -f ./$@.in || srcdir=$(srcdir)/; \
+	  $(edit) $${srcdir}$@.in >$@.tmp
+	chmod a-w $@.tmp
+	mv $@.tmp $@
+
+geni-get-ad-rspecs: $(srcdir)/geni-get-ad-rspecs.in
+
 pkgsysconfdir = $(sysconfdir)/geni-ch
 
 dist_sbin_SCRIPTS = geni-init-ca geni-init-services
