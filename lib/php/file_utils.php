@@ -45,7 +45,9 @@ function writeDataToTempFile($data, $prefix = "geni-")
 }
 
 /*
-    Like above, but writes to a temporary directory
+    Like above, but writes to a temporary directory that was
+    already created by createTempDir(); does not come up with its
+    own unique name via tempnam()
 */
 function writeDataToTempDir($dir, $data, $prefix = "geni-")
 {
@@ -66,7 +68,8 @@ function createTempDir($prefix) {
     if (is_dir($tempfile)) {
         return $tempfile;
     }
-    // FIXME: return null if directory wasn't created
+    // return null if directory wasn't created
+    return NULL;
 }
 
 /*

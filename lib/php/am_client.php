@@ -283,9 +283,16 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
     
     /* Create a directory to store all temp files, including logs and error
-       messages. Let the prefix be the username. */
+       messages. Let the prefix be the username. A "session" is each time
+       invoke_omni_function() is called.
+    
+       Returns something like: /tmp/myuser-RKvQ1Z
+    */
     $omni_session_dir = createTempDir($username);
-    error_log("Created temporary directory for omni session: $omni_session_dir");
+    if(is_null($omni_session_dir)) {
+        // FIXME: What to do if directory can't be created?
+        error_log("Could not create temporary directory for omni session: $omni_session_dir");
+    }
 
     /* Write key and credential files */
     $tmp_version_cache = "$omni_session_dir/omniVersionCache";
