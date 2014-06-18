@@ -25,17 +25,18 @@
 
 import string
 import sys
-import gcf.oscript as omni
+#import gcf.oscript as omni
+import stitcher
 import os.path
 from optparse import OptionParser
 import json
 
 def main(argv=None):
-    parser = omni.getParser()
+    #parser = omni.getParser()
     # Parse Options
-    (options, args) = parser.parse_args()
+    #(options, args) = parser.parse_args()
     
-    text, obj = omni.call( args, options )
+    text, obj = stitcher.call( sys.argv[1:] )
 
     if type(obj) == type({}):
         obj2 = {}
