@@ -415,9 +415,8 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
 
     if ($speaks_for_invocation) {
       $cmd_array[] = "--speaksfor=" . $user->urn;
-      $speaks_for_cred_filename = 
-	writeDataToTempfile($speaks_for_cred->credential(), 
-			    "$username-sfcred-");
+      $speaks_for_cred_filename = writeDataToTempDir($omni_session_dir, 
+                $speaks_for_cred->credential(), "sfcred");
       $file_manager->add($speaks_for_cred_filename);
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
