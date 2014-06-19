@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.16.7 ==
+ * Update the LabWiki URL (#1073)
+
 == 2.16.6 ==
  * Fix for slice page not defaulting to This Slice on Safari (#1067)
 
