@@ -101,7 +101,7 @@ if (count($my_slice_objects) > 0) {
   $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
-  $labwiki_base_url = 'http://emmy9.casa.umass.edu:4000/?';
+  $labwiki_base_url = 'http://labwiki.casa.umass.edu/?';
 
   $num_slices = count($my_slice_objects);
   if ($num_slices==1) {
