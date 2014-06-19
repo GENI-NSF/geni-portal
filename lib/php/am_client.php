@@ -656,7 +656,8 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   // FIXME: Note that this AM has resources
   // slice_id, am_url or ID, duration?
   $output = invoke_omni_function($am_url, $user, $args, $slice_users);
-  unlink($slice_credential_filename);
+  // FIXME: temporarily comment this out for stitching
+  // unlink($slice_credential_filename);
   return $output;
 }
 
