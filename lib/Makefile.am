@@ -32,6 +32,7 @@ nobase_dist_svcdata_DATA = \
 	php/sa_constants.php \
 	php/session_cache.php \
 	php/signer.php \
+	php/stitcher_am_client.php \
 	php/smime.php \
 	php/speaksforcred.php \
 	php/sr_client.php \

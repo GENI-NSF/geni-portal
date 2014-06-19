@@ -46,7 +46,8 @@ nobase_dist_svcdata_DATA = \
 dist_gcfsrc_DATA = \
 	gcf.d/src/logging.conf
 dist_gcfsrc_SCRIPTS = \
-	gcf.d/src/omni_php.py
+	gcf.d/src/omni_php.py \
+	gcf.d/src/stitcher_php.py
 dist_gcfsrcgeni_DATA = 
 
 dist_svcweb_DATA = \
@@ -170,6 +171,7 @@ dist_svcweb_DATA = \
 	www/portal/starter-status-bar.php \
 	www/portal/status_constants.php \
 	www/portal/status_constants_import.php \
+	www/portal/stitcher_createsliver.php \
 	www/portal/tabs.js \
 	www/portal/tool-aggwarning.php \
 	www/portal/tool-breadcrumbs.php \
