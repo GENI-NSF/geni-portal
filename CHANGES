@@ -11,6 +11,7 @@
  * Handle expiration time properly from GRAM AM (#1061)
  * Added scripts to support archiving db tables (#1071)
  * Fix grammar and a typo in certificate renewal (#1072)
+ * Use pushstate history for profile tabs (#1074)
 
 == 2.16.7 ==
  * Update the LabWiki URL (#1073)
