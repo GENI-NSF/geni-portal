@@ -85,7 +85,7 @@ $gemini_url = relative_url("gemini.php");
   print "<b>GENI Desktop</b></button> ";
 
 /* LabWiki */
-$labwiki_url = 'http://emmy9.casa.umass.edu:4000';
+$labwiki_url = 'http://labwiki.casa.umass.edu';
 print "<button onClick=\"window.open('$labwiki_url')\">";
 print "<b>LabWiki</b></button> ";
 

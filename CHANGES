@@ -5,7 +5,16 @@
 = GENI Portal Release Notes =
 
 == 2.17 ==
+ * Add indices on logging_entry, logging_entry_attribute, 
+   ma_member_attribute, sa_slice_member (CHAPI #311)
+ * Automatically retrieve Ad RSpecs from AMs (#721)
  * Handle expiration time properly from GRAM AM (#1061)
+ * Added scripts to support archiving db tables (#1071)
+ * Fix grammar and a typo in certificate renewal (#1072)
+ * Use pushstate history for profile tabs (#1074)
+
+== 2.16.7 ==
+ * Update the LabWiki URL (#1073)
 
 == 2.16.6 ==
  * Fix for slice page not defaulting to This Slice on Safari (#1067)

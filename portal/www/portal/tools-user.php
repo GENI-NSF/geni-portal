@@ -220,7 +220,7 @@ if (! $has_certificate) {
   /* Have an expired certificate, just renew it. */
   print 'Your SSL certificate has expired. Please';
   print ' <a href="kmcert.php?close=1&renew=1" target="_blank">';
-  print 'renew your SSL certifcate</a> now';
+  print 'renew your SSL certificate</a> now';
   print '</p>';
 } else {
   /* Have a current certificate */
@@ -242,7 +242,7 @@ if (! $has_certificate) {
     print '.';
   }
   print ' You can <a href="kmcert.php?close=1&renew=1" target="_blank">';
-  print 'renew your SSL certifcate</a> any time';
+  print 'renew your SSL certificate</a> at any time';
   print '</p>';
 }
 
