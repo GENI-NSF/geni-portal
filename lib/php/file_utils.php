@@ -103,7 +103,7 @@ class FileManager {
 
   function add($filename) { $this->filenames[]=$filename; }
 
-  function __destruct() {
+  /*function __destruct() {
     foreach($this->filenames as $filename) {
         unlink($filename);
         // now see if directory can be deleted
@@ -111,7 +111,7 @@ class FileManager {
             rmdir(dirname($filename));
         }
     }
-  }
+  }*/
   
 }
 

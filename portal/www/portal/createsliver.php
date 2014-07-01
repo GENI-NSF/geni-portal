@@ -126,7 +126,8 @@ $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slic
 // Call create sliver at the AM
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 			$slice_urn, $rspec_file, $slice['slice_id']);
-unlink($rspec_file);
+// FIXME: temporarily comment this out for stitching
+//unlink($rspec_file);
 
 $header = "Created Sliver on slice: $slice_name";
 
