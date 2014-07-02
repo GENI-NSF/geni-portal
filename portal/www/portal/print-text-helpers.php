@@ -119,15 +119,26 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
 // $nodes = $rspec->xpath('//def:node[@component_manager_id=$componentMgrURN]');
 // $nodes = $rspec->xpath('/def:node');
   $links = $rspec->link;
+  $stitching = $rspec->stitching;
   $num_nodes = $nodes->count();
 //  $num_nodes = count($nodes);
   $num_links = $links->count();
+  $num_stitching = $stitching->count();
 
   if ($num_nodes + $num_links == 0) {
     error_log("print-rspec-pretty got RSpec with 0 nodes and links: " . substr((string)($xml), 0, 40));
     print_xml($xml);
     return;
   }
+
+    /*
+        Stitching logic:
+            If <stitching> element is included in XML, then pass back nodes and
+            links that have a sliver_id attached to them regardless of the AM.
+    */
+    if($num_stitching > 0) {
+        $filterToAM = False;
+    }
 
   $nodes_text = "<b>".$num_nodes."</b> node";
   if ($num_nodes!=1) {
@@ -148,6 +159,13 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $client_id = $node['client_id'];
     $comp_id = $node['component_id'];
     $comp_mgr_id = $node['component_manager_id'];
+    
+    // if no sliver id, then skip
+    $sliver_id = $node['sliver_id'];
+    if (! isset($sliver_id) or is_null($sliver_id) or $sliver_id === '') {
+        continue;
+    }
+    
     if ($filterToAM and ($comp_mgr_id!=$componentMgrURN)){
       $sliver_id = $node['sliver_id'];
       if (! isset($sliver_id) or is_null($sliver_id) or $sliver_id === '') {
@@ -173,7 +191,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $host=$node->host;
     $services=$node->services;
     $logins=$services->login;
-    echo "<b>Node #",$node_num,"</b>";
+    echo "<b>Node #",$node_num," (at ",get_auth_from_urn($comp_mgr_id),"):</b>";
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";
     echo "<th>Component ID</th>\n";
@@ -265,6 +283,12 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   
   $link_num = 1;
   foreach ($links as $link) {
+  
+    // for stitching, skip links that don't have component managers
+    if(!isset($link->component_manager)) {
+        continue;
+    }
+    
     $comp_mgrs = $link->component_manager;
     $client_id = $link['client_id'];
     // There may be multiple component managers
@@ -293,7 +317,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
 	continue;
       }
     }
-    echo "<b>Link #",$link_num,"</b>";
+    echo "<b>Link #",$link_num,":</b>";
     $link_num = $link_num+1;
     echo "<table><tr>\n";
     $num=0;
@@ -329,6 +353,53 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     /* } */
     /* print "</ul>\n"; */
   }
+  
+  
+    /* Stitching */
+    if($num_stitching > 0) {
+        print "<b>Stitching information:</b>";
+    
+        print "<table><tr>\n";
+        print "<th>Hop #</th>\n";
+        print "<th>Authority</th>\n";
+        print "<th>Interface</th>\n";
+        print "<th>Capacity</th>\n";
+        /* print "<th>Suggested VLAN Range</th>\n"; */
+        
+        print "</tr>\n";
+    
+        foreach ($stitching as $stitch) {
+        
+            foreach ($stitch->path->hop as $hop) {
+                
+                print "<tr>\n";
+                print "<td>" . $hop['id'] . "</td>\n";
+                
+                foreach ($hop->link as $link) {
+                    print "<td>" . get_auth_from_urn($link['id']) . "</td>\n";
+                    print "<td>" . get_name_from_urn($link['id']) . "</td>\n";
+                    print "<td>" . trim($link->capacity) . "</td>\n";
+                    /*print "<td>" . 
+                        trim($link->switchingCapabilityDescriptor->
+                        switchingCapabilitySpecificInfo->
+                        switchingCapabilitySpecificInfo_L2sc->
+                        suggestedVLANRange) .
+                        "</td>\n"; */
+                }
+                
+                print "</tr>\n";
+                
+            }
+        
+        }
+        
+        print "</table>\n";
+    
+    }
+    
+    
+    
+  
   print "</div>\n";
 }
 

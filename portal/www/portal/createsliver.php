@@ -159,15 +159,22 @@ $slice_expiration = dateUIFormat($slice_expiration_db);
 
 
 // Set headers for xml
-header("Cache-Control: public");
-header("Content-Type: text/xml");
+// FIXME: Temporary for stitching: header("Cache-Control: public"); 
+// FIXME: Temporary for stitching: header("Content-Type: text/xml");
 //$obj2 = trim($obj);
 if ($obj != "" ) {
    $manifestOnly=True;
-   $filterToAM = True;	
+   $filterToAM = True;	// previously set to True
    $arg_urn = am_urn($am_url);
    $obj2 = print_rspec_pretty($obj, $manifestOnly, $filterToAM, $arg_urn);
    print $obj2; 
+   
+   /* FIXME: Temporary variable dump for stitching
+   $dump = new SimpleXMLElement($obj);
+   echo "<pre>";
+   var_dump($dump);
+   echo "</pre>";*/
+   
 } else {
 
   /* error parsing */

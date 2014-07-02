@@ -141,7 +141,7 @@ $(document).ready(build_pretty_xml);
 print "<h2>$header</h2>\n";
 
 //print "Reserved resources on AM (<b>$AM_name</b>) until <b>$slice_expiration</b>:";
-print "<p>Resources on AM (<b>$AM_name</b>):</p>";
+//print "<p>Resources on AM (<b>$AM_name</b>):</p>";
 print "<div class='resources' id='prettyxml'>";
 print "<p><i>Adding resources...</i></p>";
 print "</div>\n";
