@@ -36,6 +36,9 @@ CREATE TABLE ma_member_attribute (
 CREATE INDEX ma_member_attribute_index_member_id
   ON ma_member_attribute (member_id);
 
+CREATE INDEX ma_member_attribute_name_value 
+  ON ma_member_attribute (name, value);
+
 -- ----------------------------------------------------------------------
 -- Privilege table. List all available privileges.
 -- ----------------------------------------------------------------------

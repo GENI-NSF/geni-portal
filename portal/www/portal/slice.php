@@ -286,7 +286,7 @@ $slice_own_url = "mailto:$owner_email";
 $omni_url = "tool-omniconfig.php";
 $flack_url = "flack.php?slice_id=".$slice_id;
 $gemini_url = "gemini.php?slice_id=" . $slice_id;
-$labwiki_url = 'http://emmy9.casa.umass.edu:4000/?slice_id=' . $slice_id;
+$labwiki_url = 'http://labwiki.casa.umass.edu/?slice_id=' . $slice_id;
 
 $status_url = 'sliverstatus.php?slice_id='.$slice_id;
 $listres_url = 'listresources.php?slice_id='.$slice_id;
@@ -432,7 +432,7 @@ $(document).ready(function() {
 
       $('#t_'+value).addClass('my_slice');
     });
-    $('.op_my_slice').attr('selected','selected');
+    $('.op_my_slice').prop('selected',true);
     $('#checkGroups').trigger('change');
 });
 </script>
