@@ -56,6 +56,49 @@ $pi_can_change_project = False;
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
+/**
+As of 6/25/14, known error codes:
+  ERROR1 = 'ERROR 1: UID and OU and DC match'
+Means portal tried to add a user that already exists. Handled explicitly.
+  ERROR2 = 'ERROR 2: UID and DC match but OU is different'
+Means trying to change project. Shouldn't happen, but code checks for this
+  ERROR3 = 'ERROR 3: UID matches but DC and OU are different'
+Member username exists from different authority. Code tries to pick a different username.
+  ERROR4 = 'ERROR 4: UID and OU match but DC is different'
+Seems to imply that group ou must be unique for both local and portal created groups? Huh?
+  ERROR5 = 'ERROR 5: User DN not known:'
+Handled explicitly when trying to deleteUser, changeLeader, changeProject
+  ERROR6 = 'ERROR 6: Cannot delete user: User is a admin for'
+Handled explicity in deleteUser
+  ERROR7 = 'ERROR 7: Project DN not known:'
+Handled explicitly in deleteProject, changeLeader, changeProject
+  ERROR8 = 'ERROR 8: Project not deleted because it contains admin(s):'
+Handled explicitly in deleteProject
+  ERROR9 = 'ERROR 9: Cannot move users: different DCs'
+Perhaps from changeProject? Shouldn't happen.
+  ERROR10 = 'ERROR 10: Missing OU LDIF entry'
+Malformed LDIF?
+  ERROR11 = 'ERROR 11: Missing groupname attribute in OU entry'
+Malformed LDIF of some kind?
+  ERROR12 = 'ERROR 12: Missing objectClass attribute (organizationalUnit/organizationalRole/organizationalUnit) for'
+Malformed LDIF?
+  ERROR20 = 'ERROR 20: Group exists'
+FIXME: I need to handle this (see comments below). This means I tried to create a group that exists.
+  ERROR21 = 'ERROR 21: Missing PI mail:'
+Malformed LDIF? Note all users must have an email address.
+  ERROR22 = 'ERROR 22: Missing PI sshpublickey:'
+Malformed LDIF? Note we explicitly require users have an SSH key.
+
+  ERROR30 = 'ERROR 30: Missing username (UID)'
+Malformed LDIF?
+  ERROR31 = 'ERROR 31: Organization does not egist for this user. Missing organization LDIF entry'
+FIXME: I need to handle this (see comments below). This means I tried to add a user to a group that doesn't exist.
+  ERROR32 = 'ERROR 32: Missing user mail:'
+Malformed LDIF? Not all portal users must have an email address.
+  ERROR33 = 'ERROR 33: Missing user sshpublickey:'
+Malformed LDIF? Note we explicitly require users have an SSH key.
+**/
+
 /* function project_is expired
     Checks to see whether project has expired
     Returns false if not expired, true if expired
@@ -330,6 +373,9 @@ function wimax_change_group($ldif_project_name, $ldif_user_username, $ldif_user_
     //    return false;
     return "Internal Error: WiMAX group $ldif_project_name not found";
   }
+  // Technically, this error could be returned. But I don't see how this could could cause this. It would mean that the user's 
+  // existing group is a different DC - and yet the user was found successfully 
+  // ERROR 9: Cannot move users: different DCs
   return true;
 }
 
@@ -803,6 +849,18 @@ if (array_key_exists('project_id', $_REQUEST))
 	  $usernameTaken = True;
 	}
       }
+      // FIXME: Handle:
+      //  ERROR20 = 'ERROR 20: Group exists'
+      // This means that the project/group already exists
+      // Update local state to note that the group exists, take out the ldif to create the group, and try again?
+      // But my local state needs to know who the admin is. Use the new sync function to retrieve the info, update the local state, and put the user back on the original wimax page but with an error message?
+
+      // FIXME: Handle:
+      //  ERROR31 = 'ERROR 31: Organization does not egist for this user. Missing organization LDIF entry'
+      // I believe this means that the local db thought the group exists, but wimax thinks it does not.
+      // Update local state to say the group does not exist and send the ldif to create it and try again
+      // But careful - who else thinks they are in this group? Who should be the group lead?
+      // Maybe use the sync function to update local state and go back to the wimax page with an error message?
     } // end of while loop to retry on username taken
     
     // CHECK REPLY FROM SENDER
@@ -1339,6 +1397,7 @@ P7
 	  // Other logical cases can't happen: proj enabled but lead is not wimax enabled,
 	  // or project not enbled and lead is and is enabled for this project
 	  error_log("huh? Got case in projects I lead that shouldn't happen. enabled=$enabled, ldif_user_group_id=$ldif_user_group_id, proj_id=$proj_id. Proj name: $proj_name");
+	  // FIXME: See ticket #1058
 	}
         echo "</td>";
         echo "</tr>";
