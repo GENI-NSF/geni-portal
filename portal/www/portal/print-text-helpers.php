@@ -234,7 +234,6 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
 	echo "<th colspan='2'>Login</th>\n";
 	echo "<td colspan='3' class='login' id='login_".$client_id."'>";
       } else {
-	echo "<br/>\n";
       }
       echo "<a href='$ssh_url' target='_blank'>";
       echo "ssh ", $login['username'],"@",$login['hostname'];
