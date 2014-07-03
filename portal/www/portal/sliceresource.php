@@ -156,6 +156,9 @@ print "<h2>$header</h2>\n";
 if(!$bound_rspec) {
     print "<p>Resources on AM (<b>$AM_name</b>):</p>";
 }
+else {
+    print "<p>Resources requested from bound RSpec:</p>";
+}
 print "<div class='resources' id='prettyxml'>";
 print "<p><i>Adding resources...</i></p>";
 print "</div>\n";
