@@ -98,17 +98,30 @@ if (! isset($rspec) || is_null($rspec)) {
   no_rspec_error();
   //  $rspec = fetchRSpecById(1);
 }
-if (! isset($am) || is_null($am)) {
-  no_am_error();
+
+// logic to handle bound/non-bound RSpecs with AMs
+// assuming RSpec is bound, don't test for AM
+$bound_rspec = 0;
+if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
+    $bound_rspec = 1;
+}
+else if (! isset($am) || is_null($am)) {
+      no_am_error();
 }
 
-// Get an AM
-$am_url = $am[SR_ARGUMENT::SERVICE_URL];
-$AM_name = am_name($am_url);
-// error_log("AM_URL = " . $am_url);
+// Get an AM for non-bound RSpecs
+if($bound_rspec) {
+    $am_url = "";
+    $AM_name = "";
+}
+else {
+    $am_url = $am[SR_ARGUMENT::SERVICE_URL];
+    $AM_name = am_name($am_url);
+    // error_log("AM_URL = " . $am_url);
 
-//$result = get_version($am_url, $user);
-// error_log("VERSION = " . $result);
+    //$result = get_version($am_url, $user);
+    // error_log("VERSION = " . $result);
+}
 
 // Get the slice credential from the SA
 $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
@@ -124,8 +137,9 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id);
 
 // Call create sliver at the AM
+// If bound, send empty AM URL and bound_rspec variable so logic can be handled
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
-			$slice_urn, $rspec_file, $slice['slice_id']);
+			$slice_urn, $rspec_file, $slice['slice_id'], $bound_rspec);
 // FIXME: temporarily comment this out for stitching
 //unlink($rspec_file);
 
@@ -147,9 +161,11 @@ if ($obj != "") {
    $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
 						 $slice['slice_id']);
    $log_attributes = array_merge($project_attributes, $slice_attributes);
-   log_event($log_url, $user,
-	  "Added resources to slice " . $slice_name . " at " . $AM_name,
-          $log_attributes);
+   if(!$bound_rspec) {
+       log_event($log_url, $user,
+	      "Added resources to slice " . $slice_name . " at " . $AM_name,
+              $log_attributes);
+   }
 }
 
 unset($slice2);

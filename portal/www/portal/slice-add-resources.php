@@ -216,6 +216,12 @@ if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
   $('#agg_chooser').val(am_id); 
 }
 </script>
+<script>
+// keep record of which aggregate was set on page load
+$( document ).ready(function() {
+    am_on_page_load = $('#agg_chooser').val();
+});
+</script>
 <?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 // stitching: by default, assume RSpec is not bound (0), but if a bound

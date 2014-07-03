@@ -226,7 +226,9 @@ function lookup_attribute($am_url, $attr_name)
 //    $am_url: URL of AM to which to connect
 //    $user : Structure with user information (for creating temporary files)
 //    $args: list of arguments (including the method itself) included
-function invoke_omni_function($am_url, $user, $args, $slice_users=array())
+//    $bound_rspec: 0 for unbound (default), 1 for bound RSpec
+function invoke_omni_function($am_url, $user, $args, 
+    $slice_users=array(), $bound_rspec=0)
 {
   $file_manager = new FileManager(); // Hold onto all allocated filenames
 
@@ -250,10 +252,10 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
   $private_key = $user->insidePrivateKey();
   $speaks_for_cred = $user->speaksForCred();
 
-  if ($handles_speaks_for and $speaks_for_cred) {
-      $speaks_for_invocation = true;
-      $cert = $user->certificate();
-      $private_key = $user->privateKey();
+    if ($handles_speaks_for and $speaks_for_cred) {
+        $speaks_for_invocation = true;
+        $cert = $user->certificate();
+        $private_key = $user->privateKey();
     }
 
     $username = $user->username;
@@ -263,27 +265,35 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     
     $aggregates = "aggregates=";
     $first=True;
-    if (is_array($am_url)){
-      foreach ($am_url as $single){
-	if (! isset($single) || is_null($single) || $single == '') {
-	  error_log("am_client cannot invoke Omni with invalid AM URL");
-	  return("Invalid AM URL");
-	}
-	if ($first){
-	  $first=False;
-	} else {
-	  $aggregates = $aggregates.", ";	  
-	}
-	$aggregates = $aggregates.$single;
-      }
-      $aggregates = $aggregates."\n";
-    }elseif (! isset($am_url) || is_null($am_url) || $am_url == '') {
-      error_log("am_client cannot invoke Omni without an AM URL");
-      return("Missing AM URL");
+    
+    // get AMs if non-bound
+    if(!$bound_rspec) {
+    
+        if (is_array($am_url)) {
+            foreach ($am_url as $single) {
+	            if (! isset($single) || is_null($single) || $single == '') {
+	                error_log("am_client cannot invoke Omni with invalid AM URL");
+	                return("Invalid AM URL");
+	            }
+	            if ($first){
+	                $first=False;
+	            } 
+	            else {
+	                $aggregates = $aggregates.", ";	  
+	            }
+	            $aggregates = $aggregates.$single;
+            }
+            $aggregates = $aggregates."\n";
+        }
+        elseif (! isset($am_url) || is_null($am_url) || $am_url == '') {
+              error_log("am_client cannot invoke Omni without an AM URL");
+              return("Missing AM URL");
+        }
+    
     }
     
     /* Create a directory to store all temp files, including logs and error
-       messages. Let the prefix be the username. A "session" is each time
+       messages. Let the prefix be the username. An "omni call ID" is each time
        invoke_omni_function() is called.
     
        Returns something like: /tmp/myuser-RKvQ1Z
@@ -325,8 +335,12 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       . "users = "
       . implode(", ", $username_array)
       . "\n";
-    if (is_array($am_url)){
-      $omni_config = $omni_config.$aggregates."\n";
+      
+    // specify AM for non-bound RSpecs
+    if(!$bound_rspec) {
+        if (is_array($am_url)){
+            $omni_config = $omni_config.$aggregates."\n";
+        }
     }
 
     // FIXME: If SR had AM nicknames, we could write a nickname to the
@@ -408,9 +422,12 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     $cmd_array[] = '--fileDir';
     $cmd_array[] = $omni_session_dir;
 
-    if (!is_array($am_url)){
-      $cmd_array[]='-a';
-      $cmd_array[]=$am_url;
+    // specify AM for non-bound RSpecs
+    if(!$bound_rspec) {
+        if (!is_array($am_url)){
+          $cmd_array[]='-a';
+          $cmd_array[]=$am_url;
+        }
     }
 
     if ($speaks_for_invocation) {
@@ -533,7 +550,7 @@ function get_version($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called GetVersion", $user, $am_url);
   $args = array('getversion');
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
   return $output;
 }
 
@@ -553,7 +570,7 @@ function list_resources($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called ListResources", $user, $am_url);
   $args = array('-t', 'GENI', '3', 'listresources');
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
   return $output;
 }
 
@@ -585,7 +602,7 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn, 
 		'3',
 		'listresources',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -618,7 +635,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 		'renewsliver',
 		$slice_urn,
 		$time);
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
   // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
   return $output;
@@ -627,14 +644,18 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
-                       $rspec_filename, $slice_id)
+                       $rspec_filename, $slice_id, $bound_rspec=0)
 {
-  if (! isset($am_url) || is_null($am_url) ){
-    if (!(is_array($am_url) || $am_url != '')) {
-      error_log("am_client cannot invoke Omni without an AM URL");
-      return("Missing AM URL");
+
+    // bound RSpecs should have empty AM URL, so only check for non-bound RSpecs
+    if(!$bound_rspec) {
+        if (! isset($am_url) || is_null($am_url) ){
+        if (!(is_array($am_url) || $am_url != '')) {
+          error_log("am_client cannot invoke Omni without an AM URL");
+          return("Missing AM URL");
+        }
+      }
     }
-  }
 
   if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
     error_log("am_client cannot act on a slice without a credential");
@@ -655,7 +676,7 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
 		$rspec_filename);
   // FIXME: Note that this AM has resources
   // slice_id, am_url or ID, duration?
-  $output = invoke_omni_function($am_url, $user, $args, $slice_users);
+  $output = invoke_omni_function($am_url, $user, $args, $slice_users, $bound_rspec);
   // FIXME: temporarily comment this out for stitching
   // unlink($slice_credential_filename);
   return $output;
@@ -686,7 +707,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 		$slice_credential_filename,
 		'sliverstatus',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -717,7 +738,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
 		'deletesliver',
 		$slice_urn);
   // Note that this AM no longer has resources
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
   unlink($slice_credential_filename);
   return $output;
 }

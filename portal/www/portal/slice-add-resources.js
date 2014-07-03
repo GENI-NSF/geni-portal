@@ -47,7 +47,7 @@ function rspec_onchange()
     //    console.log("ENABLE  = " + enable_agg_chooser);
 
     if (enable_agg_chooser == "1") {
-    $('#agg_chooser').val('');
+    $('#agg_chooser').val(am_on_page_load);
 	$('#agg_chooser').removeAttr('disabled');
 	$('#bound_rspec').val('0');
 	//	console.log("ENABLING");

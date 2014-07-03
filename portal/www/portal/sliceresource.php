@@ -109,16 +109,24 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
+// logic to handle bound/non-bound RSpecs with AMs
+// assuming RSpec is bound, don't test for AM
+$bound_rspec = 0;
 if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
-    // assuming RSpec is bound, don't test for AM
+    $bound_rspec = 1;
 }
 else if (! isset($am) || is_null($am)) {
       no_am_error();
 }
 
-// Get an AM
-$am_url = $am[SR_ARGUMENT::SERVICE_URL];
-$AM_name = am_name($am_url);
+// Get an AM for non-bound RSpecs
+if($bound_rspec) {
+    $am_id = "";
+}
+else {
+    $am_url = $am[SR_ARGUMENT::SERVICE_URL];
+    $AM_name = am_name($am_url);
+}
 
 $header = "Creating Sliver on slice: $slice_name";
 
@@ -131,9 +139,10 @@ var slice= "<?php echo $slice_id ?>";
 var am_id= "<?php echo $am_id ?>";
 var rspec_id= "<?php echo $rspec_id ?>";
 var rspec_file = "<?php echo $temp_rspec_file ?>";
+var bound_rspec = "<?php echo $bound_rspec ?>";
 function build_pretty_xml() 
 {
-  $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, am_id:am_id, rspec_file:rspec_file } );
+  $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, am_id:am_id, rspec_file:rspec_file, bound_rspec:bound_rspec} );
 }
 </script>
 <script>
@@ -144,7 +153,9 @@ $(document).ready(build_pretty_xml);
 print "<h2>$header</h2>\n";
 
 //print "Reserved resources on AM (<b>$AM_name</b>) until <b>$slice_expiration</b>:";
-//print "<p>Resources on AM (<b>$AM_name</b>):</p>";
+if(!$bound_rspec) {
+    print "<p>Resources on AM (<b>$AM_name</b>):</p>";
+}
 print "<div class='resources' id='prettyxml'>";
 print "<p><i>Adding resources...</i></p>";
 print "</div>\n";
