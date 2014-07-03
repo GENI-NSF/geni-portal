@@ -47,10 +47,14 @@ function rspec_onchange()
     //    console.log("ENABLE  = " + enable_agg_chooser);
 
     if (enable_agg_chooser == "1") {
+    $('#agg_chooser').val('');
 	$('#agg_chooser').removeAttr('disabled');
+	$('#bound_rspec').val('0');
 	//	console.log("ENABLING");
     } else {
+    $('#agg_chooser').val('bound');
 	$('#agg_chooser').attr('disabled', 'disabled');
+	$('#bound_rspec').val('1');
 	//	console.log("DISABLING");
     }
 

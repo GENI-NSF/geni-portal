@@ -109,8 +109,11 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
-if (! isset($am) || is_null($am)) {
-  no_am_error();
+if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
+    // assuming RSpec is bound, don't test for AM
+}
+else if (! isset($am) || is_null($am)) {
+      no_am_error();
 }
 
 // Get an AM
