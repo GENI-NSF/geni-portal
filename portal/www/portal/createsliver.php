@@ -180,8 +180,13 @@ $slice_expiration = dateUIFormat($slice_expiration_db);
 //$obj2 = trim($obj);
 if ($obj != "" ) {
    $manifestOnly=True;
-   $filterToAM = True;	// previously set to True
-   $arg_urn = am_urn($am_url);
+   $filterToAM = True;
+    if(!$bound_rspec) {
+        $arg_urn = am_urn($am_url);
+    }
+    else {
+        $arg_urn = "";
+    }
    $obj2 = print_rspec_pretty($obj, $manifestOnly, $filterToAM, $arg_urn);
    print $obj2; 
    

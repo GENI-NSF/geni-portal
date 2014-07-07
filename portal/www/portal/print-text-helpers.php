@@ -281,6 +281,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   }
   
   $link_num = 1;
+  
   foreach ($links as $link) {
   
     // for stitching, skip links that don't have component managers
@@ -290,35 +291,40 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     
     $comp_mgrs = $link->component_manager;
     $client_id = $link['client_id'];
+    
     // There may be multiple component managers
     $link_has_this_cm = False;
     foreach ($comp_mgrs as $cm) {
-      if ($cm['name'] == $componentMgrURN) {
-	$link_has_this_cm = True;
-	//	error_log("Link is for this CM based on array of CMs. " . $client_id . " has cm name " . $cm['name'] . " that matches AM URN");
-	break;
-	//      } else {
-	//	error_log("CM not this AM: " . $cm['name'] . " != " . $componentMgrURN);
-      }
+        if ($cm['name'] == $componentMgrURN) {
+	        $link_has_this_cm = True;
+	        //	error_log("Link is for this CM based on array of CMs. " . $client_id . " has cm name " . $cm['name'] . " that matches AM URN");
+	        break;
+	        //      } else {
+	        //	error_log("CM not this AM: " . $cm['name'] . " != " . $componentMgrURN);
+        }
     }
-    if ($filterToAM and !$link_has_this_cm){
-      $sliver_id = $link['sliver_id'];
-      $sliver_auth = get_auth_from_urn($sliver_id);
-      $compMgrAuth = get_auth_from_urn($componentMgrURN);
-      if ($sliver_auth == $compMgrAuth) {
-	//	error_log("Link '" . $client_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
-      } else if (! isset($sliver_id) or is_null($sliver_id) or $sliver_id === '') {
-	// Links often don't have a sliver_id
-	//	error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . $comp_mgrs->count() . " of them) != requested " . $componentMgrURN . " and sliver id not given");
-	continue;
-      } else {
-	error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . $comp_mgrs->count() . " of them) != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
-	continue;
-      }
+    
+    if ($filterToAM and !$link_has_this_cm) {
+        $sliver_id = $link['sliver_id'];
+        $sliver_auth = get_auth_from_urn($sliver_id);
+        $compMgrAuth = get_auth_from_urn($componentMgrURN);
+        if ($sliver_auth == $compMgrAuth) {
+	        //	error_log("Link '" . $client_id . "' is part of desired AM " . $componentMgrURN . " based on sliver_id " . $sliver_id);
+        } 
+        else if (! isset($sliver_id) or is_null($sliver_id) or $sliver_id === '') {
+	        // Links often don't have a sliver_id
+	        //	error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . $comp_mgrs->count() . " of them) != requested " . $componentMgrURN . " and sliver id not given");
+	        continue;
+        }
+        else {
+	        error_log("print-rspec-pretty skipping link '" . $client_id . "': its comp_mgrs (" . $comp_mgrs->count() . " of them) != requested " . $componentMgrURN . " and sliver auth doesnt match either. RSpec " . $sliver_auth . " != " . $compMgrAuth);
+	        continue;
+        }
     }
+    
     echo "<b>Link #",$link_num,":</b>";
     $link_num = $link_num+1;
-    echo "<table><tr>\n";
+    echo "<table style='margin-bottom:0px'><tr>\n";
     $num=0;
     $num_endpts = $link->interface_ref->count();
     echo "<th>Client ID</th>\n";
@@ -351,50 +357,66 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     /* 	} */
     /* } */
     /* print "</ul>\n"; */
+    
+    /* Do stitching stuff */
+    foreach ($stitching as $stitch) {
+
+        foreach ($stitch->path as $path) {
+        
+            // look for x where <stitching><path id="x"> matches <link client_id="x">
+            if((string)$path['id'] == (string)$client_id) {
+            
+                print "<table style='margin-top:0px;margin-bottom:0px'><tr>\n";
+                print "<th>Hop #</th>\n";
+                print "<th>Authority</th>\n";
+                print "<th>Interface</th>\n";
+                print "<th>Capacity</th>\n";
+                print "<th>VLAN</th>\n";
+                print "</tr>\n";
+            
+                foreach ($path->hop as $hop) {
+                    
+                    print "<tr>\n";
+                    print "<td>" . $hop['id'] . "</td>\n";
+                    
+                    foreach ($hop->link as $link) {
+                        print "<td>" . get_auth_from_urn($link['id']) . "</td>\n";
+                        print "<td>" . get_name_from_urn($link['id']) . "</td>\n";
+                        print "<td>" . trim($link->capacity) . "</td>\n";
+                        print "<td>";
+                        
+                        /* VLAN logic:
+                            Show if no aggregates are specified (combined manifest)
+                            Show if authority for this hop == the authority for the requested AM
+                        */
+                        if(($componentMgrURN == "") || (get_auth_from_urn($componentMgrURN) == get_auth_from_urn($link['id']))) {
+                            print trim($link->switchingCapabilityDescriptor->
+                                        switchingCapabilitySpecificInfo->
+                                        switchingCapabilitySpecificInfo_L2sc->
+                                        suggestedVLANRange);
+                        }
+                        else {
+                            print "N/A";
+                        }
+                        
+                        print "</td>\n";
+                    }
+                    
+                    print "</tr>\n";
+                    
+                }
+                
+                print "</table>\n";
+                break;
+            }
+        }
+    
+    }
+    
+
   }
   
   
-    /* Stitching */
-    if($num_stitching > 0) {
-        print "<b>Stitching information:</b>";
-    
-        print "<table><tr>\n";
-        print "<th>Hop #</th>\n";
-        print "<th>Authority</th>\n";
-        print "<th>Interface</th>\n";
-        print "<th>Capacity</th>\n";
-        /* print "<th>Suggested VLAN Range</th>\n"; */
-        
-        print "</tr>\n";
-    
-        foreach ($stitching as $stitch) {
-        
-            foreach ($stitch->path->hop as $hop) {
-                
-                print "<tr>\n";
-                print "<td>" . $hop['id'] . "</td>\n";
-                
-                foreach ($hop->link as $link) {
-                    print "<td>" . get_auth_from_urn($link['id']) . "</td>\n";
-                    print "<td>" . get_name_from_urn($link['id']) . "</td>\n";
-                    print "<td>" . trim($link->capacity) . "</td>\n";
-                    /*print "<td>" . 
-                        trim($link->switchingCapabilityDescriptor->
-                        switchingCapabilitySpecificInfo->
-                        switchingCapabilitySpecificInfo_L2sc->
-                        suggestedVLANRange) .
-                        "</td>\n"; */
-                }
-                
-                print "</tr>\n";
-                
-            }
-        
-        }
-        
-        print "</table>\n";
-    
-    }
     
     
     
