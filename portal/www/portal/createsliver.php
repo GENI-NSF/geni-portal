@@ -130,7 +130,9 @@ $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
 // Retrieve a canned RSpec
-$rspec_file = writeDataToTempFile($rspec);
+// FIXME: This is the RSpec that will be used to call omni/stitcher.
+// See proto-ch ticket #164 for storing all request RSpecs
+$rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
 
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -140,7 +142,7 @@ $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slic
 // If bound, send empty AM URL and bound_rspec variable so logic can be handled
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 			$slice_urn, $rspec_file, $slice['slice_id'], $bound_rspec);
-// FIXME: temporarily comment this out for stitching
+// FIXME: do something with the RSpec for ticket #164
 //unlink($rspec_file);
 
 $header = "Created Sliver on slice: $slice_name";
