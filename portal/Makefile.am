@@ -182,6 +182,7 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-projects.php \
 	www/portal/tool-rspecs.php \
+	www/portal/tool-rspec-parse.php \
 	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.php \
 	www/portal/tools-admin.php \

@@ -35,6 +35,7 @@ require_once("sa_client.php");
 require_once("proj_slice_member.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
+require_once("tool-rspec-parse.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -99,13 +100,29 @@ if (! isset($rspec) || is_null($rspec)) {
   //  $rspec = fetchRSpecById(1);
 }
 
-// logic to handle bound/non-bound RSpecs with AMs
-// assuming RSpec is bound, don't test for AM
+/* 
+    Bound and unbound RSpec logic
+        default: assume unbound RSpec
+        call parseRequestRSpecContents() to check whether rspec is bound
+*/
 $bound_rspec = 0;
-if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
+$parse_results = parseRequestRSpecContents($rspec);
+// is_bound is located in parse_results[1]
+if($parse_results[1] === true) {
     $bound_rspec = 1;
 }
-else if (! isset($am) || is_null($am)) {
+
+/* 
+// We could use this based on what was sent, but the above method is probably 
+// safer because it verifies it for *any* RSpec sent, whether in the DB or user
+// uploaded
+if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
+    $bound_rspec = 1;
+} */
+
+// logic to handle bound/non-bound RSpecs with AMs
+// assuming RSpec is bound, don't test for AM
+if (!$bound_rspec && (! isset($am) || is_null($am))) {
       no_am_error();
 }
 
