@@ -390,7 +390,9 @@ function invoke_omni_function($am_url, $user, $args,
 
     $omni_log_file = "$omni_session_dir/omni-log";
     $omni_stderr_file = "$omni_session_dir/omni-stderr";
+    $omni_stdout_file = "$omni_session_dir/omni-stdout";
     $file_manager->add($omni_stderr_file);
+    $file_manager->add($omni_stdout_file);
 
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/stitcher_php.py',
@@ -515,6 +517,13 @@ function invoke_omni_function($am_url, $user, $args,
 
      // Good for debugging but verbose
      //     error_log("am_client output " .  print_r($output, True));
+
+    // FIXME: Write stdout's contents to omni_stdout_file for now to capture
+    //  stitcher output. This will be changed when assigning descriptor_spec
+    //  to send to a file rather than a pipe.
+    $stdout_file = fopen($omni_stdout_file,"a");
+    fwrite($stdout_file, $output);
+    fclose($stdout_file);
 
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
