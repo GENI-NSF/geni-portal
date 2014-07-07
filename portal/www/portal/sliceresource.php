@@ -85,7 +85,7 @@ if(array_key_exists('rspec_selection', $_FILES)) {
   $temp_rspec_file = null;
   if(strlen($local_rspec_file) > 0) {
     $rspec = file_get_contents($local_rspec_file);
-    $temp_rspec_file = writeDataToTempFile($rspec, 'rspec-');
+    $temp_rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
   }
 }
 else if(array_key_exists('rspec_jacks', $_REQUEST)) {
@@ -93,7 +93,7 @@ else if(array_key_exists('rspec_jacks', $_REQUEST)) {
   $local_rspec_file = $_REQUEST['rspec_jacks'];
   if(strlen($local_rspec_file) > 0) {
     $rspec = $local_rspec_file;
-    $temp_rspec_file = writeDataToTempFile($rspec, 'rspec-');
+    $temp_rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
   }
 }
 
