@@ -49,13 +49,16 @@ function show_rspec_chooser($user) {
       $rname = $rmd['name'];
       $rdesc = $rmd['description'];
       //    error_log("BOUND = " . $rmd['bound']);
-      $enable_agg_chooser=1;
-      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
+      $bound = 0;
+      $stitch = 0;
       if ($rmd['bound'] == 't') {
-        $enable_agg_chooser = 0;
+        $bound = 1;
+      }
+      if ($rmd['stitch'] == 't') {
+        $stitch = 1;
       }
       //    error_log("BOUND = " . $enable_agg_chooser);
-      print "<option value='$rid' title='$rdesc' bound='$enable_agg_chooser'>$rname</option>\n";
+      print "<option value='$rid' title='$rdesc' bound='$bound' stitch='$stitch'>$rname</option>\n";
     }
   }
   echo '<option value="PUBLIC" disabled>---Public RSpecs---</option>';
@@ -65,13 +68,16 @@ function show_rspec_chooser($user) {
       $rname = $rmd['name'];
       $rdesc = $rmd['description'];
       //    error_log("BOUND = " . $rmd['bound']);
-      $enable_agg_chooser=1;
-      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
+      $bound = 0;
+      $stitch = 0;
       if ($rmd['bound'] == 't') {
-        $enable_agg_chooser = 0;
+        $bound = 1;
+      }
+      if ($rmd['stitch'] == 't') {
+        $stitch = 1;
       }
       //    error_log("BOUND = " . $enable_agg_chooser);
-      print "<option value='$rid' title='$rdesc' bound='$enable_agg_chooser'>$rname</option>\n";
+      print "<option value='$rid' title='$rdesc' bound='$bound' stitch='$stitch'>$rname</option>\n";
     }
   }
   
@@ -111,9 +117,14 @@ function show_am_chooser() {
     $aggdesc = $agg['service_description'];
     print "<option value=\"$aggid\" title=\"$aggdesc\">$aggname</option>\n";
   }
-  // for bound RSpecs
-  echo '<option disabled value="bound" title="Bound RSpec (AM chosen in RSpec)">Bound RSpec (AM chosen in RSpec)</option>'; 
+
+  echo '<option disabled value="stitch" title="Stitchable RSpec">Stitchable RSpec</option>'; 
+  // FIXME: Bound RSpecs not implemented yet
+  echo '<option disabled value="bound" title="Bound RSpec">Bound RSpec</option>'; 
   print "</select>\n";
+  
+  // Display message to user about stitching/bound RSpecs
+  print "<div id='aggregate_message' style='display:block;'></div>";
 }
 
 $user = geni_loadUser();
@@ -198,7 +209,11 @@ print "<td><b>Select existing: </b>";
 show_rspec_chooser($user);
 print "</td></tr>";
 print "<tr><td>";
-print "<b>Select from file: </b><input type='file' name='rspec_selection' id='rspec_selection' /><br><small><i>RSpecs uploaded from 'Select from file' are for this reservation only and will not be saved by the portal.</i></small>";
+print "<b>Select from file: </b><input type='file' name='rspec_selection' id='rspec_selection' onchange='fileupload_onchange()'/>";
+
+// upload message: get this from slice-add-resources.js calling rspecuploadparser.php
+print "<div id='upload_message' style='display:block;'></div>";
+
 print "</td></tr>";
 
 print "<tr><th>Choose Aggregate</th><td>";
@@ -224,9 +239,10 @@ $( document ).ready(function() {
 </script>
 <?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
-// stitching: by default, assume RSpec is not bound (0), but if a bound
-//      RSpec is selected, change this value (to 1) via slice-add-resources.js
+// by default, assume RSpec is not bound or stitchable (0), but if a bound or
+// stitchable RSpec is selected, change this value (to 1) via slice-add-resources.js
 print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
+print '<input type="hidden" name="stitchable_rspec" id="stitchable_rspec" value="0"/>';
 print '</form>';
 
 print ("<p><button onClick=\"");
