@@ -11,6 +11,7 @@
  * Handle expiration time properly from GRAM AM (#1061)
  * Added scripts to support archiving db tables (#1071)
  * Fix grammar and a typo in certificate renewal (#1072)
+ * Update LabWiki URL (#1073)
  * Use pushstate history for profile tabs (#1074)
  * Update to omni 2.6 (#1078)
  * Renamed generated SSH keypair filename in omni bundle
