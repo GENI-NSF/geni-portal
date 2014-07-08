@@ -391,8 +391,10 @@ function invoke_omni_function($am_url, $user, $args,
     $omni_log_file = "$omni_session_dir/omni-log";
     $omni_stderr_file = "$omni_session_dir/omni-stderr";
     $omni_stdout_file = "$omni_session_dir/omni-stdout";
+    $omni_command_file = "$omni_session_dir/omni-command";
     $file_manager->add($omni_stderr_file);
     $file_manager->add($omni_stdout_file);
+    $file_manager->add($omni_command_file);
 
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/stitcher_php.py',
@@ -445,6 +447,11 @@ function invoke_omni_function($am_url, $user, $args,
     }
     $command = implode(" ", $cmd_array);
 
+    // save command that was run
+    $cmd_file = fopen($omni_command_file,"a");
+    fwrite($cmd_file, $command);
+    fclose($cmd_file);
+    
      error_log("am_client invoke_omni_function COMMAND = " . $command);
      $handle = proc_open($command, $descriptor_spec, $pipes);
 
