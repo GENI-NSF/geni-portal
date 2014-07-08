@@ -57,14 +57,27 @@ client.onreadystatechange = function()
             else {
                 set_attributes_for_unbound();
             }
+            enable_reserve_resources();
         }
         // if invalid, set back to unbound
         else {
             set_attributes_for_unbound();
+            disable_reserve_resources();
         }
 
       }
    }
+
+/* enable/disable 'Reserve Resources' button */
+function disable_reserve_resources()
+{
+    $('#rspec_submit_button').attr('disabled', 'disabled');
+}
+
+function enable_reserve_resources()
+{
+    $('#rspec_submit_button').removeAttr('disabled');
+}
 
 /* Functions to do things when stitching/bound RSpecs are selected/deselected */
 
@@ -143,5 +156,13 @@ function rspec_onchange()
     $('#rspec_selection').val('');
     $("#upload_message").html('');
     //    console.log("CLEARING = " + rspec_file_chooser);
+    
+    // disable reserving resources if no RSpec is chosen
+    if(selected_element.attributes.getNamedItem('title').value == "Choose RSpec") {
+        disable_reserve_resources();
+    }
+    else {
+        enable_reserve_resources();
+    }
 
 }

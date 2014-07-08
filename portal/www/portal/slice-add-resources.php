@@ -41,7 +41,7 @@ function show_rspec_chooser($user) {
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
-  echo '<option value="" title="Choose RSpec" selected="selected">Choose RSpec...</option>';
+  echo '<option value="" title="Choose RSpec" selected="selected" bound="0" stitch="0">Choose RSpec...</option>';
   echo '<option value="PRIVATE" disabled>---Private RSpecs---</option>';
   foreach ($all_rmd as $rmd) {
     if ($rmd['visibility']==="private") {
@@ -245,7 +245,7 @@ print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
 print '<input type="hidden" name="stitchable_rspec" id="stitchable_rspec" value="0"/>';
 print '</form>';
 
-print ("<p><button onClick=\"");
+print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
