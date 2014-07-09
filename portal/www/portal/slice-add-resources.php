@@ -31,9 +31,10 @@ require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once 'geni_syslog.php';
 
+/* This is declared in tool-rspec.php
 function cmp($a,$b) {
   return strcmp(strtolower($a['name']),strtolower($b['name']));
-}
+} */
 
 function show_rspec_chooser($user) {
   $all_rmd = fetchRSpecMetaData($user);
@@ -179,6 +180,8 @@ function validateSubmit()
 }
 </script>
 
+<?php include "tabs.js"; ?>
+
 <?php
 print "<h1>Add resources to GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
 
@@ -192,11 +195,28 @@ if (count($keys) == 0) {
 	 . "Download an SSH keypair</button> to enable logon to nodes.</p>\n");
 }
 
-print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
-print "<p><button onClick=\"window.location='rspecs.php'\">"
-    . "View Available RSpecs</button> \n";
-print "<button onClick=\"window.location='rspecupload.php'\">"
-    . "Upload New RSpec</button></p>\n";
+?>
+
+  <div id='tablist'>
+		<ul class='tabs'>
+			<li><a href='#addresources'>Add Resources</a></li>
+			<li style="border-right: none"><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
+		</ul>
+  </div>
+
+<?php
+
+  // BEGIN the tabContent class
+  // this makes a fixed height box with scrolling for overflow
+  echo "<div class='tabContent'>";
+
+// BEGIN add resources tab
+echo "<div id='addresources'>";
+//print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
+//print "<p><button onClick=\"window.location='rspecs.php'\">"
+//    . "View Available RSpecs</button> \n";
+//print "<button onClick=\"window.location='rspecupload.php'\">"
+//    . "Upload New RSpec</button></p>\n";
 
 print "<h2>Add Resources</h2>\n";
 print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
@@ -250,6 +270,24 @@ print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
+
+// END add resources tab
+echo "</div>";
+
+// BEGIN rspecs tab
+echo "<div id='rspecs'>";
+/*----------------------------------------------------------------------
+ * RSpecs
+ *----------------------------------------------------------------------
+ */
+if (!$in_lockdown_mode) {
+  include("tool-rspecs.php");
+}
+// END rspecs tab
+echo "</div>";
+
+// END the tabContent class
+  echo "</div>";
 
 include("footer.php");
 ?>
