@@ -199,8 +199,8 @@ if (count($keys) == 0) {
 
   <div id='tablist'>
 		<ul class='tabs'>
-			<li><a href='#addresources'>Add Resources</a></li>
-			<li style="border-right: none"><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
+			<li><a href='#addresources' title="Add Resources">Add Resources</a></li>
+			<li style="border-right: none"><a href='#rspecs' title="Manage Resource Specifications">Manage RSpecs</a></li>
 		</ul>
   </div>
 

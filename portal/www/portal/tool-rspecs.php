@@ -76,7 +76,7 @@ print " that other users have publicly shared.</p>";
 print '<a name="privateRSpecs"></a>';
 print "<h3>My Private RSpecs</h3>\n";
 if (count($my_private) > 0) {
-  rspec_table_header();
+  rspec_table_header("my_private_rspecs");
   foreach ($my_private as $rspec) {
     display_rspec($rspec, $owners);
   }
@@ -87,7 +87,7 @@ if (count($my_private) > 0) {
 /* Show the table of existing public but editable RSpecs. */
 print "<h3>My Public RSpecs</h3>\n";
 if (count($my_public) > 0) {
-  rspec_table_header();
+  rspec_table_header("my_public_rspecs");
   foreach ($my_public as $rspec) {
     display_rspec($rspec, $owners);
   }
@@ -100,7 +100,7 @@ print '<a name="publicRSpecs"></a>';
 print("<h3>Public RSpecs that other users have shared</h3>\n");
 
 /* Show the table of public RSpecs. */
-rspec_table_header(True);
+rspec_table_header("public_rspecs", True, True);
 foreach ($public_rspecs as $rspec) {
   display_rspec($rspec, $owners, True);
 }
@@ -109,8 +109,17 @@ rspec_table_footer();
 //include("footer.php");
 
 /* ---------- */
-function rspec_table_header($public=False) {
-  print "<table>\n";
+function rspec_table_header($table_id, $searchable=False, $public=False) {
+  if($searchable) {
+      /* datatables.net (for sortable/searchable tables) */
+      echo '<script type="text/javascript">';
+      echo '$(document).ready( function () {';
+      echo '  $(\'#' . $table_id . '\').DataTable({paging: false});';
+      echo '} );';
+      echo '</script>';
+  }
+
+  print "<table id='$table_id'><thead>\n";
   if ($public) {
      $columns = array("Name", "Description", "Owner", "&nbsp;", "&nbsp;");
   } else {
@@ -121,7 +130,7 @@ function rspec_table_header($public=False) {
   foreach ($columns as $c) {
     print "<th>$c</th>";
   }
-  print "</tr>\n";
+  print "</tr></thead><tbody>\n";
 }
 
 /**
@@ -212,6 +221,6 @@ function display_rspec($rspec, $owners, $public=False) {
   print "</tr>\n";
 }
 function rspec_table_footer() {
-  print "</table>\n";
+  print "</tbody></table>\n";
 }
 ?>
