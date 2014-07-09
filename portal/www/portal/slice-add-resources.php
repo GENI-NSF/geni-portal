@@ -31,14 +31,13 @@ require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once 'geni_syslog.php';
 
-/* This is declared in tool-rspec.php
-function cmp($a,$b) {
+function cmp2($a,$b) {
   return strcmp(strtolower($a['name']),strtolower($b['name']));
-} */
+}
 
 function show_rspec_chooser($user) {
   $all_rmd = fetchRSpecMetaData($user);
-  usort($all_rmd,"cmp");
+  usort($all_rmd,"cmp2");
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
