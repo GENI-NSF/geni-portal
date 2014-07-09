@@ -540,6 +540,18 @@ function invoke_omni_function($am_url, $user, $args,
                . "JSON result is not parseable: \"$output\"");
        // this is probably a traceback from python
        // return it as a string
+       
+       // but see if omni-stderr exists, and pass back its information
+       // in addition to output to get a better traceback
+       $error_file = fopen($omni_stderr_file,"r");
+       if($error_file) {
+           $error_file_contents = fread($error_file, filesize($omni_stderr_file));
+           if($error_file_contents) {
+                $output .= $error_file_contents;
+           }
+           fclose($error_file);
+       }
+       
        return $output;
      }
      /* Delete the log file only if the decoded output is an array and
