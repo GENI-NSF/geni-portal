@@ -21,28 +21,29 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-client = new XMLHttpRequest();
 
 /* do things when RSpec is uploaded by user (i.e. not chosen from list) */
 function fileupload_onchange()
 {
-    user_rspec_file_input = document.getElementById("rspec_selection");
-    user_rspec_file = user_rspec_file_input.files[0];
-    formData = new FormData();
+    var user_rspec_file_input = document.getElementById("rspec_selection");
+    var user_rspec_file = user_rspec_file_input.files[0];
+    var formData = new FormData();
     formData.append("user_rspec", user_rspec_file);
-    client.open("post", "rspecuploadparser.php", true);
+    var client = new XMLHttpRequest();
+    client.open("post", "rspecupoadparser.php", true);
+    client.addEventListener("load", handle_results);
     client.send(formData);
 }
 
 /* once uploaded, change info */
-client.onreadystatechange = function() 
-   {
-      if (client.readyState == 4 && client.status == 200) 
-      {
-      
+function handle_results(evt)
+{
+    var client = evt.target;
+    if (client.readyState == 4 && client.status == 200)
+    {
         // parse JSON message
-        jsonResponse = JSON.parse(client.responseText);
-      
+        var jsonResponse = JSON.parse(client.responseText);
+
         // display message
         $("#upload_message").html(jsonResponse.message);
         
@@ -65,8 +66,8 @@ client.onreadystatechange = function()
             disable_reserve_resources();
         }
 
-      }
-   }
+    }
+}
 
 /* enable/disable 'Reserve Resources' button */
 function disable_reserve_resources()
