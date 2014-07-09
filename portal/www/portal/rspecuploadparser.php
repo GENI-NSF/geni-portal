@@ -88,7 +88,7 @@ if (array_key_exists('user_rspec', $_FILES)) {
             $results['ams'] = $parse_results[3];
             
             if($results['stitch']) {
-                $results['message'] .= ", bound, and stitchable";
+                $results['message'] .= " and stitchable";
             }
             else if($results['bound']) {
                 $results['message'] .= " and bound";
