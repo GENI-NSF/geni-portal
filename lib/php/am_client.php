@@ -227,8 +227,10 @@ function lookup_attribute($am_url, $attr_name)
 //    $user : Structure with user information (for creating temporary files)
 //    $args: list of arguments (including the method itself) included
 //    $bound_rspec: 0 for unbound (default), 1 for bound RSpec
+//    $stitch_rspec: 0 for non-stitchable (default), 1 for stitchable
+// FIXME: $bound_rspec not used for anything but might be useful later
 function invoke_omni_function($am_url, $user, $args, 
-    $slice_users=array(), $bound_rspec=0)
+    $slice_users=array(), $bound_rspec=0, $stitch_rspec=0)
 {
   $file_manager = new FileManager(); // Hold onto all allocated filenames
 
@@ -266,8 +268,8 @@ function invoke_omni_function($am_url, $user, $args,
     $aggregates = "aggregates=";
     $first=True;
     
-    // get AMs if non-bound
-    if(!$bound_rspec) {
+    // get AMs if non-stitchable
+    if(!$stitch_rspec) {
     
         if (is_array($am_url)) {
             foreach ($am_url as $single) {
@@ -336,8 +338,8 @@ function invoke_omni_function($am_url, $user, $args,
       . implode(", ", $username_array)
       . "\n";
       
-    // specify AM for non-bound RSpecs
-    if(!$bound_rspec) {
+    // specify AM for non-stitchable RSpecs
+    if(!$stitch_rspec) {
         if (is_array($am_url)){
             $omni_config = $omni_config.$aggregates."\n";
         }
@@ -426,8 +428,8 @@ function invoke_omni_function($am_url, $user, $args,
     $cmd_array[] = '--fileDir';
     $cmd_array[] = $omni_session_dir;
 
-    // specify AM for non-bound RSpecs
-    if(!$bound_rspec) {
+    // specify AM for non-stitchable RSpecs
+    if(!$stitch_rspec) {
         if (!is_array($am_url)){
           $cmd_array[]='-a';
           $cmd_array[]=$am_url;
@@ -566,7 +568,7 @@ function get_version($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called GetVersion", $user, $am_url);
   $args = array('getversion');
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   return $output;
 }
 
@@ -586,7 +588,7 @@ function list_resources($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called ListResources", $user, $am_url);
   $args = array('-t', 'GENI', '3', 'listresources');
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   return $output;
 }
 
@@ -618,7 +620,7 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn, 
 		'3',
 		'listresources',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -651,7 +653,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 		'renewsliver',
 		$slice_urn,
 		$time);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
   return $output;
@@ -660,11 +662,11 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
-                       $rspec_filename, $slice_id, $bound_rspec=0)
+                       $rspec_filename, $slice_id, $bound_rspec=0, $stitch_rspec=0)
 {
 
-    // bound RSpecs should have empty AM URL, so only check for non-bound RSpecs
-    if(!$bound_rspec) {
+    // stitchable RSpecs should have empty AM URL, so only check for non-stitchable RSpecs
+    if(!$stitch_rspec) {
         if (! isset($am_url) || is_null($am_url) ){
         if (!(is_array($am_url) || $am_url != '')) {
           error_log("am_client cannot invoke Omni without an AM URL");
@@ -692,7 +694,7 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
 		$rspec_filename);
   // FIXME: Note that this AM has resources
   // slice_id, am_url or ID, duration?
-  $output = invoke_omni_function($am_url, $user, $args, $slice_users, $bound_rspec);
+  $output = invoke_omni_function($am_url, $user, $args, $slice_users, $bound_rspec, $stitch_rspec);
   // FIXME: temporarily comment this out for stitching
   // unlink($slice_credential_filename);
   return $output;
@@ -723,7 +725,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 		$slice_credential_filename,
 		'sliverstatus',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -754,7 +756,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
 		'deletesliver',
 		$slice_urn);
   // Note that this AM no longer has resources
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   unlink($slice_credential_filename);
   return $output;
 }

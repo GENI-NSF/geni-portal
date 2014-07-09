@@ -89,7 +89,7 @@ function set_attributes_for_stitching()
     $('#agg_chooser').attr('disabled', 'disabled');
     $('#aggregate_message').html("You selected a <b>stitchable</b> RSpec, so aggregates will be specified from the RSpec.");
     $('#bound_rspec').val('1');
-    $('#stitchable_rspec').val('1');
+    $('#stitch_rspec').val('1');
 }
 
 /* do things when bound but not stitchable RSpec */
@@ -103,7 +103,7 @@ function set_attributes_for_bound()
     $('#agg_chooser').removeAttr('disabled');
     $('#aggregate_message').html("You selected a <b>bound</b> RSpec.");
     $('#bound_rspec').val('1');
-    $('#stitchable_rspec').val('0');
+    $('#stitch_rspec').val('0');
 }
 
 /* do things when unbound RSpec */
@@ -113,7 +113,7 @@ function set_attributes_for_unbound()
     $('#agg_chooser').removeAttr('disabled');
     $('#aggregate_message').html("");
     $('#bound_rspec').val('0');
-    $('#stitchable_rspec').val('0');
+    $('#stitch_rspec').val('0');
 }
 
 /* do things when RSpec is chosen from list (i.e. not uploaded) */

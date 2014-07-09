@@ -262,7 +262,7 @@ print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 // by default, assume RSpec is not bound or stitchable (0), but if a bound or
 // stitchable RSpec is selected, change this value (to 1) via slice-add-resources.js
 print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
-print '<input type="hidden" name="stitchable_rspec" id="stitchable_rspec" value="0"/>';
+print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
 print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");

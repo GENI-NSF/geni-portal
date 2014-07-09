@@ -101,16 +101,22 @@ if (! isset($rspec) || is_null($rspec)) {
 }
 
 /* 
-    Bound and unbound RSpec logic
-        default: assume unbound RSpec
-        call parseRequestRSpecContents() to check whether rspec is bound
+    Bound/unbound and stitchable RSpec logic
+        default: assume unbound and non-stitched RSpec
+        call parseRequestRSpecContents() to check whether rspec is bound/stitch
 */
 $bound_rspec = 0;
+$stitch_rspec = 0;
 $parse_results = parseRequestRSpecContents($rspec);
 // is_bound is located in parse_results[1]
 if($parse_results[1] === true) {
     $bound_rspec = 1;
 }
+// is_stitch is located in parse_results[2]
+if($parse_results[2] === true) {
+    $stitch_rspec = 1;
+}
+// FIXME: list of AMs is in parse_results[3] in case that needs to be passed in the future
 
 /* 
 // We could use this based on what was sent, but the above method is probably 
@@ -120,14 +126,14 @@ if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1"
     $bound_rspec = 1;
 } */
 
-// logic to handle bound/non-bound RSpecs with AMs
-// assuming RSpec is bound, don't test for AM
-if (!$bound_rspec && (! isset($am) || is_null($am))) {
+// logic to handle stitchable RSpecs with AMs
+// assuming RSpec is stitchable, don't test for AM
+if (!$stitch_rspec && (! isset($am) || is_null($am))) {
       no_am_error();
 }
 
 // Get an AM for non-bound RSpecs
-if($bound_rspec) {
+if($stitch_rspec) {
     $am_url = "";
     $AM_name = "";
 }
@@ -158,9 +164,10 @@ $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slic
 // Call create sliver at the AM
 // If bound, send empty AM URL and bound_rspec variable so logic can be handled
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
-			$slice_urn, $rspec_file, $slice['slice_id'], $bound_rspec);
+			$slice_urn, $rspec_file, $slice['slice_id'], $bound_rspec, 
+			$stitch_rspec);
 // FIXME: do something with the RSpec for ticket #164
-//unlink($rspec_file);
+unlink($rspec_file);
 
 $header = "Created Sliver on slice: $slice_name";
 
@@ -180,7 +187,7 @@ if ($obj != "") {
    $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
 						 $slice['slice_id']);
    $log_attributes = array_merge($project_attributes, $slice_attributes);
-   if(!$bound_rspec) {
+   if(!$stitch_rspec) {
        log_event($log_url, $user,
 	      "Added resources to slice " . $slice_name . " at " . $AM_name,
               $log_attributes);
@@ -200,7 +207,7 @@ $slice_expiration = dateUIFormat($slice_expiration_db);
 if ($obj != "" ) {
    $manifestOnly=True;
    $filterToAM = True;
-    if(!$bound_rspec) {
+    if(!$stitch_rspec) {
         $arg_urn = am_urn($am_url);
     }
     else {
