@@ -44,6 +44,27 @@ if (array_key_exists('project', $_REQUEST)) {
 
 // Add ssh keys to zip
 function add_ssh_keys_to_zip($keys, $zip) {
+  $filenames = array();
+
+  // Sort key_info to do those with no private key first, so we can rename
+  // those with a private key if necessary afterwards
+  if (count($keys) > 1) {
+    $ki2 = array();
+    foreach ($keys as $key_info) {
+      $sshkey_priv = $key_info[MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
+      if (! isset($sshkey_priv)) {
+	$ki2[] = $key_info;
+      }
+    }
+    foreach ($keys as $key_info) {
+      $sshkey_priv = $key_info[MA_SSH_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
+      if (! in_array($key_info, $ki2)) {
+	$ki2[] = $key_info;
+      }
+    }
+    $keys = $ki2;
+  }
+
   foreach ($keys as $key_info) {
     $ssh_filename = $key_info[MA_SSH_KEY_TABLE_FIELDNAME::FILENAME];
     $sshkey_pub = $key_info[MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY];
@@ -51,12 +72,28 @@ function add_ssh_keys_to_zip($keys, $zip) {
     if (isset($sshkey_priv)) {
       // A private key exists. This is a generated key, so
       // filename is for private key.
+
+      // Ticket 1063: If there is already a keyfile in the zip with this name,
+      // use a different name.
+      // Note we rename only where we have both parts of the keypair.
+      while (in_array($ssh_filename, $filenames) or in_array("$ssh_filename.pub", $filenames)) {
+	$ssh_filename .= "1";
+      }
       $zip->addFromString("ssh/private/$ssh_filename", $sshkey_priv);
+      $filenames[] = $ssh_filename;
       // append .pub for the public key
       $ssh_filename .= ".pub";
     }
     // Always add the public key
+    if (! isset($sshkey_priv) and in_array($ssh_filename, $filenames)) {
+      // We've already put a key in the bundle with this filename
+      // But we don't have the private key, and if we rename it,
+      // it won't match the private key. We either skip downloading this key,
+      // or include it and break the earlier keypair
+      error_log($_SERVER['eppn'] . ": omni bundle problem: 2 SSH keys with filename $ssh_filename");
+    }
     $zip->addFromString("ssh/public/$ssh_filename", $sshkey_pub);
+    $filenames[] = $ssh_filename;
   }
 }
 
