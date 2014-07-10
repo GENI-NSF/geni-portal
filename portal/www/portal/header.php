@@ -183,8 +183,9 @@ function show_header($title, $active_tab = '', $load_user=1)
     check_km_authorization($user);
   }
   echo '<!DOCTYPE HTML>';
-  echo '<html>';
+  echo '<html lang="en">';
   echo '<head>';
+  echo '<meta charset="utf-8">';
   echo '<title>';
   echo $title;
   echo '</title>';
