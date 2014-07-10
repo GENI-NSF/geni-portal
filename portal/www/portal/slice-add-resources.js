@@ -30,7 +30,7 @@ function fileupload_onchange()
     var formData = new FormData();
     formData.append("user_rspec", user_rspec_file);
     var client = new XMLHttpRequest();
-    client.open("post", "rspecupoadparser.php", true);
+    client.open("post", "rspecuploadparser.php", true);
     client.addEventListener("load", handle_results);
     client.send(formData);
 }
@@ -65,6 +65,9 @@ function handle_results(evt)
             set_attributes_for_unbound();
             disable_reserve_resources();
         }
+        
+        // change RSpec dropdown menu back to 'Choose RSpec'
+        $('#rspec_select').val('');
 
     }
 }

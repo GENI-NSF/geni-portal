@@ -78,7 +78,7 @@ if (array_key_exists('user_rspec', $_FILES)) {
         else {
             // RSpec was valid
             $results['valid'] = true;
-            $results['message'] = "<b style='color:green;'>SUCCESS:</b> This RSpec is valid";
+            $results['message'] = "This RSpec is <b>valid</b>";
             
             // get bound status, stitching status, and AM URNs if possible
             $parse_results = parseRequestRSpec($rspec_filename);
@@ -88,10 +88,10 @@ if (array_key_exists('user_rspec', $_FILES)) {
             $results['ams'] = $parse_results[3];
             
             if($results['stitch']) {
-                $results['message'] .= " and stitchable";
+                $results['message'] .= " and <b>stitchable</b>";
             }
             else if($results['bound']) {
-                $results['message'] .= " and bound";
+                $results['message'] .= " and <b>bound</b>";
             }
             $results['message'] .= ".";
         }
