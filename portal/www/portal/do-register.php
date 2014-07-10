@@ -51,12 +51,10 @@ function attrValue($attr, &$value, &$self_asserted) {
   $result = false;
   if (array_key_exists($attr, $_SERVER)) {
     $value = $_SERVER[$attr];
-    $value = utf8_decode($value);
     $self_asserted = false;
     $result = true;
   } else if (array_key_exists($attr, $_POST)) {
       $value = $_POST[$attr];
-      $value = utf8_decode($value);
       $self_asserted = true;
       $result = true;
   }
@@ -276,7 +274,7 @@ foreach ($attrs as $attr) {
       . "(identity_id, name, value, self_asserted) VALUES ("
       . $conn->quote($identity_id, 'integer')
       . ", " . $conn->quote($attr, 'text')
-      . ", " . $conn->quote(utf8_encode($value), 'text')
+      . ", " . $conn->quote($value, 'text')
       . ", " . $conn->quote($self_asserted, 'boolean')
       . ");";
     /* print "attr insert: $sql<br/>"; */
