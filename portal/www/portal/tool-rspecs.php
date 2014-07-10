@@ -76,7 +76,7 @@ print " that other users have publicly shared.</p>";
 print '<a name="privateRSpecs"></a>';
 print "<h3>My Private RSpecs</h3>\n";
 if (count($my_private) > 0) {
-  rspec_table_header("my_private_rspecs");
+  rspec_table_header("my_private_rspecs", True);
   foreach ($my_private as $rspec) {
     display_rspec($rspec, $owners);
   }
@@ -87,7 +87,7 @@ if (count($my_private) > 0) {
 /* Show the table of existing public but editable RSpecs. */
 print "<h3>My Public RSpecs</h3>\n";
 if (count($my_public) > 0) {
-  rspec_table_header("my_public_rspecs");
+  rspec_table_header("my_public_rspecs", True);
   foreach ($my_public as $rspec) {
     display_rspec($rspec, $owners);
   }
@@ -121,10 +121,11 @@ function rspec_table_header($table_id, $searchable=False, $public=False) {
 
   print "<table id='$table_id'><thead>\n";
   if ($public) {
-     $columns = array("Name", "Description", "Owner", "&nbsp;", "&nbsp;");
+     $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;",
+                    "Owner &#x2191;&#x2193;", "&nbsp;", "&nbsp;");
   } else {
-     $columns = array("Name", "Description", "&nbsp;", "&nbsp;", "&nbsp;",
-                      "&nbsp;");
+     $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;", 
+                    "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;");
   }
   print "<tr>";
   foreach ($columns as $c) {
