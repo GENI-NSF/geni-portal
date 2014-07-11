@@ -66,11 +66,11 @@ $owners = ma_lookup($ma_url, $user, $public_owners);
 /* Display starts here. */
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
 print("<p>From this page you can ");
-print '<a href="rspecupload.php">upload a new RSpec</a>';
+print '<b><a href="rspecupload.php">upload a new RSpec</a></b>';
 print ", ";
-print '<a href="#privateRSpecs">manage RSpecs</a>';
+print '<b>manage RSpecs</b>';
 print " you have uploaded to the portal, and ";
-print '<a href="#publicRSpecs">view RSpecs</a>';
+print '<b>view RSpecs</b>';
 print " that other users have publicly shared.</p>";
 /* Show the table of existing private RSpecs. */
 print '<a name="privateRSpecs"></a>';
@@ -174,9 +174,9 @@ function display_rspec($rspec, $owners, $public=False) {
   // Customize these with the RSpec id.
   $id = $rspec['id'];
   $view_url = "rspecview.php?id=$id";
-  $view_btn = ("<button onClick=\"window.location='$view_url'\">View</button>");
+  $view_btn = ("<button onClick=\"window.location='$view_url'\" title='view'>View</button>");
   $download_url = "rspecdownload.php?id=$id";
-  $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
+  $download_btn = "<button onClick=\"window.location='$download_url'\" title='Download'>Download</button>";
   if ($public) {
     $addr = $rspec['owner_email'];
     $pretty_name = $rspec['owner_name'];
@@ -205,9 +205,9 @@ function display_rspec($rspec, $owners, $public=False) {
                         'description' => $desc,
                         'name' => $sn);
     $edit_url = "rspecupload.php?" . http_build_query($edit_query);
-    $edit_btn = "<button onClick=\"window.location='$edit_url'\">Edit</button>";
+    $edit_btn = "<button onClick=\"window.location='$edit_url'\" title='Edit'>Edit</button>";
     $delete_url = "rspecdelete.php?id=$id";
-    $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
+    $delete_btn = "<button onClick=\"window.location='$delete_url'\" title='Delete'>Delete</button>";
     $columns = array($rspec['name'],
           $rspec['description'],
           $edit_btn,
