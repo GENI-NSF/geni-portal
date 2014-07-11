@@ -16,6 +16,7 @@
  * Update to omni 2.6 (#1078)
  * Renamed generated SSH keypair filename in omni bundle
    if it would conflict with another file in the bundle. (#1063)
+ * Remove dependence on pg_manifest field of sliver status (#1084)
 
 == 2.16.7 ==
  * Update the LabWiki URL (#1073)
