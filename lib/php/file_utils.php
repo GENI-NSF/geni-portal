@@ -60,7 +60,7 @@ function writeDataToTempDir($dir, $data, $prefix = "geni-")
     Create a temporary directory
 */
 function createTempDir($prefix) {
-    $tempfile=tempnam(sys_get_temp_dir(), "$prefix-");
+    $tempfile=tempnam(sys_get_temp_dir(), "omni-invoke-$prefix-");
     if (file_exists($tempfile)) { 
         unlink($tempfile);
     }
