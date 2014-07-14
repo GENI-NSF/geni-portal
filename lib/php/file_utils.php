@@ -103,7 +103,7 @@ class FileManager {
 
   function add($filename) { $this->filenames[]=$filename; }
 
-  /*function __destruct() {
+  function destruct() {
     foreach($this->filenames as $filename) {
         unlink($filename);
         // now see if directory can be deleted
@@ -111,10 +111,19 @@ class FileManager {
             rmdir(dirname($filename));
         }
     }
-  }*/
+  }
   
 }
 
-
+// delete all files in a directory
+// parameter: $dir - directory to look through
+// Source: http://stackoverflow.com/questions/4594180/deleting-all-files-from-a-folder-using-php
+function clean_directory($dir) {
+    $files = glob(rtrim($dir,'/').'/*'); // get all file names
+    foreach($files as $file){ // iterate files
+      if(is_file($file))
+        unlink($file); // delete file
+    }
+}
 
 ?>

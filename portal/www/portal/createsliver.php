@@ -201,8 +201,8 @@ $slice_expiration = dateUIFormat($slice_expiration_db);
 
 
 // Set headers for xml
-// FIXME: Temporary for stitching: header("Cache-Control: public"); 
-// FIXME: Temporary for stitching: header("Content-Type: text/xml");
+header("Cache-Control: public"); 
+header("Content-Type: text/xml");
 //$obj2 = trim($obj);
 if ($obj != "" ) {
    $manifestOnly=True;

@@ -295,26 +295,26 @@ function invoke_omni_function($am_url, $user, $args,
     }
     
     /* Create a directory to store all temp files, including logs and error
-       messages. Let the prefix be the username. An "omni call ID" is each time
-       invoke_omni_function() is called.
+       messages. Let the prefix be the username. An "omni invocation ID" is
+       created each time invoke_omni_function() is called.
     
-       Returns something like: /tmp/myuser-RKvQ1Z
+       Returns something like: /tmp/omni-invoke-myuser-RKvQ1Z
     */
-    $omni_session_dir = createTempDir($username);
-    if(is_null($omni_session_dir)) {
+    $omni_invocation_dir = createTempDir($username);
+    if(is_null($omni_invocation_dir)) {
         // FIXME: What to do if directory can't be created?
-        error_log("Could not create temporary directory for omni session: $omni_session_dir");
+        error_log("Could not create temporary directory for omni session: $omni_invocation_dir");
     }
 
     /* Write key and credential files */
-    $tmp_version_cache = "$omni_session_dir/omniVersionCache";
-    $tmp_agg_cache = "$omni_session_dir/omniAggCache";
+    $tmp_version_cache = "$omni_invocation_dir/omniVersionCache";
+    $tmp_agg_cache = "$omni_invocation_dir/omniAggCache";
     $file_manager->add($tmp_version_cache);
     $file_manager->add($tmp_agg_cache);
 
-    $cert_file = writeDataToTempDir($omni_session_dir, $cert, "cert");
+    $cert_file = writeDataToTempDir($omni_invocation_dir, $cert, "cert");
     $file_manager->add($cert_file);
-    $key_file = writeDataToTempDir($omni_session_dir, $private_key, "key");
+    $key_file = writeDataToTempDir($omni_invocation_dir, $private_key, "key");
     $file_manager->add($key_file);
 
     $slice_users = $slice_users + array($user);
@@ -372,7 +372,7 @@ function invoke_omni_function($am_url, $user, $args,
     foreach ($slice_users as $slice_user){
        $slice_username = $slice_user->username;
        $slice_urn = $slice_user->urn();	
-       $ssh_key_files = write_ssh_keys($slice_user, $user, $omni_session_dir);
+       $ssh_key_files = write_ssh_keys($slice_user, $user, $omni_invocation_dir);
        $all_ssh_key_files = array_merge($all_ssh_key_files, $ssh_key_files);
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
@@ -385,18 +385,18 @@ function invoke_omni_function($am_url, $user, $args,
       $file_manager->add($ssh_key_file);
     }
 
-    $omni_file = writeDataToTempDir($omni_session_dir, $omni_config, "omni-ini");
+    $omni_file = writeDataToTempDir($omni_invocation_dir, $omni_config, "omni-ini");
     $file_manager->add($omni_file);
 
     /* Call OMNI */
 
-    $omni_log_file = "$omni_session_dir/omni-log";
-    $omni_stderr_file = "$omni_session_dir/omni-stderr";
-    $omni_stdout_file = "$omni_session_dir/omni-stdout";
-    $omni_command_file = "$omni_session_dir/omni-command";
-    $file_manager->add($omni_stderr_file);
-    $file_manager->add($omni_stdout_file);
-    $file_manager->add($omni_command_file);
+    $omni_log_file = "$omni_invocation_dir/omni-log";
+    $omni_stderr_file = "$omni_invocation_dir/omni-stderr";
+    $omni_stdout_file = "$omni_invocation_dir/omni-stdout";
+    $omni_command_file = "$omni_invocation_dir/omni-command";
+    //$file_manager->add($omni_stderr_file);
+    //$file_manager->add($omni_stdout_file);
+    //$file_manager->add($omni_command_file);
 
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/stitcher_php.py',
@@ -426,7 +426,7 @@ function invoke_omni_function($am_url, $user, $args,
 
     /* stitcher.py: specify fileDir */
     $cmd_array[] = '--fileDir';
-    $cmd_array[] = $omni_session_dir;
+    $cmd_array[] = $omni_invocation_dir;
 
     // specify AM for non-stitchable RSpecs
     if(!$stitch_rspec) {
@@ -438,7 +438,7 @@ function invoke_omni_function($am_url, $user, $args,
 
     if ($speaks_for_invocation) {
       $cmd_array[] = "--speaksfor=" . $user->urn;
-      $speaks_for_cred_filename = writeDataToTempDir($omni_session_dir, 
+      $speaks_for_cred_filename = writeDataToTempDir($omni_invocation_dir, 
                 $speaks_for_cred->credential(), "sfcred");
       $file_manager->add($speaks_for_cred_filename);
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
@@ -554,13 +554,23 @@ function invoke_omni_function($am_url, $user, $args,
        
        return $output;
      }
-     /* Delete the log file only if the decoded output is an array and
-        its length is 2 and the second value (index 1) is boolean true
+     
+     /* Clean out $file_manager's directory 
+        This does NOT include log/error files or any additional files that
+        stitching requests may make.
+     */
+     $file_manager->destruct();
+     
+     /* Delete the remaining temp files only if the decoded output is an array
+        and its length is 2 and the second value (index 1) is boolean true
         (not null or empty string).
       */
-     /*if (is_array($output2) && count($output2) == 2 && $output2[1]) {
-       unlink($omni_log_file);
-     }*/
+     if (is_array($output2) && count($output2) == 2 && $output2[1]) {
+        clean_directory($omni_invocation_dir);
+        rmdir($omni_invocation_dir);
+        //unlink($omni_log_file);
+        //unlink($omni_stderr_file);
+     }
           error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
@@ -707,8 +717,7 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   // FIXME: Note that this AM has resources
   // slice_id, am_url or ID, duration?
   $output = invoke_omni_function($am_url, $user, $args, $slice_users, $bound_rspec, $stitch_rspec);
-  // FIXME: temporarily comment this out for stitching
-  // unlink($slice_credential_filename);
+  unlink($slice_credential_filename);
   return $output;
 }
 
