@@ -73,7 +73,7 @@ if (array_key_exists('user_rspec', $_FILES)) {
         // Upload was successful, do some basic checks on the contents.
         $rspec_filename = $_FILES["user_rspec"]["tmp_name"];
         if (! validateRSpec($rspec_filename, $msg)) {
-            $results['message'] = "<b style='color:red;'>ERROR:</b> This RSpec is invalid: " . $msg;
+            $results['message'] = "<b style='color:red;'>ERROR:</b> This RSpec is <b>invalid</b>: " . $msg;
         }
         else {
             // RSpec was valid
