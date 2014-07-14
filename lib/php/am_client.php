@@ -542,10 +542,18 @@ function invoke_omni_function($am_url, $user, $args,
        // but see if omni-stderr exists, and pass back its information
        // in addition to output to get a better traceback
        $error_file = fopen($omni_stderr_file,"r");
-       if($error_file) {
+       // only try to read if fopen was successful and if the error file
+       // contains something (i.e. more than 0 bytes)
+       if($error_file && filesize($omni_stderr_file)) {
            $error_file_contents = fread($error_file, filesize($omni_stderr_file));
            if($error_file_contents) {
-                $output .= $error_file_contents;
+                error_log("am_client invoke_omni_function: " .
+                    "stderr file non-empty. Check " . $omni_stderr_file .
+                    " for more information");
+                // uncomment the next line to append stderr contents to what
+                // users will see
+                // FIXME: Ticket 1086: parsing stderr
+                //$output .= $error_file_contents;
            }
            fclose($error_file);
        }
