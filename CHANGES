@@ -17,6 +17,7 @@
  * Renamed generated SSH keypair filename in omni bundle
    if it would conflict with another file in the bundle. (#1063)
  * Remove dependence on pg_manifest field of sliver status (#1084)
+ * Fix link on login-help page to point to new password reset page. (#1056)
 
 == 2.16.7 ==
  * Update the LabWiki URL (#1073)
