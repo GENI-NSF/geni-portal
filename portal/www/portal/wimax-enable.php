@@ -66,6 +66,7 @@ Means trying to change project. Shouldn't happen, but code checks for this
 Member username exists from different authority. Code tries to pick a different username.
   ERROR4 = 'ERROR 4: UID and OU match but DC is different'
 Seems to imply that group ou must be unique for both local and portal created groups? Huh?
+FIXME FIXME
   ERROR5 = 'ERROR 5: User DN not known:'
 Handled explicitly when trying to deleteUser, changeLeader, changeProject
   ERROR6 = 'ERROR 6: Cannot delete user: User is a admin for'
@@ -75,28 +76,30 @@ Handled explicitly in deleteProject, changeLeader, changeProject
   ERROR8 = 'ERROR 8: Project not deleted because it contains admin(s):'
 Handled explicitly in deleteProject
   ERROR9 = 'ERROR 9: Cannot move users: different DCs'
-Perhaps from changeProject? Shouldn't happen.
+Theoretically could happen from changeProject if I'm trying to move a user not created
+by the portal to a different project. Shouldn't happen.
   ERROR10 = 'ERROR 10: Missing OU LDIF entry'
-Malformed LDIF?
+Malformed LDIF
   ERROR11 = 'ERROR 11: Missing groupname attribute in OU entry'
-Malformed LDIF of some kind?
+Malformed LDIF
   ERROR12 = 'ERROR 12: Missing objectClass attribute (organizationalUnit/organizationalRole/organizationalUnit) for'
-Malformed LDIF?
+Malformed LDIF
   ERROR20 = 'ERROR 20: Group exists'
-FIXME: I need to handle this (see comments below). This means I tried to create a group that exists.
+Tried to create a group that already exists.
+FIXME: I need to handle this (see comments below).
   ERROR21 = 'ERROR 21: Missing PI mail:'
-Malformed LDIF? Note all users must have an email address.
+Malformed LDIF. Note all users must have an email address.
   ERROR22 = 'ERROR 22: Missing PI sshpublickey:'
-Malformed LDIF? Note we explicitly require users have an SSH key.
+Malformed LDIF. Note we explicitly require users have an SSH key.
 
   ERROR30 = 'ERROR 30: Missing username (UID)'
-Malformed LDIF?
+Malformed LDIF.
   ERROR31 = 'ERROR 31: Organization does not egist for this user. Missing organization LDIF entry'
 FIXME: I need to handle this (see comments below). This means I tried to add a user to a group that doesn't exist.
   ERROR32 = 'ERROR 32: Missing user mail:'
-Malformed LDIF? Not all portal users must have an email address.
+Malformed LDIF. Not all portal users must have an email address.
   ERROR33 = 'ERROR 33: Missing user sshpublickey:'
-Malformed LDIF? Note we explicitly require users have an SSH key.
+Malformed LDIF. Note we explicitly require users have an SSH key.
 **/
 
 /* function project_is expired
@@ -374,7 +377,7 @@ function wimax_change_group($ldif_project_name, $ldif_user_username, $ldif_user_
     return "Internal Error: WiMAX group $ldif_project_name not found";
   }
   // Technically, this error could be returned. But I don't see how this could could cause this. It would mean that the user's 
-  // existing group is a different DC - and yet the user was found successfully 
+  // existing group is a different DC - and yet the user was found successfully.
   // ERROR 9: Cannot move users: different DCs
   return true;
 }
@@ -857,10 +860,11 @@ if (array_key_exists('project_id', $_REQUEST))
 
       // FIXME: Handle:
       //  ERROR31 = 'ERROR 31: Organization does not egist for this user. Missing organization LDIF entry'
-      // I believe this means that the local db thought the group exists, but wimax thinks it does not.
+      // This means that the local db thought the group exists, but wimax thinks it does not.
       // Update local state to say the group does not exist and send the ldif to create it and try again
       // But careful - who else thinks they are in this group? Who should be the group lead?
       // Maybe use the sync function to update local state and go back to the wimax page with an error message?
+
     } // end of while loop to retry on username taken
     
     // CHECK REPLY FROM SENDER
