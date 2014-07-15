@@ -221,6 +221,36 @@ function lookup_attribute($am_url, $attr_name)
     return null;
 }
 
+// helper function to write the configuration file for omni/stitcher
+// returns the filename of where the logger config file was written
+function write_logger_configuration_file($dir) {
+
+    global $portal_gcf_dir;
+    
+    // open template for reading
+    $template_file_location = $portal_gcf_dir . '/src/stitcher_logging_template.conf';
+    $template_file = fopen($template_file_location,"r");
+    $template_file_contents = fread($template_file, 
+            filesize($template_file_location));
+    fclose($template_file);
+    
+    // string replacement of '%(consolelogfilename)s'
+    $console_log_file_variable = "%(consolelogfilename)s";
+    $console_log_file = "$dir/omni-console";
+    $config_file_contents = str_replace($console_log_file_variable, 
+            $console_log_file, $template_file_contents);
+    $config_file_location = "$dir/logger.conf";
+    
+    // write file to directory
+    $config_file = fopen($config_file_location,"a");
+    fwrite($config_file, $config_file_contents);
+    fclose($config_file);
+    
+    // return file name
+    return $config_file_location;
+
+}
+
 // Generic invocation of omni function 
 // Args:
 //    $am_url: URL of AM to which to connect
@@ -404,7 +434,7 @@ function invoke_omni_function($am_url, $user, $args,
 		       $omni_file,
 		       //		       '--debug',
 		       '-l',
-		       $portal_gcf_dir . '/src/logging.conf',
+		       write_logger_configuration_file($omni_invocation_dir),
 		       '--logoutput', $omni_log_file,
 		       '--api-version',
 		       '2',
@@ -573,6 +603,7 @@ function invoke_omni_function($am_url, $user, $args,
         and its length is 2 and the second value (index 1) is boolean true
         (not null or empty string).
       */
+      
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
         clean_directory($omni_invocation_dir);
         rmdir($omni_invocation_dir);

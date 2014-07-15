@@ -44,7 +44,8 @@ nobase_dist_svcdata_DATA = \
 # GCF related files that overwrite the installed gcf
 #----------------------------------------------------
 dist_gcfsrc_DATA = \
-	gcf.d/src/logging.conf
+	gcf.d/src/logging.conf \
+	gcf.d/src/stitcher_logging_template.conf
 dist_gcfsrc_SCRIPTS = \
 	gcf.d/src/omni_php.py \
 	gcf.d/src/stitcher_php.py
