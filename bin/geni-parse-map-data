@@ -1,0 +1,277 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+#
+#----------------------------------------------------------------------
+# Copyright (c) 2014 Raytheon BBN Technologies
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and/or hardware specification (the "Work") to
+# deal in the Work without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Work, and to permit persons to whom the Work
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Work.
+#
+# THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+# IN THE WORK.
+#----------------------------------------------------------------------
+
+#----------------------------------------------------------------------
+#
+# Generate GeoJSON map data from parsing advertisement RSpecs
+#
+#----------------------------------------------------------------------
+
+import sys
+import os
+import logging
+import optparse
+import psycopg2
+import psycopg2.extras
+import json
+import re
+from xml.dom import minidom
+import glob
+
+AM_SERVICE_TYPE = "0"
+logger = logging.getLogger()
+
+# class for a GENI resource
+class GENIResource:
+    def __init__(self):
+        self.am = ""
+        self.am_id = ""
+        self.type = "unknown"
+        self.name = ""
+        self.id = ""
+        self.latitude = "0.0"
+        self.longitude = "0.0"
+    def toGeoJSON(self):
+        return dict(
+            type='Feature',
+            properties=dict(
+                component_id=self.name,
+                resources=1,
+                am=self.am,
+                am_id=self.am_id,
+                type=self.type
+                ),
+            geometry=dict(
+                type='Point',
+                coordinates=[self.longitude, self.latitude]),
+        )
+
+def init_logging(options):
+    if options.silent:
+        level = logging.ERROR
+    elif options.debug:
+        level = logging.DEBUG
+    else:
+        level = logging.INFO
+    logging.basicConfig(level=level)
+
+def parse_args(argv):
+    parser = optparse.OptionParser(
+        usage="Generate GeoJSON map data from parsing advertisement RSpecs")
+    parser.add_option("--debug", action="store_true", default=False,
+                       help="enable debugging output")
+    parser.add_option("--silent", action="store_true", default=False,
+                       help="enable silent mode (only show errors)")
+    parser.add_option("-s", "--save", metavar="DIRECTORY", default='./',
+                      help="Directory of saved ad RSpecs (default is `./`)")
+    parser.add_option("-o", "--output", default='current.json',
+                      help="Filename for JSON output (default is `current.json`)")
+    parser.add_option("-d", "--database", default='portal',
+                      help="database name (default is `portal`)")
+    parser.add_option("--host", default='localhost',
+                      help="database host (default is `localhost`)")
+    parser.add_option("-u", "--user", default='portal',
+                      help="database user (default is `portal`)")
+    options,args = parser.parse_args()
+    return options,args
+
+# attempt to connect to database
+# returns connection and cursor variables
+def connect_to_database(database, user, host):
+    try:
+        conn = psycopg2.connect(database=database,
+                                user=user,
+                                host=host)
+    except:
+        raise Exception("Could not connect to database.")
+    logger.info("Established connection to database '%s' on %s." 
+            % (database, host))
+    return (conn, conn.cursor(cursor_factory=psycopg2.extras.DictCursor))
+
+# close database connection
+def disconnect_from_database(conn, cur):
+    cur.close()
+    conn.close()
+    logger.info("Closed connection to database.")
+
+# (Geo)JSON stuff
+def write_to_geojson_file(resources, output_file):
+    JSONarray = {'type':'FeatureCollection', 'features':[]}
+    JSONarray['features'].extend(resources)
+    try:
+        f = open(output_file, "w")
+        f.write(json.dumps(JSONarray, default=lambda o: o.toGeoJSON(), indent=4))
+        f.close()
+    except IOError as e:
+        logger.error("Could not write output to %s: %s" % (output_file, e))
+    else:
+        logger.info("Wrote GeoJSON output to %s." % output_file)
+
+# make a best guess about the resource type
+def determine_resource_type(name):
+    if 'pc' in name:
+        return 'pc'
+    elif 'pg' in name:
+        return 'pc'
+    elif 'compute' in name:
+        return 'pc'
+    elif 'procurve' in name:
+        return 'switch'
+    elif 'cisco' in name:
+        return 'switch'
+    else:
+        return 'unknown'
+
+# do a regex on the AM ID or search in SR to get the AM name
+def determine_am_name(am_id, ams_dictionary):
+    # first attempt to see if AM ID is in dictionary
+    if am_id in ams_dictionary:
+        return ams_dictionary[am_id]
+    # if not, parse from component_manager_id attribute
+    result = re.search(r'IDN\+(.*)\+authority', am_id)
+    if result is None:
+        logger.info("Could not parse AM name from AM URN %s. "
+                "Defaulting to None." % am_id)
+        return None
+    else:
+        # cache result in dictionary
+        ams_dictionary[am_id] = result.group(1)
+        return result.group(1)
+
+# get the resource short name
+def determine_resource_name(element):
+    if element.tagName == 'openflow:datapath':
+        return element.getAttribute('dpid')
+    else:
+        return element.getAttribute('component_name')
+
+# get lat/lon information (default to 0.0, 0.0 if unknown)
+def determine_resource_location(element):
+    latitude = "0.0"
+    longitude = "0.0"
+    if element.tagName == 'openflow:datapath':
+        locations = element.getElementsByTagName('openflow:location')
+    else:
+        locations = element.getElementsByTagName('location')
+    if len(locations) == 0:
+        logger.info("No location information found for %s" % 
+                element.getAttribute('component_id'))
+    for location in locations:
+        latitude = location.getAttribute('latitude')
+        longitude = location.getAttribute('longitude')
+    return (longitude, latitude)
+
+# instantiate and add attributes to a GENIResource()
+def populate_geni_resource(element, ams_dictionary):
+    logger.debug("Instantiating new GENIResource.")
+    resource = GENIResource()
+    resource.am_id = element.getAttribute('component_manager_id')
+    resource.id = element.getAttribute('component_id')
+    resource.name = determine_resource_name(element)
+    (resource.longitude, resource.latitude) = determine_resource_location(element)
+    resource.type = determine_resource_type(resource.name)      
+    if resource.am_id:
+        resource.am = determine_am_name(resource.am_id, ams_dictionary)
+    return resource
+
+# do some checking before adding the resource to list of resources
+# check if minimum parameters exist before adding them
+def add_to_geni_resources(resource, resources):
+    if(resource.id and resource.am_id):
+        logger.debug("Added new GENIResource %s to list of existing resources." %
+                (resource.id))
+        resources.append(resource)
+    else:
+        logger.error("Could not add GENIResource; missing minimum information.")
+        logger.error("  resource.id: %s" % resource.id)
+        logger.error("  resource.am_id: %s" % resource.am_id)
+
+# open connection to DB once to get all AM URN/name data as key/value pairs
+def get_am_names(cur):
+    dictionary = {}
+    select_sql = 'SELECT service_urn, service_name FROM service_registry WHERE service_type = %s'
+    logger.debug("Querying from SR: %s", cur.mogrify(select_sql, (AM_SERVICE_TYPE)))
+    logger.info("Starting database search for AM URNs and names.")
+    cur.execute(select_sql, (AM_SERVICE_TYPE))
+    records = cur.fetchall()
+    if not records:
+        logger.error("Found no AMs in the service registry.")
+    else:
+        for record in records:
+            dictionary[record['service_urn']] = record['service_name']
+    return dictionary
+
+# look through all RSpecs in a directory for GENI resources
+def search_rspecs_for_resources(rspecs_directory, cur):
+
+    resources = []
+    ams_dictionary = get_am_names(cur)
+    
+    for filepath in glob.glob(os.path.join(rspecs_directory, "*.xml")):
+        try:
+            xmlfile = minidom.parse(filepath)
+            rspecs = xmlfile.getElementsByTagName('rspec')
+        except Exception as e:
+            logger.error("Could not parse %s" % filepath)
+            continue
+            
+        logger.info("Starting parse of %s" % filepath)
+        
+        # should only be one <rspec...> in most files
+        for rspec in rspecs:
+            children = rspec.childNodes
+            
+            # potential <node...> or <openflow:datapath...> elemenets
+            for child in children:
+                if (child.nodeType == minidom.Node.ELEMENT_NODE and 
+                    (child.tagName == 'node' or child.tagName == 'openflow:datapath')):
+                    
+                    resource = populate_geni_resource(child, ams_dictionary)
+                    add_to_geni_resources(resource, resources)
+
+    if not resources:
+        raise Exception("No resources found in %s. Quitting." % rspecs_directory)
+
+    return resources
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    try:
+        options,args = parse_args(argv)
+        init_logging(options)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
+        return 1
+    
+    (conn, cur) = connect_to_database(options.database, 
+            options.user, options.host)
+    resources = search_rspecs_for_resources(options.save, cur)
+    disconnect_from_database(conn, cur)
+    write_to_geojson_file(resources, options.output)
+
+if __name__ == "__main__":
+    sys.exit(main())

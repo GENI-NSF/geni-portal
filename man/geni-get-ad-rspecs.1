@@ -1,0 +1,76 @@
+.TH GENI-GET-AD-RSPECS 1 "June 10, 2014"
+.SH NAME
+geni-get-ad-rspecs \- query all AMs in the SR for advertisement RSpecs
+.SH SYNOPSIS
+.B geni-get-ad-rspecs
+\fB-c \fICONFIG\fR
+[\fB-s \fIDIRECTORY\fR]
+[\fB-d \fIDATABASE\fR]
+[\fB--host \fIHOST\fR]
+[\fB-u \fIUSER\fR]
+[\fB--debug\fR]
+[\fB--silent\fR]
+[\fB--cleanup\fR]
+.SH DESCRIPTION
+.B geni-get-ad-rspecs
+queries all of the aggregate managers (AMs) in the service registry (SR) for
+their advertisement RSpecs. It queries the SR for a list of AMs, calls
+\fBomni\fR's listresources and saves each returned RSpec, and verifies
+that each saved RSpec contains a valid XML structure and at least one <rspec>
+element.
+
+Files that are downloaded are first stored in the OS's temporary directory (e.g.
+\fB/tmp/rspecs/\fR on Linux). Valid files are moved to the user-specified
+directory. Invalid files are left in the temporary directory. Cleanup of the
+temporary directory occurs every time \fBgeni-get-ad-rspecs\fR is called.
+
+The user is assumed to have a \fB.pgpass\fR file to access the PostgreSQL
+database.
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--configfile \fICONFIG
+Path of omni configuration file (required)
+.TP
+\fB-s\fR, \fB--save \fIDIRECTORY
+Path of directory to save ad RSpecs (default is './')
+.TP
+\fB-d\fR, \fB--database \fIDATABASE
+Database name (default is 'portal')
+.TP
+\fB--host \fIHOST
+Database hostname (default is 'localhost')
+.TP
+\fB-u\fR, \fB--user \fIUSER
+Database user (default is 'portal')
+.TP
+\fB--debug
+Show verbose debugging information.
+.TP
+\fB--silent
+Silence all info and debug messages but show errors.
+.TP
+\fB--cleanup
+Delete all .xml files remaining in the temporary directory (i.e. all invalid
+RSpecs) when completed.
+.SH EXAMPLES
+Query all AMs of a service registry running on the local machine:
+
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs
+    
+Query all AMs of a service registry running on an external machine:
+
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
+        --host ch.geni.net
+
+Run silently but show errors if they occur:
+
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
+        --silent
+
+Run silently and remove invalid RSpecs at the end:
+
+    geni-get-ad-rspecs -c ~/.gcf/omni_config -s ~/my_rspecs \\
+        --silent --cleanup
+        
+.SH AUTHOR
+geni-get-ad-rspecs was written by Raytheon BBN Technologies.

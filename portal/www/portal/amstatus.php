@@ -99,7 +99,7 @@ foreach ($obj as $am_url => $am_status) {
        // If the expiration doesn't have TZ set, make it explicitly UTC (Z=Zulu)
        if ($geni_expires != 'unknown') {
 	 $date_details = date_parse($geni_expires);
-	 if(!array_key_exists('tz_id', $date_details)) {
+         if(!(array_key_exists('tz_id', $date_details) || array_key_exists('zone', $date_details))) {
 	   $geni_expires = $geni_expires . "Z";
 	 }
        }
@@ -110,18 +110,7 @@ foreach ($obj as $am_url => $am_status) {
        $geni_resources = $am_status['geni_resources'];
        foreach ($geni_resources as $rsc){
            $resource_item = Array();
-      	   if ( array_key_exists("pg_manifest", $rsc) ){
-	       $pg_rsc = $rsc["pg_manifest"];
-	       $pg_name = $pg_rsc["name"];
-	       if ($pg_name == "rspec"){
-	           continue;
-	       }
-	       $pg_attr = $pg_rsc["attributes"];
-	       $rsc_urn = $pg_attr["client_id"];
-	       $resource_item['geni_urn'] = $rsc_urn;
-      	   } else {
-	       $resource_item['geni_urn'] = $rsc['geni_urn'];
-      	   }
+	   $resource_item['geni_urn'] = $rsc['geni_urn'];
       	   $resource_item['geni_status'] = $rsc['geni_status'];
       	   $resource_item['geni_error'] = $rsc['geni_error'];
       
@@ -230,65 +219,6 @@ function getInfoFromSliverStatusPG( $obj, $status_array ){
       	# which private key
       	  	$pgKeyList[$userDict['login']][] = $k['key'];
     	}
-
-    	foreach ($am_item['geni_resources'] as $resourceDict) {
-      		if (! array_key_exists('pg_manifest',$resourceDict)){
-        	   continue;
-      		}
-      		if (! array_key_exists('children',$resourceDict['pg_manifest'])){
-        	  continue;
-      		}
-      		foreach ($resourceDict['pg_manifest']['children'] as $children1) {	
-          	  if (! array_key_exists('children',$children1)){
-             	    continue;
-          	  }
-          	  foreach ($children1['children'] as $children2) {	
-             	    if (! array_key_exists('attributes',$children2)){
-               	       continue;
-             	    }
-             	    $child = $children2['attributes'];
-             	    $port = "";
-             	    $hostname = "";
-             	    if (array_key_exists("hostname", $child)){
-                      $hostname = $child["hostname"];
-             	    } else {
-                      continue;
- 	     	    }
-             	    if (array_key_exists("port", $child)){
-                      $port = $child["port"];
-	     	    }
-             	    $client_id = "";
-             	    if (array_key_exists('attributes', $resourceDict["pg_manifest"]) and array_key_exists("client_id", $resourceDict["pg_manifest"]["attributes"])){
-                       $client_id = $resourceDict["pg_manifest"]["attributes"]["client_id"];
- 	     	    }
-		    $geni_status = "";
-             	    if (array_key_exists("geni_status",$resourceDict)){
-                       $geni_status = $resourceDict["geni_status"];
-             	    }
-             	    $am_status = "";
-             	    if (array_key_exists("pg_status",$resourceDict)){
-               	      $am_status = $resourceDict["pg_status"];
-	     	    }	    
-
-      		    $loginInfo[ $client_id ] = array();
-      		    foreach ($pgKeyList as $user => $keys) {	
-            	    	    $loginInfo[ $client_id ][$user] = array('authentication' => 'ssh-keys', 
-                              'hostname' => $hostname,
-                              'client_id' =>  $client_id,
-                              'port' => $port,
-                              'username' => $user,
-                              'keys'  =>  $keys,
-                              'geni_status' => $geni_status,
-                              'am_status' => $am_status
-                             );
-     		    }
-
-	 }
-      }
-
-
-     $status_array[am_id( $am_url )]['login_info']["resources"]  = $loginInfo ;
-   }
 
    }
    return $status_array; 

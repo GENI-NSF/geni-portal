@@ -141,7 +141,7 @@ function rfc3339Format($date_string)
   return $rfc3339;
 }
 
-// Are the candiates all in the given list
+// Are the candidates all in the given list
 // If 'true_if_any' is true, return true if ANY candidate is in the list, not ALL
 function already_in_list($candidates, $members, $true_if_any)
 {
