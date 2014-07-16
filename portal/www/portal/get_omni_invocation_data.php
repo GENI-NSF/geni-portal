@@ -55,7 +55,12 @@ require_once("print-text-helpers.php");
         $retVal: JSON-encoded array of 4 key/values:
             'code': 0 for success, non-zero number for failure
             'msg': user-friendly message about the result of the action
-            'obj': raw or pretty data (or NULL if failure)
+            'obj': raw or pretty data
+                for non-tailing objects, 'obj' will be string (or NULL if failed)
+                for tailing objects, 'obj' has 3 key/values:
+                    'data': raw or pretty data returned
+                    'bytes_read': number of bytes read
+                    'new_offset': what the next query's offset should be
             'time': local server time when request is returned
     
 */
