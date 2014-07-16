@@ -43,6 +43,8 @@ require_once("print-text-helpers.php");
                 console
                 error
                 debug
+                stdout
+                status
         Optional:
             raw: 'true' (default) or 'false' (pretty print if available)
     
@@ -97,6 +99,9 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
             break;
         case "stdout":
             $retVal = get_omni_invocation_stdout($invocation_dir, $raw);
+            break;
+        case "status":
+            $retVal = get_omni_invocation_status($invocation_dir, $raw);
             break;
         default:
             $retVal = array(
@@ -182,15 +187,7 @@ function get_omni_invocation_pid($dir, $raw=true) {
 function get_omni_invocation_command($dir, $raw=true) {
     $retVal = get_omni_invocation_file_raw_contents($dir, "omni-command", 
             "command file");
-    if($raw) {
-        return $retVal;
-    }
-    else {
-        if($retVal['obj']) {
-            $retVal['obj'] = "<p>" . $retVal['obj'] . "</p>";
-        }
-        return $retVal;
-    }
+    return $raw ? $retVal : make_pretty_command($retVal);
 }
 
 /*
@@ -229,24 +226,72 @@ function get_omni_invocation_error_log($dir, $raw=true) {
 function get_omni_invocation_stdout($dir, $raw=true) {
     $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
             "stdout from stitcher.call");
-    if($raw) {
-        return $retVal;
-    }
-    else {
-        if($retVal['obj']) {
-        
-            // FIXME: Do checks on this to see if this contains real data
-            $output2 = json_decode($retVal['obj'], True);
-        
-            // FIXME: Note that this captures whatever is buffered in the
-            //      output, as print_rspec_pretty() uses prints and echoes.
-            //      Probably need a more elegant solution going forward.
-            ob_start();
-            $obj = print_rspec_pretty($output2[1]);
-            $retVal['obj'] = ob_get_clean();
+    return $raw ? $retVal : make_pretty_stdout($retVal);
+}
+
+/*
+    Get the status of the omni invocation based on its PID
+*/
+function get_omni_invocation_status($dir, $raw=true) {
+    $retVal = get_omni_invocation_pid($dir, true);
+    if($retVal['obj']) {
+        $pid = $retVal['obj'];
+        $command = 'ps -p ' . $pid;
+        exec($command, $output);
+        if(isset($output[1])) {
+            $retVal['code'] = 0;
+            $retVal['msg'] = "Process $pid running";
+            $retVal['obj'] = "run";
+        }
+        else {
+            $retVal['code'] = 0;
+            $retVal['msg'] = "Process $pid not running";
+            $retVal['obj'] = "norun";
         }
         return $retVal;
     }
+    else {
+        return $retVal;
+    }
+
+}
+
+/*
+    Return pretty print for command that was called
+*/
+function make_pretty_command($retVal) {
+    if($retVal['obj']) {
+        $retVal['obj'] = "<pre>" . $retVal['obj'] . "</pre>";
+        return $retVal;
+    }
+    else {
+        return $retVal;
+    }
+}
+
+/*
+    Return pretty print for omni-stdout data
+*/
+function make_pretty_stdout($retVal) {
+
+    // check that obj isn't empty
+    if($retVal['obj']) {
+        // FIXME: Do checks on this to see if this contains real data
+        $output2 = json_decode($retVal['obj'], True);
+            
+        // FIXME: Note that this captures whatever is buffered in the
+        //      output, as print_rspec_pretty() uses prints and echoes.
+        //      Probably need a more elegant solution going forward.
+        ob_start();
+        $obj = print_rspec_pretty($output2[1]);
+        $retVal['obj'] = ob_get_clean();
+        return $retVal;
+    }
+    // pass back what we originally got
+    else {
+        return $retVal;
+    }
+
 }
 
 ?>
