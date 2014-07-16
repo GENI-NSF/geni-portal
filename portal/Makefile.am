@@ -107,6 +107,7 @@ dist_svcweb_DATA = \
 	www/portal/footer.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
+	www/portal/get_omni_invocation_data.php \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \
 	www/portal/getversion.php \

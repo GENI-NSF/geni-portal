@@ -167,7 +167,8 @@ $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 			$slice_urn, $rspec_file, $slice['slice_id'], $bound_rspec, 
 			$stitch_rspec);
 // FIXME: do something with the RSpec for ticket #164
-unlink($rspec_file);
+// FIXME: forking: this file shouldn't be deleted for now
+//unlink($rspec_file);
 
 $header = "Created Sliver on slice: $slice_name";
 

@@ -26,6 +26,8 @@
  * Functions to help with file handling.
  */
 
+$omni_invocation_prefix = "omni-invoke";
+
 /**
  * Write $data to a temp file and return the filename.  An optional
  * file prefix can be specified.
@@ -60,7 +62,8 @@ function writeDataToTempDir($dir, $data, $prefix = "geni-")
     Create a temporary directory
 */
 function createTempDir($prefix) {
-    $tempfile=tempnam(sys_get_temp_dir(), "omni-invoke-$prefix-");
+    global $omni_invocation_prefix;
+    $tempfile=tempnam(sys_get_temp_dir(), "$omni_invocation_prefix-$prefix-");
     if (file_exists($tempfile)) { 
         unlink($tempfile);
     }
