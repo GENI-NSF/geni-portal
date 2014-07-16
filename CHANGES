@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.18 ==
+
 == 2.17 ==
  * Add indices on logging_entry, logging_entry_attribute, 
    ma_member_attribute, sa_slice_member (CHAPI #311)
