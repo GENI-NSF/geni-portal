@@ -516,8 +516,10 @@ function invoke_omni_function($am_url, $user, $args,
         fwrite($pid_file, $pid);
         fclose($pid_file);
         
-        // FIXME: return string with PID for now
-        $string_return = "The PID for the omni process called is " . $pid;
+        // FIXME: return debug URL page for now
+        $invoke_id = array_pop(explode("-", $omni_invocation_dir));
+        $string_return = "Go to <a href='https://portal1.gpolab.bbn.com/secure/view_omni_invocation_data.php?invocation_user=";
+        $string_return .= $user->username . "&invocation_id=" . $invoke_id . "'>view omni invocation data</a> for more information.";
         return $string_return;
      
      }

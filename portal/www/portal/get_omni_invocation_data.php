@@ -447,8 +447,12 @@ function secs_to_h($secs)
 */
 function make_pretty_code($retVal) {
     if($retVal['obj']) {
-        $new = str_replace("\n", "<br>", $retVal['obj']);
-        $retVal['obj'] = $new;
+        // change <, >, and " to special characters so they display correctly
+        $retVal['obj'] = str_replace("<", "&lt;", $retVal['obj']);
+        $retVal['obj'] = str_replace(">", "&gt;", $retVal['obj']);
+        $retVal['obj'] = str_replace("\"", "&quot;", $retVal['obj']);
+        // change newlines to breaks (do this after the above three!)
+        $retVal['obj'] = str_replace("\n", "<br>", $retVal['obj']);
         return $retVal;
     }
     else {
@@ -461,8 +465,12 @@ function make_pretty_code($retVal) {
 */
 function make_pretty_tailed_logs($retVal) {
     if($retVal['obj']['data']) {
-        $new = str_replace("\n", "<br>", $retVal['obj']['data']);
-        $retVal['obj']['data'] = $new;
+        // change <, >, and " to special characters so they display correctly
+        $retVal['obj']['data'] = str_replace("<", "&lt;", $retVal['obj']['data']);
+        $retVal['obj']['data'] = str_replace(">", "&gt;", $retVal['obj']['data']);
+        $retVal['obj']['data'] = str_replace("\"", "&quot;", $retVal['obj']['data']);
+        // change newlines to breaks (do this after the above three!)
+        $retVal['obj']['data'] = str_replace("\n", "<br>", $retVal['obj']['data']);
         return $retVal;
     }
     else {

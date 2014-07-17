@@ -245,21 +245,21 @@ hr {
 #content pre {
   font-family: 'Droid Sans Mono', monospace;
   font-weight: 400;
-  font-size: .9em;
+  font-size: .8em;
   line-height: 1.3em;
-  background-color: #E5E5E5;
-  color: #5F584E;
+  background-color: #5F584E;
+  color: white;
   padding: 5px;
   padding-left: 10px;
   margin-left: 45px;
-  border: 1px solid #5F584E;
-  border-left: 10px solid #5F584E;
+  border-left: 10px solid #DBD7CC;
   box-shadow: 4px 4px 10px #B5B5B5;
   overflow: auto;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius: 8px; /* future proofing */
-  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+      white-space: pre-wrap;       /* CSS 3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 /* Inline code */
