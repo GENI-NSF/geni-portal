@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.18 ==
+ * Stitching Allocate Resources Interface (#581)
 
 == 2.17 ==
  * Add indices on logging_entry, logging_entry_attribute, 
