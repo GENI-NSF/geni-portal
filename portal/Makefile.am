@@ -174,8 +174,6 @@ dist_svcweb_DATA = \
 	www/portal/starter-status-bar.php \
 	www/portal/status_constants.php \
 	www/portal/status_constants_import.php \
-	www/portal/stitcher_slice-add-resources.js \
-	www/portal/stitcher_slice-add-resources.php \
 	www/portal/tabs.js \
 	www/portal/tool-aggwarning.php \
 	www/portal/tool-breadcrumbs.php \

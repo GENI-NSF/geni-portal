@@ -264,6 +264,8 @@ print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
 print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
+print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose File' to temporarily upload an RSpec for this reservation only.</p>";
+
 print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");

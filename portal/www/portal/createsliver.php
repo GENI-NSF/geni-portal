@@ -193,6 +193,11 @@ if ($obj != "") {
 	      "Added resources to slice " . $slice_name . " at " . $AM_name,
               $log_attributes);
    }
+   else {
+        log_event($log_url, $user,
+	      "Added resources to slice " . $slice_name . " from stitching RSpec",
+              $log_attributes);
+   }
 }
 
 unset($slice2);
