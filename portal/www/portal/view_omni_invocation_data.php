@@ -119,7 +119,7 @@ function updateDebugLog(invocationUser, invocationID, offset) {
 </pre>
 
 <h2>Debug Log</h2>
-<pre id='debug_data_container' style="height:400px;">
+<pre id='debug_data_container' style="height:300px;">
 <div id='debug_data'></div>
 </pre>
 
