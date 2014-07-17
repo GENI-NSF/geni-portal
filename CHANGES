@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.18 ==
+ * Add Stitching Allocate Resources Interface (#581)
+
 == 2.17 ==
  * Add indices on logging_entry, logging_entry_attribute, 
    ma_member_attribute, sa_slice_member (CHAPI #311)
@@ -17,6 +20,7 @@
  * Renamed generated SSH keypair filename in omni bundle
    if it would conflict with another file in the bundle. (#1063)
  * Remove dependence on pg_manifest field of sliver status (#1084)
+ * Fix link on login-help page to point to new password reset page. (#1056)
 
 == 2.16.7 ==
  * Update the LabWiki URL (#1073)
