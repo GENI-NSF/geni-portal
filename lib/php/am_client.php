@@ -74,7 +74,7 @@ function log_action($op, $user, $agg, $slice = NULL, $rspec = NULL, $slice_id = 
  * Returns an array of temporary filenames. The caller is responsible
  * for deleting (unlink) these files.
  */
-function write_ssh_keys($for_user, $as_user)
+function write_ssh_keys($for_user, $as_user, $dir)
 {
   $result = array();
 
@@ -84,7 +84,7 @@ function write_ssh_keys($for_user, $as_user)
   foreach ($ssh_keys as $key_info)
     {
       $key = $key_info['public_key'];
-      $tmp_file = writeDataToTempFile($key, $for_user->username . "-ssh-key-");
+      $tmp_file = writeDataToTempDir($dir, $key, "ssh-key-" . $for_user->username);
       $result[] = $tmp_file;
     }
   return $result;
@@ -221,12 +221,46 @@ function lookup_attribute($am_url, $attr_name)
     return null;
 }
 
+// helper function to write the configuration file for omni/stitcher
+// returns the filename of where the logger config file was written
+function write_logger_configuration_file($dir) {
+
+    global $portal_gcf_dir;
+    
+    // open template for reading
+    $template_file_location = $portal_gcf_dir . '/src/stitcher_logging_template.conf';
+    $template_file = fopen($template_file_location,"r");
+    $template_file_contents = fread($template_file, 
+            filesize($template_file_location));
+    fclose($template_file);
+    
+    // string replacement of '%(consolelogfilename)s'
+    $console_log_file_variable = "%(consolelogfilename)s";
+    $console_log_file = "$dir/omni-console";
+    $config_file_contents = str_replace($console_log_file_variable, 
+            $console_log_file, $template_file_contents);
+    $config_file_location = "$dir/logger.conf";
+    
+    // write file to directory
+    $config_file = fopen($config_file_location,"a");
+    fwrite($config_file, $config_file_contents);
+    fclose($config_file);
+    
+    // return file name
+    return $config_file_location;
+
+}
+
 // Generic invocation of omni function 
 // Args:
 //    $am_url: URL of AM to which to connect
 //    $user : Structure with user information (for creating temporary files)
 //    $args: list of arguments (including the method itself) included
-function invoke_omni_function($am_url, $user, $args, $slice_users=array())
+//    $bound_rspec: 0 for unbound (default), 1 for bound RSpec
+//    $stitch_rspec: 0 for non-stitchable (default), 1 for stitchable
+// FIXME: $bound_rspec not used for anything but might be useful later
+function invoke_omni_function($am_url, $user, $args, 
+    $slice_users=array(), $bound_rspec=0, $stitch_rspec=0)
 {
   $file_manager = new FileManager(); // Hold onto all allocated filenames
 
@@ -250,10 +284,10 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
   $private_key = $user->insidePrivateKey();
   $speaks_for_cred = $user->speaksForCred();
 
-  if ($handles_speaks_for and $speaks_for_cred) {
-      $speaks_for_invocation = true;
-      $cert = $user->certificate();
-      $private_key = $user->privateKey();
+    if ($handles_speaks_for and $speaks_for_cred) {
+        $speaks_for_invocation = true;
+        $cert = $user->certificate();
+        $private_key = $user->privateKey();
     }
 
     $username = $user->username;
@@ -263,36 +297,54 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     
     $aggregates = "aggregates=";
     $first=True;
-    if (is_array($am_url)){
-      foreach ($am_url as $single){
-	if (! isset($single) || is_null($single) || $single == '') {
-	  error_log("am_client cannot invoke Omni with invalid AM URL");
-	  return("Invalid AM URL");
-	}
-	if ($first){
-	  $first=False;
-	} else {
-	  $aggregates = $aggregates.", ";	  
-	}
-	$aggregates = $aggregates.$single;
-      }
-      $aggregates = $aggregates."\n";
-    }elseif (! isset($am_url) || is_null($am_url) || $am_url == '') {
-      error_log("am_client cannot invoke Omni without an AM URL");
-      return("Missing AM URL");
+    
+    // get AMs if non-stitchable
+    if(!$stitch_rspec) {
+    
+        if (is_array($am_url)) {
+            foreach ($am_url as $single) {
+	            if (! isset($single) || is_null($single) || $single == '') {
+	                error_log("am_client cannot invoke Omni with invalid AM URL");
+	                return("Invalid AM URL");
+	            }
+	            if ($first){
+	                $first=False;
+	            } 
+	            else {
+	                $aggregates = $aggregates.", ";	  
+	            }
+	            $aggregates = $aggregates.$single;
+            }
+            $aggregates = $aggregates."\n";
+        }
+        elseif (! isset($am_url) || is_null($am_url) || $am_url == '') {
+              error_log("am_client cannot invoke Omni without an AM URL");
+              return("Missing AM URL");
+        }
+    
+    }
+    
+    /* Create a directory to store all temp files, including logs and error
+       messages. Let the prefix be the username. An "omni invocation ID" is
+       created each time invoke_omni_function() is called.
+    
+       Returns something like: /tmp/omni-invoke-myuser-RKvQ1Z
+    */
+    $omni_invocation_dir = createTempDir($username);
+    if(is_null($omni_invocation_dir)) {
+        // FIXME: What to do if directory can't be created?
+        error_log("Could not create temporary directory for omni session: $omni_invocation_dir");
     }
 
     /* Write key and credential files */
-    $tmp_version_cache = tempnam(sys_get_temp_dir(),
-            'omniVersionCache');
-    $tmp_agg_cache = tempnam(sys_get_temp_dir(),
-            'omniAggCache');
+    $tmp_version_cache = "$omni_invocation_dir/omniVersionCache";
+    $tmp_agg_cache = "$omni_invocation_dir/omniAggCache";
     $file_manager->add($tmp_version_cache);
     $file_manager->add($tmp_agg_cache);
 
-    $cert_file = writeDataToTempFile($cert, "$username-cert-");
+    $cert_file = writeDataToTempDir($omni_invocation_dir, $cert, "cert");
     $file_manager->add($cert_file);
-    $key_file = writeDataToTempFile($private_key, "$username-key-");
+    $key_file = writeDataToTempDir($omni_invocation_dir, $private_key, "key");
     $file_manager->add($key_file);
 
     $slice_users = $slice_users + array($user);
@@ -315,8 +367,12 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       . "users = "
       . implode(", ", $username_array)
       . "\n";
-    if (is_array($am_url)){
-      $omni_config = $omni_config.$aggregates."\n";
+      
+    // specify AM for non-stitchable RSpecs
+    if(!$stitch_rspec) {
+        if (is_array($am_url)){
+            $omni_config = $omni_config.$aggregates."\n";
+        }
     }
 
     // FIXME: If SR had AM nicknames, we could write a nickname to the
@@ -346,7 +402,7 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     foreach ($slice_users as $slice_user){
        $slice_username = $slice_user->username;
        $slice_urn = $slice_user->urn();	
-       $ssh_key_files = write_ssh_keys($slice_user, $user);
+       $ssh_key_files = write_ssh_keys($slice_user, $user, $omni_invocation_dir);
        $all_ssh_key_files = array_merge($all_ssh_key_files, $ssh_key_files);
        $all_key_files = implode(',', $ssh_key_files);
        $omni_config = $omni_config
@@ -359,22 +415,26 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
       $file_manager->add($ssh_key_file);
     }
 
-    $omni_file = writeDataToTempFile($omni_config, "$username-omni-ini-");
+    $omni_file = writeDataToTempDir($omni_invocation_dir, $omni_config, "omni-ini");
     $file_manager->add($omni_file);
 
     /* Call OMNI */
 
-    $omni_log_file = tempnam(sys_get_temp_dir(), $username . "-omni-log-");
-    $omni_stderr_file = tempnam(sys_get_temp_dir(), $username . "-omni-stderr-");
-    $file_manager->add($omni_stderr_file);
+    $omni_log_file = "$omni_invocation_dir/omni-log";
+    $omni_stderr_file = "$omni_invocation_dir/omni-stderr";
+    $omni_stdout_file = "$omni_invocation_dir/omni-stdout";
+    $omni_command_file = "$omni_invocation_dir/omni-command";
+    //$file_manager->add($omni_stderr_file);
+    //$file_manager->add($omni_stdout_file);
+    //$file_manager->add($omni_command_file);
 
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
-    $cmd_array = array($portal_gcf_dir . '/src/omni_php.py',
+    $cmd_array = array($portal_gcf_dir . '/src/stitcher_php.py',
 		       '-c',
 		       $omni_file,
 		       //		       '--debug',
 		       '-l',
-		       $portal_gcf_dir . '/src/logging.conf',
+		       write_logger_configuration_file($omni_invocation_dir),
 		       '--logoutput', $omni_log_file,
 		       '--api-version',
 		       '2',
@@ -394,17 +454,22 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
                           // stderr is a file to write to
                          2 => array("file", $omni_stderr_file, "a"));
 
+    /* stitcher.py: specify fileDir */
+    $cmd_array[] = '--fileDir';
+    $cmd_array[] = $omni_invocation_dir;
 
-    if (!is_array($am_url)){
-      $cmd_array[]='-a';
-      $cmd_array[]=$am_url;
+    // specify AM for non-stitchable RSpecs
+    if(!$stitch_rspec) {
+        if (!is_array($am_url)){
+          $cmd_array[]='-a';
+          $cmd_array[]=$am_url;
+        }
     }
 
     if ($speaks_for_invocation) {
       $cmd_array[] = "--speaksfor=" . $user->urn;
-      $speaks_for_cred_filename = 
-	writeDataToTempfile($speaks_for_cred->credential(), 
-			    "$username-sfcred-");
+      $speaks_for_cred_filename = writeDataToTempDir($omni_invocation_dir, 
+                $speaks_for_cred->credential(), "sfcred");
       $file_manager->add($speaks_for_cred_filename);
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
@@ -414,6 +479,11 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
     }
     $command = implode(" ", $cmd_array);
 
+    // save command that was run
+    $cmd_file = fopen($omni_command_file,"a");
+    fwrite($cmd_file, $command);
+    fclose($cmd_file);
+    
      error_log("am_client invoke_omni_function COMMAND = " . $command);
      $handle = proc_open($command, $descriptor_spec, $pipes);
 
@@ -487,22 +557,60 @@ function invoke_omni_function($am_url, $user, $args, $slice_users=array())
      // Good for debugging but verbose
      //     error_log("am_client output " .  print_r($output, True));
 
+    // FIXME: Write stdout's contents to omni_stdout_file for now to capture
+    //  stitcher output. This will be changed when assigning descriptor_spec
+    //  to send to a file rather than a pipe.
+    $stdout_file = fopen($omni_stdout_file,"a");
+    fwrite($stdout_file, $output);
+    fclose($stdout_file);
+
      $output2 = json_decode($output, True);
      if (is_null($output2)) {
-       error_log("am_client invoke_omni_function:"
-               . "JSON result is not parseable: \"$output\"");
        // this is probably a traceback from python
        // return it as a string
+       
+       // but see if omni-stderr exists, and pass back its information
+       // in addition to output to get a better traceback
+       $error_file = fopen($omni_stderr_file,"r");
+       // only try to read if fopen was successful and if the error file
+       // contains something (i.e. more than 0 bytes)
+       if($error_file && filesize($omni_stderr_file)) {
+           $error_file_contents = fread($error_file, filesize($omni_stderr_file));
+           if($error_file_contents) {
+                error_log("am_client invoke_omni_function: " .
+                    "stderr file non-empty. Check " . $omni_stderr_file .
+                    " for more information");
+                // uncomment the next line to append stderr contents to what
+                // users will see
+                // FIXME: Ticket 1086: parsing stderr
+                //$output .= $error_file_contents;
+           }
+           fclose($error_file);
+       }
+       error_log("am_client invoke_omni_function:"
+               . "JSON result is not parseable: \"$output\"");
+       
        return $output;
      }
-     /* Delete the log file only if the decoded output is an array and
-        its length is 2 and the second value (index 1) is boolean true
+     
+     /* Clean out $file_manager's directory 
+        This does NOT include log/error files or any additional files that
+        stitching requests may make.
+     */
+     $file_manager->destruct();
+     
+     /* Delete the remaining temp files only if the decoded output is an array
+        and its length is 2 and the second value (index 1) is boolean true
         (not null or empty string).
       */
+      
      if (is_array($output2) && count($output2) == 2 && $output2[1]) {
-       unlink($omni_log_file);
+        clean_directory($omni_invocation_dir);
+        rmdir($omni_invocation_dir);
+        //unlink($omni_log_file);
+        //unlink($omni_stderr_file);
      }
-     //     error_log("Returning output2 : " . print_r($output2, True));
+          error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 
@@ -521,7 +629,7 @@ function get_version($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called GetVersion", $user, $am_url);
   $args = array('getversion');
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   return $output;
 }
 
@@ -541,7 +649,7 @@ function list_resources($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called ListResources", $user, $am_url);
   $args = array('-t', 'GENI', '3', 'listresources');
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   return $output;
 }
 
@@ -573,7 +681,7 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn, 
 		'3',
 		'listresources',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -606,7 +714,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 		'renewsliver',
 		$slice_urn,
 		$time);
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
   return $output;
@@ -615,14 +723,18 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
-                       $rspec_filename, $slice_id)
+                       $rspec_filename, $slice_id, $bound_rspec=0, $stitch_rspec=0)
 {
-  if (! isset($am_url) || is_null($am_url) ){
-    if (!(is_array($am_url) || $am_url != '')) {
-      error_log("am_client cannot invoke Omni without an AM URL");
-      return("Missing AM URL");
+
+    // stitchable RSpecs should have empty AM URL, so only check for non-stitchable RSpecs
+    if(!$stitch_rspec) {
+        if (! isset($am_url) || is_null($am_url) ){
+        if (!(is_array($am_url) || $am_url != '')) {
+          error_log("am_client cannot invoke Omni without an AM URL");
+          return("Missing AM URL");
+        }
+      }
     }
-  }
 
   if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
     error_log("am_client cannot act on a slice without a credential");
@@ -643,7 +755,7 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
 		$rspec_filename);
   // FIXME: Note that this AM has resources
   // slice_id, am_url or ID, duration?
-  $output = invoke_omni_function($am_url, $user, $args, $slice_users);
+  $output = invoke_omni_function($am_url, $user, $args, $slice_users, $bound_rspec, $stitch_rspec);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -673,7 +785,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 		$slice_credential_filename,
 		'sliverstatus',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -704,7 +816,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
 		'deletesliver',
 		$slice_urn);
   // Note that this AM no longer has resources
-  $output = invoke_omni_function($am_url, $user, $args);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
   unlink($slice_credential_filename);
   return $output;
 }

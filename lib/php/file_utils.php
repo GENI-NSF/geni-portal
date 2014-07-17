@@ -44,6 +44,49 @@ function writeDataToTempFile($data, $prefix = "geni-")
   return $tmpfile;
 }
 
+/*
+    Like above, but writes to a temporary directory that was
+    already created by createTempDir(); does not come up with its
+    own unique name via tempnam()
+*/
+function writeDataToTempDir($dir, $data, $prefix = "geni-")
+{
+  $tmpfile = "$dir/$prefix";
+  file_put_contents($tmpfile, $data);
+  return $tmpfile;
+}
+
+/*
+    Create a temporary directory
+*/
+function createTempDir($prefix) {
+    $tempfile=tempnam(sys_get_temp_dir(), "omni-invoke-$prefix-");
+    if (file_exists($tempfile)) { 
+        unlink($tempfile);
+    }
+    mkdir($tempfile);
+    if (is_dir($tempfile)) {
+        return $tempfile;
+    }
+    // return null if directory wasn't created
+    return NULL;
+}
+
+/*
+    Checks to see if directory is empty
+    Source: http://stackoverflow.com/questions/7497733/how-can-use-php-to-check-if-a-directory-is-empty
+*/
+function isDirEmpty($dir) {
+  if (!is_readable($dir)) return NULL; 
+  $handle = opendir($dir);
+  while (false !== ($entry = readdir($handle))) {
+    if ($entry != "." && $entry != "..") {
+      return FALSE;
+    }
+  }
+  return TRUE;
+}
+
 /**
  * create a UUID
  */
@@ -60,13 +103,27 @@ class FileManager {
 
   function add($filename) { $this->filenames[]=$filename; }
 
-  function __destruct() {
+  function destruct() {
     foreach($this->filenames as $filename) {
-      unlink($filename);
+        unlink($filename);
+        // now see if directory can be deleted
+        if(isDirEmpty(dirname($filename))) {
+            rmdir(dirname($filename));
+        }
     }
   }
+  
 }
 
-
+// delete all files in a directory
+// parameter: $dir - directory to look through
+// Source: http://stackoverflow.com/questions/4594180/deleting-all-files-from-a-folder-using-php
+function clean_directory($dir) {
+    $files = glob(rtrim($dir,'/').'/*'); // get all file names
+    foreach($files as $file){ // iterate files
+      if(is_file($file))
+        unlink($file); // delete file
+    }
+}
 
 ?>

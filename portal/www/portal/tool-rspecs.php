@@ -66,17 +66,17 @@ $owners = ma_lookup($ma_url, $user, $public_owners);
 /* Display starts here. */
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
 print("<p>From this page you can ");
-print '<a href="rspecupload.php">upload a new RSpec</a>';
+print '<b><a href="rspecupload.php">upload a new RSpec</a></b>';
 print ", ";
-print '<a href="#privateRSpecs">manage RSpecs</a>';
+print '<b>manage RSpecs</b>';
 print " you have uploaded to the portal, and ";
-print '<a href="#publicRSpecs">view RSpecs</a>';
+print '<b>view RSpecs</b>';
 print " that other users have publicly shared.</p>";
 /* Show the table of existing private RSpecs. */
 print '<a name="privateRSpecs"></a>';
 print "<h3>My Private RSpecs</h3>\n";
 if (count($my_private) > 0) {
-  rspec_table_header();
+  rspec_table_header("my_private_rspecs", True);
   foreach ($my_private as $rspec) {
     display_rspec($rspec, $owners);
   }
@@ -87,7 +87,7 @@ if (count($my_private) > 0) {
 /* Show the table of existing public but editable RSpecs. */
 print "<h3>My Public RSpecs</h3>\n";
 if (count($my_public) > 0) {
-  rspec_table_header();
+  rspec_table_header("my_public_rspecs", True);
   foreach ($my_public as $rspec) {
     display_rspec($rspec, $owners);
   }
@@ -100,7 +100,7 @@ print '<a name="publicRSpecs"></a>';
 print("<h3>Public RSpecs that other users have shared</h3>\n");
 
 /* Show the table of public RSpecs. */
-rspec_table_header(True);
+rspec_table_header("public_rspecs", True, True);
 foreach ($public_rspecs as $rspec) {
   display_rspec($rspec, $owners, True);
 }
@@ -109,19 +109,29 @@ rspec_table_footer();
 //include("footer.php");
 
 /* ---------- */
-function rspec_table_header($public=False) {
-  print "<table>\n";
+function rspec_table_header($table_id, $searchable=False, $public=False) {
+  if($searchable) {
+      /* datatables.net (for sortable/searchable tables) */
+      echo '<script type="text/javascript">';
+      echo '$(document).ready( function () {';
+      echo '  $(\'#' . $table_id . '\').DataTable({paging: false});';
+      echo '} );';
+      echo '</script>';
+  }
+
+  print "<table id='$table_id'><thead>\n";
   if ($public) {
-     $columns = array("Name", "Description", "Owner", "&nbsp;", "&nbsp;");
+     $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;",
+                    "Owner &#x2191;&#x2193;", "&nbsp;", "&nbsp;");
   } else {
-     $columns = array("Name", "Description", "&nbsp;", "&nbsp;", "&nbsp;",
-                      "&nbsp;");
+     $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;", 
+                    "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;");
   }
   print "<tr>";
   foreach ($columns as $c) {
     print "<th>$c</th>";
   }
-  print "</tr>\n";
+  print "</tr></thead><tbody>\n";
 }
 
 /**
@@ -164,9 +174,9 @@ function display_rspec($rspec, $owners, $public=False) {
   // Customize these with the RSpec id.
   $id = $rspec['id'];
   $view_url = "rspecview.php?id=$id";
-  $view_btn = ("<button onClick=\"window.location='$view_url'\">View</button>");
+  $view_btn = ("<button onClick=\"window.location='$view_url'\" title='view'>View</button>");
   $download_url = "rspecdownload.php?id=$id";
-  $download_btn = "<button onClick=\"window.location='$download_url'\">Download</button>";
+  $download_btn = "<button onClick=\"window.location='$download_url'\" title='Download'>Download</button>";
   if ($public) {
     $addr = $rspec['owner_email'];
     $pretty_name = $rspec['owner_name'];
@@ -195,9 +205,9 @@ function display_rspec($rspec, $owners, $public=False) {
                         'description' => $desc,
                         'name' => $sn);
     $edit_url = "rspecupload.php?" . http_build_query($edit_query);
-    $edit_btn = "<button onClick=\"window.location='$edit_url'\">Edit</button>";
+    $edit_btn = "<button onClick=\"window.location='$edit_url'\" title='Edit'>Edit</button>";
     $delete_url = "rspecdelete.php?id=$id";
-    $delete_btn = "<button onClick=\"window.location='$delete_url'\">Delete</button>";
+    $delete_btn = "<button onClick=\"window.location='$delete_url'\" title='Delete'>Delete</button>";
     $columns = array($rspec['name'],
           $rspec['description'],
           $edit_btn,
@@ -212,6 +222,6 @@ function display_rspec($rspec, $owners, $public=False) {
   print "</tr>\n";
 }
 function rspec_table_footer() {
-  print "</table>\n";
+  print "</tbody></table>\n";
 }
 ?>
