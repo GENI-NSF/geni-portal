@@ -384,7 +384,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
         }
         else {
             // FIXME: Decide what happens if process not running
-            $retVal['code'] = 0;
+            $retVal['code'] = 1;
             $retVal['msg'] = "Process $pid not running, so no elapsed time.";
             $retVal['obj'] = "";
         }

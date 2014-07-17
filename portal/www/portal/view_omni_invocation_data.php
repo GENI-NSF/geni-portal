@@ -58,12 +58,14 @@ debug_log_offset = 0;
 console_log_offset = 0;
 
 $( document ).ready( function() {
-    updateConsoleLog(user, id, console_log_offset);
+    getPID(user, id);
     updateDebugLog(user, id, debug_log_offset);
 });
 
-setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
-setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
+get_console = setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
+get_debug = setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
+get_xml = setInterval( "updateXMLResults(user, id)", 1000 );
+get_elapsed = setInterval( "updateElapsedTime(user, id)", 1000 );
 
 function updateConsoleLog(invocationUser, invocationID, offset) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=console&offset='+offset+'&raw=false',
@@ -108,6 +110,39 @@ function updateDebugLog(invocationUser, invocationID, offset) {
             }
         });
 }
+
+function updateXMLResults(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=stdout&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#prettyxml").html(data.obj);
+                clearInterval(get_xml);
+                clearInterval(get_debug);
+                clearInterval(get_console);
+                clearInterval(get_elapsed);
+            }
+            $("#results_time").html(data.time);
+        });
+}
+
+function updateElapsedTime(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=elapsed&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#pid_elapsed").html(data.obj);
+            }
+            $("#pid_time").html(data.time);
+        });
+}
+
+function getPID(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=pid',
+        function(data) {
+            if(data.code == 0) {
+                $("#pid_pid").html(data.obj);
+            }
+        });
+}
     
 </script>
 
@@ -123,11 +158,19 @@ function updateDebugLog(invocationUser, invocationID, offset) {
 <div id='debug_data'></div>
 </pre>
 
+<h2>Results</h2>
+<div class='resources' id='prettyxml'>
+</div>
+
 <h2>Statistics</h2>
 <h3>Console Log</h3>
 <p>Bytes read: <b><span id='console_bytes_read'></span> bytes</b>, New offset: <b><span id='console_new_offset'></span> bytes</b>, Last read: <b><span id='console_time'></span></b></p>
 <h3>Debug Log</h3>
 <p>Bytes read: <b><span id='debug_bytes_read'></span> bytes</b>, New offset: <b><span id='debug_new_offset'></span> bytes</b>, Last read: <b><span id='debug_time'></span></b></p>
+<h3>Results</h3>
+<p>Last read: <b><span id='results_time'></span></b></p>
+<h3>Process Information</h3>
+<p>PID: <b><span id='pid_pid'></span></b>, Elapsed time: <b><span id='pid_elapsed'></span></b>, Last read: <b><span id='pid_time'></span></b></p>
 <?php
 
 
