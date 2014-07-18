@@ -59,6 +59,7 @@ console_log_offset = 0;
 
 $( document ).ready( function() {
     getPID(user, id);
+    getCommand(user, id);
     updateConsoleLog(user, id, console_log_offset);
     updateDebugLog(user, id, debug_log_offset);
     updateXMLResults(user, id);
@@ -141,6 +142,15 @@ function getPID(invocationUser, invocationID) {
         });
 }
 
+function getCommand(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=command&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#command_data").html(data.obj);
+            }
+        });
+}
+
 function stopPolling() {
     clearInterval(get_xml);
     clearInterval(get_debug);
@@ -154,25 +164,28 @@ function stopPolling() {
 
 <h2>Console Log</h2>
 <pre id='console_data_container' style="height:300px;">
-<div id='console_data'></div>
+<span id='console_data'></span>
 </pre>
 
 <h2>Debug Log</h2>
 <pre id='debug_data_container' style="height:300px;">
-<div id='debug_data'></div>
+<span id='debug_data'></span>
 </pre>
+
+<h2>Command</h2>
+<pre id='command_data_container'><span id='command_data'></span></pre>
 
 <h2>Results</h2>
 <div class='resources' id='prettyxml'>
 </div>
 
 <h2>Statistics</h2>
-<h3>Console Log</h3>
+<div id="hide" style="display:none;"><h3>Console Log</h3>
 <p>Bytes read: <b><span id='console_bytes_read'></span> bytes</b>, New offset: <b><span id='console_new_offset'></span> bytes</b>, Last read: <b><span id='console_time'></span></b></p>
 <h3>Debug Log</h3>
 <p>Bytes read: <b><span id='debug_bytes_read'></span> bytes</b>, New offset: <b><span id='debug_new_offset'></span> bytes</b>, Last read: <b><span id='debug_time'></span></b></p>
 <h3>Results</h3>
-<p>Last read: <b><span id='results_time'></span></b></p>
+<p>Last read: <b><span id='results_time'></span></b></p></div>
 <h3>Process Information</h3>
 <p>PID: <b><span id='pid_pid'></span></b>, Elapsed time: <b><span id='pid_elapsed'></span></b>, Last read: <b><span id='pid_time'></span></b></p>
 <?php
