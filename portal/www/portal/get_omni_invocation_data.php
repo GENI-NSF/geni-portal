@@ -195,8 +195,8 @@ function get_omni_invocation_file_raw_contents($dir, $file, $description) {
             'msg' => "Could not find or open $description.",
             'obj' => NULL
         );
-        error_log("get_omni_data.php get_omni_invocation_file_raw_contents: " .
-            $retVal['msg']);
+        //error_log("get_omni_data.php get_omni_invocation_file_raw_contents: " .
+        //    $retVal['msg']);
     }
     
     return $retVal;
@@ -271,8 +271,8 @@ function get_omni_invocation_file_raw_contents_offset($dir, $file,
             'msg' => "Could not find or open $description.",
             'obj' => NULL
         );
-        error_log("get_omni_data.php get_omni_invocation_file_raw_contents_offset: " .
-            $retVal['msg']);
+        //error_log("get_omni_data.php get_omni_invocation_file_raw_contents_offset: " .
+        //    $retVal['msg']);
     }
     
     return $retVal;

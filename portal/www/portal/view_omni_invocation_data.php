@@ -30,7 +30,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 skip_km_authorization();
-show_header('GENI Portal: Help', $TAB_HELP);
+show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 $hostname = $_SERVER['SERVER_NAME'];
 
@@ -59,13 +59,15 @@ console_log_offset = 0;
 
 $( document ).ready( function() {
     getPID(user, id);
+    updateConsoleLog(user, id, console_log_offset);
     updateDebugLog(user, id, debug_log_offset);
+    updateXMLResults(user, id);
+    updateElapsedTime(user, id);
+    get_console = setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
+    get_debug = setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
+    get_xml = setInterval( "updateXMLResults(user, id)", 1000 );
+    get_elapsed = setInterval( "updateElapsedTime(user, id)", 1000 );
 });
-
-get_console = setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
-get_debug = setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
-get_xml = setInterval( "updateXMLResults(user, id)", 1000 );
-get_elapsed = setInterval( "updateElapsedTime(user, id)", 1000 );
 
 function updateConsoleLog(invocationUser, invocationID, offset) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=console&offset='+offset+'&raw=false',
@@ -76,7 +78,6 @@ function updateConsoleLog(invocationUser, invocationID, offset) {
             $("#console_bytes_read").html(data.obj.bytes_read);
             $("#console_new_offset").html(data.obj.new_offset);
             $("#console_time").html(data.time);
-            //console.log('scrollpos = '+scrollPositionContainer+', dataHeight = '+dataHeight+', containerHeight= '+containerHeight);
             // Tail bottom if near the bottom
             if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
                 $("#console_data").append(data.obj.data);
@@ -99,7 +100,6 @@ function updateDebugLog(invocationUser, invocationID, offset) {
             $("#debug_new_offset").html(data.obj.new_offset);
             $("#debug_time").html(data.time);
             debug_log_offset = data.obj.new_offset;
-            //console.log('scrollpos = '+scrollPositionContainer+', dataHeight = '+dataHeight+', containerHeight= '+containerHeight);
             // Tail bottom if near the bottom
             if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
                 $("#debug_data").append(data.obj.data);
@@ -116,10 +116,7 @@ function updateXMLResults(invocationUser, invocationID) {
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
-                clearInterval(get_xml);
-                clearInterval(get_debug);
-                clearInterval(get_console);
-                clearInterval(get_elapsed);
+                stopPolling();
             }
             $("#results_time").html(data.time);
         });
@@ -142,6 +139,13 @@ function getPID(invocationUser, invocationID) {
                 $("#pid_pid").html(data.obj);
             }
         });
+}
+
+function stopPolling() {
+    clearInterval(get_xml);
+    clearInterval(get_debug);
+    clearInterval(get_console);
+    clearInterval(get_elapsed);
 }
     
 </script>
