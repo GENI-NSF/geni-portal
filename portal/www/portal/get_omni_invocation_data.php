@@ -122,6 +122,9 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
         case "elapsed":
             $retVal = get_omni_invocation_elapsed_time($invocation_dir, $raw);
             break;
+        case "requestrspec":
+            $retVal = get_omni_invocation_request_rspec($invocation_dir, $raw);
+            break;
         default:
             $retVal = array(
                 'code' => 1,
@@ -323,6 +326,15 @@ function get_omni_invocation_debug_log($dir, $raw=true, $offset=0) {
 function get_omni_invocation_error_log($dir, $raw=true) {
     $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
             "error log");
+    return $raw ? $retVal : make_pretty_code($retVal);
+}
+
+/*
+    Get the request RSpec from the omni invocation
+*/
+function get_omni_invocation_request_rspec($dir, $raw=true) {
+    $retVal = get_omni_invocation_file_raw_contents($dir, "rspec", 
+            "request RSpec");
     return $raw ? $retVal : make_pretty_code($retVal);
 }
 

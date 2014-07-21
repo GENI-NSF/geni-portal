@@ -60,6 +60,7 @@ console_log_offset = 0;
 $( document ).ready( function() {
     getPID(user, id);
     getCommand(user, id);
+    getRequestRSpec(user, id);
     updateConsoleLog(user, id, console_log_offset);
     updateDebugLog(user, id, debug_log_offset);
     updateXMLResults(user, id);
@@ -113,7 +114,8 @@ function updateDebugLog(invocationUser, invocationID, offset) {
 }
 
 function updateXMLResults(invocationUser, invocationID) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=stdout&raw=false',
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=stdout&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
@@ -124,7 +126,8 @@ function updateXMLResults(invocationUser, invocationID) {
 }
 
 function updateElapsedTime(invocationUser, invocationID) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=elapsed&raw=false',
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=elapsed&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#pid_elapsed").html(data.obj);
@@ -134,7 +137,8 @@ function updateElapsedTime(invocationUser, invocationID) {
 }
 
 function getPID(invocationUser, invocationID) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=pid',
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=pid',
         function(data) {
             if(data.code == 0) {
                 $("#pid_pid").html(data.obj);
@@ -143,10 +147,21 @@ function getPID(invocationUser, invocationID) {
 }
 
 function getCommand(invocationUser, invocationID) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=command&raw=false',
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=command&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#command_data").html(data.obj);
+            }
+        });
+}
+
+function getRequestRSpec(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=requestrspec&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#requestrspec_data").html(data.obj);
             }
         });
 }
@@ -156,6 +171,7 @@ function stopPolling() {
     clearInterval(get_debug);
     clearInterval(get_console);
     clearInterval(get_elapsed);
+    clearInterval(get_requestrspec);
 }
     
 </script>
@@ -174,6 +190,9 @@ function stopPolling() {
 
 <h2>Command</h2>
 <pre id='command_data_container'><span id='command_data'></span></pre>
+
+<h2>Request RSpec</h2>
+<pre id='requestrspec_container'><span id='requestrspec_data'></span></pre>
 
 <h2>Results</h2>
 <div class='resources' id='prettyxml'>
