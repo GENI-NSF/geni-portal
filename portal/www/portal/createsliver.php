@@ -161,13 +161,13 @@ $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 			$stitch_rspec);
 
 // FIXME: temp
-$retVal = 1;
+//$retVal = 0;
 
 if($retVal) {
     create_sliver_success($omni_invocation_dir, $user->username);
 }
 else {
-    create_sliver_error("Failed to start an omni process.");
+    create_sliver_error("Failed to start an <tt>omni</tt> process.");
 }
 
 function no_slice_error() {
