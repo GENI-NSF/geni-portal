@@ -220,7 +220,7 @@ echo "<div id='addresources'>";
 print "<h2>Add Resources</h2>\n";
 print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
 
-print '<form id="f1" action="sliceresource.php" method="post" enctype="multipart/form-data">';
+print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/form-data">';
 
 print "<table>";
 print "<tr><th rowspan='2'>Choose RSpec</th>";

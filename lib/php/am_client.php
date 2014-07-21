@@ -262,13 +262,17 @@ function write_logger_configuration_file($dir) {
 //    $stitch_rspec: 0 for non-stitchable (default), 1 for stitchable
 //    $fork: false for synchronous behavior (default), true for asynchronous
 //       behavior
+//    $omni_invocation_dir: directory to store all files per invocation if
+//       a directory already exists; if set to NULL (default), it will get 
+//       created to store all files created by invoke_omni_function()
 // Returns:
 //    non-forked calls: array of message and data
 //    forked calls: true if successfully forked, false if not
 // FIXME: $bound_rspec not used for anything but might be useful later
 // FIXME: Clean up this function - it's too long!
 function invoke_omni_function($am_url, $user, $args, 
-    $slice_users=array(), $bound_rspec=0, $stitch_rspec=0, $fork=false)
+    $slice_users=array(), $bound_rspec=0, $stitch_rspec=0, $fork=false,
+    $omni_invocation_dir=NULL)
 {
   /* $file_manager only holds on to non-critical files (i.e., those
      that can be deleted regardless of whether the call was successful
@@ -336,15 +340,13 @@ function invoke_omni_function($am_url, $user, $args,
     }
     
     /* Create a directory to store all temp files, including logs and error
-       messages. Let the prefix be the username. An "omni invocation ID" is
-       created each time invoke_omni_function() is called.
+       messages *if one doesn't exist already*. Let the prefix be the username.
+       An "omni invocation ID" is created.
     
        Returns something like: /tmp/omni-invoke-myuser-RKvQ1Z
     */
-    $omni_invocation_dir = createTempDir($username);
     if(is_null($omni_invocation_dir)) {
-        // FIXME: What to do if directory can't be created?
-        error_log("Could not create temporary directory for omni session: $omni_invocation_dir");
+        $omni_invocation_dir = createTempDir($username);
     }
 
     /* Write key and credential files */
@@ -518,7 +520,7 @@ function invoke_omni_function($am_url, $user, $args,
         fwrite($pid_file, $pid);
         fclose($pid_file);
         
-        // FIXME: return debug URL page for now
+        // FIXME: return debug URL page for now (probably want to return non-null upon success)
         $invoke_id = array_pop(explode("-", $omni_invocation_dir));
         $string_return = "Go to <a href='https://portal1.gpolab.bbn.com/secure/view_omni_invocation_data.php?invocation_user=";
         $string_return .= $user->username . "&invocation_id=" . $invoke_id . "'>view omni invocation data</a> for more information.";
@@ -676,7 +678,7 @@ function get_version($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called GetVersion", $user, $am_url);
   $args = array('getversion');
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   return $output;
 }
 
@@ -696,7 +698,7 @@ function list_resources($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called ListResources", $user, $am_url);
   $args = array('-t', 'GENI', '3', 'listresources');
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   return $output;
 }
 
@@ -728,7 +730,7 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn, 
 		'3',
 		'listresources',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -761,7 +763,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 		'renewsliver',
 		$slice_urn,
 		$time);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
   return $output;
@@ -770,7 +772,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
-                       $rspec_filename, $slice_id, $bound_rspec=0, $stitch_rspec=0)
+                       $omni_invocation_dir, $slice_id, $bound_rspec=0, $stitch_rspec=0)
 {
 
     // stitchable RSpecs should have empty AM URL, so only check for non-stitchable RSpecs
@@ -791,10 +793,12 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   $member_id = $user->account_id;
   $msg = "User $member_id calling CreateSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  $rspec_filename = "$omni_invocation_dir/rspec";
   $rspec = file_get_contents($rspec_filename);
   // Don't log this: We already log from the caller if the allocation is successful
   //  log_action("Called CreateSliver", $user, $am_url, $slice_urn, $rspec, $slice_id);
-  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
+  $slice_credential_filename = writeDataToTempDir($omni_invocation_dir, $slice_credential, "cred");
+  
   $args = array("--slicecredfile", 
 		$slice_credential_filename, 
 		'createsliver',
@@ -806,7 +810,7 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   // we want to fork the process
   $fork = true;
   $output = invoke_omni_function($am_url, $user, $args, $slice_users, 
-        $bound_rspec, $stitch_rspec, $fork);
+        $bound_rspec, $stitch_rspec, $fork, $omni_invocation_dir);
   // FIXME: forking: this file shouldn't be deleted for now
   //unlink($slice_credential_filename);
   return $output;
@@ -837,7 +841,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 		$slice_credential_filename,
 		'sliverstatus',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -868,7 +872,7 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
 		'deletesliver',
 		$slice_urn);
   // Note that this AM no longer has resources
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   unlink($slice_credential_filename);
   return $output;
 }

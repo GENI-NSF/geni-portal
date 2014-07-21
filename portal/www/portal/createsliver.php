@@ -36,42 +36,26 @@ require_once("proj_slice_member.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
 require_once("tool-rspec-parse.php");
+
+/*
+    STEP 1: VERIFY
+    Verify that incoming data can be used to create a sliver
+*/
+
+// redirect if user doesn't exist, isn't logged in, etc.
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-function no_slice_error() {
-  header('HTTP/1.1 404 Not Found');
-  print 'No slice id specified.';
-  exit();
-}
-function no_rspec_error() {
-  header('HTTP/1.1 404 Not Found');
-  if (array_key_exists("rspec_id", $_REQUEST)) {
-    $rspec_id = $_REQUEST['rspec_id'];
-    print "Invalid resource specification id \"$rspec_id\" specified.";
-  } else {
-    print 'No resource specification specified.';
-  }
-  exit();
-}
-function no_am_error() {
-  header('HTTP/1.1 404 Not Found');
-  if (array_key_exists("am_id", $_REQUEST)) {
-    $am_id = $_REQUEST['am_id'];
-    print "Invalid aggregate manager id \"$am_id\" specified.";
-  } else {
-    print 'No aggregate manager id specified.';
-  }
-  exit();
-}
-
+// redirect if no parameters were added
 if (! count($_REQUEST)) {
   // No parameters. Return an error result?
   // For now, return nothing.
-  no_slice_error();
+  relative_redirect('home.php');
 }
+
+// reset and set slice, AM, and RSpec
 unset($slice);
 unset($rspec);
 unset($am);
@@ -80,31 +64,37 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
-if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-  relative_redirect('home.php');
-}
+// print header/breadcrumbs since we know slice information
+show_header('GENI Portal: Slices',  $TAB_SLICES);
+include("tool-breadcrumbs.php");
+echo "<h1>Add Resources to GENI Slice: $slice_name</h1>";
 
-if(array_key_exists("rspec_file", $_REQUEST)) {
-  //  error_log("createsliver.REQUEST = " . print_r($_REQUEST, true));
-  $temp_rspec_file = trim($_REQUEST['rspec_file']);
-  if(strlen($temp_rspec_file) > 0) {
-    $rspec = file_get_contents($temp_rspec_file);
-    unlink($temp_rspec_file);
-  //  error_log("createsliver.RSPEC = " . print_r($rspec, true));
+// get RSpec if tool-lookupids.php hasn't already gotten it
+// both will store contents of RSpec in $rspec
+if(array_key_exists('rspec_selection', $_FILES)) {
+  $local_rspec_file = $_FILES['rspec_selection']['tmp_name'];
+  $local_rspec_file = trim($local_rspec_file);
+  $temp_rspec_file = null;
+  if(strlen($local_rspec_file) > 0) {
+    $rspec = file_get_contents($local_rspec_file);
+  }
+}
+else if(array_key_exists('rspec_jacks', $_REQUEST)) {
+	$temp_rspec_file = null;
+  $local_rspec_file = $_REQUEST['rspec_jacks'];
+  if(strlen($local_rspec_file) > 0) {
+    $rspec = $local_rspec_file;
   }
 }
 
+// redirect if no RSpec is specified
 if (! isset($rspec) || is_null($rspec)) {
   error_log("RSPEC is not set or null");
   no_rspec_error();
   //  $rspec = fetchRSpecById(1);
 }
 
-/* 
-    Bound/unbound and stitchable RSpec logic
-        default: assume unbound and non-stitched RSpec
-        call parseRequestRSpecContents() to check whether rspec is bound/stitch
-*/
+// check stitching to see if AM is required to be specified
 $bound_rspec = 0;
 $stitch_rspec = 0;
 $parse_results = parseRequestRSpecContents($rspec);
@@ -117,17 +107,6 @@ if($parse_results[2] === true) {
     $stitch_rspec = 1;
 }
 // FIXME: list of AMs is in parse_results[3] in case that needs to be passed in the future
-
-/* 
-// We could use this based on what was sent, but the above method is probably 
-// safer because it verifies it for *any* RSpec sent, whether in the DB or user
-// uploaded
-if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
-    $bound_rspec = 1;
-} */
-
-// logic to handle stitchable RSpecs with AMs
-// assuming RSpec is stitchable, don't test for AM
 if (!$stitch_rspec && (! isset($am) || is_null($am))) {
       no_am_error();
 }
@@ -141,9 +120,22 @@ else {
     $am_url = $am[SR_ARGUMENT::SERVICE_URL];
     $AM_name = am_name($am_url);
     // error_log("AM_URL = " . $am_url);
-
     //$result = get_version($am_url, $user);
     // error_log("VERSION = " . $result);
+}
+
+/*
+    STEP 2: PREPARE
+    At this point, we can assume that verification is done and that the
+    sliver is ready to be created.
+*/
+
+// prepare temporary directory to hold all files related to invocation
+$omni_invocation_dir = prepare_temp_dir($user->username);
+if(is_null($omni_invocation_dir)) {
+    // FIXME: What to do if directory can't be created?
+    error_log("Could not create temporary directory for omni session: $omni_invocation_dir");
+    create_sliver_error("Could not create temporary directory for omni session: $omni_invocation_dir");
 }
 
 // Get the slice credential from the SA
@@ -152,119 +144,76 @@ $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
 // Get the slice URN via the SA
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
-// Retrieve a canned RSpec
 // FIXME: This is the RSpec that will be used to call omni/stitcher.
 // See proto-ch ticket #164 for storing all request RSpecs
-$rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
-
+$rspec_file = writeDataToTempDir($omni_invocation_dir, $rspec, "rspec");
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id);
 
-// Call create sliver at the AM
-// If bound, send empty AM URL and bound_rspec variable so logic can be handled
+/*
+    STEP 3: CALL AM CLIENT
+    Call create_sliver() in am_client.php and get a return code back.
+    $retVal is non-null if successful, null if failed
+*/
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
-			$slice_urn, $rspec_file, $slice['slice_id'], $bound_rspec, 
+			$slice_urn, $omni_invocation_dir, $slice['slice_id'], $bound_rspec, 
 			$stitch_rspec);
-// FIXME: do something with the RSpec for ticket #164
-// FIXME: forking: this file shouldn't be deleted for now
-//unlink($rspec_file);
 
-$header = "Created Sliver on slice: $slice_name";
+// FIXME: temp
+$retVal = 1;
 
-if ( count($retVal) == 2 ) {
-   $msg = $retVal[0];
-   $obj = $retVal[1];
-} else {
-   $msg = $retVal;
-   $obj = "";
+if($retVal) {
+    create_sliver_success($omni_invocation_dir, $user->username);
+}
+else {
+    create_sliver_error("Failed to start an omni process.");
 }
 
-// Only log this if the create appears successful
-if ($obj != "") {
-   $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-   $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
-						   $slice['project_id']);
-   $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
-						 $slice['slice_id']);
-   $log_attributes = array_merge($project_attributes, $slice_attributes);
-   if(!$stitch_rspec) {
-       log_event($log_url, $user,
-	      "Added resources to slice " . $slice_name . " at " . $AM_name,
-              $log_attributes);
-   }
-   else {
-        log_event($log_url, $user,
-	      "Added resources to slice " . $slice_name . " from stitching RSpec",
-              $log_attributes);
-   }
+function no_slice_error() {
+  header('HTTP/1.1 404 Not Found');
+  print 'No slice id specified.';
+  exit();
 }
 
-unset($slice2);
-$slice2 = lookup_slice($sa_url, $user, $slice_id);
-$slice_expiration_db = $slice2[SA_ARGUMENT::EXPIRATION];
-$slice_expiration = dateUIFormat($slice_expiration_db);
-
-
-// Set headers for xml
-header("Cache-Control: public"); 
-header("Content-Type: text/xml");
-//$obj2 = trim($obj);
-if ($obj != "" ) {
-   $manifestOnly=True;
-   $filterToAM = True;
-    if(!$stitch_rspec) {
-        $arg_urn = am_urn($am_url);
-    }
-    else {
-        $arg_urn = "";
-    }
-   $obj2 = print_rspec_pretty($obj, $manifestOnly, $filterToAM, $arg_urn);
-   print $obj2; 
-   
-   /* FIXME: Temporary variable dump for stitching
-   $dump = new SimpleXMLElement($obj);
-   echo "<pre>";
-   var_dump($dump);
-   echo "</pre>";*/
-   
-} else {
-
-  /* error parsing */
-  
-  $new_msg = $msg;
-  
-  //   note: preg_match returns 1 if expression is found
-  //         and matched string is stored in $string[0]
-  
-  // match on omni python traceback error
-  if(preg_match("/omnilib\.util\.omnierror.*/", $msg, $new_msg)) {
-    print '<b>Error:</b> Failed to create a sliver.<br><br>';
-    print "<i>";
-    print $new_msg[0];
-    print "</i>";
+function no_rspec_error() {
+  if (array_key_exists("rspec_id", $_REQUEST)) {
+    $rspec_id = $_REQUEST['rspec_id'];
+    create_sliver_error("Invalid resource specification id \"$rspec_id\" specified.");
+  } else {
+    create_sliver_error("No resource specification specified.");
   }
-  
-  // match on InstaGENI URL
-  else if(preg_match("/http[s]?:\/\/[a-zA-Z0-9.\/]*\/spewlogfile[^)]*/", $msg, $error_url)) {
-    $new_msg = str_replace("\n", "<br>", $msg);
-    print '<b>Error:</b> Failed to create a sliver. Check log file at <a href="' . $error_url[0] . '" target="_blank">' . $error_url[0] . '</a>.<br><br>';
-    print "<i>";
-    print $new_msg;
-    print "</i>";
-  
+}
+function no_am_error() {
+  if (array_key_exists("am_id", $_REQUEST)) {
+    $am_id = $_REQUEST['am_id'];
+    create_sliver_error("Invalid aggregate manager id \"$am_id\" specified.");
+  } else {
+    create_sliver_error("No aggregate manager id specified.");
   }
-  
-  // if unknown error, display in its entirety
-  else {
-    $new_msg = str_replace("\n", "<br>", $msg);
-    print '<b>Error:</b> Failed to create a sliver.<br><br>';
-    print "<i>";
-    print $new_msg;
-    print "</i>";
-  }
-  
+}
 
+function create_sliver_error($error) {
+    echo "<p class='error'>$error</p>";
+    echo '<form method="GET" action="back">';
+    echo '<input type="button" value="Back" onClick="history.back(-1)"/>';
+    echo '</form>';
+    include("footer.php");
+    exit;
+}
+
+// FIXME: Maybe pass other attributes like slice id?
+function create_sliver_success($omni_invocation_dir, $username) {
+    $invoke_id = array_pop(explode("-", $omni_invocation_dir));
+    $string_return = "Go to <a href='https://portal1.gpolab.bbn.com/secure/view_omni_invocation_data.php?invocation_user=";
+    $string_return .= $username . "&invocation_id=" . $invoke_id . "'>view omni invocation data</a> for more information.";
+    echo "<p class='instruction'>$string_return</p>";
+    include("footer.php");
+    exit;
+}
+
+function prepare_temp_dir($identifier) {
+    return createTempDir($identifier);
 }
 
 ?>

@@ -761,6 +761,32 @@ margin-left: .4in;
   font-size: 1.1em !important;
 }
 
+.error {
+  background-color: #E5E5E5;
+  border-left: 10px solid red;
+  color: #5F584E;
+  padding: 20px;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px; /* future proofing */
+  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+}
+
+.error:before {
+  content: "Error";
+  color: red;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  display: block;
+  font-size: 1.1em !important;
+}
+
 .starter {
  color: black;
  font-weight: bold;
