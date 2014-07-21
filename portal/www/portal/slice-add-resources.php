@@ -109,7 +109,7 @@ function show_rspec_chooser($user) {
 
 function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  print '<select name="am_id" id="agg_chooser">\n';
+  print '<select name="am_id" id="agg_chooser" onchange="am_onchange()">\n';
   echo '<option value="" title = "Choose an Aggregate">Choose an Aggregate...</option>';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
