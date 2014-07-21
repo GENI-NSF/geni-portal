@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.18 ==
+ * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
 
 == 2.17.1 ==

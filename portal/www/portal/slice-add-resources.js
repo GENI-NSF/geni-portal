@@ -120,6 +120,12 @@ function set_attributes_for_unbound()
     $('#stitch_rspec').val('0');
 }
 
+/* save previously chosen AM when AM changes */
+function am_onchange()
+{
+    am_on_page_load = $('#agg_chooser').val();
+}
+
 /* do things when RSpec is chosen from list (i.e. not uploaded) */
 function rspec_onchange()
 {
