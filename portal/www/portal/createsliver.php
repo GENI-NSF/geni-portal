@@ -94,6 +94,20 @@ if (! isset($rspec) || is_null($rspec)) {
   //  $rspec = fetchRSpecById(1);
 }
 
+// redirect if slice has expired
+if (isset($slice_expired) && convert_boolean($slice_expired)) {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
+// redirect if user isn't allowed to look up slice
+if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
+}
+
 // check stitching to see if AM is required to be specified
 $bound_rspec = 0;
 $stitch_rspec = 0;
@@ -164,7 +178,7 @@ $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 //$retVal = 0;
 
 if($retVal) {
-    create_sliver_success($omni_invocation_dir, $user->username);
+    create_sliver_success($omni_invocation_dir, $user->username, $slice_id);
 }
 else {
     create_sliver_error("Failed to start an <tt>omni</tt> process.");
@@ -202,13 +216,22 @@ function create_sliver_error($error) {
     exit;
 }
 
-// FIXME: Maybe pass other attributes like slice id?
-function create_sliver_success($omni_invocation_dir, $username) {
+function create_sliver_success($omni_invocation_dir, $username, $slice_id) {
     $invoke_id = array_pop(explode("-", $omni_invocation_dir));
-    $string_return = "Go to <a href='https://portal1.gpolab.bbn.com/secure/view_omni_invocation_data.php?invocation_user=";
-    $string_return .= $username . "&invocation_id=" . $invoke_id . "'>view omni invocation data</a> for more information.";
-    echo "<p class='instruction'>$string_return</p>";
+    
+    $link = "sliceresource.php?invocation_user=$username" .
+        "&invocation_id=$invoke_id&slice_id=$slice_id";
+        
+    $string = "<p class='instruction'>Resource request submitted. If you are ";
+    $string .= "not automatically redirected, <a href='$link'>click here</a> ";
+    $string .= "to view request progress and results.</p>";
+    echo $string;
     include("footer.php");
+    
+    // FIXME: We probably want to redirect the user as quickly as possible, but
+    // is this the best way of doing it?
+    relative_redirect($link);
+    
     exit;
 }
 

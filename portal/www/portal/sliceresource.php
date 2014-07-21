@@ -34,69 +34,47 @@ require_once("am_map.php");
 require_once("sa_client.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
+require_once("header.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-
 
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
   print 'No slice id specified.';
   exit();
 }
-function no_rspec_error() {
+
+function no_invocation_id_error() {
   header('HTTP/1.1 404 Not Found');
-  if (array_key_exists("rspec_id", $_REQUEST)) {
-    $rspec_id = $_REQUEST['rspec_id'];
-    print "Invalid resource specification id \"$rspec_id\" specified.";
-  } else {
-    print 'No resource specification id specified.';
-  }
-  exit();
-}
-function no_am_error() {
-  header('HTTP/1.1 404 Not Found');
-  if (array_key_exists("am_id", $_REQUEST)) {
-    $am_id = $_REQUEST['am_id'];
-    print "Invalid aggregate manager id \"$am_id\" specified.";
-  } else {
-    print 'No aggregate manager id specified.';
-  }
+  print 'No omni invocation id and/or user ID specified.';
   exit();
 }
 
+// redirect if no attributes passed in
 if (! count($_REQUEST)) {
-  // No parameters. Return an error result?
-  // For now, return nothing.
   no_slice_error();
 }
+
+// set user ID and invocation
+if(array_key_exists("invocation_id", $_REQUEST) && 
+        array_key_exists("invocation_user", $_REQUEST)) {
+    $invocation_user = $_REQUEST['invocation_user'];
+    $invocation_id = $_REQUEST['invocation_id'];
+}
+else {
+    no_invocation_id_error();
+}
+
+// set slice information
 unset($slice);
-unset($rspec);
-unset($am);
 include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();
 }
 
-if(array_key_exists('rspec_selection', $_FILES)) {
-  $local_rspec_file = $_FILES['rspec_selection']['tmp_name'];
-  $local_rspec_file = trim($local_rspec_file);
-  $temp_rspec_file = null;
-  if(strlen($local_rspec_file) > 0) {
-    $rspec = file_get_contents($local_rspec_file);
-    $temp_rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
-  }
-}
-else if(array_key_exists('rspec_jacks', $_REQUEST)) {
-	$temp_rspec_file = null;
-  $local_rspec_file = $_REQUEST['rspec_jacks'];
-  if(strlen($local_rspec_file) > 0) {
-    $rspec = $local_rspec_file;
-    $temp_rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
-  }
-}
-
+// redirect if slice has expired
 if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
     $slice_name = "";
@@ -105,76 +83,178 @@ if (isset($slice_expired) && convert_boolean($slice_expired)) {
   relative_redirect('slices.php');
 }
 
+// redirect if user isn't allowed to look up slice
 if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
 
-// FIXME: bound RSpec handling - for now, just pass variable
-$bound_rspec = 0;
-if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
-    $bound_rspec = 1;
-}
-
-// logic to handle stitchable RSpecs with AMs
-// assuming RSpec is stitchable, don't test for AM
-$stitch_rspec = 0;
-if(array_key_exists('stitch_rspec', $_REQUEST) && $_REQUEST['stitch_rspec'] == "1") {
-    $stitch_rspec = 1;
-}
-else if (! isset($am) || is_null($am)) {
-      no_am_error();
-}
-
-// Get an AM for non-stitchable RSpecs
-if($stitch_rspec) {
-    $am_id = "";
-}
-else {
-    $am_url = $am[SR_ARGUMENT::SERVICE_URL];
-    $AM_name = am_name($am_url);
-}
-
-$header = "Creating Sliver on slice: $slice_name";
-
+// show header and breadcrumbs
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 ?>
 
+
+
+<!-- JS functions for tailing -->
 <script>
-var slice= "<?php echo $slice_id ?>";
-var am_id= "<?php echo $am_id ?>";
-var rspec_id= "<?php echo $rspec_id ?>";
-var rspec_file = "<?php echo $temp_rspec_file ?>";
-var bound_rspec = "<?php echo $bound_rspec ?>";
-var stitch_rspec = "<?php echo $stitch_rspec ?>";
-function build_pretty_xml() 
-{
-  $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, 
-        am_id:am_id, rspec_file:rspec_file, bound_rspec:bound_rspec, 
-        stitch_rspec:stitch_rspec} );
+
+user = "<?php echo $invocation_user; ?>";
+id = "<?php echo $invocation_id; ?>";
+    
+debug_log_offset = 0;
+console_log_offset = 0;
+
+$( document ).ready( function() {
+    getPID(user, id);
+    getCommand(user, id);
+    getRequestRSpec(user, id);
+    updateConsoleLog(user, id, console_log_offset);
+    updateDebugLog(user, id, debug_log_offset);
+    updateXMLResults(user, id);
+    updateElapsedTime(user, id);
+    get_console = setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
+    get_debug = setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
+    get_xml = setInterval( "updateXMLResults(user, id)", 1000 );
+    get_elapsed = setInterval( "updateElapsedTime(user, id)", 1000 );
+});
+
+function updateConsoleLog(invocationUser, invocationID, offset) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=console&offset='+offset+'&raw=false',
+        function(data) {
+            var scrollPositionContainer = $("#console_data_container").scrollTop();
+            var dataHeight = $( "#console_data" ).height();
+            var containerHeight = $( "#console_data_container" ).height();
+            $("#console_bytes_read").html(data.bytes_read);
+            $("#console_new_offset").html(data.new_offset);
+            $("#console_time").html(data.time);
+            // Tail bottom if near the bottom
+            if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
+                $("#console_data").append(data.obj);
+                $("#console_data_container").scrollTop($("#console_data").height());
+            }
+            else {
+                $("#console_data").append(data.obj);
+            }
+            console_log_offset = data.new_offset;
+        });
 }
-</script>
-<script>
-$(document).ready(build_pretty_xml);
+
+function updateDebugLog(invocationUser, invocationID, offset) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=debug&offset='+offset+'&raw=false',
+        function(data) {
+            var scrollPositionContainer = $("#debug_data_container").scrollTop();
+            var dataHeight = $( "#debug_data" ).height();
+            var containerHeight = $( "#debug_data_container" ).height();
+            $("#debug_bytes_read").html(data.bytes_read);
+            $("#debug_new_offset").html(data.new_offset);
+            $("#debug_time").html(data.time);
+            debug_log_offset = data.new_offset;
+            // Tail bottom if near the bottom
+            if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
+                $("#debug_data").append(data.obj);
+                $("#debug_data_container").scrollTop($("#debug_data").height());
+            }
+            else {
+                $("#debug_data").append(data.obj);
+            }
+        });
+}
+
+function updateXMLResults(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=stdout&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#prettyxml").html(data.obj);
+                stopPolling();
+            }
+            $("#results_time").html(data.time);
+        });
+}
+
+function updateElapsedTime(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=elapsed&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#pid_elapsed").html(data.obj);
+            }
+            $("#pid_time").html(data.time);
+        });
+}
+
+function getPID(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=pid',
+        function(data) {
+            if(data.code == 0) {
+                $("#pid_pid").html(data.obj);
+            }
+        });
+}
+
+function getCommand(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=command&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#command_data").html(data.obj);
+            }
+        });
+}
+
+function getRequestRSpec(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=requestrspec&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#requestrspec_data").html(data.obj);
+            }
+        });
+}
+
+function stopPolling() {
+    clearInterval(get_xml);
+    clearInterval(get_debug);
+    clearInterval(get_console);
+    clearInterval(get_elapsed);
+}
+    
 </script>
 
+<?php echo "<h1>Add Resources to GENI Slice: $slice_name</h1>"; ?>
+
+<h2>Console Log</h2>
+<pre id='console_data_container' style="height:300px;">
+<span id='console_data'></span>
+</pre>
+
+<h2>Debug Log</h2>
+<pre id='debug_data_container' style="height:300px;">
+<span id='debug_data'></span>
+</pre>
+
+<h2>Command</h2>
+<pre id='command_data_container'><span id='command_data'></span></pre>
+
+<h2>Request RSpec</h2>
+<pre id='requestrspec_container'><span id='requestrspec_data'></span></pre>
+
+<h2>Results</h2>
+<div class='resources' id='prettyxml'>
+</div>
+
+<h2>Statistics</h2>
+<div id="hide" style="display:none;"><h3>Console Log</h3>
+<p>Bytes read: <b><span id='console_bytes_read'></span> bytes</b>, New offset: <b><span id='console_new_offset'></span> bytes</b>, Last read: <b><span id='console_time'></span></b></p>
+<h3>Debug Log</h3>
+<p>Bytes read: <b><span id='debug_bytes_read'></span> bytes</b>, New offset: <b><span id='debug_new_offset'></span> bytes</b>, Last read: <b><span id='debug_time'></span></b></p>
+<h3>Results</h3>
+<p>Last read: <b><span id='results_time'></span></b></p></div>
+<h3>Process Information</h3>
+<p>PID: <b><span id='pid_pid'></span></b>, Elapsed time: <b><span id='pid_elapsed'></span></b>, Last read: <b><span id='pid_time'></span></b></p>
 <?php
-print "<h2>$header</h2>\n";
 
-//print "Reserved resources on AM (<b>$AM_name</b>) until <b>$slice_expiration</b>:";
-if(!$stitch_rspec) {
-    print "<p>Resources on AM (<b>$AM_name</b>):</p>";
-}
-else {
-    print "<p>Resources requested from stitchable RSpec:</p>";
-}
-print "<div class='resources' id='prettyxml'>";
-print "<p><i>Adding resources...</i></p>";
-print "</div>\n";
 
-print "<hr/>";
-print "<p><a href='slices.php'>Back to All slices</a>";
-print "<br/>";
-print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 include("footer.php");
 ?>
