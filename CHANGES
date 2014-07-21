@@ -8,6 +8,7 @@
  * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
  * Warn that the Raw status link refetches status. (#764)
+ * Mention 'manifest' and 'xml' on Details page. (#475)
 
 == 2.17.1 ==
  * Allow the OpenID WiMAX username attribute to be wimax/wimax_username. (#1097)
