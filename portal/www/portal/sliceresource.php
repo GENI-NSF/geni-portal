@@ -224,10 +224,57 @@ function stopPolling() {
 
 <?php echo "<h1>Add Resources to GENI Slice: $slice_name</h1>"; ?>
 
-<h2>Console Log</h2>
+<?php
+    echo "<div style='position:relative;'>";
+    echo "<p style='margin-left:0px;'>Total run time: <b><span id='pid_elapsed'></span></b></p>";
+    echo "<div style='position:absolute;top:0px;right:0px;'>";
+    echo "<p style='margin:0px;'>Last updated: <b><span id='pid_time'></span></b></p>";
+    echo "</div></div>";
+?>
+
+  <div id='tablist'>
+		<ul class='tabs'>
+			<li><a href='#tab_progress_results'>Progress and Results</a></li>
+			<li><a href='#tab_request_rspec'>Request RSpec</a></li>
+			<li><a href='#tab_send_bug_report'>Send Bug Report</a></li>
+			<li style="border-right: none"><a href='#tab_advanced'>Advanced</a></li>
+		</ul>
+  </div>
+
+<!-- begin tab content -->
+<div class='tabContent'>
+
+<!-- progress / results tab -->
+<div id='tab_progress_results'>
+
+<h2>Progress</h2>
 <pre id='console_data_container' style="height:300px;">
 <span id='console_data'></span>
 </pre>
+
+<h2>Results</h2>
+<div class='resources' id='prettyxml'>
+</div>
+
+</div>
+
+<!-- request RSpec tab -->
+<div id='tab_request_rspec'>
+
+<h2>Request RSpec</h2>
+<pre id='requestrspec_container'><span id='requestrspec_data'></span></pre>
+
+</div>
+
+<!-- send bug report tab -->
+<div id='tab_send_bug_report'>
+
+
+
+</div>
+
+<!-- advanced tab -->
+<div id='tab_advanced'>
 
 <h2>Debug Log</h2>
 <pre id='debug_data_container' style="height:300px;">
@@ -237,12 +284,7 @@ function stopPolling() {
 <h2>Command</h2>
 <pre id='command_data_container'><span id='command_data'></span></pre>
 
-<h2>Request RSpec</h2>
-<pre id='requestrspec_container'><span id='requestrspec_data'></span></pre>
 
-<h2>Results</h2>
-<div class='resources' id='prettyxml'>
-</div>
 
 <h2>Statistics</h2>
 <div id="hide" style="display:none;"><h3>Console Log</h3>
@@ -251,10 +293,15 @@ function stopPolling() {
 <p>Bytes read: <b><span id='debug_bytes_read'></span> bytes</b>, New offset: <b><span id='debug_new_offset'></span> bytes</b>, Last read: <b><span id='debug_time'></span></b></p>
 <h3>Results</h3>
 <p>Last read: <b><span id='results_time'></span></b></p></div>
-<h3>Process Information</h3>
-<p>PID: <b><span id='pid_pid'></span></b>, Elapsed time: <b><span id='pid_elapsed'></span></b>, Last read: <b><span id='pid_time'></span></b></p>
+<h3>PID</h3>
+<p><b><span id='pid_pid'></span></b></p>
+
+</div>
+
+<!-- end tab content -->
+</div>
 <?php
 
-
+include "tabs.js";
 include("footer.php");
 ?>
