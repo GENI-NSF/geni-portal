@@ -118,10 +118,12 @@ $( document ).ready( function() {
     updateDebugLog(user, id, debug_log_offset);
     updateXMLResults(user, id);
     updateElapsedTime(user, id);
+    updateManifestRSpec(user, id);
     get_console = setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
     get_debug = setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
     get_xml = setInterval( "updateXMLResults(user, id)", 1000 );
     get_elapsed = setInterval( "updateElapsedTime(user, id)", 1000 );
+    get_manifest_rspec = setInterval( "updateManifestRSpec(user, id)", 1000 );
 });
 
 function updateConsoleLog(invocationUser, invocationID, offset) {
@@ -219,11 +221,22 @@ function getRequestRSpec(invocationUser, invocationID) {
         });
 }
 
+function updateManifestRSpec(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=manifestrspec&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#manifestrspec_data").html(data.obj);
+            }
+        });
+}
+
 function stopPolling() {
     clearInterval(get_xml);
     clearInterval(get_debug);
     clearInterval(get_console);
     clearInterval(get_elapsed);
+    clearInterval(get_manifest_rspec);
 }
     
 </script>
@@ -242,6 +255,7 @@ function stopPolling() {
 		<ul class='tabs'>
 			<li><a href='#tab_progress_results'>Progress and Results</a></li>
 			<li><a href='#tab_request_rspec'>Request RSpec</a></li>
+			<li><a href='#tab_manifest_rspec'>Manifest RSpec</a></li>
 			<li><a href='#tab_send_bug_report'>Send Bug Report</a></li>
 			<li style="border-right: none"><a href='#tab_advanced'>Advanced</a></li>
 		</ul>
@@ -268,9 +282,17 @@ function stopPolling() {
 <div id='tab_request_rspec'>
 
 <h2>Request RSpec</h2>
-<pre id='requestrspec_container'><span id='requestrspec_data'></span></pre>
+<pre id='requestrspec_container' style="height:300px;"><span id='requestrspec_data'></span></pre>
 
 </div>
+
+<!-- manifest RSpec tab -->
+<div id='tab_manifest_rspec'>
+
+<h2>Manifest RSpec</h2>
+<pre id='manifestrspec_container' style="height:300px;"><span id='manifestrspec_data'></span></pre>
+</div>
+
 
 <!-- send bug report tab -->
 <div id='tab_send_bug_report'>

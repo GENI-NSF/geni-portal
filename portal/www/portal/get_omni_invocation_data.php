@@ -133,6 +133,9 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
         case "requestrspec":
             $retVal = get_omni_invocation_request_rspec($invocation_dir, $raw);
             break;
+        case "manifestrspec":
+            $retVal = get_omni_invocation_manifest_rspec($invocation_dir, $raw);
+            break;
         default:
             $retVal = array(
                 'code' => 1,
@@ -366,6 +369,26 @@ function get_omni_invocation_stdout($dir, $raw=true) {
             "stdout from stitcher.call");
     return $raw ? $retVal : make_pretty_stdout($retVal);
 }
+
+/*
+    Get the manifest RSpec
+*/
+function get_omni_invocation_manifest_rspec($dir, $raw=true) {
+    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
+            "stdout from stitcher.call (for manifest)");
+            
+    // get XML from obj
+    if($retVal['obj']) {
+        // FIXME: Do checks on this to see if this contains real data
+        $output2 = json_decode($retVal['obj'], True);
+        $retVal['obj'] = $output2[1];
+    }
+    else {
+        $retVal['obj'] = NULL;
+    }
+    return $raw ? $retVal : make_pretty_code($retVal);
+}
+
 
 /*
     Get the status of the omni invocation based on its PID
