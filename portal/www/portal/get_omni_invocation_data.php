@@ -50,18 +50,18 @@ require_once("print-text-helpers.php");
             raw: 'true' (default) or 'false' (pretty print if available)
             offset: offset in bytes of where to get file data for requests 
                 that use tailing (default is 0)
+            download: 'true' or 'false' (default)
     
     Returns:
-        $retVal: JSON-encoded array of 4 key/values:
+        $retVal: JSON-encoded array of up to 6 key/values:
             'code': 0 for success, non-zero number for failure
             'msg': user-friendly message about the result of the action
-            'obj': raw or pretty data
-                for non-tailing objects, 'obj' will be string (or NULL if failed)
-                for tailing objects, 'obj' has 3 key/values:
-                    'data': raw or pretty data returned (or NULL if nothing)
-                    'bytes_read': number of bytes read
-                    'new_offset': what the next query's offset should be
+            'obj': raw or pretty data returned (or NULL if nothing)
+            'bytes_read': number of bytes read (set for tailable functions)
+            'new_offset': what the next query's offset should be (set for tailable functions)
             'time': local server time when request is returned
+        If download flag is set, contents of 'obj' are dumped into a response
+        and sent back to the user.
     
 */
 
@@ -82,6 +82,14 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
     }
     else {
         $raw = true;
+    }
+    
+    // set download to false by default unless it's set to 'true'
+    if(array_key_exists("download", $_REQUEST) && $_REQUEST['download'] == 'true') {
+        $download = true;
+    }
+    else {
+        $download = false;
     }
     
     // set offset to 0 by default unless it's set in AJAX call
@@ -132,6 +140,16 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
                 'obj' => NULL
             );
             error_log("get_omni_data.php: " . $retVal['msg']);
+    }
+    
+    // for downloads, send data to file and exit
+    if($download) {
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=$request");
+        header("Content-Type: text/plain");
+        print $retVal['obj'];
+        exit();
     }
     
 }
@@ -240,7 +258,7 @@ function get_omni_invocation_file_raw_contents_offset($dir, $file,
         
         /* return data back
            in this case, the object will contain 3 key/value pairs:
-                data: the data from the file itself
+                obj: the data from the file itself
                 bytes_read: number of bytes that were read from the file based
                     on file size and offset specified
                 new_offset: what should be the next offset when another AJAX
@@ -250,11 +268,9 @@ function get_omni_invocation_file_raw_contents_offset($dir, $file,
             'code' => 0,
             'msg' => "Opened $description of length " .
                     filesize($file_path) . " bytes.",
-            'obj' => array(
-                'data' => $data,
-                'bytes_read' => $length_to_read,
-                'new_offset' => $fsize
-            )
+            'obj' => $data,
+            'bytes_read' => $length_to_read,
+            'new_offset' => $fsize
         );
     
     }
@@ -264,7 +280,9 @@ function get_omni_invocation_file_raw_contents_offset($dir, $file,
         $retVal = array(
             'code' => 1,
             'msg' => "Opened $description but file was empty.",
-            'obj' => NULL
+            'obj' => NULL,
+            'bytes_read' => NULL,
+            'new_offset' => NULL
         );
     }
     // file doesn't exist
@@ -272,7 +290,9 @@ function get_omni_invocation_file_raw_contents_offset($dir, $file,
         $retVal = array(
             'code' => 1,
             'msg' => "Could not find or open $description.",
-            'obj' => NULL
+            'obj' => NULL,
+            'bytes_read' => NULL,
+            'new_offset' => NULL
         );
         //error_log("get_omni_data.php get_omni_invocation_file_raw_contents_offset: " .
         //    $retVal['msg']);
@@ -307,7 +327,7 @@ function get_omni_invocation_command($dir, $raw=true) {
 function get_omni_invocation_console_log($dir, $raw=true, $offset=0) {
     $retVal = get_omni_invocation_file_raw_contents_offset($dir, "omni-console", 
             "console log", $offset);
-    return $raw ? $retVal : make_pretty_tailed_logs($retVal);
+    return $raw ? $retVal : make_pretty_code($retVal);
 }
 
 /*
@@ -317,7 +337,7 @@ function get_omni_invocation_console_log($dir, $raw=true, $offset=0) {
 function get_omni_invocation_debug_log($dir, $raw=true, $offset=0) {
     $retVal = get_omni_invocation_file_raw_contents_offset($dir, "omni-log", 
             "debug log", $offset);
-    return $raw ? $retVal : make_pretty_tailed_logs($retVal);
+    return $raw ? $retVal : make_pretty_code($retVal);
 }
 
 /*
@@ -472,24 +492,6 @@ function make_pretty_code($retVal) {
     }
 }
 
-/*
-    Return pretty print for tailed logs
-*/
-function make_pretty_tailed_logs($retVal) {
-    if($retVal['obj']['data']) {
-        // change <, >, and " to special characters so they display correctly
-        $retVal['obj']['data'] = str_replace("<", "&lt;", $retVal['obj']['data']);
-        $retVal['obj']['data'] = str_replace(">", "&gt;", $retVal['obj']['data']);
-        $retVal['obj']['data'] = str_replace("\"", "&quot;", $retVal['obj']['data']);
-        // change newlines to breaks (do this after the above three!)
-        $retVal['obj']['data'] = str_replace("\n", "<br>", $retVal['obj']['data']);
-        return $retVal;
-    }
-    else {
-        return $retVal;
-    }
-
-}
 
 /*
     Return pretty print for omni-stdout data

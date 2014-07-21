@@ -77,18 +77,18 @@ function updateConsoleLog(invocationUser, invocationID, offset) {
             var scrollPositionContainer = $("#console_data_container").scrollTop();
             var dataHeight = $( "#console_data" ).height();
             var containerHeight = $( "#console_data_container" ).height();
-            $("#console_bytes_read").html(data.obj.bytes_read);
-            $("#console_new_offset").html(data.obj.new_offset);
+            $("#console_bytes_read").html(data.bytes_read);
+            $("#console_new_offset").html(data.new_offset);
             $("#console_time").html(data.time);
             // Tail bottom if near the bottom
             if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
-                $("#console_data").append(data.obj.data);
+                $("#console_data").append(data.obj);
                 $("#console_data_container").scrollTop($("#console_data").height());
             }
             else {
-                $("#console_data").append(data.obj.data);
+                $("#console_data").append(data.obj);
             }
-            console_log_offset = data.obj.new_offset;
+            console_log_offset = data.new_offset;
         });
 }
 
@@ -98,17 +98,17 @@ function updateDebugLog(invocationUser, invocationID, offset) {
             var scrollPositionContainer = $("#debug_data_container").scrollTop();
             var dataHeight = $( "#debug_data" ).height();
             var containerHeight = $( "#debug_data_container" ).height();
-            $("#debug_bytes_read").html(data.obj.bytes_read);
-            $("#debug_new_offset").html(data.obj.new_offset);
+            $("#debug_bytes_read").html(data.bytes_read);
+            $("#debug_new_offset").html(data.new_offset);
             $("#debug_time").html(data.time);
-            debug_log_offset = data.obj.new_offset;
+            debug_log_offset = data.new_offset;
             // Tail bottom if near the bottom
             if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
-                $("#debug_data").append(data.obj.data);
+                $("#debug_data").append(data.obj);
                 $("#debug_data_container").scrollTop($("#debug_data").height());
             }
             else {
-                $("#debug_data").append(data.obj.data);
+                $("#debug_data").append(data.obj);
             }
         });
 }
