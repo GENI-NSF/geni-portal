@@ -130,6 +130,12 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
         case "elapsed":
             $retVal = get_omni_invocation_elapsed_time($invocation_dir, $raw);
             break;
+        case "start":
+            $retVal = get_omni_invocation_start_time($invocation_dir, $raw);
+            break;
+        case "stop":
+            $retVal = get_omni_invocation_stop_time($invocation_dir, $raw);
+            break;
         case "requestrspec":
             $retVal = get_omni_invocation_request_rspec($invocation_dir, $raw);
             break;
@@ -456,10 +462,10 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
         $retValError = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
             "error log");
         if($retValError['code'] == 0) {
-            $retVal['msg'] = "<b style='color:red;'>(Failed)</b>";
+            $retVal['msg'] = "<b style='color:red;'>Failed</b>";
         }
         else {
-            $retVal['msg'] = "<b style='color:green;'>(Finished)</b>";
+            $retVal['msg'] = "<b style='color:green;'>Finished</b>";
         }
         
     }
@@ -467,7 +473,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
         // process isn't finished, so find the difference between start and now
         $stop_time = time();
         $retVal['code'] = 1;
-        $retVal['msg'] = "<b style='color:#E17000;'>(Running)</b>";
+        $retVal['msg'] = "<b style='color:#E17000;'>Running</b>";
     }
     
     $total_time = $stop_time - $start_time;
@@ -481,6 +487,27 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     return $retVal;
 
 }
+
+/*
+    Get the start time (if exists) from the omni invocation
+*/
+function get_omni_invocation_start_time($dir, $raw=true) {
+    $retVal = get_omni_invocation_file_raw_contents($dir, "start", 
+            "start time file");
+    return $raw ? $retVal : make_pretty_time($retVal);
+}
+
+/*
+    Get the stop time (if exists) from the omni invocation
+*/
+function get_omni_invocation_stop_time($dir, $raw=true) {
+    $retVal = get_omni_invocation_file_raw_contents($dir, "stop", 
+            "stop time file");
+    return $raw ? $retVal : make_pretty_time($retVal);
+}
+
+
+
 
 /*
     Parse etime from calling ps
@@ -548,7 +575,7 @@ function make_pretty_code($retVal) {
 
 
 /*
-    Return pretty print for omni-stdout data
+    Return pretty print for omni-stdout data (i.e. the results)
 */
 function make_pretty_stdout($retVal) {
 
@@ -570,6 +597,21 @@ function make_pretty_stdout($retVal) {
         return $retVal;
     }
 
+}
+
+
+/*
+    Return RFC 2822 time given Unix epoch time
+*/
+function make_pretty_time($retVal) {
+    if($retVal['obj']) {
+        date_default_timezone_set('America/New_York');
+        $retVal['obj'] = date('r', $retVal['obj']);
+        return $retVal;
+    }
+    else {
+        return $retVal;
+    }
 }
 
 ?>

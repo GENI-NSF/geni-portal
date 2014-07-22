@@ -119,9 +119,9 @@ include("sliceresource.js");
 echo "<h1>Add Resources to GENI Slice: $slice_name</h1>";
 echo "<div style='position:relative;'>";
 echo "<p style='margin-left:0px;'>Total run time: <b><span id='total_run_time'></span></b> ";
-echo "<span id='total_run_time_status'></span></p>";
+echo "<br>Status: <span id='total_run_time_status'></span></p>";
 echo "<div style='position:absolute;top:0px;right:0px;'>";
-echo "<p style='margin:0px;'>Last updated: <b><span id='total_run_time_last_updated'></span></b></p>";
+echo "<p style='margin:0px;text-align:right;'>Started at: <b><span id='start_time'></span></b><br><span id='last_updated_or_finished_text'>Last updated:</span> <b><span id='last_updated_or_finished_time'></span></b></p>";
 echo "</div></div>";
 ?>
 
@@ -229,7 +229,8 @@ echo "</div></div>";
 
 <!-- always show results -->
 <h2>Results</h2>
-<div class='resources' id='prettyxml'>Pending...</div>
+<div class='resources' id='prettyxml'><p><i>Pending... (See 'Detailed Progress' tab for more information.)</i></p></div>
+<div id='results_stop_msg'></div>
 
 <?php
 

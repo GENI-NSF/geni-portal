@@ -6,10 +6,14 @@ id = "<?php echo $invocation_id; ?>";
 debug_log_offset = 0;
 console_log_offset = 0;
 
+start_time = "";
+stop_time = "";
+
 $( document ).ready( function() {
     getPID(user, id);
     getCommand(user, id);
     getRequestRSpec(user, id);
+    getStartTime(user, id);
     updateConsoleLog(user, id, console_log_offset);
     updateDebugLog(user, id, debug_log_offset);
     updateXMLResults(user, id);
@@ -84,10 +88,60 @@ function updateElapsedTime(invocationUser, invocationID) {
                 // both the start and stop files - nothing else will get updated
                 // beyond this point
                 stopPolling();
+                getStopTime(invocationUser, invocationID);
+                getErrorLog(invocationUser, invocationID);
+            }
+            else {
+                // since not finished, update the 'Last updated:' time
+                $("#last_updated_or_finished_time").html(data.time);
             }
             $("#total_run_time").html(data.obj);
             $("#total_run_time_status").html(data.msg);
-            $("#total_run_time_last_updated").html(data.time);
+        });
+}
+
+function getStopTime(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=stop&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                stop_time = data.obj;
+                $("#last_updated_or_finished_time").html(data.obj);
+            }
+        });
+}
+
+function getErrorLog(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=error&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                // some error was detected
+                // set 'Last updated:' to 'Failed at:'
+                $("#last_updated_or_finished_text").html("Failed at:");
+                // update 'Results' section to reflect this
+                $("#prettyxml").html("<p><i>Failed. See 'Detailed Progress' tab for more information.</i></p>");
+                // FIXME: update 'Advanced' tab with results of omni-stderr
+            }
+            else {
+                // no error was detected
+                // set 'Last updated:' to 'Finished at:'
+                $("#last_updated_or_finished_text").html("Finished at:");
+                // post notice about 'Results current...'
+                $("#results_stop_msg").html("<p><b>Note:</b> Results current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted.</p>");
+            }
+        });
+}
+
+function getStartTime(invocationUser, invocationID) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&request=start&raw=false',
+        function(data) {
+            if(data.code == 0) {
+                $("#start_time").html(data.obj);
+                // update global variable start_time
+                start_time = data.obj;
+            }
         });
 }
 
