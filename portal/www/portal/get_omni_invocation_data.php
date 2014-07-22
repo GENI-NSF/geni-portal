@@ -173,7 +173,8 @@ header("Content-Type: application/json", true);
 */
 $dt = new DateTime();
 $dt->setTimezone(new DateTimeZone("America/New_York"));
-$retVal['time'] = $dt->format('H:i:s T');
+//$retVal['time'] = $dt->format('H:i:s T (P \U\T\C)');
+$retVal['time'] = $dt->format('r');
 
 /* send back JSON-encoded data */
 echo json_encode($retVal);
