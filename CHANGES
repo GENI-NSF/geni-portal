@@ -9,6 +9,11 @@
  * Add Stitching Allocate Resources Interface (#581)
  * Warn that the Raw status link refetches status. (#764)
  * Mention 'manifest' and 'xml' on Details page. (#475)
+ * Cleanly redirect to the referer on the KM activate page,
+   avoiding attempting to construct a relative URL from an
+   absolute URL. Additionally, check the path when constructing
+   a relative URL to make sure we construct something 
+   relative. (#1110)
 
 == 2.17.1 ==
  * Allow the OpenID WiMAX username attribute to be wimax/wimax_username. (#1097)
