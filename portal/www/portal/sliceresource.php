@@ -118,9 +118,10 @@ include("sliceresource.js");
 
 echo "<h1>Add Resources to GENI Slice: $slice_name</h1>";
 echo "<div style='position:relative;'>";
-echo "<p style='margin-left:0px;'>Total run time: <b><span id='pid_elapsed'></span></b></p>";
+echo "<p style='margin-left:0px;'>Total run time: <b><span id='total_run_time'></span></b> ";
+echo "<span id='total_run_time_status'></span></p>";
 echo "<div style='position:absolute;top:0px;right:0px;'>";
-echo "<p style='margin:0px;'>Last updated: <b><span id='pid_time'></span></b></p>";
+echo "<p style='margin:0px;'>Last updated: <b><span id='total_run_time_last_updated'></span></b></p>";
 echo "</div></div>";
 ?>
 

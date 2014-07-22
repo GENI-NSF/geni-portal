@@ -70,7 +70,6 @@ function updateXMLResults(invocationUser, invocationID) {
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
-                stopPolling();
             }
             $("#results_time").html(data.time);
         });
@@ -81,9 +80,14 @@ function updateElapsedTime(invocationUser, invocationID) {
     '&invocation_id='+invocationID+'&request=elapsed&raw=false',
         function(data) {
             if(data.code == 0) {
-                $("#pid_elapsed").html(data.obj);
+                // stop polling when we know that stitcher_php.py has written
+                // both the start and stop files - nothing else will get updated
+                // beyond this point
+                stopPolling();
             }
-            $("#pid_time").html(data.time);
+            $("#total_run_time").html(data.obj);
+            $("#total_run_time_status").html(data.msg);
+            $("#total_run_time_last_updated").html(data.time);
         });
 }
 

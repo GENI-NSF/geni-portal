@@ -446,14 +446,27 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     if($retValStop['code'] == 0) {
         // process is finished, so find the difference between start and stop
         $stop_time = $retValStop['obj'];
+        
+        // return code of 0 tells client-side JS to stop polling - we want
+        // this whether the finished process was a success or failure
         $retVal['code'] = 0;
-        $retVal['msg'] = "Process has finished (both start/stop files exist).";
+        
+        // check if omni-stderr is empty - if not, then process probably failed
+        $retValError = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
+            "error log");
+        if($retValError['code'] == 0) {
+            $retVal['msg'] = "<b style='color:red;'>(Failed)</b>";
+        }
+        else {
+            $retVal['msg'] = "<b style='color:green;'>(Finished)</b>";
+        }
+        
     }
     else {
         // process isn't finished, so find the difference between start and now
         $stop_time = time();
         $retVal['code'] = 1;
-        $retVal['msg'] = "Process has not finished (only start file exists).";
+        $retVal['msg'] = "<b style='color:#E17000;'>(Running)</b>";
     }
     
     $total_time = $stop_time - $start_time;
