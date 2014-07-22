@@ -30,12 +30,6 @@ require_once 'util.php';
 require_once 'km_utils.php';
 require_once 'maintenance_mode.php';
 
-$redirect_address = "";
-
-if(array_key_exists('HTTP_REFERER', $_SERVER)) {
-  $redirect_address = $_SERVER['HTTP_REFERER'];
-}
-
 // If no eppn, go directly to InCommon error page
 if (! key_exists('eppn', $_SERVER)) {
   $feh_url = incommon_feh_url();
@@ -90,11 +84,7 @@ $member = ma_lookup_member_by_eppn($ma_url, Portal::getInstance(), $eppn);
   //if ($count !== 0) {
 if (!is_null($member)) {
   // Existing account, go to home page or to referer
-  if ($redirect_address != '') {
-    relative_redirect($redirect_address);
-  } else {
-    relative_redirect("kmhome.php");
-  }
+  redirect_referer("kmhome.php");
 }
 
 include("kmheader.php");
