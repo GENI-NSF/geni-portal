@@ -127,7 +127,7 @@ echo "</div></div>";
 
   <div id='tablist'>
 		<ul class='tabs'>
-			<li><a href='#tab_progress_results'>Progress and Results</a></li>
+			<li><a href='#tab_progress'>Detailed Progress</a></li>
 			<li><a href='#tab_request_rspec'>Request RSpec</a></li>
 			<li><a href='#tab_manifest_rspec'>Manifest RSpec</a></li>
 			<li><a href='#tab_send_bug_report'>Send Bug Report</a></li>
@@ -138,17 +138,13 @@ echo "</div></div>";
 <!-- begin tab content -->
 <div class='tabContent'>
 
-<!-- progress / results tab -->
-<div id='tab_progress_results'>
+<!-- progress tab -->
+<div id='tab_progress'>
 
-<h2>Progress</h2>
+<h2>Detailed Progress</h2>
 <pre id='console_data_container' style="height:300px;">
 <span id='console_data'></span>
 </pre>
-
-<h2>Results</h2>
-<div class='resources' id='prettyxml'>
-</div>
 
 </div>
 
@@ -230,8 +226,13 @@ echo "</div></div>";
 
 <!-- end tab content -->
 </div>
+
+<!-- always show results -->
+<h2>Results</h2>
+<div class='resources' id='prettyxml'>Pending...</div>
+
 <?php
 
-include "tabs.js";
+include "sliceresource-tabs.js";
 include("footer.php");
 ?>
