@@ -44,26 +44,30 @@ def main(argv=None):
     except (ValueError, IOError) as e:
         pass
     
-    text, obj = stitcher.call( sys.argv[1:] )
-
-    if type(obj) == type({}):
-        obj2 = {}
-        for key, value in obj.items():
-            obj2[str(key)]=value
-    else:
-        obj2 = obj
-    # serialize using json
-    jsonObj = json.dumps( (text, obj2), indent=4 )
-    print jsonObj
-    
-    # write stop time to file (and silently fail)
+    # catch exceptions that stitcher.call may pass back
     try:
-        stop_file = os.path.join(sys.argv[invocation_dir], "stop")
-        stop_file_handle = open(stop_file, "w")
-        stop_file_handle.write(str(int(time.time())))
-        stop_file_handle.close()
-    except (ValueError, IOError) as e:
-        pass
+        text, obj = stitcher.call( sys.argv[1:] )
+        if type(obj) == type({}):
+            obj2 = {}
+            for key, value in obj.items():
+                obj2[str(key)]=value
+        else:
+            obj2 = obj
+        # serialize using json
+        jsonObj = json.dumps( (text, obj2), indent=4 )
+        print jsonObj
+    except Exception as e:
+        raise e
+    # always try writing the stop file
+    finally:
+        # write stop time to file (and silently fail)
+        try:
+            stop_file = os.path.join(sys.argv[invocation_dir], "stop")
+            stop_file_handle = open(stop_file, "w")
+            stop_file_handle.write(str(int(time.time())))
+            stop_file_handle.close()
+        except (ValueError, IOError) as e:
+            pass
     
 if __name__ == "__main__":
     sys.exit(main())
