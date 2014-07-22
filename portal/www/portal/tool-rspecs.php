@@ -196,7 +196,6 @@ function display_rspec($rspec, $owners, $public=False) {
           $view_btn,
           $download_btn);
   } else {
-    //    $edit_url = "rspecedit.php?id=$id";
     $sn = $rspec['name'];
     $desc = $rspec['description'];
     $visibility = $rspec['visibility'];

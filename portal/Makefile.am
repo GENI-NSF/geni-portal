@@ -144,8 +144,6 @@ dist_svcweb_DATA = \
 	www/portal/request_test.php \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
-	www/portal/rspecedit.php \
-	www/portal/rspechandleedit.php \
 	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \

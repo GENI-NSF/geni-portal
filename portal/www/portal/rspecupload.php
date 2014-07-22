@@ -135,19 +135,24 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input type="file" name="file" id="file" /></p>';
   echo '  <p>';
   echo '  <label for="file">Short Name:</label>';
-  echo '  <input type="text" name="name" value="' . $rspec_sn . '"/> - Required</p>';
+  echo '  <input type="text" name="name" value="' . $rspec_sn . '"/> - Required: Name as the RSpec will appear in menus.</p>';
   // Use single quotes in the placeholder because double quotes cause
   // malformed HTML.
-  $desc_placeholder = "E.g. '3 InstaGENI Xen VMs connected by an OVS switch'";
+  $desc_placeholder = "Detailed description including purpose, topology, aggregates requried, etc. E.g. '3 InstaGENI Xen VMs connected by an OVS switch'";
   echo '  <p>';
   echo '  <label for="file">Description:</label>';
-  echo '<textarea name="description"';
+  echo '  <textarea name="description"';
   echo ' placeholder="' . $desc_placeholder . '"';
-  echo ' cols="30"';
-  echo ' rows="2"';
+  echo ' cols="60"';
+  echo ' rows="4"';
   echo '>';
   echo $rspec_desc . '</textarea>';
-  echo ' - Required</p>';
+  echo ' - Required';
+  if($rspec_id != "") {
+    echo '<br/>&nbsp;&nbsp;&nbsp;&nbsp;Detailed description (purpose, topology, etc.)</p>';
+  } else {
+    echo '</p>';
+  }
 
   $public_checked = "";
   $private_checked = "checked";
