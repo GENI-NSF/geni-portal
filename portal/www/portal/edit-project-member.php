@@ -157,6 +157,7 @@ $all_project_member_details = lookup_member_details($ma_url, $user, $all_project
 //}
 
 print "<h1>Edit GENI Project Membership: " . $project_name . "</h1>";
+print "<p>Add or remove project members, or change member roles. For an explanation of the different roles, see the <a href='http://groups.geni.net/geni/wiki/GENIGlossary#Project'>GENI Glossary</a>.</p>";
 
 ?>
 <form method="POST" action="do-edit-project-member.php">

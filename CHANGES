@@ -15,6 +15,7 @@
    a relative URL to make sure we construct something 
    relative. (#1110)
  * Explain what RSpec name and description are. (#420)
+ * Link to the GENI Glossary to explain project and slice roles. (#558)
 
 == 2.17.1 ==
  * Allow the OpenID WiMAX username attribute to be wimax/wimax_username. (#1097)
