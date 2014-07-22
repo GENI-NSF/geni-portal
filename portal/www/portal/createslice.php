@@ -60,7 +60,11 @@ if (is_null($project_id) || $project_id == '') {
   relative_redirect("home.php");
 }
 
-if (!is_null($slice_name) && ($slice_name != '') && !is_valid_slice_name($slice_name)) {
+if (!is_null($slice_name) && $slice_name == '') {
+  error_log("createslice: missing slice name from GET");
+  $_SESSION['lasterror'] = "Missing slice name: Slice name is required and must be non-empty.";
+  $slice_name = NULL;
+} else if (!is_null($slice_name) && ($slice_name != '') && !is_valid_slice_name($slice_name)) {
   error_log("createslice: invalid slice name from GET: " . $slice_name);
   $_SESSION['lasterror'] = "Invalid slice name '$slice_name': Use only alphanumeric plus hyphen (no leading hyphen), and at most 19 characters.";
   $slice_name = NULL;
