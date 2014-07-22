@@ -799,7 +799,7 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   //  log_action("Called CreateSliver", $user, $am_url, $slice_urn, $rspec, $slice_id);
   $slice_credential_filename = writeDataToTempDir($omni_invocation_dir, $slice_credential, "cred");
   
-  $args = array("--slicecredfile", 
+  $args = array("-o", "--slicecredfile", 
 		$slice_credential_filename, 
 		'createsliver',
 		$slice_urn,
