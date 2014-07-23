@@ -129,4 +129,20 @@ function clean_directory($dir) {
     }
 }
 
+/*
+    Get the omni invocation directory based on username and invocation ID
+*/
+function get_invocation_dir_name($user, $id) { 
+    global $omni_invocation_prefix;
+    return sys_get_temp_dir() . "/$omni_invocation_prefix-$user-$id";
+}
+
+/*
+    Get the invocation ID based on the omni invocation directory
+*/
+function get_invocation_id_from_dir($omni_invocation_dir) { 
+    return array_pop(explode("-", $omni_invocation_dir));
+}
+
+
 ?>

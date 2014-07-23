@@ -521,7 +521,7 @@ function invoke_omni_function($am_url, $user, $args,
         fclose($pid_file);
         
         // FIXME: return debug URL page for now (probably want to return non-null upon success)
-        $invoke_id = array_pop(explode("-", $omni_invocation_dir));
+        $invoke_id = get_invocation_id_from_dir($omni_invocation_dir);
         $string_return = "Go to <a href='https://portal1.gpolab.bbn.com/secure/view_omni_invocation_data.php?invocation_user=";
         $string_return .= $user->username . "&invocation_id=" . $invoke_id . "'>view omni invocation data</a> for more information.";
         return $string_return;

@@ -197,7 +197,7 @@ $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 if($retVal) {
 
     // Set up link to results page
-    $invoke_id = array_pop(explode("-", $omni_invocation_dir));
+    $invoke_id = get_invocation_id_from_dir($omni_invocation_dir);
     $link = "sliceresource.php?invocation_user=" . $user->username .
         "&invocation_id=$invoke_id&slice_id=$slice_id";
     $link = relative_url($link);
@@ -262,7 +262,7 @@ function create_sliver_error($error) {
 }
 
 function create_sliver_success($omni_invocation_dir, $username, $slice_id) {
-    $invoke_id = array_pop(explode("-", $omni_invocation_dir));
+    $invoke_id = get_invocation_id_from_dir($omni_invocation_dir);
     
     $link = "sliceresource.php?invocation_user=$username" .
         "&invocation_id=$invoke_id&slice_id=$slice_id";

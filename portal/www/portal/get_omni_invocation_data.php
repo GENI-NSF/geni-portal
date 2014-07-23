@@ -214,14 +214,6 @@ echo json_encode($retVal);
 /* HELPER FUNCTIONS */
 
 /*
-    Create the invocation directory given the invocation ID and username
-*/
-function get_invocation_dir_name($user, $id) { 
-    global $omni_invocation_prefix;
-    return sys_get_temp_dir() . "/$omni_invocation_prefix-$user-$id";
-}
-
-/*
     Get a file's contents (with no offset via file_get_contents)
 */
 function get_omni_invocation_file_raw_contents($dir, $file, $description) {

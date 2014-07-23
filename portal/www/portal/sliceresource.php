@@ -94,8 +94,7 @@ include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
 // check that invocation ID actually points to a directory
-$dir_to_check = sys_get_temp_dir() . "/$omni_invocation_prefix-" 
-    . "$invocation_user-$invocation_id";
+$dir_to_check = get_invocation_dir_name($invocation_user, $invocation_id);
 if(!is_dir($dir_to_check)) {
     echo "<h1>Add Resources to GENI Slice: $slice_name</h1>";
     echo "<p class='error'>Files and process data related to omni request <b>$invocation_user-$invocation_id</b> not found. Note that older files are periodically removed from the Portal, so it is possible that the files and process-related data have been deleted as part of routine maintenance.<br><br>For further help, please contact <a href='mailto:portal-help@geni.net'>Portal Help</a>.</p>";
