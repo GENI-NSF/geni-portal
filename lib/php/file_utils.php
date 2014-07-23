@@ -144,5 +144,31 @@ function get_invocation_id_from_dir($omni_invocation_dir) {
     return array_pop(explode("-", $omni_invocation_dir));
 }
 
+/*
+    Zip all files in a directory (optionally exclude some files)
+    Returns zip file location if successful, NULL if not
+*/
+function zip_dir_files($zip_name, $dir, $excluded_files_list=array()) {
+
+    // all files in directory
+    $files_list = glob(rtrim($dir,'/').'/*'); // get all file names
+
+    // all files we want to zip (all files in directory - excluded files)
+    $zip_files_list = array_diff($files_list, $excluded_files_list);
+
+    $zip = new ZipArchive();
+    
+    if ($zip->open($zip_name, ZipArchive::CREATE) === TRUE) {
+        foreach($zip_files_list as $file) {
+            $zip->addFile($file, basename($file));
+        }
+        $zip->close();
+        return $zip_name;
+    }
+    else {
+        return NULL;
+    }
+
+}
 
 ?>
