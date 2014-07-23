@@ -583,13 +583,59 @@ function make_pretty_stdout($retVal) {
     if($retVal['obj']) {
         // FIXME: Do checks on this to see if this contains real data
         $output2 = json_decode($retVal['obj'], True);
-            
-        // FIXME: Note that this captures whatever is buffered in the
-        //      output, as print_rspec_pretty() uses prints and echoes.
-        //      Probably need a more elegant solution going forward.
-        ob_start();
-        $obj = print_rspec_pretty($output2[1]);
-        $retVal['obj'] = ob_get_clean();
+        
+        if ( count($output2) == 2 ) {
+           $msg = $output2[0];
+           $obj = $output2[1];
+        } else {
+           $msg = $output2;
+           $obj = "";
+        }
+        
+        // probably XML, so send to print_rspec_pretty
+        // Note: prints/echos are sent to output buffer; this captures that
+        // FIXME: Filter to AM
+        if ($obj != "" ) {
+            ob_start();
+            $obj = print_rspec_pretty($output2[1]);
+            $retVal['obj'] = ob_get_clean();
+        }
+        
+        // something else, so parse out to determine if it's an error
+        else {
+            // Note: prints/echos are sent to output buffer; this captures that
+            ob_start();
+            $new_msg = $msg;
+            //   note: preg_match returns 1 if expression is found
+            //         and matched string is stored in $string[0]
+            // match on omni python traceback error
+            print "<p>";
+            if(preg_match("/omnilib\.util\.omnierror.*/", $msg, $new_msg)) {
+                print '<b>Error:</b> Failed to create a sliver.<br><br>';
+                print "<i>";
+                print $new_msg[0];
+                print "</i>";
+            }
+            // match on InstaGENI URL
+            else if(preg_match("/http[s]?:\/\/[a-zA-Z0-9.\/]*\/spewlogfile[^)]*/", $msg, $error_url)) {
+                $new_msg = str_replace("\n", "<br>", $msg);
+                print '<b>Error:</b> Failed to create a sliver. Check log file at <a href="' . $error_url[0] . '" target="_blank">' . $error_url[0] . '</a>.<br><br>';
+                print "<i>";
+                print $new_msg;
+                print "</i>";
+            }
+            // if unknown error, display in its entirety
+            else {
+                $new_msg = str_replace("\n", "<br>", $msg);
+                print '<b>Error:</b> Failed to create a sliver.<br><br>';
+                print "<i>";
+                print $new_msg;
+                print "</i>";
+            }
+            print "</p>";
+            $retVal['obj'] = ob_get_clean();
+        }
+        
         return $retVal;
     }
     // pass back what we originally got
