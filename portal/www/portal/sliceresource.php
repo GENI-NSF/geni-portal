@@ -210,9 +210,7 @@ echo "</div></div>";
 <p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&request=debug&download=true&filename=debug.log";?>'" title='Download Debug Log' id='download_debug'>Download Debug Log</button></p>
 
 <h2>Error Log</h2>
-<pre id='error_data_container'>
-<span id='error_data'><i>Error log empty</i></span>
-</pre>
+<pre id='error_data_container'><span id='error_data'><i>Error log empty</i></span></pre>
 <p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&request=error&download=true&filename=error.log";?>'" title='Download Error Log' id='download_error' disabled='disabled'>Download Error Log</button></p>
 
 <h2>Command</h2>
