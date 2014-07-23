@@ -91,6 +91,7 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 // show header and breadcrumbs
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
+include("tool-showmessage.php");
 
 // check that invocation ID actually points to a directory
 $dir_to_check = sys_get_temp_dir() . "/$omni_invocation_prefix-" 
