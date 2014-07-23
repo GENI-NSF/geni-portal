@@ -170,7 +170,7 @@ echo "</div></div>";
 
 <h2>Send a Bug Report</h2>
 <p>Fill out the following form to send a bug report. Bug reports will include the <b>progress log</b>, <b>debug log</b>, <b>error log</b>, <b>request RSpec</b>, and <b>process information</b>.</p>
-<p>User-sensitive information, such as slice credentials, will <i>not</i> be included.</p>
+<p>User-sensitive information, such as slice credentials, certificates, and private keys, will <i>not</i> be included.</p>
 
 <table>
 <tr>
