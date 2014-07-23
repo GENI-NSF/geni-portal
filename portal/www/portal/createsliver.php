@@ -103,8 +103,8 @@ if (isset($slice_expired) && convert_boolean($slice_expired)) {
   relative_redirect('slices.php');
 }
 
-// redirect if user isn't allowed to look up slice
-if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+// redirect if user isn't allowed to add slivers
+if(!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
 
