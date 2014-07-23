@@ -27,6 +27,7 @@ require_once("user.php");
 require_once("file_utils.php");
 require_once("logging_client.php");
 require_once("print-text-helpers.php");
+//$user = geni_loadUser();
 
 /*
     get_omni_invocation_data.php
@@ -66,9 +67,6 @@ require_once("print-text-helpers.php");
     
 */
 
-// FIXME: Add security (who is allowed to call this?)
-
-
 /* Handle incoming AJAX calls here */
 if(array_key_exists("invocation_id", $_REQUEST) && 
         array_key_exists("invocation_user", $_REQUEST) &&
@@ -77,7 +75,24 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
 
     $invocation_user = $_REQUEST['invocation_user'];
     $invocation_id = $_REQUEST['invocation_id'];
+    $slice_id = $_REQUEST['slice_id'];
     $request = $_REQUEST['request'];
+    
+    // Do a check to see that user is allowed to lookup slice information
+    /*if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+        $retVal = array(
+            'code' => 1,
+            'msg' => "Invalid AJAX request (user not allowed to access this slice's information)",
+            'obj' => NULL
+        );
+        $dt = new DateTime();
+        $dt->setTimezone(new DateTimeZone("America/New_York"));
+        $retVal['time'] = $dt->format('r');
+        error_log("get_omni_data.php: " . $retVal['msg']);
+        header("Content-Type: application/json", true);
+        echo json_encode($retVal);
+        exit();
+    }*/
     
     // set raw to true by default unless it's set to 'false' in AJAX call
     if(array_key_exists("raw", $_REQUEST) && $_REQUEST['raw'] == 'false') {
