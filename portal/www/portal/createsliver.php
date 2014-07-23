@@ -165,6 +165,26 @@ $rspec_file = writeDataToTempDir($omni_invocation_dir, $rspec, "rspec");
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id);
 
+// write out metadata file
+$metadata = array(
+    'User name' => $user->prettyName(),
+    'User username' => $user->username,
+    'User EPPN' => $user->eppn,
+    'User e-mail' => $user->mail,
+    'User UUID' => $user->account_id,
+    'Slice UUID' => $slice_id,
+    'Slice URN' => $slice_urn,
+    'Slice name' => $slice_name,
+    'Project UUID' => $project_id,
+    'Project name' => $project_name,
+    'Aggregate manager URL' => $am_url,
+    'Aggregate manager name' => $AM_name,
+    'Request IP' => $_SERVER['REMOTE_ADDR'],
+    'Request browser' => $_SERVER['HTTP_USER_AGENT'],
+    'Request submitted' => date('r')
+    );
+$metadata_file = writeDataToTempDir($omni_invocation_dir, json_encode($metadata), "metadata");
+
 /*
     STEP 3: CALL AM CLIENT
     Call create_sliver() in am_client.php and get a return code back.
@@ -174,10 +194,8 @@ $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 			$slice_urn, $omni_invocation_dir, $slice['slice_id'], $bound_rspec, 
 			$stitch_rspec);
 
-// FIXME: temp
-//$retVal = 0;
-
 if($retVal) {
+    // FIXME: Write URL to 'Recent slice events' log
     create_sliver_success($omni_invocation_dir, $user->username, $slice_id);
 }
 else {
