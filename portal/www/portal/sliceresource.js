@@ -16,14 +16,10 @@ $( document ).ready( function() {
     getStartTime(user, id);
     updateConsoleLog(user, id, console_log_offset);
     updateDebugLog(user, id, debug_log_offset);
-    updateXMLResults(user, id);
     updateElapsedTime(user, id);
-    updateManifestRSpec(user, id);
     get_console = setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
     get_debug = setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
-    get_xml = setInterval( "updateXMLResults(user, id)", 1000 );
     get_elapsed = setInterval( "updateElapsedTime(user, id)", 1000 );
-    get_manifest_rspec = setInterval( "updateManifestRSpec(user, id)", 1000 );
 });
 
 function updateConsoleLog(invocationUser, invocationID, offset) {
@@ -68,7 +64,7 @@ function updateDebugLog(invocationUser, invocationID, offset) {
         });
 }
 
-function updateXMLResults(invocationUser, invocationID) {
+function getXMLResults(invocationUser, invocationID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
     '&invocation_id='+invocationID+'&request=stdout&raw=false',
         function(data) {
@@ -88,6 +84,10 @@ function updateElapsedTime(invocationUser, invocationID) {
                 // both the start and stop files - nothing else will get updated
                 // beyond this point
                 stopPolling();
+                // get the manifest RSpec, pretty XML, stop time, and error log
+                // if exists
+                getManifestRSpec(invocationUser, invocationID); 
+                getXMLResults(invocationUser, invocationID); 
                 getStopTime(invocationUser, invocationID);
                 getErrorLog(invocationUser, invocationID);
             }
@@ -121,7 +121,10 @@ function getErrorLog(invocationUser, invocationID) {
                 $("#last_updated_or_finished_text").html("Failed at:");
                 // update 'Results' section to reflect this
                 $("#prettyxml").html("<p><i>Failed. See 'Detailed Progress' tab for more information.</i></p>");
-                // FIXME: update 'Advanced' tab with results of omni-stderr
+                // update 'Advanced' tab with results of omni-stderr
+                $("#error_data").html(data.obj);
+                // allow for error log to be downloaded
+                $("#download_error").removeAttr('disabled');
             }
             else {
                 // no error was detected
@@ -175,22 +178,22 @@ function getRequestRSpec(invocationUser, invocationID) {
         });
 }
 
-function updateManifestRSpec(invocationUser, invocationID) {
+function getManifestRSpec(invocationUser, invocationID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
     '&invocation_id='+invocationID+'&request=manifestrspec&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#manifestrspec_data").html(data.obj);
+                // allow manifest to be downloaded
+                $("#download_manifestrspec").removeAttr('disabled');
             }
         });
 }
 
 function stopPolling() {
-    clearInterval(get_xml);
     clearInterval(get_debug);
     clearInterval(get_console);
     clearInterval(get_elapsed);
-    clearInterval(get_manifest_rspec);
 }
     
 </script>
