@@ -153,10 +153,26 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
     
     // for downloads, send data to file and exit
     if($download) {
+    
+        // if client-side specifies filename to use, use it
+        if(array_key_exists("filename", $_REQUEST)) {
+            $filename = $_REQUEST['filename'];
+        }
+        else {
+            $filename = $request;
+        }
+        // if XML, set content-type to XML, else plain text
+        $filetype = array_pop(explode(".", $filename));
+        if($filetype == "xml" || $filetype == "rspec") {
+            $contenttype = "text/xml";
+        }
+        else {
+            $contenttype = "text/plain";
+        }
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
-        header("Content-Disposition: attachment; filename=$request");
-        header("Content-Type: text/plain");
+        header("Content-Disposition: attachment; filename=$filename");
+        header("Content-Type: $contenttype");
         print $retVal['obj'];
         exit();
     }
