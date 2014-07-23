@@ -37,6 +37,7 @@ require_once("print-text-helpers.php");
         Required:
             invocation_id: unique ID for an omni invocation (e.g. qlj7KS)
             invocation_user: user ID (e.g. bujcich)
+            slice_id: slice ID related to invocation
             request: type of data requested
                 pid
                 command
@@ -67,9 +68,11 @@ require_once("print-text-helpers.php");
 
 // FIXME: Add security (who is allowed to call this?)
 
+
 /* Handle incoming AJAX calls here */
 if(array_key_exists("invocation_id", $_REQUEST) && 
         array_key_exists("invocation_user", $_REQUEST) &&
+        array_key_exists("slice_id", $_REQUEST) &&
         array_key_exists("request", $_REQUEST)) {
 
     $invocation_user = $_REQUEST['invocation_user'];
@@ -181,7 +184,7 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
 else {
     $retVal = array(
         'code' => 1,
-        'msg' => "Invalid AJAX request.",
+        'msg' => "Invalid AJAX request (invocation ID, invocation user, slice ID, and request type all required)",
         'obj' => NULL
     );
     error_log("get_omni_data.php: " . $retVal['msg']);

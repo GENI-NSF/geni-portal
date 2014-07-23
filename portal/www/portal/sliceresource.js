@@ -2,6 +2,7 @@
 
 user = "<?php echo $invocation_user; ?>";
 id = "<?php echo $invocation_id; ?>";
+slice_id = "<?php echo $slice_id; ?>";
     
 debug_log_offset = 0;
 console_log_offset = 0;
@@ -10,20 +11,20 @@ start_time = "";
 stop_time = "";
 
 $( document ).ready( function() {
-    getPID(user, id);
-    getCommand(user, id);
-    getRequestRSpec(user, id);
-    getStartTime(user, id);
-    updateConsoleLog(user, id, console_log_offset);
-    updateDebugLog(user, id, debug_log_offset);
-    updateElapsedTime(user, id);
-    get_console = setInterval( "updateConsoleLog(user, id, console_log_offset)", 1000 );
-    get_debug = setInterval( "updateDebugLog(user, id, debug_log_offset)", 1000 );
-    get_elapsed = setInterval( "updateElapsedTime(user, id)", 1000 );
+    getPID(user, id, slice_id);
+    getCommand(user, id, slice_id);
+    getRequestRSpec(user, id, slice_id);
+    getStartTime(user, id, slice_id);
+    updateConsoleLog(user, id, slice_id, console_log_offset);
+    updateDebugLog(user, id, slice_id, debug_log_offset);
+    updateElapsedTime(user, id, slice_id);
+    get_console = setInterval( "updateConsoleLog(user, id, slice_id, console_log_offset)", 1000 );
+    get_debug = setInterval( "updateDebugLog(user, id, slice_id, debug_log_offset)", 1000 );
+    get_elapsed = setInterval( "updateElapsedTime(user, id, slice_id)", 1000 );
 });
 
-function updateConsoleLog(invocationUser, invocationID, offset) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=console&offset='+offset+'&raw=false',
+function updateConsoleLog(invocationUser, invocationID, sliceID, offset) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=console&offset='+offset+'&raw=false',
         function(data) {
             var scrollPositionContainer = $("#console_data_container").scrollTop();
             var dataHeight = $( "#console_data" ).height();
@@ -40,8 +41,8 @@ function updateConsoleLog(invocationUser, invocationID, offset) {
         });
 }
 
-function updateDebugLog(invocationUser, invocationID, offset) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&request=debug&offset='+offset+'&raw=false',
+function updateDebugLog(invocationUser, invocationID, sliceID, offset) {
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+'&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=debug&offset='+offset+'&raw=false',
         function(data) {
             var scrollPositionContainer = $("#debug_data_container").scrollTop();
             var dataHeight = $( "#debug_data" ).height();
@@ -58,9 +59,9 @@ function updateDebugLog(invocationUser, invocationID, offset) {
         });
 }
 
-function getXMLResults(invocationUser, invocationID) {
+function getXMLResults(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=stdout&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=stdout&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
@@ -69,9 +70,9 @@ function getXMLResults(invocationUser, invocationID) {
         });
 }
 
-function updateElapsedTime(invocationUser, invocationID) {
+function updateElapsedTime(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=elapsed&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=elapsed&raw=false',
         function(data) {
             if(data.code == 0) {
                 // essentially, we're done at this point
@@ -81,10 +82,10 @@ function updateElapsedTime(invocationUser, invocationID) {
                 stopPolling();
                 // get the manifest RSpec, pretty XML, stop time, and error log
                 // if exists
-                getManifestRSpec(invocationUser, invocationID); 
-                getXMLResults(invocationUser, invocationID); 
-                getStopTime(invocationUser, invocationID);
-                getErrorLog(invocationUser, invocationID);
+                getManifestRSpec(invocationUser, invocationID, sliceID); 
+                getXMLResults(invocationUser, invocationID, sliceID); 
+                getStopTime(invocationUser, invocationID, sliceID);
+                getErrorLog(invocationUser, invocationID, sliceID);
             }
             else {
                 // since not finished, update the 'Last updated:' time
@@ -95,9 +96,9 @@ function updateElapsedTime(invocationUser, invocationID) {
         });
 }
 
-function getStopTime(invocationUser, invocationID) {
+function getStopTime(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=stop&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=stop&raw=false',
         function(data) {
             if(data.code == 0) {
                 stop_time = data.obj;
@@ -106,9 +107,9 @@ function getStopTime(invocationUser, invocationID) {
         });
 }
 
-function getErrorLog(invocationUser, invocationID) {
+function getErrorLog(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=error&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=error&raw=false',
         function(data) {
             if(data.code == 0) {
                 // some error was detected
@@ -131,9 +132,9 @@ function getErrorLog(invocationUser, invocationID) {
         });
 }
 
-function getStartTime(invocationUser, invocationID) {
+function getStartTime(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=start&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=start&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#start_time").html(data.obj);
@@ -143,9 +144,9 @@ function getStartTime(invocationUser, invocationID) {
         });
 }
 
-function getPID(invocationUser, invocationID) {
+function getPID(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=pid',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=pid',
         function(data) {
             if(data.code == 0) {
                 $("#pid_pid").html(data.obj);
@@ -153,9 +154,9 @@ function getPID(invocationUser, invocationID) {
         });
 }
 
-function getCommand(invocationUser, invocationID) {
+function getCommand(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=command&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=command&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#command_data").html(data.obj);
@@ -163,9 +164,9 @@ function getCommand(invocationUser, invocationID) {
         });
 }
 
-function getRequestRSpec(invocationUser, invocationID) {
+function getRequestRSpec(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=requestrspec&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=requestrspec&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#requestrspec_data").html(data.obj);
@@ -173,9 +174,9 @@ function getRequestRSpec(invocationUser, invocationID) {
         });
 }
 
-function getManifestRSpec(invocationUser, invocationID) {
+function getManifestRSpec(invocationUser, invocationID, sliceID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&request=manifestrspec&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=manifestrspec&raw=false',
         function(data) {
             if((data.code == 0) && data.obj) {
                 $("#manifestrspec_data").html(data.obj);

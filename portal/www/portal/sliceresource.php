@@ -145,7 +145,7 @@ echo "</div></div>";
 <pre id='console_data_container' style="height:300px;">
 <span id='console_data'></span>
 </pre>
-<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&request=console&download=true&filename=detailed_progress.log";?>'" title='Download Detailed Progress Log' id='download_console'>Download Detailed Progress Log</button></p>
+<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=console&download=true&filename=detailed_progress.log";?>'" title='Download Detailed Progress Log' id='download_console'>Download Detailed Progress Log</button></p>
 </div>
 
 <!-- request RSpec tab -->
@@ -153,7 +153,7 @@ echo "</div></div>";
 
 <h2>Request RSpec</h2>
 <pre id='requestrspec_container' style="height:300px;"><span id='requestrspec_data'></span></pre>
-<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&request=requestrspec&download=true&filename=request.rspec";?>'" title='Download Request RSpec' id='download_requestrspec'>Download Request RSpec</button></p>
+<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=requestrspec&download=true&filename=request.rspec";?>'" title='Download Request RSpec' id='download_requestrspec'>Download Request RSpec</button></p>
 </div>
 
 <!-- manifest RSpec tab -->
@@ -161,7 +161,7 @@ echo "</div></div>";
 
 <h2>Manifest RSpec</h2>
 <pre id='manifestrspec_container' style="height:300px;"><span id='manifestrspec_data'><i>Manifest RSpec empty</i></span></pre>
-<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&request=manifestrspec&download=true&filename=manifest.rspec";?>'" title='Download Manifest RSpec' id='download_manifestrspec' disabled='disabled'>Download Manifest RSpec</button></p>
+<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=manifestrspec&download=true&filename=manifest.rspec";?>'" title='Download Manifest RSpec' id='download_manifestrspec' disabled='disabled'>Download Manifest RSpec</button></p>
 </div>
 
 
@@ -207,11 +207,11 @@ echo "</div></div>";
 <pre id='debug_data_container' style="height:300px;">
 <span id='debug_data'></span>
 </pre>
-<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&request=debug&download=true&filename=debug.log";?>'" title='Download Debug Log' id='download_debug'>Download Debug Log</button></p>
+<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=debug&download=true&filename=debug.log";?>'" title='Download Debug Log' id='download_debug'>Download Debug Log</button></p>
 
 <h2>Error Log</h2>
 <pre id='error_data_container'><span id='error_data'><i>Error log empty</i></span></pre>
-<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&request=error&download=true&filename=error.log";?>'" title='Download Error Log' id='download_error' disabled='disabled'>Download Error Log</button></p>
+<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=error&download=true&filename=error.log";?>'" title='Download Error Log' id='download_error' disabled='disabled'>Download Error Log</button></p>
 
 <h2>Command</h2>
 <pre id='command_data_container'><span id='command_data'></span></pre>
