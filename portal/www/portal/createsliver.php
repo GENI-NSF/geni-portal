@@ -195,7 +195,34 @@ $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
 			$stitch_rspec);
 
 if($retVal) {
-    // FIXME: Write URL to 'Recent slice events' log
+
+    // Set up link to results page
+    $invoke_id = array_pop(explode("-", $omni_invocation_dir));
+    $link = "sliceresource.php?invocation_user=" . $user->username .
+        "&invocation_id=$invoke_id&slice_id=$slice_id";
+    $link = relative_url($link);
+
+    // Write URL to 'Recent slice events' log
+    $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+    $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
+						   $slice['project_id']);
+    $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
+						 $slice['slice_id']);
+    $log_attributes = array_merge($project_attributes, $slice_attributes);
+    if($stitch_rspec) {
+        log_event($log_url, $user,
+            "Add resource request submitted to slice " . $slice_name . " from " .
+            "stitching RSpec.<br><a href='$link'>Click here</a> for results.",
+            $log_attributes);
+    }
+    else {
+        log_event($log_url, $user,
+            "Add resource request submitted to slice " . $slice_name . " at " . 
+            $AM_name . ".<br><a href='$link'>Click here</a> for results.",
+            $log_attributes);
+    }
+    
+    // Do redirection
     create_sliver_success($omni_invocation_dir, $user->username, $slice_id);
 }
 else {
