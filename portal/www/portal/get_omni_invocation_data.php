@@ -27,7 +27,6 @@ require_once("user.php");
 require_once("file_utils.php");
 require_once("logging_client.php");
 require_once("print-text-helpers.php");
-//$user = geni_loadUser();
 
 /*
     get_omni_invocation_data.php
@@ -48,6 +47,10 @@ require_once("print-text-helpers.php");
                 stdout
                 status
                 elapsed
+                start
+                stop
+                requestrspec
+                manifestrspec
         Optional:
             raw: 'true' (default) or 'false' (pretty print if available)
             offset: offset in bytes of where to get file data for requests 
@@ -65,6 +68,13 @@ require_once("print-text-helpers.php");
         If download flag is set, contents of 'obj' are dumped into a response
         and sent back to the user.
     
+    Notes:
+        An optional security check can be called by do_security_check($slice_id).
+        If the user isn't logged in or allowed to view information related to
+        the slice, then the data isn't sent back. Note that the security check
+        increases the latency significantly (as much as 10x), so only perform
+        the security check when it's needed or for AJAX calls that aren't called
+        frequently.
 */
 
 /* Handle incoming AJAX calls here */
@@ -77,22 +87,6 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
     $invocation_id = $_REQUEST['invocation_id'];
     $slice_id = $_REQUEST['slice_id'];
     $request = $_REQUEST['request'];
-    
-    // Do a check to see that user is allowed to lookup slice information
-    /*if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-        $retVal = array(
-            'code' => 1,
-            'msg' => "Invalid AJAX request (user not allowed to access this slice's information)",
-            'obj' => NULL
-        );
-        $dt = new DateTime();
-        $dt->setTimezone(new DateTimeZone("America/New_York"));
-        $retVal['time'] = $dt->format('r');
-        error_log("get_omni_data.php: " . $retVal['msg']);
-        header("Content-Type: application/json", true);
-        echo json_encode($retVal);
-        exit();
-    }*/
     
     // set raw to true by default unless it's set to 'false' in AJAX call
     if(array_key_exists("raw", $_REQUEST) && $_REQUEST['raw'] == 'false') {
@@ -131,15 +125,19 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
             $retVal = get_omni_invocation_command($invocation_dir, $raw);
             break;
         case "console":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_console_log($invocation_dir, $raw, $offset);
             break;
         case "error":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_error_log($invocation_dir, $raw);
             break;
         case "debug":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_debug_log($invocation_dir, $raw, $offset);
             break;
         case "stdout":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_stdout($invocation_dir, $raw);
             break;
         case "status":
@@ -155,18 +153,15 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
             $retVal = get_omni_invocation_stop_time($invocation_dir, $raw);
             break;
         case "requestrspec":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_request_rspec($invocation_dir, $raw);
             break;
         case "manifestrspec":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_manifest_rspec($invocation_dir, $raw);
             break;
         default:
-            $retVal = array(
-                'code' => 1,
-                'msg' => "Request type '$request' not valid.",
-                'obj' => NULL
-            );
-            error_log("get_omni_data.php: " . $retVal['msg']);
+            exit_with_response("Request type '$request' not valid.");
     }
     
     // for downloads, send data to file and exit
@@ -197,12 +192,8 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
     
 }
 else {
-    $retVal = array(
-        'code' => 1,
-        'msg' => "Invalid AJAX request (invocation ID, invocation user, slice ID, and request type all required)",
-        'obj' => NULL
-    );
-    error_log("get_omni_data.php: " . $retVal['msg']);
+    exit_with_response("Invocation ID, invocation user, slice ID, and request type all required.");
+
 }
 
 /* set JSON header */
@@ -692,6 +683,44 @@ function make_pretty_time($retVal) {
     else {
         return $retVal;
     }
+}
+
+
+/*
+    Do security check to make sure that user is allowed to request data
+    
+    Note: This significantly increases the latency of AJAX requests, so only
+        use on functions that really need the security
+*/
+function do_security_check($slice_id) {
+    $user = geni_loadUser();
+    if (!isset($user) || is_null($user) || ! $user->isActive()) {
+        exit_with_response("User not logged in.");
+    }
+    
+    if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+        exit_with_response("User " . $user->username . " not allowed to access this slice's information.");
+    }
+    
+}
+
+
+/*
+    Prepare a response given an invalid request, and exit
+*/
+function exit_with_response($msg) {
+    $retVal = array(
+            'code' => 1,
+            'msg' => "Invalid AJAX request ($msg)",
+            'obj' => NULL
+    );
+    $dt = new DateTime();
+    $dt->setTimezone(new DateTimeZone("America/New_York"));
+    $retVal['time'] = $dt->format('r');
+    error_log("get_omni_data.php: " . $retVal['msg']);
+    header("Content-Type: application/json", true);
+    echo json_encode($retVal);
+    exit();
 }
 
 ?>

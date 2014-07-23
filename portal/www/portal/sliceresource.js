@@ -82,10 +82,10 @@ function updateElapsedTime(invocationUser, invocationID, sliceID) {
                 stopPolling();
                 // get the manifest RSpec, pretty XML, stop time, and error log
                 // if exists
-                getManifestRSpec(invocationUser, invocationID, sliceID); 
-                getXMLResults(invocationUser, invocationID, sliceID); 
                 getStopTime(invocationUser, invocationID, sliceID);
                 getErrorLog(invocationUser, invocationID, sliceID);
+                getManifestRSpec(invocationUser, invocationID, sliceID); 
+                getXMLResults(invocationUser, invocationID, sliceID); 
             }
             else {
                 // since not finished, update the 'Last updated:' time
