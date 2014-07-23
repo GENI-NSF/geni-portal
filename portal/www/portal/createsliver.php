@@ -167,6 +167,7 @@ $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slic
 
 // write out metadata file
 $metadata = array(
+    'Omni invocation ID' => get_invocation_id_from_dir($omni_invocation_dir),
     'User name' => $user->prettyName(),
     'User username' => $user->username,
     'User EPPN' => $user->eppn,
