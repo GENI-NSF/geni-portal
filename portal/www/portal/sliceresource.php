@@ -221,12 +221,6 @@ echo "</div></div>";
 
 
 <h2>Statistics</h2>
-<div id="hide" style="display:none;"><h3>Console Log</h3>
-<p>Bytes read: <b><span id='console_bytes_read'></span> bytes</b>, New offset: <b><span id='console_new_offset'></span> bytes</b>, Last read: <b><span id='console_time'></span></b></p>
-<h3>Debug Log</h3>
-<p>Bytes read: <b><span id='debug_bytes_read'></span> bytes</b>, New offset: <b><span id='debug_new_offset'></span> bytes</b>, Last read: <b><span id='debug_time'></span></b></p>
-<h3>Results</h3>
-<p>Last read: <b><span id='results_time'></span></b></p></div>
 <h3>PID</h3>
 <p><b><span id='pid_pid'></span></b></p>
 

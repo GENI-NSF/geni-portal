@@ -28,9 +28,6 @@ function updateConsoleLog(invocationUser, invocationID, offset) {
             var scrollPositionContainer = $("#console_data_container").scrollTop();
             var dataHeight = $( "#console_data" ).height();
             var containerHeight = $( "#console_data_container" ).height();
-            $("#console_bytes_read").html(data.bytes_read);
-            $("#console_new_offset").html(data.new_offset);
-            $("#console_time").html(data.time);
             // Tail bottom if near the bottom
             if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
                 $("#console_data").append(data.obj);
@@ -49,9 +46,6 @@ function updateDebugLog(invocationUser, invocationID, offset) {
             var scrollPositionContainer = $("#debug_data_container").scrollTop();
             var dataHeight = $( "#debug_data" ).height();
             var containerHeight = $( "#debug_data_container" ).height();
-            $("#debug_bytes_read").html(data.bytes_read);
-            $("#debug_new_offset").html(data.new_offset);
-            $("#debug_time").html(data.time);
             debug_log_offset = data.new_offset;
             // Tail bottom if near the bottom
             if(((scrollPositionContainer + 50) > (dataHeight - containerHeight)) ) {
@@ -80,6 +74,7 @@ function updateElapsedTime(invocationUser, invocationID) {
     '&invocation_id='+invocationID+'&request=elapsed&raw=false',
         function(data) {
             if(data.code == 0) {
+                // essentially, we're done at this point
                 // stop polling when we know that stitcher_php.py has written
                 // both the start and stop files - nothing else will get updated
                 // beyond this point
@@ -182,7 +177,7 @@ function getManifestRSpec(invocationUser, invocationID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
     '&invocation_id='+invocationID+'&request=manifestrspec&raw=false',
         function(data) {
-            if(data.code == 0) {
+            if((data.code == 0) && data.obj) {
                 $("#manifestrspec_data").html(data.obj);
                 // allow manifest to be downloaded
                 $("#download_manifestrspec").removeAttr('disabled');
