@@ -160,7 +160,9 @@ function zip_dir_files($zip_name, $dir, $excluded_files_list=array()) {
     
     if ($zip->open($zip_name, ZipArchive::CREATE) === TRUE) {
         foreach($zip_files_list as $file) {
-            $zip->addFile($file, basename($file));
+            if(file_exists($file)) {
+                $zip->addFile($file, basename($file));
+            }
         }
         $zip->close();
         return $zip_name;
