@@ -30,6 +30,44 @@
 // Compute a url relative to the current page.
 //--------------------------------------------------
 function relative_url($relpath) {
+  if (! isset($relpath) or is_null($relpath)) {
+    // Asked for a relative URL to empty.
+    error_log("Asked for relative URL to empty path");
+    $relpath = '';
+  }
+
+  // Now check that this is in fact a page and we can do a relative redirect
+  $relpieces = parse_url($relpath);
+  if ($relpieces === FALSE) {
+    // completely malformed URL. Go to the server I guess
+    error_log("Asked for relative_url from malformed " . $relpath);
+    $relpath = '';
+  } else {
+    // Make sure this is not already an absolute URL
+    if (array_key_exists('scheme', $relpieces) and isset($relpieces['scheme']) and ! is_null($relpieces['scheme']) and \
+	array_key_exists('host', $relpieces) and isset($relpieces['host']) and ! is_null($relpieces['host'])) {
+      // Appears to already be an absolute path. Huh?
+      error_log("Asked for relative_url to absolute path " . $relpath);
+      // Return what they asked for? Or force it to be a link on this server?
+
+      // Here is code that would force us to always go to a URL on this server
+      $relpath = '';
+      if (array_key_exists('path', $relpieces) and isset($relpieces['path']) and ! is_null($relpieces['path'])) {
+	$relpath = $relpieces['path'];
+	if (array_key_exists('fragment', $relpieces) and isset($relpieces['fragment']) and ! is_null($relpieces['fragment'])) {
+	  $relpath = $relpath . '#' . $relpieces['fragment'];
+	}
+	if (array_key_exists('query', $relpieces) and isset($relpieces['query']) and ! is_null($relpieces['query'])) {
+	  $relpath = $relpath . '?' . $relpieces['query'];
+	}
+      }
+
+      // But here we just go where they asked
+      //      return $relpath;
+    } else {
+      // missing scheme or host, so treat as relative. Normal case.
+    }
+  }
   $protocol = "http";
   if (array_key_exists('HTTPS', $_SERVER)) {
     $protocol = "https";
@@ -37,6 +75,14 @@ function relative_url($relpath) {
   $host  = $_SERVER['SERVER_NAME'];
   $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
   $extra = $relpath;
+  if (strpos($extra, $uri) === 0) {
+    // Extra starts with URI already - trim that off
+    $extra = substr($extra, strlen($uri));
+  }
+  // If extra starts with /, pull that first / off extra
+  if (strpos($extra, '/') === 0) {
+    $extra = substr($extra, 1);
+  }
   return "$protocol://$host$uri/$extra";
 }
 
