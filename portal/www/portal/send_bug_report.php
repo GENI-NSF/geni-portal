@@ -199,7 +199,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc) {
 
     // set up e-mail
     $boundary_string = md5(date('r', time()));
-    $from = "\"" . $user->prettyName() . " (via the GENI Portal)\" <" . $user->email() . ">";
+    $from = "\"" . $user->prettyName() . " (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
     $subject = "GENI Portal Omni Bug Report";
     
     // FIXME: Set up what body will say
