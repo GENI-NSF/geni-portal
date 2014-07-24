@@ -24,11 +24,12 @@ CREATE TABLE service_registry (
 
 CREATE TABLE service_registry_attribute (
  id SERIAL PRIMARY KEY,
- service_id INT,
+ service_id INT NOT NULL REFERENCES service_registry,
  name VARCHAR,
  value VARCHAR
 );
 
+-- service_id is not indexed
 
 -- Common query but DB not using it ?yet?
 -- CREATE INDEX service_registry_index_type ON service_registry(service_type);

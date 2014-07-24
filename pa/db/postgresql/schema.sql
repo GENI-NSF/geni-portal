@@ -13,15 +13,23 @@ DROP TABLE IF EXISTS pa_project CASCADE;
 
 CREATE TABLE pa_project (
   id SERIAL PRIMARY KEY,
-  project_id UUID UNIQUE,
-  project_name VARCHAR NOT NULL,
+  project_id UUID UNIQUE NOT NULL,
+  project_name VARCHAR UNIQUE NOT NULL,
   lead_id UUID NOT NULL REFERENCES ma_member (member_id),
   project_email VARCHAR,
   project_purpose VARCHAR,
-  creation TIMESTAMP,
+  creation TIMESTAMP NOT NULL,
   expiration TIMESTAMP,
   expired BOOLEAN NOT NULL DEFAULT 'FALSE'
 );
+
+-- Postgres implicitly indexes unique columns, so project_id, project_name.
+
+-- lead_id is not indexed unless we do so explicitly
+
+-- These are for common queries, but so far the DB doesn't use these. Tables too small?
+-- CREATE INDEX project_index_project_id ON pa_project (project_id);
+-- CREATE INDEX project_index_lead_project ON pa_project (lead_id, project_id);
 
 DROP TABLE IF EXISTS pa_project_member CASCADE;
 CREATE TABLE pa_project_member (
@@ -31,17 +39,15 @@ CREATE TABLE pa_project_member (
   role int NOT NULL
 );
 
-
--- These are for common queries, but so far the DB doesn't use these. Tables too small?
--- CREATE INDEX project_index_project_id ON pa_project (project_id);
--- CREATE INDEX project_index_lead_project ON pa_project (lead_id, project_id);
-
+-- Foreign keys are not indexed by default
+CREATE INDEX project_member_project_id ON pa_project_member(project_id);
+CREATE INDEX project_member_member_id ON pa_project_member(member_id);
 
 -- Create tables for requests relative to membership on projects
 drop TABLE IF EXISTS pa_project_member_request;
 create table pa_project_member_request (
        id SERIAL PRIMARY KEY,
-       context_type  INT NOT NULL, 
+       context_type INT NOT NULL,
        context_id UUID NOT NULL,
        request_text VARCHAR, 
         -- 0 = JOIN, 1 = UPDATE_ATTRIBUTES, 2 = .... [That's all for now]
@@ -51,11 +57,14 @@ create table pa_project_member_request (
        request_details VARCHAR, 
        requestor UUID NOT NULL REFERENCES ma_member (member_id),
        status INT NOT NULL DEFAULT '0', -- 0 = PENDING, 1 = APPROVED, 2 = CANCELED, 3 = REJECTED
-       creation_timestamp TIMESTAMP,
-       resolver UUID NOT NULL,
+       creation_timestamp TIMESTAMP NOT NULL,
+       resolver UUID, -- if an authority can resolve then it isn't a member_id
        resolution_timestamp TIMESTAMP,
        resolution_description VARCHAR
 );
+
+-- requestor is not indexed by default
+-- Is context_id a project_id?
 
 -- Create table of invitations from leads to candidate members
 drop TABLE if EXISTS pa_project_member_invitation;
@@ -67,6 +76,7 @@ create TABLE pa_project_member_invitation(
        expiration TIMESTAMP
 );
 
+-- project_id is not indexed by default
 
 -- ----------------------------------------------------------------------
 -- Project attribute table. Store all attributes of project as name/value
