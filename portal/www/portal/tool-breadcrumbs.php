@@ -112,7 +112,8 @@ $parents = array("profile.php" => "home.php",
 		 "irods.php" => "profile.php",
 		 "wimax-enable.php" => "home.php",
                  "gemini.php" => "slice.php",
-		 "tool-aggwarning.php" => "slice.php");
+		 "tool-aggwarning.php" => "slice.php",
+		 "send_bug_report.php" => "slice.php",);
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -177,7 +178,8 @@ $names = array("home.php" => $TAB_HOME,
 	       "irods.php" => "iRODS Account",
 	       "wimax-enable.php" => "Enable WiMAX",
 	       "gemini.php" => "GENI Desktop",
-	       "tool-aggwarning.php" => "Query All Aggregates");
+	       "tool-aggwarning.php" => "Query All Aggregates",
+	       "send_bug_report.php" => "Send Bug Report");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
