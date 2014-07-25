@@ -62,7 +62,7 @@ CREATE TABLE sa_slice_member_request (
        -- for the case of a user wanting a change to his attributes
        request_details VARCHAR, 
        requestor UUID NOT NULL REFERENCES ma_member (member_id),
-       status INT NOT NULL DEFAULT 0, -- 0 = PENDING, 1 = APPROVED, 2 = CANCELED, 3 = REJECTED
+       status INT NOT NULL DEFAULT '0', -- 0 = PENDING, 1 = APPROVED, 2 = CANCELED, 3 = REJECTED
        creation_timestamp TIMESTAMP NOT NULL,
        resolver UUID,
        resolution_timestamp TIMESTAMP,
