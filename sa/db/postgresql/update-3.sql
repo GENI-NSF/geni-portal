@@ -15,7 +15,6 @@ ALTER TABLE sa_slice
     ALTER COLUMN slice_urn SET NOT NULL,
     ADD COLUMN private_key VARCHAR; -- supports extending slices reusing the same keypair
 
-
 ALTER TABLE sa_slice_member 
     ALTER COLUMN slice_id SET NOT NULL,
     ADD FOREIGN KEY (slice_id) REFERENCES sa_slice(slice_id),
@@ -47,7 +46,6 @@ ALTER TABLE sa_slice_old
     ALTER COLUMN slice_name SET NOT NULL,
     ALTER COLUMN slice_urn SET NOT NULL,
     ADD COLUMN private_key VARCHAR; -- supports extending slices with the same keypair
-
 
 ALTER TABLE sa_slice_member_old 
     ALTER COLUMN slice_id SET NOT NULL,
