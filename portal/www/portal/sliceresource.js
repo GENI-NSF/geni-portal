@@ -155,8 +155,6 @@ function getErrorLog(invocationUser, invocationID, sliceID) {
                 // no error was detected
                 // set 'Last updated:' to 'Finished at:'
                 $("#last_updated_or_finished_text").html("Finished at:");
-                // post notice about 'Results current...'
-                $("#results_stop_msg").html("<p><b>Note:</b> Results current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted.</p>");
             }
         });
 }
@@ -211,6 +209,8 @@ function getManifestRSpec(invocationUser, invocationID, sliceID) {
                 $("#manifestrspec_data").html(data.obj);
                 // allow manifest to be downloaded
                 $("#download_manifestrspec").removeAttr('disabled');
+                // display note about 'Results current as of...'
+                $("#results_stop_msg").html("<p><b>Note:</b> Results current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted.</p>");
             }
         });
 }
