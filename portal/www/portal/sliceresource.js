@@ -65,9 +65,38 @@ function getXMLResults(invocationUser, invocationID, sliceID) {
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
+                // assuming XML results, update Jacks container
+                updateJacks(invocationUser, invocationID, sliceID);
             }
             $("#results_time").html(data.time);
         });
+}
+
+function updateJacks(invocationUser, invocationID, sliceID) {
+    // send Jacks the raw manifest RSpec
+    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=manifestrspec',
+        function(data) {
+            if(data.code == 0 && data.obj) {
+                thisInstance = new window.Jacks({
+                  mode: 'viewer',
+                  source: 'rspec',
+                  size: { x: 756, y: 400},
+                  show: {
+                  	rspec: false,
+                  	version: false
+                  },
+                  nodeSelect: false,
+                  root: '#jacksContainer',
+                  readyCallback: function (input, output) {
+                    input.trigger('change-topology',
+                                  [{ rspec: data.obj }]);
+                  }
+                });
+                $("jacksContainer").css("display", "block");
+            }
+        });
+
 }
 
 function updateElapsedTime(invocationUser, invocationID, sliceID) {

@@ -252,6 +252,11 @@ function validateBugReportSubmit()
 <!-- always show results -->
 <h2>Results</h2>
 <div class='resources' id='prettyxml'><p><i>Pending... (See 'Detailed Progress' tab for more information.)</i></p></div>
+
+<!-- Jacks container -->
+<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<div id='jacksContainer' class='jacks resources' style='background-color: white;display: none;'></div>
+
 <div id='results_stop_msg'></div>
 
 <?php
