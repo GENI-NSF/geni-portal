@@ -10,12 +10,12 @@ set client_min_messages='WARNING';
 --
 -- ----------------------------------------------------------------------
 -- Drop the data first, then the type.
-DROP TABLE IF EXISTS cs_attribute;
-DROP TABLE IF EXISTS cs_privilege;
 DROP TABLE IF EXISTS cs_assertion;
 DROP TABLE IF EXISTS cs_policy;
 DROP TABLE IF EXISTS cs_action;
-DROP TABLE IF EXISTS cs_context_type;;
+DROP TABLE IF EXISTS cs_attribute;
+DROP TABLE IF EXISTS cs_privilege;
+DROP TABLE IF EXISTS cs_context_type;
 
 -- List of all known attributes/roles on a principal
 CREATE TABLE cs_attribute (

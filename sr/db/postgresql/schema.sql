@@ -6,9 +6,9 @@ set client_min_messages='WARNING';
 \set ON_ERROR_STOP 1
 
 -- Drop tables to recreate
+DROP TABLE IF EXISTS service_registry_attribute;
 DROP TABLE IF EXISTS service_registry;
-DROP TABLE IF EXISTS service_registry_attribute
-;
+
 -- Now create the tables
 
 CREATE TABLE service_registry (

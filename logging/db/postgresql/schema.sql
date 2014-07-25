@@ -9,11 +9,11 @@ set client_min_messages='WARNING';
 DROP INDEX IF EXISTS logging_entry_event_time;
 DROP INDEX IF EXISTS logging_entry_attribute_event_id;
 
+DROP TABLE IF EXISTS logging_entry_attribute;
 DROP TABLE IF EXISTS logging_entry;
 DROP TABLE IF EXISTS logging_entry_context;
-DROP TABLE IF EXISTS logging_entry_attribute;
-DROP TABLE IF EXISTS logging_entry_old;
 DROP TABLE IF EXISTS logging_entry_attribute_old;
+DROP TABLE IF EXISTS logging_entry_old;
 
 -- Now create the table
 CREATE TABLE logging_entry (
