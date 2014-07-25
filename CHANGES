@@ -19,6 +19,11 @@
  * Change subject on project join request email (fix grammar). (#1083)
  * Warn on missing slice name to createslice. (#1028)
  * Allow specifying the "site" for GENI Desktop (stable vs ....). (#1113)
+ * Add various DB constraints (not null, unique, foreign key, primary key)
+   so that the database enforces known relationships. (#943)
+   Additionally, index sa_slice_member(slice_id),
+   pa_project_member(project_id), pa_project_member(member_id)
+   as some queries that showed up as slow improve with these indices. (#1081)
 
 == 2.17.1 ==
  * Allow the OpenID WiMAX username attribute to be wimax/wimax_username. (#1097)
