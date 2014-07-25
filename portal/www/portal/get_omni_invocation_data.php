@@ -56,6 +56,7 @@ require_once("sa_client.php");
                 stop
                 requestrspec
                 manifestrspec
+                manifestrspecjacks
         Optional:
             raw: 'true' (default) or 'false' (pretty print if available)
             offset: offset in bytes of where to get file data for requests 
@@ -173,6 +174,10 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
         case "manifestrspec":
             do_security_check($slice_id);
             $retVal = get_omni_invocation_manifest_rspec($invocation_dir, $raw);
+            break;
+        case "manifestrspecjacks":
+            do_security_check($slice_id);
+            $retVal = get_omni_invocation_manifest_rspec_jacks($invocation_dir, $raw);
             break;
         default:
             exit_with_response("Request type '$request' not valid.");
@@ -421,6 +426,33 @@ function get_omni_invocation_manifest_rspec($dir, $raw=true) {
         // FIXME: Do checks on this to see if this contains real data
         $output2 = json_decode($retVal['obj'], True);
         $retVal['obj'] = $output2[1];
+    }
+    else {
+        $retVal['obj'] = NULL;
+    }
+    return $raw ? $retVal : make_pretty_code($retVal);
+}
+
+/*
+    Get the manifest RSpec for Jacks
+    Ideally, this should just be an alias for get_omni_invocation_manifest()
+        since the functionality is basically the same. But because Jacks can't
+        handle XML comments (i.e. anything between <!-- and -->) for now, use
+        this function to do that.
+    FIXME: Should stripping out comments be done client-side in JS?
+    FIXME: How should AM filtering be done?
+*/
+function get_omni_invocation_manifest_rspec_jacks($dir, $raw=true) {
+    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
+            "stdout from stitcher.call (for manifest)");
+            
+    // get XML from obj
+    if($retVal['obj']) {
+        // FIXME: Do checks on this to see if this contains real data
+        $output2 = json_decode($retVal['obj'], True);
+        // strip out anything between <!-- and -->
+        $nocomments = preg_replace('/<!--(.*)-->/Uis', '', $output2[1]);
+        $retVal['obj'] = $nocomments;
     }
     else {
         $retVal['obj'] = NULL;

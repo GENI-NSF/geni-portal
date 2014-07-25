@@ -76,7 +76,7 @@ function getXMLResults(invocationUser, invocationID, sliceID, amID) {
 function updateJacks(invocationUser, invocationID, sliceID) {
     // send Jacks the raw manifest RSpec
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=manifestrspec',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=manifestrspecjacks',
         function(data) {
             if(data.code == 0 && data.obj) {
                 thisInstance = new window.Jacks({
