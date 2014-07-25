@@ -29,6 +29,12 @@ CREATE TABLE cs_privilege  (
    name VARCHAR NOT NULL UNIQUE
 );
 
+-- A mapping of context type ID to name
+CREATE TABLE cs_context_type (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL UNIQUE
+);
+
 -- List of all known actions and the required privilege and context type
 CREATE TABLE cs_action (
    id SERIAL PRIMARY KEY,
@@ -63,9 +69,4 @@ CREATE TABLE cs_policy (
   policy_cert VARCHAR
 );
 
--- A mapping of context type ID to name
-CREATE TABLE cs_context_type (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL UNIQUE
-);
 

@@ -8,13 +8,13 @@ ALTER TABLE logging_entry
 
 ALTER TABLE logging_entry_attribute 
    ALTER COLUMN event_id SET NOT NULL,
-   ADD CONSTRAINT FOREIGN KEY (event_id) REFERENCES logging_entry(id),
+   ADD FOREIGN KEY (event_id) REFERENCES logging_entry(id),
    ALTER COLUMN attribute_name SET NOT NULL;
 
 ALTER TABLE logging_entry_old
    ALTER COLUMN event_time SET NOT NULL;
 
-ALTER TABLE logging_entry_attribute
+ALTER TABLE logging_entry_attribute_old
    ALTER COLUMN event_id SET NOT NULL,
-   ADD CONSTRAINT FOREIGN KEY (event_id) REFERENCES logging_entry_old(id),
+   ADD FOREIGN KEY (event_id) REFERENCES logging_entry_old(id),
    ALTER COLUMN attribute_name SET NOT NULL;
