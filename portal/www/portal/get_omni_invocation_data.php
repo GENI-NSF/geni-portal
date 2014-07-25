@@ -27,6 +27,11 @@ require_once("user.php");
 require_once("file_utils.php");
 require_once("logging_client.php");
 require_once("print-text-helpers.php");
+require_once("sr_client.php");
+require_once("sr_constants.php");
+require_once("am_client.php");
+require_once("am_map.php");
+require_once("sa_client.php");
 
 /*
     get_omni_invocation_data.php
@@ -56,6 +61,7 @@ require_once("print-text-helpers.php");
             offset: offset in bytes of where to get file data for requests 
                 that use tailing (default is 0)
             download: 'true' or 'false' (default)
+            am_id: used for filtering AMs for stdout
     
     Returns:
         $retVal: JSON-encoded array of up to 6 key/values:
@@ -85,8 +91,8 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
 
     $invocation_user = $_REQUEST['invocation_user'];
     $invocation_id = $_REQUEST['invocation_id'];
-    $slice_id = $_REQUEST['slice_id'];
     $request = $_REQUEST['request'];
+    $slice_id = $_REQUEST['slice_id'];
     
     // set raw to true by default unless it's set to 'false' in AJAX call
     if(array_key_exists("raw", $_REQUEST) && $_REQUEST['raw'] == 'false') {
@@ -113,6 +119,14 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
     else {
         $offset = 0;
     }
+    
+    // get AM ID if it exists
+    if(array_key_exists("am_id", $_REQUEST) && $_REQUEST['am_id']) {
+        $am_id = $_REQUEST['am_id'];
+    }
+    else {
+        $am_id = NULL;
+    }
 
     // set up invocation directory based on username and invocation ID
     $invocation_dir = get_invocation_dir_name($invocation_user, $invocation_id);
@@ -138,7 +152,7 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
             break;
         case "stdout":
             do_security_check($slice_id);
-            $retVal = get_omni_invocation_stdout($invocation_dir, $raw);
+            $retVal = get_omni_invocation_stdout($invocation_dir, $raw, $am_id);
             break;
         case "status":
             $retVal = get_omni_invocation_status($invocation_dir, $raw);
@@ -387,11 +401,12 @@ function get_omni_invocation_request_rspec($dir, $raw=true) {
 
 /*
     Get the data returned from stitcher.call
+    Pass AM ID to do AM filtering for pretty XML
 */
-function get_omni_invocation_stdout($dir, $raw=true) {
+function get_omni_invocation_stdout($dir, $raw=true, $am_id=NULL) {
     $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
             "stdout from stitcher.call");
-    return $raw ? $retVal : make_pretty_stdout($retVal);
+    return $raw ? $retVal : make_pretty_stdout($retVal, $am_id);
 }
 
 /*
@@ -593,8 +608,9 @@ function make_pretty_code($retVal) {
 
 /*
     Return pretty print for omni-stdout data (i.e. the results)
+    Filter by AM if AM ID is specified
 */
-function make_pretty_stdout($retVal) {
+function make_pretty_stdout($retVal, $am_id) {
 
     // check that obj isn't empty
     if($retVal['obj']) {
@@ -611,10 +627,30 @@ function make_pretty_stdout($retVal) {
         
         // probably XML, so send to print_rspec_pretty
         // Note: prints/echos are sent to output buffer; this captures that
-        // FIXME: Filter to AM
         if ($obj != "" ) {
+        
+            // load GENI user so we can call service registry
+            $user = geni_loadUser();
+            if (!isset($user) || is_null($user) || ! $user->isActive()) {
+                exit_with_response("User not logged in.");
+            }
+            
+            // set AM if exists
+            if($am_id) {
+                $am = get_service_by_id($am_id);
+                $am_url = $am[SR_ARGUMENT::SERVICE_URL];
+                $am_urn = am_urn($am_url);
+                $filterToAM = True;
+            }
+            else {
+                $am_urn = "";
+                $filterToAM = False;
+            }
+            
+            $manifestOnly = True;
+        
             ob_start();
-            $obj = print_rspec_pretty($output2[1]);
+            $obj = print_rspec_pretty($output2[1], $manifestOnly, $filterToAM, $am_urn);
             $retVal['obj'] = ob_get_clean();
         }
         

@@ -67,8 +67,9 @@ else {
     no_invocation_id_error();
 }
 
-// set slice information
+// set slice/AM information
 unset($slice);
+unset($am);
 include("tool-lookupids.php");
 if (! isset($slice)) {
   no_slice_error();
@@ -251,6 +252,18 @@ function validateBugReportSubmit()
 
 <!-- always show results -->
 <h2>Results</h2>
+<?php
+// set AM name if it exists
+if (isset($am_id) && $am_id) {
+    $am_url = $am[SR_ARGUMENT::SERVICE_URL];
+    $AM_name = am_name($am_url);
+    print "<p>Resources on AM (<b>$AM_name</b>):</p>";
+}
+else {
+    print "<p>Resources requested from stitchable RSpec:</p>";
+}
+?>
+
 <div id='results_stop_msg'></div>
 <div class='resources' id='prettyxml'><p><i>Pending... (See 'Detailed Progress' tab for more information.)</i></p></div>
 

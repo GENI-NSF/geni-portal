@@ -3,6 +3,7 @@
 user = "<?php echo $invocation_user; ?>";
 id = "<?php echo $invocation_id; ?>";
 slice_id = "<?php echo $slice_id; ?>";
+am_id = "<?php echo $am_id; ?>";
     
 debug_log_offset = 0;
 console_log_offset = 0;
@@ -17,10 +18,10 @@ $( document ).ready( function() {
     getStartTime(user, id, slice_id);
     updateConsoleLog(user, id, slice_id, console_log_offset);
     updateDebugLog(user, id, slice_id, debug_log_offset);
-    updateElapsedTime(user, id, slice_id);
+    updateElapsedTime(user, id, slice_id, am_id);
     get_console = setInterval( "updateConsoleLog(user, id, slice_id, console_log_offset)", 1000 );
     get_debug = setInterval( "updateDebugLog(user, id, slice_id, debug_log_offset)", 1000 );
-    get_elapsed = setInterval( "updateElapsedTime(user, id, slice_id)", 1000 );
+    get_elapsed = setInterval( "updateElapsedTime(user, id, slice_id, am_id)", 1000 );
 });
 
 function updateConsoleLog(invocationUser, invocationID, sliceID, offset) {
@@ -59,9 +60,9 @@ function updateDebugLog(invocationUser, invocationID, sliceID, offset) {
         });
 }
 
-function getXMLResults(invocationUser, invocationID, sliceID) {
+function getXMLResults(invocationUser, invocationID, sliceID, amID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=stdout&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&am_id='+amID+'&request=stdout&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
@@ -99,7 +100,7 @@ function updateJacks(invocationUser, invocationID, sliceID) {
 
 }
 
-function updateElapsedTime(invocationUser, invocationID, sliceID) {
+function updateElapsedTime(invocationUser, invocationID, sliceID, amID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
     '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=elapsed&raw=false',
         function(data) {
@@ -114,7 +115,7 @@ function updateElapsedTime(invocationUser, invocationID, sliceID) {
                 getStopTime(invocationUser, invocationID, sliceID);
                 getErrorLog(invocationUser, invocationID, sliceID);
                 getManifestRSpec(invocationUser, invocationID, sliceID); 
-                getXMLResults(invocationUser, invocationID, sliceID); 
+                getXMLResults(invocationUser, invocationID, sliceID, amID); 
             }
             else {
                 // since not finished, update the 'Last updated:' time
@@ -210,7 +211,7 @@ function getManifestRSpec(invocationUser, invocationID, sliceID) {
                 // allow manifest to be downloaded
                 $("#download_manifestrspec").removeAttr('disabled');
                 // display note about 'Results current as of...'
-                $("#results_stop_msg").html("<p><b>Note:</b> Results current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted.</p>");
+                $("#results_stop_msg").html("<p><i>Note that the results are current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted.</i></p>");
             }
         });
 }

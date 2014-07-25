@@ -201,7 +201,13 @@ if($retVal) {
     $invoke_id = get_invocation_id_from_dir($omni_invocation_dir);
     $link = "sliceresource.php?invocation_user=" . $user->username .
         "&invocation_id=$invoke_id&slice_id=$slice_id";
-    $link = relative_url($link);
+    
+    // if am_id specified, append it to link
+    if (isset($am_id) && $am_id) {
+        $link .= "&am_id=$am_id";
+    }
+    
+    $full_link = relative_url($link);
 
     // Write URL to 'Recent slice events' log
     $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -213,18 +219,18 @@ if($retVal) {
     if($stitch_rspec) {
         log_event($log_url, $user,
             "Add resource request submitted to slice " . $slice_name . " from " .
-            "stitching RSpec.<br><a href='$link'>Click here</a> for results.",
+            "stitching RSpec.<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }
     else {
         log_event($log_url, $user,
             "Add resource request submitted to slice " . $slice_name . " at " . 
-            $AM_name . ".<br><a href='$link'>Click here</a> for results.",
+            $AM_name . ".<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }
     
     // Do redirection
-    create_sliver_success($omni_invocation_dir, $user->username, $slice_id);
+    create_sliver_success($link, $full_link);
 }
 else {
     create_sliver_error("Failed to start an <tt>omni</tt> process.");
@@ -262,14 +268,9 @@ function create_sliver_error($error) {
     exit;
 }
 
-function create_sliver_success($omni_invocation_dir, $username, $slice_id) {
-    $invoke_id = get_invocation_id_from_dir($omni_invocation_dir);
-    
-    $link = "sliceresource.php?invocation_user=$username" .
-        "&invocation_id=$invoke_id&slice_id=$slice_id";
-        
+function create_sliver_success($link, $full_link) {
     $string = "<p class='instruction'>Resource request submitted. If you are ";
-    $string .= "not automatically redirected, <a href='$link'>click here</a> ";
+    $string .= "not automatically redirected, <a href='$full_link'>click here</a> ";
     $string .= "to view request progress and results.</p>";
     echo $string;
     include("footer.php");
