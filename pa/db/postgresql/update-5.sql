@@ -27,6 +27,7 @@ CREATE INDEX project_member_project_id ON pa_project_member(project_id);
 CREATE INDEX project_member_member_id ON pa_project_member(member_id);
 
 ALTER TABLE pa_project_member_request 
+   ADD PRIMARY KEY (id),
    ALTER COLUMN context_type SET NOT NULL,
    ALTER COLUMN context_id SET NOT NULL,
    ALTER COLUMN request_type SET NOT NULL,
