@@ -159,7 +159,7 @@ if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result) && $
 }
 if (True) {
   $_SESSION['lastmessage'] = "Generated SSH keypair - now download the private key";
-  relative_redirect('profile.php');
+  relative_redirect('profile.php#ssh');
 } else {
   // Set headers for download
   header("Cache-Control: public");

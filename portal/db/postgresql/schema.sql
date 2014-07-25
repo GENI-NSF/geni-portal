@@ -31,18 +31,12 @@ CREATE TYPE account_status AS ENUM ('requested', 'active', 'disabled');
 CREATE TABLE account (
   account_id UUID,
   status ACCOUNT_STATUS,
-  username VARCHAR UNIQUE,
+  username VARCHAR UNIQUE NOT NULL,
   PRIMARY KEY (account_id)
 );
 
 CREATE VIEW requested_account AS
   SELECT * FROM account WHERE status = 'requested';
-
-CREATE VIEW active_account AS
-  SELECT * FROM account WHERE status = 'active';
-
-CREATE VIEW disabled_account AS
-  SELECT * FROM account WHERE status = 'disabled';
 
 -- ----------------------------------------------------------------------
 -- A geni user privilege
@@ -69,7 +63,7 @@ DROP TABLE IF EXISTS identity CASCADE;
 CREATE TABLE identity (
   identity_id SERIAL,
   provider_url varchar,
-  eppn varchar UNIQUE,
+  eppn varchar UNIQUE NOT NULL,
   affiliation varchar,
   -- We may need to support other shib id fields
   -- like transient id, etc.
@@ -88,7 +82,7 @@ DROP TABLE IF EXISTS identity_attribute;
 
 CREATE TABLE identity_attribute (
   identity_id INTEGER references identity,
-  name varchar,
+  name varchar NOT NULL,
   value varchar,
   self_asserted boolean
 );
@@ -125,14 +119,8 @@ CREATE INDEX slice_index_owner ON slice (owner);
 -- ----------------------------------------------------------------------
 -- Account to slice mapping
 -- ----------------------------------------------------------------------
+-- OBE
 DROP TABLE IF EXISTS account_slice;
-CREATE TABLE account_slice (
-  account_id UUID REFERENCES account,
-  slice_id UUID REFERENCES slice
-);
-
-CREATE INDEX account_slice_index_account_id ON account_slice (account_id);
-CREATE INDEX account_slice_index_slice_id ON account_slice (slice_id);
 
 -- "public_key" is an obsolete table. Remove it if it is there.
 DROP TABLE IF EXISTS public_key;
