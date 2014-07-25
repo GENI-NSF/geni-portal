@@ -260,7 +260,7 @@ if (isset($am_id) && $am_id) {
     print "<p>Resources on AM (<b>$AM_name</b>):</p>";
 }
 else {
-    print "<p>Resources requested from stitchable RSpec:</p>";
+    print "<p>Resources requested from RSpec:</p>";
 }
 ?>
 
