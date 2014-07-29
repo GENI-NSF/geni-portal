@@ -114,6 +114,15 @@ if(!is_dir($dir_to_check)) {
 $bug_report_msg1 = "Attached is an omni process bug report generated from the GENI Portal (https://portal.geni.net/). This bug report contains process-related information such as log files, resource specifications (RSpecs) and metadata.<br><br>User message:";
 $bug_report_msg2 = "Thanks,<br>" . $user->prettyName();
 
+/*
+    since AM ID is optional for this page, it needs to be explicitly
+    set if tool-lookupids.php hasn't already set it - there's no else clause
+    in tool-lookupids.php because the assumption is that the page would have
+    already shown an error earlier if $REQUEST['am_id'] hadn't been specified
+*/ 
+if(!isset($am_id)) {
+    $am_id = NULL;
+}
 
 include("sliceresource.js");
 
