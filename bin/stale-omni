@@ -4,20 +4,44 @@
 # A script to find and report on stale omni processes
 #
 # Written hastily before GEC 19. If this lives on, perhaps rename it
-# to geni-watch-omni, add it to the Makefile for installation, and add
-# few parameters like how many minutes before a process is considered
-# stale?
+# to geni-watch-omni, add it to the Makefile for installation
+#
+# July, 2014: Now searches for stitcher_php.py or omni_php.py and notifies only on
+# processes 12 minutes old by default - option allows resetting that value.
+
+# Note that syntax to psutil related calls changes depending on the version of psutil
 
 import ConfigParser
 import datetime
 import getpass
-import time
+import logging
+import optparse
 import smtplib
+import sys
+import time
+
 from email.mime.text import MIMEText
 import psutil
+try:
+    PSUTIL2 = psutil.version_info >= (2, 0)
+except:
+    PSUTIL2 = False
 
-# Notify on processes older than STALE_LIMIT_SECONDS
-STALE_LIMIT_SECONDS = 10 * 60
+def init_logging(options):
+    level = logging.INFO
+    if options.debug:
+        level = logging.DEBUG
+    logging.basicConfig(level=level)
+
+def parse_args(argv):
+    parser = optparse.OptionParser(usage="Email admins about stale Omni calls")
+    parser.add_option("--debug", action="store_true", default=False,
+                       help="enable debugging output")
+    # Notify on processes older than this many minutes ago
+    parser.add_option("-m", "--minutes", metavar="MINUTES", default=12, type="int",
+                      help="Minutes before a process is considered stale")
+    options,args = parser.parse_args()
+    return options,args
 
 def get_admin_email():
     config = ConfigParser.RawConfigParser()
@@ -60,45 +84,78 @@ def send_report(stale_pids, stale_report):
     s.quit()
 
 
-# If launch time was before stale_launch_time,
-# the process is stale
-stale_launch_time = time.time() - STALE_LIMIT_SECONDS
-
-# A list of stale omni pids
-stale_pids = []
-
-# A list of strings to report
-stale_report = []
-
-# For later version of psutil use 'psutil.pids()'
-allpids = psutil.get_pid_list()
-for pid in allpids:
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
     try:
-        p = psutil.Process(pid)
-        # For later version of psutil use 'p.create_time()'
-        create_time = int(p.create_time)
-        # For later version of psutil use 'p.cmdline()'
-        cmd = p.cmdline
-        pid = p.pid
-    except psutil.error.NoSuchProcess:
-        # Sometimes the process goes away since we got allpids
-        # Continue to next pid
-        continue
-    except IOError:
-        # A process that has finished may also exhibit an
-        # IOError when reading the /proc filesystem
-        continue
-    if (len(cmd) > 1
-        and cmd[0] == '/usr/bin/python'
-        and 'omni_php.py' in cmd[1]
-        and create_time < stale_launch_time):
-        # We have a stale omni process
-        agg = None
-        if '-a' in cmd:
-            agg = cmd[cmd.index('-a') + 1]
-        launch_dt = datetime.datetime.fromtimestamp(create_time)
-        launch_time = launch_dt.isoformat()
-        stale_report.append('%s %s %s' % (pid, launch_time, agg))
-        stale_pids.append(pid)
+        options,args = parse_args(argv)
+        init_logging(options)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
+        return 1
 
-send_report(stale_pids, stale_report)
+    logger = logging.getLogger()
+
+    stale_seconds = options.minutes * 60
+
+    # If launch time was before stale_launch_time,
+    # the process is stale
+    stale_launch_time = time.time() - stale_seconds
+    if options.debug:
+        logger.info("Stale cutoff launch time: %s", datetime.datetime.fromtimestamp(stale_launch_time).isoformat())
+
+    # A list of stale omni pids
+    stale_pids = []
+
+    # A list of strings to report
+    stale_report = []
+
+    # For later version of psutil use 'psutil.pids()'
+    allpids = psutil.get_pid_list()
+    for pid in allpids:
+        try:
+            p = psutil.Process(pid)
+            # For later version of psutil use 'p.create_time()'
+            create_time = int(p.create_time()) if PSUTIL2 else int(p.create_time)
+            # For later version of psutil use 'p.cmdline()'
+            cmd = p.cmdline() if PSUTIL2 else p.cmdline
+            pid = p.pid
+        except psutil.NoSuchProcess:
+            # Sometimes the process goes away since we got allpids
+            if options.debug:
+                logger.debug("PID %s gone", pid)
+            # Continue to next pid
+            continue
+        except IOError:
+            # A process that has finished may also exhibit an
+            # IOError when reading the /proc filesystem
+            if options.debug:
+                logger.debug("PID %s IOError", pid)
+            continue
+        if options.debug:
+            if len(cmd) > 1:
+                logger.debug("PID %s: cmd[0]: %s, cmd[1]: %s, create_time: %s", pid, cmd[0], cmd[1], datetime.datetime.fromtimestamp(create_time).isoformat())
+            elif len(cmd) == 1:
+                logger.debug("PID %s: cmd[0]: %s, create_time: %s", pid, cmd[0], datetime.datetime.fromtimestamp(create_time).isoformat())
+        if (len(cmd) > 1
+            and cmd[0] == '/usr/bin/python'
+            and ('omni_php.py' in cmd[1] or 'stitcher_php.py' in cmd[1])
+            and create_time < stale_launch_time):
+            # We have a stale omni process
+            agg = None
+            if '-a' in cmd:
+                agg = cmd[cmd.index('-a') + 1]
+            launch_dt = datetime.datetime.fromtimestamp(create_time)
+            launch_time = launch_dt.isoformat()
+            if options.debug:
+                logger.info("Stale Omni: %s %s %s", pid, launch_time, agg)
+            stale_report.append('%s %s %s' % (pid, launch_time, agg))
+            stale_pids.append(pid)
+    if options.debug:
+        logger.info("\nFound %d stale omni processes", len(stale_pids))
+
+    send_report(stale_pids, stale_report)
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
