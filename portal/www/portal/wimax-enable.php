@@ -1281,6 +1281,16 @@ P7
 	// See case 6 below
 	if ($enabled and ! isset($ldif_user_group_id)) {
 	  // Project enabled but lead has no group
+	  // Could be the project lead changed and old lead is the admin. In this case right thing
+	  // is to create this user as member of that group and then change admin
+	  // Else we have real data sync problem, and we need to know what orbit has and make ours match. And then
+	  // If it still makes no sense, delete it all? Or what?
+	  // Need util functions to create user and changeAdmin. 
+	  // We should prefer to create users&groups to fix the problem rather than delete.
+	  // So check who we think admin is, and then create user and optionally change admin. If createUser fails,
+	  // then we need to know what group orbit things the user is in if they exist and try to match that possibly.
+	  // And if changeAdmin fails then similarly
+
 	  // FIXME!!
 	  // Check what orbit has and sync state.
 	  // Check if admin we list is diff. Then maybe I just need to create the user and change admin
@@ -1305,6 +1315,11 @@ P7
 	// See case 5 below
 	if (! $enabled and isset($ldif_user_group_id) and $ldif_user_group_id==$proj_id) {
 	  error_log("Proj " . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " not enabled but lead lists that proj_id as their WiMAX group - delete user $ldif_user_username");
+
+	  // Could create the group with this user as admin. But it's strange that we are in this state. It suggests something broke earlier. We probably
+	  // want to get the orbit state, sync up with what they have. Cause that might fix it. If not, crete the group or delete the user.
+	  // We should prefer to create the group rather than delete the user (who might be doing real work)
+
 	  $res = wimax_delete_user($ldif_user_username, $proj_name);
 	  if (true === $res) {
 	    // Change relevant MA attribute
