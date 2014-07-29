@@ -7,6 +7,13 @@
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
+   * Use stitcher to do all Omni calls, including adding a new
+   `stitcher_php` to invoke it.
+   * Refactor `slice-add-resources` to use a table for display
+   * Disable `Reserve Resources` until you pick an RSpec
+   * Include `Manage RSpecs` as a tab on the `Add Resources`
+     page.
+   * Add searching and sorting to `Manage RSpecs`
  * Warn that the Raw status link refetches status. (#764)
  * Mention 'manifest' and 'xml' on Details page. (#475)
  * Cleanly redirect to the referer on the KM activate page,
