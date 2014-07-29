@@ -24,6 +24,8 @@
    Additionally, index sa_slice_member(slice_id),
    pa_project_member(project_id), pa_project_member(member_id)
    as some queries that showed up as slow improve with these indices. (#1081)
+ * Rework `stale-omni` to search also for `stitcher_php`, and take `-m`
+   to change the # of minutes before it is stale, default 12. (#1114)
 
 == 2.17.1 ==
  * Allow the OpenID WiMAX username attribute to be wimax/wimax_username. (#1097)
