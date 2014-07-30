@@ -6,6 +6,7 @@
 
 == 2.19 ==
  * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
+ * Add comments about new error messages in WiMAX (#1077)
 
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
