@@ -306,7 +306,7 @@ function fetchRSpecNameById($id) {
  */
 function fetchRSpecMetaData($user) {
   $metadata_columns = ("id, name, description, visibility, bound, owner_id"
-                       . ", owner_name, owner_email");
+                       . ", owner_name, owner_email, stitch");
   $conn = portal_conn();
   $sql = "SELECT $metadata_columns FROM rspec";
   $sql .= " where visibility = 'public'";

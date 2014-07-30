@@ -85,7 +85,7 @@ if(array_key_exists('rspec_selection', $_FILES)) {
   $temp_rspec_file = null;
   if(strlen($local_rspec_file) > 0) {
     $rspec = file_get_contents($local_rspec_file);
-    $temp_rspec_file = writeDataToTempFile($rspec, 'rspec-');
+    $temp_rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
   }
 }
 else if(array_key_exists('rspec_jacks', $_REQUEST)) {
@@ -93,7 +93,7 @@ else if(array_key_exists('rspec_jacks', $_REQUEST)) {
   $local_rspec_file = $_REQUEST['rspec_jacks'];
   if(strlen($local_rspec_file) > 0) {
     $rspec = $local_rspec_file;
-    $temp_rspec_file = writeDataToTempFile($rspec, 'rspec-');
+    $temp_rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
   }
 }
 
@@ -109,13 +109,30 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
-if (! isset($am) || is_null($am)) {
-  no_am_error();
+// FIXME: bound RSpec handling - for now, just pass variable
+$bound_rspec = 0;
+if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
+    $bound_rspec = 1;
 }
 
-// Get an AM
-$am_url = $am[SR_ARGUMENT::SERVICE_URL];
-$AM_name = am_name($am_url);
+// logic to handle stitchable RSpecs with AMs
+// assuming RSpec is stitchable, don't test for AM
+$stitch_rspec = 0;
+if(array_key_exists('stitch_rspec', $_REQUEST) && $_REQUEST['stitch_rspec'] == "1") {
+    $stitch_rspec = 1;
+}
+else if (! isset($am) || is_null($am)) {
+      no_am_error();
+}
+
+// Get an AM for non-stitchable RSpecs
+if($stitch_rspec) {
+    $am_id = "";
+}
+else {
+    $am_url = $am[SR_ARGUMENT::SERVICE_URL];
+    $AM_name = am_name($am_url);
+}
 
 $header = "Creating Sliver on slice: $slice_name";
 
@@ -128,9 +145,13 @@ var slice= "<?php echo $slice_id ?>";
 var am_id= "<?php echo $am_id ?>";
 var rspec_id= "<?php echo $rspec_id ?>";
 var rspec_file = "<?php echo $temp_rspec_file ?>";
+var bound_rspec = "<?php echo $bound_rspec ?>";
+var stitch_rspec = "<?php echo $stitch_rspec ?>";
 function build_pretty_xml() 
 {
-  $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, am_id:am_id, rspec_file:rspec_file } );
+  $("#prettyxml").load("createsliver.php", { slice_id:slice, rspec_id:rspec_id, 
+        am_id:am_id, rspec_file:rspec_file, bound_rspec:bound_rspec, 
+        stitch_rspec:stitch_rspec} );
 }
 </script>
 <script>
@@ -141,7 +162,12 @@ $(document).ready(build_pretty_xml);
 print "<h2>$header</h2>\n";
 
 //print "Reserved resources on AM (<b>$AM_name</b>) until <b>$slice_expiration</b>:";
-print "<p>Resources on AM (<b>$AM_name</b>):</p>";
+if(!$stitch_rspec) {
+    print "<p>Resources on AM (<b>$AM_name</b>):</p>";
+}
+else {
+    print "<p>Resources requested from stitchable RSpec:</p>";
+}
 print "<div class='resources' id='prettyxml'>";
 print "<p><i>Adding resources...</i></p>";
 print "</div>\n";

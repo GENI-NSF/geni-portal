@@ -35,6 +35,7 @@ require_once("sa_client.php");
 require_once("proj_slice_member.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
+require_once("tool-rspec-parse.php");
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -98,17 +99,52 @@ if (! isset($rspec) || is_null($rspec)) {
   no_rspec_error();
   //  $rspec = fetchRSpecById(1);
 }
-if (! isset($am) || is_null($am)) {
-  no_am_error();
+
+/* 
+    Bound/unbound and stitchable RSpec logic
+        default: assume unbound and non-stitched RSpec
+        call parseRequestRSpecContents() to check whether rspec is bound/stitch
+*/
+$bound_rspec = 0;
+$stitch_rspec = 0;
+$parse_results = parseRequestRSpecContents($rspec);
+// is_bound is located in parse_results[1]
+if($parse_results[1] === true) {
+    $bound_rspec = 1;
+}
+// is_stitch is located in parse_results[2]
+if($parse_results[2] === true) {
+    $stitch_rspec = 1;
+}
+// FIXME: list of AMs is in parse_results[3] in case that needs to be passed in the future
+
+/* 
+// We could use this based on what was sent, but the above method is probably 
+// safer because it verifies it for *any* RSpec sent, whether in the DB or user
+// uploaded
+if(array_key_exists('bound_rspec', $_REQUEST) && $_REQUEST['bound_rspec'] == "1") {
+    $bound_rspec = 1;
+} */
+
+// logic to handle stitchable RSpecs with AMs
+// assuming RSpec is stitchable, don't test for AM
+if (!$stitch_rspec && (! isset($am) || is_null($am))) {
+      no_am_error();
 }
 
-// Get an AM
-$am_url = $am[SR_ARGUMENT::SERVICE_URL];
-$AM_name = am_name($am_url);
-// error_log("AM_URL = " . $am_url);
+// Get an AM for non-bound RSpecs
+if($stitch_rspec) {
+    $am_url = "";
+    $AM_name = "";
+}
+else {
+    $am_url = $am[SR_ARGUMENT::SERVICE_URL];
+    $AM_name = am_name($am_url);
+    // error_log("AM_URL = " . $am_url);
 
-//$result = get_version($am_url, $user);
-// error_log("VERSION = " . $result);
+    //$result = get_version($am_url, $user);
+    // error_log("VERSION = " . $result);
+}
 
 // Get the slice credential from the SA
 $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
@@ -117,15 +153,20 @@ $slice_credential = get_slice_credential($sa_url, $user, $slice_id);
 $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
 // Retrieve a canned RSpec
-$rspec_file = writeDataToTempFile($rspec);
+// FIXME: This is the RSpec that will be used to call omni/stitcher.
+// See proto-ch ticket #164 for storing all request RSpecs
+$rspec_file = writeDataToTempFile($rspec, $user->username . "-rspec-");
 
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id);
 
 // Call create sliver at the AM
+// If bound, send empty AM URL and bound_rspec variable so logic can be handled
 $retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
-			$slice_urn, $rspec_file, $slice['slice_id']);
+			$slice_urn, $rspec_file, $slice['slice_id'], $bound_rspec, 
+			$stitch_rspec);
+// FIXME: do something with the RSpec for ticket #164
 unlink($rspec_file);
 
 $header = "Created Sliver on slice: $slice_name";
@@ -146,9 +187,16 @@ if ($obj != "") {
    $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
 						 $slice['slice_id']);
    $log_attributes = array_merge($project_attributes, $slice_attributes);
-   log_event($log_url, $user,
-	  "Added resources to slice " . $slice_name . " at " . $AM_name,
-          $log_attributes);
+   if(!$stitch_rspec) {
+       log_event($log_url, $user,
+	      "Added resources to slice " . $slice_name . " at " . $AM_name,
+              $log_attributes);
+   }
+   else {
+        log_event($log_url, $user,
+	      "Added resources to slice " . $slice_name . " from stitching RSpec",
+              $log_attributes);
+   }
 }
 
 unset($slice2);
@@ -158,15 +206,27 @@ $slice_expiration = dateUIFormat($slice_expiration_db);
 
 
 // Set headers for xml
-header("Cache-Control: public");
+header("Cache-Control: public"); 
 header("Content-Type: text/xml");
 //$obj2 = trim($obj);
 if ($obj != "" ) {
    $manifestOnly=True;
-   $filterToAM = True;	
-   $arg_urn = am_urn($am_url);
+   $filterToAM = True;
+    if(!$stitch_rspec) {
+        $arg_urn = am_urn($am_url);
+    }
+    else {
+        $arg_urn = "";
+    }
    $obj2 = print_rspec_pretty($obj, $manifestOnly, $filterToAM, $arg_urn);
    print $obj2; 
+   
+   /* FIXME: Temporary variable dump for stitching
+   $dump = new SimpleXMLElement($obj);
+   echo "<pre>";
+   var_dump($dump);
+   echo "</pre>";*/
+   
 } else {
 
   /* error parsing */

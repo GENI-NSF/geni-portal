@@ -61,8 +61,13 @@ if (! isset($ma_url)) {
   }
 }
 
+$site = 'stable';
+if (array_key_exists('site', $_REQUEST)) {
+  $site = $_REQUEST['site'];
+}
+
 /* TODO put this in the service registry */
-$gemini_url = 'https://genidesktop.netlab.uky.edu/stable/logon/clearinghouse/logon_entry.php';
+$gemini_url = 'https://genidesktop.netlab.uky.edu/' . $site . '/logon/clearinghouse/logon_entry.php';
 
 /* HTML form input name for passing data blob to GEMINI */
 $gemini_input_name = 'encoded_dict';

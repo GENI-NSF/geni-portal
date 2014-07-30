@@ -27,6 +27,7 @@ require_once("user.php");
 require_once("header.php");
 require_once 'geni_syslog.php';
 require_once 'db-util.php';
+require_once 'tool-rspec-parse.php';
 
 // This module is called in a number of contexts.
 // 1) It is called directly from profile.php
@@ -51,117 +52,7 @@ require_once 'db-util.php';
 //    (leave the existing RSPEC alone)
 
 
-/**
- * Validate the uploaded RSpec.
- *
- * @return boolean -- true for valid, false if invalid
- */
-function validateRSpec($rspec_filename, &$error_msg)
-{
-  $error = null;
 
-  //--------------------------------------------------
-  // is it parseable as XML?
-  $rspec = file_get_contents($rspec_filename);
-  $xml_parser = xml_parser_create();
-  $parse_result = xml_parse($xml_parser, $rspec, true);
-  if ($parse_result === 0) {
-    $xml_error = xml_error_string(xml_get_error_code($xml_parser));
-    $line = xml_get_current_line_number($xml_parser);
-    $column = xml_get_current_column_number($xml_parser);
-    $error_msg = "$xml_error at line $line, column $column";
-    xml_parser_free($xml_parser);
-    return false;
-  }
-  /* TODO: do some more checks on the rspec.
-   * Does it pass "rspeclint"?
-   * Is it a request RSpec (not ad or manifest)?
-   */
-  return true;
-}
-
-// Parse XML rspec contained in given file
-// Is rspec in given file bound (i.e. does it have any nodes with 
-//      component_manager_id tags)?
-// Is it for stitching (i.e. does any link have two different 
-//      component_manager_id tags)?
-// Return array of four values: 
-//    parsed_rspec (text), 
-//    is_bound (boolean), 
-//    is_stitch (boolean),
-//    a list of AM URN's (component_manager_id's) of requested nodes
-function parseRequestRSpec($rspec_filename)
-{
-
-  // Handle case wherein no file provided (for update, not upload)
-  if ($rspec_filename == NULL || $rspec_filename == "") {
-    return array(NULL, False, False, array());
-  }
-
-  $am_urns = array();
-  $is_bound = false;
-  $is_stitch = false;
-
-  $dom_document = new DOMDocument();
-  $rspec = file_get_contents($rspec_filename);
-  $dom_document->loadXML($rspec);
-  $root = $dom_document->documentElement;
-
-  // Go over each node and link child
-  // If ANY node child has a component_manager_id, is_bound is true
-  // If ANY link has two componennt_manager children of 
-  //       different names, is_stitch is true
-  foreach ($root->childNodes as $child) {
-    if ($child->nodeType == XML_TEXT_NODE) { continue; }
-    // Pull out 'client_id' and 'component_manager_id' attributes
-    if ($child->nodeName == 'node') {
-      $node = $child;
-      $client_id = NULL;
-      if ($node->hasAttribute('client_id')) { 
-	$client_id = $node->getAttribute('client_id'); 
-      }
-      $component_manager_id = NULL;
-      if ($node->hasAttribute('component_manager_id')) { 
-	$component_manager_id = $node->getAttribute('component_manager_id'); 
-	$is_bound = true;
-	$am_urns[] = $component_manager_id;
-      }
-      //      error_log("Node "  . print_r($node, true) . " " . 
-      //		print_r($client_id, true) . " " . 
-      //		print_r($component_manager_id, true));
-    } elseif ($child->nodeName == 'link') {
-      $link_urns = array();
-      // Extract the client_id attribute and 
-      // component_manager_id child name attribute
-      $link = $child;
-      $link_client_id = NULL;
-      if ($link->hasAttribute('client_id')) { 
-	$link_client_id = $link->getAttribute('client_id'); 
-      }
-      //      error_log("Link "  . print_r($link, true) . " " . 
-      //		print_r($link_client_id, true));
-      foreach($link->childNodes as $link_child) {
-	if ($link_child->nodeType == XML_TEXT_NODE) { continue; }
-	if ($link_child->nodeName == 'component_manager') {
-	  $cm_id = $link_child;
-	  $cmid_component_manager_id = NULL;
-	  if ($cm_id->hasAttribute('name')) { 
-	    $cmid_component_manager_id = $cm_id->getAttribute('name'); 
-	    $link_urns[$cmid_component_manager_id] = true;
-	  }
-	  //	  error_log("   CMID:" . print_r($cm_id, true) . " " . 
-	  //		    print_r($cmid_component_manager_id, true));
-	} 
-      }
-      // We have a link with more than 1 different aggregate URN
-      if (count(array_keys($link_urns)) > 1) {
-	$is_stitch = true;
-      }
-    }
-  }
-
-  return array($rspec, $is_bound, $is_stitch, $am_urns);
-}
 
 $rspec_id = "";
 $rspec_visibility = "";
@@ -244,19 +135,24 @@ if ($error != NULL || count($_POST) == 0) {
   echo '  <input type="file" name="file" id="file" /></p>';
   echo '  <p>';
   echo '  <label for="file">Short Name:</label>';
-  echo '  <input type="text" name="name" value="' . $rspec_sn . '"/> - Required</p>';
+  echo '  <input type="text" name="name" value="' . $rspec_sn . '"/> - Required: Name as the RSpec will appear in menus.</p>';
   // Use single quotes in the placeholder because double quotes cause
   // malformed HTML.
-  $desc_placeholder = "E.g. '3 InstaGENI Xen VMs connected by an OVS switch'";
+  $desc_placeholder = "Detailed description including purpose, topology, aggregates requried, etc. E.g. '3 InstaGENI Xen VMs connected by an OVS switch'";
   echo '  <p>';
   echo '  <label for="file">Description:</label>';
-  echo '<textarea name="description"';
+  echo '  <textarea name="description"';
   echo ' placeholder="' . $desc_placeholder . '"';
-  echo ' cols="30"';
-  echo ' rows="2"';
+  echo ' cols="60"';
+  echo ' rows="4"';
   echo '>';
   echo $rspec_desc . '</textarea>';
-  echo ' - Required</p>';
+  echo ' - Required';
+  if($rspec_id != "") {
+    echo '<br/>&nbsp;&nbsp;&nbsp;&nbsp;Detailed description (purpose, topology, etc.)</p>';
+  } else {
+    echo '</p>';
+  }
 
   $public_checked = "";
   $private_checked = "checked";

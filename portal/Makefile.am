@@ -38,15 +38,19 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-4.sql \
 	db/postgresql/update-5.sql \
 	db/postgresql/update-6.sql \
+	db/postgresql/update-7.sql \
+	db/postgresql/update-8.sql \
 	gcf.d/example-gcf.ini
 
 #----------------------------------------------------
 # GCF related files that overwrite the installed gcf
 #----------------------------------------------------
 dist_gcfsrc_DATA = \
-	gcf.d/src/logging.conf
+	gcf.d/src/logging.conf \
+	gcf.d/src/stitcher_logging_template.conf
 dist_gcfsrc_SCRIPTS = \
-	gcf.d/src/omni_php.py
+	gcf.d/src/omni_php.py \
+	gcf.d/src/stitcher_php.py
 dist_gcfsrcgeni_DATA = 
 
 dist_svcweb_DATA = \
@@ -142,11 +146,10 @@ dist_svcweb_DATA = \
 	www/portal/request_test.php \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
-	www/portal/rspecedit.php \
-	www/portal/rspechandleedit.php \
 	www/portal/rspecs.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
+	www/portal/rspecuploadparser.php \
 	www/portal/selectrspec.html \
 	www/portal/services.php \
 	www/portal/settings.php \
@@ -179,6 +182,7 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-projects.php \
 	www/portal/tool-rspecs.php \
+	www/portal/tool-rspec-parse.php \
 	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.php \
 	www/portal/tools-admin.php \
