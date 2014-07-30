@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.19 ==
+ * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
+
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
