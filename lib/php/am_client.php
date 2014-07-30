@@ -512,19 +512,26 @@ function invoke_omni_function($am_url, $user, $args,
         error_log("am_client invoke_omni_function COMMAND = " . $fork_call);
         exec($fork_call, $op);
         
-        // nohup should return an array with one line containing the PID
-        $pid = $op[0];
+        // assuming success, $op will be a non-empty array
+        if($op) {
+            // nohup should return an array with one line containing the PID
+            $pid = $op[0];
+            
+            // write PID to a file
+            $pid_file = fopen($omni_pid_file,"a");
+            fwrite($pid_file, $pid);
+            fclose($pid_file);
+            
+            // FIXME: Should we wait around to do 'ps -p <pid>' to make sure
+            // process didn't quickly die?
+            
+            return $pid;
+        }
         
-        // write PID to a file
-        $pid_file = fopen($omni_pid_file,"a");
-        fwrite($pid_file, $pid);
-        fclose($pid_file);
-        
-        // FIXME: return debug URL page for now (probably want to return non-null upon success)
-        $invoke_id = get_invocation_id_from_dir($omni_invocation_dir);
-        $string_return = "Go to <a href='https://portal1.gpolab.bbn.com/secure/view_omni_invocation_data.php?invocation_user=";
-        $string_return .= $user->username . "&invocation_id=" . $invoke_id . "'>view omni invocation data</a> for more information.";
-        return $string_return;
+        // didn't get anything back from exec(), so return NULL
+        else {
+            return NULL;
+        }
      
      }
      /* non-forked omni call (default) */
