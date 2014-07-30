@@ -204,7 +204,7 @@ function my_curl_put($arrayToPost, $url) {
 // What is the base username?
 // This is where we prepend 'geni-' if we want to do so for all usernames
 function gen_username_base($user) {
-  return $user->username;
+  return "geni-" . $user->username;
 }
 
 // Create a new unique username - we add a counter to the end of the base username
@@ -843,6 +843,8 @@ if (array_key_exists('project_id', $_REQUEST))
       if($enable_project and $ldif_project_lead_id == $user->account_id and ! $project_enabled) {
 	remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
 	add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $user->account_id);
+	remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
+	add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME, $ldif_project_name);
 	error_log($user->prettyName() . " enabled project " . $ldif_project_name . " for WiMAX use in our DB (was already enabled in their system)");
       }
 
@@ -888,6 +890,8 @@ if (array_key_exists('project_id', $_REQUEST))
       if($enable_project and $ldif_project_lead_id == $user->account_id and ! $project_enabled) {
 	remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
 	add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $user->account_id);
+	remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
+	add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME, $ldif_project_name);
 	error_log($user->prettyName() . " enabled project " . $ldif_project_name . " for WiMAX use");
       }
 
