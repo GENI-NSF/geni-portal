@@ -5,6 +5,13 @@
 = GENI Portal Release Notes =
 
 == 2.19 ==
+ * Fork omni/stitcher processes (#1106)
+   * omni/stitching calls from create_sliver run asynchronously
+   * Keep temporary files after creating slivers
+   * Add bug reporting feature
+   * Store request RSpecs (#164)
+   * Show request RSpec used in a slice (#165)
+   * Store manifest RSpecs (#225)
  * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
  * Add comments about new error messages in WiMAX (#1077)
  * If user in the project is disabled, remove them from the WiMAX group (#1124)
