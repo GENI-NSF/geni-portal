@@ -143,7 +143,7 @@ if (isset($am_id) && $am_id ) {
 }
 
 
-print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>Raw SliverStatus</a></p>";
+print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>(Refetch and) Show Raw SliverStatus</a></p>";
 print "<hr/>";
 print "<p><a href='slices.php'>Back to All slices</a>";
 print "<br/>";

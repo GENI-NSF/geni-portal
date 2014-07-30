@@ -293,6 +293,7 @@ project. You may approve (add the member) or deny each request.</p>
 know. Remember that when you approve a project join request, you agree
 that the project lead will be held responsible for all GENI actions this person
 takes in this project.</p>";
+print "<p>For an explanation of the different project roles, see the <a href='http://groups.geni.net/geni/wiki/GENIGlossary#Project'>GENI Glossary</a>.</p>";
 
 print '<form method="POST" action="do-handle-project-request.php">';
 print '<table>';
