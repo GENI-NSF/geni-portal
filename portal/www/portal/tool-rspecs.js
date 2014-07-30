@@ -55,11 +55,11 @@ function updateJacksContainer(rspec, rspec_id, rspec_name) {
                     window.location.href = 'rspecview.php?id='+rspec_id;
                     callback(true);
                     },
-                "Download Raw RSpec": function () {
+                "\u21E3 Download Raw RSpec": function () {
                     window.location.href = 'rspecdownload.php?id='+rspec_id;
                     callback(true);
                     },
-                "Close": function () {
+                "\u2715 Close": function () {
                         $(this).dialog('close');
                         callback(true);
                     }
