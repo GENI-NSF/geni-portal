@@ -13,10 +13,15 @@ function showViewerContainer(rspec_id, rspec_name) {
 
 function updateJacksContainer(rspec, rspec_id, rspec_name) {
     var rspecText = new XMLSerializer().serializeToString(rspec);
+    
+    // make window size at least 700 x 400
+    var width = Math.max(700, Math.floor(window.innerWidth * 0.5));
+    var height = Math.max(400, Math.floor(window.innerHeight * 0.5));
+    
     thisInstance = new window.Jacks({
         mode: 'viewer',
         source: 'rspec',
-        size: { x: 750, y: 400},
+        size: { x: width, y: height},
         show: {
             rspec: false,
             version: false
