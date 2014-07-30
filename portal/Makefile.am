@@ -109,6 +109,7 @@ dist_svcweb_DATA = \
 	www/portal/footer.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
+	www/portal/get_omni_invocation_data.php \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \
 	www/portal/getversion.php \
@@ -151,6 +152,7 @@ dist_svcweb_DATA = \
 	www/portal/rspecview.php \
 	www/portal/rspecuploadparser.php \
 	www/portal/selectrspec.html \
+	www/portal/send_bug_report.php \
 	www/portal/services.php \
 	www/portal/settings.php \
 	www/portal/slice-add-resources.js \
@@ -161,6 +163,8 @@ dist_svcweb_DATA = \
 	www/portal/sliceabac.php \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
+	www/portal/sliceresource.js \
+	www/portal/sliceresource-tabs.js \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
@@ -192,6 +196,7 @@ dist_svcweb_DATA = \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
 	www/portal/user.php \
+	www/portal/view_omni_invocation_data.php \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \

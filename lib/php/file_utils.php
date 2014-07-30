@@ -26,6 +26,8 @@
  * Functions to help with file handling.
  */
 
+$omni_invocation_prefix = "omni-invoke";
+
 /**
  * Write $data to a temp file and return the filename.  An optional
  * file prefix can be specified.
@@ -60,7 +62,8 @@ function writeDataToTempDir($dir, $data, $prefix = "geni-")
     Create a temporary directory
 */
 function createTempDir($prefix) {
-    $tempfile=tempnam(sys_get_temp_dir(), "omni-invoke-$prefix-");
+    global $omni_invocation_prefix;
+    $tempfile=tempnam(sys_get_temp_dir(), "$omni_invocation_prefix-$prefix-");
     if (file_exists($tempfile)) { 
         unlink($tempfile);
     }
@@ -124,6 +127,50 @@ function clean_directory($dir) {
       if(is_file($file))
         unlink($file); // delete file
     }
+}
+
+/*
+    Get the omni invocation directory based on username and invocation ID
+*/
+function get_invocation_dir_name($user, $id) { 
+    global $omni_invocation_prefix;
+    return sys_get_temp_dir() . "/$omni_invocation_prefix-$user-$id";
+}
+
+/*
+    Get the invocation ID based on the omni invocation directory
+*/
+function get_invocation_id_from_dir($omni_invocation_dir) { 
+    return array_pop(explode("-", $omni_invocation_dir));
+}
+
+/*
+    Zip all files in a directory (optionally exclude some files)
+    Returns zip file location if successful, NULL if not
+*/
+function zip_dir_files($zip_name, $dir, $excluded_files_list=array()) {
+
+    // all files in directory
+    $files_list = glob(rtrim($dir,'/').'/*'); // get all file names
+
+    // all files we want to zip (all files in directory - excluded files)
+    $zip_files_list = array_diff($files_list, $excluded_files_list);
+
+    $zip = new ZipArchive();
+    
+    if ($zip->open($zip_name, ZipArchive::CREATE) === TRUE) {
+        foreach($zip_files_list as $file) {
+            if(file_exists($file)) {
+                $zip->addFile($file, basename($file));
+            }
+        }
+        $zip->close();
+        return $zip_name;
+    }
+    else {
+        return NULL;
+    }
+
 }
 
 ?>
