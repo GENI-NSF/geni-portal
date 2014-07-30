@@ -78,6 +78,7 @@ $parents = array("profile.php" => "home.php",
 		 "sliceabac.php" => "slice.php",
 		 "slicecred.php" => "slice.php",
 		 "sliceresource.php" => "slice.php",
+		 "createsliver.php" => "slice.php",
 		 "rspecs.php" => "slice.php",
 		 "do-renew.php" => "slice.php",
 		 "do-renew-slice.php" => "slice.php",
@@ -110,7 +111,8 @@ $parents = array("profile.php" => "home.php",
 		 "irods.php" => "profile.php",
 		 "wimax-enable.php" => "home.php",
                  "gemini.php" => "slice.php",
-		 "tool-aggwarning.php" => "slice.php");
+		 "tool-aggwarning.php" => "slice.php",
+		 "send_bug_report.php" => "slice.php",);
 
 // Array from script name to a pretty name
 // FIXME: From a DB that the script uses too?
@@ -141,7 +143,8 @@ $names = array("home.php" => $TAB_HOME,
 		 "slice-member.php" => "Member %member_name in Slice %slice_name",
 		 "sliceabac.php" => "Get Slice %slice_name ABAC Credentials",
 		 "slicecred.php" => "Get Slice %slice_name slice credential",
-		 "sliceresource.php" => "Add resources to Slice %slice_name",
+		 "createsliver.php" => "Add Resources to %slice_name (Results)",
+		 "sliceresource.php" => "Add Resources to %slice_name (Results)",
 		 "sliverdelete.php" => "Delete Sliver from %slice_name",
 		 "sliverstatus.php" => "Sliver Status for %slice_name",
 		 "do-renew.php" => "Renew Sliver on %slice_name",
@@ -173,7 +176,8 @@ $names = array("home.php" => $TAB_HOME,
 	       "irods.php" => "iRODS Account",
 	       "wimax-enable.php" => "Enable WiMAX",
 	       "gemini.php" => "GENI Desktop",
-	       "tool-aggwarning.php" => "Query All Aggregates");
+	       "tool-aggwarning.php" => "Query All Aggregates",
+	       "send_bug_report.php" => "Send Bug Report");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
