@@ -152,7 +152,7 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 $keys = $user->sshKeys();
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 ?>
@@ -182,7 +182,7 @@ function validateSubmit()
 <?php include "tabs.js"; ?>
 
 <?php
-print "<h1>Add resources to GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
+print "<h1>Add Resources to GENI Slice " . "<i>" . $slice_name . "</i>" . "</h1>\n";
 
 // Put up a warning to upload SSH keys, if not done yet.
 if (count($keys) == 0) {

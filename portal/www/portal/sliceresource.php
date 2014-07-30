@@ -90,14 +90,14 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 // show header and breadcrumbs
-show_header('GENI Portal: Slices',  $TAB_SLICES);
+show_header('GENI Portal: Add Resources to Slice (Results)',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
 // check that invocation ID actually points to a directory
 $dir_to_check = get_invocation_dir_name($invocation_user, $invocation_id);
 if(!is_dir($dir_to_check)) {
-    echo "<h1>Add Resources to GENI Slice: $slice_name</h1>";
+    echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
     echo "<p class='error'>Files and process data related to omni request <b>$invocation_user-$invocation_id</b> not found. Note that older files are periodically removed from the Portal, so it is possible that the files and process-related data have been deleted as part of routine maintenance.<br><br>For further help, please contact <a href='mailto:portal-help@geni.net'>Portal Help</a>.</p>";
     
     
@@ -126,7 +126,7 @@ if(!isset($am_id)) {
 
 include("sliceresource.js");
 
-echo "<h1>Add Resources to GENI Slice: $slice_name</h1>";
+echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
 echo "<div style='position:relative;'>";
 echo "<p style='margin-left:0px;'>Total run time: <b><span id='total_run_time'></span></b> ";
 echo "<br>Status: <span id='total_run_time_status'></span></p>";

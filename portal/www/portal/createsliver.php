@@ -65,9 +65,9 @@ if (! isset($slice)) {
 }
 
 // print header/breadcrumbs since we know slice information
-show_header('GENI Portal: Slices',  $TAB_SLICES);
+show_header('GENI Portal: Add Resources to Slice (Results)',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
-echo "<h1>Add Resources to GENI Slice: $slice_name</h1>";
+echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
 
 // get RSpec if tool-lookupids.php hasn't already gotten it
 // both will store contents of RSpec in $rspec
