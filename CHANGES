@@ -12,8 +12,8 @@
    * Refactor `slice-add-resources` to use a table for display
    * Disable `Reserve Resources` until you pick an RSpec
    * Include `Manage RSpecs` as a tab on the `Add Resources`
-     page.
-   * Add searching and sorting to `Manage RSpecs`
+     page. (#412)
+   * Add searching and sorting to `Manage RSpecs` (#228, #467)
  * Warn that the Raw status link refetches status. (#764)
  * Mention 'manifest' and 'xml' on Details page. (#475)
  * Cleanly redirect to the referer on the KM activate page,
