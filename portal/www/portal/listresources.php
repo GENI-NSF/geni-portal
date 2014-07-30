@@ -135,8 +135,8 @@ if ($pretty) {
 
 }
 
-print "<p><a id='rawResource' style='cursor: pointer;'>Show Raw Resource Specification</a></p>";
-print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'>Hide Raw Resource Specification</a></p>";
+print "<p><a id='rawResource' style='cursor: pointer;'>Show Raw XML Resource Specification (Manifest)</a></p>";
+print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'>Hide Raw XML Resource Specification (Manifest)</a></p>";
 print "<hr/><p>";
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";

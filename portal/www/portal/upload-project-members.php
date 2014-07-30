@@ -134,6 +134,8 @@ if ($error != NULL || count($_POST) == 0) {
   print "<pre style='margin-left:80px;'>jsmith@geni.net, Joe Smith, Admin\n";
   print "mbrown@geni.net, Mary Brown</pre>";
 
+  print "<p>For an explanation of the different project roles, see the <a href='http://groups.geni.net/geni/wiki/GENIGlossary#Project'>GENI Glossary</a>.</p>";
+
   print '<form action="upload-project-members.php?project_id=' . $project_id . '" method="post" enctype="multipart/form-data">';
   print '  <p><b><label for="file">Upload CSV File:</label></b>';  
   print '  <input type="file" name="file" id="file" />';
@@ -185,9 +187,10 @@ if (array_key_exists('file', $_FILES)) {
 // include("tool-breadcrumbs.php");
 // include("tool-showmessage.php");
   print("<h2>Upload Project Members</h2>\n");
-  print "<b>Action Legend</b><br/>";
+  print "<p>Add or invite project members. For an explanation of the different roles, see the <a href='http://groups.geni.net/geni/wiki/GENIGlossary#Project'>GENI Glossary</a>.</p>";
+  print "<p><b>Action Legend</b><br/>";
   print "<b>Add as ...</b> Candidates who already use the portal will be added to your project with the specified role immediately.<br/>";
-  print "<b>Invite as ...</b> Others will receive an invitation email with instructions on joining your project.";
+  print "<b>Invite as ...</b> Others will receive an invitation email with instructions on joining your project.</p>";
 
 
 $project_members = get_project_members($sa_url, $user, $project_id);
