@@ -109,7 +109,7 @@ function show_rspec_chooser($user) {
 
 function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  print '<select name="am_id" id="agg_chooser">\n';
+  print '<select name="am_id" id="agg_chooser" onchange="am_onchange()">\n';
   echo '<option value="" title = "Choose an Aggregate">Choose an Aggregate...</option>';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
@@ -263,6 +263,8 @@ print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
 print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
+
+print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose File' to temporarily upload an RSpec for this reservation only.</p>";
 
 print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"

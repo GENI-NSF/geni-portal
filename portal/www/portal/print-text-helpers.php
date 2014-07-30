@@ -285,8 +285,10 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   foreach ($links as $link) {
   
     // for stitching, skip links that don't have component managers
-    if(!isset($link->component_manager)) {
-        continue;
+    if($num_stitching) {
+        if(!isset($link->component_manager)) {
+            continue;
+        }
     }
     
     $comp_mgrs = $link->component_manager;

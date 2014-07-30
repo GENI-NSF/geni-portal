@@ -164,7 +164,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   $headers = "Reply-To: $email" . "\r\n" . $cc . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
   
   mail($lead->prettyEmailAddress(),
-       "Join GENI project $project_name?",
+       "Request to Join GENI project $project_name",
        $message, $headers);
        
   // We could supply the -f arg to make bounces go back to this portal user,

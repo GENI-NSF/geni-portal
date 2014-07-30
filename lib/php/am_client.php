@@ -84,7 +84,9 @@ function write_ssh_keys($for_user, $as_user, $dir)
   foreach ($ssh_keys as $key_info)
     {
       $key = $key_info['public_key'];
-      $tmp_file = writeDataToTempDir($dir, $key, "ssh-key-" . $for_user->username);
+      // user could have more than one key, so append a unique ID
+      $tmp_file = writeDataToTempDir($dir, $key, "ssh-key-" . 
+            $for_user->username . "-" . uniqid());
       $result[] = $tmp_file;
     }
   return $result;
@@ -610,7 +612,7 @@ function invoke_omni_function($am_url, $user, $args,
         //unlink($omni_log_file);
         //unlink($omni_stderr_file);
      }
-          error_log("Returning output2 : " . print_r($output2, True));
+     //     error_log("Returning output2 : " . print_r($output2, True));
      return $output2;
 }
 
