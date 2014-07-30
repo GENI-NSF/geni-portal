@@ -35,6 +35,11 @@ if (array_key_exists('id', $_GET)) {
   $rspec_id = $_GET['id'];
 }
 
+$strip_comments = NULL;
+if (array_key_exists('strip_comments', $_GET)) {
+  $strip_comments = $_GET['strip_comments'];
+}
+
 if (is_null($rspec_id)) {
   relative_redirect('home.php');
 }
@@ -49,6 +54,16 @@ if (is_null($rspec)) {
   // Set headers for xml
   header("Cache-Control: public");
   header("Content-Type: text/xml");
-  print $rspec;
+  if($strip_comments) {
+    print strip_comments($rspec);
+  }
+  else {
+    print $rspec;
+  }
 }
+
+function strip_comments($rspec) {
+    return preg_replace('/<!--(.*)-->/Uis', '', $rspec);
+}
+
 ?>

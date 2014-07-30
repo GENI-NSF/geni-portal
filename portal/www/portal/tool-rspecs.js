@@ -3,7 +3,7 @@
 function showViewerContainer(rspec_id, rspec_name) {
     $.ajax({
         type: "GET",
-        url: "rspecview.php?id="+rspec_id,
+        url: "rspecview.php?id="+rspec_id+"&strip_comments=true",
         dataType: "xml",
         success: function(data) {
             updateJacksContainer(data, rspec_id, rspec_name);
