@@ -254,12 +254,6 @@ function validateBugReportSubmit()
 <h2>Command</h2>
 <pre id='command_data_container'><span id='command_data'></span></pre>
 
-
-
-<h2>Statistics</h2>
-<h3>PID</h3>
-<p><b><span id='pid_pid'></span></b></p>
-
 </div>
 
 <!-- end tab content -->

@@ -12,7 +12,6 @@ start_time = "";
 stop_time = "";
 
 $( document ).ready( function() {
-    getPID(user, id, slice_id);
     getCommand(user, id, slice_id);
     getRequestRSpec(user, id, slice_id);
     getStartTime(user, id, slice_id);
@@ -168,16 +167,6 @@ function getStartTime(invocationUser, invocationID, sliceID) {
                 $("#start_time").html(data.obj);
                 // update global variable start_time
                 start_time = data.obj;
-            }
-        });
-}
-
-function getPID(invocationUser, invocationID, sliceID) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=pid',
-        function(data) {
-            if(data.code == 0) {
-                $("#pid_pid").html(data.obj);
             }
         });
 }
