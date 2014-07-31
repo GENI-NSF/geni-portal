@@ -137,6 +137,7 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
             $retVal = get_omni_invocation_pid($invocation_dir);
             break;
         case "command":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_command($invocation_dir, $raw);
             break;
         case "console":
