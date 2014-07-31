@@ -218,13 +218,13 @@ if($retVal) {
     $log_attributes = array_merge($project_attributes, $slice_attributes);
     if($stitch_rspec) {
         log_event($log_url, $user,
-            "Add resource request submitted to slice " . $slice_name . " from " .
+            "Add resource request submitted for slice " . $slice_name . " from " .
             "stitching RSpec.<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }
     else {
         log_event($log_url, $user,
-            "Add resource request submitted to slice " . $slice_name . " at " . 
+            "Add resource request submitted for slice " . $slice_name . " at " . 
             $AM_name . ".<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }
