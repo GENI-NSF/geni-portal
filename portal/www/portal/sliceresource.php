@@ -137,6 +137,7 @@ echo "</div></div>";
 
   <div id='tablist'>
 		<ul class='tabs'>
+			<li><a href='#tab_results'>Results</a></li>
 			<li><a href='#tab_progress'>Detailed Progress</a></li>
 			<li><a href='#tab_request_rspec'>Request RSpec</a></li>
 			<li><a href='#tab_manifest_rspec'>Manifest RSpec</a></li>
@@ -147,6 +148,11 @@ echo "</div></div>";
 
 <!-- begin tab content -->
 <div class='tabContent'>
+
+<!-- resource 'tab' - this is empty so that the results (which always appear on
+     each tab) will show at the top -->
+<div id='tab_results'>
+</div>
 
 <!-- progress tab -->
 <div id='tab_progress'>
@@ -283,7 +289,7 @@ else {
 
 <?php
 
-include "sliceresource-tabs.js";
+include "tabs.js";
 include("footer.php");
 
 ?>

@@ -164,7 +164,6 @@ dist_svcweb_DATA = \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
 	www/portal/sliceresource.js \
-	www/portal/sliceresource-tabs.js \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
