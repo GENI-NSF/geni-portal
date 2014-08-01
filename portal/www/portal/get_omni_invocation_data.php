@@ -661,12 +661,6 @@ function make_pretty_stdout($retVal, $am_id) {
         // probably XML, so send to print_rspec_pretty
         // Note: prints/echos are sent to output buffer; this captures that
         if ($obj != "" ) {
-        
-            // load GENI user so we can call service registry
-            $user = geni_loadUser();
-            if (!isset($user) || is_null($user) || ! $user->isActive()) {
-                exit_with_response("User not logged in.");
-            }
             
             // set AM if exists
             if($am_id) {
