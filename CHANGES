@@ -17,7 +17,7 @@
  * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
  * Add comments about new error messages in WiMAX (#1077)
  * WiMAX user and group names now start with "geni-". (#1094)
-  * Added new project attribute for the wimax group name.
+  * Added new project attribute for the `wimax_group_name`.
 
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
