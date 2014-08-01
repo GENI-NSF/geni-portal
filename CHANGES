@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.18.1 ==
+ * When displaying a stitching RSpec, do not filter results by AM. (#1130)
+
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
