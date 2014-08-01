@@ -12,6 +12,8 @@
    * Store request RSpecs (#164)
    * Show request RSpec used in a slice (#165)
    * Store manifest RSpecs (#225)
+   * New tabbed results page shows logs of allocations
+   * Go back to view previous allocation logs/results via link in "Recent Messages"
  * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
  * Add comments about new error messages in WiMAX (#1077)
  * WiMAX user and group names now start with "geni-". (#1094)
