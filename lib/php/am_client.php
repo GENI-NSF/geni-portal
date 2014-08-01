@@ -582,10 +582,11 @@ function invoke_omni_function($am_url, $user, $args,
                 error_log("am_client invoke_omni_function: " .
                     "stderr file non-empty. Check " . $omni_stderr_file .
                     " for more information");
-                // uncomment the next line to append stderr contents to what
-                // users will see
-                // FIXME: Ticket 1086: parsing stderr
-                //$output .= $error_file_contents;
+                
+                // parse error file contents
+                $error = trim(preg_replace("/Traceback(.*)OmniError\:/s", "", $error_file_contents, -1 ));
+                $error = trim(preg_replace("/Traceback(.*)StitchingError\:/s", "", $error, -1 ));
+                $output .= $error;
            }
            fclose($error_file);
        }
