@@ -61,7 +61,7 @@ function updateDebugLog(invocationUser, invocationID, sliceID, offset) {
 
 function getXMLResults(invocationUser, invocationID, sliceID, amID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&am_id='+amID+'&request=stdout&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&am_id='+amID+'&request=filteredmanifestrspec&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
@@ -75,7 +75,7 @@ function getXMLResults(invocationUser, invocationID, sliceID, amID) {
 function updateJacks(invocationUser, invocationID, sliceID) {
     // send Jacks the raw manifest RSpec
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=manifestrspecjacks',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=filteredmanifestrspec',
         function(data) {
             if(data.code == 0 && data.obj) {
                 thisInstance = new window.Jacks({
