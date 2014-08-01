@@ -131,15 +131,6 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     return;
   }
 
-    /*
-        Stitching logic:
-            If <stitching> element is included in XML, then pass back nodes and
-            links that have a sliver_id attached to them regardless of the AM.
-    */
-    if($num_stitching > 0) {
-        $filterToAM = False;
-    }
-
   $nodes_text = "<b>".$num_nodes."</b> node";
   if ($num_nodes!=1) {
     $nodes_text = $nodes_text."s";
