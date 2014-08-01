@@ -211,11 +211,12 @@ header("Content-Type: text/xml");
 //$obj2 = trim($obj);
 if ($obj != "" ) {
    $manifestOnly=True;
-   $filterToAM = True;
     if(!$stitch_rspec) {
+        $filterToAM = True;
         $arg_urn = am_urn($am_url);
     }
     else {
+        $filterToAM = False;
         $arg_urn = "";
     }
    $obj2 = print_rspec_pretty($obj, $manifestOnly, $filterToAM, $arg_urn);

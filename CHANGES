@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.18.1 ==
+ * When displaying a stitching RSpec, do not filter results by AM. (#1130)
  * Show the text of any Omni or Stitching error coming
    in stderr to the user to explain any failure. (#1131)
 
