@@ -36,6 +36,7 @@ require_once("proj_slice_member.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
 require_once("tool-rspec-parse.php");
+require_once("omni_invocation_constants.php");
 
 /*
     STEP 1: VERIFY

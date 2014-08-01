@@ -32,6 +32,7 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("am_map.php");
 require_once("sa_client.php");
+require_once("omni_invocation_constants.php");
 
 /*
     get_omni_invocation_data.php

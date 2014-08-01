@@ -34,6 +34,7 @@ require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once('cert_utils.php');
 require_once('cs_constants.php');
+require_once("omni_invocation_constants.php");
 
 //Constants defined for proc_open
 //String used for msg to return - in some UI - this is the message that is displayed
