@@ -145,7 +145,7 @@ function getErrorLog(invocationUser, invocationID, sliceID) {
                 // set 'Last updated:' to 'Failed at:'
                 $("#last_updated_or_finished_text").html("Failed at:");
                 // update 'Results' section to reflect this
-                $("#prettyxml").html("<p><i>Failed. See 'Detailed Progress' tab for more information.</i></p>");
+                $("#prettyxml").html("<p><b>Error:</b> Failed to create a sliver.<br><br><i>"+data.msg+"</i></p>");
                 // update 'Advanced' tab with results of omni-stderr
                 $("#error_data").html(data.obj);
                 // allow for error log to be downloaded

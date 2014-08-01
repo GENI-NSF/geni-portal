@@ -393,6 +393,14 @@ function get_omni_invocation_debug_log($dir, $raw=true, $offset=0) {
 function get_omni_invocation_error_log($dir, $raw=true) {
     $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
             "error log");
+    
+    // parse out what the error actually is and return this in the msg field
+    if($retVal['obj']) {
+        // match on either OmniError or StitchingError
+        $retVal['msg'] = trim(preg_replace("/Traceback(.*)OmniError\:/s", "", $retVal['obj'], -1 ));
+        $retVal['msg'] = trim(preg_replace("/Traceback(.*)StitchingError\:/s", "", $retVal['msg'], -1 ));
+    }
+
     return $raw ? $retVal : make_pretty_code($retVal);
 }
 
