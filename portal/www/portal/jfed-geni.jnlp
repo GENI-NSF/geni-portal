@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp
+    xmlns:jfx="http://javafx.com"
+    spec="1.0+"
+    href="jfed-geni.jnlp"
+    >
+  <information>
+    <title>jFed Experimenter Toolkit</title>
+    <vendor>iMinds</vendor>
+    <homepage href="http://jfed.iminds.be"/>
+    <description>A toolkit to create and execute experiments on testbeds</description>
+  <icon href="images/jfed-logo.png" />
+
+  </information>
+  <security>
+     <all-permissions/>
+  </security>
+  <resources>
+    <jfx:javafx-runtime version="2.2+" href="http://javadl.sun.com/webapps/download/GetFile/javafx-latest/windows-i586/javafx2.jnlp"/>
+  </resources>
+  <resources>
+    <j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se" />
+         
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/experimenter-gui-5.0.1-SNAPSHOT.jar" main="true"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/preloader-gui-5.0.1-SNAPSHOT.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/library-5.0.1-SNAPSHOT.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/geni-rspec-binding-5.0.1-SNAPSHOT.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/httpclient-4.2.2.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/commons-codec-1.6.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/xmlsec-1.5.7.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/xercesImpl-2.9.1.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/xml-apis-1.3.04.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/xmlrpc-2.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/ganymed-ssh-2-modified-for-jfed-5.0.1-SNAPSHOT.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/log4j-api-2.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/log4j-core-2.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/log4j-1.2-api-2.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/highlevel-library-5.0.1-SNAPSHOT.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/rspec-5.0.1-SNAPSHOT.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/jaxb-api-2.2.11.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/jaxb-impl-2.2.7.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/jaxb-core-2.2.7.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/istack-commons-runtime-2.16.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/FastInfoset-1.2.12.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/jsr173_api-1.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/xmlunit-1.4.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/protobuf-java-2.5.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/json-20140107.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/base-gui-5.0.1-SNAPSHOT.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/commons-io-2.4.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/log4j-to-slf4j-2.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/slf4j-api-1.7.7.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/httpmime-4.2.2.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/httpcore-4.2.2.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/logback-classic-1.0.13.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/logback-core-1.0.13.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/fonts-fontawesome-3.2.3.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/guava-16.0.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/joda-time-2.3.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/jsr305-2.0.1.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/commons-configuration-1.10.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/commons-logging-1.1.1.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/commons-lang-2.6.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/commons-collections-3.2.1.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/jsch-0.1.50.jar"/>
+    <jar href="http://jfed.iminds.be/releases/geni-portal/webstart/experimenter/lib/dnsjava-2.1.6.jar"/>
+
+     
+  </resources>
+    <applet-desc  width="100" height="100" main-class="com.javafx.main.NoJavaFXFallback"  name="Fallback" >
+      <param name="requiredFXVersion" value="2.2+"/>
+    </applet-desc>
+    <jfx:javafx-desc main-class="be.iminds.ilabt.jfed.experimenter_gui.Launch" name="jFed Experimenter Toolkit"
+         preloader-class="be.iminds.ilabt.jfed.JFedPreloader">
+		 </jfx:javafx-desc>
+    <update check="always"/>
+</jnlp>
