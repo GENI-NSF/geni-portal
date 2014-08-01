@@ -4,6 +4,10 @@
 
 = GENI Portal Release Notes =
 
+== 2.18.1 ==
+ * Show the text of any Omni or Stitching error coming
+   in stderr to the user to explain any failure. (#1131)
+
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
