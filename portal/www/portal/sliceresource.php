@@ -111,8 +111,9 @@ if(!is_dir($dir_to_check)) {
 }
 
 // set e-mail footer message
-$bug_report_msg1 = "Attached is an omni process bug report generated from the GENI Portal (https://portal.geni.net/). This bug report contains process-related information such as log files, resource specifications (RSpecs) and metadata.<br><br>User message:";
+$bug_report_msg1 = "Attached is a bug report about reserving resources generated from the GENI Portal (https://portal.geni.net/). This bug report contains process-related information such as log files, resource specifications (RSpecs) and metadata.<br><br>User message:";
 $bug_report_msg2 = "Thanks,<br>" . $user->prettyName();
+$bug_report_subject = "GENI Portal Reservation Bug Report";
 
 /*
     since AM ID is optional for this page, it needs to be explicitly
@@ -209,7 +210,14 @@ function validateBugReportSubmit()
 
 <h2>Send a Bug Report</h2>
 <p>Fill out the following form to send a bug report. Bug reports will include the <b>progress log</b>, <b>debug log</b>, <b>error log</b>, <b>request RSpec</b>, and <b>process information</b>.</p>
-<p>User-sensitive information, such as slice credentials, certificates, and private keys, will <i>not</i> be included.</p>
+<p>Suggestions for what to include in the bug report message:</p>
+<ul>
+<li>What did you do?</li>
+<li>What did you expect to happen?</li>
+<li>What did happen?</li>
+</ul>
+<p>Security-sensitive information (slice credentials, certificates, and private keys) <i>will not</i> be included, but user-identifiable information (name, e-mail, slice/project information, RSpecs used) will be included.</p>
+<p>To report general problems, try e-mailing <a href="mailto:geni-users@googlegroups.com">geni-users@googlegroups.com</a> or writing to the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">GENI Users Group</a>.</p>
 
 <form id="f1" action="send_bug_report.php" method="post" enctype="multipart/form-data" onsubmit="return validateBugReportSubmit()">
 <input type="hidden" name="invocation_id" id="invocation_id" value="<?php echo $invocation_id;?>"/>
@@ -220,6 +228,10 @@ function validateBugReportSubmit()
 <tr>
 <th>From</th>
 <td><b><?php echo $user->prettyName() . " &lt;" . $user->email() . "&gt;"; ?></b> (Copy me on the bug report e-mail:<input type="checkbox" name="copy" id='copy' value="true"/>)</td>
+</tr>
+<tr>
+<th>Subject</th>
+<td><b><?php echo $bug_report_subject; ?></b></td>
 </tr>
 <tr>
 <th>To<br><small>(Required)</small></th>

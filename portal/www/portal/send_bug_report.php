@@ -202,11 +202,22 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     else {
         send_bug_report_error("Bug report files could not be zipped in an archive. Bug report not sent.");
     }
-
+    
+    // prepare metadata
+    $metadata = "";
+    $metadata_file = "$omni_invocation_dir/metadata-email";
+    if(is_file($metadata_file) && filesize($metadata_file)) {
+        $metadata_json_string = file_get_contents($metadata_file);
+        $metadata_array = json_decode($metadata_json_string, True);
+        foreach($metadata_array as $key => $value) {
+            $metadata .= "$key: $value\n";
+        }
+    }
+    
     // set up e-mail
     $boundary_string = md5(date('r', time()));
     $from = "\"" . $user->prettyName() . " (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
-    $subject = "GENI Portal Omni Bug Report";
+    $subject = "GENI Portal Reservation Bug Report";
     
     $headers   = array();
     $headers[] = "MIME-Version: 1.0";
@@ -228,14 +239,17 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 
-Attached is an omni process bug report generated from the GENI Portal
-(https://portal.geni.net/). This bug report contains process-related
-information such as log files, resource specifications (RSpecs) and
-metadata.
+Attached is a bug report about reserving resources generated from the
+GENI Portal (https://portal.geni.net/). This bug report contains
+process-related information such as log files, resource specifications
+(RSpecs) and metadata.
 
 User message:
 <?php echo $custom_message; ?>
 
+
+Process metadata:
+<?php echo $metadata; ?>
 
 Thanks,
 <?php echo $user->prettyName(); ?>

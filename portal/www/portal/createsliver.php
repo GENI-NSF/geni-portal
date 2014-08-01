@@ -186,6 +186,20 @@ $metadata = array(
     );
 $metadata_file = writeDataToTempDir($omni_invocation_dir, json_encode($metadata), "metadata");
 
+/* write out metadata file that will be included in the body of a bug
+   report e-mail - adjust this as necessary */
+$metadata_email_report = array(
+    'User name' => $user->prettyName(),
+    'User username' => $user->username,
+    'Slice URN' => $slice_urn,
+    'Slice name' => $slice_name,
+    'Project name' => $project_name,
+    'Aggregate manager URL' => $am_url,
+    'Aggregate manager name' => $AM_name,
+    'Request submitted' => date('r')
+    );
+$metadata_email_report_file = writeDataToTempDir($omni_invocation_dir, json_encode($metadata_email_report), "metadata-email");
+
 /*
     STEP 3: CALL AM CLIENT
     Call create_sliver() in am_client.php and get a return code back.
