@@ -200,7 +200,7 @@ function getManifestRSpec(invocationUser, invocationID, sliceID) {
                 // allow manifest to be downloaded
                 $("#download_manifestrspec").removeAttr('disabled');
                 // display note about 'Results current as of...'
-                $("#results_stop_msg").html("<p><i>Note that the results are current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted.</i></p>");
+                $("#results_stop_msg").html("<p><i>Note that the results are current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted. Check the <a target='_blank' href='listresources.php?slice_id="+slice_id+"'>slice resources page</a> for the most up-to-date results about your slice's current allocated resources.</i></p>");
             }
         });
 }
