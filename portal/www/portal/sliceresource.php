@@ -280,6 +280,11 @@ else {
 <script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
 <div id='jacksContainer' class='jacks resources' style='background-color: white;display: none;'></div>
 
+<div id='results_manifest_link'></div>
+<p>
+<a href="slices.php">Back to All slices</a><br>
+<a href="slice.php?slice_id=<?php echo $slice_id; ?>">Black to Slice <i><?php echo $slice_name; ?></i></a>
+</p>
 
 <?php
 

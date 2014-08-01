@@ -201,6 +201,8 @@ function getManifestRSpec(invocationUser, invocationID, sliceID) {
                 $("#download_manifestrspec").removeAttr('disabled');
                 // display note about 'Results current as of...'
                 $("#results_stop_msg").html("<p><i>Note that the results are current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted. Check the <a target='_blank' href='listresources.php?slice_id="+slice_id+"'>slice resources page</a> for the most up-to-date results about your slice's current allocated resources.</i></p>");
+                // display link to get raw manifest RSpec
+                $("#results_manifest_link").html("<p><a href='#tab_manifest_rspec'>Show Raw XML Resource Specification (Manifest)</a></p>");
             }
         });
 }
