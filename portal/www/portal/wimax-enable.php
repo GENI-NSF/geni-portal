@@ -56,6 +56,52 @@ $pi_can_change_project = False;
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
+/**
+As of 6/25/14, known error codes:
+  ERROR1 = 'ERROR 1: UID and OU and DC match'
+Means portal tried to add a user that already exists. Handled explicitly.
+  ERROR2 = 'ERROR 2: UID and DC match but OU is different'
+Means trying to change project. Shouldn't happen, but code checks for this
+  ERROR3 = 'ERROR 3: UID matches but DC and OU are different'
+Member username exists from different authority. Code tries to pick a different username.
+  ERROR4 = 'ERROR 4: UID and OU match but DC is different'
+Seems to imply that group ou must be unique for both local and portal created groups? Huh?
+FIXME FIXME
+  ERROR5 = 'ERROR 5: User DN not known:'
+Handled explicitly when trying to deleteUser, changeLeader, changeProject
+  ERROR6 = 'ERROR 6: Cannot delete user: User is a admin for'
+Handled explicity in deleteUser
+  ERROR7 = 'ERROR 7: Project DN not known:'
+Handled explicitly in deleteProject, changeLeader, changeProject
+  ERROR8 = 'ERROR 8: Project not deleted because it contains admin(s):'
+Handled explicitly in deleteProject
+  ERROR9 = 'ERROR 9: Cannot move users: different DCs'
+Theoretically could happen from changeProject if I'm trying to move a user not created
+by the portal to a different project. Shouldn't happen.
+  ERROR10 = 'ERROR 10: Missing OU LDIF entry'
+Malformed LDIF
+  ERROR11 = 'ERROR 11: Missing groupname attribute in OU entry'
+Malformed LDIF
+  ERROR12 = 'ERROR 12: Missing objectClass attribute (organizationalUnit/organizationalRole/organizationalUnit) for'
+Malformed LDIF
+  ERROR20 = 'ERROR 20: Group exists'
+Tried to create a group that already exists.
+FIXME: I need to handle this (see comments below).
+  ERROR21 = 'ERROR 21: Missing PI mail:'
+Malformed LDIF. Note all users must have an email address.
+  ERROR22 = 'ERROR 22: Missing PI sshpublickey:'
+Malformed LDIF. Note we explicitly require users have an SSH key.
+
+  ERROR30 = 'ERROR 30: Missing username (UID)'
+Malformed LDIF.
+  ERROR31 = 'ERROR 31: Organization does not egist for this user. Missing organization LDIF entry'
+FIXME: I need to handle this (see comments below). This means I tried to add a user to a group that doesn't exist.
+  ERROR32 = 'ERROR 32: Missing user mail:'
+Malformed LDIF. Not all portal users must have an email address.
+  ERROR33 = 'ERROR 33: Missing user sshpublickey:'
+Malformed LDIF. Note we explicitly require users have an SSH key.
+**/
+
 /* function project_is expired
     Checks to see whether project has expired
     Returns false if not expired, true if expired
@@ -330,6 +376,9 @@ function wimax_change_group($ldif_project_name, $ldif_user_username, $ldif_user_
     //    return false;
     return "Internal Error: WiMAX group $ldif_project_name not found";
   }
+  // Technically, this error could be returned. But I don't see how this could could cause this. It would mean that the user's 
+  // existing group is a different DC - and yet the user was found successfully.
+  // ERROR 9: Cannot move users: different DCs
   return true;
 }
 
@@ -803,6 +852,19 @@ if (array_key_exists('project_id', $_REQUEST))
 	  $usernameTaken = True;
 	}
       }
+      // FIXME: Handle:
+      //  ERROR20 = 'ERROR 20: Group exists'
+      // This means that the project/group already exists
+      // Update local state to note that the group exists, take out the ldif to create the group, and try again?
+      // But my local state needs to know who the admin is. Use the new sync function to retrieve the info, update the local state, and put the user back on the original wimax page but with an error message?
+
+      // FIXME: Handle:
+      //  ERROR31 = 'ERROR 31: Organization does not egist for this user. Missing organization LDIF entry'
+      // This means that the local db thought the group exists, but wimax thinks it does not.
+      // Update local state to say the group does not exist and send the ldif to create it and try again
+      // But careful - who else thinks they are in this group? Who should be the group lead?
+      // Maybe use the sync function to update local state and go back to the wimax page with an error message?
+
     } // end of while loop to retry on username taken
     
     // CHECK REPLY FROM SENDER
@@ -1276,24 +1338,50 @@ P7
         echo "<td>$lead_name</td>";
         echo "<td>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE]}</td>";
         echo "<td>";
-        $enabled = $proj["enabled"];
+        $enabled = $proj["enabled"]; // Is project WiMAX enabled in our DB?
 
+	// See case 6 below
 	if ($enabled and ! isset($ldif_user_group_id)) {
-	  error_log("Project enabled but user has no group? Delete Wimax Group " . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]);
+	  // Project enabled but lead has no group
+	  // Could be the project lead changed and old lead is the admin. In this case right thing
+	  // is to create this user as member of that group and then change admin
+	  // Else we have real data sync problem, and we need to know what orbit has and make ours match. And then
+	  // If it still makes no sense, delete it all? Or what?
+	  // Need util functions to create user and changeAdmin. 
+	  // We should prefer to create users&groups to fix the problem rather than delete.
+	  // So check who we think admin is, and then create user and optionally change admin. If createUser fails,
+	  // then we need to know what group orbit things the user is in if they exist and try to match that possibly.
+	  // And if changeAdmin fails then similarly
+
+	  // FIXME!!
+	  // Check what orbit has and sync state.
+	  // Check if admin we list is diff. Then maybe I just need to create the user and change admin
+	  // If admin is same, then maybe create the user in that group?
+
+	  // Old code:
+	  // Lead has no WiMAX group then their project cannot be enabled
+	  error_log("Project enabled but lead has no group? Delete Wimax Group " . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]);
 	  $res = wimax_delete_group($proj_name);
 	  if (true === $res) {
 	    // mark project as not wimax enabled
 	    remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
 	    $enabled = False;
 	  } else {
-	    // Failed to delete WiMAX user whose portal project is expired
+	    // Failed to delete WiMAX group whose portal LEAD has no WiMAX group
 	    // FIXME FIXME
 	    // Could go back to the wimax-enable page with an internal error message, using $res?
-	    error_log("Wimax failed to delete group $proj_name so left project attributes alone");
+	    error_log("Wimax failed to delete group $proj_name whose portal lead is not wimax enabled so left project attributes alone");
 	  }
 	}
+
+	// See case 5 below
 	if (! $enabled and isset($ldif_user_group_id) and $ldif_user_group_id==$proj_id) {
-	  error_log("Proj " . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " not enabled but user lists that proj_id as their WiMAX group - delete user $ldif_user_username");
+	  error_log("Proj " . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . " not enabled but lead lists that proj_id as their WiMAX group - delete user $ldif_user_username");
+
+	  // Could create the group with this user as admin. But it's strange that we are in this state. It suggests something broke earlier. We probably
+	  // want to get the orbit state, sync up with what they have. Cause that might fix it. If not, crete the group or delete the user.
+	  // We should prefer to create the group rather than delete the user (who might be doing real work)
+
 	  $res = wimax_delete_user($ldif_user_username, $proj_name);
 	  if (true === $res) {
 	    // Change relevant MA attribute
@@ -1303,7 +1391,7 @@ P7
 	  } else {
 	    // FIXME: WiMAX has the user, we want them deleted.
 	    // FIXME FIXME Use $res
-	    error_log("Failed to delete wimax user $ldif_user_username, so left ma_member_attributes alone");
+	    error_log("Failed to delete wimax user $ldif_user_username who listed project $proj_name as their group but the group is not listed as wimax enabled, so left ma_member_attributes alone");
 	  }
 	}
 
@@ -1335,10 +1423,53 @@ P7
 	  // Action: WiMAX Enabled and Request Login
           echo "<input type='radio' name='project_id' value='" . $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID]
 	    . "' > Enable project {$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} for WiMAX and select it as your WiMAX project";
+	}
+	// Error cases follow
+	// case 5
+	// Note we specifically test for this above and try to resolve it by deleting the user
+	else if (! $enabled and isset($ldif_user_group_id) and $ldif_user_group_id === $proj_id) {
+	  // FIXME FIXME
+	  // Error. Portal DB thinks this project is the WiMAX group for this user, but that this project is not WiMAX enabled.
+	  // Internal state problem in portal DB.
+	  // If we got here, we failed to fix the problem above
+	  // FIXME: Try a different solution than is done above
+	  error_log("Portal DB says project $proj_name is the WiMAX Group for this user, but that the project has no WiMAX group (not WiMAX enabled)");
+	  // FIXME
+	  // Ask Orbit
+	  // Update our state to match orbit and do case 1-4 as appropriate. 
+	  // If orbit agrees with this mismatch:
+	  // create the group with this user as admin
+	  echo "Internal error: Cannot enable this project";
+	} 
+	// case 6
+	// Note we specifically test for this above and try to resolve it by deleting the group
+	else if ($enabled and ! isset($ldif_user_group_id)) {
+	  // FIXME FIXME
+	  // Project says it is WiMAX enabled (group exists), but this user - the lead of that project - says they are not WiMAX enabled yet
+	  error_log("Portal DB says project $proj_name has a WiMAX group, but the project lead does not have a WiMAX account");
+	  // Who does the project in our DB say is the wimax group admin? Maybe the project lead changed.
+	  if ($proj["admin_id"] !== $user->account_id) {
+	    error_log("Portal DB says project admin is '" . $proj["admin_id"] . "', which is not this user (the project lead)");
+	    // FIXME
+	    // Ask Orbit and update our state to match
+	    // If now in case 1-4, handle that
+	    // If orbit agrees:
+	    // create the user in this group
+	    // do changeLead to make this user the admin of the wimax group
+	  } else {
+	    error_log("Portal DB says this user is the project WiMAX admin");
+	    // FIXME
+	    // Ask orbit and update our state to match
+	    // Do case 1-4 as approp
+	    // If orbit agrees:
+	    // create the user in this group
+	  }
+	  echo "Internal error: Cannot create your WiMAX account in this project";
 	} else {
-	  // Other logical cases can't happen: proj enabled but lead is not wimax enabled,
-	  // or project not enbled and lead is and is enabled for this project
+	  // Other unknown case
 	  error_log("huh? Got case in projects I lead that shouldn't happen. enabled=$enabled, ldif_user_group_id=$ldif_user_group_id, proj_id=$proj_id. Proj name: $proj_name");
+	  // FIXME: See ticket #1058
+	  echo "Unknown internal error";
 	}
         echo "</td>";
         echo "</tr>";

@@ -131,15 +131,6 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     return;
   }
 
-    /*
-        Stitching logic:
-            If <stitching> element is included in XML, then pass back nodes and
-            links that have a sliver_id attached to them regardless of the AM.
-    */
-    if($num_stitching > 0) {
-        $filterToAM = False;
-    }
-
   $nodes_text = "<b>".$num_nodes."</b> node";
   if ($num_nodes!=1) {
     $nodes_text = $nodes_text."s";
@@ -191,7 +182,14 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $host=$node->host;
     $services=$node->services;
     $logins=$services->login;
-    echo "<b>Node #",$node_num," (at ",get_auth_from_urn($comp_mgr_id),"):</b>";
+    // don't display authority info if filtering by AM since it's assumed that
+    // the AM info will be mentioned elsewhere
+    if($filterToAM) {
+        echo "<b>Node #",$node_num,":</b>";
+    }
+    else {
+        echo "<b>Node #",$node_num," (at ",get_auth_from_urn($comp_mgr_id),"):</b>";
+    }
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";
     echo "<th>Component ID</th>\n";

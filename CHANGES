@@ -4,6 +4,24 @@
 
 = GENI Portal Release Notes =
 
+== 2.19 ==
+ * Fork omni/stitcher processes (#1106)
+   * omni/stitching calls from create_sliver run asynchronously
+   * Keep temporary files after creating slivers
+   * Add bug reporting feature
+   * Store request RSpecs (#164)
+   * Show request RSpec used in a slice (#165)
+   * Store manifest RSpecs (#225)
+   * New tabbed results page shows logs of allocations
+   * Go back to view previous allocation logs/results via link in "Recent Messages"
+ * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
+ * Add comments about new error messages in WiMAX (#1077)
+
+== 2.18.1 ==
+ * When displaying a stitching RSpec, do not filter results by AM. (#1130)
+ * Show the text of any Omni or Stitching error coming
+   in stderr to the user to explain any failure. (#1131)
+
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
