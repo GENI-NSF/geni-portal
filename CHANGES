@@ -19,6 +19,11 @@
  * WiMAX user and group names now start with "geni-". (#1094)
   * Added new project attribute for the `wimax_group_name`.
 
+== 2.18.1 ==
+ * When displaying a stitching RSpec, do not filter results by AM. (#1130)
+ * Show the text of any Omni or Stitching error coming
+   in stderr to the user to explain any failure. (#1131)
+
 == 2.18 ==
  * Add Resources: changing RSpec resets AM (#1108)
  * Add Stitching Allocate Resources Interface (#581)
