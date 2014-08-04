@@ -605,6 +605,7 @@ if (isset($user->ma_member->enable_wimax)) {
       }
       
       // Also delete the user
+      // Note that this call to the wimax server may give an error that there is no such user - harmless
       $res = wimax_delete_user($ldif_user_username, $old_group);
       // Change relevant MA attribute, local vars
       remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
