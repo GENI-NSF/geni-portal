@@ -284,9 +284,18 @@ function invoke_omni_function($am_url, $user, $args,
   // Should always talk to single AM
   if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
 
-  // Does the given URL handle speaks-for?
-  $handles_speaks_for = 
-    lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+  /* Does the given URL handle speaks-for?
+        If an AM URL is given, check the SR for whether SF is enabled.
+        If no AM URL is given but it's for stitching, just assume for now
+            that all AMs handle SpeaksFor and see what happens.
+  */
+  if($am_url) {
+    $handles_speaks_for = 
+        lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+  }
+  else {
+        $handles_speaks_for = True;
+  }
 
   /*
     If an aggregate doesn't handle speaks-for, 
