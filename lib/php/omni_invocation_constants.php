@@ -22,21 +22,37 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+/* Set of constants for managing omni invocation path
+   FIXME: Not currently used
+*/
+class OMNI_INVOCATION_DIRECTORY
+{
+  const DIRECTORY_ROOT = "/tmp/";
+  const DIRECTORY_PREFIX = "omni-invoke";
+}
+
 /* Set of constants for managing omni invocation files
  */
 class OMNI_INVOCATION_FILE
 {
-  const REQUEST_RSPEC_FILE = "rspec";
-  const CALL_RESULTS_FILE = "omni-stdout";
-  const METADATA_FILE = "metadata";
-  const COMMAND_FILE = "command";
-  const OMNI_CONFIGURATION_FILE = "omni-ini";
-  const LOGGER_CONFIGURATION_FILE = "logger.conf";
-  const PID_FILE = "omni-pid";
-  const DEBUG_LOG_FILE = "omni-log";
-  const CONSOLE_LOG_FILE = "omni-console";
-  const ERROR_LOG_FILE = "omni-stderr";
-  // these two are hard-coded in stitcher_php.py
+  const REQUEST_RSPEC_FILE = "request_rspec.xml";
+  const CALL_RESULTS_FILE = "omni_results.txt";
+  const METADATA_FILE = "metadata.json";
+  const METADATA_BUG_REPORT_EMAIL_FILE = "metadata-email.json";
+  const COMMAND_FILE = "omni_command.txt";
+  const OMNI_CONFIGURATION_FILE = "omni_configuration.txt";
+  const LOGGER_CONFIGURATION_FILE = "omni_logging_configuration.txt";
+  const PID_FILE = "omni_pid.txt";
+  const DEBUG_LOG_FILE = "omni_debug_log.txt";
+  const CONSOLE_LOG_FILE = "omni_console_log.txt";
+  const ERROR_LOG_FILE = "omni_error_log.txt";
+  const SLICE_CREDENTIAL_FILE = "slice_credential";
+  const SPEAKSFOR_CREDENTIAL_FILE = "speaksfor_credential";
+  const CERTIFICATE_FILE = "certificate";
+  const PRIVATE_KEY_FILE = "private_key";
+  const PUBLIC_SSH_KEY_PREFIX = "ssh-key";
+  const ZIP_ARCHIVE_PREFIX = "omni-invocation-bug-report";
+  // Note: These two below are hard-coded separately in stitcher_php.py
   const START_FILE = "start";
   const STOP_FILE = "stop";
 }

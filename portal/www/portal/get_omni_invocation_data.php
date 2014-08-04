@@ -349,7 +349,7 @@ function get_omni_invocation_file_raw_contents_offset($dir, $file,
     Get the PID from the omni invocation
 */
 function get_omni_invocation_pid($dir) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-pid", "PID file");
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::PID_FILE, "PID file");
     return $retVal;
 }
 
@@ -357,7 +357,7 @@ function get_omni_invocation_pid($dir) {
     Get the command called from the omni invocation
 */
 function get_omni_invocation_command($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-command", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::COMMAND_FILE, 
             "command file");
     return $raw ? $retVal : make_pretty_code($retVal);
 }
@@ -368,7 +368,7 @@ function get_omni_invocation_command($dir, $raw=true) {
     the command line.)
 */
 function get_omni_invocation_console_log($dir, $raw=true, $offset=0) {
-    $retVal = get_omni_invocation_file_raw_contents_offset($dir, "omni-console", 
+    $retVal = get_omni_invocation_file_raw_contents_offset($dir, OMNI_INVOCATION_FILE::CONSOLE_LOG_FILE, 
             "console log", $offset);
     return $raw ? $retVal : make_pretty_code($retVal);
 }
@@ -378,7 +378,7 @@ function get_omni_invocation_console_log($dir, $raw=true, $offset=0) {
     (This is the full log set to the DEBUG level.)
 */
 function get_omni_invocation_debug_log($dir, $raw=true, $offset=0) {
-    $retVal = get_omni_invocation_file_raw_contents_offset($dir, "omni-log", 
+    $retVal = get_omni_invocation_file_raw_contents_offset($dir, OMNI_INVOCATION_FILE::DEBUG_LOG_FILE, 
             "debug log", $offset);
     return $raw ? $retVal : make_pretty_code($retVal);
 }
@@ -387,7 +387,7 @@ function get_omni_invocation_debug_log($dir, $raw=true, $offset=0) {
     Get any error messages (stderr) from the omni invocation
 */
 function get_omni_invocation_error_log($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::ERROR_LOG_FILE, 
             "error log");
     
     // parse out what the error actually is and return this in the msg field
@@ -404,7 +404,7 @@ function get_omni_invocation_error_log($dir, $raw=true) {
     Get the request RSpec from the omni invocation
 */
 function get_omni_invocation_request_rspec($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "rspec", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::REQUEST_RSPEC_FILE, 
             "request RSpec");
     return $raw ? $retVal : make_pretty_code($retVal);
 }
@@ -423,7 +423,7 @@ function get_omni_invocation_request_rspec($dir, $raw=true) {
         pretty: pretty XML data table on 'Results' tab
 */
 function get_omni_invocation_filtered_manifest_rspec($dir, $raw=true, $am_id=NULL) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::CALL_RESULTS_FILE, 
             "stdout from stitcher.call");
             
     if($retVal['obj']) {
@@ -526,7 +526,7 @@ function get_omni_invocation_filtered_manifest_rspec($dir, $raw=true, $am_id=NUL
         pretty: HTMLified XML on 'Manfest RSpec' tab
 */
 function get_omni_invocation_manifest_rspec($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::CALL_RESULTS_FILE, 
             "stdout from stitcher.call (for manifest)");
             
     // get XML from obj
@@ -582,7 +582,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     $retVal = array();
 
     // get data from start file if it exists
-    $retValStart = get_omni_invocation_file_raw_contents($dir, "start", 
+    $retValStart = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::START_FILE, 
             "start time file");
     if($retValStart['code'] == 0) {
         $start_time = $retValStart['obj'];
@@ -593,7 +593,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     }
 
     // get data from stop file if it exists
-    $retValStop = get_omni_invocation_file_raw_contents($dir, "stop", 
+    $retValStop = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::STOP_FILE, 
             "stop time file");
     if($retValStop['code'] == 0) {
         // process is finished, so find the difference between start and stop
@@ -604,7 +604,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
         $retVal['code'] = 0;
         
         // check if omni-stderr is empty - if not, then process probably failed
-        $retValError = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
+        $retValError = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::ERROR_LOG_FILE, 
             "error log");
         if($retValError['code'] == 0) {
             $retVal['msg'] = "<b style='color:red;'>Failed</b>";
@@ -637,7 +637,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     Get the start time (if exists) from the omni invocation
 */
 function get_omni_invocation_start_time($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "start", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::START_FILE, 
             "start time file");
     return $raw ? $retVal : make_pretty_time($retVal);
 }
@@ -646,7 +646,7 @@ function get_omni_invocation_start_time($dir, $raw=true) {
     Get the stop time (if exists) from the omni invocation
 */
 function get_omni_invocation_stop_time($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "stop", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::STOP_FILE, 
             "stop time file");
     return $raw ? $retVal : make_pretty_time($retVal);
 }

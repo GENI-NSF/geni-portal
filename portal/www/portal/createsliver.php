@@ -161,7 +161,7 @@ $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
 // FIXME: This is the RSpec that will be used to call omni/stitcher.
 // See proto-ch ticket #164 for storing all request RSpecs
-$rspec_file = writeDataToTempDir($omni_invocation_dir, $rspec, "rspec");
+$rspec_file = writeDataToTempDir($omni_invocation_dir, $rspec, OMNI_INVOCATION_FILE::REQUEST_RSPEC_FILE);
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id);
@@ -185,7 +185,8 @@ $metadata = array(
     'Request browser' => $_SERVER['HTTP_USER_AGENT'],
     'Request submitted' => date('r')
     );
-$metadata_file = writeDataToTempDir($omni_invocation_dir, json_encode($metadata), "metadata");
+$metadata_file = writeDataToTempDir($omni_invocation_dir,
+        json_encode($metadata), OMNI_INVOCATION_FILE::METADATA_FILE);
 
 /* write out metadata file that will be included in the body of a bug
    report e-mail - adjust this as necessary */
@@ -199,7 +200,9 @@ $metadata_email_report = array(
     'Aggregate manager name' => $AM_name,
     'Request submitted' => date('r')
     );
-$metadata_email_report_file = writeDataToTempDir($omni_invocation_dir, json_encode($metadata_email_report), "metadata-email");
+$metadata_email_report_file = writeDataToTempDir($omni_invocation_dir,
+        json_encode($metadata_email_report),
+        OMNI_INVOCATION_FILE::METADATA_BUG_REPORT_EMAIL_FILE);
 
 /*
     STEP 3: CALL AM CLIENT

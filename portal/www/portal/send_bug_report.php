@@ -33,6 +33,7 @@ require_once("am_map.php");
 require_once("sa_client.php");
 require_once("logging_client.php");
 require_once("header.php");
+require_once("omni_invocation_constants.php");
 
 /*
     send_bug_report.php
@@ -179,14 +180,15 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
         send_bug_report_error("Bug report files could not be zipped in an archive. Bug report not sent.");
     }
 
-    // don't include the user's cert, credentials, and private key
+    // don't include the user's cert, credentials, private key, and (maybe) SF cred
     $excluded_files_list = array(
-        "$omni_invocation_dir/cert", 
-        "$omni_invocation_dir/cred",
-        "$omni_invocation_dir/key"
+        "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::SLICE_CREDENTIAL_FILE,
+        "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::CERTIFICATE_FILE, 
+        "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::PRIVATE_KEY_FILE,
+        "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::SPEAKSFOR_CREDENTIAL_FILE
     );
 
-    $zip_name = "omni-invocation-bug-report-$invocation_user-$invocation_id.zip";
+    $zip_name = OMNI_INVOCATION_FILE::ZIP_ARCHIVE_PREFIX . "-$invocation_user-$invocation_id.zip";
     $zip_path = "$omni_invocation_dir/$zip_name";
 
     $retVal = zip_dir_files($zip_path, $omni_invocation_dir, $excluded_files_list);
@@ -205,7 +207,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     
     // prepare metadata
     $metadata = "";
-    $metadata_file = "$omni_invocation_dir/metadata-email";
+    $metadata_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::METADATA_BUG_REPORT_EMAIL_FILE;
     if(is_file($metadata_file) && filesize($metadata_file)) {
         $metadata_json_string = file_get_contents($metadata_file);
         $metadata_array = json_decode($metadata_json_string, True);
