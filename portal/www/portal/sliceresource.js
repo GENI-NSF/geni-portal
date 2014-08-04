@@ -15,11 +15,8 @@ $( document ).ready( function() {
     getCommand(user, id, slice_id);
     getRequestRSpec(user, id, slice_id);
     getStartTime(user, id, slice_id);
-    updateConsoleLog(user, id, slice_id, console_log_offset);
-    updateDebugLog(user, id, slice_id, debug_log_offset);
-    updateElapsedTime(user, id, slice_id, am_id);
-    get_console = setInterval( "updateConsoleLog(user, id, slice_id, console_log_offset)", 1000 );
-    get_debug = setInterval( "updateDebugLog(user, id, slice_id, debug_log_offset)", 1000 );
+    get_console = setInterval( "updateConsoleLog(user, id, slice_id, console_log_offset)", 5000 );
+    get_debug = setInterval( "updateDebugLog(user, id, slice_id, debug_log_offset)", 5000 );
     get_elapsed = setInterval( "updateElapsedTime(user, id, slice_id, am_id)", 1000 );
 });
 
@@ -211,6 +208,9 @@ function stopPolling() {
     clearInterval(get_debug);
     clearInterval(get_console);
     clearInterval(get_elapsed);
+    // get log data one last time to make sure that no data was missed
+    updateConsoleLog(user, id, slice_id, console_log_offset);
+    updateDebugLog(user, id, slice_id, debug_log_offset);
 }
     
 </script>
