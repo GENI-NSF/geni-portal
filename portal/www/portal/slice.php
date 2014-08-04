@@ -776,6 +776,40 @@ print "</table>\n";
 
 print "<h2></h2>\n";
 
+
+
+
+// JACKS-APP STUFF //
+include("jacks-app.php");
+
+print "<table id='jacks-app'><tbody><tr>";
+print "<th>Manage Resources</th></tr><tr><td><div id='jacks-app-container'>";
+// This function will generate the html for Jacks to hook on to.
+print build_jacks_viewer();
+print "</div></td></tr></tbody></table>";
+
+?>
+<!-- Jacks JS and App CSS -->
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script>
+  // This funciton will start up a Jacks viewer, get the status bar going
+  // and set up all of the button clicks.
+  start_jacks_viewer('#jacks-pane', '#jacks-status', '#jacks-buttons');
+
+  // AMs that the Portal says there are resources at.
+  var slice_ams = <?php echo json_encode($slice_ams) ?>;
+  var slice_id = <?php echo json_encode($slice_id) ?>;
+  jacks_get_manifest(slice_ams, slice_id);
+  jacks_poll_status(slice_ams, slice_id);
+</script>
+
+<?php
+
+// END JACKS-APP STUFF //
+
+
+
   $slice_status='';
 
   print "<div id='status_table_div'/>\n";
