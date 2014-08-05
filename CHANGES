@@ -16,6 +16,16 @@
    * Go back to view previous allocation logs/results via link in "Recent Messages"
  * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
  * Add comments about new error messages in WiMAX (#1077)
+  * Handle error 20 (group exists) by treating attempt to create
+    the group as successful and adding the user to the group
+    if needed.
+ * WiMAX user and group names now start with "geni-". (#1094)
+  * Added new project attribute for the `wimax_group_name`.
+  * If project/group leads differ and new lead
+    has no wimax account, add them to the group and make
+    them lead.
+  * Handle timeouts better.
+  * Add/remove of member attributes clears the member cache in ma_client.
  * If user in the project is disabled, remove them from the WiMAX group (#1124)
 
 == 2.18.1 ==
