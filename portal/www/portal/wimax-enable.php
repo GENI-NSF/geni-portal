@@ -1510,6 +1510,17 @@ Get user's projects (expired or not)
 	// for each:
 	foreach ($members_of_group as $member) {
 	  $member_id = $member->member_id;
+
+
+	  // Confirm the member is not disabled
+	  $member_enabled = True;
+	  if (property_exists($member, "_GENI_MEMBER_ENABLED") and $member->_GENI_MEMBER_ENABLED === False) {
+	    $member_enabled = False;
+	    $member_prettyname = $member->prettyName();
+	    error_log("wimax-enable: Member $member_prettyname listed as member of wimax group for $proj_name, but the member is disabled. Remove them.");
+	  }
+
+	  // Make sure the member is still in this CH project
 	  $found = false;
 	  foreach ($members_of_proj as $mp) {
 	    if ($member_id == $mp['member_id']) {
@@ -1520,13 +1531,17 @@ Get user's projects (expired or not)
 	  //   if that member_id is not a member of this project, call delete-user and continue to next member
 	  if (! $found) {
 	    $member_prettyname = $member->prettyName();
+	    error_log("wimax-enable: Member $member_prettyname lists $proj_name (group $proj_group_name) as their group, but they are not a member - delete wimax account");
+	  }
+
+	  // The member is disabled or not in the project - remove their wimax account
+	  if (! $found || ! $member_enabled) {
 	    if (isset($member->wimax_username)) {
 	      $member_username = $member->wimax_username;
 	    } else {
 	      $mu = new GeniUser();
 	      $member_username = gen_username_base($mu->ini_from_member($member));
 	    }
-	    error_log("wimax-enable: Member $member_prettyname lists $proj_name (group $proj_group_name) as their group, but they are not a member - delete wimax account");
 	    $res = wimax_delete_user($member_username, $proj_group_name);
 	    if (true === $res) {
 	      // Change relevant MA attribute
