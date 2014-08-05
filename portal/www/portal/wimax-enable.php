@@ -238,6 +238,7 @@ function my_curl_get($argDict, $url) {
   curl_close($ch);
   if ($error) {
     error_log("wimax-enable curl get_message error: $error");
+    $result .= $error;
   }
   return trim($result);
 }
@@ -317,6 +318,9 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
   } else if (strpos(strtolower($res), strtolower("User dn not correct")) !== false) {
     error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username in group $ldif_user_groupname: $res");
     return "Internal Error: $res";
+  } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
+    error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username: $res");
+    return "Internal Error: $res";
   }
 
   return true;
@@ -347,6 +351,9 @@ function wimax_delete_group($ldif_group_name) {
   } else if (strpos(strtolower($res), strtolower("User dn not correct")) !== false) {
     error_log("wimax-enable curl get deleteProject: Error deleting project $ldif_group_name: $res");
     return "Internal Error: $res";
+  } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
+    error_log("wimax-enable curl get deleteProject: Error deleting project $ldif_group_name: $res");
+    return "Internal Error: $res";
   }
   return true;
 }
@@ -371,6 +378,9 @@ function wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_use
     error_log("wimax-enable curl get changeLeader: Error changing group $ldif_group_name lead to $ldif_user_username: Project not known: $res");
     //    return false;
     return "Internal Error: WiMAX group $ldif_group_name not known";
+  } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
+    error_log("wimax-enable curl get changeLeader: Error changing group $ldif_group_name lead to $ldif_user_username: $res");
+    return "Internal Error: $res";
   }
   return true;
 }
@@ -390,9 +400,12 @@ function wimax_change_group($ldif_group_name, $ldif_user_username, $ldif_user_gr
     //    return false;
     return "Internal Error: WiMAX user $ldif_user_username not found";
   } else if (strpos(strtolower($res), strtolower("ERROR 7: Project DN not known")) !== false) {
-    error_log("wimax-enable curl get changeGroup: Error changing to group $ldif_group_name fpr $ldif_user_username: Project not known: $res");
+    error_log("wimax-enable curl get changeGroup: Error changing to group $ldif_group_name for $ldif_user_username: Project not known: $res");
     //    return false;
     return "Internal Error: WiMAX group $ldif_group_name not found";
+  } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
+    error_log("wimax-enable curl get changeGroup: Error changing to group $ldif_group_name for $ldif_user_username: $res");
+    return "Internal Error: $res";
   }
   // Technically, this error could be returned. But I don't see how this could could cause this. It would mean that the user's 
   // existing group is a different DC - and yet the user was found successfully.
@@ -650,7 +663,7 @@ if (isset($user->ma_member->enable_wimax)) {
 	      // Auto enable the lead in this group
 	      // Leave the old lead as lead of this group, but presumably show a reasonable message
 	      // Try option 2.
-	      if (count($lead->sshKeys()) > 0) {
+	      if (count(lookup_public_ssh_keys($ma_url, $user, $ldif_project_lead_id)) > 0) {
 		$res = add_member_to_group($lead, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $ldif_project_name, $ma_url, $user_group_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
 		if ($res === 0) {
 		  error_log("Auto added project $ldif_project_name " . $lead->prettyName() . " WiMAX account in that project.");
@@ -705,7 +718,7 @@ if (isset($user->ma_member->enable_wimax)) {
       }  // end of loop over project attributes
 
       if (! $enabled) {
-	error_log("User $ldif_user_username says their group is $ldif_user_groupname, which is a project ($ldif_user_projname) that says it is not enabled");
+	error_log("User $ldif_user_username says their group is $ldif_user_groupname, which is a project ($ldif_user_projname) that says it is not enabled. Delete the user (User DN not known errors are normal)");
 	$res = wimax_delete_user($ldif_user_username, $ldif_user_groupname);
 	if (true === $res) {
 	  // Change relevant MA attribute, local vars
@@ -840,7 +853,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	// FIXME FIXME
 	// $is_error = True;
 	// $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $project_name";
-	if (count($lead->sshKeys()) > 0) {
+	if (count(lookup_public_ssh_keys($ma_url, $user, $ldif_project_lead_id)) > 0) {
 	  $res = add_member_to_group($lead, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
 	  if ($res === 0) {
 	    error_log("Auto added project $project_name " . $lead->prettyName() . " WiMAX account in that project.");
@@ -1052,11 +1065,6 @@ if (array_key_exists('project_id', $_REQUEST))
 	  $usernameTaken = True;
 	}
       }
-      // FIXME: Handle:
-      //  ERROR20 = 'ERROR 20: Group exists'
-      // This means that the project/group already exists
-      // Update local state to note that the group exists, take out the ldif to create the group, and try again?
-      // But my local state needs to know who the admin is. Use the new sync function to retrieve the info, update the local state, and put the user back on the original wimax page but with an error message?
 
       // FIXME: Handle:
       //  ERROR31 = 'ERROR 31: Organization does not exist for this user. Missing organization LDIF entry'
@@ -1110,6 +1118,113 @@ if (array_key_exists('project_id', $_REQUEST))
 	error_log($user->prettyName() . " enabled project " . $project_name . " for WiMAX use in our DB (group $ldif_group_name; was already enabled in their system)");
       }
 
+    } else if (strpos(strtolower($result), strtolower("ERROR 20: Group exists")) !== false) {
+      // FIXME: Handle:
+      //  ERROR20 = 'ERROR 20: Group exists'
+      // This means that the project/group already exists
+      // Update local state to note that the group exists, take out the ldif to create the group, and try again?
+      // But my local state needs to know who the admin is. Use the new sync function to retrieve the info, update the local state, and put the user back on the original wimax page but with an error message?
+      if (! $enable_user) {
+	error_log("Failed to create group $ldif_group_name cause it already exists.");
+	// This is mostly success. But we don't know who Orbit thinks is the lead of the group.
+	// For now, assume it is who we think it is
+	// Then treat this as success
+	// if user is the project lead and the project is not enabled, enable the project for WiMAX
+	if($enable_project and $ldif_project_lead_id == $user->account_id and ! $project_enabled) {
+	  // Change the group admin to this user since that's what we expected
+	  $res = wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_user_groupname);
+	  if (true === $res) {
+	    error_log("Changed group $ldif_group_name admin to $project_lead_username");
+	  } else {
+	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
+	    error_log("Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username but assuming success: $res");
+	    // Maybe this means the group already had that lead?
+	    // Assume success
+	  }
+
+	  remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
+	  add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $user->account_id);
+	  remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
+	  add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME, $ldif_group_name);
+	  error_log($user->prettyName() . " (re)enabled project " . $project_name . " for WiMAX use as group $ldif_group_name");
+	}
+	$result_string = "<p>WiMAX already enabled in project '$project_name'. Your WiMAX username remains '$ldif_user_username'.</p>";
+	$result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
+
+      } else {
+	error_log("Failed to add user to new group $ldif_group_name: Got Error 20 (group exists).");
+	// We tried to enable the user and create the group at once.
+	// But the group exists. Presumably with a different admin
+	// add the member and change the admin to this user
+	$didAdd = False; // If this remains false, we'll delete the group
+	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
+	if ($res === 0) {
+	  error_log("Added " . $user->prettyName() . " WiMAX account in project $project_name.");
+	  $didAdd = True;
+	  $ldif_user_group_id = $ldif_project_id;
+	  $ldif_user_groupname = $ldif_group_name;
+	} else {
+	  // FIXME: Now what?
+	  error_log("FIXME: Could not create account for this user in pre-existing group.");
+	  $is_error = True;
+	  error_log("WiMAX already has group $ldif_group_name, and failed to add user to the existing group.");
+	  $result_string = "<p><b>Error (from $wimax_server_url):</b> Could not add you to WiMAX group for project $project_name. Contact <a mailto:'help@geni.net'>GENI Help</a></p>";
+	  $result_string = $result_string . "<p>Debug information:</p>";
+	  $result_string = $result_string . "<p>Result: $res</p>";
+	}
+	$lead = geni_load_user_by_member_id($ldif_project_lead_id);
+	if (! isset($lead->ma_member->enable_wimax)) {
+	  if ($didAdd) {
+	    error_log("FIXME: Auto added project lead still has no wimax account");
+	    $didAdd = False;
+	    $is_error = True;
+	    error_log("WiMAX already has group $ldif_group_name, and had error adding user to the existing group.");
+	    $result_string = "<p><b>Error (from $wimax_server_url):</b> Could not add you to WiMAX group for project $project_name. Contact <a mailto:'help@geni.net'>GENI Help</a></p>";
+	    $result_string = $result_string . "<p>Debug information:</p>";
+	    $result_string = $result_string . "<p>Result: $res</p>";
+	    $result_string = $result_string . "<p>Group: $ldif_group_name</p>";
+	    $result_string = $result_string . "<p>User: $ldif_user_username</p>";
+	  }
+	  // Else we complained about this above already
+	} else {
+	  if (isset($lead->ma_member->wimax_username)) {
+	    $project_lead_username =$lead->ma_member->wimax_username;
+	  } else {
+	    $project_lead_username = gen_username_base($lead);
+	  }
+	  $ldif_user_username = $project_lead_username;
+	  $project_lead_group_id = $lead->ma_member->enable_wimax;
+	  $lead_project_info = lookup_project($sa_url, $user, $project_lead_group_id);
+	  $lead_project_attrs = lookup_project_attributes($sa_url, $user, $project_lead_group_id);
+	  $project_lead_groupname = get_group_name($lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME], $lead_project_attrs);
+
+	  $res = wimax_make_group_admin($ldif_group_name, $project_lead_username, $project_lead_groupname);
+	  if (true === $res) {
+	    // Change relevant PA attribute, local vars
+	    remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
+	    add_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $ldif_project_lead_id);
+	    $result_string = "<p><b>Success</b>: WiMAX already enabled in project '$project_name', but you are now group lead.</p>";
+	    $result_string = $result_string . "<p>Your WiMAX username is '$ldif_user_username' for WiMAX group '$ldif_group_name'. Check your email ({$user->email()}) for login information.</p>";
+	    $result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
+	  } else {
+	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
+	    error_log("Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username: $res");
+	    $didAdd = False;
+	    $is_error = True;
+	    $result_string = "<p><b>Error (from $wimax_server_url):</b> Created your WiMAX account using username $ldif_user_username in group $ldif_group_name, but failed to make you lead of the group. Contact <a mailto:'help@geni.net'>GENI Help</a></p>";
+	    $result_string = $result_string . "<p>Debug information:</p>";
+	    $result_string = $result_string . "<p>Result: $res</p>";
+	    $result_string = $result_string . "<p>Group: $ldif_group_name</p>";
+	    $result_string = $result_string . "<p>User: $ldif_user_username</p>";
+	    $return_string = "Failed to make " . $lead->prettyName() . " the admin of the $ldif_group_name WiMAX group";
+	  }
+	}
+	if (! $didAdd) {
+	  // All that didn't work.
+	  // FIXME FIXME FIXME
+	  error_log("FIXME: Unhandled error 20!");
+	}
+      }
     } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
       // This implies that our portal member's username
       // already exists on ORBIT already. We can handle this error on our
@@ -1339,7 +1454,7 @@ Get user's projects (expired or not)
 	  $proj["lead_name"] = $lead->prettyName();
 	  if (! isset($lead->ma_member->enable_wimax)) {
 	    error_log("Project $proj_name has lead " . $lead->prettyName() . " who is not yet wimax enabled");
-	    if (count($lead->sshKeys()) > 0) {
+	    if (count(lookup_public_ssh_keys($ma_url, $user, $proj_lead_id)) > 0) {
 	      $res = add_member_to_group($lead, $proj_lead_id, $proj_id, $proj_group_name, $proj_name, $ma_url, $proj_desc, $wimax_server_url);
 	      if ($res === 0) {
 		error_log("Auto added project $proj_name " . $lead->prettyName() . " WiMAX account in that project.");
@@ -1585,20 +1700,77 @@ P7
 	  // Check if admin we list is diff. Then maybe I just need to create the user and change admin
 	  // If admin is same, then maybe create the user in that group?
 
-	  // Old code:
-	  // Lead has no WiMAX group then their project cannot be enabled
-	  error_log("Project enabled but lead has no group? Delete Wimax Group " . $proj_group_name);
-	  $res = wimax_delete_group($proj_group_name);
-	  if (true === $res) {
-	    // mark project as not wimax enabled
-	    remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
-	    remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
-	    $enabled = False;
+
+	  // Project lead is not enabled. Lets assume this is the result of a lead change.
+	  // Add the lead to this group and make them the admin. If that fails, delete the group.
+	  $didAdd = False; // If this remains false, we'll delete the group
+	  error_log("Project $proj_name has lead " . $user->prettyName() . " who is not yet wimax enabled - try to enable and make them group admin");
+	  if (count($user->sshKeys()) > 0) {
+	    $res = add_member_to_group($user, $lead_id, $proj_id, $proj_group_name, $proj_name, $ma_url, $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
+	    if ($res === 0) {
+	      error_log("Auto project $proj_name lead " . $user->prettyName() . " WiMAX account in that project.");
+	      $didAdd = True;
+	      $ldif_user_group_id = $proj_id;
+	      $ldif_user_groupname = $proj_group_name;
+	    } else {
+	      // FIXME: Now what?
+	      error_log("FIXME: Could not create account for this lead. Delete the group.");
+	    }
 	  } else {
-	    // Failed to delete WiMAX group whose portal LEAD has no WiMAX group
-	    // FIXME FIXME
-	    // Could go back to the wimax-enable page with an internal error message, using $res?
-	    error_log("Wimax failed to delete group $proj_group_name whose portal lead is not wimax enabled so left project attributes alone");
+	    error_log("New project lead has 0 SSH keys, cannot create their WiMAX account. Must delete the group $proj_group_name");
+	  }
+	  $lead = geni_load_user_by_member_id($lead_id);
+	  if (! isset($lead->ma_member->enable_wimax)) {
+	    if ($didAdd) {
+	      error_log("FIXME: Auto added project lead still has no wimax account");
+	      $didAdd = False;
+	    }
+	    // Else we complained about this above already
+	  } else {
+	    if (isset($lead->ma_member->wimax_username)) {
+	      $project_lead_username =$lead->ma_member->wimax_username;
+	    } else {
+	      $project_lead_username = gen_username_base($lead);
+	    }
+	    $ldif_user_username = $project_lead_username;
+	    $project_lead_group_id = $lead->ma_member->enable_wimax;
+	    $lead_project_info = lookup_project($sa_url, $user, $project_lead_group_id);
+	    $lead_project_attrs = lookup_project_attributes($sa_url, $user, $project_lead_group_id);
+	    $project_lead_groupname = get_group_name($lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME], $lead_project_attrs);
+
+	    $res = wimax_make_group_admin($proj_group_name, $project_lead_username, $project_lead_groupname);
+	    if (true === $res) {
+	      // Change relevant PA attribute, local vars
+	      remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
+	      add_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX, $lead_id);
+	      $proj_admin_id = $lead_id;
+	      $proj["admin_id"] = $lead_id;
+	    } else {
+	      // Failed to change lead. This might happen if that user has not created their wimax account yet.
+	      error_log("Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username: $res");
+	      $didAdd = False;
+	      // FIXME FIXME - Use $res
+	      // $is_error = True;
+	      // $return_string = "Failed to make " . $lead->prettyName() . " the admin of the $proj_group_name WiMAX group";
+	    }
+	  }
+
+	  if (! $didAdd) {
+	    // Old code:
+	    // Lead has no WiMAX group then their project cannot be enabled
+	    error_log("Project enabled but lead has no group? Delete Wimax Group " . $proj_group_name);
+	    $res = wimax_delete_group($proj_group_name);
+	    if (true === $res) {
+	      // mark project as not wimax enabled
+	      remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
+	      remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
+	      $enabled = False;
+	    } else {
+	      // Failed to delete WiMAX group whose portal LEAD has no WiMAX group
+	      // FIXME FIXME
+	      // Could go back to the wimax-enable page with an internal error message, using $res?
+	      error_log("Wimax failed to delete group $proj_group_name whose portal lead is not wimax enabled so left project attributes alone");
+	    }
 	  }
 	}
 
