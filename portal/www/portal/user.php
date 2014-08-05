@@ -63,8 +63,7 @@ class GeniUser
   function __construct() {
     $this->certificate = NULL;
     $this->private_key = NULL;
-    $this->sf_cred = NULL;
-    $this->sf_expires = NULL;
+    $this->sfcred = NULL;
     $this->portal = NULL;
   }
 
@@ -272,7 +271,7 @@ class GeniUser
 
     // We only do this for the currently logged in user
     if(strtolower($_SERVER['eppn']) != $this->eppn) {
-      throw new Exception("Can't call getInsideKeyPair other than for current suer");
+      throw new Exception("Can't call getInsideKeyPair other than for current user");
     }
 
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);

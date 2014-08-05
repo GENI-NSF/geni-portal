@@ -38,22 +38,32 @@ if(!isset($member_cache)) {
 // Add member attribute
 function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self_asserted)
 {
+  global $member_by_attribute_cache;
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->add_member_attribute($member_urn, _portalkey_to_attkey($name), 
 					   $value, $self_asserted, $client->creds(), 
 					   $client->options());
+  // On success, remove from the attribute cache 'MEMBER_UID.' . $member_id
+  if (array_key_exists('MEMBER_UID.' . $member_id, $member_by_attribute_cache)) {
+    unset($member_by_attribute_cache['MEMBER_UID.' . $member_id]);
+  }
   return $results;  // probably ignored
 }
 
 // Remove member attribute
 function remove_member_attribute($ma_url, $signer, $member_id, $name)
 {
+  global $member_by_attribute_cache;
   $member_urn = get_member_urn($ma_url, $signer, $member_id);
   $client = XMLRPCClient::get_client($ma_url, $signer);
   $results = $client->remove_member_attribute($member_urn, _portalkey_to_attkey($name), 
 					   $client->creds(),
                                               $client->options());
+  // On success, remove from the attribute cache 'MEMBER_UID.' . $member_id
+  if (array_key_exists('MEMBER_UID.' . $member_id, $member_by_attribute_cache)) {
+    unset($member_by_attribute_cache['MEMBER_UID.' . $member_id]);
+  }
   return $results;  // probably ignored
 }
 
