@@ -26,6 +26,7 @@
     them lead.
   * Handle timeouts better.
   * Add/remove of member attributes clears the member cache in ma_client.
+ * If user in the project is disabled, remove them from the WiMAX group (#1124)
  * Update to new WiMAX method signatures, error messages (#1093)
 
 == 2.18.1 ==
