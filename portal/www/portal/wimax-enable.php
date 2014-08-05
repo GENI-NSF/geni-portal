@@ -86,7 +86,7 @@ Malformed LDIF
 Malformed LDIF
   ERROR20 = 'ERROR 20: Group exists'
 Tried to create a group that already exists.
-FIXME: I need to handle this (see comments below).
+FIXME: Mostly handled below, but perhaps could be better.
   ERROR21 = 'ERROR 21: Missing PI mail:'
 Malformed LDIF. Note all users must have an email address.
   ERROR22 = 'ERROR 22: Missing PI sshpublickey:'
@@ -1119,11 +1119,10 @@ if (array_key_exists('project_id', $_REQUEST))
       }
 
     } else if (strpos(strtolower($result), strtolower("ERROR 20: Group exists")) !== false) {
-      // FIXME: Handle:
       //  ERROR20 = 'ERROR 20: Group exists'
       // This means that the project/group already exists
-      // Update local state to note that the group exists, take out the ldif to create the group, and try again?
-      // But my local state needs to know who the admin is. Use the new sync function to retrieve the info, update the local state, and put the user back on the original wimax page but with an error message?
+      // If we were just trying to create the group, then just change the group admin to be this user (the lead)
+      // If we were also creating the user, add the user to the group and then change the admin to this user
       if (! $enable_user) {
 	error_log("Failed to create group $ldif_group_name cause it already exists.");
 	// This is mostly success. But we don't know who Orbit thinks is the lead of the group.
@@ -1137,9 +1136,10 @@ if (array_key_exists('project_id', $_REQUEST))
 	    error_log("Changed group $ldif_group_name admin to $project_lead_username");
 	  } else {
 	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
-	    error_log("Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username but assuming success: $res");
+	    error_log("FIXME: Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username but assuming success: $res");
 	    // Maybe this means the group already had that lead?
 	    // Assume success
+	    // FIXME: If we see this, figure out if we are handling it correctly.
 	  }
 
 	  remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
@@ -1154,8 +1154,8 @@ if (array_key_exists('project_id', $_REQUEST))
       } else {
 	error_log("Failed to add user to new group $ldif_group_name: Got Error 20 (group exists).");
 	// We tried to enable the user and create the group at once.
-	// But the group exists. Presumably with a different admin
-	// add the member and change the admin to this user
+	// But the group exists. Presumably with a different admin.
+	// Add the member and change the admin to this user
 	$didAdd = False; // If this remains false, we'll delete the group
 	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
 	if ($res === 0) {
