@@ -507,9 +507,6 @@ function invoke_omni_function($am_url, $user, $args,
     fwrite($cmd_file, $command);
     fclose($cmd_file);
     
-     
-     
-     
      /* forked omni call */
      if($fork) {
      
