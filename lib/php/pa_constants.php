@@ -145,6 +145,7 @@ class PA_ATTRIBUTE {
 /* Add projects/tools here as necessary */
 class PA_ATTRIBUTE_NAME {
   const ENABLE_WIMAX = "enable_wimax";
+  const WIMAX_GROUP_NAME = "wimax_group_name";
   const IRODS_GROUP_NAME = "irods_group_name";
 }
 

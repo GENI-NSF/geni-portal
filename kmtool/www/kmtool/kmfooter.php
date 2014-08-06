@@ -28,7 +28,7 @@
 <hr/>
 <div id="footer">
    <small>Copyright &copy; 2014 Raytheon BBN Technologies, All Rights Reserved - NSF Award CNS-0714770</small><br/>
-  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="https://www.nsf.gov/images/logos/nsf1.gif" alt="NSF Logo" height="25" width="25"> National Science Foundation</a></i></small>
+  <small><i><a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="25" width="25"> National Science Foundation</a></i></small>
 </div>
 </body>
 </html>

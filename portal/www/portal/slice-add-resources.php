@@ -31,18 +31,17 @@ require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once 'geni_syslog.php';
 
-function cmp($a,$b) {
+function cmp2($a,$b) {
   return strcmp(strtolower($a['name']),strtolower($b['name']));
 }
 
 function show_rspec_chooser($user) {
   $all_rmd = fetchRSpecMetaData($user);
-  usort($all_rmd,"cmp");
-  print "<p><b>Choose Resources:</b> \n" ;
+  usort($all_rmd,"cmp2");
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
-  echo '<option value="" title="Choose RSpec" selected="selected">Choose RSpec...</option>';
+  echo '<option value="" title="Choose RSpec" selected="selected" bound="0" stitch="0">Choose RSpec...</option>';
   echo '<option value="PRIVATE" disabled>---Private RSpecs---</option>';
   foreach ($all_rmd as $rmd) {
     if ($rmd['visibility']==="private") {
@@ -50,11 +49,16 @@ function show_rspec_chooser($user) {
       $rname = $rmd['name'];
       $rdesc = $rmd['description'];
       //    error_log("BOUND = " . $rmd['bound']);
-      $enable_agg_chooser=1;
-      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
-      //-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+      $bound = 0;
+      $stitch = 0;
+      if ($rmd['bound'] == 't') {
+        $bound = 1;
+      }
+      if ($rmd['stitch'] == 't') {
+        $stitch = 1;
+      }
       //    error_log("BOUND = " . $enable_agg_chooser);
-      print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
+      print "<option value='$rid' title='$rdesc' bound='$bound' stitch='$stitch'>$rname</option>\n";
     }
   }
   echo '<option value="PUBLIC" disabled>---Public RSpecs---</option>';
@@ -64,11 +68,16 @@ function show_rspec_chooser($user) {
       $rname = $rmd['name'];
       $rdesc = $rmd['description'];
       //    error_log("BOUND = " . $rmd['bound']);
-      $enable_agg_chooser=1;
-      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
-      //-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+      $bound = 0;
+      $stitch = 0;
+      if ($rmd['bound'] == 't') {
+        $bound = 1;
+      }
+      if ($rmd['stitch'] == 't') {
+        $stitch = 1;
+      }
       //    error_log("BOUND = " . $enable_agg_chooser);
-      print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
+      print "<option value='$rid' title='$rdesc' bound='$bound' stitch='$stitch'>$rname</option>\n";
     }
   }
   
@@ -76,7 +85,7 @@ function show_rspec_chooser($user) {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
-  print "<br>or <a href=\"rspecupload.php\">upload your own RSpec to the above list</a>.";
+ // print "<br>or <a href=\"rspecupload.php\">upload your own RSpec to the above list</a>.";
 //  print " or <button onClick=\"window.location='rspecupload.php'\">";
 //  print "upload your own RSpec</button>.";
   // RSpec entry area
@@ -95,13 +104,12 @@ function show_rspec_chooser($user) {
   print '<input type="file" name="rspec_file" id="rspec_file" />' . PHP_EOL;
   print '</span>' . PHP_EOL;
   
-  print "</p>";
+  //print "</p>";
 }
 
 function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  print "<p><b>Choose Aggregate:</b> \n";
-  print '<select name="am_id" id="agg_chooser">\n';
+  print '<select name="am_id" id="agg_chooser" onchange="am_onchange()">\n';
   echo '<option value="" title = "Choose an Aggregate">Choose an Aggregate...</option>';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
@@ -109,9 +117,14 @@ function show_am_chooser() {
     $aggdesc = $agg['service_description'];
     print "<option value=\"$aggid\" title=\"$aggdesc\">$aggname</option>\n";
   }
+
+  echo '<option disabled value="stitch" title="Stitchable RSpec">Stitchable RSpec</option>'; 
+  // FIXME: Bound RSpecs not implemented yet
+  echo '<option disabled value="bound" title="Bound RSpec">Bound RSpec</option>'; 
   print "</select>\n";
   
-  print "</p>";
+  // Display message to user about stitching/bound RSpecs
+  print "<div id='aggregate_message' style='display:block;'></div>";
 }
 
 $user = geni_loadUser();
@@ -139,7 +152,7 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 $keys = $user->sshKeys();
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 ?>
@@ -166,9 +179,11 @@ function validateSubmit()
 }
 </script>
 
+<?php include "tabs.js"; ?>
+
 <?php
-print "<h1>Add resources to GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
-print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
+print "<h1>Add Resources to GENI Slice " . "<i>" . $slice_name . "</i>" . "</h1>\n";
+
 // Put up a warning to upload SSH keys, if not done yet.
 if (count($keys) == 0) {
   // No ssh keys are present.
@@ -177,20 +192,54 @@ if (count($keys) == 0) {
          . "Upload an SSH key</button> or <button " .
 	 "onClick=\"window.location='generatesshkey.php'\">Generate and "
 	 . "Download an SSH keypair</button> to enable logon to nodes.</p>\n");
-  print "<br/>\n";
 }
 
-print "<p><button onClick=\"window.location='rspecs.php'\">"
-    . "View Available RSpecs</button></p>\n";
+?>
 
+  <div id='tablist'>
+		<ul class='tabs'>
+			<li><a href='#addresources' title="Add Resources">Add Resources</a></li>
+			<li style="border-right: none"><a href='#rspecs' title="Manage Resource Specifications">Manage RSpecs</a></li>
+		</ul>
+  </div>
 
-print '<form id="f1" action="sliceresource.php" method="post" enctype="multipart/form-data">';
+<?php
+
+  // BEGIN the tabContent class
+  // this makes a fixed height box with scrolling for overflow
+  echo "<div class='tabContent'>";
+
+// BEGIN add resources tab
+echo "<div id='addresources'>";
+//print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
+//print "<p><button onClick=\"window.location='rspecs.php'\">"
+//    . "View Available RSpecs</button> \n";
+//print "<button onClick=\"window.location='rspecupload.php'\">"
+//    . "Upload New RSpec</button></p>\n";
+
+print "<h2>Add Resources</h2>\n";
+print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
+
+print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/form-data">';
+
+print "<table>";
+print "<tr><th rowspan='2'>Choose RSpec</th>";
+print "<td><b>Select existing: </b>";
 show_rspec_chooser($user);
-print  '<p><label for="file">or import RSpec from file:</label>';
-print  '<input type="file" name="rspec_selection" id="rspec_selection" /></p>';
-print "<p><i>Note: This RSpec selection is for this reservation only and will not be saved by the portal.</i></p>";
+print "</td></tr>";
+print "<tr><td>";
+print "<b>Select from file: </b><input type='file' name='rspec_selection' id='rspec_selection' onchange='fileupload_onchange()'/>";
 
+// upload message: get this from slice-add-resources.js calling rspecuploadparser.php
+print "<div id='upload_message' style='display:block;'></div>";
+
+print "</td></tr>";
+
+print "<tr><th>Choose Aggregate</th><td>";
 show_am_chooser();
+print "</td></tr>";
+print "</table>";
+
 if ($am_ids == null) {
   $am_id = "null";
 }
@@ -201,15 +250,45 @@ if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
   $('#agg_chooser').val(am_id); 
 }
 </script>
+<script>
+// keep record of which aggregate was set on page load
+$( document ).ready(function() {
+    am_on_page_load = $('#agg_chooser').val();
+});
+</script>
 <?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
+// by default, assume RSpec is not bound or stitchable (0), but if a bound or
+// stitchable RSpec is selected, change this value (to 1) via slice-add-resources.js
+print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
+print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
-print ("<p><button onClick=\"");
+print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose File' to temporarily upload an RSpec for this reservation only.</p>";
+
+print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
+
+// END add resources tab
+echo "</div>";
+
+// BEGIN rspecs tab
+echo "<div id='rspecs'>";
+/*----------------------------------------------------------------------
+ * RSpecs
+ *----------------------------------------------------------------------
+ */
+if (!$in_lockdown_mode) {
+  include("tool-rspecs.php");
+}
+// END rspecs tab
+echo "</div>";
+
+// END the tabContent class
+  echo "</div>";
 
 include("footer.php");
 ?>

@@ -227,6 +227,8 @@ if ($edit_members_disabled !== "") {
 }
 ?>
 
+<p>Add or remove slice members, or change member roles. For an explanation of the different roles, see the <a href="http://groups.geni.net/geni/wiki/GENIGlossary#Slice">GENI Glossary</a>.</p>
+
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
 <ul>
  <li>The resources were reserved directly through the portal (by clicking <b>Add Resources</b> on the slice page), and</li>

@@ -63,8 +63,7 @@ class GeniUser
   function __construct() {
     $this->certificate = NULL;
     $this->private_key = NULL;
-    $this->sf_cred = NULL;
-    $this->sf_expires = NULL;
+    $this->sfcred = NULL;
     $this->portal = NULL;
   }
 
@@ -272,7 +271,7 @@ class GeniUser
 
     // We only do this for the currently logged in user
     if(strtolower($_SERVER['eppn']) != $this->eppn) {
-      throw new Exception("Can't call getInsideKeyPair other than for current suer");
+      throw new Exception("Can't call getInsideKeyPair other than for current user");
     }
 
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -540,6 +539,11 @@ function geni_load_identity_by_eppn($eppn)
 	// "update identity_attribute set value = '" . $conn->quote($_SERVER[$row['name']], 'text') . "' where identity_id = " . $conn->quote($identity['identity_id'], 'text') . " and name = '" . $conn->quote($row['name'], 'text')
 	// What about ma_member_attribute? That one is harder to generalize
 	// update ma_member_attribute set value = <new> where value = <old> and member_id = !!!! <and name = !!!
+	// Avoid 'mail' from identity_attribute and from ma_member_attribute avoid:
+	// OPERATOR, wimax_username, username, enable_irods, enable_wimax, enable_wimax_Button, gemini-user, urn, email_address, member_enabled, irods_username, eppn, PROJECT_LEAD
+	// Also however follow the mapping of attribute names. See do_registyr and ma_constants. telephoneNumber (id) -> telephone_number (ma), givenName -> first_name, sn -> last_name (mail -> email_address)
+	// For MA, use ma_client to do remove_member_attribute followed by add_member_attribute (self_asserted='f')
+	// Problem is that this isn't a good place to update the MA - no member_id. See below in geni_loadUser() which is a better spot.
       }
     }
   }
@@ -583,7 +587,7 @@ function geni_loadUser()
   $user = geni_load_user_by_eppn($eppn, $sfcred);
   $identity = geni_load_identity_by_eppn($eppn);
   $user->init_from_identity($identity);
-  // FIXME: Confirm that attributes we have in DB match attributes in the environment
+  // FIXME: Confirm that attributes we have in DB match attributes in the environment (ticket #331)
 
   // Non-operators can't use the portal while in maintenance: they go to the 'Maintenance" page
   if ($in_maintenance_mode && 

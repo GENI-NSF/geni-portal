@@ -14,10 +14,10 @@ DROP TABLE IF EXISTS ma_member CASCADE;
 
 CREATE TABLE ma_member (
   id SERIAL PRIMARY KEY,
-  member_id UUID UNIQUE
+  member_id UUID UNIQUE NOT NULL
 );
 
-CREATE INDEX ma_member_index_member_id ON ma_member (member_id);
+-- No need to index member_id since it is already declared unique
 
 -- ----------------------------------------------------------------------
 -- Member attribute table. Store all attributes of members as name/value
@@ -64,6 +64,8 @@ CREATE TABLE ma_member_privilege (
 CREATE INDEX ma_member_privilege_index_member_id
   ON ma_member_privilege (member_id);
 
+-- privilege_id not indexed
+
 -- ----------------------------------------------------------------------
 -- Client table. Each client has a certificate and is "approved" in
 -- some way.
@@ -76,8 +78,6 @@ CREATE TABLE ma_client (
   client_urn VARCHAR UNIQUE NOT NULL
 );
 
-CREATE INDEX ma_client_index_client_urn ON ma_client (client_urn);
-
 -- ----------------------------------------------------------------------
 -- Inside keys
 -- ----------------------------------------------------------------------
@@ -86,14 +86,15 @@ DROP TABLE IF EXISTS ma_inside_key;
 CREATE TABLE ma_inside_key (
   id SERIAL PRIMARY KEY,
   client_urn VARCHAR REFERENCES ma_client (client_urn),
-  member_id UUID REFERENCES ma_member (member_id),
-  private_key VARCHAR,
-  certificate VARCHAR,
+  member_id UUID NOT NULL REFERENCES ma_member (member_id),
+  private_key VARCHAR NOT NULL,
+  certificate VARCHAR NOT NULL,
   expiration TIMESTAMP,
   UNIQUE (client_urn, member_id)
 );
 
 CREATE INDEX ma_inside_key_index_member_id ON ma_inside_key (member_id);
+-- client_urn is not indexed
 
 -- ----------------------------------------------------------------------
 -- ssh keys

@@ -48,5 +48,5 @@ if ($result) {
   $_SESSION['lasterror'] = "Resource Specification (RSpec) delete failed.";
 }
 
-redirect_referer('profile.php');
+redirect_referer('profile.php#rspecs');
 ?>
