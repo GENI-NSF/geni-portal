@@ -143,7 +143,12 @@ class XMLRPCClient
       $fun = substr($fun, 1);
     }
 
-    $request = xmlrpc_encode_request($fun, $args);
+    /* Declare UTF-8 encoding because that's what
+     * we're sending.
+     */
+    $output_options = array('encoding' => 'UTF-8',
+                            'escaping' => 'markup');
+    $request = xmlrpc_encode_request($fun, $args, $output_options);
 
     // mik: I would have liked to use the following, but it
     // had problems dealing with HTTPS+POST in some situations
@@ -192,6 +197,15 @@ class XMLRPCClient
     }
 
     $result = xmlrpc_decode($ret);
+
+    // Translate the result into UTF-8
+    //
+    // We get Unicode strings back from the clearinghouse via
+    // XML-RPC. We want UTF-8 to send back to the web browser. The
+    // choice is to do it all here, a bit blindly, or sprinkle calls
+    // to utf8_encode everywhere we're printing strings that might be
+    // unicode. This is the more maintainable approach.
+    array_walk_recursive($result, "encode_string");
 
     return $this->result_handler($result);
   }
@@ -311,6 +325,21 @@ class XMLRPCClient
   }
 }
 
+/*
+ * UTF-8 encode all strings.
+ *
+ * This is used to translate all the unicode strings we got back from
+ * the clearinghouse into UTF-8 encoded strings. This function is
+ * called via array_walk_recursive() so it only handles the one item
+ * it is sent. array_walk_recursive() handles the rest.
+ */
+function encode_string(&$item, $key)
+{
+  $item_type = gettype($item);
+  if ($item_type == "string") {
+    $item = utf8_encode($item);
+  }
+}
 
 // Session cache access.  This is a simpler static interface than 
 // session_cache.php
