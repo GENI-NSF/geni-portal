@@ -39,9 +39,29 @@
   margin-bottom: 0;
 }
 #jacks-app #jacks-buttons {
-  padding: 5px;
   border-top: 1px solid #000;
+}
+#jacks-app #jacks-buttons > button {
+    padding: 5px;
 }
 #jacks-app #jacks-pane {
   margin-top: 36px;
+  height: 350px;
+  background-color: white;
+}
+
+#jacks-app .checkbox {
+  fill: #DDD;
+  stroke: #000;
+  stroke-width: 1px;
+  visibility: visible !important;
+}
+
+#jacks-app .checkbox#ready {
+  fill: #DDFFDD;
+  stroke: #008000;
+}
+
+#jacks-app #active .checkbox {
+  stroke-width: 5px;
 }

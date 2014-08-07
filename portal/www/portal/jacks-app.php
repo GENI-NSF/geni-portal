@@ -6,8 +6,6 @@ function build_jacks_viewer()
   $output .= "<div id='jacks-pane' class='jacks'></div>";
 
   $output .= "<div id='jacks-buttons'>";
-  $output .= "<button id='jacks-button-ready'>Ready?</button>";
-  $output .= "<button id='jacks-button-delete'>Delete</button>";
   $output .= "</div>";
 
   return $output;
