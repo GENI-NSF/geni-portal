@@ -209,15 +209,24 @@ function validateBugReportSubmit()
 </script>
 
 <h2>Send a Bug Report</h2>
-<p>Fill out the following form to send a bug report. Bug reports will include the <b>progress log</b>, <b>debug log</b>, <b>error log</b>, <b>request RSpec</b>, and <b>process information</b>.</p>
+
+<p>Ran into a problem or have a question? Many issues have been addressed on the GENI Users community support mailing list. Check the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">archives</a> first before sending a new problem report.</p>
+
+<p>If you cannot find the answer to your question in the archives, submit your problem report to the GENI Users mailing list at <a href="mailto:geni-users@googlegroups.com">geni-users@googlegroups.com</a>. <i>Note, however, that this report will include the private information listed below.</i> <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">Sign up for the mailing list</a> to ensure speedy delivery of your problem report, receive the answer, and participate in ongoing conversations.</p>
+
+<ul>
+<li><b>What will be included in the bug report:</b> user-identifiable information (name, e-mail address, slice and project information), request RSpec, manifest RSpec(s), progress log, debug log, error log, process metadata</li>
+<li><b>What will <i>not</i> be included in the bug report: </b>security-sensitive information (slice credentials, certificates, private keys, SpeaksFor credentials)</li>
+</ul>
+
+<p>If you are not comfortable sharing your private information with the general GENI community, submit your problem report to <a href="mailto:gpo-expt-support@geni.net">gpo-expt-support@geni.net</a>.</p>
+
 <p>Suggestions for what to include in the bug report message:</p>
 <ul>
 <li>What did you do?</li>
 <li>What did you expect to happen?</li>
 <li>What did happen?</li>
 </ul>
-<p>Security-sensitive information (slice credentials, certificates, and private keys) <i>will not</i> be included, but user-identifiable information (name, e-mail, slice/project information, RSpecs used) will be included.</p>
-<p>To report general problems, try e-mailing <a href="mailto:geni-users@googlegroups.com">geni-users@googlegroups.com</a> or writing to the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">GENI Users Group</a>.</p>
 
 <form id="f1" action="send_bug_report.php" method="post" enctype="multipart/form-data" onsubmit="return validateBugReportSubmit()">
 <input type="hidden" name="invocation_id" id="invocation_id" value="<?php echo $invocation_id;?>"/>
@@ -235,7 +244,7 @@ function validateBugReportSubmit()
 </tr>
 <tr>
 <th>To<br><small>(Required)</small></th>
-<td><b>Recipient e-mail:</b> <input type='text' name='to' id='to' size='30'/><br></td>
+<td><b>Recipient e-mail:</b> <input type='text' name='to' id='to' size='30' value='portal-help@geni.net'></input><br></td>
 </tr>
 <tr>
 <th>Message<br><small>(Required)</small></th>
