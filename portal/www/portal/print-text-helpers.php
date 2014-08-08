@@ -188,7 +188,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
         echo "<b>Node #",$node_num,":</b>";
     }
     else {
-        echo "<b>Node #",$node_num," (at ",get_auth_from_urn($comp_mgr_id),"):</b>";
+        echo "<b>Node #",$node_num," (at ",am_name_from_urn((string)$comp_mgr_id),"):</b>";
     }
     echo "<table><tr>\n";
     echo "<th>Client ID</th>\n";

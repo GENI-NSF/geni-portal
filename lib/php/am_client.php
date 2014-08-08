@@ -34,6 +34,7 @@ require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once('cert_utils.php');
 require_once('cs_constants.php');
+require_once("omni_invocation_constants.php");
 
 //Constants defined for proc_open
 //String used for msg to return - in some UI - this is the message that is displayed
@@ -85,8 +86,8 @@ function write_ssh_keys($for_user, $as_user, $dir)
     {
       $key = $key_info['public_key'];
       // user could have more than one key, so append a unique ID
-      $tmp_file = writeDataToTempDir($dir, $key, "ssh-key-" . 
-            $for_user->username . "-" . uniqid());
+      $tmp_file = writeDataToTempDir($dir, $key, OMNI_INVOCATION_FILE::PUBLIC_SSH_KEY_PREFIX
+            . "-" . $for_user->username . "-" . uniqid());
       $result[] = $tmp_file;
     }
   return $result;
@@ -238,10 +239,10 @@ function write_logger_configuration_file($dir) {
     
     // string replacement of '%(consolelogfilename)s'
     $console_log_file_variable = "%(consolelogfilename)s";
-    $console_log_file = "$dir/omni-console";
+    $console_log_file = "$dir/" . OMNI_INVOCATION_FILE::CONSOLE_LOG_FILE;
     $config_file_contents = str_replace($console_log_file_variable, 
             $console_log_file, $template_file_contents);
-    $config_file_location = "$dir/logger.conf";
+    $config_file_location = "$dir/" . OMNI_INVOCATION_FILE::LOGGER_CONFIGURATION_FILE;
     
     // write file to directory
     $config_file = fopen($config_file_location,"a");
@@ -283,9 +284,18 @@ function invoke_omni_function($am_url, $user, $args,
   // Should always talk to single AM
   if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
 
-  // Does the given URL handle speaks-for?
-  $handles_speaks_for = 
-    lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+  /* Does the given URL handle speaks-for?
+        If an AM URL is given, check the SR for whether SF is enabled.
+        If no AM URL is given but it's for stitching, just assume for now
+            that all AMs handle SpeaksFor and see what happens.
+  */
+  if($am_url) {
+    $handles_speaks_for = 
+        lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+  }
+  else {
+        $handles_speaks_for = True;
+  }
 
   /*
     If an aggregate doesn't handle speaks-for, 
@@ -355,9 +365,9 @@ function invoke_omni_function($am_url, $user, $args,
     $file_manager->add($tmp_version_cache);
     $file_manager->add($tmp_agg_cache);
 
-    $cert_file = writeDataToTempDir($omni_invocation_dir, $cert, "cert");
+    $cert_file = writeDataToTempDir($omni_invocation_dir, $cert, OMNI_INVOCATION_FILE::CERTIFICATE_FILE);
     $file_manager->add($cert_file);
-    $key_file = writeDataToTempDir($omni_invocation_dir, $private_key, "key");
+    $key_file = writeDataToTempDir($omni_invocation_dir, $private_key, OMNI_INVOCATION_FILE::PRIVATE_KEY_FILE);
     $file_manager->add($key_file);
 
     $slice_users = $slice_users + array($user);
@@ -428,16 +438,17 @@ function invoke_omni_function($am_url, $user, $args,
       $file_manager->add($ssh_key_file);
     }
 
-    $omni_file = writeDataToTempDir($omni_invocation_dir, $omni_config, "omni-ini");
+    $omni_file = writeDataToTempDir($omni_invocation_dir, $omni_config,
+            OMNI_INVOCATION_FILE::OMNI_CONFIGURATION_FILE);
     $file_manager->add($omni_file);
 
     /* Call OMNI */
 
-    $omni_log_file = "$omni_invocation_dir/omni-log";
-    $omni_stderr_file = "$omni_invocation_dir/omni-stderr";
-    $omni_stdout_file = "$omni_invocation_dir/omni-stdout";
-    $omni_command_file = "$omni_invocation_dir/omni-command";
-    $omni_pid_file = "$omni_invocation_dir/omni-pid";
+    $omni_log_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::DEBUG_LOG_FILE;
+    $omni_stderr_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::ERROR_LOG_FILE;
+    $omni_stdout_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::CALL_RESULTS_FILE;
+    $omni_command_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::COMMAND_FILE;
+    $omni_pid_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::PID_FILE;
 
 
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
@@ -481,7 +492,7 @@ function invoke_omni_function($am_url, $user, $args,
     if ($speaks_for_invocation) {
       $cmd_array[] = "--speaksfor=" . $user->urn;
       $speaks_for_cred_filename = writeDataToTempDir($omni_invocation_dir, 
-                $speaks_for_cred->credential(), "sfcred");
+                $speaks_for_cred->credential(), OMNI_INVOCATION_FILE::SPEAKSFOR_CREDENTIAL_FILE);
       $file_manager->add($speaks_for_cred_filename);
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
@@ -797,11 +808,11 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   $member_id = $user->account_id;
   $msg = "User $member_id calling CreateSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
-  $rspec_filename = "$omni_invocation_dir/rspec";
+  $rspec_filename = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::REQUEST_RSPEC_FILE;
   $rspec = file_get_contents($rspec_filename);
   // Don't log this: We already log from the caller if the allocation is successful
   //  log_action("Called CreateSliver", $user, $am_url, $slice_urn, $rspec, $slice_id);
-  $slice_credential_filename = writeDataToTempDir($omni_invocation_dir, $slice_credential, "cred");
+  $slice_credential_filename = writeDataToTempDir($omni_invocation_dir, $slice_credential, OMNI_INVOCATION_FILE::SLICE_CREDENTIAL_FILE);
   
   $args = array("-o", "--slicecredfile", 
 		$slice_credential_filename, 

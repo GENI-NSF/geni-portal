@@ -164,7 +164,6 @@ dist_svcweb_DATA = \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
 	www/portal/sliceresource.js \
-	www/portal/sliceresource-tabs.js \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
@@ -186,6 +185,7 @@ dist_svcweb_DATA = \
 	www/portal/tool-omniconfig.php \
 	www/portal/tool-projects.php \
 	www/portal/tool-rspecs.php \
+	www/portal/tool-rspecs.js \
 	www/portal/tool-rspec-parse.php \
 	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.php \
@@ -196,7 +196,6 @@ dist_svcweb_DATA = \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
 	www/portal/user.php \
-	www/portal/view_omni_invocation_data.php \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
