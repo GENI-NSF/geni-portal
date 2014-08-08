@@ -32,16 +32,24 @@ define('server_page_template',
     <meta http-equiv="cache-control" content="no-cache"/>
     <meta http-equiv="pragma" content="no-cache"/>
     <title>%s</title>
+    <link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>
   </head>
   <body>
-<div id="content">
+<div id="header">
+  <div id="header-top"></div>
+</div>
+<div id="content-outer">
+  <div id="content">
     <h1>GENI Portal OpenID Trust</h1>
-<p>You are about to release some of your information to <b>%s</b>.</p
-<p>Do you trust <b>%s</b>? </p>
-<form action="%s" method="post">
-<input type="submit" name="save" value="Send my information" />
-<input type="submit" name="cancel" value="Cancel" />
-</form>
+    You are about to release some of your information to <b>%s</b>.
+    <br/><br/>
+    Do you trust <b>%s</b>?
+    <br/><br/>
+    <form action="%s" method="post">
+      <input type="submit" name="save" value="Send my information" />
+      <input type="submit" name="cancel" value="Cancel" />
+    </form>
+  </div>
 </div>
   </body>
 </html>');
@@ -60,8 +68,8 @@ function action_show_trust() {
   $trust_root = htmlspecialchars($info->trust_root);
   $title = 'GENI OpenID Trust';
   $authorize_url = buildURL('authorize', true);
-  $text = sprintf(server_page_template, $title, $trust_root, $trust_root,
-                  $authorize_url);
+  $text = sprintf(server_page_template, $title, $title, $trust_root,
+                  $trust_root, $authorize_url);
   $headers = array();
   return array($headers, $text);
 }

@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.19 ==
+ * Use portal styling for OpenID trust page (#1007)
  * Fork omni/stitcher processes (#1106)
    * omni/stitching calls from create_sliver run asynchronously
    * Keep temporary files after creating slivers
