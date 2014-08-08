@@ -32,6 +32,7 @@ require_once("sr_constants.php");
 require_once("am_client.php");
 require_once("am_map.php");
 require_once("sa_client.php");
+require_once("omni_invocation_constants.php");
 
 /*
     get_omni_invocation_data.php
@@ -49,14 +50,13 @@ require_once("sa_client.php");
                 console
                 error
                 debug
-                stdout
+                filteredmanifestrspec
                 status
                 elapsed
                 start
                 stop
                 requestrspec
                 manifestrspec
-                manifestrspecjacks
         Optional:
             raw: 'true' (default) or 'false' (pretty print if available)
             offset: offset in bytes of where to get file data for requests 
@@ -137,6 +137,7 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
             $retVal = get_omni_invocation_pid($invocation_dir);
             break;
         case "command":
+            do_security_check($slice_id);
             $retVal = get_omni_invocation_command($invocation_dir, $raw);
             break;
         case "console":
@@ -151,9 +152,9 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
             do_security_check($slice_id);
             $retVal = get_omni_invocation_debug_log($invocation_dir, $raw, $offset);
             break;
-        case "stdout":
+        case "filteredmanifestrspec":
             do_security_check($slice_id);
-            $retVal = get_omni_invocation_stdout($invocation_dir, $raw, $am_id);
+            $retVal = get_omni_invocation_filtered_manifest_rspec($invocation_dir, $raw, $am_id);
             break;
         case "status":
             $retVal = get_omni_invocation_status($invocation_dir, $raw);
@@ -174,10 +175,6 @@ if(array_key_exists("invocation_id", $_REQUEST) &&
         case "manifestrspec":
             do_security_check($slice_id);
             $retVal = get_omni_invocation_manifest_rspec($invocation_dir, $raw);
-            break;
-        case "manifestrspecjacks":
-            do_security_check($slice_id);
-            $retVal = get_omni_invocation_manifest_rspec_jacks($invocation_dir, $raw);
             break;
         default:
             exit_with_response("Request type '$request' not valid.");
@@ -352,7 +349,7 @@ function get_omni_invocation_file_raw_contents_offset($dir, $file,
     Get the PID from the omni invocation
 */
 function get_omni_invocation_pid($dir) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-pid", "PID file");
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::PID_FILE, "PID file");
     return $retVal;
 }
 
@@ -360,7 +357,7 @@ function get_omni_invocation_pid($dir) {
     Get the command called from the omni invocation
 */
 function get_omni_invocation_command($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-command", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::COMMAND_FILE, 
             "command file");
     return $raw ? $retVal : make_pretty_code($retVal);
 }
@@ -371,7 +368,7 @@ function get_omni_invocation_command($dir, $raw=true) {
     the command line.)
 */
 function get_omni_invocation_console_log($dir, $raw=true, $offset=0) {
-    $retVal = get_omni_invocation_file_raw_contents_offset($dir, "omni-console", 
+    $retVal = get_omni_invocation_file_raw_contents_offset($dir, OMNI_INVOCATION_FILE::CONSOLE_LOG_FILE, 
             "console log", $offset);
     return $raw ? $retVal : make_pretty_code($retVal);
 }
@@ -381,7 +378,7 @@ function get_omni_invocation_console_log($dir, $raw=true, $offset=0) {
     (This is the full log set to the DEBUG level.)
 */
 function get_omni_invocation_debug_log($dir, $raw=true, $offset=0) {
-    $retVal = get_omni_invocation_file_raw_contents_offset($dir, "omni-log", 
+    $retVal = get_omni_invocation_file_raw_contents_offset($dir, OMNI_INVOCATION_FILE::DEBUG_LOG_FILE, 
             "debug log", $offset);
     return $raw ? $retVal : make_pretty_code($retVal);
 }
@@ -390,8 +387,16 @@ function get_omni_invocation_debug_log($dir, $raw=true, $offset=0) {
     Get any error messages (stderr) from the omni invocation
 */
 function get_omni_invocation_error_log($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::ERROR_LOG_FILE, 
             "error log");
+    
+    // parse out what the error actually is and return this in the msg field
+    if($retVal['obj']) {
+        // match on either OmniError or StitchingError
+        $retVal['msg'] = trim(preg_replace("/Traceback(.*)OmniError\:/s", "", $retVal['obj'], -1 ));
+        $retVal['msg'] = trim(preg_replace("/Traceback(.*)StitchingError\:/s", "", $retVal['msg'], -1 ));
+    }
+
     return $raw ? $retVal : make_pretty_code($retVal);
 }
 
@@ -399,26 +404,129 @@ function get_omni_invocation_error_log($dir, $raw=true) {
     Get the request RSpec from the omni invocation
 */
 function get_omni_invocation_request_rspec($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "rspec", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::REQUEST_RSPEC_FILE, 
             "request RSpec");
     return $raw ? $retVal : make_pretty_code($retVal);
 }
 
+
 /*
-    Get the data returned from stitcher.call
-    Pass AM ID to do AM filtering for pretty XML
+    Get the "filtered" manifest RSpec
+    This filters the manifest RSpec in the following ways:
+        * Removes XML comments
+        * (TODO) Removes <node> elements where no sliver_id is specified
+        * For AM filtering,
+            * (TODO) Removes <node> elements that don't match AM specified
+            * (TODO) Removes <link> elements where at least one AM isn't the one specified
+    Used for:
+        raw: XML to feed to Jacks viewer on 'Results' tab
+        pretty: pretty XML data table on 'Results' tab
 */
-function get_omni_invocation_stdout($dir, $raw=true, $am_id=NULL) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
+function get_omni_invocation_filtered_manifest_rspec($dir, $raw=true, $am_id=NULL) {
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::CALL_RESULTS_FILE, 
             "stdout from stitcher.call");
-    return $raw ? $retVal : make_pretty_stdout($retVal, $am_id);
+            
+    if($retVal['obj']) {
+    
+        $output2 = json_decode($retVal['obj'], True);
+        
+        if ( count($output2) == 2 ) {
+           $msg = $output2[0];
+           $obj = $output2[1];
+        } else {
+           $msg = $output2;
+           $obj = "";
+        }
+    
+        // probably some results in XML form
+        if ($obj != "" ) {
+        
+            $obj_filter = $obj;
+        
+            // Filter: comments
+            $obj_filter = preg_replace('/<!--(.*)-->/Uis', '', $obj_filter);
+        
+            // FIXME: Do additional filtering here
+            // See Ticket 1135 about moving out logic for print_rspec_pretty
+        
+            if($raw) {
+                $retVal['obj'] = $obj_filter;
+            }
+            else {
+                $retVal['obj'] = make_pretty_results_table($obj_filter, $am_id);
+            }
+
+        }
+        
+        // probably not a successful result, so parse out to determine error
+        else {
+            // Note: prints/echos are sent to output buffer; this captures that
+            ob_start();
+            $new_msg = $msg;
+            //   note: preg_match returns 1 if expression is found
+            //         and matched string is stored in $string[0]
+            // match on omni python traceback error
+            print "<p>";
+            if(preg_match("/omnilib\.util\.omnierror.*/", $msg, $new_msg)) {
+                print '<b>Error:</b> Failed to create a sliver.<br><br>';
+                print "<i>";
+                print $new_msg[0];
+                print "</i>";
+            }
+            // match on InstaGENI URL
+            else if(preg_match("/http[s]?:\/\/[a-zA-Z0-9.\/]*\/spewlogfile[^)]*/", $msg, $error_url)) {
+                $new_msg = str_replace("\n", "<br>", $msg);
+                print '<b>Error:</b> Failed to create a sliver. Check log file at <a href="' . $error_url[0] . '" target="_blank">' . $error_url[0] . '</a>.<br><br>';
+                print "<i>";
+                print $new_msg;
+                print "</i>";
+            }
+            // if unknown error, display in its entirety
+            else {
+                $new_msg = str_replace("\n", "<br>", $msg);
+                print '<b>Error:</b> Failed to create a sliver.<br><br>';
+                print "<i>";
+                print $new_msg;
+                print "</i>";
+            }
+            print "</p>";
+            $errorMsg = ob_get_clean();
+            
+            // raw shouldn't get anything back (we don't want Jacks to get fed
+            // HTML error messages!)
+            if($raw) {
+                $retVal['obj'] = NULL;
+            }
+            // pretty should return the error message (this goes to the pretty
+            // XML table)
+            else {
+                $retVal['obj'] = $errorMsg;
+            }
+            
+        }
+
+    }
+    else {
+        $retVal['obj'] = NULL;
+    }
+    
+    return $retVal;
 }
+
 
 /*
     Get the manifest RSpec
+    This returns exactly what the AM returned, so there is no filtering
+        done for comments, different AMs, or any checks to determine
+        if anything was really added. The "filtered" manifest RSpec that is
+        used to generate the pretty XML table and Jacks viewer is
+        called in get_omni_invocation_filtered_manifest_rspec().
+    Used for:
+        raw: with download option, download manifest RSpec
+        pretty: HTMLified XML on 'Manfest RSpec' tab
 */
 function get_omni_invocation_manifest_rspec($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::CALL_RESULTS_FILE, 
             "stdout from stitcher.call (for manifest)");
             
     // get XML from obj
@@ -426,33 +534,6 @@ function get_omni_invocation_manifest_rspec($dir, $raw=true) {
         // FIXME: Do checks on this to see if this contains real data
         $output2 = json_decode($retVal['obj'], True);
         $retVal['obj'] = $output2[1];
-    }
-    else {
-        $retVal['obj'] = NULL;
-    }
-    return $raw ? $retVal : make_pretty_code($retVal);
-}
-
-/*
-    Get the manifest RSpec for Jacks
-    Ideally, this should just be an alias for get_omni_invocation_manifest()
-        since the functionality is basically the same. But because Jacks can't
-        handle XML comments (i.e. anything between <!-- and -->) for now, use
-        this function to do that.
-    FIXME: Should stripping out comments be done client-side in JS?
-    FIXME: How should AM filtering be done?
-*/
-function get_omni_invocation_manifest_rspec_jacks($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "omni-stdout", 
-            "stdout from stitcher.call (for manifest)");
-            
-    // get XML from obj
-    if($retVal['obj']) {
-        // FIXME: Do checks on this to see if this contains real data
-        $output2 = json_decode($retVal['obj'], True);
-        // strip out anything between <!-- and -->
-        $nocomments = preg_replace('/<!--(.*)-->/Uis', '', $output2[1]);
-        $retVal['obj'] = $nocomments;
     }
     else {
         $retVal['obj'] = NULL;
@@ -501,7 +582,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     $retVal = array();
 
     // get data from start file if it exists
-    $retValStart = get_omni_invocation_file_raw_contents($dir, "start", 
+    $retValStart = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::START_FILE, 
             "start time file");
     if($retValStart['code'] == 0) {
         $start_time = $retValStart['obj'];
@@ -512,7 +593,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     }
 
     // get data from stop file if it exists
-    $retValStop = get_omni_invocation_file_raw_contents($dir, "stop", 
+    $retValStop = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::STOP_FILE, 
             "stop time file");
     if($retValStop['code'] == 0) {
         // process is finished, so find the difference between start and stop
@@ -523,7 +604,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
         $retVal['code'] = 0;
         
         // check if omni-stderr is empty - if not, then process probably failed
-        $retValError = get_omni_invocation_file_raw_contents($dir, "omni-stderr", 
+        $retValError = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::ERROR_LOG_FILE, 
             "error log");
         if($retValError['code'] == 0) {
             $retVal['msg'] = "<b style='color:red;'>Failed</b>";
@@ -556,7 +637,7 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
     Get the start time (if exists) from the omni invocation
 */
 function get_omni_invocation_start_time($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "start", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::START_FILE, 
             "start time file");
     return $raw ? $retVal : make_pretty_time($retVal);
 }
@@ -565,7 +646,7 @@ function get_omni_invocation_start_time($dir, $raw=true) {
     Get the stop time (if exists) from the omni invocation
 */
 function get_omni_invocation_stop_time($dir, $raw=true) {
-    $retVal = get_omni_invocation_file_raw_contents($dir, "stop", 
+    $retVal = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::STOP_FILE, 
             "stop time file");
     return $raw ? $retVal : make_pretty_time($retVal);
 }
@@ -642,31 +723,8 @@ function make_pretty_code($retVal) {
     Return pretty print for omni-stdout data (i.e. the results)
     Filter by AM if AM ID is specified
 */
-function make_pretty_stdout($retVal, $am_id) {
+function make_pretty_results_table($xml, $am_id) {
 
-    // check that obj isn't empty
-    if($retVal['obj']) {
-        // FIXME: Do checks on this to see if this contains real data
-        $output2 = json_decode($retVal['obj'], True);
-        
-        if ( count($output2) == 2 ) {
-           $msg = $output2[0];
-           $obj = $output2[1];
-        } else {
-           $msg = $output2;
-           $obj = "";
-        }
-        
-        // probably XML, so send to print_rspec_pretty
-        // Note: prints/echos are sent to output buffer; this captures that
-        if ($obj != "" ) {
-        
-            // load GENI user so we can call service registry
-            $user = geni_loadUser();
-            if (!isset($user) || is_null($user) || ! $user->isActive()) {
-                exit_with_response("User not logged in.");
-            }
-            
             // set AM if exists
             if($am_id) {
                 $am = get_service_by_id($am_id);
@@ -682,53 +740,11 @@ function make_pretty_stdout($retVal, $am_id) {
             $manifestOnly = True;
         
             ob_start();
-            $obj = print_rspec_pretty($output2[1], $manifestOnly, $filterToAM, $am_urn);
-            $retVal['obj'] = ob_get_clean();
+            $obj = print_rspec_pretty($xml, $manifestOnly, $filterToAM, $am_urn);
+            return ob_get_clean();
+             
         }
-        
-        // something else, so parse out to determine if it's an error
-        else {
-            // Note: prints/echos are sent to output buffer; this captures that
-            ob_start();
-            $new_msg = $msg;
-            //   note: preg_match returns 1 if expression is found
-            //         and matched string is stored in $string[0]
-            // match on omni python traceback error
-            print "<p>";
-            if(preg_match("/omnilib\.util\.omnierror.*/", $msg, $new_msg)) {
-                print '<b>Error:</b> Failed to create a sliver.<br><br>';
-                print "<i>";
-                print $new_msg[0];
-                print "</i>";
-            }
-            // match on InstaGENI URL
-            else if(preg_match("/http[s]?:\/\/[a-zA-Z0-9.\/]*\/spewlogfile[^)]*/", $msg, $error_url)) {
-                $new_msg = str_replace("\n", "<br>", $msg);
-                print '<b>Error:</b> Failed to create a sliver. Check log file at <a href="' . $error_url[0] . '" target="_blank">' . $error_url[0] . '</a>.<br><br>';
-                print "<i>";
-                print $new_msg;
-                print "</i>";
-            }
-            // if unknown error, display in its entirety
-            else {
-                $new_msg = str_replace("\n", "<br>", $msg);
-                print '<b>Error:</b> Failed to create a sliver.<br><br>';
-                print "<i>";
-                print $new_msg;
-                print "</i>";
-            }
-            print "</p>";
-            $retVal['obj'] = ob_get_clean();
-        }
-        
-        return $retVal;
-    }
-    // pass back what we originally got
-    else {
-        return $retVal;
-    }
-
-}
+ 
 
 
 /*

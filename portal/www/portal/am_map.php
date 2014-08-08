@@ -29,6 +29,7 @@ function create_am_map() {
   global $am_mapping;
   global $am_mapping_id;
   global $am_mapping_urn;
+  global $am_mapping_name_by_urn;
   $am_mapping=array();
   $am_mapping_id=array();
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
@@ -41,6 +42,7 @@ function create_am_map() {
     $am_mapping[ $aggurl ] = $aggname;
     $am_mapping_id[ $aggurl ] = $aggid;
     $am_mapping_urn[ $aggurl ] = $aggurn;
+    $am_mapping_name_by_urn[ $aggurn ] = $aggname;
   }
 }
 
@@ -49,6 +51,11 @@ create_am_map();
 function am_name( $aggurl ) {
   global $am_mapping;
   return $am_mapping[ $aggurl ];
+}
+
+function am_name_from_urn( $aggurn ) {
+  global $am_mapping_name_by_urn;
+  return $am_mapping_name_by_urn[$aggurn];
 }
 
 function am_id( $aggurl ) {
