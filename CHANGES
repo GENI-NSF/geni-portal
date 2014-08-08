@@ -36,6 +36,7 @@
   * Add/remove of member attributes clears the member cache in ma_client.
  * If user in the project is disabled, remove them from the WiMAX group (#1124)
  * View RSpecs using Jacks viewer (#1127)
+ * Display project URN on project page (#1142)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
