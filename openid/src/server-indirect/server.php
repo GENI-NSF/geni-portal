@@ -36,23 +36,44 @@ define('server_page_template',
   </head>
   <body>
 <div id="header">
-  <div id="header-top"></div>
+  <div id="header-top">
+    <div id="metanav" class="nav">
+     <ul>
+      <li>Logged in as <b>%s</b> (%s)</li>
+      <li style="border-right: none">
+        <a href="%s">Logout</a>
+      </li>
+     </ul>
+    </div>
+  </div>
 </div>
 <div id="content-outer">
   <div id="content">
     <h1>GENI Portal OpenID Trust</h1>
     You are about to release some of your information to <b>%s</b>.
     <br/><br/>
-    Do you trust <b>%s</b>?
+    Do you trust <b>%s</b> ?
     <br/><br/>
     <form action="%s" method="post">
-      <input type="submit" name="save" value="Send my information" />
-      <input type="submit" name="cancel" value="Cancel" />
+      <input type="submit" name="save" value="Yes, send my information"/>
+      <input type="submit" name="cancel" value="No, I do not trust that site"/>
     </form>
   </div>
 </div>
   </body>
 </html>');
+
+
+
+function make_trust_page($geni_user, $title, $trust_root, $authorize_url) {
+  $pretty_name = $geni_user->prettyName();
+  $username = $geni_user->username;
+  $logout_url = '/secure/dologout.php';
+
+  $page = sprintf(server_page_template, $title, $pretty_name, $username,
+                  $logout_url, $trust_root, $trust_root, $authorize_url);
+  return $page;
+}
 
 
 function action_show_trust() {
@@ -68,8 +89,7 @@ function action_show_trust() {
   $trust_root = htmlspecialchars($info->trust_root);
   $title = 'GENI OpenID Trust';
   $authorize_url = buildURL('authorize', true);
-  $text = sprintf(server_page_template, $title, $title, $trust_root,
-                  $trust_root, $authorize_url);
+  $text = make_trust_page($geni_user, $title, $trust_root, $authorize_url);
   $headers = array();
   return array($headers, $text);
 }
