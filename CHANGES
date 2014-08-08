@@ -27,6 +27,7 @@
   * Handle timeouts better.
   * Add/remove of member attributes clears the member cache in ma_client.
  * If user in the project is disabled, remove them from the WiMAX group (#1124)
+ * Ensure all `img` tags are properly closed. (#1145)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
