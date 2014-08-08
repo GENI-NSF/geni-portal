@@ -105,21 +105,21 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 // FIXME: put header and breadcrumb here
-show_header('GENI Portal: Send Bug Report',  $TAB_SLICES);
+show_header('GENI Portal: Send Problem Report',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
-echo "<h1>Send Bug Report</h1>";
+echo "<h1>Send Problem Report</h1>";
 
 // get 'To:' field and sanitize input
 if(array_key_exists("to", $_REQUEST)) {
     $to = filter_var($_REQUEST['to'], FILTER_SANITIZE_EMAIL);
     // if e-mail isn't valid
     if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
-        send_bug_report_error("E-mail address provided is not valid. Bug report not sent.");
+        send_bug_report_error("E-mail address provided is not valid. Problem report not sent.");
     }
 }
 else {
-    send_bug_report_error("No e-mail address provided. Bug report not sent.");
+    send_bug_report_error("No e-mail address provided. Problem report not sent.");
 }
 
 // set CC field to user's e-mail if exists
@@ -177,7 +177,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
 
     // make sure directory actually exists
     if(!is_dir($omni_invocation_dir)) {
-        send_bug_report_error("Bug report files could not be zipped in an archive. Bug report not sent.");
+        send_bug_report_error("Problem report files could not be zipped in an archive. Problem report not sent.");
     }
 
     // don't include the user's cert, credentials, private key, and (maybe) SF cred
@@ -202,7 +202,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
         }
     }
     else {
-        send_bug_report_error("Bug report files could not be zipped in an archive. Bug report not sent.");
+        send_bug_report_error("Problem report files could not be zipped in an archive. Problem report not sent.");
     }
     
     // prepare metadata
@@ -219,7 +219,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     // set up e-mail
     $boundary_string = md5(date('r', time()));
     $from = "\"" . $user->prettyName() . " (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
-    $subject = "GENI Portal Reservation Bug Report";
+    $subject = "GENI Portal Reservation Problem Report";
     
     $headers   = array();
     $headers[] = "MIME-Version: 1.0";
@@ -241,8 +241,8 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 
-Attached is a bug report about reserving resources generated from the
-GENI Portal (https://portal.geni.net/). This bug report contains
+Attached is a problem report about reserving resources generated from the
+GENI Portal (https://portal.geni.net/). This problem report contains
 process-related information such as log files, resource specifications
 (RSpecs) and metadata.
 
@@ -270,15 +270,15 @@ Content-Disposition: attachment
 
     if($retVal) {
         if($cc) {
-            $msg = "Bug report sent to <b>$to</b> (and copied to <b>$cc</b>).";
+            $msg = "Problem report sent to <b>$to</b> (and copied to <b>$cc</b>).";
         }
         else {
-            $msg = "Bug report sent to <b>$to</b>.";
+            $msg = "Problem report sent to <b>$to</b>.";
         }
         send_bug_report_success($msg);
     }
     else {
-        send_bug_report_error("Could not send bug report. Try again later or " .
+        send_bug_report_error("Could not send problem report. Try again later or " .
             "please contact <a href='mailto:portal-help@geni.net'>Portal Help</a>.");
     }
 

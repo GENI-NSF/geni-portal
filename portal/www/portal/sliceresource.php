@@ -111,9 +111,9 @@ if(!is_dir($dir_to_check)) {
 }
 
 // set e-mail footer message
-$bug_report_msg1 = "Attached is a bug report about reserving resources generated from the GENI Portal (https://portal.geni.net/). This bug report contains process-related information such as log files, resource specifications (RSpecs) and metadata.<br><br>User message:";
+$bug_report_msg1 = "Attached is a problem report about reserving resources generated from the GENI Portal (https://portal.geni.net/). This problem report contains process-related information such as log files, resource specifications (RSpecs) and metadata.<br><br>User message:";
 $bug_report_msg2 = "Thanks,<br>" . $user->prettyName();
-$bug_report_subject = "GENI Portal Reservation Bug Report";
+$bug_report_subject = "GENI Portal Reservation Problem Report";
 
 /*
     since AM ID is optional for this page, it needs to be explicitly
@@ -142,7 +142,7 @@ echo "</div></div>";
 			<li><a href='#tab_progress'>Detailed Progress</a></li>
 			<li><a href='#tab_request_rspec'>Request RSpec</a></li>
 			<li><a href='#tab_manifest_rspec'>Manifest RSpec</a></li>
-			<li><a href='#tab_send_bug_report'>Send Bug Report</a></li>
+			<li><a href='#tab_send_bug_report'>Send Problem Report</a></li>
 			<li style="border-right: none"><a href='#tab_advanced'>Advanced</a></li>
 		</ul>
   </div>
@@ -208,25 +208,16 @@ function validateBugReportSubmit()
 }
 </script>
 
-<h2>Send a Bug Report</h2>
+<h2>Send a Problem Report</h2>
 
-<p>Ran into a problem or have a question? Many issues have been addressed on the GENI Users community support mailing list. Check the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">archives</a> first before sending a new problem report.</p>
-
-<p>If you cannot find the answer to your question in the archives, submit your problem report to the GENI Users mailing list at <a href="mailto:geni-users@googlegroups.com">geni-users@googlegroups.com</a>. <i>Note, however, that this report will include the private information listed below.</i> <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">Sign up for the mailing list</a> to ensure speedy delivery of your problem report, receive the answer, and participate in ongoing conversations.</p>
+<p>Ran into a problem or have a question? Search the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">GENI Users</a> archives for answers to similar questions.  If you cannot find an answer, join the <a target="_blank" href="http://groups.geni.net/geni/wiki/GENIExperimenter/CommunityMailingList"> geni-users mailing list</a> and send your problem report there.</p>
 
 <ul>
-<li><b>What will be included in the bug report:</b> user-identifiable information (name, e-mail address, slice and project information), request RSpec, manifest RSpec(s), progress log, debug log, error log, process metadata</li>
-<li><b>What will <i>not</i> be included in the bug report: </b>security-sensitive information (slice credentials, certificates, private keys, SpeaksFor credentials)</li>
+<li>The problem report will include your name, e-mail address, slice and project information, request RSpec, manifest RSpec(s), progress log, debug log, error log and process metadata.</li>
+<li>The report will not include security-sensitive information such as slice credentials, certificates, private keys and SpeaksFor credentials.</li>
 </ul>
 
-<p>If you are not comfortable sharing your private information with the general GENI community, submit your problem report to <a href="mailto:gpo-expt-support@geni.net">gpo-expt-support@geni.net</a>.</p>
-
-<p>Suggestions for what to include in the bug report message:</p>
-<ul>
-<li>What did you do?</li>
-<li>What did you expect to happen?</li>
-<li>What did happen?</li>
-</ul>
+<p>If you are not comfortable sharing your problem report outside the GENI Project Office, email it to <a href="mailto:portal-help@geni.net">portal-help@geni.net</a>.</p>
 
 <form id="f1" action="send_bug_report.php" method="post" enctype="multipart/form-data" onsubmit="return validateBugReportSubmit()">
 <input type="hidden" name="invocation_id" id="invocation_id" value="<?php echo $invocation_id;?>"/>
@@ -236,7 +227,7 @@ function validateBugReportSubmit()
 <table>
 <tr>
 <th>From</th>
-<td><b><?php echo $user->prettyName() . " &lt;" . $user->email() . "&gt;"; ?></b> (Copy me on the bug report e-mail:<input type="checkbox" name="copy" id='copy' value="true"/>)</td>
+<td><b><?php echo $user->prettyName() . " &lt;" . $user->email() . "&gt;"; ?></b> (Copy me on the problem report e-mail:<input type="checkbox" name="copy" id='copy' value="true"/>)</td>
 </tr>
 <tr>
 <th>Subject</th>
@@ -244,7 +235,7 @@ function validateBugReportSubmit()
 </tr>
 <tr>
 <th>To<br><small>(Required)</small></th>
-<td><b>Recipient e-mail:</b> <input type='text' name='to' id='to' size='30' value='portal-help@geni.net'></input><br></td>
+<td><b>Recipient e-mail:</b> <input type='text' name='to' id='to' size='30' value='geni-users@googlegroups.com'></input><br></td>
 </tr>
 <tr>
 <th>Message<br><small>(Required)</small></th>
@@ -252,7 +243,7 @@ function validateBugReportSubmit()
 </tr>
 </table>
 
-<p><input type="submit" value="Submit Bug Report"/></p>
+<p><input type="submit" value="Submit Problem Report"/></p>
 
 
 </form>

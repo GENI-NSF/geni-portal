@@ -177,7 +177,7 @@ $names = array("home.php" => $TAB_HOME,
 	       "wimax-enable.php" => "Enable WiMAX",
 	       "gemini.php" => "GENI Desktop",
 	       "tool-aggwarning.php" => "Query All Aggregates",
-	       "send_bug_report.php" => "Send Bug Report");
+	       "send_bug_report.php" => "Send Problem Report");
 
 // Look up in the 2 arrays above
 // Carefully checking for the project_id variant
