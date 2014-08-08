@@ -19,6 +19,7 @@ nobase_dist_svcdata_DATA = \
 	php/ma_constants.php \
 	php/maintenance_mode.php \
 	php/message_handler.php \
+	php/omni_invocation_constants.php \
 	php/pa_client.php \
 	php/pa_constants.php \
 	php/permission_manager.php \

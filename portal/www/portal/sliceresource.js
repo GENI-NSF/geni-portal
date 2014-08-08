@@ -12,15 +12,11 @@ start_time = "";
 stop_time = "";
 
 $( document ).ready( function() {
-    getPID(user, id, slice_id);
     getCommand(user, id, slice_id);
     getRequestRSpec(user, id, slice_id);
     getStartTime(user, id, slice_id);
-    updateConsoleLog(user, id, slice_id, console_log_offset);
-    updateDebugLog(user, id, slice_id, debug_log_offset);
-    updateElapsedTime(user, id, slice_id, am_id);
-    get_console = setInterval( "updateConsoleLog(user, id, slice_id, console_log_offset)", 1000 );
-    get_debug = setInterval( "updateDebugLog(user, id, slice_id, debug_log_offset)", 1000 );
+    get_console = setInterval( "updateConsoleLog(user, id, slice_id, console_log_offset)", 5000 );
+    get_debug = setInterval( "updateDebugLog(user, id, slice_id, debug_log_offset)", 5000 );
     get_elapsed = setInterval( "updateElapsedTime(user, id, slice_id, am_id)", 1000 );
 });
 
@@ -62,7 +58,7 @@ function updateDebugLog(invocationUser, invocationID, sliceID, offset) {
 
 function getXMLResults(invocationUser, invocationID, sliceID, amID) {
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&am_id='+amID+'&request=stdout&raw=false',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&am_id='+amID+'&request=filteredmanifestrspec&raw=false',
         function(data) {
             if(data.code == 0) {
                 $("#prettyxml").html(data.obj);
@@ -76,7 +72,7 @@ function getXMLResults(invocationUser, invocationID, sliceID, amID) {
 function updateJacks(invocationUser, invocationID, sliceID) {
     // send Jacks the raw manifest RSpec
     $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=manifestrspecjacks',
+    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=filteredmanifestrspec',
         function(data) {
             if(data.code == 0 && data.obj) {
                 thisInstance = new window.Jacks({
@@ -146,7 +142,7 @@ function getErrorLog(invocationUser, invocationID, sliceID) {
                 // set 'Last updated:' to 'Failed at:'
                 $("#last_updated_or_finished_text").html("Failed at:");
                 // update 'Results' section to reflect this
-                $("#prettyxml").html("<p><i>Failed. See 'Detailed Progress' tab for more information.</i></p>");
+                $("#prettyxml").html("<p><b>Error:</b> Failed to create a sliver.<br><br><i>"+data.msg+"</i></p>");
                 // update 'Advanced' tab with results of omni-stderr
                 $("#error_data").html(data.obj);
                 // allow for error log to be downloaded
@@ -168,16 +164,6 @@ function getStartTime(invocationUser, invocationID, sliceID) {
                 $("#start_time").html(data.obj);
                 // update global variable start_time
                 start_time = data.obj;
-            }
-        });
-}
-
-function getPID(invocationUser, invocationID, sliceID) {
-    $.getJSON('get_omni_invocation_data.php?invocation_user='+invocationUser+
-    '&invocation_id='+invocationID+'&slice_id='+sliceID+'&request=pid',
-        function(data) {
-            if(data.code == 0) {
-                $("#pid_pid").html(data.obj);
             }
         });
 }
@@ -211,7 +197,9 @@ function getManifestRSpec(invocationUser, invocationID, sliceID) {
                 // allow manifest to be downloaded
                 $("#download_manifestrspec").removeAttr('disabled');
                 // display note about 'Results current as of...'
-                $("#results_stop_msg").html("<p><i>Note that the results are current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted.</i></p>");
+                $("#results_stop_msg").html("<p><i>Note that the results are current as of the finish time. Your resource allocation may have changed after this time if resources expired or were deleted. Check the <a target='_blank' href='listresources.php?slice_id="+slice_id+"'>slice resources page</a> for the most up-to-date results about your slice's current allocated resources.</i></p>");
+                // display link to get raw manifest RSpec
+                $("#results_manifest_link").html("<p><a href='#tab_manifest_rspec'>Show Raw XML Resource Specification (Manifest)</a></p>");
             }
         });
 }
@@ -220,6 +208,9 @@ function stopPolling() {
     clearInterval(get_debug);
     clearInterval(get_console);
     clearInterval(get_elapsed);
+    // get log data one last time to make sure that no data was missed
+    updateConsoleLog(user, id, slice_id, console_log_offset);
+    updateDebugLog(user, id, slice_id, debug_log_offset);
 }
     
 </script>

@@ -14,6 +14,13 @@
    * Store manifest RSpecs (#225)
    * New tabbed results page shows logs of allocations
    * Go back to view previous allocation logs/results via link in "Recent Messages"
+   * Per-node results show long-form name of AM for stitching requests
+   * User-friendly error message shows when an error occurs due to the tool (#1131)
+   * omni invocation related files are referenced by constants (#1132)
+   * Results page shows aggregate managers' long form names
+   * Results page includes Jacks viewer of manifest RSpec
+   * Some support for SpeaksFor
+   * Bug/problem report page text updated via discussions with experimenter support group 
  * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
  * Add comments about new error messages in WiMAX (#1077)
   * Handle error 20 (group exists) by treating attempt to create

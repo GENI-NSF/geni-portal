@@ -111,8 +111,9 @@ if(!is_dir($dir_to_check)) {
 }
 
 // set e-mail footer message
-$bug_report_msg1 = "Attached is an omni process bug report generated from the GENI Portal (https://portal.geni.net/). This bug report contains process-related information such as log files, resource specifications (RSpecs) and metadata.<br><br>User message:";
+$bug_report_msg1 = "Attached is a problem report about reserving resources generated from the GENI Portal (https://portal.geni.net/). This problem report contains process-related information such as log files, resource specifications (RSpecs) and metadata.<br><br>User message:";
 $bug_report_msg2 = "Thanks,<br>" . $user->prettyName();
+$bug_report_subject = "GENI Portal Reservation Problem Report";
 
 /*
     since AM ID is optional for this page, it needs to be explicitly
@@ -137,16 +138,22 @@ echo "</div></div>";
 
   <div id='tablist'>
 		<ul class='tabs'>
+			<li><a href='#tab_results'>Results</a></li>
 			<li><a href='#tab_progress'>Detailed Progress</a></li>
 			<li><a href='#tab_request_rspec'>Request RSpec</a></li>
 			<li><a href='#tab_manifest_rspec'>Manifest RSpec</a></li>
-			<li><a href='#tab_send_bug_report'>Send Bug Report</a></li>
+			<li><a href='#tab_send_bug_report'>Send Problem Report</a></li>
 			<li style="border-right: none"><a href='#tab_advanced'>Advanced</a></li>
 		</ul>
   </div>
 
 <!-- begin tab content -->
 <div class='tabContent'>
+
+<!-- resource 'tab' - this is empty so that the results (which always appear on
+     each tab) will show at the top -->
+<div id='tab_results'>
+</div>
 
 <!-- progress tab -->
 <div id='tab_progress'>
@@ -201,9 +208,16 @@ function validateBugReportSubmit()
 }
 </script>
 
-<h2>Send a Bug Report</h2>
-<p>Fill out the following form to send a bug report. Bug reports will include the <b>progress log</b>, <b>debug log</b>, <b>error log</b>, <b>request RSpec</b>, and <b>process information</b>.</p>
-<p>User-sensitive information, such as slice credentials, certificates, and private keys, will <i>not</i> be included.</p>
+<h2>Send a Problem Report</h2>
+
+<p>Ran into a problem or have a question? Search the <a target="_blank" href="https://groups.google.com/forum/#!forum/geni-users">GENI Users</a> archives for answers to similar questions.  If you cannot find an answer, join the <a target="_blank" href="http://groups.geni.net/geni/wiki/GENIExperimenter/CommunityMailingList"> geni-users mailing list</a> and send your problem report there.</p>
+
+<ul>
+<li>The problem report will include your name, e-mail address, slice and project information, request RSpec, manifest RSpec(s), progress log, debug log, error log and process metadata.</li>
+<li>The report will not include security-sensitive information such as slice credentials, certificates, private keys and SpeaksFor credentials.</li>
+</ul>
+
+<p>If you are not comfortable sharing your problem report outside the GENI Project Office, email it to <a href="mailto:portal-help@geni.net">portal-help@geni.net</a>.</p>
 
 <form id="f1" action="send_bug_report.php" method="post" enctype="multipart/form-data" onsubmit="return validateBugReportSubmit()">
 <input type="hidden" name="invocation_id" id="invocation_id" value="<?php echo $invocation_id;?>"/>
@@ -213,11 +227,15 @@ function validateBugReportSubmit()
 <table>
 <tr>
 <th>From</th>
-<td><b><?php echo $user->prettyName() . " &lt;" . $user->email() . "&gt;"; ?></b> (Copy me on the bug report e-mail:<input type="checkbox" name="copy" id='copy' value="true"/>)</td>
+<td><b><?php echo $user->prettyName() . " &lt;" . $user->email() . "&gt;"; ?></b> (Copy me on the problem report e-mail:<input type="checkbox" name="copy" id='copy' value="true"/>)</td>
+</tr>
+<tr>
+<th>Subject</th>
+<td><b><?php echo $bug_report_subject; ?></b></td>
 </tr>
 <tr>
 <th>To<br><small>(Required)</small></th>
-<td><b>Recipient e-mail:</b> <input type='text' name='to' id='to' size='30'/><br></td>
+<td><b>Recipient e-mail:</b> <input type='text' name='to' id='to' size='30' value='geni-users@googlegroups.com'></input><br></td>
 </tr>
 <tr>
 <th>Message<br><small>(Required)</small></th>
@@ -225,7 +243,7 @@ function validateBugReportSubmit()
 </tr>
 </table>
 
-<p><input type="submit" value="Submit Bug Report"/></p>
+<p><input type="submit" value="Submit Problem Report"/></p>
 
 
 </form>
@@ -247,12 +265,6 @@ function validateBugReportSubmit()
 
 <h2>Command</h2>
 <pre id='command_data_container'><span id='command_data'></span></pre>
-
-
-
-<h2>Statistics</h2>
-<h3>PID</h3>
-<p><b><span id='pid_pid'></span></b></p>
 
 </div>
 
@@ -280,10 +292,15 @@ else {
 <script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
 <div id='jacksContainer' class='jacks resources' style='background-color: white;display: none;'></div>
 
+<div id='results_manifest_link'></div>
+<p>
+<a href="slices.php">Back to All slices</a><br>
+<a href="slice.php?slice_id=<?php echo $slice_id; ?>">Black to Slice <i><?php echo $slice_name; ?></i></a>
+</p>
 
 <?php
 
-include "sliceresource-tabs.js";
+include "tabs.js";
 include("footer.php");
 
 ?>
