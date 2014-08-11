@@ -36,6 +36,7 @@ require_once("proj_slice_member.php");
 require_once("print-text-helpers.php");
 require_once("logging_client.php");
 require_once("tool-rspec-parse.php");
+require_once("omni_invocation_constants.php");
 
 /*
     STEP 1: VERIFY
@@ -160,7 +161,7 @@ $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 
 // FIXME: This is the RSpec that will be used to call omni/stitcher.
 // See proto-ch ticket #164 for storing all request RSpecs
-$rspec_file = writeDataToTempDir($omni_invocation_dir, $rspec, "rspec");
+$rspec_file = writeDataToTempDir($omni_invocation_dir, $rspec, OMNI_INVOCATION_FILE::REQUEST_RSPEC_FILE);
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $slice_users = get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id);
@@ -184,7 +185,24 @@ $metadata = array(
     'Request browser' => $_SERVER['HTTP_USER_AGENT'],
     'Request submitted' => date('r')
     );
-$metadata_file = writeDataToTempDir($omni_invocation_dir, json_encode($metadata), "metadata");
+$metadata_file = writeDataToTempDir($omni_invocation_dir,
+        json_encode($metadata), OMNI_INVOCATION_FILE::METADATA_FILE);
+
+/* write out metadata file that will be included in the body of a bug
+   report e-mail - adjust this as necessary */
+$metadata_email_report = array(
+    'User name' => $user->prettyName(),
+    'User username' => $user->username,
+    'Slice URN' => $slice_urn,
+    'Slice name' => $slice_name,
+    'Project name' => $project_name,
+    'Aggregate manager URL' => $am_url,
+    'Aggregate manager name' => $AM_name,
+    'Request submitted' => date('r')
+    );
+$metadata_email_report_file = writeDataToTempDir($omni_invocation_dir,
+        json_encode($metadata_email_report),
+        OMNI_INVOCATION_FILE::METADATA_BUG_REPORT_EMAIL_FILE);
 
 /*
     STEP 3: CALL AM CLIENT
@@ -218,13 +236,13 @@ if($retVal) {
     $log_attributes = array_merge($project_attributes, $slice_attributes);
     if($stitch_rspec) {
         log_event($log_url, $user,
-            "Add resource request submitted to slice " . $slice_name . " from " .
+            "Add resource request submitted for slice " . $slice_name . " from " .
             "stitching RSpec.<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }
     else {
         log_event($log_url, $user,
-            "Add resource request submitted to slice " . $slice_name . " at " . 
+            "Add resource request submitted for slice " . $slice_name . " at " . 
             $AM_name . ".<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }

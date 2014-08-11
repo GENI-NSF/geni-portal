@@ -1353,7 +1353,7 @@ if (array_key_exists('project_id', $_REQUEST))
   echo $result_string;
 
   if (! $is_error and ($enable_user or $enable_project)) {
-    echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit WiMAX resources.</p></a>";
+    echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'/></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit WiMAX resources.</p></a>";
   }
 
   // include link to main WiMAX page
