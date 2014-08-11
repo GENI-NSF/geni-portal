@@ -42,7 +42,8 @@ if (False && ! $user->hasAttribute('enable_wimax_button')) {
 // See tickets #772, #773, #1045
 $old_wimax_server_url = "https://www.orbit-lab.org/userupload/save"; // Ticket #771
 //$wimax_server_base_url = "https://www.orbit-lab.org/login/"; // Sept, 2013
-$wimax_server_base_url = "https://www.orbit-lab.org/remoteAcc/"; // May, 2014
+// $wimax_server_base_url = "https://www.orbit-lab.org/remoteAcc/"; // May, 2014
+$wimax_server_base_url = "https://www.orbit-lab.org/delegatedAM/"; // Aug, 2014
 
 // Using new method names/signatures as of late July, 2014
 
@@ -69,38 +70,39 @@ Member username exists from different authority. Code tries to pick a different 
   ERROR4 = 'ERROR 4: UID and OU match but DC is different'
 Seems to imply that group ou must be unique for both local and portal created groups? Huh?
 FIXME FIXME
-  ERROR5 = 'ERROR 5: User DN not known:'
+  ERROR5 = 'ERROR 5: Unknown username:'
 Handled explicitly when trying to deleteUser, changeLeader, changeProject
   ERROR6 = 'ERROR 6: Cannot delete user: User is a admin for'
 Handled explicity in deleteUser
-  ERROR7 = 'ERROR 7: Project DN not known:'
+  ERROR7 = 'ERROR 7: Unknown group name:
 Handled explicitly in deleteProject, changeLeader, changeProject
-  ERROR8 = 'ERROR 8: Project not deleted because it contains admin(s):'
+  ERROR8 = 'ERROR 8: Group/project not deleted because it contains admin(s):'
 Handled explicitly in deleteProject
   ERROR9 = 'ERROR 9: Cannot move users: different DCs'
 Theoretically could happen from changeProject if I'm trying to move a user not created
 by the portal to a different project. Shouldn't happen.
   ERROR10 = 'ERROR 10: Missing OU LDIF entry'
 Malformed LDIF
-  ERROR11 = 'ERROR 11: Missing groupname attribute in OU entry'
+  ERROR11 = 'ERROR 11: Missing group name attribute in OU entry'
 Malformed LDIF
   ERROR12 = 'ERROR 12: Missing objectClass attribute (organizationalUnit/organizationalRole/organizationalUnit) for'
 Malformed LDIF
+  ERROR17 = 'ERROR 17: Missing PI entry'
   ERROR20 = 'ERROR 20: Group exists'
 Tried to create a group that already exists.
 FIXME: Mostly handled below, but perhaps could be better.
   ERROR21 = 'ERROR 21: Missing PI mail:'
 Malformed LDIF. Note all users must have an email address.
-  ERROR22 = 'ERROR 22: Missing PI sshpublickey:'
+  ERROR22 = 'ERROR 22: Missing PI ssh public key:'
 Malformed LDIF. Note we explicitly require users have an SSH key.
 
   ERROR30 = 'ERROR 30: Missing username (UID)'
 Malformed LDIF.
   ERROR31 = 'ERROR 31: Organization does not exist for this user. Missing organization LDIF entry'
 FIXME: I need to handle this (see comments below). This means I tried to add a user to a group that doesn't exist.
-  ERROR32 = 'ERROR 32: Missing user mail:'
+  ERROR32 = 'ERROR 32: Missing user's email address'
 Malformed LDIF. Not all portal users must have an email address.
-  ERROR33 = 'ERROR 33: Missing user sshpublickey:'
+  ERROR33 = 'ERROR 33: Missing user's ssh public key:'
 Malformed LDIF. Note we explicitly require users have an SSH key.
 **/
 
@@ -291,10 +293,11 @@ function gen_new_username($oldUsername, $usernameBase) {
 
 function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
   global $wimax_server_deluser_url;
-  // https://www.orbit-lab.org/login/deleteUser?user=<userDN>
+  // https://www.orbit-lab.org/login/deleteUser?username=<userName>
   // Cannot do this if user is admin of any group
   // Do some checks?
-  $res = my_curl_get(array("user" => get_user_dn($ldif_user_username, $ldif_user_groupname)), $wimax_server_deluser_url);
+  //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname)), $wimax_server_deluser_url);
+  $res = my_curl_get(array("username" => $ldif_user_username), $wimax_server_deluser_url);
   error_log("Deleting WiMAX user " . $ldif_user_username . " at " . $wimax_server_deluser_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -310,6 +313,10 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
     // Treat as success
     return true;
   } else if (strpos(strtolower($res), strtolower("ERROR 5: User DN not known")) !== false) {
+    error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username in group $ldif_user_groupname - user not known: $res");
+    // Treat as success
+    return true;
+  } else if (strpos(strtolower($res), strtolower("ERROR 5: Unknown username")) !== false) {
     error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username in group $ldif_user_groupname - user not known: $res");
     // Treat as success
     return true;
@@ -338,10 +345,11 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
 
 function wimax_delete_group($ldif_group_name) {
   global $wimax_server_delgroup_url;
-  // https://www.orbit-lab.org/login/deleteGroup?group=<userDN>
+  // https://www.orbit-lab.org/login/deleteGroup?groupname=<groupName>
   // deletes all members too
   // stops if any members are admins
-  $res = my_curl_get(array("project" => get_project_dn($ldif_group_name)), $wimax_server_delgroup_url);
+  //  $res = my_curl_get(array("groupname" => get_project_dn($ldif_group_name)), $wimax_server_delgroup_url);
+  $res = my_curl_get(array("groupname" => $ldif_group_name), $wimax_server_delgroup_url);
   error_log("Deleting WiMAX group " . $ldif_group_name . " at " . $wimax_server_delgroup_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -380,10 +388,11 @@ function wimax_delete_group($ldif_group_name) {
 
 function wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_user_groupname) {
   global $wimax_server_changeadmin_url;
-  // https://www.orbit-lab.org/login/changeGroupAdmin?user=<userDN>&group=<projectDN>
+  // https://www.orbit-lab.org/login/changeGroupAdmin?username=<userName>&groupname=<projectName>
   // deletes all members too
   // stops if any members are admins
-  $res = my_curl_get(array("user" => get_user_dn($ldif_user_username, $ldif_user_groupname), "group" => get_project_dn($ldif_group_name)), $wimax_server_changeadmin_url);
+  //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname), "groupname" => get_project_dn($ldif_group_name)), $wimax_server_changeadmin_url);
+  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name), $wimax_server_changeadmin_url);
   error_log("Changing admin for WiMAX group " . $ldif_group_name . " to $ldif_user_username at " . $wimax_server_changeadmin_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -399,6 +408,10 @@ function wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_use
     //    return false;
     return "Internal Error: WiMAX User $ldif_user_username not known";
   } else if (strpos(strtolower($res), strtolower("ERROR 5: Uknonw user")) !== false) {
+    error_log("wimax-enable curl get changeGroupAdmin: Error changing group $ldif_group_name lead to $ldif_user_username: New Lead not a known user: $res");
+    //    return false;
+    return "Internal Error: WiMAX User $ldif_user_username not known";
+  } else if (strpos(strtolower($res), strtolower("ERROR 5: Unknown username")) !== false) {
     error_log("wimax-enable curl get changeGroupAdmin: Error changing group $ldif_group_name lead to $ldif_user_username: New Lead not a known user: $res");
     //    return false;
     return "Internal Error: WiMAX User $ldif_user_username not known";
@@ -419,8 +432,9 @@ function wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_use
 
 function wimax_change_group($ldif_group_name, $ldif_user_username, $ldif_user_groupname) {
   global $wimax_server_changegroup_url;
-  // https://www.orbit-lab.org/login/moveUser?user=<userDN>&group=<projectDN>
-  $res = my_curl_get(array("user" => get_user_dn($ldif_user_username, $ldif_user_groupname), "group" => get_project_dn($ldif_group_name)), $wimax_server_changegroup_url);
+  // https://www.orbit-lab.org/login/moveUser?username=<userName>&groupname=<projectName>
+  //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname), "groupname" => get_project_dn($ldif_group_name)), $wimax_server_changegroup_url);
+  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name), $wimax_server_changegroup_url);
   error_log("Changing WiMAX group to " . $ldif_group_name . " for $ldif_user_username at " . $wimax_server_changegroup_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -436,6 +450,10 @@ function wimax_change_group($ldif_group_name, $ldif_user_username, $ldif_user_gr
     //    return false;
     return "Internal Error: WiMAX user $ldif_user_username not found";
   } else if (strpos(strtolower($res), strtolower("ERROR 5: Uknonw user")) !== false) {
+    error_log("wimax-enable curl get moveUser: Error changing to group $ldif_group_name for $ldif_user_username: Not a known user: $res");
+    //    return false;
+    return "Internal Error: WiMAX user $ldif_user_username not found";
+  } else if (strpos(strtolower($res), strtolower("ERROR 5: Unknown username")) !== false) {
     error_log("wimax-enable curl get moveUser: Error changing to group $ldif_group_name for $ldif_user_username: Not a known user: $res");
     //    return false;
     return "Internal Error: WiMAX user $ldif_user_username not found";
@@ -1201,7 +1219,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	// But the group exists. Presumably with a different admin.
 	// Add the member and change the admin to this user
 	$didAdd = False; // If this remains false, we'll delete the group
-	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
+	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $ldif_project_description, $wimax_server_url);
 	if ($res === 0) {
 	  error_log("Added " . $user->prettyName() . " WiMAX account in project $project_name.");
 	  $didAdd = True;
@@ -1252,7 +1270,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	    $result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
 	  } else {
 	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
-	    error_log("Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username: $res");
+	    error_log("Failed to change WiMAX group admin for project $project_name (group $ldif_group_name) to $project_lead_username: $res");
 	    $didAdd = False;
 	    $is_error = True;
 	    $result_string = "<p><b>Error (from $wimax_server_url):</b> Created your WiMAX account using username $ldif_user_username in group $ldif_group_name, but failed to make you lead of the group. Contact <a mailto:'help@geni.net'>GENI Help</a></p>";
