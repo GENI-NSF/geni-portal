@@ -151,8 +151,12 @@ function get_group_name($project_name, $project_attributes) {
   }
 }
 
+function get_base_dn() {
+  return "dc=ch,dc=geni,dc=net";
+}
+
 function get_project_dn($ldif_group_name) {
-  return "ou=$ldif_group_name,dc=ch,dc=geni,dc=net";
+  return "ou=$ldif_group_name," . get_base_dn();
 }
 
 function get_ldif_for_project($ldif_group_name, $ldif_project_description) {
@@ -165,12 +169,12 @@ function get_ldif_for_project($ldif_group_name, $ldif_project_description) {
 }
 
 function get_user_dn($ldif_user_username, $ldif_user_groupname) {
-  return "uid=$ldif_user_username,ou=$ldif_user_groupname,dc=ch,dc=geni,dc=net";
+  return "uid=$ldif_user_username," . get_project_dn($ldif_user_groupname);
 }
 
 function get_ldif_for_project_lead($ldif_group_name, $ldif_lead_username, $ldif_lead_groupname) {
   return "\n# LDIF for the project lead\n"
-    . "dn: cn=admin,ou=$ldif_group_name,dc=ch,dc=geni,dc=net\n"
+    . "dn: cn=admin," . get_project_dn($ldif_group_name) . "\n"
     . "cn: admin\n"
     . "objectclass: top\n"
     . "objectclass: organizationalRole\n"
@@ -297,7 +301,7 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
   // Cannot do this if user is admin of any group
   // Do some checks?
   //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname)), $wimax_server_deluser_url);
-  $res = my_curl_get(array("username" => $ldif_user_username), $wimax_server_deluser_url);
+  $res = my_curl_get(array("username" => $ldif_user_username, "baseDN" => get_project_dn($ldif_user_groupname)), $wimax_server_deluser_url);
   error_log("Deleting WiMAX user " . $ldif_user_username . " at " . $wimax_server_deluser_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -349,7 +353,7 @@ function wimax_delete_group($ldif_group_name) {
   // deletes all members too
   // stops if any members are admins
   //  $res = my_curl_get(array("groupname" => get_project_dn($ldif_group_name)), $wimax_server_delgroup_url);
-  $res = my_curl_get(array("groupname" => $ldif_group_name), $wimax_server_delgroup_url);
+  $res = my_curl_get(array("groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_delgroup_url);
   error_log("Deleting WiMAX group " . $ldif_group_name . " at " . $wimax_server_delgroup_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -392,8 +396,8 @@ function wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_use
   // deletes all members too
   // stops if any members are admins
   //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname), "groupname" => get_project_dn($ldif_group_name)), $wimax_server_changeadmin_url);
-  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name), $wimax_server_changeadmin_url);
-  error_log("Changing admin for WiMAX group " . $ldif_group_name . " to $ldif_user_username at " . $wimax_server_changeadmin_url . ": " . $res);
+  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_changeadmin_url);
+  error_log("Changing admin for WiMAX groupname " . $ldif_group_name . " to username $ldif_user_username (baseDN " . get_base_dn() . ") at " . $wimax_server_changeadmin_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
     error_log("wimax-enable curl get changeGroupAdmin: Page $wimax_server_changeadmin_url Not Found");
@@ -434,7 +438,7 @@ function wimax_change_group($ldif_group_name, $ldif_user_username, $ldif_user_gr
   global $wimax_server_changegroup_url;
   // https://www.orbit-lab.org/login/moveUser?username=<userName>&groupname=<projectName>
   //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname), "groupname" => get_project_dn($ldif_group_name)), $wimax_server_changegroup_url);
-  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name), $wimax_server_changegroup_url);
+  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_changegroup_url);
   error_log("Changing WiMAX group to " . $ldif_group_name . " for $ldif_user_username at " . $wimax_server_changegroup_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -496,6 +500,8 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
   $ldif_user_given_name = '';
   if (isset($member->first_name) and ! is_null($member->first_name)) {
     $ldif_user_given_name = $member->first_name;
+  } else if (property_exists($member, "attributes") and array_key_exists('givenName', $member->attributes) and isset($member->attributes['givenName']) and ! is_null($member->attributes['givenName'])) {
+    $ldif_user_given_name = $member->attributes['givenName'];
   } else {
     // Must be non empty. user-username? Or else user->email()
     $ldif_user_given_name = $ldif_user_email;
@@ -504,12 +510,14 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
   $ldif_user_sn = '';
   if (isset($member->last_name) and ! is_null($member->last_name)) {
     $ldif_user_sn = $member->last_name;
+  } else if (property_exists($member, "attributes") and array_key_exists('sn', $member->attributes) and isset($member->attributes['sn']) and ! is_null($member->attributes['sn'])) {
+    $ldif_user_sn = $member->attributes['sn'];
   }
 
   $ldif_string = get_ldif_for_user_string($new_member_username, $group_name, $prettyName, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $member, $ma_url, $project_desc, "project member"); 
   $postdata = array("ldif" => $ldif_string);
   $result = my_curl_put($postdata, $wimax_server_url);
-  //      error_log("At $wimax_server_url send ldif $ldif_string and got result $result");
+  error_log("At $wimax_server_url send ldif $ldif_string and got result $result");
   if (strpos($result, "404 Not Found")) {
     error_log("wimax-enable curl put_message error: Page $wimax_server_url Not Found");
   } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
@@ -539,10 +547,10 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
     remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 
     // add user as someone using WiMAX for given project
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 't');
 
     // If we enabled wimax under a variant of the username, record that
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 't');
 
     error_log($prettyName . " was already enabled for WiMAX in project " . $project_name . " (group $group_name) with username " . $new_member_username . " according to the WiMAX server - updated our DB");
   } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
@@ -568,10 +576,10 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
     remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 
     // add user as someone using WiMAX for given project
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 't');
 
     // If we enabled wimax under a variant of the username, record that
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 't');
 
     error_log($prettyName . " enabled for WiMAX in group " . $group_name . " with username " . $new_member_username);
     return 0;
@@ -1214,7 +1222,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	$result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
 
       } else {
-	error_log("Failed to add user to new group $ldif_group_name: Got Error 20 (group exists).");
+	error_log("Failed to add user to new group $ldif_group_name: Got Error 20 ($result)");
 	// We tried to enable the user and create the group at once.
 	// But the group exists. Presumably with a different admin.
 	// Add the member and change the admin to this user
