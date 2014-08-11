@@ -6,6 +6,7 @@
 
 == 2.19 ==
  * Use portal styling for OpenID trust page (#1007)
+ * Add privilege check when requesting to view private RSpecs (#1054)
  * Fork omni/stitcher processes (#1106)
    * omni/stitching calls from create_sliver run asynchronously
    * Keep temporary files after creating slivers
