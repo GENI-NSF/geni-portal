@@ -1157,7 +1157,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	// But the group exists. Presumably with a different admin.
 	// Add the member and change the admin to this user
 	$didAdd = False; // If this remains false, we'll delete the group
-	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
+	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $ldif_project_description, $wimax_server_url);
 	if ($res === 0) {
 	  error_log("Added " . $user->prettyName() . " WiMAX account in project $project_name.");
 	  $didAdd = True;
@@ -1208,7 +1208,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	    $result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
 	  } else {
 	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
-	    error_log("Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username: $res");
+	    error_log("Failed to change WiMAX group admin for project $project_name (group $ldif_group_name) to $project_lead_username: $res");
 	    $didAdd = False;
 	    $is_error = True;
 	    $result_string = "<p><b>Error (from $wimax_server_url):</b> Created your WiMAX account using username $ldif_user_username in group $ldif_group_name, but failed to make you lead of the group. Contact <a mailto:'help@geni.net'>GENI Help</a></p>";
