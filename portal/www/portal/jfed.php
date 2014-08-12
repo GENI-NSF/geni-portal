@@ -181,6 +181,7 @@ if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolowe
   $_SESSION['lasterror'] = "jFed cannot run in Chrome on a Mac. Try Safari or Firefox.";
   redirect_referer("home.php");
 }
+//                dtjava.launch( { url : 'https://flsmonitor.fed4fire.eu/jfedexperimenter/geni/jfed-geni.jnlp',
 
 ?>
 <html>
@@ -188,7 +189,7 @@ if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolowe
 	<script src="dtjava_orig.js"></script>
 	<script>
 		function launchjFed() {
-                dtjava.launch( { url : '../jfed-geni.jnlp',
+                dtjava.launch( { url : 'http://jfed.iminds.be/jfed-geni.jnlp',
 		      <?php echo $params; ?>
                          { javafx : '2.2+' }, {} );
                 return false;

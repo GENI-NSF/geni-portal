@@ -363,7 +363,6 @@ dist_svcwebmapolthemeimg_DATA =  \
 dist_svcwebtop_DATA = \
 	www/index.php \
 	www/login-help.php \
-	www/jfed-geni.jnlp \
 	www/favicon.ico
 
 dist_svcwebpolicy_DATA = \
