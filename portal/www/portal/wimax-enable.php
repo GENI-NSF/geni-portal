@@ -434,6 +434,8 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
   $ldif_user_given_name = '';
   if (isset($member->first_name) and ! is_null($member->first_name)) {
     $ldif_user_given_name = $member->first_name;
+  } else if (property_exists($member, "attributes") and array_key_exists('givenName', $member->attributes) and isset($member->attributes['givenName']) and ! is_null($member->attributes['givenName'])) {
+    $ldif_user_given_name = $member->attributes['givenName'];
   } else {
     // Must be non empty. user-username? Or else user->email()
     $ldif_user_given_name = $ldif_user_email;
@@ -442,6 +444,8 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
   $ldif_user_sn = '';
   if (isset($member->last_name) and ! is_null($member->last_name)) {
     $ldif_user_sn = $member->last_name;
+  } else if (property_exists($member, "attributes") and array_key_exists('sn', $member->attributes) and isset($member->attributes['sn']) and ! is_null($member->attributes['sn'])) {
+    $ldif_user_sn = $member->attributes['sn'];
   }
 
   $ldif_string = get_ldif_for_user_string($new_member_username, $group_name, $prettyName, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $member, $ma_url, $project_desc, "project member"); 
@@ -477,10 +481,10 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
     remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 
     // add user as someone using WiMAX for given project
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 't');
 
     // If we enabled wimax under a variant of the username, record that
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 't');
 
     error_log($prettyName . " was already enabled for WiMAX in project " . $project_name . " (group $group_name) with username " . $new_member_username . " according to the WiMAX server - updated our DB");
   } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
@@ -506,10 +510,10 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
     remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 
     // add user as someone using WiMAX for given project
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax', $project_id, 't');
 
     // If we enabled wimax under a variant of the username, record that
-    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 'f');
+    add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 't');
 
     error_log($prettyName . " enabled for WiMAX in group " . $group_name . " with username " . $new_member_username);
     return 0;
@@ -1157,7 +1161,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	// But the group exists. Presumably with a different admin.
 	// Add the member and change the admin to this user
 	$didAdd = False; // If this remains false, we'll delete the group
-	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
+	$res = add_member_to_group($user, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $project_name, $ma_url, $ldif_project_description, $wimax_server_url);
 	if ($res === 0) {
 	  error_log("Added " . $user->prettyName() . " WiMAX account in project $project_name.");
 	  $didAdd = True;
@@ -1208,7 +1212,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	    $result_string .= "<p>Note that you are responsible for all WiMAX actions by members of your project.</p>";
 	  } else {
 	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
-	    error_log("Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username: $res");
+	    error_log("Failed to change WiMAX group admin for project $project_name (group $ldif_group_name) to $project_lead_username: $res");
 	    $didAdd = False;
 	    $is_error = True;
 	    $result_string = "<p><b>Error (from $wimax_server_url):</b> Created your WiMAX account using username $ldif_user_username in group $ldif_group_name, but failed to make you lead of the group. Contact <a mailto:'help@geni.net'>GENI Help</a></p>";
@@ -1309,7 +1313,7 @@ if (array_key_exists('project_id', $_REQUEST))
   echo $result_string;
 
   if (! $is_error and ($enable_user or $enable_project)) {
-    echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit WiMAX resources.</p></a>";
+    echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'/></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit WiMAX resources.</p></a>";
   }
 
   // include link to main WiMAX page
