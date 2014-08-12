@@ -188,7 +188,7 @@ if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolowe
 	<script src="dtjava_orig.js"></script>
 	<script>
 		function launchjFed() {
-                dtjava.launch( { url : 'jfed-geni.jnlp',
+                dtjava.launch( { url : '../jfed-geni.jnlp',
 		      <?php echo $params; ?>
                          { javafx : '2.2+' }, {} );
                 return false;
