@@ -894,7 +894,8 @@ print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_n
 print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
 print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
-echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+// If this is always disabled, just don't show it.
+//echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
