@@ -72,7 +72,7 @@ if (! $has_certificate or $expired) {
 $params = '';
 if ($has_key) {
   $certstring = $result[MA_ARGUMENT::PRIVATE_KEY] . "\n" . $result[MA_ARGUMENT::CERTIFICATE];
-  $params = "params: {'login-certificate-string' : '" . base64_encode($certstring) . "' } },";
+  $params = ", params: {'login-certificate-string' : '" . base64_encode($certstring) . "' }";
 }
 
 // FIXME: Could make this simply produce the HTML for the button? Or make this a page you launch in a new window that auto calls launchjFed()?
@@ -181,7 +181,6 @@ if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolowe
   $_SESSION['lasterror'] = "jFed cannot run in Chrome on a Mac. Try Safari or Firefox.";
   redirect_referer("home.php");
 }
-//                dtjava.launch( { url : 'https://flsmonitor.fed4fire.eu/jfedexperimenter/geni/jfed-geni.jnlp',
 
 ?>
 <html>
@@ -189,9 +188,9 @@ if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolowe
 	<script src="dtjava_orig.js"></script>
 	<script>
 		function launchjFed() {
-                dtjava.launch( { url : 'http://jfed.iminds.be/jfed-geni.jnlp',
+                dtjava.launch( { url : 'http://jfed.iminds.be/jfed-geni.jnlp'
 		      <?php echo $params; ?>
-                         { javafx : '2.2+' }, {} );
+		      }, { javafx : '2.2+' }, {} );
                 return false;
 	}
 	</script>
