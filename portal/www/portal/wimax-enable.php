@@ -1801,7 +1801,7 @@ P7
 	  // Add the lead to this group and make them the admin. If that fails, delete the group.
 	  $didAdd = False; // If this remains false, we'll delete the group
 	  error_log("Project $proj_name has lead " . $user->prettyName() . " who is not yet wimax enabled - try to enable and make them group admin");
-	  if (count($user->sshKeys()) > 0) {
+	  if (count($sshkeys) > 0) {
 	    $res = add_member_to_group($user, $lead_id, $proj_id, $proj_group_name, $proj_name, $ma_url, $proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
 	    if ($res === 0) {
 	      error_log("Auto project $proj_name lead " . $user->prettyName() . " WiMAX account in that project.");
