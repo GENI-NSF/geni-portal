@@ -108,7 +108,6 @@ dist_svcweb_DATA = \
 	www/portal/flack.php \
 	www/portal/jfed.php \
 	www/portal/dtjava_orig.js \
-	www/portal/jfed-geni.jnlp \
 	www/portal/footer.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
@@ -364,6 +363,7 @@ dist_svcwebmapolthemeimg_DATA =  \
 dist_svcwebtop_DATA = \
 	www/index.php \
 	www/login-help.php \
+	www/jfed-geni.jnlp \
 	www/favicon.ico
 
 dist_svcwebpolicy_DATA = \
