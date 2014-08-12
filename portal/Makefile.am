@@ -191,6 +191,7 @@ dist_svcweb_DATA = \
 	www/portal/tool-rspec-parse.php \
 	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.php \
+	www/portal/tool-jfed.php \
 	www/portal/tools-admin.php \
 	www/portal/tools-user.js \
 	www/portal/tools-user.php \
