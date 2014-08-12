@@ -997,6 +997,10 @@ if (array_key_exists('project_id', $_REQUEST))
   $enable_project = False;
   if ($user_is_project_lead) {
     if ($project_enabled) {
+
+      // FIXME: If the user is listed as WiMAX admin of a different project, then this is going to give ERROR 8.
+      // Detect this in advance?
+
       // If the user leads the requested project and it is enabled, then only action is to delete it
       error_log("$ldif_user_username is lead of $project_name: delete the WiMAX group $ldif_group_name");
       $res = wimax_delete_group($ldif_group_name);
@@ -1215,7 +1219,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	  // Change the group admin to this user since that's what we expected
 	  $res = wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_user_groupname);
 	  if (true === $res) {
-	    error_log("Changed group $ldif_group_name admin to $project_lead_username");
+	    error_log("Changed group $ldif_group_name admin to $ldif_user_username");
 	  } else {
 	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
 	    error_log("FIXME: Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username but assuming success: $res");
@@ -1897,7 +1901,13 @@ P7
 	  // Label this: Project is WiMAX enabled and this is your WiMAX group
 	  echo "<b>{$proj[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME]} is enabled for WiMAX and is your WiMAX project</b><br/>";
 	  //     Actions (debug: radio: Disable and delete member accounts, including yours)
-	  echo "<input type='radio' name='project_id' value='" . $proj_id . "'> Disable project for WiMAX and delete member WiMAX accounts, including yours";
+
+	  // If this user is admin of more than just this group, then the user cannot disable / delete this
+	  if (count($projects_admin) > 1) {
+	    echo "Disable the other WiMAX group(s) that you lead before disabling this group and deleting your WiMAX account";
+	  } else {
+	    echo "<input type='radio' name='project_id' value='" . $proj_id . "'> Disable project for WiMAX and delete member WiMAX accounts, including yours";
+	  }
 	}
 	// case 2
 	else if ($enabled and isset($ldif_user_group_id) and $ldif_user_group_id !== $proj_id) {
