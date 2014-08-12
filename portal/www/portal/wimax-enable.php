@@ -301,7 +301,8 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
   // Cannot do this if user is admin of any group
   // Do some checks?
   //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname)), $wimax_server_deluser_url);
-  $res = my_curl_get(array("username" => $ldif_user_username, "baseDN" => get_project_dn($ldif_user_groupname)), $wimax_server_deluser_url);
+  //  $res = my_curl_get(array("username" => $ldif_user_username, "baseDN" => get_project_dn($ldif_user_groupname)), $wimax_server_deluser_url);
+  $res = my_curl_get(array("username" => $ldif_user_username), $wimax_server_deluser_url);
   error_log("Deleting WiMAX user " . $ldif_user_username . " at " . $wimax_server_deluser_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -353,7 +354,8 @@ function wimax_delete_group($ldif_group_name) {
   // deletes all members too
   // stops if any members are admins
   //  $res = my_curl_get(array("groupname" => get_project_dn($ldif_group_name)), $wimax_server_delgroup_url);
-  $res = my_curl_get(array("groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_delgroup_url);
+  //  $res = my_curl_get(array("groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_delgroup_url);
+  $res = my_curl_get(array("groupname" => $ldif_group_name), $wimax_server_delgroup_url);
   error_log("Deleting WiMAX group " . $ldif_group_name . " at " . $wimax_server_delgroup_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -369,6 +371,12 @@ function wimax_delete_group($ldif_group_name) {
     // Treat as success
     return True;
   } else if (strpos(strtolower($res), strtolower("ERROR 8: Project not deleted because it contains admin")) !== false) {
+    error_log("wimax-enable curl get deleteGroup: Error deleting group $ldif_group_name - project contains an admin: $res");
+    // FIXME: Return that admin DN? Delete that admin DN?
+    // Need to move that admin to another group or change the admin for the group they are an admin for, then you can delete them, so only then will the delete group succeed
+    //    return false;
+    return "Internal Error: $res";
+  } else if (strpos(strtolower($res), strtolower("ERROR 8: Group not deleted because it contains admin")) !== false) {
     error_log("wimax-enable curl get deleteGroup: Error deleting group $ldif_group_name - project contains an admin: $res");
     // FIXME: Return that admin DN? Delete that admin DN?
     // Need to move that admin to another group or change the admin for the group they are an admin for, then you can delete them, so only then will the delete group succeed
@@ -396,8 +404,9 @@ function wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_use
   // deletes all members too
   // stops if any members are admins
   //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname), "groupname" => get_project_dn($ldif_group_name)), $wimax_server_changeadmin_url);
-  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_changeadmin_url);
-  error_log("Changing admin for WiMAX groupname " . $ldif_group_name . " to username $ldif_user_username (baseDN " . get_base_dn() . ") at " . $wimax_server_changeadmin_url . ": " . $res);
+  //  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_changeadmin_url);
+  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name), $wimax_server_changeadmin_url);
+  error_log("Changing admin for WiMAX groupname " . $ldif_group_name . " to username $ldif_user_username at " . $wimax_server_changeadmin_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
     error_log("wimax-enable curl get changeGroupAdmin: Page $wimax_server_changeadmin_url Not Found");
@@ -438,7 +447,8 @@ function wimax_change_group($ldif_group_name, $ldif_user_username, $ldif_user_gr
   global $wimax_server_changegroup_url;
   // https://www.orbit-lab.org/login/moveUser?username=<userName>&groupname=<projectName>
   //  $res = my_curl_get(array("username" => get_user_dn($ldif_user_username, $ldif_user_groupname), "groupname" => get_project_dn($ldif_group_name)), $wimax_server_changegroup_url);
-  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_changegroup_url);
+  //  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name, "baseDN" => get_base_dn()), $wimax_server_changegroup_url);
+  $res = my_curl_get(array("username" => $ldif_user_username, "groupname" => $ldif_group_name), $wimax_server_changegroup_url);
   error_log("Changing WiMAX group to " . $ldif_group_name . " for $ldif_user_username at " . $wimax_server_changegroup_url . ": " . $res);
   // What errors come back?
   if (strpos($res, "404 Not Found")) {
@@ -517,7 +527,7 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
   $ldif_string = get_ldif_for_user_string($new_member_username, $group_name, $prettyName, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $member, $ma_url, $project_desc, "project member"); 
   $postdata = array("ldif" => $ldif_string);
   $result = my_curl_put($postdata, $wimax_server_url);
-  error_log("At $wimax_server_url send ldif $ldif_string and got result $result");
+  //  error_log("At $wimax_server_url send ldif $ldif_string and got result $result");
   if (strpos($result, "404 Not Found")) {
     error_log("wimax-enable curl put_message error: Page $wimax_server_url Not Found");
   } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
@@ -627,6 +637,9 @@ if (array_key_exists('sn', $user->attributes) and isset($user->attributes['sn'])
 $project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
 $num_projects = count($project_ids);
 
+// Get the user's SSH keys to make sure they'll be able to log in
+$sshkeys = $user->sshKeys();
+
 if (isset($user->ma_member->enable_wimax)) {
   $ldif_user_group_id = $user->ma_member->enable_wimax;
   $user_is_wimax_enabled = True;
@@ -724,7 +737,7 @@ if (isset($user->ma_member->enable_wimax)) {
 	    $lead = geni_load_user_by_member_id($ldif_project_lead_id);
 	    $didAdd = False;
 	    if (! isset($lead->ma_member->enable_wimax)) {
-	      error_log("FIXME FIXME: Project $ldif_project_name has lead " . $lead->prettyName() . " who is not yet wimax enabled");
+	      error_log("Project $ldif_project_name has lead " . $lead->prettyName() . " who is not yet wimax enabled");
 	      // FIXME FIXME
 	      // $is_error = True;
 	      // $return_string = $lead->prettyName() . " needs a WiMAX account. Then reload this page to make them admin of the WiMAX group for project $ldif_project_name";
@@ -736,7 +749,7 @@ if (isset($user->ma_member->enable_wimax)) {
 	      if (count(lookup_public_ssh_keys($ma_url, $user, $ldif_project_lead_id)) > 0) {
 		$res = add_member_to_group($lead, $ldif_project_lead_id, $ldif_project_id, $ldif_group_name, $ldif_project_name, $ma_url, $user_group_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE], $wimax_server_url);
 		if ($res === 0) {
-		  error_log("Auto added project $ldif_project_name " . $lead->prettyName() . " WiMAX account in that project.");
+		  error_log("Auto added project $ldif_project_name lead " . $lead->prettyName() . "'s WiMAX account in that project.");
 		  $didAdd = True;
 		} else {
 		  // FIXME: Now what?
@@ -1088,8 +1101,7 @@ if (array_key_exists('project_id', $_REQUEST))
     
     if ($enable_user) {
       // check that user has at least 1 SSH key
-      $keys = $user->sshKeys();
-      if (count($keys) == 0) {
+      if (count($sshkeys) == 0) {
 	$_SESSION['lasterror'] = 'You have not uploaded any SSH keys.';
 	relative_redirect('wimax-enable.php');
       }
@@ -1393,7 +1405,6 @@ if (array_key_exists('project_id', $_REQUEST))
 else { // Page 1: User picking a project
 
   $warnings = array();
-  $keys = $user->sshKeys();
   if ($num_projects > 0) {
     // If there's more than 1 project, we need the project names for
     // a default project chooser.
@@ -1412,7 +1423,7 @@ else { // Page 1: User picking a project
     $warnings[] = $warn;
   }
 
-  if (count($keys) == 0) {
+  if (count($sshkeys) == 0) {
     // warn that no ssh keys are present.
     $warnings[] = '<p class="warn">No SSH keys have been uploaded. '
           . 'Please <button onClick="window.location=\'uploadsshkey.php\'">'
@@ -1432,7 +1443,7 @@ else { // Page 1: User picking a project
   $is_group_admin = False; // is this user admin for any group
 
   // if user is member of 1+ projects and has 1+ SSH keys
-  if ($num_projects >= 1 && count($keys) >= 1) {
+  if ($num_projects >= 1 && count($sshkeys) >= 1) {
 
 // Code outline:
 /*
@@ -1680,7 +1691,7 @@ Get user's projects (expired or not)
   }
   
   // if user is member of 1+ projects and has 1+ SSH keys
-  if ($num_projects >= 1 && count($keys) >= 1) {
+  if ($num_projects >= 1 && count($sshkeys) >= 1) {
 
 /*
   Page should look like this:
