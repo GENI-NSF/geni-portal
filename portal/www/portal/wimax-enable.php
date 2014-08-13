@@ -685,33 +685,45 @@ if (isset($user->ma_member->enable_wimax)) {
 	remove_project_attribute($sa_url, $user, $ldif_user_group_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
 	remove_project_attribute($sa_url, $user, $ldif_user_group_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
 	
-	// mark user as not wimax enabled
-	remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
-	remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
+ 	// For every member with the enable_wimax attribute == $ldif_user_group_id, remove their enable_wimax and wimax_username attributes
+	// get all members with a wimax-enable attribute that lists this project ID
+
+	$members_of_group = ma_lookup_members_by_identifying($ma_url, $user, 
+							     '_GENI_ENABLE_WIMAX', $ldif_user_group_id);
+	foreach ($members_of_group as $member) {
+	  error_log("Since group $ldif_user_groupname disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
+	  $member_id = $member->member_id;
+	  // Change relevant MA attribute
+	  remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	}
 	$user->ma_member->enable_wimax = False;
 	$user_is_wimax_enabled = False;
+	$old_group = null;
 	$ldif_user_projname = null;
 	$ldif_user_groupname = null;
 	$ldif_user_group_id = null;
       } else {
-	// Failed to delete WiMAX user whose portal project is expired
+	// Failed to delete WiMAX group whose portal project is expired
 	// FIXME FIXME
 	// Could go back to the wimax-enable page with an internal error message, using $res?
 	error_log("wimax failed to delete group $ldif_user_groupname, so left project and MA attributes alone");
+
+	// Try deleting this user at least
+	// Note that this call to the wimax server may give an error that there is no such user - harmless
+	$res = wimax_delete_user($ldif_user_username, $old_group);
+	if (true === $res) {
+	  // Change relevant MA attribute, local vars
+	  remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
+	  $user->ma_member->enable_wimax = False;
+	  $user_is_wimax_enabled = False;
+	  $old_group = null;
+	  $ldif_user_projname = null;
+	  $ldif_user_groupname = null;
+	  $ldif_user_group_id = null;
+	}
       }
-      
-      // Also delete the user
-      // Note that this call to the wimax server may give an error that there is no such user - harmless
-      $res = wimax_delete_user($ldif_user_username, $old_group);
-      // Change relevant MA attribute, local vars
-      remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
-      remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
-      $user->ma_member->enable_wimax = False;
-      $user_is_wimax_enabled = False;
-      $old_group = null;
-      $ldif_user_projname = null;
-      $ldif_user_groupname = null;
-      $ldif_user_group_id = null;
     } else { // project not expired
       //      error_log("project not expired");
       $project_attributes = lookup_project_attributes($sa_url, $user, $ldif_user_group_id);
@@ -899,6 +911,19 @@ if (array_key_exists('project_id', $_REQUEST))
 	remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
 	$project_enabled = False;
 
+	// For every member with the enable_wimax attribute == $ldif_project_id, remove their enable_wimax and wimax_username attributes
+	// get all members with a wimax-enable attribute that lists this project ID
+
+	$members_of_group = ma_lookup_members_by_identifying($ma_url, $user, 
+							     '_GENI_ENABLE_WIMAX', $ldif_project_id);
+	foreach ($members_of_group as $member) {
+	  error_log("Since group $ldif_user_groupname disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
+	  $member_id = $member->member_id;
+	  // Change relevant MA attribute
+	  remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	}
+
 	// If this is the group for this user, disable this user
 	if ($ldif_user_group_id == $ldif_project_id) {
 	  // mark user as not wimax enabled
@@ -1010,11 +1035,21 @@ if (array_key_exists('project_id', $_REQUEST))
 	remove_project_attribute($sa_url, $user, $ldif_project_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
 	$project_enabled = False;
 
+	// For every member with the enable_wimax attribute == $ldif_project_id, remove their enable_wimax and wimax_username attributes
+	// get all members with a wimax-enable attribute that lists this project ID
+
+	$members_of_group = ma_lookup_members_by_identifying($ma_url, $user, 
+							     '_GENI_ENABLE_WIMAX', $ldif_project_id);
+	foreach ($members_of_group as $member) {
+	  error_log("Since group $ldif_group_name disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
+	  $member_id = $member->member_id;
+	  // Change relevant MA attribute
+	  remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	}
+
 	// If this is the group for this user, disable this user
 	if ($ldif_user_group_id == $ldif_project_id) {
-
-	  // FIXME: Need a separate call to wimax_delete_user? Shouldnt but do I?
-
 	  // mark user as not wimax enabled
 	  remove_member_attribute($ma_url, $user, $user->account_id, 'enable_wimax');
 	  remove_member_attribute($ma_url, $user, $user->account_id, 'wimax_username');
@@ -1509,6 +1544,19 @@ Get user's projects (expired or not)
 	    remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
 	    $proj_enabled = False;
 
+	    // For every member with the enable_wimax attribute == $proj_id, remove their enable_wimax and wimax_username attributes
+	    // get all members with a wimax-enable attribute that lists this project ID
+
+	    $members_of_group = ma_lookup_members_by_identifying($ma_url, $user, 
+								 '_GENI_ENABLE_WIMAX', $proj_id);
+	    foreach ($members_of_group as $member) {
+	      error_log("Since group $proj_group_name disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
+	      $member_id = $member->member_id;
+	      // Change relevant MA attribute
+	      remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
+	      remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	    }
+
 	    // If this is the group for this user, disable this user
 	    if (isset($ldif_user_group_id) and $ldif_user_group_id == $proj_id) {
 	      // mark user as not wimax enabled
@@ -1865,6 +1913,19 @@ P7
 	      remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
 	      remove_project_attribute($sa_url, $user, $proj_id, PA_ATTRIBUTE_NAME::WIMAX_GROUP_NAME);
 	      $enabled = False;
+
+	      // For every member with the enable_wimax attribute == $proj_id, remove their enable_wimax and wimax_username attributes
+	      // get all members with a wimax-enable attribute that lists this project ID
+
+	      $members_of_group = ma_lookup_members_by_identifying($ma_url, $user, 
+								   '_GENI_ENABLE_WIMAX', $proj_id);
+	      foreach ($members_of_group as $member) {
+		error_log("Since group $proj_group_name disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
+		$member_id = $member->member_id;
+		// Change relevant MA attribute
+		remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
+		remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	      }
 	    } else {
 	      // Failed to delete WiMAX group whose portal LEAD has no WiMAX group
 	      // FIXME FIXME
