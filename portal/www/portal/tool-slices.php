@@ -29,6 +29,7 @@ require_once("sa_client.php");
 require_once("pa_client.php");
 require_once("util.php");
 require_once("proj_slice_member.php");
+require_once("tool-jfed.php");
 include("services.php");
 
 // String to disable button or other active element
@@ -102,6 +103,13 @@ if (count($my_slice_objects) > 0) {
   $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
   $labwiki_base_url = 'http://labwiki.casa.umass.edu/?';
+
+  // Code to set up jfed button
+  $jfedret = get_jfed_strs($user);
+  $jfed_script_text = $jfedret[0];
+  $jfed_button_start = $jfedret[1];
+  print $jfed_script_text;
+  // End of jFed section
 
   $num_slices = count($my_slice_objects);
   if ($num_slices==1) {
@@ -179,7 +187,7 @@ function list_slice($slice,$user) {
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
   global $delete_sliver_base_url,$sliver_status_base_url, $abac_url, $flack_url;
   global $gemini_base_url, $labwiki_base_url;
-  global $disabled;
+  global $disabled, $jfed_button_start;
 
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $slice_expired = 'f';
@@ -266,6 +274,11 @@ function list_slice($slice,$user) {
   
   print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>";
   
+  // Show a jfed button if there wasn't an error generating it
+  if (! is_null($jfed_button_start)) {
+    print $jfed_button_start . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
+  }
+
   print "</td>";
   if ($portal_enable_abac) {
     print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";

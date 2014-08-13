@@ -44,6 +44,7 @@
  * Update to new WiMAX method signatures, error messages (#1093)
  * Disallow WiMAX group lead from deleting their WiMAX
    account while they still lead some other WiMAX group. (#1151)
+ * Add a button for launching jFed on the Home, Slices and Slice pages. (#1092)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
