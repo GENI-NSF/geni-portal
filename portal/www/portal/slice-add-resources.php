@@ -164,13 +164,10 @@ function validateSubmit()
   am = document.getElementById("agg_chooser");
   rspec2 = document.getElementById("rspec_selection");
   
-  if (rspec.value && am.value) {
+  if ((rspec.value || rspec2.value) && am.value) {
     f1.submit();
     return true;
-  } else if (rspec2.value && am.value) {
-    f1.submit();
-    return true;
-  } else if (rspec.value) {
+  } else if (rspec.value || rspec2.value) {
     alert("Please select an Aggregate.");
     return false;
   }
