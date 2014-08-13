@@ -28,6 +28,36 @@ require_once('sr_constants.php');
 require_once('ma_client.php');
 require_once('ma_constants.php');
 
+// FIXME: Chrome on Mac is not supported - it's a 32bit browser, and Java7 needs 64bit.. Warn user in advance?
+// FIXME: Java on FF on Mac has to be updated for jFed to work (to Java7)
+// Mac OSX 10.6 and below you use Software Update to update Java
+// It's Apple Java 6 vs Oracle Java 7. Can't have both.
+// Mac OSX 10.7+ does not come with Java
+// Java Webstart doesn't work using Apple Java
+// Once you install Oracla Java 7, then Apple Java 6 won't run, so no more Java from Chrome.
+
+// Also, you'll be prompted if you want to let this applet run. Then you'll get a security warning potentially (or is that just our dev server).
+
+// Sample page with a jfed button:
+
+/* $jfedret = get_jfed_strs($user); */
+/* $jfed_script_text = $jfedret[0]; */
+/* $jfed_button_start = $jfedret[1]; */
+/* print "<html><head>\n"; */
+/* print $jfed_script_text; */
+/* ?> */
+/* </head> */
+/* <body> */
+/* <h1>Test Launch jFed with predefined credential</h1> */
+/* <?php */
+/*   // Show a jfed button if there wasn't an error generating it */
+/*   if (! is_null($jfed_button_start)) { */
+/*     print $jfed_button_start . "><b>Start jFed</b></button>"; */
+/*   } */
+/* ?> */
+/* </body> */
+/* </html> */
+
 // Return is an array
 // First return element is text to print on the page - preferably in the header
 // second is the start of the jFed button - add the close brace,
