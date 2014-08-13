@@ -142,15 +142,6 @@ function lookup_private_ssh_keys($ma_url, $signer, $member_id)
   $options = array_merge($options, $client->options());
   $res = $client->lookup_keys($client->creds(), $options);
 
-  function privmapkeys($x) 
-  { 
-    return array('id' => $x['KEY_ID'],
-		 'private_key' => $x['KEY_PRIVATE'],
-		 'public_key' => $x['KEY_PUBLIC'],
-		 'description' => $x['KEY_DESCRIPTION'],
-		 'member_id' => $x['_GENI_KEY_MEMBER_UID'],
-		 'filename' => $x['_GENI_KEY_FILENAME']); 
-  }
   $ssh_keys=array();
   foreach ($res as $keydict) {
     foreach ($keydict as $key)  {

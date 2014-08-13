@@ -37,9 +37,13 @@
   * Handle timeouts better.
   * Add/remove of member attributes clears the member cache in ma_client.
  * If user in the project is disabled, remove them from the WiMAX group (#1124)
+ * Update to new WiMAX method signatures, error messages (#1093)
  * View RSpecs using Jacks viewer on `Manage RSpecs` page. (#1127)
  * Display project URN on project page (#1142)
  * Ensure all `img` tags are properly closed. (#1145)
+ * Update to new WiMAX method signatures, error messages (#1093)
+ * Disallow WiMAX group lead from deleting their WiMAX
+   account while they still lead some other WiMAX group. (#1151)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
