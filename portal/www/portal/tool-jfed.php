@@ -105,7 +105,7 @@ function get_jfed_strs($user) {
     }
   }
   if (! $has_certificate or $expired) {
-    $jfed_button_start = "<button type='button' onclick='alert(\"<a href=\'profile.php#ssl\'>Generate a key pair</a> to use jFed.\")'";
+    $jfed_button_start = "<button type='button' onclick='alert(\"Generate an SSL (Omni) key pair to use jFed.\")'";
   } else {
     // Print the 2 script tags needed
     $params = '';
