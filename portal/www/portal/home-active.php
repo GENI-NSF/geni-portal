@@ -149,7 +149,7 @@ if (is_array($entries) && count($entries) > 0) {
     $rawtime = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     $time = dateUIFormat($rawtime);
-    print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
+    print "<tr><td>$time</td><td>$message</td></tr>\n";
   }
 } else {
   print "<tr><td><i>No messages.</i></td></tr>\n";
