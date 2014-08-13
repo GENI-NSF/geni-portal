@@ -35,6 +35,17 @@ require_once('ma_constants.php');
 // But check for that 2nd arg being null - if so, avoid printing the button at all
 // See tool-slices for sample usage
 function get_jfed_strs($user) {
+  $jfed_button_start = null;
+  $jfed_script_text = '';
+
+  $browser = getBrowser();
+  if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolower($browser["platform"]),"mac") === 0) {
+    //error_log("User browser: " . $browser["name"] . " version " . $browser["version"] . " on " . $browser["platform"]);
+    error_log("User running Chrome on Mac. Can't launch jFed. User should try Safari or Firefox.");
+    $jfed_button_start = "<button type='button' onclick='alert(\"jFed cannot run in Chrome on a Mac. Try Safari or Firefox..\")'";
+    return array($jfed_script_text, $jfed_button_start);
+  }
+
   if (!isset($user)) {
     $user = geni_loadUser();
   }
@@ -48,8 +59,6 @@ function get_jfed_strs($user) {
   }
 
   // Code to set up jfed button
-  $jfed_button_start = null;
-  $jfed_script_text = '';
   $certresult = ma_lookup_certificate($ma_url, $user, $user->account_id);
   $expiration_key = 'expiration';
   $has_certificate = False;

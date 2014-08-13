@@ -106,7 +106,6 @@ dist_svcweb_DATA = \
 	www/portal/error-text.php \
 	www/portal/flack.css \
 	www/portal/flack.php \
-	www/portal/jfed.php \
 	www/portal/dtjava_orig.js \
 	www/portal/footer.php \
 	www/portal/future.json \
