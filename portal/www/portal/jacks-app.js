@@ -233,15 +233,28 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
  * delete all resources on given slice at given AM
  */
 JacksApp.prototype.deleteResources = function() {
+    // Is anything selected? If so , only delete at that aggregate
     var am_id = this.client2am[this.selectedElement];
-    this.updateStatus('Deleting resources from ' + am_id + '...');
-    this.output.trigger(this.DELETE_EVENT_TYPE,
-                        { name: this.DELETE_EVENT_TYPE,
-                          am_id: am_id,
-                          slice_id: this.sliceId,
-                          callback: this.input,
-			  client_data: {}
-                        });
+    var deleteAMs = this.sliceAms;
+    if (am_id) {
+        deleteAMs = [am_id];
+        var msg = "Delete resources at " + am_id + "?";
+    } else {
+        var msg = "Delete all slice resources" + "?";
+    }
+    if (confirm(msg)) {
+        var that = this;
+        $.each(deleteAMs, function(i, am_id) {
+            that.updateStatus('Deleting resources at ' + am_id);
+            that.output.trigger(that.DELETE_EVENT_TYPE,
+                                { name: that.DELETE_EVENT_TYPE,
+                                  am_id: am_id,
+                                  slice_id: that.sliceId,
+                                  callback: that.input,
+                                  client_data: {}
+                                })
+        });
+    }
 }
 
 /**
@@ -254,6 +267,7 @@ JacksApp.prototype.addResources = function() {
                               slice_id: jacksSliceId,
                               client_data: {}
                             });
+
 }
 
 JacksApp.prototype.renewResources = function() {
