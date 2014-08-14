@@ -87,7 +87,13 @@ if (count($obj)>0) {
   }
   $filterToAM = True;
 
-  print get_rspec_xml( $obj, False, $filterToAM );
+  $rspec_xml = get_rspec_xml( $obj, False, $filterToAM );
+  // Huh? get_rspec_xml returns the string "null" if there is no manifest?
+  if ($rspec_xml == "null") {
+    print "<rspec></rspec>";
+  } else {
+    print $rspec_xml;
+  }
 }
 
 if (isset($msg) && $msg && $msg != '') {
