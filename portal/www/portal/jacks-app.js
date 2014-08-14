@@ -194,6 +194,10 @@ JacksApp.prototype.isTerminalStatus = function(status) {
     return code == 2 || code == 3;
 }
 
+JacksApp.prototype.amName = function(am_id) {
+    return this.allAms[am_id].name;
+}
+
 
 //----------------------------------------------------------------------
 // Jacks App Events to Embedding Page
@@ -212,7 +216,8 @@ JacksApp.prototype.getSliceManifests = function() {
     var that = this;
     $.each(sliceAms, function(i, am_id) {
         // Update the status bar.
-        that.updateStatus('Gathering manifest from ' + am_id + '...');
+        that.updateStatus('Gathering manifest from '
+                          + that.amName(am_id) + '...');
         that.output.trigger(that.MANIFEST_EVENT_TYPE,
                             { name: that.MANIFEST_EVENT_TYPE,
                               am_id: am_id,
@@ -229,7 +234,8 @@ JacksApp.prototype.getSliceManifests = function() {
  * max_time is when to stop polling
  */
 JacksApp.prototype.getStatus = function(am_id, maxTime) {
-    this.updateStatus('Polling resource status from ' + am_id + '...');
+    this.updateStatus('Polling resource status from '
+                      + this.amName(am_id) + '...');
     this.output.trigger(this.STATUS_EVENT_TYPE,
                         { name: this.STATUS_EVENT_TYPE,
                           am_id: am_id,
@@ -248,14 +254,14 @@ JacksApp.prototype.deleteResources = function() {
     var deleteAMs = this.sliceAms;
     if (am_id) {
         deleteAMs = [am_id];
-        var msg = "Delete resources at " + am_id + "?";
+        var msg = "Delete resources at " + this.amName(am_id) + "?";
     } else {
-        var msg = "Delete all slice resources" + "?";
+        var msg = "Delete known slice resources" + "?";
     }
     if (confirm(msg)) {
         var that = this;
         $.each(deleteAMs, function(i, am_id) {
-            that.updateStatus('Deleting resources at ' + am_id);
+            that.updateStatus('Deleting resources at ' + that.amName(am_id));
             that.output.trigger(that.DELETE_EVENT_TYPE,
                                 { name: that.DELETE_EVENT_TYPE,
                                   am_id: am_id,
@@ -293,14 +299,15 @@ JacksApp.prototype.renewResources = function() {
     var renewAMs = this.sliceAms;
     if (am_id) {
         renewAMs = [am_id];
-        var msg = "Renew resources at " + am_id + " until " + renewDate + "?";
+        var msg = "Renew resources at " + this.amName(am_id)
+            + " until " + renewDate + "?";
     } else {
-        var msg = "Renew all slice resources until " + renewDate + "?";
+        var msg = "Renew known slice resources until " + renewDate + "?";
     }
     if (confirm(msg)) {
         var that = this;
         $.each(renewAMs, function(i, am_id) {
-            that.updateStatus('Renewing resources at ' + am_id);
+            that.updateStatus('Renewing resources at ' + that.amName(am_id));
             that.output.trigger(that.RENEW_EVENT_TYPE,
                                 { name: that.RENEW_EVENT_TYPE,
                                   am_id: am_id,
@@ -464,8 +471,9 @@ JacksApp.prototype.onEpDelete = function(event) {
 JacksApp.prototype.onEpRenew = function(event) {
     console.log("onEpRenew");
     if (event.code != 0) {
-        console.log("Error renewing at " + event.am_id + ": " + event.output);
+        console.log("Error renewing at " + this.amName(event.am_id)
+                    + ": " + event.output);
         return;
     }
-    this.updateStatus("Renewed resources at " + event.am_id);
+    this.updateStatus("Renewed resources at " + this.amName(event.am_id));
 }
