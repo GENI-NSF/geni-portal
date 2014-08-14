@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
       'GPO OpenGENI Rack',
       -- URN
-      'urn:publicid:IDN+bbn-cam-ctrl-1.bbn.com+authority+am'
+      'urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am'
     );
 
 insert into service_registry
