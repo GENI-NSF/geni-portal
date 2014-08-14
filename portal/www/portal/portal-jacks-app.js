@@ -41,9 +41,9 @@ function portal_jacks_app_ready(ja, ja_input, ja_output) {
 }
 
 function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_data) {
-    console.log("ResponseText = " + responseTxt);
-    console.log("statusText = " + statusTxt);
-    console.log("XHR = " + xhr);
+    // console.log("ResponseText = " + responseTxt);
+    // console.log("statusText = " + statusTxt);
+    // console.log("XHR = " + xhr);
     event_type = client_data.event_type;
     response_event = {code:0, value:responseTxt, output:statusTxt, 
 		      am_id:am_id, slice_id:slice_id, client_data:client_data};
@@ -111,7 +111,7 @@ function ep_on_manifest(event) {
 // Make an AJAX call to invoke the AM renew call
 // Then call the appropriate callback to the JA with the result.
 function ep_on_renew(event) {
-    console.log("ep_on_manifest");
+    console.log("ep_on_renew");
     var am_id = event.am_id;
     var slice_id = event.slice_id;
     var expiration_time = event.expiration_time;

@@ -150,11 +150,15 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     $(buttonSelector).append(btn);
 
     var btn = $('<button type="button">Renew</button>');
-    btn.click(function(){
-        var am_id = that.client2am[that.selectedElement];
-        alert('Renew All at ' + am_id);
+    btn.click(function() {
+        that.renewResources();
     });
     $(buttonSelector).append(btn);
+
+    var dp = $('<input type="text" id="renew_datepicker">');
+    $(buttonSelector).append(dp);
+    $("#renew_datepicker").datepicker({ dateFormat: "yy-mm-dd" });
+    $("#renew_datepicker").attr('placeholder', 'Renew Date');
 
     btn = $('<button type="button">Delete</button>');
     btn.click(function(){ 
@@ -252,8 +256,37 @@ JacksApp.prototype.addResources = function() {
                             });
 }
 
-
-
+JacksApp.prototype.renewResources = function() {
+    // Has a date been chosen? If not, help them choose a date
+    var renewDate = $('#renew_datepicker').val();
+    if (! renewDate) {
+        alert("Please choose a renewal date.");
+        return;
+    }
+    
+    // Is anything selected? If so , only renew at that aggregate
+    var am_id = this.client2am[this.selectedElement];
+    var renewAMs = this.sliceAms;
+    if (am_id) {
+        renewAMs = [am_id];
+        var msg = "Renew resources at " + am_id + " until " + renewDate + "?";
+    } else {
+        var msg = "Renew all slice resources until " + renewDate + "?";
+    }
+    if (confirm(msg)) {
+        var that = this;
+        $.each(renewAMs, function(i, am_id) {
+            that.updateStatus('Renewing resources at ' + am_id);
+            that.output.trigger(that.RENEW_EVENT_TYPE,
+                                { name: that.RENEW_EVENT_TYPE,
+                                  am_id: am_id,
+                                  slice_id: that.sliceId,
+                                  callback: that.input,
+                                  client_data: {}
+                                })
+        });
+    }
+}
 
 
 //----------------------------------------------------------------------
