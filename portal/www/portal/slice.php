@@ -825,11 +825,19 @@ print "</div></td></tr></tbody></table>";
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
+  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
+  var jacks_slice_urn= <?php echo json_encode($slice_urn) ?>;
+  var jacks_slice_expiration = <?php echo json_encode($slice_expiration) ?>;
+
+  var jacks_slice_info = {slice_id : jacks_slice_id, 
+			  slice_name : jacks_slice_name,
+			  slice_urn : jacks_slice_urn, 
+			  slice_expiration : jacks_slice_expiration};
 
   // This funciton will start up a Jacks viewer, get the status bar going
   // and set up all of the button clicks.
   var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', '#jacks-buttons',
-                              jacks_slice_ams, jacks_all_ams, jacks_slice_id,
+                              jacks_slice_ams, jacks_all_ams, jacks_slice_info,
                               portal_jacks_app_ready);
 
 </script>

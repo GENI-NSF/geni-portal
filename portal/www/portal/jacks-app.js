@@ -20,7 +20,7 @@ var theJacksApp = null;
 var jacksTimeToWait = 5000;
 
 
-function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceId,
+function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
                   readyCallback) {
     // Map from client_id to am_id
     this.client2am = {};
@@ -35,7 +35,11 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceId,
     this.buttons = buttons;
     this.sliceAms = sliceAms;
     this.allAms = allAms;
-    this.sliceId = sliceId;
+    this.sliceInfo = sliceInfo;
+    this.sliceId = sliceInfo.slice_id;
+    this.sliceUrn = sliceInfo.slice_urn;
+    this.sliceExpiration = sliceInfo.slice_expiration
+    this.sliceName = sliceInfo.slice_name;
 
     // Init globals
     // FIXME: these should all go away
@@ -43,7 +47,7 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceId,
     jacksButtons = buttons;
     jacksSliceAms = sliceAms;
     jacksAllAms = allAms;
-    jacksSliceId = sliceId;
+    jacksSliceId = this.sliceId;
 
     var that = this;
     var jacksInstance = new window.Jacks({
@@ -447,6 +451,11 @@ JacksApp.prototype.onEpDelete = function(event) {
     }
 
     this.updateStatus("Resources deleted");
+    
+    // Remove this AM from the list of slice AM's
+    var am_id = event.am_id;
+    var am_index = this.sliceAms.indexOf(am_id);
+    this.sliceAms.splice(am_index, 1);
  
     this.getSliceManifests();
 
