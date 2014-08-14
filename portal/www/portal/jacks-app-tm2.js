@@ -78,12 +78,8 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceId,
 // Jacks App Constants
 //----------------------------------------------------------------------
 
-JacksApp.prototype.ADD_EVENT_TYPE = "ADD";
-JacksApp.prototype.DELETE_EVENT_TYPE = "DELETE";
 JacksApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
-JacksApp.prototype.RENEW_EVENT_TYPE = "RENEW";
 JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
-
 
 //----------------------------------------------------------------------
 // Jacks App Methods
@@ -133,8 +129,6 @@ JacksApp.prototype.initEvents = function() {
     });
     this.input.on(this.MANIFEST_EVENT_TYPE, this.onEpManifest, this);
     this.input.on(this.STATUS_EVENT_TYPE, this.onEpStatus, this);
-    this.input.on(this.DELETE_EVENT_TYPE, this.onEpDelete, this);
-    this.input.on(this.RENEW_EVENT_TYPE, this.onEpRenew, this);
 }
 
 JacksApp.prototype.updateStatus = function(statusText) {
@@ -151,28 +145,18 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     $(buttonSelector).append(btn);
 
     var btn = $('<button type="button">Renew</button>');
-    btn.click(function() {
-        that.renewResources();
+    btn.click(function(){
+        var am_id = that.client2am[that.selectedElement];
+        alert('Renew All at ' + am_id);
     });
     $(buttonSelector).append(btn);
 
-    var dp = $('<input type="text" id="renew_datepicker">');
-    $(buttonSelector).append(dp);
-    $("#renew_datepicker").datepicker({ dateFormat: "yy-mm-dd" });
-    $("#renew_datepicker").attr('placeholder', 'Renew Date');
-
     btn = $('<button type="button">Delete</button>');
-    btn.click(function(){ 
-	    that.deleteResources();
-	});
+    btn.click(function(){ alert('Delete All');});
     $(buttonSelector).append(btn);
 
     btn = $('<button type="button">SSH</button>');
     btn.click(function(){ alert('SSH');});
-    $(buttonSelector).append(btn);
-
-    btn = $('<button type="button">Add</button>');
-    btn.click(function(){ that.addResources();});
     $(buttonSelector).append(btn);
 }
 
@@ -199,11 +183,6 @@ JacksApp.prototype.getSliceManifests = function() {
     // FIXME: temporary until globals go away
     var sliceAms = this.sliceAms || jacksSliceAms;
 
-    if(sliceAms.length == 0) {
-	this.updateStatus("Jacks initialized: no resources");
-	return;
-    }
-
     // Loop through each known AM and get the manifest.
     var that = this;
     $.each(sliceAms, function(i, am_id) {
@@ -213,12 +192,10 @@ JacksApp.prototype.getSliceManifests = function() {
                             { name: that.MANIFEST_EVENT_TYPE,
                               am_id: am_id,
                               slice_id: jacksSliceId,
-                              callback: that.input,
-                              client_data: {}
+                              callback: that.input
                             });
     });
 }
-
 
 
 /**
@@ -233,79 +210,6 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
                           callback: this.input,
                           client_data: { maxTime: maxTime }
                         });
-}
-
-/**
- * delete all resources on given slice at given AM
- */
-JacksApp.prototype.deleteResources = function() {
-    // Is anything selected? If so , only delete at that aggregate
-    var am_id = this.client2am[this.selectedElement];
-    var deleteAMs = this.sliceAms;
-    if (am_id) {
-        deleteAMs = [am_id];
-        var msg = "Delete resources at " + am_id + "?";
-    } else {
-        var msg = "Delete all slice resources" + "?";
-    }
-    if (confirm(msg)) {
-        var that = this;
-        $.each(deleteAMs, function(i, am_id) {
-            that.updateStatus('Deleting resources at ' + am_id);
-            that.output.trigger(that.DELETE_EVENT_TYPE,
-                                { name: that.DELETE_EVENT_TYPE,
-                                  am_id: am_id,
-                                  slice_id: that.sliceId,
-                                  callback: that.input,
-                                  client_data: {}
-                                })
-        });
-    }
-}
-
-/**
- * Ask embedding page to add resources to current slice
- */
-JacksApp.prototype.addResources = function() {
-    var that = this;
-    that.output.trigger(that.ADD_EVENT_TYPE,
-                            { name: that.ADD_EVENT_TYPE,
-                              slice_id: jacksSliceId,
-                              client_data: {}
-                            });
-
-}
-
-JacksApp.prototype.renewResources = function() {
-    // Has a date been chosen? If not, help them choose a date
-    var renewDate = $('#renew_datepicker').val();
-    if (! renewDate) {
-        alert("Please choose a renewal date.");
-        return;
-    }
-    
-    // Is anything selected? If so , only renew at that aggregate
-    var am_id = this.client2am[this.selectedElement];
-    var renewAMs = this.sliceAms;
-    if (am_id) {
-        renewAMs = [am_id];
-        var msg = "Renew resources at " + am_id + " until " + renewDate + "?";
-    } else {
-        var msg = "Renew all slice resources until " + renewDate + "?";
-    }
-    if (confirm(msg)) {
-        var that = this;
-        $.each(renewAMs, function(i, am_id) {
-            that.updateStatus('Renewing resources at ' + am_id);
-            that.output.trigger(that.RENEW_EVENT_TYPE,
-                                { name: that.RENEW_EVENT_TYPE,
-                                  am_id: am_id,
-                                  slice_id: that.sliceId,
-                                  callback: that.input,
-                                  client_data: {}
-                                })
-        });
-    }
 }
 
 
@@ -334,12 +238,7 @@ JacksApp.prototype.onClickEvent = function(event) {
 //----------------------------------------------------------------------
 
 JacksApp.prototype.onEpManifest = function(event) {
-    if (event.code != 0) {
-        console.log("Error retrieving manifest: " + event.output);
-        return;
-    }
-
-    var rspecManifest = event.value;
+    var rspecManifest = event.rspec;
 
     // NEEDS TO BE CHANGED
     // change-topology removes the current topology.
@@ -384,15 +283,10 @@ JacksApp.prototype.onEpManifest = function(event) {
 
 JacksApp.prototype.onEpStatus = function(event) {
     console.log("onEpStatus");
-    if (event.code != 0) {
-        console.log("Error retrieving status: " + event.output);
-        return;
-    }
-
     // re-poll as necessary up to event.client_data.maxPollTime
 
     var that = this;
-    $.each(event.value, function(i, v) {
+    $.each(event.status, function(i, v) {
 
 // SHOULD PROBABLY CHANGE
       // This only looks for READY and FAILED. There may be other cases to look for.
@@ -439,24 +333,65 @@ JacksApp.prototype.onEpStatus = function(event) {
     });
 }
 
-JacksApp.prototype.onEpDelete = function(event) {
-    console.log("onEpDelete");
-    if (event.code != 0) {
-        console.log("Error retrieving status: " + event.output);
-        return;
+
+//----------------------------------------------------------------------
+// FIXME: temporary functions that will be implemented by the
+// embedding page.
+// ----------------------------------------------------------------------
+
+// Initializes the framework for the Jacks App.
+function start_jacks_viewer(target, status, buttons, sliceAms, allAms, sliceId,
+                           readyCallback) {
+    if (readyCallback == null) {
+        readyCallback = ep_jacks_app_ready;
     }
-
-    this.updateStatus("Resources deleted");
- 
-    this.getSliceManifests();
-
+    myJacksApp = new JacksApp(target, status, buttons, sliceAms, allAms,
+                              sliceId, readyCallback);
+    return myJacksApp;
 }
 
-JacksApp.prototype.onEpRenew = function(event) {
-    console.log("onEpRenew");
-    if (event.code != 0) {
-        console.log("Error renewing at " + event.am_id + ": " + event.output);
-        return;
-    }
-    this.updateStatus("Renewed resources at " + event.am_id);
+var ep_jacks_app = null;
+
+function ep_jacks_app_ready(jacksApp, input, output) {
+    console.log("ep_jacks_app_ready");
+    ep_jacks_app = jacksApp;
+    output.on(jacksApp.MANIFEST_EVENT_TYPE, ep_on_manifest);
+    output.on(jacksApp.STATUS_EVENT_TYPE, ep_on_status);
+    output.on("all", function(eventName) {
+        console.log("JacksApp -> EP: " + eventName + " event");
+    });
+}
+
+function ep_on_manifest(event) {
+    console.log("ep_on_manifest");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    $.get("jacks-app-details.php",
+          { am_id:am_id, slice_id:slice_id },
+          function(responseTxt, statusTxt, xhr) {
+              var rspec = responseTxt;
+              event.callback.trigger(event.name,
+                                     { am_id: am_id,
+                                       slice_id: slice_id,
+                                       rspec: rspec,
+                                       client_data: event.client_data
+                                     });
+          });
+}
+
+function ep_on_status(event) {
+    console.log("ep_on_status");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    $.getJSON("amstatus.php",
+              { am_id: am_id, slice_id: slice_id },
+              function(responseTxt, statusTxt, xhr) {
+                  var status = responseTxt;
+                  event.callback.trigger(event.name,
+                                         { am_id: am_id,
+                                           slice_id: slice_id,
+                                           status: status,
+                                           client_data: event.client_data
+                                         });
+              });
 }
