@@ -228,6 +228,7 @@ print "\n";
 print "</td></tr>\n";
 print "<tr><td class='label'><b>Expiration</b></td><td>$expiration</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
+print "<tr><td class='label'><b>URN</b></td><td>$project_urn</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table>\n";

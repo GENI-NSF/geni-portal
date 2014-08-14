@@ -205,7 +205,7 @@ if ($num_projects > 1) {
 
   <table id='tip'>
     <tr>
-       <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"></td>
+       <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"/></td>
        <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:

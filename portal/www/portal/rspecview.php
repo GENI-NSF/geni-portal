@@ -35,20 +35,41 @@ if (array_key_exists('id', $_GET)) {
   $rspec_id = $_GET['id'];
 }
 
+$strip_comments = NULL;
+if (array_key_exists('strip_comments', $_GET)) {
+  $strip_comments = $_GET['strip_comments'];
+}
+
 if (is_null($rspec_id)) {
   relative_redirect('home.php');
 }
 
-/* $rspec is the XML */
-$rspec = fetchRSpecById($rspec_id);
+/* $rspec is the database record */
+$rspec = fetchRSpec($rspec_id);
 
 if (is_null($rspec)) {
-  relative_redirect('home.php');
-} else {
-  //error_log("RSPEC:$rspec");
-  // Set headers for xml
-  header("Cache-Control: public");
-  header("Content-Type: text/xml");
-  print $rspec;
+  header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+  exit();
 }
+
+$owner_id = $rspec['owner_id'];
+$visibility = $rspec['visibility'];
+if ($visibility != 'public' && $owner_id != $user->account_id) {
+  header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+  exit();
+}
+
+// Set headers for xml
+header("Cache-Control: public");
+header("Content-Type: text/xml");
+$result = $rspec['rspec'];
+if ($strip_comments) {
+  $result = strip_comments($result);
+}
+print $result;
+
+function strip_comments($rspec) {
+    return preg_replace('/<!--(.*)-->/Uis', '', $rspec);
+}
+
 ?>

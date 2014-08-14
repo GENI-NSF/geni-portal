@@ -34,6 +34,7 @@ require_once("util.php");
 require_once('logging_constants.php');
 include("services.php");
 require_once("settings.php");
+require_once("tool-jfed.php");
 
   // Actions / approvals required 
    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
@@ -79,6 +80,13 @@ include("tool-slices.php");
  */
 $gemini_url = relative_url("gemini.php");
 
+  // Code to set up jfed button
+  $jfedret = get_jfed_strs($user);
+  $jfed_script_text = $jfedret[0];
+  $jfed_button_start = $jfedret[1];
+  print $jfed_script_text;
+  // End of jFed section
+
   print "<h2>Tools</h2>";
   print "<p>";
   print "<button onClick=\"window.open('$gemini_url')\">";
@@ -102,6 +110,10 @@ print "<b>LabWiki</b></button> ";
     print "<b>WiMAX</b></button>";
   }
 
+  // Show a jfed button if there wasn't an error generating it
+  if (! is_null($jfed_button_start)) {
+    print $jfed_button_start . "><b>jFed</b></button>";
+  }
 
   print "</p>";
 
@@ -149,7 +161,7 @@ if (is_array($entries) && count($entries) > 0) {
     $rawtime = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
     $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
     $time = dateUIFormat($rawtime);
-    print "<tr><td>$time</td><td>&nbsp;$message</td></tr>\n";
+    print "<tr><td>$time</td><td>$message</td></tr>\n";
   }
 } else {
   print "<tr><td><i>No messages.</i></td></tr>\n";

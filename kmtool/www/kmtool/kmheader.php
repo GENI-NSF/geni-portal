@@ -26,8 +26,9 @@
 $title = 'GPO Member Authority';
 
   echo '<!DOCTYPE HTML>';
-  echo '<html>';
+  echo '<html lang="en">';
   echo '<head>';
+  echo '<meta charset="utf-8">';
   echo '<title>';
   echo "$title";
   echo '</title>';

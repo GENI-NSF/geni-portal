@@ -5,6 +5,9 @@
 = GENI Portal Release Notes =
 
 == 2.19 ==
+ * Support unicode/international strings in portal (#1069)
+ * Use portal styling for OpenID trust page (#1007)
+ * Add privilege check when requesting to view private RSpecs (#1054)
  * Fork omni/stitcher processes (#1106)
    * omni/stitching calls from create_sliver run asynchronously
    * Keep temporary files after creating slivers
@@ -14,8 +17,36 @@
    * Store manifest RSpecs (#225)
    * New tabbed results page shows logs of allocations
    * Go back to view previous allocation logs/results via link in "Recent Messages"
+   * Per-node results show long-form name of AM for stitching requests
+   * User-friendly error message shows when an error occurs due to the tool (#1131)
+   * omni invocation related files are referenced by constants (#1132)
+   * Results page shows aggregate managers' long form names
+   * Results page includes Jacks viewer of manifest RSpec
+   * Some support for SpeaksFor
+   * Bug/problem report page text updated via discussions with experimenter support group 
  * Comments and clearer logs when DB inconsistency gives WiMAX errors (#1058)
  * Add comments about new error messages in WiMAX (#1077)
+  * Handle error 20 (group exists) by treating attempt to create
+    the group as successful and adding the user to the group
+    if needed.
+ * WiMAX user and group names now start with "geni-". (#1094)
+  * Added new project attribute for the `wimax_group_name`.
+  * If project/group leads differ and new lead
+    has no wimax account, add them to the group and make
+    them lead.
+  * Handle timeouts better.
+  * Add/remove of member attributes clears the member cache in ma_client.
+ * If user in the project is disabled, remove them from the WiMAX group (#1124)
+ * Update to new WiMAX method signatures, error messages (#1093)
+ * View RSpecs using Jacks viewer on `Manage RSpecs` page. (#1127)
+ * Display project URN on project page (#1142)
+ * Ensure all `img` tags are properly closed. (#1145)
+ * Update to new WiMAX method signatures, error messages (#1093)
+ * Disallow WiMAX group lead from deleting their WiMAX
+   account while they still lead some other WiMAX group. (#1151)
+ * Add a button for launching jFed on the Home, Slices and Slice pages. (#1092)
+ * Correct error message on uploading an RSpec but not picking an AM,
+   and tryign to reserve resources. (#1152)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
