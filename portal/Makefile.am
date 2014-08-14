@@ -140,6 +140,7 @@ dist_svcweb_DATA = \
 	www/portal/permission_manager_test.php \
 	www/portal/portal.php \
 	www/portal/portal_omni_config.php \
+	www/portal/portal-jacks-app.js \
 	www/portal/print-text-helpers.php \
 	www/portal/print-text.php \
 	www/portal/profile.php \

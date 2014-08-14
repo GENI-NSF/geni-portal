@@ -80,6 +80,8 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceId,
 
 JacksApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
 JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
+JacksApp.prototype.DELETE_EVENT_TYPE = "DELETE";
+
 
 //----------------------------------------------------------------------
 // Jacks App Methods
@@ -192,7 +194,8 @@ JacksApp.prototype.getSliceManifests = function() {
                             { name: that.MANIFEST_EVENT_TYPE,
                               am_id: am_id,
                               slice_id: jacksSliceId,
-                              callback: that.input
+                              callback: that.input,
+                              client_data: {}
                             });
     });
 }
@@ -238,7 +241,12 @@ JacksApp.prototype.onClickEvent = function(event) {
 //----------------------------------------------------------------------
 
 JacksApp.prototype.onEpManifest = function(event) {
-    var rspecManifest = event.rspec;
+    if (event.code != 0) {
+        console.log("Error retrieving manifest: " + event.output);
+        return;
+    }
+
+    var rspecManifest = event.value;
 
     // NEEDS TO BE CHANGED
     // change-topology removes the current topology.
@@ -283,10 +291,15 @@ JacksApp.prototype.onEpManifest = function(event) {
 
 JacksApp.prototype.onEpStatus = function(event) {
     console.log("onEpStatus");
+    if (event.code != 0) {
+        console.log("Error retrieving status: " + event.output);
+        return;
+    }
+
     // re-poll as necessary up to event.client_data.maxPollTime
 
     var that = this;
-    $.each(event.status, function(i, v) {
+    $.each(event.value, function(i, v) {
 
 // SHOULD PROBABLY CHANGE
       // This only looks for READY and FAILED. There may be other cases to look for.
@@ -331,67 +344,4 @@ JacksApp.prototype.onEpStatus = function(event) {
             });
     }
     });
-}
-
-
-//----------------------------------------------------------------------
-// FIXME: temporary functions that will be implemented by the
-// embedding page.
-// ----------------------------------------------------------------------
-
-// Initializes the framework for the Jacks App.
-function start_jacks_viewer(target, status, buttons, sliceAms, allAms, sliceId,
-                           readyCallback) {
-    if (readyCallback == null) {
-        readyCallback = ep_jacks_app_ready;
-    }
-    myJacksApp = new JacksApp(target, status, buttons, sliceAms, allAms,
-                              sliceId, readyCallback);
-    return myJacksApp;
-}
-
-var ep_jacks_app = null;
-
-function ep_jacks_app_ready(jacksApp, input, output) {
-    console.log("ep_jacks_app_ready");
-    ep_jacks_app = jacksApp;
-    output.on(jacksApp.MANIFEST_EVENT_TYPE, ep_on_manifest);
-    output.on(jacksApp.STATUS_EVENT_TYPE, ep_on_status);
-    output.on("all", function(eventName) {
-        console.log("JacksApp -> EP: " + eventName + " event");
-    });
-}
-
-function ep_on_manifest(event) {
-    console.log("ep_on_manifest");
-    var am_id = event.am_id;
-    var slice_id = event.slice_id;
-    $.get("jacks-app-details.php",
-          { am_id:am_id, slice_id:slice_id },
-          function(responseTxt, statusTxt, xhr) {
-              var rspec = responseTxt;
-              event.callback.trigger(event.name,
-                                     { am_id: am_id,
-                                       slice_id: slice_id,
-                                       rspec: rspec,
-                                       client_data: event.client_data
-                                     });
-          });
-}
-
-function ep_on_status(event) {
-    console.log("ep_on_status");
-    var am_id = event.am_id;
-    var slice_id = event.slice_id;
-    $.getJSON("amstatus.php",
-              { am_id: am_id, slice_id: slice_id },
-              function(responseTxt, statusTxt, xhr) {
-                  var status = responseTxt;
-                  event.callback.trigger(event.name,
-                                         { am_id: am_id,
-                                           slice_id: slice_id,
-                                           status: status,
-                                           client_data: event.client_data
-                                         });
-              });
 }

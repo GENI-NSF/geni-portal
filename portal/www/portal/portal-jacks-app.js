@@ -1,0 +1,115 @@
+//----------------------------------------------------------------------      
+// Copyright (c) 2011-2014 Raytheon BBN Technologies                          
+//                                                                            
+// Permission is hereby granted, free of charge, to any person obtaining      
+// a copy of this software and/or hardware specification (the "Work") to      
+// deal in the Work without restriction, including without limitation the     
+// rights to use, copy, modify, merge, publish, distribute, sublicense,       
+// and/or sell copies of the Work, and to permit persons to whom the Work     
+// is furnished to do so, subject to the following conditions:                
+//                                                                            
+// The above copyright notice and this permission notice shall be             
+// included in all copies or substantial portions of the Work.                
+//                                                                            
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS        
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF                 
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                      
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT                
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,               
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,         
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS         
+// IN THE WORK.                                                               
+//----------------------------------------------------------------------      
+
+// A set of functions to handle events coming from the Jacks App (JA)
+// and responding asynchronously to the Jacks App
+
+var jacks_app_input = {};
+var jacks_app_output = {};
+
+// Callback for when JA is ready
+function portal_jacks_app_ready(ja, ja_input, ja_output) {
+    jacks_app_input = ja_input;
+    jacks_app_output = ja_output;
+
+    // Register embedding page (EP) event handlers from JA
+    jacks_app_output.on(ja.DELETE_EVENT_TYPE, ep_on_delete);
+    jacks_app_output.on(ja.STATUS_EVENT_TYPE, ep_on_status);
+    jacks_app_output.on(ja.MANIFEST_EVENT_TYPE, ep_on_manifest);
+}
+
+function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_data) {
+    console.log("ResponseText = " + responseTxt);
+    console.log("statusText = " + statusTxt);
+    console.log("XHR = " + xhr);
+    event_type = client_data.event_type;
+    response_event = {code:0, value:responseTxt, output:statusTxt, 
+		      am_id:am_id, slice_id:slice_id, client_data:client_data};
+    jacks_app_input.trigger(event_type, response_event);
+}
+
+function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_data) {
+    console.log("XHR = " + xhr);
+    console.log("ResponseText = " + textStatus);
+    console.log("errorThrown = " + errorThrown);
+    event_type = client_data.event_type;
+    response_event = {code:xhr.status, value:null, output:errorThrown,
+		      am_id:am_id, slice_id:slice_id, client_data:client_data};
+    jacks_app_input.trigger(event_type, response_event);
+}
+
+// Handle the delete request. 
+// Make an AJAX call to invoke the AM delete call
+// Then call the appropriate callback to the JA with the result.
+function ep_on_delete(request_event) {
+    var am_id = request_event.am_id;
+    var slice_id = request_event.slice_id;
+    var client_data = request_event.client_data;
+    client_data.event_type = request_event.name;
+
+    // Make an AJAX call to delete the slivers of this slice at this AM
+    $.ajax({
+	    type: "POST",
+		url: "sliverdelete.php",
+		dataType: "html",
+		data : {slice_id: slice_id, am_id:am_id},
+		success : function(rt, st, xhr) {
+		success_callback(rt, st, xhr, am_id, slice_id, client_data);
+	    },
+		error: function(xhr, ts, et) {
+		error_callback(xhr, ts, et, am_id, slice_id, client_data);
+	    }});
+}
+
+function ep_on_status(event) {
+    console.log("ep_on_status");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    var client_data = event.client_data;
+    client_data.event_type = event.name;
+    $.getJSON("amstatus.php",
+              { am_id: am_id, slice_id: slice_id },
+              function(rt, st, xhr) {
+                  success_callback(rt, st, xhr, am_id, slice_id, client_data);
+              })
+    .fail(function(xhr, ts, et) {
+	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+    });
+}
+
+function ep_on_manifest(event) {
+    console.log("ep_on_manifest");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    var client_data = event.client_data;
+    client_data.event_type = event.name;
+    $.get("jacks-app-details.php",
+          { am_id:am_id, slice_id:slice_id },
+          function(rt, st, xhr) {
+              success_callback(rt, st, xhr, am_id, slice_id, client_data);
+          })
+    .fail(function(xhr, ts, et) {
+	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+    });
+}
+

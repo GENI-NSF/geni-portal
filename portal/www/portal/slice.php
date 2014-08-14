@@ -803,6 +803,7 @@ print build_jacks_viewer();
 print "</div></td></tr></tbody></table>";
 
 ?>
+<script src="portal-jacks-app.js"></script>
 <script>
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
@@ -811,7 +812,10 @@ print "</div></td></tr></tbody></table>";
 
   // This funciton will start up a Jacks viewer, get the status bar going
   // and set up all of the button clicks.
-  start_jacks_viewer('#jacks-pane', '#jacks-status', '#jacks-buttons', jacks_slice_ams, jacks_all_ams, jacks_slice_id);
+  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', '#jacks-buttons',
+                              jacks_slice_ams, jacks_all_ams, jacks_slice_id,
+                              portal_jacks_app_ready);
+
 </script>
 
 <?php
