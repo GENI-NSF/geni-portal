@@ -198,6 +198,11 @@ JacksApp.prototype.getSliceManifests = function() {
     // FIXME: temporary until globals go away
     var sliceAms = this.sliceAms || jacksSliceAms;
 
+    if(sliceAms.length == 0) {
+	this.updateStatus("Jacks initialized: no resources");
+	return;
+    }
+
     // Loop through each known AM and get the manifest.
     var that = this;
     $.each(sliceAms, function(i, am_id) {
@@ -439,6 +444,8 @@ JacksApp.prototype.onEpDelete = function(event) {
         console.log("Error retrieving status: " + event.output);
         return;
     }
+
+    this.updateStatus("Resources deleted");
  
     this.getSliceManifests();
 
