@@ -1,20 +1,17 @@
+/* These global variables are mostly dead. Verify, then delete. */
 var jacksStatus;
 var jacksButtons;
-
 var jacksSliceAms;
-var jacksAllAms;
-var jacksSliceId;
-
 // These variables will be used to communicate with Jacks
 var jacksInput;
 var jacksOutput;
 
+
+/* Eradicate these global variables */
+var jacksAllAms;
+var jacksSliceId;
 var jacksMap;
 var jacksAMs = {};
-
-// FIXME: A temporary global as the code is transitioned to an
-// object-oriented model.
-var theJacksApp = null;
 
 // Variable that determines how long (in ms) to wait in between status calls.
 var jacksTimeToWait = 5000;
@@ -64,7 +61,7 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
         root: jacks,
         readyCallback: function (input, output) {
             that.jacksReady(input, output);
-            that.initButtons(jacksButtons);
+            that.initButtons(that.buttons);
 
             // FIXME: these are globals but eventually shouldn't be
             // Commands going into Jacks.
@@ -142,8 +139,7 @@ JacksApp.prototype.initEvents = function() {
 }
 
 JacksApp.prototype.updateStatus = function(statusText) {
-    // FIXME: temporary until globals go away
-    var statusPane = this.statusPane || jacksStatus;
+    var statusPane = this.status;
     var html = '<p class="jacksStatusText">' + statusText + '</p>';
     $(statusPane).prepend(html);
 }
@@ -204,8 +200,7 @@ JacksApp.prototype.amName = function(am_id) {
 //----------------------------------------------------------------------
 
 JacksApp.prototype.getSliceManifests = function() {
-    // FIXME: temporary until globals go away
-    var sliceAms = this.sliceAms || jacksSliceAms;
+    var sliceAms = this.sliceAms;
 
     if(sliceAms.length == 0) {
 	this.updateStatus("Jacks initialized: no resources");
