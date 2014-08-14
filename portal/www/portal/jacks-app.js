@@ -78,9 +78,11 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceId,
 // Jacks App Constants
 //----------------------------------------------------------------------
 
-JacksApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
-JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
+JacksApp.prototype.ADD_EVENT_TYPE = "ADD";
 JacksApp.prototype.DELETE_EVENT_TYPE = "DELETE";
+JacksApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
+JacksApp.prototype.RENEW_EVENT_TYPE = "RENEW";
+JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
 
 
 //----------------------------------------------------------------------
@@ -131,6 +133,7 @@ JacksApp.prototype.initEvents = function() {
     });
     this.input.on(this.MANIFEST_EVENT_TYPE, this.onEpManifest, this);
     this.input.on(this.STATUS_EVENT_TYPE, this.onEpStatus, this);
+    this.input.on(this.DELETE_EVENT_TYPE, this.onEpDelete, this);
 }
 
 JacksApp.prototype.updateStatus = function(statusText) {
@@ -154,11 +157,17 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     $(buttonSelector).append(btn);
 
     btn = $('<button type="button">Delete</button>');
-    btn.click(function(){ alert('Delete All');});
+    btn.click(function(){ 
+	    that.deleteResources();
+	});
     $(buttonSelector).append(btn);
 
     btn = $('<button type="button">SSH</button>');
     btn.click(function(){ alert('SSH');});
+    $(buttonSelector).append(btn);
+
+    btn = $('<button type="button">Add</button>');
+    btn.click(function(){ that.addResources();});
     $(buttonSelector).append(btn);
 }
 
@@ -201,6 +210,7 @@ JacksApp.prototype.getSliceManifests = function() {
 }
 
 
+
 /**
  * max_time is when to stop polling
  */
@@ -214,6 +224,36 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
                           client_data: { maxTime: maxTime }
                         });
 }
+
+/**
+ * delete all resources on given slice at given AM
+ */
+JacksApp.prototype.deleteResources = function() {
+    var am_id = this.client2am[this.selectedElement];
+    this.updateStatus('Deleting resources from ' + am_id + '...');
+    this.output.trigger(this.DELETE_EVENT_TYPE,
+                        { name: this.DELETE_EVENT_TYPE,
+                          am_id: am_id,
+                          slice_id: this.sliceId,
+                          callback: this.input,
+			  client_data: {}
+                        });
+}
+
+/**
+ * Ask embedding page to add resources to current slice
+ */
+JacksApp.prototype.addResources = function() {
+    var that = this;
+    that.output.trigger(that.ADD_EVENT_TYPE,
+                            { name: that.ADD_EVENT_TYPE,
+                              slice_id: jacksSliceId,
+                              client_data: {}
+                            });
+}
+
+
+
 
 
 //----------------------------------------------------------------------
@@ -344,4 +384,15 @@ JacksApp.prototype.onEpStatus = function(event) {
             });
     }
     });
+}
+
+JacksApp.prototype.onEpDelete = function(event) {
+    console.log("onEpDelete");
+    if (event.code != 0) {
+        console.log("Error retrieving status: " + event.output);
+        return;
+    }
+ 
+    this.getSliceManifests();
+
 }

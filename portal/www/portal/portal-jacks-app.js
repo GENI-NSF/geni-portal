@@ -33,9 +33,11 @@ function portal_jacks_app_ready(ja, ja_input, ja_output) {
     jacks_app_output = ja_output;
 
     // Register embedding page (EP) event handlers from JA
+    jacks_app_output.on(ja.ADD_EVENT_TYPE, ep_on_add);
     jacks_app_output.on(ja.DELETE_EVENT_TYPE, ep_on_delete);
-    jacks_app_output.on(ja.STATUS_EVENT_TYPE, ep_on_status);
     jacks_app_output.on(ja.MANIFEST_EVENT_TYPE, ep_on_manifest);
+    jacks_app_output.on(ja.RENEW_EVENT_TYPE, ep_on_renew);
+    jacks_app_output.on(ja.STATUS_EVENT_TYPE, ep_on_status);
 }
 
 function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_data) {
@@ -58,29 +60,76 @@ function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_da
     jacks_app_input.trigger(event_type, response_event);
 }
 
+// Handle the add (i.e. add resources)  request. 
+// Redirect to the add resouces page
+function ep_on_add(event) {
+    console.log("ep_on_add");
+    var slice_id = event.slice_id;
+    var new_url = "slice-add-resources.php?slice_id=" + slice_id;
+    window.location.replace(new_url);
+}
+
 // Handle the delete request. 
 // Make an AJAX call to invoke the AM delete call
 // Then call the appropriate callback to the JA with the result.
-function ep_on_delete(request_event) {
-    var am_id = request_event.am_id;
-    var slice_id = request_event.slice_id;
-    var client_data = request_event.client_data;
-    client_data.event_type = request_event.name;
-
-    // Make an AJAX call to delete the slivers of this slice at this AM
-    $.ajax({
-	    type: "POST",
-		url: "sliverdelete.php",
-		dataType: "html",
-		data : {slice_id: slice_id, am_id:am_id},
-		success : function(rt, st, xhr) {
-		success_callback(rt, st, xhr, am_id, slice_id, client_data);
-	    },
-		error: function(xhr, ts, et) {
-		error_callback(xhr, ts, et, am_id, slice_id, client_data);
-	    }});
+function ep_on_delete(event) {
+    console.log("ep_on_delete");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    var client_data = event.client_data;
+    client_data.event_type = event.name;
+    $.getJSON("deletesliver.php",
+              { am_id: am_id, slice_id: slice_id },
+              function(rt, st, xhr) {
+                  success_callback(rt, st, xhr, am_id, slice_id, client_data);
+              })
+    .fail(function(xhr, ts, et) {
+	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+    });
 }
 
+// Handle the manifest status. 
+// Make an AJAX call to invoke the AM manifest call
+// Then call the appropriate callback to the JA with the result.
+function ep_on_manifest(event) {
+    console.log("ep_on_manifest");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    var client_data = event.client_data;
+    client_data.event_type = event.name;
+    $.get("jacks-app-details.php",
+          { am_id:am_id, slice_id:slice_id },
+          function(rt, st, xhr) {
+              success_callback(rt, st, xhr, am_id, slice_id, client_data);
+          })
+    .fail(function(xhr, ts, et) {
+	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+    });
+}
+
+// Handle the renew status. 
+// Make an AJAX call to invoke the AM renew call
+// Then call the appropriate callback to the JA with the result.
+function ep_on_renew(event) {
+    console.log("ep_on_manifest");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    var expiration_time = event.expiration_time;
+    var client_data = event.client_data;
+    client_data.event_type = event.name;
+    $.get("renewsliver.php",
+          { am_id:am_id, slice_id:slice_id, sliver_expiration:expiration_time },
+          function(rt, st, xhr) {
+              success_callback(rt, st, xhr, am_id, slice_id, client_data);
+          })
+    .fail(function(xhr, ts, et) {
+	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+    });
+}
+
+// Handle the status status. 
+// Make an AJAX call to invoke the AM status call
+// Then call the appropriate callback to the JA with the result.
 function ep_on_status(event) {
     console.log("ep_on_status");
     var am_id = event.am_id;
@@ -97,6 +146,9 @@ function ep_on_status(event) {
     });
 }
 
+// Handle the manifest status. 
+// Make an AJAX call to invoke the AM manifest call
+// Then call the appropriate callback to the JA with the result.
 function ep_on_manifest(event) {
     console.log("ep_on_manifest");
     var am_id = event.am_id;
