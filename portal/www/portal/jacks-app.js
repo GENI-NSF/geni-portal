@@ -360,6 +360,17 @@ JacksApp.prototype.onEpManifest = function(event) {
 
     var that = this;
     var am_id = event.am_id;
+    var nodes = jacksXml.find('node');
+
+    // If there are no nodes at this AM, don't poll for status and
+    // remove from list of sliceAms
+    if(nodes.length == 0) {
+	var am_index = this.sliceAms.indexOf(am_id);
+	this.sliceAms.splice(am_index, 1);
+	this.updateStatus("No resources found at " + am_id);
+	return;
+    }
+
     jacksXml.find('node').each(function(i, v) {
         jacksMap[$(this).attr('sliver_id')] = $(this).attr('client_id');
         // This is needed because some AMs do return the client_id, so
@@ -452,12 +463,8 @@ JacksApp.prototype.onEpDelete = function(event) {
 
     this.updateStatus("Resources deleted");
     
-    // Remove this AM from the list of slice AM's
-    var am_id = event.am_id;
-    var am_index = this.sliceAms.indexOf(am_id);
-    this.sliceAms.splice(am_index, 1);
- 
     this.getSliceManifests();
+
 
 }
 
