@@ -1,7 +1,5 @@
 
 /* Eradicate these global variables */
-var jacksAllAms;
-var jacksMap;
 var jacksAMs = {};
 
 // Variable that determines how long (in ms) to wait in between status calls.
@@ -12,6 +10,8 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
                   readyCallback) {
     // Map from client_id to am_id
     this.client2am = {};
+    // Map from URN (and client_id) to client_id
+    this.urn2clientId = {};
     this.selectedElement = null;
     this.input = null;
     this.output = null;
@@ -30,10 +30,6 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.sliceUrn = sliceInfo.slice_urn;
     this.sliceExpiration = sliceInfo.slice_expiration
     this.sliceName = sliceInfo.slice_name;
-
-    // Init globals
-    // FIXME: these should all go away
-    jacksAllAms = allAms;
 
     var that = this;
     var jacksInstance = new window.Jacks({
@@ -340,7 +336,10 @@ JacksApp.prototype.onEpManifest = function(event) {
     // for the page to find the correct node class inside of Jacks.
     // Used to highlight nodes when they are ready.
     var jacksXml = $($.parseXML(rspecManifest));
-    jacksMap = {};
+
+    // Not sure why this gets initialized here - that throws away data
+    // we'll want when handling the multi-am case.
+    this.urn2clientId = {};
 
     var that = this;
     var am_id = event.am_id;
@@ -356,15 +355,17 @@ JacksApp.prototype.onEpManifest = function(event) {
     }
 
     jacksXml.find('node').each(function(i, v) {
-        jacksMap[$(this).attr('sliver_id')] = $(this).attr('client_id');
+        var client_id = $(this).attr('client_id');
+        var sliver_id = $(this).attr('sliver_id');
+        that.urn2clientId[sliver_id] = client_id;
         // This is needed because some AMs do return the client_id, so
         // the mapping needs to have both to avoid needing special cases.
-        jacksMap[$(this).attr('client_id')] = $(this).attr('client_id');
+        that.urn2clientId[client_id] = client_id;
 
-        that.client2am[$(this).attr('sliver_id')] = am_id;
+        that.client2am[sliver_id] = am_id;
         // This is needed because some AMs do return the client_id, so
         // the mapping needs to have both to avoid needing special cases.
-        that.client2am[$(this).attr('client_id')] = am_id;
+        that.client2am[client_id] = am_id;
 
         // Dig out login info
         $(this).find('login').each(function(il, vl) {
@@ -376,7 +377,7 @@ JacksApp.prototype.onEpManifest = function(event) {
         });
     });
 
-    jacksAMs[jacksAllAms[am_id]['name']] = [];
+    jacksAMs[this.allAms[am_id]['name']] = [];
     var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
     this.getStatus(am_id, maxPollTime);
 }
@@ -416,6 +417,8 @@ JacksApp.prototype.onEpStatus = function(event) {
         if (v.hasOwnProperty('resources')) {
             $.each(v['resources'], function(ii, vi) {
                 if (vi['geni_status'] == 'ready') {
+                    var resourceURN = vi.geni_urn;
+                    console.log("URN " + resourceURN + " is ready");
 
 // NEEDS TO CHANGE
                     // The classes that are targeted will likely need
@@ -426,11 +429,11 @@ JacksApp.prototype.onEpStatus = function(event) {
                     // There has also been talk about Jacks supporting
                     // the page telling it what to highlight, which
                     // would make this less hack-ey.
-                    $('.jacks #node-'+jacksMap[vi['geni_urn']]).parent().find('.checkbox').attr('id','ready');
-                    $('.jacks #link-'+jacksMap[vi['geni_urn']]).parent().find('.checkbox').attr('id','ready');
-                    $('.jacks #list-'+jacksMap[vi['geni_urn']]).parent().find('.itemID').addClass('resourcesReady');
+                    $('.jacks #node-'+that.urn2clientId[resourceURN]).parent().find('.checkbox').attr('id','ready');
+                    $('.jacks #link-'+that.urn2clientId[resourceURN]).parent().find('.checkbox').attr('id','ready');
+                    $('.jacks #list-'+that.urn2clientId[resourceURN]).parent().find('.itemID').addClass('resourcesReady');
 
-                    jacksAMs[v['am_name']].push(jacksMap[vi['geni_urn']]);
+                    jacksAMs[v['am_name']].push(that.urn2clientId[resourceURN]);
                     console.log(jacksAMs[v['am_name']]);
                 }
             });
