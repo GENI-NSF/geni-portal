@@ -74,6 +74,7 @@ JacksApp.prototype.ADD_EVENT_TYPE = "ADD";
 JacksApp.prototype.DELETE_EVENT_TYPE = "DELETE";
 JacksApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
 JacksApp.prototype.RENEW_EVENT_TYPE = "RENEW";
+JacksApp.prototype.RESTART_EVENT_TYPE = "RESTART";
 JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
 
 
@@ -127,6 +128,7 @@ JacksApp.prototype.initEvents = function() {
     this.input.on(this.STATUS_EVENT_TYPE, this.onEpStatus, this);
     this.input.on(this.DELETE_EVENT_TYPE, this.onEpDelete, this);
     this.input.on(this.RENEW_EVENT_TYPE, this.onEpRenew, this);
+    this.input.on(this.RESTART_EVENT_TYPE, this.onEpRestart, this);
 }
 
 JacksApp.prototype.updateStatus = function(statusText) {
@@ -158,13 +160,18 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
 	});
     $(buttonSelector).append(btn);
 
+    btn = $('<button type="button">Add</button>');
+    btn.click(function(){ that.addResources();});
+    $(buttonSelector).append(btn);
+
     btn = $('<button type="button">SSH</button>');
     btn.click(function(){ that.handleSSH();});
     $(buttonSelector).append(btn);
 
-    btn = $('<button type="button">Add</button>');
-    btn.click(function(){ that.addResources();});
+    btn = $('<button type="button">Restart</button>');
+    btn.click(function(){ that.handleRestart();});
     $(buttonSelector).append(btn);
+
 }
 
 /**
@@ -246,6 +253,36 @@ JacksApp.prototype.handleSSH = function() {
 	}
     }
 }
+
+
+/**
+ * handle VM restart request
+ */
+JacksApp.prototype.handleRestart = function(am_id) {
+    console.log("Restart");
+    // Is anything selected? If so , only restart at that aggregate
+    var am_id = this.client2am[this.selectedElement];
+    var restartAMs = this.sliceAms;
+    if (am_id) {
+        restartAMs = [am_id];
+        var msg = "Restart resources at " + this.amName(am_id) + "?";
+    } else {
+        var msg = "Restart at known slice resources" + "?";
+    }
+    if (confirm(msg)) {
+        var that = this;
+        $.each(restartAMs, function(i, am_id) {
+            that.updateStatus('Restarting resources at ' + that.amName(am_id));
+            that.output.trigger(that.RESTART_EVENT_TYPE,
+                                { name: that.RESTART_EVENT_TYPE,
+                                  am_id: am_id,
+                                  slice_id: that.sliceId,
+                                  callback: that.input,
+                                  client_data: {}
+                                })
+        });
+    }
+ }
 
 
 /**
@@ -496,4 +533,16 @@ JacksApp.prototype.onEpRenew = function(event) {
         return;
     }
     this.updateStatus("Renewed resources at " + this.amName(event.am_id));
+}
+
+JacksApp.prototype.onEpRestart = function(event) {
+    console.log("onEpRestart");
+    if (event.code != 0) {
+        console.log("Error restarting at " + this.amName(event.am_id)
+                    + ": " + event.output);
+        return;
+    }
+    this.updateStatus("Restarted resources at " + this.amName(event.am_id));
+
+    this.getSliceManifests();
 }

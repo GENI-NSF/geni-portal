@@ -37,6 +37,7 @@ function portal_jacks_app_ready(ja, ja_input, ja_output) {
     jacks_app_output.on(ja.DELETE_EVENT_TYPE, ep_on_delete);
     jacks_app_output.on(ja.MANIFEST_EVENT_TYPE, ep_on_manifest);
     jacks_app_output.on(ja.RENEW_EVENT_TYPE, ep_on_renew);
+    jacks_app_output.on(ja.RESTART_EVENT_TYPE, ep_on_restart);
     jacks_app_output.on(ja.STATUS_EVENT_TYPE, ep_on_status);
 }
 
@@ -127,6 +128,25 @@ function ep_on_renew(event) {
     });
 }
 
+// Handle the restart request
+// Make an AJAX call to invoke the AM POA geni_restart call
+// Then call the appropriate callback to the JA with the result.
+function ep_on_restart(event) {
+    console.log("ep_on_restart");
+    var am_id = event.am_id;
+    var slice_id = event.slice_id;
+    var client_data = event.client_data;
+    client_data.event_type = event.name;
+    $.get("restartsliver.php",
+          { am_id : am_id, slice_id:slice_id },
+          function(rt, st, xhr) {
+              success_callback(rt, st, xhr, am_id, slice_id, client_data);
+          })
+    .fail(function(xhr, ts, et) {
+	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+    });
+}
+
 // Handle the status status. 
 // Make an AJAX call to invoke the AM status call
 // Then call the appropriate callback to the JA with the result.
@@ -146,22 +166,4 @@ function ep_on_status(event) {
     });
 }
 
-// Handle the manifest status. 
-// Make an AJAX call to invoke the AM manifest call
-// Then call the appropriate callback to the JA with the result.
-function ep_on_manifest(event) {
-    console.log("ep_on_manifest");
-    var am_id = event.am_id;
-    var slice_id = event.slice_id;
-    var client_data = event.client_data;
-    client_data.event_type = event.name;
-    $.get("jacks-app-details.php",
-          { am_id:am_id, slice_id:slice_id },
-          function(rt, st, xhr) {
-              success_callback(rt, st, xhr, am_id, slice_id, client_data);
-          })
-    .fail(function(xhr, ts, et) {
-	error_callback(xhr, ts, et, am_id, slice_id, client_data);
-    });
-}
 
