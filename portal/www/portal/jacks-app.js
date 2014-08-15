@@ -7,6 +7,7 @@ var jacksTimeToWait = 5000;
 
 
 function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
+		  userInfo,
                   readyCallback) {
     // Map from client_id to am_id
     this.client2am = {};
@@ -25,11 +26,21 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.buttons = buttons;
     this.sliceAms = sliceAms;
     this.allAms = allAms;
+
     this.sliceInfo = sliceInfo;
     this.sliceId = sliceInfo.slice_id;
     this.sliceUrn = sliceInfo.slice_urn;
     this.sliceExpiration = sliceInfo.slice_expiration
     this.sliceName = sliceInfo.slice_name;
+
+    this.loginInfo = {};
+
+    this.userInfo = userInfo;
+    this.username = userInfo.user_name;
+
+    // Init globals
+    // FIXME: these should all go away
+    jacksAllAms = allAms;
 
     var that = this;
     var jacksInstance = new window.Jacks({
@@ -148,7 +159,7 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     $(buttonSelector).append(btn);
 
     btn = $('<button type="button">SSH</button>');
-    btn.click(function(){ alert('SSH');});
+    btn.click(function(){ that.handleSSH();});
     $(buttonSelector).append(btn);
 
     btn = $('<button type="button">Add</button>');
@@ -219,6 +230,23 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
                           client_data: { maxTime: maxTime }
                         });
 }
+
+/**
+ * handle SSH call into given node
+ */
+JacksApp.prototype.handleSSH = function() {
+    console.log("SSH");
+    console.log("USER = " + this.username);
+    if(this.username in this.loginInfo) {
+	var urls = this.loginInfo[this.username];
+	for(var i = 0; i < urls.length; i++) {
+	    url = urls[i];
+	    console.log("LOGIN URL = " + url);
+	    window.location.replace(url);
+	}
+    }
+}
+
 
 /**
  * delete all resources on given slice at given AM
@@ -373,6 +401,11 @@ JacksApp.prototype.onEpManifest = function(event) {
             var hostname = $(this).attr('hostname');
             var port = $(this).attr('port');
             var username = $(this).attr('username');
+	    var login_url = "ssh://" + username + "@" + hostname + ":" + port;
+	    if (!(username in that.loginInfo)) {
+		that.loginInfo[username] = [];
+	    }
+	    that.loginInfo[username].push(login_url);
             console.log(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });

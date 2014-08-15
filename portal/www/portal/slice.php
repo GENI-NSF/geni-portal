@@ -834,10 +834,19 @@ print "</div></td></tr></tbody></table>";
 			  slice_urn : jacks_slice_urn, 
 			  slice_expiration : jacks_slice_expiration};
 
+  var jacks_user_name = <?php echo json_encode($user->username) ?>;
+  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
+  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
+
+  var jacks_user_info = {user_name : jacks_user_name,
+			 user_urn : jacks_user_urn,
+			 user_id : jacks_user_id};
+
   // This funciton will start up a Jacks viewer, get the status bar going
   // and set up all of the button clicks.
   var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', '#jacks-buttons',
                               jacks_slice_ams, jacks_all_ams, jacks_slice_info,
+			      jacks_user_info,
                               portal_jacks_app_ready);
 
 </script>
