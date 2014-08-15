@@ -27,6 +27,14 @@
 var jacks_app_input = {};
 var jacks_app_output = {};
 
+var portal_jacks_app_verbose = false;
+
+// Log messages to console if 'verbose' is set
+function debug(msg) {
+    if (portal_jacks_app_verbose)
+	console.log(msg);
+}
+
 // Callback for when JA is ready
 function portal_jacks_app_ready(ja, ja_input, ja_output) {
     jacks_app_input = ja_input;
@@ -42,9 +50,9 @@ function portal_jacks_app_ready(ja, ja_input, ja_output) {
 }
 
 function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_data) {
-    // console.log("ResponseText = " + responseTxt);
-    // console.log("statusText = " + statusTxt);
-    // console.log("XHR = " + xhr);
+    // debug("ResponseText = " + responseTxt);
+    // debug("statusText = " + statusTxt);
+    // debug("XHR = " + xhr);
     event_type = client_data.event_type;
     response_event = {code:0, value:responseTxt, output:statusTxt, 
 		      am_id:am_id, slice_id:slice_id, client_data:client_data};
@@ -52,9 +60,9 @@ function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_d
 }
 
 function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_data) {
-    console.log("XHR = " + xhr);
-    console.log("ResponseText = " + textStatus);
-    console.log("errorThrown = " + errorThrown);
+    debug("XHR = " + xhr);
+    debug("ResponseText = " + textStatus);
+    debug("errorThrown = " + errorThrown);
     event_type = client_data.event_type;
     response_event = {code:xhr.status, value:null, output:errorThrown,
 		      am_id:am_id, slice_id:slice_id, client_data:client_data};
@@ -64,7 +72,7 @@ function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_da
 // Handle the add (i.e. add resources)  request. 
 // Redirect to the add resouces page
 function ep_on_add(event) {
-    console.log("ep_on_add");
+    debug("ep_on_add");
     var slice_id = event.slice_id;
     var new_url = "slice-add-resources-jacks.php?slice_id=" + slice_id;
     window.location.replace(new_url);
@@ -74,7 +82,7 @@ function ep_on_add(event) {
 // Make an AJAX call to invoke the AM delete call
 // Then call the appropriate callback to the JA with the result.
 function ep_on_delete(event) {
-    console.log("ep_on_delete");
+    debug("ep_on_delete");
     var am_id = event.am_id;
     var slice_id = event.slice_id;
     var client_data = event.client_data;
@@ -93,7 +101,7 @@ function ep_on_delete(event) {
 // Make an AJAX call to invoke the AM manifest call
 // Then call the appropriate callback to the JA with the result.
 function ep_on_manifest(event) {
-    console.log("ep_on_manifest");
+    debug("ep_on_manifest");
     var am_id = event.am_id;
     var slice_id = event.slice_id;
     var client_data = event.client_data;
@@ -112,7 +120,7 @@ function ep_on_manifest(event) {
 // Make an AJAX call to invoke the AM renew call
 // Then call the appropriate callback to the JA with the result.
 function ep_on_renew(event) {
-    console.log("ep_on_renew");
+    debug("ep_on_renew");
     var am_id = event.am_id;
     var slice_id = event.slice_id;
     var expiration_time = event.expiration_time;
@@ -132,7 +140,7 @@ function ep_on_renew(event) {
 // Make an AJAX call to invoke the AM POA geni_restart call
 // Then call the appropriate callback to the JA with the result.
 function ep_on_restart(event) {
-    console.log("ep_on_restart");
+    debug("ep_on_restart");
     var am_id = event.am_id;
     var slice_id = event.slice_id;
     var client_data = event.client_data;
@@ -151,7 +159,7 @@ function ep_on_restart(event) {
 // Make an AJAX call to invoke the AM status call
 // Then call the appropriate callback to the JA with the result.
 function ep_on_status(event) {
-    console.log("ep_on_status");
+    debug("ep_on_status");
     var am_id = event.am_id;
     var slice_id = event.slice_id;
     var client_data = event.client_data;

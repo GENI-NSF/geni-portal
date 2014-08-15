@@ -21,6 +21,8 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.sliceAms = sliceAms;
     this.allAms = allAms;
 
+    this.verbose = false; // Print debug messages to console.log
+
     this.sliceInfo = sliceInfo;
     this.sliceId = sliceInfo.slice_id;
     this.sliceUrn = sliceInfo.slice_urn;
@@ -71,6 +73,14 @@ JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
 //----------------------------------------------------------------------
 
 /**
+ * Print to console.log if verbose is set
+ */
+JacksApp.prototype.debug = function(msg) {
+    if(this.verbose)
+	console.log(msg);
+}
+
+/**
  * Called when Jacks is ready. 'input' and 'output' are the Jacks
  * input and output event channels.
  */
@@ -110,7 +120,7 @@ JacksApp.prototype.initEvents = function() {
 
     // Debug the event channels
     this.input.on("all", function(eventName) {
-        console.log("EP -> JacksApp: " + eventName + " event");
+        debug("EP -> JacksApp: " + eventName + " event");
     });
     this.input.on(this.MANIFEST_EVENT_TYPE, this.onEpManifest, this);
     this.input.on(this.STATUS_EVENT_TYPE, this.onEpStatus, this);
@@ -229,13 +239,13 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
  * handle SSH call into given node
  */
 JacksApp.prototype.handleSSH = function() {
-    console.log("SSH");
-    console.log("USER = " + this.username);
+    debug("SSH");
+    debug("USER = " + this.username);
     if(this.username in this.loginInfo) {
 	var urls = this.loginInfo[this.username];
 	for(var i = 0; i < urls.length; i++) {
 	    url = urls[i];
-	    console.log("LOGIN URL = " + url);
+	    debug("LOGIN URL = " + url);
 	    window.location.replace(url);
 	}
     }
@@ -246,7 +256,7 @@ JacksApp.prototype.handleSSH = function() {
  * handle VM restart request
  */
 JacksApp.prototype.handleRestart = function() {
-    console.log("Restart");
+    debug("Restart");
     // Is anything selected? If so , only restart at that aggregate
     var am_id = this.client2am[this.selectedElement];
     var restartAMs = this.sliceAms;
@@ -356,7 +366,7 @@ JacksApp.prototype.onClickEvent = function(event) {
     $('.jacks #active').attr('id','');
     $('.jacks #'+event['type']+'-'+event['client_id']).parent().attr('id',
                                                                      'active');
-    console.log('Event ' + event.type + ': ' + event.client_id);
+    debug('Event ' + event.type + ': ' + event.client_id);
     //$('#jacksApp'+ji+' .expandedI').each(function() { $(this).removeClass('expandedI') });
     //$('#jacksApp'+ji+' #list-'+event['client_id']).parent().addClass('expandedI');
 };
@@ -368,7 +378,7 @@ JacksApp.prototype.onClickEvent = function(event) {
 
 JacksApp.prototype.onEpManifest = function(event) {
     if (event.code !== 0) {
-        console.log("Error retrieving manifest: " + event.output);
+        debug("Error retrieving manifest: " + event.output);
         return;
     }
 
@@ -427,7 +437,7 @@ JacksApp.prototype.onEpManifest = function(event) {
 		that.loginInfo[username] = [];
 	    }
 	    that.loginInfo[username].push(login_url);
-            console.log(authn + "://" + username + "@" + hostname + ":" + port);
+            debug(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });
 
@@ -436,9 +446,9 @@ JacksApp.prototype.onEpManifest = function(event) {
 };
 
 JacksApp.prototype.onEpStatus = function(event) {
-    console.log("onEpStatus");
+    debug("onEpStatus");
     if (event.code !== 0) {
-        console.log("Error retrieving status: " + event.output);
+        debug("Error retrieving status: " + event.output);
         return;
     }
 
@@ -472,7 +482,7 @@ JacksApp.prototype.onEpStatus = function(event) {
                 if (vi['geni_status'] == 'ready') {
                     var resourceURN = vi.geni_urn;
                     var clientId = that.urn2clientId[resourceURN];
-                    console.log(clientId + " (" + resourceURN + ") is ready");
+                    debug(clientId + " (" + resourceURN + ") is ready");
 
 // NEEDS TO CHANGE
                     // The classes that are targeted will likely need
@@ -496,9 +506,9 @@ JacksApp.prototype.onEpStatus = function(event) {
 };
 
 JacksApp.prototype.onEpDelete = function(event) {
-    console.log("onEpDelete");
+    debug("onEpDelete");
     if (event.code !== 0) {
-        console.log("Error retrieving status: " + event.output);
+        debug("Error retrieving status: " + event.output);
         return;
     }
 
@@ -507,9 +517,9 @@ JacksApp.prototype.onEpDelete = function(event) {
 };
 
 JacksApp.prototype.onEpRenew = function(event) {
-    console.log("onEpRenew");
+    debug("onEpRenew");
     if (event.code !== 0) {
-        console.log("Error renewing at " + this.amName(event.am_id)
+        debug("Error renewing at " + this.amName(event.am_id)
                     + ": " + event.output);
         return;
     }
@@ -517,9 +527,9 @@ JacksApp.prototype.onEpRenew = function(event) {
 };
 
 JacksApp.prototype.onEpRestart = function(event) {
-    console.log("onEpRestart");
+    debug("onEpRestart");
     if (event.code !== 0) {
-        console.log("Error restarting at " + this.amName(event.am_id)
+        debug("Error restarting at " + this.amName(event.am_id)
                     + ": " + event.output);
         return;
     }
