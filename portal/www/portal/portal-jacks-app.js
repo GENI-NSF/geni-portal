@@ -66,7 +66,7 @@ function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_da
 function ep_on_add(event) {
     console.log("ep_on_add");
     var slice_id = event.slice_id;
-    var new_url = "slice-add-resources.php?slice_id=" + slice_id;
+    var new_url = "slice-add-resources-jacks.php?slice_id=" + slice_id;
     window.location.replace(new_url);
 }
 

@@ -153,11 +153,11 @@ function validateSubmit()
   rspec2 = document.getElementById("rspec_selection");
   
   if (rspec.value && am.value) {
-    $('#f1').attr('action','sliceresource.php');
+    $('#f1').attr('action','createsliver.php');
     f1.submit();
     return true;
   } else if (rspec2.value && am.value) {
-    $('#f1').attr('action','sliceresource.php');
+    $('#f1').attr('action','createsliver.php');
     f1.submit();
     return true;
   } else if (rspec.value) {
