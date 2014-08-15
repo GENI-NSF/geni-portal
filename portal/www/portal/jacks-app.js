@@ -1,15 +1,6 @@
-/* These global variables are mostly dead. Verify, then delete. */
-var jacksStatus;
-var jacksButtons;
-var jacksSliceAms;
-// These variables will be used to communicate with Jacks
-var jacksInput;
-var jacksOutput;
-
 
 /* Eradicate these global variables */
 var jacksAllAms;
-var jacksSliceId;
 var jacksMap;
 var jacksAMs = {};
 
@@ -24,7 +15,9 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.selectedElement = null;
     this.input = null;
     this.output = null;
+    // Commands going into Jacks.
     this.jacksInput = null;
+    // Responses coming out of Jacks.
     this.jacksOutput = null;
 
     this.jacks = jacks;
@@ -40,11 +33,7 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
 
     // Init globals
     // FIXME: these should all go away
-    jacksStatus = status;
-    jacksButtons = buttons;
-    jacksSliceAms = sliceAms;
     jacksAllAms = allAms;
-    jacksSliceId = this.sliceId;
 
     var that = this;
     var jacksInstance = new window.Jacks({
@@ -63,11 +52,6 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
             that.jacksReady(input, output);
             that.initButtons(that.buttons);
 
-            // FIXME: these are globals but eventually shouldn't be
-            // Commands going into Jacks.
-            jacksInput = input;
-            // Responses coming out of Jacks.
-            jacksOutput = output;
 
             // Finally, tell our client that we're ready
             readyCallback(that, that.input, that.output);
@@ -216,7 +200,7 @@ JacksApp.prototype.getSliceManifests = function() {
         that.output.trigger(that.MANIFEST_EVENT_TYPE,
                             { name: that.MANIFEST_EVENT_TYPE,
                               am_id: am_id,
-                              slice_id: jacksSliceId,
+                              slice_id: that.sliceId,
                               callback: that.input,
                               client_data: {}
                             });
@@ -272,13 +256,11 @@ JacksApp.prototype.deleteResources = function() {
  * Ask embedding page to add resources to current slice
  */
 JacksApp.prototype.addResources = function() {
-    var that = this;
-    that.output.trigger(that.ADD_EVENT_TYPE,
-                            { name: that.ADD_EVENT_TYPE,
-                              slice_id: jacksSliceId,
-                              client_data: {}
-                            });
-
+    this.output.trigger(this.ADD_EVENT_TYPE,
+                        { name: this.ADD_EVENT_TYPE,
+                          slice_id: this.sliceId,
+                          client_data: {}
+                        });
 }
 
 JacksApp.prototype.renewResources = function() {
