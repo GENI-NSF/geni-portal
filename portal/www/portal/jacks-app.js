@@ -1,4 +1,4 @@
-
+ 
 function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
 		  userInfo, readyCallback) {
     // Map from client_id to am_id
@@ -24,7 +24,7 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.sliceInfo = sliceInfo;
     this.sliceId = sliceInfo.slice_id;
     this.sliceUrn = sliceInfo.slice_urn;
-    this.sliceExpiration = sliceInfo.slice_expiration
+    this.sliceExpiration = sliceInfo.slice_expiration;
     this.sliceName = sliceInfo.slice_name;
 
     this.loginInfo = {};
@@ -98,7 +98,7 @@ JacksApp.prototype.jacksReady = function(input, output) {
     setTimeout(function() {
         that.getSliceManifests();
     }, 0);
-}
+};
 
 JacksApp.prototype.initEvents = function() {
     // Initialize input and output as Backbone.Events
@@ -117,13 +117,13 @@ JacksApp.prototype.initEvents = function() {
     this.input.on(this.DELETE_EVENT_TYPE, this.onEpDelete, this);
     this.input.on(this.RENEW_EVENT_TYPE, this.onEpRenew, this);
     this.input.on(this.RESTART_EVENT_TYPE, this.onEpRestart, this);
-}
+};
 
 JacksApp.prototype.updateStatus = function(statusText) {
     var statusPane = this.status;
     var html = '<p class="jacksStatusText">' + statusText + '</p>';
     $(statusPane).prepend(html);
-}
+};
 
 JacksApp.prototype.initButtons = function(buttonSelector) {
     var btn = $('<button type="button">Get Manifest</button>');
@@ -131,7 +131,7 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.getSliceManifests();});
     $(buttonSelector).append(btn);
 
-    var btn = $('<button type="button">Renew</button>');
+    btn = $('<button type="button">Renew</button>');
     btn.click(function() {
         that.renewResources();
     });
@@ -159,8 +159,7 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn = $('<button type="button">Restart</button>');
     btn.click(function(){ that.handleRestart();});
     $(buttonSelector).append(btn);
-
-}
+};
 
 /**
  * Determine whether the status is in a terminal state.
@@ -174,11 +173,11 @@ JacksApp.prototype.isTerminalStatus = function(status) {
     var code = status['status_code'];
     /* Which is which? What is 2 and what is 3? */
     return code == 2 || code == 3;
-}
+};
 
 JacksApp.prototype.amName = function(am_id) {
     return this.allAms[am_id].name;
-}
+};
 
 
 //----------------------------------------------------------------------
@@ -188,7 +187,7 @@ JacksApp.prototype.amName = function(am_id) {
 JacksApp.prototype.getSliceManifests = function() {
     var sliceAms = this.sliceAms;
 
-    if(sliceAms.length == 0) {
+    if (sliceAms.length === 0) {
 	this.updateStatus("Jacks initialized: no resources");
 	return;
     }
@@ -207,7 +206,7 @@ JacksApp.prototype.getSliceManifests = function() {
                               client_data: {}
                             });
     });
-}
+};
 
 
 
@@ -224,7 +223,7 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
                           callback: this.input,
                           client_data: { maxTime: maxTime }
                         });
-}
+};
 
 /**
  * handle SSH call into given node
@@ -240,22 +239,21 @@ JacksApp.prototype.handleSSH = function() {
 	    window.location.replace(url);
 	}
     }
-}
+};
 
 
 /**
  * handle VM restart request
  */
-JacksApp.prototype.handleRestart = function(am_id) {
+JacksApp.prototype.handleRestart = function() {
     console.log("Restart");
     // Is anything selected? If so , only restart at that aggregate
     var am_id = this.client2am[this.selectedElement];
     var restartAMs = this.sliceAms;
+    var msg = "Restart at known slice resources?";
     if (am_id) {
         restartAMs = [am_id];
-        var msg = "Restart resources at " + this.amName(am_id) + "?";
-    } else {
-        var msg = "Restart at known slice resources" + "?";
+        msg = "Restart resources at " + this.amName(am_id) + "?";
     }
     if (confirm(msg)) {
         var that = this;
@@ -267,10 +265,10 @@ JacksApp.prototype.handleRestart = function(am_id) {
                                   slice_id: that.sliceId,
                                   callback: that.input,
                                   client_data: {}
-                                })
+                                });
         });
     }
- }
+ };
 
 
 /**
@@ -280,11 +278,10 @@ JacksApp.prototype.deleteResources = function() {
     // Is anything selected? If so , only delete at that aggregate
     var am_id = this.client2am[this.selectedElement];
     var deleteAMs = this.sliceAms;
+    var msg = "Delete known slice resources?";
     if (am_id) {
         deleteAMs = [am_id];
-        var msg = "Delete resources at " + this.amName(am_id) + "?";
-    } else {
-        var msg = "Delete known slice resources" + "?";
+        msg = "Delete resources at " + this.amName(am_id) + "?";
     }
     if (confirm(msg)) {
         var that = this;
@@ -296,10 +293,10 @@ JacksApp.prototype.deleteResources = function() {
                                   slice_id: that.sliceId,
                                   callback: that.input,
                                   client_data: {}
-                                })
+                                });
         });
     }
-}
+};
 
 /**
  * Ask embedding page to add resources to current slice
@@ -310,7 +307,7 @@ JacksApp.prototype.addResources = function() {
                           slice_id: this.sliceId,
                           client_data: {}
                         });
-}
+};
 
 JacksApp.prototype.renewResources = function() {
     // Has a date been chosen? If not, help them choose a date
@@ -323,12 +320,11 @@ JacksApp.prototype.renewResources = function() {
     // Is anything selected? If so , only renew at that aggregate
     var am_id = this.client2am[this.selectedElement];
     var renewAMs = this.sliceAms;
+    var msg = "Renew known slice resources until " + renewDate + "?";
     if (am_id) {
         renewAMs = [am_id];
-        var msg = "Renew resources at " + this.amName(am_id)
-            + " until " + renewDate + "?";
-    } else {
-        var msg = "Renew known slice resources until " + renewDate + "?";
+        msg = ("Renew resources at " + this.amName(am_id)
+               + " until " + renewDate + "?");
     }
     if (confirm(msg)) {
         var that = this;
@@ -340,10 +336,10 @@ JacksApp.prototype.renewResources = function() {
                                   slice_id: that.sliceId,
                                   callback: that.input,
                                   client_data: {}
-                                })
+                                });
         });
     }
-}
+};
 
 
 //----------------------------------------------------------------------
@@ -363,7 +359,7 @@ JacksApp.prototype.onClickEvent = function(event) {
     console.log('Event ' + event.type + ': ' + event.client_id);
     //$('#jacksApp'+ji+' .expandedI').each(function() { $(this).removeClass('expandedI') });
     //$('#jacksApp'+ji+' #list-'+event['client_id']).parent().addClass('expandedI');
-}
+};
 
 
 //----------------------------------------------------------------------
@@ -371,7 +367,7 @@ JacksApp.prototype.onClickEvent = function(event) {
 //----------------------------------------------------------------------
 
 JacksApp.prototype.onEpManifest = function(event) {
-    if (event.code != 0) {
+    if (event.code !== 0) {
         console.log("Error retrieving manifest: " + event.output);
         return;
     }
@@ -400,7 +396,7 @@ JacksApp.prototype.onEpManifest = function(event) {
 
     // If there are no nodes at this AM, don't poll for status and
     // remove from list of sliceAms
-    if(nodes.length == 0) {
+    if (nodes.length === 0) {
 	var am_index = this.sliceAms.indexOf(am_id);
 	this.sliceAms.splice(am_index, 1);
 	this.updateStatus("No resources found at " + am_id);
@@ -437,11 +433,11 @@ JacksApp.prototype.onEpManifest = function(event) {
 
     var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
     this.getStatus(am_id, maxPollTime);
-}
+};
 
 JacksApp.prototype.onEpStatus = function(event) {
     console.log("onEpStatus");
-    if (event.code != 0) {
+    if (event.code !== 0) {
         console.log("Error retrieving status: " + event.output);
         return;
     }
@@ -497,35 +493,32 @@ JacksApp.prototype.onEpStatus = function(event) {
             });
     }
     });
-}
+};
 
 JacksApp.prototype.onEpDelete = function(event) {
     console.log("onEpDelete");
-    if (event.code != 0) {
+    if (event.code !== 0) {
         console.log("Error retrieving status: " + event.output);
         return;
     }
 
     this.updateStatus("Resources deleted");
-    
     this.getSliceManifests();
-
-
-}
+};
 
 JacksApp.prototype.onEpRenew = function(event) {
     console.log("onEpRenew");
-    if (event.code != 0) {
+    if (event.code !== 0) {
         console.log("Error renewing at " + this.amName(event.am_id)
                     + ": " + event.output);
         return;
     }
     this.updateStatus("Renewed resources at " + this.amName(event.am_id));
-}
+};
 
 JacksApp.prototype.onEpRestart = function(event) {
     console.log("onEpRestart");
-    if (event.code != 0) {
+    if (event.code !== 0) {
         console.log("Error restarting at " + this.amName(event.am_id)
                     + ": " + event.output);
         return;
@@ -533,4 +526,4 @@ JacksApp.prototype.onEpRestart = function(event) {
     this.updateStatus("Restarted resources at " + this.amName(event.am_id));
 
     this.getSliceManifests();
-}
+};
