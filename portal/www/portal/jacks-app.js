@@ -1,14 +1,6 @@
 
-/* Eradicate these global variables */
-var jacksAMs = {};
-
-// Variable that determines how long (in ms) to wait in between status calls.
-var jacksTimeToWait = 5000;
-
-
 function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
-		  userInfo,
-                  readyCallback) {
+		  userInfo, readyCallback) {
     // Map from client_id to am_id
     this.client2am = {};
     // Map from URN (and client_id) to client_id
@@ -20,6 +12,8 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.jacksInput = null;
     // Responses coming out of Jacks.
     this.jacksOutput = null;
+    // How long to wait before polling status again in milliseconds
+    this.statusPollDelayMillis = 5000;
 
     this.jacks = jacks;
     this.status = status;
@@ -38,10 +32,6 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.userInfo = userInfo;
     this.username = userInfo.user_name;
 
-    // Init globals
-    // FIXME: these should all go away
-    jacksAllAms = allAms;
-
     var that = this;
     var jacksInstance = new window.Jacks({
         mode: 'viewer',
@@ -58,8 +48,6 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
         readyCallback: function (input, output) {
             that.jacksReady(input, output);
             that.initButtons(that.buttons);
-
-
             // Finally, tell our client that we're ready
             readyCallback(that, that.input, that.output);
         }
@@ -447,7 +435,6 @@ JacksApp.prototype.onEpManifest = function(event) {
         });
     });
 
-    jacksAMs[this.allAms[am_id]['name']] = [];
     var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
     this.getStatus(am_id, maxPollTime);
 }
@@ -470,11 +457,11 @@ JacksApp.prototype.onEpStatus = function(event) {
       if (! that.isTerminalStatus(v)) {
           that.updateStatus('Resources on ' + v['am_name'] + ' are '
                             + v['geni_status'] + '. Polling again in '
-                            + jacksTimeToWait/1000 + ' seconds.');
+                            + that.statusPollDelayMillis/1000 + ' seconds.');
           // Poll again in a little while
           setTimeout(function() {
               that.getStatus(event.am_id, event.client_data.maxTime);
-          }, jacksTimeToWait);
+          }, that.statusPollDelayMillis);
       } else if (v['geni_status'] == 'ready') {
           that.updateStatus('Resources on '+v['am_name']+' are ready.');
       } else if (v['geni_status'] == 'failed') {
@@ -488,7 +475,8 @@ JacksApp.prototype.onEpStatus = function(event) {
             $.each(v['resources'], function(ii, vi) {
                 if (vi['geni_status'] == 'ready') {
                     var resourceURN = vi.geni_urn;
-                    console.log("URN " + resourceURN + " is ready");
+                    var clientId = that.urn2clientId[resourceURN];
+                    console.log(clientId + " (" + resourceURN + ") is ready");
 
 // NEEDS TO CHANGE
                     // The classes that are targeted will likely need
@@ -499,12 +487,12 @@ JacksApp.prototype.onEpStatus = function(event) {
                     // There has also been talk about Jacks supporting
                     // the page telling it what to highlight, which
                     // would make this less hack-ey.
-                    $('.jacks #node-'+that.urn2clientId[resourceURN]).parent().find('.checkbox').attr('id','ready');
-                    $('.jacks #link-'+that.urn2clientId[resourceURN]).parent().find('.checkbox').attr('id','ready');
-                    $('.jacks #list-'+that.urn2clientId[resourceURN]).parent().find('.itemID').addClass('resourcesReady');
-
-                    jacksAMs[v['am_name']].push(that.urn2clientId[resourceURN]);
-                    console.log(jacksAMs[v['am_name']]);
+                    $('.jacks #node-'+ clientId).parent()
+                        .find('.checkbox').attr('id','ready');
+                    $('.jacks #link-'+ clientId).parent()
+                        .find('.checkbox').attr('id','ready');
+                    $('.jacks #list-'+ clientId).parent()
+                        .find('.itemID').addClass('resourcesReady');
                 }
             });
     }
