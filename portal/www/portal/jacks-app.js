@@ -241,12 +241,15 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
 JacksApp.prototype.handleSSH = function() {
     debug("SSH");
     debug("USER = " + this.username);
+    var client_id = this.selectedElement;
     if(this.username in this.loginInfo) {
-	var urls = this.loginInfo[this.username];
-	for(var i = 0; i < urls.length; i++) {
-	    url = urls[i];
-	    debug("LOGIN URL = " + url);
-	    window.location.replace(url);
+	if (client_id in this.loginInfo[this.username]) {
+	    var urls = this.loginInfo[this.username][client_id];
+	    if (urls.length > 0) {
+		url = urls[0];
+		debug("LOGIN URL = " + url);
+		window.location.replace(url);
+	    }
 	}
     }
 };
@@ -436,7 +439,10 @@ JacksApp.prototype.onEpManifest = function(event) {
 	    if (!(username in that.loginInfo)) {
 		that.loginInfo[username] = [];
 	    }
-	    that.loginInfo[username].push(login_url);
+	    if (!(client_id in that.loginInfo[username])) {
+		that.loginInfo[username][client_id] = [];
+	    }
+	    that.loginInfo[username][client_id].push(login_url);
             debug(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });
