@@ -1,7 +1,11 @@
 <!--
  This document can be translated online at:
     http://daringfireball.net/projects/markdown/dingus
+
+ To translate this document to LaTeX, use pandoc:
+    pandoc -f markdown -t latex -o JacksApp.tex JacksApp.md
 -->
+
 JacksApp
 ========
 
@@ -117,12 +121,50 @@ page:
 Events to embedding page
 ========================
 
+Add request
+----------------
+
+JacksApp sends an add request event when the user indicates that they
+want to add resources to their topology. The embedding page should
+respond to this event by showing a user interface for adding
+resources. This event does not have a corresponding response event. It
+is intended that this event will cause the user to leave the JacksApp
+and go to a different page in the embedding application.
+
+The add request event from JacksApp will contain the following fields:
+
+ * **name**: the constant `ADD_EVENT_TYPE`
+ * **slice_id**: the id contained in the `slice_info` constructor
+   argument
+ * **client_data**: an opaque data structure which can be ignored by
+   the embedding page
+
+Delete request
+----------------
+
+**Describe the delete request here**
+
+JacksApp sends a delete request event to request deletion of resources
+in a given slice at a given aggregate. The event type is
+`DELETE_EVENT_TYPE`. The corresponding response event has the same
+event type. See "Delete response" below.
+
+The delete request event from JacksApp will contain the following fields:
+
+ * **name**: the constant `DELETE_EVENT_TYPE`
+ * **am_id**: a key from the `all_ams` constructor argument
+ * **slice_id**: the id contained in `slice_info` constructor argument
+ * **callback**: the event channel for the delete response event
+ * **client_data**: an opaque data structure to be passed back in the
+   `client_data` of the delete response event
+
 Manifest request
 ----------------
 
 JacksApp sends a manifest request event to request a manifest rspec for a
 given aggregate manager and slice. The event type is
-`MANIFEST_EVENT_TYPE`.
+`MANIFEST_EVENT_TYPE`. The corresponding response event has the same
+event type. See "Manifest response" below.
 
 The manifest request event from JacksApp will contain the following fields:
 
@@ -132,6 +174,51 @@ The manifest request event from JacksApp will contain the following fields:
  * **callback**: the event channel for the manifest response event
  * **client_data**: an opaque data structure to be passed back in the
    `client_data` of the manifest response event
+
+Renew request
+----------------
+
+JacksApp sends a renew request event to request resource renewal for a
+given slice at a given aggregate. The event type is
+`RENEW_EVENT_TYPE`. The corresponding response event has the same
+event type. See "Renew response" below.
+
+ * **name**: the constant `RENEW_EVENT_TYPE`
+ * **am_id**: a key from the `all_ams` constructor argument
+ * **slice_id**: the id contained in `slice_info` constructor argument
+ * **callback**: the event channel for the renew response event
+ * **client_data**: an opaque data structure to be passed back in the
+   `client_data` of the renew response event
+
+Restart request
+----------------
+
+JacksApp sends a restart request event to request restart of resources
+for a given slice at a given aggregate. The event type is
+`RESTART_EVENT_TYPE`. The corresponding response event has the same
+event type. See "Restart response" below.
+
+ * **name**: the constant `RESTART_EVENT_TYPE`
+ * **am_id**: a key from the `all_ams` constructor argument
+ * **slice_id**: the id contained in `slice_info` constructor argument
+ * **callback**: the event channel for the restart response event
+ * **client_data**: an opaque data structure to be passed back in the
+   `client_data` of the restart response event
+
+Status request
+----------------
+
+JacksApp sends a status request event to request status of resources
+for a given slice at a given aggregate. The event type is
+`STATUS_EVENT_TYPE`. The corresponding response event has the same
+event type. See "Status response" below.
+
+ * **name**: the constant `STATUS_EVENT_TYPE`
+ * **am_id**: a key from the `all_ams` constructor argument
+ * **slice_id**: the id contained in `slice_info` constructor argument
+ * **callback**: the event channel for the status response event
+ * **client_data**: an opaque data structure to be passed back in the
+   `client_data` of the status response event
 
 
 Events from embedding page
@@ -202,10 +289,37 @@ user. See the Jacks documentation for information about the
 Example
 ========
 
+    function ep_on_add(event) {
+        var am_id = event.am_id;
+        var slice_id = event.slice_id;
+        // Send user to add page
+    }
+
+    function ep_on_status(event) {
+        var am_id = event.am_id;
+        var slice_id = event.slice_id;
+        // Fetch status from aggregate
+        var status = getStatus(am_id, slice_id);
+        var response_event = { code: 0,
+                               value: status,
+                               output: "",
+                               am_id: am_id,
+                               slice_id: slice_id,
+                               client_data: event.client_data
+                             };
+        event.callback.trigger(event.name, response_event);
+    }
+
     var jaReadyCallback = function(ja, input, output) {
-      // ja is the JacksApp instance
-      // input is the event channel to send events to JacksApp
-      // output is the event channel to receive events from JacksApp
+        // ja is the JacksApp instance
+        // input is the event channel to send events to JacksApp
+        // output is the event channel to receive events from JacksApp
+        jacks_app_output.on(ja.ADD_EVENT_TYPE, ep_on_add);
+        jacks_app_output.on(ja.DELETE_EVENT_TYPE, ep_on_delete);
+        jacks_app_output.on(ja.MANIFEST_EVENT_TYPE, ep_on_manifest);
+        jacks_app_output.on(ja.RENEW_EVENT_TYPE, ep_on_renew);
+        jacks_app_output.on(ja.RESTART_EVENT_TYPE, ep_on_restart);
+        jacks_app_output.on(ja.STATUS_EVENT_TYPE, ep_on_status);
     };
 
     var jacksApp = new JacksApp('#jacks-pane',
