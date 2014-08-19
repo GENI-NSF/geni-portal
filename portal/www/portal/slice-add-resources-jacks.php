@@ -127,6 +127,10 @@ $slice_id = "None";
 $slice_name = "None";
 include("tool-lookupids.php");
 
+if (isset($slice)) {
+  $slice_urn = $slice[SA_Argument::SLICE_URN];
+}
+
 if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
     $slice_name = "";
@@ -143,47 +147,89 @@ $keys = $user->sshKeys();
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
+
+// Define list of all known AM's
+if (! isset($all_ams)) {
+  $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $all_ams = array();
+  foreach ($am_list as $am) 
+  {
+    $single_am = array();
+    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $all_ams[$service_id] = $single_am;
+  }   
+}
+
+$slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
+//find aggregates to be able to return just am_id
+$all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+$aggs_with_resources = Array();
+
+//do the comparison and find ams
+foreach($slivers as $sliver)
+  {
+    foreach($all_aggs as $agg)
+      {
+	if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
+	  {
+	    $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
+	    break;
+	  }
+      }
+  }
+//return unique ids
+$slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
+
+// JACKS-APP stuff
+include("jacks-editor-app.php");
+print build_jacks_editor();
+
 ?>
+
+
+<!-- Jacks JS and App CSS -->
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+
+<script src="portal-jacks-editor-app.js"></script>
 <script>
-function validateSubmit()
-{
-  f1 = document.getElementById("f1");
-  rspec = document.getElementById("rspec_select");
-  am = document.getElementById("agg_chooser");
-  rspec2 = document.getElementById("rspec_selection");
-  
-  if (rspec.value && am.value) {
-    $('#f1').attr('action','createsliver.php');
-    f1.submit();
-    return true;
-  } else if (rspec2.value && am.value) {
-    $('#f1').attr('action','createsliver.php');
-    f1.submit();
-    return true;
-  } else if (rspec.value) {
-    alert("Please select an Aggregate.");
-    return false;
-  }
-  alert ("Please select a Resource Specification (RSpec).");
-  return false;
-}
+  // AMs that the Portal says there are resources at.
+  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
+  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
+  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
 
-function sendRspecToJacks()
-{
-  f1 = document.getElementById("f1");
-  rspec = document.getElementById("rspec_select");
+  var jacks_slice_info = {slice_id : jacks_slice_id, 
+			  slice_name : jacks_slice_name};
 
-  if (rspec.value) {
-      $('#f1').attr('action','create-rspec.php');
-      f1.submit();
-      return true;
-  }
-  console.log("false");
-  return false;
-}
+  var jacks_user_name = <?php echo json_encode($user->username) ?>;
+  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
+  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
+
+  var jacks_user_info = {user_name : jacks_user_name,
+			 user_urn : jacks_user_urn,
+			 user_id : jacks_user_id};
+
+  // This funciton will start up a Jacks viewer, get the status bar going
+  // and set up all of the button clicks.
+  var jacksEditorApp = new JacksEditorApp('#jacks-pane', '#jacks-status', 
+					  '#jacks-buttons',
+					  jacks_slice_ams, jacks_all_ams, 
+					  jacks_slice_info,
+					  jacks_user_info,
+					  portal_jacks_editor_app_ready);
+   portal_jacks_editor_app_verbose=true;
+   jacksEditorApp.verbose=true;
+
 </script>
 
+
 <?php
+// END JACKS-APP STUFF //
+
+  /*
 print "<h1>Add resources to GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
 print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
 // Put up a warning to upload SSH keys, if not done yet.
@@ -216,6 +262,8 @@ print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
+
+  */
 
 
 include("footer.php");
