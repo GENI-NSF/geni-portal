@@ -212,7 +212,7 @@ JacksEditorApp.prototype.constructAggregateSelector = function() {
     selector_text += 
     '<select name="am_chooser" id="agg_chooser" ">\n';
     $.each(this.allAms, function(am_id, am_info) {
-	    console.log("AM = " + am_info);
+	    debug("AM = " + am_info);
 	    var am_url = am_info["url"];
 	    var am_name = am_info["name"];
 	    selector_text += '<option value="' + am_id + '">' + am_name + '</option>\n';
@@ -357,7 +357,7 @@ JacksEditorApp.prototype.onEpLookup = function(event) {
 	debug("Error retrieving rspec: " + event.output);
 	return;
     }
-    console.log("onEpLookup: " + event);
+    debug("onEpLookup: " + event);
     var rspec = event.rspec;
     this.jacksInput.trigger('change-topology',
 			    [{ rspec: rspec }]);

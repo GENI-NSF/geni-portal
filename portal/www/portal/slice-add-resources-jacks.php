@@ -228,8 +228,8 @@ print build_jacks_editor();
 					  jacks_slice_info,
 					  jacks_user_info,
 					  portal_jacks_editor_app_ready);
-   portal_jacks_editor_app_verbose=true;
-   jacksEditorApp.verbose=true;
+//   portal_jacks_editor_app_verbose=true;
+//   jacksEditorApp.verbose=true;
 
 </script>
 

@@ -41,11 +41,10 @@ function portal_jacks_editor_app_ready(je, je_input, je_output) {
     jacks_editor_app_output = je_output;
 
     // Register embedding page (EP) event handlers from JE
-    jacks_editor_app_output.on(je.LOAD_EVENT_TYPE, ep_on_load);
     jacks_editor_app_output.on(je.LOOKUP_EVENT_TYPE, ep_on_lookup);    
     jacks_editor_app_output.on(je.RESERVE_EVENT_TYPE, ep_on_reserve);
     jacks_editor_app_output.on(je.SAVE_EVENT_TYPE, ep_on_save);
-    console.log("JE Ready");
+    debug("JE Ready");
 };
 
 function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_data) {
@@ -68,27 +67,10 @@ function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_da
     jacks_editor_app_input.trigger(event_type, response_event);
 };
 
-function fileupload_onchange(event) {
-    console.log("EVENT = " + event);
-};
-
-// Handle the load (load rspec from file system) request
-function ep_on_load(event) {
-    debug("ep_on_load");
-    console.log("ep_on_load");
-    var selector_html = '<input type="file" name="rspec_selection" id="rspec_selection" onchange="fileupload_onchange()"/>n';
-    var selector = $('#selector_html');
-    var selector2 = $('#rspec_selection');
-    selector.focus();
-    console.log("Selector = " + selector);
-
-};
-
 // Handle the lookup for an RSpec by id
 function ep_on_lookup(event) {
-    debug("ep_on_lookup");
     var rspec_id = event.rspec_id;
-    console.log("ep_on_lookup " + rspec_id);
+    debug("ep_on_lookup " + rspec_id);
     client_data = {id : rspec_id};
     slice_id = "";
     am_id = 0;
