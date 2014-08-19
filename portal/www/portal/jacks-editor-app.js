@@ -1,5 +1,6 @@
-function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
-			userInfo, readyCallback) {
+function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, 
+			allRspecs,
+			sliceInfo, userInfo, readyCallback) {
 
     // Map from client_id to am_id
     this.client2am = {};
@@ -18,6 +19,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.buttons = buttons;
     this.sliceAms = sliceAms;
     this.allAms = allAms;
+
+    this.allRspecs = allRspecs;
 
     this.verbose = false; // Print debug messages to console.log
 
@@ -67,6 +70,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
 //----------------------------------------------------------------------
 
 JacksEditorApp.prototype.LOAD_EVENT_TYPE = "LOAD";
+JacksEditorApp.prototype.LOOKUP_EVENT_TYPE = "LOOKUP";
 JacksEditorApp.prototype.PASTE_EVENT_TYPE = "PASTE";
 JacksEditorApp.prototype.RESERVE_EVENT_TYPE = "RESERVE";
 JacksEditorApp.prototype.SAVE_EVENT_TYPE = "SAVE";
@@ -123,6 +127,7 @@ JacksEditorApp.prototype.initEvents = function() {
 
     
     this.input.on(this.LOAD_EVENT_TYPE, this.onEpLoad, this);
+    this.input.on(this.LOOKUP_EVENT_TYPE, this.onEpLookup, this);
     this.input.on(this.PASTE_EVENT_TYPE, this.onEpPaste, this);
     this.input.on(this.RESERVE_EVENT_TYPE, this.onEpReserve, this);
     this.input.on(this.SAVE_EVENT_TYPE, this.onEpSave, this);
@@ -168,9 +173,11 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
     var rspec_loader = $('<input type="file" id="rspec_loader" onchange="rspec_loader_onchange();" />');
     $(buttonSelector).append(rspec_loader);
 
-    var btn = $('<button type="button">Select RSpec</button>');
-    btn.click(function(){ that.handleSelect();});
-    $(buttonSelector).append(btn);
+    var rspec_select_label = $('<label for "rspec_chooser">Select Rspec: </label>');
+    $(buttonSelector).append(rspec_select_label);
+    
+    var rspec_selector = that.constructRspecSelector();
+    $(buttonSelector).append(rspec_selector);
 
     var btn = $('<button type="button">Save RSpec</button>');
     btn.click(function(){ that.handleSave();});
@@ -200,20 +207,50 @@ am_on_change = function(foo) {
     console.log("FOO");
 }
 
-    JacksEditorApp.prototype.constructAggregateSelector = function() {
-	var selector_text = "";
-	selector_text += 
-	'<select name="am_id" id="agg_chooser" ">\n';
-	$.each(this.allAms, function(am_id, am_info) {
-		console.log("AM = " + am_info);
-		var am_url = am_info["url"];
-		var am_name = am_info["name"];
-		selector_text += '<option value="' + am_id + '">' + am_name + '</option>\n';
-	    });
-	selector_text += "</select>\n";
+JacksEditorApp.prototype.constructAggregateSelector = function() {
+    var selector_text = "";
+    selector_text += 
+    '<select name="am_chooser" id="agg_chooser" ">\n';
+    $.each(this.allAms, function(am_id, am_info) {
+	    console.log("AM = " + am_info);
+	    var am_url = am_info["url"];
+	    var am_name = am_info["name"];
+	    selector_text += '<option value="' + am_id + '">' + am_name + '</option>\n';
+	});
+    selector_text += "</select>\n";
+    
+    return selector_text;
+};
 
-	return selector_text;
+JacksEditorApp.prototype.constructRspecSelector = function() {
+
+    var that = this;
+    rspec_selector_on_change = function() {
+	that.handleSelect();
     };
+    var selector_text = "";
+    selector_text += 
+    '<select name="rspec_chooser" id="rspec_chooser" onchange="rspec_selector_on_change();">\n';
+
+    $.each(this.allRspecs, function(i, rspec_info) {
+	    var rspec_id = rspec_info['id'];
+	    var rspec_name = rspec_info['name'];
+	    var bound = rspec_info['bound'];
+	    var stitch = rspec_info['stitch'];
+	    var visibility = rspec_info['visbiilty'];
+	    var rspec_text = rspec_name;
+	    if (visibility =="private" ) rspec_text += " [PRIVATE]";
+	    if (bound == "t") rspec_text += " [BOUND]";
+	    if (stitch == "t") rspec_text += " [STITCH]";
+	    selector_text += '<option value="' + rspec_id + '">' + 
+		rspec_text + '</option>\n';
+	});
+
+    selector_text += "</select>\n";
+    
+    return selector_text;
+};
+
 
 
 //----------------------------------------------------------------------
@@ -234,22 +271,24 @@ JacksEditorApp.prototype.handleLoad = function() {
  * Hanlde request to select an RSpec from embedding page's list
  */
 JacksEditorApp.prototype.handleSelect = function() {
-    alert("Select");
+    // Load the selected rspec into jacks
+    var selector_parent = $('#rspec_chooser');
+    var selector = selector_parent[0];
+    var selected_index = selector.selectedIndex;
+    var selected_option = selector.options[selected_index];
+    var rspec_id = selected_option['value'];
+
+    this.output.trigger(this.LOOKUP_EVENT_TYPE, {name : this.LOOKUP_EVENT_TYPE,
+		rspec_id : rspec_id,
+		client_data : {},
+		callback : this.input});
     
-    this.output.trigger(this.SELECT_EVENT_TYPE, { 
-	    name : this.SELECT_EVENT_TYPE, 
-		am_id : am_id,
-		client_data : {}, 
-		slice_id: this.sliceId,
-		callback: this.input}
-	);
 };
 
 /**
  * Handle request to an RSpec to local file system
  */
 JacksEditorApp.prototype.handleSave = function() {
-    alert("Save");
     this.output.trigger(this.SAVE_EVENT_TYPE, { name : this.SAVE_EVENT_TYPE, 
 		client_data : {}, slice_id: this.sliceId,
 				      callback: this.input}
@@ -263,7 +302,6 @@ JacksEditorApp.prototype.handleSave = function() {
 JacksEditorApp.prototype.handlePaste = function() {
     var rspec_paste_input = $('#rspec_paste_text');
     var current_rspec = rspec_paste_input.val();
-    console.log("CR = " + current_rspec);
     this.jacksInput.trigger('change-topology', [{rspec : current_rspec}]);
 };
 
@@ -275,8 +313,6 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
     var selected_option = selector.options[selected_index];
     var am_id = selected_option['value'];
     var am_name = selected_option['label'];
-    console.log("AM_ID = " + am_id + " AM_NAME = " + am_name);
-    console.log("RSPECS = " + rspecs);
     if (rspecs.length > 0 && rspecs[0].rspec) {
 	rspec = rspecs[0].rspec;
 	this.output.trigger(this.RESERVE_EVENT_TYPE, { 
@@ -296,7 +332,6 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
  */
     JacksEditorApp.prototype.handleReserve = function() {
 	this.jacksInput.trigger('fetch-topology');
-	console.log("Handle Reserve");
     };
 
 
@@ -315,6 +350,18 @@ JacksEditorApp.prototype.onEpLoad = function(event) {
 	debug("Error retrieving rspec: " + event.output);
 	return;
     }
+};
+
+JacksEditorApp.prototype.onEpLookup = function(event) {
+    if (event.code !== 0) {
+	debug("Error retrieving rspec: " + event.output);
+	return;
+    }
+    console.log("onEpLookup: " + event);
+    var rspec = event.rspec;
+    this.jacksInput.trigger('change-topology',
+			    [{ rspec: rspec }]);
+
 };
 
 JacksEditorApp.prototype.onEpSelect = function(event) {

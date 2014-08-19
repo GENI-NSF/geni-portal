@@ -86,7 +86,7 @@ else if(array_key_exists('rspec_jacks', $_REQUEST)) {
   if(strlen($local_rspec_file) > 0) {
     $rspec = $local_rspec_file;
   }
-}
+} 
 
 // redirect if no RSpec is specified
 if (! isset($rspec) || is_null($rspec)) {

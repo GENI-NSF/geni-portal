@@ -182,6 +182,10 @@ foreach($slivers as $sliver)
 //return unique ids
 $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
 
+// Grab all rspecs 
+$all_rspecs = fetchRSpecMetaData($user);
+usort($all_rspecs, "cmp");
+
 // JACKS-APP stuff
 include("jacks-editor-app.php");
 print build_jacks_editor();
@@ -198,6 +202,9 @@ print build_jacks_editor();
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+
+  var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
+
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
   var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
 
@@ -217,6 +224,7 @@ print build_jacks_editor();
   var jacksEditorApp = new JacksEditorApp('#jacks-pane', '#jacks-status', 
 					  '#jacks-buttons',
 					  jacks_slice_ams, jacks_all_ams, 
+					  jacks_all_rspecs,
 					  jacks_slice_info,
 					  jacks_user_info,
 					  portal_jacks_editor_app_ready);

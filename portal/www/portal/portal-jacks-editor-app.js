@@ -42,10 +42,9 @@ function portal_jacks_editor_app_ready(je, je_input, je_output) {
 
     // Register embedding page (EP) event handlers from JE
     jacks_editor_app_output.on(je.LOAD_EVENT_TYPE, ep_on_load);
+    jacks_editor_app_output.on(je.LOOKUP_EVENT_TYPE, ep_on_lookup);    
     jacks_editor_app_output.on(je.RESERVE_EVENT_TYPE, ep_on_reserve);
-    jacks_editor_app_output.on(je.PASTE_EVENT_TYPE, ep_on_paste);
     jacks_editor_app_output.on(je.SAVE_EVENT_TYPE, ep_on_save);
-    jacks_editor_app_output.on(je.SELECT_EVENT_TYPE, ep_on_select);
     console.log("JE Ready");
 };
 
@@ -85,9 +84,28 @@ function ep_on_load(event) {
 
 };
 
-// Handle the request to paste an rspec
-function ep_on_paste(event) {
-    debug("ep_on_paste");
+// Handle the lookup for an RSpec by id
+function ep_on_lookup(event) {
+    debug("ep_on_lookup");
+    var rspec_id = event.rspec_id;
+    console.log("ep_on_lookup " + rspec_id);
+    client_data = {id : rspec_id};
+    slice_id = "";
+    am_id = 0;
+
+    $.get("rspecview.php",
+	 {id : rspec_id},
+              function(rt, st, xhr) {
+                  success_callback(rt, st, xhr, am_id, slice_id, client_data);
+		  var rspec = xhr.responseText;
+		  jacks_editor_app_input.trigger(event.name,
+						 {code : 0,
+							 rspec : rspec});
+              })
+    .fail(function(xhr, ts, et) {
+	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+    });
+
 };
 
 // Handle the reserve request
@@ -95,6 +113,14 @@ function ep_on_paste(event) {
 // Then call the appropriate callback to the JE with the result.
 function ep_on_reserve(event) {
     debug("ep_on_reserve");
+    var am_id = event.am_id;
+    var rspec = event.rspec;
+    var slice_id = event.slice_id;
+
+    create_sliver_url = "createsliver.php?am_id=" + am_id + "&slice_id=" + slice_id + "&rspec_jacks=" + rspec;
+
+    window.location.replace(create_sliver_url);
+
 };
 
 // Handle the save request to save an rspec to local file system
@@ -102,10 +128,6 @@ function ep_on_save(event) {
     debug("ep_on_save");
 };
 
-// Handle the select request to select a requestrspec from portal list
-function ep_on_select(event) {
-    debug("ep_on_select");
-};
 
 
 
