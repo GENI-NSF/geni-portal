@@ -78,7 +78,6 @@ function ep_on_lookup(event) {
     $.get("rspecview.php",
 	 {id : rspec_id},
               function(rt, st, xhr) {
-                  success_callback(rt, st, xhr, am_id, slice_id, client_data);
 		  var rspec = xhr.responseText;
 		  jacks_editor_app_input.trigger(event.name,
 						 {code : 0,

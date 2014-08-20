@@ -150,12 +150,10 @@ JacksEditorApp.prototype.rspec_loaded = function(jacks_input) {
 	var contents = evt.target.result;
 	jacks_input.trigger('change-topology', 
 					    [{rspec : contents}]);
+	$('#rspec_chooser').val("0");
+	$('#rspec_paste_text').val("");
     }
     reader.readAsText(rspec_file);
-}
-
-function handleFileSelect(evt) {
-    console.log("HFS = " + evt);
 }
 
 JacksEditorApp.prototype.initButtons = function(buttonSelector) {
@@ -204,11 +202,6 @@ JacksEditorApp.prototype.amName = function(am_id) {
     return this.allAms[am_id].name;
 };
 
-am_on_change = function(foo) {
-    var chooser = $('#agg_chooser');
-    console.log("FOO");
-}
-
 JacksEditorApp.prototype.constructAggregateSelector = function() {
     var selector_text = "";
     selector_text += 
@@ -233,6 +226,7 @@ JacksEditorApp.prototype.constructRspecSelector = function() {
     var selector_text = "";
     selector_text += 
     '<select name="rspec_chooser" id="rspec_chooser" onchange="rspec_selector_on_change();">\n';
+    selector_text += ' <option value="0"/>'; // Empty first entry
 
     $.each(this.allRspecs, function(i, rspec_info) {
 	    var rspec_id = rspec_info['id'];
@@ -303,6 +297,10 @@ JacksEditorApp.prototype.handlePaste = function() {
     var rspec_paste_input = $('#rspec_paste_text');
     var current_rspec = rspec_paste_input.val();
     this.jacksInput.trigger('change-topology', [{rspec : current_rspec}]);
+
+    $('#rspec_chooser').val("0");
+    $('#rspec_loader').val(null);
+
 };
 
 JacksEditorApp.prototype.postRspec = function(rspecs) 
@@ -375,6 +373,9 @@ JacksEditorApp.prototype.onEpLookup = function(event) {
     this.jacksInput.trigger('change-topology',
 			    [{ rspec: rspec }]);
 
+    $('#rspec_loader').val(null);
+    $('#rspec_paste_text').val("");
+
 };
 
 JacksEditorApp.prototype.onEpSelect = function(event) {
@@ -382,6 +383,8 @@ JacksEditorApp.prototype.onEpSelect = function(event) {
 	debug("Error retrieving rspec: " + event.output);
 	return;
     }
+
+    debug("ON_EP_SELECT");
 };
 
 JacksEditorApp.prototype.onEpPaste = function(event) {
@@ -389,6 +392,8 @@ JacksEditorApp.prototype.onEpPaste = function(event) {
 	debug("Error retrieving rspec: " + event.output);
 	return;
     }
+    debug("ON_EP_PASTE");
+
 };
 
 JacksEditorApp.prototype.onEpReserve = function(event) {
@@ -396,7 +401,7 @@ JacksEditorApp.prototype.onEpReserve = function(event) {
 	debug("Error reserving resources: " + event.output);
 	return;
     }
-    
+    debug("ON_EP_RESERVE");
 };
 
 JacksEditorApp.prototype.onEpDownload = function(event) {
@@ -404,6 +409,6 @@ JacksEditorApp.prototype.onEpDownload = function(event) {
 	debug("Error savinging rspec: " + event.output);
 	return;
     }
-    console.log("Done with download");
+    debug("ON_EP_DOWNLOAD");
 };
 
