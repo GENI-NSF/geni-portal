@@ -41,9 +41,9 @@ function portal_jacks_editor_app_ready(je, je_input, je_output) {
     jacks_editor_app_output = je_output;
 
     // Register embedding page (EP) event handlers from JE
+    jacks_editor_app_output.on(je.DOWNLOAD_EVENT_TYPE, ep_on_download);    
     jacks_editor_app_output.on(je.LOOKUP_EVENT_TYPE, ep_on_lookup);    
     jacks_editor_app_output.on(je.RESERVE_EVENT_TYPE, ep_on_reserve);
-    jacks_editor_app_output.on(je.SAVE_EVENT_TYPE, ep_on_save);
     debug("JE Ready");
 };
 
@@ -106,8 +106,12 @@ function ep_on_reserve(event) {
 };
 
 // Handle the save request to save an rspec to local file system
-function ep_on_save(event) {
-    debug("ep_on_save");
+function ep_on_download(event) {
+    debug("ep_on_download");
+    var rspec = event.rspec;
+    var rspec_download_url = "rspecdownload.php?rspec=" + rspec;
+    window.location.replace(rspec_download_url);
+    jacks_editor_app_input.trigger(event.name,  {code : 0 });
 };
 
 

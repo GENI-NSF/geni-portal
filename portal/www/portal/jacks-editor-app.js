@@ -30,6 +30,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.sliceExpiration = sliceInfo.slice_expiration;
     this.sliceName = sliceInfo.slice_name;
 
+    this.downloadingRspec = false;
+
     this.loginInfo = {};
 
     this.userInfo = userInfo;
@@ -69,11 +71,11 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 // Jacks App Constants
 //----------------------------------------------------------------------
 
+JacksEditorApp.prototype.DOWNLOAD_EVENT_TYPE = "DOWNLOAD";
 JacksEditorApp.prototype.LOAD_EVENT_TYPE = "LOAD";
 JacksEditorApp.prototype.LOOKUP_EVENT_TYPE = "LOOKUP";
 JacksEditorApp.prototype.PASTE_EVENT_TYPE = "PASTE";
 JacksEditorApp.prototype.RESERVE_EVENT_TYPE = "RESERVE";
-JacksEditorApp.prototype.SAVE_EVENT_TYPE = "SAVE";
 JacksEditorApp.prototype.SELECT_EVENT_TYPE = "SELECT";
 
 //----------------------------------------------------------------------
@@ -126,11 +128,11 @@ JacksEditorApp.prototype.initEvents = function() {
 	});
 
     
+    this.input.on(this.DOWNLOAD_EVENT_TYPE, this.onEpDownload, this);
     this.input.on(this.LOAD_EVENT_TYPE, this.onEpLoad, this);
     this.input.on(this.LOOKUP_EVENT_TYPE, this.onEpLookup, this);
     this.input.on(this.PASTE_EVENT_TYPE, this.onEpPaste, this);
     this.input.on(this.RESERVE_EVENT_TYPE, this.onEpReserve, this);
-    this.input.on(this.SAVE_EVENT_TYPE, this.onEpSave, this);
     this.input.on(this.SELECT_EVENT_TYPE, this.onEpSelect, this);
 };
 
@@ -179,8 +181,8 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
     var rspec_selector = that.constructRspecSelector();
     $(buttonSelector).append(rspec_selector);
 
-    var btn = $('<button type="button">Save RSpec</button>');
-    btn.click(function(){ that.handleSave();});
+    var btn = $('<button type="button">Download RSpec</button>');
+    btn.click(function(){ that.handleDownload();});
     $(buttonSelector).append(btn);
 
     var btn = $('<button type="button">Paste RSpec</button>');
@@ -288,11 +290,9 @@ JacksEditorApp.prototype.handleSelect = function() {
 /**
  * Handle request to an RSpec to local file system
  */
-JacksEditorApp.prototype.handleSave = function() {
-    this.output.trigger(this.SAVE_EVENT_TYPE, { name : this.SAVE_EVENT_TYPE, 
-		client_data : {}, slice_id: this.sliceId,
-				      callback: this.input}
-	);
+JacksEditorApp.prototype.handleDownload = function() {
+    this.downloadingRspec = true;
+    this.jacksInput.trigger('fetch-topology');
 };
 
 
@@ -307,14 +307,27 @@ JacksEditorApp.prototype.handlePaste = function() {
 
 JacksEditorApp.prototype.postRspec = function(rspecs) 
 {
-    var selector_parent = $('#agg_chooser');
-    var selector = selector_parent[0];
-    var selected_index = selector.selectedIndex;
-    var selected_option = selector.options[selected_index];
-    var am_id = selected_option['value'];
-    var am_name = selected_option['label'];
-    if (rspecs.length > 0 && rspecs[0].rspec) {
-	rspec = rspecs[0].rspec;
+    if (rspecs.length == 0 || (!rspecs[0].rspec)) 
+	return;
+
+    rspec = rspecs[0].rspec;
+
+    if (this.downloadingRspec) {
+	this.output.trigger(this.DOWNLOAD_EVENT_TYPE, {
+		name : this.DOWNLOAD_EVENT_TYPE,
+		    rspec : rspec,
+		    client_data : {},
+		    callback : this.input
+		    }
+	    );
+	this.downloadingRspec = false;
+    } else {
+	var selector_parent = $('#agg_chooser');
+	var selector = selector_parent[0];
+	var selected_index = selector.selectedIndex;
+	var selected_option = selector.options[selected_index];
+	var am_id = selected_option['value'];
+	var am_name = selected_option['label'];
 	this.output.trigger(this.RESERVE_EVENT_TYPE, { 
 		name : this.RESERVE_EVENT_TYPE, 
 		    rspec : rspec,
@@ -386,10 +399,11 @@ JacksEditorApp.prototype.onEpReserve = function(event) {
     
 };
 
-JacksEditorApp.prototype.onEpSave = function(event) {
+JacksEditorApp.prototype.onEpDownload = function(event) {
     if (event.code !== 0) {
 	debug("Error savinging rspec: " + event.output);
 	return;
     }
+    console.log("Done with download");
 };
 
