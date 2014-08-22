@@ -1,0 +1,67 @@
+#jacks-app #jacks-app-container {
+  border: 1px solid #000;
+  position: relative;
+}
+#jacks-app #jacks-status {
+  position: absolute;
+  top: 0;
+  z-index: 9;
+  width: 781px;
+  min-height: 25px;
+  max-height: 25px;
+  padding: 5px;
+  overflow: hidden;
+  border-bottom: 1px solid #000;
+  background: #f5f5f5;
+  font-weight: bold;
+}
+#jacks-app #jacks-status:after {
+  content: "";
+  overflow: hidden;
+  box-shadow: 0px 10px 4px #888888;
+  height: 5px;
+  width: 100%;
+  position: absolute;
+  z-index: 10;
+  top: 20px;
+  left: 0;
+}
+#jacks-app #jacks-status:hover {
+  overflow-y: scroll;
+  max-height: 75px;
+}
+#jacks-app #jacks-status:hover:after {
+  display: none;
+}
+#jacks-app #jacks-status > p {
+  margin-left: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#jacks-app #jacks-buttons {
+  border-top: 1px solid #000;
+}
+#jacks-app #jacks-buttons > button {
+    padding: 5px;
+}
+#jacks-app #jacks-pane {
+  margin-top: 36px;
+  height: 350px;
+  background-color: white;
+}
+
+#jacks-app .checkbox {
+  fill: #DDD;
+  stroke: #000;
+  stroke-width: 1px;
+  visibility: visible !important;
+}
+
+#jacks-app .checkbox#ready {
+  fill: #DDFFDD;
+  stroke: #008000;
+}
+
+#jacks-app #active .checkbox {
+  stroke-width: 5px;
+}

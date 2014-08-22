@@ -855,8 +855,6 @@ print "</div></td></tr></tbody></table>";
 
 // END JACKS-APP STUFF //
 
-
-
   $slice_status='';
 
   print "<div id='status_table_div'/>\n";

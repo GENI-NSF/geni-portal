@@ -35,19 +35,34 @@ if (array_key_exists('id', $_GET)) {
   $rspec_id = $_GET['id'];
 }
 
-if (is_null($rspec_id)) {
+$rspec_contents = NULL;
+if (array_key_exists("rspec", $_GET)) {
+  $rspec_contents = $_GET['rspec'];
+}
+
+if (is_null($rspec_id && is_null($rspec_contents))) {
   relative_redirect('home.php');
 }
 
 /* $rspec is the XML */
-$rspec = fetchRSpecById($rspec_id);
-$name = fetchRSpecNameById($rspec_id);
+if(!(is_null($rspec_id ))) {
+  $rspec = fetchRSpecById($rspec_id);
+  $name = fetchRSpecNameById($rspec_id);
+} else {
+  $rspec = $rspec_contents;
+  $name = "";
+}
+
 $name2 = preg_replace("/[^a-zA-Z0-9]/", "_", $name);
 if ($name2 != ""){
    $filename = $name2.".xml";
 } else {
   $filename = "rspec.xml";
 }
+
+error_log("RSPEC = " . print_r($rspec, true));
+error_log("FILENAME = " . print_r($filename, true));
+error_log("GET = " . print_r($_GET, true));
 
 /* How to improve this?
  *  - store the filename when uploaded
