@@ -56,7 +56,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	id: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
     }]
 	    },
-	    nodeSelect: false,
+	    nodeSelect: true,
 	    root: jacks,
 	    readyCallback: function (input, output) {
 		output.on('fetch-topology', function(rspecs) {
