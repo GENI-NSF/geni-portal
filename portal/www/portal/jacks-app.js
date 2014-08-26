@@ -402,6 +402,7 @@ JacksApp.prototype.renewResources = function() {
                                 { name: that.RENEW_EVENT_TYPE,
                                   am_id: am_id,
                                   slice_id: that.sliceId,
+                                  expiration_time: renewDate,
                                   callback: that.input,
                                   client_data: {}
                                 });
