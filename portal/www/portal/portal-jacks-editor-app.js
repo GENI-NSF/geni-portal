@@ -44,10 +44,11 @@ function portal_jacks_editor_app_ready(je, je_input, je_output) {
     jacks_editor_app_output.on(je.DOWNLOAD_EVENT_TYPE, ep_on_download);    
     jacks_editor_app_output.on(je.LOOKUP_EVENT_TYPE, ep_on_lookup);    
     jacks_editor_app_output.on(je.RESERVE_EVENT_TYPE, ep_on_reserve);
-    debug("JE Ready");
+    jacks_editor_app_output.on(je.UPLOAD_EVENT_TYPE, ep_on_upload);
+    je.updateStatus("Jacks Editor ready.");
 };
 
-function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_data) {
+function pe_success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_data) {
     // debug("ResponseText = " + responseTxt);
     // debug("statusText = " + statusTxt);
     // debug("XHR = " + xhr);
@@ -57,7 +58,7 @@ function success_callback(responseTxt, statusTxt, xhr, am_id, slice_id, client_d
     jacks_editor_app_input.trigger(event_type, response_event);
 };
 
-function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_data) {
+function pe_error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_data) {
     debug("XHR = " + xhr);
     debug("ResponseText = " + textStatus);
     debug("errorThrown = " + errorThrown);
@@ -84,9 +85,29 @@ function ep_on_lookup(event) {
 							 rspec : rspec});
               })
     .fail(function(xhr, ts, et) {
-	error_callback(xhr, ts, et, am_id, slice_id, client_data);
+	pe_error_callback(xhr, ts, et, am_id, slice_id, client_data);
     });
 
+};
+
+// Handle upload request (turn a URL into the corresponding rspec text
+function ep_on_upload(event) {
+    client_data = {};
+    slice_id = "";
+    am_id = 0;
+
+    var url = event.url;
+    $.get("upload-file.php", 
+	  {url : url}, 
+              function(rt, st, xhr) {
+		  var rspec = xhr.responseText;
+		  jacks_editor_app_input.trigger(event.name,
+						 {code : 0,
+							 rspec : rspec});
+              })
+    .fail(function(xhr, ts, et) {
+	pe_error_callback(xhr, ts, et, am_id, slice_id, client_data);
+	});
 };
 
 // Handle the reserve request
@@ -100,7 +121,8 @@ function ep_on_reserve(event) {
 
     create_sliver_url = "createsliver.php?am_id=" + am_id + "&slice_id=" + slice_id + "&rspec_jacks=" + rspec;
 
-    window.location.replace(create_sliver_url);
+    //    window.location.replace(create_sliver_url);
+    window.open(create_sliver_url);
 
 };
 

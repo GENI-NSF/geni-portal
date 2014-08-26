@@ -173,6 +173,7 @@ dist_svcweb_DATA = \
 	www/portal/slice-add-resources-jacks.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
+	www/portal/slice-jacks.php \
 	www/portal/sliceabac.php \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
@@ -206,6 +207,7 @@ dist_svcweb_DATA = \
 	www/portal/tools-admin.php \
 	www/portal/tools-user.js \
 	www/portal/tools-user.php \
+	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \

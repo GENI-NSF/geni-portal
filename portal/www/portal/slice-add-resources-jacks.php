@@ -221,8 +221,8 @@ print build_jacks_editor();
 
   // This funciton will start up a Jacks viewer, get the status bar going
   // and set up all of the button clicks.
-  var jacksEditorApp = new JacksEditorApp('#jacks-pane', '#jacks-status', 
-					  '#jacks-buttons',
+  var jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', '#jacks-editor-status', 
+					  '#jacks-editor-buttons',
 					  jacks_slice_ams, jacks_all_ams, 
 					  jacks_all_rspecs,
 					  jacks_slice_info,
