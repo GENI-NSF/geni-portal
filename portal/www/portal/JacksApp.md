@@ -186,6 +186,8 @@ event type. See "Renew response" below.
  * **name**: the constant `RENEW_EVENT_TYPE`
  * **am_id**: a key from the `all_ams` constructor argument
  * **slice_id**: the id contained in `slice_info` constructor argument
+ * **expiration_time**: The date/timestamp of the desired new
+   expiration time. Format TBD, currently "YYYY-MM-DD".
  * **callback**: the event channel for the renew response event
  * **client_data**: an opaque data structure to be passed back in the
    `client_data` of the renew response event
@@ -240,12 +242,41 @@ GENI AM API calls and Federation API calls.
    while fulfilling the corresponding request event. If `code` is
    zero, the value of `output` is not defined.
 
+Delete response
+-----------------
+
+In response to a delete request event, the embedding page should cause
+resources to be deleted from the given slice at the given
+aggregate. After deletion, a delete response event should be sent to
+JacksApp indicating success or failure via the `code` attribute. The
+`value` attribute is ignored by JacksApp. The event type for a delete
+response is `DELETE_EVENT_TYPE`.
+
+The delete response event from the embedding page to JacksApp must
+contain the following fields:
+
+ * **code**: integer indicating success or failure. Zero is success,
+   non-zero positive integers can be used to indicate failure.
+ * **value**: if `code` is zero this is ignored. If `code` is
+   non-zero, `value` is undefined.
+ * **output**: if `code` is non-zero, this is a user-viewable string
+   providing information about the failure. If `code` is zero, this is
+   undefined.
+ * **am_id**: The `am_id` from the corresponding delete request
+   event
+ * **slice_id** The `slice_id` from the corresponding delete request
+   event
+ * **client_data**: The `client_data` from the corresponding delete
+   request event
+
 Manifest response
 -----------------
 
 In response to a manifest request event, the embedding page should
-respond with a manifest response event. The event type for a manifest
-response event is `MANIFEST_EVENT_TYPE`.
+request a manifest rspec for the given slice at the given
+aggregate. The embedding page should then respond with a manifest
+response event. The event type for a manifest response event is
+`MANIFEST_EVENT_TYPE`.
 
 The manifest response event from the embedding page to JacksApp must
 contain the following fields:
@@ -262,6 +293,88 @@ contain the following fields:
  * **slice_id** The `slice_id` from the corresponding manifest request
    event
  * **client_data**: The `client_data` from the corresponding manifest
+   request event
+
+Renew response
+-----------------
+
+In response to a renew request event, the embedding page should renew
+resources in the given slice at the given aggregate. After renewal, a
+renew response event should be sent to JacksApp indicating success or
+failure via the `code` attribute. The `value` attribute is ignored by
+JacksApp. The event type for a renew response is `RENEW_EVENT_TYPE`.
+
+The renew response event from the embedding page to JacksApp must
+contain the following fields:
+
+ * **code**: integer indicating success or failure. Zero is success,
+   non-zero positive integers can be used to indicate failure.
+ * **value**: if `code` is zero this is ignored. If `code` is
+   non-zero, `value` is undefined.
+ * **output**: if `code` is non-zero, this is a user-viewable string
+   providing information about the failure. If `code` is zero, this is
+   undefined.
+ * **am_id**: The `am_id` from the corresponding renew request
+   event
+ * **slice_id** The `slice_id` from the corresponding renew request
+   event
+ * **client_data**: The `client_data` from the corresponding renew
+   request event
+
+Restart response
+-----------------
+
+In response to a restart request event, the embedding page should restart
+resources in the given slice at the given aggregate. After sending the
+restart request to the aggregate, a
+restart response event should be sent to JacksApp indicating success or
+failure via the `code` attribute. The `value` attribute is ignored by
+JacksApp. The event type for a renew response is `RESTART_EVENT_TYPE`.
+
+The restart response event from the embedding page to JacksApp must
+contain the following fields:
+
+ * **code**: integer indicating success or failure. Zero is success,
+   non-zero positive integers can be used to indicate failure.
+ * **value**: if `code` is zero this is ignored. If `code` is
+   non-zero, `value` is undefined.
+ * **output**: if `code` is non-zero, this is a user-viewable string
+   providing information about the failure. If `code` is zero, this is
+   undefined.
+ * **am_id**: The `am_id` from the corresponding restart request
+   event
+ * **slice_id** The `slice_id` from the corresponding restart request
+   event
+ * **client_data**: The `client_data` from the corresponding restart
+   request event
+
+Status response
+-----------------
+
+Dictionary whose keys are am_ids and whose values are the SliverStatus
+results from the aggregates. See the GENI AM API SliverStatus call for
+details about the structure of a SliverStatus result.
+
+In general:
+
+    { am_id : <GENI AM API SliverStatus result> }
+
+The status response event from the embedding page to JacksApp must
+contain the following fields:
+
+ * **code**: integer indicating success or failure. Zero is success,
+   non-zero positive integers can be used to indicate failure.
+ * **value**: if `code` is zero this is a dictionary with the am_id as
+   the key and the GENI AM API SliverStatus result as value. If `code`
+   is non-zero, `value` is undefined.
+ * **output**: if `code` is non-zero, this is a user-viewable string
+   providing information about the failure. If `code` is zero, this is
+   undefined.
+ * **am_id**: The `am_id` from the corresponding status request
+   event
+ * **slice_id** The `slice_id` from the corresponding status request
+   event
+ * **client_data**: The `client_data` from the corresponding status
    request event
 
 
