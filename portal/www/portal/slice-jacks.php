@@ -360,7 +360,6 @@ print $jfed_script_text;
 ?>
 
 <!-- Jacks JS and App CSS -->
-<link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
 
 <!-- This belongs in the header, probably -->
@@ -475,7 +474,7 @@ $(document).ready(function() {
 }
 #content table {
   margin-left: 30px;
-  width: 795px;
+  width: auto;
 }
 #content table table {
   margin: 0;
@@ -832,6 +831,7 @@ print "</div></td></tr></tbody></table>";
 
 ?>
 
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 
 <script src="portal-jacks-app.js"></script>

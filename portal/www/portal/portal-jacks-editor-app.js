@@ -119,12 +119,45 @@ function ep_on_reserve(event) {
     var rspec = event.rspec;
     var slice_id = event.slice_id;
 
-    create_sliver_url = "createsliver.php?am_id=" + am_id + "&slice_id=" + slice_id + "&rspec_jacks=" + rspec;
+    var create_sliver_url = "createsliver.php?am_id=" + am_id + "&slice_id=" + slice_id + "&rspec_jacks=" + rspec + "&background=1";
 
-    //    window.location.replace(create_sliver_url);
-    window.open(create_sliver_url);
-
+    $.get(create_sliver_url,
+	  {},
+	  function(rt, st, xhr) {
+	      debug("Return from createsliver.php");
+	      monitor_reservation(rt, event);
+	  })
+    .fail(function(xhr, ts, et) {
+	    debug("Fail return from createsliver.php");
+	});
 };
+
+// Poll the invocation 'stop' file to see when the invocation is complete. Then tell the jacks-editor-app
+// that the reservation is completed.
+function monitor_reservation(rt, event)
+{
+    var orig_rt = rt;
+    url_parts = rt.split('?')[1].split('&');
+    url_args = rt.split('?')[1];
+    var checkstop_url = "get_omni_invocation_data.php?" + url_args + "&request=stop&raw=false";
+    $.getJSON(checkstop_url, 
+	  {},
+	  function(rt, st, xhr) {
+	      //	      console.log("Return from get_omni_invocation.php");
+	      if(rt.code != 0) {
+		  setTimeout(function() {
+			  monitor_reservation(orig_rt, event);
+		      }, 5000);
+	      } else {
+		  //		  console.log("OMNI Invocation Complete");
+		  event.code = 0;
+		  jacks_editor_app_input.trigger(event.name, event);
+	      }
+	  })
+    .fail(function(xhr, ts, et) {
+	    console.log("Fail return from get_omni_invocation.php");
+	});
+}
 
 // Handle the save request to save an rspec to local file system
 function ep_on_download(event) {

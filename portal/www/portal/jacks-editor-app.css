@@ -6,7 +6,7 @@
   position: absolute;
   top: 0;
   z-index: 9;
-  width: 781px;
+  width: auto;
   min-height: 25px;
   max-height: 25px;
   padding: 5px;

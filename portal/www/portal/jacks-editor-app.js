@@ -45,7 +45,9 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	    mode: 'editor',
 	    source: 'rspec',
 	    // This may not need to be hardcoded.
-	    size: { x: 791, y: 350},
+	    // size: { x: 791, y: 350},
+	    // size: { x: 1400, y: 350},
+	    size: 'auto',
 	    canvasOptions: {
 		images: [{
 			name: 'foo',
@@ -78,6 +80,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 JacksEditorApp.prototype.DOWNLOAD_EVENT_TYPE = "DOWNLOAD";
 JacksEditorApp.prototype.LOAD_EVENT_TYPE = "LOAD";
 JacksEditorApp.prototype.LOOKUP_EVENT_TYPE = "LOOKUP";
+JacksEditorApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
 JacksEditorApp.prototype.PASTE_EVENT_TYPE = "PASTE";
 JacksEditorApp.prototype.RESERVE_EVENT_TYPE = "RESERVE";
 JacksEditorApp.prototype.SELECT_EVENT_TYPE = "SELECT";
@@ -137,6 +140,8 @@ JacksEditorApp.prototype.show = function (msg) {
 	this.jacksInput.trigger('change-topology',
 				[{ rspec: '<rspec></rspec>' }]);
 
+	this.jacksOutput.on('selection', this.onSelectionEvent, this);
+
     };
 
 JacksEditorApp.prototype.initEvents = function() {
@@ -159,6 +164,7 @@ JacksEditorApp.prototype.initEvents = function() {
     this.input.on(this.DOWNLOAD_EVENT_TYPE, this.onEpDownload, this);
     this.input.on(this.LOAD_EVENT_TYPE, this.onEpLoad, this);
     this.input.on(this.LOOKUP_EVENT_TYPE, this.onEpLookup, this);
+    this.input.on(this.MANIFEST_EVENT_TYPE, this.onEpManifest, this);
     this.input.on(this.PASTE_EVENT_TYPE, this.onEpPaste, this);
     this.input.on(this.RESERVE_EVENT_TYPE, this.onEpReserve, this);
     this.input.on(this.SELECT_EVENT_TYPE, this.onEpSelect, this);
@@ -236,7 +242,6 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
     var agg_selector = that.constructAggregateSelector(); 
     $(buttonSelector).append(agg_selector);
 
-    /*
     btn = $('<button type="button">VIEWER</BUTTON>');
     btn.click(function() {
 	    //	    console.log("HIDE " + that.jacks_viewer);
@@ -252,7 +257,6 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
 	    }
 	});
     $(buttonSelector).append(btn);
-    */
 
 };
 
@@ -392,6 +396,7 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
 	    );
 	this.downloadingRspec = false;
     } else {
+	this.updateStatus("Processing reservation request...");
 	var selector_parent = $('#agg_chooser');
 	var selector = selector_parent[0];
 	var selected_index = selector.selectedIndex;
@@ -411,7 +416,7 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
 
 
 /**
- * Handle request to to an RSpec to local file system
+ * Handle request to allocate resources
  */
     JacksEditorApp.prototype.handleReserve = function() {
 	this.jacksInput.trigger('fetch-topology');
@@ -422,6 +427,10 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
 //----------------------------------------------------------------------
 // Jacks App Events from Jacks
 //----------------------------------------------------------------------
+
+JacksEditorApp.prototype.onSelectionEvent = function(event) {
+    debug("JE : " + event);
+}
 
 
 //----------------------------------------------------------------------
@@ -484,12 +493,40 @@ JacksEditorApp.prototype.onEpPaste = function(event) {
 
 };
 
+JacksEditorApp.prototype.onEpManifest = function(event) {
+    if (event.code !== 0) {
+	debug("Error retrieving rspec: " + event.output);
+	return;
+    }
+    debug("ON_EP_Manifest");
+
+};
+
 JacksEditorApp.prototype.onEpReserve = function(event) {
     if (event.code !== 0) {
 	debug("Error reserving resources: " + event.output);
 	return;
     }
     debug("ON_EP_RESERVE");
+
+    if (this.jacks_viewer != null) {
+	this.jacksInput.trigger('change-topology',
+				[{ rspec: '<rspec></rspec>' }]);
+	this.updateStatus("Reservation request completed.");
+	var am_id = event.am_id;
+	if (this.jacks_viewer.sliceAms.indexOf(am_id) < 0) {
+	    this.jacks_viewer.sliceAms.push(am_id);
+	}
+	this.hide();
+	$('#rspec_chooser').val("0");
+	$('#rspec_paste_text').val("");
+	$('#rspec_loader').val(null);
+	$('#rspec_url_text').val("");
+
+
+	this.jacks_viewer.show();
+	this.jacks_viewer.getSliceManifests();
+    }
 };
 
 JacksEditorApp.prototype.onEpDownload = function(event) {

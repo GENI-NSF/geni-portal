@@ -43,7 +43,9 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
         mode: 'viewer',
         source: 'rspec',
         // This may not need to be hardcoded.
-        size: { x: 791, y: 350},
+	// size: { x: 791, y: 350},
+	size: { x: 1400, y: 350},
+	// size: 'auto',
         show: {
             menu: false,
             rspec: false,
@@ -125,6 +127,7 @@ JacksApp.prototype.jacksReady = function(input, output) {
     // Set up the function that Jacks will call when a node
     // is clicked.
     this.jacksOutput.on('click-event', this.onClickEvent, this);
+    this.jacksOutput.on('selection', this.onSelectionEvent, this);
 
     // Start with a blank topology.
     this.jacksInput.trigger('change-topology',
@@ -200,7 +203,6 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.handleRestart();});
     $(buttonSelector).append(btn);
 
-    /*
     btn = $('<button type="button">EDITOR</BUTTON>');
     btn.click(function() {
 	    //	    console.log("HIDE " + that.jacks_editor);
@@ -215,7 +217,6 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
 	    }
 	});
     $(buttonSelector).append(btn);
-    */
 };
 
 /**
@@ -270,6 +271,21 @@ JacksApp.prototype.getSliceManifests = function() {
 };
 
 
+
+/**
+ * max_time is when to stop polling
+ */
+JacksApp.prototype.getManifest = function(am_id, maxTime) {
+    this.updateStatus('Polling resource manifest from '
+                      + this.amName(am_id) + '...');
+    this.output.trigger(this.MANIFEST_EVENT_TYPE,
+                        { name: this.MANIFEST_EVENT_TYPE,
+                          am_id: am_id,
+                          slice_id: this.sliceId,
+                          callback: this.input,
+                          client_data: { maxTime: maxTime }
+                        });
+};
 
 /**
  * max_time is when to stop polling
@@ -430,18 +446,26 @@ JacksApp.prototype.onClickEvent = function(event) {
     //$('#jacksApp'+ji+' #list-'+event['client_id']).parent().addClass('expandedI');
 };
 
+JacksApp.prototype.onSelectionEvent = function(event) {
+    console.log("JA : " + event);
+}
+
+
 
 //----------------------------------------------------------------------
 // Jacks App Events from Embedding Page
 //----------------------------------------------------------------------
 
 JacksApp.prototype.onEpManifest = function(event) {
+
+    var that = this;
+
     if (event.code !== 0) {
         debug("Error retrieving manifest: " + event.output);
         return;
     }
 
-    var rspecManifest = event.value;
+   var rspecManifest = event.value;
 
     // NEEDS TO BE CHANGED
     // change-topology removes the current topology.
@@ -476,7 +500,7 @@ JacksApp.prototype.onEpManifest = function(event) {
 		this.hide();
 	    }
 	}
-
+	
 	return;
     }
 
