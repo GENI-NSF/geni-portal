@@ -191,7 +191,9 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
         echo "<b>Node #",$node_num," (at ",am_name_from_urn((string)$comp_mgr_id),"):</b>";
     }
     echo "<table><tr>\n";
-    echo "<th>Client ID</th>\n";
+    // This is for Selenium testing
+    $client_id_id = 'client_id_' . $node_num;
+    echo "<th id=\"$client_id_id\">Client ID</th>\n";
     echo "<th>Component ID</th>\n";
     echo "<th>Exclusive</th>\n";
     echo "<th>Type</th>\n";
