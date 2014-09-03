@@ -23,6 +23,25 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.sliceAms = sliceAms;
     this.allAms = allAms;
 
+    // Turn {am_id => {name, url}} dictionary into list,
+    this.sortedAms = [];
+    for(var am_id in allAms) {
+	var entry = {
+	    am_id : am_id, 
+	    name: allAms[am_id]['name'],
+	    url : allAms[am_id]['url']
+	};
+	this.sortedAms.push(entry);
+    }
+
+    // sort list
+    this.sortedAms.sort(function(am1, am2) {
+	    if (am1.name < am2.name)
+		return -1;
+	    else
+		return 1;
+	});
+
     this.allRspecs = allRspecs;
 
     this.verbose = false; // Print debug messages to console.log
@@ -242,6 +261,7 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
     var agg_selector = that.constructAggregateSelector(); 
     $(buttonSelector).append(agg_selector);
 
+    /*
     btn = $('<button type="button">VIEWER</BUTTON>');
     btn.click(function() {
 	    //	    console.log("HIDE " + that.jacks_viewer);
@@ -257,6 +277,7 @@ JacksEditorApp.prototype.initButtons = function(buttonSelector) {
 	    }
 	});
     $(buttonSelector).append(btn);
+    */
 
 };
 
@@ -265,13 +286,19 @@ JacksEditorApp.prototype.amName = function(am_id) {
 };
 
 JacksEditorApp.prototype.constructAggregateSelector = function() {
+    var that = this;
     var selector_text = "";
     selector_text += 
     '<select name="am_chooser" id="agg_chooser" ">\n';
-    $.each(this.allAms, function(am_id, am_info) {
-	    debug("AM = " + am_info);
-	    var am_url = am_info["url"];
-	    var am_name = am_info["name"];
+    $.each(that.sortedAms, function(am_index) {
+	    var am_entry = that.sortedAms[am_index];
+	    var am_id = am_entry.am_id;
+	    var am_url = am_entry.url;
+	    var am_name = am_entry.name;
+	    console.log("AM_ENTRY = " + am_entry);
+	    console.log("AM_ENTRY = " + am_id);
+	    console.log("AM_ENTRY = " + am_url);
+	    console.log("AM_ENTRY = " + am_name);
 	    selector_text += '<option value="' + am_id + '">' + am_name + '</option>\n';
 	});
     selector_text += "</select>\n";
