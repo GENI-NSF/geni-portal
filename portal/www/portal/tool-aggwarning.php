@@ -28,15 +28,17 @@ include("tool-showmessage.php");
 $location = $_GET['loc'];
 include("tool-lookupids.php");
 
+/* Copy the request args into the location */
+$query = $_REQUEST;
+unset($query['loc']); // already extracted above
+$location .= '&' . http_build_query($query);
+
 print "<p class='warn'>";
 if (isset($am_id) && $am_id) {
   print "This action will query " . count($ams)
     . " aggregates and may take several minutes.";
   print '<br>Are you sure that you want to query these '
     . count($ams) . ' aggregates?';
-  for ($i = 0; $i < count($ams); $i++) {
-    $location = $location . "&am_id[]=" . $am_ids[$i];
-  }
 } else {
   print 'This action will query all aggregates and may take several minutes.';
   print '<br>Are you sure that you want to query all aggregates?';

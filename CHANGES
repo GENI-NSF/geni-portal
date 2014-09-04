@@ -47,6 +47,7 @@
  * Add a button for launching jFed on the Home, Slices and Slice pages. (#1092)
  * Correct error message on uploading an RSpec but not picking an AM,
    and tryign to reserve resources. (#1152)
+ * Fix renewal at many aggregates (#1155)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
