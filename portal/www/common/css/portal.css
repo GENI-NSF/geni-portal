@@ -46,7 +46,7 @@ hr {
     /* center */
     margin-left: auto;
     margin-right: auto;
-    width: auto;
+    width: 897px;
   border-left: 2px solid #5F584E;
   border-right: 1px solid #5F584E;
   margin-top: 30px;
@@ -97,7 +97,7 @@ hr {
   border: 5px solid #5F584E;
   margin: 0;
   padding: 5px;
-  width: auto:
+  width: 878px;
 }
 #mainnav li { 
   border-left: 2px solid #ffffff;
@@ -157,7 +157,7 @@ hr {
   margin-left: auto;
   margin-right: auto;
   margin-top: 20px;
-  width: auto:
+  width: 897px;
   box-shadow: 0px 0px 10px #5F584E;
 }
 
@@ -301,11 +301,11 @@ hr {
   line-height: 1.2em;
   margin-left: 60px;
   box-shadow: 4px 4px 10px #B5B5B5;
-  width: auto;
+  width: 733px;
 }
 
 #content table table {
-  width: auto:
+  width: auto;
   box-shadow: none;
 }
 
@@ -527,7 +527,7 @@ hr {
     /* center */
     margin-left: auto;
     margin-right: auto;
-    width: auto:
+    width: 807px;
   margin-bottom: 30px;
   margin-top: 20px;
   /* by default, let text be serif */
@@ -548,14 +548,14 @@ hr {
 #footer-left {
   float: left;
   text-align: left;
-  width: auto;
+  width: 400px;
   font-size: 0.9em;
 }
 
 #footer-right {
   float: right;
   text-align: right;
-  width: auto;;
+  width: 400px;
   font-size: 0.8em;
   border-right: 2px solid #ffffff;
   padding-right: 15px;
@@ -575,19 +575,19 @@ hr {
   margin-top: 30px;
   margin-bottom: 20px;
   padding: 30px;
-  width: auto;;
+  width: 840px;
   overflow: auto;
   box-shadow: 0px 0px 10px #5F584E;  
 }
 
 #welcome-left {
   float: left;
-  width: auto;;
+  width: 220px;
 }
 
 #welcome-right {
   float: right;
-  width: auto;;
+  width: 620px;
   overflow: auto;
   font-family: 'PT Serif', serif;
   font-weight: 400;
@@ -654,18 +654,18 @@ hr {
 
 #welcome-right-top {
   float: left;
-  width: auto;;
+  width: 620px;
   padding-bottom: 20px;
 }
 
 #welcome-right-left {
   float: left;
-  width: auto;
+  width: 275px;
 }
 
 #welcome-right-right {
   float: right;
-  width: auto;;
+  width: 345px;
   background: #E5E5E5;
   border-top: 5px solid #E17000;
 }
@@ -867,7 +867,7 @@ table .notapply {
   padding: 8px;
   margin-left: 20px;
   box-shadow: 4px 4px 10px #B5B5B5;
-  width: auto;
+  width: 757px;
  
 }
 .aggregate {
@@ -891,7 +891,7 @@ table .notapply {
 
 .xml table {
   margin-left: 8px !important;
-  width: auto !important;
+  width: 701px !important;
   font-size: .9em !important;
   line-height: 1.3em !important;
 }

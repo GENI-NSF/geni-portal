@@ -173,6 +173,7 @@ dist_svcweb_DATA = \
 	www/portal/slice-add-resources-jacks.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
+	www/portal/slice-jacks.css \
 	www/portal/slice-jacks.php \
 	www/portal/sliceabac.php \
 	www/portal/slicecred.php \

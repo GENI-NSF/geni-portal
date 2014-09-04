@@ -295,10 +295,6 @@ JacksEditorApp.prototype.constructAggregateSelector = function() {
 	    var am_id = am_entry.am_id;
 	    var am_url = am_entry.url;
 	    var am_name = am_entry.name;
-	    console.log("AM_ENTRY = " + am_entry);
-	    console.log("AM_ENTRY = " + am_id);
-	    console.log("AM_ENTRY = " + am_url);
-	    console.log("AM_ENTRY = " + am_name);
 	    selector_text += '<option value="' + am_id + '">' + am_name + '</option>\n';
 	});
     selector_text += "</select>\n";
