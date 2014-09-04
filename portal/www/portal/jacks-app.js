@@ -73,8 +73,8 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
         source: 'rspec',
         // This may not need to be hardcoded.
 	// size: { x: 791, y: 350},
-	size: { x: 1400, y: 350},
-	// size: 'auto',
+	// size: { x: 1400, y: 350},
+	size: 'auto',
         show: {
             menu: false,
             rspec: false,

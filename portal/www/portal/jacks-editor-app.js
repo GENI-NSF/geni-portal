@@ -29,7 +29,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	var entry = {
 	    am_id : am_id, 
 	    name: allAms[am_id]['name'],
-	    url : allAms[am_id]['url']
+	    url : allAms[am_id]['url'],
+	    id : allAms[am_id]['urn']
 	};
 	this.sortedAms.push(entry);
     }
@@ -59,6 +60,10 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.userInfo = userInfo;
     this.username = userInfo.user_name;
 
+    var canvasOptions = this.getCanvasOptions();
+    canvasOptions.aggregates = this.sortedAms;
+    var constraints = this.getConstraints();
+
     var that = this;
     var jacksInstance = new window.Jacks({
 	    mode: 'editor',
@@ -67,16 +72,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	    // size: { x: 791, y: 350},
 	    // size: { x: 1400, y: 350},
 	    size: 'auto',
-	    canvasOptions: {
-		images: [{
-			name: 'foo',
-			id: 'bar'
-		    },
-    {
-	name: 'UBUNTU12-64-STD',
-	id: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
-    }]
-	    },
+	    canvasOptions: canvasOptions,
+	    constraints : constraints,
 	    nodeSelect: true,
 	    root: jacks,
 	    readyCallback: function (input, output) {
@@ -115,6 +112,189 @@ JacksEditorApp.prototype.UPLOAD_EVENT_TYPE = "UPLOAD";
 JacksEditorApp.prototype.debug = function(msg) {
     if(this.verbose)
 	console.log(msg);
+}
+
+JacksEditorApp.prototype.getCanvasOptions = function() {
+    var defaults = [ 
+        {
+	    name: 'Add VM',
+	    type: 'default-vm'
+	},
+        {
+	    name: 'Add Xen VM',
+	    type: 'emulab-xen',
+	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
+	},
+        {
+	    name: 'Add Raw PC',
+	    type: 'emulab-rawpc',
+	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
+        },
+        {
+	    name: 'Add Small Exogeni',
+	    type: 'm1.small'
+	},
+        {
+	    name: 'Add Open VSwitch',
+	    type: 'emulab-xen',
+	    image: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS',
+	    icon: 'https://www.emulab.net/protogeni/jacks-stable/images/router.svg'
+	}];
+
+  var images = [
+        {
+	    name: 'UBUNTU12-64-STD',
+	    id: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
+	},
+        {
+	    name: 'OVS Image',
+	    id: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS'
+	},
+        {
+	    name: 'Any Image',
+	    id: 'urn:blahblah:any'
+	}];
+
+var types =  [
+	{
+	    name: 'Universal Default VM',
+	    id: 'default-vm'
+	},
+        {
+	    name: 'Emulab Xen VM',
+	    id: 'emulab-xen'
+	      },
+        {
+	    name: 'Emulab Raw PC',
+	    id: 'emulab-rawpc'
+	},
+        {
+	    name: 'ExoGENI Small VM',
+	    id: 'm1.small'
+	}];
+
+var hardware = [
+        {
+	    name: 'Dell d710',
+	    id: 'd710'
+	},
+        {
+	    name: 'Dell 3Ghz',
+	    id: 'pc3000'
+	},
+        {
+	    name: 'Any PC',
+	    id: 'pc',
+	}];
+
+var linkTypes = [
+        {
+	    name: 'GRE Tunnel',
+	    id: 'gre-tunnel'
+	},
+        {
+	    name: 'EGRE Tunnel',
+	    id: 'egre-tunnel'
+	},
+        {
+	    name: 'Ethernet',
+	    id: 'lan'
+	},
+        {
+	    name: 'Stitched Ethernet',
+	    id: 'stitched'
+	}];
+
+var sharedvlans = [
+       {
+	       name: 'Foo',
+	       id: 'bar'
+	   },
+        {
+	    name: 'Foobar',
+	    id: 'bar2'
+	}];
+
+var canvas_options = { defaults: defaults,
+		       images : images,
+		       types: types,
+		       hardware : hardware,
+		       linkTypes : linkTypes,
+		       sharedvlans : sharedvlans
+		       };
+return canvas_options;
+
+}
+
+JacksEditorApp.prototype.getConstraints = function() {
+var constraints = [
+        {
+	    node: {
+		'hardware': ['d710', 'pc3000'],
+		'types': ['emulab-rawpc', 'emulab-xen']
+	    }
+	},
+        {
+	    node: {
+		'hardware': ['pc3000'],
+		'types': ['*']
+	    }
+	},
+        {
+	    node: {
+		'hardware': ['*'],
+		'types': ['default-vm']
+	    }
+	},
+        {
+	    node: {
+		'hardware': ['pc', 'pc3000'],
+		'images': ['urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD']
+	    }
+	},
+        {
+	    node: {
+		'hardware': ['d710'],
+		'images': ['urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS']
+	    }
+	},
+        {
+	    node: {
+		'hardware': ['*'],
+		'images': ['urn:blahblah:any']
+	    }
+	},
+        {
+	    node: {
+		'hardware': ['pc', 'd710'],
+		'types': ['m1.small']
+	    }
+	},
+        {
+	    node: {
+		'types': ['emulab-xen']
+	    },
+	    link: {
+		'linkTypes': ['egre-tunnel']
+	    },
+	    node2: {
+		'types': ['emulab-xen']
+	    }
+	},
+        {
+	    node: {
+		'types': ['emulab-rawpc']
+	    },
+	    link: {
+		'linkTypes': ['stitched'],
+	    },
+	    node2: {
+		'types': ['m1.small']
+	    }
+	}];
+
+return constraints;
+
 }
 
 JacksEditorApp.prototype.setJacksViewer = function(jv) {
