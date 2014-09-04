@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.19 ==
+ * Allow parallel AJAX deletes and renews (#998)
  * Support unicode/international strings in portal (#1069)
  * Use portal styling for OpenID trust page (#1007)
  * Add privilege check when requesting to view private RSpecs (#1054)
