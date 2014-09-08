@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.19 ==
+ * Allow parallel AJAX deletes and renews (#998)
  * Support unicode/international strings in portal (#1069)
  * Use portal styling for OpenID trust page (#1007)
  * Add privilege check when requesting to view private RSpecs (#1054)
@@ -47,6 +48,7 @@
  * Add a button for launching jFed on the Home, Slices and Slice pages. (#1092)
  * Correct error message on uploading an RSpec but not picking an AM,
    and tryign to reserve resources. (#1152)
+ * Fix renewal at many aggregates (#1155)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
