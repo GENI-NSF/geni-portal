@@ -278,9 +278,9 @@ class GeniUser
     $row = lookup_keys_and_certs($ma_url, Portal::getInstance(),
             $this->account_id);
     if ($row != null) {
-      if (in_array(MA_INSICE_KEY_TABLE_FIELDNAME::CERTIFICATE, $row))
+      if (in_array(MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE, $row))
 	$this->certificate = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::CERTIFICATE];
-      if (in_array(MA_INSICE_KEY_TABLE_FIELDNAME::PRIVATE_KEY, $row))
+      if (in_array(MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY, $row))
 	$this->private_key = $row[MA_INSIDE_KEY_TABLE_FIELDNAME::PRIVATE_KEY];
     }
   }
