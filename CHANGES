@@ -42,12 +42,11 @@
  * View RSpecs using Jacks viewer on `Manage RSpecs` page. (#1127)
  * Display project URN on project page (#1142)
  * Ensure all `img` tags are properly closed. (#1145)
- * Update to new WiMAX method signatures, error messages (#1093)
  * Disallow WiMAX group lead from deleting their WiMAX
    account while they still lead some other WiMAX group. (#1151)
  * Add a button for launching jFed on the Home, Slices and Slice pages. (#1092)
  * Correct error message on uploading an RSpec but not picking an AM,
-   and tryign to reserve resources. (#1152)
+   and trying to reserve resources. (#1152)
  * Fix renewal at many aggregates (#1155)
 
 == 2.18.1 ==
