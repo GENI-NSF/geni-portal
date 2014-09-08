@@ -71,8 +71,10 @@ function get_jfed_strs($user) {
   $browser = getBrowser();
   if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolower($browser["platform"]),"mac") === 0) {
     //error_log("User browser: " . $browser["name"] . " version " . $browser["version"] . " on " . $browser["platform"]);
-    error_log("User running Chrome on Mac. Can't launch jFed. User should try Safari or Firefox.");
-    $jfed_button_start = "<button type='button' onclick='alert(\"jFed cannot run in Chrome on a Mac. Try Safari or Firefox..\")'";
+
+    // While interesting, this message appears every time a Chrome on Mac user displays this page. Too much.
+    //    error_log("User running Chrome on Mac. Can't launch jFed. User should try Safari or Firefox.");
+    $jfed_button_start = "<button type='button' onclick='alert(\"jFed cannot run in Chrome on a Mac. Try Safari or Firefox.\")'";
     return array($jfed_script_text, $jfed_button_start);
   }
 
