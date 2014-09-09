@@ -138,7 +138,6 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     }
     $am_urls[] = $am_url; 
   }
-  error_log("SLIVER_DELETE AM_URL = " . $am_url);
 
   // Close the session so other calls can happen in parallel.
   session_write_close();

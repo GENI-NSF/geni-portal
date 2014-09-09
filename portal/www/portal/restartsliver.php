@@ -128,7 +128,6 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     }
     $am_urls[] = $am_url; 
   }
-  error_log("SLIVER_RESTART AM_URL = " . $am_url);
   
   // Call restart sliver at the AM
   $retVal = restart_sliver($am_urls, $user, $slice_credential,
