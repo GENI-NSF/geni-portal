@@ -563,6 +563,8 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
     add_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username', $new_member_username, 't');
 
     error_log($prettyName . " was already enabled for WiMAX in project " . $project_name . " (group $group_name) with username " . $new_member_username . " according to the WiMAX server - updated our DB");
+    // Return 0 as though this worked
+    return 0;
   } else if (strpos(strtolower($result), strtolower("ERROR 3: UID matches but DC and OU are different")) !== false) {
     // This implies that our portal member's username
     // already exists on ORBIT already. We can handle this error on our
@@ -744,9 +746,17 @@ if (isset($user->ma_member->enable_wimax)) {
 	    $project_lead_groupname = "";
 	    $project_lead_projname = "";
 
-	    // get username from member ID
-	    // get member attribute
-	    $lead = geni_load_user_by_member_id($ldif_project_lead_id);
+
+	    $lead_is_user = False;
+	    // If the lead is the current user, then just use that
+	    if($ldif_project_lead_id == $user->account_id) {
+	      $lead = $user;
+	      $lead_is_user = True;
+	    } else {
+	      // get username from member ID
+	      // get member attribute
+	      $lead = geni_load_user_by_member_id($ldif_project_lead_id);
+	    }
 	    $didAdd = False;
 	    if (! isset($lead->ma_member->enable_wimax)) {
 	      error_log("Project $ldif_project_name has lead " . $lead->prettyName() . " who is not yet wimax enabled");
@@ -789,6 +799,18 @@ if (isset($user->ma_member->enable_wimax)) {
 	      $lead_project_attributes = lookup_project_attributes($sa_url, $user, $project_lead_group_id);
 	      $project_lead_projname = $lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	      $project_lead_groupname = get_group_name($project_lead_projname, $lead_project_attributes);
+
+	      // If the user we just enabled as lead is also the current user,
+	      // set the various status variables so we remember this current user is now enabled
+	      if ($lead_is_user === True) {
+		$user->ma_member->wimax_username = $project_lead_username;
+		$ldif_user_username = $project_lead_username;
+		$ldif_user_group_id = $project_lead_group_id;
+		$user_is_wimax_enabled = True;
+		$ldif_user_groupname = $project_lead_groupname;
+		$ldif_user_projname = $project_lead_projname;
+		$user->ma_member->enable_wimax = $ldif_user_group_id;
+	      }
 
 	      error_log("Changing admin for wimax group $ldif_group_name to $project_lead_username");
 
@@ -952,9 +974,16 @@ if (array_key_exists('project_id', $_REQUEST))
       $project_lead_projname = "";
       $project_lead_groupname = "";
 
-      // get username from member ID
-      // get member attribute
-      $lead = geni_load_user_by_member_id($ldif_project_lead_id);
+      // If the lead is the current user, then just use that
+      $lead_is_user = False;
+      if($ldif_project_lead_id == $user->account_id) {
+	$lead = $user;
+	$lead_is_user = True;
+      } else {
+	// get username from member ID
+	// get member attribute
+	$lead = geni_load_user_by_member_id($ldif_project_lead_id);
+      }
       $didAdd = False;
       if (! isset($lead->ma_member->enable_wimax)) {
 	error_log("Project $project_name has lead " . $lead->prettyName() . " who is not yet wimax enabled");
@@ -991,6 +1020,18 @@ if (array_key_exists('project_id', $_REQUEST))
 	$lead_project_attrs = lookup_project_attributes($sa_url, $user, $project_lead_group_id);
 	$project_lead_projname = $lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
 	$project_lead_groupname = get_group_name($project_lead_projname, $lead_project_attrs);
+
+	// If the user we just enabled as lead is also the current user,
+	// set the various status variables so we remember this current user is now enabled
+	if ($lead_is_user === True) {
+	  $user->ma_member->wimax_username = $project_lead_username;
+	  $ldif_user_username = $project_lead_username;
+	  $ldif_user_group_id = $project_lead_group_id;
+	  $user_is_wimax_enabled = True;
+	  $ldif_user_groupname = $project_lead_groupname;
+	  $ldif_user_projname = $project_lead_projname;
+	  $user->ma_member->enable_wimax = $ldif_user_group_id;
+	}
 
 	error_log("Changing admin for wimax group $ldif_group_name (project $project_name) to $project_lead_username");
       
@@ -1580,9 +1621,17 @@ Get user's projects (expired or not)
 	if ($proj_admin_id != $proj_lead_id) {
 	  // change group admin and keep going to next project
 	  error_log("Project $proj_name is wimax enabled with group admin that is no longer the project lead - change admin");
-	  // get username from member ID
-	  // get member attribute
-	  $lead = geni_load_user_by_member_id($proj_lead_id);
+
+	  // If the lead is the current user, then just use that
+	  $lead_is_user = False;
+	  if($proj_lead_id == $user->account_id) {
+	    $lead = $user;
+	    $lead_is_user = True;
+	  } else {
+	    // get username from member ID
+	    // get member attribute
+	    $lead = geni_load_user_by_member_id($proj_lead_id);
+	  }
 	  $didAdd = False;
 	  $proj["lead_name"] = $lead->prettyName();
 	  if (! isset($lead->ma_member->enable_wimax)) {
@@ -1617,6 +1666,18 @@ Get user's projects (expired or not)
 	    $lead_project_attrs = lookup_project_attributes($sa_url, $user, $project_lead_group_id);
 	    $project_lead_groupname = get_group_name($lead_project_info[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME], $lead_project_attrs);
 	    
+	    // If the user we just enabled as lead is also the current user,
+	    // set the various status variables so we remember this current user is now enabled
+	    if ($lead_is_user === True) {
+	      $user->ma_member->wimax_username = $project_lead_username;
+	      $ldif_user_username = $project_lead_username;
+	      $ldif_user_group_id = $project_lead_group_id;
+	      $user_is_wimax_enabled = True;
+	      $ldif_user_groupname = $project_lead_groupname;
+	      $ldif_user_projname = $proj_name;
+	      $user->ma_member->enable_wimax = $ldif_user_group_id;
+	    }
+
 	    $res = wimax_make_group_admin($proj_group_name, $project_lead_username, $project_lead_groupname);
 	    if (true === $res) {
 	      // Change relevant PA attribute, local vars
