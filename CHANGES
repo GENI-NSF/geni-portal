@@ -49,7 +49,7 @@
  * Correct error message on uploading an RSpec but not picking an AM,
    and trying to reserve resources. (#1152)
  * Fix renewal at many aggregates (#1155)
- * Fix typo in user.php `getInsideKeys`. (#1157)
+ * Fix typo in user.php `getInsideKeys`: `INSICE` should be `INSIDE`. (#1157)
  * Fix WiMAX auto-adding a new lead to their group, to use the real user
    object if the new lead is the current user. (#1158)
 
