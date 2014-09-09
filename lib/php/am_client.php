@@ -273,7 +273,8 @@ function write_logger_configuration_file($dir) {
 // FIXME: Clean up this function - it's too long!
 function invoke_omni_function($am_url, $user, $args, 
     $slice_users=array(), $bound_rspec=0, $stitch_rspec=0, $fork=false,
-    $omni_invocation_dir=NULL)
+			      $omni_invocation_dir=NULL, 
+			      $api_version="2")
 {
   /* $file_manager only holds on to non-critical files (i.e., those
      that can be deleted regardless of whether the call was successful
@@ -460,7 +461,7 @@ function invoke_omni_function($am_url, $user, $args,
 		       write_logger_configuration_file($omni_invocation_dir),
 		       '--logoutput', $omni_log_file,
 		       '--api-version',
-		       '2',
+		       $api_version,
 		       "--GetVersionCacheName",
 		       $tmp_version_cache,
 		       "--ForceUseAggNickCache", // Do not try to
@@ -888,6 +889,38 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
 		$slice_urn);
   // Note that this AM no longer has resources
   $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
+  unlink($slice_credential_filename);
+  return $output;
+}
+
+function restart_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id)
+{
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
+  }
+
+  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+    error_log("am_client cannot act on a slice without a credential");
+    return("Missing slice credential");
+  }
+
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling POA geni_restart at $am_url on $slice_urn";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  // Caller logs if the restart appeared successful, so don't bother doing this
+  //  log_action("Called POA(geni_restart)", $user, $am_url, $slice_urn, NULL, $slice_id);
+  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
+  $args = array("--slicecredfile",
+		$slice_credential_filename,
+		'performoperationalaction',
+		$slice_urn,
+		'geni_restart');
+  // Note that this AM no longer has resources
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, 
+				 false, NULL, $api_version="3");
   unlink($slice_credential_filename);
   return $output;
 }
