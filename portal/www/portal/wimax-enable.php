@@ -1325,6 +1325,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	  $didAdd = True;
 	  $ldif_user_group_id = $ldif_project_id;
 	  $ldif_user_groupname = $ldif_group_name;
+	  $ldif_user_projname = $project_name;
 	} else {
 	  // FIXME: Now what?
 	  error_log("FIXME: Could not create account for this user in pre-existing group.");

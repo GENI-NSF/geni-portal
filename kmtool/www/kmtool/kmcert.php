@@ -327,7 +327,8 @@ if ($renew) {
 <li>Have the SSL certificate generated for you based on a private key you keep locally. This is the most secure option.  For advanced users only.</li>
 </ol>
 </p>
-<div style="padding-left:10px; background-color:#F0F0F0;">
+<!-- This next div used to have style="padding-left:10px; background...." But why? It looks funny. -->
+<div style="background-color:#F0F0F0;">
 <hr/>
 <h2>Simple Option: Have the SSL certificate generated for you </h2>
 
