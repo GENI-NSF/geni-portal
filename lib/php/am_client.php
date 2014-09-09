@@ -671,7 +671,7 @@ function invoke_omni_function($am_url, $user, $args,
             //unlink($omni_log_file);
             //unlink($omni_stderr_file);
          }
-              error_log("Returning output2 : " . print_r($output2, True));
+	 //error_log("Returning output2 : " . print_r($output2, True));
          return $output2;
 
     }
