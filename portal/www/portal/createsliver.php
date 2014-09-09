@@ -38,6 +38,13 @@ require_once("logging_client.php");
 require_once("tool-rspec-parse.php");
 require_once("omni_invocation_constants.php");
 
+$background = (array_key_exists("background", $_REQUEST));
+
+// Don't print to output if running in background
+if ($background) {
+  ob_start(null, 0, true);
+}
+
 /*
     STEP 1: VERIFY
     Verify that incoming data can be used to create a sliver
@@ -86,7 +93,7 @@ else if(array_key_exists('rspec_jacks', $_REQUEST)) {
   if(strlen($local_rspec_file) > 0) {
     $rspec = $local_rspec_file;
   }
-}
+} 
 
 // redirect if no RSpec is specified
 if (! isset($rspec) || is_null($rspec)) {
@@ -283,7 +290,15 @@ function create_sliver_error($error) {
     echo '<input type="button" value="Back" onClick="history.back(-1)"/>';
     echo '</form>';
     include("footer.php");
-    exit;
+
+    global $background;
+    if($background) {
+      ob_end_clean(); // Flush all previous output
+      $result = $error;
+      print_r($result, true);
+    } else {
+      exit;
+    }
 }
 
 function create_sliver_success($link, $full_link) {
@@ -292,12 +307,20 @@ function create_sliver_success($link, $full_link) {
     $string .= "to view request progress and results.</p>";
     echo $string;
     include("footer.php");
+
+    global $background;
+    if($background) {
+      ob_end_clean();
+      print_r($link);
+    }  else {
     
-    // FIXME: We probably want to redirect the user as quickly as possible, but
-    // is this the best way of doing it?
-    relative_redirect($link);
+      // FIXME: We probably want to redirect the user as 
+      // quickly as possible, but
+      // is this the best way of doing it?
+      relative_redirect($link);
     
-    exit;
+      exit;
+    }
 }
 
 function prepare_temp_dir($identifier) {

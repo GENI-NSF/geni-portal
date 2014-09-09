@@ -123,6 +123,15 @@ dist_svcweb_DATA = \
 	www/portal/home.php \
 	www/portal/invite-to-geni.php \
 	www/portal/invite-to-project.php \
+        www/portal/jacks-app.css \
+        www/portal/jacks-app.js \
+        www/portal/jacks-app.php \
+        www/portal/jacks-app-details.php \
+        www/portal/jacks-app-reserve.php \
+        www/portal/jacks-app-status.php \
+        www/portal/jacks-editor-app.css \
+	www/portal/jacks-editor-app.js \
+	www/portal/jacks-editor-app.php \
 	www/portal/join-project.php \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \
@@ -135,6 +144,8 @@ dist_svcweb_DATA = \
 	www/portal/permission_manager_test.php \
 	www/portal/portal.php \
 	www/portal/portal_omni_config.php \
+	www/portal/portal-jacks-app.js \
+	www/portal/portal-jacks-editor-app.js \
 	www/portal/print-text-helpers.php \
 	www/portal/print-text.php \
 	www/portal/profile.php \
@@ -146,6 +157,7 @@ dist_svcweb_DATA = \
 	www/portal/raw-sliverstatus.php \
 	www/portal/renewsliver.php \
 	www/portal/request_test.php \
+	www/portal/restartsliver.php \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
 	www/portal/rspecs.php \
@@ -161,6 +173,8 @@ dist_svcweb_DATA = \
 	www/portal/slice-add-resources-jacks.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
+	www/portal/slice-jacks.css \
+	www/portal/slice-jacks.php \
 	www/portal/sliceabac.php \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
@@ -194,6 +208,7 @@ dist_svcweb_DATA = \
 	www/portal/tools-admin.php \
 	www/portal/tools-user.js \
 	www/portal/tools-user.php \
+	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
