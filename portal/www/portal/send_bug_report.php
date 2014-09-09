@@ -238,8 +238,8 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     ?>
 
 --PHP-mixed-<?php echo $boundary_string; ?> 
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
 Attached is a problem report about reserving resources generated from the
 GENI Portal (https://portal.geni.net/). This problem report contains

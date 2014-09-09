@@ -53,6 +53,8 @@
  * Fix WiMAX auto-adding a new lead to their group, to use the real user
    object if the new lead is the current user. (#1158)
  * Add breadcrumbs to the Edit SSH Key page. (#1161)
+ * When sending email, set charset to utf8 and transfer encoding to 8bit,
+   so that international characters are preserved correctly. (#1162)
 
 == 2.18.1 ==
  * When displaying a stitching RSpec, do not filter results by AM. (#1130)
