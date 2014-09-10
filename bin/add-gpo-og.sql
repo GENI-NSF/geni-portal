@@ -1,9 +1,9 @@
 -- -----------------------------------------------------------------
--- Create the entry for BBN GRAM Starter Rack:
+-- Create the entry for GPO OpenGENI (gpo-og) Rack:
 --
 -- Execute as:
 --
---    psql -U portal -h localhost -f add-gram-bbncam.sql portal
+--    psql -U portal -h localhost -f add-gpo-og.sql portal
 --
 -- -----------------------------------------------------------------
 
