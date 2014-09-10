@@ -191,7 +191,7 @@ print "<script>
 
 print '<button onClick="grabRspec();">Grab Rspec</button>';
 print '<p class="rawRspec" style="display:none"></p>';
-print '<form id="f1" action="sliceresource.php" method="post" enctype="multipart/form-data">';
+print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/form-data">';
 show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '<input type="hidden" name="rspec_jacks" id="rspec_raw"/>';

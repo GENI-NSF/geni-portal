@@ -27,6 +27,6 @@ if (! $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, n
   exit();
 }
 ?>
-<h1>Adminstrator Tools</h1>
+<h1>Administrator Tools</h1>
 
 <p>This page intentionally left blank.</p>

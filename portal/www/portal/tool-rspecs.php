@@ -64,6 +64,9 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $owners = ma_lookup($ma_url, $user, $public_owners);
 
 /* Display starts here. */
+include('tool-rspecs.js');
+print '<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>';
+print "<div id='jacksContainer' class='jacks' style='background-color: white; display:none;'></div>";
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
 print("<p>From this page you can ");
 print '<b><a href="rspecupload.php">upload a new RSpec</a></b>';
@@ -173,8 +176,10 @@ function rspec_owner_info($rspec, $owners, &$addr, &$pretty_name) {
 function display_rspec($rspec, $owners, $public=False) {
   // Customize these with the RSpec id.
   $id = $rspec['id'];
+  $name = $rspec['name'];
+  
   $view_url = "rspecview.php?id=$id";
-  $view_btn = ("<button onClick=\"window.location='$view_url'\" title='view'>View</button>");
+  $view_btn = ("<button onClick=\"showViewerContainer($id, '$name')\" title='view'>View</button>");
   $download_url = "rspecdownload.php?id=$id";
   $download_btn = "<button onClick=\"window.location='$download_url'\" title='Download'>Download</button>";
   if ($public) {

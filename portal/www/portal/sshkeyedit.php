@@ -95,6 +95,7 @@ if (array_key_exists('id', $_REQUEST)
 } else {
   // User has requested edit
   show_header('GENI Portal: Profile', $TAB_PROFILE);
+  include("tool-breadcrumbs.php");
   print "<h1>Edit SSH Key</h1>";
   if (array_key_exists('id', $_REQUEST)) {
     $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);

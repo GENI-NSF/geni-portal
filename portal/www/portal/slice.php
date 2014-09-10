@@ -41,6 +41,7 @@ require_once('am_map.php');
 require_once('status_constants.php');
 require_once('maintenance_mode.php');
 require_once('am_client.php');
+require_once("tool-jfed.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -338,9 +339,17 @@ if ($project_expiration) {
   $renewal_days = min($renewal_days, $portal_max_slice_renewal_days);
 }
 
+// Code to set up jfed button
+$jfedret = get_jfed_strs($user);
+$jfed_script_text = $jfedret[0];
+$jfed_button_start = $jfedret[1];
+
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
+
+// Finish jFed setup
+print $jfed_script_text;
 
 ?>
 
@@ -758,6 +767,12 @@ print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disa
 
 print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Omni</b></button>\n";
 //print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
+
+// Show a jfed button if there wasn't an error generating it
+if (! is_null($jfed_button_start)) {
+  print $jfed_button_start . " $disable_buttons_str><b>jFed</b></button>";
+}
+
 print "</td>\n";
 print "</tr>\n";
 
@@ -879,7 +894,8 @@ print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_n
 print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
 print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
-echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
+// If this is always disabled, just don't show it.
+//echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
 print "</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";

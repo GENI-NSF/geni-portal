@@ -34,6 +34,7 @@ require_once("pa_client.php");
 require_once("pa_constants.php");
 require_once('cert_utils.php');
 require_once('cs_constants.php');
+require_once("omni_invocation_constants.php");
 
 //Constants defined for proc_open
 //String used for msg to return - in some UI - this is the message that is displayed
@@ -85,8 +86,8 @@ function write_ssh_keys($for_user, $as_user, $dir)
     {
       $key = $key_info['public_key'];
       // user could have more than one key, so append a unique ID
-      $tmp_file = writeDataToTempDir($dir, $key, "ssh-key-" . 
-            $for_user->username . "-" . uniqid());
+      $tmp_file = writeDataToTempDir($dir, $key, OMNI_INVOCATION_FILE::PUBLIC_SSH_KEY_PREFIX
+            . "-" . $for_user->username . "-" . uniqid());
       $result[] = $tmp_file;
     }
   return $result;
@@ -238,10 +239,10 @@ function write_logger_configuration_file($dir) {
     
     // string replacement of '%(consolelogfilename)s'
     $console_log_file_variable = "%(consolelogfilename)s";
-    $console_log_file = "$dir/omni-console";
+    $console_log_file = "$dir/" . OMNI_INVOCATION_FILE::CONSOLE_LOG_FILE;
     $config_file_contents = str_replace($console_log_file_variable, 
             $console_log_file, $template_file_contents);
-    $config_file_location = "$dir/logger.conf";
+    $config_file_location = "$dir/" . OMNI_INVOCATION_FILE::LOGGER_CONFIGURATION_FILE;
     
     // write file to directory
     $config_file = fopen($config_file_location,"a");
@@ -260,19 +261,42 @@ function write_logger_configuration_file($dir) {
 //    $args: list of arguments (including the method itself) included
 //    $bound_rspec: 0 for unbound (default), 1 for bound RSpec
 //    $stitch_rspec: 0 for non-stitchable (default), 1 for stitchable
+//    $fork: false for synchronous behavior (default), true for asynchronous
+//       behavior
+//    $omni_invocation_dir: directory to store all files per invocation if
+//       a directory already exists; if set to NULL (default), it will get 
+//       created to store all files created by invoke_omni_function()
+// Returns:
+//    non-forked calls: array of message and data
+//    forked calls: true if successfully forked, false if not
 // FIXME: $bound_rspec not used for anything but might be useful later
+// FIXME: Clean up this function - it's too long!
 function invoke_omni_function($am_url, $user, $args, 
-    $slice_users=array(), $bound_rspec=0, $stitch_rspec=0)
+    $slice_users=array(), $bound_rspec=0, $stitch_rspec=0, $fork=false,
+			      $omni_invocation_dir=NULL, 
+			      $api_version="2")
 {
-  $file_manager = new FileManager(); // Hold onto all allocated filenames
+  /* $file_manager only holds on to non-critical files (i.e., those
+     that can be deleted regardless of whether the call was successful
+     or not). */
+  $file_manager = new FileManager();
 
   // We seem to get $am_url sometimes as a string, sometimes as an array
   // Should always talk to single AM
   if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
 
-  // Does the given URL handle speaks-for?
-  $handles_speaks_for = 
-    lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+  /* Does the given URL handle speaks-for?
+        If an AM URL is given, check the SR for whether SF is enabled.
+        If no AM URL is given but it's for stitching, just assume for now
+            that all AMs handle SpeaksFor and see what happens.
+  */
+  if($am_url) {
+    $handles_speaks_for = 
+        lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+  }
+  else {
+        $handles_speaks_for = True;
+  }
 
   /*
     If an aggregate doesn't handle speaks-for, 
@@ -327,15 +351,13 @@ function invoke_omni_function($am_url, $user, $args,
     }
     
     /* Create a directory to store all temp files, including logs and error
-       messages. Let the prefix be the username. An "omni invocation ID" is
-       created each time invoke_omni_function() is called.
+       messages *if one doesn't exist already*. Let the prefix be the username.
+       An "omni invocation ID" is created.
     
        Returns something like: /tmp/omni-invoke-myuser-RKvQ1Z
     */
-    $omni_invocation_dir = createTempDir($username);
     if(is_null($omni_invocation_dir)) {
-        // FIXME: What to do if directory can't be created?
-        error_log("Could not create temporary directory for omni session: $omni_invocation_dir");
+        $omni_invocation_dir = createTempDir($username);
     }
 
     /* Write key and credential files */
@@ -344,9 +366,9 @@ function invoke_omni_function($am_url, $user, $args,
     $file_manager->add($tmp_version_cache);
     $file_manager->add($tmp_agg_cache);
 
-    $cert_file = writeDataToTempDir($omni_invocation_dir, $cert, "cert");
+    $cert_file = writeDataToTempDir($omni_invocation_dir, $cert, OMNI_INVOCATION_FILE::CERTIFICATE_FILE);
     $file_manager->add($cert_file);
-    $key_file = writeDataToTempDir($omni_invocation_dir, $private_key, "key");
+    $key_file = writeDataToTempDir($omni_invocation_dir, $private_key, OMNI_INVOCATION_FILE::PRIVATE_KEY_FILE);
     $file_manager->add($key_file);
 
     $slice_users = $slice_users + array($user);
@@ -417,18 +439,18 @@ function invoke_omni_function($am_url, $user, $args,
       $file_manager->add($ssh_key_file);
     }
 
-    $omni_file = writeDataToTempDir($omni_invocation_dir, $omni_config, "omni-ini");
+    $omni_file = writeDataToTempDir($omni_invocation_dir, $omni_config,
+            OMNI_INVOCATION_FILE::OMNI_CONFIGURATION_FILE);
     $file_manager->add($omni_file);
 
     /* Call OMNI */
 
-    $omni_log_file = "$omni_invocation_dir/omni-log";
-    $omni_stderr_file = "$omni_invocation_dir/omni-stderr";
-    $omni_stdout_file = "$omni_invocation_dir/omni-stdout";
-    $omni_command_file = "$omni_invocation_dir/omni-command";
-    //$file_manager->add($omni_stderr_file);
-    //$file_manager->add($omni_stdout_file);
-    //$file_manager->add($omni_command_file);
+    $omni_log_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::DEBUG_LOG_FILE;
+    $omni_stderr_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::ERROR_LOG_FILE;
+    $omni_stdout_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::CALL_RESULTS_FILE;
+    $omni_command_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::COMMAND_FILE;
+    $omni_pid_file = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::PID_FILE;
+
 
     /*    $cmd_array = array($portal_gcf_dir . '/src/omni.py', */
     $cmd_array = array($portal_gcf_dir . '/src/stitcher_php.py',
@@ -439,7 +461,7 @@ function invoke_omni_function($am_url, $user, $args,
 		       write_logger_configuration_file($omni_invocation_dir),
 		       '--logoutput', $omni_log_file,
 		       '--api-version',
-		       '2',
+		       $api_version,
 		       "--GetVersionCacheName",
 		       $tmp_version_cache,
 		       "--ForceUseAggNickCache", // Do not try to
@@ -471,7 +493,7 @@ function invoke_omni_function($am_url, $user, $args,
     if ($speaks_for_invocation) {
       $cmd_array[] = "--speaksfor=" . $user->urn;
       $speaks_for_cred_filename = writeDataToTempDir($omni_invocation_dir, 
-                $speaks_for_cred->credential(), "sfcred");
+                $speaks_for_cred->credential(), OMNI_INVOCATION_FILE::SPEAKSFOR_CREDENTIAL_FILE);
       $file_manager->add($speaks_for_cred_filename);
       $cmd_array[] = "--cred=" . $speaks_for_cred_filename;
     }
@@ -486,135 +508,175 @@ function invoke_omni_function($am_url, $user, $args,
     fwrite($cmd_file, $command);
     fclose($cmd_file);
     
-     error_log("am_client invoke_omni_function COMMAND = " . $command);
-     $handle = proc_open($command, $descriptor_spec, $pipes);
-
-     stream_set_blocking($pipes[1], 0);
-     // 1 MB
-     $bufsiz = 1024 * 1024;
-     $output= '';
-     $outchunk = null;
-
-     //time to terminate omni process
-     $now = time();
-     $kill_time = $now + AM_CLIENT_OMNI_KILL_TIME;
-
-     while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
-       $outchunk = fread($pipes[1], $bufsiz);
-       if ($outchunk != null && $outchunk !== FALSE) {
-	 $output = $output . $outchunk;
-         $usleep = 0;
-       } else {
-         // 0.25 seconds
-         $usleep = 250000;
-       }
-       // If we got data, don't sleep, see if there's more ($usleep = 0)
-       // If no data, sleep for a little while then check again.
-       usleep($usleep);
-       $now = time();
+     /* forked omni call */
+     if($fork) {
+     
+        // define how to handle streams
+        $stdout_redirect = " > " . $omni_stdout_file;
+        $stderr_redirect = " 2> " . $omni_stderr_file;
+        $stdin_redirect = " < /dev/null";
+     
+        // set up call via nohup and grab its PID
+        $fork_call = 'nohup ' . $command . $stdout_redirect . $stderr_redirect . $stdin_redirect . ' & echo $!';
+        error_log("am_client invoke_omni_function COMMAND = " . $fork_call);
+        exec($fork_call, $op);
+        
+        // assuming success, $op will be a non-empty array
+        if($op) {
+            // nohup should return an array with one line containing the PID
+            $pid = $op[0];
+            
+            // write PID to a file
+            $pid_file = fopen($omni_pid_file,"a");
+            fwrite($pid_file, $pid);
+            fclose($pid_file);
+            
+            // FIXME: Should we wait around to do 'ps -p <pid>' to make sure
+            // process didn't quickly die?
+            
+            return $pid;
+        }
+        
+        // didn't get anything back from exec(), so return NULL
+        else {
+            return NULL;
+        }
+     
      }
-     // Catch any final output after timeout
-     $outchunk = fread($pipes[1], $bufsiz);
-     if ($outchunk != null && $outchunk !== FALSE) {
-       $output = $output . $outchunk;
-     }
+     /* non-forked omni call (default) */
+     else {
+     
+        error_log("am_client invoke_omni_function COMMAND = " . $command);
+         $handle = proc_open($command, $descriptor_spec, $pipes);
 
-     //fclose($pipes[0]);
-     //fclose($pipes[1]);
-     //proc_close($handle);
+         stream_set_blocking($pipes[1], 0);
+         // 1 MB
+         $bufsiz = 1024 * 1024;
+         $output= '';
+         $outchunk = null;
 
-     $status = proc_get_status($handle);
-     if (!$status['running']) {
-        fclose($pipes[0]);
-     	fclose($pipes[1]);
-	$return_value = $status['exitcode'];
-	proc_close($handle);
-     }  else {
-    // Still running, terminate it.
-    // See https://bugs.php.net/bug.php?id=39992, for problems
-    // terminating child processes and a workaround involving posix_setpgid()
-	fclose($pipes[0]);
-	fclose($pipes[1]);
-	$term_result = proc_terminate($handle);
-	// Omni is taking too long to respond so
-	// assign Timeout error message to output and this message may show up in UI
-	//msg constant defined above
-	$output = AM_CLIENT_TIMED_OUT_MSG;
-     }
+         //time to terminate omni process
+         $now = time();
+         $kill_time = $now + AM_CLIENT_OMNI_KILL_TIME;
 
-     /*
-     unlink($cert_file);
-     unlink($key_file);
-     unlink($omni_file);
-     unlink($tmp_version_cache);
-     unlink($tmp_agg_cache);
-     foreach ($all_ssh_key_files as $tmpfile) {
-       unlink($tmpfile);
-     }
-     if ($speaks_for_invocation) {
-       unlink($speaks_for_cred_filename);
-     }
-     */
-
-     // Good for debugging but verbose
-     //     error_log("am_client output " .  print_r($output, True));
-
-    // FIXME: Write stdout's contents to omni_stdout_file for now to capture
-    //  stitcher output. This will be changed when assigning descriptor_spec
-    //  to send to a file rather than a pipe.
-    $stdout_file = fopen($omni_stdout_file,"a");
-    fwrite($stdout_file, $output);
-    fclose($stdout_file);
-
-     $output2 = json_decode($output, True);
-     if (is_null($output2)) {
-       // this is probably a traceback from python
-       // return it as a string
-       
-       // but see if omni-stderr exists, and pass back its information
-       // in addition to output to get a better traceback
-       $error_file = fopen($omni_stderr_file,"r");
-       // only try to read if fopen was successful and if the error file
-       // contains something (i.e. more than 0 bytes)
-       if($error_file && filesize($omni_stderr_file)) {
-           $error_file_contents = fread($error_file, filesize($omni_stderr_file));
-           if($error_file_contents) {
-                error_log("am_client invoke_omni_function: " .
-                    "stderr file non-empty. Check " . $omni_stderr_file .
-                    " for more information");
-                
-                // parse error file contents
-                $error = trim(preg_replace("/Traceback(.*)OmniError\:/s", "", $error_file_contents, -1 ));
-                $error = trim(preg_replace("/Traceback(.*)StitchingError\:/s", "", $error, -1 ));
-                $output .= $error;
+         while ($outchunk !== FALSE && ! feof($pipes[1]) && $now < $kill_time) {
+           $outchunk = fread($pipes[1], $bufsiz);
+           if ($outchunk != null && $outchunk !== FALSE) {
+	     $output = $output . $outchunk;
+             $usleep = 0;
+           } else {
+             // 0.25 seconds
+             $usleep = 250000;
            }
-           fclose($error_file);
-       }
-       error_log("am_client invoke_omni_function:"
-               . "JSON result is not parseable: \"$output\"");
-       
-       return $output;
-     }
-     
-     /* Clean out $file_manager's directory 
-        This does NOT include log/error files or any additional files that
-        stitching requests may make.
-     */
-     $file_manager->destruct();
-     
-     /* Delete the remaining temp files only if the decoded output is an array
-        and its length is 2 and the second value (index 1) is boolean true
-        (not null or empty string).
-      */
-      
-     if (is_array($output2) && count($output2) == 2 && $output2[1]) {
-        clean_directory($omni_invocation_dir);
-        rmdir($omni_invocation_dir);
-        //unlink($omni_log_file);
-        //unlink($omni_stderr_file);
-     }
-     //     error_log("Returning output2 : " . print_r($output2, True));
-     return $output2;
+           // If we got data, don't sleep, see if there's more ($usleep = 0)
+           // If no data, sleep for a little while then check again.
+           usleep($usleep);
+           $now = time();
+         }
+         // Catch any final output after timeout
+         $outchunk = fread($pipes[1], $bufsiz);
+         if ($outchunk != null && $outchunk !== FALSE) {
+           $output = $output . $outchunk;
+         }
+
+         //fclose($pipes[0]);
+         //fclose($pipes[1]);
+         //proc_close($handle);
+
+         $status = proc_get_status($handle);
+         if (!$status['running']) {
+            fclose($pipes[0]);
+         	fclose($pipes[1]);
+	    $return_value = $status['exitcode'];
+	    proc_close($handle);
+         }  else {
+        // Still running, terminate it.
+        // See https://bugs.php.net/bug.php?id=39992, for problems
+        // terminating child processes and a workaround involving posix_setpgid()
+	    fclose($pipes[0]);
+	    fclose($pipes[1]);
+	    $term_result = proc_terminate($handle);
+	    // Omni is taking too long to respond so
+	    // assign Timeout error message to output and this message may show up in UI
+	    //msg constant defined above
+	    $output = AM_CLIENT_TIMED_OUT_MSG;
+         }
+
+         /*
+         unlink($cert_file);
+         unlink($key_file);
+         unlink($omni_file);
+         unlink($tmp_version_cache);
+         unlink($tmp_agg_cache);
+         foreach ($all_ssh_key_files as $tmpfile) {
+           unlink($tmpfile);
+         }
+         if ($speaks_for_invocation) {
+           unlink($speaks_for_cred_filename);
+         }
+         */
+
+         // Good for debugging but verbose
+         //     error_log("am_client output " .  print_r($output, True));
+
+        // FIXME: Write stdout's contents to omni_stdout_file for now to capture
+        //  stitcher output. This will be changed when assigning descriptor_spec
+        //  to send to a file rather than a pipe.
+        $stdout_file = fopen($omni_stdout_file,"a");
+        fwrite($stdout_file, $output);
+        fclose($stdout_file);
+
+         $output2 = json_decode($output, True);
+         if (is_null($output2)) {
+           // this is probably a traceback from python
+           // return it as a string
+           
+           // but see if omni-stderr exists, and pass back its information
+           // in addition to output to get a better traceback
+           $error_file = fopen($omni_stderr_file,"r");
+           // only try to read if fopen was successful and if the error file
+           // contains something (i.e. more than 0 bytes)
+           if($error_file && filesize($omni_stderr_file)) {
+               $error_file_contents = fread($error_file, filesize($omni_stderr_file));
+               if($error_file_contents) {
+                    error_log("am_client invoke_omni_function: " .
+                        "stderr file non-empty. Check " . $omni_stderr_file .
+                        " for more information");
+                    // uncomment the next line to append stderr contents to what
+                    // users will see
+                    // FIXME: Ticket 1086: parsing stderr
+                    //$output .= $error_file_contents;
+               }
+               fclose($error_file);
+           }
+           error_log("am_client invoke_omni_function:"
+                   . "JSON result is not parseable: \"$output\"");
+           
+           return $output;
+         }
+         
+         /* Clean out $file_manager's directory 
+            This does NOT include log/error files or any additional files that
+            stitching requests may make.
+         */
+         $file_manager->destruct();
+         
+         /* Delete the remaining temp files only if the decoded output is an array
+            and its length is 2 and the second value (index 1) is boolean true
+            (not null or empty string).
+          */
+          
+         if (is_array($output2) && count($output2) == 2 && $output2[1]) {
+            clean_directory($omni_invocation_dir);
+            rmdir($omni_invocation_dir);
+            //unlink($omni_log_file);
+            //unlink($omni_stderr_file);
+         }
+	 //error_log("Returning output2 : " . print_r($output2, True));
+         return $output2;
+
+    }
+
 }
 
 // Get version of AM API at given AM
@@ -632,7 +694,7 @@ function get_version($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called GetVersion", $user, $am_url);
   $args = array('getversion');
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   return $output;
 }
 
@@ -652,7 +714,7 @@ function list_resources($am_url, $user)
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   log_action("Called ListResources", $user, $am_url);
   $args = array('-t', 'GENI', '3', 'listresources');
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   return $output;
 }
 
@@ -684,7 +746,7 @@ function list_resources_on_slice($am_url, $user, $slice_credential, $slice_urn, 
 		'3',
 		'listresources',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -717,7 +779,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 		'renewsliver',
 		$slice_urn,
 		$time);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   // FIXME: Note that this AM still has resources
   unlink($slice_credential_filename);
   return $output;
@@ -726,7 +788,7 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 
 // Create a sliver on a given AM with given rspec
 function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
-                       $rspec_filename, $slice_id, $bound_rspec=0, $stitch_rspec=0)
+                       $omni_invocation_dir, $slice_id, $bound_rspec=0, $stitch_rspec=0)
 {
 
     // stitchable RSpecs should have empty AM URL, so only check for non-stitchable RSpecs
@@ -747,19 +809,26 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   $member_id = $user->account_id;
   $msg = "User $member_id calling CreateSliver at $am_url on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  $rspec_filename = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::REQUEST_RSPEC_FILE;
   $rspec = file_get_contents($rspec_filename);
   // Don't log this: We already log from the caller if the allocation is successful
   //  log_action("Called CreateSliver", $user, $am_url, $slice_urn, $rspec, $slice_id);
-  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
-  $args = array("--slicecredfile", 
+  $slice_credential_filename = writeDataToTempDir($omni_invocation_dir, $slice_credential, OMNI_INVOCATION_FILE::SLICE_CREDENTIAL_FILE);
+  
+  $args = array("-o", "--slicecredfile", 
 		$slice_credential_filename, 
 		'createsliver',
 		$slice_urn,
 		$rspec_filename);
   // FIXME: Note that this AM has resources
   // slice_id, am_url or ID, duration?
-  $output = invoke_omni_function($am_url, $user, $args, $slice_users, $bound_rspec, $stitch_rspec);
-  unlink($slice_credential_filename);
+  
+  // we want to fork the process
+  $fork = true;
+  $output = invoke_omni_function($am_url, $user, $args, $slice_users, 
+        $bound_rspec, $stitch_rspec, $fork, $omni_invocation_dir);
+  // FIXME: forking: this file shouldn't be deleted for now
+  //unlink($slice_credential_filename);
   return $output;
 }
 
@@ -788,7 +857,7 @@ function sliver_status($am_url, $user, $slice_credential, $slice_urn)
 		$slice_credential_filename,
 		'sliverstatus',
 		$slice_urn);
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
   unlink($slice_credential_filename);
   return $output;
 }
@@ -819,7 +888,39 @@ function delete_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id 
 		'deletesliver',
 		$slice_urn);
   // Note that this AM no longer has resources
-  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0);
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, false, NULL);
+  unlink($slice_credential_filename);
+  return $output;
+}
+
+function restart_sliver($am_url, $user, $slice_credential, $slice_urn, $slice_id)
+{
+  if (! isset($am_url) || is_null($am_url) ){
+    if (!(is_array($am_url) || $am_url != '')) {
+      error_log("am_client cannot invoke Omni without an AM URL");
+      return("Missing AM URL");
+    }
+  }
+
+  if (! isset($slice_credential) || is_null($slice_credential) || $slice_credential == '') {
+    error_log("am_client cannot act on a slice without a credential");
+    return("Missing slice credential");
+  }
+
+  $member_id = $user->account_id;
+  $msg = "User $member_id calling POA geni_restart at $am_url on $slice_urn";
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+  // Caller logs if the restart appeared successful, so don't bother doing this
+  //  log_action("Called POA(geni_restart)", $user, $am_url, $slice_urn, NULL, $slice_id);
+  $slice_credential_filename = writeDataToTempFile($slice_credential, $user->username . "-cred-");
+  $args = array("--slicecredfile",
+		$slice_credential_filename,
+		'performoperationalaction',
+		$slice_urn,
+		'geni_restart');
+  // Note that this AM no longer has resources
+  $output = invoke_omni_function($am_url, $user, $args, array(), 0, 0, 
+				 false, NULL, $api_version="3");
   unlink($slice_credential_filename);
   return $output;
 }

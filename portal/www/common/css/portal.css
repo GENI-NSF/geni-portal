@@ -245,21 +245,21 @@ hr {
 #content pre {
   font-family: 'Droid Sans Mono', monospace;
   font-weight: 400;
-  font-size: .9em;
+  font-size: .8em;
   line-height: 1.3em;
-  background-color: #E5E5E5;
-  color: #5F584E;
+  background-color: #5F584E;
+  color: white;
   padding: 5px;
   padding-left: 10px;
   margin-left: 45px;
-  border: 1px solid #5F584E;
-  border-left: 10px solid #5F584E;
+  border-left: 10px solid #DBD7CC;
   box-shadow: 4px 4px 10px #B5B5B5;
   overflow: auto;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius: 8px; /* future proofing */
-  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+      white-space: pre-wrap;       /* CSS 3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 /* Inline code */
@@ -761,6 +761,32 @@ margin-left: .4in;
   font-size: 1.1em !important;
 }
 
+.error {
+  background-color: #E5E5E5;
+  border-left: 10px solid red;
+  color: #5F584E;
+  padding: 20px;
+  font-family: 'PT Serif', serif;
+  font-weight: 400;
+  box-shadow: 4px 4px 10px #B5B5B5;
+  margin-left: 0px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px; /* future proofing */
+  -khtml-border-radius: 8px; /* for old Konqueror browsers */
+}
+
+.error:before {
+  content: "Error";
+  color: red;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  display: block;
+  font-size: 1.1em !important;
+}
+
 .starter {
  color: black;
  font-weight: bold;
@@ -894,3 +920,84 @@ img {
 .dataTables_filter input {
   margin-left: 10px;
 }
+
+/* Dialog box jQuery UI CSS overrides */
+.ui-widget-overlay {
+    background: #000;
+    opacity: 0.5;
+}
+
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    border-bottom-right-radius: 0px;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-bottom-left-radius: 0px;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+    border-top-right-radius: 0px;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    border-top-left-radius: 0px;
+}
+
+.ui-dialog {
+    box-shadow: 0px 0px 20px #B5B5B5;
+    padding: 0;
+}
+
+.ui-dialog-content {
+    margin: 0;
+    padding: 0;
+}
+
+.ui-dialog-title {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+	font-size: 0.9em;
+    padding: 6px;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    padding: 0px;
+}
+
+.ui-dialog-titlebar {
+	background: #E17000;
+	border-top: 4px solid #5F584E;
+	border-bottom: 1px solid #fff;
+	border-right: 0px;
+	border-left: 0px;
+	color: #fff;
+	vertical-align:middle;
+}
+
+.ui-dialog-titlebar-close {
+    visibility: hidden;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    padding: 0;
+    margin-top: 0;
+}
+
+.ui-helper-clearfix {
+    padding: 0;
+}
+
+.ui-widget-content {
+    border: 0;
+    background: #E5E5E5;
+}
+
+.ui-widget button {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+	font-size: 0.8em;
+	color: #5F584E;
+}
+
+

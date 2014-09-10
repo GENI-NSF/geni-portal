@@ -97,6 +97,16 @@ if (! isset($ams) || is_null($ams)) {
   }
 }
 
+// Cache log info because the session gets closed before we log the
+// delete.
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+$project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT,
+                                                $slice['project_id']);
+$slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE,
+                                              $slice['slice_id']);
+$log_attributes = array_merge($project_attributes, $slice_attributes);
+
+
 // Get an AM
 $am_url = $am[SR_ARGUMENT::SERVICE_URL];
 $AM_name = am_name($am_url);
@@ -128,7 +138,9 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
     }
     $am_urls[] = $am_url; 
   }
-  error_log("SLIVER_DELETE AM_URL = " . $am_url);
+
+  // Close the session so other calls can happen in parallel.
+  session_write_close();
   
   // Call delete sliver at the AM
   $retVal = delete_sliver($am_urls, $user, $slice_credential,
@@ -161,12 +173,6 @@ $success = $obj[0];
 $fail = $obj[1];
 
 if (count($success)) {
-  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  $project_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::PROJECT, 
-						  $slice['project_id']);
-  $slice_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::SLICE, 
-						$slice['slice_id']);
-  $log_attributes = array_merge($project_attributes, $slice_attributes);
   if (count($am_urls) == 1) {
     log_event($log_url, $user,
 	      "Deleted resources from slice " . $slice_name . " at " . $AM_name,
@@ -185,11 +191,6 @@ if (count($success)) {
     $rrht[] = am_name($am_url);
     $obj[1] = $rrht;
 }
-
-unset($slice2);
-$slice2 = lookup_slice($sa_url, $user, $slice_id);
-$slice_expiration_db = $slice2[SA_ARGUMENT::EXPIRATION];
-$slice_expiration = dateUIFormat($slice_expiration_db);
 
 // Set headers for download
 header("Cache-Control: public");

@@ -28,23 +28,26 @@ include("tool-showmessage.php");
 $location = $_GET['loc'];
 include("tool-lookupids.php");
 
+/* Copy the request args into the location */
+$query = $_REQUEST;
+unset($query['loc']); // already extracted above
+$location .= '&' . http_build_query($query);
+
 print "<p class='warn'>";
 if (isset($am_id) && $am_id) {
-	print "This action will query ".count($ams)." aggregates and may take several minutes.";
-  print '<br>Are you sure that you want to query these '.count($ams).' aggregates?';
-  for ($i = 0; $i < count($ams); $i++) {
-    $location = $location."&am_id[]=".$am_ids[$i];
-  }
-}
-else {
-	print 'This action will query all aggregates and may take several minutes.';
-	print '<br>Are you sure that you want to query all aggregates?';
+  print "This action will query " . count($ams)
+    . " aggregates and may take several minutes.";
+  print '<br>Are you sure that you want to query these '
+    . count($ams) . ' aggregates?';
+} else {
+  print 'This action will query all aggregates and may take several minutes.';
+  print '<br>Are you sure that you want to query all aggregates?';
 }
 
-//print "<button onClick=\"window.location=$location\"><b>YES</b></button><br/>\n";
 print "<form method='POST' action=\"$location\">";
 print '<input type="submit" value="YES" style="width:60px;height:30px"/>';
-print '<input type="button" value="CANCEL" onclick="history.back(-1)" style="width:60px;height:30px"/>';
+print ('<input type="button" value="CANCEL" onclick="history.back(-1)"'
+       . ' style="width:60px;height:30px"/>');
 print "</form></p>";
 
 include("footer.php");

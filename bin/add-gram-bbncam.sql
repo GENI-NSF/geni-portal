@@ -14,15 +14,15 @@ insert into service_registry
     ( -- TYPE: zero = aggregate
       0,
       -- URL
-      'https://128.89.118.100:5002',
+      'https://bbn-cam-ctrl-1.gpolab.bbn.com:5002',
       -- CERT
       '/usr/share/geni-ch/sr/certs/gr-bbncam-am.pem',
       -- NAME
-      'BBN-CAM GRAM (BBN-CAM)',
+      'GPO OpenGENI',
       -- DESCRIPTION
-      'BBN-CAM GRAM Rack (BBN-CAM)',
+      'GPO OpenGENI Rack',
       -- URN
-      'urn:publicid:IDN+bbn-cam-ctrl-1.bbn.com+authority+am'
+      'urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am'
     );
 
 insert into service_registry
@@ -38,7 +38,7 @@ insert into service_registry
       -- NAME
       '',
       -- DESCRIPTION
-      'BBN-CAM GRAM Rack cert signer (self)',
+      'GPO OpenGENI Rack cert signer (self)',
       -- URN
      ''
     );

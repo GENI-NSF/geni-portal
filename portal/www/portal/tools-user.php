@@ -242,7 +242,7 @@ if (! $has_certificate) {
     print '.';
   }
   print ' You can <a href="kmcert.php?close=1&renew=1" target="_blank">';
-  print 'renew your SSL certificate</a> at any time';
+  print 'renew your SSL certificate</a> at any time.';
   print '</p>';
 }
 
