@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.20 ==
+
+
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
  * Use portal styling for OpenID trust page (#1007)
