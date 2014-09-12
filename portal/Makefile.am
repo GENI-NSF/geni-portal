@@ -168,6 +168,7 @@ dist_svcweb_DATA = \
 	www/portal/send_bug_report.php \
 	www/portal/services.php \
 	www/portal/settings.php \
+	www/portal/slice-add-resources.css \
 	www/portal/slice-add-resources.js \
 	www/portal/slice-add-resources.php \
 	www/portal/slice-add-resources-jacks.php \

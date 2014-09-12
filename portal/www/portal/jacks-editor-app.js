@@ -1,6 +1,7 @@
 function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, 
 			allRspecs,
-			sliceInfo, userInfo, readyCallback) {
+			sliceInfo, userInfo, enableButtons,
+			readyCallback, fetchTopologyCallback) {
 
     // Map from client_id to am_id
     this.client2am = {};
@@ -77,11 +78,11 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	    nodeSelect: true,
 	    root: jacks,
 	    readyCallback: function (input, output) {
-		output.on('fetch-topology', function(rspecs) {
-			that.postRspec(rspecs);
-		    });
+		output.on('fetch-topology', fetchTopologyCallback);
 		that.jacksReady(input, output);
-		that.initButtons(that.buttons);
+		if (that.enableButtons) {
+		    that.initButtons(that.buttons);
+		}
 		// Finally, tell our client that we're ready
 		readyCallback(that, that.input, that.output);
 	    }
@@ -117,25 +118,25 @@ JacksEditorApp.prototype.debug = function(msg) {
 JacksEditorApp.prototype.getCanvasOptions = function() {
     var defaults = [ 
         {
-	    name: 'Add VM',
+	    name: 'VM',
 	    type: 'default-vm'
 	},
         {
-	    name: 'Add Xen VM',
+	    name: 'Xen VM',
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
 	},
         {
-	    name: 'Add Raw PC',
+	    name: 'Raw PC',
 	    type: 'emulab-rawpc',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
         },
         {
-	    name: 'Add Small Exogeni',
+	    name: 'Small Exogeni',
 	    type: 'm1.small'
 	},
         {
-	    name: 'Add Open VSwitch',
+	    name: 'Open VSwitch',
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS',
 	    icon: 'https://www.emulab.net/protogeni/jacks-stable/images/router.svg'

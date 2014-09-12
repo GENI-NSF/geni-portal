@@ -22,54 +22,101 @@
 //----------------------------------------------------------------------
 
 
+var current_rspec = null;
+var current_rspec_attributes = {};
+
 /* do things when RSpec is uploaded by user (i.e. not chosen from list) */
 function fileupload_onchange()
 {
-    var user_rspec_file_input = document.getElementById("rspec_selection");
+    var user_rspec_file_input = document.getElementById("file_select");
     var user_rspec_file = user_rspec_file_input.files[0];
+    validate_rspec_file(user_rspec_file, true, handle_validation_results);
+
+    // change RSpec dropdown menu back to 'Choose RSpec'
+    clear_other_inputs('#file_select');
+
+
+}
+
+function validate_rspec_file(rspec, is_filename, callback)
+{
     var formData = new FormData();
-    formData.append("user_rspec", user_rspec_file);
+    if(is_filename) {
+	formData.append("user_rspec_file", rspec);
+    } else {
+	formData.append("user_rspec_raw", rspec);
+    }
     var client = new XMLHttpRequest();
     client.open("post", "rspecuploadparser.php", true);
-    client.addEventListener("load", handle_results);
+    client.addEventListener("load", callback);
     client.send(formData);
 }
 
+function handle_validation_results_no_jacks(evt)
+{
+    handle_validation_results_base(evt, false);
+}
+
+function handle_validation_results(evt)
+{
+    handle_validation_results_base(evt, true);
+}
+
 /* once uploaded, change info */
-function handle_results(evt)
+function handle_validation_results_base(evt, update_jacks)
 {
     var client = evt.target;
     if (client.readyState == 4 && client.status == 200)
     {
-        // parse JSON message
-        var jsonResponse = JSON.parse(client.responseText);
+	// parse JSON message
+	var jsonResponse = JSON.parse(client.responseText);
 
-        // display message
-        $("#upload_message").html(jsonResponse.message);
-        
-        // if valid, change around attributes depending on stitch/bound
-        if(jsonResponse.valid) {
-            if(jsonResponse.stitch) {
-                set_attributes_for_stitching();
-            }
-            else if(jsonResponse.bound) {
-                set_attributes_for_bound();
-            }
-            else {
-                set_attributes_for_unbound();
-            }
-            enable_reserve_resources();
-        }
-        // if invalid, set back to unbound
-        else {
-            set_attributes_for_unbound();
-            disable_reserve_resources();
-        }
-        
-        // change RSpec dropdown menu back to 'Choose RSpec'
-        $('#rspec_select').val('');
+	handle_rspec_validation_results(jsonResponse);
+
+	handle_rspec_update(jsonResponse, jsonResponse.rspec, update_jacks);
 
     }
+}
+
+function handle_rspec_validation_results(jsonResponse)
+{
+
+    // if valid, change around attributes depending on stitch/bound
+    if(jsonResponse.valid) {
+	if(jsonResponse.stitch) {
+	    set_attributes_for_stitching();
+	}
+	else if(jsonResponse.bound) {
+	    set_attributes_for_bound();
+	}
+	else {
+	    set_attributes_for_unbound();
+	}
+	enable_reserve_resources();
+    }
+    // if invalid, set back to unbound
+    else {
+	set_attributes_for_unbound();
+	disable_reserve_resources();
+    }
+        
+}
+
+function handle_rspec_update(jsonResponse, rspec, updateJacks)
+{
+    current_rspec = rspec;
+
+    if(!jacksEditorApp_isHidden && updateJacks) {
+	jacksEditorApp.jacksInput.trigger('change-topology',
+					  [{rspec: rspec}]);
+    }
+
+    // Update the message string
+    // Update the reserve resources button
+    console.log("handle_rspec_update: " + jsonResponse);
+    $('#rspec_status_text').text(jsonResponse.message);
+
+
 }
 
 /* enable/disable 'Reserve Resources' button */
@@ -150,7 +197,7 @@ function rspec_onchange()
     var selected_element = rspec_chooser.children()[selected_index];
     var is_bound = selected_element.attributes.getNamedItem('bound').value;
     var is_stitchable = selected_element.attributes.getNamedItem('stitch').value;
-    
+
     if (is_stitchable == "1") {
         set_attributes_for_stitching();
     }
@@ -161,11 +208,18 @@ function rspec_onchange()
         set_attributes_for_unbound();
     }
 
+    rspec_id = selected_element.value;
+    $.get("rspecview.php", {id : rspec_id},
+	  function(rt, st, xhr) {
+	      var rspec = xhr.responseText;
+	      validate_rspec_file(rspec, false, handle_validation_results);
+	  })
+	.fail(function(xhr, ts, et) {
+		console.log("Error loading rspec : " + rspec_id);
+	    })
+
     // Clear the "rspec_selection" file chooser
-    var rspec_file_chooser = $('#rspec_selection');
-    $('#rspec_selection').val('');
-    $("#upload_message").html('');
-    //    console.log("CLEARING = " + rspec_file_chooser);
+    clear_other_inputs('#rspec_select');
     
     // disable reserving resources if no RSpec is chosen
     if(selected_element.attributes.getNamedItem('title').value == "Choose RSpec") {
@@ -175,4 +229,138 @@ function rspec_onchange()
         enable_reserve_resources();
     }
 
+}
+
+var jacksEditorApp_isHidden = true;
+var jacksEditorApp = null;
+
+/* Make sure Jacks Editor App exists */
+function assureJacksEditorApp() {
+    if (jacksEditorApp == null) {
+	jacksEditorApp = new JacksEditorApp('#jacks-editor-pane',
+					'#jacks-editor-status',
+					'#jacks-editor-buttons',
+					jacks_slice_ams,
+					jacks_all_ams,
+					jacks_all_rspecs,
+					jacks_slice_info,
+					jacks_user_info,
+					jacks_enable_buttons,
+				    jacks_editor_app_ready,
+				    jacks_fetch_topology_callback);
+    }
+}
+
+function jacks_editor_app_ready(je, je_input, je_output) {
+  console.log("JEAR : JacksEditorApp ready");
+  $('#rspec_status_text').text("");
+};
+
+// The callback when we've received the current rspec from Jacks
+// If downloading, download in place
+// Otherwise, treat as a new RSpec
+function jacks_fetch_topology_callback(rspecs) {
+    //  console.log("RSPECS = " + rspecs + " " + rspecs.length);
+  var rspec = rspecs[0].rspec;
+  if(jacksEditorApp.downloadingRspec) {
+      var rspec_download_url = "rspecdownload.php?rspec=" + rspec;
+      window.location.replace(rspec_download_url);
+      jacksEditorApp.downloadingRspec = false;
+  } else {
+      // Handle new rspec but don't update Jacks (we just got it from Jacks)
+      validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
+  }
+}
+
+
+/** Hide/Show the editor buttons **/
+/* And hide the jacks editor itself **/
+function do_hide_editor()
+{
+    if(jacksEditorApp == null) return;
+    $('#show_jacks_editor_button').show();
+    $('#hide_jacks_editor_button').hide();
+    do_hide_editor_elements();
+}
+
+function do_hide_editor_elements()
+{
+    console.log("Hiding editor");
+    $('#jacks-editor-status').hide();
+    $('#jacks-editor-pane').hide();
+    $('#jacks-editor-buttons').hide();
+    $('#jacks-editor-app').hide();
+    $('#grab_editor_topology_button').attr('disabled', true);
+    jacksEditorApp_isHidden = true;
+}
+
+/** If the editor doesn't exist, create it before showing */
+function do_show_editor()
+{
+    assureJacksEditorApp();
+    $('#show_jacks_editor_button').hide();
+    $('#hide_jacks_editor_button').show();
+    console.log("Showing editor");
+    do_show_editor_elements();
+}
+
+function do_show_editor_elements()
+{
+    //    $('#jacks-editor-status').show();
+    $('#jacks-editor-pane').show();
+    //    $('#jacks-editor-buttons').show();
+    $('#jacks-editor-app').show();
+    $('#grab_editor_topology_button').removeAttr('disabled');
+    jacksEditorApp_isHidden = false;
+}
+
+function grab_paste_onchange()
+{
+    console.log("Grabbing paste");
+    var rspec = $('#paste_select').val();
+    validate_rspec_file(rspec, false, handle_validation_results);
+    clear_other_inputs('#paste_select');
+}
+
+function urlupload_onchange()
+{
+    console.log("URLUPLOAD");
+    var url = $('#url_select').val();
+    $.get("upload-file.php", 
+	  {url : url}, 
+              function(rt, st, xhr) {
+		  var rspec = xhr.responseText;
+		  validate_rspec_file(rspec, true, handle_validation_results);
+              })
+    .fail(function(xhr, ts, et) {
+	    console.log("Failed uploading URL: " + url);
+	});
+    clear_other_inputs("#url_select");
+}
+
+// Clear all other inputs other than most recent one
+function clear_other_inputs(current_input)
+{
+    if(current_input != '#rspec_select')
+	$('#rspec_select').val('0');
+    if(current_input != '#file_select')
+	$('#file_select').val(null);
+    if(current_input != '#url_select')
+	$('#url_select').val("");
+    if(current_input != '#paste_select')
+	$('#paste_select').val('');
+}
+
+// Download current rspec from Jacks to browser's Download directory
+function do_rspec_download()
+{
+    jacksEditorApp.downloadingRspec = true;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+// Grab current topology from Jacks editor
+function do_grab_editor_topology()
+{
+    jacksEditorApp.downloadingRspec = false;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
 }

@@ -162,7 +162,7 @@ function validateSubmit()
   f1 = document.getElementById("f1");
   rspec = document.getElementById("rspec_select");
   am = document.getElementById("agg_chooser");
-  rspec2 = document.getElementById("rspec_selection");
+  rspec2 = document.getElementById("file_select");
   
   if ((rspec.value || rspec2.value) && am.value) {
     f1.submit();
@@ -220,16 +220,47 @@ print "<p>To add resources you need to choose a Resource Specification file (RSp
 print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/form-data">';
 
 print "<table>";
-print "<tr><th rowspan='2'>Choose RSpec</th>";
+
+print "<tr>";
+print "<th rowspan='1' >Graphical Editor</th>";
+print "<td>";
+print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
+print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Hide Editor</button>';
+print "</td></tr>";
+
+print "<tr>";
+print "<th rowspan='6'>Choose RSpec</th>";
 print "<td><b>Select existing: </b>";
 show_rspec_chooser($user);
 print "</td></tr>";
 print "<tr><td>";
-print "<b>Select from file: </b><input type='file' name='rspec_selection' id='rspec_selection' onchange='fileupload_onchange()'/>";
-
-// upload message: get this from slice-add-resources.js calling rspecuploadparser.php
+print "<b>Select from file: </b><input type='file' name='file_select' id='file_select' onchange='fileupload_onchange()'/>";
+// upload message: get this from slice-add-resources.js 
+// calling rspecuploadparser.php
 print "<div id='upload_message' style='display:block;'></div>";
+print "</td></tr>";
+print "<tr><td>";
+print "<b>Select from URL: </b>";
+print '<button type="button" name="url_grab_button" id="url_grab_button" onClick="urlupload_onchange()"  >Select</button>';
+print "<input type='input' name='url_select' id='url_select' onchange='urlupload_onchange()' />";
+print "</td></tr>";
+print "<tr><td>";
+print '<b>Paste Rspec: </b>';
+print '<button type="button" name="paste_grab_button" id="paste_grab_button" onClick="grab_paste_onchange()">Select</button>';
+print '<textarea cols="60" rows="4" name="paste_select" id="paste_select"></textarea>';
+print "</td></tr>";
+print "<tr><td>";
+print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button" onClick="do_grab_editor_topology()">Select</button>';
+print "</td></tr>";
+print "<tr><td>";
+print '<b><p id="rspec_status_text" /></b>';
+print "</td></tr>";
 
+print "<tr>";
+print "<th rowspan='1'>Save RSpec</th>";
+print "<td>";
+print "<b>Download RSpec: </b>";
+print '<button type="button" onClick="do_rspec_download()">Download</button>';
 print "</td></tr>";
 
 print "<tr><th>Choose Aggregate</th><td>";
@@ -253,6 +284,66 @@ $( document ).ready(function() {
     am_on_page_load = $('#agg_chooser').val();
 });
 </script>
+
+<?php
+
+if (! isset($all_ams)) {
+  $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $all_ams = array();
+  foreach ($am_list as $am) 
+  {
+    $single_am = array();
+    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
+    $all_ams[$service_id] = $single_am;
+  }   
+}
+
+$slice_ams = array();
+$all_rspecs = fetchRSpecMetaData($user);
+
+// JACKS-APP STUFF //
+include("jacks-editor-app.php");
+print "<table id='jacks-editor-app'>";
+print "<tr><td><div id='jacks-editor-app-container'>";
+print build_jacks_editor();
+print "</div></td></tr></table>";
+?>
+
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<link rel="stylesheet" type="text/css" href="slice-add-resources.css" />
+<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="portal-jacks-editor-app.js"></script>
+
+<script>
+
+  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
+  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+  var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
+
+  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
+  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
+
+  var jacks_slice_info = {slice_id : jacks_slice_id, 
+			  slice_name : jacks_slice_name};
+
+  var jacks_user_name = <?php echo json_encode($user->username) ?>;
+  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
+  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
+
+  var jacks_user_info = {user_name : jacks_user_name,
+			 user_urn : jacks_user_urn,
+			 user_id : jacks_user_id};
+
+  var jacks_enable_buttons = false;
+
+  do_hide_editor_elements();
+
+</script>
+
 <?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 // by default, assume RSpec is not bound or stitchable (0), but if a bound or
@@ -261,7 +352,10 @@ print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
 print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
-print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose File' to temporarily upload an RSpec for this reservation only.</p>";
+?>
+<?php
+
+print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose RSpec' options to temporarily upload an RSpec for this reservation only.</p>";
 
 print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"

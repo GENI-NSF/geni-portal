@@ -232,6 +232,10 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.handleRestart();});
     $(buttonSelector).append(btn);
 
+    btn = $('<button type="button">Details</button>');
+    btn.click(function(){ that.handleRestart();});
+    $(buttonSelector).append(btn);
+
     /*
     btn = $('<button type="button">EDITOR</BUTTON>');
     btn.click(function() {

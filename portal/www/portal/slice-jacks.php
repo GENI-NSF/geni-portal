@@ -1,4 +1,4 @@
-<?php
+$a<?php
 //----------------------------------------------------------------------
 // Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
@@ -674,6 +674,7 @@ print "</div></td></tr></tbody></table>";
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
+  var jacks_enable_buttons = true;
   var jacksEditorApp = null;
 
 function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
@@ -686,7 +687,10 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
 				      jacks_all_rspecs,
 				      jacks_slice_info,
 				      jacks_user_info,
-				      portal_jacks_editor_app_ready);
+				      jacks_enable_buttons, 
+				      portal_jacks_editor_app_ready,
+				      JacksEditorApp.prototype.postRspec
+				      );
 
   jacksEditorApp.setJacksViewer(ja);
   ja.setJacksEditor(jacksEditorApp);

@@ -24,6 +24,7 @@
 // A set of functions to handle events coming from the Jacks App (JA)
 // and responding asynchronously to the Jacks App
 
+var jacks_app = {};
 var jacks_app_input = {};
 var jacks_app_output = {};
 
@@ -37,6 +38,7 @@ function debug(msg) {
 
 // Callback for when JA is ready
 function portal_jacks_app_ready(ja, ja_input, ja_output) {
+    jacks_app = ja;
     jacks_app_input = ja_input;
     jacks_app_output = ja_output;
 

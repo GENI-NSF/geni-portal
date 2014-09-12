@@ -114,7 +114,7 @@ function parseRequestRSpecContents($rspec) {
     }
   }
 
-  return array($rspec, $is_bound, $is_stitch, $am_urns);
+  return array($rspec, $is_bound, $is_stitch, $am_urns, $rspec);
 }
 
 
