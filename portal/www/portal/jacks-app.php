@@ -1,3 +1,4 @@
+<?php
 //----------------------------------------------------------------------
 // Copyright (c) 2014 Raytheon BBN Technologies
 //
@@ -20,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-<?php
+
 function build_jacks_viewer()
 {
 	$output = "<script src='jacks-app.js'></script>";
