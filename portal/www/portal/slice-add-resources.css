@@ -6,35 +6,6 @@
 
 */
 
-/**
- * Top level jacks container entities
- */
-
-.jacks-pane {
-   height: auto;
-   min-height: 500px;
-}
-
-#jacks-editor-pane.jacks {
-   height: auto;
-   min-height: 500px;
-}
-
-.jacks-container {
-   height: auto;
-   min-height: 500px;
-}
-
-#canvasContainer.container {
-   height: auto;
-   min-height: 500px;
-}
-
-#url_select {
-   width: auto;
-   min-width: 200px;
-}
-
 /*
   Override default portal settings
 */
@@ -52,7 +23,7 @@
 
 #content table {
   margin-left: 30px;
-  min-width: 733px;
+  min-width: 1400px;
   width: auto;
 }
 
@@ -406,5 +377,49 @@ ype="button"] {
 
 #ui-datepicker-div {
   z-index: 10 !important;
+}
+
+/**
+ * Top level jacks container entities
+ */
+
+#jacks-editor-pane {
+   height: auto;
+   min-height: 500px;
+   width: auto;
+   min-width: 800px;
+}
+
+#jacks-editor-app-container {
+   height: auto;
+   min-height: 500px;
+   width: auto;
+   min-width: 800px;
+}
+
+#container jacks-editor-app {
+   height: auto;
+   min-height: 500px;
+   width: auto;
+   min-width: 800px;
+}
+
+#container .jacks-editor-app {
+   height: auto;
+   min-height: 500px;
+   width: auto;
+   min-width: 800px;
+}
+
+#container #jacks-editor-app {
+   height: auto;
+   min-height: 500px;
+   width: auto;
+   min-width: 800px;
+}
+
+#url_select {
+   width: auto;
+   min-width: 200px;
 }
 

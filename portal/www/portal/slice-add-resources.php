@@ -163,16 +163,23 @@ function validateSubmit()
   rspec = document.getElementById("rspec_select");
   am = document.getElementById("agg_chooser");
   rspec2 = document.getElementById("file_select");
+
+  current_rspec_text = $('#current_rspec_tet').val();
+  is_bound = $('#bound_rspec').val();
+
+  console.log("validateSubmit.rspec = " + current_rspec_text);
+  console.log("validateSubmit.bound = " + is_bound);
   
-  if ((rspec.value || rspec2.value) && am.value) {
+  if ((current_rspec_text != '') && (am.value || is_bound)) {
     f1.submit();
     return true;
-  } else if (rspec.value || rspec2.value) {
+  } else if (current_rspec_text != '') {
     alert("Please select an Aggregate.");
     return false;
+  } else {
+    alert ("Please select a Resource Specification (RSpec).");
+    return false;
   }
-  alert ("Please select a Resource Specification (RSpec).");
-  return false;
 }
 </script>
 
@@ -217,6 +224,64 @@ echo "<div id='addresources'>";
 print "<h2>Add Resources</h2>\n";
 print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
 
+if (! isset($all_ams)) {
+  $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $all_ams = array();
+  foreach ($am_list as $am) 
+  {
+    $single_am = array();
+    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
+    $all_ams[$service_id] = $single_am;
+  }   
+}
+
+$slice_ams = array();
+$all_rspecs = fetchRSpecMetaData($user);
+
+// JACKS-APP STUFF //
+include("jacks-editor-app.php");
+print "<table id='jacks-editor-app'>";
+print "<tr><td><div id='jacks-editor-app-container'>";
+print build_jacks_editor();
+print "</div></td></tr></table>";
+?>
+
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<link rel="stylesheet" type="text/css" href="slice-add-resources.css" />
+<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="portal-jacks-editor-app.js"></script>
+<script>
+
+  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
+  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+  var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
+
+  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
+  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
+
+  var jacks_slice_info = {slice_id : jacks_slice_id, 
+			  slice_name : jacks_slice_name};
+
+  var jacks_user_name = <?php echo json_encode($user->username) ?>;
+  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
+  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
+
+  var jacks_user_info = {user_name : jacks_user_name,
+			 user_urn : jacks_user_urn,
+			 user_id : jacks_user_id};
+
+  var jacks_enable_buttons = false;
+
+  do_hide_editor_elements();
+
+</script>
+
+<?php
+
 print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/form-data">';
 
 print "<table>";
@@ -250,7 +315,7 @@ print '<button type="button" name="paste_grab_button" id="paste_grab_button" onC
 print '<textarea cols="60" rows="4" name="paste_select" id="paste_select"></textarea>';
 print "</td></tr>";
 print "<tr><td>";
-print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button" onClick="do_grab_editor_topology()">Select</button>';
+print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button" disabled="true" onClick="do_grab_editor_topology()">Select</button>';
 print "</td></tr>";
 print "<tr><td>";
 print '<b><p id="rspec_status_text" /></b>';
@@ -286,68 +351,12 @@ $( document ).ready(function() {
 </script>
 
 <?php
-
-if (! isset($all_ams)) {
-  $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  $all_ams = array();
-  foreach ($am_list as $am) 
-  {
-    $single_am = array();
-    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
-    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
-    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-    $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
-    $all_ams[$service_id] = $single_am;
-  }   
-}
-
-$slice_ams = array();
-$all_rspecs = fetchRSpecMetaData($user);
-
-// JACKS-APP STUFF //
-include("jacks-editor-app.php");
-print "<table id='jacks-editor-app'>";
-print "<tr><td><div id='jacks-editor-app-container'>";
-print build_jacks_editor();
-print "</div></td></tr></table>";
-?>
-
-<link rel="stylesheet" type="text/css" href="jacks-app.css" />
-<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-<link rel="stylesheet" type="text/css" href="slice-add-resources.css" />
-<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
-<script src="portal-jacks-editor-app.js"></script>
-
-<script>
-
-  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
-  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
-  var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
-
-  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
-  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
-
-  var jacks_slice_info = {slice_id : jacks_slice_id, 
-			  slice_name : jacks_slice_name};
-
-  var jacks_user_name = <?php echo json_encode($user->username) ?>;
-  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
-  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
-
-  var jacks_user_info = {user_name : jacks_user_name,
-			 user_urn : jacks_user_urn,
-			 user_id : jacks_user_id};
-
-  var jacks_enable_buttons = false;
-
-  do_hide_editor_elements();
-
-</script>
-
-<?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
+print '<input type="hidden" name="current_rspec_text" id="current_rspec_text" value="" />';
+
 // by default, assume RSpec is not bound or stitchable (0), but if a bound or
 // stitchable RSpec is selected, change this value (to 1) via slice-add-resources.js
+print '<input type="hidden" name="valid_rspec" id="valid_rspec" value="0"/>';
 print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
 print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';

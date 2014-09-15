@@ -21,10 +21,6 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-
-var current_rspec = null;
-var current_rspec_attributes = {};
-
 /* do things when RSpec is uploaded by user (i.e. not chosen from list) */
 function fileupload_onchange()
 {
@@ -80,22 +76,32 @@ function handle_validation_results_base(evt, update_jacks)
 
 function handle_rspec_validation_results(jsonResponse)
 {
+    var agg_chooser_val = $('#agg_chooser').val();
+    var aggregate_chosen = agg_chooser_val != "";
 
     // if valid, change around attributes depending on stitch/bound
     if(jsonResponse.valid) {
+	$('#valid_rspec').val('1');
 	if(jsonResponse.stitch) {
 	    set_attributes_for_stitching();
+	    enable_reserve_resources();
 	}
 	else if(jsonResponse.bound) {
 	    set_attributes_for_bound();
+	    enable_reserve_resources();
 	}
 	else {
 	    set_attributes_for_unbound();
+	    if (aggregate_chosen) {
+		enable_reserve_resources();
+	    } else {
+		disable_reserve_resources();
+	    }
 	}
-	enable_reserve_resources();
     }
     // if invalid, set back to unbound
     else {
+	$('#valid_rspec').val('0');
 	set_attributes_for_unbound();
 	disable_reserve_resources();
     }
@@ -104,7 +110,7 @@ function handle_rspec_validation_results(jsonResponse)
 
 function handle_rspec_update(jsonResponse, rspec, updateJacks)
 {
-    current_rspec = rspec;
+    $('#current_rspec_text').val(rspec);
 
     if(!jacksEditorApp_isHidden && updateJacks) {
 	jacksEditorApp.jacksInput.trigger('change-topology',
@@ -114,8 +120,7 @@ function handle_rspec_update(jsonResponse, rspec, updateJacks)
     // Update the message string
     // Update the reserve resources button
     console.log("handle_rspec_update: " + jsonResponse);
-    $('#rspec_status_text').text(jsonResponse.message);
-
+    $('#rspec_status_text').html(jsonResponse.message);
 
 }
 
@@ -136,7 +141,7 @@ function enable_reserve_resources()
 function set_attributes_for_stitching()
 {
     // disable AMs
-    $('#agg_chooser').val('stitch');
+    $('#agg_chooser').val('Stitchable RSpec');
     $('#agg_chooser').attr('disabled', 'disabled');
     $('#aggregate_message').html("You selected a <b>stitchable</b> RSpec, so aggregates will be specified from the RSpec.");
     $('#bound_rspec').val('1');
@@ -146,12 +151,11 @@ function set_attributes_for_stitching()
 /* do things when bound but not stitchable RSpec */
 function set_attributes_for_bound()
 {
-    // FIXME: Bound RSpecs should disable AM selection - uncomment when ready
-    //$('#agg_chooser').val('bound');
-    //$('#agg_chooser').attr('disabled', 'disabled');
+    $('#agg_chooser').val('Bound RSpec');
+    $('#agg_chooser').attr('disabled', 'disabled');
     // FIXME: Comment these 2 lines out when the above 2 lines are uncommented
-    $('#agg_chooser').val(am_on_page_load);
-    $('#agg_chooser').removeAttr('disabled');
+    //    $('#agg_chooser').val(am_on_page_load);
+    //    $('#agg_chooser').removeAttr('disabled');
     $('#aggregate_message').html("You selected a <b>bound</b> RSpec.");
     $('#bound_rspec').val('1');
     $('#stitch_rspec').val('0');
@@ -171,6 +175,17 @@ function set_attributes_for_unbound()
 function am_onchange()
 {
     am_on_page_load = $('#agg_chooser').val();
+    bound_rspec = $('#bound_rspec').val();
+    valid_rspec = $('#valid_rspec').val();
+    current_rspec = $('#current_rspec_text').val();
+
+    if(current_rspec != "" && valid_rspec != "0"  &&
+       (am_on_page_load != "" || bound_rspec != "0")) {
+	enable_reserve_resources();
+    } else {
+	disable_reserve_resources();
+    }
+
 }
 
 /* do things when RSpec is chosen from list (i.e. not uploaded) */
@@ -195,18 +210,6 @@ function rspec_onchange()
 
     var selected_index = document.getElementById('rspec_select').selectedIndex;
     var selected_element = rspec_chooser.children()[selected_index];
-    var is_bound = selected_element.attributes.getNamedItem('bound').value;
-    var is_stitchable = selected_element.attributes.getNamedItem('stitch').value;
-
-    if (is_stitchable == "1") {
-        set_attributes_for_stitching();
-    }
-    else if(is_bound == "1") {
-        set_attributes_for_bound();
-    }
-    else {
-        set_attributes_for_unbound();
-    }
 
     rspec_id = selected_element.value;
     $.get("rspecview.php", {id : rspec_id},
@@ -220,15 +223,6 @@ function rspec_onchange()
 
     // Clear the "rspec_selection" file chooser
     clear_other_inputs('#rspec_select');
-    
-    // disable reserving resources if no RSpec is chosen
-    if(selected_element.attributes.getNamedItem('title').value == "Choose RSpec") {
-        disable_reserve_resources();
-    }
-    else {
-        enable_reserve_resources();
-    }
-
 }
 
 var jacksEditorApp_isHidden = true;
@@ -312,6 +306,9 @@ function do_show_editor_elements()
     $('#jacks-editor-app').show();
     $('#grab_editor_topology_button').removeAttr('disabled');
     jacksEditorApp_isHidden = false;
+    rspec = $('#current_rspec_text').val();
+    jacksEditorApp.jacksInput.trigger('change-topology',
+				      [{rspec : rspec}]);
 }
 
 function grab_paste_onchange()
@@ -330,7 +327,7 @@ function urlupload_onchange()
 	  {url : url}, 
               function(rt, st, xhr) {
 		  var rspec = xhr.responseText;
-		  validate_rspec_file(rspec, true, handle_validation_results);
+		  validate_rspec_file(rspec, false, handle_validation_results);
               })
     .fail(function(xhr, ts, et) {
 	    console.log("Failed uploading URL: " + url);
