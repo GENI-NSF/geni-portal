@@ -5,7 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.20 ==
-
+ * Require unique name for rspecs (#784)
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
