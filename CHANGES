@@ -6,6 +6,7 @@
 
 == 2.20 ==
  * Require unique name for rspecs (#784)
+ * Default browser named to 'Unknown' to avoid undefined var error. (#1166)
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
