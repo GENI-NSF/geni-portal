@@ -11,7 +11,7 @@ function info_set_location(slice_id, url)
                       }
                       window.location = url;
                   } else {
-                      alert("Slice has no sliver information");
+                      alert("This slice has no known resources.");
                   }
               })
         .fail(function() {
