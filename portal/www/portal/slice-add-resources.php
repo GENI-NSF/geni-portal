@@ -118,9 +118,9 @@ function show_am_chooser() {
     print "<option value=\"$aggid\" title=\"$aggdesc\">$aggname</option>\n";
   }
 
-  echo '<option disabled value="stitch" title="Stitchable RSpec">Stitchable RSpec</option>'; 
   // FIXME: Bound RSpecs not implemented yet
-  echo '<option disabled value="bound" title="Bound RSpec">Bound RSpec</option>'; 
+  //  echo '<option disabled value="stitch" title="Stitchable RSpec">Stitchable RSpec</option>'; 
+  //  echo '<option disabled value="bound" title="Bound RSpec">Bound RSpec</option>'; 
   print "</select>\n";
   
   // Display message to user about stitching/bound RSpecs
@@ -164,11 +164,11 @@ function validateSubmit()
   am = document.getElementById("agg_chooser");
   rspec2 = document.getElementById("file_select");
 
-  current_rspec_text = $('#current_rspec_tet').val();
+  current_rspec_text = $('#current_rspec_text').val();
   is_bound = $('#bound_rspec').val();
 
-  console.log("validateSubmit.rspec = " + current_rspec_text);
-  console.log("validateSubmit.bound = " + is_bound);
+  //  console.log("validateSubmit.rspec = " + current_rspec_text);
+  //  console.log("validateSubmit.bound = " + is_bound);
   
   if ((current_rspec_text != '') && (am.value || is_bound)) {
     f1.submit();
@@ -290,7 +290,8 @@ print "<tr>";
 print "<th rowspan='1' >Graphical Editor</th>";
 print "<td>";
 print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
-print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Hide Editor</button>';
+print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Close Editor: Save</button>';
+print '<button type="button" name="discard_jacks_editor_button" id="discard_jacks_editor_button" hidden="hidden" onClick="do_discard_editor()">Close Editor: Discard</button>';
 print "</td></tr>";
 
 print "<tr>";
@@ -325,7 +326,7 @@ print "<tr>";
 print "<th rowspan='1'>Save RSpec</th>";
 print "<td>";
 print "<b>Download RSpec: </b>";
-print '<button type="button" onClick="do_rspec_download()">Download</button>';
+print '<button type="button" disabled="disabled" id="download_rspec_button" onClick="do_rspec_download()">Download</button>';
 print "</td></tr>";
 
 print "<tr><th>Choose Aggregate</th><td>";
@@ -358,6 +359,7 @@ print '<input type="hidden" name="current_rspec_text" id="current_rspec_text" va
 // stitchable RSpec is selected, change this value (to 1) via slice-add-resources.js
 print '<input type="hidden" name="valid_rspec" id="valid_rspec" value="0"/>';
 print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
+print '<input type="hidden" name="partially_bound_rspec" id="partially_bound_rspec" value="0"/>';
 print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 

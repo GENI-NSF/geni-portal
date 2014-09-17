@@ -82,7 +82,11 @@ function handle_rspec_validation_results(jsonResponse)
     // if valid, change around attributes depending on stitch/bound
     if(jsonResponse.valid) {
 	$('#valid_rspec').val('1');
-	if(jsonResponse.stitch) {
+	if(jsonResponse.partially_bound) {
+	    set_attributes_for_partially_bound();
+	    disable_reserve_resources();
+	} 
+	else if(jsonResponse.stitch) {
 	    set_attributes_for_stitching();
 	    enable_reserve_resources();
 	}
@@ -113,13 +117,15 @@ function handle_rspec_update(jsonResponse, rspec, updateJacks)
     $('#current_rspec_text').val(rspec);
 
     if(!jacksEditorApp_isHidden && updateJacks) {
-	jacksEditorApp.jacksInput.trigger('change-topology',
-					  [{rspec: rspec}]);
+	set_jacks_topology(rspec);
     }
+
+    // enable the download button
+    $('#download_rspec_button').removeAttr('disabled');
 
     // Update the message string
     // Update the reserve resources button
-    console.log("handle_rspec_update: " + jsonResponse);
+    //    console.log("handle_rspec_update: " + jsonResponse);
     $('#rspec_status_text').html(jsonResponse.message);
 
 }
@@ -141,9 +147,9 @@ function enable_reserve_resources()
 function set_attributes_for_stitching()
 {
     // disable AMs
-    $('#agg_chooser').val('Stitchable RSpec');
+    //    $('#agg_chooser').val('Stitchable RSpec');
     $('#agg_chooser').attr('disabled', 'disabled');
-    $('#aggregate_message').html("You selected a <b>stitchable</b> RSpec, so aggregates will be specified from the RSpec.");
+    //    $('#aggregate_message').html("You selected a <b>stitchable</b> RSpec, so aggregates will be specified from the RSpec.");
     $('#bound_rspec').val('1');
     $('#stitch_rspec').val('1');
 }
@@ -151,13 +157,22 @@ function set_attributes_for_stitching()
 /* do things when bound but not stitchable RSpec */
 function set_attributes_for_bound()
 {
-    $('#agg_chooser').val('Bound RSpec');
+    //    $('#agg_chooser').val('Bound RSpec');
     $('#agg_chooser').attr('disabled', 'disabled');
     // FIXME: Comment these 2 lines out when the above 2 lines are uncommented
     //    $('#agg_chooser').val(am_on_page_load);
     //    $('#agg_chooser').removeAttr('disabled');
-    $('#aggregate_message').html("You selected a <b>bound</b> RSpec.");
+    //    $('#aggregate_message').html("You selected a <b>bound</b> RSpec.");
     $('#bound_rspec').val('1');
+    $('#stitch_rspec').val('0');
+}
+
+/* do things when partially bound RSpec */
+function set_attributes_for_partially_bound()
+{
+    //    $('#aggregate_message').html("You selected a <b>partially bound</b> RSpec.");
+    $('#partially_bound_rspec').val('1');
+    $('#bound_rspec').val('0');
     $('#stitch_rspec').val('0');
 }
 
@@ -223,6 +238,11 @@ function rspec_onchange()
 
     // Clear the "rspec_selection" file chooser
     clear_other_inputs('#rspec_select');
+
+    // If RSPEC is unchosen, disable reserve resources
+    if (rspec_opt == "") {
+	disable_reserve_resources();
+    }
 }
 
 var jacksEditorApp_isHidden = true;
@@ -246,7 +266,7 @@ function assureJacksEditorApp() {
 }
 
 function jacks_editor_app_ready(je, je_input, je_output) {
-  console.log("JEAR : JacksEditorApp ready");
+    //  console.log("JEAR : JacksEditorApp ready");
   $('#rspec_status_text').text("");
 };
 
@@ -263,20 +283,46 @@ function jacks_fetch_topology_callback(rspecs) {
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
+      clear_other_inputs("");
   }
 }
 
 
 /** Hide/Show the editor buttons **/
-/* And hide the jacks editor itself **/
+
+// With saving editor state
 function do_hide_editor()
 {
+    do_hide_editor_internal(true);
+}
+
+// Without saving editor state
+function do_discard_editor()
+{
+    do_hide_editor_internal(false);
+}
+
+function do_hide_editor_internal(grab_topology)
+{
     if(jacksEditorApp == null) return;
+
+    if (grab_topology) {
+	// Set new value of current RSPEC
+	do_grab_editor_topology();
+    } else {
+	// Revert to previous value of current RSPEC
+	var rspec = $('#current_rspec_text').val();
+	set_jacks_topology(rspec);
+    }
+
     $('#show_jacks_editor_button').show();
     $('#hide_jacks_editor_button').hide();
+    $('#discard_jacks_editor_button').hide();
     do_hide_editor_elements();
 }
 
+
+/* And hide the jacks editor itself **/
 function do_hide_editor_elements()
 {
     console.log("Hiding editor");
@@ -294,6 +340,7 @@ function do_show_editor()
     assureJacksEditorApp();
     $('#show_jacks_editor_button').hide();
     $('#hide_jacks_editor_button').show();
+    $('#discard_jacks_editor_button').show();
     console.log("Showing editor");
     do_show_editor_elements();
 }
@@ -307,9 +354,16 @@ function do_show_editor_elements()
     $('#grab_editor_topology_button').removeAttr('disabled');
     jacksEditorApp_isHidden = false;
     rspec = $('#current_rspec_text').val();
-    jacksEditorApp.jacksInput.trigger('change-topology',
-				      [{rspec : rspec}]);
+    set_jacks_topology(rspec);
 }
+
+function set_jacks_topology(rspec)
+{
+    if(rspec == "") rspec = "<rspec></rspec>";
+    jacksEditorApp.jacksInput.trigger('change-topology',
+				      [{rspec: rspec}]);
+}
+
 
 function grab_paste_onchange()
 {
@@ -344,15 +398,19 @@ function clear_other_inputs(current_input)
 	$('#file_select').val(null);
     if(current_input != '#url_select')
 	$('#url_select').val("");
-    if(current_input != '#paste_select')
-	$('#paste_select').val('');
 }
 
 // Download current rspec from Jacks to browser's Download directory
 function do_rspec_download()
 {
-    jacksEditorApp.downloadingRspec = true;
-    jacksEditorApp.jacksInput.trigger('fetch-topology');
+    if (jacksEditorApp == null) {
+	var rspec = $('#current_rspec_text').val();
+	var rspec_download_url = "rspecdownload.php?rspec=" + rspec;
+	window.location.replace(rspec_download_url);
+    } else {
+	jacksEditorApp.downloadingRspec = true;
+	jacksEditorApp.jacksInput.trigger('fetch-topology');
+    }
 }
 
 // Grab current topology from Jacks editor

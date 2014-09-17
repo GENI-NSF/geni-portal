@@ -50,6 +50,9 @@ require_once 'tool-rspec-parse.php';
                 1 (bound)
         stitch: 0 (non-stitching)
                 1 (stitching)
+	partially_bound: 
+	        0 (not-partially bound: either fully bound or unbound)
+	        1 (partially bound)
         ams:    array of AM URNs parsed
 	rspec: Text of parsed rspec
 */
@@ -64,6 +67,7 @@ $results['valid'] = false;
 $results['message'] = "";
 $results['bound'] = false;
 $results['stitch'] = false;
+$results['partially_bound'] = false;
 $results['ams'] = array();
 $results['rspec'] = "";
 
@@ -103,14 +107,18 @@ if (array_key_exists('user_rspec_file', $_FILES)) {
             
             // get bound status, stitching status, and AM URNs if possible
             $parse_results = parseRequestRSpec($rspec_filename);
+	    $results['rspec'] = $parse_results[0];
             $results['bound'] = $parse_results[1];
             $results['stitch'] = $parse_results[2];
             // FIXME: We can pass the AM URNs back if we need to for bound RSpecs
             $results['ams'] = $parse_results[3];
-	    $results['rspec'] = $parse_results[4];
+	    $results['partially_bound'] = $parse_results[4];
             
-            if($results['stitch']) {
-                $results['message'] .= " and <b>stitchable</b>";
+	    if($results['partially_bound']) {
+	      $results['message'] .= " and <b>partially bound</b>";
+	    }
+            else if($results['stitch']) {
+                $results['message'] .= " and <b>multi-aggregate</b>";
             }
             else if($results['bound']) {
                 $results['message'] .= " and <b>bound</b>";

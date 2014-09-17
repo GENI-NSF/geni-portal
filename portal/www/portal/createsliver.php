@@ -124,16 +124,24 @@ if(!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id))
 // check stitching to see if AM is required to be specified
 $bound_rspec = 0;
 $stitch_rspec = 0;
+$partially_bound_rspec = 0;
 $parse_results = parseRequestRSpecContents($rspec);
 
 // is_bound is located in parse_results[1]
 if($parse_results[1] === true) {
     $bound_rspec = 1;
 }
+
 // is_stitch is located in parse_results[2]
 if($parse_results[2] === true) {
     $stitch_rspec = 1;
 }
+
+// is_partially_bound is located in parse_results[5]
+if($parse_results[5] == true) {
+  $partially_bound_rspec = 1;
+}
+
 //List of AMs is in parse_results[3] for bound rspecs
 
 
@@ -147,6 +155,8 @@ if (!$stitch_rspec && (! isset($am) || is_null($am))) {
 $am_urns = $parse_results[3];
 if ($bound_rspec && count($am_urns) == 0) {
       no_am_error();
+} else if ($partially_bound_rspec) {
+  no_am_error();
 } else if (!$bound_rspec && (!isset($am) || is_null($am))) {
       no_am_error();
 }

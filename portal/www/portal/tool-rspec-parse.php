@@ -32,17 +32,18 @@ require_once 'db-util.php';
 //      component_manager_id tags)?
 // Is it for stitching (i.e. does any link have two different 
 //      component_manager_id tags)?
-// Return array of four values: 
+// Return array of five values: 
 //    parsed_rspec (text), 
 //    is_bound (boolean), 
 //    is_stitch (boolean),
 //    a list of AM URN's (component_manager_id's) of requested nodes
+//    is_partially_bound (boolean)
 function parseRequestRSpec($rspec_filename)
 {
 
   // Handle case wherein no file provided (for update, not upload)
   if ($rspec_filename == NULL || $rspec_filename == "") {
-    return array(NULL, False, False, array());
+    return array(NULL, False, False, array(), False);
   }
 
   $rspec = file_get_contents($rspec_filename);
@@ -55,6 +56,7 @@ function parseRequestRSpecContents($rspec) {
   
   $am_urns = array();
   $is_bound = false;
+  $has_unbound_node = false;
   $is_stitch = false;
   
   $dom_document = new DOMDocument();
@@ -79,6 +81,8 @@ function parseRequestRSpecContents($rspec) {
 	$component_manager_id = $node->getAttribute('component_manager_id'); 
 	$is_bound = true;
 	$am_urns[] = $component_manager_id;
+      } else {
+	$has_unbound_node = true;
       }
       //      error_log("Node "  . print_r($node, true) . " " . 
       //		print_r($client_id, true) . " " . 
@@ -114,7 +118,8 @@ function parseRequestRSpecContents($rspec) {
     }
   }
 
-  return array($rspec, $is_bound, $is_stitch, $am_urns, $rspec);
+  $is_partially_bound = ($is_bound and $has_unbound_node);
+  return array($rspec, $is_bound, $is_stitch, $am_urns, $is_partially_bound);
 }
 
 
