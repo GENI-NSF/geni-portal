@@ -6,6 +6,7 @@
 
 == 2.20 ==
  * Require unique name for rspecs (#784)
+ * Poll slice aggregates by default (#1147)
  * Default browser named to 'Unknown' to avoid undefined var error. (#1166)
  * Update to use Omni 2.7 (support any bound multi-am request,
    clicking 'Ready' updates the AM list for 'This Slice'). (#1163)

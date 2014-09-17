@@ -24,6 +24,7 @@
 
 require_once("settings.php");
 require_once("user.php");
+require_once("sa_client.php");
 
 function get_am_array( $all_aggs ) {
   $am_array = Array();
@@ -72,6 +73,22 @@ if (array_key_exists("am_id", $_REQUEST)) {
     }
   }
   //$all_aggs = $ams;
+} else if (array_key_exists('slice_id', $_REQUEST)) {
+  /* Get all aggregates in the sliver info data for the given slice */
+
+  // User hasn't been loaded, so that's first
+  $user = geni_loadUser();
+
+  // Get the slice
+  if (! isset($sa_url)) {
+    $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  }
+  $slice_id = $_REQUEST['slice_id'];
+  $slice = lookup_slice($sa_url, $user, $slice_id);
+  // If no slice, set $ams = []
+  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
+  // Get the AMs
+  $ams = aggregates_in_slice($sa_url, $user, $slice_urn);
 } else {
   $ams = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 }
