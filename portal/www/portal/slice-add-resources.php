@@ -368,6 +368,8 @@ print '</form>';
 
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose RSpec' options to temporarily upload an RSpec for this reservation only.</p>";
 
+print "<p id='partially_bound_notice' hidden='hidden'><b>Note:</b> 'Partially bound' RSpecs are RSpecs that bind some resources to specific aggregates, but not all. RSpecs must either not assign resources to any specific aggregates, or assign all resources to specific aggregates.</p>";
+
 print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");

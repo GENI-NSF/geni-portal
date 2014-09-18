@@ -152,6 +152,7 @@ function set_attributes_for_stitching()
     //    $('#aggregate_message').html("You selected a <b>stitchable</b> RSpec, so aggregates will be specified from the RSpec.");
     $('#bound_rspec').val('1');
     $('#stitch_rspec').val('1');
+    $('#partially_bound_notice').attr('hidden', 'hidden');
 }
 
 /* do things when bound but not stitchable RSpec */
@@ -165,6 +166,7 @@ function set_attributes_for_bound()
     //    $('#aggregate_message').html("You selected a <b>bound</b> RSpec.");
     $('#bound_rspec').val('1');
     $('#stitch_rspec').val('0');
+    $('#partially_bound_notice').attr('hidden', 'hidden');
 }
 
 /* do things when partially bound RSpec */
@@ -174,6 +176,7 @@ function set_attributes_for_partially_bound()
     $('#partially_bound_rspec').val('1');
     $('#bound_rspec').val('0');
     $('#stitch_rspec').val('0');
+    $('#partially_bound_notice').removeAttr('hidden');
 }
 
 /* do things when unbound RSpec */
@@ -184,6 +187,7 @@ function set_attributes_for_unbound()
     $('#aggregate_message').html("");
     $('#bound_rspec').val('0');
     $('#stitch_rspec').val('0');
+    $('#partially_bound_notice').attr('hidden', 'hidden');
 }
 
 /* save previously chosen AM when AM changes */
