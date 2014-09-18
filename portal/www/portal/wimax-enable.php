@@ -270,6 +270,7 @@ function my_curl_put($arrayToPost, $url) {
   curl_close($ch);
   if ($error) {
     error_log("wimax-enable curl put_message error: $error");
+    $result .= $error;
   }
   return trim($result);
 }
