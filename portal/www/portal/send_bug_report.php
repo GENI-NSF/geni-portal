@@ -223,7 +223,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     
     $headers   = array();
     $headers[] = "MIME-Version: 1.0";
-    $headers[] = "Content-type: multipart/mixed;boundary=\"PHP-mixed-" . $boundary_string . "\"";
+    $headers[] = "Content-type: multipart/mixed; boundary=PHP-mixed-" . $boundary_string;
     $headers[] = "From: $from";
     if($cc) {
         $headers[] = "Cc: $cc";
@@ -233,7 +233,8 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     $headers[] = "X-Mailer: PHP/" . phpversion();
 
     // start output buffering
-    // do not add any additional tabs here
+    // do not add any additional tabs here as they will indent
+    // the PHP-mixed et al lines
     ob_start();
     ?>
 
@@ -262,8 +263,9 @@ Content-Transfer-Encoding: base64
 Content-Disposition: attachment 
 
 <?php echo $attachment; ?>
+--PHP-mixed-<?php echo $boundary_string; ?>--
 
-    <?php 
+<?php 
     $message = ob_get_clean(); 
 
     $retVal = mail($to, $subject, $message, implode("\r\n", $headers));
