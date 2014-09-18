@@ -277,9 +277,8 @@ function jacks_fetch_topology_callback(rspecs) {
     //  console.log("RSPECS = " + rspecs + " " + rspecs.length);
   var rspec = rspecs[0].rspec;
   if(jacksEditorApp.downloadingRspec) {
-      var rspec_download_url = "rspecdownload.php?rspec=" + rspec;
-      window.location.replace(rspec_download_url);
       jacksEditorApp.downloadingRspec = false;
+      $.get("rspecdownload.php", {rspec : rspec});
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);

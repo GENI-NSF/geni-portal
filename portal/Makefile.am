@@ -171,7 +171,6 @@ dist_svcweb_DATA = \
 	www/portal/slice-add-resources.css \
 	www/portal/slice-add-resources.js \
 	www/portal/slice-add-resources.php \
-	www/portal/slice-add-resources-jacks.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
