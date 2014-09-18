@@ -1287,7 +1287,8 @@ if (array_key_exists('project_id', $_REQUEST))
       // If we were just trying to create the group, then just change the group admin to be this user (the lead)
       // If we were also creating the user, add the user to the group and then change the admin to this user
       if (! $enable_user) {
-	error_log("Failed to create group $ldif_group_name cause it already exists.");
+	error_log("Failed to create group $ldif_group_name cause it already exists. Result: $result");
+	//	error_log("Sent LDIF: $ldif_string");
 	// This is mostly success. But we don't know who Orbit thinks is the lead of the group.
 	// For now, assume it is who we think it is
 	// Then treat this as success
@@ -1299,7 +1300,7 @@ if (array_key_exists('project_id', $_REQUEST))
 	    error_log("Changed group $ldif_group_name admin to $ldif_user_username");
 	  } else {
 	    // Failed to change lead. This might happen if that user has not created their wimax account yet.
-	    error_log("FIXME: Failed to change WiMAX group admin for project $proj_name (group $proj_group_name) to $project_lead_username but assuming success: $res");
+	    error_log("FIXME: Failed to change WiMAX group admin for project $project_name (group $ldif_group_name) to $ldif_user_username but assuming success: $res");
 	    // Maybe this means the group already had that lead?
 	    // Assume success
 	    // FIXME: If we see this, figure out if we are handling it correctly.
