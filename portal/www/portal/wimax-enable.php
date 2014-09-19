@@ -181,13 +181,16 @@ function get_ldif_for_project_lead($ldif_group_name, $ldif_lead_username, $ldif_
     . "roleoccupant: " . get_user_dn($ldif_lead_username, $ldif_lead_groupname) . "\n";
 }
 
-function get_ldif_for_user_string($ldif_user_username, $ldif_user_groupname, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, $comment) {
+function get_ldif_for_user_string($ldif_user_username, $ldif_user_groupname, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, $comment, $ldif_user_irodsname=NULL) {
   $ldif_string = "# LDIF for user ($comment)\n"
     . "dn: " . get_user_dn($ldif_user_username,$ldif_user_groupname) . "\n"
     . "cn: $ldif_user_pretty_name\n"
     . "givenname: $ldif_user_given_name\n"
     . "mail: $ldif_user_email\n"
     . "sn: $ldif_user_sn\n";
+  if (! is_null($ldif_user_irodsname) and trim($ldif_user_irodsname) != "") {
+    $ldif_string .= "iRODSusername: $ldif_user_irodsname\n";
+  }
   
   if(strtolower($_SERVER['eppn']) != $user->eppn) {
     $ssh_public_keys = lookup_public_ssh_keys($ma_url, Portal::getInstance(), $user->account_id);
@@ -525,7 +528,14 @@ function add_member_to_group($member, $member_id, $project_id, $group_name, $pro
     $ldif_user_sn = $member->attributes['sn'];
   }
 
-  $ldif_string = get_ldif_for_user_string($new_member_username, $group_name, $prettyName, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $member, $ma_url, $project_desc, "project member"); 
+  $ldif_user_irodsname = NULL;
+  if (isset($member->irods_username)) {
+    $ldif_user_irodsname = $member->irods_username;
+  } else if (property_exists($member, "attributes") and array_key_exists('irods_username', $member->attributes) and isset($member->attributes['irods_username']) and ! is_null($member->attributes['irods_username'])) {
+    $ldif_user_irodsname = $member->attributes['irods_username'];
+  }
+
+  $ldif_string = get_ldif_for_user_string($new_member_username, $group_name, $prettyName, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $member, $ma_url, $project_desc, "project member", $ldif_user_irodsname); 
   $postdata = array("ldif" => $ldif_string);
   $result = my_curl_put($postdata, $wimax_server_url);
   //  error_log("At $wimax_server_url send ldif $ldif_string and got result $result");
@@ -635,6 +645,13 @@ if (array_key_exists('givenName', $user->attributes) and isset($user->attributes
 $ldif_user_sn = '';
 if (array_key_exists('sn', $user->attributes) and isset($user->attributes['sn']) and ! is_null($user->attributes['sn'])) {
   $ldif_user_sn = $user->attributes['sn'];
+}
+
+$ldif_user_irodsname = NULL;
+if (isset($user->ma_member->irods_username)) {
+  $ldif_user_irodsname = $user->ma_member->irods_username;
+} else if (property_exists($user, "attributes") and array_key_exists('irods_username', $user->attributes) and isset($user->attributes['irods_username']) and ! is_null($user->attributes['irods_username'])) {
+  $ldif_user_irodsname = $user->attributes['irods_username'];
 }
 
 $project_ids = get_projects_for_member($sa_url, $user, $user->account_id, true);
@@ -1203,7 +1220,7 @@ if (array_key_exists('project_id', $_REQUEST))
       }
       if ($enable_user) {
 	// Could use the new moveUser URL here instead....
-	$ldif_string .= get_ldif_for_user_string($ldif_user_username, $ldif_user_groupname, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project member"); 
+	$ldif_string .= get_ldif_for_user_string($ldif_user_username, $ldif_user_groupname, $ldif_user_pretty_name, $ldif_user_given_name, $ldif_user_email, $ldif_user_sn, $user, $ma_url, $ldif_project_description, "project member", $ldif_user_irodsname); 
       }
       
       // SEND LDIF
