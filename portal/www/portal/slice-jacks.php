@@ -688,6 +688,7 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
 				      jacks_slice_info,
 				      jacks_user_info,
 				      jacks_enable_buttons, 
+				      null, null,
 				      portal_jacks_editor_app_ready,
 				      JacksEditorApp.prototype.postRspec
 				      );

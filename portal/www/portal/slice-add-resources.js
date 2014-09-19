@@ -264,6 +264,8 @@ function assureJacksEditorApp() {
 					jacks_slice_info,
 					jacks_user_info,
 					jacks_enable_buttons,
+					    jacksContext.canvasOptions,
+					    jacksContext.constraints,
 				    jacks_editor_app_ready,
 				    jacks_fetch_topology_callback);
     }
@@ -282,7 +284,15 @@ function jacks_fetch_topology_callback(rspecs) {
   var rspec = rspecs[0].rspec;
   if(jacksEditorApp.downloadingRspec) {
       jacksEditorApp.downloadingRspec = false;
-      $.get("rspecdownload.php", {rspec : rspec});
+      $.post("saverspectoserver.php", {rspec : rspec},
+	    function(rt, st, xhr) {
+		//		console.log("SUCCESS");
+		var replace_url = "rspecdownload.php?tempfile=" + rt;
+		window.location.replace(replace_url);
+	    })
+	  .fail(function(xhr, ts, et) {
+		  //		  console.log("FAILURE");
+	      });
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
@@ -329,8 +339,8 @@ function do_hide_editor_internal(grab_topology)
 function do_hide_editor_elements()
 {
     console.log("Hiding editor");
-    $('#jacks-editor-status').hide();
     $('#jacks-editor-pane').hide();
+    $('#jacks-editor-status').hide();
     $('#jacks-editor-buttons').hide();
     $('#jacks-editor-app').hide();
     $('#grab_editor_topology_button').attr('disabled', true);
@@ -350,14 +360,14 @@ function do_show_editor()
 
 function do_show_editor_elements()
 {
+    $('#jacks-editor-status').hide();
+    $('#jacks-editor-buttons').hide();
     //    $('#jacks-editor-status').show();
     $('#jacks-editor-pane').show();
     //    $('#jacks-editor-buttons').show();
     $('#jacks-editor-app').show();
     $('#grab_editor_topology_button').removeAttr('disabled');
     jacksEditorApp_isHidden = false;
-    rspec = $('#current_rspec_text').val();
-    set_jacks_topology(rspec);
 }
 
 function set_jacks_topology(rspec)
@@ -395,6 +405,8 @@ function urlupload_onchange()
 // Clear all other inputs other than most recent one
 function clear_other_inputs(current_input)
 {
+    if(current_input != '#paste_select')
+	$('#paste_select').val('`');
     if(current_input != '#rspec_select')
 	$('#rspec_select').val('0');
     if(current_input != '#file_select')

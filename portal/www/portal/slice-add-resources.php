@@ -155,8 +155,14 @@ $keys = $user->sshKeys();
 show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
+
+$jacksContext = json_decode(file_get_contents('/tmp/cascade-jacks.json'));
+
 ?>
+
+
 <script>
+
 function validateSubmit()
 {
   f1 = document.getElementById("f1");
@@ -276,7 +282,9 @@ print "</div></td></tr></table>";
 
   var jacks_enable_buttons = false;
 
-  do_hide_editor_elements();
+  var jacksContext = <?php echo json_encode($jacksContext) ?>;
+
+  do_show_editor();
 
 </script>
 
@@ -287,12 +295,12 @@ print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/
 print "<table>";
 
 print "<tr>";
-print "<th rowspan='1' >Graphical Editor</th>";
-print "<td>";
-print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
-print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Close Editor: Save</button>';
-print '<button type="button" name="discard_jacks_editor_button" id="discard_jacks_editor_button" hidden="hidden" onClick="do_discard_editor()">Close Editor: Discard</button>';
-print "</td></tr>";
+//print "<th rowspan='1' >Graphical Editor</th>";
+//print "<td>";
+//print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
+//print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Close Editor: Save</button>';
+//print '<button type="button" name="discard_jacks_editor_button" id="discard_jacks_editor_button" hidden="hidden" onClick="do_discard_editor()">Close Editor: Discard</button>';
+//print "</td></tr>";
 
 print "<tr>";
 print "<th rowspan='6'>Choose RSpec</th>";

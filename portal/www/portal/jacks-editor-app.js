@@ -1,6 +1,7 @@
 function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, 
 			allRspecs,
 			sliceInfo, userInfo, enableButtons,
+			canvasOptions, constraints,
 			readyCallback, fetchTopologyCallback) {
 
     // Map from client_id to am_id
@@ -61,9 +62,13 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.userInfo = userInfo;
     this.username = userInfo.user_name;
 
-    var canvasOptions = this.getCanvasOptions();
-    canvasOptions.aggregates = this.sortedAms;
-    var constraints = this.getConstraints();
+    if (canvasOptions == null)
+	canvasOptions = this.getCanvasOptions();
+    if (constraints == null)
+	constraints = this.getConstraints();
+
+
+    //    canvasOptions.aggregates = this.sortedAms;
 
     var that = this;
     var jacksInstance = new window.Jacks({
