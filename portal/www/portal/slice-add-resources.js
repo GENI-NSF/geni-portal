@@ -173,6 +173,7 @@ function set_attributes_for_bound()
 function set_attributes_for_partially_bound()
 {
     //    $('#aggregate_message').html("You selected a <b>partially bound</b> RSpec.");
+    $('#agg_chooser').attr('disabled', 'disabled');
     $('#partially_bound_rspec').val('1');
     $('#bound_rspec').val('0');
     $('#stitch_rspec').val('0');
@@ -406,7 +407,7 @@ function urlupload_onchange()
 function clear_other_inputs(current_input)
 {
     if(current_input != '#paste_select')
-	$('#paste_select').val('`');
+	$('#paste_select').val('');
     if(current_input != '#rspec_select')
 	$('#rspec_select').val('0');
     if(current_input != '#file_select')
@@ -433,4 +434,37 @@ function do_grab_editor_topology()
 {
     jacksEditorApp.downloadingRspec = false;
     jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+// Routine to hide/show the various rspec choice mechanisms
+function enable_rspec_selection_mode_portal() { enable_rspec_selection_mode("PORTAL"); }
+function enable_rspec_selection_mode_file() { enable_rspec_selection_mode("FILE"); }
+function enable_rspec_selection_mode_url() { enable_rspec_selection_mode("URL"); }
+function enable_rspec_selection_mode_textbox() { enable_rspec_selection_mode("TEXTBOX"); }
+function enable_rspec_selection_mode_jacks() { enable_rspec_selection_mode("JACKS"); }
+
+function enable_rspec_selection_mode(selected_mode)
+{
+    if(selected_mode == "PORTAL")
+	$('#rspec_portal_row').show();
+    else if (selected_mode == "FILE")
+	$('#rspec_file_row').show();
+    else if (selected_mode == "URL")
+	$('#rspec_url_row').show();
+    else if (selected_mode == "TEXTBOX")
+	$('#rspec_paste_row').show();
+    else if (selected_mode == "JACKS")
+	$('#rspec_jacks_row').show();
+
+    if(selected_mode != "PORTAL")
+	$('#rspec_portal_row').hide();
+    if (selected_mode != "FILE")
+	$('#rspec_file_row').hide();
+    if (selected_mode != "URL")
+	$('#rspec_url_row').hide();
+    if (selected_mode != "TEXTBOX")
+	$('#rspec_paste_row').hide();
+    if (selected_mode != "JACKS")
+	$('#rspec_jacks_row').hide();
+
 }

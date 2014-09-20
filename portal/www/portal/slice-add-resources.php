@@ -249,16 +249,20 @@ $all_rspecs = fetchRSpecMetaData($user);
 
 // JACKS-APP STUFF //
 include("jacks-editor-app.php");
-print "<table id='jacks-editor-app'>";
-print "<tr><td><div id='jacks-editor-app-container'>";
-print build_jacks_editor();
-print "</div></td></tr></table>";
 ?>
 
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <link rel="stylesheet" type="text/css" href="slice-add-resources.css" />
 <script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+
+<?php
+print "<table id='jacks-editor-app'>";
+print "<tr><td><div id='jacks-editor-app-container'>";
+print build_jacks_editor();
+print "</div></td></tr></table>";
+?>
+
 <script src="portal-jacks-editor-app.js"></script>
 <script>
 
@@ -294,7 +298,7 @@ print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/
 
 print "<table>";
 
-print "<tr>";
+//print "<tr>";
 //print "<th rowspan='1' >Graphical Editor</th>";
 //print "<td>";
 //print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
@@ -303,28 +307,35 @@ print "<tr>";
 //print "</td></tr>";
 
 print "<tr>";
-print "<th rowspan='6'>Choose RSpec</th>";
-print "<td><b>Select existing: </b>";
+print "<th rowspan='3'>Choose RSpec</th>";
+print '<td>';
+print '<b >Portal</b> <input type="radio" style="width:50px;padding: 0 10px;"name="rspec_select" id="portal_radio_select" checked="checked" onclick="enable_rspec_selection_mode_portal()" />';
+print '<b >File</b> <input type="radio" style="width:50px;padding: 0 10px;" name="rspec_select" id="file_radio_select" onclick="enable_rspec_selection_mode_file()" />';
+print '<b > URL</b> <input type="radio" style="width:50px;pading: 0 10px;"" name="rspec_select" id="url_radio_select" onclick="enable_rspec_selection_mode_url()" />';
+print '<b >Text Box</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="textbox_radio_select" onclick="enable_rspec_selection_mode_textbox()" />';
+print '<b >Graphical Editor</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="jacks_radio_select" onclick="enable_rspec_selection_mode_jacks()" />';
+print '</td></tr>';
+print '<tr id="rspec_portal_row" ><td><b>Select existing: </b>';
 show_rspec_chooser($user);
 print "</td></tr>";
-print "<tr><td>";
+print '<tr id = "rspec_file_row" hidden="hidden"><td>';
 print "<b>Select from file: </b><input type='file' name='file_select' id='file_select' onchange='fileupload_onchange()'/>";
 // upload message: get this from slice-add-resources.js 
 // calling rspecuploadparser.php
 print "<div id='upload_message' style='display:block;'></div>";
 print "</td></tr>";
-print "<tr><td>";
+print '<tr id="rspec_url_row" hidden="hidden"><td>';
 print "<b>Select from URL: </b>";
 print '<button type="button" name="url_grab_button" id="url_grab_button" onClick="urlupload_onchange()"  >Select</button>';
 print "<input type='input' name='url_select' id='url_select' onchange='urlupload_onchange()' />";
 print "</td></tr>";
-print "<tr><td>";
+print '<tr id="rspec_paste_row" hidden="hidden"><td>';
 print '<b>Paste Rspec: </b>';
 print '<button type="button" name="paste_grab_button" id="paste_grab_button" onClick="grab_paste_onchange()">Select</button>';
 print '<textarea cols="60" rows="4" name="paste_select" id="paste_select"></textarea>';
 print "</td></tr>";
-print "<tr><td>";
-print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button" disabled="true" onClick="do_grab_editor_topology()">Select</button>';
+print '<tr id="rspec_jacks_row" hidden="hidden"><td>';
+print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button"onClick="do_grab_editor_topology()">Select</button>';
 print "</td></tr>";
 print "<tr><td>";
 print '<b><p id="rspec_status_text" /></b>';
@@ -347,6 +358,7 @@ if ($am_ids == null) {
 }
 ?>
 <script>
+enable_rspec_selection_mode_portal();
 var am_id = <?php echo $am_id ?>;
 if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
   $('#agg_chooser').val(am_id); 
