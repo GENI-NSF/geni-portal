@@ -104,19 +104,27 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
   relative_redirect('home.php');
 }
 
-// FIXME: put header and breadcrumb here
+// put header and breadcrumb here
 show_header('GENI Portal: Send Problem Report',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 echo "<h1>Send Problem Report</h1>";
 
 // get 'To:' field and sanitize input
+// We support semi-colon separated lists of addresses
 if(array_key_exists("to", $_REQUEST)) {
-    $to = filter_var($_REQUEST['to'], FILTER_SANITIZE_EMAIL);
-    // if e-mail isn't valid
-    if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+    $tos = preg_split("/;\s*/", $_REQUEST['to'], NULL, PREG_SPLIT_NO_EMPTY);
+    $rtos = array();
+    foreach($tos as $to) {
+      $to = filter_var($to, FILTER_SANITIZE_EMAIL);
+      if (filter_var($to, FILTER_VALIDATE_EMAIL)) {
+        $rtos[] = $to;
+      }
+    }
+    if (count($rtos) == 0) {
         send_bug_report_error("E-mail address provided is not valid. Problem report not sent.");
     }
+    $to = implode("; ", $rtos);
 }
 else {
     send_bug_report_error("No e-mail address provided. Problem report not sent.");
@@ -223,7 +231,7 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     
     $headers   = array();
     $headers[] = "MIME-Version: 1.0";
-    $headers[] = "Content-type: multipart/mixed; boundary=PHP-mixed-" . $boundary_string;
+    $headers[] = "Content-type: multipart/mixed; boundary=\"PHP-mixed-" . $boundary_string . "\"";
     $headers[] = "From: $from";
     if($cc) {
         $headers[] = "Cc: $cc";
@@ -236,9 +244,9 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
     // do not add any additional tabs here as they will indent
     // the PHP-mixed et al lines
     ob_start();
-    ?>
+?>
 
---PHP-mixed-<?php echo $boundary_string; ?> 
+--PHP-mixed-<?php echo "$boundary_string\n"; ?>
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 
@@ -257,16 +265,17 @@ Process metadata:
 Thanks,
 <?php echo $user->prettyName(); ?>
 
---PHP-mixed-<?php echo $boundary_string; ?> 
-Content-Type: application/zip; name="<?php echo $zip_name; ?>" 
-Content-Transfer-Encoding: base64 
-Content-Disposition: attachment 
+--PHP-mixed-<?php echo "$boundary_string\n"; ?>
+Content-Type: application/zip; name="<?php echo $zip_name; ?>"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment
 
 <?php echo $attachment; ?>
---PHP-mixed-<?php echo $boundary_string; ?>--
 
 <?php 
     $message = ob_get_clean(); 
+    $message .= "\r\n";
+    $message .= "--PHP-mixed-$boundary_string--\r\n";
 
     $retVal = mail($to, $subject, $message, implode("\r\n", $headers));
 
