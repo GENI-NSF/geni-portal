@@ -507,8 +507,8 @@ JacksApp.prototype.handleStatus = function() {
     var slice_id = this.sliceId;
     if (this.sliceAms.length > 0) {
 	var am_id = this.sliceAms[0];
-	var details_url = "sliverstatus.php?slice_id=" + slice_id + "&am_id="  + am_id;
-	window.location.replace(details_url);
+	var status_url = "sliverstatus.php?slice_id=" + slice_id + "&am_id="  + am_id;
+	window.location.replace(status_url);
     }
 }
 
