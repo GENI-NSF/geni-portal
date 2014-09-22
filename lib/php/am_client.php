@@ -391,6 +391,10 @@ function invoke_omni_function($am_url, $user, $args,
       . "users = "
       . implode(", ", $username_array)
       . "\n";
+
+    // As of omni 2.7, by default omni queries the CH to get slice members
+    // We pass those in explicitly and don't want the extra query
+    $omni_config .= "useslicemembers = False\n";
       
     // specify AM for non-stitchable RSpecs
     if(!$stitch_rspec) {
