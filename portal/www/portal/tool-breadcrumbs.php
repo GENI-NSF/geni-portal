@@ -178,7 +178,7 @@ $names = array("home.php" => $TAB_HOME,
 	       "rspecs.php" => "Manage RSpecs",
 	       "omni-bundle.php" => "Omni Bundle",
 	       "irods.php" => "iRODS Account",
-	       "wimax-enable.php" => "Enable WiMAX",
+	       "wimax-enable.php" => "Wireless Account Setup",
 	       "gemini.php" => "GENI Desktop",
 	       "tool-aggwarning.php" => "Query All Aggregates",
 	       "send_bug_report.php" => "Send Problem Report");

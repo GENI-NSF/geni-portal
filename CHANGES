@@ -10,6 +10,10 @@
  * Default browser named to 'Unknown' to avoid undefined var error. (#1166)
  * Update to use Omni 2.7 (support any bound multi-am request,
    clicking 'Ready' updates the AM list for 'This Slice'). (#1163)
+  * Set `useslicemembers=False` in the `omni_config`.
+ * Rename WiMAX as Wireless. (#1168)
+ * Send the user's iRODS username to the WiMAX server when
+   creating an account, if available. (#1167)
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
