@@ -16,7 +16,7 @@
    creating an account, if available. (#1167)
  * Bug report sending fixes: (#1169)
   * Fix spacing so mail readers see the attachment.
-  * Allow semi-colon separated list of to addresses.
+  * Allow comma or semi-colon separated list of to addresses.
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
