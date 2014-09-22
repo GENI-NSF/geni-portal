@@ -111,9 +111,9 @@ include("tool-showmessage.php");
 echo "<h1>Send Problem Report</h1>";
 
 // get 'To:' field and sanitize input
-// We support semi-colon separated lists of addresses
+// We support semi-colon or comma separated lists of addresses
 if(array_key_exists("to", $_REQUEST)) {
-    $tos = preg_split("/;\s*/", $_REQUEST['to'], NULL, PREG_SPLIT_NO_EMPTY);
+    $tos = preg_split("/[;,]\s*/", $_REQUEST['to'], NULL, PREG_SPLIT_NO_EMPTY);
     $rtos = array();
     foreach($tos as $to) {
       $to = filter_var($to, FILTER_SANITIZE_EMAIL);
@@ -124,7 +124,7 @@ if(array_key_exists("to", $_REQUEST)) {
     if (count($rtos) == 0) {
         send_bug_report_error("E-mail address provided is not valid. Problem report not sent.");
     }
-    $to = implode("; ", $rtos);
+    $to = implode(", ", $rtos);
 }
 else {
     send_bug_report_error("No e-mail address provided. Problem report not sent.");
@@ -198,6 +198,8 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
 
     $zip_name = OMNI_INVOCATION_FILE::ZIP_ARCHIVE_PREFIX . "-$invocation_user-$invocation_id.zip";
     $zip_path = "$omni_invocation_dir/$zip_name";
+
+    // FIXME: See ticket #1117/1169: Try making this a .tar.gz?
 
     $retVal = zip_dir_files($zip_path, $omni_invocation_dir, $excluded_files_list);
 
@@ -289,6 +291,7 @@ Content-Disposition: attachment
         send_bug_report_success($msg);
     }
     else {
+        error_log("Error sending problem report $invocation_user-$invocation_id: $retVal");
         send_bug_report_error("Could not send problem report. Try again later or " .
             "please contact <a href='mailto:portal-help@geni.net'>Portal Help</a>.");
     }
