@@ -11,10 +11,10 @@ function info_set_location(slice_id, url)
                       }
                       window.location = url;
                   } else {
-                      alert("This slice has no known resources.");
+                      alert("This slice has no known resources. \n\nSomething missing? Select aggregates manually on the slice page.");
                   }
               })
         .fail(function() {
-            alert("Unable to location sliver information for this slice.");
+            alert("Unable to locate sliver information for this slice.");
         });
 }

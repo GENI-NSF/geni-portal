@@ -14,6 +14,9 @@
  * Rename WiMAX as Wireless. (#1168)
  * Send the user's iRODS username to the WiMAX server when
    creating an account, if available. (#1167)
+ * Bug report sending fixes: (#1169)
+  * Fix spacing so mail readers see the attachment.
+  * Allow comma or semi-colon separated list of to addresses.
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
