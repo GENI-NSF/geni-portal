@@ -17,6 +17,7 @@
  * Bug report sending fixes: (#1169)
   * Fix spacing so mail readers see the attachment.
   * Allow comma or semi-colon separated list of to addresses.
+ * Avoid polling all aggregates by default (#1171)
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
