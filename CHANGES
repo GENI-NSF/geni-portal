@@ -7,16 +7,17 @@
 == 2.20 ==
  * Require unique name for rspecs (#784)
  * Poll slice aggregates by default (#1147)
- * Default browser named to 'Unknown' to avoid undefined var error. (#1166)
  * Update to use Omni 2.7 (support any bound multi-am request,
    clicking 'Ready' updates the AM list for 'This Slice'). (#1163)
   * Set `useslicemembers=False` in the `omni_config`.
- * Rename WiMAX as Wireless. (#1168)
+ * Default browser named to 'Unknown' to avoid undefined var error. (#1166)
  * Send the user's iRODS username to the WiMAX server when
    creating an account, if available. (#1167)
+ * Rename WiMAX as Wireless. (#1168)
  * Bug report sending fixes: (#1169)
   * Fix spacing so mail readers see the attachment.
   * Allow comma or semi-colon separated list of to addresses.
+ * Avoid polling all aggregates by default (#1171)
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
