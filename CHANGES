@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.21 ==
+
 == 2.20 ==
  * Require unique name for rspecs (#784)
  * Poll slice aggregates by default (#1147)
