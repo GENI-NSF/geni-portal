@@ -30,7 +30,7 @@ sudo easy_install-2.7 pip
 
 
 sudo yum -y install python-devel.x86_64 swig.x86_64 libxslt-devel.x86_64 php-xmlrpc.x86_64 \
-          libffi-devel libffi openssl-devel perl-devel \
+          libffi-devel libffi openssl-devel perl-devel php-xml \
           perl-ExtUtils-Embed xmlsec1-devel.x86_64 xmlsec1-openssl-devel.x86_64 \
           postgresql-server.x86_64 postgresql.x86_64 postgresql-devel.x86_64 php-pgsql.x86_64 \
           mod_fastcgi.x86_64 rsyslog.x86_64 php-pear-MDB2-Driver-pgsql \

@@ -107,7 +107,7 @@ print "<b>LabWiki</b></button> ";
   if (True || $user->hasAttribute('enable_wimax_button')) {
     $wimax_url = relative_url("wimax-enable.php");
     print "<button onClick=\"window.open('$wimax_url')\">";
-    print "<b>WiMAX</b></button>";
+    print "<b>Wireless Account Setup</b></button>";
   }
 
   // Show a jfed button if there wasn't an error generating it

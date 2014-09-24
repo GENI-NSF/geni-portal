@@ -544,5 +544,34 @@ function lookup_sliver_info_by_slice($sa_url, $signer, $slice_urn) {
 
 }
 
+/**
+ * Determine the aggregates in a given slice from the sliver info data.
+ *
+ * Return an array of the aggregates.
+ */
+function aggregates_in_slice($sa_url, $user, $slice_urn) {
+  $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
+  $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+
+  /* Construct a map from aggregate URN to aggregate for faster
+     lookup inside the sliver loop. */
+  $urn2agg = Array();
+  foreach ($all_aggs as $agg) {
+    $agg_urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
+    $urn2agg[$agg_urn] = $agg;
+  }
+
+  $aggs_with_resources = Array();
+  // map the sliver aggregate URNs to aggregate IDs
+  foreach ($slivers as $sliver) {
+    $urn = $sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN];
+    if (! array_key_exists($urn, $aggs_with_resources)
+        && array_key_exists($urn, $urn2agg)) {
+        $aggs_with_resources[$urn] = $urn2agg[$urn];
+        break;
+    }
+  }
+  return array_values($aggs_with_resources);
+}
 
 ?>

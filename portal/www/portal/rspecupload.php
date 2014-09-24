@@ -226,6 +226,15 @@ $visibility = $_POST["group1"];
 $description = $_POST["description"];
 $rspec_id = $_POST['rspec_id'];
 
+if (rspec_name_exists($user, $visibility, $name, $rspec_id)) {
+  /* This rspec name has already been taken. */
+  $msg = "ERROR. A $visibility RSpec already exists with name \"$name \".";
+  $_SESSION['lasterror'] = $msg;
+  relative_redirect('profile#rspecs');
+  exit;
+}
+
+
 $am_urns_image = "";
 foreach($am_urns as $am_urn) {
   $am_urns_image = $am_urns_image . $am_urn . " ";

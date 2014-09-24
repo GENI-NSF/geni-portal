@@ -449,6 +449,66 @@ function deleteRSpecById($id, $user)
   }
 }
 
+function public_rspec_name_exists($name, $id)
+{
+  $conn = portal_conn();
+  $qname = $conn->quote($name, 'text');
+  $visibility = $conn->quote('public', 'text');
+  $sql = "SELECT count(*) FROM rspec WHERE";
+  $sql .= " visibility = $visibility";
+  $sql .= " AND upper(name) = upper($qname)";
+  if ($id) {
+    $qid = $conn->quote($id, 'integer');
+    $sql .= " AND id != $qid";
+  }
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  //  error_log($sql);
+  $result = db_fetch_row($sql, "rspec_name_exists");
+  $value = $result[RESPONSE_ARGUMENT::VALUE];
+  $count = $value['count'];
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL,
+              'public_rspec_name_exists value = ' . print_r($count, true));
+  return $count != 0;
+}
+
+function private_rspec_name_exists($user, $name, $id)
+{
+  $conn = portal_conn();
+  $qname = $conn->quote($name, 'text');
+  $visibility = $conn->quote('private', 'text');
+  $owner_id = $conn->quote($user->account_id, 'text');
+  $sql = "SELECT count(*) FROM rspec WHERE";
+  $sql .= " owner_id = $owner_id";
+  $sql .= " AND visibility = $visibility";
+  $sql .= " AND upper(name) = upper($qname)";
+  if ($id) {
+    $qid = $conn->quote($id, 'integer');
+    $sql .= " AND id != $qid";
+  }
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  //  error_log($sql);
+  $result = db_fetch_row($sql, "private_rspec_name_exists");
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL,
+              'private_rspec_name_exists result = ' . print_r($result, true));
+  $value = $result[RESPONSE_ARGUMENT::VALUE];
+  $count = $value['count'];
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL,
+              'private_rspec_name_exists value = ' . print_r($count, true));
+  return $count != 0;
+}
+
+/**
+ * Determine if an rspec exists with the given name.
+ */
+function rspec_name_exists($user, $visibility, $name, $id)
+{
+  if ($visibility == 'public') {
+    return public_rspec_name_exists($name, $id);
+  } else {
+    return private_rspec_name_exists($user, $name, $id);
+  }
+}
+
 function record_last_seen($user, $request_uri)
 {
   $conn = portal_conn();

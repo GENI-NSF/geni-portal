@@ -1,6 +1,7 @@
 AC_INIT([geni-ch], [0.1], [portal-help@geni.net])
 #AM_INIT_AUTOMAKE([foreign -Wall -Werror])
-AM_INIT_AUTOMAKE([foreign -Wall])
+#AM_INIT_AUTOMAKE([foreign -Wall])
+AM_INIT_AUTOMAKE([foreign -Wall -Wno-portability])
 AC_PROG_MKDIR_P
 AC_PROG_INSTALL
 AM_PATH_PYTHON([2.6])
