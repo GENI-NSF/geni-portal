@@ -22,7 +22,7 @@ insert into service_registry
       -- DESCRIPTION
      'RENCI ExoGENI Rack OpenFlow',
       -- URN
-     'urn:publicid:IDN+openflow:foam:rci-hn.exogeni.gpolab.bbn.com+authority+am'
+     'urn:publicid:IDN+openflow:foam:rci-hn.exogeni.net+authority+am'
     );
 
 insert into service_registry

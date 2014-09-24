@@ -71,8 +71,8 @@ else
   test -f $GCF_INI
 fi
 
-sudo /bin/ln -s /usr/share/geni-ch/CA/cacert.pem /usr/share/geni-ch/gcf.d/trusted_roots/cacert.pem
-sudo /bin/ln -s /usr/share/geni-ch/ma/ma-cert.pem /usr/share/geni-ch/gcf.d/trusted_roots/ma-cert.pem
+sudo /bin/ln -s /usr/share/geni-ch/CA/cacert.pem /usr/share/geni-ch/portal/gcf.d/trusted_roots/cacert.pem
+sudo /bin/ln -s /usr/share/geni-ch/ma/ma-cert.pem /usr/share/geni-ch/portal/gcf.d/trusted_roots/ma-cert.pem
 sleep 10
 
 sudo service httpd restart

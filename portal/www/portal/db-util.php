@@ -449,7 +449,7 @@ function deleteRSpecById($id, $user)
   }
 }
 
-function public_rspec_name_exists($name)
+function public_rspec_name_exists($name, $id)
 {
   $conn = portal_conn();
   $qname = $conn->quote($name, 'text');
@@ -457,6 +457,10 @@ function public_rspec_name_exists($name)
   $sql = "SELECT count(*) FROM rspec WHERE";
   $sql .= " visibility = $visibility";
   $sql .= " AND upper(name) = upper($qname)";
+  if ($id) {
+    $qid = $conn->quote($id, 'integer');
+    $sql .= " AND id != $qid";
+  }
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
   //  error_log($sql);
   $result = db_fetch_row($sql, "rspec_name_exists");
@@ -467,7 +471,7 @@ function public_rspec_name_exists($name)
   return $count != 0;
 }
 
-function private_rspec_name_exists($user, $name)
+function private_rspec_name_exists($user, $name, $id)
 {
   $conn = portal_conn();
   $qname = $conn->quote($name, 'text');
@@ -477,6 +481,10 @@ function private_rspec_name_exists($user, $name)
   $sql .= " owner_id = $owner_id";
   $sql .= " AND visibility = $visibility";
   $sql .= " AND upper(name) = upper($qname)";
+  if ($id) {
+    $qid = $conn->quote($id, 'integer');
+    $sql .= " AND id != $qid";
+  }
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
   //  error_log($sql);
   $result = db_fetch_row($sql, "private_rspec_name_exists");
@@ -492,12 +500,12 @@ function private_rspec_name_exists($user, $name)
 /**
  * Determine if an rspec exists with the given name.
  */
-function rspec_name_exists($user, $visibility, $name)
+function rspec_name_exists($user, $visibility, $name, $id)
 {
   if ($visibility == 'public') {
-    return public_rspec_name_exists($name);
+    return public_rspec_name_exists($name, $id);
   } else {
-    return private_rspec_name_exists($user, $name);
+    return private_rspec_name_exists($user, $name, $id);
   }
 }
 
