@@ -242,6 +242,7 @@ if ($pi_request and ! $is_pi) {
   $headers = "Reply-To: help@geni.net\r\n";
   $headers .= "Bcc: " . $portal_admin_email . "\r\n";
   $headers .= $cc;
+  $headers .= "\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
 
   mail($to, $subject, $body, $headers);
 }

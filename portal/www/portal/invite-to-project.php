@@ -133,7 +133,7 @@ Thank you,\n" . $user->prettyName() . "\n";
   $email = $user->email();
   $name = $user->prettyName();
 
-  $headers = "Reply-To: $email" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
+  $headers = "Reply-To: $email" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
 
 
   mail($to,
