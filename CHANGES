@@ -5,6 +5,8 @@
 = GENI Portal Release Notes =
 
 == 2.21 ==
+ * When sending email, set charset to utf8 and transfer encoding to 8bit,
+   so that international characters are preserved correctly. (#1162)
 
 == 2.20 ==
  * Require unique name for rspecs (#784)
@@ -20,8 +22,6 @@
   * Fix spacing so mail readers see the attachment.
   * Allow comma or semi-colon separated list of to addresses.
  * Avoid polling all aggregates by default (#1171)
- * When sending email, set charset to utf8 and transfer encoding to 8bit,
-   so that international characters are preserved correctly. (#1162)
 
 == 2.19 ==
  * Allow parallel AJAX deletes and renews (#998)
