@@ -4,6 +4,10 @@
 
 = GENI Portal Release Notes =
 
+== 2.21 ==
+ * When sending email, set charset to utf8 and transfer encoding to 8bit,
+   so that international characters are preserved correctly. (#1162)
+
 == 2.20 ==
  * Require unique name for rspecs (#784)
  * Poll slice aggregates by default (#1147)

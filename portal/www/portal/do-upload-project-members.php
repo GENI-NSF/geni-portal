@@ -117,7 +117,7 @@ foreach($selections as $email_name => $attribs) {
     $userEmail = $user->email();
     $name = $user->prettyName();
     
-    $headers = "Reply-To: $userEmail" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>";
+    $headers = "Reply-To: $userEmail" . "\r\n" . "From: \"$name (via the GENI Portal)\" <www-data@gpolab.bbn.com>\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
 
     mail($email, $email_subject, $email_text,
 	 $headers,
