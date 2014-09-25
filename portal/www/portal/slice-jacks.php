@@ -116,7 +116,7 @@ function build_agg_table_on_slicepg()
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
 
-     $add_url = 'slice-add-resources-jacks.php?slice_id='.$slice_id;
+     $add_url = 'slice-add-resources-jacks.php?slice_id='.$slice_id."&source=devel";
      $status_url = 'sliverstatus.php?slice_id='.$slice_id;
      $listres_url = 'listresources.php?slice_id='.$slice_id;
 
@@ -284,7 +284,7 @@ if (isset($slice)) {
 }
 
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
-$add_url = 'slice-add-resources-jacks.php?slice_id='.$slice_id;
+$add_url = 'slice-add-resources-jacks.php?slice_id='.$slice_id."&source=devel";
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
 $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = "mailto:$owner_email";
