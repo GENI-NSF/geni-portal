@@ -81,6 +81,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	    canvasOptions: canvasOptions,
 	    constraints : constraints,
 	    nodeSelect: true,
+	    multiSite: true,
 	    root: jacks,
 	    readyCallback: function (input, output) {
 		output.on('fetch-topology', fetchTopologyCallback);

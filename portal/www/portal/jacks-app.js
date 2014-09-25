@@ -81,7 +81,8 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
             rspec: false,
             version: false
         },
-        nodeSelect: false,
+	multiSite: true,
+        nodeSelect: true,
         root: jacks,
         readyCallback: function (input, output) {
             that.jacksReady(input, output);
@@ -559,7 +560,7 @@ JacksApp.prototype.onEpManifest = function(event) {
     // change-topology removes the current topology.
     // The trigger will need to be updated once an event is implemented
     // that adds the manifest to the current topology.      
-    this.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+    this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
     //
 
     // A map from sliver_id to client_id is needed by some aggregates
