@@ -28,7 +28,7 @@ function fileupload_onchange()
     var user_rspec_file_input = document.getElementById("rspec_selection");
     var user_rspec_file = user_rspec_file_input.files[0];
     var formData = new FormData();
-    formData.append("user_rspec", user_rspec_file);
+    formData.append("user_rspec_file", user_rspec_file);
     var client = new XMLHttpRequest();
     client.open("post", "rspecuploadparser.php", true);
     client.addEventListener("load", handle_results);
