@@ -155,8 +155,14 @@ $keys = $user->sshKeys();
 show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
+
+$jacksContext = json_decode(file_get_contents('/tmp/cascade-jacks.json'));
+
 ?>
+
+
 <script>
+
 function validateSubmit()
 {
   f1 = document.getElementById("f1");
@@ -243,16 +249,20 @@ $all_rspecs = fetchRSpecMetaData($user);
 
 // JACKS-APP STUFF //
 include("jacks-editor-app.php");
-print "<table id='jacks-editor-app'>";
-print "<tr><td><div id='jacks-editor-app-container'>";
-print build_jacks_editor();
-print "</div></td></tr></table>";
 ?>
 
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
 <script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+
+<?php
+print "<table id='jacks-editor-app'>";
+print "<tr><td><div id='jacks-editor-app-container'>";
+print build_jacks_editor();
+print "</div></td></tr></table>";
+?>
+
 <script src="portal-jacks-editor-app.js"></script>
 <script>
 
@@ -276,7 +286,9 @@ print "</div></td></tr></table>";
 
   var jacks_enable_buttons = false;
 
-  do_hide_editor_elements();
+  var jacksContext = <?php echo json_encode($jacksContext) ?>;
+
+  do_show_editor();
 
 </script>
 
@@ -286,41 +298,47 @@ print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/
 
 print "<table>";
 
-print "<tr>";
-print "<th rowspan='1' >Graphical Editor</th>";
-print "<td>";
-print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
-print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Close Editor: Save</button>';
-print '<button type="button" name="discard_jacks_editor_button" id="discard_jacks_editor_button" hidden="hidden" onClick="do_discard_editor()">Close Editor: Discard</button>';
-print "</td></tr>";
+//print "<tr>";
+//print "<th rowspan='1' >Graphical Editor</th>";
+//print "<td>";
+//print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
+//print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Close Editor: Save</button>';
+//print '<button type="button" name="discard_jacks_editor_button" id="discard_jacks_editor_button" hidden="hidden" onClick="do_discard_editor()">Close Editor: Discard</button>';
+//print "</td></tr>";
 
 print "<tr>";
-print "<th rowspan='6'>Choose RSpec</th>";
-print "<td><b>Select existing: </b>";
+print "<th rowspan='3'>Choose RSpec</th>";
+print '<td>';
+print '<b >Portal</b> <input type="radio" style="width:50px;padding: 0 10px;"name="rspec_select" id="portal_radio_select" checked="checked" onclick="enable_rspec_selection_mode_portal()" />';
+print '<b >File</b> <input type="radio" style="width:50px;padding: 0 10px;" name="rspec_select" id="file_radio_select" onclick="enable_rspec_selection_mode_file()" />';
+print '<b > URL</b> <input type="radio" style="width:50px;pading: 0 10px;"" name="rspec_select" id="url_radio_select" onclick="enable_rspec_selection_mode_url()" />';
+print '<b >Text Box</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="textbox_radio_select" onclick="enable_rspec_selection_mode_textbox()" />';
+print '<b >Graphical Editor</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="jacks_radio_select" onclick="enable_rspec_selection_mode_jacks()" />';
+print '</td></tr>';
+print '<tr id="rspec_portal_row" ><td><b>Select existing: </b>';
 show_rspec_chooser($user);
 print "</td></tr>";
-print "<tr><td>";
+print '<tr id = "rspec_file_row" hidden="hidden"><td>';
 print "<b>Select from file: </b><input type='file' name='file_select' id='file_select' onchange='fileupload_onchange()'/>";
-// upload message: get this from slice-add-resources.js 
+// upload message: get this from slice-add-resources-jacks.js 
 // calling rspecuploadparser.php
 print "<div id='upload_message' style='display:block;'></div>";
 print "</td></tr>";
-print "<tr><td>";
+print '<tr id="rspec_url_row" hidden="hidden"><td>';
 print "<b>Select from URL: </b>";
 print '<button type="button" name="url_grab_button" id="url_grab_button" onClick="urlupload_onchange()"  >Select</button>';
 print "<input type='input' name='url_select' id='url_select' onchange='urlupload_onchange()' />";
 print "</td></tr>";
-print "<tr><td>";
+print '<tr id="rspec_paste_row" hidden="hidden"><td>';
 print '<b>Paste Rspec: </b>';
 print '<button type="button" name="paste_grab_button" id="paste_grab_button" onClick="grab_paste_onchange()">Select</button>';
 print '<textarea cols="60" rows="4" name="paste_select" id="paste_select"></textarea>';
 print "</td></tr>";
-print "<tr><td>";
-print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button" disabled="true" onClick="do_grab_editor_topology()">Select</button>';
-print '<div id="editor_save_status_text" />';
+print '<tr id="rspec_jacks_row" hidden="hidden"><td>';
+print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button"onClick="do_grab_editor_topology()">Select</button>';
 print "</td></tr>";
 print "<tr><td>";
-print '<div id="rspec_status_text" />';
+print '<b><p id="rspec_status_text" /></b>';
 print "</td></tr>";
 
 print "<tr>";
@@ -340,6 +358,7 @@ if ($am_ids == null) {
 }
 ?>
 <script>
+enable_rspec_selection_mode_portal();
 var am_id = <?php echo $am_id ?>;
 if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
   $('#agg_chooser').val(am_id); 
@@ -357,7 +376,7 @@ print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '<input type="hidden" name="current_rspec_text" id="current_rspec_text" value="" />';
 
 // by default, assume RSpec is not bound or stitchable (0), but if a bound or
-// stitchable RSpec is selected, change this value (to 1) via slice-add-resources.js
+// stitchable RSpec is selected, change this value (to 1) via slice-add-resources-jacks.js
 print '<input type="hidden" name="valid_rspec" id="valid_rspec" value="0"/>';
 print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
 print '<input type="hidden" name="partially_bound_rspec" id="partially_bound_rspec" value="0"/>';
@@ -368,6 +387,8 @@ print '</form>';
 <?php
 
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose RSpec' options to temporarily upload an RSpec for this reservation only.</p>";
+
+print "<p id='partially_bound_notice' hidden='hidden'><b>Note:</b> 'Partially bound' RSpecs are RSpecs that bind some resources to specific aggregates, but not all. RSpecs must either not assign resources to any specific aggregates, or assign all resources to specific aggregates.</p>";
 
 print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"
