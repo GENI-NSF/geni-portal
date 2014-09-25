@@ -63,6 +63,8 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     this.sliceExpiration = sliceInfo.slice_expiration;
     this.sliceName = sliceInfo.slice_name;
 
+    this.first_manifest_pending = false;
+
     this.loginInfo = {};
 
     this.userInfo = userInfo;
@@ -323,6 +325,10 @@ JacksApp.prototype.getSliceManifests = function() {
 	return;
     }
 
+    // Make it so that the first manifst coming back replaces the current
+    // manifests, but subsequent manfiests are added.
+    this.first_manifest_pending=true;
+
     // Loop through each known AM and get the manifest.
     var that = this;
     $.each(sliceAms, function(i, am_id) {
@@ -556,11 +562,14 @@ JacksApp.prototype.onEpManifest = function(event) {
 
    var rspecManifest = event.value;
 
-    // NEEDS TO BE CHANGED
-    // change-topology removes the current topology.
-    // The trigger will need to be updated once an event is implemented
-    // that adds the manifest to the current topology.      
-    this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
+    // If first manifest, replace current topology
+    if (this.first_manifest_pending) {
+	this.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+	this.first_manifest_pending = false;
+    } else {
+	// Otherwise add to current topology
+	this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
+    }
     //
 
     // A map from sliver_id to client_id is needed by some aggregates
