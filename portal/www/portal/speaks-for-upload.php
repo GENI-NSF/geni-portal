@@ -27,6 +27,7 @@
  */
 require_once 'user.php';
 require_once 'db-util.php';
+require_once 'portal.php';
 
 $key_token = NULL;
 if (array_key_exists('AUTH_TYPE', $_SERVER)
@@ -107,6 +108,23 @@ $pemCert = $certNode->nodeValue;
 $beginpem = "-----BEGIN CERTIFICATE-----\n";
 $endpem = "-----END CERTIFICATE-----\n";
 $signer_urn = pem_cert_geni_urn($beginpem . $pemCert . $endpem);
+
+/* Test if the signer is from the same GENI Authority as the portal.
+   We really would like to compare the signer to the authenticated
+   user, but in the speaks-for world we have no way of getting the
+   user info without the speaks-for credential. This is an attempt to
+   weed out obviously bad signers, while not necessarily an indication
+   that the speaks-for credential will work.
+*/
+$tool = Portal::getInstance();
+$tool_pem = $tool->certificate();
+$tool_urn = pem_cert_geni_urn($tool_pem);
+parse_urn($tool_urn, $tool_authority, $tool_type, $tool_name);
+parse_urn($signer_urn, $signer_authority, $signer_type, $signer_name);
+if ($signer_authority != $tool_authority) {
+  header('HTTP/1.1 406 Not Acceptable');
+  exit();
+}
 
 /* Now put the credential in the database. */
 $db_result = store_speaks_for($key_token, $raw_cred, $signer_urn, $expires);
