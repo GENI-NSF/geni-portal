@@ -39,6 +39,159 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-campus"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.nps.edu+authority+cm", 
+                "am": "NPS InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-122.17", 
                     "37.43"
                 ]
@@ -17404,7 +17557,7 @@
             "properties": {
                 "type": "unknown", 
                 "am_id": "urn:publicid:IDN+openflow:foam:rci-hn.exogeni.net+authority+am", 
-                "am": "RENCI ExoGENI OpenFlow", 
+                "am": "openflow:foam:rci-hn.exogeni.net", 
                 "resources": 1, 
                 "component_id": "00:01:08:17:f4:b3:5b:00"
             }
@@ -18943,6 +19096,23 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-121.87405", 
+                    "36.59644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.instageni.nps.edu+authority+am", 
+                "am": "NPS InstaGENI OpenFlow", 
+                "resources": 1, 
+                "component_id": "07:3e:2c:59:e5:5f:80:00"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-92.331461", 
                     "38.946767"
                 ]
@@ -19498,23 +19668,6 @@
                 "am": "Illinois InstaGENI", 
                 "resources": 1, 
                 "component_id": "internet"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-79.017426", 
-                    "35.939518"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+openflow:foam:rci-hn.exogeni.net+authority+am", 
-                "am": "RENCI ExoGENI OpenFlow", 
-                "resources": 1, 
-                "component_id": "00:01:08:17:f4:b3:5b:00"
             }
         }, 
         {
