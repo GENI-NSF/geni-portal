@@ -2,7 +2,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 			allRspecs,
 			sliceInfo, userInfo, enableButtons,
 			canvasOptions, constraints,
-			readyCallback, fetchTopologyCallback) {
+			readyCallback, fetchTopologyCallback,
+			modifiedTopologyCallback) {
 
     // Map from client_id to am_id
     this.client2am = {};
@@ -85,6 +86,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	    root: jacks,
 	    readyCallback: function (input, output) {
 		output.on('fetch-topology', fetchTopologyCallback);
+		output.on('modified-topology', modifiedTopologyCallback);
 		that.jacksReady(input, output);
 		if (that.enableButtons) {
 		    that.initButtons(that.buttons);

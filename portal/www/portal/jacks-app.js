@@ -70,6 +70,13 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     this.userInfo = userInfo;
     this.username = userInfo.user_name;
 
+    var aggregate_info = [];
+    $.each(allAms, function(am_id, agg_details) {
+	    var agg_id = agg_details.urn;
+	    var agg_name = agg_details.name;
+	    aggregate_info.push({id: agg_id, name: agg_name});
+	});
+
     var that = this;
     var jacksInstance = new window.Jacks({
         mode: 'viewer',
@@ -78,6 +85,7 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	// size: { x: 791, y: 350},
 	// size: { x: 1400, y: 350},
 	size: 'auto',
+	canvasOptions : {aggregates: aggregate_info},
         show: {
             menu: false,
             rspec: false,

@@ -283,7 +283,8 @@ function assureJacksEditorApp() {
 					canvasOptions,
 					constraints,
 					jacks_editor_app_ready,
-					jacks_fetch_topology_callback);
+				        jacks_fetch_topology_callback,
+					jacks_modified_topology_callback);
     }
 }
 
@@ -314,6 +315,27 @@ function jacks_fetch_topology_callback(rspecs) {
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
       clear_other_inputs("");
   }
+}
+
+// The callback from Jacks when topology has been modified
+function jacks_modified_topology_callback(data)
+{
+    console.log("MOD = " + data);
+    rspec = data.rspec;
+
+    // id, client_id, aggregate_id, site_name
+    nodes = data.nodes;
+
+    // id, client_id
+    links = data.links;
+
+    // id, name, urn 
+    // Note: site.name = node.site_name, node.aggregate_id = site.urn
+    sites = data.sites;
+
+    // RSpec is bound IFF every node has an aggregate_id, or every site has a urn
+    // call validate_rspec_file if we've changed from bound 
+    // to either partially bound or bound
 }
 
 
