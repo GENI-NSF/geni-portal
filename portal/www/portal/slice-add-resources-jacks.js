@@ -256,6 +256,21 @@ var jacksEditorApp = null;
 /* Make sure Jacks Editor App exists */
 function assureJacksEditorApp() {
     if (jacksEditorApp == null) {
+	canvasOptions=jacksContext.canvasOptions;
+	constraints = jacksContext.constraints;
+	// If no constraints provided, use defaults and construct aggregate array
+	if (canvasOptions == null) {
+	    canvasOptions = getDefaultCanvasOptions(); // Get default constraints
+	    var aggregates = [];
+	    $.each(jacks_all_ams, function(index, value) {
+		    am_id = index;
+		    agg_id = value.urn;
+		    agg_name = value.name;
+		    aggregates.push({id:agg_id, name: agg_name});
+		});
+	    canvasOptions.aggregates = aggregates;
+	}
+
 	jacksEditorApp = new JacksEditorApp('#jacks-editor-pane',
 					'#jacks-editor-status',
 					'#jacks-editor-buttons',
@@ -265,10 +280,10 @@ function assureJacksEditorApp() {
 					jacks_slice_info,
 					jacks_user_info,
 					jacks_enable_buttons,
-					    jacksContext.canvasOptions,
-					    jacksContext.constraints,
-				    jacks_editor_app_ready,
-				    jacks_fetch_topology_callback);
+					canvasOptions,
+					constraints,
+					jacks_editor_app_ready,
+					jacks_fetch_topology_callback);
     }
 }
 

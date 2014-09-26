@@ -156,7 +156,12 @@ show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
-$jacksContext = json_decode(file_get_contents('/tmp/cascade-jacks.json'));
+$STANDARD_JACKS_CONTEXT_LOCATION = "/etc/geni-ch/jacks-context.json";
+
+$jacksContext = array("canvasOptions" => null, "constraints" => array());
+if (file_exists($STANDARD_JACKS_CONTEXT_LOCATION)) {
+  $jacksContext = json_decode(file_get_contents($STANDARD_JACKS_CONTEXT_LOCATION));
+} 
 
 ?>
 

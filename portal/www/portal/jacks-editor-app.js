@@ -63,9 +63,9 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.username = userInfo.user_name;
 
     if (canvasOptions == null)
-	canvasOptions = this.getCanvasOptions();
+	canvasOptions = getDefaultCanvasOptions();
     if (constraints == null)
-	constraints = this.getConstraints();
+	constraints = getDefaultConstraints();
 
 
     //    canvasOptions.aggregates = this.sortedAms;
@@ -121,7 +121,8 @@ JacksEditorApp.prototype.debug = function(msg) {
 	console.log(msg);
 }
 
-JacksEditorApp.prototype.getCanvasOptions = function() {
+function getDefaultCanvasOptions()
+{
     var defaults = [ 
         {
 	    name: 'VM',
@@ -156,11 +157,8 @@ JacksEditorApp.prototype.getCanvasOptions = function() {
         {
 	    name: 'OVS Image',
 	    id: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS'
-	},
-        {
-	    name: 'Any Image',
-	    id: 'urn:blahblah:any'
-	}];
+	}
+	];
 
 var types =  [
 	{
@@ -212,16 +210,7 @@ var linkTypes = [
 	    id: 'stitched'
 	}];
 
-var sharedvlans = [
-       {
-	       name: 'Foo',
-	       id: 'bar'
-	   },
-        {
-	    name: 'Foobar',
-	    id: 'bar2'
-	}];
-
+var sharedvlans = [];
 var canvas_options = { defaults: defaults,
 		       images : images,
 		       types: types,
@@ -233,7 +222,8 @@ return canvas_options;
 
 }
 
-JacksEditorApp.prototype.getConstraints = function() {
+ function getDefaultConstraints() 
+{
 var constraints = [
         {
 	    node: {
