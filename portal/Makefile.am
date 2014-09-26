@@ -164,12 +164,15 @@ dist_svcweb_DATA = \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
 	www/portal/rspecuploadparser.php \
+	www/portal/saverspectoserver.php \
 	www/portal/selectrspec.html \
 	www/portal/send_bug_report.php \
 	www/portal/services.php \
 	www/portal/settings.php \
 	www/portal/slice-add-resources.js \
 	www/portal/slice-add-resources.php \
+	www/portal/slice-add-resources-jacks.css \
+	www/portal/slice-add-resources-jacks.js \
 	www/portal/slice-add-resources-jacks.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \

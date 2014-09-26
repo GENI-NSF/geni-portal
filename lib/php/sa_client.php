@@ -568,7 +568,6 @@ function aggregates_in_slice($sa_url, $user, $slice_urn) {
     if (! array_key_exists($urn, $aggs_with_resources)
         && array_key_exists($urn, $urn2agg)) {
         $aggs_with_resources[$urn] = $urn2agg[$urn];
-        break;
     }
   }
   return array_values($aggs_with_resources);

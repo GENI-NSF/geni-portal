@@ -40,6 +40,11 @@ if (array_key_exists("rspec", $_GET)) {
   $rspec_contents = $_GET['rspec'];
 }
 
+$rspec_tempfile = NULL;
+if (array_key_exists('tempfile', $_GET)) {
+  $rspec_tempfile = $_GET['tempfile'];
+}
+
 if (is_null($rspec_id && is_null($rspec_contents))) {
   relative_redirect('home.php');
 }
@@ -48,10 +53,15 @@ if (is_null($rspec_id && is_null($rspec_contents))) {
 if(!(is_null($rspec_id ))) {
   $rspec = fetchRSpecById($rspec_id);
   $name = fetchRSpecNameById($rspec_id);
-} else {
+} else if (!(is_null($rspec_tempfile))) {
+  $rspec = file_get_contents($rspec_tempfile);
+  $name = "";
+  // This is a one-time get file: it is written and then deleted when downloaded
+  unlink($rspec_tempfile); 
+} else { 
   $rspec = $rspec_contents;
   $name = "";
-}
+} 
 
 $name2 = preg_replace("/[^a-zA-Z0-9]/", "_", $name);
 if ($name2 != ""){

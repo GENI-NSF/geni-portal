@@ -28,7 +28,7 @@
 #
 */
  
-function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
+function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, sliceInfo,
 		  userInfo, readyCallback) {
     // Map from client_id to am_id
     this.client2am = {};
@@ -49,6 +49,7 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.jacks_editor_visible = false;
 
     this.status = status;
+    this.statusHistory = statusHistory;
 
     this.buttons = buttons;
     this.sliceAms = sliceAms;
@@ -61,6 +62,8 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
     this.sliceUrn = sliceInfo.slice_urn;
     this.sliceExpiration = sliceInfo.slice_expiration;
     this.sliceName = sliceInfo.slice_name;
+
+    this.first_manifest_pending = false;
 
     this.loginInfo = {};
 
@@ -80,11 +83,18 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
             rspec: false,
             version: false
         },
-        nodeSelect: false,
+	multiSite: true,
+        nodeSelect: true,
         root: jacks,
         readyCallback: function (input, output) {
             that.jacksReady(input, output);
             that.initButtons(that.buttons);
+	    $(that.status).click(function () {
+		    that.handleStatusClick();
+		});
+	    $(that.statusHistory).click(function() {
+		    that.handleStatusHistoryClick();
+		});
             // Finally, tell our client that we're ready
             readyCallback(that, that.input, that.output);
         }
@@ -97,6 +107,7 @@ function JacksApp(jacks, status, buttons, sliceAms, allAms, sliceInfo,
 
 JacksApp.prototype.ADD_EVENT_TYPE = "ADD";
 JacksApp.prototype.DELETE_EVENT_TYPE = "DELETE";
+JacksApp.prototype.DETAILS_EVENT_TYPE = "DETAILS";
 JacksApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
 JacksApp.prototype.RENEW_EVENT_TYPE = "RENEW";
 JacksApp.prototype.RESTART_EVENT_TYPE = "RESTART";
@@ -122,6 +133,7 @@ JacksApp.prototype.hide = function (msg) {
     $(this.jacks).hide();
     $(this.buttons).hide();
     $(this.status).hide();
+    $(this.statusHistory).hide();
 }
 
 /** 
@@ -131,6 +143,7 @@ JacksApp.prototype.show = function (msg) {
     $(this.jacks).show();
     $(this.buttons).show();
     $(this.status).show();
+    //    $(this.statusHistory).show();
 }
 
 JacksApp.prototype.setJacksEditor = function(je) {
@@ -183,16 +196,35 @@ JacksApp.prototype.initEvents = function() {
     });
     this.input.on(this.MANIFEST_EVENT_TYPE, this.onEpManifest, this);
     this.input.on(this.STATUS_EVENT_TYPE, this.onEpStatus, this);
+    this.input.on(this.DETAILS_EVENT_TYPE, this.onEpDetails, this);
     this.input.on(this.DELETE_EVENT_TYPE, this.onEpDelete, this);
     this.input.on(this.RENEW_EVENT_TYPE, this.onEpRenew, this);
     this.input.on(this.RESTART_EVENT_TYPE, this.onEpRestart, this);
 };
 
 JacksApp.prototype.updateStatus = function(statusText) {
+    var statusHistoryPane = this.statusHistory;
     var statusPane = this.status;
     var html = '<p class="jacksStatusText">' + statusText + '</p>';
-    $(statusPane).prepend(html);
+    $(statusPane).html(html);
+    $(statusHistoryPane).prepend(html);
 };
+
+JacksApp.prototype.handleStatusClick = function() {
+    console.log("STATUS Click");
+    $(this.statusHistory).show();
+}
+
+JacksApp.prototype.handleStatusHistoryClick = function() {
+    console.log("STATUS HISTORY Click");
+    this.hideStatusHistory();
+}
+
+
+JacksApp.prototype.hideStatusHistory = function()
+{
+    $(this.statusHistory).hide();
+}
 
 JacksApp.prototype.initButtons = function(buttonSelector) {
     var that = this;
@@ -230,6 +262,14 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
 
     btn = $('<button type="button">Restart</button>');
     btn.click(function(){ that.handleRestart();});
+    $(buttonSelector).append(btn);
+
+    btn = $('<button type="button">Details</button>');
+    btn.click(function(){ that.handleDetails();});
+    $(buttonSelector).append(btn);
+
+    btn = $('<button type="button">Status</button>');
+    btn.click(function(){ that.handleStatus();});
     $(buttonSelector).append(btn);
 
     /*
@@ -284,6 +324,10 @@ JacksApp.prototype.getSliceManifests = function() {
 	this.updateStatus("Jacks initialized: no resources");
 	return;
     }
+
+    // Make it so that the first manifst coming back replaces the current
+    // manifests, but subsequent manfiests are added.
+    this.first_manifest_pending=true;
 
     // Loop through each known AM and get the manifest.
     var that = this;
@@ -457,6 +501,26 @@ JacksApp.prototype.renewResources = function() {
     }
 };
 
+JacksApp.prototype.handleDetails = function() {
+    var slice_id = this.sliceId;
+    if (this.sliceAms.length > 0) {
+	var am_id = this.sliceAms[0];
+	var details_url = "listresources.php?slice_id=" + slice_id + "&am_id="  + am_id;
+	window.location.replace(details_url);
+    }
+}
+
+JacksApp.prototype.handleStatus = function() {
+    var slice_id = this.sliceId;
+    if (this.sliceAms.length > 0) {
+	var am_id = this.sliceAms[0];
+	var status_url = "sliverstatus.php?slice_id=" + slice_id + "&am_id="  + am_id;
+	window.location.replace(status_url);
+    }
+}
+
+
+
 
 //----------------------------------------------------------------------
 // Jacks App Events from Jacks
@@ -498,11 +562,14 @@ JacksApp.prototype.onEpManifest = function(event) {
 
    var rspecManifest = event.value;
 
-    // NEEDS TO BE CHANGED
-    // change-topology removes the current topology.
-    // The trigger will need to be updated once an event is implemented
-    // that adds the manifest to the current topology.      
-    this.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+    // If first manifest, replace current topology
+    if (this.first_manifest_pending) {
+	this.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+	this.first_manifest_pending = false;
+    } else {
+	// Otherwise add to current topology
+	this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
+    }
     //
 
     // A map from sliver_id to client_id is needed by some aggregates
@@ -639,6 +706,14 @@ JacksApp.prototype.onEpDelete = function(event) {
 
     this.updateStatus("Resources deleted");
     this.getSliceManifests();
+};
+
+JacksApp.prototype.onEpDetails = function(event) {
+    debug("onEpDetails");
+    if (event.code !== 0) {
+        debug("Error retrieving status: " + event.output);
+        return;
+    }
 };
 
 JacksApp.prototype.onEpRenew = function(event) {

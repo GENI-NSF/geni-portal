@@ -38,6 +38,10 @@ require_once("logging_client.php");
 require_once("tool-rspec-parse.php");
 require_once("omni_invocation_constants.php");
 
+#error_log("REQUEST = " . print_r($_REQUEST, true));
+#error_log("POST = " . print_r($_POST, true));
+#error_log("FILES = " . print_r($_FILES, true));
+
 $background = (array_key_exists("background", $_REQUEST));
 
 // Don't print to output if running in background
@@ -86,14 +90,15 @@ if(array_key_exists('rspec_selection', $_FILES)) {
   if(strlen($local_rspec_file) > 0) {
     $rspec = file_get_contents($local_rspec_file);
   }
-}
-else if(array_key_exists('rspec_jacks', $_REQUEST)) {
+} else if (array_key_exists('current_rspec_text', $_REQUEST)) {
+  $rspec = $_REQUEST['current_rspec_text'];
+}else if(array_key_exists('rspec_jacks', $_REQUEST)) {
 	$temp_rspec_file = null;
   $local_rspec_file = $_REQUEST['rspec_jacks'];
   if(strlen($local_rspec_file) > 0) {
     $rspec = $local_rspec_file;
   }
-} 
+}
 
 // redirect if no RSpec is specified
 if (! isset($rspec) || is_null($rspec)) {
@@ -119,31 +124,67 @@ if(!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id))
 // check stitching to see if AM is required to be specified
 $bound_rspec = 0;
 $stitch_rspec = 0;
+$partially_bound_rspec = 0;
 $parse_results = parseRequestRSpecContents($rspec);
+
 // is_bound is located in parse_results[1]
 if($parse_results[1] === true) {
     $bound_rspec = 1;
 }
+
 // is_stitch is located in parse_results[2]
 if($parse_results[2] === true) {
     $stitch_rspec = 1;
 }
-// FIXME: list of AMs is in parse_results[3] in case that needs to be passed in the future
+
+// is_partially_bound is located in parse_results[5]
+if($parse_results[5] == true) {
+  $partially_bound_rspec = 1;
+}
+
+//List of AMs is in parse_results[3] for bound rspecs
+
+
 if (!$stitch_rspec && (! isset($am) || is_null($am))) {
+}
+
+
+// If a bound rspec, we should get the AM's from the rspec itself 
+// in parse_results[3]
+// If not a bound rspec, need to get it from the selected AM
+$am_urns = $parse_results[3];
+if ($bound_rspec && count($am_urns) == 0) {
+      no_am_error();
+} else if ($partially_bound_rspec) {
+  no_am_error();
+} else if (!$bound_rspec && (!isset($am) || is_null($am))) {
       no_am_error();
 }
 
 // Get an AM for non-bound RSpecs
-if($stitch_rspec) {
-    $am_url = "";
-    $AM_name = "";
+if($bound_rspec) {
+  $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $am_urls = array();
+  $am_names = array();
+  foreach($am_urns as $am_urn) {
+    //    error_log("AM_URN = " . print_r($am_urn, true));
+    foreach($all_aggs as $agg) {
+      if ($agg[SR_ARGUMENT::SERVICE_URN] == $am_urn) {
+	//	error_log("MATCH " . print_r($agg, true));
+	$am_name = $agg[SR_ARGUMENT::SERVICE_NAME];
+	$am_url = $agg[SR_ARGUMENT::SERVICE_URL];
+	array_push($am_urls, $am_url);
+	array_push($am_names, $am_name);
+	break;
+      }
+    }
+  }
 }
 else {
     $am_url = $am[SR_ARGUMENT::SERVICE_URL];
-    $AM_name = am_name($am_url);
-    // error_log("AM_URL = " . $am_url);
-    //$result = get_version($am_url, $user);
-    // error_log("VERSION = " . $result);
+    $am_name = am_name($am_url);
+    $am_urls = array($am_url);
+    $am_names = array($am_name);
 }
 
 /*
@@ -186,8 +227,8 @@ $metadata = array(
     'Slice name' => $slice_name,
     'Project UUID' => $project_id,
     'Project name' => $project_name,
-    'Aggregate manager URL' => $am_url,
-    'Aggregate manager name' => $AM_name,
+    'Aggregate manager URLs' => $am_urls,
+    'Aggregate manager names' => $am_names,
     'Request IP' => $_SERVER['REMOTE_ADDR'],
     'Request browser' => $_SERVER['HTTP_USER_AGENT'],
     'Request submitted' => date('r')
@@ -203,8 +244,8 @@ $metadata_email_report = array(
     'Slice URN' => $slice_urn,
     'Slice name' => $slice_name,
     'Project name' => $project_name,
-    'Aggregate manager URL' => $am_url,
-    'Aggregate manager name' => $AM_name,
+    'Aggregate manager URLs' => $am_urls,
+    'Aggregate manager names' => $am_names,
     'Request submitted' => date('r')
     );
 $metadata_email_report_file = writeDataToTempDir($omni_invocation_dir,
@@ -216,7 +257,7 @@ $metadata_email_report_file = writeDataToTempDir($omni_invocation_dir,
     Call create_sliver() in am_client.php and get a return code back.
     $retVal is non-null if successful, null if failed
 */
-$retVal = create_sliver($am_url, $user, $slice_users, $slice_credential,
+$retVal = create_sliver($am_urls, $user, $slice_users, $slice_credential,
 			$slice_urn, $omni_invocation_dir, $slice['slice_id'], $bound_rspec, 
 			$stitch_rspec);
 
@@ -249,8 +290,9 @@ if($retVal) {
     }
     else {
         log_event($log_url, $user,
-            "Add resource request submitted for slice " . $slice_name . " at " . 
-            $AM_name . ".<br><a href='$full_link'>Click here</a> for results.",
+            "Add resource request submitted for slice " . $slice_name . 
+		  " at " . print_r($am_names, true) . 
+             ".<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }
     
