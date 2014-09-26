@@ -86,13 +86,32 @@ foreach ($obj as $am_url => $am_status) {
        $status_item['geni_status'] = $geni_status;
        $status_item['status_code'] = $GENI_MESSAGES_REV[ $geni_status ]; //STATUS_INDEX::GENI_READY; //FIXME
        if (array_key_exists("geni_expires", $am_status )) {
-              $geni_expires = $am_status['geni_expires'];
+	 // DCN (ION/MAX)
+	 $geni_expires = $am_status['geni_expires'];
        } elseif (array_key_exists("pg_expires", $am_status )) {
-              $geni_expires = $am_status['pg_expires'];
-       } elseif (array_key_exists("geni_resources", $am_status ) and (count($am_status['geni_resources'])>=1) and ((array_key_exists("orca_expires", $am_status['geni_resources'][0]) )) ) {	       
-       	      // this assumes all resources have the same expiration time
-	      // this may cease to be the case in AM API v3 and later
-              $geni_expires = $am_status['geni_resources'][0]['orca_expires'];
+	 // InstaGENI / ProtoGENI
+	 $geni_expires = $am_status['pg_expires'];
+       } elseif (array_key_exists("foam_expires", $am_status )) {
+	 // FOAM / OESS
+	 $geni_expires = $am_status['foam_expires'];
+       } elseif (array_key_exists("pl_expires", $am_status )) {
+	 $geni_expires = $am_status['pl_expires'];
+       } elseif (array_key_exists("sfa_expires", $am_status )) {
+	 $geni_expires = $am_status['sfa_expires'];
+       } elseif (array_key_exists("geni_resources", $am_status ) and (count($am_status['geni_resources'])>=1)) {
+	 if (array_key_exists("orca_expires", $am_status['geni_resources'][0]) ) {
+	   // ExoGENI
+	   // this assumes all resources have the same expiration time
+	   // this may cease to be the case in AM API v3 and later
+	   // Better would be to loop over resources and take the minimum expiration
+	   $geni_expires = $am_status['geni_resources'][0]['orca_expires'];
+	 } elseif (array_key_exists("geni_expires", $am_status['geni_resources'][0]) ) {
+	   // GRAM
+	   // this assumes all resources have the same expiration time
+	   // this may cease to be the case in AM API v3 and later
+	   // Better would be to loop over resources and take the minimum expiration
+	   $geni_expires = $am_status['geni_resources'][0]['geni_expires'];
+	 }
        } else {
               $geni_expires = 'unknown';
        }
