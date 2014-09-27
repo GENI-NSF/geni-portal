@@ -447,16 +447,26 @@ JacksApp.prototype.handleRestart = function() {
  * delete all resources on given slice at given AM
  */
 JacksApp.prototype.deleteResources = function() {
-    // Is anything selected? If so , only delete at that aggregate
-    var am_id = this.client2am[this.selectedElement];
     var deleteAMs = this.sliceAms;
     var msg = "Delete known slice resources?";
-    if (am_id) {
-        deleteAMs = [am_id];
-        msg = "Delete resources at " + this.amName(am_id) + "?";
+    var that = this;
+
+    // If any nodes selected, use only them
+    if(this.selectedNodes.length > 0) {
+	deleteAMs = []
+	msg = "Delete slice resources at ";
+	$.each(this.selectedNodes, function(i, selected_node) {
+		//		var selected_node = this.selectedNodes[i];
+		var node_name = selected_node.name;
+		var am_id = that.client2am[node_name];
+		deleteAMs.push(am_id);
+		if(i > 0) msg = msg + ", ";
+		msg = msg + that.allAms[am_id].name;
+	    });
+	msg = msg + "?";
     }
+
     if (confirm(msg)) {
-        var that = this;
         $.each(deleteAMs, function(i, am_id) {
             that.updateStatus('Deleting resources at ' + that.amName(am_id));
             that.output.trigger(that.DELETE_EVENT_TYPE,
@@ -520,20 +530,44 @@ JacksApp.prototype.renewResources = function() {
 
 JacksApp.prototype.handleDetails = function() {
     var slice_id = this.sliceId;
-    if (this.sliceAms.length > 0) {
-	var am_id = this.sliceAms[0];
-	var details_url = "listresources.php?slice_id=" + slice_id + "&am_id="  + am_id;
-	window.location.replace(details_url);
+    var that = this;
+    var am_ids = this.sliceAms;
+    if (this.selectedNodes.length > 0) {
+	am_ids = [];
+	$.each(this.selectedNodes, function(i, selected_node) {
+		var node_name = selected_node.name;
+		var am_id = that.client2am[node_name];
+		am_ids.push(am_id);
+	    });
     }
+    ams_info = "";
+    $.each(am_ids, function(i, am_id) {
+	    ams_info = ams_info + "&am_id[]=" + am_id;
+	});
+
+    var details_url = "listresources.php?slice_id=" + slice_id + ams_info;
+    window.location.replace(details_url);
 }
 
 JacksApp.prototype.handleStatus = function() {
     var slice_id = this.sliceId;
-    if (this.sliceAms.length > 0) {
-	var am_id = this.sliceAms[0];
-	var status_url = "sliverstatus.php?slice_id=" + slice_id + "&am_id="  + am_id;
-	window.location.replace(status_url);
+    var that = this;
+    var am_ids = this.sliceAms;
+    if (this.selectedNodes.length > 0) {
+	am_ids = [];
+	$.each(this.selectedNodes, function(i, selected_node) {
+		var node_name = selected_node.name;
+		var am_id = that.client2am[node_name];
+		am_ids.push(am_id);
+	    });
     }
+    ams_info = "";
+    $.each(am_ids, function(i, am_id) {
+	    ams_info = ams_info + "&am_id[]=" + am_id;
+	});
+
+    var status_url = "sliverstatus.php?slice_id=" + slice_id + ams_info;
+    window.location.replace(status_url);
 }
 
 
@@ -590,9 +624,9 @@ JacksApp.prototype.selectObjects = function(objs, select) {
 	    var obj = objs[i];
 	    var key = obj.key;
 	    console.log("Select: " + key +  " " + select);
-	    $('.nodekbox #' + key)[0].attr('style', 'visibility:visible');
-	    $('.nodebox #' + key)[0].attr('visible', 'visible');
-	    $('.nodebox #' + key)[0].attr('id', 'ready');
+	    //	    $('.nodekbox #' + key)[0].attr('style', 'visibility:visible');
+	    //	    $('.nodebox #' + key)[0].attr('visible', 'visible');
+	    //	    $('.nodebox #' + key)[0].attr('id', 'ready');
 
 	    
 	});
