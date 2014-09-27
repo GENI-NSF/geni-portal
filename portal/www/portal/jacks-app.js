@@ -70,6 +70,12 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     this.userInfo = userInfo;
     this.username = userInfo.user_name;
 
+    this.selectedNodes = [];
+    this.selectedSites = [];
+    this.selectedLinks = [];
+
+    this.currentTopology = {};
+
     var aggregate_info = [];
     $.each(allAms, function(am_id, agg_details) {
 	    var agg_id = agg_details.urn;
@@ -97,6 +103,9 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
         readyCallback: function (input, output) {
             that.jacksReady(input, output);
             that.initButtons(that.buttons);
+	    output.on('modified-topology', function (data) {
+		    that.currentTopology = data;
+		});
 	    $(that.status).click(function () {
 		    that.handleStatusClick();
 		});
@@ -177,8 +186,8 @@ JacksApp.prototype.jacksReady = function(input, output) {
     // Set up the function that Jacks will call when a node
     // is clicked.
     this.jacksOutput.on('click-event', this.onClickEvent, this);
-    this.jacksOutput.on('selection', this.onSelectionEvent, this);
-
+    this.jacksOutput.on('selection', this.onSelectionEvent, this)
+;
     // Start with a blank topology.
     this.jacksInput.trigger('change-topology',
                             [{ rspec: '<rspec></rspec>' }]);
@@ -550,10 +559,44 @@ JacksApp.prototype.onClickEvent = function(event) {
 };
 
 JacksApp.prototype.onSelectionEvent = function(event) {
-    console.log("JA : " + event);
+    // Deselect objejcts
+    this.selectObjects(this.selectedNodes, false);
+    this.selectObjects(this.selectedSites, false);
+    this.selectObjects(this.selectedLinks, false);
+
+    // Clear out old selection info
+    this.selectedNodes = [];
+    this.selectedSites = [];
+    this.selecedLinks = [];
+
+    // Clear out old selection info
+    if (event.type == "node") {
+	// Node have key, name
+	this.selectedNodes = event.items;
+	this.selectObjects(this.selectedNodes, true);
+    } else if (event.type == "site") {
+	// Sites have key, id, urn
+	this.selectedSites = event.items;
+	this.selectObjects(this.selectedSites, true);
+    } else if (event.type == "link") {
+	// Links have key, name
+	this.selectedLinks = event.items;
+	this.selectObjects(this.selectedLinks, true);
+    }
 }
 
+JacksApp.prototype.selectObjects = function(objs, select) {
+    $.each(objs, function(i) {
+	    var obj = objs[i];
+	    var key = obj.key;
+	    console.log("Select: " + key +  " " + select);
+	    $('.nodekbox #' + key)[0].attr('style', 'visibility:visible');
+	    $('.nodebox #' + key)[0].attr('visible', 'visible');
+	    $('.nodebox #' + key)[0].attr('id', 'ready');
 
+	    
+	});
+}
 
 //----------------------------------------------------------------------
 // Jacks App Events from Embedding Page
@@ -584,10 +627,6 @@ JacksApp.prototype.onEpManifest = function(event) {
     // for the page to find the correct node class inside of Jacks.
     // Used to highlight nodes when they are ready.
     var jacksXml = $($.parseXML(rspecManifest));
-
-    // Not sure why this gets initialized here - that throws away data
-    // we'll want when handling the multi-am case.
-    this.urn2clientId = {};
 
     var that = this;
     var am_id = event.am_id;
@@ -655,6 +694,8 @@ JacksApp.prototype.onEpStatus = function(event) {
     // re-poll as necessary up to event.client_data.maxPollTime
 
     var that = this;
+    var agg_urn = that.allAms[event.am_id].urn;
+
     $.each(event.value, function(i, v) {
 
 // SHOULD PROBABLY CHANGE
@@ -682,9 +723,13 @@ JacksApp.prototype.onEpStatus = function(event) {
                 if (vi['geni_status'] == 'ready') {
                     var resourceURN = vi.geni_urn;
                     var clientId = that.urn2clientId[resourceURN];
+		    var jacksId = lookup_jacks_id_from_client_id(agg_urn, clientId,
+								 that.currentTopology,
+								 'nodes');
                     debug(clientId + " (" + resourceURN + ") is ready");
 
-// NEEDS TO CHANGE
+		    /*		    
+		    // NEEDS TO CHANGE
                     // The classes that are targeted will likely need
                     // to change once the restriction of unique client
                     // name is changed to unique client name per
@@ -693,12 +738,17 @@ JacksApp.prototype.onEpStatus = function(event) {
                     // There has also been talk about Jacks supporting
                     // the page telling it what to highlight, which
                     // would make this less hack-ey.
+		    
                     $('.jacks #node-'+ clientId).parent()
                         .find('.checkbox').attr('id','ready');
                     $('.jacks #link-'+ clientId).parent()
                         .find('.checkbox').attr('id','ready');
                     $('.jacks #list-'+ clientId).parent()
                         .find('.itemID').addClass('resourcesReady');
+		    */
+
+		    $('#' + jacksId).find('.checkbox').attr('id', 'ready');
+
                 }
             });
     }
@@ -745,3 +795,18 @@ JacksApp.prototype.onEpRestart = function(event) {
 
     this.getSliceManifests();
 };
+
+function lookup_jacks_id_from_client_id(agg_urn, client_id, current_topology, obj_type)
+{
+    var objects = current_topology[obj_type];
+    var jacksId = null;
+    $.each(objects, function(ii) {
+	    var obj = objects[ii];
+	    if(obj.aggregate_id == agg_urn && obj.client_id == client_id) {
+		jacksId = obj.id;
+		return false; // Use instead of break in Jquery each loop
+	    }
+	});
+    return jacksId;
+      
+}
