@@ -154,7 +154,7 @@ function monitor_reservation(rt, event)
 		  //		  console.log("OMNI Invocation Complete");
 		  event.code = 0;
 		  jacks_editor_app_input.trigger(event.name, event);
-		  console.log("rt = " + rt);
+		  // console.log("rt = " + rt);
 		  invocation_details_url = "sliceresource.php?" + url_args;
 		  msg = "Reservation details " + "<a href='" + 
 		      invocation_details_url + "'>Here</a>";;

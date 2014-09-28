@@ -320,7 +320,7 @@ function jacks_fetch_topology_callback(rspecs) {
 // The callback from Jacks when topology has been modified
 function jacks_modified_topology_callback(data)
 {
-    console.log("MOD = " + data);
+    //    console.log("MOD = " + data);
     rspec = data.rspec;
 
     // id, client_id, aggregate_id, site_name
@@ -376,7 +376,7 @@ function do_hide_editor_internal(grab_topology)
 /* And hide the jacks editor itself **/
 function do_hide_editor_elements()
 {
-    console.log("Hiding editor");
+    // console.log("Hiding editor");
     $('#jacks-editor-pane').hide();
     $('#jacks-editor-status').hide();
     $('#jacks-editor-buttons').hide();
@@ -392,7 +392,7 @@ function do_show_editor()
     $('#show_jacks_editor_button').hide();
     $('#hide_jacks_editor_button').show();
     $('#discard_jacks_editor_button').show();
-    console.log("Showing editor");
+    // console.log("Showing editor");
     do_show_editor_elements();
 }
 
@@ -418,7 +418,7 @@ function set_jacks_topology(rspec)
 
 function grab_paste_onchange()
 {
-    console.log("Grabbing paste");
+    // console.log("Grabbing paste");
     var rspec = $('#paste_select').val();
     validate_rspec_file(rspec, false, handle_validation_results);
     clear_other_inputs('#paste_select');
@@ -426,7 +426,7 @@ function grab_paste_onchange()
 
 function urlupload_onchange()
 {
-    console.log("URLUPLOAD");
+    // console.log("URLUPLOAD");
     var url = $('#url_select').val();
     $.get("upload-file.php", 
 	  {url : url}, 

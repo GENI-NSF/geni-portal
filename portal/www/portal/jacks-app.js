@@ -228,12 +228,12 @@ JacksApp.prototype.updateStatus = function(statusText) {
 };
 
 JacksApp.prototype.handleStatusClick = function() {
-    console.log("STATUS Click");
+    debug("STATUS Click");
     $(this.statusHistory).show();
 }
 
 JacksApp.prototype.handleStatusHistoryClick = function() {
-    console.log("STATUS HISTORY Click");
+    debug("STATUS HISTORY Click");
     this.hideStatusHistory();
 }
 
@@ -400,7 +400,12 @@ JacksApp.prototype.getStatus = function(am_id, maxTime) {
 JacksApp.prototype.handleSSH = function() {
     debug("SSH");
     debug("USER = " + this.username);
-    var client_id = this.selectedElement;
+    if (this.selectedNodes.length ==  0) {
+	alert("No compute node selected.");
+	return;
+    }
+
+    var client_id = this.selectedNodes[0].name;
     if(this.username in this.loginInfo) {
 	if (client_id in this.loginInfo[this.username]) {
 	    var urls = this.loginInfo[this.username][client_id];
@@ -419,16 +424,26 @@ JacksApp.prototype.handleSSH = function() {
  */
 JacksApp.prototype.handleRestart = function() {
     debug("Restart");
+    var that = this;
     // Is anything selected? If so , only restart at that aggregate
-    var am_id = this.client2am[this.selectedElement];
     var restartAMs = this.sliceAms;
     var msg = "Restart at known slice resources?";
-    if (am_id) {
-        restartAMs = [am_id];
-        msg = "Restart resources at " + this.amName(am_id) + "?";
+
+    if(this.selectedNodes.length > 0) {
+	restartAMs = [];
+	msg = "Restart resources at ";
+	$.each(this.selectedNodes, function(i, selected_node) {
+		var node_name = selected_node.name;
+		var am_id = that.client2am[node_name];
+		var am_name = that.allAms[am_id].name;
+		if (i > 0) msg = msg + ", ";
+		msg = msg + am_name;
+		restartAMs.push(am_id);
+	    });
     }
+
     if (confirm(msg)) {
-        var that = this;
+	this.first_manifest_pending = true;
         $.each(restartAMs, function(i, am_id) {
             that.updateStatus('Restarting resources at ' + that.amName(am_id));
             that.output.trigger(that.RESTART_EVENT_TYPE,
@@ -456,7 +471,6 @@ JacksApp.prototype.deleteResources = function() {
 	deleteAMs = []
 	msg = "Delete slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
-		//		var selected_node = this.selectedNodes[i];
 		var node_name = selected_node.name;
 		var am_id = that.client2am[node_name];
 		deleteAMs.push(am_id);
@@ -502,10 +516,26 @@ JacksApp.prototype.renewResources = function() {
         alert("Please choose a renewal date.");
         return;
     }
+    var that = this;
+    var renewAMs = this.sliceAms;
+
+    // If any nodss selected, use only them
+    if(this.selectedNodes.length > 0) {
+	deleteAMs = []
+	msg = "Delete slice resources at ";
+	$.each(this.selectedNodes, function(i, selected_node) {
+		var node_name = selected_node.name;
+		var am_id = that.client2am[node_name];
+		reneweAMs.push(am_id);
+		if(i > 0) msg = msg + ", ";
+		msg = msg + that.allAms[am_id].name;
+	    });
+	msg = msg + "?";
+    }
+
     
     // Is anything selected? If so , only renew at that aggregate
     var am_id = this.client2am[this.selectedElement];
-    var renewAMs = this.sliceAms;
     var msg = "Renew known slice resources until " + renewDate + "?";
     if (am_id) {
         renewAMs = [am_id];
@@ -513,7 +543,6 @@ JacksApp.prototype.renewResources = function() {
                + " until " + renewDate + "?");
     }
     if (confirm(msg)) {
-        var that = this;
         $.each(renewAMs, function(i, am_id) {
             that.updateStatus('Renewing resources at ' + that.amName(am_id));
             that.output.trigger(that.RENEW_EVENT_TYPE,
@@ -623,7 +652,7 @@ JacksApp.prototype.selectObjects = function(objs, select) {
     $.each(objs, function(i) {
 	    var obj = objs[i];
 	    var key = obj.key;
-	    console.log("Select: " + key +  " " + select);
+	    // console.log("Select: " + key +  " " + select);
 	    //	    $('.nodekbox #' + key)[0].attr('style', 'visibility:visible');
 	    //	    $('.nodebox #' + key)[0].attr('visible', 'visible');
 	    //	    $('.nodebox #' + key)[0].attr('id', 'ready');
@@ -754,36 +783,19 @@ JacksApp.prototype.onEpStatus = function(event) {
         // At the moment there is no coloring for failed nodes, etc.
         if (v.hasOwnProperty('resources')) {
             $.each(v['resources'], function(ii, vi) {
+                var resourceURN = vi.geni_urn;
+		var clientId = that.urn2clientId[resourceURN];
+		var jacksId = lookup_jacks_id_from_client_id(agg_urn, clientId,
+							     that.currentTopology,
+							     'nodes');
                 if (vi['geni_status'] == 'ready') {
-                    var resourceURN = vi.geni_urn;
-                    var clientId = that.urn2clientId[resourceURN];
-		    var jacksId = lookup_jacks_id_from_client_id(agg_urn, clientId,
-								 that.currentTopology,
-								 'nodes');
                     debug(clientId + " (" + resourceURN + ") is ready");
-
-		    /*		    
-		    // NEEDS TO CHANGE
-                    // The classes that are targeted will likely need
-                    // to change once the restriction of unique client
-                    // name is changed to unique client name per
-                    // aggregate.
-                    // 
-                    // There has also been talk about Jacks supporting
-                    // the page telling it what to highlight, which
-                    // would make this less hack-ey.
-		    
-                    $('.jacks #node-'+ clientId).parent()
-                        .find('.checkbox').attr('id','ready');
-                    $('.jacks #link-'+ clientId).parent()
-                        .find('.checkbox').attr('id','ready');
-                    $('.jacks #list-'+ clientId).parent()
-                        .find('.itemID').addClass('resourcesReady');
-		    */
-
 		    $('#' + jacksId).find('.checkbox').attr('id', 'ready');
 
-                }
+                } else {
+                    debug(clientId + " (" + resourceURN + ") is not ready");
+		    $('#' + jacksId).find('.checkbox').removeAttr('id');
+		}
             });
     }
     });
@@ -827,7 +839,9 @@ JacksApp.prototype.onEpRestart = function(event) {
     }
     this.updateStatus("Restarted resources at " + this.amName(event.am_id));
 
-    this.getSliceManifests();
+    var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    this.getStatus(event.am_id, maxPollTime);
+    //    this.getSliceManifests();
 };
 
 function lookup_jacks_id_from_client_id(agg_urn, client_id, current_topology, obj_type)
