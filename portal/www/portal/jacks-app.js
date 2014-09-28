@@ -34,7 +34,6 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     this.client2am = {};
     // Map from URN (and client_id) to client_id
     this.urn2clientId = {};
-    this.selectedElement = null;
     this.input = null;
     this.output = null;
     // Commands going into Jacks.
@@ -519,29 +518,22 @@ JacksApp.prototype.renewResources = function() {
     var that = this;
     var renewAMs = this.sliceAms;
 
+    var msg = "Renew known slice resources until " + renewDate + "?";
+
     // If any nodss selected, use only them
     if(this.selectedNodes.length > 0) {
-	deleteAMs = []
-	msg = "Delete slice resources at ";
+	renewAMs = []
+	msg = "Renew slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
 		var node_name = selected_node.name;
 		var am_id = that.client2am[node_name];
-		reneweAMs.push(am_id);
+		renewAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
 		msg = msg + that.allAms[am_id].name;
 	    });
-	msg = msg + "?";
+	msg = msg + " until " + renewDate + "?";
     }
 
-    
-    // Is anything selected? If so , only renew at that aggregate
-    var am_id = this.client2am[this.selectedElement];
-    var msg = "Renew known slice resources until " + renewDate + "?";
-    if (am_id) {
-        renewAMs = [am_id];
-        msg = ("Renew resources at " + this.amName(am_id)
-               + " until " + renewDate + "?");
-    }
     if (confirm(msg)) {
         $.each(renewAMs, function(i, am_id) {
             that.updateStatus('Renewing resources at ' + that.amName(am_id));
@@ -611,11 +603,9 @@ JacksApp.prototype.onClickEvent = function(event) {
     // selections. Once Jacks supports this, the following code will need
     // to handle displaying information for multiple items.      
 
-    this.selectedElement = event.client_id;
-
-    $('.jacks #active').attr('id','');
-    $('.jacks #'+event['type']+'-'+event['client_id']).parent().attr('id',
-                                                                     'active');
+    //    $('.jacks #active').attr('id','');
+    //    $('.jacks #'+event['type']+'-'+event['client_id']).parent().attr('id',
+    //                                                                 'active');
     debug('Event ' + event.type + ': ' + event.client_id);
     //$('#jacksApp'+ji+' .expandedI').each(function() { $(this).removeClass('expandedI') });
     //$('#jacksApp'+ji+' #list-'+event['client_id']).parent().addClass('expandedI');
