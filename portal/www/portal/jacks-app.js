@@ -268,9 +268,9 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
 	});
     $(buttonSelector).append(btn);
 
-    btn = $('<button type="button">Add Resources</button>');
-    btn.click(function(){ that.addResources();});
-    $(buttonSelector).append(btn);
+    // GAP
+    label = $('<label style="padding: 020px;" />');
+    $(buttonSelector).append(label);
 
     btn = $('<button type="button">SSH</button>');
     btn.click(function(){ that.handleSSH();});
@@ -280,12 +280,24 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.handleRestart();});
     $(buttonSelector).append(btn);
 
+    //  GAP
+    label = $('<label style="padding: 020px;" />');
+    $(buttonSelector).append(label);
+
     btn = $('<button type="button">Details</button>');
     btn.click(function(){ that.handleDetails();});
     $(buttonSelector).append(btn);
 
     btn = $('<button type="button">Status</button>');
     btn.click(function(){ that.handleStatus();});
+    $(buttonSelector).append(btn);
+
+    // GAP
+    label = $('<label style="padding: 020px;" />');
+    $(buttonSelector).append(label);
+
+    btn = $('<button type="button">Add Resources</button>');
+    btn.click(function(){ that.addResources();});
     $(buttonSelector).append(btn);
 
     /*
