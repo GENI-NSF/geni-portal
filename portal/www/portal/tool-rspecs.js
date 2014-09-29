@@ -58,15 +58,12 @@ function updateJacksContainer(rspec, rspec_id, rspec_name) {
             buttons: {
                 "View Raw RSpec": function () {
                     window.location.href = 'rspecview.php?id='+rspec_id;
-                    callback(true);
                     },
                 "\u21E3 Download Raw RSpec": function () {
                     window.location.href = 'rspecdownload.php?id='+rspec_id;
-                    callback(true);
                     },
                 "\u2715 Close": function () {
                         $(this).dialog('close');
-                        callback(true);
                     }
                 }
                             
