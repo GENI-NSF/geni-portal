@@ -11,6 +11,7 @@
  * aggregates_in_slice only finds one aggregate (#1174)
  * Verify the signer of a speaks-for credential before storing it. (#1175)
  * getBrowser utility must handle not finding browser version. (#1176)
+ * Log, validate, and protect temp uploads (#1177)
 
 == 2.20 ==
  * Require unique name for rspecs (#784)
