@@ -309,6 +309,7 @@ function jacks_fetch_topology_callback(rspecs) {
 	    })
 	  .fail(function(xhr, ts, et) {
 		  //		  console.log("FAILURE");
+              alert("An error occurred. Please notify portal-help@geni.net.");
 	      });
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
