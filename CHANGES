@@ -12,6 +12,8 @@
  * Verify the signer of a speaks-for credential before storing it. (#1175)
  * getBrowser utility must handle not finding browser version. (#1176)
  * Log, validate, and protect temp uploads (#1177)
+ * RSpec View button is non-responsive (#1181)
+ * JavaScript reference errors on RSpec viewer (#1182)
 
 == 2.20 ==
  * Require unique name for rspecs (#784)
