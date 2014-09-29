@@ -7,6 +7,11 @@ function showViewerContainer(rspec_id, rspec_name) {
         dataType: "xml",
         success: function(data) {
             updateJacksContainer(data, rspec_id, rspec_name);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            //console.log("status on rspecview: " + textStatus);
+            //console.log("error on rspecview: " + errorThrown);
+            alert(errorThrown);
         }
        });
 }
