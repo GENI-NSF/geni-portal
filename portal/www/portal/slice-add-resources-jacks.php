@@ -172,7 +172,7 @@ function validateSubmit()
 {
   f1 = document.getElementById("f1");
   rspec = document.getElementById("rspec_select");
-  am = document.getElementById("agg_chooser");
+  //  am = document.getElementById("agg_chooser");
   rspec2 = document.getElementById("file_select");
 
   current_rspec_text = $('#current_rspec_text').val();
@@ -181,7 +181,7 @@ function validateSubmit()
   //  console.log("validateSubmit.rspec = " + current_rspec_text);
   //  console.log("validateSubmit.bound = " + is_bound);
   
-  if ((current_rspec_text != '') && (am.value || is_bound)) {
+  if ((current_rspec_text != '') && is_bound) {
     f1.submit();
     return true;
   } else if (current_rspec_text != '') {
