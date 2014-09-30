@@ -702,6 +702,176 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-74.445183", 
+                    "40.46809"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.instageni.rutgers.edu+authority+am", 
+                "am": "Rutgers InstaGENI OpenFlow", 
+                "resources": 1, 
+                "component_id": "06:d9:84:34:97:d5:62:00"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-wimax"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-74.445183", 
+                    "40.468090"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.rutgers.edu+authority+cm", 
+                "am": "Rutgers InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-76.152849", 
                     "43.049957"
                 ]
@@ -991,8 +1161,8 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
+                    "-84.39014", 
+                    "33.754523"
                 ]
             }, 
             "type": "Feature", 
@@ -1008,8 +1178,8 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
+                    "-84.39014", 
+                    "33.754523"
                 ]
             }, 
             "type": "Feature", 
@@ -1025,8 +1195,8 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
+                    "-84.39014", 
+                    "33.754523"
                 ]
             }, 
             "type": "Feature", 
@@ -1042,8 +1212,8 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
+                    "-84.39014", 
+                    "33.754523"
                 ]
             }, 
             "type": "Feature", 
@@ -1059,8 +1229,8 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
+                    "-84.39014", 
+                    "33.754523"
                 ]
             }, 
             "type": "Feature", 
@@ -1076,8 +1246,8 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
+                    "-84.39014", 
+                    "33.754523"
                 ]
             }, 
             "type": "Feature", 
@@ -19096,6 +19266,159 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-ion"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.503950", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky PKS2 InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-121.87405", 
                     "36.59644"
                 ]
@@ -20031,32 +20354,15 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-80.37404", 
-                    "25.757292"
+                    "-96.33883", 
+                    "30.619232"
                 ]
             }, 
             "type": "Feature", 
             "properties": {
                 "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am", 
-                "am": "FIU ExoGENI", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-82.346214", 
-                    "29.64171"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uflvmsite+authority+am", 
-                "am": "exogeni.net:uflvmsite", 
+                "am_id": "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am", 
+                "am": "exogeni.net:tamuvmsite", 
                 "resources": 1, 
                 "component_id": "orca-vm-cloud"
             }
@@ -20065,32 +20371,15 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "0.0", 
-                    "0.0"
+                    "-78.67714", 
+                    "35.774155"
                 ]
             }, 
             "type": "Feature", 
             "properties": {
                 "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:osfNet+authority+am", 
-                "am": "exogeni.net:osfNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-71.14751", 
-                    "42.38974"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am", 
-                "am": "GPO ExoGENI", 
+                "am_id": "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am", 
+                "am": "exogeni.net:wvnvmsite", 
                 "resources": 1, 
                 "component_id": "orca-xcat-cloud"
             }
@@ -20099,15 +20388,32 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-71.14751", 
-                    "42.38974"
+                    "-79.017426", 
+                    "35.939518"
                 ]
             }, 
             "type": "Feature", 
             "properties": {
                 "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am", 
-                "am": "GPO ExoGENI", 
+                "am_id": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am", 
+                "am": "RENCI ExoGENI", 
+                "resources": 1, 
+                "component_id": "orca-xcat-cloud"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-79.017426", 
+                    "35.939518"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am", 
+                "am": "RENCI ExoGENI", 
                 "resources": 1, 
                 "component_id": "orca-vm-cloud"
             }
@@ -20125,278 +20431,6 @@
                 "type": "unknown", 
                 "am_id": "urn:publicid:IDN+exogeni.net:ion+authority+am", 
                 "am": "exogeni.net:ion", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-121.74898", 
-                    "38.536854"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am", 
-                "am": "exogeni.net:ucdvmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:fiuNet+authority+am", 
-                "am": "exogeni.net:fiuNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uflvmsite+authority+am", 
-                "am": "exogeni.net:uflvmsite", 
-                "resources": 1, 
-                "component_id": "orca-iscsi-luns"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-78.67714", 
-                    "35.774155"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ncsuvmsite+authority+am", 
-                "am": "exogeni.net:ncsuvmsite", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-121.74898", 
-                    "38.536854"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am", 
-                "am": "exogeni.net:ucdvmsite", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:esnet+authority+am", 
-                "am": "exogeni.net:esnet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "4.955346", 
-                    "52.354843"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am", 
-                "am": "exogeni.net:uvanlvmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-87.681564", 
-                    "42.05286"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:slvmsite+authority+am", 
-                "am": "exogeni.net:slvmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:slNet+authority+am", 
-                "am": "exogeni.net:slNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:nictaNet+authority+am", 
-                "am": "exogeni.net:nictaNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:nlr+authority+am", 
-                "am": "exogeni.net:nlr", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:bbnNet+authority+am", 
-                "am": "exogeni.net:bbnNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-87.681564", 
-                    "42.05286"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:slvmsite+authority+am", 
-                "am": "exogeni.net:slvmsite", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "4.955346", 
-                    "52.354843"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am", 
-                "am": "exogeni.net:uvanlvmsite", 
-                "resources": 1, 
-                "component_id": "orca-iscsi-luns"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "151.19708", 
-                    "-33.89533"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:nictavmsite+authority+am", 
-                "am": "exogeni.net:nictavmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ncsuNet+authority+am", 
-                "am": "exogeni.net:ncsuNet", 
                 "resources": 1, 
                 "component_id": "orca-transit-net-vlan"
             }
@@ -20439,357 +20473,17 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "0.0", 
-                    "0.0"
+                    "-96.33883", 
+                    "30.619232"
                 ]
             }, 
             "type": "Feature", 
             "properties": {
                 "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am", 
-                "am": "exogeni.net:ucdvmsite", 
-                "resources": 1, 
-                "component_id": "orca-iscsi-luns"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ncsu2Net+authority+am", 
-                "am": "exogeni.net:ncsu2Net", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-95.34269", 
-                    "29.72327"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uhvmsite+authority+am", 
-                "am": "UH ExoGENI", 
+                "am_id": "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am", 
+                "am": "exogeni.net:tamuvmsite", 
                 "resources": 1, 
                 "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-122.25003", 
-                    "37.87631"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am", 
-                "am": "exogeni.net:osfvmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-95.34269", 
-                    "29.72327"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uhvmsite+authority+am", 
-                "am": "UH ExoGENI", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-78.67714", 
-                    "35.774155"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am", 
-                "am": "exogeni.net:wvnvmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uvanlNet+authority+am", 
-                "am": "exogeni.net:uvanlNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-122.25003", 
-                    "37.87631"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am", 
-                "am": "exogeni.net:osfvmsite", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-78.67714", 
-                    "35.774155"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am", 
-                "am": "exogeni.net:wvnvmsite", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ucdNet+authority+am", 
-                "am": "exogeni.net:ucdNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-71.14751", 
-                    "42.38974"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am", 
-                "am": "GPO ExoGENI", 
-                "resources": 1, 
-                "component_id": "orca-iscsi-luns"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:slvmsite+authority+am", 
-                "am": "exogeni.net:slvmsite", 
-                "resources": 1, 
-                "component_id": "orca-iscsi-luns"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-78.67714", 
-                    "35.774155"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ncsuvmsite+authority+am", 
-                "am": "exogeni.net:ncsuvmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-79.017426", 
-                    "35.939518"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am", 
-                "am": "RENCI ExoGENI", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-80.37404", 
-                    "25.757292"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am", 
-                "am": "FIU ExoGENI", 
-                "resources": 1, 
-                "component_id": "orca-iscsi-luns"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-79.017426", 
-                    "35.939518"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am", 
-                "am": "RENCI ExoGENI", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-82.346214", 
-                    "29.64171"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uflvmsite+authority+am", 
-                "am": "exogeni.net:uflvmsite", 
-                "resources": 1, 
-                "component_id": "orca-xcat-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uhNet+authority+am", 
-                "am": "exogeni.net:uhNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "0.0", 
-                    "0.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uflNet+authority+am", 
-                "am": "exogeni.net:uflNet", 
-                "resources": 1, 
-                "component_id": "orca-transit-net-vlan"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-80.37404", 
-                    "25.757292"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am", 
-                "am": "FIU ExoGENI", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-78.67714", 
-                    "35.774155"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:ncsu2vmsite+authority+am", 
-                "am": "exogeni.net:ncsu2vmsite", 
-                "resources": 1, 
-                "component_id": "orca-vm-cloud"
             }
         }, 
         {
@@ -20813,15 +20507,15 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "0.0", 
-                    "0.0"
+                    "-96.33883", 
+                    "30.619232"
                 ]
             }, 
             "type": "Feature", 
             "properties": {
                 "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uhvmsite+authority+am", 
-                "am": "UH ExoGENI", 
+                "am_id": "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am", 
+                "am": "exogeni.net:tamuvmsite", 
                 "resources": 1, 
                 "component_id": "orca-iscsi-luns"
             }
@@ -20847,34 +20541,51 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "4.955346", 
-                    "52.354843"
+                    "0.0", 
+                    "0.0"
                 ]
             }, 
             "type": "Feature", 
             "properties": {
                 "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am", 
-                "am": "exogeni.net:uvanlvmsite", 
+                "am_id": "urn:publicid:IDN+exogeni.net:nlr+authority+am", 
+                "am": "exogeni.net:nlr", 
                 "resources": 1, 
-                "component_id": "orca-xcat-cloud"
+                "component_id": "orca-transit-net-vlan"
             }
         }, 
         {
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-122.25003", 
-                    "37.87631"
+                    "0.0", 
+                    "0.0"
                 ]
             }, 
             "type": "Feature", 
             "properties": {
                 "type": "unknown", 
-                "am_id": "urn:publicid:IDN+exogeni.net:osfvmsite+authority+am", 
-                "am": "exogeni.net:osfvmsite", 
+                "am_id": "urn:publicid:IDN+exogeni.net:tamuNet+authority+am", 
+                "am": "exogeni.net:tamuNet", 
                 "resources": 1, 
-                "component_id": "orca-iscsi-luns"
+                "component_id": "orca-transit-net-vlan"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-78.67714", 
+                    "35.774155"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am", 
+                "am": "exogeni.net:wvnvmsite", 
+                "resources": 1, 
+                "component_id": "orca-vm-cloud"
             }
         }, 
         {
@@ -21028,6 +20739,23 @@
                 "am": "Illinois InstaGENI OpenFlow", 
                 "resources": 1, 
                 "component_id": "17:51:70:b3:d5:3e:10:03"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.50395", 
+                    "38.033406"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.pks2.sdn.uky.edu+authority+am", 
+                "am": "Kentucky PKS2 InstaGENI OpenFlow", 
+                "resources": 1, 
+                "component_id": "06:d6:2c:44:fd:db:67:00"
             }
         }, 
         {
