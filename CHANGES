@@ -15,6 +15,8 @@
  * RSpec View button is non-responsive (#1181)
  * JavaScript reference errors on RSpec viewer (#1182)
  * Detect errors in loadXML parsing RSpecs. (#1179)
+ * Support multi-am RSpecs. Jacks page handles them fully,
+   main page requires you to pick an AM (a bug). (#1087)
 
 == 2.20 ==
  * Require unique name for rspecs (#784)
