@@ -109,7 +109,10 @@
   stroke-width: 5px;
 }
 
-.jacks #leftNav pre {
-   color: black;
-   overflow: auto;
+.jacks .sitelabelgroup .labelbox {
+ fill: white;
+}
+
+.jacks .sitetext {
+  color: black;
 }
