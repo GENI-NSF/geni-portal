@@ -69,7 +69,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	constraints = getDefaultConstraints();
 
 
-    //    canvasOptions.aggregates = this.sortedAms;
+    canvasOptions.aggregates = this.sortedAms;
 
     var that = this;
     var jacksInstance = new window.Jacks({
