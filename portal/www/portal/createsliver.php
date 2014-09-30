@@ -76,6 +76,20 @@ if (! isset($slice)) {
   no_slice_error();
 }
 
+// redirect if slice has expired
+if (isset($slice_expired) && convert_boolean($slice_expired)) {
+  if (! isset($slice_name)) {
+    $slice_name = "";
+  }
+  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
+  relative_redirect('slices.php');
+}
+
+// redirect if user isn't allowed to add slivers
+if(!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+  relative_redirect('home.php');
+}
+
 // print header/breadcrumbs since we know slice information
 show_header('GENI Portal: Add Resources to Slice (Results)',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
@@ -92,8 +106,8 @@ if(array_key_exists('rspec_selection', $_FILES)) {
   }
 } else if (array_key_exists('current_rspec_text', $_REQUEST)) {
   $rspec = $_REQUEST['current_rspec_text'];
-}else if(array_key_exists('rspec_jacks', $_REQUEST)) {
-	$temp_rspec_file = null;
+} else if(array_key_exists('rspec_jacks', $_REQUEST)) {
+  $temp_rspec_file = null;
   $local_rspec_file = $_REQUEST['rspec_jacks'];
   if(strlen($local_rspec_file) > 0) {
     $rspec = $local_rspec_file;
@@ -107,58 +121,47 @@ if (! isset($rspec) || is_null($rspec)) {
   //  $rspec = fetchRSpecById(1);
 }
 
-// redirect if slice has expired
-if (isset($slice_expired) && convert_boolean($slice_expired)) {
-  if (! isset($slice_name)) {
-    $slice_name = "";
-  }
-  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
-  relative_redirect('slices.php');
-}
-
-// redirect if user isn't allowed to add slivers
-if(!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-  relative_redirect('home.php');
-}
-
 // check stitching to see if AM is required to be specified
 $bound_rspec = 0;
 $stitch_rspec = 0;
 $partially_bound_rspec = 0;
+$am_urns = array();
 $parse_results = parseRequestRSpecContents($rspec);
+if (is_null($parse_results)) {
+    error_log("Invalid request RSpec");
+    no_rspec_error();
+} else {
+    // is_bound is located in parse_results[1]
+    if($parse_results[1] === true) {
+      $bound_rspec = 1;
+    }
 
-// is_bound is located in parse_results[1]
-if($parse_results[1] === true) {
-    $bound_rspec = 1;
+    // is_stitch is located in parse_results[2]
+    if($parse_results[2] === true) {
+      $stitch_rspec = 1;
+    }
+
+    // List of AMs is in parse_results[3] for bound rspecs
+    $am_urns = $parse_results[3];
+
+    // is_partially_bound is located in parse_results[5]
+    if($parse_results[4] == true) {
+      $partially_bound_rspec = 1;
+    }
 }
-
-// is_stitch is located in parse_results[2]
-if($parse_results[2] === true) {
-    $stitch_rspec = 1;
-}
-
-// is_partially_bound is located in parse_results[5]
-if($parse_results[5] == true) {
-  $partially_bound_rspec = 1;
-}
-
-//List of AMs is in parse_results[3] for bound rspecs
-
-
-if (!$stitch_rspec && (! isset($am) || is_null($am))) {
-}
-
 
 // If a bound rspec, we should get the AM's from the rspec itself 
 // in parse_results[3]
 // If not a bound rspec, need to get it from the selected AM
-$am_urns = $parse_results[3];
 if ($bound_rspec && count($am_urns) == 0) {
-      no_am_error();
-} else if ($partially_bound_rspec) {
+  error_log("Bound RSpec but 0 AMs");
   no_am_error();
+} else if ($partially_bound_rspec) {
+  error_log("Partially bound RSpec with AMs: " . print_r($am_urns, true));
+  create_sliver_error("Partially bound RSpecs are not supported. All nodes must be assigned to an aggregate.");
 } else if (!$bound_rspec && (!isset($am) || is_null($am))) {
-      no_am_error();
+  error_log("Unbound RSpoec and no AM specified");
+  no_am_error();
 }
 
 // Get an AM for non-bound RSpecs

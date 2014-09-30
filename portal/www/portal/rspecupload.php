@@ -213,18 +213,27 @@ if ($error != NULL || count($_POST) == 0) {
 
 // The rspec is in $_FILES["file"]["tmp_name"]
 $actual_filename = $_FILES["file"]["tmp_name"];
-$parse_results = parseRequestRSpec($actual_filename);
-$contents = $parse_results[0];
-$is_bound = $parse_results[1];
-$is_stitch = $parse_results[2];
-$am_urns = $parse_results[3];
-
 $filename = $_FILES["file"]["name"];
 $description = NULL;
 $name = $_POST["name"];
 $visibility = $_POST["group1"];
 $description = $_POST["description"];
 $rspec_id = $_POST['rspec_id'];
+
+$parse_results = parseRequestRSpec($actual_filename);
+if (is_null($parse_results)) {
+  error_log("Failed to parse uploaded RSpec '$actual_filename'");
+  $msg = "ERROR. RSpec '$name' from file '$filename' failed to parse.";
+  $_SESSION['lasterror'] = $msg;
+  relative_redirect('profile#rspecs');
+  exit;
+}
+
+$contents = $parse_results[0];
+$is_bound = $parse_results[1];
+$is_stitch = $parse_results[2];
+$am_urns = $parse_results[3];
+
 
 if (rspec_name_exists($user, $visibility, $name, $rspec_id)) {
   /* This rspec name has already been taken. */
@@ -233,7 +242,6 @@ if (rspec_name_exists($user, $visibility, $name, $rspec_id)) {
   relative_redirect('profile#rspecs');
   exit;
 }
-
 
 $am_urns_image = "";
 foreach($am_urns as $am_urn) {
