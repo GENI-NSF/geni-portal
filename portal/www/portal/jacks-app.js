@@ -654,6 +654,20 @@ JacksApp.prototype.selectObjects = function(objs, select) {
     $.each(objs, function(i) {
 	    var obj = objs[i];
 	    var key = obj.key;
+	    var nodebox = $("#"+key).find('.nodebox');
+	    if (nodebox.length > 0) {
+		if (select)
+		    nodebox.attr('visible', 'true');
+		else
+		    nodebox.removeAttr('visible');
+	    }
+	    var checkbox = $("#"+key).find('.checkbox');
+	    if (checkbox.length > 0) {
+		if (select)
+		    checkbox.attr('visible', 'true');
+		else
+		    checkbox.removeAttr('visible');
+	    }
 	    // console.log("Select: " + key +  " " + select);
 	    //	    $('.nodekbox #' + key)[0].attr('style', 'visibility:visible');
 	    //	    $('.nodebox #' + key)[0].attr('visible', 'visible');

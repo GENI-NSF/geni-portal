@@ -137,8 +137,8 @@ if($parse_results[2] === true) {
     $stitch_rspec = 1;
 }
 
-// is_partially_bound is located in parse_results[5]
-if($parse_results[5] == true) {
+// is_partially_bound is located in parse_results[4]
+if($parse_results[4] == true) {
   $partially_bound_rspec = 1;
 }
 
