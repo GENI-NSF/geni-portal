@@ -6,9 +6,9 @@
 
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)
- * Added 'Jacks beta" buttons and versions of slices.php (slice-jacks.php) and 
-   slice-add-resources.php (slice-add-resources-jacks.php) that all creation and management
-   of topologies by embedding jacks viewer/editor in PHP portal pages. (#1126).
+ * Added "Jacks beta" buttons and versions of slices.php (slice-jacks.php) and 
+   slice-add-resources.php (slice-add-resources-jacks.php) that handle all creation and management
+   of topologies by embedding Jacks viewer/editor in PHP portal pages. (#1126)
  * When sending email, set charset to utf8 and transfer encoding to 8bit,
    so that international characters are preserved correctly. (#1162)
  * Extract sliver expiration at FOAM (so OESS), SFA, and GRAM AMs. (#1173)
