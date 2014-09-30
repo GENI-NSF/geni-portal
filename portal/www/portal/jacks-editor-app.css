@@ -77,6 +77,7 @@
 
 .jacks #leftNav pre {
    color: black;
-   overflow: auto;
+   overflow: scroll;
 }
+
 
