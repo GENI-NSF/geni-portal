@@ -101,31 +101,34 @@ if (array_key_exists('user_rspec_file', $_FILES)) {
             $results['message'] = "<b style='color:red;'>ERROR:</b> This RSpec is <b>invalid</b>: " . $msg;
         }
         else {
-            // RSpec was valid
-            $results['valid'] = true;
-            $results['message'] = "This RSpec is <b>valid</b>";
-            
             // get bound status, stitching status, and AM URNs if possible
             $parse_results = parseRequestRSpec($rspec_filename);
-	    $results['rspec'] = $parse_results[0];
-            $results['bound'] = $parse_results[1];
-            $results['stitch'] = $parse_results[2];
-            // FIXME: We can pass the AM URNs back if we need to for bound RSpecs
-            $results['ams'] = $parse_results[3];
-	    $results['partially_bound'] = $parse_results[4];
-            
-	    if($results['partially_bound']) {
-	      $results['message'] .= " and <b>partially bound</b>";
-	    }
-            else if($results['stitch']) {
+	    if (is_null($parse_results)) {
+	      $results['message'] = "<b style='color:red;'>ERROR:</b> This RSpec is <b>invalid</b>.";
+	    } else {
+	      // RSpec was valid
+	      $results['valid'] = true;
+	      $results['message'] = "This RSpec is <b>valid</b>";
+
+	      $results['rspec'] = $parse_results[0];
+	      $results['bound'] = $parse_results[1];
+	      $results['stitch'] = $parse_results[2];
+	      // FIXME: We can pass the AM URNs back if we need to for bound RSpecs
+	      $results['ams'] = $parse_results[3];
+	      $results['partially_bound'] = $parse_results[4];
+
+	      if($results['partially_bound']) {
+		$results['message'] .= " and <b>partially bound</b>";
+	      }
+	      else if($results['stitch']) {
                 $results['message'] .= " and <b>multi-aggregate</b>";
-            }
-            else if($results['bound']) {
+	      }
+	      else if($results['bound']) {
                 $results['message'] .= " and <b>bound</b>";
-            }
-            $results['message'] .= ".";
+	      }
+	      $results['message'] .= ".";
+	    }
         }
-        
     }
 }
 
@@ -137,8 +140,6 @@ else {
 if (array_key_exists('user_rspec_raw', $_POST)) {
   unlink($tempfile);
 }
-
-
 
 //error_log("Attempted to validate RSpec on slice-add-resources: " . json_encode($results));
 

@@ -51,6 +51,34 @@ function parseRequestRSpec($rspec_filename)
 
 }
 
+function display_xml_error($error, $xml)
+{
+    $return  = $xml[$error->line - 1] . "\n";
+    $return .= str_repeat('-', $error->column) . "^\n";
+
+    switch ($error->level) {
+        case LIBXML_ERR_WARNING:
+            $return .= "Warning $error->code: ";
+            break;
+         case LIBXML_ERR_ERROR:
+            $return .= "Error $error->code: ";
+            break;
+        case LIBXML_ERR_FATAL:
+            $return .= "Fatal Error $error->code: ";
+            break;
+    }
+
+    $return .= trim($error->message) .
+               "\n  Line: $error->line" .
+               "\n  Column: $error->column";
+
+    if ($error->file) {
+        $return .= "\n  File: $error->file";
+    }
+
+    return "$return\n\n--------------------------------------------\n\n";
+}
+
 // Like parseRequestRSpec(), but takes input of XML string rather than filename
 function parseRequestRSpecContents($rspec) {
   
@@ -60,7 +88,18 @@ function parseRequestRSpecContents($rspec) {
   $is_stitch = false;
   
   $dom_document = new DOMDocument();
-  $dom_document->loadXML($rspec);
+  $ret = $dom_document->loadXML($rspec);
+  if (! $ret) {
+    error_log("Failed to parse request RSpec");
+    $errors = libxml_get_errors();
+    $xmlstr = explode("\n", $rspec);
+    foreach ($errors as $error) {
+      $errstr = display_xml_error($error, $xmlstr);
+      error_log($errstr);
+    }
+    libxml_clear_errors();
+    return NULL;
+  }
   $root = $dom_document->documentElement;
 
   // Go over each node and link child
