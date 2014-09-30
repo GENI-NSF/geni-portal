@@ -67,12 +67,12 @@
   stroke-width: 5px;
 }
 
-.jacks .sitelabelgroup .labelbox {
- fill: white;
+.jacks .sitelabelgroup .sitetext {
+  fill: black;
 }
 
-.jacks .sitetext {
-  color: black;
+.jacks .sitelabelgroup .labelbox {
+  fill: white;
 }
 
 .jacks #leftNav pre {
