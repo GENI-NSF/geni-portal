@@ -256,7 +256,6 @@ $all_rspecs = fetchRSpecMetaData($user);
 include("jacks-editor-app.php");
 ?>
 
-<link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
 <script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
@@ -318,7 +317,7 @@ print '<b >Portal</b> <input type="radio" style="width:50px;padding: 0 10px;"nam
 print '<b >File</b> <input type="radio" style="width:50px;padding: 0 10px;" name="rspec_select" id="file_radio_select" onclick="enable_rspec_selection_mode_file()" />';
 print '<b > URL</b> <input type="radio" style="width:50px;pading: 0 10px;"" name="rspec_select" id="url_radio_select" onclick="enable_rspec_selection_mode_url()" />';
 print '<b >Text Box</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="textbox_radio_select" onclick="enable_rspec_selection_mode_textbox()" />';
-print '<b >Graphical Editor</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="jacks_radio_select" onclick="enable_rspec_selection_mode_jacks()" />';
+//print '<b >Graphical Editor</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="jacks_radio_select" onclick="enable_rspec_selection_mode_jacks()" />';
 print '</td></tr>';
 print '<tr id="rspec_portal_row" ><td><b>Select existing: </b>';
 show_rspec_chooser($user);
@@ -353,9 +352,9 @@ print "<b>Download RSpec: </b>";
 print '<button type="button" disabled="disabled" id="download_rspec_button" onClick="do_rspec_download()">Download</button>';
 print "</td></tr>";
 
-print "<tr><th>Choose Aggregate</th><td>";
-show_am_chooser();
-print "</td></tr>";
+//print "<tr><th>Choose Aggregate</th><td>";
+//show_am_chooser();
+//print "</td></tr>";
 print "</table>";
 
 if ($am_ids == null) {

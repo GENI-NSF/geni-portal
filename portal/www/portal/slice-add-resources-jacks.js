@@ -76,8 +76,8 @@ function handle_validation_results_base(evt, update_jacks)
 
 function handle_rspec_validation_results(jsonResponse)
 {
-    var agg_chooser_val = $('#agg_chooser').val();
-    var aggregate_chosen = agg_chooser_val != "";
+    //    var agg_chooser_val = $('#agg_chooser').val();
+    //    var aggregate_chosen = agg_chooser_val != "";
 
     // if valid, change around attributes depending on stitch/bound
     if(jsonResponse.valid) {
@@ -96,11 +96,7 @@ function handle_rspec_validation_results(jsonResponse)
 	}
 	else {
 	    set_attributes_for_unbound();
-	    if (aggregate_chosen) {
-		enable_reserve_resources();
-	    } else {
-		disable_reserve_resources();
-	    }
+	    disable_reserve_resources();
 	}
     }
     // if invalid, set back to unbound
@@ -148,7 +144,7 @@ function set_attributes_for_stitching()
 {
     // disable AMs
     //    $('#agg_chooser').val('Stitchable RSpec');
-    $('#agg_chooser').attr('disabled', 'disabled');
+    //    $('#agg_chooser').attr('disabled', 'disabled');
     //    $('#aggregate_message').html("You selected a <b>stitchable</b> RSpec, so aggregates will be specified from the RSpec.");
     $('#bound_rspec').val('1');
     $('#stitch_rspec').val('1');
@@ -159,7 +155,7 @@ function set_attributes_for_stitching()
 function set_attributes_for_bound()
 {
     //    $('#agg_chooser').val('Bound RSpec');
-    $('#agg_chooser').attr('disabled', 'disabled');
+    //    $('#agg_chooser').attr('disabled', 'disabled');
     // FIXME: Comment these 2 lines out when the above 2 lines are uncommented
     //    $('#agg_chooser').val(am_on_page_load);
     //    $('#agg_chooser').removeAttr('disabled');
@@ -173,7 +169,7 @@ function set_attributes_for_bound()
 function set_attributes_for_partially_bound()
 {
     //    $('#aggregate_message').html("You selected a <b>partially bound</b> RSpec.");
-    $('#agg_chooser').attr('disabled', 'disabled');
+    //    $('#agg_chooser').attr('disabled', 'disabled');
     $('#partially_bound_rspec').val('1');
     $('#bound_rspec').val('0');
     $('#stitch_rspec').val('0');
@@ -183,8 +179,8 @@ function set_attributes_for_partially_bound()
 /* do things when unbound RSpec */
 function set_attributes_for_unbound()
 {
-    $('#agg_chooser').val(am_on_page_load);
-    $('#agg_chooser').removeAttr('disabled');
+    //    $('#agg_chooser').val(am_on_page_load);
+    //    $('#agg_chooser').removeAttr('disabled');
     $('#aggregate_message').html("");
     $('#bound_rspec').val('0');
     $('#stitch_rspec').val('0');
@@ -194,7 +190,7 @@ function set_attributes_for_unbound()
 /* save previously chosen AM when AM changes */
 function am_onchange()
 {
-    am_on_page_load = $('#agg_chooser').val();
+    //    am_on_page_load = $('#agg_chooser').val();
     bound_rspec = $('#bound_rspec').val();
     valid_rspec = $('#valid_rspec').val();
     current_rspec = $('#current_rspec_text').val();
@@ -225,7 +221,7 @@ function rspec_onchange()
     //        $('#upload_rspec').hide(500);
     //    }
 
-    var agg_chooser = $('#agg_chooser');
+    //    var agg_chooser = $('#agg_chooser');
     var rspec_chooser = $('#rspec_select');
 
     var selected_index = document.getElementById('rspec_select').selectedIndex;
@@ -321,7 +317,7 @@ function jacks_fetch_topology_callback(rspecs) {
 // The callback from Jacks when topology has been modified
 function jacks_modified_topology_callback(data)
 {
-    //    console.log("MOD = " + data);
+    console.log("MOD = " + data);
     rspec = data.rspec;
 
     // id, client_id, aggregate_id, site_name
@@ -337,6 +333,7 @@ function jacks_modified_topology_callback(data)
     // RSpec is bound IFF every node has an aggregate_id, or every site has a urn
     // call validate_rspec_file if we've changed from bound 
     // to either partially bound or bound
+    validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
 }
 
 

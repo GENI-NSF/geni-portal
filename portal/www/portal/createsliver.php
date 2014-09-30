@@ -144,7 +144,7 @@ if (is_null($parse_results)) {
     // List of AMs is in parse_results[3] for bound rspecs
     $am_urns = $parse_results[3];
 
-    // is_partially_bound is located in parse_results[5]
+    // is_partially_bound is located in parse_results[4]
     if($parse_results[4] == true) {
       $partially_bound_rspec = 1;
     }
