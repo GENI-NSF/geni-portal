@@ -14,6 +14,7 @@
  * Log, validate, and protect temp uploads (#1177)
  * RSpec View button is non-responsive (#1181)
  * JavaScript reference errors on RSpec viewer (#1182)
+ * Detect errors in loadXML parsing RSpecs. (#1179)
 
 == 2.20 ==
  * Require unique name for rspecs (#784)
