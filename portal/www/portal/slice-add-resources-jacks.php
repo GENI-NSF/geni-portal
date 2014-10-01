@@ -31,18 +31,17 @@ require_once("sa_constants.php");
 require_once("sa_client.php");
 require_once 'geni_syslog.php';
 
-function cmp($a,$b) {
+function cmp2($a,$b) {
   return strcmp(strtolower($a['name']),strtolower($b['name']));
 }
 
 function show_rspec_chooser($user) {
   $all_rmd = fetchRSpecMetaData($user);
-  usort($all_rmd,"cmp");
-  print "<p><b>Choose Resources:</b> \n" ;
+  usort($all_rmd,"cmp2");
   print "<select name=\"rspec_id\" id=\"rspec_select\""
     . " onchange=\"rspec_onchange()\""
     . ">\n";
-  echo '<option value="" title="Choose RSpec" selected="selected">Choose RSpec...</option>';
+  echo '<option value="" title="Choose RSpec" selected="selected" bound="0" stitch="0">Choose RSpec...</option>';
   echo '<option value="PRIVATE" disabled>---Private RSpecs---</option>';
   foreach ($all_rmd as $rmd) {
     if ($rmd['visibility']==="private") {
@@ -50,11 +49,16 @@ function show_rspec_chooser($user) {
       $rname = $rmd['name'];
       $rdesc = $rmd['description'];
       //    error_log("BOUND = " . $rmd['bound']);
-      $enable_agg_chooser=1;
-      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
-      //-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+      $bound = 0;
+      $stitch = 0;
+      if ($rmd['bound'] == 't') {
+        $bound = 1;
+      }
+      if ($rmd['stitch'] == 't') {
+        $stitch = 1;
+      }
       //    error_log("BOUND = " . $enable_agg_chooser);
-      print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
+      print "<option value='$rid' title='$rdesc' bound='$bound' stitch='$stitch'>$rname</option>\n";
     }
   }
   echo '<option value="PUBLIC" disabled>---Public RSpecs---</option>';
@@ -64,11 +68,16 @@ function show_rspec_chooser($user) {
       $rname = $rmd['name'];
       $rdesc = $rmd['description'];
       //    error_log("BOUND = " . $rmd['bound']);
-      $enable_agg_chooser=1;
-      //UNCOMMENT NEXT LINE WHEN WE WANT BOUND RSPEC TO BE HANDLED CORRECTLY AGAIN
-      //-->    if ($rmd['bound'] == 't') { $enable_agg_chooser = 0; }
+      $bound = 0;
+      $stitch = 0;
+      if ($rmd['bound'] == 't') {
+        $bound = 1;
+      }
+      if ($rmd['stitch'] == 't') {
+        $stitch = 1;
+      }
       //    error_log("BOUND = " . $enable_agg_chooser);
-      print "<option value=\"$rid\" title=\"$rdesc\" bound=\"$enable_agg_chooser\">$rname</option>\n";
+      print "<option value='$rid' title='$rdesc' bound='$bound' stitch='$stitch'>$rname</option>\n";
     }
   }
   
@@ -76,8 +85,7 @@ function show_rspec_chooser($user) {
   //  print "<option value=\"upload\" title=\"Upload an RSpec\">Upload</option>\n";
   print "</select>\n";
 
-  print '<br><button onClick="sendRspecToJacks();">Edit Selected RSpec With Jacks</button>';
-  print "<br>or <a href=\"rspecupload.php\">upload your own RSpec to the above list</a>.";
+ // print "<br>or <a href=\"rspecupload.php\">upload your own RSpec to the above list</a>.";
 //  print " or <button onClick=\"window.location='rspecupload.php'\">";
 //  print "upload your own RSpec</button>.";
   // RSpec entry area
@@ -96,23 +104,27 @@ function show_rspec_chooser($user) {
   print '<input type="file" name="rspec_file" id="rspec_file" />' . PHP_EOL;
   print '</span>' . PHP_EOL;
   
-  print "</p>";
+  //print "</p>";
 }
 
 function show_am_chooser() {
   $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  print "<p><b>Choose Aggregate:</b> \n";
-  print '<select name="am_id" id="agg_chooser">\n';
-  echo '<option value="" title = "Choose an Aggregate" selected="selected">Choose an Aggregate...</option>';
+  print '<select name="am_id" id="agg_chooser" onchange="am_onchange()">\n';
+  echo '<option value="" title = "Choose an Aggregate">Choose an Aggregate...</option>';
   foreach ($all_aggs as $agg) {
     $aggid = $agg['id'];
     $aggname = $agg['service_name'];
     $aggdesc = $agg['service_description'];
     print "<option value=\"$aggid\" title=\"$aggdesc\">$aggname</option>\n";
   }
+
+  // FIXME: Bound RSpecs not implemented yet
+  //  echo '<option disabled value="stitch" title="Stitchable RSpec">Stitchable RSpec</option>'; 
+  //  echo '<option disabled value="bound" title="Bound RSpec">Bound RSpec</option>'; 
   print "</select>\n";
   
-  print "</p>";
+  // Display message to user about stitching/bound RSpecs
+  print "<div id='aggregate_message' style='display:block;'></div>";
 }
 
 $user = geni_loadUser();
@@ -121,15 +133,11 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
-add_js_script($mydir . '/slice-add-resources.js');
+add_js_script($mydir . '/slice-add-resources-jacks.js');
 
 $slice_id = "None";
 $slice_name = "None";
 include("tool-lookupids.php");
-
-if (isset($slice)) {
-  $slice_urn = $slice[SA_Argument::SLICE_URN];
-}
 
 if (isset($slice_expired) && convert_boolean($slice_expired)) {
   if (! isset($slice_name)) {
@@ -144,11 +152,89 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 $keys = $user->sshKeys();
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
-// Define list of all known AM's
+$STANDARD_JACKS_CONTEXT_LOCATION = "/etc/geni-ch/jacks-context.json";
+
+$jacksContext = array("canvasOptions" => null, "constraints" => array());
+if (file_exists($STANDARD_JACKS_CONTEXT_LOCATION)) {
+  $jacksContext = json_decode(file_get_contents($STANDARD_JACKS_CONTEXT_LOCATION));
+} 
+
+?>
+
+
+<script>
+
+function validateSubmit()
+{
+  f1 = document.getElementById("f1");
+  rspec = document.getElementById("rspec_select");
+  //  am = document.getElementById("agg_chooser");
+  rspec2 = document.getElementById("file_select");
+
+  current_rspec_text = $('#current_rspec_text').val();
+  is_bound = $('#bound_rspec').val();
+
+  //  console.log("validateSubmit.rspec = " + current_rspec_text);
+  //  console.log("validateSubmit.bound = " + is_bound);
+  
+  if ((current_rspec_text != '') && is_bound) {
+    f1.submit();
+    return true;
+  } else if (current_rspec_text != '') {
+    alert("Please select an Aggregate.");
+    return false;
+  } else {
+    alert ("Please select a Resource Specification (RSpec).");
+    return false;
+  }
+}
+</script>
+
+<?php include "tabs.js"; ?>
+
+<?php
+print "<h1>Add Resources to GENI Slice " . "<i>" . $slice_name . "</i>" . "</h1>\n";
+
+// Put up a warning to upload SSH keys, if not done yet.
+if (count($keys) == 0) {
+  // No ssh keys are present.
+  print "<p class='warn'>No ssh keys have been uploaded. ";
+  print ("Please <button onClick=\"window.location='uploadsshkey.php'\">"
+         . "Upload an SSH key</button> or <button " .
+	 "onClick=\"window.location='generatesshkey.php'\">Generate and "
+	 . "Download an SSH keypair</button> to enable logon to nodes.</p>\n");
+}
+
+?>
+
+  <div id='tablist'>
+		<ul class='tabs'>
+			<li><a href='#addresources' title="Add Resources">Add Resources</a></li>
+			<li style="border-right: none"><a href='#rspecs' title="Manage Resource Specifications">Manage RSpecs</a></li>
+		</ul>
+  </div>
+
+<?php
+
+  // BEGIN the tabContent class
+  // this makes a fixed height box with scrolling for overflow
+  echo "<div class='tabContent'>";
+
+// BEGIN add resources tab
+echo "<div id='addresources'>";
+//print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
+//print "<p><button onClick=\"window.location='rspecs.php'\">"
+//    . "View Available RSpecs</button> \n";
+//print "<button onClick=\"window.location='rspecupload.php'\">"
+//    . "Upload New RSpec</button></p>\n";
+
+print "<h2>Add Resources</h2>\n";
+print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
+
 if (! isset($all_ams)) {
   $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $all_ams = array();
@@ -158,51 +244,34 @@ if (! isset($all_ams)) {
     $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
     $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
     $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
     $all_ams[$service_id] = $single_am;
   }   
 }
 
-$slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
-//find aggregates to be able to return just am_id
-$all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-$aggs_with_resources = Array();
-
-//do the comparison and find ams
-foreach($slivers as $sliver)
-  {
-    foreach($all_aggs as $agg)
-      {
-	if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
-	  {
-	    $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
-	    break;
-	  }
-      }
-  }
-//return unique ids
-$slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
-
-// Grab all rspecs 
+$slice_ams = array();
 $all_rspecs = fetchRSpecMetaData($user);
-usort($all_rspecs, "cmp");
 
-// JACKS-APP stuff
+// JACKS-APP STUFF //
 include("jacks-editor-app.php");
-print build_jacks_editor();
-
 ?>
 
-
-<!-- Jacks JS and App CSS -->
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
 <script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+
+<?php
+print "<table id='jacks-editor-app'>";
+print "<tr><td><div id='jacks-editor-app-container'>";
+print build_jacks_editor();
+print "</div></td></tr></table>";
+?>
 
 <script src="portal-jacks-editor-app.js"></script>
 <script>
-  // AMs that the Portal says there are resources at.
+
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
-
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
@@ -219,60 +288,135 @@ print build_jacks_editor();
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  var jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', '#jacks-editor-status', 
-					  '#jacks-editor-buttons',
-					  jacks_slice_ams, jacks_all_ams, 
-					  jacks_all_rspecs,
-					  jacks_slice_info,
-					  jacks_user_info,
-					  portal_jacks_editor_app_ready);
-//   portal_jacks_editor_app_verbose=true;
-//   jacksEditorApp.verbose=true;
+  var jacks_enable_buttons = false;
+
+  var jacksContext = <?php echo json_encode($jacksContext) ?>;
+
+  do_show_editor();
 
 </script>
 
+<?php
+
+print '<form id="f1" action="createsliver.php" method="post" enctype="multipart/form-data">';
+
+print "<table>";
+
+//print "<tr>";
+//print "<th rowspan='1' >Graphical Editor</th>";
+//print "<td>";
+//print '<button type="button" name="show_jacks_editor_button" id="show_jacks_editor_button" onClick="do_show_editor()">Show Editor</button>';
+//print '<button type="button" name="hide_jacks_editor_button" id="hide_jacks_editor_button" hidden="hidden" onClick="do_hide_editor()">Close Editor: Save</button>';
+//print '<button type="button" name="discard_jacks_editor_button" id="discard_jacks_editor_button" hidden="hidden" onClick="do_discard_editor()">Close Editor: Discard</button>';
+//print "</td></tr>";
+
+print "<tr>";
+print "<th rowspan='3'>Choose RSpec</th>";
+print '<td>';
+print '<b >Portal</b> <input type="radio" style="width:50px;padding: 0 10px;"name="rspec_select" id="portal_radio_select" checked="checked" onclick="enable_rspec_selection_mode_portal()" />';
+print '<b >File</b> <input type="radio" style="width:50px;padding: 0 10px;" name="rspec_select" id="file_radio_select" onclick="enable_rspec_selection_mode_file()" />';
+print '<b > URL</b> <input type="radio" style="width:50px;pading: 0 10px;"" name="rspec_select" id="url_radio_select" onclick="enable_rspec_selection_mode_url()" />';
+print '<b >Text Box</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="textbox_radio_select" onclick="enable_rspec_selection_mode_textbox()" />';
+//print '<b >Graphical Editor</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="jacks_radio_select" onclick="enable_rspec_selection_mode_jacks()" />';
+print '</td></tr>';
+print '<tr id="rspec_portal_row" ><td><b>Select existing: </b>';
+show_rspec_chooser($user);
+print "</td></tr>";
+print '<tr id = "rspec_file_row" hidden="hidden"><td>';
+print "<b>Select from file: </b><input type='file' name='file_select' id='file_select' onchange='fileupload_onchange()'/>";
+// upload message: get this from slice-add-resources-jacks.js 
+// calling rspecuploadparser.php
+print "<div id='upload_message' style='display:block;'></div>";
+print "</td></tr>";
+print '<tr id="rspec_url_row" hidden="hidden"><td>';
+print "<b>Select from URL: </b>";
+print '<button type="button" name="url_grab_button" id="url_grab_button" onClick="urlupload_onchange()"  >Select</button>';
+print "<input type='input' name='url_select' id='url_select' onchange='urlupload_onchange()' />";
+print "</td></tr>";
+print '<tr id="rspec_paste_row" hidden="hidden"><td>';
+print '<b>Paste Rspec: </b>';
+print '<button type="button" name="paste_grab_button" id="paste_grab_button" onClick="grab_paste_onchange()">Select</button>';
+print '<textarea cols="60" rows="4" name="paste_select" id="paste_select"></textarea>';
+print "</td></tr>";
+print '<tr id="rspec_jacks_row" hidden="hidden"><td>';
+print '<b>Select from Editor: </b><button id="grab_editor_topology_button" type="button"onClick="do_grab_editor_topology()">Select</button>';
+print "</td></tr>";
+print "<tr><td>";
+print '<b><p id="rspec_status_text" /></b>';
+print "</td></tr>";
+
+print "<tr>";
+print "<th rowspan='1'>Save RSpec</th>";
+print "<td>";
+print "<b>Download RSpec: </b>";
+print '<button type="button" disabled="disabled" id="download_rspec_button" onClick="do_rspec_download()">Download</button>';
+print "</td></tr>";
+
+//print "<tr><th>Choose Aggregate</th><td>";
+//show_am_chooser();
+//print "</td></tr>";
+print "</table>";
+
+if ($am_ids == null) {
+  $am_id = "null";
+}
+?>
+<script>
+enable_rspec_selection_mode_portal();
+var am_id = <?php echo $am_id ?>;
+if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
+  $('#agg_chooser').val(am_id); 
+}
+</script>
+<script>
+// keep record of which aggregate was set on page load
+$( document ).ready(function() {
+    am_on_page_load = $('#agg_chooser').val();
+});
+</script>
 
 <?php
-// END JACKS-APP STUFF //
-
-  /*
-print "<h1>Add resources to GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h1>\n";
-print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
-// Put up a warning to upload SSH keys, if not done yet.
-if (count($keys) == 0) {
-  // No ssh keys are present.
-  print "<p class='warn'>No ssh keys have been uploaded. ";
-  print ("Please <button onClick=\"window.location='uploadsshkey.php'\">"
-         . "Upload an SSH key</button> or <button " .
-	 "onClick=\"window.location='generatesshkey.php'\">Generate and "
-	 . "Download an SSH keypair</button> to enable logon to nodes.</p>\n");
-  print "<br/>\n";
-}
-
-print "<p><button onClick=\"window.location='create-rspec.php?slice_id=" . $slice_id . "'\">"
-    . "Create New RSpec</button></p>\n";
-print "<p><button onClick=\"window.location='rspecs.php'\">"
-    . "View Available RSpecs</button></p>\n";
-
-print '<form id="f1" action="" method="post" enctype="multipart/form-data">';
-show_rspec_chooser($user);
-print  '<p><label for="file">or import RSpec from file:</label>';
-print  '<input type="file" name="rspec_selection" id="rspec_selection" /></p>';
-print "<p><i>Note: This RSpec selection is for this reservation only and will not be saved by the portal.</i></p>";
-show_am_chooser();
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
+print '<input type="hidden" name="current_rspec_text" id="current_rspec_text" value="" />';
+
+// by default, assume RSpec is not bound or stitchable (0), but if a bound or
+// stitchable RSpec is selected, change this value (to 1) via slice-add-resources-jacks.js
+print '<input type="hidden" name="valid_rspec" id="valid_rspec" value="0"/>';
+print '<input type="hidden" name="bound_rspec" id="bound_rspec" value="0"/>';
+print '<input type="hidden" name="partially_bound_rspec" id="partially_bound_rspec" value="0"/>';
+print '<input type="hidden" name="stitch_rspec" id="stitch_rspec" value="0"/>';
 print '</form>';
 
-print ("<p><button onClick=\"");
+?>
+<?php
+
+print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec; use 'Choose RSpec' options to temporarily upload an RSpec for this reservation only.</p>";
+
+print "<p id='partially_bound_notice' hidden='hidden'><b>Note:</b> 'Partially bound' RSpecs are RSpecs that bind some resources to specific aggregates, but not all. RSpecs must either not assign resources to any specific aggregates, or assign all resources to specific aggregates.</p>";
+
+print ("<p><button id='rspec_submit_button' disabled='disabled' onClick=\"");
 print ("validateSubmit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
 
-  */
+// END add resources tab
+echo "</div>";
 
+// BEGIN rspecs tab
+echo "<div id='rspecs'>";
+/*----------------------------------------------------------------------
+ * RSpecs
+ *----------------------------------------------------------------------
+ */
+if (!$in_lockdown_mode) {
+  include("tool-rspecs.php");
+}
+// END rspecs tab
+echo "</div>";
+
+// END the tabContent class
+  echo "</div>";
 
 include("footer.php");
 ?>

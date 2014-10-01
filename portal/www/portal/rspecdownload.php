@@ -40,6 +40,11 @@ if (array_key_exists("rspec", $_GET)) {
   $rspec_contents = $_GET['rspec'];
 }
 
+$rspec_tempfile = NULL;
+if (array_key_exists('tempfile', $_GET)) {
+  $rspec_tempfile = $_GET['tempfile'];
+}
+
 if (is_null($rspec_id && is_null($rspec_contents))) {
   relative_redirect('home.php');
 }
@@ -48,10 +53,24 @@ if (is_null($rspec_id && is_null($rspec_contents))) {
 if(!(is_null($rspec_id ))) {
   $rspec = fetchRSpecById($rspec_id);
   $name = fetchRSpecNameById($rspec_id);
-} else {
+} else if (!(is_null($rspec_tempfile))) {
+  // Get the canonical path without symlinks or '.' or '..'
+  $rspec_tempfile = realpath($rspec_tempfile);
+  /* See saverspectoserver.php */
+  // Perform a modicum of validation. Yes, we could do more.
+  if (strpos($rspec_tempfile, '/tmp/saverspectoserver') !== 0) {
+    error_log("Not allowing download of rspec_tempfile $rspec_tempfile");
+    header('Not Found', true, 404);
+    exit();
+  }
+  $rspec = file_get_contents($rspec_tempfile);
+  $name = "";
+  // This is a one-time get file: it is written and then deleted when downloaded
+  unlink($rspec_tempfile); 
+} else { 
   $rspec = $rspec_contents;
   $name = "";
-}
+} 
 
 $name2 = preg_replace("/[^a-zA-Z0-9]/", "_", $name);
 if ($name2 != ""){
@@ -59,10 +78,6 @@ if ($name2 != ""){
 } else {
   $filename = "rspec.xml";
 }
-
-error_log("RSPEC = " . print_r($rspec, true));
-error_log("FILENAME = " . print_r($filename, true));
-error_log("GET = " . print_r($_GET, true));
 
 /* How to improve this?
  *  - store the filename when uploaded

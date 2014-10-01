@@ -256,7 +256,7 @@ function write_logger_configuration_file($dir) {
 
 // Generic invocation of omni function 
 // Args:
-//    $am_url: URL of AM to which to connect
+//    $am_urls: URL of AM to which to connect (could be list of URLs)
 //    $user : Structure with user information (for creating temporary files)
 //    $args: list of arguments (including the method itself) included
 //    $bound_rspec: 0 for unbound (default), 1 for bound RSpec
@@ -271,7 +271,7 @@ function write_logger_configuration_file($dir) {
 //    forked calls: true if successfully forked, false if not
 // FIXME: $bound_rspec not used for anything but might be useful later
 // FIXME: Clean up this function - it's too long!
-function invoke_omni_function($am_url, $user, $args, 
+function invoke_omni_function($am_urls, $user, $args, 
     $slice_users=array(), $bound_rspec=0, $stitch_rspec=0, $fork=false,
 			      $omni_invocation_dir=NULL, 
 			      $api_version="2")
@@ -281,18 +281,26 @@ function invoke_omni_function($am_url, $user, $args,
      or not). */
   $file_manager = new FileManager();
 
-  // We seem to get $am_url sometimes as a string, sometimes as an array
-  // Should always talk to single AM
-  if(!is_string($am_url) && is_array($am_url)) { $am_url = $am_url[0]; }
+  //  error_log("INVOKE : " . print_r($am_urls, true));
 
-  /* Does the given URL handle speaks-for?
-        If an AM URL is given, check the SR for whether SF is enabled.
+  // If we get a single URL, make it an array (handle the general case)
+  if($am_urls && (!is_array($am_urls))) { $am_urls = array($am_urls); }
+
+  /* Does each given URL handle speaks-for?
+        If one or more AM URLs are given, check the SR for whether SF is enabled.
         If no AM URL is given but it's for stitching, just assume for now
             that all AMs handle SpeaksFor and see what happens.
   */
-  if($am_url) {
-    $handles_speaks_for = 
+  if($am_urls) {
+    $handles_speaks_for = True;
+    foreach($am_urls as $am_url) {
+      $am_handles_speaks_for = 
         lookup_attribute($am_url, SERVICE_ATTRIBUTE_SPEAKS_FOR) == 't';
+      if(!$am_handles_speaks_for) {
+	$handles_speaks_for = False;
+	break;
+      }
+    }
   }
   else {
         $handles_speaks_for = True;
@@ -327,8 +335,8 @@ function invoke_omni_function($am_url, $user, $args,
     // get AMs if non-stitchable
     if(!$stitch_rspec) {
     
-        if (is_array($am_url)) {
-            foreach ($am_url as $single) {
+        if (is_array($am_urls)) {
+            foreach ($am_urls as $single) {
 	            if (! isset($single) || is_null($single) || $single == '') {
 	                error_log("am_client cannot invoke Omni with invalid AM URL");
 	                return("Invalid AM URL");
@@ -398,7 +406,7 @@ function invoke_omni_function($am_url, $user, $args,
       
     // specify AM for non-stitchable RSpecs
     if(!$stitch_rspec) {
-        if (is_array($am_url)){
+        if (is_array($am_urls)){
             $omni_config = $omni_config.$aggregates."\n";
         }
     }
@@ -488,7 +496,7 @@ function invoke_omni_function($am_url, $user, $args,
 
     // specify AM for non-stitchable RSpecs
     if(!$stitch_rspec) {
-        if (!is_array($am_url)){
+      foreach($am_urls as $am_url) {
           $cmd_array[]='-a';
           $cmd_array[]=$am_url;
         }
@@ -791,14 +799,16 @@ function renew_sliver($am_url, $user, $slice_credential, $slice_urn, $time, $sli
 
 
 // Create a sliver on a given AM with given rspec
-function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_urn,
+function create_sliver($am_urls, $user, $slice_users, $slice_credential, $slice_urn,
                        $omni_invocation_dir, $slice_id, $bound_rspec=0, $stitch_rspec=0)
 {
 
+  //  error_log("CS : " . print_r($am_urls, true));
+
     // stitchable RSpecs should have empty AM URL, so only check for non-stitchable RSpecs
     if(!$stitch_rspec) {
-        if (! isset($am_url) || is_null($am_url) ){
-        if (!(is_array($am_url) || $am_url != '')) {
+        if (! isset($am_urls) || is_null($am_urls) ){
+        if (!(is_array($am_urls) || $am_url != '')) {
           error_log("am_client cannot invoke Omni without an AM URL");
           return("Missing AM URL");
         }
@@ -811,12 +821,12 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
   }
 
   $member_id = $user->account_id;
-  $msg = "User $member_id calling CreateSliver at $am_url on $slice_urn";
+  $msg = "User $member_id calling CreateSliver at $am_urls on $slice_urn";
   geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
   $rspec_filename = "$omni_invocation_dir/" . OMNI_INVOCATION_FILE::REQUEST_RSPEC_FILE;
   $rspec = file_get_contents($rspec_filename);
   // Don't log this: We already log from the caller if the allocation is successful
-  //  log_action("Called CreateSliver", $user, $am_url, $slice_urn, $rspec, $slice_id);
+  //  log_action("Called CreateSliver", $user, $am_urls, $slice_urn, $rspec, $slice_id);
   $slice_credential_filename = writeDataToTempDir($omni_invocation_dir, $slice_credential, OMNI_INVOCATION_FILE::SLICE_CREDENTIAL_FILE);
   
   $args = array("-o", "--slicecredfile", 
@@ -825,11 +835,11 @@ function create_sliver($am_url, $user, $slice_users, $slice_credential, $slice_u
 		$slice_urn,
 		$rspec_filename);
   // FIXME: Note that this AM has resources
-  // slice_id, am_url or ID, duration?
+  // slice_id, am_urls or ID, duration?
   
   // we want to fork the process
   $fork = true;
-  $output = invoke_omni_function($am_url, $user, $args, $slice_users, 
+  $output = invoke_omni_function($am_urls, $user, $args, $slice_users, 
         $bound_rspec, $stitch_rspec, $fork, $omni_invocation_dir);
   // FIXME: forking: this file shouldn't be deleted for now
   //unlink($slice_credential_filename);

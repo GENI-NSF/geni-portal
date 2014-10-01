@@ -66,3 +66,24 @@
 #jacks-editor-app #active .checkbox {
   stroke-width: 5px;
 }
+
+.jacks .sitelabelgroup .sitetext {
+  fill: black;
+}
+
+.jacks .sitelabelgroup .labelbox {
+  fill: white;
+}
+
+.jacks #leftNav pre {
+   color: black;
+}
+
+
+.jacks #leftNav .fromBottom {
+    overflow: scroll;
+}
+
+#jacks-editor-app .checkbox.selected {
+  stroke-width: 5px;
+}

@@ -60,7 +60,11 @@ portal.authZResponse = function(speaks_for_cred)
       window.location.href = "home.php";
     })
   .fail(function(data, textStatus, jqxhr) {
-      alert('got fail result: ' + textStatus);
+      if (data.status == 406) {
+          alert('An error occurred storing your credential. Please use your GENI certificate to sign the credential.');
+      } else {
+          alert('An error occurred storing your credential. Please contact portal-help@geni.net');
+      }
     });
 }
 portal.initialize = function()

@@ -1,6 +1,9 @@
 function JacksEditorApp(jacks, status, buttons, sliceAms, allAms, 
 			allRspecs,
-			sliceInfo, userInfo, readyCallback) {
+			sliceInfo, userInfo, enableButtons,
+			canvasOptions, constraints,
+			readyCallback, fetchTopologyCallback,
+			modifiedTopologyCallback) {
 
     // Map from client_id to am_id
     this.client2am = {};
@@ -60,9 +63,13 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.userInfo = userInfo;
     this.username = userInfo.user_name;
 
-    var canvasOptions = this.getCanvasOptions();
+    if (canvasOptions == null)
+	canvasOptions = getDefaultCanvasOptions();
+    if (constraints == null)
+	constraints = getDefaultConstraints();
+
+
     canvasOptions.aggregates = this.sortedAms;
-    var constraints = this.getConstraints();
 
     var that = this;
     var jacksInstance = new window.Jacks({
@@ -75,13 +82,15 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 	    canvasOptions: canvasOptions,
 	    constraints : constraints,
 	    nodeSelect: true,
+	    multiSite: true,
 	    root: jacks,
 	    readyCallback: function (input, output) {
-		output.on('fetch-topology', function(rspecs) {
-			that.postRspec(rspecs);
-		    });
+		output.on('fetch-topology', fetchTopologyCallback);
+		output.on('modified-topology', modifiedTopologyCallback);
 		that.jacksReady(input, output);
-		that.initButtons(that.buttons);
+		if (that.enableButtons) {
+		    that.initButtons(that.buttons);
+		}
 		// Finally, tell our client that we're ready
 		readyCallback(that, that.input, that.output);
 	    }
@@ -114,28 +123,29 @@ JacksEditorApp.prototype.debug = function(msg) {
 	console.log(msg);
 }
 
-JacksEditorApp.prototype.getCanvasOptions = function() {
+function getDefaultCanvasOptions()
+{
     var defaults = [ 
         {
-	    name: 'Add VM',
+	    name: 'VM',
 	    type: 'default-vm'
 	},
         {
-	    name: 'Add Xen VM',
+	    name: 'Xen VM',
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
 	},
         {
-	    name: 'Add Raw PC',
+	    name: 'Raw PC',
 	    type: 'emulab-rawpc',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
         },
         {
-	    name: 'Add Small Exogeni',
+	    name: 'Small Exogeni',
 	    type: 'm1.small'
 	},
         {
-	    name: 'Add Open VSwitch',
+	    name: 'Open VSwitch',
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS',
 	    icon: 'https://www.emulab.net/protogeni/jacks-stable/images/router.svg'
@@ -149,11 +159,8 @@ JacksEditorApp.prototype.getCanvasOptions = function() {
         {
 	    name: 'OVS Image',
 	    id: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS'
-	},
-        {
-	    name: 'Any Image',
-	    id: 'urn:blahblah:any'
-	}];
+	}
+	];
 
 var types =  [
 	{
@@ -205,16 +212,7 @@ var linkTypes = [
 	    id: 'stitched'
 	}];
 
-var sharedvlans = [
-       {
-	       name: 'Foo',
-	       id: 'bar'
-	   },
-        {
-	    name: 'Foobar',
-	    id: 'bar2'
-	}];
-
+var sharedvlans = [];
 var canvas_options = { defaults: defaults,
 		       images : images,
 		       types: types,
@@ -226,7 +224,8 @@ return canvas_options;
 
 }
 
-JacksEditorApp.prototype.getConstraints = function() {
+ function getDefaultConstraints() 
+{
 var constraints = [
         {
 	    node: {

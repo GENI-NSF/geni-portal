@@ -1,0 +1,428 @@
+A.  Provision a machine with 2 interfaces
+primary hostname for the portal - HOST=savinhill.bbn.com
+secondary hostname for the clearinghouse - CHHOST=fields.bbn.com
+
+
+B.  Check that
+
+1.  Disable SELINUX - causes some unknown grief
+
+* SELINUX=disabled in /etc/selinux/config and you have to reboot the box
+
+2. Disable firewall service but you'll have to put this back in the end and figure out what ports to make run.   Check for the minimum
+ports later in the document.
+
+* sudo service iptables stop
+
+C.  Software Dependencies
+
+Repositories we are dependent on
+base.repo              CentOS-Vault.repo    epel-testing-debuginfo.repo   puppetlabs.repo
+CentOS-Base.repo       contrib.repo         epel-testing.repo
+CentOS-Debuginfo.repo  epel-debuginfo.repo  epel-testing-source.repo      updates.repo
+CentOS-Media.repo      epel.repo            extras.repo
+centosplus.repo        epel-source.repo     puppetlabs_dependencies.repo
+
+There is 1 more repository we use later - refer to script proto/prep-centos.sh.  These repositories need to be installed
+if for some reason they are not there by default.  Refer to: http://wiki.centos.org/AdditionalResources/Repositories
+
+
+Software from GIT
+- This installation assumes that you have software repositories for shib, proto-ch, and chapi and are in the installer's home directory.
+
+D.  Install dependencies
+
+1.  * cd ~/shib/sp; sudo ./prep-sp-centos.sh
+
+E.  Generate keys and certificates - Questions need to be answered in some of these steps.  These certificates are self-signed and you'll have
+to figure out how to get one from a real authority for a real installation.
+
+===== Do this on the command line
+export HOST='savinhill';
+export CHHOST='fields';
+
+#generate private keys
+openssl genrsa -out portal-${HOST}.key 2048
+openssl genrsa -out ch-${CHHOST}.key 2048
+
+#generate CSR
+openssl req -new -key portal-${HOST}.key -out portal-${HOST}.csr [Fully Qualified Domain Name of portal host should be used when asked, ex savinhill.bbn.com.]
+openssl req -new -key ch-${CHHOST}.key -out ch-${CHHOST}.csr [Fully Qualified Domain Name of ch host should be used when asked, ex fields.bbn.com.]
+
+#generate Self-Signed Cert
+openssl x509 -req -days 365 -in portal-${HOST}.csr -signkey portal-${HOST}.key -out portal-${HOST}.crt
+openssl x509 -req -days 365 -in ch-${CHHOST}.csr -signkey ch-${CHHOST}.key -out ch-${CHHOST}.crt
+===== Do this by hand
+
+
+F.  Do the installation
+1.  You need to make sure you have an sp/$HOST/ch-ssl and an
+sp/$HOST/portal-ssl edited for the correct machine.
+Copy files from sp/centos-example to machine name.  You can edit
+files after running install-sp-centos.sh, but you need to
+ensure the existence of these files before running the script.
+
+* cp -r sp/centos-example sp/$HOST
+
+2.  Install sp software
+
+* cd ~/shib/sp; sudo ./install-sp-centos.sh
+
+
+Here, doing a "sudo shibd -t" should get output with the last line
+saying "overall configuration is loadable, check console for
+non-fatal problems", which says that shibd is loadable.
+
+
+G. Edit shibboleth and httpd configuration files
+
+* Edit by hand - /etc/httpd/sites-enabled/ch-ssl, /etc/httpd/sites-enabled/portal-ssl and /etc/shibboleth/shibboleth2.xml
+
+1.  What your diff for shibboleth2.xml should look like - instances of hainvm15.bbn.com should be replaced by the portal hostname.
+
+23c23
+<     <ApplicationDefaults entityID="https://hainvm15.bbn.com/shibboleth"
+---
+>     <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
+44c44,45
+<             <SSO discoveryProtocol="SAMLDS" discoveryURL="https://hainvm15.bbn.com/eds">
+---
+>             <SSO entityID="https://idp.example.org/idp/shibboleth"
+>                  discoveryProtocol="SAMLDS" discoveryURL="https://ds.example.org/DS/WAYF">
+85d85
+<         <MetadataProvider type="XML" file="idp-metadata-cetaganda.xml"/>
+
+    a. Here if you restart ntpd, shibd, and httpd, https://hostname/Shibboleth.sso/Session should give you a line
+"A valid session was not found." indicating things are mostly working
+
+2.  For /etc/httpd/conf/httpd.conf
+
+*    Add these lines at the end of this file.
+    Include sites-enabled/ch-ssl
+    Include sites-enabled/portal-ssl
+
+3.  For the sites-enabled files
+    - Edit all IP addresses and ServerName directives to your host.
+      Portal IP and Name should be for portal-ssl
+
+      All SSLCertificateFile and SSLCertificateKeyFile should point to the
+files created in Step E.
+      =====
+      SSLCertificateFile    /etc/pki/tls/certs/portal-savinhill.crt
+      SSLCertificateKeyFile /etc/pki/tls/private/portal-savinhill.key
+      =====
+
+      And since we are using self-signed certificates, all
+SSLCertificateChainFile should be commented.  There should be no such directive.
+      #SSLCertificateChainFile /etc/ssl/certs/usertrust.com.pem
+
+      Also take out the LoadModule shib directive as the httpd/conf.d/shib.conf does the loading already.
+      #LoadModule mod_shib /usr/lib/apache2/modules/mod_shib_22.so
+
+      All logs should point to "/var/log/httpd" instead of "/var/log/apache2"
+
+    - Edit all IP addresses and ServerName directives to your host.
+      CHHOST IP and Name should be for ch-ssl
+      All SSLCertificateFile and SSLCertificateKeyFile should point to
+the files created in Step E.
+      =====
+      SSLCertificateFile    /etc/pki/tls/certs/ch-fields.crt
+      SSLCertificateKeyFile /etc/pki/tls/private/ch-fields.key
+      =====
+
+      And since we are using self-signed certificates, all
+SSLCertificateChainFile should be commented.  There should be no such directive.
+      #SSLCertificateChainFile /etc/ssl/certs/geotrust.com.pem
+
+      All logs should point to "/var/log/httpd" instead of "/var/log/apache2"
+
+
+H.  Restart services
+1.  * sudo service ntpd restart
+2.  * sudo service shibd restart
+3.  * sudo service httpd restart
+
+I.   Metadata exchange
+To get metadata
+save https://hostname/Shibboleth.sso/Metadata and then send the file to GPO.  You need to coordinate
+with GPO on this subject.
+
+Different behaviour happens with safari and firefox - safari silently downloads the Metadata file
+But I have always used the file that Firefox gives me.
+
+Instructions for GPO:
+To move sp metadata to idp (in this example, cetaganda)
+To update your CentOS service provider metadata on the identity
+provider (cetaganda):
+
+1. Copy the SP metadata to your home directory cetaganda:
+	scp Metadata-savinhill.xml cetaganda:
+2. On cetaganda, copy the metadata into place (via sudo):
+	sudo mv Metadata-savinhill.xml /opt/shibboleth-idp/metadata/Metadata-savinhill.xml
+3. On cetaganda, restart Tomcat:
+	sudo service tomcat6 restart
+
+Note: wait about 30 seconds before testing it, the identity provider in Tomcat seems to take a little while to be ready.
+
+Here, restart ntp, shibd, httpd, and then try https://hostname/secure/env.php and you should get html output that
+starts with the lines
+
+ Welcome!
+
+You have successfully logged in via Shibboleth
+
+
+
+
+========
+Prep CENTOS
+
+We installed Python2.7 for this suite of software.   CentOS comes with python2.6 installed by default.
+So an alternative install of python2.7 is done and our dependencies our installed in the 2.7 world.
+This suite of software should work on python2.6.
+
+Run
+* cd ~/proto-ch; sudo ./prep-centos.sh
+
+This script might look like it hiccups, but you just need to be patient as output is buffered before it
+shows up on the terminal.
+
+Last thing done by the script is to restart rsyslog.  If you get to this point, the script is completely successful.
+All the scripts will exit if there is an error.
+
+========
+Install GCF
+
+Run from proto-ch
+
+* ./install-gcf-centos.sh
+
+This install gcf-2.5 because that is what was being used at the time.  This will have to be changed if the gcf version
+changes.
+
+=====
+PREP DB
+
+* Edit bin/geni-add-trusted-tool to use python2.7 - add 2.7 after python in first line
+--- /tmp/httpd.conf     2014-08-04 19:30:37.635172697 -0400
++++ /etc/httpd/conf/httpd.conf  2014-07-31 09:52:24.362107897 -0400
+@@ -1007,3 +1007,6 @@
+ #    ErrorLog logs/dummy-host.example.com-error_log
+ #    CustomLog logs/dummy-host.example.com-access_log common
+ #</VirtualHost>
++Include sites-enabled/000-default
++Include sites-enabled/ch-ssl
++Include sites-enabled/portal-ssl
+
+* Edit ca/Makefile.am so that WWW_OWNER=apache, WWW_GROUP=apache
+
+diff -u /tmp/Makefile.am ~/proto-ch/ca/Makefile.am
+--- /tmp/Makefile.am    2014-08-04 19:38:38.851334962 -0400
++++ /home/rrhain/proto-ch/ca/Makefile.am        2014-07-31 09:38:01.799366252 -0400
+@@ -4,8 +4,8 @@
+ # Ubuntu, but won't work on other Linux distributions, like Red Hat.
+ # We need to do it this way so that certificates can be issued via
+ # the web site user.
+-WWW_OWNER=www-data
+-WWW_GROUP=www-data
++WWW_OWNER=apache
++WWW_GROUP=apache
+ INSTALL_WWW = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
+ SERIAL_FILE = $(svcdatadir)/serial
+ INDEX_FILE = $(svcdatadir)/index.txt
+
+
+Run from proto-ch
+This mostly initializes postgres.
+You will have to enter the password for the user, portal, and the password for the user, portal, as a database user
+user password two times each.
+
+* ./prep-ch-centos.sh
+
+You might want to create a ~/.pgpass file here.   Otherwise you'll have to enter the portal
+password many times for this script and the subsequent script.   A default .pgpass is created
+if it doesn't exist and assumes a password of portal for the portal db user.  So, if you use portal
+as the password, the default .pgpass will take care of installation.   You then might want to change
+the portal password after installation.
+
+Diffs that might be relevant for this section
+
+diff -u pgsql/data/pg_hba.conf pgsql.q/data/pg_hba.conf
+--- pgsql/data/pg_hba.conf      2014-08-04 20:09:52.148754885 -0400
++++ pgsql.q/data/pg_hba.conf    2014-07-31 09:38:53.336103127 -0400
+@@ -69,6 +69,7 @@
+ # "local" is for Unix domain socket connections only
+ local   all         all                               ident
+ # IPv4 local connections:
+-host    all         all         127.0.0.1/32          ident
++host    all         all         127.0.0.1/32          md5
+ # IPv6 local connections:
+-host    all         all         ::1/128               ident
++host    all         all         ::1/128               md5
++host    all         all         0.0.0.0/0             md5
+
+diff -u pgsql/data/postgresql.conf pgsql.q/data/postgresql.conf
+--- pgsql/data/postgresql.conf  2014-08-04 20:09:52.143754705 -0400
++++ pgsql.q/data/postgresql.conf        2014-07-31 09:38:53.313102401 -0400
+@@ -56,11 +56,11 @@
+
+ # - Connection Settings -
+
+-#listen_addresses = 'localhost'                # what IP address(es) to listen on;
++listen_addresses = '*'         # what IP address(es) to listen on;
+                                        # comma-separated list of addresses;
+                                        # defaults to 'localhost', '*' = all
+                                        # (change requires restart)
+-#port = 5432                           # (change requires restart)
++port = 5432                            # (change requires restart)
+ max_connections = 100                  # (change requires restart)
+ # Note:  Increasing max_connections costs ~400 bytes of shared memory per
+ # connection slot, plus lock space (see max_locks_per_transaction).
+
+
+====
+
+INSTALL CH stuff
+
+Run from proto-ch
+* ./install-ch-centos.sh
+
+======
+Install CHAPI
+
+1. Install ABAC
+
+======
+#for abac
+#although I'd recommend putting all our stuff in our world
+cd /usr/share/geni-ch
+sudo bash
+wget abac.deterlab.net/src/abac-0.1.7.tar.gz
+sudo ln -s /usr/lib64/libltdl.so.7.2.1 /usr/lib64/libltdl.so
+tar xvzf abac-0.1.7.tar.gz
+ln -s abac-0.1.7 abac
+cd abac
+./configure --prefix=/usr --sysconfdir=/etc  --bindir=/usr/local/bin --sbindir=/usr/local/sbin PYTHON_VERSION='2.7'
+make
+/bin/sh ./libtool  --tag=CXX   --mode=link g++  -g -O2 -module  -o /usr/share/geni-ch/abac/swig/perl/ABAC.la -rpath /usr/share/geni-ch/abac/swig/perl/swig_perl_ABAC_la-abac_wrap.lo /usr/share/geni-ch/abac/swig/perl/swig_perl_ABAC_la-SSL_keyid.lo ./libabac/libabac.la -lssl
+make
+make install
+ln -s /usr/lib/python2.7/site-packages/_ABAC.* /usr/local/lib/python2.7/site-packages/
+exit
+======
+
+2.  Get AMsoil tar ball
+
+* cd /tmp
+* wget http://www.gpolab.bbn.com/internal/projects/chapi/AMsoil-gpo-0.3.2.tar.gz
+
+3.  Install chapi
+
+* cd chapi/tools
+* Run install-chapi-centos.sh
+
+
+=====
+Finalized HTTPD Configuration - Look for files in chapi/tools/httpd-config.
+
+1.  Edit ch-ssl, and portal-ssl for correct IP, key values and server names.
+
+    Key Values were the ones created in the SHIB installation - this may change as sites probably do not want this self-signed.
+
+    Copy 000-default, ch-ssl and portal-ssl to /etc/httpd/sites-enabled.  Edit
+/etc/httpd/conf/httpd.conf to so that it includes 000-default.
+
+    * sudo cp chapi/tools/httpd-config/000-default chapi/tools/httpd-config/ch-ssl chapi/tools/httpd-config/portal-ssl /etc/httpd/sites-enabled
+
+    * Edit /etc/httpd/conf/httpd.conf by making sure these lines are included
+    Include sites-enabled/000-default
+    Include sites-enabled/ch-ssl
+    Include sites-enabled/portal-ssl
+
+--- /tmp/httpd.conf     2014-08-04 19:30:37.635172697 -0400
++++ /etc/httpd/conf/httpd.conf  2014-07-31 09:52:24.362107897 -0400
+@@ -1007,3 +1007,6 @@
+ #    ErrorLog logs/dummy-host.example.com-error_log
+ #    CustomLog logs/dummy-host.example.com-access_log common
+ #</VirtualHost>
++Include sites-enabled/000-default
++Include sites-enabled/ch-ssl
++Include sites-enabled/portal-ssl
+
+
+
+2.  Copy fastcgi.conf and ssl.conf to /etc/httpd/conf.d
+
+    * sudo cp chapi/tools/httpd-config/*.conf /etc/httpd/conf.d
+
+3.  Chown /usr/share/geni-ch/CA/* to be owned by apache
+
+    * sudo chown -R apache.apache /usr/share/geni-ch/CA/*
+
+4.  Create /etc/geni-chapi/chapi.ini.  Copy /etc/geni-chapi/chapi-centos.ini to /etc/geni-chapi/chapi.ini and edit variable
+    authority to be CHHOST.
+
+    * sudo cp /etc/geni-chapi/chapi-centos.ini /etc/geni-chapi/chapi.ini
+    * Change authority value to $CHHOST value as defined above (ex. here is that $CHHOST=fields.bbn.com)
+
+diff -u chapi-centos.ini chapi.ini
+--- chapi-centos.ini    2014-07-31 09:47:08.958212657 -0400
++++ chapi.ini   2014-07-31 09:49:20.518717549 -0400
+@@ -62,7 +62,7 @@
+
+ ; name of CH/SA/MA authority
+ ; This is probably the hostname, or a CNAME alias for the host
+-authority=ch-ph.gpolab.bbn.com
++authority=fields.bbn.com
+
+ ; database URL
+ ;  Syntax: postgresql://USER:PASSWORD@HOST/DB
+
+
+5.  /usr/share/geni-ch/chapi/AMsoil/src/main.py needs to be changed to point to /usr/local/bin/python2.7 instead of /usr/local/bin
+
+    * Edit /usr/share/geni-ch/chapi/AMsoil/src/main.py
+
+6.  Create a combined certificate.   In CentOS, I had trouble with the certificate authority chain and the workaround was to put all the certificates in a single file.
+This may still be something that can be resolved by looking at the differences in the ssl libraries used by php on the different OSes.
+
+    * cat /usr/share/geni-ch/CA/cacert.pem /usr/share/geni-ch/ma/ma-cert.pem > /tmp/ca-ma-cert.pem;  sudo cp /tmp/ca-ma-cert.pem /usr/share/geni-ch/CA
+
+7.  Add firewall rules back in.
+
+    * Fix /etc/sysconfig/iptables for deployment
+
+   You will need at least these rules, and some rules need to be tailored to your environment.
+
+To add to /etc/sysconfig/iptables
+-A INPUT -p tcp -m multiport --dports 80 -m comment --comment "101 open port 80" -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 443 -m comment --comment "102 open port 443" -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8443 -m comment --comment "102 open port 8443" -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 8444 -m comment --comment "102 open port 8444" -j ACCEPT
+
+
+8.  Make sure services run on boot up
+
+    * sudo chkconfig httpd on
+    * sudo chkconfig shibd on
+    * sudo chkconfig ntpd on
+    * sudo chkconfig postgresql on
+
+
+9.  After rebooting we want to check that services are running and that the firewall is in a state that you desire.
+
+
+10.  To test that things are working:
+
+      This requires a user account that is already recognized at GENI.   At this point, it would be good to coordinate
+      with GPO to ensure that things are working properly.
+
+      Go to: http://savinhill.bbn.com
+
+      Run geni-add-member-privilege:
+      On savinhill.bbn.com (the portal)
+      1.  sudo cp -r /usr/local/lib/python2.6/site-packages/chapiclient /usr/local/lib/python2.7/site-packages (this can be fixed if we fix config
+          in proto-ch)
+      2.  python2.7 /usr/local/bin/geni-add-member-privilege --member rrhain -l --url https://fields.bbn.com/MA -k /usr/share/geni-ch/ma/ma-key.pem -c /usr/share/geni-ch/ma/ma-cert.pem  [This command creates a project lead, who can then create a project, and then ask for resources, by creating a slice.]
+
+      Back to the web interface, you should be able to create a project and create a slice.

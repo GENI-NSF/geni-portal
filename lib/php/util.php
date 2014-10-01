@@ -249,20 +249,20 @@ function getBrowser() {
     ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
   if (!preg_match_all($pattern, $u_agent, $matches)) {
     // we have no matching number just continue
-  }
-
-  // see how many we have
-  $i = count($matches['browser']);
-  if ($i != 1) {
-    //we will have two since we are not using 'other' argument yet
-    //see if version is before or after the name
-    if (strripos($u_agent,"Version") < strripos($u_agent,$ub)) {
-      $version = $matches['version'][0];
-    } else {
-      $version = $matches['version'][1];
-    }
   } else {
-    $version = $matches['version'][0];
+    // see how many we have
+    $i = count($matches['browser']);
+    if ($i != 1) {
+      //we will have two since we are not using 'other' argument yet
+      //see if version is before or after the name
+      if (strripos($u_agent,"Version") < strripos($u_agent,$ub)) {
+	$version = $matches['version'][0];
+      } else {
+	$version = $matches['version'][1];
+      }
+    } else {
+      $version = $matches['version'][0];
+    }
   }
 
   // check if we have a number

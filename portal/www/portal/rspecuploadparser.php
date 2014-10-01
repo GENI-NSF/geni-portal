@@ -36,6 +36,10 @@ require_once 'tool-rspec-parse.php';
     
     If the RSpec is valid, pass back information on whether it's bound and/or
     stitchable.
+
+    Can take inputs in two forms:
+    A filename in the $_FILES['user_rspec_file][tmp_name] argument
+    A raw-rspec in the $_FILES['user_rspec_raw'] argument
     
     Returns the following in JSON:
     
@@ -46,8 +50,16 @@ require_once 'tool-rspec-parse.php';
                 1 (bound)
         stitch: 0 (non-stitching)
                 1 (stitching)
+	partially_bound: 
+	        0 (not-partially bound: either fully bound or unbound)
+	        1 (partially bound)
         ams:    array of AM URNs parsed
+	rspec: Text of parsed rspec
 */
+
+// error_log("FILES = " . print_r($_FILES, true));
+// error_log("POST = " . print_r($_POST, true));
+// error_log("GET = " . print_r($_GET, true));
 
 // defaults
 $results = array();
@@ -55,11 +67,23 @@ $results['valid'] = false;
 $results['message'] = "";
 $results['bound'] = false;
 $results['stitch'] = false;
+$results['partially_bound'] = false;
 $results['ams'] = array();
+$results['rspec'] = "";
+
+// If what is sent is an rspec, put it in a temp file
+if (array_key_exists('user_rspec_raw', $_POST)) {
+  $rspec = $_POST['user_rspec_raw'];
+  $tempfile = tempnam('/tmp', 'rspecuploadparser');
+  file_put_contents($tempfile, $rspec);
+  $_FILES['user_rspec_file'] = array();
+  $_FILES['user_rspec_file']['error'] = 0;
+  $_FILES['user_rspec_file']['tmp_name'] = $tempfile;
+}
 
 // basic checking on file sent
-if (array_key_exists('user_rspec', $_FILES)) {
-    $errorcode = $_FILES['user_rspec']['error'];
+if (array_key_exists('user_rspec_file', $_FILES)) {
+    $errorcode = $_FILES['user_rspec_file']['error'];
     if ($errorcode != 0) {
         // An error occurred with the upload.
         if ($errorcode == UPLOAD_ERR_NO_FILE) {
@@ -71,36 +95,50 @@ if (array_key_exists('user_rspec', $_FILES)) {
     }
     else {
         // Upload was successful, do some basic checks on the contents.
-        $rspec_filename = $_FILES["user_rspec"]["tmp_name"];
+        $rspec_filename = $_FILES["user_rspec_file"]["tmp_name"];
+
         if (! validateRSpec($rspec_filename, $msg)) {
             $results['message'] = "<b style='color:red;'>ERROR:</b> This RSpec is <b>invalid</b>: " . $msg;
         }
         else {
-            // RSpec was valid
-            $results['valid'] = true;
-            $results['message'] = "This RSpec is <b>valid</b>";
-            
             // get bound status, stitching status, and AM URNs if possible
             $parse_results = parseRequestRSpec($rspec_filename);
-            $results['bound'] = $parse_results[1];
-            $results['stitch'] = $parse_results[2];
-            // FIXME: We can pass the AM URNs back if we need to for bound RSpecs
-            $results['ams'] = $parse_results[3];
-            
-            if($results['stitch']) {
-                $results['message'] .= " and <b>stitchable</b>";
-            }
-            else if($results['bound']) {
+	    if (is_null($parse_results)) {
+	      $results['message'] = "<b style='color:red;'>ERROR:</b> This RSpec is <b>invalid</b>.";
+	    } else {
+	      // RSpec was valid
+	      $results['valid'] = true;
+	      $results['message'] = "This RSpec is <b>valid</b>";
+
+	      $results['rspec'] = $parse_results[0];
+	      $results['bound'] = $parse_results[1];
+	      $results['stitch'] = $parse_results[2];
+	      // FIXME: We can pass the AM URNs back if we need to for bound RSpecs
+	      $results['ams'] = $parse_results[3];
+	      $results['partially_bound'] = $parse_results[4];
+
+	      if($results['partially_bound']) {
+		$results['message'] .= " and <b>partially bound</b>";
+	      }
+	      else if($results['stitch']) {
+                $results['message'] .= " and <b>multi-aggregate</b>";
+	      }
+	      else if($results['bound']) {
                 $results['message'] .= " and <b>bound</b>";
-            }
-            $results['message'] .= ".";
+	      }
+	      $results['message'] .= ".";
+	    }
         }
-        
     }
 }
 
 else {
     $results['message'] = "<b style='color:red;'>ERROR:</b> Invalid form data sent.";
+}
+
+// Remove the tempfile if a raw rspec was given
+if (array_key_exists('user_rspec_raw', $_POST)) {
+  unlink($tempfile);
 }
 
 //error_log("Attempted to validate RSpec on slice-add-resources: " . json_encode($results));

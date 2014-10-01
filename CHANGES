@@ -4,6 +4,24 @@
 
 = GENI Portal Release Notes =
 
+== 2.21 ==
+ * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)
+ * Added "Jacks beta" buttons and versions of slices.php (slice-jacks.php) and 
+   slice-add-resources.php (slice-add-resources-jacks.php) that handle all creation and management
+   of topologies by embedding Jacks viewer/editor in PHP portal pages. (#1126)
+ * When sending email, set charset to utf8 and transfer encoding to 8bit,
+   so that international characters are preserved correctly. (#1162)
+ * Extract sliver expiration at FOAM (so OESS), SFA, and GRAM AMs. (#1173)
+ * aggregates_in_slice only finds one aggregate (#1174)
+ * Verify the signer of a speaks-for credential before storing it. (#1175)
+ * getBrowser utility must handle not finding browser version. (#1176)
+ * Log, validate, and protect temp uploads (#1177)
+ * RSpec View button is non-responsive (#1181)
+ * JavaScript reference errors on RSpec viewer (#1182)
+ * Detect errors in loadXML parsing RSpecs. (#1179)
+ * Support multi-am RSpecs. Jacks page handles them fully,
+   main page requires you to pick an AM (a bug). (#1087)
+
 == 2.20 ==
  * Require unique name for rspecs (#784)
  * Poll slice aggregates by default (#1147)

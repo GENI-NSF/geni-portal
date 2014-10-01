@@ -116,7 +116,7 @@ function build_agg_table_on_slicepg()
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
 
-     $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
+     $add_url = 'slice-add-resources-jacks.php?slice_id='.$slice_id."&source=devel";
      $status_url = 'sliverstatus.php?slice_id='.$slice_id;
      $listres_url = 'listresources.php?slice_id='.$slice_id;
 
@@ -284,7 +284,7 @@ if (isset($slice)) {
 }
 
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
-$add_url = 'slice-add-resources.php?slice_id='.$slice_id;
+$add_url = 'slice-add-resources-jacks.php?slice_id='.$slice_id."&source=devel";
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
 $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = "mailto:$owner_email";
@@ -611,11 +611,11 @@ print "<th>Manage Resources</th></tr><tr><td><div id='jacks-app-container'>";
 print build_jacks_viewer();
 print "</div></td></tr></tbody></table>";
 
-include("jacks-editor-app.php");
-print "<table id='jacks-editor-app'><tbody><tr>";
-print "<th>Add Resources</th></tr><tr><td><div id='jacks-editor-app-container'>";
-print build_jacks_editor();
-print "</div></td></tr></tbody></table>";
+//include("jacks-editor-app.php");
+//print "<table id='jacks-editor-app'><tbody><tr>";
+//print "<th>Add Resources</th></tr><tr><td><div id='jacks-editor-app-container'>";
+//print build_jacks_editor();
+//print "</div></td></tr></tbody></table>";
 
 ?>
 
@@ -649,10 +649,13 @@ print "</div></td></tr></tbody></table>";
 
   // This funciton will start up a Jacks viewer, get the status bar going
   // and set up all of the button clicks.
-  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', '#jacks-buttons',
+  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
+			      '#jacks-status-history', '#jacks-buttons',
                               jacks_slice_ams, jacks_all_ams, jacks_slice_info,
 			      jacks_user_info,
-			      portal_jacks_combo_app_ready);
+			      portal_jacks_app_ready);
+ 
+  jacksApp.hideStatusHistory();
 
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
@@ -674,19 +677,25 @@ print "</div></td></tr></tbody></table>";
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
+  var jacks_enable_buttons = true;
   var jacksEditorApp = null;
 
 function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
   portal_jacks_app_ready(ja, ja_input, ja_output);
   // This funciton will start up a Jacks viewer, get the status bar going
   // and set up all of the button clicks.
-  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', '#jacks-editor-status', 
+  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
+				      '#jacks-editor-status', 
 				      '#jacks-editor-buttons',
 				      jacks_slice_ams, jacks_all_ams, 
 				      jacks_all_rspecs,
 				      jacks_slice_info,
 				      jacks_user_info,
-				      portal_jacks_editor_app_ready);
+				      jacks_enable_buttons, 
+				      null, null,
+				      portal_jacks_editor_app_ready,
+				      JacksEditorApp.prototype.postRspec
+				      );
 
   jacksEditorApp.setJacksViewer(ja);
   ja.setJacksEditor(jacksEditorApp);

@@ -24,6 +24,7 @@
 // A set of functions to handle events coming from the Jacks Editor App (JE)
 // and responding asynchronously to the Jacks Editor App
 
+var jacks_editor = {};
 var jacks_editor_app_input = {};
 var jacks_editor_app_output = {};
 
@@ -37,6 +38,7 @@ function debug(msg) {
 
 // Callback for when JE is ready
 function portal_jacks_editor_app_ready(je, je_input, je_output) {
+    jacks_editor = je;
     jacks_editor_app_input = je_input;
     jacks_editor_app_output = je_output;
 
@@ -152,6 +154,14 @@ function monitor_reservation(rt, event)
 		  //		  console.log("OMNI Invocation Complete");
 		  event.code = 0;
 		  jacks_editor_app_input.trigger(event.name, event);
+		  // console.log("rt = " + rt);
+		  invocation_details_url = "sliceresource.php?" + url_args;
+		  msg = "Reservation details " + "<a href='" + 
+		      invocation_details_url + "'>Here</a>";;
+		  jacks_editor.updateStatus(msg);
+		  if(jacks_editor.jacks_viewer != null) {
+		      jacks_editor.jacks_viewer.updateStatus(msg);
+		  }
 	      }
 	  })
     .fail(function(xhr, ts, et) {

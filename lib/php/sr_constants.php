@@ -71,6 +71,7 @@ class SR_ARGUMENT
 {
   const SERVICE_ID = "service_id";
   const SERVICE_URL = "service_url";
+  const SERVICE_URN = "service_urn";
   const SERVICE_TYPE = "service_type";
   const SERVICE_NAME = "service_name";
   const SERVICE_DESCRIPTION = "service_description";

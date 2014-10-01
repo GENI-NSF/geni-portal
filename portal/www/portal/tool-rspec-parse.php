@@ -32,17 +32,18 @@ require_once 'db-util.php';
 //      component_manager_id tags)?
 // Is it for stitching (i.e. does any link have two different 
 //      component_manager_id tags)?
-// Return array of four values: 
+// Return array of five values: 
 //    parsed_rspec (text), 
 //    is_bound (boolean), 
 //    is_stitch (boolean),
 //    a list of AM URN's (component_manager_id's) of requested nodes
+//    is_partially_bound (boolean)
 function parseRequestRSpec($rspec_filename)
 {
 
   // Handle case wherein no file provided (for update, not upload)
   if ($rspec_filename == NULL || $rspec_filename == "") {
-    return array(NULL, False, False, array());
+    return array(NULL, False, False, array(), False);
   }
 
   $rspec = file_get_contents($rspec_filename);
@@ -50,15 +51,55 @@ function parseRequestRSpec($rspec_filename)
 
 }
 
+function display_xml_error($error, $xml)
+{
+    $return  = $xml[$error->line - 1] . "\n";
+    $return .= str_repeat('-', $error->column) . "^\n";
+
+    switch ($error->level) {
+        case LIBXML_ERR_WARNING:
+            $return .= "Warning $error->code: ";
+            break;
+         case LIBXML_ERR_ERROR:
+            $return .= "Error $error->code: ";
+            break;
+        case LIBXML_ERR_FATAL:
+            $return .= "Fatal Error $error->code: ";
+            break;
+    }
+
+    $return .= trim($error->message) .
+               "\n  Line: $error->line" .
+               "\n  Column: $error->column";
+
+    if ($error->file) {
+        $return .= "\n  File: $error->file";
+    }
+
+    return "$return\n\n--------------------------------------------\n\n";
+}
+
 // Like parseRequestRSpec(), but takes input of XML string rather than filename
 function parseRequestRSpecContents($rspec) {
   
   $am_urns = array();
   $is_bound = false;
+  $has_unbound_node = false;
   $is_stitch = false;
   
   $dom_document = new DOMDocument();
-  $dom_document->loadXML($rspec);
+  $ret = $dom_document->loadXML($rspec);
+  if (! $ret) {
+    error_log("Failed to parse request RSpec");
+    $errors = libxml_get_errors();
+    $xmlstr = explode("\n", $rspec);
+    foreach ($errors as $error) {
+      $errstr = display_xml_error($error, $xmlstr);
+      error_log($errstr);
+    }
+    libxml_clear_errors();
+    return NULL;
+  }
   $root = $dom_document->documentElement;
 
   // Go over each node and link child
@@ -79,6 +120,8 @@ function parseRequestRSpecContents($rspec) {
 	$component_manager_id = $node->getAttribute('component_manager_id'); 
 	$is_bound = true;
 	$am_urns[] = $component_manager_id;
+      } else {
+	$has_unbound_node = true;
       }
       //      error_log("Node "  . print_r($node, true) . " " . 
       //		print_r($client_id, true) . " " . 
@@ -114,7 +157,8 @@ function parseRequestRSpecContents($rspec) {
     }
   }
 
-  return array($rspec, $is_bound, $is_stitch, $am_urns);
+  $is_partially_bound = ($is_bound and $has_unbound_node);
+  return array($rspec, $is_bound, $is_stitch, $am_urns, $is_partially_bound);
 }
 
 

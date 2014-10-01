@@ -24,6 +24,7 @@
 // A set of functions to handle events coming from the Jacks App (JA)
 // and responding asynchronously to the Jacks App
 
+var jacks_app = {};
 var jacks_app_input = {};
 var jacks_app_output = {};
 
@@ -37,6 +38,7 @@ function debug(msg) {
 
 // Callback for when JA is ready
 function portal_jacks_app_ready(ja, ja_input, ja_output) {
+    jacks_app = ja;
     jacks_app_input = ja_input;
     jacks_app_output = ja_output;
 
@@ -74,7 +76,7 @@ function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_da
 function ep_on_add(event) {
     debug("ep_on_add");
     var slice_id = event.slice_id;
-    var new_url = "slice-add-resources-jacks.php?slice_id=" + slice_id;
+    var new_url = "slice-add-resources-jacks.php?slice_id=" + slice_id + "&source=devel";
     window.location.replace(new_url);
 }
 
