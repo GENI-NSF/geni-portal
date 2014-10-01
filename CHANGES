@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.22 ==
+
+
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)
  * Added "Jacks beta" buttons and versions of slices.php (slice-jacks.php) and 
