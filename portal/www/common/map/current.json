@@ -974,6 +974,40 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.instageni.idre.ucla.edu+authority+am", 
+                "am": "UCLA InstaGENI OpenFlow", 
+                "resources": 1, 
+                "component_id": "07:3f:2c:59:e5:5c:ed:00"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "3.0", 
+                    "2.0"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.instageni.idre.ucla.edu+authority+am", 
+                "am": "UCLA InstaGENI OpenFlow", 
+                "resources": 1, 
+                "component_id": "1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "0.0", 
                     "0.0"
                 ]
@@ -17439,6 +17473,159 @@
                 "type": "unknown", 
                 "am_id": "urn:publicid:IDN+uky.emulab.net+authority+cm", 
                 "am": "Kentucky ProtoGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-wimax"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.443056", 
+                    "34.069444"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm", 
+                "am": "UCLA InstaGENI", 
                 "resources": 1, 
                 "component_id": "internet"
             }

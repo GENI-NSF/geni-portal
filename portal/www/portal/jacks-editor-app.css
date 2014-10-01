@@ -77,7 +77,13 @@
 
 .jacks #leftNav pre {
    color: black;
-   overflow: scroll;
 }
 
 
+.jacks #leftNav .fromBottom {
+    overflow: scroll;
+}
+
+#jacks-editor-app .checkbox.selected {
+  stroke-width: 5px;
+}
