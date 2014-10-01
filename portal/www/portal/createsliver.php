@@ -294,7 +294,7 @@ if($retVal) {
     else {
         log_event($log_url, $user,
             "Add resource request submitted for slice " . $slice_name . 
-		  " at " . print_r($am_names, true) . 
+		  " at " . implode(", ", $am_names) . 
              ".<br><a href='$full_link'>Click here</a> for results.",
             $log_attributes);
     }
