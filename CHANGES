@@ -5,7 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.22 ==
-
+ * Expand default context for Jacks editor and remove constraints. (#1193)
 
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)
