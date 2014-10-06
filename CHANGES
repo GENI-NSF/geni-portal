@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.21.2 ==
+ * Change URL entrypoints for GENI Desktop (#1199)
+
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)
  * Added "Jacks beta" buttons and versions of slices.php (slice-jacks.php) and 
