@@ -120,6 +120,7 @@ dist_svcweb_DATA = \
 	www/portal/home-active-tabs.php \
 	www/portal/home-active.php \
 	www/portal/home-requested.php \
+	www/portal/index.php \
 	www/portal/home.php \
 	www/portal/invite-to-geni.php \
 	www/portal/invite-to-project.php \

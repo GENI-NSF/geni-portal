@@ -6,6 +6,7 @@
 
 == 2.21.2 ==
  * Change URL entrypoints for GENI Desktop (#1199)
+ * Add an `index.php` that redirects to `home.php` to block directory listing.
 
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)
