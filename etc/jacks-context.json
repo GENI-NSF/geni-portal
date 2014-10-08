@@ -1,0 +1,203 @@
+{
+    "canvasOptions": {
+
+
+        "defaults": [
+            {
+	        "name": "VM",
+	        "type": "default-vm"
+            },
+            {
+	        "name": "Xen VM",
+	        "type": "emulab-xen",
+	        "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+            },
+            {
+	        "name": "EG VM",
+	        "type": "XOSmall",
+	        "hardware": "orca-vm-cloud"
+            },
+            {
+	        "name": "Raw PC IG",
+	        "type": "emulab-rawpc",
+	        "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD",
+	        "hardware": "pc"
+            },
+            {
+	        "name": "Raw PC EG",
+	        "type": "ExoGENI-M4",
+	        "hardware": "orca-xcat-cloud"
+            },
+            {
+	        "name": "Open VSwitch",
+	        "type": "emulab-xen",
+	        "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS",
+	        "icon": "https://www.emulab.net/protogeni/jacks-stable/images/router.svg"
+            }
+        ],
+
+
+        "images" : [
+            {
+                "name": "CentOS 6.3 64-bit",
+                "id": "urn:publicid:IDN+utahddc.geniracks.net+image+emulab-ops:CENTOS63-64-STD"
+            },
+            {
+                "name": "FreeBSD 8.2 32-bit",
+                "id": "urn:publicid:IDN+utah.geniracks.net+image+emulab-ops:FBSD82-STD"
+            },
+            {
+                "name": "FreeBSD 9.2 32-bit",
+                "id": "urn:publicid:IDN+utah.geniracks.net+image+emulab-ops:FBSD92-STD"
+            },
+            {
+	        "name": "Ubuntu 12 64-bit",
+	        "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+            },
+            {
+	        "name": "OVS in Ubuntu 12 64-bit",
+	        "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
+            },
+            {
+	        "name": "Fedora 15 32-bit",
+	        "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+            },
+            {
+	        "name": "OpenVZ Fedora 15",
+	        "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
+            }
+        ],
+
+
+        "types": [
+            {
+	        "name": "Universal Default VM",
+	        "id": "default-vm"
+            },
+            {
+	        "name": "InstaGENI Xen VM",
+	        "id": "emulab-xen"
+            },
+            {
+	        "name": "InstaGENI OpenVZ VM",
+	        "id": "emulab-openvz"
+            },
+            {
+	        "name": "InstaGENI Raw PC",
+	        "id": "emulab-rawpc"
+            },
+            {
+	        "name": "ExoGENI Small VM",
+	        "id": "XOSmall"
+            },
+            {
+	        "name": "ExoGENI Large VM",
+	        "id": "XOLarge"
+            },
+            {
+                "id": "EC2C1Medium",
+                "name": "EC2 C1Medium VM"
+            },
+            {
+                "id": "EC2M1XLarge",
+                "name": "EC2 M1XLarge VM"
+            },
+            {
+                "id": "EucaM1XLarge",
+                "name": "Euca M1XLarge VM"
+            },
+            {
+                "id": "EucaC1XLarge",
+                "name": "Euca C1XLarge VM"
+            },
+            {
+                "id": "EucaM1Small",
+                "name": "Euca M1Small VM"
+            },
+            {
+                "id": "EC2M1Small",
+                "name": "EC2 M1Small VM"
+            },
+            {
+                "id": "EucaC1Medium",
+                "name": "Euca C1Medium VM"
+            },
+            {
+                "id": "XOMedium",
+                "name": "ExoGENI Medium VM"
+            },
+            {
+                "id": "EC2M1Large",
+                "name": "EC2 M1Large VM"
+            },
+            {
+                "id": "EucaM1Large",
+                "name": "Euca M1Large VM"
+            },
+            {
+                "id": "XOXlarge",
+                "name": "ExoGENI X-Large VM"
+            },
+            {
+	        "name": "ExoGENI Raw PC",
+	        "id": "ExoGENI-M4"
+            }
+        ],
+
+
+        "hardware" : [
+            {
+	        "name": "Dell dl360",
+	        "id": "dl360"
+            },
+            {
+	        "name": "Dell d710",
+	        "id": "d710"
+            },
+            {
+	        "name": "Dell 3Ghz",
+	        "id": "pc3000"
+            },
+            {
+	        "name": "Any PC",
+	        "id": "pc"
+            },
+            {
+	        "name": "Any ExoGENI VM Server",
+	        "id": "orca-vm-cloud"
+            },
+            {
+	        "name": "Any ExoGENI PC",
+	        "id": "orca-xcat-cloud"
+            }
+        ],
+
+
+        "linkTypes" : [
+            {
+	        "name": "Ethernet",
+	        "id": "lan"
+            },
+            {
+	        "name": "Stitched Ethernet",
+	        "id": "vlan"
+            },
+            {
+	        "name": "GRE Tunnel",
+	        "id": "gre-tunnel"
+            },
+            {
+	        "name": "EGRE Tunnel",
+	        "id": "egre-tunnel"
+            }
+        ],
+
+
+        "sharedvlans" : []
+
+    },
+
+
+
+    "constraints": []
+}
