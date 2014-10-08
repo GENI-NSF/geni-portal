@@ -8,6 +8,7 @@
  * Add an `index.php` that redirects to `home.php` to block directory listing. (#1196)
  * Fix headers in email that your lead request was received. (#1197)
  * Fix bug report to print list of aggregates correctly. (#1198)
+ * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
 
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)
