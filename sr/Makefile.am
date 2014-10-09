@@ -9,8 +9,6 @@ cert_FILES = \
 	certs/cornell-ig-boss.pem \
 	certs/cornell-ig-cm.pem \
 	certs/cornell-ig-of.pem \
-	certs/exo-gpo-of.pem \
-	certs/exo-bbn-am.pem \
 	certs/exo-fiu-am.pem \
 	certs/exo-nicta-am.pem \
 	certs/exo-rci-am.pem \
