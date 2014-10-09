@@ -22,23 +22,10 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-
-// require_once("user.php");
-// require_once("header.php");
-// require_once("portal.php");
 require_once('util.php');
 require_once('sr_constants.php');
 require_once('sr_client.php');
-
 require_once('session_cache.php');
-// require_once('sr_controller_test.php');
-
-
-// $user = geni_loadUser();
-// if (!isset($user) || is_null($user) || ! $user->isActive()) {
-//   relative_redirect('home.php');
-// }
-
 
 global $SR_SERVICE_TYPE_NAMES;	
 global $services, $sa_url, $ma_url, $sa_url, $log_url;
@@ -46,7 +33,6 @@ global $services, $sa_url, $ma_url, $sa_url, $log_url;
 if (! isset($services)) {
    $services = get_services();	
 }
-
 
 if (! isset($sa_url)) {
   $sa_list = select_services($services, SR_SERVICE_TYPE::SLICE_AUTHORITY);
@@ -59,7 +45,6 @@ if (! isset($sa_url)) {
     error_log("Found no SA in SR!'");
   }
 }
-
 
 if (! isset($ma_url)) {
   $ma_list = select_services($services, SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -84,11 +69,5 @@ if (! isset($log_url)) {
     error_log("Found no LOG in SR!'");
   }
 }
-
-// print "<html>";
-// print "<p>".$sa_url."</p>";
-// print "<p>".$ma_url."</p>";
-// print "<p>".$log_url."</p>";
-// print "</html>";
 
 ?>
