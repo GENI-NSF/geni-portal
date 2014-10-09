@@ -27,7 +27,6 @@ require_once('rq_client.php');
 require_once('ma_client.php');
 require_once('sa_client.php');
 require_once('pa_client.php');
-//require_once('starter-status-bar.php');
 require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
