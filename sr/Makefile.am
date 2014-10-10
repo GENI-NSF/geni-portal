@@ -13,7 +13,6 @@ cert_FILES = \
 	certs/exo-nicta-am.pem \
 	certs/exo-rci-am.pem \
 	certs/exo-uh-am.pem \
-	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
         certs/gpo-of.pem \
         certs/gr-bbn1-am.pem \
