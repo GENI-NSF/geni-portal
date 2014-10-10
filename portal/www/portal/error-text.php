@@ -21,13 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-?>
 
-<?php
+require_once("header.php");
 
-
-
- require_once("header.php");
 $referer_key = 'HTTP_REFERER';
 $referer = "";
 if (key_exists($referer_key, $_SERVER)) {

@@ -24,7 +24,7 @@
 ?>
 <?php
 require_once("header.php");
-require_once( "am_map.php");
+require_once("am_map.php");
 
 function print_agg_list( $list ){
   print_list( $list, $use_nickname=True );

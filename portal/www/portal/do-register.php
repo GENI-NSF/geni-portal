@@ -346,7 +346,6 @@ if ($speaks_for_enabled) {
 }
 
 if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
-  require_once("km_utils.php");
   // get portal tool URN
   $portal_urn = ''; // FIXMEFIXME
   $candidate_tools = ma_list_clients($ma_url, $km_signer);

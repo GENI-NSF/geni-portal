@@ -8,6 +8,7 @@
  * Fix headers in email that your lead request was received. (#1197)
  * Fix bug report to print list of aggregates correctly. (#1198)
  * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
+ * Move included files to lib from portal (#1207)
 
 == 2.21.2 ==
  * Provide a simple Jacks context (#1194)
