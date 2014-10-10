@@ -11,9 +11,7 @@ cert_FILES = \
 	certs/cornell-ig-of.pem \
 	certs/exo-fiu-am.pem \
 	certs/exo-nicta-am.pem \
-	certs/exo-rci-am.pem \
 	certs/exo-uh-am.pem \
-	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
         certs/gpo-of.pem \
         certs/gr-bbn1-am.pem \
@@ -65,7 +63,6 @@ cert_FILES = \
 	certs/nyu-ig-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
-	certs/renci-eg-of.pem \
 	certs/sl-of.pem \
 	certs/sox-ig-boss.pem \
 	certs/sox-ig-cm.pem \
