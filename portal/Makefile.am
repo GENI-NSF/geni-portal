@@ -186,18 +186,33 @@ dist_svcweb_DATA = \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
-	www/images/Symbols-Tips-icon-clear.png \
-	www/images/UseGENI.png \
+	www/images/EG-VM-noTxt-centered.svg \
+	www/images/EG-VM-noTxt.svg \
+	www/images/EG-VM.svg \
 	www/images/geni.png \
+	www/images/geni_globe.png \
+	www/images/geni_globe_small.png \
+	www/images/header-home.jpg \
+	www/images/openVZvm-noTxt-centered.svg \
+	www/images/openVZvm-noTxt.svg \
+	www/images/openVZvm.svg \
+	www/images/orbit_banner.png \
 	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
+	www/images/RawPC-EG-noTxt-centered.svg \
+	www/images/RawPC-EG-noTxt.svg \
+	www/images/RawPC-EG.svg \
+	www/images/RawPC-IG-noTxt-centered.svg \
+	www/images/RawPC-IG-noTxt.svg \
+	www/images/RawPC-IG.svg \
 	www/images/site-icon.png \
 	www/images/staticmap.png \
-	www/images/header-home.jpg \
-	www/images/geni_globe.png \
-	www/images/geni_globe_small.png \
-	www/images/orbit_banner.png
+	www/images/Symbols-Tips-icon-clear.png \
+	www/images/UseGENI.png \
+	www/images/Xen-VM-noTxt-centered.svg \
+	www/images/Xen-VM-noTxt.svg \
+	www/images/Xen-VM.svg
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
