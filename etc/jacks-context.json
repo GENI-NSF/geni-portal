@@ -12,7 +12,7 @@
 	        "name": "Xen VM",
 	        "type": "emulab-xen",
 	        "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD",
-	        "icon": "https://portal1.gpolab.bbn.com/images/Xen-VM-noTxt-centered.svg"
+	        "icon": "https://portal1.gpolab.bbn.com/images/Xen-VM.svg"
             },
             {
 	        "name": "EG VM",
@@ -25,13 +25,13 @@
 	        "type": "emulab-rawpc",
 	        "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD",
 	        "hardware": "pc",
-	        "icon": "https://portal1.gpolab.bbn.com/images/RawPC-IG-noTxt-centered.svg"
+	        "icon": "https://portal1.gpolab.bbn.com/images/RawPC-IG.svg"
             },
             {
 	        "name": "Raw PC EG",
 	        "type": "ExoGENI-M4",
 	        "hardware": "orca-xcat-cloud",
-	        "icon": "https://portal1.gpolab.bbn.com/images/RawPC-EG-noTxt-centered.svg"
+	        "icon": "https://portal1.gpolab.bbn.com/images/RawPC-EG.svg"
             },
             {
 	        "name": "Open VSwitch",
