@@ -6,7 +6,7 @@
             {
 	        "name": "VM",
 	        "type": "default-vm",
-	        "icon": "https://portal1.gpolab.bbn.com/images/openVZvm-noTxt-centered.svg"
+	        "icon": "https://portal1.gpolab.bbn.com/images/VM-noTxt-centered.svg"
             },
             {
 	        "name": "Xen VM",
