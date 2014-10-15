@@ -5,6 +5,12 @@
 = GENI Portal Release Notes =
 
 == 2.21.2 ==
+ * Lowercase eppn before lookup in speaks-for flow (#1209)
+
+== 2.21.3 ==
+ * New Jacks icons
+
+== 2.21.2 ==
  * Change URL entrypoints for GENI Desktop (#1199)
  * Add an `index.php` that redirects to `home.php` to block directory listing.
 
