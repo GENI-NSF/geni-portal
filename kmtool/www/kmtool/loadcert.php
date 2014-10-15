@@ -41,6 +41,7 @@ $member_id = null;
 $authorized_tools_for_user = array();
 if (array_key_exists($member_id_key, $_SERVER)) {
   $member_id_value = $_SERVER[$member_id_key];
+  $member_id_value = strtolower($member_id_value);
   $members = ma_lookup_member_id($ma_url, $km_signer,
 				 $member_id_key, $member_id_value);
 } else {

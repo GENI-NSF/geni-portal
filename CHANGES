@@ -10,6 +10,12 @@
  * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
  * Move included files to lib from portal (#1207)
 
+== 2.21.4 ==
+ * Lowercase eppn before lookup in speaks-for flow (#1209)
+
+== 2.21.3 ==
+ * New Jacks icons
+
 == 2.21.2 ==
  * Provide a simple Jacks context (#1194)
  * Add an `index.php` that redirects to `home.php` to block directory
