@@ -193,46 +193,44 @@ dist_svcweb_DATA = \
 	www/portal/speaks-for-upload.php \
 	www/portal/sshkeyedit.php \
 	www/portal/starter-status-bar.php \
-	www/portal/status_constants.php \
 	www/portal/status_constants_import.php \
-	www/portal/tabs.js \
 	www/portal/tool-aggwarning.php \
-	www/portal/tool-breadcrumbs.php \
-	www/portal/tool-expired-projects.php \
-	www/portal/tool-expired-slices.php \
-	www/portal/tool-lookupids.php \
 	www/portal/tool-omniconfig.php \
-	www/portal/tool-projects.php \
-	www/portal/tool-rspecs.php \
-	www/portal/tool-rspecs.js \
-	www/portal/tool-rspec-parse.php \
-	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.js \
-	www/portal/tool-slices.php \
-	www/portal/tool-jfed.php \
-	www/portal/tools-admin.php \
 	www/portal/tools-user.js \
-	www/portal/tools-user.php \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
-	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
-	www/portal/user.php \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
-	www/images/Symbols-Tips-icon-clear.png \
-	www/images/UseGENI.png \
+	www/images/EG-VM-noTxt-centered.svg \
+	www/images/EG-VM-noTxt.svg \
+	www/images/EG-VM.svg \
 	www/images/geni.png \
+	www/images/geni_globe.png \
+	www/images/geni_globe_small.png \
+	www/images/header-home.jpg \
+	www/images/openVZvm-noTxt-centered.svg \
+	www/images/openVZvm-noTxt.svg \
+	www/images/openVZvm.svg \
+	www/images/orbit_banner.png \
 	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
+	www/images/RawPC-EG-noTxt-centered.svg \
+	www/images/RawPC-EG-noTxt.svg \
+	www/images/RawPC-EG.svg \
+	www/images/RawPC-IG-noTxt-centered.svg \
+	www/images/RawPC-IG-noTxt.svg \
+	www/images/RawPC-IG.svg \
 	www/images/site-icon.png \
 	www/images/staticmap.png \
-	www/images/header-home.jpg \
-	www/images/geni_globe.png \
-	www/images/geni_globe_small.png \
-	www/images/orbit_banner.png
+	www/images/Symbols-Tips-icon-clear.png \
+	www/images/UseGENI.png \
+	www/images/Xen-VM-noTxt-centered.svg \
+	www/images/Xen-VM-noTxt.svg \
+	www/images/Xen-VM.svg
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
