@@ -493,6 +493,24 @@ function wimax_change_group($ldif_group_name, $ldif_user_username, $ldif_user_gr
   return true;
 }
 
+// Echo to the screen images / links to wireless sites
+function print_wimax_site_links() {
+  // FIXME: Can I get a list of sites from the SR? Can I hack it an dmake the cert field actually contain the path to the image?
+  // I'd need a new service type for wireless sites
+  echo "<p>You may use GENI Wireless resources at these testbeds:</p>\n";
+  echo "<table><tr><td align=\"center\"><a href='https://geni.orbit-lab.org'><img src='/images/orbit_banner.png' alt='Orbit Lab'/></a></td>";
+  echo "<td align=\"center\"><a href='https://witestlab.poly.edu'><img src='/images/witest-logo-white.png' alt='Orbit Lab'/></a></td>";
+  echo "</tr></table>\n";
+
+  //  echo "<p>You may use GENI Wireless resources at these testbeds:<ul>\n";
+  //  echo "<li><a href='https://geni.orbit-lab.org'><img src='/images/orbit_banner.png' alt='Orbit Lab'/></a></li>";
+  //  echo "<li><a href='https://witestlab.poly.edu'><img src='/images/witest-logo-white.png' alt='Orbit Lab'/></a></li>";
+  //  echo "</ul></p>\n";
+
+//  echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'/></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit Wireless resources.</p></a>";
+//  echo "<a href='https://witestlab.poly.edu'><p style='width:150px; margin:0 auto'><img src='/images/witest-logo-white.png' alt='WITest Lab'/></p><p style='width:300px; margin:5px auto 0'>Use GENI WITest Wireless resources.</p></a>";
+}
+
 // Enable the given member in the given existing wimax group
 // Use this when project lead changed and the new lead is not wimax enabled
 // FIXME: User better have at least one SSH key! 
@@ -1491,7 +1509,7 @@ if (array_key_exists('project_id', $_REQUEST))
   echo $result_string;
 
   if (! $is_error and ($enable_user or $enable_project)) {
-    echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'/></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit Wireless resources.</p></a>";
+    print_wimax_site_links();
   }
 
   // include link to main WiMAX page
@@ -1863,7 +1881,9 @@ P7
         . "<a href='project.php?project_id=" 
         . $ldif_user_group_id 
         . "'>" . $ldif_user_projname . "</a> with username '$ldif_user_username'. </p>";
-      echo "<a href='https://geni.orbit-lab.org'><p style='width:150px; margin:0 auto'><img src='/images/orbit_banner.png' alt='Orbit Lab'></p><p style='width:300px; margin:5px auto 0'>Use GENI Orbit Wireless resources.</p></a>";
+
+      print_wimax_site_links();
+
       if (count($projects_admin) > 0) {
 	echo "<p>You are the Wireless group admin for these projects that you lead: ";
 	$cnt = 0;
