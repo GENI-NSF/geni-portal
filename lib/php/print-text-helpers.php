@@ -525,10 +525,6 @@ function get_rspec_xml( $obj, $pretty, $filterToAM ) {
   }
 
   foreach ($args as $arg) {
-    $arg_url = $arg;
-    $am_id = am_id( $arg_url );
-    $arg_name = am_name($arg_url);
-    $arg_urn = am_urn($arg_url);
     if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg])) {
         $xml = $obj[$arg]['value'];
     } else {

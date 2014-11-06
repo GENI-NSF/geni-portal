@@ -50,22 +50,42 @@ create_am_map();
 
 function am_name( $aggurl ) {
   global $am_mapping;
-  return $am_mapping[ $aggurl ];
+  if (array_key_exists($aggurl, $am_mapping)) {
+    return $am_mapping[ $aggurl ];
+  } else {
+    error_log("No AM name: Unknown AM URL $aggurl");
+    return $aggurl;
+  }
 }
 
 function am_name_from_urn( $aggurn ) {
   global $am_mapping_name_by_urn;
-  return $am_mapping_name_by_urn[$aggurn];
+  if (array_key_exists($aggurn, $am_mapping_name_by_urn)) {
+    return $am_mapping_name_by_urn[$aggurn];
+  } else {
+    error_log("No AM name: Unknown AM URN $aggurn");
+    return $aggurn;
+  }
 }
 
 function am_id( $aggurl ) {
   global $am_mapping_id;
-  return $am_mapping_id[ $aggurl ];
+  if (array_key_exists($aggurl, $am_mapping_id)) {
+    return $am_mapping_id[ $aggurl ];
+  } else {
+    error_log("No AM id: Unknown AM URL $aggurl");
+    return $aggurl;
+  }
 }
 
 function am_urn( $aggurl ) {
   global $am_mapping_urn;
-  return $am_mapping_urn[ $aggurl ];
+  if (array_key_exists($aggurl, $am_mapping_urn)) {
+    return $am_mapping_urn[ $aggurl ];
+  } else {
+    error_log("No AM urn: Unknown AM URL $aggurl");
+    return "";
+  }
 }
 
 ?>
