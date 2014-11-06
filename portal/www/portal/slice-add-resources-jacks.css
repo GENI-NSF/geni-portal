@@ -30,7 +30,7 @@
 #content table table {
   margin: 0;
   border: 0;
-  min-width: 100;
+  min-width: 100px;
   width: auto;
 }
 
@@ -102,9 +102,10 @@
   margin-top: 20px !important;
   margin-bottom: 20px !important;
   -moz-border-radius: 8px;
+}
 
 input.date {
- width: 14en;
+ width: 14em;
 }
 
 
@@ -152,7 +153,7 @@ input.date {
 
 .ui-dialog-titlebar {
 	background: #E17000;
-order-top: 4px solid #5F584E;
+        order-top: 4px solid #5F584E;
 	border-bottom: 1px solid #fff;
 	border-right: 0px;
 	border-left: 0px;
@@ -307,17 +308,13 @@ order-top: 4px solid #5F584E;
   position: relative;
   min-height: 26px;
 }
-#status_table tbody:hover .hide, #status_table tbody:focus .hide, #status_table\
- tbody.activeBody .hide {
+#status_table tbody:hover .hide, #status_table tbody:focus .hide, #status_table tbody.activeBody .hide {
   border-left: 1px solid white;
 }
-#status_table tbody:hover .hide > div, #status_table tbody:focus .hide > div, #\
-status_table tbody.activeBody .hide > div {
+#status_table tbody:hover .hide > div, #status_table tbody:focus .hide > div, #status_table tbody.activeBody .hide > div {
   visibility: visible;
 }
-#status_table .notqueried .expireText, #status_table .updating .expireText, #st\
-atus_table .noresources .expireText, #status_table .busy .expireText, #status_t\
-able .failed .expireText {
+#status_table .notqueried .expireText, #status_table .updating .expireText, #status_table .noresources .expireText, #status_table .busy .expireText, #status_table .failed .expireText {
         display: none;
 }
 
@@ -347,8 +344,7 @@ able .failed .expireText {
   text-align: left;
 }
 
-#status_table button, #status_table input[type="submit"], #status_table input[t\
-ype="button"] {
+#status_table button, #status_table input[type="submit"], #status_table input[type="button"] {
   font-size: 0.85em;
   font-weight: 700;
   margin: 0 1px 1px;
