@@ -7,6 +7,7 @@
 == 2.22 ==
  * Fix headers in email that your lead request was received. (#1197)
  * Fix bug report to print list of aggregates correctly. (#1198)
+ * Change label for add resources URL entry (#1201)
  * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
  * Move included files to lib from portal (#1207)
  * Include link to NYU Poly WITest wireless site. (#773)
