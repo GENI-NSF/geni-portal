@@ -158,10 +158,12 @@ function do_modify_slice_membership($selections, $slice_id, $slice_members_by_ro
 //  }
 //}
 
+if (! array_key_exists('slice_id', $_REQUEST)) {
+  error_log("do-edit-slice-member called without a slice_id");
+  relative_redirect('home.php');
+}
 $slice_id = $_REQUEST['slice_id'];
 unset($_REQUEST['slice_id']);
-$project_id = $_REQUEST['project_id'];
-unset($_REQUEST['project_id']);
 $slice_members = get_slice_members($sa_url, $user, $slice_id);
 $slice_members_by_role = array();
 foreach($slice_members as $slice_member) {

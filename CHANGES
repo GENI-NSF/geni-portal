@@ -15,6 +15,7 @@
  * Exclude users with no public SSH keys from the generated omni_config. (#1215)
  * Put radio buttons on left on jacks add resources (#1217)
  * Widen URL entry on Jacks add resources page (#1218)
+ * Error check arguments to do-edit-slice-member. (#1224)
  * Switch to Jacks stable (#1228)
 
 == 2.21.4 ==
