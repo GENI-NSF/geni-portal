@@ -84,11 +84,17 @@ function write_ssh_keys($for_user, $as_user, $dir)
 
   foreach ($ssh_keys as $key_info)
     {
+      // If the key is empty or missing, skip it
+      if (! array_key_exists('public_key', $key_info) or is_null($key_info['public_key']) or trim($key_info['public_key']) == '') {
+	continue;
+      }
       $key = $key_info['public_key'];
       // user could have more than one key, so append a unique ID
       $tmp_file = writeDataToTempDir($dir, $key, OMNI_INVOCATION_FILE::PUBLIC_SSH_KEY_PREFIX
             . "-" . $for_user->username . "-" . uniqid());
-      $result[] = $tmp_file;
+      if (! is_null($tmp_file)) {
+	$result[] = $tmp_file;
+      }
     }
   return $result;
 }
@@ -381,8 +387,18 @@ function invoke_omni_function($am_urls, $user, $args,
 
     $slice_users = $slice_users + array($user);
     $username_array = array();
+    $all_ssh_key_files = array();
+    $ssh_key_files_by_user = array();
     foreach ($slice_users as $slice_user){
-    	   $username_array[] = $slice_user->username;
+       $slice_urn = $slice_user->urn();
+       $ssh_key_files = write_ssh_keys($slice_user, $user, $omni_invocation_dir);
+       // Skip from omni_config any user with no public SSH keys
+       if (count($ssh_key_files) == 0) {
+	 continue;
+       }
+       $all_ssh_key_files = array_merge($all_ssh_key_files, $ssh_key_files);
+       $ssh_key_files_by_user[$slice_urn] = $ssh_key_files;
+       $username_array[] = $slice_user->username;
     }
 
     /* Create OMNI config file */
@@ -434,13 +450,14 @@ function invoke_omni_function($am_urls, $user, $args,
       . "cert=$cert_file\n"
       . "key=$key_file\n";
 
-    $all_ssh_key_files = array();
-    foreach ($slice_users as $slice_user){
+    foreach ($slice_users as $slice_user) {
        $slice_username = $slice_user->username;
-       $slice_urn = $slice_user->urn();	
-       $ssh_key_files = write_ssh_keys($slice_user, $user, $omni_invocation_dir);
-       $all_ssh_key_files = array_merge($all_ssh_key_files, $ssh_key_files);
-       $all_key_files = implode(',', $ssh_key_files);
+       $slice_urn = $slice_user->urn();
+       if (! array_key_exists($slice_urn, $ssh_key_files_by_user)) {
+	 // This user had no SSH keys
+	 continue;
+       }
+       $all_key_files = implode(',', $ssh_key_files_by_user[$slice_urn]);
        $omni_config = $omni_config
              . "[$slice_username]\n"
              . "urn=$slice_urn\n"

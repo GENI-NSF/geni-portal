@@ -42,7 +42,11 @@ $omni_invocation_prefix = "omni-invoke";
 function writeDataToTempFile($data, $prefix = "geni-")
 {
   $tmpfile = tempnam(sys_get_temp_dir(), $prefix);
-  file_put_contents($tmpfile, $data);
+  if (file_put_contents($tmpfile, $data) === False) {
+    // Error writing the data to the file!
+    error_log("Failed to write to $tmpfile!");
+    return null;
+  }
   return $tmpfile;
 }
 
@@ -54,7 +58,11 @@ function writeDataToTempFile($data, $prefix = "geni-")
 function writeDataToTempDir($dir, $data, $prefix = "geni-")
 {
   $tmpfile = "$dir/$prefix";
-  file_put_contents($tmpfile, $data);
+  if (file_put_contents($tmpfile, $data) === False) {
+    // Error writing the data to the file!
+    error_log("Failed to write to $tmpfile!");
+    return null;
+  }
   return $tmpfile;
 }
 
