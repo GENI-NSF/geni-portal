@@ -181,7 +181,14 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $sliver_type=$node->sliver_type;
     $host=$node->host;
     $services=$node->services;
-    $logins=$services->login;
+    $services = array();
+    $logins = array();
+    foreach ($node->services as $service) {
+      $services[] = $service;
+      foreach($service->login as $login) {
+	$logins[] = $login;
+      }
+    }
     // don't display authority info if filtering by AM since it's assumed that
     // the AM info will be mentioned elsewhere
     if($filterToAM) {
