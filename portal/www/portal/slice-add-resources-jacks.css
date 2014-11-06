@@ -415,7 +415,5 @@ input.date {
 }
 
 #url_select {
-   width: auto;
-   min-width: 200px;
+   width: 500px;
 }
-

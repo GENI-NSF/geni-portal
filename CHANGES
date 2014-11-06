@@ -11,6 +11,7 @@
  * Change label for add resources URL entry (#1201)
  * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
  * Move included files to lib from portal (#1207)
+ * Wident URL entry on jacks add resources page (#1218)
 
 == 2.21.4 ==
  * Lowercase eppn before lookup in speaks-for flow (#1209)
