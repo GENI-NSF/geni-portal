@@ -417,3 +417,8 @@ input.date {
 #url_select {
    width: 500px;
 }
+
+/* Radio button labels */
+.rb_label {
+    padding-right: 35px;
+}

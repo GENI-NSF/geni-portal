@@ -12,6 +12,7 @@
  * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
  * Move included files to lib from portal (#1207)
  * Exclude users with no public SSH keys from the generated omni_config. (#1215)
+ * Put radio buttons on left on jacks add resources (#1217)
  * Widen URL entry on Jacks add resources page (#1218)
 
 == 2.21.4 ==
