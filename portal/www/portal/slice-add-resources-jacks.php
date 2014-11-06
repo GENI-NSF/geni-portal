@@ -329,7 +329,7 @@ print "<b>Select from file: </b><input type='file' name='file_select' id='file_s
 print "<div id='upload_message' style='display:block;'></div>";
 print "</td></tr>";
 print '<tr id="rspec_url_row" hidden="hidden"><td>';
-print "<b>Select from URL: </b>";
+print "<b>Load from URL: </b>";
 print '<button type="button" name="url_grab_button" id="url_grab_button" onClick="urlupload_onchange()"  >Select</button>';
 print "<input type='input' name='url_select' id='url_select' onchange='urlupload_onchange()' />";
 print "</td></tr>";
