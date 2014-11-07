@@ -342,6 +342,11 @@ function invoke_omni_function($am_urls, $user, $args,
     if(!$stitch_rspec) {
     
         if (is_array($am_urls)) {
+	  if (count($am_urls) == 0) {
+	    error_log("am_client Got non stitching RSpec and 0 AM URLs");
+	    // Careful: Are all RSpecs that stitcher can handle marked as stitch_rspecs properly?
+	    // return("Invalid AM URL");
+	  }
             foreach ($am_urls as $single) {
 	            if (! isset($single) || is_null($single) || $single == '') {
 	                error_log("am_client cannot invoke Omni with invalid AM URL");
@@ -824,11 +829,9 @@ function create_sliver($am_urls, $user, $slice_users, $slice_credential, $slice_
 
     // stitchable RSpecs should have empty AM URL, so only check for non-stitchable RSpecs
     if(!$stitch_rspec) {
-        if (! isset($am_urls) || is_null($am_urls) ){
-        if (!(is_array($am_urls) || $am_url != '')) {
-          error_log("am_client cannot invoke Omni without an AM URL");
-          return("Missing AM URL");
-        }
+      if (! isset($am_urls) || is_null($am_urls) || (is_array($am_urls) && count($am_urls) == 0) || (! is_array($am_urls) && $am_urls == '')) {
+	error_log("am_client cannot do createsliver without an AM URL");
+	return("Missing AM URL");
       }
     }
 
