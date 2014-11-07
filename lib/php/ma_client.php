@@ -191,9 +191,9 @@ function update_ssh_key($ma_url, $signer, $member_id, $ssh_key_id,
   if (sizeof($pairs) > 0) {
     $options = array('fields' => $pairs);
     $options = array_merge($options, $client->options());
-    $client->update_key($ssh_key_id, $client->creds(), $options);
+    return $client->update_key($ssh_key_id, $client->creds(), $options);
   }
-
+  return False;
   //return $ssh_key;
   // CHAPI: no return for now.  If needed, we'll need to retrieve it
 }

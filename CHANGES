@@ -6,6 +6,7 @@
 
 == 2.22 ==
  * Include link to NYU Poly WITest wireless site. (#773)
+ * Show a proper error message or success message on updating SSH keys. (#973)
  * Fix headers in email that your lead request was received. (#1197)
  * Fix bug report to print list of aggregates correctly. (#1198)
  * Change label for add resources URL entry (#1201)
