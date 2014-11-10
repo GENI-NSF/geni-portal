@@ -14,6 +14,7 @@
  * Move included files to lib from portal (#1207)
  * Handle unknown AM URNs and URLs mroe gracefully. (#1212)
  * Exclude users with no public SSH keys from the generated omni_config. (#1215)
+ * Update Jacks on allocation page (#1216)
  * Put radio buttons on left on jacks add resources (#1217)
  * Widen URL entry on Jacks add resources page (#1218)
  * Handle 'pending' status from OpenGENI AMs. (#1221)
