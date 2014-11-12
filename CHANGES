@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.23 ==
+
 == 2.22 ==
  * Include link to NYU Poly WITest wireless site. (#773)
  * Show a proper error message or success message on updating SSH keys. (#973)
