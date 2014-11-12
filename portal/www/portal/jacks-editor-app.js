@@ -87,6 +87,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.sliceName = sliceInfo.slice_name;
 
     this.downloadingRspec = false;
+    this.submittingRspec = false;
 
     this.loginInfo = {};
 
@@ -592,6 +593,7 @@ JacksEditorApp.prototype.handleSelect = function() {
  */
 JacksEditorApp.prototype.handleDownload = function() {
     this.downloadingRspec = true;
+    this.submittingRspec = false;
     this.jacksInput.trigger('fetch-topology');
 };
 
