@@ -773,7 +773,7 @@ if (! is_null($jfed_button_start)) {
   print $jfed_button_start . " $disable_buttons_str><b>jFed</b></button>";
 }
 
-$slice_jacks_url = "slice-jacks.php?slice_id=$slice_id&source=devel";
+$slice_jacks_url = "slice-jacks.php?slice_id=$slice_id";
 print "<button onClick=\"window.location='$slice_jacks_url'\"><b>Slice Jacks (beta)</b></button>\n";
 
 print "</td>\n";

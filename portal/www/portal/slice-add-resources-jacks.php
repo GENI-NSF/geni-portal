@@ -313,10 +313,18 @@ print "<table>";
 print "<tr>";
 print "<th rowspan='3'>Choose RSpec</th>";
 print '<td>';
-print '<b >Portal</b> <input type="radio" style="width:50px;padding: 0 10px;"name="rspec_select" id="portal_radio_select" checked="checked" onclick="enable_rspec_selection_mode_portal()" />';
-print '<b >File</b> <input type="radio" style="width:50px;padding: 0 10px;" name="rspec_select" id="file_radio_select" onclick="enable_rspec_selection_mode_file()" />';
-print '<b > URL</b> <input type="radio" style="width:50px;pading: 0 10px;"" name="rspec_select" id="url_radio_select" onclick="enable_rspec_selection_mode_url()" />';
-print '<b >Text Box</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="textbox_radio_select" onclick="enable_rspec_selection_mode_textbox()" />';
+print '<input type="radio" name="rspec_select" id="portal_radio_select" checked="checked" onclick="enable_rspec_selection_mode_portal()" />';
+print '<b class="rb_label">Portal</b>';
+
+print '<input type="radio" name="rspec_select" id="file_radio_select" onclick="enable_rspec_selection_mode_file()" />';
+print '<b class="rb_label">File</b>';
+
+print '<input type="radio" name="rspec_select" id="url_radio_select" onclick="enable_rspec_selection_mode_url()" />';
+print '<b class="rb_label">URL</b>';
+
+print '<input type="radio" name="rspec_select" id="textbox_radio_select" onclick="enable_rspec_selection_mode_textbox()" />';
+print '<b class="rb_label">Text Box</b>';
+
 //print '<b >Graphical Editor</b> <input type="radio" style="width:50px;padding: 0 50px;" name="rspec_select" id="jacks_radio_select" onclick="enable_rspec_selection_mode_jacks()" />';
 print '</td></tr>';
 print '<tr id="rspec_portal_row" ><td><b>Select existing: </b>';
@@ -329,7 +337,7 @@ print "<b>Select from file: </b><input type='file' name='file_select' id='file_s
 print "<div id='upload_message' style='display:block;'></div>";
 print "</td></tr>";
 print '<tr id="rspec_url_row" hidden="hidden"><td>';
-print "<b>Select from URL: </b>";
+print "<b>Load from URL: </b>";
 print '<button type="button" name="url_grab_button" id="url_grab_button" onClick="urlupload_onchange()"  >Select</button>';
 print "<input type='input' name='url_select' id='url_select' onchange='urlupload_onchange()' />";
 print "</td></tr>";

@@ -9,19 +9,13 @@ cert_FILES = \
 	certs/cornell-ig-boss.pem \
 	certs/cornell-ig-cm.pem \
 	certs/cornell-ig-of.pem \
-	certs/exo-gpo-of.pem \
-	certs/exo-bbn-am.pem \
 	certs/exo-fiu-am.pem \
 	certs/exo-nicta-am.pem \
-	certs/exo-rci-am.pem \
 	certs/exo-uh-am.pem \
-	certs/exosm-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
         certs/gpo-of.pem \
         certs/gr-bbn1-am.pem \
         certs/gr-bbn1-ch.pem \
-        certs/gr-bbncam-am.pem \
-        certs/gr-bbncam-ch.pem \
 	certs/i2-of.pem \
 	certs/ig-gatech-boss.pem \
 	certs/ig-gatech-cm.pem \
@@ -69,7 +63,6 @@ cert_FILES = \
 	certs/nyu-ig-of.pem \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
-	certs/renci-eg-of.pem \
 	certs/sl-of.pem \
 	certs/sox-ig-boss.pem \
 	certs/sox-ig-cm.pem \

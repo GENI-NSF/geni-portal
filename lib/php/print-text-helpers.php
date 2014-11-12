@@ -24,7 +24,7 @@
 ?>
 <?php
 require_once("header.php");
-require_once( "am_map.php");
+require_once("am_map.php");
 
 function print_agg_list( $list ){
   print_list( $list, $use_nickname=True );
@@ -180,8 +180,12 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $comp_name = get_name_from_urn($comp_id);
     $sliver_type=$node->sliver_type;
     $host=$node->host;
-    $services=$node->services;
-    $logins=$services->login;
+    $logins = array();
+    foreach ($node->services as $service) {
+      foreach($service->login as $login) {
+	$logins[] = $login;
+      }
+    }
     // don't display authority info if filtering by AM since it's assumed that
     // the AM info will be mentioned elsewhere
     if($filterToAM) {
@@ -525,10 +529,6 @@ function get_rspec_xml( $obj, $pretty, $filterToAM ) {
   }
 
   foreach ($args as $arg) {
-    $arg_url = $arg;
-    $am_id = am_id( $arg_url );
-    $arg_name = am_name($arg_url);
-    $arg_urn = am_urn($arg_url);
     if (is_array($obj[$arg]) and array_key_exists('value', $obj[$arg])) {
         $xml = $obj[$arg]['value'];
     } else {

@@ -25,7 +25,7 @@
 // Display and then clear any lastmessage put in the session by a previous page
 
 if (! isset($_SESSION)) {
-  require_once("user.php"); // restores the session after defining GeniUser class
+  session_start();
 }
 
 if (isset($_SESSION['lastmessage'])) {

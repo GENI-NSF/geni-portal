@@ -4,15 +4,35 @@
 
 = GENI Portal Release Notes =
 
-== 2.21.2 ==
+== 2.22 ==
+ * Include link to NYU Poly WITest wireless site. (#773)
+ * Show a proper error message or success message on updating SSH keys. (#973)
+ * Fix headers in email that your lead request was received. (#1197)
+ * Fix bug report to print list of aggregates correctly. (#1198)
+ * Change label for add resources URL entry (#1201)
+ * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
+ * Move included files to lib from portal (#1207)
+ * Handle unknown AM URNs and URLs mroe gracefully. (#1212)
+ * Exclude users with no public SSH keys from the generated omni_config. (#1215)
+ * Update Jacks on allocation page (#1216)
+ * Put radio buttons on left on jacks add resources (#1217)
+ * Widen URL entry on Jacks add resources page (#1218)
+ * Handle 'pending' status from OpenGENI AMs. (#1221)
+ * Handle multiple 'services' tags in an RSpec. (#1222)
+ * Error check arguments to do-edit-slice-member. (#1224)
+ * Switch to Jacks stable (#1228)
+
+== 2.21.4 ==
  * Lowercase eppn before lookup in speaks-for flow (#1209)
 
 == 2.21.3 ==
  * New Jacks icons
 
 == 2.21.2 ==
+ * Provide a simple Jacks context (#1194)
+ * Add an `index.php` that redirects to `home.php` to block directory
+   listing. (#1196)
  * Change URL entrypoints for GENI Desktop (#1199)
- * Add an `index.php` that redirects to `home.php` to block directory listing.
 
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)

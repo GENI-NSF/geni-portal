@@ -234,15 +234,15 @@ if ($pi_request and ! $is_pi) {
   $to = $user->prettyEmailAddress();
   //  $from = "From: GENI Portal <www-data@portal.geni.net>"; // FIXME!!!
   $subject = "Your GENI Project Lead request has been received";
-  $body = "\nDear " . $user->prettyName() . ",\n";
+  $body = "Dear " . $user->prettyName() . ",\n";
   $body = $body . "\nWe have received your request to be a GENI Project Lead.  We are processing your request and you should hear from us in 3-4 business days.\n";
   $body = $body . "\nIf you have any questions about your request or about using GENI in general, please email help@geni.net.\n";
   $body = $body . "\nThank you for your interest in GENI!\n";
   $body = $body . "\nSincerely,\n\nGENI Experimenter Support\nhelp@geni.net\n";
   $headers = "Reply-To: help@geni.net\r\n";
   $headers .= "Bcc: " . $portal_admin_email . "\r\n";
+  $headers .= "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n";
   $headers .= $cc;
-  $headers .= "\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit";
 
   mail($to, $subject, $body, $headers);
 }

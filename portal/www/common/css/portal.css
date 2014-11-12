@@ -1000,4 +1000,7 @@ img {
 	color: #5F584E;
 }
 
-
+/* For Jacks RSpec display instead of white-on-white */
+.jacks #leftNav pre {
+   color: black;
+}

@@ -170,6 +170,7 @@ if($bound_rspec) {
   $am_urls = array();
   $am_names = array();
   foreach($am_urns as $am_urn) {
+    $knownAM = False;
     //    error_log("AM_URN = " . print_r($am_urn, true));
     foreach($all_aggs as $agg) {
       if ($agg[SR_ARGUMENT::SERVICE_URN] == $am_urn) {
@@ -178,8 +179,18 @@ if($bound_rspec) {
 	$am_url = $agg[SR_ARGUMENT::SERVICE_URL];
 	array_push($am_urls, $am_url);
 	array_push($am_names, $am_name);
+	$knownAM = True;
 	break;
       }
+    }
+    if (! $knownAM) {
+      error_log("Bound RSpec uses unknown AM $am_urn!");
+      // This is going to fail later - almost certainly (all my tests do).
+      // Some cases get you a results page with a clear error message.
+      // Others give an SCS error about failing to find a path.
+      // Doing this error message here cuts off that later work, but also stops
+      // before the submit problem report page, which might be useful.
+      //create_sliver_error("Your RSpec requires using an unknown aggregate: $am_urn.");
     }
   }
 }
@@ -223,7 +234,7 @@ $metadata = array(
     'User name' => $user->prettyName(),
     'User username' => $user->username,
     'User EPPN' => $user->eppn,
-    'User e-mail' => $user->mail,
+    'User e-mail' => $user->email(),
     'User UUID' => $user->account_id,
     'Slice UUID' => $slice_id,
     'Slice URN' => $slice_urn,
@@ -264,8 +275,8 @@ $retVal = create_sliver($am_urls, $user, $slice_users, $slice_credential,
 			$slice_urn, $omni_invocation_dir, $slice['slice_id'], $bound_rspec, 
 			$stitch_rspec);
 
-if($retVal) {
-
+if($retVal and $retVal != "Invalid AM URL" and $retVal != "Missing AM URL" and $retVal != "Missing slice credential") {
+  // Really we want to come here if we spawned the process OK only
     // Set up link to results page
     $invoke_id = get_invocation_id_from_dir($omni_invocation_dir);
     $link = "sliceresource.php?invocation_user=" . $user->username .
@@ -303,7 +314,11 @@ if($retVal) {
     create_sliver_success($link, $full_link);
 }
 else {
-    create_sliver_error("Failed to start an <tt>omni</tt> process.");
+  $msg = "Failed to start an <tt>omni</tt> process.";
+  if ($retVal == "Invalid AM URL" or $retVal == "Missing AM URL" or $retVal == "Missing slice credential") {
+    $msg = $msg . " $retVal";
+  }
+  create_sliver_error($msg);
 }
 
 function no_slice_error() {

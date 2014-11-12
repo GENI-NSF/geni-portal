@@ -452,7 +452,7 @@ function lookup_project_details($sa_url, $signer, $project_uuids)
 
 }
 
-// Routines to invite and accept invivations for members to projects
+// Routines to invite and accept invitations for members to projects
 
 // Generate an invitation for a (not yet identified) member
 // to join a project
