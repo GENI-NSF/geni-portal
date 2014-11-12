@@ -710,6 +710,8 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
 
 </script>
 
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
+
 <?php
 
 // END JACKS-APP STUFF //
@@ -723,6 +725,7 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
 
 print "<h2 id='members'>Slice Members</h2>";
 ?>
+
 
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
 <ul>
