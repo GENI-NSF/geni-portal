@@ -489,7 +489,7 @@ if ($project_expiration) {
   $project_line = "Project does not have an expiration date<br>";
 }
 if ($renew_slice_privilege) {
-  print "<td colspan='1' style=\"width:320px;\">\n";
+  print "<td id='renewtext' colspan='1' style=\"width:320px;\">\n";
 } else {
   print "<td colspan='4'>\n";
 }
@@ -622,6 +622,7 @@ print "</div></td></tr></tbody></table>";
 <link rel="stylesheet" type="text/css" href="slice-jacks.css" />
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
 
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
@@ -709,8 +710,6 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
 };
 
 </script>
-
-<link rel="stylesheet" type="text/css" href="slice-table.css" />
 
 <?php
 

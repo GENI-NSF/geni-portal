@@ -33,6 +33,13 @@
   border-bottom: 0;
 }
 
+#content #renewtext {
+  padding: 0;
+  border-top: 0;
+  border-bottom: 0;
+  width: 320px;
+}
+
 #content .statusButtons td {
   border-bottom: 0;
   padding-bottom: 0;
