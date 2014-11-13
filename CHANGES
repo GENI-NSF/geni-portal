@@ -7,6 +7,7 @@
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
  * Restore highlighting of boxes on select (#1190)
+ * Fix AM table view on slice-jacks  (#1187)
 
 == 2.22 ==
  * Include link to NYU Poly WITest wireless site. (#773)
