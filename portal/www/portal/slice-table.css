@@ -1,190 +1,26 @@
-/*
-  CSS Style Sheet for GENI Portal tailored for slice-add-resources-jacks page
-  to allow for allowing very wide windows (giving Jacks all
-  real-estate that we can
+/* CSS Style Sheet for Jacks page with slice/aggregate table */
 
-
-*/
-
-/*
-  Override default portal settings
-*/
-
-#content-outer {
-  position: relative;
-  min-width: 900px;
-  width: auto;
-}
-
-#content {
-  padding: 20px 30px 30px;
+#header, #content-outer {
   position: relative;
 }
-
-#content table {
-  margin-left: 30px;
-  min-width: 900px;
-  width: auto;
-}
-
-#content table table {
-  margin: 0;
-  border: 0;
-  min-width: 100px;
-  width: auto;
-}
-
-#header {
-    min-width: 897px;
-    width: auto;
-}
-
-/* Main navigation bar */
-#mainnav {
-  min-width: 878px;
-  width: auto;
-}
-
-#footer {
-    min-width: 807px;
-    width: auto;
-}
-
-#footer-left {
-  min-width: 400px;
-  width: auto;
-}
-
-#footer-right {
-  min-width: 400px;
-  width: auto;
-}
-
-#welcome {
-  min-width: 840px;
-  width: auto;
-}
-
-#welcome-left {
-  min-width: 220px;
-  width: auto;
-}
-
-#welcome-right {
-  min-width: 620px;
-  width: auto;
-}
-
-#welcome-right-top {
-  min-width: 620px;
-  width: auto;
-}
-
-#welcome-right-left {
-  min-width: 275px;
-  width: auto;
-}
-
-#welcome-right-right {
-  min-width: 345px;
-  width: auto;
-}
-
-.instruction {
-  background-color: #E5E5E5;
-  border-left: 10px solid green;
-  color: #5F584E;
-  padding: 20px;
-  font-family: 'PT Serif', serif;
-  font-weight: 400;
-  box-shadow: 4px 4px 10px #B5B5B5;
-  margin-left: 0px !important;
-  margin-top: 20px !important;
-  margin-bottom: 20px !important;
-  border-radius: 8px;
-}
-
-input.date {
- width: 14em;
-}
-
-
-.aggregate, .resources {
-  min-width: 757px;
-  width: auto;
-}
-
-
-.xml table {
-  min-width: 701px !important;
-  width: auto !important;
-}
-
-
-
-.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
-    border-top-right-radius: 0px;
-}
-
-.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
-    border-top-left-radius: 0px;
-}
-
-.ui-dialog {
-    box-shadow: 0px 0px 20px #B5B5B5;
-    padding: 0;
-}
-
-.ui-dialog-content {
-    margin: 0;
-    padding: 0;
-}
-
-.ui-dialog-title {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
-	font-size: 0.9em;
-    padding: 6px;
-}
-
-.ui-dialog .ui-dialog-titlebar {
-    padding: 0px;
-}
-
-.ui-dialog-titlebar {
-	background: #E17000;
-        border-top: 4px solid #5F584E;
-	border-bottom: 1px solid #fff;
-	border-right: 0px;
-	border-left: 0px;
-	color: #fff;
-	vertical-align:middle;
-}
-
-.ui-dialog-titlebar-close {
-    visibility: hidden;
-}
-
-.ui-dialog .ui-dialog-buttonpane {
-    padding: 0;
-    margin-top: 0;
-}
-
-.ui-helper-clearfix {
-    padding: 0;
-}
-
-
-/* 
- * CSS Settings for slice-add-resources-jacks.php specific entities
- */
-
 #content #portalhelp {
   position: absolute;
   top: -56px;
   right: 0px;
 }
-
+#content {
+  padding: 20px 30px 30px;
+  position: relative;
+}
+#content table {
+  margin-left: 30px;
+  width: 795px;
+}
+#content table table {
+  margin: 0;
+  border: 0;
+  width: 100%;
+}
 #content table table td {
   border-top: 0;
 }
@@ -192,6 +28,12 @@ input.date {
   border-bottom: 0;
 }
 #content #renewcell {
+  padding: 0;
+  border-top: 0;
+  border-bottom: 0;
+}
+
+#content #renewtext {
   padding: 0;
   border-top: 0;
   border-bottom: 0;
@@ -228,7 +70,7 @@ input.date {
   padding-left: 0;
   height: 540px;
   overflow-y: scroll;
-  margin: 0;
+  margin: 0; 
 }
 #am_names > li {
   margin-left: 0;
@@ -258,7 +100,7 @@ input.date {
 #am_names li ul li {
   padding-left: 8px;
 }
-
+ 
 #am_names .collapsable {
   position: absolute;
   cursor: pointer;
@@ -267,7 +109,6 @@ input.date {
   width: 16px;
   height: 16px;
 }
-
 #am_names .collapsed .collapsable:after {
   content: "+";
   font-weight: bold;
@@ -315,7 +156,7 @@ input.date {
   visibility: visible;
 }
 #status_table .notqueried .expireText, #status_table .updating .expireText, #status_table .noresources .expireText, #status_table .busy .expireText, #status_table .failed .expireText {
-        display: none;
+	display: none;
 }
 
 #status_table .getButton {
@@ -337,7 +178,7 @@ input.date {
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
-        text-align: left;
+	text-align: left;
 }
 
 .configuring, .unknown, .busy, .ready, .failed {
@@ -366,59 +207,10 @@ input.date {
 #status_table tbody tr:nth-child(1) td {
   padding: 6px 0 2px 15px;
 }
-
 .am_name_field {
   width: 270px;
 }
-
 #ui-datepicker-div {
   z-index: 10 !important;
 }
 
-/**
- * Top level jacks container entities
- */
-
-#jacks-editor-pane {
-   height: auto;
-   min-height: 500px;
-   width: auto;
-   min-width: 800px;
-}
-
-#jacks-editor-app-container {
-   height: auto;
-   min-height: 500px;
-   width: auto;
-   min-width: 800px;
-}
-
-#container jacks-editor-app {
-   height: auto;
-   min-height: 500px;
-   width: auto;
-   min-width: 800px;
-}
-
-#container .jacks-editor-app {
-   height: auto;
-   min-height: 500px;
-   width: auto;
-   min-width: 800px;
-}
-
-#container #jacks-editor-app {
-   height: auto;
-   min-height: 500px;
-   width: auto;
-   min-width: 800px;
-}
-
-#url_select {
-   width: 500px;
-}
-
-/* Radio button labels */
-.rb_label {
-    padding-right: 35px;
-}
