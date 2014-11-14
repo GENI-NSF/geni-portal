@@ -92,8 +92,8 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	size: 'auto',
 	canvasOptions : {aggregates: aggregate_info},
         show: {
-            menu: false,
-            rspec: false,
+            menu: true,
+            rspec: true,
             version: false
         },
 	multiSite: true,
