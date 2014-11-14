@@ -606,10 +606,12 @@ usort($all_rspecs, "cmp");
 
 // JACKS-APP STUFF //
 include("jacks-app.php");
+print "<div id='jacks-app-div'>";
 print "<table id='jacks-app'><tbody><tr>";
 print "<th>Manage Resources</th></tr><tr><td><div id='jacks-app-container'>";
 print build_jacks_viewer();
 print "</div></td></tr></tbody></table>";
+print "</div>";
 
 //include("jacks-editor-app.php");
 //print "<table id='jacks-editor-app'><tbody><tr>";
@@ -619,10 +621,9 @@ print "</div></td></tr></tbody></table>";
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="slice-jacks.css" />
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-<link rel="stylesheet" type="text/css" href="slice-table.css" />
 
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
