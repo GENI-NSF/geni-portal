@@ -9,6 +9,7 @@
  * Restore highlighting of boxes on select (#1190)
  * Fix AM table view on slice-jacks  (#1187)
  * Add view rspec button to jacks app (#1202)
+ * "Delete All" clears the Rspec and Reserve Resources button in Jacks Editor App (slice-add-resource-jacks) (#1191)
 
 == 2.22 ==
  * Include link to NYU Poly WITest wireless site. (#773)
