@@ -52,8 +52,8 @@ class GENIResource:
         self.type = "unknown"
         self.name = ""
         self.id = ""
-        self.latitude = "0.0"
-        self.longitude = "0.0"
+        self.latitude = None
+        self.longitude = None
     def toGeoJSON(self):
         return dict(
             type='Feature',
@@ -171,10 +171,10 @@ def determine_resource_name(element):
     else:
         return element.getAttribute('component_name')
 
-# get lat/lon information (default to 0.0, 0.0 if unknown)
+# get lat/lon information: default to None, None if unknown
 def determine_resource_location(element):
-    latitude = "0.0"
-    longitude = "0.0"
+    latitude = None
+    longitude = None
     if element.tagName == 'openflow:datapath':
         locations = element.getElementsByTagName('openflow:location')
     else:
@@ -254,15 +254,9 @@ def search_rspecs_for_resources(rspecs_directory, cur):
                     
                     resource = populate_geni_resource(child, ams_dictionary)
 
-                    # Remove meaningless entries
-                    if resource.latitude == "0.0" and \
-                            resource.longitude == "0.0":
-                        if child.tagName == "openflow:datapath":
-                            continue
-                        if resource.name == "orca-transit-net-vlan":
-                            continue
-                        if resource.name == "unknown":
-                            continue
+                    # Remove nodes with no lat/long info
+                    if resource.latitude == None or resource.longitude == None:
+                        continue
 
                     add_to_geni_resources(resource, resources)
 
