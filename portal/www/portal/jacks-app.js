@@ -321,15 +321,15 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
 /**
  * Determine whether the status is in a terminal state.
  *
- * Status can be terminal if it is 'ready' or 'failed'. Other states
- * are considered transient, not terminal.
+ * Status can be terminal if it is 'ready' or 'failed' or 'no resources'. 
+ * Other states are considered transient, not terminal.
  *
  * Returns a boolean, true if terminal status, false otherwise.
  */
 JacksApp.prototype.isTerminalStatus = function(status) {
     var code = status['status_code'];
-    /* Which is which? What is 2 and what is 3? */
-    return code == 2 || code == 3;
+    /* From status_constants.php: 2 = READY, 3 = FAILED , 5 = NO_RESOURCES */
+    return code == 2 || code == 3 || code == 5;
 };
 
 JacksApp.prototype.amName = function(am_id) {
@@ -778,7 +778,8 @@ JacksApp.prototype.onEpStatus = function(event) {
     $.each(event.value, function(i, v) {
 
 // SHOULD PROBABLY CHANGE
-      // This only looks for READY and FAILED. There may be other cases to look for.
+      // This only looks for READY and FAILED.
+      // There may be other cases to look for.
       // Probably shouldn't poll infinitely.
       if (! that.isTerminalStatus(v)) {
           that.updateStatus('Resources on ' + v['am_name'] + ' are '
@@ -792,7 +793,10 @@ JacksApp.prototype.onEpStatus = function(event) {
           that.updateStatus('Resources on '+v['am_name']+' are ready.');
       } else if (v['geni_status'] == 'failed') {
           that.updateStatus('Resources on '+v['am_name']+' have failed.');
-      }
+      } else if (v['geni_status'] == 'no resources') {
+	  that.getSliceManifests();
+	  return;
+      } 
 
 // SHOULD PROBABLY CHANGE
         // This section is for coloring the nodes that are ready.
