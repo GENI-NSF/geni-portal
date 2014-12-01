@@ -593,8 +593,8 @@ print "<h2></h2>\n";
 
 <div id='tablist'>
   <ul class='tabs'>
-    <li><a href='#jacks-app'>Current Resources</a></li>
-    <li><a href='#status_table_div'>Resource Details</a></li>
+    <li><a href='#jacks-app'>Graphical View</a></li>
+    <li><a href='#status_table_div'>Aggregate View</a></li>
   </ul>
 </div>
 
