@@ -13,6 +13,7 @@
  * Fix map view to remove nodes with no lat/long info (#1240)
  # Fix handling of delete race-condition (delete returns before manifest 
     shows deletion) in jacks-app.js (#1241)
+ # Change tabs on slice-jacks to "Graphical View" and "Aggregate View (#1238)
 
 == 2.22 ==
  * Include link to NYU Poly WITest wireless site. (#773)
