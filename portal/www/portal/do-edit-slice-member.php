@@ -173,6 +173,12 @@ foreach($slice_members as $slice_member) {
 }
 $selections = $_REQUEST;
 
+/* Remove project_id from selections so that it isn't confused
+   with a member id. */
+if (array_key_exists('project_id', $selections)) {
+  unset($selections['project_id']);
+}
+
 $validation_result = validate_slice_member_requests($slice_members_by_role, $selections);
 $success = $validation_result['success'];
 if($success) {
