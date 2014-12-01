@@ -96,8 +96,8 @@ function compute_member_row_elements($member_details,
     $options = $options . "<option $selected value=$role_index>$label</>";
   }
   $member_actions =  "<select " . 
-    "name=\"$member_id\"" . $member_id .
-    "id=\"$member_id\"" . $member_id .
+    "name=\"$member_id\"" .
+    "id=\"$member_id\"" .
     ">$options</select>";
 
   $row_elements = array('member_url' => $member_url,
