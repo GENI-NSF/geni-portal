@@ -16,6 +16,8 @@
  # Change tabs on slice-jacks to "Graphical View" and "Aggregate View (#1238)
  # Fix bug that incorrectly formats HTML and sets 'project_id' as a member_uid
    in case of changing slice/project membershop (#1242)
+ # Fix bug that doesn't allow GRAM resources to turn green due to PHP fatal 
+   error  around GENI_PENDING scope (#1243).
 
 == 2.22 ==
  * Include link to NYU Poly WITest wireless site. (#773)
