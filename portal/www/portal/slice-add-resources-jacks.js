@@ -291,6 +291,7 @@ function jacks_editor_app_ready(je, je_input, je_output) {
 
 // The callback when we've received the current rspec from Jacks
 // If downloading, download in place
+// If submitting, call validateSubmit
 // Otherwise, treat as a new RSpec
 function jacks_fetch_topology_callback(rspecs) {
     //  console.log("RSPECS = " + rspecs + " " + rspecs.length);
@@ -307,6 +308,10 @@ function jacks_fetch_topology_callback(rspecs) {
 		  //		  console.log("FAILURE");
               alert("An error occurred. Please notify portal-help@geni.net.");
 	      });
+  } else if (jacksEditorApp.submittingRspec) {
+      jacksEditorApp.submittingRspec = false;
+      $('#current_rspec_text').val(rspec);
+      validateSubmit();
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
@@ -460,14 +465,24 @@ function do_rspec_download()
 	window.location.replace(rspec_download_url);
     } else {
 	jacksEditorApp.downloadingRspec = true;
+	jacksEditorApp.submittingRspec = false;
 	jacksEditorApp.jacksInput.trigger('fetch-topology');
     }
+}
+
+// Grab current topology from Jacks editor and submit if valid
+function do_grab_editor_topology_and_submit()
+{
+    jacksEditorApp.downloadingRspec = false;
+    jacksEditorApp.submittingRspec = true;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
 }
 
 // Grab current topology from Jacks editor
 function do_grab_editor_topology()
 {
     jacksEditorApp.downloadingRspec = false;
+    jacksEditorApp.submittingRspec = false;
     jacksEditorApp.jacksInput.trigger('fetch-topology');
 }
 

@@ -109,6 +109,10 @@
   stroke-width: 5px;
 }
 
+#jacks-app .checkbox.selected {
+  stroke-width: 5px;
+}
+
 .jacks .sitelabelgroup .labelbox {
  fill: white;
 }

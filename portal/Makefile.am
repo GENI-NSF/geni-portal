@@ -162,6 +162,7 @@ dist_svcweb_DATA = \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
 	www/portal/slice-jacks.php \
+	www/portal/slice-table.css \
 	www/portal/sliceabac.php \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
