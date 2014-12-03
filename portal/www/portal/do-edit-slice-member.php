@@ -56,8 +56,8 @@ function validate_slice_member_requests($slice_members_by_role, $selections)
 {
   global $user;
 
-  error_log("SMBR = " . print_r($slice_members_by_role, True));
-  error_log("SELS = " . print_r($selections, True));
+  //  error_log("SMBR = " . print_r($slice_members_by_role, True));
+  //  error_log("SELS = " . print_r($selections, True));
 
   $excluding_self = False;
   foreach($selections as $member_id => $sel) {
@@ -76,12 +76,12 @@ function validate_slice_member_requests($slice_members_by_role, $selections)
   $lead_count = 0;
   foreach($selections as $member_id => $sel) {
     if ($sel == CS_ATTRIBUTE_TYPE::LEAD) { // Changing to or maintaining a lead
-      error_log("LEAD DETECTED : " . $member_id . " " . $sel);
+      //      error_log("LEAD DETECTED : " . $member_id . " " . $sel);
       $lead_count += 1;
     }
   }
 
-  error_log("LEAD_COUNT = " . $lead_count);
+  //  error_log("LEAD_COUNT = " . $lead_count);
 
   // See if there are any current members they are trying to change to lead
   // See if there are any non-members they are trying to add as lead
