@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.24 ==
+ * Remove debug printouts in do-edit-slice-member. (#1242)
 
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
