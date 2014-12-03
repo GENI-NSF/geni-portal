@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.24 ==
+
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
  * Restore highlighting of boxes on select (#1190)
