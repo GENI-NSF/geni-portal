@@ -234,7 +234,7 @@ echo "<div id='addresources'>";
 //    . "Upload New RSpec</button></p>\n";
 
 print "<h2>Add Resources</h2>\n";
-print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
+print "<p>To add resources you need to draw or choose a Resource Specification (RSpec).</p>";
 
 if (! isset($all_ams)) {
   $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
