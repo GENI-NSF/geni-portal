@@ -357,7 +357,7 @@ print $jfed_script_text;
 
 <!-- Jacks JS and App CSS -->
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
-<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <!-- This belongs in the header, probably -->
 <script>

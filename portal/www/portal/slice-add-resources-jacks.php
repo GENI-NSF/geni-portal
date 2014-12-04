@@ -29,6 +29,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
+require_once("settings.php");
 require_once 'geni_syslog.php';
 
 function cmp2($a,$b) {
@@ -258,7 +259,7 @@ include("jacks-editor-app.php");
 
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
-<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <?php
 print "<table id='jacks-editor-app'>";
