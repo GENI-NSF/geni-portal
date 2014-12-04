@@ -65,7 +65,7 @@ $owners = ma_lookup($ma_url, $user, $public_owners);
 
 /* Display starts here. */
 include('tool-rspecs.js');
-print '<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>';
+print '<script src="' . $jacks_stable_url . '"></script>';
 print "<div id='jacksContainer' class='jacks' style='background-color: white; display:none;'></div>";
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
 print("<p>From this page you can ");

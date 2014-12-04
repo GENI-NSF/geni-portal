@@ -29,6 +29,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
+require_once("settings.php");
 require_once 'geni_syslog.php';
 
 function cmp($a,$b) {
@@ -96,7 +97,7 @@ function validateSubmit()
   return false;
 }
 </script>
-<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 <script>
 var thisInstance;
 var jacksInput;

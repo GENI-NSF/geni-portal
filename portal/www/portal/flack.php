@@ -173,7 +173,7 @@ $client_cert_parameter = $user->insideCertificate();
     </script>
     <!-- Run the loader after its variables are set above. -->
     <script type="text/javascript"
-            src="https://www.emulab.net/protogeni/flack-stable/loader.js">
+  src="<?php echo $flack_url;?>">
     </script>
   </body>
 </html>
