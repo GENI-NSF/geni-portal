@@ -10,6 +10,7 @@
   * Host the Jacks router.svg locally
   * Make the Jacks URL be a value from settings.php
   * (Re) make the Flack URL be a value from settings.php
+ * Jacks Add Resources instructs you to draw or pick an RSpec. (#1249)
 
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
