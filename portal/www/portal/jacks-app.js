@@ -30,10 +30,15 @@
  
 function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, sliceInfo,
 		  userInfo, readyCallback) {
-    // Map from client_id to am_id
-    this.client2am = {};
+
+    var that = this;
+
     // Map from URN (and client_id) to client_id
     this.urn2clientId = {};
+
+    // Map from AM URN to AM ID
+    this.urn2amId = {}
+
     this.input = null;
     this.output = null;
     // Commands going into Jacks.
@@ -80,9 +85,10 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	    var agg_id = agg_details.urn;
 	    var agg_name = agg_details.name;
 	    aggregate_info.push({id: agg_id, name: agg_name});
+	    that.urn2amId[agg_id] = am_id;
 	});
 
-    var that = this;
+
     var jacksInstance = new window.Jacks({
         mode: 'viewer',
         source: 'rspec',
@@ -336,6 +342,22 @@ JacksApp.prototype.amName = function(am_id) {
     return this.allAms[am_id].name;
 };
 
+/*
+  Return the AM ID assocaited with a node key (from the Jacks topology
+ */
+JacksApp.prototype.lookup_am_id = function (node_key) {
+    var that = this;
+    var am_id = null;
+    $.each(this.currentTopology.nodes, function(ni, nd) {
+	    if(nd.id == node_key) {
+		var urn = nd.aggregate_id;
+		am_id = that.urn2amId[urn];
+		return;
+	    }
+	});
+    return am_id;
+}
+
 
 //----------------------------------------------------------------------
 // Jacks App Events to Embedding Page
@@ -419,13 +441,8 @@ JacksApp.prototype.handleSSH = function() {
     var client_id = this.selectedNodes[0].name;
     var selected_node_key = this.selectedNodes[0].key;
     
-    var agg_urn = null;
-    $.each(this.currentTopology.nodes, function(ni, nd) {
-	    if(nd.id == selected_node_key) {
-		agg_urn = nd.aggregate_id;
-		return;
-	    }
-	});
+    var am_id = this.lookup_am_id(selected_node_key);
+    var agg_urn = this.allAms[am_id].urn;
 
     var client_host_key = client_id + ":" + agg_urn;
     if(this.username in this.loginInfo) {
@@ -455,8 +472,7 @@ JacksApp.prototype.handleRestart = function() {
 	restartAMs = [];
 	msg = "Restart resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		var am_name = that.allAms[am_id].name;
 		if (i > 0) msg = msg + ", ";
 		msg = msg + am_name;
@@ -493,8 +509,7 @@ JacksApp.prototype.deleteResources = function() {
 	deleteAMs = []
 	msg = "Delete slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		deleteAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
 		msg = msg + that.allAms[am_id].name;
@@ -548,8 +563,7 @@ JacksApp.prototype.renewResources = function() {
 	renewAMs = []
 	msg = "Renew slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		renewAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
 		msg = msg + that.allAms[am_id].name;
@@ -579,8 +593,7 @@ JacksApp.prototype.handleDetails = function() {
     if (this.selectedNodes.length > 0) {
 	am_ids = [];
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		am_ids.push(am_id);
 	    });
     }
@@ -600,8 +613,7 @@ JacksApp.prototype.handleStatus = function() {
     if (this.selectedNodes.length > 0) {
 	am_ids = [];
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		am_ids.push(am_id);
 	    });
     }
@@ -746,11 +758,6 @@ JacksApp.prototype.onEpManifest = function(event) {
         // This is needed because some AMs do return the client_id, so
         // the mapping needs to have both to avoid needing special cases.
         that.urn2clientId[client_id] = client_id;
-
-        that.client2am[sliver_id] = am_id;
-        // This is needed because some AMs do return the client_id, so
-        // the mapping needs to have both to avoid needing special cases.
-        that.client2am[client_id] = am_id;
 
         var agg_urn = that.allAms[am_id].urn;
 
