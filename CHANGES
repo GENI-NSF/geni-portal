@@ -5,6 +5,9 @@
 = GENI Portal Release Notes =
 
 == 2.24 ==
+ * Support multiple nodes with same client_id from different AMs in SSH (#1257)
+ * Support multiple nodes with same client_id from different AMs 
+   for AM API calls (#1258)
 
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
