@@ -417,9 +417,20 @@ JacksApp.prototype.handleSSH = function() {
     }
 
     var client_id = this.selectedNodes[0].name;
+    var selected_node_key = this.selectedNodes[0].key;
+    
+    var agg_urn = null;
+    $.each(this.currentTopology.nodes, function(ni, nd) {
+	    if(nd.id == selected_node_key) {
+		agg_urn = nd.aggregate_id;
+		return;
+	    }
+	});
+
+    var client_host_key = client_id + ":" + agg_urn;
     if(this.username in this.loginInfo) {
-	if (client_id in this.loginInfo[this.username]) {
-	    var urls = this.loginInfo[this.username][client_id];
+	if (client_host_key in this.loginInfo[this.username]) {
+	    var urls = this.loginInfo[this.username][client_host_key];
 	    if (urls.length > 0) {
 		url = urls[0];
 		debug("LOGIN URL = " + url);
@@ -632,7 +643,7 @@ JacksApp.prototype.onSelectionEvent = function(event) {
     // Clear out old selection info
     this.selectedNodes = [];
     this.selectedSites = [];
-    this.selecedLinks = [];
+    this.selectedLinks = [];
 
     // Clear out old selection info
     if (event.type == "node") {
@@ -741,20 +752,23 @@ JacksApp.prototype.onEpManifest = function(event) {
         // the mapping needs to have both to avoid needing special cases.
         that.client2am[client_id] = am_id;
 
+        var agg_urn = that.allAms[am_id].urn;
+
         // Dig out login info
         $(this).find('login').each(function(il, vl) {
             var authn = $(this).attr('authentication');
             var hostname = $(this).attr('hostname');
             var port = $(this).attr('port');
             var username = $(this).attr('username');
-	    var login_url = "ssh://" + username + "@" + hostname + ":" + port;
-	    if (!(username in that.loginInfo)) {
+            var login_url = "ssh://" + username + "@" + hostname + ":" + port;
+            var client_host_key = client_id + ":" + agg_urn;
+            if (!(username in that.loginInfo)) {
 		that.loginInfo[username] = [];
 	    }
-	    if (!(client_id in that.loginInfo[username])) {
-		that.loginInfo[username][client_id] = [];
+	    if (!(client_host_key in that.loginInfo[username])) {
+		that.loginInfo[username][client_host_key] = [];
 	    }
-	    that.loginInfo[username][client_id].push(login_url);
+	    that.loginInfo[username][client_host_key].push(login_url);
             debug(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });
@@ -878,3 +892,4 @@ function lookup_jacks_id_from_client_id(agg_urn, client_id, current_topology, ob
     return jacksId;
       
 }
+
