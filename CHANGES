@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.24 ==
+ * Name downloaded request rspec with slice name (#1204)
 
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)

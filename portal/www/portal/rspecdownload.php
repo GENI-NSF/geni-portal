@@ -72,9 +72,13 @@ if(!(is_null($rspec_id ))) {
   $name = "";
 } 
 
+if (array_key_exists('slice_name', $_GET)) {
+  $name = $_GET['slice_name'];
+}
+
 $name2 = preg_replace("/[^a-zA-Z0-9]/", "_", $name);
 if ($name2 != ""){
-   $filename = $name2.".xml";
+   $filename = $name2 . "_request_rspec.xml";
 } else {
   $filename = "rspec.xml";
 }
