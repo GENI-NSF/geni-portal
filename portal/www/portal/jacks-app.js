@@ -826,9 +826,10 @@ JacksApp.prototype.onEpStatus = function(event) {
             $.each(v['resources'], function(ii, vi) {
                 var resourceURN = vi.geni_urn;
 		var clientId = that.urn2clientId[resourceURN];
-		var jacksId = lookup_jacks_id_from_client_id(agg_urn, clientId,
-							     that.currentTopology,
-							     'nodes');
+		var jacksId = that.lookup_jacks_id_from_client_id(agg_urn, 
+								  clientId,
+								  resourceURN,
+								  'nodes');
                 if (vi['geni_status'] == 'ready') {
                     debug(clientId + " (" + resourceURN + ") is ready");
 		    $('#' + jacksId).find('.checkbox').attr('id', 'ready');
@@ -885,9 +886,12 @@ JacksApp.prototype.onEpRestart = function(event) {
     //    this.getSliceManifests();
 };
 
-function lookup_jacks_id_from_client_id(agg_urn, client_id, current_topology, obj_type)
+JacksApp.prototype.lookup_jacks_id_from_client_id = function (agg_urn, 
+							     client_id, 
+							     resourceURN,
+							     obj_type)
 {
-    var objects = current_topology[obj_type];
+    var objects = this.currentTopology[obj_type];
     var jacksId = null;
     $.each(objects, function(ii) {
 	    var obj = objects[ii];
@@ -896,6 +900,7 @@ function lookup_jacks_id_from_client_id(agg_urn, client_id, current_topology, ob
 		return false; // Use instead of break in Jquery each loop
 	    }
 	});
+
     return jacksId;
       
 }
