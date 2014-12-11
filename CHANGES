@@ -5,6 +5,8 @@
 = GENI Portal Release Notes =
 
 == 2.24 ==
+ * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
+  editor. (#1143).
 
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
