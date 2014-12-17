@@ -4,6 +4,15 @@
 
 = GENI Portal Release Notes =
 
+== 2.24 ==
+ * Remove debug printouts in do-edit-slice-member. (#1242)
+ * Prepare to be runnable without access to emulab.net. (#1251)
+  * Host the Jacks router.svg locally
+  * Make the Jacks URL be a value from settings.php
+  * (Re) make the Flack URL be a value from settings.php
+ * Jacks Add Resources instructs you to draw or pick an RSpec. (#1249)
+ * Warn that you cannot reserve where you already have a reservation (static). (#1192)
+
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
  * Restore highlighting of boxes on select (#1190)

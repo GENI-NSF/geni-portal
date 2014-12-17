@@ -75,7 +75,7 @@ $header = "Resources on slice: $slice_name";
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 ?>
 
-<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 <script src="amstatus.js"></script>
 <script>
   var thisInstance;

@@ -208,6 +208,7 @@ dist_svcwebimages_DATA = \
 	www/images/RawPC-IG-noTxt-centered.svg \
 	www/images/RawPC-IG-noTxt.svg \
 	www/images/RawPC-IG.svg \
+	www/images/router.svg \
 	www/images/site-icon.png \
 	www/images/staticmap.png \
 	www/images/Symbols-Tips-icon-clear.png \
