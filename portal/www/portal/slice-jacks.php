@@ -588,15 +588,22 @@ print "</table>\n";
 
 print "<h2></h2>\n";
 
-
 ?>
+
 
 <div id='tablist'>
   <ul class='tabs'>
     <li><a href='#jacks-app'>Graphical View</a></li>
     <li><a href='#status_table_div'>Aggregate View</a></li>
+    <li><a href='#geo_view_div'>Geographic View</a></li>
   </ul>
 </div>
+
+<?php
+echo "<div id='geo_view_div'>";
+include('slice_map.html');
+echo "</div>";
+?>
 
 <?php
 
