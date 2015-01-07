@@ -570,6 +570,9 @@ if (! is_null($jfed_button_start)) {
   print $jfed_button_start . " $disable_buttons_str><b>jFed</b></button>";
 }
 
+$map_url = "slice-map-view.php?slice_id=$slice_id";
+print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
+
 print "</td>\n";
 print "</tr>\n";
 
@@ -595,15 +598,8 @@ print "<h2></h2>\n";
   <ul class='tabs'>
     <li><a href='#jacks-app'>Graphical View</a></li>
     <li><a href='#status_table_div'>Aggregate View</a></li>
-    <li><a href='#geo_view_div'>Geographic View</a></li>
   </ul>
 </div>
-
-<?php
-echo "<div id='geo_view_div'>";
-include('slice_map.html');
-echo "</div>";
-?>
 
 <?php
 

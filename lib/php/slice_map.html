@@ -21,24 +21,52 @@ window.onload = function init() {
   center.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
   map1.setCenter(center, 4);
   map1.addControl(new OpenLayers.Control.LayerSwitcher());
+
+  var my_node_filter = new OpenLayers.Filter.FeatureId({
+      type: OpenLayers.Filter.Function,
+      evaluate: function(attributes) {
+         return attributes.data.type == "Node";
+      }
+  });
      
+  var my_link_filter = new OpenLayers.Filter.FeatureId({
+      type: OpenLayers.Filter.Function,
+      evaluate: function(attributes) {
+         return attributes.data.type == "Link";
+      }
+  });
+     
+  var ruleNodes = new OpenLayers.Rule({
+               filter : my_node_filter,
+               symbolizer: {
+                    externalGraphic: "/images/site-icon.png",
+                    graphicWidth: "${radius}",
+                    graphicHeight: "${radius}",
+                    graphicOpacity: 1.0
+                }
+   });
+
+  var ruleLinks = new OpenLayers.Rule({
+              filter : my_link_filter,
+              symbolizer: {
+                 'strokeWidth': 2,
+                 'strokeColor' : "black"
+              }
+   });
+
   // set up style for current GENI resources
   var style = new OpenLayers.Style(null, {
       context: {
         resourceCount: 
           function(feature) {
             var sum = 0;
-            for(var i = 0; i < feature.cluster.length; i++) {
-              sum = sum + feature.cluster[i].attributes.resources;
-            }
+            sum = sum + feature.data.resources;
             return sum;
           } ,
         radius:
           function(feature) {
             var sum = 0;
-            for(var i = 0; i < feature.cluster.length; i++) {
-              sum = sum + feature.cluster[i].attributes.resources;
-            }
+            sum = sum + feature.data.resources;
             if(sum < 10) {
               return 16;
             }
@@ -49,44 +77,20 @@ window.onload = function init() {
               return 36;
             }
           }
-
-      }, 
-        
-      rules: [new OpenLayers.Rule({
-      symbolizer: {
-          externalGraphic: "/images/site-icon.png",
-          graphicWidth: "${radius}",
-          graphicHeight: "${radius}",
-          graphicOpacity: 1.0
-      }
-  })]
-      
-  });  
-
-  // currentSites: layer for current GENI resources
-  var currentSitesOLD = new OpenLayers.Layer.Vector("GENI Slice Resources", {
-      protocol: new OpenLayers.Protocol.HTTP({
-          url: "/common/map/current.json",
-          format: new OpenLayers.Format.GeoJSON()
-      }),
-      strategies: [
-          new OpenLayers.Strategy.Fixed(),
-          new OpenLayers.Strategy.Cluster({distance:1})
-      ],
-      styleMap:  new OpenLayers.StyleMap(style)
-      
+     },
+     rules: [ruleNodes, ruleLinks]
   });
 
   var http_protocol =  new OpenLayers.Protocol.HTTP({
-          url: "slice-map-data.php",
+          url: "slice-map-data.php?slice_id=" + slice_id,
           format: new OpenLayers.Format.GeoJSON()
       });
 
   var currentSitesOptions = {
       protocol: http_protocol,
       strategies: [
-          new OpenLayers.Strategy.Fixed(),
-          new OpenLayers.Strategy.Cluster({distance:1})
+          new OpenLayers.Strategy.Fixed()
+//          new OpenLayers.Strategy.Cluster({distance:1})
       ],
       styleMap:  new OpenLayers.StyleMap(style)
   };
@@ -104,22 +108,14 @@ window.onload = function init() {
       returns list of resources
   */
   function resourceString(feature) {
-    var sum = feature.cluster[0].attributes.am + ":" + 
-		       feature.cluster[0].attributes.name;
-    for(var i = 1; i < feature.cluster.length; i++) {
-        sum = sum + ", " + feature.cluster[i].attributes.am + ":" + 
-		       feature.cluster[i].attributes.name;
-    }
+    var sum = feature.data.am + ":" + feature.data.name;
     return sum;
   /*
     resourceCount
       returns number of resources
   */
   function resourceCount(feature) {
-    var sum = 0;
-    for(var i = 0; i < feature.cluster.length; i++) {
-      sum = sum + feature.cluster[i].attributes.resources;
-    }
+    var sum = feature.data.resources;
     return sum;
   }
   
@@ -130,27 +126,24 @@ window.onload = function init() {
       determines unique list of AMs and resource counts
   */
   function amString(feature) {
+
+    return "";
   
     var ams = new Array();
     var ams_count = new Array();
     
-    // look through each AM
-    for(var i = 0; i < feature.cluster.length; i++) {
-    
         // look through AMs already in array
         var found = 0;
         for(var j = 0; j < ams.length; j++) {
-          if(ams[j] === feature.cluster[i].attributes.am) {
-            ams_count[j] = ams_count[j] + parseInt(feature.cluster[i].attributes.resources);
+          if(ams[j] === feature.data.am) {
+            ams_count[j] = ams_count[j] + parseInt(feature.data.resources);
             found = 1;
           }
         }
         if(!found) {
-          ams.push(feature.cluster[i].attributes.am);
-          ams_count.push(parseInt(feature.cluster[i].attributes.resources));
+          ams.push(feature.data.am);
+          ams_count.push(parseInt(feature.data.resources));
         }
-    
-    }
     
     // create the string that lists AMs
     var sum = "";
@@ -204,4 +197,5 @@ window.onload = function init() {
 }
 
 </script>
-<div id="map1" style="width: 793px; height: 400px"></div>
+<div id="map1" style="min-width: 793px; width: 100%; min-height: 400px; height: 100%"></div>
+
