@@ -258,11 +258,15 @@ foreach($manifests as $slice_agg_urn => $manifest) {
   $links = $dom_document->getElementsByTagName('link');
   foreach($links as $link) {
     $link_points = array();
+    $link_id = $link->getAttribute('client_id');
     $iface_refs = $link->getElementsByTagName('interface_ref');
+    $interfaces = array();
     foreach($iface_refs as $iface_ref) {
       $iface_name = $iface_ref->getAttribute('client_id');
+      $interfaces[] = $iface_name;
       if(array_key_exists($iface_name, $component_info_per_interface)) {
 	$component_info = $component_info_per_interface[$iface_name];
+	$am_name = $component_info['am_name'];
 	$x = $component_info['x'];
 	$y = $component_info['y'];
 	$link_points[] = array($x, $y);
@@ -272,10 +276,10 @@ foreach($manifests as $slice_agg_urn => $manifest) {
 			  "geometry" => array("type" => "LineString",
 					      "coordinates" => $link_points),
 			  "type" => "Feature",
-			  "properties" => array("type" => "Link"));
+			  "properties" => array("type" => "Link",
+						"name" => $link_id,
+						"interfaces" => $interfaces));
     error_log("C(LF) = " . count($link_points) . " " . print_r($link_feature, true));
-
-    if (count($link_features) > 0) break;
 
     $link_features[] = $link_feature;
     

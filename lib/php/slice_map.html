@@ -59,14 +59,12 @@ window.onload = function init() {
       context: {
         resourceCount: 
           function(feature) {
-            var sum = 0;
-            sum = sum + feature.data.resources;
+            var sum = feature.data.resources;
             return sum;
           } ,
         radius:
           function(feature) {
-            var sum = 0;
-            sum = sum + feature.data.resources;
+            var sum = 5*feature.data.resources;
             if(sum < 10) {
               return 16;
             }
@@ -127,23 +125,21 @@ window.onload = function init() {
   */
   function amString(feature) {
 
-    return "";
-  
     var ams = new Array();
     var ams_count = new Array();
     
-        // look through AMs already in array
-        var found = 0;
-        for(var j = 0; j < ams.length; j++) {
-          if(ams[j] === feature.data.am) {
-            ams_count[j] = ams_count[j] + parseInt(feature.data.resources);
-            found = 1;
-          }
-        }
-        if(!found) {
-          ams.push(feature.data.am);
-          ams_count.push(parseInt(feature.data.resources));
-        }
+    // look through AMs already in array
+    var found = 0;
+    for(var j = 0; j < ams.length; j++) {
+      if(ams[j] === feature.data.am) {
+        ams_count[j] = ams_count[j] + parseInt(feature.data.resources);
+        found = 1;
+      }
+    }
+    if(!found) {
+      ams.push(feature.data.am);
+      ams_count.push(parseInt(feature.data.resources));
+    }
     
     // create the string that lists AMs
     var sum = "";
@@ -162,19 +158,34 @@ window.onload = function init() {
   }
   function onFeatureSelect(feature) {
     selectedFeature = feature;
-    popup = new OpenLayers.Popup.Anchored("chicken", 
-         feature.geometry.getBounds().getCenterLonLat(),
-         new OpenLayers.Size(250,156),
-            "<div id='maptext'>" +
-            "<h1>Aggregate Manager(s):</h1>" + 
+    popup_string = "";
+    if (feature.data.type == "Node") {
+      popup_string = "<h1>Aggregate Manager(s):</h1>" + 
             "<ul>" + 
             amString(feature) + 
             "</ul>" + 
             "<h1>Node(s):</h1>" + 
             "<p>" + 
             resourceString(feature) + 
-            "</p>" + 
-            "</div>",
+            "</p>";
+    } else {
+      link_id = feature.data.name;
+      interfaces = feature.data.interfaces;
+      popup_string = "<h1>Link:</h1>" + 
+		       "<p>" + 
+		       link_id + 
+		       "</p>" + 
+		       "<h1>Interfaces:</h1><p>";
+     for(var i = 0; i < interfaces.length; i++) {
+	if (i > 0) popup_string = popup_string + ", ";
+	popup_string = popup_string + interfaces[i];
+     }
+     popup_string = popup_string + "</p>";
+    }		       
+    popup = new OpenLayers.Popup.Anchored("chicken", 
+         feature.geometry.getBounds().getCenterLonLat(),
+         new OpenLayers.Size(250,156),
+            "<div id='maptext'>" + popup_string + "</div>",
          null, false, onPopupClose);
     popup.setBackgroundColor("#ffffff");
     popup.setBorder("1px solid #5F584E");     
