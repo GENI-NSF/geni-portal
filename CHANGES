@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.25 ==
+ * Add aggregate categories 'Experimental' and 'Federated'. (#1239)
 
 == 2.24 ==
  * Remove debug printouts in do-edit-slice-member. (#1242)
