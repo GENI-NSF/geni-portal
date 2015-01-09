@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2014 Raytheon BBN Technologies
+// Copyright (c) 2011-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -75,7 +75,7 @@ $header = "Resources on slice: $slice_name";
 show_header('GENI Portal: Slices',  $TAB_SLICES);
 ?>
 
-<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 <script src="amstatus.js"></script>
 <script>
   var thisInstance;

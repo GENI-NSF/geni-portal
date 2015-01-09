@@ -30,10 +30,15 @@
  
 function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, sliceInfo,
 		  userInfo, readyCallback) {
-    // Map from client_id to am_id
-    this.client2am = {};
+
+    var that = this;
+
     // Map from URN (and client_id) to client_id
     this.urn2clientId = {};
+
+    // Map from AM URN to AM ID
+    this.urn2amId = {}
+
     this.input = null;
     this.output = null;
     // Commands going into Jacks.
@@ -80,9 +85,10 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	    var agg_id = agg_details.urn;
 	    var agg_name = agg_details.name;
 	    aggregate_info.push({id: agg_id, name: agg_name});
+	    that.urn2amId[agg_id] = am_id;
 	});
 
-    var that = this;
+
     var jacksInstance = new window.Jacks({
         mode: 'viewer',
         source: 'rspec',
@@ -336,6 +342,22 @@ JacksApp.prototype.amName = function(am_id) {
     return this.allAms[am_id].name;
 };
 
+/*
+  Return the AM ID assocaited with a node key (from the Jacks topology
+ */
+JacksApp.prototype.lookup_am_id = function (node_key) {
+    var that = this;
+    var am_id = null;
+    $.each(this.currentTopology.nodes, function(ni, nd) {
+	    if(nd.id == node_key) {
+		var urn = nd.aggregate_id;
+		am_id = that.urn2amId[urn];
+		return;
+	    }
+	});
+    return am_id;
+}
+
 
 //----------------------------------------------------------------------
 // Jacks App Events to Embedding Page
@@ -417,9 +439,15 @@ JacksApp.prototype.handleSSH = function() {
     }
 
     var client_id = this.selectedNodes[0].name;
+    var selected_node_key = this.selectedNodes[0].key;
+    
+    var am_id = this.lookup_am_id(selected_node_key);
+    var agg_urn = this.allAms[am_id].urn;
+
+    var client_host_key = client_id + ":" + agg_urn;
     if(this.username in this.loginInfo) {
-	if (client_id in this.loginInfo[this.username]) {
-	    var urls = this.loginInfo[this.username][client_id];
+	if (client_host_key in this.loginInfo[this.username]) {
+	    var urls = this.loginInfo[this.username][client_host_key];
 	    if (urls.length > 0) {
 		url = urls[0];
 		debug("LOGIN URL = " + url);
@@ -444,8 +472,7 @@ JacksApp.prototype.handleRestart = function() {
 	restartAMs = [];
 	msg = "Restart resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		var am_name = that.allAms[am_id].name;
 		if (i > 0) msg = msg + ", ";
 		msg = msg + am_name;
@@ -482,8 +509,7 @@ JacksApp.prototype.deleteResources = function() {
 	deleteAMs = []
 	msg = "Delete slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		deleteAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
 		msg = msg + that.allAms[am_id].name;
@@ -537,8 +563,7 @@ JacksApp.prototype.renewResources = function() {
 	renewAMs = []
 	msg = "Renew slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		renewAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
 		msg = msg + that.allAms[am_id].name;
@@ -568,8 +593,7 @@ JacksApp.prototype.handleDetails = function() {
     if (this.selectedNodes.length > 0) {
 	am_ids = [];
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		am_ids.push(am_id);
 	    });
     }
@@ -589,8 +613,7 @@ JacksApp.prototype.handleStatus = function() {
     if (this.selectedNodes.length > 0) {
 	am_ids = [];
 	$.each(this.selectedNodes, function(i, selected_node) {
-		var node_name = selected_node.name;
-		var am_id = that.client2am[node_name];
+		var am_id = that.lookup_am_id(selected_node.key);
 		am_ids.push(am_id);
 	    });
     }
@@ -632,7 +655,7 @@ JacksApp.prototype.onSelectionEvent = function(event) {
     // Clear out old selection info
     this.selectedNodes = [];
     this.selectedSites = [];
-    this.selecedLinks = [];
+    this.selectedLinks = [];
 
     // Clear out old selection info
     if (event.type == "node") {
@@ -736,10 +759,7 @@ JacksApp.prototype.onEpManifest = function(event) {
         // the mapping needs to have both to avoid needing special cases.
         that.urn2clientId[client_id] = client_id;
 
-        that.client2am[sliver_id] = am_id;
-        // This is needed because some AMs do return the client_id, so
-        // the mapping needs to have both to avoid needing special cases.
-        that.client2am[client_id] = am_id;
+        var agg_urn = that.allAms[am_id].urn;
 
         // Dig out login info
         $(this).find('login').each(function(il, vl) {
@@ -747,14 +767,15 @@ JacksApp.prototype.onEpManifest = function(event) {
             var hostname = $(this).attr('hostname');
             var port = $(this).attr('port');
             var username = $(this).attr('username');
-	    var login_url = "ssh://" + username + "@" + hostname + ":" + port;
-	    if (!(username in that.loginInfo)) {
+            var login_url = "ssh://" + username + "@" + hostname + ":" + port;
+            var client_host_key = client_id + ":" + agg_urn;
+            if (!(username in that.loginInfo)) {
 		that.loginInfo[username] = [];
 	    }
-	    if (!(client_id in that.loginInfo[username])) {
-		that.loginInfo[username][client_id] = [];
+	    if (!(client_host_key in that.loginInfo[username])) {
+		that.loginInfo[username][client_host_key] = [];
 	    }
-	    that.loginInfo[username][client_id].push(login_url);
+	    that.loginInfo[username][client_host_key].push(login_url);
             debug(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });
@@ -805,9 +826,10 @@ JacksApp.prototype.onEpStatus = function(event) {
             $.each(v['resources'], function(ii, vi) {
                 var resourceURN = vi.geni_urn;
 		var clientId = that.urn2clientId[resourceURN];
-		var jacksId = lookup_jacks_id_from_client_id(agg_urn, clientId,
-							     that.currentTopology,
-							     'nodes');
+		var jacksId = that.lookup_jacks_id_from_client_id(agg_urn, 
+								  clientId,
+								  resourceURN,
+								  'nodes');
                 if (vi['geni_status'] == 'ready') {
                     debug(clientId + " (" + resourceURN + ") is ready");
 		    $('#' + jacksId).find('.checkbox').attr('id', 'ready');
@@ -864,9 +886,12 @@ JacksApp.prototype.onEpRestart = function(event) {
     //    this.getSliceManifests();
 };
 
-function lookup_jacks_id_from_client_id(agg_urn, client_id, current_topology, obj_type)
+JacksApp.prototype.lookup_jacks_id_from_client_id = function (agg_urn, 
+							     client_id, 
+							     resourceURN,
+							     obj_type)
 {
-    var objects = current_topology[obj_type];
+    var objects = this.currentTopology[obj_type];
     var jacksId = null;
     $.each(objects, function(ii) {
 	    var obj = objects[ii];
@@ -875,6 +900,8 @@ function lookup_jacks_id_from_client_id(agg_urn, client_id, current_topology, ob
 		return false; // Use instead of break in Jquery each loop
 	    }
 	});
+
     return jacksId;
       
 }
+

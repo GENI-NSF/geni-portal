@@ -159,6 +159,8 @@ dist_svcweb_DATA = \
 	www/portal/slice-add-resources-jacks.css \
 	www/portal/slice-add-resources-jacks.js \
 	www/portal/slice-add-resources-jacks.php \
+	www/portal/slice-map-view.php \
+	www/portal/slice-map-data.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
@@ -209,6 +211,7 @@ dist_svcwebimages_DATA = \
 	www/images/RawPC-IG-noTxt-centered.svg \
 	www/images/RawPC-IG-noTxt.svg \
 	www/images/RawPC-IG.svg \
+	www/images/router.svg \
 	www/images/site-icon.png \
 	www/images/staticmap.png \
 	www/images/Symbols-Tips-icon-clear.png \
