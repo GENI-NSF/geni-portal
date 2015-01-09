@@ -208,10 +208,10 @@ foreach($manifests as $slice_agg_urn => $manifest) {
     # exclusive
     # sliver_id
 
-    error_log("AGG_URN " . $slice_agg_urn . " CLIENT_ID " . $client_id . 
-	      " COMPONENT_NAME " . $component_name .
-	      " COMPONENT_ID " . $component_id .
-	      " CMID " . $component_manager_id);
+      //    error_log("AGG_URN " . $slice_agg_urn . " CLIENT_ID " . $client_id . 
+      //	      " COMPONENT_NAME " . $component_name .
+      //	      " COMPONENT_ID " . $component_id .
+      //	      " CMID " . $component_manager_id);
     if ($component_manager_id != $slice_agg_urn)  continue; 
 
     $component_info = lookup_component_info($slice_agg_urn, 
@@ -249,7 +249,7 @@ foreach($manifests as $slice_agg_urn => $manifest) {
 }
 
 
-error_log("CIPI = " . print_r($component_info_per_interface, true));
+// error_log("CIPI = " . print_r($component_info_per_interface, true));
 
 # Now go through the links
 foreach($manifests as $slice_agg_urn => $manifest) {
@@ -279,7 +279,7 @@ foreach($manifests as $slice_agg_urn => $manifest) {
 			  "properties" => array("type" => "Link",
 						"name" => $link_id,
 						"interfaces" => $interfaces));
-    error_log("C(LF) = " . count($link_points) . " " . print_r($link_feature, true));
+    //    error_log("C(LF) = " . count($link_points) . " " . print_r($link_feature, true));
 
     $link_features[] = $link_feature;
     
@@ -294,8 +294,8 @@ foreach($manifests as $slice_agg_urn => $manifest) {
 # 
 # Eventually, try to avoid drawing the same line twice(A -> B, B -> A) 
 
-error_log("NODE_FEATURES = " . print_r($node_features, true));
-error_log("LINK_FEATURES = " . print_r($link_features, true));
+  //error_log("NODE_FEATURES = " . print_r($node_features, true));
+  //error_log("LINK_FEATURES = " . print_r($link_features, true));
 
 $slice_info = array(
 		    "type" => "FeatureCollection",
