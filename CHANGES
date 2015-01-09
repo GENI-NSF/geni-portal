@@ -4,10 +4,40 @@
 
 = GENI Portal Release Notes =
 
+== 2.25 ==
+ * Support multiple nodes with same client_id from different AMs in SSH (#1257)
+ * Support multiple nodes with same client_id from different AMs 
+   for AM API calls (#1258)
+ * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
+   editor. (#1143).
+ * Name downloaded request rspec with slice name (#1204)
+
+== 2.24 ==
+ * Remove debug printouts in do-edit-slice-member. (#1242)
+ * Prepare to be runnable without access to emulab.net. (#1251)
+  * Host the Jacks router.svg locally
+  * Make the Jacks URL be a value from settings.php
+  * (Re) make the Flack URL be a value from settings.php
+ * Jacks Add Resources instructs you to draw or pick an RSpec. (#1249)
+ * Warn that you cannot reserve where you already have a reservation (static). (#1192)
+
 == 2.23 ==
  * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
  * Restore highlighting of boxes on select (#1190)
  * Fix AM table view on slice-jacks  (#1187)
+ * Add view rspec button to jacks app (#1202)
+ * "Delete All" clears the Rspec and Reserve Resources button in Jacks Editor App (slice-add-resource-jacks) (#1191)
+ * Fix map view to remove nodes with no lat/long info (#1240)
+ * Fix handling of delete race-condition (delete returns before manifest 
+   shows deletion) in jacks-app.js (#1241)
+ * Change tabs on slice-jacks to "Graphical View" and "Aggregate View". (#1238)
+ * Fix bug that incorrectly formats HTML and sets 'project_id' as a member_uid
+   in case of changing slice/project membershop (#1242)
+ * Fix bug that doesn't allow GRAM resources to turn green due to PHP fatal 
+   error around GENI_PENDING scope. (#1243).
+ * Make the downloaded request and manifest rspec be named with the slice: 
+   <slicename>_<rspec_type>_rspec.xml (#1205).
+ * On Jacks Add Resources, ensure topology changes are reflected in what is reserved. (#1226)
 
 == 2.22 ==
  * Include link to NYU Poly WITest wireless site. (#773)

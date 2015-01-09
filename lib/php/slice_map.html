@@ -1,0 +1,212 @@
+<script type="text/javascript"
+        src="/common/map/OpenLayers-2.13/OpenLayers.js"></script>
+<script type="text/javascript">
+
+// Adapted from http://acuriousanimal.com/code/animatedCluster/
+
+window.onload = function init() {
+
+  // create map and add OSM as base
+  var map1 = new OpenLayers.Map("map1");
+  // Explicitly use HTTPS URLs to avoid a mixed content warning
+  // from web browsers. The default tile URLs use HTTP.
+  var tileURLs = ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                  "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                  "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"];
+  var osm1 = new OpenLayers.Layer.OSM("OpenStreetMap", tileURLs);
+  map1.addLayer(osm1);
+  
+  // Initial view location
+  var center = new OpenLayers.LonLat(-96,38);
+  center.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+  map1.setCenter(center, 4);
+  map1.addControl(new OpenLayers.Control.LayerSwitcher());
+
+  var my_node_filter = new OpenLayers.Filter.FeatureId({
+      type: OpenLayers.Filter.Function,
+      evaluate: function(attributes) {
+         return attributes.data.type == "Node";
+      }
+  });
+     
+  var my_link_filter = new OpenLayers.Filter.FeatureId({
+      type: OpenLayers.Filter.Function,
+      evaluate: function(attributes) {
+         return attributes.data.type == "Link";
+      }
+  });
+     
+  var ruleNodes = new OpenLayers.Rule({
+               filter : my_node_filter,
+               symbolizer: {
+                    externalGraphic: "/images/site-icon.png",
+                    graphicWidth: "${radius}",
+                    graphicHeight: "${radius}",
+                    graphicOpacity: 1.0
+                }
+   });
+
+  var ruleLinks = new OpenLayers.Rule({
+              filter : my_link_filter,
+              symbolizer: {
+                 'strokeWidth': 2,
+                 'strokeColor' : "black"
+              }
+   });
+
+  // set up style for current GENI resources
+  var style = new OpenLayers.Style(null, {
+      context: {
+        resourceCount: 
+          function(feature) {
+            var sum = feature.data.resources;
+            return sum;
+          } ,
+        radius:
+          function(feature) {
+            var sum = 5*feature.data.resources;
+            if(sum < 10) {
+              return 16;
+            }
+            else if (sum < 100) {
+              return 24;
+            }
+            else {
+              return 36;
+            }
+          }
+     },
+     rules: [ruleNodes, ruleLinks]
+  });
+
+  var http_protocol =  new OpenLayers.Protocol.HTTP({
+          url: "slice-map-data.php?slice_id=" + slice_id,
+          format: new OpenLayers.Format.GeoJSON()
+      });
+
+  var currentSitesOptions = {
+      protocol: http_protocol,
+      strategies: [
+          new OpenLayers.Strategy.Fixed()
+//          new OpenLayers.Strategy.Cluster({distance:1})
+      ],
+      styleMap:  new OpenLayers.StyleMap(style)
+  };
+  var currentSitesNEW = new OpenLayers.Layer.Vector("GENI Slice Resources", 
+			   currentSitesOptions);
+
+  var currentSites = currentSitesNEW;
+
+  
+  // add GENI current resources to map
+  map1.addLayer(currentSites);
+  
+  /*
+    resourceString
+      returns list of resources
+  */
+  function resourceString(feature) {
+    var sum = feature.data.am + ":" + feature.data.name;
+    return sum;
+  /*
+    resourceCount
+      returns number of resources
+  */
+  function resourceCount(feature) {
+    var sum = feature.data.resources;
+    return sum;
+  }
+  
+  }
+
+  /* 
+    amString
+      determines unique list of AMs and resource counts
+  */
+  function amString(feature) {
+
+    var ams = new Array();
+    var ams_count = new Array();
+    
+    // look through AMs already in array
+    var found = 0;
+    for(var j = 0; j < ams.length; j++) {
+      if(ams[j] === feature.data.am) {
+        ams_count[j] = ams_count[j] + parseInt(feature.data.resources);
+        found = 1;
+      }
+    }
+    if(!found) {
+      ams.push(feature.data.am);
+      ams_count.push(parseInt(feature.data.resources));
+    }
+    
+    // create the string that lists AMs
+    var sum = "";
+    for(var i = 0; i < ams.length; i++) {
+        sum = sum + "<li>" + ams[i] + " <b>(" + ams_count[i] + ")</b></li>";
+    }
+    return sum;
+    
+  }
+
+  /*
+    popups windows for current GENI resources
+  */
+  function onPopupClose(evt) {
+    selectControl.unselect(selectedFeature);
+  }
+  function onFeatureSelect(feature) {
+    selectedFeature = feature;
+    popup_string = "";
+    if (feature.data.type == "Node") {
+      popup_string = "<h1>Aggregate Manager(s):</h1>" + 
+            "<ul>" + 
+            amString(feature) + 
+            "</ul>" + 
+            "<h1>Node(s):</h1>" + 
+            "<p>" + 
+            resourceString(feature) + 
+            "</p>";
+    } else {
+      link_id = feature.data.name;
+      interfaces = feature.data.interfaces;
+      popup_string = "<h1>Link:</h1>" + 
+		       "<p>" + 
+		       link_id + 
+		       "</p>" + 
+		       "<h1>Interfaces:</h1><p>";
+     for(var i = 0; i < interfaces.length; i++) {
+	if (i > 0) popup_string = popup_string + ", ";
+	popup_string = popup_string + interfaces[i];
+     }
+     popup_string = popup_string + "</p>";
+    }		       
+    popup = new OpenLayers.Popup.Anchored("chicken", 
+         feature.geometry.getBounds().getCenterLonLat(),
+         new OpenLayers.Size(250,156),
+            "<div id='maptext'>" + popup_string + "</div>",
+         null, false, onPopupClose);
+    popup.setBackgroundColor("#ffffff");
+    popup.setBorder("1px solid #5F584E");     
+    feature.popup = popup;
+    map1.addPopup(popup);
+  }
+  function onFeatureUnselect(feature) {
+    map1.removePopup(feature.popup);
+    feature.popup.destroy();
+    feature.popup = null;
+  }      
+  var selectControl = new OpenLayers.Control.SelectFeature(currentSites, {
+      onSelect: onFeatureSelect,
+      onUnselect: onFeatureUnselect
+  });
+  map1.addControl(selectControl);
+  selectControl.activate();
+
+  
+}
+
+</script>
+<div id="map1" style="min-width: 793px; width: 100%; min-height: 400px; height: 100%"></div>
+

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -65,14 +65,7 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 
 function get_sliver_status( $obj,  $status_array, $goodret ) {
 
-$GENI_MESSAGES_REV = array( 
-    		       STATUS_MSG::GENI_CONFIGURING => STATUS_INDEX::GENI_CONFIGURING,
-		       STATUS_MSG::GENI_READY => STATUS_INDEX::GENI_READY,
-		       STATUS_MSG::GENI_FAILED => STATUS_INDEX::GENI_FAILED,
-  		       STATUS_MSG::GENI_UNKNOWN => STATUS_INDEX::GENI_UNKNOWN,
-  		       STATUS_MSG::GENI_NO_RESOURCES => STATUS_INDEX::GENI_NO_RESOURCES,
-  		       STATUS_MSG::GENI_PENDING => STATUS_INDEX::GENI_PENDING,
-		       STATUS_MSG::GENI_BUSY => STATUS_INDEX::GENI_BUSY);
+  global $GENI_MESSAGES_REV;
 
 foreach ($obj as $am_url => $am_status) {
     $status_item = Array();

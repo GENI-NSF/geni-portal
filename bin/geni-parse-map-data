@@ -2,7 +2,7 @@
 # -*- Mode: python -*-
 #
 #----------------------------------------------------------------------
-# Copyright (c) 2014 Raytheon BBN Technologies
+# Copyright (c) 2014-2015 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and/or hardware specification (the "Work") to
@@ -52,8 +52,8 @@ class GENIResource:
         self.type = "unknown"
         self.name = ""
         self.id = ""
-        self.latitude = "0.0"
-        self.longitude = "0.0"
+        self.latitude = None
+        self.longitude = None
     def toGeoJSON(self):
         return dict(
             type='Feature',
@@ -95,16 +95,19 @@ def parse_args(argv):
                       help="database host (default is `localhost`)")
     parser.add_option("-u", "--user", default='portal',
                       help="database user (default is `portal`)")
+    parser.add_option("-p", "--password", 
+                      help="database user password")
     options,args = parser.parse_args()
     return options,args
 
 # attempt to connect to database
 # returns connection and cursor variables
-def connect_to_database(database, user, host):
+def connect_to_database(database, user, host, password):
     try:
         conn = psycopg2.connect(database=database,
                                 user=user,
-                                host=host)
+                                host=host,
+                                password=password)
     except:
         raise Exception("Could not connect to database.")
     logger.info("Established connection to database '%s' on %s." 
@@ -168,10 +171,10 @@ def determine_resource_name(element):
     else:
         return element.getAttribute('component_name')
 
-# get lat/lon information (default to 0.0, 0.0 if unknown)
+# get lat/lon information: default to None, None if unknown
 def determine_resource_location(element):
-    latitude = "0.0"
-    longitude = "0.0"
+    latitude = None
+    longitude = None
     if element.tagName == 'openflow:datapath':
         locations = element.getElementsByTagName('openflow:location')
     else:
@@ -250,6 +253,11 @@ def search_rspecs_for_resources(rspecs_directory, cur):
                     (child.tagName == 'node' or child.tagName == 'openflow:datapath')):
                     
                     resource = populate_geni_resource(child, ams_dictionary)
+
+                    # Remove nodes with no lat/long info
+                    if resource.latitude == None or resource.longitude == None:
+                        continue
+
                     add_to_geni_resources(resource, resources)
 
     if not resources:
@@ -262,13 +270,17 @@ def main(argv=None):
         argv = sys.argv
     try:
         options,args = parse_args(argv)
+        if not options.password:
+            sys.stderr.write("Database password not provided\n")
+            return 1
+
         init_logging(options)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
         return 1
     
     (conn, cur) = connect_to_database(options.database, 
-            options.user, options.host)
+            options.user, options.host, options.password)
     resources = search_rspecs_for_resources(options.save, cur)
     disconnect_from_database(conn, cur)
     write_to_geojson_file(resources, options.output)
