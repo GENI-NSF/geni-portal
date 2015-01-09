@@ -5,12 +5,13 @@
 = GENI Portal Release Notes =
 
 == 2.25 ==
- * Support multiple nodes with same client_id from different AMs in SSH (#1257)
- * Support multiple nodes with same client_id from different AMs 
-   for AM API calls (#1258)
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
    editor. (#1143).
  * Name downloaded request rspec with slice name (#1204)
+ * Add aggregate categories 'Experimental' and 'Federated'. (#1239)
+ * Support multiple nodes with same client_id from different AMs in SSH (#1257)
+ * Support multiple nodes with same client_id from different AMs
+   for AM API calls (#1258)
 
 == 2.24 ==
  * Remove debug printouts in do-edit-slice-member. (#1242)
