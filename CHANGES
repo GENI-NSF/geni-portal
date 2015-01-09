@@ -9,7 +9,7 @@
  * Support multiple nodes with same client_id from different AMs 
    for AM API calls (#1258)
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
-  editor. (#1143).
+   editor. (#1143).
  * Name downloaded request rspec with slice name (#1204)
 
 == 2.24 ==
