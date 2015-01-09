@@ -407,12 +407,34 @@ function db_update_rspec($rspec_id, $user, $name, $description,
   //  error_log($sql);                                                          
   $result = db_execute_statement($sql, "db_update_rspec");
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
-    $msg = "db_add_rspec: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    $msg = "db_update_rspec: " . $result[RESPONSE_ARGUMENT::OUTPUT];
     geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
     error_log($msg);
     return false;
   }
   return $result[RESPONSE_ARGUMENT::VALUE];
+}
+
+// Update an existing rspec, but only the rspec contents, not meta-data
+function db_update_rspec_contents($rspec_id, $rspec)
+{
+  $conn = portal_conn();
+  $sql = "UPDATE rspec SET ";
+  $sql .= "rspec = " . $conn->quote($rspec, 'text');
+  $sql .= " where id = " . $rspec_id;
+
+  geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $sql);
+  //  error_log($sql);                                                          
+  $result = db_execute_statement($sql, "db_update_rspec_contents");
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE) {
+    $msg = "db_update_rspec_contents: " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, $msg);
+    error_log($msg);
+    return false;
+  }
+  return $result[RESPONSE_ARGUMENT::VALUE];
+
+  
 }
 
 function deleteRSpecById($id, $user)

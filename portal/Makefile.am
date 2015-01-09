@@ -147,6 +147,7 @@ dist_svcweb_DATA = \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
 	www/portal/rspecs.php \
+	www/portal/rspecupdate.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
 	www/portal/rspecuploadparser.php \
@@ -158,6 +159,8 @@ dist_svcweb_DATA = \
 	www/portal/slice-add-resources-jacks.css \
 	www/portal/slice-add-resources-jacks.js \
 	www/portal/slice-add-resources-jacks.php \
+	www/portal/slice-map-view.php \
+	www/portal/slice-map-data.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \

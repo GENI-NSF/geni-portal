@@ -301,7 +301,7 @@ function jacks_fetch_topology_callback(rspecs) {
       $.post("saverspectoserver.php", {rspec : rspec},
 	    function(rt, st, xhr) {
 		//		console.log("SUCCESS");
-		var replace_url = "rspecdownload.php?tempfile=" + rt;
+		var replace_url = "rspecdownload.php?tempfile=" + rt + "&slice_name=" + jacksEditorApp.sliceName;
 		window.location.replace(replace_url);
 	    })
 	  .fail(function(xhr, ts, et) {
