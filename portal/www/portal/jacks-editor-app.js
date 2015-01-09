@@ -179,7 +179,7 @@ function getDefaultCanvasOptions()
 	    name: 'Open VSwitch',
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS',
-	    icon: 'https://www.emulab.net/protogeni/jacks-stable/images/router.svg'
+	    icon: 'https://portal.geni.net/images/router.svg'
 	}];
 
   var images = [

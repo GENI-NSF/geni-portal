@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2014-2015 Raytheon BBN Technologies
+// Copyright (c) 2012-2014 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,51 +22,34 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once 'chapi.php';
+require_once('user.php');
+require_once('header.php');
 
-class SpeaksForCredential
-{
-  public function __construct() {
-    $this->cred = NULL;
-    $this->expires = NULL;
-    $this->signer_urn = NULL;
-  }
-
-  /**
-   * Factory method to create an instance from pre-parsed
-   * information.
-   *
-   * Note: information is assumed to be correct and is not validated.
-   */
-  public static function fromInfo($cred, $expires, $signer_urn) {
-    $sfcred = new SpeaksForCredential();
-    $sfcred->cred = $cred;
-    $sfcred->expires = $expires;
-    $sfcred->signer_urn = $signer_urn;
-    return $sfcred;
-  }
-
-  public function credential() {
-    return $this->cred;
-  }
-
-  public function expires() {
-    return $this->expires;
-  }
-
-  public function signerURN() {
-    return $this->signer_urn;
-  }
-
-  /**
-   * Return an map (key value pairs) representation of this credential
-   * suitable for passing via the Common Federation API.
-   */
-  public function credentialForFedAPI() {
-    $result = array('geni_type' => CHAPI_KEY::CREDENTIAL_TYPE_ABAC,
-                    'geni_version' => '1',
-                    'geni_value' => $this->cred);
-    return $result;
-  }
+$user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
 }
+unset($slice);
+include("tool-lookupids.php");
+
+echo '<div id="content">';
+echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
+echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
+echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+  
+
+
+?>
+
+<script>
+var slice_id = <?php echo json_encode($slice_id); ?>
+</script>
+
+<?php
+
+echo "<table style=\"margin-left: 0px;width:100%;height:20px\"><tr><th>Geographic View for Slice $slice_name</th></tr></table'>";
+echo "<table style=\"margin-left: 0px;width:100%;height:90%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+include('slice_map.html');
+echo "</td></tr></table>";
+echo '</div>';
 ?>

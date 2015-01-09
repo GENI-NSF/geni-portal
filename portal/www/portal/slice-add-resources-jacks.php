@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologiesc
+// Copyright (c) 2012-2015 Raytheon BBN Technologiesc
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -29,6 +29,7 @@ require_once('sr_constants.php');
 require_once('sr_client.php');
 require_once("sa_constants.php");
 require_once("sa_client.php");
+require_once("settings.php");
 require_once 'geni_syslog.php';
 
 function cmp2($a,$b) {
@@ -233,7 +234,7 @@ echo "<div id='addresources'>";
 //    . "Upload New RSpec</button></p>\n";
 
 print "<h2>Add Resources</h2>\n";
-print "<p>To add resources you need to choose a Resource Specification file (RSpec).</p>";
+print "<p>To add resources you need to draw or choose a Resource Specification (RSpec).</p>";
 
 if (! isset($all_ams)) {
   $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
@@ -258,7 +259,7 @@ include("jacks-editor-app.php");
 
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
-<script src="//www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <?php
 print "<table id='jacks-editor-app'>";
@@ -399,7 +400,8 @@ print '</form>';
 <?php
 
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec.</p>";
-print '<p><b>Note:</b> You need to bind a request to a specific GENI site before reserving resources, you can do this in the graphical pane by clicking on the "Site X" icon.';
+print '<p><b>Note:</b> You need to bind a request to a specific GENI site before reserving resources, you can do this in the graphical pane by clicking on the "Site X" icon.</p>';
+print '<p><b>Note:</b> You can only add resources at aggregates where you do not yet have a reservation.</p>';
 
 print "<p id='partially_bound_notice' hidden='hidden'><b>Note:</b> 'Partially bound' RSpecs are RSpecs that bind some resources to specific aggregates, but not all. RSpecs must either not assign resources to any specific aggregates, or assign all resources to specific aggregates.</p>";
 
