@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -570,6 +570,9 @@ if (! is_null($jfed_button_start)) {
   print $jfed_button_start . " $disable_buttons_str><b>jFed</b></button>";
 }
 
+$map_url = "slice-map-view.php?slice_id=$slice_id";
+print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
+
 print "</td>\n";
 print "</tr>\n";
 
@@ -588,8 +591,8 @@ print "</table>\n";
 
 print "<h2></h2>\n";
 
-
 ?>
+
 
 <div id='tablist'>
   <ul class='tabs'>

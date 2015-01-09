@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2014 Raytheon BBN Technologies
+// Copyright (c) 2011-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -34,6 +34,32 @@ $public_rspecs = array();
 $public_owners = array();
 $me = $user->account_id;
 
+if (! isset($all_ams)) {
+  $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+  $all_ams = array();
+  foreach ($am_list as $am) 
+  {
+    $single_am = array();
+    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
+    $all_ams[$service_id] = $single_am;
+  }   
+}
+
+// error_log("ALL_AMS = " . print_r($all_ams, true));
+
+?>
+
+<script type="text/javascript">
+  var allAms = <?php echo json_encode($all_ams); ?>;
+</script>
+
+<?php
+
+
+
 function cmp($a,$b) {
   return strcmp(strtolower($a['name']),strtolower($b['name']));
 }
@@ -65,7 +91,9 @@ $owners = ma_lookup($ma_url, $user, $public_owners);
 
 /* Display starts here. */
 include('tool-rspecs.js');
+error_log("JSU = " . $jacks_stable_url);
 print '<script src="' . $jacks_stable_url . '"></script>';
+print "<div id='jacksEditorContainer' class='jacks' style='background-color: white; display:none;'></div>";
 print "<div id='jacksContainer' class='jacks' style='background-color: white; display:none;'></div>";
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
 print("<p>From this page you can ");
@@ -128,7 +156,7 @@ function rspec_table_header($table_id, $searchable=False, $public=False) {
                     "Owner &#x2191;&#x2193;", "&nbsp;", "&nbsp;");
   } else {
      $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;", 
-                    "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;");
+                    "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;");
   }
   print "<tr>";
   foreach ($columns as $c) {
@@ -174,6 +202,7 @@ function rspec_owner_info($rspec, $owners, &$addr, &$pretty_name) {
 }
 
 function display_rspec($rspec, $owners, $public=False) {
+
   // Customize these with the RSpec id.
   $id = $rspec['id'];
   $name = $rspec['name'];
@@ -208,13 +237,16 @@ function display_rspec($rspec, $owners, $public=False) {
                         'group1' => $visibility,
                         'description' => $desc,
                         'name' => $sn);
+    global $all_ams;
+    $jacks_btn = ("<button onClick=\"showEditorContainer($id, '$name')\" title='jacks_view'>Edit RSpec</button>");
     $edit_url = "rspecupload.php?" . http_build_query($edit_query);
-    $edit_btn = "<button onClick=\"window.location='$edit_url'\" title='Edit'>Edit</button>";
+    $edit_btn = "<button onClick=\"window.location='$edit_url'\" title='Edit'>Edit Info</button>";
     $delete_url = "rspecdelete.php?id=$id";
     $delete_btn = "<button onClick=\"window.location='$delete_url'\" title='Delete'>Delete</button>";
     $columns = array($rspec['name'],
           $rspec['description'],
           $edit_btn,
+	  $jacks_btn,
           $view_btn,
           $download_btn,
           $delete_btn);
