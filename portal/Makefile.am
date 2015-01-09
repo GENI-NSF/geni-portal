@@ -119,6 +119,7 @@ dist_svcweb_DATA = \
         www/portal/jacks-app.css \
         www/portal/jacks-app.js \
         www/portal/jacks-app-details.php \
+        www/portal/jacks-app-expanded.php \
         www/portal/jacks-app-reserve.php \
         www/portal/jacks-app-status.php \
         www/portal/jacks-editor-app.css \

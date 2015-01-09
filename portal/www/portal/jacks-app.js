@@ -306,6 +306,15 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.addResources();});
     $(buttonSelector).append(btn);
 
+    // GAP
+    label = $('<label style="padding: 020px;" />');
+    $(buttonSelector).append(label);
+
+    btn = $('<button type="button">Expand</button>');
+    btn.click(function(){ that.expandViewer();});
+    $(buttonSelector).append(btn);
+
+
     /*
     btn = $('<button type="button">EDITOR</BUTTON>');
     btn.click(function() {
@@ -604,6 +613,12 @@ JacksApp.prototype.handleDetails = function() {
 
     var details_url = "listresources.php?slice_id=" + slice_id + ams_info;
     window.location.replace(details_url);
+}
+
+JacksApp.prototype.expandViewer = function() {
+    var slice_id = this.sliceId;
+    var expanded_viewer_url = "jacks-app-expanded.php?slice_id=" + slice_id;
+    window.location.replace(expanded_viewer_url);
 }
 
 JacksApp.prototype.handleStatus = function() {
