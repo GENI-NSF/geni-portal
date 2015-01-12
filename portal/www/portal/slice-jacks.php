@@ -573,7 +573,7 @@ if (! is_null($jfed_button_start)) {
 }
 
 $map_url = "slice-map-view.php?slice_id=$slice_id";
-print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
+//print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
 
 print "</td>\n";
 print "</tr>\n";
