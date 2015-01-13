@@ -470,6 +470,13 @@ function do_rspec_download()
     }
 }
 
+// Invoke a new full-size editor in a new window
+function do_editor_expand()
+{
+    var editor_expand_url = "jacks-editor-app-expanded.php?slice_id=" + jacks_slice_id;
+    window.location.replace(editor_expand_url);
+}
+
 // Grab current topology from Jacks editor and submit if valid
 function do_grab_editor_topology_and_submit()
 {

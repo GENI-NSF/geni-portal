@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologiesc
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -24,141 +24,67 @@
 
 require_once("user.php");
 require_once("header.php");
-require_once('util.php');
-require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once("sa_constants.php");
-require_once("sa_client.php");
 require_once("settings.php");
-require_once 'geni_syslog.php';
-
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-$mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
-add_js_script($mydir . '/slice-add-resources-jacks.js');
-
 $slice_id = "None";
 $slice_name = "None";
-include("tool-lookupids.php");
-
-if (isset($slice_expired) && convert_boolean($slice_expired)) {
-  if (! isset($slice_name)) {
-    $slice_name = "";
-  }
-  $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
-  relative_redirect('slices.php');
-}
-
-if (!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
-  relative_redirect('home.php');
-}
-$keys = $user->sshKeys();
-
-show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
-include("tool-breadcrumbs.php");
-include("tool-showmessage.php");
-
-
-?>
-
-
-<script>
-
-function validateSubmit()
-{
-  f1 = document.getElementById("f1");
-  rspec = document.getElementById("rspec_select");
-  //  am = document.getElementById("agg_chooser");
-  rspec2 = document.getElementById("file_select");
-
-  current_rspec_text = $('#current_rspec_text').val();
-  is_bound = $('#bound_rspec').val();
-
-  //  console.log("validateSubmit.rspec = " + current_rspec_text);
-  //  console.log("validateSubmit.bound = " + is_bound);
-  
-  if ((current_rspec_text != '') && is_bound) {
-    f1.submit();
-    return true;
-  } else if (current_rspec_text != '') {
-    alert("Please select an Aggregate.");
-    return false;
-  } else {
-    alert ("Please select a Resource Specification (RSpec).");
-    return false;
-  }
-}
-</script>
-
-<?php include "tabs.js"; ?>
-
-<?php
-print "<h1>Add Resources to GENI Slice " . "<i>" . $slice_name . "</i>" . "</h1>\n";
-
-// Put up a warning to upload SSH keys, if not done yet.
-if (count($keys) == 0) {
-  // No ssh keys are present.
-  print "<p class='warn'>No ssh keys have been uploaded. ";
-  print ("Please <button onClick=\"window.location='uploadsshkey.php'\">"
-         . "Upload an SSH key</button> or <button " .
-	 "onClick=\"window.location='generatesshkey.php'\">Generate and "
-	 . "Download an SSH keypair</button> to enable logon to nodes.</p>\n");
-}
-
-?>
-
-  <div id='tablist'>
-		<ul class='tabs'>
-			<li><a href='#addresources' title="Add Resources">Add Resources</a></li>
-			<li style="border-right: none"><a href='#rspecs' title="Manage Resource Specifications">Manage RSpecs</a></li>
-		</ul>
-  </div>
-
-<?php
-
-  // BEGIN the tabContent class
-  // this makes a fixed height box with scrolling for overflow
-  echo "<div class='tabContent'>";
-
-// BEGIN add resources tab
-echo "<div id='addresources'>";
-//print "<h2>Manage Resource Specifications (RSpecs)</h2>\n";
-//print "<p><button onClick=\"window.location='rspecs.php'\">"
-//    . "View Available RSpecs</button> \n";
-//print "<button onClick=\"window.location='rspecupload.php'\">"
-//    . "Upload New RSpec</button></p>\n";
-
-print "<h2>Add Resources</h2>\n";
-print "<p>To add resources you need to draw or choose a Resource Specification (RSpec).</p>";
-
 $slice_ams = array();
 $all_rspecs = fetchRSpecMetaData($user);
+include("tool-lookupids.php");
+
+echo '<div id="content" >';
+
+echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
+echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
+echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+echo '<script src="' . $jacks_stable_url . '"></script>';
 
 // JACKS-APP STUFF //
 include("jacks-editor-app.php");
 setup_jacks_editor_slice_context();
+
 ?>
 
+<link rel="stylesheet" type="text/css" href="slice-jacks.css" />
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-<link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="<?php echo $jacks_stable_url;?>"></script>
+<script src="jacks-app.js"></script>
+<script src="jacks-editor-app.js"></script>
+<script src="portal-jacks-editor-app.js"></script>
+<script src="slice-add-resources-jacks.js"></script>
+
+
 
 <?php
-print "<table id='jacks-editor-app'>";
-print "<tr><td><div id='jacks-editor-app-container'>";
+
+echo "<table style=\"margin-left: 0px;width:90%;height:20px\"><tr><th>Resources Allocated to Slice $slice_name</th></tr></table>";
+
+print "<table style=\"margin-left: 0px; width:90%; height:70%\" id='jacks-editor-app'><tbody>";
+print "<tr><td><div id='jacks-editor-app-container' style='width:100%; height:100%'>";
 print build_jacks_editor();
 print "</div></td></tr></table>";
+
 ?>
 
 <script src="portal-jacks-editor-app.js"></script>
 <script>
+  var slice_id = <?php echo json_encode($slice_id); ?>;
+  var slice_name = <?php echo json_encode($slice_name); ?>;
 
+  // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
@@ -175,8 +101,7 @@ print "</div></td></tr></table>";
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
-  var jacks_enable_buttons = false;
-
+  var jacks_enable_buttons = true;
   var jacksContext = <?php echo json_encode($jacksContext) ?>;
 
   do_show_editor();
@@ -185,15 +110,13 @@ print "</div></td></tr></table>";
 
 <?php
 
-setup_jacks_editor_app_controls(True);
-
+setup_jacks_editor_app_controls(False);
 
 if ($am_ids == null) {
   $am_id = "null";
 }
 ?>
 <script>
-
 enable_rspec_selection_mode_portal();
 var am_id = <?php echo $am_id ?>;
 if (am_id && $('#agg_chooser option[value="'+am_id+'"]').length > 0) {
@@ -234,23 +157,19 @@ print ("do_grab_editor_topology_and_submit();\">"
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
 
-// END add resources tab
-echo "</div>";
+?>
 
-// BEGIN rspecs tab
-echo "<div id='rspecs'>";
-/*----------------------------------------------------------------------
- * RSpecs
- *----------------------------------------------------------------------
- */
-if (!$in_lockdown_mode) {
-  include("tool-rspecs.php");
-}
-// END rspecs tab
-echo "</div>";
+<script>
+$('#jacks-editor-status').hide();
+var pane = $("#jacks-editor-pane")[0];
+pane.style.height ="100%";
+pane.style.width ="100%";
+</script>
 
-// END the tabContent class
-  echo "</div>";
+<?php
 
-include("footer.php");
+print "</div></td></tr></tbody></table>";
+
+echo '</div>';
+
 ?>

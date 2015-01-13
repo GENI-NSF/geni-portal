@@ -91,7 +91,7 @@ $owners = ma_lookup($ma_url, $user, $public_owners);
 
 /* Display starts here. */
 include('tool-rspecs.js');
-error_log("JSU = " . $jacks_stable_url);
+// error_log("JSU = " . $jacks_stable_url);
 print '<script src="' . $jacks_stable_url . '"></script>';
 print "<div id='jacksEditorContainer' class='jacks' style='background-color: white; display:none;'></div>";
 print "<div id='jacksContainer' class='jacks' style='background-color: white; display:none;'></div>";

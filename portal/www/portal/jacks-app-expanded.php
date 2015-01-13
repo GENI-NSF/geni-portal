@@ -115,16 +115,16 @@ echo '<script src="' . $jacks_stable_url . '"></script>';
 
 <?php
 
-echo "<table style=\"margin-left: 0px;width:100%;height:20px\"><tr><th>Resources Allocated to Slice $slice_name</th></tr></table>";
+echo "<table style=\"margin-left: 0px;width:100%;height:20px\"><tr><th>Add Resources to Slice $slice_name</th></tr></table>";
 
 print "<table style=\"margin-left: 0px; width:95%; height:100%\" id='jacks-app'><tbody>";
-print "<tr><td><div id='jacks-app-container' style='width:95%; height:100%'>";
+print "<tr><td><div id='jacks-editor-app-container' style='width:95%; height:100%'>";
 print build_jacks_viewer();
 
 ?>
 
 <script>
-var pane = $("#jacks-pane")[0];
+var pane = $("#jacks-editor-pane")[0];
 pane.style.height ="80%";
 pane.style.width ="100%";
 </script>
