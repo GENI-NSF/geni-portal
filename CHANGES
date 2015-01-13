@@ -15,6 +15,7 @@
  * Add a geographic map view of the resources in a given slice. See
    the "Geo View" button on the Slice Jacks page. (#1260)
  * Update copyrights to 2015. (#1261)
+ * Support delete with multiple manifests (singularly or as a group) (#1265)
 
 == 2.24 ==
  * Remove debug printouts in do-edit-slice-member. (#1242)
