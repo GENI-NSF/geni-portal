@@ -4,6 +4,10 @@
 
 = GENI Portal Release Notes =
 
+== 2.26 ==
+ * Add scroll bars and standard canvasOptions/constraints to popup rspec  
+   editors (#1266)
+
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
    editor. (#1143).
