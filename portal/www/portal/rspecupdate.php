@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2014-2015 Raytheon BBN Technologies
+// Copyright (c) 2011-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,51 +22,25 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once 'chapi.php';
+require_once('db-util.php');
 
-class SpeaksForCredential
-{
-  public function __construct() {
-    $this->cred = NULL;
-    $this->expires = NULL;
-    $this->signer_urn = NULL;
-  }
 
-  /**
-   * Factory method to create an instance from pre-parsed
-   * information.
-   *
-   * Note: information is assumed to be correct and is not validated.
-   */
-  public static function fromInfo($cred, $expires, $signer_urn) {
-    $sfcred = new SpeaksForCredential();
-    $sfcred->cred = $cred;
-    $sfcred->expires = $expires;
-    $sfcred->signer_urn = $signer_urn;
-    return $sfcred;
-  }
+// This file is invoked to update an existing rspec with new rspec contents
 
-  public function credential() {
-    return $this->cred;
-  }
+// error_log("RSU: " . print_r($_POST, true));
 
-  public function expires() {
-    return $this->expires;
-  }
-
-  public function signerURN() {
-    return $this->signer_urn;
-  }
-
-  /**
-   * Return an map (key value pairs) representation of this credential
-   * suitable for passing via the Common Federation API.
-   */
-  public function credentialForFedAPI() {
-    $result = array('geni_type' => CHAPI_KEY::CREDENTIAL_TYPE_ABAC,
-                    'geni_version' => '1',
-                    'geni_value' => $this->cred);
-    return $result;
-  }
+if (!array_key_exists('rspec_id', $_POST) || 
+    (!array_key_exists('rspec', $_POST))) {
+  error_log("Invalid call to rspecupdate: no rspec_id or rspec provided");
+  return;
 }
+
+$rspec_id = $_POST['rspec_id'];
+$rspec = $_POST['rspec'];
+
+$result = db_update_rspec_contents($rspec_id, $rspec);
+// error_log("RSPEC_UPDATE = " . print_r($result, true));
+
+relative_redirect('profile#rspecs');
+
 ?>

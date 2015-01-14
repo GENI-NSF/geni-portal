@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -145,6 +145,7 @@ const SERVICE_ATTRIBUTE_PROD_CAT = "ui_prod_cat";
 const SERVICE_ATTRIBUTE_COMPUTE_CAT = "ui_compute_cat";
 const SERVICE_ATTRIBUTE_NETWORK_CAT = "ui_network_cat";
 const SERVICE_ATTRIBUTE_STITCHABLE_CAT = "ui_stitchable_cat";
-
+const SERVICE_ATTRIBUTE_EXPERIMENTAL_CAT = "ui_experimental_cat";
+const SERVICE_ATTRIBUTE_FEDERATED_CAT = "ui_federated_cat";
 
 ?>
