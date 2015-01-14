@@ -160,7 +160,7 @@ if ($bound_rspec && count($am_urns) == 0) {
   error_log("Partially bound RSpec with AMs: " . print_r($am_urns, true));
   create_sliver_error("Partially bound RSpecs are not supported. All nodes must be assigned to an aggregate.");
 } else if (!$bound_rspec && (!isset($am) || is_null($am))) {
-  error_log("Unbound RSpoec and no AM specified");
+  error_log("Unbound RSpec and no AM specified");
   no_am_error();
 }
 
