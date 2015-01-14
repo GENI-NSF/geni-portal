@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.26 ==
+
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
    editor. (#1143).
