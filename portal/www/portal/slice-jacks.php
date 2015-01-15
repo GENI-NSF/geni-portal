@@ -736,15 +736,25 @@ var slice_id = <?php echo json_encode($slice_id); ?>
   include('slice_map.html');
   echo "</td></tr></table>";
   print "</div>";
-// --- End of Slice and Sliver Status table
 
-print "<h2 id='members'>Slice Members</h2>";
 ?>
 
 <script>
 // Make sure the height is not 100% but an actual size
+// Make sure width is set to 100% at load time 
+ //   (don't know, some times it isn't)
 $("#map1").height(400); 
+$("#map1").width('100%'); 
+
 </script>
+
+
+<?php
+
+// --- End of Slice and Sliver Status table
+
+print "<h2 id='members'>Slice Members</h2>";
+?>
 
 
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
