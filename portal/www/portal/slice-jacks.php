@@ -573,7 +573,7 @@ if (! is_null($jfed_button_start)) {
 }
 
 $map_url = "slice-map-view.php?slice_id=$slice_id";
-//print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
+print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
 
 print "</td>\n";
 print "</tr>\n";
@@ -600,6 +600,7 @@ print "<h2></h2>\n";
   <ul class='tabs'>
     <li><a href='#jacks-app'>Graphical View</a></li>
     <li><a href='#status_table_div'>Aggregate View</a></li>
+    <li><a href='#geo_view_div'>Geographic View</a></li>
   </ul>
 </div>
 
@@ -714,6 +715,8 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
   }
 };
 
+var slice_id = <?php echo json_encode($slice_id); ?>
+
 </script>
 
 <?php
@@ -725,10 +728,23 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
   print "<div id='status_table_div'/>\n";
   print build_agg_table_on_slicepg();
   print "</div>\n";
+
+
+  // Slice geo view
+  print "<div id='geo_view_div' >\n";
+  echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+  include('slice_map.html');
+  echo "</td></tr></table>";
+  print "</div>";
 // --- End of Slice and Sliver Status table
 
 print "<h2 id='members'>Slice Members</h2>";
 ?>
+
+<script>
+// Make sure the height is not 100% but an actual size
+$("#map1").height(400); 
+</script>
 
 
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>

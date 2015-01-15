@@ -48,8 +48,11 @@ var slice_id = <?php echo json_encode($slice_id); ?>
 <?php
 
 echo "<table style=\"margin-left: 0px;width:100%;height:20px\"><tr><th>Geographic View for Slice $slice_name</th></tr></table'>";
-echo "<table style=\"margin-left: 0px;width:100%;height:90%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+echo "<table style=\"margin-left: 0px;width:100%;height:75%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
 include('slice_map.html');
 echo "</td></tr></table>";
 echo '</div>';
+
+include('footer.php');
+
 ?>
