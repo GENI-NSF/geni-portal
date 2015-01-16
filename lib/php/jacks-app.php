@@ -45,6 +45,8 @@ function setup_jacks_slice_context()
   global $sa_url;
   global $all_ams;
   global $slice_ams;
+  global $slice_urn;
+  global $slice_expiration;
 
   unset($slice);
   include("tool-lookupids.php");
