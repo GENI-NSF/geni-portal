@@ -8,6 +8,7 @@
  * Add scroll bars and standard canvasOptions/constraints to popup rspec  
    editors (#1266)
  * Add footer, and internal and expanded views for geo map. (#1264).
+ * Support 'expanded' (much higher, full-width) jacks viewer and editor (#1233)
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
