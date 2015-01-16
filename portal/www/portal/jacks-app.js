@@ -916,6 +916,9 @@ JacksApp.prototype.lookup_jacks_id_from_client_id = function (agg_urn,
 	    if(obj.aggregate_id == agg_urn && obj.client_id == client_id) {
 		jacksId = obj.id;
 		return false; // Use instead of break in Jquery each loop
+	    } else if (obj.hasOwnProperty('sliver_id') && obj.sliver_id == resourceURN) {
+		jacksId = obj.id;
+		return false; // Use instead of break in Jquery each loop
 	    }
 	});
 
