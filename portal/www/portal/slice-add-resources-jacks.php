@@ -65,35 +65,6 @@ include("tool-showmessage.php");
 
 ?>
 
-
-<script>
-
-function validateSubmit()
-{
-  f1 = document.getElementById("f1");
-  rspec = document.getElementById("rspec_select");
-  //  am = document.getElementById("agg_chooser");
-  rspec2 = document.getElementById("file_select");
-
-  current_rspec_text = $('#current_rspec_text').val();
-  is_bound = $('#bound_rspec').val();
-
-  //  console.log("validateSubmit.rspec = " + current_rspec_text);
-  //  console.log("validateSubmit.bound = " + is_bound);
-  
-  if ((current_rspec_text != '') && is_bound) {
-    f1.submit();
-    return true;
-  } else if (current_rspec_text != '') {
-    alert("Please select an Aggregate.");
-    return false;
-  } else {
-    alert ("Please select a Resource Specification (RSpec).");
-    return false;
-  }
-}
-</script>
-
 <?php include "tabs.js"; ?>
 
 <?php

@@ -162,7 +162,7 @@ print '</p>';
 <script>
 $('#jacks-editor-status').hide();
 var pane = $("#jacks-editor-pane")[0];
-pane.style.height ="100%";
+pane.style.height ="80%";
 pane.style.width ="100%";
 </script>
 
