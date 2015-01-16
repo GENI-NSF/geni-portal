@@ -129,6 +129,8 @@ function build_agg_table_on_slicepg()
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_STITCHABLE_CAT."'>Stitchable</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_PROD_CAT."'>Production</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_DEV_CAT."'>Development</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_EXPERIMENTAL_CAT."'>Experimental</option>";
+     //     $output .= "<option class='op_".SERVICE_ATTRIBUTE_FEDERATED_CAT."'>Federated</option>";
      $output .= "</select>";
      $output .= "</td>";
      $output .= "<td colspan='2'>";
@@ -528,6 +530,7 @@ print "<h2></h2>\n";
   <ul class='tabs'>
     <li><a href='#jacks-app'>Graphical View</a></li>
     <li><a href='#status_table_div'>Aggregate View</a></li>
+    <li><a href='#geo_view_div'>Geographic View</a></li>
   </ul>
 </div>
 
@@ -642,6 +645,8 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
   }
 };
 
+var slice_id = <?php echo json_encode($slice_id); ?>
+
 </script>
 
 <?php
@@ -653,6 +658,29 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
   print "<div id='status_table_div'/>\n";
   print build_agg_table_on_slicepg();
   print "</div>\n";
+
+
+  // Slice geo view
+  print "<div id='geo_view_div' >\n";
+  echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+  include('slice_map.html');
+  echo "</td></tr></table>";
+  print "</div>";
+
+?>
+
+<script>
+// Make sure the height is not 100% but an actual size
+// Make sure width is set to 100% at load time 
+ //   (don't know, some times it isn't)
+$("#map1").height(400); 
+$("#map1").width('100%'); 
+
+</script>
+
+
+<?php
+
 // --- End of Slice and Sliver Status table
 
 print "<h2 id='members'>Slice Members</h2>";

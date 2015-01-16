@@ -111,7 +111,7 @@ function ep_on_manifest(event) {
     $.get("jacks-app-details.php",
           { am_id:am_id, slice_id:slice_id },
           function(rt, st, xhr) {
-              success_callback(rt, st, xhr, am_id, slice_id, client_data);
+	      success_callback(rt, st, xhr, am_id, slice_id, client_data);
           })
     .fail(function(xhr, ts, et) {
 	error_callback(xhr, ts, et, am_id, slice_id, client_data);

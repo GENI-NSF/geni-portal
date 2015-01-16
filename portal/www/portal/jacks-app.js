@@ -736,7 +736,10 @@ JacksApp.prototype.onEpManifest = function(event) {
 	this.first_manifest_pending = false;
     } else {
 	// Otherwise add to current topology
-	this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
+	// <rspec></rspec> is returned in some cases as an empty manifest.
+	// Don't add these to current topology (they show up as empty sites)
+	if (rspecManifest != "<rspec></rspec>")
+	    this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
     }
     //
 

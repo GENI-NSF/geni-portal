@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -48,8 +48,11 @@ var slice_id = <?php echo json_encode($slice_id); ?>
 <?php
 
 echo "<table style=\"margin-left: 0px;width:100%;height:20px\"><tr><th>Geographic View for Slice $slice_name</th></tr></table'>";
-echo "<table style=\"margin-left: 0px;width:100%;height:90%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+echo "<table style=\"margin-left: 0px;width:100%;height:75%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
 include('slice_map.html');
 echo "</td></tr></table>";
 echo '</div>';
+
+include('footer.php');
+
 ?>
