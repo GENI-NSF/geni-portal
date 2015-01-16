@@ -322,7 +322,7 @@ function jacks_fetch_topology_callback(rspecs) {
 // The callback from Jacks when topology has been modified
 function jacks_modified_topology_callback(data)
 {
-    console.log("MOD = " + data);
+    //    console.log("MOD = " + data);
     rspec = data.rspec;
 
     // id, client_id, aggregate_id, site_name
