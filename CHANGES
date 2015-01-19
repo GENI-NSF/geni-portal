@@ -13,6 +13,7 @@
  * Add CloudLab button to home tools list (#1263) 
  * Remove warning about IDP has no affiliation for EPPN 
      (which is optional) (#1269).
+ * Add rspec viewer and node selection to rspec viewer in profile (#1237)
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
