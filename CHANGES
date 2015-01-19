@@ -10,7 +10,9 @@
  * Add footer, and internal and expanded views for geo map. (#1264).
  * Support 'expanded' (much higher, full-width) jacks viewer and editor (#1233)
  * Support matching on sliver_id for exosm resources status (#1231)
- * Add CloudLab button to home tools list (#1263)
+ * Add CloudLab button to home tools list (#1263) 
+ * Remove warning about IDP has no affiliation for EPPN 
+     (which is optional) (#1269).
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
