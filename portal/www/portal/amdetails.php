@@ -90,6 +90,8 @@ if (count($obj)>0) {
   print_rspec( $obj, True, $filterToAM );
     // Get the rspec in xml format without HTML clutter
     $xmlRspec = get_rspec_xml( $obj, False, $filterToAM );
+
+    /*
     if ($xmlRspec && $xmlRspec != "null") {
       print "<div id='jacksContainer-".hash('ripemd160', am_name(key($obj)))."' class='jacks resources' style='background-color: white'></div>";
 
@@ -114,6 +116,7 @@ if (count($obj)>0) {
               });
             </script>";
     }
+    */
   print '<div class="rawRSpec" style="display: none;">';
   print_rspec( $obj, False, $filterToAM );
   print '</div>';

@@ -458,6 +458,37 @@ function add_one_login(am_id, slice_id)
         json_am = responseTxt;
 	if (Object.keys(json_am).length > 0) {
 	    am = json_am[am_id];
+
+
+	    // Set the expiration on each sliver
+	    if ('resources' in am) {
+		resources = am['resources'];
+		var expires = null;
+		if ('geni_expires' in am) {
+		    expires = am['geni_expires'];
+		} else if ('pg_expires' in am) {
+		    expires = am['pg_expires'];
+		} else if ('foam_expires' in am) {
+		    expires = am['foam_expires'];
+		} else if ('orca_expires' in am) {
+		    expires = am['orca_expires'];
+		} else if ('pl_expires' in am) {
+		    expires = am['pl_expires'];
+		} else if ('sfa_expires' in am) {
+		    expires = am['sfa_expires'];
+		}
+		if (expires != null) {
+		    for(var i in resources) {
+			var res = resources[i];
+			var sliver_id = res['geni_urn'];
+			// Replace : and .
+			var adjusted_sliver_id = sliver_id.replace( /(:|\.|\[|\]|\+)/g, "_" );
+			var exp_div = $('#expiration-' + adjusted_sliver_id);
+			exp_div.text(expires);
+		    }
+		}
+	    }
+
 	    if (!("login_info" in am)) {
 		return;
 	    }
