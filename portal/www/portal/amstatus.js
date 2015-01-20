@@ -492,7 +492,7 @@ function add_one_login(am_id, slice_id)
 
 			if (expires != null) {
 			    var exp_tds = $('#expiration-' + adjusted_sliver_id);
-			    exp_tds.text(expires);
+			    exp_tds.text(new Date(expires).toISOString());
 			}
 
 			if (status != null) {
