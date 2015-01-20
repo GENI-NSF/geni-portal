@@ -14,12 +14,13 @@
  * Remove warning about IDP has no affiliation for EPPN 
      (which is optional) (#1269).
  * Add rspec viewer and node selection to rspec viewer in profile (#1237)
+ * Add aggregate category 'Federated'. (#1239)
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
    editor. (#1143).
  * Name downloaded request rspec with slice name (#1204)
- * Add aggregate categories 'Experimental' and 'Federated'. (#1239)
+ * Add aggregate category 'Experimental'. (#1239)
  * Support multiple nodes with same client_id from different AMs in SSH (#1257)
  * Support multiple nodes with same client_id from different AMs
    for AM API calls (#1258)
