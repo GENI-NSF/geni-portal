@@ -217,7 +217,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     //    echo "<td><div id='status-$adjusted_sliver_id'>$sliver_status</div</td>\n";
     echo "<td>",$client_id,"</td>\n";
     echo "<td>",$comp_name,"</td>";
-    echo "<td id='expiration-$adjusted_sliver_id'></td>";
+    echo "<td id='expiration-$adjusted_sliver_id'>$sliver_expiration</td>";
     //    echo "<td><div id='expiration-$adjusted_sliver_id'></div></td>";
     if ($sliver_type){
       echo "<td>",$sliver_type['name'],"</td>\n";
@@ -264,7 +264,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       echo "<tr>\n";
       echo "<th colspan='2'>Interfaces</th>";
       echo "<th colspan='2'>MAC</th>\n";
-      echo "<th>Layer 3</th>\n";
+      echo "<th colspan='2'>Layer 3</th>\n";
       echo "</tr>\n";
     }
     foreach ($interfaces as $interface){
@@ -276,7 +276,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       echo "<td colspan='2'>",$interface['mac_address'],"</td>";
       foreach ($interface as $ip){
 	if ($ip->getName() == "ip") {
-	  echo "<td>";
+	  echo "<td colspan='2'>";
 	  if ($ip['type'] ){
 	     echo $ip['type'],": ";
 	  }	  
@@ -526,8 +526,12 @@ function expires_from_manifest($manifest_node, $xml)
 	//	    error_log("NAME " . $name . " VAL " . $value);
 	//	  }
 	//	}
-	$expires = $sliver_info->getAttribute('expiration_time');
-	$expires = dateUIFormat($expires);
+	$expires_orig = $sliver_info->getAttribute('expiration_time');
+	error_log("EXP1 = " . $expires_orig);
+	$expires = dateUIFormat($expires_orig);
+	error_log("EXP1 = " . $expires);
+	$expires = rfc3339Format($expires_orig);
+	error_log("EXP1 = " . $expires);
 	break;
       }
     }
