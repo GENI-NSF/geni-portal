@@ -463,6 +463,12 @@ function add_one_login(am_id, slice_id)
 	    // Set the expiration on each sliver
 	    if ('resources' in am) {
 		resources = am['resources'];
+
+		var status = null;
+		if ('geni_status' in am) {
+		    status = am['geni_status'];
+		}
+
 		var expires = null;
 		if ('geni_expires' in am) {
 		    expires = am['geni_expires'];
@@ -483,8 +489,19 @@ function add_one_login(am_id, slice_id)
 			var sliver_id = res['geni_urn'];
 			// Replace : and .
 			var adjusted_sliver_id = sliver_id.replace( /(:|\.|\[|\]|\+)/g, "_" );
-			var exp_div = $('#expiration-' + adjusted_sliver_id);
-			exp_div.text(expires);
+
+			if (expires != null) {
+			    var exp_tds = $('#expiration-' + adjusted_sliver_id);
+			    exp_tds.text(expires);
+			}
+
+			if (status != null) {
+			    var status_tds = $('#status-' + adjusted_sliver_id);
+			    status_tds.text(status.toUpperCase());
+			    for(var i in status_tds) {
+				status_tds[i].className = status;
+			    }
+			}
 		    }
 		}
 	    }

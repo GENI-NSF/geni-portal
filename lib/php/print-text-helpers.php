@@ -207,16 +207,18 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     echo "<th>Hostname</th>\n";
     echo "</tr>\n";
     echo "<tr>\n"; 
-    echo "<td>".$sliver_status."</td>\n";
-    echo "<td>",$client_id,"</td>\n";
-    echo "<td>",$comp_name,"</td>";
     // Replace +, : and . in sliver ID for later jQuery lookup
     $adjusted_sliver_id = str_replace('.', '_', $sliver_id);
     $adjusted_sliver_id = str_replace('+', '_', $adjusted_sliver_id);
     $adjusted_sliver_id = str_replace(':', '_', $adjusted_sliver_id);
-    error_log("SID = " . $sliver_id . " ASI " . $adjusted_sliver_id);
-    echo "<td><div id='expiration-$adjusted_sliver_id'></div></td>";
-    //    echo "<td id='expiration-$client_id-$comp_id'>",$sliver_expiration,"</td>";
+    //    error_log("SID = " . $sliver_id . " ASI " . $adjusted_sliver_id);
+
+    echo "<td id='status-$adjusted_sliver_id'>$sliver_status</td>\n";
+    //    echo "<td><div id='status-$adjusted_sliver_id'>$sliver_status</div</td>\n";
+    echo "<td>",$client_id,"</td>\n";
+    echo "<td>",$comp_name,"</td>";
+    echo "<td id='expiration-$adjusted_sliver_id'></td>";
+    //    echo "<td><div id='expiration-$adjusted_sliver_id'></div></td>";
     if ($sliver_type){
       echo "<td>",$sliver_type['name'],"</td>\n";
     } else {
