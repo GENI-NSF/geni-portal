@@ -434,10 +434,18 @@ function add_all_logins_to_manifest_table()
    });
 }
 
+// Add all information from am_status for a set of AMs 
+// including login, status, expiration
+function add_all_logins(am_ids, slice_id)
+{
+    for(var i in am_ids) {
+	var am_id = am_ids[i];
+	add_one_login(am_id, slice_id);
+    }
+}
 
 
-
-
+// Add all information from am_status including login, status, expiration
 function add_one_login(am_id, slice_id) 
 {
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){

@@ -115,8 +115,11 @@ print "<p id='query' style='display:block;'><i>Querying aggregates for details a
 
 print "<p id='summary' style='display:none;'><i>Queried <span id='numagg'>0</span> of <span id='total'>0</span> aggregates. </i><br/>";
 print "<p id='noresources' style='display:none;'><i>You have no resources</i><br/>";
-// print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh</button></p>";
 print "</p>";
+print "<table id='refresh_buttons' style='vertical-align: middle;'>";
+print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh</button>";
+print "<button id='reload_all_button' type='button' onclick='add_all_logins(am_id,slice)' $get_slice_credential_disable_buttons>Refresh Status</button>";
+print "</table>\n";
 print "</div>\n";
 
 echo "<div id='details'>
