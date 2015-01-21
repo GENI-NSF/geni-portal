@@ -5,12 +5,22 @@
 = GENI Portal Release Notes =
 
 == 2.26 ==
+ * Add scroll bars and standard canvasOptions/constraints to popup rspec  
+   editors (#1266)
+ * Add footer, and internal and expanded views for geo map. (#1264).
+ * Support 'expanded' (much higher, full-width) jacks viewer and editor (#1233)
+ * Support matching on sliver_id for exosm resources status (#1231)
+ * Add CloudLab button to home tools list (#1263) 
+ * Remove warning about IDP has no affiliation for EPPN 
+     (which is optional) (#1269).
+ * Add rspec viewer and node selection to rspec viewer in profile (#1237)
+ * Add aggregate category 'Federated'. (#1239)
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
    editor. (#1143).
  * Name downloaded request rspec with slice name (#1204)
- * Add aggregate categories 'Experimental' and 'Federated'. (#1239)
+ * Add aggregate category 'Experimental'. (#1239)
  * Support multiple nodes with same client_id from different AMs in SSH (#1257)
  * Support multiple nodes with same client_id from different AMs
    for AM API calls (#1258)

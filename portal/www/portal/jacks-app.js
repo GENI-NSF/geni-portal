@@ -306,6 +306,15 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.addResources();});
     $(buttonSelector).append(btn);
 
+    // GAP
+    label = $('<label style="padding: 020px;" />');
+    $(buttonSelector).append(label);
+
+    btn = $('<button type="button">Expand</button>');
+    btn.click(function(){ that.expandViewer();});
+    $(buttonSelector).append(btn);
+
+
     /*
     btn = $('<button type="button">EDITOR</BUTTON>');
     btn.click(function() {
@@ -606,6 +615,12 @@ JacksApp.prototype.handleDetails = function() {
     window.location.replace(details_url);
 }
 
+JacksApp.prototype.expandViewer = function() {
+    var slice_id = this.sliceId;
+    var expanded_viewer_url = "jacks-app-expanded.php?slice_id=" + slice_id;
+    window.location.replace(expanded_viewer_url);
+}
+
 JacksApp.prototype.handleStatus = function() {
     var slice_id = this.sliceId;
     var that = this;
@@ -899,6 +914,9 @@ JacksApp.prototype.lookup_jacks_id_from_client_id = function (agg_urn,
     $.each(objects, function(ii) {
 	    var obj = objects[ii];
 	    if(obj.aggregate_id == agg_urn && obj.client_id == client_id) {
+		jacksId = obj.id;
+		return false; // Use instead of break in Jquery each loop
+	    } else if (obj.hasOwnProperty('sliver_id') && obj.sliver_id == resourceURN) {
 		jacksId = obj.id;
 		return false; // Use instead of break in Jquery each loop
 	    }

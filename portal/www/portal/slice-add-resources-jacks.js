@@ -322,7 +322,7 @@ function jacks_fetch_topology_callback(rspecs) {
 // The callback from Jacks when topology has been modified
 function jacks_modified_topology_callback(data)
 {
-    console.log("MOD = " + data);
+    //    console.log("MOD = " + data);
     rspec = data.rspec;
 
     // id, client_id, aggregate_id, site_name
@@ -470,6 +470,13 @@ function do_rspec_download()
     }
 }
 
+// Invoke a new full-size editor in a new window
+function do_editor_expand()
+{
+    var editor_expand_url = "jacks-editor-app-expanded.php?slice_id=" + jacks_slice_id;
+    window.location.replace(editor_expand_url);
+}
+
 // Grab current topology from Jacks editor and submit if valid
 function do_grab_editor_topology_and_submit()
 {
@@ -518,3 +525,29 @@ function enable_rspec_selection_mode(selected_mode)
 	$('#rspec_jacks_row').hide();
 
 }
+
+function validateSubmit()
+{
+  f1 = document.getElementById("f1");
+  rspec = document.getElementById("rspec_select");
+  //  am = document.getElementById("agg_chooser");
+  rspec2 = document.getElementById("file_select");
+
+  current_rspec_text = $('#current_rspec_text').val();
+  is_bound = $('#bound_rspec').val();
+
+  //  console.log("validateSubmit.rspec = " + current_rspec_text);
+  //  console.log("validateSubmit.bound = " + is_bound);
+  
+  if ((current_rspec_text != '') && is_bound) {
+    f1.submit();
+    return true;
+  } else if (current_rspec_text != '') {
+    alert("Please select an Aggregate.");
+    return false;
+  } else {
+    alert ("Please select a Resource Specification (RSpec).");
+    return false;
+  }
+}
+

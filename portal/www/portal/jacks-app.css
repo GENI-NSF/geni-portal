@@ -28,6 +28,21 @@
 #
 */
 
+#content {
+    min-width: 795px;
+    width: 100%;
+}
+
+#content table {
+    min-width: 795px;
+    width: 100%;
+}
+
+#jacks-app-div {
+    min-width: 795px;
+    width: 100%;
+}
+
 #jacks-app #jacks-app-container {
   border: 1px solid #000;
   position: relative;
