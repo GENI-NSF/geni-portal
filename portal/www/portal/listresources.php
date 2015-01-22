@@ -82,7 +82,22 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
   var slice= "<?php echo $slice_id ?>";
   var am_id= <?php echo json_encode($am_ids) ?>;
   var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
+  var agg_info = {};
   $(document).ready(build_details_table);
+  $(document).ready(function() {
+      $.getJSON("aggregates.php", function(responseTxt, statusTxt, xhr) {
+	  if(statusTxt == "success") {
+	    agg_info = responseTxt;
+	    for(var i in am_id) {
+	      var this_am_id = am_id[i];
+	      var this_am_info = agg_info[this_am_id];
+	      var this_am_name = this_am_info['name'];
+	      var am_row = "<tr><td id='am_status_" + this_am_id + "'>Unknown</td><td>" + this_am_name + "</td></tr>";
+	      $('#agg_status_table tr:last').after(am_row);
+	    }
+	  }
+	});
+    });
   //$(document).ready(add_all_logins_to_manifest_table);
   $(document).ready(function() {
   	$('#rawResource').click(function() {
@@ -116,10 +131,18 @@ print "<p id='query' style='display:block;'><i>Querying aggregates for details a
 print "<p id='summary' style='display:none;'><i>Queried <span id='numagg'>0</span> of <span id='total'>0</span> aggregates. </i><br/>";
 print "<p id='noresources' style='display:none;'><i>You have no resources</i><br/>";
 print "</p>";
-print "<table id='refresh_buttons' style='vertical-align: middle;'>";
-print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh</button>";
+print "<p id='refresh_buttons' style='display:block;'>";
+print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh All</button>";
 print "<button id='reload_all_button' type='button' onclick='add_all_logins(am_id,slice)' $get_slice_credential_disable_buttons>Refresh Status</button>";
-print "</table>\n";
+print "</p>";
+
+print "<div class='xml'>";
+print "<table id='agg_status_table'>";
+print "<tr><th>Status</th><th>Aggregate</th></tr>";
+
+print "</table>";
+
+print "</div>\n";
 print "</div>\n";
 
 echo "<div id='details'>

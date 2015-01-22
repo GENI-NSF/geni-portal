@@ -527,11 +527,7 @@ function expires_from_manifest($manifest_node, $xml)
 	//	  }
 	//	}
 	$expires_orig = $sliver_info->getAttribute('expiration_time');
-	error_log("EXP1 = " . $expires_orig);
-	$expires = dateUIFormat($expires_orig);
-	error_log("EXP1 = " . $expires);
 	$expires = rfc3339Format($expires_orig);
-	error_log("EXP1 = " . $expires);
 	break;
       }
     }
@@ -540,17 +536,6 @@ function expires_from_manifest($manifest_node, $xml)
   //  error_log("about to return: " . $expires);
   return $expires;
 }
-
-# Pull expiration from status
-# Try all of pg_expires, geni_expires, foam_expires
-# orca_expires, sl_expires or pl_expires
-function expires_from_status($status)
-{
-  # *** WRITE ME
-  return "";
-}
-
-
 
 function print_return( $obj, $topLevel ) {
   if (!$topLevel){

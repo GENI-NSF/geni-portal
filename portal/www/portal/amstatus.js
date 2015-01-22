@@ -472,9 +472,14 @@ function add_one_login(am_id, slice_id)
 	    if ('resources' in am) {
 		resources = am['resources'];
 
-		var status = null;
+		// Set the overall slice status at the aggregate
 		if ('geni_status' in am) {
-		    status = am['geni_status'];
+		    am_status = am['geni_status'];
+		    am_status_box = $('#am_status_' + am_id);
+		    am_status_box.text(am_status.toUpperCase());
+		    for(var i in am_status_box) {
+			am_status_box[i].className = am_status
+		    }
 		}
 
 		var expires = null;
@@ -503,11 +508,15 @@ function add_one_login(am_id, slice_id)
 			    exp_tds.text(new Date(expires).toISOString());
 			}
 
-			if (status != null) {
+			var sliver_status = null;
+			if ('geni_status' in res) 
+			    sliver_status = res['geni_status'];
+
+			if (sliver_status != null) {
 			    var status_tds = $('#status-' + adjusted_sliver_id);
-			    status_tds.text(status.toUpperCase());
+			    status_tds.text(sliver_status.toUpperCase());
 			    for(var i in status_tds) {
-				status_tds[i].className = status;
+				status_tds[i].className = sliver_status;
 			    }
 			}
 		    }
