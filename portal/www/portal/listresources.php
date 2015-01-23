@@ -100,22 +100,38 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
     });
   //$(document).ready(add_all_logins_to_manifest_table);
   $(document).ready(function() {
-  	$('#rawResource').click(function() {
-      $('.rawRSpec').each(function() {
-        $(this).attr('style', '');
-      });
-      $(this).parent().attr('style', 'display: none;');
-      $('#hideRawResource').parent().attr('style', '');
-    });
+      $('#rawResource').click(function() {
+	  $('.rawRSpec').each(function() {
+	      $(this).attr('style', '');
+	    });
+	  $(this).parent().attr('style', 'display: none;');
+	  $('#hideRawResource').parent().attr('style', '');
+	});
 
-    $('#hideRawResource').click(function() {
-      $('.rawRSpec').each(function() {
-        $(this).attr('style', 'display: none;');
-      });
-      $(this).parent().attr('style', 'display: none;');
-      $('#rawResource').parent().attr('style', '');
+      $('#hideRawResource').click(function() {
+	  $('.rawRSpec').each(function() {
+	      $(this).attr('style', 'display: none;');
+	    });
+	  $(this).parent().attr('style', 'display: none;');
+	  $('#rawResource').parent().attr('style', '');
+	});
+
+      $('#rawStatus').click(function() {
+	  $('.rawStatus').each(function() {
+	      $(this).attr('style', '');
+	    });
+	  $(this).parent().attr('style', 'display: none;');
+	  $('#hideRawStatus').parent().attr('style', '');
+	});
+
+      $('#hideRawStatus').click(function() {
+	  $('.rawStatus').each(function() {
+	      $(this).attr('style', 'display: none;');
+	    });
+	  $(this).parent().attr('style', 'display: none;');
+	  $('#rawStatus').parent().attr('style', '');
+	});
     });
-  });
 </script>
 
 <?php
@@ -162,7 +178,9 @@ if ($pretty) {
 }
 
 print "<p><a id='rawResource' style='cursor: pointer;'>Show Raw XML Resource Specification (Manifest)</a></p>";
-print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'>Hide Raw XML Resource Specification (Manifest)</a></p>";
+print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'>Hide Raw XML Resource Specification</a></p>";
+print "<p><a id='rawStatus' style='cursor: pointer;'>Show Raw JSON Resource Status </a></p>";
+print "<p style='display:none;'><a id='hideRawStatus' style='cursor: pointer;'>Hide Raw JSON Resource Status </a></p>";
 print "<hr/><p>";
 print "<a href='slices.php'>Back to All slices</a>";
 print "<br/>";
