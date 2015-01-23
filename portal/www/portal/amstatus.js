@@ -467,6 +467,19 @@ function add_one_login(am_id, slice_id)
 	if (Object.keys(json_am).length > 0) {
 	    am = json_am[am_id];
 
+	    // Add a div with the JSON of the response for this AM
+	    // after the 'details/[aggregate, resources] divs
+	    am_name = am['am_name'];
+	    agg_info = "Aggregate <b>" + am_name + "'s</b>  Status:";
+	    status_info = JSON.stringify(am, null, 1);
+
+	    status_info = "<div class='rawStatus' style='display:none'>" + 
+		"<div class='aggregate'>" + agg_info + "</div>" + 
+		"<div class='resources' id='" + am_id + "'>" + 
+		"<div class='xml'>" + status_info + "</div>" + 
+		"</div>";
+	    $('#details').find('#agg_' + am_id).after(status_info);
+
 
 	    // Set the expiration on each sliver
 	    if ('resources' in am) {
