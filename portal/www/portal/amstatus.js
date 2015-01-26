@@ -434,10 +434,18 @@ function add_all_logins_to_manifest_table()
    });
 }
 
+// Add all information from am_status for a set of AMs 
+// including login, status, expiration
+function add_all_logins(am_ids, slice_id)
+{
+    for(var i in am_ids) {
+	var am_id = am_ids[i];
+	add_one_login(am_id, slice_id);
+    }
+}
 
 
-
-
+// Add all information from am_status including login, status, expiration
 function add_one_login(am_id, slice_id) 
 {
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
@@ -458,6 +466,76 @@ function add_one_login(am_id, slice_id)
         json_am = responseTxt;
 	if (Object.keys(json_am).length > 0) {
 	    am = json_am[am_id];
+
+	    // Add a div with the JSON of the response for this AM
+	    // after the 'details/[aggregate, resources] divs
+	    am_name = am['am_name'];
+	    agg_info = "Aggregate <b>" + am_name + "'s</b>  Status:";
+	    status_info = JSON.stringify(am, null, 1);
+
+	    status_info = "<div class='rawStatus' style='display:none'>" + 
+		"<div class='aggregate'>" + agg_info + "</div>" + 
+		"<div class='resources' id='" + am_id + "'>" + 
+		"<div class='xml'>" + status_info + "</div>" + 
+		"</div>";
+	    $('#details').find('#agg_' + am_id).after(status_info);
+
+
+	    // Set the expiration on each sliver
+	    if ('resources' in am) {
+		resources = am['resources'];
+
+		// Set the overall slice status at the aggregate
+		if ('geni_status' in am) {
+		    am_status = am['geni_status'];
+		    am_status_box = $('#am_status_' + am_id);
+		    am_status_box.text(am_status.toUpperCase());
+		    for(var i in am_status_box) {
+			am_status_box[i].className = am_status
+		    }
+		}
+
+		var expires = null;
+		if ('geni_expires' in am) {
+		    expires = am['geni_expires'];
+		} else if ('pg_expires' in am) {
+		    expires = am['pg_expires'];
+		} else if ('foam_expires' in am) {
+		    expires = am['foam_expires'];
+		} else if ('orca_expires' in am) {
+		    expires = am['orca_expires'];
+		} else if ('pl_expires' in am) {
+		    expires = am['pl_expires'];
+		} else if ('sfa_expires' in am) {
+		    expires = am['sfa_expires'];
+		}
+		if (expires != null) {
+		    for(var i in resources) {
+			var res = resources[i];
+			var sliver_id = res['geni_urn'];
+			// Replace : and .
+			var adjusted_sliver_id = sliver_id.replace( /(:|\.|\[|\]|\+)/g, "_" );
+
+			if (expires != null) {
+			    var exp_tds = $('#expiration-' + adjusted_sliver_id);
+			    exp_tds.text(new Date(expires).toISOString());
+			}
+
+			var sliver_status = null;
+			if ('geni_status' in res) 
+			    sliver_status = res['geni_status'];
+
+			if (sliver_status != null) {
+			    var status_tds = $('#status-' + adjusted_sliver_id);
+			    status_tds.text(sliver_status.toUpperCase());
+			    for(var i in status_tds) {
+				status_tds[i].className = sliver_status;
+			    }
+			}
+		    }
+		}
+	    }
+
 	    if (!("login_info" in am)) {
 		return;
 	    }

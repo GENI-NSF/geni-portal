@@ -15,6 +15,9 @@
      (which is optional) (#1269).
  * Add rspec viewer and node selection to rspec viewer in profile (#1237)
  * Add aggregate category 'Federated'. (#1239)
+ * Combine status and details pages, eliminate status buttons (#1043)
+ # Show expiration on combined status/details page (#1107)
+ # Show/hide raw status on combined status/details page (#1273).
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks

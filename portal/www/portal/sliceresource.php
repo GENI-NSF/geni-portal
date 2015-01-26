@@ -292,8 +292,10 @@ else {
 <div class='resources' id='prettyxml'><p><i>Pending... (See 'Detailed Progress' tab for more information.)</i></p></div>
 
 <!-- Jacks container -->
+<!--
 <script src="<?php echo $jacks_stable_url;?>"></script>
 <div id='jacksContainer' class='jacks resources' style='background-color: white;display: none;'></div>
+-->
 
 <div id='results_manifest_link'></div>
 <p>

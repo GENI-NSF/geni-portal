@@ -294,9 +294,9 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.handleDetails();});
     $(buttonSelector).append(btn);
 
-    btn = $('<button type="button">Status</button>');
-    btn.click(function(){ that.handleStatus();});
-    $(buttonSelector).append(btn);
+    //    btn = $('<button type="button">Status</button>');
+    //    btn.click(function(){ that.handleStatus();});
+    //    $(buttonSelector).append(btn);
 
     // GAP
     label = $('<label style="padding: 020px;" />');
