@@ -8,16 +8,18 @@
  * Add scroll bars and standard canvasOptions/constraints to popup rspec  
    editors (#1266)
  * Add footer, and internal and expanded views for geo map. (#1264).
- * Support 'expanded' (much higher, full-width) jacks viewer and editor (#1233)
- * Support matching on sliver_id for exosm resources status (#1231)
- * Add CloudLab button to home tools list (#1263) 
- * Remove warning about IDP has no affiliation for EPPN 
+ * Support 'expanded' (much higher, full-width) Jacks viewer and editor (#1233)
+  * Add missing scrollbar on 'View RSpec' in Jacks. (#1248)
+ * Support matching on sliver_id for exosm resources status in Jacks (#1231)
+ * Add CloudLab button to home page tools list (#1263) 
+ * Remove warning about IdP has no affiliation for EPPN 
      (which is optional) (#1269).
  * Add rspec viewer and node selection to rspec viewer in profile (#1237)
  * Add aggregate category 'Federated'. (#1239)
  * Combine status and details pages, eliminate status buttons (#1043)
- # Show expiration on combined status/details page (#1107)
- # Show/hide raw status on combined status/details page (#1273).
+  * Remove per aggregate Jacks viewer on details page
+  * Show sliver expiration on combined status/details page (#1107)
+  * Show/hide raw status on combined status/details page (#1273).
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
