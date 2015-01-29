@@ -478,7 +478,7 @@ function add_one_login(am_id, slice_id)
 		"<div class='resources' id='" + am_id + "'>" + 
 		"<div class='xml'>" + status_info + "</div>" + 
 		"</div>";
-	    $('#details').find('#agg_' + am_id).after(status_info);
+	    $('#details').append(status_info);
 
 
 	    // Set the expiration on each sliver
