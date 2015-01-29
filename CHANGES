@@ -20,6 +20,7 @@
   * Remove per aggregate Jacks viewer on details page
   * Show sliver expiration on combined status/details page (#1107)
   * Show/hide raw status on combined status/details page (#1273).
+  * Align status text and status table header (#1276)
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
