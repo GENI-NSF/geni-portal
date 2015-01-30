@@ -188,6 +188,30 @@ class GeniUser
     return $phone;
 
   }
+
+  function reason() {
+    if (isset($this->ma_member->reason)) {
+      return $this->ma_member->reason;
+    } else {
+      return null;
+    }
+  }
+
+  function reference() {
+    if (isset($this->ma_member->reference)) {
+      return $this->ma_member->reference;
+    } else {
+      return null;
+    }
+  }
+
+  function url() {
+    if (isset($this->ma_member->url)) {
+      return $this->ma_member->url;
+    } else {
+      return null;
+    }
+  }
   
   // Produce a pretty email name/address for sending like '"My Name" <my email>'
   function prettyEmailAddress() {

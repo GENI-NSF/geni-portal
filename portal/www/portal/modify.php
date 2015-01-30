@@ -98,18 +98,90 @@ include("tool-showmessage.php");
 example, use this page to request to be a Project Lead (get Project
 Creation permissions).</p>
 <p>Please provide a current telephone number. GENI operations staff will
-use it only in an emergency, such as if a resource owned by you is severely misbehaving. </p>
-<p>If you do not have Project Creation permission and need it, provide an updated reference or profile and your request will be considered.</p>
-<p><i>Note</i>: Based on GENI's current policy, only faculty and senior members of an organization
+use it only in an emergency, such as if a resource owned by you is severely
+  misbehaving. </p>
+<p>If you do not have Project Creation permission and need it, provide an
+   updated reference or profile and your request will be considered.</p>
+<p><i>Note</i>: Based on GENI's current policy, only faculty and senior
+ members of an organization
 may be project leads (e.g. students <i>may not</i> be project leads).</p>
+
 <form method="POST" action="do-modify.php">
 <?php
-  //  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone');
-  $shib_fields = array('givenName' => 'First name', 'sn' => 'Last name', 'mail' => 'Email', 'telephoneNumber' => 'Telephone',
-		       'reference' => '<i>(Optional)</i> Reference Contact (e.g. Advisor)',
-		       'reason' => '<i>(Optional)</i> Intended use of GENI, explanation of request, or other comments',
-		       'profile'=> '<i>(Optional)</i> URL of your profile page for more information (not GENI public)');
-print "<ul>";
+  $shib_fields = array('givenName' => 'First name',
+       'sn' => 'Last name',
+       'mail' => 'Email',
+       'telephoneNumber' => 'Telephone',
+       'reference' => '<i>(Optional)</i> Reference Contact (e.g. Advisor)',
+       'reason' => '<i>(Optional)</i> Intended use of GENI, explanation of request, or other comments',
+       'profile'=> '<i>(Optional)</i> URL of your profile page for more information (not GENI public)');
+
+
+$name = $user->prettyName();
+if (strpos($name, '@') !== false) {
+  // If the name has an @ it is an email, so leave it blank.
+  $name = '';
+}
+
+print '<ul>';
+
+print '<li>';
+print '<label for="name">';
+print '<b>Name: </b>';
+print '</label>';
+print '<input type="text" name="name" id="name" size="40" value="';
+print $name;
+print '"/></li>';
+print "\n";
+
+print '<li>';
+print '<label for="email">';
+print '<b>Email:</b> ';
+print '</label>';
+print '<input type="text" name="email" id="email" size="40" value="';
+print $user->email();
+print '"  disabled="yes"/></li>';
+print "\n";
+
+print '<li>';
+print '<label for="telephone">';
+print '<b>Telephone:</b> ';
+print '</label>';
+print '<input type="text" name="telephone" id="telephone" size="20" value="';
+print $user->phone();
+print '"/></li>';
+print "\n";
+
+print '<li>';
+print '<label for="reference">';
+print '<b><i>(Optional)</i> Reference Contact (e.g. Advisor):</b> ';
+print '</label>';
+print '<input type="text" name="reference" id="reference" size="80" value="';
+print $user->reference();
+print '"/></li>';
+print "\n";
+
+print '<li>';
+print '<label for="url">';
+print '<b><i>(Optional)</i> URL of your profile page for more information';
+print ' (not GENI public):</b> ';
+print '</label>';
+print '<input type="text" name="url" id="url" size="80" value="';
+print $user->url();
+print '"/></li>';
+print "\n";
+
+print '<li>';
+print '<label for="reason">';
+print '<b><i>(Optional)</i> Intended use of GENI, explanation of request';
+print ', or other comments:</b> ';
+print '</label>';
+print '<textarea rows="4" cols="50" id="reason" name="reason">';
+print $user->reason();
+print '</textarea></li>';
+print "\n";
+
+
 foreach (array_keys($shib_fields) as $fieldkey) {
     $is_user = false;
     foreach ($attrs as $a) {
