@@ -136,7 +136,7 @@ echo "<p style='margin:0px;text-align:right;'>Started at: <b><span id='start_tim
 echo "</div></div>";
 
 $request_rspec_filename = $slice_name . "_request_rspec.xml";
-$manifest_rspec_filename = $slice_name . "_manifst_rspec.xml";
+$manifest_rspec_filename = $slice_name . "_manifest_rspec.xml";
 ?>
 
   <div id='tablist'>
