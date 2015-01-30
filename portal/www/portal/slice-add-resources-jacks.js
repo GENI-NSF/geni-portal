@@ -430,7 +430,7 @@ function grab_paste_onchange()
 function urlupload_onchange()
 {
     // console.log("URLUPLOAD");
-    var url = $('#url_select').val();
+    var url = $('#url_select').val().trim();
     $.get("upload-file.php", 
 	  {url : url}, 
               function(rt, st, xhr) {
