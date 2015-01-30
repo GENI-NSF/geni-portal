@@ -30,58 +30,6 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 include("header.php");
 
-// Local functions
-function shib_input($shib_name, $pretty_name, $value)
-{
-  print "<li><b>" . $pretty_name . ":</b> ";
-  print "<input type=\"text\" name=\"$shib_name\"";
-  if (array_key_exists($shib_name, $_SERVER)) {
-      if (isset($value)) {
-	echo " value=\"$value\"";
-      } else {
-	$value = $_SERVER[$shib_name];
-	echo " value=\"$value\" disabled=\"yes\"";
-      }
-  } else {
-     echo " value=\"$value\"";
-  }
-  print "/></li>\n";
-}
-
-// Only allow modifying fields that didn't come from Shib
-
-// This should go through stuff in DB for this user.
-// If user-supplied then make it editable, else disabled=yes
-// pull from identity_attribute table I think
-// so need the identity_id
-
-//--------------------------------------------------
-// Now pull the id out of that newly inserted identity record and add
-// the additional attributes.
-//--------------------------------------------------
-$conn = portal_conn();
-$conn->setFetchMode(MDB2_FETCHMODE_ASSOC);
-$sql = "SELECT * from identity_attribute WHERE identity_id = "
-  . $conn->quote($user->identity_id, 'text')
-  . ";";
-//print "Query = $sql<br/>";
-$resultset = $conn->query($sql);
-if (PEAR::isError($resultset)) {
-  die("error on identity attrs select: " . $resultset->getMessage());
-}
-$rows = $resultset->fetchall(MDB2_FETCHMODE_ASSOC);
-$rowcount = count($rows);
-$attrs = array();
-foreach ($rows as $row) {
-  if (convert_boolean($row['self_asserted'])) {
-    // FIXME: attrs a list of name/value? so I can get it out ok....
-    array_push($attrs, $row);
-    //    print "Found self asserted " . $row['name'] . " = " . $row['value'] . "<br/>\n";
-  } else {
-    //    print "Found NOT self asserted " . $row['name'] . " = " . $row['value'] . "<br/>\n";
-  }
-}
-
 $is_pi = false;
 if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
   $is_pi = true;
@@ -91,37 +39,23 @@ show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
-?>
-
+$boilerplate = <<<EOD
 <h1> Modify Your Account </h1>
 <p>Request a modification to user supplied account properties. For
 example, use this page to request to be a Project Lead (get Project
 Creation permissions).</p>
 <p>Please provide a current telephone number. GENI operations staff will
 use it only in an emergency, such as if a resource owned by you is severely
-  misbehaving. </p>
+misbehaving. </p>
 <p>If you do not have Project Creation permission and need it, provide an
    updated reference or profile and your request will be considered.</p>
-<p><i>Note</i>: Based on GENI's current policy, only faculty and senior
+<p><i>Note</i>: Based on current GENI policy only faculty and senior
  members of an organization
 may be project leads (e.g. students <i>may not</i> be project leads).</p>
+EOD;
 
-<form method="POST" action="do-modify.php">
-<?php
-  $shib_fields = array('givenName' => 'First name',
-       'sn' => 'Last name',
-       'mail' => 'Email',
-       'telephoneNumber' => 'Telephone',
-       'reference' => '<i>(Optional)</i> Reference Contact (e.g. Advisor)',
-       'reason' => '<i>(Optional)</i> Intended use of GENI, explanation of request, or other comments',
-       'profile'=> '<i>(Optional)</i> URL of your profile page for more information (not GENI public)');
-
-
-$name = $user->prettyName();
-if (strpos($name, '@') !== false) {
-  // If the name has an @ it is an email, so leave it blank.
-  $name = '';
-}
+print "$boilerplate\n";
+print '<form method="POST" action="do-modify.php">';
 
 print '<ul>';
 
@@ -130,6 +64,11 @@ print '<label for="name">';
 print '<b>Name: </b>';
 print '</label>';
 print '<input type="text" name="name" id="name" size="40" value="';
+$name = $user->prettyName();
+if (strpos($name, '@') !== false) {
+  // If the name has an @ it is an email, so leave it blank.
+  $name = '';
+}
 print $name;
 print '"/></li>';
 print "\n";
@@ -181,39 +120,20 @@ print $user->reason();
 print '</textarea></li>';
 print "\n";
 
+print '</ul>';
+print '<p>';
+print '<input type="checkbox" name="projectlead" value="projectlead"';
 
-foreach (array_keys($shib_fields) as $fieldkey) {
-    $is_user = false;
-    foreach ($attrs as $a) {
-      if ($a['name'] == $fieldkey ) {
-	$is_user = true;
-	shib_input($a['name'], $shib_fields[$a['name']], $a['value']);
-        $a['printed'] = true;
-      }
-    }
-    if (!$is_user) {
-      shib_input($fieldkey, $shib_fields[$fieldkey], null);
-    }
+if ($is_pi) {
+  print "checked='checked'>I want to remain ";
+} else {
+  if (array_key_exists('belead', $_REQUEST)) {
+    print "checked='checked'";
   }
-  foreach ($attrs as $a) {
-    if (! array_key_exists($a['name'], $shib_fields)) {
-      shib_input($a['name'], $a['name'], $a['value']);
-    }
-  }
-print "</ul>";
+  print ">Make me ";
+}
 ?>
-<p>
-<input type="checkbox" name="projectlead" value="projectlead"
-<?php
-    if ($is_pi) {
-      print "checked='checked'>I want to remain ";
-    } else {
-      if (array_key_exists('belead', $_REQUEST)) {
-	print "checked='checked'";
-      }
-      print ">Make me ";
-    }
-?>
+
 a 'Project Lead' who can create projects. I am a professor or senior
 technical staff (as indicated by my profile page supplied above). I
 want the ability to create projects, and I agree to take full
@@ -224,6 +144,8 @@ responsibility for all GENI resource reservations made in my projects.<br/>
 <input type="button" value="Cancel" onclick="history.back(-1)"/>
 </p>
 </form>
+
+
 <?php
 include("footer.php");
 ?>
