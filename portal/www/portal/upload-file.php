@@ -30,21 +30,15 @@ $trimmed_url = trim($url);
 
 $has_error = false;
 
-// Check that this has a URL protocol://path format
-$url_pieces = split("\:\/\/", $trimmed_url);
-if(count($url_pieces) != 2) {
+// Check that this has a URL scheme://path format
+// and that the scheme is not file
+$scheme = parse_url($url, PHP_URL_SCHEME);
+// error_log("SCHEMA = " . $scheme);
+if ($scheme == FALSE || $scheme == "file") {
   // Return 400: BAD REQUEST
   header("HTTP/1.0 400 Bad Request");
   return;
 }
-
-// Check that the protocol is not file
-if(strtolower($url_pieces[0]) == "file") {
-  // Return 400: BAD REQUEST
-  header("HTTP/1.0 400 Bad Request");
-  return;
-}
-
 
 $result = file_get_contents($trimmed_url);
 
