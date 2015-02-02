@@ -208,9 +208,10 @@ function setup_jacks_editor_app_controls($enable_expansion)
   
   if ($enable_expansion) {
     print "<tr>";
-    print "<th rowspan='1'>Expand Editor</th>";
+    print "<th rowspan='1'>Editor Ops</th>";
     print "<td>";
     print '<button type="button" id="expand_editor_button" onClick="do_editor_expand()">Expand</button>';
+    print '<button type="button" id="expand_editor_button" onClick="do_selection_duplicate()">Duplicate</button>';
     print "</td></tr>";
   }
 

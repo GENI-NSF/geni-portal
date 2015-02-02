@@ -56,6 +56,10 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.sliceAms = sliceAms;
     this.allAms = allAms;
 
+    this.selectedNodes = [];
+    this.currentTopology = null;
+    this.nodeCounter = 0;
+
     // Turn {am_id => {name, url}} dictionary into list,
     this.sortedAms = [];
     for(var am_id in allAms) {
@@ -664,6 +668,11 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
 
 JacksEditorApp.prototype.onSelectionEvent = function(event) {
     debug("JE : " + event);
+
+    if (event.type == "node") {
+	// Node has key, name
+	this.selectedNodes = event.items;
+    }
 }
 
 

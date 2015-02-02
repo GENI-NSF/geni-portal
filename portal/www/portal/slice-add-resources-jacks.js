@@ -322,6 +322,8 @@ function jacks_fetch_topology_callback(rspecs) {
 // The callback from Jacks when topology has been modified
 function jacks_modified_topology_callback(data)
 {
+    jacksEditorApp.currentTopology = data;
+
     //    console.log("MOD = " + data);
     rspec = data.rspec;
 
@@ -475,6 +477,80 @@ function do_editor_expand()
 {
     var editor_expand_url = "jacks-editor-app-expanded.php?slice_id=" + jacks_slice_id;
     window.location.replace(editor_expand_url);
+}
+
+// Take every selected node and make a copy of it, sending a new
+// rspec containing these copied nodes to Jacks
+function do_selection_duplicate()
+{
+
+    var added_nodes = false;
+    var rspec = $('#current_rspec_text').val();
+    var doc = jQuery.parseXML(rspec);
+    var rspec_root = $(doc).find('rspec')[0];
+
+    for(var i in jacksEditorApp.selectedNodes) {
+
+	added_nodes = true;
+
+	var selected_node = jacksEditorApp.selectedNodes[i];
+	var selected_node_id = selected_node.key;
+	var selected_node_name = selected_node.name;
+	var selected_node_component_manager_id = "";
+
+	// Find the node object in the current topology
+	var current_topology = jacksEditorApp.currentTopology;
+	var current_topology_nodes = current_topology['nodes'];
+	var selected_topology_node = null;
+	for(var j in current_topology_nodes) {
+	    var topology_node = current_topology_nodes[j];
+	    if (topology_node.id == selected_node_id) {
+		selected_topology_node = topology_node;
+		break;
+	    }
+	}
+
+	// Find the site object in the current topology to which the node is assigned
+	var site_name = selected_topology_node.site_name;
+	var selected_topology_node_site = null;
+	var current_topology_sites  = current_topology['sites'];
+	for (var j  in current_topology_sites) {
+	    var topology_site = current_topology_sites[j];
+	    if (topology_site.name == site_name) {
+		selected_topology_node_site = topology_site;
+	    }
+	}
+
+	// New name is from old name plus "-$UNIQUE_COUNTER";
+	var new_node_name = selected_node_name + "-" + jacksEditorApp.nodeCounter;
+	jacksEditorApp.nodeCounter = jacksEditorApp.nodeCounter + 1;
+
+	var rspec_nodes = $(rspec_root).find('node');
+	for(var j in rspec_nodes) {
+	    var rspec_node = rspec_nodes[j];
+	    if ($(rspec_node).attr('client_id') == selected_node_name) {
+		var site_elements = $(rspec_node).find('site');
+		var site_element = null;
+		if (site_elements.length > 0) site_element = site_elements[0];
+		if ($(rspec_node).attr('component_manager_id') == selected_node_component_manager_id ||
+		    (site_element != null && $(site_element).attr('id') == selected_topology_node_site.id)) {
+		    selected_rspec_node = rspec_node;
+		    break;
+		}
+	    }
+	}
+
+
+	// Make clone of node, change its client_id and add to list of nodes
+	var cloned_rspec_node = $(selected_rspec_node).clone()[0];
+	$(cloned_rspec_node).attr('client_id', new_node_name);
+	rspec_root.appendChild(cloned_rspec_node);
+    }
+
+    if (added_nodes) {
+	var new_rspec = (new XMLSerializer()).serializeToString(doc);
+	set_jacks_topology(new_rspec);
+    }
 }
 
 // Grab current topology from Jacks editor and submit if valid
