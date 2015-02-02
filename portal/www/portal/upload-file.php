@@ -40,11 +40,19 @@ if ($scheme == FALSE || $scheme == "file") {
   return;
 }
 
-$result = file_get_contents($trimmed_url);
+$MAX_LENGTH = 800000;
+
+$result = file_get_contents($trimmed_url, $MAX_LENGTH);
 
 if ($result == FALSE) {
   // Return 404: NOT FOUND
   header('HTTP/1.1 404 Not Found');
+  return;
+} else if (strlen($result) >= $MAX_LENGTH)  {
+  // We asked for a URL that is too large. 
+  // Return a bad request error
+  // Return 413: TOO LARGE
+  header("HTTP/1.0 400 Too Large");
   return;
 } else {
   // Return the contents of the file itself
