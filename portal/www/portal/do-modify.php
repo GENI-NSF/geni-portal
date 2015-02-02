@@ -21,8 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-?>
-<?php
+
 require_once("settings.php");
 require_once("util.php");
 require_once("user.php");
@@ -41,31 +40,6 @@ if (! isset($user) || ! $user->isActive()) {
   relative_redirect("home.php");
 }
 
-/**
- * Find an attribute value either in the ENV or in the POST.
- *
- * @param unknown_type $attr
- * @param unknown_type $value
- * @param unknown_type $self_asserted
- * @return boolean
- */
-function attrValue($attr, &$value, &$self_asserted) {
-  $value = null;
-  $self_asserted = null;
-  $result = false;
-  if (array_key_exists($attr, $_SERVER)) {
-    $value = $_SERVER[$attr];
-    $self_asserted = false;
-    $result = true;
-  } else if (array_key_exists($attr, $_POST)) {
-      $value = $_POST[$attr];
-      $self_asserted = true;
-      $result = true;
-  }
-  return $result;
-}
-
-
 $sr_url = get_sr_url();
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
@@ -81,18 +55,17 @@ $form_reason = 'reason';
 $form_projectlead = 'projectlead';
 
 function from_request($key) {
-  return isset($_REQUEST[$key]) ? $_REQUEST[$key] : null;
+  return empty($_REQUEST[$key]) ? null : $_REQUEST[$key];
 }
 
 function update_ma($ma_url, $user, $name, $value) {
-  if (isset($value)) {
+  if (empty($value)) {
+    remove_member_attribute($ma_url, $user, $user->account_id, $name);
+  } else {
     add_member_attribute($ma_url, $user, $user->account_id,
                          $name, $value, true);
-  } else {
-    remove_member_attribute($ma_url, $user, $user->account_id, $name);
   }
 }
-
 
 $req_name = from_request($form_name);
 $req_telephone = from_request($form_telephone);
@@ -101,11 +74,14 @@ $req_url = from_request($form_url);
 $req_reason = from_request($form_reason);
 $req_projectlead = from_request($form_projectlead);
 
+// Update the attributes, except for project lead
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::DISPLAY_NAME, $req_name);
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER, $req_telephone);
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REFERENCE, $req_reference);
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::URL, $req_url);
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason);
+
+// Now handle project lead...
 
 // If we got 'projectlead' in the POST, it is a pi_request.
 $pi_request = isset($req_projectlead);
@@ -113,16 +89,6 @@ $pi_request = isset($req_projectlead);
 // If the user is allowed to create a project, they are a PI (PL?)
 $is_pi = $user->isAllowed(PA_ACTION::CREATE_PROJECT,
                           CS_CONTEXT_TYPE::RESOURCE, null);
-
-
-// FIXME: This is not right
-// Instead: Create a request infrastructure in the MA
-// register a request
-// MA sends mail
-// MA has a method to approve or deny such a request
-// approve needs to update the appropriate identity/ma_attribute
-// tables, and then email the user that it was approved
-// activate_account script then needs to call this
 
 $body = '';
 $subject = "GENI Project Lead request";
@@ -135,18 +101,26 @@ if ($pi_request and ! $is_pi) {
   $log_msg = $user->prettyName() . " requested to NOT be a Project Lead";
 }
 
-$body .= PHP_EOL;
-$body .= PHP_EOL;
-$body .= "Account ID: " . $user->account_id . "\n";
-$body .= "EPPN: " . $user->eppn . "\n";
-$body .= "Username: " . $user->username . "\n";
-$body .= "Email: " . $user->email() . "\n";
+// If there's something to log, then send email about it too.
+if (isset($log_msg)) {
+  $log_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
+                                              $user->account_id);
+  log_event($log_url, $user, $log_msg, $log_attributes);
 
-$log_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
-                                            $user->account_id);
-log_event($log_url, $user, $msg, $log_attributes);
+  $body .= PHP_EOL;
+  $body .= PHP_EOL;
+  $body .= "Account ID: " . $user->account_id . "\n";
+  $body .= "EPPN: " . $user->eppn . "\n";
+  $body .= "Username: " . $user->username . "\n";
+  $body .= "Email: " . $user->email() . "\n";
+  $body .= "Name: $req_name\n";
+  $body .= "Telephone: $req_telephone\n";
+  $body .= "Reference: $req_reference\n";
+  $body .= "Url: $req_url\n";
+  $body .= "Reason: $req_reason\n";
 
-mail($portal_admin_email, $subject, $body);
+  mail($portal_admin_email, $subject, $body);
+}
 
 // If they submitted a new name, use it. Otherwise, use what we have.
 $pretty_name = isset($req_name) ? $req_name : $user->prettyName();
@@ -154,7 +128,7 @@ $pretty_name = isset($req_name) ? $req_name : $user->prettyName();
 if ($pi_request and ! $is_pi) {
   $body = "Dear $pretty_name,\n\n";
   $body .= "We have received your request to be a GENI Project Lead.";
-  $body .= "We are processing your request and you should hear from us";
+  $body .= " We are processing your request and you should hear from us";
   $body .= " in 3-4 business days.\n\n";
   $body .= "If you have any questions about your request or about using GENI";
   $body .= " in general, please email help@geni.net.\n\n";
@@ -165,60 +139,47 @@ if ($pi_request and ! $is_pi) {
 
   $headers = "Reply-To: help@geni.net\r\n";
   $headers .= "Bcc: $portal_admin_email\r\n";
-  $headers .= "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n";
-  $headers .= $cc;
+  $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+  $headers .= "Content-Transfer-Encoding: 8bit\r\n";
 
   $to = $user->prettyEmailAddress();
   $subject = "Your GENI Project Lead request has been received";
   mail($to, $subject, $body, $headers);
 }
 
-
-
+/*
+ * Now display the web page to the user.
+ */
 include("header.php");
-show_header('GENI Portal Home', $TAB_HOME);
+show_header('GENI Portal: Profile', $TAB_PROFILE);
 include("tool-breadcrumbs.php");
-?>
 
-<h1> Modify Your Account </h1>
-<p><b>Your account modification request has been submitted.</b></p>
-<ul>
-<?php
-print '<pre>' . PHP_EOL;
-print_r($_POST);
-print '</pre>' . PHP_EOL;
+print '<h1> Modify Your Account </h1>' . PHP_EOL;
+print '<p><b>Your account information has been updated.</b></p>';
 
-print "<li><b>Account ID:</b> " . $user->account_id . "</li>\n";
-print "<li><b>Name:</b> " . $user->prettyName() . "</li>\n";
-print "<li><b>Username:</b> " . $user->username . "</li>\n";
 if ($pi_request and ! $is_pi) {
-  print "<li><b>Requesting to be a Project Lead</b></li>\n";
+  print '<p>' . PHP_EOL;
+  print "Your Project Lead request has been received.";
+  print " Project Lead requests take several days to review.";
+  print " You should hear from us within 3 - 4 business days.";
+  print '</p>' . PHP_EOL;
+  print '<p>' . PHP_EOL;
+  print 'If you have any questions about your request or about';
+  print ' using GENI in general, please email';
+  print ' <a href="mailto:help@geni.net">GENI Help</a>.';
+  print '</p>' . PHP_EOL;
 } else if (! $pi_request and $is_pi) {
-  print "<li><b>Requesting to NOT be a Project Lead</b></li>\n";
+  print '<p>' . PHP_EOL;
+  print "You have indicated that you no longer want to be a  Project Lead.";
+  print " This is an administrative function that requires approval.";
+  print " You should hear from us within 3 - 4 business days.";
+  print '</p>' . PHP_EOL;
+  print '<p>' . PHP_EOL;
+  print 'If you have any questions about your request or about';
+  print ' using GENI in general, please email';
+  print ' <a href="mailto:help@geni.net">GENI Help</a>.';
+  print '</p>' . PHP_EOL;
 }
-if ($changed_str !== '') {
-  print "<li><b>Changes:</b> $changed_str</li>\n";
-}
-if ($added_str !== '') {
-  print "<li><b>Additions:</b> $added_str</li>\n";
-}
-if ($removed_str !== '') {
-  print "<li><b>Removals:</b> $removed_str</li>\n";
-}
-echo '</ul>';
-echo '<p>Your change request is being processed by the Portal operators, and you will receive an email when your request has been handled.</p>';
-if ($pi_request and ! $is_pi) {
-  echo '<p>If and when you are made a Project Lead, your Home Page will show the "Create Project" button.</p>';
-}
-?>
 
-<p>Go to the <a href=
-<?php
-$url = relative_url("home.php");
-print $url
-?>
->portal home page</a>.</p>
-
-<?php
 include("footer.php");
 ?>

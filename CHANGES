@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.26 ==
+ * Handle multi-valued attributes from Shibboleth (#740)
  * Add scroll bars and standard canvasOptions/constraints to popup rspec  
    editors (#1266)
  * Add footer, and internal and expanded views for geo map. (#1264).
