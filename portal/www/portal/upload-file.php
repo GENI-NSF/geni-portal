@@ -40,15 +40,6 @@ if ($scheme == FALSE || $scheme == "file") {
   return;
 }
 
-
-// Check that the protocol is not file
-if(strtolower($url_pieces[0]) == "file") {
-  // Return 400: BAD REQUEST
-  header("HTTP/1.0 400 Bad Request");
-  return;
-}
-
-
 $result = file_get_contents($trimmed_url);
 
 if ($result == FALSE) {
