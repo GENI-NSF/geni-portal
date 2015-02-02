@@ -58,8 +58,11 @@ function from_request($key) {
   return empty($_REQUEST[$key]) ? null : $_REQUEST[$key];
 }
 
-function update_ma($ma_url, $user, $name, $value) {
-  if (empty($value)) {
+function update_ma($ma_url, $user, $name, $value, $old_value) {
+  if (strcmp($value, $old_value) === 0) {
+    // If no change, do nothing.
+    return;
+  } else if (empty($value)) {
     remove_member_attribute($ma_url, $user, $user->account_id, $name);
   } else {
     add_member_attribute($ma_url, $user, $user->account_id,
@@ -75,11 +78,15 @@ $req_reason = from_request($form_reason);
 $req_projectlead = from_request($form_projectlead);
 
 // Update the attributes, except for project lead
-update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::DISPLAY_NAME, $req_name);
-update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER, $req_telephone);
-update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REFERENCE, $req_reference);
-update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::URL, $req_url);
-update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason);
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::DISPLAY_NAME, $req_name,
+          $user->prettyName());
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER, $req_telephone,
+          $user->phone());
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REFERENCE, $req_reference,
+          $user->reference());
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::URL, $req_url, $user->url());
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason,
+          $user->reason());
 
 // Now handle project lead...
 
