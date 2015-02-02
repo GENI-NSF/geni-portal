@@ -25,6 +25,8 @@
      hierarchical (#1275).
   * Allow leading/trailing whitespace in URL in 
     slice-add-resource-jacks.js (#1277)
+  * Check valid URL names and handle URL load errors in 
+    jacks editor app (#1279).
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
