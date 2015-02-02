@@ -31,6 +31,10 @@ require_once("cs_client.php");
 require_once("cs_constants.php");
 require_once('logging_client.php');
 require_once('logging_constants.php');
+require_once('ma_client.php');
+require_once('ma_constants.php');
+include_once('/etc/geni-ch/settings.php');
+
 
 $user=geni_loadUser();
 if (! isset($user) || ! $user->isActive()) {
@@ -64,122 +68,52 @@ function attrValue($attr, &$value, &$self_asserted) {
 
 $sr_url = get_sr_url();
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
 
-attrValue('givenName', $first_name, $first_name_self_asserted);
-attrValue('sn', $last_name, $larst_name_self_asserted);
-attrValue('mail', $email_address, $email_address_self_asserted);
-attrValue('telephoneNumber', $telephone_number, $telephone_number_self_asserted);
-$attrs = array();
-$sa_attrs = array();
-$all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
-        'sn' => MA_ATTRIBUTE_NAME::LAST_NAME,
-        'mail' => MA_ATTRIBUTE_NAME::EMAIL_ADDRESS,
-        'telephoneNumber' => MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER,
-        'affiliation' => 'affiliation',
-        'eppn' => 'eppn',
-        'reference' => 'reference',
-        'reason' => 'reason',
-        'profile' => 'profile'
-		   );
-foreach (array_keys($all_attrs) as $attr_name) {
-  if (attrValue($attr_name, $value, $self_asserted)) {
-    if ($self_asserted) {
-      $sa_attrs[$all_attrs[$attr_name]] = $value;
-    } else {
-      $attrs[$all_attrs[$attr_name]] = $value;
-    }
+/*
+ * Pull info from the $_REQUEST
+ */
+$form_name = 'name';
+$form_telephone = 'telephone';
+$form_reference = 'reference';
+$form_url = 'url';
+$form_reason = 'reason';
+$form_projectlead = 'projectlead';
+
+function from_request($key) {
+  return isset($_REQUEST[$key]) ? $_REQUEST[$key] : null;
+}
+
+function update_ma($ma_url, $user, $name, $value) {
+  if (isset($value)) {
+    add_member_attribute($ma_url, $user, $user->account_id,
+                         $name, $value, true);
+  } else {
+    remove_member_attribute($ma_url, $user, $user->account_id, $name);
   }
 }
 
-$added_attrs = array();
-$removed_attrs = array();
-$changed_attrs = array();
-$changed_attrs_old = array();
-$newEmail = null;
 
-// Diff the fields
-foreach (array_keys($sa_attrs) as $attr_name) {
-  if (array_key_exists($attr_name, $user->attributes)) {
-    if ($sa_attrs[$attr_name] != $user->attributes[$attr_name]) {
-      $changed_attrs[$attr_name] = $sa_attrs[$attr_name];
-      $changed_attrs_old[$attr_name] = $user->attributes[$attr_name];
-      if ($attr_name === "mail" or $attr_name === "email_address") {
-	$newEmail = $sa_attrs[$attr_name];
-      }
-    }
-  } else if (isset($sa_attrs[$attr_name]) and
-	     !is_null($sa_attrs[$attr_name]) and $sa_attrs[$attr_name] !== ''){
-    $added_attrs[$attr_name] = $sa_attrs[$attr_name];
-    if ($attr_name === "mail" or $attr_name === "email_address") {
-      $newEmail = $sa_attrs[$attr_name];
-    }
-  }
-}
-foreach (array_keys($user->attributes) as $attr_name) {
-  if (array_key_exists($attr_name, $sa_attrs)) {
-    continue;
-  }
-  if (array_key_exists($attr_name, $attrs)) {
-    if ($user->attributes[$attr_name] != $attrs[$attr_name]) {
-      error_log("Account " . $user->account_id . " got changed shib attribute $attr_name. Was " 
-		. $user->attributes[$attr_name] . " now " . $attrs[$attr_name]);
-    }
-    continue;
-  }
-  if (! isset($user->attributes[$attr_name]) or
-      is_null($user->attributes[$attr_name]) or
-      $user->attributes[$attr_name] === '') {
-    continue;
-  }
-  if (array_key_exists($attr_name, $_SERVER)) {
-    if ($_SERVER[$attr_name] !== $user->attributes[$attr_name]) {
-      $changed_attrs[$attr_name] = $_SERVER[$attr_name];
-      $changed_attrs_old[$attr_name] = $user->attributes[$attr_name];
-    }
-    continue;
-  }
-  $removed_attrs[$attr_name] = $user->attributes[$attr_name];
-}
+$req_name = from_request($form_name);
+$req_telephone = from_request($form_telephone);
+$req_reference = from_request($form_reference);
+$req_url = from_request($form_url);
+$req_reason = from_request($form_reason);
+$req_projectlead = from_request($form_projectlead);
 
-$pi_request = false;
-if (array_key_exists("projectlead", $_REQUEST)) {
-  $pi_request = true;
-}
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::DISPLAY_NAME, $req_name);
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::TELEPHONE_NUMBER, $req_telephone);
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REFERENCE, $req_reference);
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::URL, $req_url);
+update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason);
 
-$is_pi = false;
-if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
-  $is_pi = true;
-}
+// If we got 'projectlead' in the POST, it is a pi_request.
+$pi_request = isset($req_projectlead);
 
-if (count($changed_attrs) == 0 and count($added_attrs) == 0 and
-    count($removed_attrs) == 0 and $pi_request == $is_pi) {
-  $_SESSION['lastmessage'] = "No account edits made.";
-  relative_redirect('profile.php');
-}
+// If the user is allowed to create a project, they are a PI (PL?)
+$is_pi = $user->isAllowed(PA_ACTION::CREATE_PROJECT,
+                          CS_CONTEXT_TYPE::RESOURCE, null);
 
-$changed_str = "";
-if (count($changed_attrs) > 0) {
-  foreach (array_keys($changed_attrs) as $attr_name) {
-    $changed_str = $changed_str . "[" . $attr_name . "]: " . $changed_attrs_old[$attr_name] . " => " .
-      $changed_attrs[$attr_name] . "; \n";
-  }
-    //  $changed_str = print_r($changed_attrs, true) . "(was "
-    //    . print_r($changed_attrs_old, true) . ")";
-}
-$added_str = "";
-if (count($added_attrs) > 0) {
-  foreach (array_keys($added_attrs) as $attr_name) {
-    $added_str = $added_str . "[" . $attr_name . "]: " . $added_attrs[$attr_name] . "; \n";
-  }
-  //  $added_str = print_r($added_attrs, true);
-}
-$removed_str = "";
-if (count($removed_attrs) > 0) {
-  foreach (array_keys($removed_attrs) as $attr_name) {
-    $removed_str = $removed_str . "[" . $attr_name . "]: " . $removed_attrs[$attr_name] . "; \n";
-  }
-  //  $removed_str = print_r($removed_attrs, true);
-}
 
 // FIXME: This is not right
 // Instead: Create a request infrastructure in the MA
@@ -189,70 +123,57 @@ if (count($removed_attrs) > 0) {
 // approve needs to update the appropriate identity/ma_attribute
 // tables, and then email the user that it was approved
 // activate_account script then needs to call this
-$body = "There is a new account change request on ". $_SERVER['SERVER_NAME'] . ":\n\n";
-$body .= "Account ID: " . $user->account_id . "\n"; // same as member_id
-$body .= "Identity ID: " . $user->identity_id . "\n";
-$body .= "EPPN: " . $user->eppn . "\n"; // same as member->eppn
-$body .= "Name: " . $user->prettyName() . "\n";
-$body .= "Username: " . $user->username . "\n";
-$body .= "Email: " . $user->email() . "\n";
-$member_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
-					       $user->account_id);
-$subject = "New GENI CH account change requested";
-if ($pi_request and ! $is_pi) {
-  $body .= "\t\t**** Requesting to be a Project Lead. ****\n";
-  $msg = $user->prettyName() . " requested to be a Project Lead";
-  $subject = "New GENI CH Project Lead request";
-  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, $user, $msg, $member_attributes);
-} else if (! $pi_request and $is_pi) {
-  $body .= "\t\t**** Requesting to NOT be a Project Lead. ****\n";
-  $msg = $user->prettyName() . " requested to NOT be a Project Lead";
-  $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-  log_event($log_url, $user, $msg, $member_attributes);
-}
-if ($changed_str !== '') {
-  $body .= "Changes: \n$changed_str\n";
-}
-if ($added_str !== '') {
-  $body .= "Additions: \n$added_str\n";
-}
-if ($removed_str !== '') {
-  $body .= "Removals: \n$removed_str\n";
-}
-include_once('/etc/geni-ch/settings.php');
-global $portal_admin_email;
-mail($portal_admin_email, $subject,
-     $body);
+
+$body = '';
+$subject = "GENI Project Lead request";
 
 if ($pi_request and ! $is_pi) {
-  // Email the experimenter that their request was received
-  $cc = "";
-  if (! is_null($newEmail) and $newEmail !== $user->email()) {
-    $cc = "\r\nCc: " . $newEmail;
-  }
-  $to = $user->prettyEmailAddress();
-  //  $from = "From: GENI Portal <www-data@portal.geni.net>"; // FIXME!!!
-  $subject = "Your GENI Project Lead request has been received";
-  $body = "Dear " . $user->prettyName() . ",\n";
-  $body = $body . "\nWe have received your request to be a GENI Project Lead.  We are processing your request and you should hear from us in 3-4 business days.\n";
-  $body = $body . "\nIf you have any questions about your request or about using GENI in general, please email help@geni.net.\n";
-  $body = $body . "\nThank you for your interest in GENI!\n";
-  $body = $body . "\nSincerely,\n\nGENI Experimenter Support\nhelp@geni.net\n";
+  $body .= 'The following user has requested to be a Project Lead:';
+  $log_msg = $user->prettyName() . " requested to be a Project Lead";
+} else if (! $pi_request and $is_pi) {
+  $body .= 'The following user has requested to no longer be a Project Lead:';
+  $log_msg = $user->prettyName() . " requested to NOT be a Project Lead";
+}
+
+$body .= PHP_EOL;
+$body .= PHP_EOL;
+$body .= "Account ID: " . $user->account_id . "\n";
+$body .= "EPPN: " . $user->eppn . "\n";
+$body .= "Username: " . $user->username . "\n";
+$body .= "Email: " . $user->email() . "\n";
+
+$log_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
+                                            $user->account_id);
+log_event($log_url, $user, $msg, $log_attributes);
+
+mail($portal_admin_email, $subject, $body);
+
+// If they submitted a new name, use it. Otherwise, use what we have.
+$pretty_name = isset($req_name) ? $req_name : $user->prettyName();
+
+if ($pi_request and ! $is_pi) {
+  $body = "Dear $pretty_name,\n\n";
+  $body .= "We have received your request to be a GENI Project Lead.";
+  $body .= "We are processing your request and you should hear from us";
+  $body .= " in 3-4 business days.\n\n";
+  $body .= "If you have any questions about your request or about using GENI";
+  $body .= " in general, please email help@geni.net.\n\n";
+  $body .= "Thank you for your interest in GENI!\n\n";
+  $body .= "Sincerely,\n";
+  $body .= "GENI Experimenter Support\n";
+  $body .= "help@geni.net\n";
+
   $headers = "Reply-To: help@geni.net\r\n";
-  $headers .= "Bcc: " . $portal_admin_email . "\r\n";
+  $headers .= "Bcc: $portal_admin_email\r\n";
   $headers .= "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n";
   $headers .= $cc;
 
+  $to = $user->prettyEmailAddress();
+  $subject = "Your GENI Project Lead request has been received";
   mail($to, $subject, $body, $headers);
 }
 
-//error_log("Request: " . print_r($_REQUEST, true));
 
-// Validate the inputs
-// Only allow editing certain fields
-// Submit this as a Request to the MA Admin
-// FIXME!
 
 include("header.php");
 show_header('GENI Portal Home', $TAB_HOME);
@@ -263,6 +184,10 @@ include("tool-breadcrumbs.php");
 <p><b>Your account modification request has been submitted.</b></p>
 <ul>
 <?php
+print '<pre>' . PHP_EOL;
+print_r($_POST);
+print '</pre>' . PHP_EOL;
+
 print "<li><b>Account ID:</b> " . $user->account_id . "</li>\n";
 print "<li><b>Name:</b> " . $user->prettyName() . "</li>\n";
 print "<li><b>Username:</b> " . $user->username . "</li>\n";

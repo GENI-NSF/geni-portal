@@ -68,6 +68,9 @@ class MA_ATTRIBUTE_NAME {
   const AFFILIATION = "affiliation";
   const DISPLAY_NAME = "displayName";
   const EPPN = "eppn";
+  const URL = "url";
+  const REASON = "reason";
+  const LEAD_REQUEST = "lead_request";
 }
 
 class MA_PRIVILEGE {
