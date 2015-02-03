@@ -540,40 +540,18 @@ function geni_load_identity_by_eppn($eppn)
     return $identity;
   }
 
-  //  error_log("Got identity for $eppn: " . print_r($identity, true));
-
-  // FIXME: If affiliation has changed, log it / update it
-  $sql = "select * from identity_attribute where identity_id = " . $conn->quote($identity['identity_id'], 'text');
+  $sql = "select * from identity_attribute where identity_id = ";
+  $sql .= $conn->quote($identity['identity_id'], 'text');
   $res = db_fetch_rows($sql);
   if ($res['code'] != RESPONSE_ERROR::NONE) {
-    error_log("Failed to get identity attributes for eppn $eppn: " . $res['output']);
+    error_log("Failed to get identity attributes for eppn $eppn: "
+              . $res['output']);
     return $identity;
   }
   $rows = $res['value'];
-  $cureppn = null;
-  if (array_key_exists('eppn', $_SERVER)) {
-    $cureppn = strtolower($_SERVER['eppn']);
-  }
   foreach($rows as $row) {
     $identity[$row['name']] = $row['value'];
-    if (! is_null($cureppn) && $cureppn == $identity['eppn'] && array_key_exists($row['name'], $_SERVER)) {
-      if ($row['value'] != $_SERVER[$row['name']]) {
-	error_log("IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
-	geni_syslog(GENI_SYSLOG_PREFIX::PORTAL, "IdP changed value for eppn $eppn value " . $row['name'] . ": Old=" . $row['value'] . ", new = " . $_SERVER[$row['name']]);
-	// FIXME: Update the identity_attribute table!
-	// "update identity_attribute set value = '" . $conn->quote($_SERVER[$row['name']], 'text') . "' where identity_id = " . $conn->quote($identity['identity_id'], 'text') . " and name = '" . $conn->quote($row['name'], 'text')
-	// What about ma_member_attribute? That one is harder to generalize
-	// update ma_member_attribute set value = <new> where value = <old> and member_id = !!!! <and name = !!!
-	// Avoid 'mail' from identity_attribute and from ma_member_attribute avoid:
-	// OPERATOR, wimax_username, username, enable_irods, enable_wimax, enable_wimax_Button, gemini-user, urn, email_address, member_enabled, irods_username, eppn, PROJECT_LEAD
-	// Also however follow the mapping of attribute names. See do_registyr and ma_constants. telephoneNumber (id) -> telephone_number (ma), givenName -> first_name, sn -> last_name (mail -> email_address)
-	// For MA, use ma_client to do remove_member_attribute followed by add_member_attribute (self_asserted='f')
-	// Problem is that this isn't a good place to update the MA - no member_id. See below in geni_loadUser() which is a better spot.
-      }
-    }
   }
-
-  //  error_log("Added attributes, now ID is " . print_r($identity, true));
 
   return $identity;
 }
