@@ -25,6 +25,12 @@
 // Make sure the URL is trimmed, is a valid URL and doesn't contain file:// protocol
 // If the file_get_contents returns FALSE, return a 404 error
 
+if (! array_key_exists('url', $_GET)) {
+  // Return 400: BAD REQUEST
+  header("HTTP/1.0 400 Bad Request");
+  return;
+}
+  
 $url = $_GET['url'];
 $trimmed_url = trim($url);
 
@@ -34,8 +40,9 @@ $has_error = false;
 // and that the scheme is not file
 $scheme = parse_url($url, PHP_URL_SCHEME);
 // error_log("SCHEMA = " . $scheme);
-if ($scheme == FALSE || $scheme == "file") {
+if ($scheme == FALSE || trim(strtolower($scheme)) == "file") {
   // Return 400: BAD REQUEST
+  error_log("upload-file: Refusing to serve: $url");
   header("HTTP/1.0 400 Bad Request");
   return;
 }
