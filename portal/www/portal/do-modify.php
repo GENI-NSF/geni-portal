@@ -55,7 +55,7 @@ $form_reason = 'reason';
 $form_projectlead = 'projectlead';
 
 function from_request($key) {
-  return empty($_REQUEST[$key]) ? null : $_REQUEST[$key];
+  return empty($_REQUEST[$key]) ? null : trim($_REQUEST[$key]);
 }
 
 function update_ma($ma_url, $user, $name, $value, $old_value) {
@@ -76,6 +76,13 @@ $req_reference = from_request($form_reference);
 $req_url = from_request($form_url);
 $req_reason = from_request($form_reason);
 $req_projectlead = from_request($form_projectlead);
+
+// Filter the name a bit so it makes some sense.
+
+// This is an arbitrary string of "bad" characters we simply remove
+// from the name.
+$bad_chars = '~{()}@^$%?;:/*&|#!^\\';
+$req_name = str_replace(str_split($bad_chars), '', $req_name);
 
 // Update the attributes, except for project lead
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::DISPLAY_NAME, $req_name,
