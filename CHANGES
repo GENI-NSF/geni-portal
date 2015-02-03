@@ -31,6 +31,8 @@
  * Limit max size of rspec loaded from URL to 8M (#1282).
  * Restore Jacks viewer to sliceresource.php and give it an rspec 
     scrollbar (#1235)
+ * Remove error_log warning about undefined 
+    get_slice_credential_disable_buttons (#1288)
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
