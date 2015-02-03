@@ -74,15 +74,6 @@ print '"/></li>';
 print "\n";
 
 print '<li>';
-print '<label for="email">';
-print '<b>Email:</b> ';
-print '</label>';
-print '<input type="text" name="email" id="email" size="40" value="';
-print $user->email();
-print '"  disabled="yes"/></li>';
-print "\n";
-
-print '<li>';
 print '<label for="telephone">';
 print '<b>Telephone:</b> ';
 print '</label>';
