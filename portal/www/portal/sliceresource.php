@@ -292,10 +292,10 @@ else {
 <div class='resources' id='prettyxml'><p><i>Pending... (See 'Detailed Progress' tab for more information.)</i></p></div>
 
 <!-- Jacks container -->
-<!--
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <script src="<?php echo $jacks_stable_url;?>"></script>
 <div id='jacksContainer' class='jacks resources' style='background-color: white;display: none;'></div>
--->
 
 <div id='results_manifest_link'></div>
 <p>

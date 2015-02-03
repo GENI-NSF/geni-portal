@@ -29,6 +29,8 @@
  * Check valid URL names and handle URL load errors in 
    jacks editor app (#1279).
  * Limit max size of rspec loaded from URL to 8M (#1282).
+ * Restore Jacks viewer to sliceresource.php and give it an rspec 
+    scrollbar (#1235)
 
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
