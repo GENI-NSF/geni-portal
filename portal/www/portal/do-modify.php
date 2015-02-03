@@ -155,6 +155,43 @@ if ($pi_request and ! $is_pi) {
 }
 
 /*
+ * Send an email listing values changed.
+ */
+function note_change($field, $new, $old) {
+  if (strcmp($old, $new) === 0) {
+    return '';
+  } else {
+    return "$field was '$old', now '$new'\n";
+  }
+}
+$change_text = '';
+$change_text .= note_change('Name', $req_name, $user->prettyName());
+$change_text .= note_change('Telephone', $req_telephone, $user->phone());
+$change_text .= note_change('Reference', $req_reference, $user->reference());
+$change_text .= note_change('URL', $req_url, $user->url());
+$change_text .= note_change('Reason', $req_reason, $user->reason());
+
+if (! empty($change_text)) {
+  $body = 'Account changes were posted by the following user:';
+  $body .= PHP_EOL;
+  $body .= PHP_EOL;
+  $body .= "Account ID: " . $user->account_id . "\n";
+  $body .= "EPPN: " . $user->eppn . "\n";
+  $body .= "Username: " . $user->username . "\n";
+  $body .= "Email: " . $user->email() . "\n";
+  $body .= PHP_EOL;
+  $body .= PHP_EOL;
+  $body .= 'Changes posted:';
+  $body .= PHP_EOL;
+  $body .= PHP_EOL;
+  $body .= $change_text;
+
+  $subject = "GENI account changes posted";
+  mail($portal_admin_email, $subject, $body);
+}
+
+
+/*
  * Now display the web page to the user.
  */
 include("header.php");
