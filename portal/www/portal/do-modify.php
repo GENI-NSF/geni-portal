@@ -77,6 +77,13 @@ $req_url = from_request($form_url);
 $req_reason = from_request($form_reason);
 $req_projectlead = from_request($form_projectlead);
 
+// Filter the name a bit so it makes some sense.
+
+// This is an arbitrary string of "bad" characters we simply remove
+// from the name.
+$bad_chars = '~{()}@^$%?;:/*&|#!^\\';
+$req_name = str_replace(str_split($bad_chars), '', $req_name);
+
 // Update the attributes, except for project lead
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::DISPLAY_NAME, $req_name,
           $user->prettyName());
