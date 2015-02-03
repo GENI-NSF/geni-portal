@@ -211,7 +211,9 @@ function setup_jacks_editor_app_controls($enable_expansion)
     print "<th rowspan='1'>Editor Ops</th>";
     print "<td>";
     print '<button type="button" id="expand_editor_button" onClick="do_editor_expand()">Expand</button>';
-    print '<button type="button" id="expand_editor_button" onClick="do_selection_duplicate()">Duplicate</button>';
+    print '<button type="button" id="expand_editor_button" onClick="do_selection_duplicate(true)">Duplicate</button>';
+    print '<button type="button" id="expand_editor_button" onClick="do_selection_duplicate(false)">Duplicate w/o Links</button>';
+    print '<button type="button" id="expand_editor_button" onClick="do_auto_ip_assignment()">Auto IP</button>';
     print "</td></tr>";
   }
 

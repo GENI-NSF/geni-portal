@@ -481,7 +481,7 @@ function do_editor_expand()
 
 // Take every selected node and make a copy of it, sending a new
 // rspec containing these copied nodes to Jacks
-function do_selection_duplicate()
+function do_selection_duplicate(include_links)
 {
 
     var added_nodes = false;
@@ -548,6 +548,50 @@ function do_selection_duplicate()
     }
 
     if (added_nodes) {
+	var new_rspec = (new XMLSerializer()).serializeToString(doc);
+	set_jacks_topology(new_rspec);
+    }
+
+    console.log("INCLUDE_LINKS = " + include_links);
+}
+
+// Perform auto IP assignment on topologies
+// Go through all links. Label that 10.10.i.*;
+//   Go through all interfaces on that link. Label that 10.10.i.j;
+function do_auto_ip_assignment()
+{
+    var rspec = $('#current_rspec_text').val();
+    var doc = jQuery.parseXML(rspec);
+    var links = $(doc).find('link');
+    var changed_ips = (links.length > 0);
+
+    // Make a hash table of all interfaces by client_id
+    var interfaces_by_client_id = [];
+    var interfaces = $(doc).find('interface');
+    var num_interfaces = interfaces.length;
+    for(var iface_index = 0; iface_index < num_interfaces; iface_index++) {
+	var interface = interfaces[iface_index];
+	var client_id = interface.getAttribute('client_id');
+	interfaces_by_client_id[client_id] = interface;
+    }
+
+    var num_links = links.length;
+    for(var link_index = 0; link_index < num_links; link_index++) {
+	var iface_ref_elts = links[link_index].getElementsByTagName('interface_ref');
+	var num_iface_ref_elts = iface_ref_elts.length;
+	for(var iface_index = 0; iface_index < num_iface_ref_elts; iface_index++) {
+	    var iface_name = iface_ref_elts[iface_index].getAttribute('client_id');
+	    var interface = interfaces_by_client_id[iface_name];
+	    var ip_elt = doc.createElement('ip');
+	    var address = "10.10." + (link_index + 1) + "." + (iface_index + 1);
+	    var netmask = "255.255.255.0";
+	    ip_elt.setAttribute('address', address);
+	    ip_elt.setAttribute('netmask', netmask);
+	    interface.appendChild(ip_elt);
+	}
+    }
+
+    if (changed_ips) {
 	var new_rspec = (new XMLSerializer()).serializeToString(doc);
 	set_jacks_topology(new_rspec);
     }
