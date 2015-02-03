@@ -55,7 +55,7 @@ $form_reason = 'reason';
 $form_projectlead = 'projectlead';
 
 function from_request($key) {
-  return empty($_REQUEST[$key]) ? null : $_REQUEST[$key];
+  return empty($_REQUEST[$key]) ? null : trim($_REQUEST[$key]);
 }
 
 function update_ma($ma_url, $user, $name, $value, $old_value) {
