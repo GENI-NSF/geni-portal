@@ -473,11 +473,14 @@ function add_one_login(am_id, slice_id)
 	    agg_info = "Aggregate <b>" + am_name + "'s</b>  Status:";
 	    status_info = JSON.stringify(am, null, 1);
 
-	    status_info = "<div class='rawStatus' style='display:none'>" + 
+	    status_info = "<div id='" + am_id + "' class='rawStatus' style='display:none'>" + 
 		"<div class='aggregate'>" + agg_info + "</div>" + 
 		"<div class='resources' id='" + am_id + "'>" + 
 		"<div class='xml'>" + status_info + "</div>" + 
 		"</div>";
+	    // Remove any previous raw status for this am_id
+	    remove_tag = ".rawStatus#" + am_id;
+	    $(remove_tag).remove();
 	    $('#details').append(status_info);
 
 
