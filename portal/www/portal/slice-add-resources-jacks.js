@@ -110,10 +110,12 @@ function handle_rspec_validation_results(jsonResponse)
 
 function handle_rspec_update(jsonResponse, rspec, updateJacks)
 {
-    $('#current_rspec_text').val(rspec);
+    if(jsonResponse.valid) {
+	$('#current_rspec_text').val(rspec);
 
-    if(!jacksEditorApp_isHidden && updateJacks) {
-	set_jacks_topology(rspec);
+	if(!jacksEditorApp_isHidden && updateJacks) {
+	    set_jacks_topology(rspec);
+	}
     }
 
     // enable the download button
@@ -440,7 +442,9 @@ function urlupload_onchange()
 		  validate_rspec_file(rspec, false, handle_validation_results);
               })
     .fail(function(xhr, ts, et) {
-	    console.log("Failed uploading URL: " + url);
+	    //	    console.log("Failed uploading URL: " + url);
+	    jsonResponse = {"valid" : false, "message" : "<b style='color:red;'>ERROR: </b>: " + et};
+	    handle_rspec_update(jsonResponse, "", false);
 	});
     clear_other_inputs("#url_select");
 }

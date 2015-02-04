@@ -473,13 +473,18 @@ function add_one_login(am_id, slice_id)
 	    agg_info = "Aggregate <b>" + am_name + "'s</b>  Status:";
 	    status_info = JSON.stringify(am, null, 1);
 
-	    status_info = "<div class='rawStatus' style='display:none'>" + 
+	    status_info = "<div id='" + am_id + "' class='rawStatus' style='display:none'>" + 
 		"<div class='aggregate'>" + agg_info + "</div>" + 
 		"<div class='resources' id='" + am_id + "'>" + 
 		"<div class='xml'>" + status_info + "</div>" + 
 		"</div>";
-	    $('#details').append(status_info);
+	    // Remove any previous raw status for this am_id
+	    remove_tag = ".rawStatus#" + am_id;
+	    $(remove_tag).remove();
 
+	    // Place the raw status after the resources tag
+	    var resource_elt = $('#details').children('.resources#agg_' + am_id);
+	    $(status_info).insertAfter(resource_elt);
 
 	    // Set the expiration on each sliver
 	    if ('resources' in am) {

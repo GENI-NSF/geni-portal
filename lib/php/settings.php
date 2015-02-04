@@ -50,7 +50,7 @@ $portal_private_key_file = '/usr/share/geni-ch/portal/portal-key.pem';
 $portal_max_slice_renewal_days = 185;
 
 // Portal version
-$portal_version = "2.26";
+$portal_version = "2.27";
 
 // URL to the Flack loader. Used in flack.php
 $flack_url = "https://www.emulab.net/protogeni/flack-stable/loader.js";
