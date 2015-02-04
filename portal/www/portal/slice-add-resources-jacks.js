@@ -556,6 +556,37 @@ function do_selection_duplicate(include_links)
 	if (include_links) {
 	    // If we're including links, we need to rename all the interfaces on the cloned node
 	    // And add them to the link associated with the original node's interface
+	    var interfaces = $(cloned_rspec_node).find('interface');
+	    var num_interfaces = interfaces.length;
+
+	    var links = $(doc).find('link');
+	    var num_links = links.length;
+
+	    // For each interface, find the link to which it belongs
+	    // Rename the interface and then add an interface ref to the link
+	    for(var iface_index = 0; iface_index < num_interfaces; iface_index++) {
+		var interface = interfaces[iface_index];
+		var interface_name = $(interface).attr('client_id');
+
+		var link_for_interface = null;
+		for(var link_index = 0; link_index < num_links; link_index++) {
+		    var link = links[link_index];
+		    var interface_refs = $(link).find('interface_ref');
+		    var num_interface_refs = interface_refs.length;
+		    for(var iface_ref_index = 0; iface_ref_index < num_interface_refs; iface_ref_index++) {
+			var interface_ref = interface_refs[iface_ref];
+			if ($(interface_ref).attr('client_id') == interface_name) {
+			    link_for_interface = link;
+			    break;
+			}
+		    }
+		}
+
+		if (link_for_interface != null) {
+		    console.log("INCLUDE LINKS");
+		}
+	    }
+	    
 	} else {
 	    // If we're not including links, we need to eliminate the interfaces from the cloned node
 	    $(cloned_rspec_node).find('interface').remove();
