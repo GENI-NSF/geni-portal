@@ -483,6 +483,12 @@ function do_editor_expand()
 // rspec containing these copied nodes to Jacks
 function do_selection_duplicate(include_links)
 {
+    var all_node_names = [];
+    var num_topology_nodes = jacksEditorApp.currentTopology.nodes.length;
+    for(var i = 0; i < num_topology_nodes; i++) {
+	var node_name = jacksEditorApp.currentTopology.nodes[i].client_id;
+	all_node_names.push(node_name);
+    }
 
     var added_nodes = false;
     var rspec = $('#current_rspec_text').val();
@@ -521,9 +527,10 @@ function do_selection_duplicate(include_links)
 	    }
 	}
 
-	// New name is from old name plus "-$UNIQUE_COUNTER";
-	var new_node_name = selected_node_name + "-" + jacksEditorApp.nodeCounter;
-	jacksEditorApp.nodeCounter = jacksEditorApp.nodeCounter + 1;
+	// New name is from old name plus "-$UNIQUE_COUNTER", 
+	// skipping over any existing nodes with that manufactured name
+	var new_node_name = construct_new_node_name(selected_node_name, all_node_names);
+	all_node_names.push(new_node_name);
 
 	var rspec_nodes = $(rspec_root).find('node');
 	for(var j in rspec_nodes) {
@@ -545,6 +552,16 @@ function do_selection_duplicate(include_links)
 	var cloned_rspec_node = $(selected_rspec_node).clone()[0];
 	$(cloned_rspec_node).attr('client_id', new_node_name);
 	rspec_root.appendChild(cloned_rspec_node);
+
+	if (include_links) {
+	    // If we're including links, we need to rename all the interfaces on the cloned node
+	    // And add them to the link associated with the original node's interface
+	} else {
+	    // If we're not including links, we need to eliminate the interfaces from the cloned node
+	    $(cloned_rspec_node).find('interface').remove();
+	}
+
+
     }
 
     if (added_nodes) {
@@ -552,7 +569,19 @@ function do_selection_duplicate(include_links)
 	set_jacks_topology(new_rspec);
     }
 
-    console.log("INCLUDE_LINKS = " + include_links);
+}
+
+// Construct a new node name by appending -X to the existing one
+// Increase jacksEditorApp.nodeCounter until we find an X for which there is no such node
+function construct_new_node_name(orig_node_name, all_node_names) {
+    var new_node_name = "";
+    while(true)  {
+	new_node_name = orig_node_name + "-" + jacksEditorApp.nodeCounter;
+	jacksEditorApp.nodeCounter = jacksEditorApp.nodeCounter + 1;
+	if (all_node_names.indexOf(new_node_name) == -1) break;
+    }
+    return new_node_name;
+
 }
 
 // Perform auto IP assignment on topologies
