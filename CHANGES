@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.27 ==
+
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
  * Add scroll bars and standard canvasOptions/constraints to popup rspec  
