@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.27 ==
+ * Improve database password handling on map-related scripts (#1253)
  * Remove interleaving of status and details in listresources (#1289).
 
 == 2.26 ==
