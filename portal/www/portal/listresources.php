@@ -139,9 +139,13 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 include("tool-breadcrumbs.php");
 
 $get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
-						   CS_CONTEXT_TYPE::SLICE, $slice_id);
+						   CS_CONTEXT_TYPE::SLICE,
+                                                   $slice_id);
 $get_slice_credential_disable_buttons = "";
-if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
+$disabled = 'disabled = "disabled"';
+if(!$get_slice_credential_privilege) {
+  $get_slice_credential_disable_buttons = $disabled;
+}
 
 print "<h2>$header</h2>\n";
 
