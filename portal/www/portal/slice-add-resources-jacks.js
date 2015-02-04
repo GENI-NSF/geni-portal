@@ -574,7 +574,7 @@ function do_selection_duplicate(include_links)
 		    var interface_refs = $(link).find('interface_ref');
 		    var num_interface_refs = interface_refs.length;
 		    for(var iface_ref_index = 0; iface_ref_index < num_interface_refs; iface_ref_index++) {
-			var interface_ref = interface_refs[iface_ref];
+			var interface_ref = interface_refs[iface_ref_index];
 			if ($(interface_ref).attr('client_id') == interface_name) {
 			    link_for_interface = link;
 			    break;
@@ -583,7 +583,17 @@ function do_selection_duplicate(include_links)
 		}
 
 		if (link_for_interface != null) {
-		    console.log("INCLUDE LINKS");
+		    // Make a new name for the interface
+		    var new_interface_name = new_node_name + ":if" + 
+			iface_index;
+
+		    // Add a new interface ref to the link
+		    var new_interface_ref = doc.createElement('interface_ref');
+		    $(new_interface_ref).attr('client_id', new_interface_name);
+		    link_for_interface.appendChild(new_interface_ref);
+
+		    // Rename the interface
+		    $(interface).attr('client_id', new_interface_name);
 		}
 	    }
 	    
@@ -591,8 +601,6 @@ function do_selection_duplicate(include_links)
 	    // If we're not including links, we need to eliminate the interfaces from the cloned node
 	    $(cloned_rspec_node).find('interface').remove();
 	}
-
-
     }
 
     if (added_nodes) {
