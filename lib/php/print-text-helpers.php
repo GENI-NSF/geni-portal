@@ -179,6 +179,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     $node_num = $node_num+1;
     $comp_name = get_name_from_urn($comp_id);
     $sliver_type=$node->sliver_type;
+    $sliver_status = "Unknown";
+    $sliver_expiration = expires_from_manifest($node, $xml);
     $host=$node->host;
     $logins = array();
     foreach ($node->services as $service) {
@@ -197,21 +199,26 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
     echo "<table><tr>\n";
     // This is for Selenium testing
     $client_id_id = 'client_id_' . $node_num;
+    echo "<th>Status</th>";
     echo "<th id=\"$client_id_id\">Client ID</th>\n";
     echo "<th>Component ID</th>\n";
-    echo "<th>Exclusive</th>\n";
+    echo "<th>Expiration</th>\n";
     echo "<th>Type</th>\n";
     echo "<th>Hostname</th>\n";
     echo "</tr>\n";
     echo "<tr>\n"; 
+    // Replace +, : and . in sliver ID for later jQuery lookup
+    $adjusted_sliver_id = str_replace('.', '_', $sliver_id);
+    $adjusted_sliver_id = str_replace('+', '_', $adjusted_sliver_id);
+    $adjusted_sliver_id = str_replace(':', '_', $adjusted_sliver_id);
+    //    error_log("SID = " . $sliver_id . " ASI " . $adjusted_sliver_id);
+
+    echo "<td id='status-$adjusted_sliver_id'>$sliver_status</td>\n";
+    //    echo "<td><div id='status-$adjusted_sliver_id'>$sliver_status</div</td>\n";
     echo "<td>",$client_id,"</td>\n";
     echo "<td>",$comp_name,"</td>";
-    if (strtolower($node['exclusive'])=="true"){
-      $exclusive = "exclusive";
-    } else {
-      $exclusive = "not exclusive";
-    }
-    echo "<td>",$exclusive,"</td>";
+    echo "<td id='expiration-$adjusted_sliver_id'>$sliver_expiration</td>";
+    //    echo "<td><div id='expiration-$adjusted_sliver_id'></div></td>";
     if ($sliver_type){
       echo "<td>",$sliver_type['name'],"</td>\n";
     } else {
@@ -235,8 +242,8 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       if (! $hadLogins) {
 	$hadLogins = true;
 	echo "<tr>\n";    
-	echo "<th colspan='2'>Login</th>\n";
-	echo "<td colspan='3' class='login' id='login_".$client_id."'>";
+	echo "<th colspan='1'>Login</th>\n";
+	echo "<td colspan='5' class='login' id='login_".$client_id."'>";
       } else {
       }
       echo "<a href='$ssh_url' target='_blank'>";
@@ -245,9 +252,6 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
 	echo " -p ", $login['port'];
       }
       echo "</a>\n";
-      if (!$manifestOnly){
-      	 echo "<span class='status_msg'><i>Querying for more login information... </i></span>\n";      
-      }
     }
     if ($hadLogins) {
       echo "</td>\n";
@@ -260,7 +264,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       echo "<tr>\n";
       echo "<th colspan='2'>Interfaces</th>";
       echo "<th colspan='2'>MAC</th>\n";
-      echo "<th>Layer 3</th>\n";
+      echo "<th colspan='2'>Layer 3</th>\n";
       echo "</tr>\n";
     }
     foreach ($interfaces as $interface){
@@ -272,7 +276,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
       echo "<td colspan='2'>",$interface['mac_address'],"</td>";
       foreach ($interface as $ip){
 	if ($ip->getName() == "ip") {
-	  echo "<td>";
+	  echo "<td colspan='2'>";
 	  if ($ip['type'] ){
 	     echo $ip['type'],": ";
 	  }	  
@@ -491,7 +495,47 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
   }
 }
 
+# Pull expiration from manifest 
+# (only for EG: from ns4:geni_sliver_info extension)
+function expires_from_manifest($manifest_node, $xml)
+{
+  $expires = "";
 
+  $client_id = $manifest_node['client_id'];
+  $component_id = $manifest_node['component_id'];
+  $component_manager_id = $manifest_node['component_manager_id'];
+
+  $doc = new DOMDocument('1.0', 'utf-8');
+  $doc->loadXML($xml);
+  $nodes = $doc->getElementsByTagName('node');
+
+  for($i = 0; $i < $nodes->length; $i++) {
+    $node = $nodes->item($i);
+    if ($node->getAttribute('client_id') == $client_id &&
+	$node->getAttribute('component_id') == $component_id && 
+	$node->getAttribute('component_manager_id') == $component_manager_id) {
+      $sliver_infos = $node->getElementsByTagName('geni_sliver_info');
+      if ($sliver_infos->length > 0) {
+	$sliver_info = $sliver_infos->item(0);
+	//	if (!$sliver_info->hasAttributes()) {
+	//	  error_log("NO ATTRIBS");
+	//	} else {
+	//  foreach($sliver_info->attributes as $attr) {
+	//	    $name = $attr->nodeName;
+	//	    $value = $attr->nodeValue;
+	//	    error_log("NAME " . $name . " VAL " . $value);
+	//	  }
+	//	}
+	$expires_orig = $sliver_info->getAttribute('expiration_time');
+	$expires = rfc3339Format($expires_orig);
+	break;
+      }
+    }
+  }
+
+  //  error_log("about to return: " . $expires);
+  return $expires;
+}
 
 function print_return( $obj, $topLevel ) {
   if (!$topLevel){

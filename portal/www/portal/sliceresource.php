@@ -136,7 +136,7 @@ echo "<p style='margin:0px;text-align:right;'>Started at: <b><span id='start_tim
 echo "</div></div>";
 
 $request_rspec_filename = $slice_name . "_request_rspec.xml";
-$manifest_rspec_filename = $slice_name . "_manifst_rspec.xml";
+$manifest_rspec_filename = $slice_name . "_manifest_rspec.xml";
 ?>
 
   <div id='tablist'>
@@ -292,6 +292,8 @@ else {
 <div class='resources' id='prettyxml'><p><i>Pending... (See 'Detailed Progress' tab for more information.)</i></p></div>
 
 <!-- Jacks container -->
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <script src="<?php echo $jacks_stable_url;?>"></script>
 <div id='jacksContainer' class='jacks resources' style='background-color: white;display: none;'></div>
 

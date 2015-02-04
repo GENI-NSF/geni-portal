@@ -63,15 +63,15 @@ if (isset($slice_expired) && convert_boolean($slice_expired) ) {
 if (! isset($all_ams)) {
   $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $all_ams = array();
-  foreach ($am_list as $am) 
-  {
-    $single_am = array();
-    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
-    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
-    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-    $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
-    $all_ams[$service_id] = $single_am;
-  }   
+  foreach ($am_list as $am)
+    {
+      $single_am = array();
+      $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+      $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+      $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+      $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
+      $all_ams[$service_id] = $single_am;
+    }
 }
 
 // print_r( $all_ams);
@@ -131,7 +131,7 @@ function build_agg_table_on_slicepg()
      $output .= "<td colspan='2'>";
      $output .= "<button title='Get summary status for resources at selected aggregates.' onClick=\"getCheckedStatus();\"><b>Ready?</b></button>";
      $output .= "<button title='Login info, etc. for resources at selected aggregates.' onClick=\"doOnChecked('$listres_url');\"><b>Resource Details</b></button>";
-     $output .= "<button title='Get status of individual resources at selected aggregates.' onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
+     //     $output .= "<button title='Get status of individual resources at selected aggregates.' onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
      $output .= "<button title='Delete resources at selected aggregates.' onClick=\"doOnChecked('confirm-sliverdelete.php?slice_id=" . $slice_id . "', true)\"><b>Delete Resources</b></button>";
      $output .= "</td></tr>\n";
 
@@ -144,7 +144,7 @@ function build_agg_table_on_slicepg()
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_PROD_CAT."'>Production</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_DEV_CAT."'>Development</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_EXPERIMENTAL_CAT."'>Experimental</option>";
-     //     $output .= "<option class='op_".SERVICE_ATTRIBUTE_FEDERATED_CAT."'>Federated</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_FEDERATED_CAT."'>Federated</option>";
      $output .= "</select>";
      $output .= "</td>";
      $output .= "<td colspan='2'>";
@@ -193,7 +193,7 @@ function build_agg_table_on_slicepg()
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
       $output .= "<button  id='add_button_".$am_id."' title='Add resources at this aggregate.' onClick=\"window.location='".$add_url."&am_id=".$am_id."'\" $add_slivers_disabled $disable_buttons_str><b>Add</b></button>\n";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
-      $output .= "<button id='status_button_".$am_id."' title='Get status of individual resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
+#      $output .= "<button id='status_button_".$am_id."' title='Get status of individual resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' title='Delete resources at this aggregate.' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
       $output .= "</div></td></tr>";
       
@@ -226,7 +226,6 @@ function build_agg_table_on_slicepg()
      return $output;
 }
 
-
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
@@ -236,8 +235,8 @@ if (! isset($ma_url)) {
 }
 
 if (isset($slice)) {
-  //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
-  //  error_log("SLICE  = " . print_r($slice, true));
+  //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];                            
+  //  error_log("SLICE  = " . print_r($slice, true));                           
   $slice_desc = $slice[SA_ARGUMENT::SLICE_DESCRIPTION];
   $slice_creation_db = $slice[SA_ARGUMENT::CREATION];
   $slice_creation = dateUIFormat($slice_creation_db);
@@ -251,11 +250,11 @@ if (isset($slice)) {
   $owner_email = $owner->email();
 
   $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  //error_log("slice project_name result: $project_name\n");
-  // Fill in members of slice member table
+  //error_log("slice project_name result: $project_name\n");                    
+  // Fill in members of slice member table                                      
   $members = get_slice_members($sa_url, $user, $slice_id);
-  $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
-					       SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
+  $member_names = lookup_member_names_for_rows($ma_url, $user, $members,
+                                               SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 
   //find only ams that slice has resources on
   $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
@@ -265,16 +264,16 @@ if (isset($slice)) {
 
   //do the comparison and find ams
   foreach($slivers as $sliver)
-  {
-    foreach($all_aggs as $agg)
     {
-       if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
-       {
-          $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
-          break;
-       }
+      foreach($all_aggs as $agg)
+	{
+	  if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
+	    {
+	      $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
+	      break;
+	    }
+	}
     }
-  }
   //return unique ids
   $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
 
@@ -284,6 +283,9 @@ if (isset($slice)) {
   relative_redirect("home.php");
   exit();
 }
+
+include("jacks-app.php");
+setup_jacks_slice_context();
 
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
 $add_url = 'slice-add-resources-jacks.php?slice_id=' . $slice_id;
@@ -573,7 +575,7 @@ if (! is_null($jfed_button_start)) {
 }
 
 $map_url = "slice-map-view.php?slice_id=$slice_id";
-//print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
+print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
 
 print "</td>\n";
 print "</tr>\n";
@@ -600,6 +602,7 @@ print "<h2></h2>\n";
   <ul class='tabs'>
     <li><a href='#jacks-app'>Graphical View</a></li>
     <li><a href='#status_table_div'>Aggregate View</a></li>
+    <li><a href='#geo_view_div'>Geographic View</a></li>
   </ul>
 </div>
 
@@ -610,11 +613,12 @@ $all_rspecs = fetchRSpecMetaData($user);
 usort($all_rspecs, "cmp");
 
 // JACKS-APP STUFF //
-include("jacks-app.php");
+print "<div id='jacks-app-div'>";
 print "<table id='jacks-app'><tbody><tr>";
 print "<th>Manage Resources</th></tr><tr><td><div id='jacks-app-container'>";
 print build_jacks_viewer();
 print "</div></td></tr></tbody></table>";
+print "</div>";
 
 //include("jacks-editor-app.php");
 //print "<table id='jacks-editor-app'><tbody><tr>";
@@ -624,10 +628,9 @@ print "</div></td></tr></tbody></table>";
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="slice-jacks.css" />
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-<link rel="stylesheet" type="text/css" href="slice-table.css" />
 
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
@@ -714,6 +717,8 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
   }
 };
 
+var slice_id = <?php echo json_encode($slice_id); ?>
+
 </script>
 
 <?php
@@ -725,6 +730,29 @@ function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
   print "<div id='status_table_div'/>\n";
   print build_agg_table_on_slicepg();
   print "</div>\n";
+
+
+  // Slice geo view
+  print "<div id='geo_view_div' >\n";
+  echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+  include('slice_map.html');
+  echo "</td></tr></table>";
+  print "</div>";
+
+?>
+
+<script>
+// Make sure the height is not 100% but an actual size
+// Make sure width is set to 100% at load time 
+ //   (don't know, some times it isn't)
+$("#map1").height(400); 
+$("#map1").width('100%'); 
+
+</script>
+
+
+<?php
+
 // --- End of Slice and Sliver Status table
 
 print "<h2 id='members'>Slice Members</h2>";

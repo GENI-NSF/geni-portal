@@ -22,8 +22,48 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-$url = $_GET['url'];
+// Make sure the URL is trimmed, is a valid URL and doesn't contain file:// protocol
+// If the file_get_contents returns FALSE, return a 404 error
 
-print file_get_contents($url);
+if (! array_key_exists('url', $_GET)) {
+  // Return 400: BAD REQUEST
+  header("HTTP/1.0 400 Bad Request");
+  return;
+}
+  
+$url = $_GET['url'];
+$trimmed_url = trim($url);
+
+$has_error = false;
+
+// Check that this has a URL scheme://path format
+// and that the scheme is not file
+$scheme = parse_url($url, PHP_URL_SCHEME);
+// error_log("SCHEMA = " . $scheme);
+if ($scheme == FALSE || trim(strtolower($scheme)) == "file") {
+  // Return 400: BAD REQUEST
+  error_log("upload-file: Refusing to serve: $url");
+  header("HTTP/1.0 400 Bad Request");
+  return;
+}
+
+$MAX_LENGTH = 800000;
+
+$result = file_get_contents($trimmed_url, $MAX_LENGTH);
+
+if ($result == FALSE) {
+  // Return 404: NOT FOUND
+  header('HTTP/1.1 404 Not Found');
+  return;
+} else if (strlen($result) >= $MAX_LENGTH)  {
+  // We asked for a URL that is too large. 
+  // Return a bad request error
+  // Return 413: TOO LARGE
+  header("HTTP/1.0 400 Too Large");
+  return;
+} else {
+  // Return the contents of the file itself
+  print $result;
+}
 
 ?>

@@ -110,10 +110,12 @@ function handle_rspec_validation_results(jsonResponse)
 
 function handle_rspec_update(jsonResponse, rspec, updateJacks)
 {
-    $('#current_rspec_text').val(rspec);
+    if(jsonResponse.valid) {
+	$('#current_rspec_text').val(rspec);
 
-    if(!jacksEditorApp_isHidden && updateJacks) {
-	set_jacks_topology(rspec);
+	if(!jacksEditorApp_isHidden && updateJacks) {
+	    set_jacks_topology(rspec);
+	}
     }
 
     // enable the download button
@@ -322,7 +324,7 @@ function jacks_fetch_topology_callback(rspecs) {
 // The callback from Jacks when topology has been modified
 function jacks_modified_topology_callback(data)
 {
-    console.log("MOD = " + data);
+    //    console.log("MOD = " + data);
     rspec = data.rspec;
 
     // id, client_id, aggregate_id, site_name
@@ -430,7 +432,7 @@ function grab_paste_onchange()
 function urlupload_onchange()
 {
     // console.log("URLUPLOAD");
-    var url = $('#url_select').val();
+    var url = $('#url_select').val().trim();
     $.get("upload-file.php", 
 	  {url : url}, 
               function(rt, st, xhr) {
@@ -438,7 +440,9 @@ function urlupload_onchange()
 		  validate_rspec_file(rspec, false, handle_validation_results);
               })
     .fail(function(xhr, ts, et) {
-	    console.log("Failed uploading URL: " + url);
+	    //	    console.log("Failed uploading URL: " + url);
+	    jsonResponse = {"valid" : false, "message" : "<b style='color:red;'>ERROR: </b>: " + et};
+	    handle_rspec_update(jsonResponse, "", false);
 	});
     clear_other_inputs("#url_select");
 }
@@ -468,6 +472,13 @@ function do_rspec_download()
 	jacksEditorApp.submittingRspec = false;
 	jacksEditorApp.jacksInput.trigger('fetch-topology');
     }
+}
+
+// Invoke a new full-size editor in a new window
+function do_editor_expand()
+{
+    var editor_expand_url = "jacks-editor-app-expanded.php?slice_id=" + jacks_slice_id;
+    window.location.replace(editor_expand_url);
 }
 
 // Grab current topology from Jacks editor and submit if valid
@@ -518,3 +529,29 @@ function enable_rspec_selection_mode(selected_mode)
 	$('#rspec_jacks_row').hide();
 
 }
+
+function validateSubmit()
+{
+  f1 = document.getElementById("f1");
+  rspec = document.getElementById("rspec_select");
+  //  am = document.getElementById("agg_chooser");
+  rspec2 = document.getElementById("file_select");
+
+  current_rspec_text = $('#current_rspec_text').val();
+  is_bound = $('#bound_rspec').val();
+
+  //  console.log("validateSubmit.rspec = " + current_rspec_text);
+  //  console.log("validateSubmit.bound = " + is_bound);
+  
+  if ((current_rspec_text != '') && is_bound) {
+    f1.submit();
+    return true;
+  } else if (current_rspec_text != '') {
+    alert("Please select an Aggregate.");
+    return false;
+  } else {
+    alert ("Please select a Resource Specification (RSpec).");
+    return false;
+  }
+}
+

@@ -4,11 +4,43 @@
 
 = GENI Portal Release Notes =
 
+== 2.26 ==
+ * Handle multi-valued attributes from Shibboleth (#740)
+ * Add scroll bars and standard canvasOptions/constraints to popup rspec  
+   editors (#1266)
+ * Add footer, and internal and expanded views for geo map. (#1264).
+ * Support 'expanded' (much higher, full-width) Jacks viewer and editor (#1233)
+  * Add missing scrollbar on 'View RSpec' in Jacks. (#1248)
+ * Support matching on sliver_id for exosm resources status in Jacks (#1231)
+ * Add CloudLab button to home page tools list (#1263) 
+ * Remove warning about IdP has no affiliation for EPPN 
+   (which is optional) (#1269).
+ * Add rspec viewer and node selection to rspec viewer in profile (#1237)
+ * Add aggregate category 'Federated'. (#1239)
+ * Combine status and details pages, eliminate status buttons (#1043)
+  * Remove per aggregate Jacks viewer on details page
+  * Show sliver expiration on combined status/details page (#1107)
+  * Show/hide raw status on combined status/details page (#1273).
+  * Align status text and status table header (#1276)
+  * Decouple showing status from details (make them siblings not 
+     hierarchical) (#1275).
+  * Clear old status when fetching new status. (#1286)
+ * Allow leading/trailing whitespace in URL in 
+   slice-add-resource-jacks.js (#1277)
+ * Check valid URL names and handle URL load errors in 
+   jacks editor app (#1279).
+ * Limit max size of rspec loaded from URL to 8M (#1282).
+ * Restore Jacks viewer to sliceresource.php and give it an rspec 
+    scrollbar (#1235)
+ * Add a Cloud Lab button on the home page. (#1267)
+ * Remove error_log warning about undefined 
+    get_slice_credential_disable_buttons (#1288)
+
 == 2.25 ==
  * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
    editor. (#1143).
  * Name downloaded request rspec with slice name (#1204)
- * Add aggregate categories 'Experimental' and 'Federated'. (#1239)
+ * Add aggregate category 'Experimental'. (#1239)
  * Support multiple nodes with same client_id from different AMs in SSH (#1257)
  * Support multiple nodes with same client_id from different AMs
    for AM API calls (#1258)

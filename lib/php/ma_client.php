@@ -288,6 +288,9 @@ $MEMBERALTKEYS = array("MEMBER_URN"=> "urn",
 		       "_GENI_ENABLE_IRODS" => "enable_irods",
 		       "_GENI_IRODS_USERNAME" => "irods_username",
 		       "_GENI_WIMAX_USERNAME" => "wimax_username",
+		       "_GENI_MEMBER_URL"=> "url",
+		       "_GENI_MEMBER_REASON"=> "reason",
+		       "_GENI_MEMBER_REFERENCE"=> "reference",
 		       );
 
 function invert_array($ar) {
@@ -666,6 +669,9 @@ $DETAILS_IDENTIFYING = array(
 			     "_GENI_MEMBER_EPPN",
 			     "_GENI_IRODS_USERNAME",
 			     "_GENI_WIMAX_USERNAME",
+			     "_GENI_MEMBER_URL",
+			     "_GENI_MEMBER_REASON",
+			     "_GENI_MEMBER_REFERENCE",
 			     );
 
 function _lookup_identifying_members_details($client, $signer, $uid)

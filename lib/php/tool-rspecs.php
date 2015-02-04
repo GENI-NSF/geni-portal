@@ -93,6 +93,19 @@ $owners = ma_lookup($ma_url, $user, $public_owners);
 include('tool-rspecs.js');
 //error_log("JSU = " . $jacks_stable_url);
 print '<script src="' . $jacks_stable_url . '"></script>';
+print "<script src='jacks-editor-app.js'></script>";
+
+$STANDARD_JACKS_CONTEXT_LOCATION = "/etc/geni-ch/jacks-context.json";
+
+$jacksContext = array("canvasOptions" => null, "constraints" => array());
+if (file_exists($STANDARD_JACKS_CONTEXT_LOCATION)) {
+  $jacksContext = json_decode(file_get_contents($STANDARD_JACKS_CONTEXT_LOCATION));
+}
+
+?>
+<script>var jacksContext = <?php echo json_encode($jacksContext) ?>;</script>
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<?php
 print "<div id='jacksEditorContainer' class='jacks' style='background-color: white; display:none;'></div>";
 print "<div id='jacksContainer' class='jacks' style='background-color: white; display:none;'></div>";
 print("<h2>Manage Resource Specifications (RSpecs)</h2>\n");
