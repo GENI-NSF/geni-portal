@@ -481,8 +481,10 @@ function add_one_login(am_id, slice_id)
 	    // Remove any previous raw status for this am_id
 	    remove_tag = ".rawStatus#" + am_id;
 	    $(remove_tag).remove();
-	    $('#details').append(status_info);
 
+	    // Place the raw status after the resources tag
+	    var resource_elt = $('#details').children('.resources#agg_' + am_id);
+	    $(status_info).insertAfter(resource_elt);
 
 	    // Set the expiration on each sliver
 	    if ('resources' in am) {
