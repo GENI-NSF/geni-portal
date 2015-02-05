@@ -50,10 +50,11 @@ setup_jacks_editor_slice_context();
 
 ?>
 
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
 <link rel="stylesheet" type="text/css" href="slice-jacks.css" />
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-<link rel="stylesheet" type="text/css" href="slice-table.css" />
+<link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
@@ -67,7 +68,7 @@ setup_jacks_editor_slice_context();
 
 <?php
 
-echo "<table style=\"margin-left: 0px;width:90%;height:20px\"><tr><th>Resources Allocated to Slice $slice_name</th></tr></table>";
+echo "<table style=\"margin-left: 0px;width:90%;height:20px\"><tr><th>Add Resources to GENI Slice $slice_name</th></tr></table>";
 
 print "<table style=\"margin-left: 0px; width:90%; height:70%\" id='jacks-editor-app'><tbody>";
 print "<tr><td><div id='jacks-editor-app-container' style='width:100%; height:100%'>";
