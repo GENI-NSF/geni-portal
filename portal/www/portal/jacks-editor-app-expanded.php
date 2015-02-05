@@ -173,4 +173,6 @@ print "</div></td></tr></tbody></table>";
 
 echo '</div>';
 
+include("footer.php");
+
 ?>
