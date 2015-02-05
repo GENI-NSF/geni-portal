@@ -6499,23 +6499,6 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "3.0", 
-                    "2.0"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+openflow:foam:foam.instageni.idre.ucla.edu+authority+am", 
-                "am": "UCLA InstaGENI OpenFlow", 
-                "resources": 1, 
-                "component_id": "1"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
                     "-82.346214", 
                     "29.64171"
                 ]
