@@ -443,7 +443,7 @@ function urlupload_onchange()
               })
     .fail(function(xhr, ts, et) {
 	    //	    console.log("Failed uploading URL: " + url);
-	    jsonResponse = {"valid" : false, "message" : "<b style='color:red;'>ERROR: </b>: " + et};
+	    jsonResponse = {"valid" : false, "message" : "<b style='color:red;'>ERROR: </b> " + et};
 	    handle_rspec_update(jsonResponse, "", false);
 	});
     clear_other_inputs("#url_select");

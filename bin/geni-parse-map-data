@@ -103,11 +103,13 @@ def parse_args(argv):
 # attempt to connect to database
 # returns connection and cursor variables
 def connect_to_database(database, user, host, password):
+    args=dict(database=database,
+              user=user,
+              host=host)
+    if password:
+        args['password'] = password
     try:
-        conn = psycopg2.connect(database=database,
-                                user=user,
-                                host=host,
-                                password=password)
+        conn = psycopg2.connect(**args)
     except:
         raise Exception("Could not connect to database.")
     logger.info("Established connection to database '%s' on %s." 
@@ -270,10 +272,6 @@ def main(argv=None):
         argv = sys.argv
     try:
         options,args = parse_args(argv)
-        if not options.password:
-            sys.stderr.write("Database password not provided\n")
-            return 1
-
         init_logging(options)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
