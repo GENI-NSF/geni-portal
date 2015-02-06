@@ -17,9 +17,9 @@ window.onload = function init() {
   map1.addLayer(osm1);
   
   // Initial view location
-  var center = new OpenLayers.LonLat(-96,38);
+  var center = new OpenLayers.LonLat(-109,22);
   center.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-  map1.setCenter(center, 4);
+  map1.setCenter(center, 2);
   map1.addControl(new OpenLayers.Control.LayerSwitcher());
      
   // set up style for current GENI resources
