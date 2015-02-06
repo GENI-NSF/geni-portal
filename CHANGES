@@ -11,6 +11,7 @@
     formatting, expanded views (#1283).
  * Add Duplicate Nodes/Links, Duplicate Nodes only, Auto IP buttons
     to jacks editor (#1278).
+ * Add Editor Ops buttons pto Expanded Jacks editor (#1295)
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
