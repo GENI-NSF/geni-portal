@@ -555,6 +555,11 @@ function do_selection_duplicate(include_links)
 	// Make clone of node, change its client_id and add to list of nodes
 	var cloned_rspec_node = $(selected_rspec_node).clone()[0];
 	$(cloned_rspec_node).attr('client_id', new_node_name);
+
+	// Remove any IP addresses that were cloned
+	$(cloned_rspec_node).find('ip').remove();
+
+	// Add new node into rspec
 	rspec_root.appendChild(cloned_rspec_node);
 
 	if (include_links) {
@@ -609,7 +614,10 @@ function do_selection_duplicate(include_links)
 
     if (added_nodes) {
 	var new_rspec = (new XMLSerializer()).serializeToString(doc);
-	set_jacks_topology(new_rspec);
+	// Remove xmlns="" which Firefox puts into new elements 
+	// but Jacks can't handle
+	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
+	set_jacks_topology(cleaned_rspec);
     }
 
 }
@@ -635,22 +643,36 @@ function do_auto_ip_assignment()
     var rspec = $('#current_rspec_text').val();
     var doc = jQuery.parseXML(rspec);
     var links = $(doc).find('link');
+    var num_links = links.length;
     var changed_ips = (links.length > 0);
+
+    if (num_links > 255) {
+    	alert("Can't perform AUTO_IP assignment with > 255 links ");
+    	return;
+    }
 
     // Make a hash table of all interfaces by client_id
     var interfaces_by_client_id = [];
     var interfaces = $(doc).find('interface');
     var num_interfaces = interfaces.length;
+
     for(var iface_index = 0; iface_index < num_interfaces; iface_index++) {
 	var interface = interfaces[iface_index];
 	var client_id = interface.getAttribute('client_id');
 	interfaces_by_client_id[client_id] = interface;
     }
 
-    var num_links = links.length;
     for(var link_index = 0; link_index < num_links; link_index++) {
 	var iface_ref_elts = links[link_index].getElementsByTagName('interface_ref');
 	var num_iface_ref_elts = iface_ref_elts.length;
+
+	if (num_iface_ref_elts > 255) {
+	    alert("Can't perform AUTO_IP assignment with " + 
+		  "> 255 interfaces per link ");
+	    return;
+	}
+
+
 	for(var iface_index = 0; iface_index < num_iface_ref_elts; iface_index++) {
 	    var iface_name = iface_ref_elts[iface_index].getAttribute('client_id');
 	    var interface = interfaces_by_client_id[iface_name];
@@ -665,7 +687,10 @@ function do_auto_ip_assignment()
 
     if (changed_ips) {
 	var new_rspec = (new XMLSerializer()).serializeToString(doc);
-	set_jacks_topology(new_rspec);
+	// Remove xmlns="" which Firefox puts into new elements 
+	// but Jacks can't handle
+	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
+	set_jacks_topology(cleaned_rspec);
     }
 }
 
