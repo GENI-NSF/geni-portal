@@ -498,8 +498,9 @@ function do_selection_duplicate(include_links)
     var rspec = $('#current_rspec_text').val();
     var doc = jQuery.parseXML(rspec);
     var rspec_root = $(doc).find('rspec')[0];
+    var num_selected_nodes = jacksEditorApp.selectedNodes.length;
 
-    for(var i in jacksEditorApp.selectedNodes) {
+    for(var i = 0; i < num_selected_nodes; i++) {
 
 	added_nodes = true;
 
@@ -512,7 +513,8 @@ function do_selection_duplicate(include_links)
 	var current_topology = jacksEditorApp.currentTopology;
 	var current_topology_nodes = current_topology['nodes'];
 	var selected_topology_node = null;
-	for(var j in current_topology_nodes) {
+	var num_current_topology_nodes = current_topology_nodes.length;
+	for(var j = 0; j < num_current_topology_nodes; j++) {
 	    var topology_node = current_topology_nodes[j];
 	    if (topology_node.id == selected_node_id) {
 		selected_topology_node = topology_node;
@@ -524,7 +526,8 @@ function do_selection_duplicate(include_links)
 	var site_name = selected_topology_node.site_name;
 	var selected_topology_node_site = null;
 	var current_topology_sites  = current_topology['sites'];
-	for (var j  in current_topology_sites) {
+	var num_current_topology_sites = current_topology_sites.length;
+	for (var j = 0; j < num_current_topology_sites; j++) {
 	    var topology_site = current_topology_sites[j];
 	    if (topology_site.name == site_name) {
 		selected_topology_node_site = topology_site;
@@ -537,7 +540,8 @@ function do_selection_duplicate(include_links)
 	all_node_names.push(new_node_name);
 
 	var rspec_nodes = $(rspec_root).find('node');
-	for(var j in rspec_nodes) {
+	var num_rspec_nodes = rspec_nodes.length;
+	for(var j = 0; j < num_rspec_nodes; j++) {
 	    var rspec_node = rspec_nodes[j];
 	    if ($(rspec_node).attr('client_id') == selected_node_name) {
 		var site_elements = $(rspec_node).find('site');
