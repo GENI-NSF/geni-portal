@@ -59,7 +59,7 @@ function from_request($key) {
 }
 
 function update_ma($ma_url, $user, $name, $value, $old_value) {
-  if (strcmp($value, $old_value) === 0) {
+  if ($value === $old_value) {
     // If no change, do nothing.
     return;
   } else if (empty($value)) {
@@ -165,7 +165,7 @@ if ($pi_request and ! $is_pi) {
  * Send an email listing values changed.
  */
 function note_change($field, $new, $old) {
-  if (strcmp($old, $new) === 0) {
+  if ($old === $new) {
     return '';
   } else {
     return "$field was '$old', now '$new'\n";
