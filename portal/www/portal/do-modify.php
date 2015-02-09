@@ -194,6 +194,9 @@ if (! empty($change_text)) {
   $body .= $change_text;
 
   $subject = "GENI account changes posted";
+  if ($req_name !== $user->prettyName()) {
+    $subject = "GENI name change posted";
+  }
   mail($portal_admin_email, $subject, $body);
 }
 
