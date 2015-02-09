@@ -252,7 +252,7 @@ var jacksEditorApp_isHidden = true;
 var jacksEditorApp = null;
 
 /* Make sure Jacks Editor App exists */
-function assureJacksEditorApp() {
+function assureJacksEditorApp(initial_rspec) {
     if (jacksEditorApp == null) {
 	canvasOptions=jacksContext.canvasOptions;
 	constraints = jacksContext.constraints;
@@ -283,12 +283,17 @@ function assureJacksEditorApp() {
 					jacks_editor_app_ready,
 				        jacks_fetch_topology_callback,
 					jacks_modified_topology_callback);
+	jacksEditorApp.initialRSpec = initial_rspec;
     }
 }
 
 function jacks_editor_app_ready(je, je_input, je_output) {
     //  console.log("JEAR : JacksEditorApp ready");
   $('#rspec_status_text').text("");
+
+  if (je.initialRSpec != null) {
+      set_jacks_topology(je.initialRSpec);
+  }
 };
 
 // The callback when we've received the current rspec from Jacks
@@ -393,9 +398,11 @@ function do_hide_editor_elements()
 }
 
 /** If the editor doesn't exist, create it before showing */
-function do_show_editor()
+function do_show_editor(initial_rspec)
 {
-    assureJacksEditorApp();
+    if (initial_rspec === undefined) initial_rspec = null;
+
+    assureJacksEditorApp(initial_rspec);
     $('#show_jacks_editor_button').hide();
     $('#hide_jacks_editor_button').show();
     $('#discard_jacks_editor_button').show();
@@ -477,10 +484,26 @@ function do_rspec_download()
 }
 
 // Invoke a new full-size editor in a new window
-function do_editor_expand()
+// Pass along current rspec as a POST argument
+// by creating a form at the end of the document body (not nested)
+// If true, return to slice-add-resources-jacks.js
+// with current topology
+function do_editor_expand(restore)
 {
-    var editor_expand_url = "jacks-editor-app-expanded.php?slice_id=" + jacks_slice_id;
-    window.location.replace(editor_expand_url);
+    var current_rspec = jacksEditorApp.currentTopology.rspec;
+    $("#current_editor_rspec").val(rspec);
+    var editor_url = "jacks-editor-app-expanded.php?slice_id=" + 
+	jacks_slice_id;
+
+    if (restore == true)
+	editor_url = "slice-add-resources-jacks.php?slice_id=" + 
+	    jacks_slice_id;
+
+    var $form=$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",editor_url);
+    var $input=$(document.createElement('input')).attr('name','current_editor_rspec').val(current_rspec);
+    $form.append($input);
+    $("body").append($form);
+    $form.submit();
 }
 
 // Take every selected node and make a copy of it, sending a new

@@ -32,6 +32,10 @@ require_once("sa_client.php");
 require_once("settings.php");
 require_once 'geni_syslog.php';
 
+$current_rspec = "";
+if (array_key_exists('current_editor_rspec', $_POST)) {
+    $current_rspec = $_POST['current_editor_rspec'];
+}
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -147,10 +151,10 @@ print "</div></td></tr></table>";
 			 user_id : jacks_user_id};
 
   var jacks_enable_buttons = false;
-
+  var jacks_current_rspec = <?php echo json_encode($current_rspec) ?>;
   var jacksContext = <?php echo json_encode($jacksContext) ?>;
 
-  do_show_editor();
+  do_show_editor(jacks_current_rspec);
 
 </script>
 

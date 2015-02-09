@@ -26,6 +26,13 @@ require_once("user.php");
 require_once("header.php");
 require_once("settings.php");
 
+// error_log("POST = " . print_r($_POST, true));
+
+$current_rspec = "";
+if (array_key_exists('current_editor_rspec', $_POST)) {
+    $current_rspec = $_POST['current_editor_rspec'];
+}
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -103,9 +110,10 @@ print "</div></td></tr></table>";
 			 user_id : jacks_user_id};
 
   var jacks_enable_buttons = true;
+  var jacks_current_rspec = <?php echo json_encode($current_rspec) ?>;
   var jacksContext = <?php echo json_encode($jacksContext) ?>;
 
-  do_show_editor();
+  do_show_editor(jacks_current_rspec);
 
 </script>
 
@@ -162,9 +170,6 @@ print '</p>';
 
 <script>
 $('#jacks-editor-status').hide();
-var pane = $("#jacks-editor-pane")[0];
-pane.style.height ="80%";
-pane.style.width ="100%";
 </script>
 
 <?php

@@ -47,6 +47,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     // Responses coming out of Jacks.
     this.jacksOutput = null;
 
+    this.initialRSpec = null;
+
     this.jacks = jacks;
     this.jacks_viewer = null;
     this.jacks_viewer_visible = false;
