@@ -212,7 +212,7 @@ function setup_jacks_editor_app_controls($enable_expansion)
   if ($enable_expansion) {
     print '<button type="button" id="expand_editor_button" onClick="do_editor_expand(false)">Expand</button>';
   } else {
-    print '<button type="button" id="restore_editor_button" onClick="do_editor_expand(true)">Restore</button>';
+    print '<button type="button" id="restore_editor_button" onClick="do_editor_expand(true)">Back</button>';
   }
   print '<button type="button" id="duplicate_nodes_links_button" onClick="do_selection_duplicate(true)">Duplicate Nodes/Links</button>';
   print '<button type="button" id="duplicate_nodes_only_button" onClick="do_selection_duplicate(false)">Duplicate Nodes only</button>';
