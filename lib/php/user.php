@@ -140,30 +140,6 @@ class GeniUser
   // MSB : Disable the permission manager cache: it is ALWAYS stale
   const STALE_PERMISSION_MANAGER_THRESHOLD_SEC = -1;
 
-  function loadAccount() {
-    /* print "in GeniUser->loadAccount<br/>"; */
-    $dict = loadAccount($this->account_id);
-    $this->status = $dict['status'];
-    $this->username = $dict['username'];
-    /*
-     * It seems to be necessary to use a temporary
-     * variable rather than assigning directly to
-     * the instance variable. I don't know why.
-     */
-    $attrs = loadIdentityAttributes($this->identity_id);
-    $this->raw_attrs = $attrs;
-    foreach ($attrs as $attr) {
-      $this->attributes[$attr['name']] = $attr['value'];
-    }
-    // identity table has this - but where else?
-    if (isset($this->attributes['provider_url']) && ! isset($this->idp_url)) {
-      $this->idp_url = $this->attributes['provider_url'];
-    }
-    if (isset($this->attributes['affiliation']) && ! isset($this->affiliation)) {
-      $this->affiliation = $this->attributes['affiliation'];
-    }
-  }
-
   function isActive() {
     return $this->status == 'active';
   }

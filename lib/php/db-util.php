@@ -28,74 +28,6 @@ require_once 'db_utils.php';
 require_once 'response_format.php';
 require_once 'speaksforcred.php';
 
-function loadAccount($account_id) 
-{
-  /* print "in db-util loadAccount<br/>"; */
-  $conn = portal_conn();
-  $sql = "SELECT * FROM account WHERE account_id = "
-    . $conn->quote($account_id, 'text');
-  $row = db_fetch_row($sql);
-  return $row[RESPONSE_ARGUMENT::VALUE];
-}
-
-// Get just the account status for this account id, to see if it has changed since the cached value
-function loadAccountStatus($account_id)
-{
-  /* print "in db-util loadAccount<br/>"; */
-  $conn = portal_conn();
-  $sql = "SELECT status FROM account WHERE account_id = "
-    . $conn->quote($account_id, 'text');
-  $row = db_fetch_row($sql);
-  return $row[RESPONSE_ARGUMENT::VALUE];
-}
-
-/*
-function loadAccountPrivileges($account_id) {
-  // print "in db-util loadAccount<br/>"; 
-  $conn = portal_conn();
-  $sql = "SELECT privilege FROM account_privilege WHERE account_id = "
-    . $conn->quote($account_id, 'text');
-// print "Query = $sql<br/>"; 
-  $result = db_fetch_rows($sql);
-  $rows = $result[RESPONSE_ARGUMENT::VALUE];
-  $privs = array();
-  foreach ($rows as $row) {
-    $privs[] = $row["privilege"];
-  }
-  return $privs;
-}
-*/
-
-function loadIdentityAttributes($identity_id) {
-  $conn = portal_conn();
-  $sql = "SELECT * FROM identity_attribute WHERE identity_id = "
-    . $conn->quote($identity_id, 'integer');
-  /* print "Query = $sql<br/>"; */
-  $value = db_fetch_rows($sql);
-  return $value[RESPONSE_ARGUMENT::VALUE];
-}
-
-function fetch_slice($slice_id)
-{
-  $conn = portal_conn();
-  $sql = "SELECT * FROM slice"
-    . " WHERE slice.slice_id = "
-    . $conn->quote($slice_id, 'text');
-  $row = db_fetch_row($sql);
-  // FIXME: Check for errors
-  return $row[RESPONSE_ARGUMENT::VALUE];
-}
-
-function fetch_slice_by_name($name)
-{
-  $conn = portal_conn();
-  $sql = "SELECT * FROM slice"
-    . " WHERE slice.name = "
-    . $conn->quote($name, 'text');
-  $row = db_fetch_row($sql, "fetch_slice_by_name");
-  // FIXME: Check for errors
-  return $row[RESPONSE_ARGUMENT::VALUE];
-}
 
 function db_add_outside_key_cert($account_id, $certificate, $key)
 {
@@ -188,15 +120,6 @@ function requestedAccounts() {
   /* print "Query = $sql<br/>"; */
   $value = db_fetch_rows($sql, "loadAccount select");
   return $value[RESPONSE_ARGUMENT::VALUE];  // FIXME: Check for errors
-}
-
-function loadIdentitiesByAccountId($account_id) {
-  $conn = portal_conn();
-  $sql = "SELECT * FROM identity WHERE account_id = "
-    . $conn->quote($account_id, 'text');
-  /* print "Query = $sql<br/>"; */
-  $value = db_fetch_rows($sql, "loadIdentityAttributes select");
-  return $value[RESPONSE_ARGUMENT::VALUE];
 }
 
 function storeAbacAssertion($assertion,
