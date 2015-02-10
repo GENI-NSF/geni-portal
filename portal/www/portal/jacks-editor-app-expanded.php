@@ -31,6 +31,7 @@ require_once("settings.php");
 $current_rspec = "";
 if (array_key_exists('current_editor_rspec', $_POST)) {
     $current_rspec = $_POST['current_editor_rspec'];
+    //    error_log("CURRENT_RSPEC = " . $current_rspec);
 }
 
 $user = geni_loadUser();

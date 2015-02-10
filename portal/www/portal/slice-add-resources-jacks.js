@@ -334,6 +334,8 @@ function jacks_modified_topology_callback(data)
     //    console.log("MOD = " + data);
     rspec = data.rspec;
 
+    $('#current_rspec_text').val(rspec);
+
     // id, client_id, aggregate_id, site_name
     nodes = data.nodes;
 
