@@ -63,7 +63,6 @@ dist_svcweb_DATA = \
 	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
-	www/portal/approve.php \
 	www/portal/ask-for-project.php \
 	www/portal/cancel-join-project.php \
 	www/portal/certificate.php \
@@ -99,7 +98,6 @@ dist_svcweb_DATA = \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
 	www/portal/edit-slice.php \
-	www/portal/error-eppn.php \
 	www/portal/error-text.php \
 	www/portal/flack.css \
 	www/portal/flack.php \
