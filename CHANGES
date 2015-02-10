@@ -9,11 +9,19 @@
  * Remove interleaving of status and details in listresources (#1289).
  * Fix a number of bugs on jacks views, footers, inconsistent table
     formatting, expanded views (#1283).
- * Add Editor Ops buttons pto Expanded Jacks editor (#1295)
+ * Add Duplicate Nodes/Links, Duplicate Nodes only, Auto IP buttons
+   to jacks editor (#1278).
+ * Add Editor Ops buttons to Expanded Jacks editor (#1295)
+ * Make expanded jacks editor take context from unexpanded
    (and vice versa) (#1292).
-=======
  * Highlight name changes in email (#1297)
-
+ * Time out calls to stitcher after 45 minutes using new `--timeout` option to stitcher. (#1234)
+ * Deprecate Flack (#1219)
+ * Make the Jacks Add Resources and Slice pages the default. (#1183)
+  * Add a `Restart` button. (#1044)
+  * Handle bound RSpecs. (#389)
+  * Allow (re) binding nodes. (#1100)
+  * Warn about illegal RSpecs. (#1101)
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)

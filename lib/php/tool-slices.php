@@ -96,7 +96,7 @@ if (count($my_slice_objects) > 0) {
   $base_url = relative_url("slicecred.php?");
   $slice_base_url = relative_url("slice.php?");
   $listres_base_url = relative_url("listresources.php?");
-  $resource_base_url = relative_url("slice-add-resources.php?");
+  $resource_base_url = relative_url("slice-add-resources-jacks.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");
@@ -268,7 +268,8 @@ function list_slice($slice,$user) {
   print ("<button title='Login info, etc' onClick=\"info_set_location('$slice_id', 'tool-aggwarning.php?loc=$listres_url')\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button $delete_slivers_disabled onClick=\"info_set_location('$slice_id', '$delete_sliver_url')\"><b>Delete Resources</b></button>");
   $hostname = $_SERVER['SERVER_NAME'];
-  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
+#  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
+  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\">Launch Flack<br/>(deprecated)</button>";
   
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
   

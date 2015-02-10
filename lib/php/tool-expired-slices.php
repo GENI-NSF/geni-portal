@@ -84,7 +84,7 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
   $base_url = relative_url("slicecred.php?");
   $slice_base_url = relative_url("slice.php?");
   $listres_base_url = relative_url("listresources.php?");
-  $resource_base_url = relative_url("slice-add-resources.php?");
+  $resource_base_url = relative_url("slice-add-resources-jacks.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
   $abac_url = relative_url("sliceabac.php?");

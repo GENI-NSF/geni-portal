@@ -43,10 +43,6 @@ require_once('maintenance_mode.php');
 require_once('am_client.php');
 require_once("tool-jfed.php");
 
-function cmp($a,$b) {
-  return strcmp(strtolower($a['name']),strtolower($b['name']));
-}
-
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -63,15 +59,14 @@ if (isset($slice_expired) && convert_boolean($slice_expired) ) {
 if (! isset($all_ams)) {
   $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
   $all_ams = array();
-  foreach ($am_list as $am)
-    {
-      $single_am = array();
-      $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
-      $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
-      $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
-      $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
-      $all_ams[$service_id] = $single_am;
-    }
+  foreach ($am_list as $am) 
+  {
+    $single_am = array();
+    $service_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+    $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
+    $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $all_ams[$service_id] = $single_am;
+  }   
 }
 
 // print_r( $all_ams);
@@ -116,7 +111,7 @@ function build_agg_table_on_slicepg()
      $sliver_expiration = "NOT IMPLEMENTED YET";
      $slice_status = "";
 
-     $add_url = 'slice-add-resources-jacks.php?slice_id=' . $slice_id;
+     $add_url = 'slice-add-resources.php?slice_id='.$slice_id;
      $status_url = 'sliverstatus.php?slice_id='.$slice_id;
      $listres_url = 'listresources.php?slice_id='.$slice_id;
 
@@ -193,7 +188,7 @@ function build_agg_table_on_slicepg()
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
       $output .= "<button  id='add_button_".$am_id."' title='Add resources at this aggregate.' onClick=\"window.location='".$add_url."&am_id=".$am_id."'\" $add_slivers_disabled $disable_buttons_str><b>Add</b></button>\n";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
-#      $output .= "<button id='status_button_".$am_id."' title='Get status of individual resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
+	    //      $output .= "<button id='status_button_".$am_id."' title='Get status of individual resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' title='Delete resources at this aggregate.' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
       $output .= "</div></td></tr>";
       
@@ -226,6 +221,7 @@ function build_agg_table_on_slicepg()
      return $output;
 }
 
+
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
@@ -235,8 +231,8 @@ if (! isset($ma_url)) {
 }
 
 if (isset($slice)) {
-  //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];                            
-  //  error_log("SLICE  = " . print_r($slice, true));                           
+  //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  //  error_log("SLICE  = " . print_r($slice, true));
   $slice_desc = $slice[SA_ARGUMENT::SLICE_DESCRIPTION];
   $slice_creation_db = $slice[SA_ARGUMENT::CREATION];
   $slice_creation = dateUIFormat($slice_creation_db);
@@ -250,11 +246,11 @@ if (isset($slice)) {
   $owner_email = $owner->email();
 
   $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  //error_log("slice project_name result: $project_name\n");                    
-  // Fill in members of slice member table                                      
+  //error_log("slice project_name result: $project_name\n");
+  // Fill in members of slice member table
   $members = get_slice_members($sa_url, $user, $slice_id);
-  $member_names = lookup_member_names_for_rows($ma_url, $user, $members,
-                                               SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
+  $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
+					       SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
 
   //find only ams that slice has resources on
   $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
@@ -264,16 +260,16 @@ if (isset($slice)) {
 
   //do the comparison and find ams
   foreach($slivers as $sliver)
+  {
+    foreach($all_aggs as $agg)
     {
-      foreach($all_aggs as $agg)
-	{
-	  if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
-	    {
-	      $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
-	      break;
-	    }
-	}
+       if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
+       {
+          $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
+          break;
+       }
     }
+  }
   //return unique ids
   $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
 
@@ -284,11 +280,8 @@ if (isset($slice)) {
   exit();
 }
 
-include("jacks-app.php");
-setup_jacks_slice_context();
-
 $edit_url = 'edit-slice.php?slice_id='.$slice_id;
-$add_url = 'slice-add-resources-jacks.php?slice_id=' . $slice_id;
+$add_url = 'slice-add-resources.php?slice_id='.$slice_id;
 $res_url = 'sliceresource.php?slice_id='.$slice_id;
 $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = "mailto:$owner_email";
@@ -357,15 +350,10 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
-include("tabs.js");
-
 // Finish jFed setup
 print $jfed_script_text;
 
 ?>
-
-<!-- Jacks JS and App CSS -->
-<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <!-- This belongs in the header, probably -->
 <script>
@@ -460,6 +448,11 @@ $(document).ready(function() {
 });
 </script>
 
+<!--
+  Style for the slice redesign.
+  Should probably be merged into the css stylesheet, but this will change some elements on other pages.
+-->
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
 
 <?php 
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
@@ -493,7 +486,7 @@ if ($project_expiration) {
   $project_line = "Project does not have an expiration date<br>";
 }
 if ($renew_slice_privilege) {
-  print "<td id='renewtext' colspan='1' style=\"width:320px;\">\n";
+  print "<td colspan='1' style=\"width:320px;\">\n";
 } else {
   print "<td colspan='4'>\n";
 }
@@ -574,8 +567,8 @@ if (! is_null($jfed_button_start)) {
   print $jfed_button_start . " $disable_buttons_str><b>jFed</b></button>";
 }
 
-$map_url = "slice-map-view.php?slice_id=$slice_id";
-print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
+$slice_jacks_url = "slice-jacks.php?slice_id=$slice_id";
+print "<button onClick=\"window.location='$slice_jacks_url'\"><b>Slice Jacks (beta)</b></button>\n";
 
 print "</td>\n";
 print "</tr>\n";
@@ -595,169 +588,15 @@ print "</table>\n";
 
 print "<h2></h2>\n";
 
-?>
-
-
-<div id='tablist'>
-  <ul class='tabs'>
-    <li><a href='#jacks-app'>Graphical View</a></li>
-    <li><a href='#status_table_div'>Aggregate View</a></li>
-    <li><a href='#geo_view_div'>Geographic View</a></li>
-  </ul>
-</div>
-
-<?php
-
-// Grab all rspecs 
-$all_rspecs = fetchRSpecMetaData($user);
-usort($all_rspecs, "cmp");
-
-// JACKS-APP STUFF //
-print "<div id='jacks-app-div'>";
-print "<table id='jacks-app'><tbody><tr>";
-print "<th>Manage Resources</th></tr><tr><td><div id='jacks-app-container'>";
-print build_jacks_viewer();
-print "</div></td></tr></tbody></table>";
-print "</div>";
-
-//include("jacks-editor-app.php");
-//print "<table id='jacks-editor-app'><tbody><tr>";
-//print "<th>Add Resources</th></tr><tr><td><div id='jacks-editor-app-container'>";
-//print build_jacks_editor();
-//print "</div></td></tr></tbody></table>";
-
-?>
-
-<link rel="stylesheet" type="text/css" href="slice-table.css" />
-<link rel="stylesheet" type="text/css" href="jacks-app.css" />
-<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-
-<script src="portal-jacks-app.js"></script>
-<script src="portal-jacks-editor-app.js"></script>
-<script>
-  // AMs that the Portal says there are resources at.
-  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
-  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
-  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
-  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
-  var jacks_slice_urn= <?php echo json_encode($slice_urn) ?>;
-  var jacks_slice_expiration = <?php echo json_encode($slice_expiration) ?>;
-
-  var jacks_slice_info = {slice_id : jacks_slice_id, 
-			  slice_name : jacks_slice_name,
-			  slice_urn : jacks_slice_urn, 
-			  slice_expiration : jacks_slice_expiration};
-
-  var jacks_user_name = <?php echo json_encode($user->username) ?>;
-  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
-  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
-
-  var jacks_user_info = {user_name : jacks_user_name,
-			 user_urn : jacks_user_urn,
-			 user_id : jacks_user_id};
-
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
-			      '#jacks-status-history', '#jacks-buttons',
-                              jacks_slice_ams, jacks_all_ams, jacks_slice_info,
-			      jacks_user_info,
-			      portal_jacks_app_ready);
- 
-  jacksApp.hideStatusHistory();
-
-  // AMs that the Portal says there are resources at.
-  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
-  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
-
-  var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
-
-  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
-  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
-
-  var jacks_slice_info = {slice_id : jacks_slice_id, 
-			  slice_name : jacks_slice_name};
-
-  var jacks_user_name = <?php echo json_encode($user->username) ?>;
-  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
-  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
-
-  var jacks_user_info = {user_name : jacks_user_name,
-			 user_urn : jacks_user_urn,
-			 user_id : jacks_user_id};
-
-  var jacks_enable_buttons = true;
-  var jacksEditorApp = null;
-
-function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
-  portal_jacks_app_ready(ja, ja_input, ja_output);
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
-				      '#jacks-editor-status', 
-				      '#jacks-editor-buttons',
-				      jacks_slice_ams, jacks_all_ams, 
-				      jacks_all_rspecs,
-				      jacks_slice_info,
-				      jacks_user_info,
-				      jacks_enable_buttons, 
-				      null, null,
-				      portal_jacks_editor_app_ready,
-				      JacksEditorApp.prototype.postRspec
-				      );
-
-  jacksEditorApp.setJacksViewer(ja);
-  ja.setJacksEditor(jacksEditorApp);
-  if(jacks_slice_ams.length == 0) {
-    // Initially hide the viewer if there are no resources
-    ja.hide();
-  } else {
-    // Initally hide the editor if there are resources
-    jacksEditorApp.hide(); 
-  }
-};
-
-var slice_id = <?php echo json_encode($slice_id); ?>
-
-</script>
-
-<?php
-
-// END JACKS-APP STUFF //
-
   $slice_status='';
 
   print "<div id='status_table_div'/>\n";
   print build_agg_table_on_slicepg();
   print "</div>\n";
-
-
-  // Slice geo view
-  print "<div id='geo_view_div' >\n";
-  echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
-  include('slice_map.html');
-  echo "</td></tr></table>";
-  print "</div>";
-
-?>
-
-<script>
-// Make sure the height is not 100% but an actual size
-// Make sure width is set to 100% at load time 
- //   (don't know, some times it isn't)
-$("#map1").height(400); 
-$("#map1").width('100%'); 
-
-</script>
-
-
-<?php
-
 // --- End of Slice and Sliver Status table
 
 print "<h2 id='members'>Slice Members</h2>";
 ?>
-
 
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
 <ul>
