@@ -13,6 +13,7 @@
     to jacks editor (#1278).
  * Add Editor Ops buttons pto Expanded Jacks editor (#1295)
  * Highlight name changes in email (#1297)
+ * Time out calls to stitcher after 45 minutes using new `--timeout` option to stitcher. (#1234)
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)

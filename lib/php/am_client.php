@@ -494,6 +494,7 @@ function invoke_omni_function($am_urls, $user, $args,
 		       '-l',
 		       write_logger_configuration_file($omni_invocation_dir),
 		       '--logoutput', $omni_log_file,
+		       '--timeout', '45', // Time out stitcher calls after 45 minutes. New in Omni2.8
 		       '--api-version',
 		       $api_version,
 		       "--GetVersionCacheName",
