@@ -99,7 +99,6 @@ if (count($my_slice_objects) > 0) {
   $resource_base_url = relative_url("slice-add-resources.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
-  $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
   $labwiki_base_url = 'http://labwiki.casa.umass.edu/?';
@@ -145,9 +144,6 @@ if (count($my_slice_objects) > 0) {
     print ("<th>Slice Expiration</th>");
     print ("<th>Slice Lead</th>"
 	   . "<th>Actions</th>");
-    if ($portal_enable_abac) {
-      print "<th>ABAC Credential</th>";
-    }
     print "</tr>\n";
 
     foreach ($lead_slices as $slice) {
@@ -164,9 +160,6 @@ if (count($my_slice_objects) > 0) {
     print ("<th>Slice Expiration</th>");
     print ("<th>Slice Lead</th>"
 	   . "<th>Actions</th>");
-    if ($portal_enable_abac) {
-      print "<th>ABAC Credential</th>";
-    }
     print "</tr>\n";
 
     foreach ($nonlead_slices as $slice) {
@@ -183,9 +176,9 @@ if (count($my_slice_objects) > 0) {
 }
 
 function list_slice($slice,$user) {
-  global $project_objects, $slice_owner_names, $portal_enable_abac;
+  global $project_objects, $slice_owner_names;
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
-  global $delete_sliver_base_url,$sliver_status_base_url, $abac_url, $flack_url;
+  global $delete_sliver_base_url,$sliver_status_base_url, $flack_url;
   global $gemini_base_url, $labwiki_base_url;
   global $disabled, $jfed_button_start;
 
@@ -208,7 +201,6 @@ function list_slice($slice,$user) {
   $sliceresource_url = $resource_base_url . $query;
   $delete_sliver_url = $delete_sliver_base_url . $query;
   $sliver_status_url = $sliver_status_base_url . $query;
-  $sliceabac_url = $abac_url . $query;
   $sliceflack_url = $flack_url . $query;
   $listres_url = $listres_base_url . $query;
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
@@ -280,9 +272,6 @@ function list_slice($slice,$user) {
   }
 
   print "</td>";
-  if ($portal_enable_abac) {
-    print "<td><button onClick=\"window.location='$sliceabac_url'\" $disable_buttons_str><b>Get ABAC Credential</b></button></td>";
-  }
   print "</tr>\n";
 } // end of list_slice function
 
