@@ -55,8 +55,6 @@ dist_gcfsrcgeni_DATA =
 
 dist_svcweb_DATA = \
 	www/portal/SocketPool.swf \
-	www/portal/abac-id.php \
-	www/portal/abac-key.php \
 	www/portal/accept-project-invite.php \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
@@ -166,7 +164,6 @@ dist_svcweb_DATA = \
 	www/portal/slice-jacks.css \
 	www/portal/slice-jacks.php \
 	www/portal/slice-table.css \
-	www/portal/sliceabac.php \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
 	www/portal/slices.php \

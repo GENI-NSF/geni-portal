@@ -29,8 +29,6 @@ require_once 'sr_constants.php';
 require_once 'sr_client.php';
 require_once 'permission_manager.php';
 require_once 'settings.php';
-if ($portal_enable_abac)
-  require 'abac.php';
 require_once 'ma_constants.php';
 require_once 'ma_client.php';
 require_once 'geni_syslog.php';

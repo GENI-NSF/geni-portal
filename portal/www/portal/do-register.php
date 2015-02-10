@@ -341,54 +341,6 @@ if ($first_name) {
 addIdentityAttribute($conn, $identity_id, 'mail', $email_address,
                      $email_address_self_asserted);
 
-if ($portal_enable_abac) {
-  // ----------------------------------------------------------------------
-  // Add an ABAC cert and key. This should probably be done when
-  // and admin approves the request, but we don't have that page
-  // yet, so... do it here for now, and migrate it later.
-  // ----------------------------------------------------------------------
-  $cmd_array = array("/usr/local/bin/creddy",
-		     "--generate",
-		     "--cn",
-		     $username
-		     );
-  $command = implode(" ", $cmd_array);
-  $orig_dir = getcwd();
-  chdir(sys_get_temp_dir());
-  $result = exec($command, $output, $status);
-  $abac_id_file = $username . "_ID.pem";
-  $abac_key_file = $username . "_private.pem";
-  $abac_id = file_get_contents($abac_id_file);
-  $abac_key = file_get_contents($abac_key_file);
-  
-  // Get the ABAC fingerprint for use in creating attributes later
-  $cmd_array = array("/usr/local/bin/creddy",
-		     "--keyid",
-		     "--cert",
-		     $abac_id_file
-		     );
-  $command = implode(" ", $cmd_array);
-  // Clear the previous output
-  unset($output);
-  $result = exec($command, $output, $status);
-  $abac_fingerprint = $output[0];
-  unlink($abac_id_file);
-  unlink($abac_key_file);
-  chdir($orig_dir);
-  
-  // Put this stuff in the database
-  $sql = "INSERT INTO abac"
-    . "(account_id, abac_id, abac_key, abac_fingerprint) VALUES ("
-    . $conn->quote($account_id, 'text')
-    . ", ". $conn->quote($abac_id, 'text')
-    . ", ". $conn->quote($abac_key, 'text')
-    . ", ". $conn->quote($abac_fingerprint, 'text')
-    . ");";
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    die("error on abac insert: " . $result->getMessage());
-  }
-} // end of block if portal_enable_abac
 
 // if portal=portal, then authorize the portal.
 // FIXME: Really this should be in a util in the km area for code
