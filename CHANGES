@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.27 ==
+ * Progress on #299 and #1120, remove dead code.
  * Improve database password handling on map-related scripts (#1253)
  * Remove interleaving of status and details in listresources (#1289).
  * Fix a number of bugs on jacks views, footers, inconsistent table

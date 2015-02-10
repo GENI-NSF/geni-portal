@@ -55,15 +55,12 @@ dist_gcfsrcgeni_DATA =
 
 dist_svcweb_DATA = \
 	www/portal/SocketPool.swf \
-	www/portal/abac-id.php \
-	www/portal/abac-key.php \
 	www/portal/accept-project-invite.php \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
 	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
-	www/portal/approve.php \
 	www/portal/ask-for-project.php \
 	www/portal/cancel-join-project.php \
 	www/portal/certificate.php \
@@ -99,7 +96,6 @@ dist_svcweb_DATA = \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
 	www/portal/edit-slice.php \
-	www/portal/error-eppn.php \
 	www/portal/error-text.php \
 	www/portal/flack.css \
 	www/portal/flack.php \
@@ -168,7 +164,6 @@ dist_svcweb_DATA = \
 	www/portal/slice-jacks.css \
 	www/portal/slice-old.php \
 	www/portal/slice-table.css \
-	www/portal/sliceabac.php \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
 	www/portal/slices.php \
