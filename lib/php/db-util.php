@@ -181,28 +181,6 @@ function fetch_abac_key($account_id)
   return $row["abac_key"];
 }
 
-function approve_account($account_id)
-{
-  $conn = portal_conn();
-
-  $sql = "UPDATE account"
-    . " SET status = 'active'"
-    . " WHERE account_id = "
-    . $conn->quote($account_id, 'text');
-  /* print "command = $sql<br/>"; */
-  $result = db_execute_statement($sql, "update account active");
-
-  /* $sql = "INSERT INTO account_privilege" */
-  /*   . " VALUES(" */
-  /*   . $conn->quote($account_id, 'text') */
-  /*   . ", 'slice'" */
-  /*   . ')'; */
-  /* /\* print "command = $sql<br/>"; *\/ */
-  /* $result = db_fetch_row($sql, "approve account"); */
-  $row = $result[RESPONSE_ARGUMENT::VALUE];  // FIXME: Check for errors
-  return $row["abac_key"];
-}
-
 function requestedAccounts() {
   /* print "in db-util loadAccount<br/>"; */
   $conn = portal_conn();

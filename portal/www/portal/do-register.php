@@ -437,36 +437,4 @@ if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
   relative_redirect($authorize_portal_page);
 }
 
-/* <?php */
-/* include("header.php"); */
-/* show_header('GENI Portal Home', $TAB_HOME); */
-/* ?> */
-/* <h2>Your account request has been submitted.</h2> */
-/* Go to the <a href= */
-/* <?php */
-/* $url = relative_url("home.php"); */
-/* if ($portal_auto_approve) { */
-/*   $args['id'] = $account_id; */
-/*   $query = http_build_query($args); */
-/*   $url = relative_url("approve.php?"); */
-/*   $url = $url . $query; */
-/* } */
-/* print $url */
-/* ?> */
-/* >portal home page</a> */
-
-/* <?php */
-/* //$array = $_POST; */
-/* //foreach ($array as $var => $value) { */
-/* //    print "POST[$var] = $value<br/>"; */
-/* //    } */
-/* ?> */
-
-/* <hr/> */
-
-/* <?php */
-/* include("footer.php"); */
-/* ?> */
-
-
 ?>
