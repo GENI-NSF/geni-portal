@@ -174,6 +174,9 @@ print '</p>';
 <script>
 $(document).ready(function() {
     $('#jacks-editor-status').hide();
+    var pane = $("#jacks-editor-pane")[0];
+    pane.style.height = "95%";
+    pane.style.width = "100%";
   });
 </script>
 
