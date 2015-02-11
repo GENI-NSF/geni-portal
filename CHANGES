@@ -15,6 +15,7 @@
  * Add Editor Ops buttons to Expanded Jacks editor (#1295)
  * Make expanded jacks editor take context from unexpanded
    (and vice versa) (#1292).
+ * Remove race condition on jacks editor page load (#1300).
  * Highlight name changes in email (#1297)
  * Time out calls to stitcher after 45 minutes using new `--timeout` option to stitcher. (#1234)
  * Deprecate Flack (#1219)

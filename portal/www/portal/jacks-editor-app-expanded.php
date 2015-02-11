@@ -114,7 +114,9 @@ print "</div></td></tr></table>";
   var jacks_current_rspec = <?php echo json_encode($current_rspec) ?>;
   var jacksContext = <?php echo json_encode($jacksContext) ?>;
 
+$(document).ready(function() {
   do_show_editor(jacks_current_rspec);
+  });
 
 </script>
 
@@ -170,7 +172,12 @@ print '</p>';
 ?>
 
 <script>
-$('#jacks-editor-status').hide();
+$(document).ready(function() {
+    $('#jacks-editor-status').hide();
+    var pane = $("#jacks-editor-pane")[0];
+    pane.style.height = "95%";
+    pane.style.width = "100%";
+  });
 </script>
 
 <?php

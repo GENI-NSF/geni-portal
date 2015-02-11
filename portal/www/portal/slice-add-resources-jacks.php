@@ -155,7 +155,9 @@ print "</div></td></tr></table>";
   var jacks_current_rspec = <?php echo json_encode($current_rspec) ?>;
   var jacksContext = <?php echo json_encode($jacksContext) ?>;
 
-  do_show_editor(jacks_current_rspec);
+$(document).ready(function() {
+    do_show_editor(jacks_current_rspec);
+  });
 
 </script>
 
