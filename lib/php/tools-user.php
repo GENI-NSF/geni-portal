@@ -467,16 +467,7 @@ echo "</div>";
 <?php
 // BEGIN tools tab
 echo "<div id='tools'>";
-/*----------------------------------------------------------------------
- * ABAC (if enabled)
- *----------------------------------------------------------------------
- */
-if ($portal_enable_abac)
-  {
-    print '<h2>ABAC</h2>\n';
-    print "<button onClick=\"window.location='abac-id.php'\">Download your ABAC ID</button><br/>\n";
-    print "<button onClick=\"window.location='abac-key.php'\">Download your ABAC private key</button>\n";
-  }
+
 $disable_authorize_tools = "";
 if($in_lockdown_mode) {
   $disable_authorize_tools = "disabled";

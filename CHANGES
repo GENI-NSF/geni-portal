@@ -5,17 +5,19 @@
 = GENI Portal Release Notes =
 
 == 2.27 ==
+ * Progress on #299 and #1120, remove dead code.
  * Improve database password handling on map-related scripts (#1253)
  * Remove interleaving of status and details in listresources (#1289).
  * Fix a number of bugs on jacks views, footers, inconsistent table
     formatting, expanded views (#1283).
- * Add Editor Ops buttons pto Expanded Jacks editor (#1295)
+ * Add Duplicate Nodes/Links, Duplicate Nodes only, Auto IP buttons
+   to jacks editor (#1278).
+ * Add Editor Ops buttons to Expanded Jacks editor (#1295)
+ * Make expanded jacks editor take context from unexpanded
    (and vice versa) (#1292).
  * Remove race condition on jacks editor page load (#1300).
-
-=======
  * Highlight name changes in email (#1297)
-
+ * Time out calls to stitcher after 45 minutes using new `--timeout` option to stitcher. (#1234)
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
