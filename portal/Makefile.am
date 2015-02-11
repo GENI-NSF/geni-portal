@@ -199,7 +199,6 @@ dist_svcwebimages_DATA = \
 	www/images/openVZvm.svg \
 	www/images/orbit_banner.png \
 	www/images/witest-logo-white.png \
-	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
 	www/images/RawPC-EG-noTxt-centered.svg \
