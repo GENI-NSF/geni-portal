@@ -66,6 +66,7 @@ setup_jacks_editor_slice_context();
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
 <script src="<?php echo $jacks_stable_url;?>"></script>
 <script src="jacks-app.js"></script>
 <script src="jacks-editor-app.js"></script>

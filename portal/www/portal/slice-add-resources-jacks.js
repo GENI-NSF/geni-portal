@@ -319,6 +319,10 @@ function jacks_fetch_topology_callback(rspecs) {
       jacksEditorApp.submittingRspec = false;
       $('#current_rspec_text').val(rspec);
       validateSubmit();
+  } else if (jacksEditorApp.passingContextToURL != null) {
+      var editor_url = jacksEditorApp.passingContextToURL;
+      jacksEditorApp.passingContextToURL = null;
+      do_editor_expand_internal(editor_url, rspec);
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
@@ -492,8 +496,6 @@ function do_rspec_download()
 // with current topology
 function do_editor_expand(restore)
 {
-    var current_rspec = jacksEditorApp.currentTopology.rspec;
-    $("#current_editor_rspec").val(rspec);
     var editor_url = "jacks-editor-app-expanded.php?slice_id=" + 
 	jacks_slice_id;
 
@@ -501,6 +503,12 @@ function do_editor_expand(restore)
 	editor_url = "slice-add-resources-jacks.php?slice_id=" + 
 	    jacks_slice_id;
 
+    jacksEditorApp.passingContextToURL = editor_url;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+function do_editor_expand_internal(editor_url, current_rspec)
+{
     var $form=$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",editor_url);
     var $input=$(document.createElement('input')).attr('name','current_editor_rspec').val(current_rspec);
     $form.append($input);

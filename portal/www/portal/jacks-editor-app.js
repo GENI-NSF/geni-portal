@@ -94,6 +94,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.downloadingRspec = false;
     this.submittingRspec = false;
+    this.passingContextToURL = null;
 
     this.loginInfo = {};
 
