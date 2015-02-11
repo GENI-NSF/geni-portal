@@ -11,6 +11,8 @@
     formatting, expanded views (#1283).
  * Add Editor Ops buttons pto Expanded Jacks editor (#1295)
    (and vice versa) (#1292).
+ * Remove race condition on jacks editor page load (#1300).
+
 =======
  * Highlight name changes in email (#1297)
 
