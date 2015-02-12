@@ -4,10 +4,124 @@
 
 = GENI Portal Release Notes =
 
-== 2.22 ==
- * Add an `index.php` that redirects to `home.php` to block directory listing. (#1196)
- * Fix headers in email that your lead request was received. (#1197)
+== 2.27 ==
+ * Progress on #299 and #1120, remove dead code.
+ * Improve database password handling on map-related scripts (#1253)
+ * Remove interleaving of status and details in listresources (#1289).
+ * Fix a number of bugs on jacks views, footers, inconsistent table
+    formatting, expanded views (#1283).
+ * Add Duplicate Nodes/Links, Duplicate Nodes only, Auto IP buttons
+   to jacks editor (#1278).
+ * Add Editor Ops buttons to Expanded Jacks editor (#1295)
+ * Make expanded jacks editor take context from unexpanded
+   (and vice versa) (#1292).
+ * Remove race condition on jacks editor page load (#1300).
+ * Highlight name changes in email (#1297)
+ * Time out calls to stitcher after 45 minutes using new `--timeout` option to stitcher. (#1234)
  * Expand default context for Jacks editor and remove constraints. (#1193)
+
+== 2.26 ==
+ * Handle multi-valued attributes from Shibboleth (#740)
+ * Add scroll bars and standard canvasOptions/constraints to popup rspec  
+   editors (#1266)
+ * Add footer, and internal and expanded views for geo map. (#1264).
+ * Support 'expanded' (much higher, full-width) Jacks viewer and editor (#1233)
+  * Add missing scrollbar on 'View RSpec' in Jacks. (#1248)
+ * Support matching on sliver_id for exosm resources status in Jacks (#1231)
+ * Add CloudLab button to home page tools list (#1263) 
+ * Remove warning about IdP has no affiliation for EPPN 
+   (which is optional) (#1269).
+ * Add rspec viewer and node selection to rspec viewer in profile (#1237)
+ * Add aggregate category 'Federated'. (#1239)
+ * Combine status and details pages, eliminate status buttons (#1043)
+  * Remove per aggregate Jacks viewer on details page
+  * Show sliver expiration on combined status/details page (#1107)
+  * Show/hide raw status on combined status/details page (#1273).
+  * Align status text and status table header (#1276)
+  * Decouple showing status from details (make them siblings not 
+     hierarchical) (#1275).
+  * Clear old status when fetching new status. (#1286)
+ * Allow leading/trailing whitespace in URL in 
+   slice-add-resource-jacks.js (#1277)
+ * Check valid URL names and handle URL load errors in 
+   jacks editor app (#1279).
+ * Limit max size of rspec loaded from URL to 8M (#1282).
+ * Restore Jacks viewer to sliceresource.php and give it an rspec 
+    scrollbar (#1235)
+ * Add a Cloud Lab button on the home page. (#1267)
+ * Remove error_log warning about undefined 
+    get_slice_credential_disable_buttons (#1288)
+
+== 2.25 ==
+ * Allow for editing RSpecs in the Profile Manage RSpecs page using Jacks
+   editor. (#1143).
+ * Name downloaded request rspec with slice name (#1204)
+ * Add aggregate category 'Experimental'. (#1239)
+ * Support multiple nodes with same client_id from different AMs in SSH (#1257)
+ * Support multiple nodes with same client_id from different AMs
+   for AM API calls (#1258)
+ * Add a geographic map view of the resources in a given slice. See
+   the "Geo View" button on the Slice Jacks page. (#1260)
+ * Update copyrights to 2015. (#1261)
+ * Support Delete in Jacks App with multiple manifests
+   (singularly or as a group) (#1265)
+
+== 2.24 ==
+ * Remove debug printouts in do-edit-slice-member. (#1242)
+ * Prepare to be runnable without access to emulab.net. (#1251)
+  * Host the Jacks router.svg locally
+  * Make the Jacks URL be a value from settings.php
+  * (Re) make the Flack URL be a value from settings.php
+ * Jacks Add Resources instructs you to draw or pick an RSpec. (#1249)
+ * Warn that you cannot reserve where you already have a reservation (static). (#1192)
+
+== 2.23 ==
+ * Grab latest topology from Jacks before calling validateSubmit from ReserveResources (#1126)
+ * Restore highlighting of boxes on select (#1190)
+ * Fix AM table view on slice-jacks  (#1187)
+ * Add view rspec button to jacks app (#1202)
+ * "Delete All" clears the Rspec and Reserve Resources button in Jacks Editor App (slice-add-resource-jacks) (#1191)
+ * Fix map view to remove nodes with no lat/long info (#1240)
+ * Fix handling of delete race-condition (delete returns before manifest 
+   shows deletion) in jacks-app.js (#1241)
+ * Change tabs on slice-jacks to "Graphical View" and "Aggregate View". (#1238)
+ * Fix bug that incorrectly formats HTML and sets 'project_id' as a member_uid
+   in case of changing slice/project membershop (#1242)
+ * Fix bug that doesn't allow GRAM resources to turn green due to PHP fatal 
+   error around GENI_PENDING scope. (#1243).
+ * Make the downloaded request and manifest rspec be named with the slice: 
+   <slicename>_<rspec_type>_rspec.xml (#1205).
+ * On Jacks Add Resources, ensure topology changes are reflected in what is reserved. (#1226)
+
+== 2.22 ==
+ * Include link to NYU Poly WITest wireless site. (#773)
+ * Show a proper error message or success message on updating SSH keys. (#973)
+ * Fix headers in email that your lead request was received. (#1197)
+ * Fix bug report to print list of aggregates correctly. (#1198)
+ * Change label for add resources URL entry (#1201)
+ * Use `email()` function to get user's address, not a `mail` attribute. (#1206)
+ * Move included files to lib from portal (#1207)
+ * Handle unknown AM URNs and URLs mroe gracefully. (#1212)
+ * Exclude users with no public SSH keys from the generated omni_config. (#1215)
+ * Update Jacks on allocation page (#1216)
+ * Put radio buttons on left on jacks add resources (#1217)
+ * Widen URL entry on Jacks add resources page (#1218)
+ * Handle 'pending' status from OpenGENI AMs. (#1221)
+ * Handle multiple 'services' tags in an RSpec. (#1222)
+ * Error check arguments to do-edit-slice-member. (#1224)
+ * Switch to Jacks stable (#1228)
+
+== 2.21.4 ==
+ * Lowercase eppn before lookup in speaks-for flow (#1209)
+
+== 2.21.3 ==
+ * New Jacks icons
+
+== 2.21.2 ==
+ * Provide a simple Jacks context (#1194)
+ * Add an `index.php` that redirects to `home.php` to block directory
+   listing. (#1196)
+ * Change URL entrypoints for GENI Desktop (#1199)
 
 == 2.21 ==
  * Added support for distinguishing bound, unbound and partially bound rspecs. (#1126)

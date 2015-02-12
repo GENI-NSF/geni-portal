@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -126,7 +126,7 @@ function build_agg_table_on_slicepg()
      $output .= "<td colspan='2'>";
      $output .= "<button title='Get summary status for resources at selected aggregates.' onClick=\"getCheckedStatus();\"><b>Ready?</b></button>";
      $output .= "<button title='Login info, etc. for resources at selected aggregates.' onClick=\"doOnChecked('$listres_url');\"><b>Resource Details</b></button>";
-     $output .= "<button title='Get status of individual resources at selected aggregates.' onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
+     //     $output .= "<button title='Get status of individual resources at selected aggregates.' onClick=\"doOnChecked('$status_url')\"><b>Resource Status</b></button>";
      $output .= "<button title='Delete resources at selected aggregates.' onClick=\"doOnChecked('confirm-sliverdelete.php?slice_id=" . $slice_id . "', true)\"><b>Delete Resources</b></button>";
      $output .= "</td></tr>\n";
 
@@ -138,6 +138,8 @@ function build_agg_table_on_slicepg()
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_STITCHABLE_CAT."'>Stitchable</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_PROD_CAT."'>Production</option>";
      $output .= "<option class='op_".SERVICE_ATTRIBUTE_DEV_CAT."'>Development</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_EXPERIMENTAL_CAT."'>Experimental</option>";
+     $output .= "<option class='op_".SERVICE_ATTRIBUTE_FEDERATED_CAT."'>Federated</option>";
      $output .= "</select>";
      $output .= "</td>";
      $output .= "<td colspan='2'>";
@@ -186,7 +188,7 @@ function build_agg_table_on_slicepg()
       $output .= "<td colspan='2' class='hide status_buttons'><div>";
       $output .= "<button  id='add_button_".$am_id."' title='Add resources at this aggregate.' onClick=\"window.location='".$add_url."&am_id=".$am_id."'\" $add_slivers_disabled $disable_buttons_str><b>Add</b></button>\n";
 	    $output .= "<button  id='details_button_".$am_id."' title='Login info, etc. for resources at this aggregate.' onClick=\"window.location='".$listres_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Details</b></button>\n";
-      $output .= "<button id='status_button_".$am_id."' title='Get status of individual resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
+	    //      $output .= "<button id='status_button_".$am_id."' title='Get status of individual resources at this aggregate.' onClick=\"window.location='".$status_url."&am_id=".$am_id."'\" $get_slice_credential_disable_buttons><b>Status</b></button>\n";
 	    $output .= "<button  id='delete_button_".$am_id."' title='Delete resources at this aggregate.' onClick=\"window.location='confirm-sliverdelete.php?slice_id=".$slice_id."&am_id=".$am_id."'\" ".$delete_slivers_disabled." $disable_buttons_str><b>Delete</b></button>\n";
       $output .= "</div></td></tr>";
       
@@ -450,215 +452,7 @@ $(document).ready(function() {
   Style for the slice redesign.
   Should probably be merged into the css stylesheet, but this will change some elements on other pages.
 -->
-<style>
-#header, #content-outer {
-  position: relative;
-}
-#content #portalhelp {
-  position: absolute;
-  top: -56px;
-  right: 0px;
-}
-#content {
-  padding: 20px 30px 30px;
-  position: relative;
-}
-#content table {
-  margin-left: 30px;
-  width: 795px;
-}
-#content table table {
-  margin: 0;
-  border: 0;
-  width: 100%;
-}
-#content table table td {
-  border-top: 0;
-}
-#content #renewtable td {
-  border-bottom: 0;
-}
-#content #renewcell {
-  padding: 0;
-  border-top: 0;
-  border-bottom: 0;
-}
-
-#content .statusButtons td {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-
-#content #am_name_list {
-  width: 230px;
-  vertical-align: top;
-  border-right: 1px solid white;
-}
-
-#content #status_table .hidden {
-  display: none;
-}
-
-#content #status_table_cont {
-  display: block;
-  position: relative;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 540px;
-}
-
-#content #sliceActions button {
-  margin-right: 5px;
-}
-
-#am_names {
-  padding-left: 0;
-  height: 540px;
-  overflow-y: scroll;
-  margin: 0; 
-}
-#am_names > li {
-  margin-left: 0;
-}
-#am_names ul, li {
-    list-style: none;
-    margin:0;
-    padding:0;
-    position: relative;
-}
-#am_names p:hover {
-    background-color:#121212;
-}
-#am_names li {
-    line-height:140%;
-    text-indent:0px;
-    background-position: 1px 8px;
-    padding-left: 15px;
-    background-repeat: no-repeat;
-}
-
-#am_names li ul {
-  border-left: 1px dotted #808080;
-  margin-left: 8px;
-}
-
-#am_names li ul li {
-  padding-left: 8px;
-}
- 
-#am_names .collapsable {
-  position: absolute;
-  cursor: pointer;
-  left: 0;
-  top: 0;
-  width: 16px;
-  height: 16px;
-}
-#am_names .collapsed .collapsable:after {
-  content: "+";
-  font-weight: bold;
-  position: absolute;
-  top:-2px;
-  left: 5px;
-}
-#am_names .expanded .collapsable:after {
-  content: "-";
-}
-
-#checkGroups {
-  min-width: 100px;
-}
-
-.checkSib {
-  cursor: pointer;
-}
-
-#none-selected {
-  text-align: center;
-  position: absolute;
-  top: 10px;
-  left: 130px;
-  z-index: 1;
-}
-
-#status_table {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  background: none repeat scroll 0 0 #E5E5E5;
-}
-
-#status_table .hide > div {
-  visibility: hidden;
-  position: relative;
-  min-height: 26px;
-}
-#status_table tbody:hover .hide, #status_table tbody:focus .hide, #status_table tbody.activeBody .hide {
-  border-left: 1px solid white;
-}
-#status_table tbody:hover .hide > div, #status_table tbody:focus .hide > div, #status_table tbody.activeBody .hide > div {
-  visibility: visible;
-}
-#status_table .notqueried .expireText, #status_table .updating .expireText, #status_table .noresources .expireText, #status_table .busy .expireText, #status_table .failed .expireText {
-	display: none;
-}
-
-#status_table .getButton {
-  position: absolute;
-  left: -92px;
-}
-
-#status_table .renewForm input.date {
-  margin-top: 1px;
-}
-
-#status_table .ready .getButton {
-  margin: 10px 1px 1px;
-  text-transform: none;
-}
-
-#status_table .expireText, #status_table .getButton {
-  text-transform: none;
-}
-
-.notqueried, .configuring, .unknown, .busy, .ready, .failed {
-	text-align: left;
-}
-
-.configuring, .unknown, .busy, .ready, .failed {
-  text-align: left;
-}
-
-#status_table button, #status_table input[type="submit"], #status_table input[type="button"] {
-  font-size: 0.85em;
-  font-weight: 700;
-  margin: 0 1px 1px;
-  padding: 0 2px;
-}
-
-#status_table button:disabled {
-  color: #5F584E;
-}
-
-#status_table td {
-  border-bottom: 0;
-  padding: 2px;
-}
-#status_table tbody tr:nth-child(2) td {
-  border-bottom: 1px solid #FFFFFF;
-  padding: 2px 0 6px 15px;
-}
-#status_table tbody tr:nth-child(1) td {
-  padding: 6px 0 2px 15px;
-}
-.am_name_field {
-  width: 270px;
-}
-#ui-datepicker-div {
-  z-index: 10 !important;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
 
 <?php 
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
@@ -773,7 +567,7 @@ if (! is_null($jfed_button_start)) {
   print $jfed_button_start . " $disable_buttons_str><b>jFed</b></button>";
 }
 
-$slice_jacks_url = "slice-jacks.php?slice_id=$slice_id&source=devel";
+$slice_jacks_url = "slice-jacks.php?slice_id=$slice_id";
 print "<button onClick=\"window.location='$slice_jacks_url'\"><b>Slice Jacks (beta)</b></button>\n";
 
 print "</td>\n";

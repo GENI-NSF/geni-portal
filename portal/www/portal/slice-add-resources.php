@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologiesc
+// Copyright (c) 2012-2015 Raytheon BBN Technologiesc
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -156,7 +156,7 @@ show_header('GENI Portal: Add Resources to Slice', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
-$slice_jacks_url = "slice-add-resources-jacks.php?slice_id=$slice_id&source=devel";
+$slice_jacks_url = "slice-add-resources-jacks.php?slice_id=$slice_id";
 print "<button onClick=\"window.location='$slice_jacks_url'\"><b>Add Resources with Jacks (beta)</b></button>\n";
 
 ?>

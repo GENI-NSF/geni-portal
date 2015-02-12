@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -84,11 +84,17 @@ function write_ssh_keys($for_user, $as_user, $dir)
 
   foreach ($ssh_keys as $key_info)
     {
+      // If the key is empty or missing, skip it
+      if (! array_key_exists('public_key', $key_info) or is_null($key_info['public_key']) or trim($key_info['public_key']) == '') {
+	continue;
+      }
       $key = $key_info['public_key'];
       // user could have more than one key, so append a unique ID
       $tmp_file = writeDataToTempDir($dir, $key, OMNI_INVOCATION_FILE::PUBLIC_SSH_KEY_PREFIX
             . "-" . $for_user->username . "-" . uniqid());
-      $result[] = $tmp_file;
+      if (! is_null($tmp_file)) {
+	$result[] = $tmp_file;
+      }
     }
   return $result;
 }
@@ -336,6 +342,11 @@ function invoke_omni_function($am_urls, $user, $args,
     if(!$stitch_rspec) {
     
         if (is_array($am_urls)) {
+	  if (count($am_urls) == 0) {
+	    error_log("am_client Got non stitching RSpec and 0 AM URLs");
+	    // Careful: Are all RSpecs that stitcher can handle marked as stitch_rspecs properly?
+	    // return("Invalid AM URL");
+	  }
             foreach ($am_urls as $single) {
 	            if (! isset($single) || is_null($single) || $single == '') {
 	                error_log("am_client cannot invoke Omni with invalid AM URL");
@@ -381,8 +392,18 @@ function invoke_omni_function($am_urls, $user, $args,
 
     $slice_users = $slice_users + array($user);
     $username_array = array();
+    $all_ssh_key_files = array();
+    $ssh_key_files_by_user = array();
     foreach ($slice_users as $slice_user){
-    	   $username_array[] = $slice_user->username;
+       $slice_urn = $slice_user->urn();
+       $ssh_key_files = write_ssh_keys($slice_user, $user, $omni_invocation_dir);
+       // Skip from omni_config any user with no public SSH keys
+       if (count($ssh_key_files) == 0) {
+	 continue;
+       }
+       $all_ssh_key_files = array_merge($all_ssh_key_files, $ssh_key_files);
+       $ssh_key_files_by_user[$slice_urn] = $ssh_key_files;
+       $username_array[] = $slice_user->username;
     }
 
     /* Create OMNI config file */
@@ -434,13 +455,14 @@ function invoke_omni_function($am_urls, $user, $args,
       . "cert=$cert_file\n"
       . "key=$key_file\n";
 
-    $all_ssh_key_files = array();
-    foreach ($slice_users as $slice_user){
+    foreach ($slice_users as $slice_user) {
        $slice_username = $slice_user->username;
-       $slice_urn = $slice_user->urn();	
-       $ssh_key_files = write_ssh_keys($slice_user, $user, $omni_invocation_dir);
-       $all_ssh_key_files = array_merge($all_ssh_key_files, $ssh_key_files);
-       $all_key_files = implode(',', $ssh_key_files);
+       $slice_urn = $slice_user->urn();
+       if (! array_key_exists($slice_urn, $ssh_key_files_by_user)) {
+	 // This user had no SSH keys
+	 continue;
+       }
+       $all_key_files = implode(',', $ssh_key_files_by_user[$slice_urn]);
        $omni_config = $omni_config
              . "[$slice_username]\n"
              . "urn=$slice_urn\n"
@@ -472,6 +494,7 @@ function invoke_omni_function($am_urls, $user, $args,
 		       '-l',
 		       write_logger_configuration_file($omni_invocation_dir),
 		       '--logoutput', $omni_log_file,
+		       '--timeout', '45', // Time out stitcher calls after 45 minutes. New in Omni2.8
 		       '--api-version',
 		       $api_version,
 		       "--GetVersionCacheName",
@@ -807,11 +830,9 @@ function create_sliver($am_urls, $user, $slice_users, $slice_credential, $slice_
 
     // stitchable RSpecs should have empty AM URL, so only check for non-stitchable RSpecs
     if(!$stitch_rspec) {
-        if (! isset($am_urls) || is_null($am_urls) ){
-        if (!(is_array($am_urls) || $am_url != '')) {
-          error_log("am_client cannot invoke Omni without an AM URL");
-          return("Missing AM URL");
-        }
+      if (! isset($am_urls) || is_null($am_urls) || (is_array($am_urls) && count($am_urls) == 0) || (! is_array($am_urls) && $am_urls == '')) {
+	error_log("am_client cannot do createsliver without an AM URL");
+	return("Missing AM URL");
       }
     }
 

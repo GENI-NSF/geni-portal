@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------      
-// Copyright (c) 2011-2014 Raytheon BBN Technologies                          
+// Copyright (c) 2011-2015 Raytheon BBN Technologies                          
 //                                                                            
 // Permission is hereby granted, free of charge, to any person obtaining      
 // a copy of this software and/or hardware specification (the "Work") to      
@@ -76,7 +76,7 @@ function error_callback(xhr, textStatus, errorThrown, am_id, slice_id, client_da
 function ep_on_add(event) {
     debug("ep_on_add");
     var slice_id = event.slice_id;
-    var new_url = "slice-add-resources-jacks.php?slice_id=" + slice_id + "&source=devel";
+    var new_url = "slice-add-resources-jacks.php?slice_id=" + slice_id;
     window.location.replace(new_url);
 }
 
@@ -111,7 +111,7 @@ function ep_on_manifest(event) {
     $.get("jacks-app-details.php",
           { am_id:am_id, slice_id:slice_id },
           function(rt, st, xhr) {
-              success_callback(rt, st, xhr, am_id, slice_id, client_data);
+	      success_callback(rt, st, xhr, am_id, slice_id, client_data);
           })
     .fail(function(xhr, ts, et) {
 	error_callback(xhr, ts, et, am_id, slice_id, client_data);

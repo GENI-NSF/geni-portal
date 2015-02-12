@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -42,7 +42,11 @@ $omni_invocation_prefix = "omni-invoke";
 function writeDataToTempFile($data, $prefix = "geni-")
 {
   $tmpfile = tempnam(sys_get_temp_dir(), $prefix);
-  file_put_contents($tmpfile, $data);
+  if (file_put_contents($tmpfile, $data) === False) {
+    // Error writing the data to the file!
+    error_log("Failed to write to $tmpfile!");
+    return null;
+  }
   return $tmpfile;
 }
 
@@ -54,7 +58,11 @@ function writeDataToTempFile($data, $prefix = "geni-")
 function writeDataToTempDir($dir, $data, $prefix = "geni-")
 {
   $tmpfile = "$dir/$prefix";
-  file_put_contents($tmpfile, $data);
+  if (file_put_contents($tmpfile, $data) === False) {
+    // Error writing the data to the file!
+    error_log("Failed to write to $tmpfile!");
+    return null;
+  }
   return $tmpfile;
 }
 

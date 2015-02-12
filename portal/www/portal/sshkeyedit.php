@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -82,15 +82,37 @@ if (array_key_exists('id', $_REQUEST)
   print "<br>Description = " . $_REQUEST['description'];
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 
-  $result = update_ssh_key($ma_url, $user, $user->account_id,
-            $_REQUEST['id'], $_REQUEST['name'], $_REQUEST['description']);
+  $result = "Success";
+  try {
+    $result = update_ssh_key($ma_url, $user, $user->account_id,
+			     $_REQUEST['id'], $_REQUEST['name'], $_REQUEST['description']);
+  } catch (Exception $exc) {
+    $result = print_r($exc, True);
+  }
   if (is_array($result) && array_key_exists(RESPONSE_ARGUMENT::CODE, $result)) {
     $result = "Error " . $result[RESPONSE_ARGUMENT::CODE] . ": " . $result[RESPONSE_ARGUMENT::OUTPUT];
+    $_SESSION['lastmessage'] = "Failed to update SSH keypair ($result)";
   } elseif (is_array($result)) {
     $result = $result[0];
     $result = "File " . $result[MA_SSH_KEY_TABLE_FIELDNAME::FILENAME] . " (" . $result[MA_SSH_KEY_TABLE_FIELDNAME::DESCRIPTION] . ")";
+    $_SESSION['lastmessage'] = "Updated SSH keypair ($result)";
+  } elseif ($result === True) {
+    $desc = $_REQUEST['description'];
+    if (strlen($desc) == 0) {
+      $desc = "";
+    } elseif (strlen($desc) <= 15) {
+      $desc = ", description='" . $desc . "'";
+    } else {
+      $desc = substr($desc, 0, 14);
+      $desc = ", description='" . $desc . "...'";
+    }
+    $_SESSION['lastmessage'] = "Updated SSH keypair (name='" . $_REQUEST['name'] . "'" . $desc . ")";
+  } else {
+    if (! isset($result) || is_null($result) || print_r($result, True) == '') {
+      $result = "Error";
+    }
+    $_SESSION['lastmessage'] = "Failed to update SSH keypair ($result)";
   }
-  $_SESSION['lastmessage'] = "Updated SSH keypair ($result)";
   relative_redirect('profile.php');
 } else {
   // User has requested edit

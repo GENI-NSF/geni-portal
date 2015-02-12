@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -65,13 +65,7 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
 
 function get_sliver_status( $obj,  $status_array, $goodret ) {
 
-$GENI_MESSAGES_REV = array( 
-    		       STATUS_MSG::GENI_CONFIGURING => STATUS_INDEX::GENI_CONFIGURING,
-		       STATUS_MSG::GENI_READY => STATUS_INDEX::GENI_READY,
-		       STATUS_MSG::GENI_FAILED => STATUS_INDEX::GENI_FAILED,
-  		       STATUS_MSG::GENI_UNKNOWN => STATUS_INDEX::GENI_UNKNOWN,
-  		       STATUS_MSG::GENI_NO_RESOURCES => STATUS_INDEX::GENI_NO_RESOURCES,
-		       STATUS_MSG::GENI_BUSY => STATUS_INDEX::GENI_BUSY);
+  global $GENI_MESSAGES_REV;
 
 foreach ($obj as $am_url => $am_status) {
     $status_item = Array();
@@ -84,7 +78,12 @@ foreach ($obj as $am_url => $am_status) {
        $geni_status = $am_status['geni_status'];
        $geni_status = strtolower( $geni_status );
        $status_item['geni_status'] = $geni_status;
-       $status_item['status_code'] = $GENI_MESSAGES_REV[ $geni_status ]; //STATUS_INDEX::GENI_READY; //FIXME
+       if (array_key_exists($geni_status, $GENI_MESSAGES_REV)) {
+	 $status_item['status_code'] = $GENI_MESSAGES_REV[ $geni_status ]; //STATUS_INDEX::GENI_READY; //FIXME
+       } else {
+	 error_log("Unrecognized status message '$geni_status' from AM $am_url");
+	 $status_item['status_code'] = STATUS_INDEX::GENI_UNKNOWN;
+       }
        if (array_key_exists("geni_expires", $am_status )) {
 	 // DCN (ION/MAX)
 	 $geni_expires = $am_status['geni_expires'];

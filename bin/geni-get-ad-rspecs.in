@@ -2,7 +2,7 @@
 # -*- Mode: python -*-
 #
 #----------------------------------------------------------------------
-# Copyright (c) 2014 Raytheon BBN Technologies
+# Copyright (c) 2014-2015 Raytheon BBN Technologies
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and/or hardware specification (the "Work") to
@@ -82,6 +82,8 @@ def parse_args(argv):
                       help="database host (default is `localhost`)")
     parser.add_option("-u", "--user", default='portal',
                       help="database user (default is `portal`)")
+    parser.add_option("-p", "--password",
+                      help="database user password")
     options,args = parser.parse_args()
     if not (options.configfile):
         parser.print_usage()
@@ -129,11 +131,14 @@ def clean_directory(directory):
 
 # attempt to connect to database
 # returns connection and cursor variables
-def connect_to_database(database, user, host):
+def connect_to_database(database, user, host, password):
+    args=dict(database=database,
+              user=user,
+              host=host)
+    if password:
+        args['password'] = password
     try:
-        conn = psycopg2.connect(database=database,
-                                user=user,
-                                host=host)
+        conn = psycopg2.connect(**args)
     except:
         raise Exception("Could not connect to database.")
     logger.info("Established connection to database '%s' on %s." 
@@ -202,7 +207,9 @@ def main(argv=None):
         return 1
     
     (conn, cur) = connect_to_database(options.database, 
-            options.user, options.host)
+                                      options.user,
+                                      options.host,
+                                      options.password)
     clean_directory(TEMP_DIR)
     download_rspecs(query_sr_for_ams(cur), options.configfile, TEMP_DIR)
     verify_downloaded_rspecs(TEMP_DIR, options.save)

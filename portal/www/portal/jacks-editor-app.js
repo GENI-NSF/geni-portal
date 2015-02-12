@@ -47,6 +47,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     // Responses coming out of Jacks.
     this.jacksOutput = null;
 
+    this.initialRSpec = null;
+
     this.jacks = jacks;
     this.jacks_viewer = null;
     this.jacks_viewer_visible = false;
@@ -55,6 +57,10 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.buttons = buttons;
     this.sliceAms = sliceAms;
     this.allAms = allAms;
+
+    this.selectedNodes = [];
+    this.currentTopology = null;
+    this.nodeCounter = 0;
 
     // Turn {am_id => {name, url}} dictionary into list,
     this.sortedAms = [];
@@ -87,6 +93,7 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.sliceName = sliceInfo.slice_name;
 
     this.downloadingRspec = false;
+    this.submittingRspec = false;
 
     this.loginInfo = {};
 
@@ -172,7 +179,7 @@ function getDefaultCanvasOptions()
 	},
         {
 	    name: 'Raw PC IG',
-	    type: 'emulab-rawpc',
+	    type: 'raw-pc',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD',
 	    hardware: 'pc'
         },
@@ -185,7 +192,7 @@ function getDefaultCanvasOptions()
 	    name: 'Open VSwitch',
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS',
-	    icon: 'https://www.emulab.net/protogeni/jacks-stable/images/router.svg'
+	    icon: 'https://portal.geni.net/images/router.svg'
 	}];
 
   var images = [
@@ -237,7 +244,7 @@ var types =  [
 	      },
         {
 	    name: 'InstaGENI Raw PC',
-	    id: 'emulab-rawpc'
+	    id: 'raw-pc'
 	},
 // ExoGENI node types
         {
@@ -385,7 +392,7 @@ var constraints = [
         {
 	    node: {
 		'hardware': ['d710', 'pc3000'],
-		'types': ['emulab-rawpc', 'emulab-xen']
+		'types': ['raw-pc', 'emulab-xen']
 	    }
 	},
         {
@@ -430,7 +437,7 @@ var constraints = [
 	},
         {
 	    node: {
-		'types': ['emulab-rawpc']
+		'types': ['raw-pc']
 	    },
 	    link: {
 		'linkTypes': ['stitched'],
@@ -710,6 +717,7 @@ JacksEditorApp.prototype.handleSelect = function() {
  */
 JacksEditorApp.prototype.handleDownload = function() {
     this.downloadingRspec = true;
+    this.submittingRspec = false;
     this.jacksInput.trigger('fetch-topology');
 };
 
@@ -780,6 +788,11 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
 
 JacksEditorApp.prototype.onSelectionEvent = function(event) {
     debug("JE : " + event);
+
+    if (event.type == "node") {
+	// Node has key, name
+	this.selectedNodes = event.items;
+    }
 }
 
 

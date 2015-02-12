@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2014 Raytheon BBN Technologies
+// Copyright (c) 2011-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -134,6 +134,9 @@ echo "<br>Status: <span id='total_run_time_status'></span></p>";
 echo "<div style='position:absolute;top:0px;right:0px;'>";
 echo "<p style='margin:0px;text-align:right;'>Started at: <b><span id='start_time'></span></b><br><span id='last_updated_or_finished_text'>Last updated:</span> <b><span id='last_updated_or_finished_time'></span></b></p>";
 echo "</div></div>";
+
+$request_rspec_filename = $slice_name . "_request_rspec.xml";
+$manifest_rspec_filename = $slice_name . "_manifest_rspec.xml";
 ?>
 
   <div id='tablist'>
@@ -170,7 +173,7 @@ echo "</div></div>";
 
 <h2>Request RSpec</h2>
 <pre id='requestrspec_container' style="height:300px;"><span id='requestrspec_data'></span></pre>
-<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=requestrspec&download=true&filename=request.rspec";?>'" title='Download Request RSpec' id='download_requestrspec'>Download Request RSpec</button></p>
+<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=requestrspec&download=true&filename=$request_rspec_filename";?>'" title='Download Request RSpec' id='download_requestrspec'>Download Request RSpec</button></p>
 </div>
 
 <!-- manifest RSpec tab -->
@@ -178,7 +181,7 @@ echo "</div></div>";
 
 <h2>Manifest RSpec</h2>
 <pre id='manifestrspec_container' style="height:300px;"><span id='manifestrspec_data'><i>Manifest RSpec empty</i></span></pre>
-<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=manifestrspec&download=true&filename=manifest.rspec";?>'" title='Download Manifest RSpec' id='download_manifestrspec' disabled='disabled'>Download Manifest RSpec</button></p>
+<p><button onClick="window.location='<?php echo "get_omni_invocation_data.php?invocation_user=$invocation_user&invocation_id=$invocation_id&slice_id=$slice_id&request=manifestrspec&download=true&filename=$manifest_rspec_filename";?>'" title='Download Manifest RSpec' id='download_manifestrspec' disabled='disabled'>Download Manifest RSpec</button></p>
 </div>
 
 
@@ -289,7 +292,9 @@ else {
 <div class='resources' id='prettyxml'><p><i>Pending... (See 'Detailed Progress' tab for more information.)</i></p></div>
 
 <!-- Jacks container -->
-<script src="https://www.emulab.net/protogeni/jacks-stable/js/jacks"></script>
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<script src="<?php echo $jacks_stable_url;?>"></script>
 <div id='jacksContainer' class='jacks resources' style='background-color: white;display: none;'></div>
 
 <div id='results_manifest_link'></div>

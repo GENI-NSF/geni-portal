@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2014 Raytheon BBN Technologies
+// Copyright (c) 2011-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -61,6 +61,35 @@ function attrValue($attr, &$value, &$self_asserted) {
   return $result;
 }
 
+/**
+ * Find a multi-valued attribute in the ENV or POST.
+ *
+ * Sets parameter $value to an array of values. Sets $self_asserted
+ * according to where the data was found. If in $_SERVER,
+ * $self_asserted is false. If in $_POST, $self_asserted is true.
+ *
+ * Returns boolean indicating success (true) or failure
+ * (i.e. attribute not found) (false).
+ */
+function multiAttrValue($attr, &$value, &$self_asserted) {
+  $av_result = attrValue($attr, $raw_value, $self_asserted);
+  if ($av_result) {
+    // Parse raw_value into an array to return.  According to:
+    // https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPAddAttribute
+    // "Multiple values are separated by a semicolon, and semicolons
+    // in values are escaped with a backslash." The regular expression
+    // below uses a lookbehind assertion to handle escaped
+    // semicolons. I didn't write it, I found it on the internet. See
+    // http://php.net/preg_split
+    $value = preg_split('#(?<!\\\)\;#', $raw_value);
+    return true;
+  } else {
+    // attrValue couldn't find the attribute, so return the failure to
+    // the caller.
+    $value = $raw_value;
+    return $av_result;
+  }
+}
 
 $sr_url = get_sr_url();
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
@@ -71,12 +100,36 @@ if (! array_key_exists('agree', $_POST) or $_POST['agree'] !== 'agree') {
   relative_redirect('kmactivate.php');
 }
 
-$eppn = strtolower($_SERVER['eppn']);
+$attrs = array(); // non-self-asserted attributes
+$sa_attrs = array(); // Self-asserted attributes
 
-attrValue('givenName', $first_name, $first_name_self_asserted);
-attrValue('sn', $last_name, $larst_name_self_asserted);
-attrValue('mail', $email_address, $email_address_self_asserted);
-//attrValue('telephoneNumber', $telephone_number, $telephone_number_self_asserted);
+$eppn = strtolower($_SERVER['eppn']);
+$attrs['eppn'] = $eppn; // eppn is never self-asserted.
+
+$first_name = null;
+if (multiAttrValue('givenName', $first_name, $first_name_self_asserted)) {
+  $first_name = $first_name[0];
+  if ($first_name_self_asserted) {
+    $sa_attrs[MA_ATTRIBUTE_NAME::FIRST_NAME] = $first_name;
+  } else {
+    $attrs[MA_ATTRIBUTE_NAME::FIRST_NAME] = $first_name;
+  }
+}
+
+$last_name = null;
+if (multiAttrValue('sn', $last_name, $last_name_self_asserted)) {
+  $last_name = $last_name[0];
+  if ($last_name_self_asserted) {
+    $sa_attrs[MA_ATTRIBUTE_NAME::LAST_NAME] = $last_name;
+  } else {
+    $attrs[MA_ATTRIBUTE_NAME::LAST_NAME] = $last_name;
+  }
+}
+
+$email_address = null;
+if (multiAttrValue('mail', $email_address, $email_address_self_asserted)) {
+  $email_address = $email_address[0];
+}
 
 if (! isset($email_address)) {
   $asserted_attrs = get_asserted_attributes($eppn);
@@ -89,16 +142,25 @@ if (! isset($email_address)) {
   }
 }
 
-$attrs = array();
-$sa_attrs = array();
-$all_attrs = array('givenName' => MA_ATTRIBUTE_NAME::FIRST_NAME,
-        'sn' => MA_ATTRIBUTE_NAME::LAST_NAME,
-        'affiliation' => 'affiliation',
-        'displayName' => 'displayName'
-		   );
+$email_address = filter_var($email_address, FILTER_SANITIZE_EMAIL);
+if (! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+  error_log("do-register got invalid email address! EPPN: " . $eppn . ", email: " . $email_address);
+  // FIXME: Bail out?
+}
 
-/* We already have the EPPN, add it here. */
-$attrs['eppn'] = $eppn;
+if ($email_address_self_asserted) {
+  $sa_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
+} else {
+  $attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
+}
+
+// Pick up remaining attributes. Affiliation is really multi-valued,
+// but we treat it as one long string, so we pick it up as a simple
+// attribute. DisplayName is a single-valued attribute per the
+// documentation.
+$all_attrs = array('affiliation' => 'affiliation',
+                   'displayName' => 'displayName'
+		   );
 
 foreach (array_keys($all_attrs) as $attr_name) {
   if (attrValue($attr_name, $value, $self_asserted)) {
@@ -122,20 +184,6 @@ if (!is_null($member)) {
   error_log("Attempted double registration by $eppn?");
   // Existing account, go to home page
   relative_redirect("home.php");
-}
-
-$email_address = filter_var($email_address, FILTER_SANITIZE_EMAIL);
-if (! filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
-  error_log("do-register got invalid email address! EPPN: " . $eppn . ", email: " . $email_address);
-  // FIXME: Bail out?
-}
-
-// Special case for email because it may not be available
-// via "attrValue".
-if ($email_address_self_asserted) {
-  $sa_attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
-} else {
-  $attrs[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS] = $email_address;
 }
 
 $result = ma_create_account($ma_url, $km_signer, $attrs, $sa_attrs);
@@ -224,7 +272,7 @@ $affiliation = "";
 if (array_key_exists('affiliation', $_SERVER)) {
   $affiliation = $_SERVER['affiliation'];
 } else {
-  error_log("IdP " . $shib_idp . " gave no affiliation for eppn " . $eppn);
+  //  error_log("IdP " . $shib_idp . " gave no affiliation for eppn " . $eppn);
 }
 
 $sql = "INSERT INTO identity (provider_url, eppn, affiliation, account_id)"
@@ -265,74 +313,34 @@ $identity_id = $rows[0]['identity_id'];
 // Add extra attributes
 //--------------------------------------------------
 
-//$attrs = array('givenName','sn', 'mail','telephoneNumber', 'reference', 'reason', 'profile');
-$attrs = array('givenName','sn', 'mail');
-// FIXME: Use filters to sanitize these
-foreach ($attrs as $attr) {
-  if (attrValue($attr, $value, $self_asserted)) {
-    $sql = "INSERT INTO identity_attribute "
-      . "(identity_id, name, value, self_asserted) VALUES ("
-      . $conn->quote($identity_id, 'integer')
-      . ", " . $conn->quote($attr, 'text')
-      . ", " . $conn->quote($value, 'text')
-      . ", " . $conn->quote($self_asserted, 'boolean')
-      . ");";
-    /* print "attr insert: $sql<br/>"; */
-    $result = $conn->exec($sql);
-    if (PEAR::isError($result)) {
-      die("error on attr $attr insert: " . $result->getMessage());
-    }
+function addIdentityAttribute($conn, $identity_id, $attr, $value,
+                              $self_asserted) {
+  $sql = "INSERT INTO identity_attribute "
+    . "(identity_id, name, value, self_asserted) VALUES ("
+    . $conn->quote($identity_id, 'integer')
+    . ", " . $conn->quote($attr, 'text')
+    . ", " . $conn->quote($value, 'text')
+    . ", " . $conn->quote($self_asserted, 'boolean')
+    . ");";
+  /* print "attr insert: $sql<br/>"; */
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on attr $attr insert: " . $result->getMessage());
   }
 }
 
-if ($portal_enable_abac) {
-  // ----------------------------------------------------------------------
-  // Add an ABAC cert and key. This should probably be done when
-  // and admin approves the request, but we don't have that page
-  // yet, so... do it here for now, and migrate it later.
-  // ----------------------------------------------------------------------
-  $cmd_array = array("/usr/local/bin/creddy",
-		     "--generate",
-		     "--cn",
-		     $username
-		     );
-  $command = implode(" ", $cmd_array);
-  $orig_dir = getcwd();
-  chdir(sys_get_temp_dir());
-  $result = exec($command, $output, $status);
-  $abac_id_file = $username . "_ID.pem";
-  $abac_key_file = $username . "_private.pem";
-  $abac_id = file_get_contents($abac_id_file);
-  $abac_key = file_get_contents($abac_key_file);
-  
-  // Get the ABAC fingerprint for use in creating attributes later
-  $cmd_array = array("/usr/local/bin/creddy",
-		     "--keyid",
-		     "--cert",
-		     $abac_id_file
-		     );
-  $command = implode(" ", $cmd_array);
-  // Clear the previous output
-  unset($output);
-  $result = exec($command, $output, $status);
-  $abac_fingerprint = $output[0];
-  unlink($abac_id_file);
-  unlink($abac_key_file);
-  chdir($orig_dir);
-  
-  // Put this stuff in the database
-  $sql = "INSERT INTO abac"
-    . "(account_id, abac_id, abac_key, abac_fingerprint) VALUES ("
-    . $conn->quote($account_id, 'text')
-    . ", ". $conn->quote($abac_id, 'text')
-    . ", ". $conn->quote($abac_key, 'text')
-    . ", ". $conn->quote($abac_fingerprint, 'text')
-    . ");";
-  $result = $conn->exec($sql);
-  if (PEAR::isError($result)) {
-    die("error on abac insert: " . $result->getMessage());
-  }
-} // end of block if portal_enable_abac
+if ($last_name) {
+  addIdentityAttribute($conn, $identity_id, 'sn', $last_name,
+                       $last_name_self_asserted);
+}
+if ($first_name) {
+  addIdentityAttribute($conn, $identity_id, 'givenName', $first_name,
+                       $first_name_self_asserted);
+}
+// We always have email address
+addIdentityAttribute($conn, $identity_id, 'mail', $email_address,
+                     $email_address_self_asserted);
+
 
 // if portal=portal, then authorize the portal.
 // FIXME: Really this should be in a util in the km area for code
@@ -346,7 +354,6 @@ if ($speaks_for_enabled) {
 }
 
 if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
-  require_once("km_utils.php");
   // get portal tool URN
   $portal_urn = ''; // FIXMEFIXME
   $candidate_tools = ma_list_clients($ma_url, $km_signer);
@@ -381,37 +388,5 @@ if (array_key_exists('portal', $_POST) and $_POST['portal'] === 'portal') {
   }
   relative_redirect($authorize_portal_page);
 }
-
-/* <?php */
-/* include("header.php"); */
-/* show_header('GENI Portal Home', $TAB_HOME); */
-/* ?> */
-/* <h2>Your account request has been submitted.</h2> */
-/* Go to the <a href= */
-/* <?php */
-/* $url = relative_url("home.php"); */
-/* if ($portal_auto_approve) { */
-/*   $args['id'] = $account_id; */
-/*   $query = http_build_query($args); */
-/*   $url = relative_url("approve.php?"); */
-/*   $url = $url . $query; */
-/* } */
-/* print $url */
-/* ?> */
-/* >portal home page</a> */
-
-/* <?php */
-/* //$array = $_POST; */
-/* //foreach ($array as $var => $value) { */
-/* //    print "POST[$var] = $value<br/>"; */
-/* //    } */
-/* ?> */
-
-/* <hr/> */
-
-/* <?php */
-/* include("footer.php"); */
-/* ?> */
-
 
 ?>

@@ -28,6 +28,23 @@
 #
 */
 
+/*
+#content {
+    min-width: 795px;
+    width: 100%;
+}
+
+#content table {
+    min-width: 795px;
+    width: 100%;
+}
+*/
+
+#jacks-app-div {
+    min-width: 795px;
+    width: 100%;
+}
+
 #jacks-app #jacks-app-container {
   border: 1px solid #000;
   position: relative;
@@ -106,6 +123,10 @@
 }
 
 #jacks-app #active .checkbox {
+  stroke-width: 5px;
+}
+
+#jacks-app .checkbox.selected {
   stroke-width: 5px;
 }
 

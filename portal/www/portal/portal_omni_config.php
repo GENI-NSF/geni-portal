@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2011-2014 Raytheon BBN Technologies
+// Copyright (c) 2011-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -47,7 +47,7 @@ $filename = "portal_omni_config";
 
 $_SESSION['lastmessage'] = "Downloaded '$filename'";
 
-require_once("am_client.php"); 
+require_once("am_client.php");
 $omni_config = get_template_omni_config($user, $omni_version,
                                         $default_project);
 

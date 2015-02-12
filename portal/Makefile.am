@@ -55,17 +55,12 @@ dist_gcfsrcgeni_DATA =
 
 dist_svcweb_DATA = \
 	www/portal/SocketPool.swf \
-	www/portal/abac-id.php \
-	www/portal/abac-key.php \
-	www/portal/abac.php \
 	www/portal/accept-project-invite.php \
 	www/portal/admin.php \
 	www/portal/aggregates.php \
-	www/portal/am_map.php \
 	www/portal/amdetails.php \
 	www/portal/amstatus.js \
 	www/portal/amstatus.php \
-	www/portal/approve.php \
 	www/portal/ask-for-project.php \
 	www/portal/cancel-join-project.php \
 	www/portal/certificate.php \
@@ -73,7 +68,6 @@ dist_svcweb_DATA = \
 	www/portal/create-rspec.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
-	www/portal/db-util.php \
 	www/portal/db_error_test.php \
 	www/portal/debug_clearcache.php \
 	www/portal/deletesliver.php \
@@ -102,12 +96,10 @@ dist_svcweb_DATA = \
 	www/portal/edit-project.php \
 	www/portal/edit-slice-member.php \
 	www/portal/edit-slice.php \
-	www/portal/error-eppn.php \
 	www/portal/error-text.php \
 	www/portal/flack.css \
 	www/portal/flack.php \
 	www/portal/dtjava_orig.js \
-	www/portal/footer.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
 	www/portal/get_omni_invocation_data.php \
@@ -115,46 +107,37 @@ dist_svcweb_DATA = \
 	www/portal/generatesshkey.php \
 	www/portal/getversion.php \
 	www/portal/handle-project-request.php \
-	www/portal/header.php \
 	www/portal/help.php \
-	www/portal/home-active-tabs.php \
-	www/portal/home-active.php \
-	www/portal/home-requested.php \
 	www/portal/index.php \
 	www/portal/home.php \
 	www/portal/invite-to-geni.php \
 	www/portal/invite-to-project.php \
         www/portal/jacks-app.css \
         www/portal/jacks-app.js \
-        www/portal/jacks-app.php \
         www/portal/jacks-app-details.php \
+        www/portal/jacks-app-expanded.php \
         www/portal/jacks-app-reserve.php \
         www/portal/jacks-app-status.php \
         www/portal/jacks-editor-app.css \
 	www/portal/jacks-editor-app.js \
-	www/portal/jacks-editor-app.php \
+	www/portal/jacks-editor-app-expanded.php \
 	www/portal/join-project.php \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \
 	www/portal/listresources_plain.php \
 	www/portal/maintenance_redirect_page.php \
-	www/portal/map.html \
 	www/portal/map.php \
 	www/portal/modify.php \
 	www/portal/omni-bundle.php \
 	www/portal/permission_manager_test.php \
-	www/portal/portal.php \
 	www/portal/portal_omni_config.php \
 	www/portal/portal-jacks-app.js \
 	www/portal/portal-jacks-editor-app.js \
-	www/portal/print-text-helpers.php \
 	www/portal/print-text.php \
 	www/portal/profile.php \
 	www/portal/project-member.php \
 	www/portal/project.php \
 	www/portal/projects.php \
-	www/portal/query-sliverstatus.php \
-	www/portal/query-details.php \
 	www/portal/raw-sliverstatus.php \
 	www/portal/renewsliver.php \
 	www/portal/request_test.php \
@@ -162,27 +145,27 @@ dist_svcweb_DATA = \
 	www/portal/rspecdelete.php \
 	www/portal/rspecdownload.php \
 	www/portal/rspecs.php \
+	www/portal/rspecupdate.php \
 	www/portal/rspecupload.php \
 	www/portal/rspecview.php \
 	www/portal/rspecuploadparser.php \
 	www/portal/saverspectoserver.php \
 	www/portal/selectrspec.html \
 	www/portal/send_bug_report.php \
-	www/portal/services.php \
-	www/portal/settings.php \
 	www/portal/slice-add-resources.js \
 	www/portal/slice-add-resources.php \
 	www/portal/slice-add-resources-jacks.css \
 	www/portal/slice-add-resources-jacks.js \
 	www/portal/slice-add-resources-jacks.php \
+	www/portal/slice-map-view.php \
+	www/portal/slice-map-data.php \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
 	www/portal/slice-jacks.php \
-	www/portal/sliceabac.php \
+	www/portal/slice-table.css \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
-	www/portal/sliceresource.js \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
 	www/portal/sliverstatus.php \
@@ -193,46 +176,46 @@ dist_svcweb_DATA = \
 	www/portal/speaks-for-upload.php \
 	www/portal/sshkeyedit.php \
 	www/portal/starter-status-bar.php \
-	www/portal/status_constants.php \
 	www/portal/status_constants_import.php \
-	www/portal/tabs.js \
 	www/portal/tool-aggwarning.php \
-	www/portal/tool-breadcrumbs.php \
-	www/portal/tool-expired-projects.php \
-	www/portal/tool-expired-slices.php \
-	www/portal/tool-lookupids.php \
 	www/portal/tool-omniconfig.php \
-	www/portal/tool-projects.php \
-	www/portal/tool-rspecs.php \
-	www/portal/tool-rspecs.js \
-	www/portal/tool-rspec-parse.php \
-	www/portal/tool-showmessage.php \
 	www/portal/tool-slices.js \
-	www/portal/tool-slices.php \
-	www/portal/tool-jfed.php \
-	www/portal/tools-admin.php \
 	www/portal/tools-user.js \
-	www/portal/tools-user.php \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
-	www/portal/uploadsshkey.html \
 	www/portal/uploadsshkey.php \
-	www/portal/user.php \
         www/portal/wimax-enable.php
 
 dist_svcwebimages_DATA = \
-	www/images/Symbols-Tips-icon-clear.png \
-	www/images/UseGENI.png \
+	www/images/EG-VM-noTxt-centered.svg \
+	www/images/EG-VM-noTxt.svg \
+	www/images/EG-VM.svg \
 	www/images/geni.png \
+	www/images/geni_globe.png \
+	www/images/geni_globe_small.png \
+	www/images/header-home.jpg \
+	www/images/openVZvm-noTxt-centered.svg \
+	www/images/openVZvm-noTxt.svg \
+	www/images/openVZvm.svg \
+	www/images/orbit_banner.png \
+	www/images/witest-logo-white.png \
 	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
+	www/images/RawPC-EG-noTxt-centered.svg \
+	www/images/RawPC-EG-noTxt.svg \
+	www/images/RawPC-EG.svg \
+	www/images/RawPC-IG-noTxt-centered.svg \
+	www/images/RawPC-IG-noTxt.svg \
+	www/images/RawPC-IG.svg \
+	www/images/router.svg \
 	www/images/site-icon.png \
 	www/images/staticmap.png \
-	www/images/header-home.jpg \
-	www/images/geni_globe.png \
-	www/images/geni_globe_small.png \
-	www/images/orbit_banner.png
+	www/images/Symbols-Tips-icon-clear.png \
+	www/images/UseGENI.png \
+	www/images/Xen-VM-noTxt-centered.svg \
+	www/images/Xen-VM-noTxt.svg \
+	www/images/Xen-VM.svg
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \

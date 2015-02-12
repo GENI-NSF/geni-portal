@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2014 Raytheon BBN Technologies
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -51,8 +51,6 @@ if (is_null($user)) {
     print "User $user->eppn has been disabled.";
   } else if ($user->isActive()) {
     include("home-active.php");
-    // Uncomment below if you want jquery tabs example
-    //include("home-active-tabs.php");
   } else {
     // TODO: Handle unknown state
     print "Unknown account state: $user->status<br/>";

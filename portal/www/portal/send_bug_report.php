@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2014 Raytheon BBN Technologies
+// Copyright (c) 2014-2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -222,7 +222,11 @@ function send_bug_report($user, $invocation_user, $invocation_id, $to, $cc, $cus
         $metadata_json_string = file_get_contents($metadata_file);
         $metadata_array = json_decode($metadata_json_string, True);
         foreach($metadata_array as $key => $value) {
+	  if (is_array($value)) {
+	    $metadata .= "$key: " . implode(', ', $value) . "\n";
+	  } else {
             $metadata .= "$key: $value\n";
+	  }
         }
     }
     
