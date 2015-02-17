@@ -80,16 +80,6 @@ echo '<script src="' . $jacks_stable_url . '"></script>';
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
-			      '#jacks-status-history', '#jacks-buttons',
-                              jacks_slice_ams, jacks_all_ams, jacks_slice_info,
-			      jacks_user_info,
-			      portal_jacks_app_ready);
- 
-  jacksApp.hideStatusHistory();
-
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
@@ -124,9 +114,25 @@ print build_jacks_viewer();
 ?>
 
 <script>
-var pane = $("#jacks-pane")[0];
-pane.style.height ="100%";
-pane.style.width ="100%";
+
+$(document).ready(function() {
+
+    // This function will start up a Jacks viewer, get the status bar going
+    // and set up all of the button clicks.
+    var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
+				'#jacks-status-history', '#jacks-buttons',
+				jacks_slice_ams, jacks_all_ams, 
+				jacks_slice_info,
+				jacks_user_info,
+				portal_jacks_app_ready);
+ 
+    jacksApp.hideStatusHistory();
+
+    var pane = $("#jacks-pane")[0];
+    pane.style.height ="100%";
+    pane.style.width ="100%";
+  });
+
 </script>
 
 <?php
