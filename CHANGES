@@ -22,6 +22,8 @@
  * Pass full context (not just most recent topology change) between
    slice-add-resources-jacks and jacks-editor-app-expanded (#1301).
    app when there are no aggregates with resources (#1302)
+ * Give sliverstatus indication on details page ("..refreshing..") (#1307).
+
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
