@@ -39,7 +39,7 @@ echo '<div id="content" >';
 echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
 echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
-echo '<script src="' . $jacks_stable_url . '"></script>';
+// echo '<script src="' . $jacks_stable_url . '"></script>';
 
 
 ?>
@@ -54,6 +54,7 @@ echo '<script src="' . $jacks_stable_url . '"></script>';
 <script src="jacks-app.js"></script>
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <script>
   var slice_id = <?php echo json_encode($slice_id); ?>;
