@@ -448,6 +448,10 @@ function add_all_logins(am_ids, slice_id)
 // Add all information from am_status including login, status, expiration
 function add_one_login(am_id, slice_id) 
 {
+
+    $("#am_status_" + am_id).text("...refreshing...");
+    $("#am_status_" + am_id).attr('class', '');
+  
   $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
      $("div#agg_"+am_id+" .status_msg").css( 'display', 'none' );
      if(statusTxt=="success") 
