@@ -45,6 +45,7 @@ $slice_ams = array();
 $all_rspecs = fetchRSpecMetaData($user);
 include("tool-lookupids.php");
 
+echo '<html><body><meta charset="utf-8">';
 echo '<div id="content" >';
 
 echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
