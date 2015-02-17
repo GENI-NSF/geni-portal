@@ -24,7 +24,7 @@
    app when there are no aggregates with resources (#1302)
  * Give sliverstatus indication on details page ("..refreshing..") (#1307).
  * Remove warning on multiple queries on tool-slices/details (#1308).
-
+ * Proper idnentation of MANIFEST rspecs on slice manfiest page (#1290).
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
