@@ -27,7 +27,8 @@
  * Remove warning on multiple queries on tool-slices/details (#1308).
  * Proper indentation of MANIFEST rspecs on slice manifest page (#1290).
  * Configure Omni to use the non-SSL SCS, given python2.6 60 second delay. (#1291)
-  * Edited the `agg_nick_cache.base`; redo this with each Omni update.
+ * Edited the `agg_nick_cache.base`; redo this with each Omni update.
+ * Make attribute changes survive auto_ip and duplicate selection (#1309).
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
