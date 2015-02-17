@@ -23,6 +23,7 @@
    slice-add-resources-jacks and jacks-editor-app-expanded (#1301).
    app when there are no aggregates with resources (#1302)
  * Give sliverstatus indication on details page ("..refreshing..") (#1307).
+ * Remove warning on multiple queries on tool-slices/details (#1308).
 
 
 == 2.26 ==
