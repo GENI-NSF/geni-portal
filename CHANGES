@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.28 ==
+
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.
  * Improve database password handling on map-related scripts (#1253)
