@@ -131,7 +131,7 @@ $(document).ready(function() {
     jacksApp.hideStatusHistory();
 
     var pane = $("#jacks-pane")[0];
-    pane.style.height ="100%";
+    pane.style.height ="90%";
     pane.style.width ="100%";
   });
 
