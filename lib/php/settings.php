@@ -37,9 +37,6 @@ $portal_gcf_cfg_dir = '/usr/share/geni-ch/portal/gcf.d';
 // Set to true for demo situations to auto approve new accounts.
 $portal_auto_approve = false;
 
-// Set to false to hide ABAC content and skip generating abac certs
-$portal_enable_abac = false;
-
 // Portal certificate file
 $portal_cert_file = '/usr/share/geni-ch/portal/portal-cert.pem';
 
@@ -50,7 +47,7 @@ $portal_private_key_file = '/usr/share/geni-ch/portal/portal-key.pem';
 $portal_max_slice_renewal_days = 185;
 
 // Portal version
-$portal_version = "2.26";
+$portal_version = "2.27";
 
 // URL to the Flack loader. Used in flack.php
 $flack_url = "https://www.emulab.net/protogeni/flack-stable/loader.js";

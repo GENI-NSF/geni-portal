@@ -206,13 +206,18 @@ function setup_jacks_editor_app_controls($enable_expansion)
   print '<button type="button" disabled="disabled" id="download_rspec_button" onClick="do_rspec_download()">Download</button>';
   print "</td></tr>";
   
+  print "<tr>";
+  print "<th rowspan='1'>Editor Ops</th>";
+  print "<td>";
   if ($enable_expansion) {
-    print "<tr>";
-    print "<th rowspan='1'>Expand Editor</th>";
-    print "<td>";
-    print '<button type="button" id="expand_editor_button" onClick="do_editor_expand()">Expand</button>';
-    print "</td></tr>";
+    print '<button type="button" id="expand_editor_button" onClick="do_editor_expand(false)">Expand</button>';
+  } else {
+    print '<button type="button" id="restore_editor_button" onClick="do_editor_expand(true)">Back</button>';
   }
+  print '<button type="button" id="duplicate_nodes_links_button" onClick="do_selection_duplicate(true)">Duplicate Nodes/Links</button>';
+  print '<button type="button" id="duplicate_nodes_only_button" onClick="do_selection_duplicate(false)">Duplicate Nodes only</button>';
+  print '<button type="button" id="auto_ip_button" onClick="do_auto_ip_assignment()">Auto IP</button>';
+  print "</td></tr>";
 
   //print "<tr><th>Choose Aggregate</th><td>";
   //show_am_chooser();

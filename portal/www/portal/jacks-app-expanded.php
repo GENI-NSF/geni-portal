@@ -34,12 +34,13 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 setup_jacks_slice_context();
 
+echo '<html><body><meta charset="utf-8">';
 echo '<div id="content" >';
 
 echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
 echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
-echo '<script src="' . $jacks_stable_url . '"></script>';
+// echo '<script src="' . $jacks_stable_url . '"></script>';
 
 
 ?>
@@ -54,6 +55,7 @@ echo '<script src="' . $jacks_stable_url . '"></script>';
 <script src="jacks-app.js"></script>
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <script>
   var slice_id = <?php echo json_encode($slice_id); ?>;
@@ -80,16 +82,6 @@ echo '<script src="' . $jacks_stable_url . '"></script>';
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
-			      '#jacks-status-history', '#jacks-buttons',
-                              jacks_slice_ams, jacks_all_ams, jacks_slice_info,
-			      jacks_user_info,
-			      portal_jacks_app_ready);
- 
-  jacksApp.hideStatusHistory();
-
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
@@ -115,18 +107,34 @@ echo '<script src="' . $jacks_stable_url . '"></script>';
 
 <?php
 
-echo "<table style=\"margin-left: 0px;width:100%;height:20px\"><tr><th>Add Resources to Slice $slice_name</th></tr></table>";
+echo "<table style=\"margin-left: 0px;width:95%;height:20px\"><tr><th>Resources for Slice $slice_name</th></tr></table>";
 
-print "<table style=\"margin-left: 0px; width:95%; height:100%\" id='jacks-app'><tbody>";
+print "<table style=\"margin-left: 0px; width:95%; height:75%\" id='jacks-app'><tbody>";
 print "<tr><td><div id='jacks-app-container' style='width:100%; height:100%'>";
 print build_jacks_viewer();
 
 ?>
 
 <script>
-var pane = $("#jacks-pane")[0];
-pane.style.height ="80%";
-pane.style.width ="100%";
+
+$(document).ready(function() {
+
+    // This function will start up a Jacks viewer, get the status bar going
+    // and set up all of the button clicks.
+    var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
+				'#jacks-status-history', '#jacks-buttons',
+				jacks_slice_ams, jacks_all_ams, 
+				jacks_slice_info,
+				jacks_user_info,
+				portal_jacks_app_ready);
+ 
+    jacksApp.hideStatusHistory();
+
+    var pane = $("#jacks-pane")[0];
+    pane.style.height ="90%";
+    pane.style.width ="100%";
+  });
+
 </script>
 
 <?php
@@ -134,5 +142,7 @@ pane.style.width ="100%";
 print "</div></td></tr></tbody></table>";
 
 echo '</div>';
+
+include("footer.php");
 
 ?>

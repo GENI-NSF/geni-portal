@@ -252,7 +252,7 @@ var jacksEditorApp_isHidden = true;
 var jacksEditorApp = null;
 
 /* Make sure Jacks Editor App exists */
-function assureJacksEditorApp() {
+function assureJacksEditorApp(initial_rspec) {
     if (jacksEditorApp == null) {
 	canvasOptions=jacksContext.canvasOptions;
 	constraints = jacksContext.constraints;
@@ -283,12 +283,17 @@ function assureJacksEditorApp() {
 					jacks_editor_app_ready,
 				        jacks_fetch_topology_callback,
 					jacks_modified_topology_callback);
+	jacksEditorApp.initialRSpec = initial_rspec;
     }
 }
 
 function jacks_editor_app_ready(je, je_input, je_output) {
     //  console.log("JEAR : JacksEditorApp ready");
   $('#rspec_status_text').text("");
+
+  if (je.initialRSpec != null) {
+      set_jacks_topology(je.initialRSpec);
+  }
 };
 
 // The callback when we've received the current rspec from Jacks
@@ -298,6 +303,7 @@ function jacks_editor_app_ready(je, je_input, je_output) {
 function jacks_fetch_topology_callback(rspecs) {
     //  console.log("RSPECS = " + rspecs + " " + rspecs.length);
   var rspec = rspecs[0].rspec;
+  $('#current_rspec_text').val(rspec);
   if(jacksEditorApp.downloadingRspec) {
       jacksEditorApp.downloadingRspec = false;
       $.post("saverspectoserver.php", {rspec : rspec},
@@ -312,8 +318,20 @@ function jacks_fetch_topology_callback(rspecs) {
 	      });
   } else if (jacksEditorApp.submittingRspec) {
       jacksEditorApp.submittingRspec = false;
-      $('#current_rspec_text').val(rspec);
       validateSubmit();
+  } else if (jacksEditorApp.passingContextToURL != null) {
+      var editor_url = jacksEditorApp.passingContextToURL;
+      jacksEditorApp.passingContextToURL = null;
+      do_editor_expand_internal(editor_url, rspec);
+  } else if (jacksEditorApp.invoking_auto_ip) {
+      jacksEditorApp.invoking_auto_ip = false;
+      do_auto_ip_assignment_internal();
+  } else if (jacksEditorApp.invoking_selection_duplicate_nolinks) {
+      jacksEditorApp.invoking_selection_duplicate_nolinks = false;
+      do_selection_duplicate_internal(false);
+  } else if (jacksEditorApp.invoking_selection_duplicate_links) {
+      jacksEditorApp.invoking_selection_duplicate_links = false;
+      do_selection_duplicate_internal(true);
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
@@ -324,8 +342,12 @@ function jacks_fetch_topology_callback(rspecs) {
 // The callback from Jacks when topology has been modified
 function jacks_modified_topology_callback(data)
 {
+    jacksEditorApp.currentTopology = data;
+
     //    console.log("MOD = " + data);
     rspec = data.rspec;
+
+    $('#current_rspec_text').val(rspec);
 
     // id, client_id, aggregate_id, site_name
     nodes = data.nodes;
@@ -391,9 +413,11 @@ function do_hide_editor_elements()
 }
 
 /** If the editor doesn't exist, create it before showing */
-function do_show_editor()
+function do_show_editor(initial_rspec)
 {
-    assureJacksEditorApp();
+    if (initial_rspec === undefined) initial_rspec = null;
+
+    assureJacksEditorApp(initial_rspec);
     $('#show_jacks_editor_button').hide();
     $('#hide_jacks_editor_button').show();
     $('#discard_jacks_editor_button').show();
@@ -441,7 +465,7 @@ function urlupload_onchange()
               })
     .fail(function(xhr, ts, et) {
 	    //	    console.log("Failed uploading URL: " + url);
-	    jsonResponse = {"valid" : false, "message" : "<b style='color:red;'>ERROR: </b>: " + et};
+	    jsonResponse = {"valid" : false, "message" : "<b style='color:red;'>ERROR: </b> " + et};
 	    handle_rspec_update(jsonResponse, "", false);
 	});
     clear_other_inputs("#url_select");
@@ -475,10 +499,262 @@ function do_rspec_download()
 }
 
 // Invoke a new full-size editor in a new window
-function do_editor_expand()
+// Pass along current rspec as a POST argument
+// by creating a form at the end of the document body (not nested)
+// If true, return to slice-add-resources-jacks.js
+// with current topology
+function do_editor_expand(restore)
 {
-    var editor_expand_url = "jacks-editor-app-expanded.php?slice_id=" + jacks_slice_id;
-    window.location.replace(editor_expand_url);
+    var editor_url = "jacks-editor-app-expanded.php?slice_id=" + 
+	jacks_slice_id;
+
+    if (restore == true)
+	editor_url = "slice-add-resources-jacks.php?slice_id=" + 
+	    jacks_slice_id;
+
+    jacksEditorApp.passingContextToURL = editor_url;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+function do_editor_expand_internal(editor_url, current_rspec)
+{
+    var $form=$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",editor_url);
+    var $input=$(document.createElement('input')).attr('name','current_editor_rspec').val(current_rspec);
+    $form.append($input);
+    $("body").append($form);
+    $form.submit();
+}
+
+// Take every selected node and make a copy of it, sending a new
+// rspec containing these copied nodes to Jacks
+function do_selection_duplicate(include_links)
+{
+    if (include_links) {
+	jacksEditorApp.invoking_selection_duplicate_links = true;
+    } else {
+	jacksEditorApp.invoking_selection_duplicate_nolinks = true;
+    }
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+function do_selection_duplicate_internal(include_links)
+{
+    var all_node_names = [];
+    var num_topology_nodes = jacksEditorApp.currentTopology.nodes.length;
+    for(var i = 0; i < num_topology_nodes; i++) {
+	var node_name = jacksEditorApp.currentTopology.nodes[i].client_id;
+	all_node_names.push(node_name);
+    }
+
+    var added_nodes = false;
+    var rspec = $('#current_rspec_text').val();
+    var doc = jQuery.parseXML(rspec);
+    var rspec_root = $(doc).find('rspec')[0];
+    var num_selected_nodes = jacksEditorApp.selectedNodes.length;
+
+    for(var i = 0; i < num_selected_nodes; i++) {
+
+	added_nodes = true;
+
+	var selected_node = jacksEditorApp.selectedNodes[i];
+	var selected_node_id = selected_node.key;
+	var selected_node_name = selected_node.name;
+	var selected_node_component_manager_id = "";
+
+	// Find the node object in the current topology
+	var current_topology = jacksEditorApp.currentTopology;
+	var current_topology_nodes = current_topology['nodes'];
+	var selected_topology_node = null;
+	var num_current_topology_nodes = current_topology_nodes.length;
+	for(var j = 0; j < num_current_topology_nodes; j++) {
+	    var topology_node = current_topology_nodes[j];
+	    if (topology_node.id == selected_node_id) {
+		selected_topology_node = topology_node;
+		break;
+	    }
+	}
+
+	// Find the site object in the current topology to which the node is assigned
+	var site_name = selected_topology_node.site_name;
+	var selected_topology_node_site = null;
+	var current_topology_sites  = current_topology['sites'];
+	var num_current_topology_sites = current_topology_sites.length;
+	for (var j = 0; j < num_current_topology_sites; j++) {
+	    var topology_site = current_topology_sites[j];
+	    if (topology_site.name == site_name) {
+		selected_topology_node_site = topology_site;
+	    }
+	}
+
+	// New name is from old name plus "-$UNIQUE_COUNTER", 
+	// skipping over any existing nodes with that manufactured name
+	var new_node_name = construct_new_node_name(selected_node_name, all_node_names);
+	all_node_names.push(new_node_name);
+
+	var rspec_nodes = $(rspec_root).find('node');
+	var num_rspec_nodes = rspec_nodes.length;
+	for(var j = 0; j < num_rspec_nodes; j++) {
+	    var rspec_node = rspec_nodes[j];
+	    if ($(rspec_node).attr('client_id') == selected_node_name) {
+		var site_elements = $(rspec_node).find('site');
+		var site_element = null;
+		if (site_elements.length > 0) site_element = site_elements[0];
+		if ($(rspec_node).attr('component_manager_id') == selected_node_component_manager_id ||
+		    (site_element != null && $(site_element).attr('id') == selected_topology_node_site.id)) {
+		    selected_rspec_node = rspec_node;
+		    break;
+		}
+	    }
+	}
+
+
+	// Make clone of node, change its client_id and add to list of nodes
+	var cloned_rspec_node = $(selected_rspec_node).clone()[0];
+	$(cloned_rspec_node).attr('client_id', new_node_name);
+
+	// Remove any IP addresses that were cloned
+	$(cloned_rspec_node).find('ip').remove();
+
+	// Add new node into rspec
+	rspec_root.appendChild(cloned_rspec_node);
+
+	if (include_links) {
+	    // If we're including links, we need to rename all the interfaces on the cloned node
+	    // And add them to the link associated with the original node's interface
+	    var interfaces = $(cloned_rspec_node).find('interface');
+	    var num_interfaces = interfaces.length;
+
+	    var links = $(doc).find('link');
+	    var num_links = links.length;
+
+	    // For each interface, find the link to which it belongs
+	    // Rename the interface and then add an interface ref to the link
+	    for(var iface_index = 0; iface_index < num_interfaces; iface_index++) {
+		var interface = interfaces[iface_index];
+		var interface_name = $(interface).attr('client_id');
+
+		var link_for_interface = null;
+		for(var link_index = 0; link_index < num_links; link_index++) {
+		    var link = links[link_index];
+		    var interface_refs = $(link).find('interface_ref');
+		    var num_interface_refs = interface_refs.length;
+		    for(var iface_ref_index = 0; iface_ref_index < num_interface_refs; iface_ref_index++) {
+			var interface_ref = interface_refs[iface_ref_index];
+			if ($(interface_ref).attr('client_id') == interface_name) {
+			    link_for_interface = link;
+			    break;
+			}
+		    }
+		}
+
+		if (link_for_interface != null) {
+		    // Make a new name for the interface
+		    var new_interface_name = new_node_name + ":if" + 
+			iface_index;
+
+		    // Add a new interface ref to the link
+		    var new_interface_ref = doc.createElement('interface_ref');
+		    $(new_interface_ref).attr('client_id', new_interface_name);
+		    link_for_interface.appendChild(new_interface_ref);
+
+		    // Rename the interface
+		    $(interface).attr('client_id', new_interface_name);
+		}
+	    }
+	    
+	} else {
+	    // If we're not including links, we need to eliminate the interfaces from the cloned node
+	    $(cloned_rspec_node).find('interface').remove();
+	}
+    }
+
+    if (added_nodes) {
+	var new_rspec = (new XMLSerializer()).serializeToString(doc);
+	// Remove xmlns="" which Firefox puts into new elements 
+	// but Jacks can't handle
+	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
+	set_jacks_topology(cleaned_rspec);
+    }
+
+}
+
+// Construct a new node name by appending -X to the existing one
+// Increase jacksEditorApp.nodeCounter until we find an X for which there is no such node
+function construct_new_node_name(orig_node_name, all_node_names) {
+    var new_node_name = "";
+    while(true)  {
+	new_node_name = orig_node_name + "-" + jacksEditorApp.nodeCounter;
+	jacksEditorApp.nodeCounter = jacksEditorApp.nodeCounter + 1;
+	if (all_node_names.indexOf(new_node_name) == -1) break;
+    }
+    return new_node_name;
+
+}
+
+// Perform auto IP assignment on topologies
+// Go through all links. Label that 10.10.i.*;
+//   Go through all interfaces on that link. Label that 10.10.i.j;
+function do_auto_ip_assignment()
+{
+    jacksEditorApp.invoking_auto_ip = true;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+
+function do_auto_ip_assignment_internal()
+{
+    var rspec = $('#current_rspec_text').val();
+    var doc = jQuery.parseXML(rspec);
+    var links = $(doc).find('link');
+    var num_links = links.length;
+    var changed_ips = (links.length > 0);
+
+    if (num_links > 255) {
+    	alert("Can't perform AUTO_IP assignment with > 255 links ");
+    	return;
+    }
+
+    // Make a hash table of all interfaces by client_id
+    var interfaces_by_client_id = [];
+    var interfaces = $(doc).find('interface');
+    var num_interfaces = interfaces.length;
+
+    for(var iface_index = 0; iface_index < num_interfaces; iface_index++) {
+	var interface = interfaces[iface_index];
+	var client_id = interface.getAttribute('client_id');
+	interfaces_by_client_id[client_id] = interface;
+    }
+
+    for(var link_index = 0; link_index < num_links; link_index++) {
+	var iface_ref_elts = links[link_index].getElementsByTagName('interface_ref');
+	var num_iface_ref_elts = iface_ref_elts.length;
+
+	if (num_iface_ref_elts > 255) {
+	    alert("Can't perform AUTO_IP assignment with " + 
+		  "> 255 interfaces per link ");
+	    return;
+	}
+
+
+	for(var iface_index = 0; iface_index < num_iface_ref_elts; iface_index++) {
+	    var iface_name = iface_ref_elts[iface_index].getAttribute('client_id');
+	    var interface = interfaces_by_client_id[iface_name];
+	    var ip_elt = doc.createElement('ip');
+	    var address = "10.10." + (link_index + 1) + "." + (iface_index + 1);
+	    var netmask = "255.255.255.0";
+	    ip_elt.setAttribute('address', address);
+	    ip_elt.setAttribute('netmask', netmask);
+	    interface.appendChild(ip_elt);
+	}
+    }
+
+    if (changed_ips) {
+	var new_rspec = (new XMLSerializer()).serializeToString(doc);
+	// Remove xmlns="" which Firefox puts into new elements 
+	// but Jacks can't handle
+	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
+	set_jacks_topology(cleaned_rspec);
+    }
 }
 
 // Grab current topology from Jacks editor and submit if valid

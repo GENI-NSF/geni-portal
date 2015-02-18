@@ -76,9 +76,6 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
   print ("<th>Slice Creation</th>");
   print ("<th>Slice Expiration</th>");
   print ("<th>Slice Owner</th>");
-  if ($portal_enable_abac) {
-    print "<th>ABAC Credential</th>";
-  }
   print "</tr>\n";
 
   $base_url = relative_url("slicecred.php?");
@@ -87,7 +84,6 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
   $resource_base_url = relative_url("slice-add-resources.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
   $sliver_status_base_url = relative_url("sliverstatus.php?");
-  $abac_url = relative_url("sliceabac.php?");
   $flack_url = relative_url("flack.php?");
   $num_slices = count($expired_slices);
   if ($num_slices==1) {
@@ -117,7 +113,6 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     $sliceresource_url = $resource_base_url . $query;
     $delete_sliver_url = $delete_sliver_base_url . $query;
     $sliver_status_url = $sliver_status_base_url . $query;
-    $sliceabac_url = $abac_url . $query;
     $sliceflack_url = $flack_url . $query;
     $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];

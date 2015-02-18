@@ -365,7 +365,6 @@ print $jfed_script_text;
 ?>
 
 <!-- Jacks JS and App CSS -->
-<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <!-- This belongs in the header, probably -->
 <script>
@@ -634,7 +633,10 @@ print "</div>";
 
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
+
 <script>
+
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
@@ -656,23 +658,13 @@ print "</div>";
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
-			      '#jacks-status-history', '#jacks-buttons',
-                              jacks_slice_ams, jacks_all_ams, jacks_slice_info,
-			      jacks_user_info,
-			      portal_jacks_app_ready);
- 
-  jacksApp.hideStatusHistory();
-
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
 
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
-  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
+  var slice_id = <?php echo json_encode($slice_id) ?>;
   var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
 
   var jacks_slice_info = {slice_id : jacks_slice_id, 
@@ -689,35 +681,51 @@ print "</div>";
   var jacks_enable_buttons = true;
   var jacksEditorApp = null;
 
-function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
-  portal_jacks_app_ready(ja, ja_input, ja_output);
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
-				      '#jacks-editor-status', 
-				      '#jacks-editor-buttons',
-				      jacks_slice_ams, jacks_all_ams, 
-				      jacks_all_rspecs,
-				      jacks_slice_info,
-				      jacks_user_info,
-				      jacks_enable_buttons, 
-				      null, null,
-				      portal_jacks_editor_app_ready,
-				      JacksEditorApp.prototype.postRspec
-				      );
+  var slice_id = <?php echo json_encode($slice_id); ?>
 
-  jacksEditorApp.setJacksViewer(ja);
-  ja.setJacksEditor(jacksEditorApp);
-  if(jacks_slice_ams.length == 0) {
-    // Initially hide the viewer if there are no resources
-    ja.hide();
-  } else {
-    // Initally hide the editor if there are resources
-    jacksEditorApp.hide(); 
-  }
-};
+  $(document).ready(function() {
 
-var slice_id = <?php echo json_encode($slice_id); ?>
+      // This funciton will start up a Jacks viewer, get the status bar going
+      // and set up all of the button clicks.
+      var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
+				  '#jacks-status-history', '#jacks-buttons',
+				  jacks_slice_ams, jacks_all_ams, 
+				  jacks_slice_info,
+				  jacks_user_info,
+				  portal_jacks_app_ready);
+ 
+      jacksApp.hideStatusHistory();
+    });
+
+
+//function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
+//  portal_jacks_app_ready(ja, ja_input, ja_output);
+//  // This funciton will start up a Jacks viewer, get the status bar going
+//  // and set up all of the button clicks.
+//  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
+//				      '#jacks-editor-status', 
+//				      '#jacks-editor-buttons',
+//				      jacks_slice_ams, jacks_all_ams, 
+//				      jacks_all_rspecs,
+//				      jacks_slice_info,
+//				      jacks_user_info,
+//				      jacks_enable_buttons, 
+//				      null, null,
+//				      portal_jacks_editor_app_ready,
+//				      JacksEditorApp.prototype.postRspec
+//				      );
+//
+//  jacksEditorApp.setJacksViewer(ja);
+//  ja.setJacksEditor(jacksEditorApp);
+//  if(jacks_slice_ams.length == 0) {
+//    // Initially hide the viewer if there are no resources
+//    ja.hide();
+//  } else {
+//    // Initally hide the editor if there are resources
+//    jacksEditorApp.hide(); 
+//  }
+//};
+//
 
 </script>
 
@@ -745,8 +753,10 @@ var slice_id = <?php echo json_encode($slice_id); ?>
 // Make sure the height is not 100% but an actual size
 // Make sure width is set to 100% at load time 
  //   (don't know, some times it isn't)
-$("#map1").height(400); 
-$("#map1").width('100%'); 
+$(document).ready(function() {
+    $("#map1").height(400); 
+    $("#map1").width('100%'); 
+  });
 
 </script>
 

@@ -47,6 +47,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     // Responses coming out of Jacks.
     this.jacksOutput = null;
 
+    this.initialRSpec = null;
+
     this.jacks = jacks;
     this.jacks_viewer = null;
     this.jacks_viewer_visible = false;
@@ -55,6 +57,10 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
     this.buttons = buttons;
     this.sliceAms = sliceAms;
     this.allAms = allAms;
+
+    this.selectedNodes = [];
+    this.currentTopology = null;
+    this.nodeCounter = 0;
 
     // Turn {am_id => {name, url}} dictionary into list,
     this.sortedAms = [];
@@ -88,6 +94,10 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.downloadingRspec = false;
     this.submittingRspec = false;
+    this.passingContextToURL = null;
+    this.invoking_auto_ip = false;
+    this.invoking_selection_duplicate_links = false;
+    this.invoking_selection_duplicate_nolinks = false;
 
     this.loginInfo = {};
 
@@ -664,6 +674,11 @@ JacksEditorApp.prototype.postRspec = function(rspecs)
 
 JacksEditorApp.prototype.onSelectionEvent = function(event) {
     debug("JE : " + event);
+
+    if (event.type == "node") {
+	// Node has key, name
+	this.selectedNodes = event.items;
+    }
 }
 
 

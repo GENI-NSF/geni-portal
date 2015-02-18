@@ -26,6 +26,14 @@ require_once("user.php");
 require_once("header.php");
 require_once("settings.php");
 
+// error_log("POST = " . print_r($_POST, true));
+
+$current_rspec = "";
+if (array_key_exists('current_editor_rspec', $_POST)) {
+    $current_rspec = $_POST['current_editor_rspec'];
+    //    error_log("CURRENT_RSPEC = " . $current_rspec);
+}
+
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
@@ -37,6 +45,7 @@ $slice_ams = array();
 $all_rspecs = fetchRSpecMetaData($user);
 include("tool-lookupids.php");
 
+echo '<html><body><meta charset="utf-8">';
 echo '<div id="content" >';
 
 echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
@@ -50,13 +59,15 @@ setup_jacks_editor_slice_context();
 
 ?>
 
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
 <link rel="stylesheet" type="text/css" href="slice-jacks.css" />
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-<link rel="stylesheet" type="text/css" href="slice-table.css" />
+<link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
 <script src="<?php echo $jacks_stable_url;?>"></script>
 <script src="jacks-app.js"></script>
 <script src="jacks-editor-app.js"></script>
@@ -67,7 +78,7 @@ setup_jacks_editor_slice_context();
 
 <?php
 
-echo "<table style=\"margin-left: 0px;width:90%;height:20px\"><tr><th>Resources Allocated to Slice $slice_name</th></tr></table>";
+echo "<table style=\"margin-left: 0px;width:90%;height:20px\"><tr><th>Add Resources to GENI Slice $slice_name</th></tr></table>";
 
 print "<table style=\"margin-left: 0px; width:90%; height:70%\" id='jacks-editor-app'><tbody>";
 print "<tr><td><div id='jacks-editor-app-container' style='width:100%; height:100%'>";
@@ -102,9 +113,12 @@ print "</div></td></tr></table>";
 			 user_id : jacks_user_id};
 
   var jacks_enable_buttons = true;
+  var jacks_current_rspec = <?php echo json_encode($current_rspec) ?>;
   var jacksContext = <?php echo json_encode($jacksContext) ?>;
 
-  do_show_editor();
+$(document).ready(function() {
+  do_show_editor(jacks_current_rspec);
+  });
 
 </script>
 
@@ -160,10 +174,12 @@ print '</p>';
 ?>
 
 <script>
-$('#jacks-editor-status').hide();
-var pane = $("#jacks-editor-pane")[0];
-pane.style.height ="80%";
-pane.style.width ="100%";
+$(document).ready(function() {
+    $('#jacks-editor-status').hide();
+    var pane = $("#jacks-editor-pane")[0];
+    pane.style.height = "95%";
+    pane.style.width = "100%";
+  });
 </script>
 
 <?php
@@ -171,5 +187,7 @@ pane.style.width ="100%";
 print "</div></td></tr></tbody></table>";
 
 echo '</div>';
+
+include("footer.php");
 
 ?>
