@@ -13,22 +13,22 @@
  * Add Duplicate Nodes/Links, Duplicate Nodes only, Auto IP buttons
    to jacks editor (#1278).
   * Refactor duplicate node javascript to avoid infinite loop over some structures. (#1296)
+  * Make attribute changes survive auto_ip and duplicate selection (#1309).
  * Add Editor Ops buttons to Expanded Jacks editor (#1295)
- * Make expanded jacks editor take context from unexpanded
+ * Make expanded Jacks editor take context from unexpanded
    (and vice versa) (#1292).
- * Remove race condition on jacks editor page load (#1300).
+ * Remove race condition on Jacks editor page load (#1300).
  * Highlight name changes in email (#1297)
  * Time out calls to stitcher after 45 minutes using new `--timeout` option to stitcher. (#1234)
- * Avoid looking at all aggregates when hitting DETAILS button on jacks 
+ * Avoid looking at all aggregates when hitting Details button on Jacks 
    app when there are no aggregates with resources (#1302)
  * Pass full context (not just most recent topology change) between
    slice-add-resources-jacks and jacks-editor-app-expanded (#1301).
  * Give sliverstatus indication on details page ("..refreshing..") (#1307).
  * Remove warning on multiple queries on tool-slices/details (#1308).
- * Proper indentation of MANIFEST rspecs on slice manifest page (#1290).
+ * Proper indentation of Manifest rspecs on slice manifest page (#1290).
  * Configure Omni to use the non-SSL SCS, given python2.6 60 second delay. (#1291)
- * Edited the `agg_nick_cache.base`; redo this with each Omni update.
- * Make attribute changes survive auto_ip and duplicate selection (#1309).
+  * Edited the `agg_nick_cache.base`; redo this with each Omni update.
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
