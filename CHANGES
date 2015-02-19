@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.28 ==
+  * Restrict AMs shown in jacks editor to only compute aggregates (#1316).
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.
@@ -31,7 +32,6 @@
  * Proper indentation of Manifest rspecs on slice manifest page (#1290).
  * Configure Omni to use the non-SSL SCS, given python2.6 60 second delay. (#1291)
   * Edited the `agg_nick_cache.base`; redo this with each Omni update.
-  * Restrict AMs shown in jacks editor to only compute aggregates (#1316).
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)
