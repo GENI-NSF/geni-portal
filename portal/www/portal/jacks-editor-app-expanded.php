@@ -95,6 +95,7 @@ print "</div></td></tr></table>";
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+  var jacks_all_compute_ams = <?php echo json_encode($all_compute_ams) ?>;
 
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
