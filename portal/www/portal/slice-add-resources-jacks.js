@@ -273,7 +273,7 @@ function assureJacksEditorApp(initial_rspec) {
 					'#jacks-editor-status',
 					'#jacks-editor-buttons',
 					jacks_slice_ams,
-					jacks_all_ams,
+					jacks_all_compute_ams,
 					jacks_all_rspecs,
 					jacks_slice_info,
 					jacks_user_info,
