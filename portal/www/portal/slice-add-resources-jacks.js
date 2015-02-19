@@ -36,6 +36,11 @@ function fileupload_onchange()
 
 function validate_rspec_file(rspec, is_filename, callback)
 {
+    // Don't validate the rspec if we just did. We get lots
+    // of modify events that don't really change the rspec
+    if(jacksEditorApp.currentRspec == rspec) return;
+    jacksEditorApp.currentRspec = rspec;
+
     var formData = new FormData();
     if(is_filename) {
 	formData.append("user_rspec_file", rspec);

@@ -84,6 +84,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.allRspecs = allRspecs;
 
+    this.currentRspec = null;
+
     this.verbose = false; // Print debug messages to console.log
 
     this.sliceInfo = sliceInfo;
