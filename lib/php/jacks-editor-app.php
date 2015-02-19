@@ -73,8 +73,9 @@ function setup_jacks_editor_slice_context()
 	if (array_key_exists(SERVICE_ATTRIBUTE_TAG, $am) &&
 	    array_key_exists(SERVICE_ATTRIBUTE_AM_CAT, 
 			     $am[SERVICE_ATTRIBUTE_TAG]) && 
-	    strpos(SERVICE_ATTRIBUTE_COMPUTE_CAT,
-		   $am[SERVICE_ATTRIBUTE_TAG][SERVICE_ATTRIBUTE_AM_CAT]) 
+	    strpos(
+		   $am[SERVICE_ATTRIBUTE_TAG][SERVICE_ATTRIBUTE_AM_CAT],
+		   SERVICE_ATTRIBUTE_COMPUTE_CAT) 
 	    !== FALSE) 
 	  {
 	    $all_compute_ams[$service_id] = $single_am;
