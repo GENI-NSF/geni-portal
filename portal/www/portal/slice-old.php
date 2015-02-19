@@ -355,6 +355,8 @@ print $jfed_script_text;
 
 ?>
 
+<!-- Jacks JS and App CSS -->
+
 <!-- This belongs in the header, probably -->
 <script>
 var slice= "<?php echo $slice_id ?>";
@@ -588,11 +590,175 @@ print "</table>\n";
 
 print "<h2></h2>\n";
 
+?>
+
+
+<div id='tablist'>
+  <ul class='tabs'>
+    <li><a href='#jacks-app'>Graphical View</a></li>
+    <li><a href='#status_table_div'>Aggregate View</a></li>
+    <li><a href='#geo_view_div'>Geographic View</a></li>
+  </ul>
+</div>
+
+<?php
+
+// Grab all rspecs 
+$all_rspecs = fetchRSpecMetaData($user);
+usort($all_rspecs, "cmp");
+
+// JACKS-APP STUFF //
+print "<div id='jacks-app-div'>";
+print "<table id='jacks-app'><tbody><tr>";
+print "<th>Manage Resources</th></tr><tr><td><div id='jacks-app-container'>";
+print build_jacks_viewer();
+print "</div></td></tr></tbody></table>";
+print "</div>";
+
+//include("jacks-editor-app.php");
+//print "<table id='jacks-editor-app'><tbody><tr>";
+//print "<th>Add Resources</th></tr><tr><td><div id='jacks-editor-app-container'>";
+//print build_jacks_editor();
+//print "</div></td></tr></tbody></table>";
+
+?>
+
+<link rel="stylesheet" type="text/css" href="slice-table.css" />
+<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+
+<script src="portal-jacks-app.js"></script>
+<script src="portal-jacks-editor-app.js"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
+
+<script>
+
+  // AMs that the Portal says there are resources at.
+  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
+  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
+  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
+  var jacks_slice_urn= <?php echo json_encode($slice_urn) ?>;
+  var jacks_slice_expiration = <?php echo json_encode($slice_expiration) ?>;
+
+  var jacks_slice_info = {slice_id : jacks_slice_id, 
+			  slice_name : jacks_slice_name,
+			  slice_urn : jacks_slice_urn, 
+			  slice_expiration : jacks_slice_expiration};
+
+  var jacks_user_name = <?php echo json_encode($user->username) ?>;
+  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
+  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
+
+  var jacks_user_info = {user_name : jacks_user_name,
+			 user_urn : jacks_user_urn,
+			 user_id : jacks_user_id};
+
+  // AMs that the Portal says there are resources at.
+  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
+  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+
+  var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
+
+  var slice_id = <?php echo json_encode($slice_id) ?>;
+  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
+
+  var jacks_slice_info = {slice_id : jacks_slice_id, 
+			  slice_name : jacks_slice_name};
+
+  var jacks_user_name = <?php echo json_encode($user->username) ?>;
+  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
+  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
+
+  var jacks_user_info = {user_name : jacks_user_name,
+			 user_urn : jacks_user_urn,
+			 user_id : jacks_user_id};
+
+  var jacks_enable_buttons = true;
+  var jacksEditorApp = null;
+
+  var slice_id = <?php echo json_encode($slice_id); ?>
+
+  $(document).ready(function() {
+
+      // This funciton will start up a Jacks viewer, get the status bar going
+      // and set up all of the button clicks.
+      var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
+				  '#jacks-status-history', '#jacks-buttons',
+				  jacks_slice_ams, jacks_all_ams, 
+				  jacks_slice_info,
+				  jacks_user_info,
+				  portal_jacks_app_ready);
+ 
+      jacksApp.hideStatusHistory();
+    });
+
+
+//function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
+//  portal_jacks_app_ready(ja, ja_input, ja_output);
+//  // This funciton will start up a Jacks viewer, get the status bar going
+//  // and set up all of the button clicks.
+//  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
+//				      '#jacks-editor-status', 
+//				      '#jacks-editor-buttons',
+//				      jacks_slice_ams, jacks_all_ams, 
+//				      jacks_all_rspecs,
+//				      jacks_slice_info,
+//				      jacks_user_info,
+//				      jacks_enable_buttons, 
+//				      null, null,
+//				      portal_jacks_editor_app_ready,
+//				      JacksEditorApp.prototype.postRspec
+//				      );
+//
+//  jacksEditorApp.setJacksViewer(ja);
+//  ja.setJacksEditor(jacksEditorApp);
+//  if(jacks_slice_ams.length == 0) {
+//    // Initially hide the viewer if there are no resources
+//    ja.hide();
+//  } else {
+//    // Initally hide the editor if there are resources
+//    jacksEditorApp.hide(); 
+//  }
+//};
+//
+
+</script>
+
+<?php
+
+// END JACKS-APP STUFF //
+
   $slice_status='';
 
   print "<div id='status_table_div'/>\n";
   print build_agg_table_on_slicepg();
   print "</div>\n";
+
+
+  // Slice geo view
+  print "<div id='geo_view_div' >\n";
+  echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+  include('slice_map.html');
+  echo "</td></tr></table>";
+  print "</div>";
+
+?>
+
+<script>
+// Make sure the height is not 100% but an actual size
+// Make sure width is set to 100% at load time 
+ //   (don't know, some times it isn't)
+$(document).ready(function() {
+    $("#map1").height(400); 
+    $("#map1").width('100%'); 
+  });
+
+</script>
+
+
+<?php
+
 // --- End of Slice and Sliver Status table
 
 print "<h2 id='members'>Slice Members</h2>";

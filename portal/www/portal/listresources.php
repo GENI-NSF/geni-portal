@@ -156,8 +156,8 @@ print "<p id='summary' style='display:none;'><i>Queried <span id='numagg'>0</spa
 print "<p id='noresources' style='display:none;'><i>You have no resources</i><br/>";
 print "</p>";
 print "<p id='refresh_buttons' style='display:block;'>";
-print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh All</button>";
-print "<button id='reload_all_button' type='button' onclick='add_all_logins(am_id,slice)' $get_slice_credential_disable_buttons>Refresh Status</button>";
+print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh All Details</button>";
+print "<button id='reload_all_button' type='button' onclick='add_all_logins(am_id,slice)' $get_slice_credential_disable_buttons>Refresh Status Only</button>";
 print "</p>";
 
 print "<div class='xml'>";

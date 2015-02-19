@@ -483,7 +483,8 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 	  /* Parsed into a table */
 	  print_rspec_pretty($xml, False, $filterToAM, $arg_urn );
 	} else {
-	  /* As plain XML */
+	  /* As plain XML but with newlines after each block */
+	  $xml = str_replace(">", ">\n", $xml);
 	  print_xml($xml);
 	}
       } else {

@@ -611,8 +611,10 @@ JacksApp.prototype.handleDetails = function() {
 	    ams_info = ams_info + "&am_id[]=" + am_id;
 	});
 
-    var details_url = "listresources.php?slice_id=" + slice_id + ams_info;
-    window.location.replace(details_url);
+    if (ams_info != "") {
+	var details_url = "listresources.php?slice_id=" + slice_id + ams_info;
+	window.location.replace(details_url);
+    }
 }
 
 JacksApp.prototype.expandViewer = function() {
