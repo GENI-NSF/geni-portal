@@ -6,6 +6,8 @@
 
 == 2.28 ==
   * Restrict AMs shown in jacks editor to only compute aggregates (#1316).
+  * Remove excessive calls to validate rspec (#1313).
+  * Remove duplicate jacks loads (#1312).
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.
