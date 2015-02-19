@@ -70,7 +70,8 @@ function get_services()
   $services = $client->get_services();
   $converted_services = array();
   foreach ($services as $service) {
-    $converted_services[] = service_chapi2portal($service);
+    $converted_service = service_chapi2portal($service);
+    $converted_services[] = $converted_service;
   }
   set_session_cached(SERVICE_REGISTRY_CACHE_TAG, $converted_services);
   return $converted_services;
@@ -91,7 +92,7 @@ function get_services_of_type($service_type)
 {
   $all_services = get_services();
   $services = select_services($all_services, $service_type);
-  if ($service_type === SR_SERVICE_TYPE::AGGREGATE_MANAGER) {
+  if ($service_type === $service_type) {
     // Sort the aggregates alphabetically by name
     usort($services, "agg_cmp");
   }
