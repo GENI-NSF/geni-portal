@@ -46,6 +46,7 @@ function setup_jacks_editor_slice_context()
   global $slice_urn;
   global $slice_expiration;
   global $all_ams;
+  global $all_compute_ams;
   global $all_rspecs;
   global $am_ids;
 
@@ -59,6 +60,7 @@ function setup_jacks_editor_slice_context()
   if (! isset($all_ams)) {
     $am_list = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
     $all_ams = array();
+    $all_compute_ams = array();
     foreach ($am_list as $am) 
       {
 	$single_am = array();
@@ -67,6 +69,16 @@ function setup_jacks_editor_slice_context()
 	$single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
 	$single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
 	$all_ams[$service_id] = $single_am;
+
+	if (array_key_exists(SERVICE_ATTRIBUTE_TAG, $am) &&
+	    array_key_exists(SERVICE_ATTRIBUTE_AM_CAT, 
+			     $am[SERVICE_ATTRIBUTE_TAG]) && 
+	    strpos(SERVICE_ATTRIBUTE_COMPUTE_CAT,
+		   $am[SERVICE_ATTRIBUTE_TAG][SERVICE_ATTRIBUTE_AM_CAT]) 
+	    !== FALSE) 
+	  {
+	    $all_compute_ams[$service_id] = $single_am;
+	  }
       }   
   }
 }
