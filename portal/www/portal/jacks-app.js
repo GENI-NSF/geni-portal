@@ -310,7 +310,12 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     label = $('<label style="padding: 020px;" />');
     $(buttonSelector).append(label);
 
-    btn = $('<button type="button">Expand</button>');
+    expand_label = "Expand";
+    if (jacks_app_expanded) {
+	expand_label = "Back";
+    }
+    btn = $('<button type="button">' + expand_label + 
+	    '</button>');
     btn.click(function(){ that.expandViewer();});
     $(buttonSelector).append(btn);
 
@@ -619,8 +624,13 @@ JacksApp.prototype.handleDetails = function() {
 
 JacksApp.prototype.expandViewer = function() {
     var slice_id = this.sliceId;
+    var unexpanded_viewer_url = "slice-jacks.php?slice_id=" + slice_id;
     var expanded_viewer_url = "jacks-app-expanded.php?slice_id=" + slice_id;
-    window.location.replace(expanded_viewer_url);
+    var viewer_url = expanded_viewer_url;
+    if(jacks_app_expanded) {
+	viewer_url = unexpanded_viewer_url;
+    }
+    window.location.replace(viewer_url);
 }
 
 JacksApp.prototype.handleStatus = function() {

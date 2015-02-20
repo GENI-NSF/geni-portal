@@ -52,6 +52,9 @@ echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+S
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+<script>var jacks_app_expanded = true;</script>
+
 <script src="jacks-app.js"></script>
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
