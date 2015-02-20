@@ -580,6 +580,7 @@ function do_selection_duplicate_internal(include_links)
 	    var topology_site = current_topology_sites[j];
 	    if (topology_site.name == site_name) {
 		selected_topology_node_site = topology_site;
+		selected_node_component_manager_id = topology_site.urn;
 	    }
 	}
 
