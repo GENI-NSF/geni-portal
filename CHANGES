@@ -11,6 +11,7 @@
   * Remove site tag when component_manager_id is set, so the true site name
      is shown (#1317).
   * Remove duplicate node with links (#1320).
+  * Make site names black not white (#1321)
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.

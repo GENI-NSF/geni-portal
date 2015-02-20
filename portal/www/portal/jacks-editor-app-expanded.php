@@ -50,6 +50,11 @@ echo '<head>';
 echo '<meta charset="utf-8">';
 echo '<title>GENI Portal: Add Resources to Slice</title>';
 
+echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
+echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>';
+echo '<script src="slice-add-resources-jacks.js"></script>';
+
+
 echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
 echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
@@ -60,18 +65,17 @@ setup_jacks_editor_slice_context();
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
-<link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-42566976-1', 'bbn.com');ga('send', 'pageview');</script>
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
+<link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
+
 <script src="<?php echo $jacks_stable_url;?>"></script>
 <script src="jacks-editor-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
-<script src="slice-add-resources-jacks.js"></script>
+
 
 <?php
 echo '</head>';
@@ -86,6 +90,9 @@ print build_jacks_editor();
 print "</div></td></tr></table>";
 
 ?>
+
+<link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
+<link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 
 <script>
   var slice_id = <?php echo json_encode($slice_id); ?>;
