@@ -700,6 +700,12 @@ function do_auto_ip_assignment_internal()
 {
     var rspec = $('#current_rspec_text').val();
     var doc = jQuery.parseXML(rspec);
+
+
+    // Remove any existing IP tags on the nodes
+    // We're replacing them all with new values
+    $(doc).find('ip').remove();
+
     var links = $(doc).find('link');
     var num_links = links.length;
     var changed_ips = (links.length > 0);
