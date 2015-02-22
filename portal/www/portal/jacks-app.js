@@ -71,6 +71,9 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 
     this.loginInfo = {};
 
+    // Most recent status return element for each am (by am_id)
+    this.currentStatusByAm = {};
+
     this.userInfo = userInfo;
     this.username = userInfo.user_name;
 
@@ -378,6 +381,10 @@ JacksApp.prototype.lookup_am_id = function (node_key) {
 //----------------------------------------------------------------------
 
 JacksApp.prototype.getSliceManifests = function() {
+
+    // Reset this table: we're getting new manifests and statuses
+    this.currentStatusByAm = {};
+
     var sliceAms = this.sliceAms;
 
     if (sliceAms.length === 0) {
@@ -810,8 +817,10 @@ JacksApp.prototype.onEpManifest = function(event) {
         });
     });
 
+    // re-poll as necessary up to event.client_data.maxPollTime
     var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
     this.getStatus(am_id, maxPollTime);
+
 };
 
 JacksApp.prototype.onEpStatus = function(event) {
@@ -821,56 +830,71 @@ JacksApp.prototype.onEpStatus = function(event) {
         return;
     }
 
-    // re-poll as necessary up to event.client_data.maxPollTime
+    // Hold onto this status for this AM, overriding any previous info
+    this.currentStatusByAm[event.am_id] = event.value[event.am_id];
 
     var that = this;
-    var agg_urn = that.allAms[event.am_id].urn;
+    // *** Maybe here we just go through all entries in currentStatusByAM
+    $.each(this.currentStatusByAm, function (am_id, status) {
+	that.handleNewStatus(am_id, status);
+	});
 
-    $.each(event.value, function(i, v) {
+    //    $.each(event.value, function(i, v) {
+    //	    that.handleNewStatus(i, v);
+    //	});
+}
+
+// Handle a newly received status message for a given AM
+// Change the status history message
+// Potentially paint the associated node boxes green/red 
+//     if they are ready/failed
+JacksApp.prototype.handleNewStatus = function (am_id, status)
+{
+
+    var that = this;
+    var agg_urn = that.allAms[am_id].urn;
 
 // SHOULD PROBABLY CHANGE
       // This only looks for READY and FAILED.
       // There may be other cases to look for.
       // Probably shouldn't poll infinitely.
-      if (! that.isTerminalStatus(v)) {
-          that.updateStatus('Resources on ' + v['am_name'] + ' are '
-                            + v['geni_status'] + '. Polling again in '
-                            + that.statusPollDelayMillis/1000 + ' seconds.');
+      if (! this.isTerminalStatus(status)) {
+          this.updateStatus('Resources on ' + status['am_name'] + ' are '
+                            + status['geni_status'] + '. Polling again in '
+                            + this.statusPollDelayMillis/1000 + ' seconds.');
           // Poll again in a little while
           setTimeout(function() {
-              that.getStatus(event.am_id, event.client_data.maxTime);
-          }, that.statusPollDelayMillis);
-      } else if (v['geni_status'] == 'ready') {
-          that.updateStatus('Resources on '+v['am_name']+' are ready.');
-      } else if (v['geni_status'] == 'failed') {
-          that.updateStatus('Resources on '+v['am_name']+' have failed.');
-      } else if (v['geni_status'] == 'no resources') {
-	  that.getSliceManifests();
+              this.getStatus(event.am_id, event.client_data.maxTime);
+          }, this.statusPollDelayMillis);
+      } else if (status['geni_status'] == 'ready') {
+          this.updateStatus('Resources on '+status['am_name']+' are ready.');
+      } else if (status['geni_status'] == 'failed') {
+          this.updateStatus('Resources on '+status['am_name']+' have failed.');
+      } else if (status['geni_status'] == 'no resources') {
+	  this.getSliceManifests();
 	  return;
       } 
 
-// SHOULD PROBABLY CHANGE
-        // This section is for coloring the nodes that are ready.
-        // At the moment there is no coloring for failed nodes, etc.
-        if (v.hasOwnProperty('resources')) {
-            $.each(v['resources'], function(ii, vi) {
-                var resourceURN = vi.geni_urn;
-		var clientId = that.urn2clientId[resourceURN];
-		var jacksId = that.lookup_jacks_id_from_client_id(agg_urn, 
-								  clientId,
-								  resourceURN,
-								  'nodes');
-                if (vi['geni_status'] == 'ready') {
-                    debug(clientId + " (" + resourceURN + ") is ready");
-		    $('#' + jacksId).find('.checkbox').attr('id', 'ready');
-
-                } else {
-                    debug(clientId + " (" + resourceURN + ") is not ready");
-		    $('#' + jacksId).find('.checkbox').removeAttr('id');
-		}
-            });
-    }
-    });
+      // SHOULD PROBABLY CHANGE
+      // This section is for coloring the nodes that are ready.
+      // At the moment there is no coloring for failed nodes, etc.
+      if (status.hasOwnProperty('resources')) {
+	  $.each(status['resources'], function(ii, vi) {
+		  var resourceURN = vi.geni_urn;
+		  var clientId = that.urn2clientId[resourceURN];
+		  var jacksId = that.lookup_jacks_id_from_client_id(agg_urn, 
+								    clientId,
+								    resourceURN,
+								    'nodes');
+		  if (vi['geni_status'] == 'ready') {
+		      debug(clientId + " (" + resourceURN + ") is ready");
+		      $('#' + jacksId).find('.checkbox').attr('id', 'ready');
+		  } else {
+		      debug(clientId + " (" + resourceURN + ") is not ready");
+		      $('#' + jacksId).find('.checkbox').removeAttr('id');
+		  }
+	      });
+      }
 };
 
 JacksApp.prototype.onEpDelete = function(event) {
