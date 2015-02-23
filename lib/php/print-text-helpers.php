@@ -59,8 +59,10 @@ function print_xml( $xml ){
     $dom->loadXML($xml);
     if (count(libxml_get_errors()) == 0) {
       $xml = $dom->saveXML();
-      //} else {
+    } else {
       //error_log("Cannot prettify malformed XML. " . print_r(libxml_get_errors()) . "; " . $xml);
+      // Add a newline after any close tag that doesn't already have one
+      $xml = preg_replace("/>([ \t\r]*<)/", ">\n$1", $xml);
     }
     libxml_clear_errors();
     if (! $wasVal) {
