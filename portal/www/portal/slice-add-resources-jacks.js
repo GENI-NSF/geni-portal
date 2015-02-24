@@ -119,7 +119,7 @@ function handle_rspec_update(jsonResponse, rspec, updateJacks)
 	$('#current_rspec_text').val(rspec);
 
 	if(!jacksEditorApp_isHidden && updateJacks) {
-	    set_jacks_topology(rspec);
+	    jacksEditorApp.setTopology(rspec);
 	}
     }
 
@@ -297,7 +297,7 @@ function jacks_editor_app_ready(je, je_input, je_output) {
   $('#rspec_status_text').text("");
 
   if (je.initialRSpec != null) {
-      set_jacks_topology(je.initialRSpec);
+      jacksEditorApp.setTopology(je.initialRSpec);
   }
 };
 
@@ -395,7 +395,7 @@ function do_hide_editor_internal(grab_topology)
     } else {
 	// Revert to previous value of current RSPEC
 	var rspec = $('#current_rspec_text').val();
-	set_jacks_topology(rspec);
+	jacksEdiorApp.setTopology(rspec);
     }
 
     $('#show_jacks_editor_button').show();
@@ -441,14 +441,6 @@ function do_show_editor_elements()
     $('#grab_editor_topology_button').removeAttr('disabled');
     jacksEditorApp_isHidden = false;
 }
-
-function set_jacks_topology(rspec)
-{
-    if(rspec == "") rspec = "<rspec></rspec>";
-    jacksEditorApp.jacksInput.trigger('change-topology',
-				      [{rspec: rspec}]);
-}
-
 
 function grab_paste_onchange()
 {
@@ -588,6 +580,7 @@ function do_selection_duplicate_internal(include_links)
 	    var topology_site = current_topology_sites[j];
 	    if (topology_site.name == site_name) {
 		selected_topology_node_site = topology_site;
+		selected_node_component_manager_id = topology_site.urn;
 	    }
 	}
 
@@ -675,10 +668,7 @@ function do_selection_duplicate_internal(include_links)
 
     if (added_nodes) {
 	var new_rspec = (new XMLSerializer()).serializeToString(doc);
-	// Remove xmlns="" which Firefox puts into new elements 
-	// but Jacks can't handle
-	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
-	set_jacks_topology(cleaned_rspec);
+	jacksEditorApp.setTopology(new_rspec);
     }
 
 }
@@ -710,6 +700,12 @@ function do_auto_ip_assignment_internal()
 {
     var rspec = $('#current_rspec_text').val();
     var doc = jQuery.parseXML(rspec);
+
+
+    // Remove any existing IP tags on the nodes
+    // We're replacing them all with new values
+    $(doc).find('ip').remove();
+
     var links = $(doc).find('link');
     var num_links = links.length;
     var changed_ips = (links.length > 0);
@@ -755,10 +751,7 @@ function do_auto_ip_assignment_internal()
 
     if (changed_ips) {
 	var new_rspec = (new XMLSerializer()).serializeToString(doc);
-	// Remove xmlns="" which Firefox puts into new elements 
-	// but Jacks can't handle
-	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
-	set_jacks_topology(cleaned_rspec);
+	jacksEditorApp.setTopology(new_rspec);
     }
 }
 

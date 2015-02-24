@@ -378,8 +378,7 @@ JacksEditorApp.prototype.show = function (msg) {
 	this.jacksOutput = output;
 
 	// Start with a blank topology.
-	this.jacksInput.trigger('change-topology',
-				[{ rspec: '<rspec></rspec>' }]);
+	this.setTopology(null);
 
 	this.jacksOutput.on('selection', this.onSelectionEvent, this);
 
@@ -424,14 +423,15 @@ JacksEditorApp.prototype.rspec_loaded = function(jacks_input) {
     var reader = new FileReader();
     reader.onload = function(evt) { 
 	var contents = evt.target.result;
-	jacks_input.trigger('change-topology', 
-					    [{rspec : contents}]);
+	JacksEditorApp.setTopology(contents);
 	$('#rspec_chooser').val("0");
 	$('#rspec_paste_text').val("");
 	$('#rspec_url_text').val("");
     }
     reader.readAsText(rspec_file);
 }
+
+
 
 JacksEditorApp.prototype.initButtons = function(buttonSelector) {
     var that = this;
@@ -609,6 +609,40 @@ JacksEditorApp.prototype.handleDownload = function() {
     this.jacksInput.trigger('fetch-topology');
 };
 
+/**
+ * Set the given topology of the editor, but doing some pre-processing first
+ */
+JacksEditorApp.prototype.setTopology = function(rspec) {
+    if (rspec == null || rspec == "") rspec = "<rspec></rspec>";
+
+    // Remove site tags if there are already component_manager_ids set on nodes
+    rspec = remove_superfluous_site_tags(rspec);
+
+    // Remove xmlns="" which Firefox puts into new elements 
+    // but Jacks can't handle
+    rspec = rspec.replace(/xmlns=""/g, '');
+
+    this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
+}
+
+function remove_superfluous_site_tags(rspec)
+{
+    var doc = jQuery.parseXML(rspec);
+    var rspec_root = $(doc).find('rspec')[0];
+    var nodes = $(rspec_root).find('node');
+    var num_nodes = nodes.length;
+    for(var i = 0; i < num_nodes; i++) {
+	var node = nodes[i];
+	if(node.hasAttribute('component_manager_id')) {
+	    $(node).find('site').remove();
+	}
+    }
+    var new_rspec = (new XMLSerializer()).serializeToString(doc);
+    return new_rspec;
+}
+
+
+
 
 /**
  * Handle request to paste an RSpec to the portal for use by Jacks
@@ -616,7 +650,7 @@ JacksEditorApp.prototype.handleDownload = function() {
 JacksEditorApp.prototype.handlePaste = function() {
     var rspec_paste_input = $('#rspec_paste_text');
     var current_rspec = rspec_paste_input.val();
-    this.jacksInput.trigger('change-topology', [{rspec : current_rspec}]);
+    this.setTopology(rspec);
 
     $('#rspec_chooser').val("0");
     $('#rspec_loader').val(null);
@@ -701,9 +735,7 @@ JacksEditorApp.prototype.onEpLookup = function(event) {
 	return;
     }
     debug("onEpLookup: " + event);
-    this.jacksInput.trigger('change-topology',
-			    [{ rspec: event.rspec }]);
-
+    this.setTopology(event.rspec);
     $('#rspec_loader').val(null);
     $('#rspec_paste_text').val("");
     $('#rspec_url_text').val("");
@@ -726,8 +758,7 @@ JacksEditorApp.prototype.onEpUpload = function(event) {
     }
 
     debug("ON_EP_UPLOAD");
-    this.jacksInput.trigger('change-topology',
-			    [{ rspec: event.rspec }]);
+    this.setTopology(event.rspec);
 
     $('#rspec_chooser').val("0");
     $('#rspec_loader').val(null);
@@ -761,8 +792,7 @@ JacksEditorApp.prototype.onEpReserve = function(event) {
     debug("ON_EP_RESERVE");
 
     if (this.jacks_viewer != null) {
-	this.jacksInput.trigger('change-topology',
-				[{ rspec: '<rspec></rspec>' }]);
+	this.setTopology(null);
 	this.updateStatus("Reservation request completed.");
 	var am_id = event.am_id;
 	if (this.jacks_viewer.sliceAms.indexOf(am_id) < 0) {
