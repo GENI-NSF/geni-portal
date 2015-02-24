@@ -6907,6 +6907,159 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-al2s"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm", 
+                "am": "University of Chicago InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-122.25003", 
                     "37.87631"
                 ]
@@ -29279,6 +29432,23 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-87.597098", 
+                    "41.785644"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.geni.uchicago.edu+authority+am", 
+                "am": "University of Chicago InstaGENI OpenFlow", 
+                "resources": 1, 
+                "component_id": "09:bb:2c:59:e5:28:82:00"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-95.34269", 
                     "29.72327"
                 ]
@@ -29636,6 +29806,23 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-83.06556", 
+                    "42.357742"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:pscvmsite+authority+am", 
+                "am": "exogeni.net:pscvmsite", 
+                "resources": 1, 
+                "component_id": "orca-iscsi-luns"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-71.14751", 
                     "42.38974"
                 ]
@@ -29681,6 +29868,23 @@
                 "am": "UC Davis ExoGENI", 
                 "resources": 1, 
                 "component_id": "orca-vm-cloud"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-83.06556", 
+                    "42.357742"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:pscvmsite+authority+am", 
+                "am": "exogeni.net:pscvmsite", 
+                "resources": 1, 
+                "component_id": "orca-xcat-cloud"
             }
         }, 
         {
@@ -29800,6 +30004,23 @@
                 "am": "RENCI ExoGENI", 
                 "resources": 1, 
                 "component_id": "orca-iscsi-luns"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-83.06556", 
+                    "42.357742"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:pscvmsite+authority+am", 
+                "am": "exogeni.net:pscvmsite", 
+                "resources": 1, 
+                "component_id": "orca-vm-cloud"
             }
         }, 
         {
