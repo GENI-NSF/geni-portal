@@ -631,7 +631,7 @@ JacksApp.prototype.handleDetails = function() {
 
 JacksApp.prototype.expandViewer = function() {
     var slice_id = this.sliceId;
-    var unexpanded_viewer_url = "slice-jacks.php?slice_id=" + slice_id;
+    var unexpanded_viewer_url = "slice.php?slice_id=" + slice_id;
     var expanded_viewer_url = "jacks-app-expanded.php?slice_id=" + slice_id;
     var viewer_url = expanded_viewer_url;
     if(jacks_app_expanded) {
