@@ -19,6 +19,8 @@
    after statuses start coming in (#1314)
  * Prettify RSpecs. Check out Details page, sliceresources
    (both request and manifest). (#1252)
+ * Clean up jacks-add-resources-expand to aid debugging CSS/height
+   issue for some users. (#1311)
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.
