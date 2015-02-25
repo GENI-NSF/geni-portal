@@ -355,15 +355,6 @@ function build_details_table()
 	    add_agg_row_to_details_table(tmp_am_id, numAgg);
 	}
    });
-
-    setTimeout(check_if_details_table_done, 5000);
-}
-
-function check_if_details_table_done()
-{
-    // Does each aggregate have login info?
-    // Are all aggregates in a terminal state?
-    console.log("FOO");
 }
 
 function add_agg_row_to_details_table(am_id, numagg) {
@@ -487,8 +478,8 @@ function add_one_login(am_id, slice_id)
 	    agg_info = "Aggregate <b>" + am_name + "'s</b>  Status:";
 	    status_info = JSON.stringify(am, null, 1);
 
-	    status_info = "<div id='" + am_id + "' class='rawStatus' style='display:none'>" + 
-		"<div class='aggregate'>" + agg_info + "</div>" + 
+	    status_info = "<div id='rawstatus_" + am_id + "' class='rawStatus' style='display:none'>" + 
+		"<div class='aggregate' >" + agg_info + "</div>" + 
 		"<div class='resources' id='" + am_id + "'>" + 
 		"<div class='xml'>" + status_info + "</div>" + 
 		"</div>";
@@ -556,16 +547,19 @@ function add_one_login(am_id, slice_id)
 	    }
 
 	    if (!("login_info" in am)) {
+		check_for_completeness(am_id, slice_id);
 		return;
 	    }
 	    login_info = am['login_info'];
 	    if (!(login_info)) {
 		// sometimes (eg if BUSY) might have contain anything
+		check_for_completeness(am_id, slice_id);
 		return;
 	    }
 	    resources = login_info['resources'];
 
 	    if (!(resources)) {
+		check_for_completeness(am_id, slice_id);
 		return;
 	    }
 	    for (var i in resources ){
@@ -596,19 +590,45 @@ function add_one_login(am_id, slice_id)
 	    }
 	}
 
-	// At this point, we have the status. If it is not READY or FAILED
-	// i.e. terminal, then call this again in N seconds.
-	// add_one_login(am_id, slice_id)
-        // If it is READY, then call  add_agg_row_to_details_table
-	// with num_agg=0
-	// # total
-	// # num_agg
-
-
+	check_for_completeness(am_id, slice_id);
      }
      if(statusTxt=="error")
         alert("Error: "+xhr.status+": "+xhr.statusText);
    });
+}
+
+// We've completed getting manifest and status for a given AM
+// But we should regather status if the status isn't terminal
+// And if the status is terminal but there is no login info, 
+// We should re-get the manifest
+function check_for_completeness(am_id, slice_id)
+{
+    // Check if aggregate is ready or failed
+    var agg_status = $('#am_status_' + am_id).attr('class');
+    if (agg_status == 'ready' || agg_status == 'failed') {
+	// We're done with status. If there is no login info, we should get it
+	var login_info = $('#agg_' + am_id).find('.login');
+	if (login_info.length == 0) {
+	    // Remove all the previous manifest/status artifacts
+	    // Need to remove the 'resources' field
+	    // Need to remove the rawRSpec field
+	    // Decrement the aggregate counter 
+	    // since we're getting the manifest again
+	    var numagg = parseInt($('span#numagg').text());
+	    $('span#numagg').text(numagg-1);
+	    $('#details').find('#agg_' + am_id).remove();
+	    $('#details').find('#rawstatus_' + am_id).remove();
+	    var numagg = parseInt($('#numagg').text());
+	    add_agg_row_to_details_table(am_id, numagg);
+	}
+    } else {
+	// We're not done with status. Get it again.
+	setTimeout(function() {
+		$('#details').children('#rawstatus_' + am_id).remove();
+		add_one_login(am_id, slice_id);
+	    }, 5000);
+	
+    }
 }
 
 
