@@ -355,6 +355,15 @@ function build_details_table()
 	    add_agg_row_to_details_table(tmp_am_id, numAgg);
 	}
    });
+
+    setTimeout(check_if_details_table_done, 5000);
+}
+
+function check_if_details_table_done()
+{
+    // Does each aggregate have login info?
+    // Are all aggregates in a terminal state?
+    console.log("FOO");
 }
 
 function add_agg_row_to_details_table(am_id, numagg) {
@@ -418,6 +427,7 @@ function add_agg_row_to_details_table(am_id, numagg) {
 // 	      $("#summary").css( 'display', 'block');
 // 	  }
 //       }
+
   });  
 }
 
@@ -585,6 +595,16 @@ function add_one_login(am_id, slice_id)
 		}
 	    }
 	}
+
+	// At this point, we have the status. If it is not READY or FAILED
+	// i.e. terminal, then call this again in N seconds.
+	// add_one_login(am_id, slice_id)
+        // If it is READY, then call  add_agg_row_to_details_table
+	// with num_agg=0
+	// # total
+	// # num_agg
+
+
      }
      if(statusTxt=="error")
         alert("Error: "+xhr.status+": "+xhr.statusText);
