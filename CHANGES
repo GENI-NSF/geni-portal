@@ -23,6 +23,7 @@
    issue for some users. (#1311)
  * Remove duplicate aggregates (-a arguments to Omni) for multiple nodes 
    on same aggregate (#1322).
+ * Fix Jacks app logic to handle retrying fetching status from AMs. (#1325)
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.

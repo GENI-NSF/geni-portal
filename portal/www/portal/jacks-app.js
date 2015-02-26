@@ -831,12 +831,12 @@ JacksApp.prototype.onEpStatus = function(event) {
     }
 
     // Hold onto this status for this AM, overriding any previous info
-    this.currentStatusByAm[event.am_id] = event.value[event.am_id];
+    this.currentStatusByAm[event.am_id] = [event.value[event.am_id], event.client_data.maxTime];
 
     var that = this;
     // *** Maybe here we just go through all entries in currentStatusByAM
-    $.each(this.currentStatusByAm, function (am_id, status) {
-	that.handleNewStatus(am_id, status);
+    $.each(this.currentStatusByAm, function (am_id, statusAndmaxTime) {
+	that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1]);
 	});
 
     //    $.each(event.value, function(i, v) {
@@ -848,7 +848,7 @@ JacksApp.prototype.onEpStatus = function(event) {
 // Change the status history message
 // Potentially paint the associated node boxes green/red 
 //     if they are ready/failed
-JacksApp.prototype.handleNewStatus = function (am_id, status)
+JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime)
 {
 
     var that = this;
@@ -864,7 +864,7 @@ JacksApp.prototype.handleNewStatus = function (am_id, status)
                             + this.statusPollDelayMillis/1000 + ' seconds.');
           // Poll again in a little while
           setTimeout(function() {
-              this.getStatus(event.am_id, event.client_data.maxTime);
+              that.getStatus(am_id, maxTime);
           }, this.statusPollDelayMillis);
       } else if (status['geni_status'] == 'ready') {
           this.updateStatus('Resources on '+status['am_name']+' are ready.');
