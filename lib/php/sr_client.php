@@ -92,7 +92,7 @@ function get_services_of_type($service_type)
 {
   $all_services = get_services();
   $services = select_services($all_services, $service_type);
-  if ($service_type === $service_type) {
+  if ($service_type === SR_SERVICE_TYPE::AGGREGATE_MANAGER) {
     // Sort the aggregates alphabetically by name
     usort($services, "agg_cmp");
   }

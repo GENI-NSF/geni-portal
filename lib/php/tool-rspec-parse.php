@@ -119,7 +119,8 @@ function parseRequestRSpecContents($rspec) {
       if ($node->hasAttribute('component_manager_id')) { 
 	$component_manager_id = $node->getAttribute('component_manager_id'); 
 	$is_bound = true;
-	$am_urns[] = $component_manager_id;
+	if (!in_array($component_manager_id, $am_urns))
+	  $am_urns[] = $component_manager_id;
       } else {
 	$has_unbound_node = true;
       }
