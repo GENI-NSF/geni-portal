@@ -73,9 +73,9 @@ function get_jfed_strs($user) {
     //error_log("User browser: " . $browser["name"] . " version " . $browser["version"] . " on " . $browser["platform"]);
 
     // While interesting, this message appears every time a Chrome on Mac user displays this page. Too much.
-    //    error_log("User running Chrome on Mac. Can't launch jFed. User should try Safari or Firefox.");
-    $jfed_button_start = "<button type='button' onclick='alert(\"jFed cannot run in Chrome on a Mac. Try Safari or Firefox.\")'";
-    return array($jfed_script_text, $jfed_button_start);
+    error_log("User running Chrome on Mac. Can't launch jFed. User should try Safari or Firefox.");
+    //$jfed_button_start = "<button type='button' onclick='alert(\"jFed cannot run in Chrome on a Mac. Try Safari or Firefox.\")'";
+    //return array($jfed_script_text, $jfed_button_start);
   }
 
   if (!isset($user)) {
@@ -109,25 +109,50 @@ function get_jfed_strs($user) {
   if (! $has_certificate or $expired) {
     $jfed_button_start = "<button type='button' onclick='alert(\"Generate an SSL (Omni) key pair to use jFed.\")'";
   } else {
-    // Print the 2 script tags needed
+    // Print the script tags needed
     $params = '';
     if ($has_key) {
       $certstring = $certresult[MA_ARGUMENT::PRIVATE_KEY] . "\n" . $certresult[MA_ARGUMENT::CERTIFICATE];
-      $params = ", params: {'login-certificate-string' : '" . base64_encode($certstring) . "' }";
+      $certkey = base64_encode($certstring);
+      //      $params = ", params: {'login-certificate-string' : '" . base64_encode($certstring) . "' }";
     }
     $jfed_script_text = "
-	<script src=\"dtjava_orig.js\"></script>
-	<script>
-		function launchjFed() {
-                dtjava.launch( { url : 'http://jfed.iminds.be/jfed-geni.jnlp'
-" . $params . "
-		      }, { javafx : '2.2+' }, {} );
-                return false;
-	}
-	</script>
-";
+<div id='java7Dialog' title=\"Old Java version detected\" >
+<p>The latest version of jFed is only compatible with Java 8 or higher. We detected that you are using an older version.</p>
+<p>Please upgrade to <a href=\"//java.com\">Java 8</a> to get access to the newest version of jFed. Otherwise, you can use jFed 5.3.2, which is Java 7-compatible.</p>
+</div>
 
+<div id='noJavaDialog' title=\"No Java detected\" >
+<p>jFed requires Java to run. We however couldn't detect a Java installation in your browser.</p>
+<p>Please install the latest version of <a href=\"//java.com\">Java</a> to continue.</p>
+</div>
+        <link rel='stylesheet' href='https://authority.ilabt.iminds.be/css/bootstrap.css'>
+        <script>
+        var config = {
+            java8_jnlp: '//jfed.iminds.be/jfed-geni-java8.jnlp',
+            java7_jnlp: '//jfed.iminds.be/jfed-geni-java7.jnlp'
+        };
+        var certkey = '$certkey';
+        //var slice = 'urn:publicid:IDN+ch.geni.net:CHtest+slice+vm1';
+        //var slice = '';
+        </script>
+        <script src='https://authority.ilabt.iminds.be/js/jquery/jquery.min.js'></script>
+        <link rel='stylesheet' href='https://authority.ilabt.iminds.be/js/jquery/jquery-ui.css' />
+        <script src='https://authority.ilabt.iminds.be/js/jquery/jquery-ui.min.js'></script>
+        <script src=\"//java.com/js/dtjava.js\"></script>
+        <script src='http://jfed.iminds.be/jfed_webstart_geni.js'></script>
+        <script src='https://authority.ilabt.iminds.be/js/lib/bootstrap.js'></script>
+";
+    // Brecht has id of 'start'
     $jfed_button_start = "<button id='jfed' type='button' onclick='launchjFed()'";
   }
   return array($jfed_script_text, $jfed_button_start);
+}
+
+function getjFedSliceScript($sliceurn = NULL) {
+  if (! is_null($sliceurn)) {
+    return "<script>var slice = '$sliceurn';</script>";
+  } else {
+    return "<script>var slice = '';</script>";
+  }
 }

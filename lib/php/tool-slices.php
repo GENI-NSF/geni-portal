@@ -204,6 +204,7 @@ function list_slice($slice,$user) {
   $sliceflack_url = $flack_url . $query;
   $listres_url = $listres_base_url . $query;
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
   $expiration = dateUIFormat($expiration_db);
   $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
@@ -268,6 +269,7 @@ function list_slice($slice,$user) {
   
   // Show a jfed button if there wasn't an error generating it
   if (! is_null($jfed_button_start)) {
+    print getjFedSliceScript($sliceurn);
     print $jfed_button_start . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
   }
 
