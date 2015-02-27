@@ -107,6 +107,7 @@ if (count($my_slice_objects) > 0) {
   $jfedret = get_jfed_strs($user);
   $jfed_script_text = $jfedret[0];
   $jfed_button_start = $jfedret[1];
+  $jfed_button_part2 = $jfedret[2];
   print $jfed_script_text;
   // End of jFed section
 
@@ -149,8 +150,8 @@ if (count($my_slice_objects) > 0) {
     foreach ($lead_slices as $slice) {
       list_slice($slice,$user);
     }
+    print "</table>\n";
   }
-  print "</table>\n";
 
   if (count($nonlead_slices) > 0) {
     print "<h3>Slices on which I am not lead</h3>";
@@ -165,8 +166,8 @@ if (count($my_slice_objects) > 0) {
     foreach ($nonlead_slices as $slice) {
       list_slice($slice,$user);
     }
+    print "</table>\n";
   }
-  print "</table>\n";
 } else {
   if (isset($project_id) && uuid_is_valid($project_id)) {
     print "<p><i>You do not have access to any slices in this project.</i></p>\n";
@@ -180,7 +181,7 @@ function list_slice($slice,$user) {
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
   global $delete_sliver_base_url,$sliver_status_base_url, $flack_url;
   global $gemini_base_url, $labwiki_base_url;
-  global $disabled, $jfed_button_start;
+  global $disabled, $jfed_button_start, $jfed_button_part2;
 
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $slice_expired = 'f';
@@ -269,8 +270,7 @@ function list_slice($slice,$user) {
   
   // Show a jfed button if there wasn't an error generating it
   if (! is_null($jfed_button_start)) {
-    print getjFedSliceScript($sliceurn);
-    print $jfed_button_start . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
+    print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
   }
 
   print "</td>";
