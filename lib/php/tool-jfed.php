@@ -126,7 +126,7 @@ function get_jfed_strs($user) {
         };
         var certkey = '$certkey';
         //var slice = 'urn:publicid:IDN+ch.geni.net:CHtest+slice+vm1';
-        //var slice = '';
+        var slice = ''; // over-ridden in the onclick of the jFed button with the specific slice URN. launchjFed() uses this global. Tom says Gross!
         </script>
         <script src='https://authority.ilabt.iminds.be/js/jquery/jquery.min.js'></script>
         <link rel='stylesheet' href='https://authority.ilabt.iminds.be/js/jquery/jquery-ui.css' />
@@ -152,8 +152,8 @@ function get_jfed_strs($user) {
 
 function getjFedSliceScript($sliceurn = NULL) {
   if (! is_null($sliceurn)) {
-    return "var slice = \"$sliceurn\";";
+    return "slice = \"$sliceurn\";";
   } else {
-    return "var slice = \"\";";
+    return "slice = \"\";";
   }
 }
