@@ -350,6 +350,9 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
  * Returns a boolean, true if terminal status, false otherwise.
  */
 JacksApp.prototype.isTerminalStatus = function(status) {
+    if (typeof status === "undefined") {
+	return false;
+    }
     var code = status['status_code'];
     /* From status_constants.php: 2 = READY, 3 = FAILED , 5 = NO_RESOURCES */
     return code == 2 || code == 3 || code == 5;
@@ -857,8 +860,13 @@ JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime)
 // SHOULD PROBABLY CHANGE
       // This only looks for READY and FAILED.
       // There may be other cases to look for.
-      // Probably shouldn't poll infinitely.
-      if (! this.isTerminalStatus(status)) {
+    // Probably shouldn't poll infinitely.
+    if (typeof status === "undefined") {
+          // Poll again in a little while
+          setTimeout(function() {
+              that.getStatus(am_id, maxTime);
+          }, this.statusPollDelayMillis);
+    } else if (! this.isTerminalStatus(status)) {
           this.updateStatus('Resources on ' + status['am_name'] + ' are '
                             + status['geni_status'] + '. Polling again in '
                             + this.statusPollDelayMillis/1000 + ' seconds.');
@@ -878,7 +886,7 @@ JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime)
       // SHOULD PROBABLY CHANGE
       // This section is for coloring the nodes that are ready.
       // At the moment there is no coloring for failed nodes, etc.
-      if (status.hasOwnProperty('resources')) {
+      if (typeof status !== "undefined" && status.hasOwnProperty('resources')) {
 	  $.each(status['resources'], function(ii, vi) {
 		  var resourceURN = vi.geni_urn;
 		  var clientId = that.urn2clientId[resourceURN];
