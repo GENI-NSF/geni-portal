@@ -81,11 +81,15 @@ include("tool-slices.php");
 $gemini_url = relative_url("gemini.php");
 
   // Code to set up jfed button
-// Already done by tool-slices above
-//  $jfedret = get_jfed_strs($user);
-//  $jfed_script_text = $jfedret[0];
-//  $jfed_button_start = $jfedret[1];
-//  print $jfed_script_text;
+if (! isset($jfed_button_start)) {
+  $jfedret = get_jfed_strs($user);
+  $jfed_script_text = $jfedret[0];
+  $jfed_button_start = $jfedret[1];
+  $jfed_button_part2 = $jfedret[2];
+  if (! is_null($jfed_button_start)) {
+    print $jfed_script_text;
+  }
+}
 //  // End of jFed section
 
   print "<h2>Tools</h2>";
