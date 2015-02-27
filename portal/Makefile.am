@@ -99,7 +99,6 @@ dist_svcweb_DATA = \
 	www/portal/error-text.php \
 	www/portal/flack.css \
 	www/portal/flack.php \
-	www/portal/dtjava_orig.js \
 	www/portal/future.json \
 	www/portal/gemini.php \
 	www/portal/get_omni_invocation_data.php \
