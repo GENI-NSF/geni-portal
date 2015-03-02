@@ -26,6 +26,7 @@
  * Fix Jacks app logic to handle retrying fetching status from AMs. (#1325)
  * Update jFed launching to latest launcher code, including support for Java 8
    and passing the URN of the current slice (if any). (#1210)
+ * Remove unused create-rspec.php (#1329)
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.
