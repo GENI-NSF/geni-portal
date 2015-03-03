@@ -65,7 +65,6 @@ dist_svcweb_DATA = \
 	www/portal/cancel-join-project.php \
 	www/portal/certificate.php \
 	www/portal/confirm-sliverdelete.php \
-	www/portal/create-rspec.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
 	www/portal/db_error_test.php \
@@ -99,7 +98,6 @@ dist_svcweb_DATA = \
 	www/portal/error-text.php \
 	www/portal/flack.css \
 	www/portal/flack.php \
-	www/portal/dtjava_orig.js \
 	www/portal/future.json \
 	www/portal/gemini.php \
 	www/portal/get_omni_invocation_data.php \
@@ -121,6 +119,7 @@ dist_svcweb_DATA = \
         www/portal/jacks-editor-app.css \
 	www/portal/jacks-editor-app.js \
 	www/portal/jacks-editor-app-expanded.php \
+	www/portal/jacks-lib.js \
 	www/portal/join-project.php \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \

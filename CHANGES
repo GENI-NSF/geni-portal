@@ -23,6 +23,11 @@
    issue for some users. (#1311)
  * Remove duplicate aggregates (-a arguments to Omni) for multiple nodes 
    on same aggregate (#1322).
+ * Fix Jacks app logic to handle retrying fetching status from AMs. (#1325)
+ * Update jFed launching to latest launcher code, including support for Java 8
+   and passing the URN of the current slice (if any). (#1210)
+ * Remove unused create-rspec.php (#1329)
+ * Try to remove unused site ID elements and change the ID of other sites to the name. (#1323)
  * Deprecate Flack (#1219)
  * Make the Jacks Add Resources and Slice pages the default. (#1183)
   * Add a `Restart` button. (#1044)

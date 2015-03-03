@@ -81,11 +81,16 @@ include("tool-slices.php");
 $gemini_url = relative_url("gemini.php");
 
   // Code to set up jfed button
+if (! isset($jfed_button_start)) {
   $jfedret = get_jfed_strs($user);
   $jfed_script_text = $jfedret[0];
   $jfed_button_start = $jfedret[1];
-  print $jfed_script_text;
-  // End of jFed section
+  $jfed_button_part2 = $jfedret[2];
+  if (! is_null($jfed_button_start)) {
+    print $jfed_script_text;
+  }
+}
+//  // End of jFed section
 
   print "<h2>Tools</h2>";
   print "<p>";
@@ -112,7 +117,7 @@ print "<b>LabWiki</b></button> ";
 
   // Show a jfed button if there wasn't an error generating it
   if (! is_null($jfed_button_start)) {
-    print $jfed_button_start . "><b>jFed</b></button>";
+    print $jfed_button_start . getjFedSliceScript(NULL) . $jfed_button_part2 . "><b>jFed</b></button>";
   }
 
   // Show cloudlab button

@@ -350,6 +350,9 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
  * Returns a boolean, true if terminal status, false otherwise.
  */
 JacksApp.prototype.isTerminalStatus = function(status) {
+    if (typeof status === "undefined") {
+	return false;
+    }
     var code = status['status_code'];
     /* From status_constants.php: 2 = READY, 3 = FAILED , 5 = NO_RESOURCES */
     return code == 2 || code == 3 || code == 5;
@@ -747,7 +750,12 @@ JacksApp.prototype.onEpManifest = function(event) {
         return;
     }
 
-   var rspecManifest = event.value;
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    // Remove site tags if there are already component_manager_ids set on nodes
+    var rspecManifest = cleanSiteIDsInOutputRSpec(event.value,sites);
 
     // If first manifest, replace current topology
     if (this.first_manifest_pending) {
@@ -831,12 +839,12 @@ JacksApp.prototype.onEpStatus = function(event) {
     }
 
     // Hold onto this status for this AM, overriding any previous info
-    this.currentStatusByAm[event.am_id] = event.value[event.am_id];
+    this.currentStatusByAm[event.am_id] = [event.value[event.am_id], event.client_data.maxTime];
 
     var that = this;
     // *** Maybe here we just go through all entries in currentStatusByAM
-    $.each(this.currentStatusByAm, function (am_id, status) {
-	that.handleNewStatus(am_id, status);
+    $.each(this.currentStatusByAm, function (am_id, statusAndmaxTime) {
+	that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1]);
 	});
 
     //    $.each(event.value, function(i, v) {
@@ -848,7 +856,7 @@ JacksApp.prototype.onEpStatus = function(event) {
 // Change the status history message
 // Potentially paint the associated node boxes green/red 
 //     if they are ready/failed
-JacksApp.prototype.handleNewStatus = function (am_id, status)
+JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime)
 {
 
     var that = this;
@@ -857,14 +865,19 @@ JacksApp.prototype.handleNewStatus = function (am_id, status)
 // SHOULD PROBABLY CHANGE
       // This only looks for READY and FAILED.
       // There may be other cases to look for.
-      // Probably shouldn't poll infinitely.
-      if (! this.isTerminalStatus(status)) {
+    // Probably shouldn't poll infinitely.
+    if (typeof status === "undefined") {
+          // Poll again in a little while
+          setTimeout(function() {
+              that.getStatus(am_id, maxTime);
+          }, this.statusPollDelayMillis);
+    } else if (! this.isTerminalStatus(status)) {
           this.updateStatus('Resources on ' + status['am_name'] + ' are '
                             + status['geni_status'] + '. Polling again in '
                             + this.statusPollDelayMillis/1000 + ' seconds.');
           // Poll again in a little while
           setTimeout(function() {
-              this.getStatus(event.am_id, event.client_data.maxTime);
+              that.getStatus(am_id, maxTime);
           }, this.statusPollDelayMillis);
       } else if (status['geni_status'] == 'ready') {
           this.updateStatus('Resources on '+status['am_name']+' are ready.');
@@ -878,7 +891,7 @@ JacksApp.prototype.handleNewStatus = function (am_id, status)
       // SHOULD PROBABLY CHANGE
       // This section is for coloring the nodes that are ready.
       // At the moment there is no coloring for failed nodes, etc.
-      if (status.hasOwnProperty('resources')) {
+      if (typeof status !== "undefined" && status.hasOwnProperty('resources')) {
 	  $.each(status['resources'], function(ii, vi) {
 		  var resourceURN = vi.geni_urn;
 		  var clientId = that.urn2clientId[resourceURN];

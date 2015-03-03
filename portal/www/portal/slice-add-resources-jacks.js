@@ -307,7 +307,7 @@ function jacks_editor_app_ready(je, je_input, je_output) {
 // Otherwise, treat as a new RSpec
 function jacks_fetch_topology_callback(rspecs) {
     //  console.log("RSPECS = " + rspecs + " " + rspecs.length);
-  var rspec = rspecs[0].rspec;
+  var rspec = cleanSiteIDsInOutputRSpec(rspecs[0].rspec, jacksEditorApp.currentTopology.sites);
   $('#current_rspec_text').val(rspec);
   if(jacksEditorApp.downloadingRspec) {
       jacksEditorApp.downloadingRspec = false;
