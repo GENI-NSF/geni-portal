@@ -27,6 +27,7 @@
  * Update jFed launching to latest launcher code, including support for Java 8
    and passing the URN of the current slice (if any). (#1210)
  * Remove unused create-rspec.php (#1329)
+ * Try to remove unused site ID elements and change the ID of other sites to the name. (#1323)
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.

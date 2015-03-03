@@ -632,6 +632,7 @@ print "</div>";
 <link rel="stylesheet" type="text/css" href="jacks-app.css" />
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 
+<script src="jacks-lib.js"></script>
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
 <script src="<?php echo $jacks_stable_url;?>"></script>

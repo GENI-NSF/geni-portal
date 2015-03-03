@@ -125,6 +125,7 @@ if(!isset($am_id)) {
     $am_id = NULL;
 }
 
+print '<script src="jacks-lib.js"></script>';
 include("sliceresource.js");
 
 echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";

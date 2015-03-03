@@ -52,6 +52,7 @@ echo '<title>GENI Portal: Add Resources to Slice</title>';
 
 echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
 echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>';
+echo '<script src="/secure/jacks-lib.js"></script>';
 echo '<script src="/secure/slice-add-resources-jacks.js"></script>';
 
 

@@ -44,6 +44,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
+add_js_script($mydir . '/jacks-lib.js');
 add_js_script($mydir . '/slice-add-resources-jacks.js');
 
 $slice_id = "None";

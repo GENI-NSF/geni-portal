@@ -24,7 +24,8 @@
 
 function build_jacks_viewer()
 {
-	$output = "<script src='jacks-app.js'></script>";
+	$output = "<script src='jacks-lib.js'></script>";
+	$output .= "<script src='jacks-app.js'></script>";
   $output .= "<div id='jacks-status'><p>Starting Jacks...</p></div>";
   $output .= "<div id='jacks-status-history'></div>";
   $output .= "<div id='jacks-pane' class='jacks'></div>";

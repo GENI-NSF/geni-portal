@@ -180,7 +180,7 @@ function getDefaultCanvasOptions()
 	},
         {
 	    name: 'Raw PC',
-	    type: 'emulab-rawpc',
+	    type: 'raw-pc',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
         },
         {
@@ -216,7 +216,7 @@ var types =  [
 	      },
         {
 	    name: 'Emulab Raw PC',
-	    id: 'emulab-rawpc'
+	    id: 'raw-pc'
 	},
         {
 	    name: 'ExoGENI Small VM',
@@ -252,7 +252,7 @@ var linkTypes = [
 	},
         {
 	    name: 'Stitched Ethernet',
-	    id: 'stitched'
+	    id: 'vlan'
 	}];
 
 var sharedvlans = [];
@@ -325,10 +325,10 @@ var constraints = [
 	},
         {
 	    node: {
-		'types': ['emulab-rawpc']
+		'types': ['raw-pc']
 	    },
 	    link: {
-		'linkTypes': ['stitched'],
+		'linkTypes': ['vlan'],
 	    },
 	    node2: {
 		'types': ['m1.small']
@@ -583,7 +583,7 @@ JacksEditorApp.prototype.handleUpload = function(url) {
 };
 
 /**
- * Hanlde request to select an RSpec from embedding page's list
+ * Handle request to select an RSpec from embedding page's list
  */
 JacksEditorApp.prototype.handleSelect = function() {
     // Load the selected rspec into jacks
@@ -614,35 +614,16 @@ JacksEditorApp.prototype.handleDownload = function() {
  */
 JacksEditorApp.prototype.setTopology = function(rspec) {
     if (rspec == null || rspec == "") rspec = "<rspec></rspec>";
-
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    
     // Remove site tags if there are already component_manager_ids set on nodes
-    rspec = remove_superfluous_site_tags(rspec);
-
-    // Remove xmlns="" which Firefox puts into new elements 
-    // but Jacks can't handle
-    rspec = rspec.replace(/xmlns=""/g, '');
+    rspec = cleanSiteIDsInOutputRSpec(rspec, sites);
 
     this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
 }
-
-function remove_superfluous_site_tags(rspec)
-{
-    var doc = jQuery.parseXML(rspec);
-    var rspec_root = $(doc).find('rspec')[0];
-    var nodes = $(rspec_root).find('node');
-    var num_nodes = nodes.length;
-    for(var i = 0; i < num_nodes; i++) {
-	var node = nodes[i];
-	if(node.hasAttribute('component_manager_id')) {
-	    $(node).find('site').remove();
-	}
-    }
-    var new_rspec = (new XMLSerializer()).serializeToString(doc);
-    return new_rspec;
-}
-
-
-
 
 /**
  * Handle request to paste an RSpec to the portal for use by Jacks
@@ -659,12 +640,18 @@ JacksEditorApp.prototype.handlePaste = function() {
 
 };
 
+// Unused method; see slice-jacks.php
 JacksEditorApp.prototype.postRspec = function(rspecs) 
 {
     if (rspecs.length == 0 || (!rspecs[0].rspec)) 
 	return;
 
-    rspec = rspecs[0].rspec;
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    // Remove site tags if there are already component_manager_ids set on nodes
+    rspec = cleanSiteIDsInOutputRSpec(rspecs[0].rspec, sites);
 
     if (this.downloadingRspec) {
 	this.output.trigger(this.DOWNLOAD_EVENT_TYPE, {
