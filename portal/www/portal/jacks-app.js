@@ -750,7 +750,12 @@ JacksApp.prototype.onEpManifest = function(event) {
         return;
     }
 
-   var rspecManifest = event.value;
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    // Remove site tags if there are already component_manager_ids set on nodes
+    var rspecManifest = cleanSiteIDsInOutputRSpec(event.value,sites);
 
     // If first manifest, replace current topology
     if (this.first_manifest_pending) {

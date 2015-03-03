@@ -55,6 +55,7 @@ echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+S
 
 <script>var jacks_app_expanded = true;</script>
 
+<script src="jacks-lib.js"></script>
 <script src="jacks-app.js"></script>
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
