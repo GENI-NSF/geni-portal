@@ -221,7 +221,7 @@ function build_agg_table_on_slicepg()
             // (3) Get the status for this slice at this aggregate
 //	    update_agg_row( am_id );
      }	
-     $output .= "</table></td>";
+     $output .= "</table></div></td>";
      $output .= "</tr></table>";
      return $output;
 }
@@ -352,6 +352,7 @@ if ($project_expiration) {
 $jfedret = get_jfed_strs($user);
 $jfed_script_text = $jfedret[0];
 $jfed_button_start = $jfedret[1];
+$jfed_button_part2 = $jfedret[2];
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
@@ -365,11 +366,11 @@ print $jfed_script_text;
 ?>
 
 <!-- Jacks JS and App CSS -->
-<script src="<?php echo $jacks_stable_url;?>"></script>
 
 <!-- This belongs in the header, probably -->
 <script>
-var slice= "<?php echo $slice_id ?>";
+var jacks_app_expanded = false;
+// var slice= "<?php echo $slice_id ?>";
 var renew_slice_privilege= "<?php echo $renew_slice_privilege?>";
 var slice_expiration= "<?php echo $slice_expiration?>";
 var slice_date_expiration= "<?php echo $slice_date_expiration?>";
@@ -377,7 +378,6 @@ var sliver_expiration= "NOT IMPLEMENTED YET";
 var delete_slivers_disabled= "<?php echo $delete_slivers_disabled ?>";
 var slice_status= "";
 var slice_name= "<?php echo $slice_name?>";
-var slice= "<?php echo $slice_id ?>";
 var all_ams= '<?php echo json_encode($all_ams) ?>';
 var slice_ams= <?php echo json_encode($slice_ams) ?>;
 var max_slice_renewal_days = "+" + "<?php echo $renewal_days ?>" + "d";
@@ -571,7 +571,7 @@ print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $di
 
 // Show a jfed button if there wasn't an error generating it
 if (! is_null($jfed_button_start)) {
-  print $jfed_button_start . " $disable_buttons_str><b>jFed</b></button>";
+  print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $disable_buttons_str><b>jFed</b></button>";
 }
 
 $map_url = "slice-map-view.php?slice_id=$slice_id";
@@ -634,7 +634,10 @@ print "</div>";
 
 <script src="portal-jacks-app.js"></script>
 <script src="portal-jacks-editor-app.js"></script>
+<script src="<?php echo $jacks_stable_url;?>"></script>
+
 <script>
+
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
@@ -656,23 +659,13 @@ print "</div>";
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
-			      '#jacks-status-history', '#jacks-buttons',
-                              jacks_slice_ams, jacks_all_ams, jacks_slice_info,
-			      jacks_user_info,
-			      portal_jacks_app_ready);
- 
-  jacksApp.hideStatusHistory();
-
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
 
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
-  var jacks_slice_id = <?php echo json_encode($slice_id) ?>;
+  var slice_id = <?php echo json_encode($slice_id) ?>;
   var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
 
   var jacks_slice_info = {slice_id : jacks_slice_id, 
@@ -689,35 +682,51 @@ print "</div>";
   var jacks_enable_buttons = true;
   var jacksEditorApp = null;
 
-function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
-  portal_jacks_app_ready(ja, ja_input, ja_output);
-  // This funciton will start up a Jacks viewer, get the status bar going
-  // and set up all of the button clicks.
-  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
-				      '#jacks-editor-status', 
-				      '#jacks-editor-buttons',
-				      jacks_slice_ams, jacks_all_ams, 
-				      jacks_all_rspecs,
-				      jacks_slice_info,
-				      jacks_user_info,
-				      jacks_enable_buttons, 
-				      null, null,
-				      portal_jacks_editor_app_ready,
-				      JacksEditorApp.prototype.postRspec
-				      );
+  var slice_id = <?php echo json_encode($slice_id); ?>
 
-  jacksEditorApp.setJacksViewer(ja);
-  ja.setJacksEditor(jacksEditorApp);
-  if(jacks_slice_ams.length == 0) {
-    // Initially hide the viewer if there are no resources
-    ja.hide();
-  } else {
-    // Initally hide the editor if there are resources
-    jacksEditorApp.hide(); 
-  }
-};
+  $(document).ready(function() {
 
-var slice_id = <?php echo json_encode($slice_id); ?>
+      // This funciton will start up a Jacks viewer, get the status bar going
+      // and set up all of the button clicks.
+      var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
+				  '#jacks-status-history', '#jacks-buttons',
+				  jacks_slice_ams, jacks_all_ams, 
+				  jacks_slice_info,
+				  jacks_user_info,
+				  portal_jacks_app_ready);
+ 
+      jacksApp.hideStatusHistory();
+    });
+
+
+//function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
+//  portal_jacks_app_ready(ja, ja_input, ja_output);
+//  // This funciton will start up a Jacks viewer, get the status bar going
+//  // and set up all of the button clicks.
+//  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
+//				      '#jacks-editor-status', 
+//				      '#jacks-editor-buttons',
+//				      jacks_slice_ams, jacks_all_ams, 
+//				      jacks_all_rspecs,
+//				      jacks_slice_info,
+//				      jacks_user_info,
+//				      jacks_enable_buttons, 
+//				      null, null,
+//				      portal_jacks_editor_app_ready,
+//				      JacksEditorApp.prototype.postRspec
+//				      );
+//
+//  jacksEditorApp.setJacksViewer(ja);
+//  ja.setJacksEditor(jacksEditorApp);
+//  if(jacks_slice_ams.length == 0) {
+//    // Initially hide the viewer if there are no resources
+//    ja.hide();
+//  } else {
+//    // Initally hide the editor if there are resources
+//    jacksEditorApp.hide(); 
+//  }
+//};
+//
 
 </script>
 
@@ -727,7 +736,7 @@ var slice_id = <?php echo json_encode($slice_id); ?>
 
   $slice_status='';
 
-  print "<div id='status_table_div'/>\n";
+  print "<div id='status_table_div'>\n";
   print build_agg_table_on_slicepg();
   print "</div>\n";
 
@@ -745,8 +754,10 @@ var slice_id = <?php echo json_encode($slice_id); ?>
 // Make sure the height is not 100% but an actual size
 // Make sure width is set to 100% at load time 
  //   (don't know, some times it isn't)
-$("#map1").height(400); 
-$("#map1").width('100%'); 
+$(document).ready(function() {
+    $("#map1").height(400); 
+    $("#map1").width('100%'); 
+  });
 
 </script>
 
@@ -848,7 +859,7 @@ print "<h2 id='identifiers'>Slice Identifiers</h2>";
 print "<table>\n";
 print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
-print "<tr><td class='label'><b>Project</b></td><td><a href=$proj_url>$project_name</a></td></tr>\n";
+print "<tr><td class='label'><b>Project</b></td><td><a href='$proj_url'>$project_name</a></td></tr>\n";
 print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
 print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";

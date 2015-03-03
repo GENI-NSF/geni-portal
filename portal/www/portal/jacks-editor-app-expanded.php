@@ -45,12 +45,19 @@ $slice_ams = array();
 $all_rspecs = fetchRSpecMetaData($user);
 include("tool-lookupids.php");
 
-echo '<div id="content" >';
+echo '<!DOCTYPE HTML><html lang="en">';
+echo '<head>';
+echo '<meta charset="utf-8">';
+echo '<title>GENI Portal: Add Resources to Slice</title>';
+
+echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
+echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>';
+echo '<script src="/secure/slice-add-resources-jacks.js"></script>';
+
 
 echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
 echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
-echo '<script src="' . $jacks_stable_url . '"></script>';
 
 // JACKS-APP STUFF //
 include("jacks-editor-app.php");
@@ -58,34 +65,28 @@ setup_jacks_editor_slice_context();
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="slice-table.css" />
-<link rel="stylesheet" type="text/css" href="slice-jacks.css" />
-<link rel="stylesheet" type="text/css" href="jacks-app.css" />
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-42566976-1', 'bbn.com');ga('send', 'pageview');</script>
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+</head>
+<body>
+<div id="content">
 <link rel="stylesheet" type="text/css" href="jacks-editor-app.css" />
 <link rel="stylesheet" type="text/css" href="slice-add-resources-jacks.css" />
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="<?php echo $jacks_stable_url;?>"></script>
-<script src="jacks-app.js"></script>
-<script src="jacks-editor-app.js"></script>
-<script src="portal-jacks-editor-app.js"></script>
-<script src="slice-add-resources-jacks.js"></script>
-
-
 
 <?php
 
 echo "<table style=\"margin-left: 0px;width:90%;height:20px\"><tr><th>Add Resources to GENI Slice $slice_name</th></tr></table>";
 
-print "<table style=\"margin-left: 0px; width:90%; height:70%\" id='jacks-editor-app'><tbody>";
+print "<table style=\"margin-left: 0px; width:90%; height:70%\" id='jacks-editor-app'>";
 print "<tr><td><div id='jacks-editor-app-container' style='width:100%; height:100%'>";
 print build_jacks_editor();
 print "</div></td></tr></table>";
+print "<script src='portal-jacks-editor-app.js'></script>";
 
 ?>
 
-<script src="portal-jacks-editor-app.js"></script>
 <script>
   var slice_id = <?php echo json_encode($slice_id); ?>;
   var slice_name = <?php echo json_encode($slice_name); ?>;
@@ -93,6 +94,7 @@ print "</div></td></tr></table>";
   // AMs that the Portal says there are resources at.
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+  var jacks_all_compute_ams = <?php echo json_encode($all_compute_ams) ?>;
 
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
@@ -170,7 +172,9 @@ print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
 
 ?>
-
+<!--
+The height setting below breaks things on Chrome for Aaron, but not Marshall. But it is what allows the pane to grow vertically.
+  -->
 <script>
 $(document).ready(function() {
     $('#jacks-editor-status').hide();
@@ -179,7 +183,6 @@ $(document).ready(function() {
     pane.style.width = "100%";
   });
 </script>
-
 <?php
 
 print "</div></td></tr></tbody></table>";

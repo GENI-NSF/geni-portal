@@ -4,6 +4,31 @@
 
 = GENI Portal Release Notes =
 
+== 2.28 ==
+ * Restrict AMs shown in Jacks editor to only compute aggregates (#1316).
+ * Remove excessive calls to validate rspec from Jacks editor (#1313).
+ * Remove duplicate Jacks loads from Jacks editor (#1312).
+ * Remove site tag when component_manager_id is set, so the true site name
+   is shown in Jacks (#1317).
+ * Remove 'Duplicate Node with Links' button (#1320).
+ * Make site names black not white in Jacks (#1321)
+ * Remove previous `<ip>` tags when doing 
+   ip_auto_assignment in Jacks editor. (#1319)
+ * jacks-app-expanded (viewer) adds a 'Back' button (#1310).
+ * Update status (history and node color) even when manifests come in 
+   after statuses start coming in in Jacks viewer (#1314)
+ * Prettify RSpecs. Details page, sliceresources
+   (both request and manifest). (#1252)
+ * Clean up jacks-add-resources-expand to aid debugging CSS/height
+   issue for some users. (#1311)
+ * Remove duplicate aggregates (-a arguments to Omni) for multiple nodes 
+   on same aggregate (#1322).
+ * Fix Jacks app logic to handle retrying fetching status from AMs. (#1325)
+ * Update jFed launching to latest launcher code, including support for Java 8
+   and passing the URN of the current slice (if any). (#1210)
+ * Remove unused create-rspec.php (#1329)
+ * Expand default context for Jacks editor and remove constraints. (#1193)
+
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.
  * Improve database password handling on map-related scripts (#1253)
@@ -12,13 +37,23 @@
     formatting, expanded views (#1283).
  * Add Duplicate Nodes/Links, Duplicate Nodes only, Auto IP buttons
    to jacks editor (#1278).
+  * Refactor duplicate node javascript to avoid infinite loop over some structures. (#1296)
+  * Make attribute changes survive auto_ip and duplicate selection (#1309).
  * Add Editor Ops buttons to Expanded Jacks editor (#1295)
- * Make expanded jacks editor take context from unexpanded
+ * Make expanded Jacks editor take context from unexpanded
    (and vice versa) (#1292).
- * Remove race condition on jacks editor page load (#1300).
+ * Remove race condition on Jacks editor page load (#1300).
  * Highlight name changes in email (#1297)
  * Time out calls to stitcher after 45 minutes using new `--timeout` option to stitcher. (#1234)
- * Expand default context for Jacks editor and remove constraints. (#1193)
+ * Avoid looking at all aggregates when hitting Details button on Jacks 
+   app when there are no aggregates with resources (#1302)
+ * Pass full context (not just most recent topology change) between
+   slice-add-resources-jacks and jacks-editor-app-expanded (#1301).
+ * Give sliverstatus indication on details page ("..refreshing..") (#1307).
+ * Remove warning on multiple queries on tool-slices/details (#1308).
+ * Proper indentation of Manifest rspecs on slice manifest page (#1290).
+ * Configure Omni to use the non-SSL SCS, given python2.6 60 second delay. (#1291)
+  * Edited the `agg_nick_cache.base`; redo this with each Omni update.
 
 == 2.26 ==
  * Handle multi-valued attributes from Shibboleth (#740)

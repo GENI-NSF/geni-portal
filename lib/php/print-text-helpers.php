@@ -51,15 +51,33 @@ function print_list( $list, $use_nickname=False ){
 
 
 function print_xml( $xml ){
-  $xml2 = explode("\n",$xml);
-  print "<div class='xml'>";
-  foreach ($xml2 as $line_num => $line) {
-    if (trim($line) == "") {
-      continue;
+    // Use libxml to format XML prettily, but suppress any XML parsing errors
+    $dom = new DOMDocument('1.0');
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $wasVal = libxml_use_internal_errors(true);
+    $dom->loadXML($xml);
+    if (count(libxml_get_errors()) == 0) {
+      $xml = $dom->saveXML();
+    } else {
+      //error_log("Cannot prettify malformed XML. " . print_r(libxml_get_errors()) . "; " . $xml);
+      // Add a newline after any close tag that doesn't already have one
+      $xml = preg_replace("/>([ \t\r]*<)/", ">\n$1", $xml);
     }
-    echo htmlspecialchars(rtrim($line)) . "\n";
-  }
-  print "</div>\n";
+    libxml_clear_errors();
+    if (! $wasVal) {
+      libxml_use_internal_errors($wasVal);
+    }
+
+    $xml2 = explode("\n",$xml);
+    print "<div class='xml'>";
+    foreach ($xml2 as $line_num => $line) {
+      if (trim($line) == "") {
+	continue;
+      }
+      echo htmlspecialchars(rtrim($line)) . "\n";
+    }
+    print "</div>\n";
 }
 
 
@@ -483,7 +501,8 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 	  /* Parsed into a table */
 	  print_rspec_pretty($xml, False, $filterToAM, $arg_urn );
 	} else {
-	  /* As plain XML */
+	  //	  /* As plain XML but with newlines after each block */
+	  //	  $xml = str_replace(">", ">\n", $xml);
 	  print_xml($xml);
 	}
       } else {
@@ -495,8 +514,8 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
   }
 }
 
-# Pull expiration from manifest 
-# (only for EG: from ns4:geni_sliver_info extension)
+// Pull expiration from manifest 
+// (only for EG: from ns4:geni_sliver_info extension)
 function expires_from_manifest($manifest_node, $xml)
 {
   $expires = "";

@@ -36,6 +36,11 @@ function fileupload_onchange()
 
 function validate_rspec_file(rspec, is_filename, callback)
 {
+    // Don't validate the rspec if we just did. We get lots
+    // of modify events that don't really change the rspec
+    if(jacksEditorApp.currentRspec == rspec) return;
+    jacksEditorApp.currentRspec = rspec;
+
     var formData = new FormData();
     if(is_filename) {
 	formData.append("user_rspec_file", rspec);
@@ -114,7 +119,7 @@ function handle_rspec_update(jsonResponse, rspec, updateJacks)
 	$('#current_rspec_text').val(rspec);
 
 	if(!jacksEditorApp_isHidden && updateJacks) {
-	    set_jacks_topology(rspec);
+	    jacksEditorApp.setTopology(rspec);
 	}
     }
 
@@ -273,7 +278,7 @@ function assureJacksEditorApp(initial_rspec) {
 					'#jacks-editor-status',
 					'#jacks-editor-buttons',
 					jacks_slice_ams,
-					jacks_all_ams,
+					jacks_all_compute_ams,
 					jacks_all_rspecs,
 					jacks_slice_info,
 					jacks_user_info,
@@ -292,7 +297,7 @@ function jacks_editor_app_ready(je, je_input, je_output) {
   $('#rspec_status_text').text("");
 
   if (je.initialRSpec != null) {
-      set_jacks_topology(je.initialRSpec);
+      jacksEditorApp.setTopology(je.initialRSpec);
   }
 };
 
@@ -303,6 +308,7 @@ function jacks_editor_app_ready(je, je_input, je_output) {
 function jacks_fetch_topology_callback(rspecs) {
     //  console.log("RSPECS = " + rspecs + " " + rspecs.length);
   var rspec = rspecs[0].rspec;
+  $('#current_rspec_text').val(rspec);
   if(jacksEditorApp.downloadingRspec) {
       jacksEditorApp.downloadingRspec = false;
       $.post("saverspectoserver.php", {rspec : rspec},
@@ -317,8 +323,20 @@ function jacks_fetch_topology_callback(rspecs) {
 	      });
   } else if (jacksEditorApp.submittingRspec) {
       jacksEditorApp.submittingRspec = false;
-      $('#current_rspec_text').val(rspec);
       validateSubmit();
+  } else if (jacksEditorApp.passingContextToURL != null) {
+      var editor_url = jacksEditorApp.passingContextToURL;
+      jacksEditorApp.passingContextToURL = null;
+      do_editor_expand_internal(editor_url, rspec);
+  } else if (jacksEditorApp.invoking_auto_ip) {
+      jacksEditorApp.invoking_auto_ip = false;
+      do_auto_ip_assignment_internal();
+  } else if (jacksEditorApp.invoking_selection_duplicate_nolinks) {
+      jacksEditorApp.invoking_selection_duplicate_nolinks = false;
+      do_selection_duplicate_internal(false);
+  } else if (jacksEditorApp.invoking_selection_duplicate_links) {
+      jacksEditorApp.invoking_selection_duplicate_links = false;
+      do_selection_duplicate_internal(true);
   } else {
       // Handle new rspec but don't update Jacks (we just got it from Jacks)
       validate_rspec_file(rspec, false, handle_validation_results_no_jacks);
@@ -377,7 +395,7 @@ function do_hide_editor_internal(grab_topology)
     } else {
 	// Revert to previous value of current RSPEC
 	var rspec = $('#current_rspec_text').val();
-	set_jacks_topology(rspec);
+	jacksEdiorApp.setTopology(rspec);
     }
 
     $('#show_jacks_editor_button').show();
@@ -423,14 +441,6 @@ function do_show_editor_elements()
     $('#grab_editor_topology_button').removeAttr('disabled');
     jacksEditorApp_isHidden = false;
 }
-
-function set_jacks_topology(rspec)
-{
-    if(rspec == "") rspec = "<rspec></rspec>";
-    jacksEditorApp.jacksInput.trigger('change-topology',
-				      [{rspec: rspec}]);
-}
-
 
 function grab_paste_onchange()
 {
@@ -492,8 +502,6 @@ function do_rspec_download()
 // with current topology
 function do_editor_expand(restore)
 {
-    var current_rspec = jacksEditorApp.currentTopology.rspec;
-    $("#current_editor_rspec").val(rspec);
     var editor_url = "jacks-editor-app-expanded.php?slice_id=" + 
 	jacks_slice_id;
 
@@ -501,6 +509,12 @@ function do_editor_expand(restore)
 	editor_url = "slice-add-resources-jacks.php?slice_id=" + 
 	    jacks_slice_id;
 
+    jacksEditorApp.passingContextToURL = editor_url;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+function do_editor_expand_internal(editor_url, current_rspec)
+{
     var $form=$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",editor_url);
     var $input=$(document.createElement('input')).attr('name','current_editor_rspec').val(current_rspec);
     $form.append($input);
@@ -511,6 +525,16 @@ function do_editor_expand(restore)
 // Take every selected node and make a copy of it, sending a new
 // rspec containing these copied nodes to Jacks
 function do_selection_duplicate(include_links)
+{
+    if (include_links) {
+	jacksEditorApp.invoking_selection_duplicate_links = true;
+    } else {
+	jacksEditorApp.invoking_selection_duplicate_nolinks = true;
+    }
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+function do_selection_duplicate_internal(include_links)
 {
     var all_node_names = [];
     var num_topology_nodes = jacksEditorApp.currentTopology.nodes.length;
@@ -556,6 +580,7 @@ function do_selection_duplicate(include_links)
 	    var topology_site = current_topology_sites[j];
 	    if (topology_site.name == site_name) {
 		selected_topology_node_site = topology_site;
+		selected_node_component_manager_id = topology_site.urn;
 	    }
 	}
 
@@ -643,10 +668,7 @@ function do_selection_duplicate(include_links)
 
     if (added_nodes) {
 	var new_rspec = (new XMLSerializer()).serializeToString(doc);
-	// Remove xmlns="" which Firefox puts into new elements 
-	// but Jacks can't handle
-	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
-	set_jacks_topology(cleaned_rspec);
+	jacksEditorApp.setTopology(new_rspec);
     }
 
 }
@@ -669,8 +691,21 @@ function construct_new_node_name(orig_node_name, all_node_names) {
 //   Go through all interfaces on that link. Label that 10.10.i.j;
 function do_auto_ip_assignment()
 {
+    jacksEditorApp.invoking_auto_ip = true;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+
+function do_auto_ip_assignment_internal()
+{
     var rspec = $('#current_rspec_text').val();
     var doc = jQuery.parseXML(rspec);
+
+
+    // Remove any existing IP tags on the nodes
+    // We're replacing them all with new values
+    $(doc).find('ip').remove();
+
     var links = $(doc).find('link');
     var num_links = links.length;
     var changed_ips = (links.length > 0);
@@ -716,10 +751,7 @@ function do_auto_ip_assignment()
 
     if (changed_ips) {
 	var new_rspec = (new XMLSerializer()).serializeToString(doc);
-	// Remove xmlns="" which Firefox puts into new elements 
-	// but Jacks can't handle
-	cleaned_rspec = new_rspec.replace(/xmlns=""/g, '');
-	set_jacks_topology(cleaned_rspec);
+	jacksEditorApp.setTopology(new_rspec);
     }
 }
 

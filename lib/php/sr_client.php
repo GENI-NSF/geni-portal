@@ -70,7 +70,8 @@ function get_services()
   $services = $client->get_services();
   $converted_services = array();
   foreach ($services as $service) {
-    $converted_services[] = service_chapi2portal($service);
+    $converted_service = service_chapi2portal($service);
+    $converted_services[] = $converted_service;
   }
   set_session_cached(SERVICE_REGISTRY_CACHE_TAG, $converted_services);
   return $converted_services;
