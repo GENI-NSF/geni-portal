@@ -273,6 +273,9 @@ print ("validateSubmit();\">"
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
 
+$slice_jacks_url = "slice-add-resources-jacks.php?slice_id=$slice_id";
+print "<p><b>Note:</b> For a graphical reservation tool, use the <button onClick=\"window.location='$slice_jacks_url'\"><b>Jacks Add Resources</b></button> page.</p>";
+
 // END add resources tab
 echo "</div>";
 
