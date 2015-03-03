@@ -214,7 +214,7 @@ print ("do_grab_editor_topology_and_submit();\">"
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
 $slice_nojacks_url = "slice-add-resources.php?slice_id=$slice_id";
-print "<p><b>Note:</b> To reserve FOAM or other non-compute resources, use the <button onClick=\"window.location='$slice_nojacks_url'\"><b>Non Jacks Add Resources</b></button></p>";
+print "<p><b>Note:</b> To reserve FOAM or other non-compute resources, use the <button onClick=\"window.location='$slice_nojacks_url'\"><b>Non Jacks Add Resources</b></button> page.</p>";
 
 // END add resources tab
 echo "</div>";
