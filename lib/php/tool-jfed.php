@@ -68,6 +68,7 @@ function get_jfed_strs($user) {
   $jfed_button_start = null;
   $jfed_script_text = '';
   $jfed_button_part2 = '';
+  $certkey = '';
 
   $browser = getBrowser();
   if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolower($browser["platform"]),"mac") === 0) {
