@@ -12,6 +12,8 @@
      with jFed and restore setting it.
    * Rename slice uid javascript variable for jFed as slice_urn.
  * Make Geo View robust to an error getting the manifest from an AM. (#1334)
+ * On slice-jacks and empty manifest now looks like <rspec/>, and these too
+   should not be given to Jacks. (#1330)
 
 == 2.28 ==
  * Restrict AMs shown in Jacks editor to only compute aggregates (#1316).

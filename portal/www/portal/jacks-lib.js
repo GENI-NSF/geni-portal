@@ -93,6 +93,7 @@ function cleanSiteIDsInOutputRSpec(rspec, sites) {
     // Remove xmlns="" which Firefox puts into new elements 
     // but Jacks can't handle
     new_rspec = new_rspec.replace(/xmlns=""/g, '');
+    new_rspec = new_rspec.trim();
 
     return new_rspec;
 }
