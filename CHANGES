@@ -7,6 +7,10 @@
 == 2.28.1 ==
  * Initialize the certkey variable in tool-jfed to avoid
    PHP warning for users with no private key for their outside cert. (#1331)
+ * Restore Renew function on slice page. (#1332)
+   * Rename the slice uid javascript variable as slice_uid to avoid conflicting
+     with jFed and restore setting it.
+   * Rename slice uid javascript variable for jFed as slice_urn.
 
 == 2.28 ==
  * Restrict AMs shown in Jacks editor to only compute aggregates (#1316).

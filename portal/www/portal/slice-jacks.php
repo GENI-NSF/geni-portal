@@ -370,7 +370,7 @@ print $jfed_script_text;
 <!-- This belongs in the header, probably -->
 <script>
 var jacks_app_expanded = false;
-// var slice= "<?php echo $slice_id ?>";
+var slice_uid = "<?php echo $slice_id ?>";
 var renew_slice_privilege= "<?php echo $renew_slice_privilege?>";
 var slice_expiration= "<?php echo $slice_expiration?>";
 var slice_date_expiration= "<?php echo $slice_date_expiration?>";
@@ -660,30 +660,12 @@ print "</div>";
 			 user_urn : jacks_user_urn,
 			 user_id : jacks_user_id};
 
-  // AMs that the Portal says there are resources at.
-  var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
-  var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
-
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
   var slice_id = <?php echo json_encode($slice_id) ?>;
-  var jacks_slice_name = <?php echo json_encode($slice_name) ?>;
-
-  var jacks_slice_info = {slice_id : jacks_slice_id, 
-			  slice_name : jacks_slice_name};
-
-  var jacks_user_name = <?php echo json_encode($user->username) ?>;
-  var jacks_user_urn = <?php echo json_encode($user->urn) ?>;
-  var jacks_user_id = <?php echo json_encode($user->account_id) ?>;
-
-  var jacks_user_info = {user_name : jacks_user_name,
-			 user_urn : jacks_user_urn,
-			 user_id : jacks_user_id};
 
   var jacks_enable_buttons = true;
   var jacksEditorApp = null;
-
-  var slice_id = <?php echo json_encode($slice_id); ?>
 
   $(document).ready(function() {
 
