@@ -45,8 +45,8 @@ function lookup_component_info($agg_urn, $component_name,
 			       $component_id,
 			       $current_resource_map_data)
 {
-#  error_log("AGG_URN = " . $agg_urn . " CN = " . $component_name . 
-#	    " CID = " . $component_id);
+  // error_log("AGG_URN = " . $agg_urn . " CN = " . $component_name . 
+  //    " CID = " . $component_id);
   $componnent_info = NULL;
   foreach($current_resource_map_data['features'] as $feature) {
     $am_id = $feature['properties']['am_id'];
@@ -54,12 +54,12 @@ function lookup_component_info($agg_urn, $component_name,
     $comp_id = $feature['properties']['component_id'];
     $match = false;
 
-    # Usual match: Match by AM URN and component name
+    // Usual match: Match by AM URN and component name
     if($am_id == $agg_urn && $comp_id == $component_name) {
       $match = true;
     }
 
-    # Case where AM does not advertise component IDs: match on am_id
+    // Case where AM does not advertise component IDs: match on am_id
     if(!$match) {
       if(($component_id == "") || ($component_id == NULL)) {
 	if ($am_id == $agg_urn) {
@@ -68,16 +68,16 @@ function lookup_component_info($agg_urn, $component_name,
       }
     }
 
-    # Match on PC by constructing component_id from am_id and comp_id
-    # E.g. if am_id => urn:publicid:IDN+utahddc.geniracks.net+authority+cm
-    #      and comp_id => pc16
-    #  then match  component_id against 
-    #         urn:publicid:IDN+utahddc.geniracks.net+node+pc16
+    // Match on PC by constructing component_id from am_id and comp_id
+    // E.g. if am_id => urn:publicid:IDN+utahddc.geniracks.net+authority+cm
+    //      and comp_id => pc16
+    //  then match  component_id against 
+    //         urn:publicid:IDN+utahddc.geniracks.net+node+pc16
     if(!$match) {
       $authority_suffix = implode("+", array_slice(explode("+", $am_id), 0, 2));
       $node_name = $authority_suffix . "+node+" . $comp_id;
-#      error_log("AUTH_SUFFIX = " . $authority_suffix);
-#      error_log("NODE_NAME = " . $node_name . " CID = " . $component_id);
+//     error_log("AUTH_SUFFIX = " . $authority_suffix);
+//      error_log("NODE_NAME = " . $node_name . " CID = " . $component_id);
       if ($node_name == $component_id) {
 	$match = true;
       }
@@ -102,38 +102,38 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 unset($slice);
 include("tool-lookupids.php");
 
-# error_log("SLICE_ID = " . $slice_id);
+// error_log("SLICE_ID = " . $slice_id);
 
 if (isset($slice)) {
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
 }
-#error_log("SLICE_URN = " . $slice_urn);
+//error_log("SLICE_URN = " . $slice_urn);
 
 if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
-# Need to get the sliver info for the slice
-# For each sliver of the slice, all we really need is 
-# 1. The LAT/LONG of the AM
-#    Take the sliver URN => authority URN => LAT/LONG in common.json
-# 2. The name of the AM 
-#    Take from service_registry (service_urn => service_name)
-# 3. The name of the sliver
-#    Need to ask for manifest at each AM
-# Then we need to go through all the slivers and find their AMs.
-# Then find the lat/long of that aggregte
-# And add to the list of features
+// Need to get the sliver info for the slice
+// For each sliver of the slice, all we really need is 
+// 1. The LAT/LONG of the AM
+//    Take the sliver URN => authority URN => LAT/LONG in common.json
+// 2. The name of the AM 
+//    Take from service_registry (service_urn => service_name)
+// 3. The name of the sliver
+//    Need to ask for manifest at each AM
+// Then we need to go through all the slivers and find their AMs.
+// Then find the lat/long of that aggregte
+// And add to the list of features
 
-# Get the current resource geo information (we parse this regularly from Ads)
+// Get the current resource geo information (we parse this regularly from Ads)
 $current_resource_map_data_raw = file_get_contents("/var/www/common/map/current.json");
 $current_resource_map_data = json_decode($current_resource_map_data_raw, true);
 
-# Get the sliver info for this slice
+// Get the sliver info for this slice
 $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
-# error_log("SLIVERS = " . print_r($slivers, true));
+// error_log("SLIVERS = " . print_r($slivers, true));
 
-# Gather all aggregates at which this slice has resources
+// Gather all aggregates at which this slice has resources
 $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 $all_slice_aggs = array();
 foreach($slivers as $sliver) {
@@ -141,8 +141,8 @@ foreach($slivers as $sliver) {
   $all_slice_aggs[$aggregate_urn] = "";
 }
 
-# Lookup the URL for each AGG URN
-# error_log("SLICE_AGGS = " . print_r($all_slice_aggs, true));
+// Lookup the URL for each AGG URN
+// error_log("SLICE_AGGS = " . print_r($all_slice_aggs, true));
 foreach(array_keys($all_slice_aggs) as $slice_agg_urn) {
   foreach($all_aggs as $agg) {
     $agg_urn = $agg[SR_TABLE_FIELDNAME::SERVICE_URN];
@@ -153,36 +153,42 @@ foreach(array_keys($all_slice_aggs) as $slice_agg_urn) {
     }
   }
 }
-# error_log("SLICE_AGGS = " . print_r($all_slice_aggs, true));
+// error_log("SLICE_AGGS = " . print_r($all_slice_aggs, true));
 
-# Get the manifests for this slice at each aggregate in the sliver info
+// Get the manifests for this slice at each aggregate in the sliver info
 $manifests = array();
 foreach($all_slice_aggs as $agg_urn => $agg_url) {
-#  error_log("URN " . $agg_urn . " URL " . $agg_url);
+  //  error_log("URN " . $agg_urn . " URL " . $agg_url);
   $slice_cred = get_slice_credential($sa_url, $user, $slice_id);
-#  error_log("SC = " . $slice_cred);
+  //  error_log("SC = " . $slice_cred);
   $raw_output = list_resources_on_slice($agg_url, $user, $slice_cred, $slice_urn);
-  $output = $raw_output[1][$agg_url];
-#  error_log("OUTPUT = " . print_r($output, true));
-  if(array_key_exists('code', $output) &&
-     array_key_exists('value', $output) &&
-     array_key_exists('geni_code', $output['code']) &&
-     $output['code']['geni_code'] == 0) {
-    $manifest = $output['value'];
-    $manifests[$agg_urn] = $manifest;
+  if (is_null($raw_output)) {
+    error_log("Null result from listresources at " . $agg_url . " on " . $slice_urn);
+  } else if (! is_array($raw_output)) {
+    error_log("Error result from listresources at " . $agg_url . " on " . $slice_urn . ": " . $raw_output);
+  } else {
+    $output = $raw_output[1][$agg_url];
+    //  error_log("OUTPUT = " . print_r($output, true));
+    if(array_key_exists('code', $output) &&
+      array_key_exists('value', $output) &&
+      array_key_exists('geni_code', $output['code']) &&
+      $output['code']['geni_code'] == 0) {
+      $manifest = $output['value'];
+      $manifests[$agg_urn] = $manifest;
+    }
   }
 }
-# error_log("MANIFESTS = " . print_r($manifests, true));
+// error_log("MANIFESTS = " . print_r($manifests, true));
 
-# Now we have the manifests and the mapping of component_ids to lat/long
-# We can create our graph info
+// Now we have the manifests and the mapping of component_ids to lat/long
+// We can create our graph info
 
 $node_features = array();
 $link_features = array();
 
 $component_info_per_interface = array();
 
-# First pull all the nodes out of the manifests
+// First pull all the nodes out of the manifests
 foreach($manifests as $slice_agg_urn => $manifest) {
   $dom_document = new DOMDocument();
   $dom_document->loadXML($manifest);
@@ -204,9 +210,9 @@ foreach($manifests as $slice_agg_urn => $manifest) {
     if ($node->hasAttribute('component_name')) {
       $component_name = $node->getAttribute('component_name');
     }
-    # Also available:
-    # exclusive
-    # sliver_id
+    // Also available:
+    // exclusive
+    // sliver_id
 
       //    error_log("AGG_URN " . $slice_agg_urn . " CLIENT_ID " . $client_id . 
       //	      " COMPONENT_NAME " . $component_name .
@@ -218,7 +224,7 @@ foreach($manifests as $slice_agg_urn => $manifest) {
 					    $component_name,
 					    $component_id, 
 					    $current_resource_map_data);
-#    error_log("COMP_INFO = " . print_r($component_info, true));
+    //    error_log("COMP_INFO = " . print_r($component_info, true));
   
     if($component_info != NULL) {
 
@@ -251,7 +257,7 @@ foreach($manifests as $slice_agg_urn => $manifest) {
 
 // error_log("CIPI = " . print_r($component_info_per_interface, true));
 
-# Now go through the links
+//Now go through the links
 foreach($manifests as $slice_agg_urn => $manifest) {
   $dom_document = new DOMDocument();
   $dom_document->loadXML($manifest);
@@ -286,13 +292,13 @@ foreach($manifests as $slice_agg_urn => $manifest) {
   }
 }
 
-# Above we need to keep a mapping of interfaces to coordinates
-# Then we go through the links and get the interface refs, lookup 
-# the interfaces and corresponding coordinates
-# and add a line segment (OpenLayers.Geometry.LineString) between these
-# points
-# 
-# Eventually, try to avoid drawing the same line twice(A -> B, B -> A) 
+// Above we need to keep a mapping of interfaces to coordinates
+// Then we go through the links and get the interface refs, lookup 
+// the interfaces and corresponding coordinates
+// and add a line segment (OpenLayers.Geometry.LineString) between these
+// points
+//
+// Eventually, try to avoid drawing the same line twice(A -> B, B -> A) 
 
   //error_log("NODE_FEATURES = " . print_r($node_features, true));
   //error_log("LINK_FEATURES = " . print_r($link_features, true));
