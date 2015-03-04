@@ -96,7 +96,7 @@ if (! isset($am_id) or is_null($am_id)) {
 
 <script src="amstatus.js"></script>
 <script>
-var slice= "<?php echo $slice_id ?>";
+var slice_uid = "<?php echo $slice_id ?>";
 var am_id= <?php echo json_encode($am_ids) ?>;
 
 $(document).ready(build_delete_table);
