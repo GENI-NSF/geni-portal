@@ -84,6 +84,8 @@ function JacksEditorApp(jacks, status, buttons, sliceAms, allAms,
 
     this.allRspecs = allRspecs;
 
+    this.currentRspec = null;
+
     this.verbose = false; // Print debug messages to console.log
 
     this.sliceInfo = sliceInfo;
@@ -178,7 +180,7 @@ function getDefaultCanvasOptions()
 	},
         {
 	    name: 'Raw PC',
-	    type: 'emulab-rawpc',
+	    type: 'raw-pc',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
         },
         {
@@ -214,7 +216,7 @@ var types =  [
 	      },
         {
 	    name: 'Emulab Raw PC',
-	    id: 'emulab-rawpc'
+	    id: 'raw-pc'
 	},
         {
 	    name: 'ExoGENI Small VM',
@@ -250,7 +252,7 @@ var linkTypes = [
 	},
         {
 	    name: 'Stitched Ethernet',
-	    id: 'stitched'
+	    id: 'vlan'
 	}];
 
 var sharedvlans = [];
@@ -323,10 +325,10 @@ var constraints = [
 	},
         {
 	    node: {
-		'types': ['emulab-rawpc']
+		'types': ['raw-pc']
 	    },
 	    link: {
-		'linkTypes': ['stitched'],
+		'linkTypes': ['vlan'],
 	    },
 	    node2: {
 		'types': ['m1.small']
@@ -376,8 +378,7 @@ JacksEditorApp.prototype.show = function (msg) {
 	this.jacksOutput = output;
 
 	// Start with a blank topology.
-	this.jacksInput.trigger('change-topology',
-				[{ rspec: '<rspec></rspec>' }]);
+	this.setTopology(null);
 
 	this.jacksOutput.on('selection', this.onSelectionEvent, this);
 
@@ -422,14 +423,15 @@ JacksEditorApp.prototype.rspec_loaded = function(jacks_input) {
     var reader = new FileReader();
     reader.onload = function(evt) { 
 	var contents = evt.target.result;
-	jacks_input.trigger('change-topology', 
-					    [{rspec : contents}]);
+	JacksEditorApp.setTopology(contents);
 	$('#rspec_chooser').val("0");
 	$('#rspec_paste_text').val("");
 	$('#rspec_url_text').val("");
     }
     reader.readAsText(rspec_file);
 }
+
+
 
 JacksEditorApp.prototype.initButtons = function(buttonSelector) {
     var that = this;
@@ -581,7 +583,7 @@ JacksEditorApp.prototype.handleUpload = function(url) {
 };
 
 /**
- * Hanlde request to select an RSpec from embedding page's list
+ * Handle request to select an RSpec from embedding page's list
  */
 JacksEditorApp.prototype.handleSelect = function() {
     // Load the selected rspec into jacks
@@ -607,6 +609,21 @@ JacksEditorApp.prototype.handleDownload = function() {
     this.jacksInput.trigger('fetch-topology');
 };
 
+/**
+ * Set the given topology of the editor, but doing some pre-processing first
+ */
+JacksEditorApp.prototype.setTopology = function(rspec) {
+    if (rspec == null || rspec == "") rspec = "<rspec></rspec>";
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    
+    // Remove site tags if there are already component_manager_ids set on nodes
+    rspec = cleanSiteIDsInOutputRSpec(rspec, sites);
+
+    this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
+}
 
 /**
  * Handle request to paste an RSpec to the portal for use by Jacks
@@ -614,7 +631,7 @@ JacksEditorApp.prototype.handleDownload = function() {
 JacksEditorApp.prototype.handlePaste = function() {
     var rspec_paste_input = $('#rspec_paste_text');
     var current_rspec = rspec_paste_input.val();
-    this.jacksInput.trigger('change-topology', [{rspec : current_rspec}]);
+    this.setTopology(rspec);
 
     $('#rspec_chooser').val("0");
     $('#rspec_loader').val(null);
@@ -623,12 +640,18 @@ JacksEditorApp.prototype.handlePaste = function() {
 
 };
 
+// Unused method; see slice-jacks.php
 JacksEditorApp.prototype.postRspec = function(rspecs) 
 {
     if (rspecs.length == 0 || (!rspecs[0].rspec)) 
 	return;
 
-    rspec = rspecs[0].rspec;
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    // Remove site tags if there are already component_manager_ids set on nodes
+    rspec = cleanSiteIDsInOutputRSpec(rspecs[0].rspec, sites);
 
     if (this.downloadingRspec) {
 	this.output.trigger(this.DOWNLOAD_EVENT_TYPE, {
@@ -699,9 +722,7 @@ JacksEditorApp.prototype.onEpLookup = function(event) {
 	return;
     }
     debug("onEpLookup: " + event);
-    this.jacksInput.trigger('change-topology',
-			    [{ rspec: event.rspec }]);
-
+    this.setTopology(event.rspec);
     $('#rspec_loader').val(null);
     $('#rspec_paste_text').val("");
     $('#rspec_url_text').val("");
@@ -724,8 +745,7 @@ JacksEditorApp.prototype.onEpUpload = function(event) {
     }
 
     debug("ON_EP_UPLOAD");
-    this.jacksInput.trigger('change-topology',
-			    [{ rspec: event.rspec }]);
+    this.setTopology(event.rspec);
 
     $('#rspec_chooser').val("0");
     $('#rspec_loader').val(null);
@@ -759,8 +779,7 @@ JacksEditorApp.prototype.onEpReserve = function(event) {
     debug("ON_EP_RESERVE");
 
     if (this.jacks_viewer != null) {
-	this.jacksInput.trigger('change-topology',
-				[{ rspec: '<rspec></rspec>' }]);
+	this.setTopology(null);
 	this.updateStatus("Reservation request completed.");
 	var am_id = event.am_id;
 	if (this.jacks_viewer.sliceAms.indexOf(am_id) < 0) {

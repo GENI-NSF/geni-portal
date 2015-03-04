@@ -44,6 +44,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $mydir = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
+add_js_script($mydir . '/jacks-lib.js');
 add_js_script($mydir . '/slice-add-resources-jacks.js');
 
 $slice_id = "None";
@@ -135,6 +136,7 @@ print "</div></td></tr></table>";
 
   var jacks_slice_ams = <?php echo json_encode($slice_ams) ?>;
   var jacks_all_ams = <?php echo json_encode($all_ams) ?>;
+  var jacks_all_compute_ams = <?php echo json_encode($all_compute_ams) ?>;
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
   var jacks_slice_id = <?php echo json_encode($slice_id) ?>;

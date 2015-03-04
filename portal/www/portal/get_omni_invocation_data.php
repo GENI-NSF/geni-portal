@@ -704,18 +704,37 @@ function secs_to_h($secs)
         This should return basic HTML that converts newlines into <br> tags
 */
 function make_pretty_code($retVal) {
-    if($retVal['obj']) {
-        // change <, >, and " to special characters so they display correctly
-        $retVal['obj'] = str_replace("<", "&lt;", $retVal['obj']);
-        $retVal['obj'] = str_replace(">", "&gt;", $retVal['obj']);
-        $retVal['obj'] = str_replace("\"", "&quot;", $retVal['obj']);
-        // change newlines to breaks (do this after the above three!)
-        $retVal['obj'] = str_replace("\n", "<br>", $retVal['obj']);
-        return $retVal;
+  if($retVal['obj']) {
+
+    // Use libxml to format XML prettily, but suppress any XML parsing errors
+    $dom = new DOMDocument('1.0');
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $wasVal = libxml_use_internal_errors(true);
+    $dom->loadXML($retVal['obj']);
+    if (count(libxml_get_errors()) == 0) {
+      $retVal['obj'] = $dom->saveXML();
+    } else {
+      //error_log("Cannot prettify malformed XML. " . print_r(libxml_get_errors()) . "; " . $retVal['obj']);
+        // Add a newline after any close tag that doesn't already have one
+        $retVal['obj'] = preg_replace("/>([ \t\r]*<)/", ">\n$1", $retVal['obj']);
     }
-    else {
-        return $retVal;
+    libxml_clear_errors();
+    if (! $wasVal) {
+        libxml_use_internal_errors($wasVal);
     }
+
+    // change <, >, and " to special characters so they display correctly
+    $retVal['obj'] = str_replace("<", "&lt;", $retVal['obj']);
+    $retVal['obj'] = str_replace(">", "&gt;", $retVal['obj']);
+    $retVal['obj'] = str_replace("\"", "&quot;", $retVal['obj']);
+    // change newlines to breaks (do this after the above three!)
+    $retVal['obj'] = str_replace("\n", "<br>", $retVal['obj']);
+    return $retVal;
+  }
+  else {
+    return $retVal;
+  }
 }
 
 

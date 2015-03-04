@@ -1,12 +1,7 @@
 svcdatadir = $(pkgdatadir)/CA
 
-# A bunch of files get installed as user www-data which is great for
-# Ubuntu, but won't work on other Linux distributions, like Red Hat.
-# We need to do it this way so that certificates can be issued via
-# the web site user.
-WWW_OWNER=www-data
-WWW_GROUP=www-data
-INSTALL_WWW = $(INSTALL) -o $(WWW_OWNER) -g $(WWW_GROUP)
+# apache_user and apache_group are set in the configure script.
+INSTALL_WWW = $(INSTALL) -o $(apache_user) -g $(apache_group)
 SERIAL_FILE = $(svcdatadir)/serial
 INDEX_FILE = $(svcdatadir)/index.txt
 OPENSSL_CONF = $(svcdatadir)/openssl.cnf
