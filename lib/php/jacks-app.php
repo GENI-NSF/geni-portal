@@ -49,6 +49,15 @@ function setup_jacks_slice_context()
   global $slice_urn;
   global $slice_expiration;
 
+  // Set globals for variables used in slice jacks page later
+  global $owner_email;
+  global $slice_date_expiration;
+  global $member_names;
+  global $slice_creation;
+  global $slice_desc;
+  global $slice_owner_name;
+  global $members;
+
   unset($slice);
   include("tool-lookupids.php");
 
