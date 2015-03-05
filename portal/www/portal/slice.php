@@ -234,59 +234,6 @@ if (! isset($ma_url)) {
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 }
 
-if (isset($slice)) {
-  //  $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];                            
-  //  error_log("SLICE  = " . print_r($slice, true));                           
-  $slice_desc = $slice[SA_ARGUMENT::SLICE_DESCRIPTION];
-  $slice_creation_db = $slice[SA_ARGUMENT::CREATION];
-  $slice_creation = dateUIFormat($slice_creation_db);
-  $slice_expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
-  $slice_expiration = dateUIFormat($slice_expiration_db);
-  $slice_date_expiration = dateOnlyUIFormat($slice_expiration_db);
-  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
-  $owner = $user->fetchMember($slice_owner_id);
-  $slice_owner_name = $owner->prettyName();
-  $owner_email = $owner->email();
-
-  $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  //error_log("slice project_name result: $project_name\n");                    
-  // Fill in members of slice member table                                      
-  $members = get_slice_members($sa_url, $user, $slice_id);
-  $member_names = lookup_member_names_for_rows($ma_url, $user, $members,
-                                               SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
-
-  //find only ams that slice has resources on
-  $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
-  //find aggregates to be able to return just am_id
-  $all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
-  $aggs_with_resources = Array();
-
-  //do the comparison and find ams
-  foreach($slivers as $sliver)
-    {
-      foreach($all_aggs as $agg)
-	{
-	  if($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN] == $agg[SR_TABLE_FIELDNAME::SERVICE_URN])
-	    {
-	      $aggs_with_resources[] = $agg[SR_TABLE_FIELDNAME::SERVICE_ID];
-	      break;
-	    }
-	}
-    }
-  //return unique ids
-  $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
-  // Now restore the array to a numerically ordered array because
-  // array_unique preserves keys, so it could turn into, in effect, a
-  // dictionary.
-  $slice_ams = array_values($slice_ams);
-
-} else {
-  print "Unable to load slice<br/>\n";
-  $_SESSION['lasterror'] = "Unable to load slice";
-  relative_redirect("home.php");
-  exit();
-}
 
 include("jacks-app.php");
 setup_jacks_slice_context();
@@ -662,6 +609,7 @@ print "</div>";
   var jacks_all_rspecs = <?php echo json_encode($all_rspecs) ?>;
 
   var slice_id = <?php echo json_encode($slice_id) ?>;
+
   var jacks_enable_buttons = true;
   var jacksEditorApp = null;
 
