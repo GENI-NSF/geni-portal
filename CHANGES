@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.29 ==
+
 == 2.28.1 ==
  * Initialize the certkey variable in tool-jfed to avoid
    PHP warning for users with no private key for their outside cert. (#1331)
