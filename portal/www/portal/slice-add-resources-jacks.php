@@ -205,6 +205,8 @@ print '</form>';
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec.</p>";
 print '<p><b>Note:</b> You need to bind a request to a specific GENI site before reserving resources, you can do this in the graphical pane by clicking on the "Site X" icon.</p>';
 print '<p><b>Note:</b> You can only add resources at aggregates where you do not yet have a reservation.</p>';
+print '<p><b>Node:</b> If you would like a Layer 2 link between sites, set the Link Type to "Stitched Ethernet".
+However, if you would like a layer 2 link connecting only ExoGENI sites, instead set the Link Type to "(any)".</p>
 
 print "<p id='partially_bound_notice' hidden='hidden'><b>Note:</b> 'Partially bound' RSpecs are RSpecs that bind some resources to specific aggregates, but not all. RSpecs must either not assign resources to any specific aggregates, or assign all resources to specific aggregates.</p>";
 
