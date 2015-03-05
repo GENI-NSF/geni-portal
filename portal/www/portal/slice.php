@@ -390,7 +390,9 @@ function confirmQuery() {
     if ($("#sliceslivers").is(':checked') && count > 0) {
       var result = true;
       if (count > 10) {
-        result = confirm("This action will renew resources at "+slice_ams+" aggregates and may take several minutes.");
+        result = confirm("This action will renew resources at "
+                         + count
+                         + " aggregates and may take several minutes.");
       }
 
       if (result) {
