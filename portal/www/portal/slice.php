@@ -382,17 +382,10 @@ var ui_other_am = "<?php echo SERVICE_ATTRIBUTE_OTHER_AM ?>";
 
 function confirmQuery() {
   if ($('#datepicker').val()) {
-    var count = 0;
+    var count = slice_ams.length;
     var i;
     // Modifying the form html resets the values to default. Need this saved for later.
     var dateVal = $('#datepicker').val();
-
-    // .length doesn't work on objects, have to count manually
-    for (i in slice_ams) {
-      if (slice_ams.hasOwnProperty(i)) {
-        count++;
-      }
-    }
 
     if ($("#sliceslivers").is(':checked') && count > 0) {
       var result = true;
