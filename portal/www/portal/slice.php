@@ -272,6 +272,10 @@ if (isset($slice)) {
   }
   //return unique ids
   $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
+  // Now restore the array to a numerically ordered array because
+  // array_unique preserves keys, so it could turn into, in effect, a
+  // dictionary.
+  $slice_ams = array_values($slice_ams);
 
 } else {
   print "Unable to load slice<br/>\n";
@@ -378,22 +382,17 @@ var ui_other_am = "<?php echo SERVICE_ATTRIBUTE_OTHER_AM ?>";
 
 function confirmQuery() {
   if ($('#datepicker').val()) {
-    var count = 0;
+    var count = slice_ams.length;
     var i;
     // Modifying the form html resets the values to default. Need this saved for later.
     var dateVal = $('#datepicker').val();
 
-    // .length doesn't work on objects, have to count manually
-    for (i in slice_ams) {
-      if (slice_ams.hasOwnProperty(i)) {
-        count++;
-      }
-    }
-
     if ($("#sliceslivers").is(':checked') && count > 0) {
       var result = true;
       if (count > 10) {
-        result = confirm("This action will renew resources at "+slice_ams+" aggregates and may take several minutes.");
+        result = confirm("This action will renew resources at "
+                         + count
+                         + " aggregates and may take several minutes.");
       }
 
       if (result) {
