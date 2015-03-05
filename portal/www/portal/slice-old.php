@@ -358,7 +358,8 @@ print $jfed_script_text;
 
 <!-- This belongs in the header, probably -->
 <script>
-  //var slice = "<?php echo $slice_id ?>";
+var jacks_app_expanded = false;
+var slice_uid = "<?php echo $slice_id ?>";
 var renew_slice_privilege= "<?php echo $renew_slice_privilege?>";
 var slice_expiration= "<?php echo $slice_expiration?>";
 var slice_date_expiration= "<?php echo $slice_date_expiration?>";

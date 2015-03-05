@@ -68,6 +68,7 @@ function get_jfed_strs($user) {
   $jfed_button_start = null;
   $jfed_script_text = '';
   $jfed_button_part2 = '';
+  $certkey = '';
 
   $browser = getBrowser();
   if (strpos(strtolower($browser["name"]), "chrom") !== false and strpos(strtolower($browser["platform"]),"mac") === 0) {
@@ -125,20 +126,20 @@ function get_jfed_strs($user) {
             java7_jnlp: 'http://jfed.iminds.be/jfed-geni-java7.jnlp'
         };
         var certkey = '$certkey';
-        //var slice = 'urn:publicid:IDN+ch.geni.net:CHtest+slice+vm1';
-        var slice = ''; // over-ridden in the onclick of the jFed button with the specific slice URN. launchjFed() uses this global. Tom says Gross!
+        //var slice_urn = 'urn:publicid:IDN+ch.geni.net:CHtest+slice+vm1';
+        var slice_urn = ''; // over-ridden in the onclick of the jFed button with the specific slice URN. launchjFed() uses this global. Tom says Gross!
         </script>
         <script src='https://authority.ilabt.iminds.be/js/jquery/jquery.min.js'></script> <!-- jQuery v2.1.1 | (c) 2005, 2014 jQuery Foundation, Inc -->
         <link rel='stylesheet' href='https://authority.ilabt.iminds.be/js/jquery/jquery-ui.css' /> <!-- Query UI - v1.11.2 - 2014-10-16 -->
         <script src='https://authority.ilabt.iminds.be/js/jquery/jquery-ui.min.js'></script> <!-- Query UI - v1.11.2 - 2014-10-16 -->
         <script src=\"//java.com/js/dtjava.js\"></script>
         <script src='https://authority.ilabt.iminds.be/js/jfed_webstart_geni.js'></script>
-<div id='java7Dialog' title=\"Old Java version detected\" >
+<div id='java7Dialog' title=\"Old Java version detected\" style=\"display: none\">
 <p>The latest version of jFed is only compatible with Java 8 or higher. We detected that you are using an older version.</p>
 <p>Please upgrade to Java 8 to get access to the newest version of jFed. Otherwise, you can use jFed 5.3.2, which is Java 7-compatible.</p>
 </div>
 
-<div id='noJavaDialog' title=\"No Java detected\" >
+<div id='noJavaDialog' title=\"No Java detected\" style=\"display: none\">
 <p>jFed requires Java to run. We however couldn't detect a Java installation in your browser.</p>
 <p>Please install the latest version of Java to continue.</p>
 </div>
@@ -152,8 +153,8 @@ function get_jfed_strs($user) {
 
 function getjFedSliceScript($sliceurn = NULL) {
   if (! is_null($sliceurn)) {
-    return "slice = \"$sliceurn\";";
+    return "slice_urn = \"$sliceurn\";";
   } else {
-    return "slice = \"\";";
+    return "slice_urn = \"\";";
   }
 }

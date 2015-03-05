@@ -363,6 +363,7 @@ include("tabs.js");
 // Finish jFed setup
 print $jfed_script_text;
 
+// Javascript below is for amstatus.js
 ?>
 
 <!-- Jacks JS and App CSS -->
@@ -370,7 +371,7 @@ print $jfed_script_text;
 <!-- This belongs in the header, probably -->
 <script>
 var jacks_app_expanded = false;
-// var slice= "<?php echo $slice_id ?>";
+var slice_uid = "<?php echo $slice_id ?>";
 var renew_slice_privilege= "<?php echo $renew_slice_privilege?>";
 var slice_expiration= "<?php echo $slice_expiration?>";
 var slice_date_expiration= "<?php echo $slice_date_expiration?>";
