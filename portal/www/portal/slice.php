@@ -272,6 +272,10 @@ if (isset($slice)) {
   }
   //return unique ids
   $slice_ams = array_unique($aggs_with_resources, SORT_REGULAR);
+  // Now restore the array to a numerically ordered array because
+  // array_unique preserves keys, so it could turn into, in effect, a
+  // dictionary.
+  $slice_ams = array_values($slice_ams);
 
 } else {
   print "Unable to load slice<br/>\n";
