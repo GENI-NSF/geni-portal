@@ -11,6 +11,7 @@
   * Handle bound RSpecs. (#389)
   * Allow (re) binding nodes. (#1100)
   * Warn about illegal RSpecs. (#1101)
+  * Handle partially bound RSpecs. (#1088)
 
 == 2.28.1 ==
  * Initialize the certkey variable in tool-jfed to avoid
