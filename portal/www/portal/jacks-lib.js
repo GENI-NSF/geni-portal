@@ -95,5 +95,10 @@ function cleanSiteIDsInOutputRSpec(rspec, sites) {
     new_rspec = new_rspec.replace(/xmlns=""/g, '');
     new_rspec = new_rspec.trim();
 
+    // Ensure at least have newlines to make it slightly pretty, preserving spacing
+    // Note jacks loads vkbeautify, which might be the right way to do this. Something like vkbeautify.xml(new_rspec, 2)
+    // However, that seems to just keep further indenting the text
+    new_rspec = new_rspec.replace(/>([ \t\r]*<)/g, ">\n$1");
+
     return new_rspec;
 }

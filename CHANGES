@@ -25,6 +25,7 @@
    should not be given to Jacks. (#1330)
  * slice-jacks and slice pages must get only the values from the array
    of unique AM IDs, so that javascript gets an actual array. (#1330)
+ * Ensure RSpecs from Jacks have newlines. (#1340)
 
 == 2.28 ==
  * Restrict AMs shown in Jacks editor to only compute aggregates (#1316).
