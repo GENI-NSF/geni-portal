@@ -205,6 +205,8 @@ print '</form>';
 print "<p><b>Note:</b> Use the 'Manage RSpecs' tab to add a permanent RSpec.</p>";
 print '<p><b>Note:</b> You need to bind a request to a specific GENI site before reserving resources, you can do this in the graphical pane by clicking on the "Site X" icon.</p>';
 print '<p><b>Note:</b> You can only add resources at aggregates where you do not yet have a reservation.</p>';
+print '<p><b>Note:</b> If you would like a Layer 2 link between sites, set the Link Type to "Stitched Ethernet".<br/>';
+print 'However, if you would like a Layer 2 link connecting only ExoGENI sites, instead set the Link Type to "(any)" and pick any two ExoGENI aggregates except "ExoGENI ExoSM".</p>';
 
 print "<p id='partially_bound_notice' hidden='hidden'><b>Note:</b> 'Partially bound' RSpecs are RSpecs that bind some resources to specific aggregates, but not all. RSpecs must either not assign resources to any specific aggregates, or assign all resources to specific aggregates.</p>";
 
@@ -213,6 +215,8 @@ print ("do_grab_editor_topology_and_submit();\">"
        . "<b>Reserve Resources</b></button>\n");
 print "<button onClick=\"history.back(-1)\">Cancel</button>\n";
 print '</p>';
+$slice_nojacks_url = "slice-add-resources.php?slice_id=$slice_id";
+print "<p><b>Note:</b> To reserve FOAM or other non-compute resources, use the <button onClick=\"window.location='$slice_nojacks_url'\"><b>Non Jacks Add Resources</b></button> page.</p>";
 
 // END add resources tab
 echo "</div>";
