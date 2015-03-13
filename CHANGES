@@ -6,6 +6,9 @@
 
 == 2.30 ==
 
+== 2.29.1 ==
+ * Slice Map Details must close the session to allow AJAX calls in parallel. (#1343)
+
 == 2.29 ==
  * Deprecate Flack (#1219)
  * Make the Jacks Add Resources and Slice pages the default. (#1183)
