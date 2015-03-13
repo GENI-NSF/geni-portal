@@ -113,6 +113,15 @@ if (! isset($sa_url)) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 }
 
+$all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+
+// Close the session here to allow multiple AJAX requests to run
+// concurrently. If the session is left open, it holds the session
+// lock, causing AJAX requests to run serially.
+// DO NOT DO ANY SESSION MANIPULATION AFTER THIS POINT!
+// This includes SR queries
+session_write_close();
+
 // Need to get the sliver info for the slice
 // For each sliver of the slice, all we really need is 
 // 1. The LAT/LONG of the AM
@@ -134,7 +143,6 @@ $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
 // error_log("SLIVERS = " . print_r($slivers, true));
 
 // Gather all aggregates at which this slice has resources
-$all_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
 $all_slice_aggs = array();
 foreach($slivers as $sliver) {
   $aggregate_urn = $sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_AGGREGATE_URN];
