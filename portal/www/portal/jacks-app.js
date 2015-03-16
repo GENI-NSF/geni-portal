@@ -475,7 +475,8 @@ JacksApp.prototype.handleSSH = function() {
 	    if (urls.length > 0) {
 		url = urls[0];
 		debug("LOGIN URL = " + url);
-		window.location.replace(url);
+//		window.location.replace(url);
+		window.open(url, '_blank');
 	    }
 	}
     }
