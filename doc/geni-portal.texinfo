@@ -1,17 +1,38 @@
 \input texinfo   @c -*-texinfo-*-
 @c %**start of header
-@setfilename sample.info
-@settitle Sample Manual 1.0
+@setfilename geni-portal.info
+@settitle GENI Portal Manual 2.29
 @c %**end of header
 
 @copying
-This is a short example of a complete Texinfo file.
+Copyright @copyright{} 2015 Raytheon BBN Technologies
 
-Copyright @copyright{} 2013 Free Software Foundation, Inc.
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and/or hardware specification (the "Work") to
+deal in the Work without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Work, and to permit persons to whom the Work
+is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Work.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+IN THE WORK.
 @end copying
 
 @titlepage
-@title Sample Title
+@title The GENI Portal
+@subtitle Version 2.29, March, 2015
+@author Marshall Brinn
+@author Aaron Helsinger
+@author Tom Mitchell
 @page
 @vskip 0pt plus 1filll
 @insertcopying
@@ -22,7 +43,7 @@ Copyright @copyright{} 2013 Free Software Foundation, Inc.
 
 @ifnottex
 @node Top
-@top GNU Sample
+@top GENI Portal
 
 @insertcopying
 @end ifnottex
@@ -51,6 +72,49 @@ This is the first item.
 @item
 This is the second item.
 @end enumerate
+
+
+@node Installation
+@chapter Installation
+
+This chapter describes installing the GENI Portal and Clearinghouse on
+CentOS 6.5.
+
+@node Prepare host
+@section Prepare the host
+
+@subsection Disable SELinux
+The GENI Portal and Clearinghouse are not compatible with SELinux, so
+it must be disabled. To test for SELinux, use the @command{sestatus}
+command.
+
+@example
+$ sestatus
+SELinux status:                 disabled
+@end example
+
+@noindent
+If SELinux is enabled, google "CentOS disable SELinux" for
+instructions. Do not proceed until SELinux has been disabled.
+
+@subsection Disable Firewall
+
+@emph{N.B. This should not be necessary and this step should be fixed.}
+
+Disable iptables during installation. Check for the minimum ports
+later in the document.
+
+@example
+sudo service iptables stop
+@end example
+
+@section Install Shibboleth
+
+@emph{This section will be filled in later.}
+
+@section Install GENI Portal
+
+@emph{This section will be filled in later.}
 
 
 @node Index
