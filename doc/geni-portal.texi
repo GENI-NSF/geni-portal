@@ -51,6 +51,7 @@ IN THE WORK.
 @menu
 * First Chapter::    The first chapter is the
                       only chapter in this sample.
+* Installation::     Installation guide for CentOS 6.5.
 * Index::            Complete index.
 @end menu
 
@@ -80,7 +81,6 @@ This is the second item.
 This chapter describes installing the GENI Portal and Clearinghouse on
 CentOS 6.5.
 
-@node Prepare host
 @section Prepare the host
 
 @subsection Disable SELinux
@@ -94,7 +94,7 @@ SELinux status:                 disabled
 @end example
 
 @noindent
-If SELinux is enabled, google "CentOS disable SELinux" for
+If SELinux is enabled, google ``CentOS disable SELinux'' for
 instructions. Do not proceed until SELinux has been disabled.
 
 @subsection Disable Firewall
@@ -116,6 +116,47 @@ sudo service iptables stop
 
 @emph{This section will be filled in later.}
 
+@section Install GENI Clearinghouse
+
+@subsection Install ABAC
+
+@example
+cd /usr/share/geni-ch
+sudo bash
+wget abac.deterlab.net/src/abac-0.1.7.tar.gz
+ln -s /usr/lib64/libltdl.so.7.2.1 /usr/lib64/libltdl.so
+tar xvzf abac-0.1.7.tar.gz
+ln -s abac-0.1.7 abac
+cd abac
+./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
+        --sbindir=/usr/local/sbin PYTHON_VERSION='2.7' \
+        --with-site-perl=/usr/local/share/perl5
+make
+make install
+ln -s /usr/lib/python2.7/site-packages/_ABAC.* \
+        /usr/local/lib/python2.7/site-packages/
+exit
+@end example
+
+@subsection Install AMSoil
+
+Get AMsoil tar ball
+
+@emph{N.B. Need to change to a publicly available URL or alter the
+ download instructions.}
+
+@example
+cd /tmp
+wget http://www.gpolab.bbn.com/internal/projects/chapi/AMsoil-gpo-0.3.2.tar.gz
+@end example
+
+@subsection Install chapi
+
+@example
+cd chapi/tools
+touch ../etc/geni-chapi-githash
+install-chapi-centos.sh
+@end example
 
 @node Index
 @unnumbered Index
