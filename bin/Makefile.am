@@ -13,6 +13,13 @@ geni-get-ad-rspecs: Makefile
 
 geni-get-ad-rspecs: $(srcdir)/geni-get-ad-rspecs.in
 
+# Distribute but do not install
+EXTRA_DIST =  \
+	geni-get-ad-rspecs.in
+
+CLEANFILES =  \
+	geni-get-ad-rspecs
+
 pkgsysconfdir = $(sysconfdir)/geni-ch
 
 dist_sbin_SCRIPTS = geni-init-ca geni-init-services
@@ -29,11 +36,13 @@ dist_bin_SCRIPTS = \
 		geni-remove-project-member \
 		geni-enable-user \
 		geni-disable-user \
-		geni-get-ad-rspecs \
 		geni-parse-map-data \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		report_genich_relations
+
+bin_SCRIPTS = \
+	geni-get-ad-rspecs
 
 dist_pkgsysconf_DATA = geni-ch-githash
 
