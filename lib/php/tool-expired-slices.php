@@ -83,7 +83,6 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
   $listres_base_url = relative_url("listresources.php?");
   $resource_base_url = relative_url("slice-add-resources-jacks.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
-  $sliver_status_base_url = relative_url("sliverstatus.php?");
   $flack_url = relative_url("flack.php?");
   $num_slices = count($expired_slices);
   if ($num_slices==1) {
@@ -112,7 +111,6 @@ if(isset($expired_slices) && count($expired_slices) > 0) {
     $slice_url = $slice_base_url . $query;
     $sliceresource_url = $resource_base_url . $query;
     $delete_sliver_url = $delete_sliver_base_url . $query;
-    $sliver_status_url = $sliver_status_base_url . $query;
     $sliceflack_url = $flack_url . $query;
     $listres_url = $listres_base_url . $query;
     $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];

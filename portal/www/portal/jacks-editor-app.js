@@ -353,6 +353,7 @@ var linkTypes = [
 	    name: 'Stitched Ethernet',
 	    id: 'vlan'
 	},
+        {
 	    name: 'GRE Tunnel',
 	    ip: 'auto',
 	    id: 'gre-tunnel'

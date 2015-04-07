@@ -297,10 +297,6 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
     btn.click(function(){ that.handleDetails();});
     $(buttonSelector).append(btn);
 
-    //    btn = $('<button type="button">Status</button>');
-    //    btn.click(function(){ that.handleStatus();});
-    //    $(buttonSelector).append(btn);
-
     // GAP
     label = $('<label style="padding: 020px;" />');
     $(buttonSelector).append(label);
@@ -643,28 +639,6 @@ JacksApp.prototype.expandViewer = function() {
     }
     window.location.replace(viewer_url);
 }
-
-JacksApp.prototype.handleStatus = function() {
-    var slice_id = this.sliceId;
-    var that = this;
-    var am_ids = this.sliceAms;
-    if (this.selectedNodes.length > 0) {
-	am_ids = [];
-	$.each(this.selectedNodes, function(i, selected_node) {
-		var am_id = that.lookup_am_id(selected_node.key);
-		am_ids.push(am_id);
-	    });
-    }
-    ams_info = "";
-    $.each(am_ids, function(i, am_id) {
-	    ams_info = ams_info + "&am_id[]=" + am_id;
-	});
-
-    var status_url = "sliverstatus.php?slice_id=" + slice_id + ams_info;
-    window.location.replace(status_url);
-}
-
-
 
 
 //----------------------------------------------------------------------
