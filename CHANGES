@@ -9,6 +9,7 @@
  * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
  * Remove OBE `sliverstatus.php`. (#1333)
   * Remember to remove it from installations.
+ * Fix typo in slice resource page. (#1348)
 
 == 2.29.2 ==
  * Use `window.open` not `window.location.replace` to launch SSH from
