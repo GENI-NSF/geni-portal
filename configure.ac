@@ -1,4 +1,4 @@
-AC_INIT([geni-ch], [2.28], [portal-help@geni.net])
+AC_INIT([geni-ch], [2.30], [portal-help@geni.net])
 #AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 #AM_INIT_AUTOMAKE([foreign -Wall])
 AM_INIT_AUTOMAKE([foreign -Wall -Wno-portability])
@@ -47,4 +47,5 @@ AC_CONFIG_FILES([sr/Makefile lib/Makefile cs/Makefile])
 AC_CONFIG_FILES([logging/Makefile ma/Makefile pa/Makefile sa/Makefile])
 AC_CONFIG_FILES([kmtool/Makefile portal/Makefile openid/Makefile])
 AC_CONFIG_FILES([ca/Makefile sbin/Makefile ch/Makefile man/Makefile])
+AC_CONFIG_FILES([doc/Makefile])
 AC_OUTPUT

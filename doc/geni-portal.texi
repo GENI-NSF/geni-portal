@@ -1,0 +1,252 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename geni-portal.info
+@settitle GENI Portal Manual 2.29
+@c %**end of header
+
+@c combine the program index into the concept index
+@syncodeindex pg cp
+
+@copying
+Copyright @copyright{} 2015 Raytheon BBN Technologies
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and/or hardware specification (the "Work") to
+deal in the Work without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Work, and to permit persons to whom the Work
+is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Work.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+IN THE WORK.
+@end copying
+
+@titlepage
+@title The GENI Portal and Clearinghouse
+@subtitle Version 2.29
+@subtitle March, 2015
+@author Marshall Brinn
+@author Aaron Helsinger
+@author Tom Mitchell
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c Output the table of the contents at the beginning.
+@contents
+
+@ifnottex
+@node Top
+@top GENI Portal
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Introduction::    Introduction.
+* Installation::     Installation guide for CentOS 6.5.
+* Operations::       Operator's guide.
+* System Administration:: Administrator's guide.
+* Index::            Complete index.
+@end menu
+
+
+@node Introduction
+@chapter Introduction
+
+@cindex introduction
+@cindex PHP
+@cindex Python
+@cindex XML-RPC
+
+The GENI Portal and Clearinghouse consist of two main bodies
+of software. The portal is a web site written in PHP. The
+clearinghouse is an XML-RPC server written in Python.
+
+
+
+@node Installation
+@chapter Installation
+
+@cindex installation
+
+This chapter describes installing the GENI Portal and Clearinghouse on
+CentOS 6.5.
+
+@section Prepare the host
+
+@subsection Disable SELinux
+The GENI Portal and Clearinghouse are not compatible with SELinux, so
+it must be disabled. To test for SELinux, use the @command{sestatus}
+command.
+
+@example
+$ sestatus
+SELinux status:                 disabled
+@end example
+
+@noindent
+If SELinux is enabled, google ``CentOS disable SELinux'' for
+instructions. Do not proceed until SELinux has been disabled.
+
+@subsection Disable Firewall
+
+@emph{N.B. This should not be necessary and this step should be fixed.}
+
+Disable iptables during installation. Check for the minimum ports
+later in the document.
+
+@example
+sudo service iptables stop
+@end example
+
+@section Install Shibboleth
+
+@emph{This section will be filled in later.}
+
+@section Install GENI Portal
+
+@emph{This section will be filled in later.}
+
+@section Install GENI Clearinghouse
+
+@subsection Install ABAC
+
+@example
+cd /usr/share/geni-ch
+sudo bash
+wget abac.deterlab.net/src/abac-0.1.7.tar.gz
+ln -s /usr/lib64/libltdl.so.7.2.1 /usr/lib64/libltdl.so
+tar xvzf abac-0.1.7.tar.gz
+ln -s abac-0.1.7 abac
+cd abac
+./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
+        --sbindir=/usr/local/sbin PYTHON_VERSION='2.7' \
+        --with-site-perl=/usr/local/share/perl5
+make
+make install
+ln -s /usr/lib/python2.7/site-packages/_ABAC.* \
+        /usr/local/lib/python2.7/site-packages/
+exit
+@end example
+
+@subsection Install AMSoil
+
+Get AMsoil tar ball
+
+@emph{N.B. Need to change to a publicly available URL or alter the
+ download instructions.}
+
+@example
+cd /tmp
+wget http://www.gpolab.bbn.com/internal/projects/chapi/AMsoil-gpo-0.3.2.tar.gz
+@end example
+
+@subsection Install chapi
+
+@example
+cd chapi/tools
+touch ../etc/geni-chapi-githash
+install-chapi-centos.sh
+@end example
+
+@section Installing Updates
+
+From time to time new versions of the GENI portal and clearinghouse
+software are released. Updating your system to the new versions of
+software is generally an easy process.
+
+Releases may be accompanied by special instructions that must be
+performed before and/or after installing the new version of the
+software. These special instructions are not covered by this manual.
+
+@subsection Updating @code{chapi}
+@cindex installing updates
+@cindex update
+@cindex chapi
+
+Updating the clearinghouse software (``chapi'') from git involves
+first updating to the latest revision of the software. Once the latest
+version of software is obtained, execute the following commands:
+@example
+autoreconf --install
+./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
+        --sbindir=/usr/local/sbin --mandir=/usr/local/man
+make
+sudo make install
+sudo service apache2 restart
+@end example
+
+@subsection Updating @code{proto-ch}
+@cindex installing updates
+@cindex update
+@cindex proto-ch
+Updating the portal software (``proto-ch'') from git is very similar
+to the updating the clearinghouse software above.  First update to the
+latest revision of the software. Once the latest version of software
+is obtained, execute the following commands:
+@example
+autoreconf --install
+./configure --prefix=/usr --sysconfdir=/etc --bindir=/usr/local/bin \
+    --sbindir=/usr/local/sbin --mandir=/usr/local/man
+make
+sudo make install
+@end example
+
+
+@node Operations
+@chapter Operations
+
+@section Introduction
+
+@section Project Lead Privileges
+@cindex lead, project
+@cindex project lead
+@pindex geni-add-member-privilege
+@pindex geni-revoke-member-privilege
+User privileges are elevated by the @code{geni-add-member-privilege}
+program. For instance, to elevate a user's privileges so that they can
+act as a project lead and manage their own projects, invoke
+@code{geni-add-member-privilege} with the @code{-l} option to grant
+project lead privilege.
+@example
+geni-add-member-privilege -k <private key> -c <certificate> \
+        -u https://ch.geni.net/ -l -m <member id>
+@end example
+
+@node System Administration
+@chapter System Administration
+
+@section CRL error
+@cindex CRL error
+In the file /var/log/apache2/ch_error.log the following errors are listed.
+
+@example
+[Tue Mar 31 16:08:05 2015] [warn] Found CRL is expired - revoking all certificates until you get updated CRL
+[Tue Mar 31 16:08:05 2015] [error] [client 128.89.91.42] Certificate Verification: Error (12): CRL has expired
+@end example
+
+@noindent
+The remedy for this error is to run the @code{geni-create-ma-crl} program and
+restart the web server:
+@example
+sudo /usr/local/sbin/geni-create-ma-crl
+sudo service apache2 restart
+@end example
+
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@bye

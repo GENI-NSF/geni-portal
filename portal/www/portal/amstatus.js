@@ -1,3 +1,25 @@
+//----------------------------------------------------------------------
+// Copyright (c) 2012-2015 Raytheon BBN Technologies
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and/or hardware specification (the "Work") to
+// deal in the Work without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Work, and to permit persons to whom the Work
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Work.
+//
+// THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
+// IN THE WORK.
+//----------------------------------------------------------------------
 var updating_text = "Updating status...";
 var UNKNOWN = 'unknown';
 var NOT_APPLICABLE = "not applicable";
@@ -130,7 +152,7 @@ function update_agg_row(am_id) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
   $("button#reload_button_"+am_id).prop( "disabled", true ); 
-  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice_uid },function(responseTxt,statusTxt,xhr){
      if(statusTxt=="success") 
      {
         var json_am;
@@ -212,7 +234,7 @@ function add_agg_row_on_sliverstatuspg(am, numagg) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
   var am_id = am.id;
-  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice_uid },function(responseTxt,statusTxt,xhr){
       var json_am, am;
       var geni_urn, geni_status, agg_name, geni_resources, colspan;
       var resource, firstrow, num_rsc, rsc_urn, rsc_status, rsc_error;
@@ -361,7 +383,7 @@ function add_agg_row_to_details_table(am_id, numagg) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amdetails.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61&pretty=False
     // amdetails.php returns HTML (not JSON) since there was already php code to generate the needed text
-    $.get("amdetails.php", { am_id:am_id, slice_id:slice, pretty:pretty},function(responseTxt,statusTxt,xhr){
+    $.get("amdetails.php", { am_id:am_id, slice_id:slice_uid, pretty:pretty},function(responseTxt,statusTxt,xhr){
       var json_am, am, numAttempt;
       var geni_urn, geni_status, agg_name, geni_resources, colspan;
       var resource, firstrow, num_rsc, rsc_urn, rsc_status, rsc_error;
@@ -386,7 +408,7 @@ function add_agg_row_to_details_table(am_id, numagg) {
 	 $("div#details").append( output );
 	 output = "";
 	 if (pretty=="true" && am) {
-	     add_one_login(am_id, slice);
+	     add_one_login(am_id, slice_uid);
 	 }
      }
 
@@ -425,17 +447,18 @@ function add_agg_row_to_details_table(am_id, numagg) {
 function add_all_logins_to_manifest_table() 
 {
    // (1) query the server for all a list of aggregates
-    $.getJSON("aggregates.php", { am_id:am_id, slice_id:slice }, function(responseTxt,statusTxt,xhr){
+    $.getJSON("aggregates.php", { am_id:am_id, slice_id:slice_uid }, function(responseTxt,statusTxt,xhr){
      var json_agg;
      json_agg = responseTxt;
      for (var tmp_am_id in json_agg ) {
-	 add_one_login(tmp_am_id, slice);
+	 add_one_login(tmp_am_id, slice_uid);
      }
    });
 }
 
 // Add all information from am_status for a set of AMs 
 // including login, status, expiration
+// slice_id is a slice_uid
 function add_all_logins(am_ids, slice_id)
 {
     for(var i in am_ids) {
@@ -446,13 +469,14 @@ function add_all_logins(am_ids, slice_id)
 
 
 // Add all information from am_status including login, status, expiration
+// slice_id is a uid
 function add_one_login(am_id, slice_id) 
 {
 
     $("#am_status_" + am_id).text("...refreshing...");
     $("#am_status_" + am_id).attr('class', '');
   
-  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+  $.getJSON("amstatus.php", { am_id:am_id, slice_id:slice_id },function(responseTxt,statusTxt,xhr){
      $("div#agg_"+am_id+" .status_msg").css( 'display', 'none' );
      if(statusTxt=="success") 
      {
@@ -610,7 +634,7 @@ function build_delete_table()
 function add_agg_row_to_delete_table(am_id) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
-  $.getJSON("deletesliver.php", { am_id:am_id, slice_id:slice },function(responseTxt,statusTxt,xhr){
+  $.getJSON("deletesliver.php", { am_id:am_id, slice_id:slice_uid },function(responseTxt,statusTxt,xhr){
       var succ, fail;
       var agg; 
       var numSucc =0;
@@ -686,7 +710,7 @@ function build_renew_table()
 function add_agg_row_to_renew_table(am_id, sliver_expiration) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amstatus.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61
-    $.getJSON("renewsliver.php", { am_id:am_id, slice_id:slice, sliver_expiration:sliver_expiration },function(responseTxt,statusTxt,xhr){
+    $.getJSON("renewsliver.php", { am_id:am_id, slice_id:slice_uid, sliver_expiration:sliver_expiration },function(responseTxt,statusTxt,xhr){
       var succ, fail;
       var agg; 
       var numSucc =0;

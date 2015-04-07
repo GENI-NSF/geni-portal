@@ -475,7 +475,8 @@ JacksApp.prototype.handleSSH = function() {
 	    if (urls.length > 0) {
 		url = urls[0];
 		debug("LOGIN URL = " + url);
-		window.location.replace(url);
+//		window.location.replace(url);
+		window.open(url, '_blank');
 	    }
 	}
     }
@@ -634,7 +635,7 @@ JacksApp.prototype.handleDetails = function() {
 
 JacksApp.prototype.expandViewer = function() {
     var slice_id = this.sliceId;
-    var unexpanded_viewer_url = "slice-jacks.php?slice_id=" + slice_id;
+    var unexpanded_viewer_url = "slice.php?slice_id=" + slice_id;
     var expanded_viewer_url = "jacks-app-expanded.php?slice_id=" + slice_id;
     var viewer_url = expanded_viewer_url;
     if(jacks_app_expanded) {
@@ -750,7 +751,12 @@ JacksApp.prototype.onEpManifest = function(event) {
         return;
     }
 
-   var rspecManifest = event.value;
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    // Remove site tags if there are already component_manager_ids set on nodes
+    var rspecManifest = cleanSiteIDsInOutputRSpec(event.value,sites);
 
     // If first manifest, replace current topology
     if (this.first_manifest_pending) {
@@ -758,9 +764,9 @@ JacksApp.prototype.onEpManifest = function(event) {
 	this.first_manifest_pending = false;
     } else {
 	// Otherwise add to current topology
-	// <rspec></rspec> is returned in some cases as an empty manifest.
+	// <rspec></rspec> or <rspec/> is returned in some cases as an empty manifest.
 	// Don't add these to current topology (they show up as empty sites)
-	if (rspecManifest != "<rspec></rspec>")
+	if (rspecManifest && rspecManifest != "" && rspecManifest != "<rspec></rspec>" && rspecManifest != "<rspec/>")
 	    this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
     }
     //

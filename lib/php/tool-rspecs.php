@@ -93,6 +93,7 @@ $owners = ma_lookup($ma_url, $user, $public_owners);
 include('tool-rspecs.js');
 //error_log("JSU = " . $jacks_stable_url);
 print '<script src="' . $jacks_stable_url . '"></script>';
+print "<script src='jacks-lib.js'></script>";
 print "<script src='jacks-editor-app.js'></script>";
 
 $STANDARD_JACKS_CONTEXT_LOCATION = "/etc/geni-ch/jacks-context.json";

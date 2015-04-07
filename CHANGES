@@ -4,6 +4,40 @@
 
 = GENI Portal Release Notes =
 
+== 2.30 ==
+ * Migrate some scripts to chapi
+
+== 2.29.2 ==
+ * Use `window.open` not `window.location.replace` to launch SSH from
+   Jacks App. (#1344)
+
+== 2.29.1 ==
+ * Slice Map Details must close the session to allow AJAX calls in
+   parallel. (#1343)
+
+== 2.29 ==
+ * Deprecate Flack (#1219)
+ * Make the Jacks Add Resources and Slice pages the default. (#1183)
+  * Add a `Restart` button. (#1044)
+  * Handle bound RSpecs. (#389)
+  * Allow (re) binding nodes. (#1100)
+  * Warn about illegal RSpecs. (#1101)
+  * Handle partially bound RSpecs. (#1088)
+
+== 2.28.1 ==
+ * Initialize the certkey variable in tool-jfed to avoid
+   PHP warning for users with no private key for their outside cert. (#1331)
+ * Restore Renew function on slice page. (#1332)
+   * Rename the slice uid javascript variable as slice_uid to avoid conflicting
+     with jFed and restore setting it.
+   * Rename slice uid javascript variable for jFed as slice_urn.
+ * Make Geo View robust to an error getting the manifest from an AM. (#1334)
+ * On slice-jacks an empty manifest now looks like `<rspec/>`, and these too
+   should not be given to Jacks. (#1330)
+ * slice-jacks and slice pages must get only the values from the array
+   of unique AM IDs, so that javascript gets an actual array. (#1330)
+ * Ensure RSpecs from Jacks have newlines. (#1340)
+
 == 2.28 ==
  * Restrict AMs shown in Jacks editor to only compute aggregates (#1316).
  * Remove excessive calls to validate rspec from Jacks editor (#1313).
@@ -27,7 +61,7 @@
  * Update jFed launching to latest launcher code, including support for Java 8
    and passing the URN of the current slice (if any). (#1210)
  * Remove unused create-rspec.php (#1329)
- * Expand default context for Jacks editor and remove constraints. (#1193)
+ * Try to remove unused site ID elements and change the ID of other sites to the name. (#1323)
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.

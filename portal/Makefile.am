@@ -119,6 +119,7 @@ dist_svcweb_DATA = \
         www/portal/jacks-editor-app.css \
 	www/portal/jacks-editor-app.js \
 	www/portal/jacks-editor-app-expanded.php \
+	www/portal/jacks-lib.js \
 	www/portal/join-project.php \
 	www/portal/join-this-project.php \
 	www/portal/listresources.php \
@@ -160,7 +161,7 @@ dist_svcweb_DATA = \
 	www/portal/slice-member.php \
 	www/portal/slice.php \
 	www/portal/slice-jacks.css \
-	www/portal/slice-jacks.php \
+	www/portal/slice-old.php \
 	www/portal/slice-table.css \
 	www/portal/slicecred.php \
 	www/portal/sliceresource.php \
@@ -197,7 +198,6 @@ dist_svcwebimages_DATA = \
 	www/images/openVZvm.svg \
 	www/images/orbit_banner.png \
 	www/images/witest-logo-white.png \
-	www/images/pgfc-screenshot.jpg \
 	www/images/portal.png \
 	www/images/portal2.png \
 	www/images/RawPC-EG-noTxt-centered.svg \
