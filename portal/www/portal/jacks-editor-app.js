@@ -178,24 +178,26 @@ function getDefaultCanvasOptions()
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD'
 	},
-        {
-	    name: 'EG VM',
-	    type: 'XOSmall',
-	    hardware: 'orca-vm-cloud'
+	{
+            hardware: 'orca-vm-cloud',
+            icon: 'https://portal.geni.net/images/EG-VM-noTxt-centered.svg',
+            name: 'EG VM',
+            type: 'XOSmall'
 	},
         {
+	    hardware: 'pc',
 	    name: 'Raw PC IG',
 	    type: 'raw-pc',
-	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD',
-	    hardware: 'pc'
+	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD'
         },
-        {
-	    name: 'Raw PC EG',
-	    type: 'ExoGENI-M4',
-	    hardware: 'orca-xcat-cloud'
+	{
+            hardware: 'orca-xcat-cloud',
+            icon: 'https://portal.geni.net/images/RawPC-EG.svg',
+            name: 'Raw PC EG',
+            type: 'ExoGENI-M4'
 	},
         {
-	    name: 'Open VSwitch',
+	    name: 'OF OVS',
 	    type: 'emulab-xen',
 	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS',
 	    icon: 'https://portal.geni.net/images/router.svg'
@@ -338,21 +340,8 @@ var hardware = [
 	    id: 'd710'
 	},
         {
-	    name: 'Dell 3Ghz',
-	    id: 'pc3000'
- 	},
-        {
-	    name: 'Any PC',
-	    id: 'pc'
- 	},
-// ExoGENI
-        {
-	    name: 'Any ExoGENI VM Server',
-	    id: 'orca-vm-cloud'
- 	},
-        {
-	    name: 'Any ExoGENI PC',
-	    id: 'orca-xcat-cloud'
+	    name: 'Dell 360',
+	    id: 'dl360'
 	}];
 
 var linkTypes = [
@@ -364,12 +353,13 @@ var linkTypes = [
 	    name: 'Stitched Ethernet',
 	    id: 'vlan'
 	},
-        {
-	    name: 'GRE Tunnel', // IG only
+	    name: 'GRE Tunnel',
+	    ip: 'auto',
 	    id: 'gre-tunnel'
 	},
         {
-	    name: 'EGRE Tunnel', // IG only
+	    name: 'EGRE Tunnel',
+	    ip: 'auto',
 	    id: 'egre-tunnel'
 	}];
 
@@ -389,8 +379,9 @@ return canvas_options;
 {
     var constraints = [];
 
-/**
-var constraints = [
+ // Make the default constraints be no constraints - dont use these
+ /**
+    var constraints = [
         {
 	    node: {
 		'hardware': ['d710', 'pc3000'],
