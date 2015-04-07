@@ -301,7 +301,7 @@ else {
 <div id='results_manifest_link'></div>
 <p>
 <a href="slices.php">Back to All slices</a><br>
-<a href="slice.php?slice_id=<?php echo $slice_id; ?>">Black to Slice <i><?php echo $slice_name; ?></i></a>
+<a href="slice.php?slice_id=<?php echo $slice_id; ?>">Back to Slice <i><?php echo $slice_name; ?></i></a>
 </p>
 
 <?php
