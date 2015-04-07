@@ -98,7 +98,6 @@ if (count($my_slice_objects) > 0) {
   $listres_base_url = relative_url("listresources.php?");
   $resource_base_url = relative_url("slice-add-resources-jacks.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
-  $sliver_status_base_url = relative_url("sliverstatus.php?");
   $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
   $labwiki_base_url = 'http://labwiki.casa.umass.edu/?';
@@ -179,7 +178,7 @@ if (count($my_slice_objects) > 0) {
 function list_slice($slice,$user) {
   global $project_objects, $slice_owner_names;
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
-  global $delete_sliver_base_url,$sliver_status_base_url, $flack_url;
+  global $delete_sliver_base_url, $flack_url;
   global $gemini_base_url, $labwiki_base_url;
   global $disabled, $jfed_button_start, $jfed_button_part2;
 
@@ -201,7 +200,6 @@ function list_slice($slice,$user) {
   $slice_url = $slice_base_url . $query;
   $sliceresource_url = $resource_base_url . $query;
   $delete_sliver_url = $delete_sliver_base_url . $query;
-  $sliver_status_url = $sliver_status_base_url . $query;
   $sliceflack_url = $flack_url . $query;
   $listres_url = $listres_base_url . $query;
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
@@ -257,7 +255,6 @@ function list_slice($slice,$user) {
   print "<td>$slice_owner_name</td>";
   //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
   print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
-  //  print ("<button onClick=\"info_set_location('$slice_id', 'tool-aggwarning.php?loc=$sliver_status_url')\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
   //  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button title='Login info, etc' onClick=\"info_set_location('$slice_id', '$listres_url')\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button $delete_slivers_disabled onClick=\"info_set_location('$slice_id', '$delete_sliver_url')\"><b>Delete Resources</b></button>");

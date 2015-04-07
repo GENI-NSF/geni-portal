@@ -167,7 +167,6 @@ dist_svcweb_DATA = \
 	www/portal/sliceresource.php \
 	www/portal/slices.php \
 	www/portal/sliverdelete.php \
-	www/portal/sliverstatus.php \
 	www/portal/speaks-for.css \
 	www/portal/speaks-for.js \
 	www/portal/speaks-for.php \

@@ -31,12 +31,11 @@ var count = 0;
 //      var json_agg;
 //      var name;
 //      var output; 
-//      var status_url, listres_url;
+//      var listres_url;
 
 //      var s = all_ams;
 //      var all_am_obj = JSON.parse(s);
 
-//      status_url = 'sliverstatus.php?slice_id='+slice;
 //      listres_url = 'listresources.php?slice_id='+slice;
 
 //      // (2) create an HTML table with one row for each aggregate
@@ -82,7 +81,6 @@ var count = 0;
 // 	    }
 // 	    // sliver actions
 // 	    output += "<td>";
-// 	    output += "<button id='status_button_"+am_id+"' disabled='' onClick=\"window.location='"+status_url+"&am_id="+am_id+"'\"><b>Resource Status</b></button>";
 // 	    output += "<button  id='details_button_"+am_id+"' disabled='' title='Login info, etc' onClick=\"window.location='"+listres_url+"&am_id="+am_id+"'\"><b>Details</b></button>\n";
 // 	    output += "<button  id='delete_button_"+am_id+"' disabled='' onClick=\"window.location='confirm-sliverdelete.php?slice_id=" + slice+ "&am_id="+am_id+"'\" "+ delete_slivers_disabled +"><b>Delete Resources</b></button>\n";
 // 	    output += "</td></tr>";
