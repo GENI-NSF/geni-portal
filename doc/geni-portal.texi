@@ -32,8 +32,8 @@ IN THE WORK.
 
 @titlepage
 @title The GENI Portal and Clearinghouse
-@subtitle Version 2.29
-@subtitle March, 2015
+@subtitle Version 2.30
+@subtitle April, 2015
 @author Marshall Brinn
 @author Aaron Helsinger
 @author Tom Mitchell
@@ -101,6 +101,7 @@ instructions. Do not proceed until SELinux has been disabled.
 
 @subsection Disable Firewall
 
+@c FIXME
 @emph{N.B. This should not be necessary and this step should be fixed.}
 
 Disable iptables during installation. Check for the minimum ports
@@ -229,13 +230,91 @@ geni-add-member-privilege -k <private key> -c <certificate> \
 @node System Administration
 @chapter System Administration
 
-@section CRL error
-@cindex CRL error
-In the file /var/log/apache2/ch_error.log the following errors are listed.
+@section @code{cron} jobs
+@cindex cron
+
+@subsection Clean @code{/tmp}
+@cindex /tmp
+The GENI portal creates directories in @code{/tmp} to capture logs of
+commands run with @code{omni}, a GENI client tool. These log files
+stay around so that a GENI experimenter can refer to them later. As a
+result, these log directires need to be cleaned up periodically.
+
+The @code{crontab} entry below deletes omni logs that are more than
+seven days old.
+
+@emph{N.B. The entry below must appear on a single line, without the
+backslash. The use of backslash and multiple lines is for readability
+in this document}
 
 @example
-[Tue Mar 31 16:08:05 2015] [warn] Found CRL is expired - revoking all certificates until you get updated CRL
-[Tue Mar 31 16:08:05 2015] [error] [client 128.89.91.42] Certificate Verification: Error (12): CRL has expired
+# Delete omni log files in /tmp
+55 23 * * * /bin/find /tmp -name '*-omni-log-??????' -mtime +7 \
+        | /usr/bin/xargs /bin/rm -f
+@end example
+
+@subsection Generate Certificate Revocation List
+@cindex CRL
+It is possible, although rare, to revoke a certificate issued by the
+member authority. Revoked certificates are added to a certificate
+revocation list (CRL). This list must be periodically generated so
+that the Apache server has an unexpired CRL available. The
+@code{crontab} entry below generates a CRL nightly. This is entry is
+needed even if no certificates have ever been revoked. In this case,
+the CRL is valid but empty.
+
+@emph{N.B. The entry below must appear on a single line, without the
+backslash. The use of backslash and multiple lines is for readability
+in this document}
+@example
+# Create the member authority CRL
+10 2 * * * /usr/local/sbin/geni-create-ma-crl \
+        && /sbin/service httpd restart
+@end example
+
+@subsection Expiring certificate notifications
+GENI experimenters use certificates to authenticate communications to
+GENI services. These certificates have an expiration (generally one
+year). The @code{crontab} entry below generates email to experimenters
+whose certificates will expire a certain number of days in the
+future. In the example below, experimenters whose certificates expire
+30 days in the future, 14 days, 7 days, and 2 days will receive email
+telling them they should renew their certificate.
+
+@example
+# Notify users of expiring certificates
+5 1 * * * /usr/local/sbin/geni-expiring-certs --days 30,14,7,2
+@end example
+
+@subsection Detect long-running omni processes
+Occasionally an operation involving one or more aggregates will take a
+long time to complete. For example, an attempt to create a stitched
+topology across several aggregates can take many minutes. The
+@code{crontab} entry below detects long-running @code{omni} or
+@code{stitcher} jobs and reports them to administrators. The jobs are
+not killed. This is only a reporting mechanism.
+
+If a long-running @code{omni} or @code{stitcher} job is reported it is
+generally best to leave it alone. If a job goes on for longer than 45
+- 60 minutes for some reason, the adminitrator can kill the job using
+the @code{kill} command with the default signal (@code{TERM}).
+
+@c FIXME
+@emph{N.B. The stale-omni script is currently not installed.}
+@example
+# Check for stale omni processes every 5 minutes
+*/5 * * * * /FIX/THIS/PATH/stale-omni
+@end example
+
+@section CRL error
+@cindex CRL error
+In the file @code{/var/log/apache2/ch_error.log} the following errors
+are listed.
+
+@example
+Found CRL is expired - revoking all certificates until you get
+       updated CRL
+Certificate Verification: Error (12): CRL has expired
 @end example
 
 @noindent
