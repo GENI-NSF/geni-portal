@@ -139,8 +139,9 @@ function get_template_omni_config($user, $version, $default_project=null)
       . "# Each user is defined in a separate section below.\n"
       . "users = $username\n";
     if ($version == "2.5") {
-    $omni_config .= "# Over-ride the commandline setting of --useSliceMembers to force it True\n"
-      . "useslicemembers = True\n";
+      // Note this isn't necessary for omni 2.7+, where the default is True
+      $omni_config .= "# Over-ride the commandline setting of --useSliceMembers to force it True\n"
+	. "useslicemembers = True\n";
     }
 
      $omni_config = $omni_config		
