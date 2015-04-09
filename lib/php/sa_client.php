@@ -44,6 +44,7 @@
 require_once('sa_constants.php');
 require_once('chapi.php');
 require_once 'ma_client.php';
+require_once 'am_client.php';
 require_once('client_utils.php');
 
 $SACHAPI2PORTAL = array('SLICE_UID' => SA_SLICE_TABLE_FIELDNAME::SLICE_ID,
@@ -273,6 +274,75 @@ function _conv_mid2urn_map_s($sa_url, $signer, $amap)
   return $narr;
 }
 
+// Make a POA geni_update_users call on all aggregates at which this slice
+// has resources, updating keys for existing members, removing keys
+// for removed members
+function update_user_keys_on_slivers($sa_url, $signer, $slice_id, 
+				     $slice_urn,
+				     $members_to_add,
+				     $members_to_change,
+				     $members_to_remove)
+{
+  $username = $signer->username;
+  $ma_url = sa_to_ma_url($sa_url);
+
+  // Get list of aggregates for slice
+  $aggs_for_slice = aggregates_in_slice($sa_url, $signer, $slice_urn);
+  //  error_log("SLIVER_INFO.RES = " . print_r($aggs_for_slice, true));
+  foreach($aggs_for_slice as $agg_info) {
+    if(!array_key_exists(SERVICE_ATTRIBUTE_TAG, $agg_info)) continue;
+    $agg_attributes = $agg_info[SERVICE_ATTRIBUTE_TAG];
+    $am_type = $agg_attributes[SERVICE_ATTRIBUTE_AM_TYPE];
+    if ($am_type != SERVICE_ATTRIBUTE_INSTAGENI_AM) continue; // This call only works for IG/PG racks
+    $am_url = $agg_info[SR_TABLE_FIELDNAME::SERVICE_URL];
+    $am_urls[] = $am_url;
+  }
+  //  error_log("AM_URLS = " . print_r($am_urls, true));
+
+  // Generate slice_users list of dictionaries: [{"urn" : urn, "keys" : [key1, key2]}, ...]
+  $slice_users_list = array();
+  $slice_members = get_slice_members($sa_url, $signer, $slice_id);
+  //  error_log("MEMBERS = " . print_r($slice_members, true));
+  foreach($slice_members as $member_info) {
+    $member_id = $member_info[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
+    $member_urn = get_member_urn($ma_url, $signer, $member_id);
+    $keys_res = lookup_public_ssh_keys($ma_url, $signer, $member_id);
+    //    error_log("MEMBER_ID = " . print_r($member_id, true));
+    //    error_log("KEYS_RES = " . print_r($keys_res, true));
+    $member_public_keys = array();
+    foreach($keys_res as $key_info) {
+      $public_key = $key_info[MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY];
+      $member_public_keys[] = $public_key;
+    }
+    $member_entry = array('urn' => $member_urn, 'keys' => $member_public_keys);
+    $slice_users_list[] = $member_entry;
+  }
+
+  // For each removed member, add an empty entry to list (to remove their SSH keys)
+  foreach($members_to_remove as $member_to_remove) {
+    $member_entry = array('urn' => $member_to_remove, 'keys' => array());
+    $slice_users_list[] = $member_entry;
+  }
+
+  $slice_users = array('geni_users' => $slice_users_list);
+  //  error_log("GENI_USERS = " . print_r($slice_users, true));
+
+  // invoke omni to call the geni_update_users POA
+  $slice_users_json = json_encode($slice_users);
+  $slice_users_filename = writeDataToTempFile($slice_users_json);
+  $args = array("--optionsfile", $slice_users_filename, 
+		"poa", $slice_urn, 'geni_update_users');
+  $res = invoke_omni_function($am_urls, $signer, $args,
+			      array(), 0, 0, false, NULL, 3);
+  //   error_log("Update_user_keys_on_slivers.RES = " . print_r($res, true));
+
+  // Clean up JSON file and invocation directory
+  unlink($slice_users_filename);
+
+  return $res;
+  
+}
+
 // Modify slice membership according to given lists to add/change_role/remove
 // $members_to_add and $members_to_change role are both
 //     dictionaries of {member_id => role, ....}
@@ -295,6 +365,10 @@ function modify_slice_membership($sa_url, $signer, $slice_id,
   if (sizeof($members_to_remove)>0) { $options['members_to_remove'] = $members_to_remove; }
   $options = array_merge($options, $client->options());
   $res = $client->modify_slice_membership($slice_urn, $client->creds(), $options);
+  //  error_log("MSM.RES = " . print_r($res, true));
+  $update_user_res = update_user_keys_on_slivers($sa_url, $signer, $slice_id, $slice_urn,
+						 $members_to_add, $members_to_change,
+						 $members_to_remove);
   return $res;
 }
 
