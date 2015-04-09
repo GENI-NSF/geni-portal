@@ -96,9 +96,8 @@ if (count($my_slice_objects) > 0) {
   $base_url = relative_url("slicecred.php?");
   $slice_base_url = relative_url("slice.php?");
   $listres_base_url = relative_url("listresources.php?");
-  $resource_base_url = relative_url("slice-add-resources.php?");
+  $resource_base_url = relative_url("slice-add-resources-jacks.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
-  $sliver_status_base_url = relative_url("sliverstatus.php?");
   $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
   $labwiki_base_url = 'http://labwiki.casa.umass.edu/?';
@@ -107,6 +106,7 @@ if (count($my_slice_objects) > 0) {
   $jfedret = get_jfed_strs($user);
   $jfed_script_text = $jfedret[0];
   $jfed_button_start = $jfedret[1];
+  $jfed_button_part2 = $jfedret[2];
   print $jfed_script_text;
   // End of jFed section
 
@@ -149,8 +149,8 @@ if (count($my_slice_objects) > 0) {
     foreach ($lead_slices as $slice) {
       list_slice($slice,$user);
     }
+    print "</table>\n";
   }
-  print "</table>\n";
 
   if (count($nonlead_slices) > 0) {
     print "<h3>Slices on which I am not lead</h3>";
@@ -165,8 +165,8 @@ if (count($my_slice_objects) > 0) {
     foreach ($nonlead_slices as $slice) {
       list_slice($slice,$user);
     }
+    print "</table>\n";
   }
-  print "</table>\n";
 } else {
   if (isset($project_id) && uuid_is_valid($project_id)) {
     print "<p><i>You do not have access to any slices in this project.</i></p>\n";
@@ -178,9 +178,9 @@ if (count($my_slice_objects) > 0) {
 function list_slice($slice,$user) {
   global $project_objects, $slice_owner_names;
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
-  global $delete_sliver_base_url,$sliver_status_base_url, $flack_url;
+  global $delete_sliver_base_url, $flack_url;
   global $gemini_base_url, $labwiki_base_url;
-  global $disabled, $jfed_button_start;
+  global $disabled, $jfed_button_start, $jfed_button_part2;
 
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $slice_expired = 'f';
@@ -200,10 +200,10 @@ function list_slice($slice,$user) {
   $slice_url = $slice_base_url . $query;
   $sliceresource_url = $resource_base_url . $query;
   $delete_sliver_url = $delete_sliver_base_url . $query;
-  $sliver_status_url = $sliver_status_base_url . $query;
   $sliceflack_url = $flack_url . $query;
   $listres_url = $listres_base_url . $query;
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
+  $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
   $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
   $expiration = dateUIFormat($expiration_db);
   $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
@@ -255,12 +255,10 @@ function list_slice($slice,$user) {
   print "<td>$slice_owner_name</td>";
   //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
   print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
-  //  print ("<button onClick=\"info_set_location('$slice_id', 'tool-aggwarning.php?loc=$sliver_status_url')\" $get_slice_credential_disable_buttons><b>Resource Status</b></button>");
   //  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button title='Login info, etc' onClick=\"info_set_location('$slice_id', '$listres_url')\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button $delete_slivers_disabled onClick=\"info_set_location('$slice_id', '$delete_sliver_url')\"><b>Delete Resources</b></button>");
-  $hostname = $_SERVER['SERVER_NAME'];
-  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\"><image width=\"40\" src=\"https://$hostname/images/pgfc-screenshot.jpg\"/><br/>Launch Flack</button>";
+  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\">Launch Flack<br/>(deprecated)</button>";
   
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
   
@@ -268,7 +266,7 @@ function list_slice($slice,$user) {
   
   // Show a jfed button if there wasn't an error generating it
   if (! is_null($jfed_button_start)) {
-    print $jfed_button_start . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
+    print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
   }
 
   print "</td>";

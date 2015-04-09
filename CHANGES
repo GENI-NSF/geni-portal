@@ -4,23 +4,72 @@
 
 = GENI Portal Release Notes =
 
+== 2.30 ==
+ * Migrate some scripts to chapi
+ * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
+ * Remove OBE `sliverstatus.php`. (#1333)
+  * Remember to remove it from installations.
+ * Fix typo in slice resource page. (#1348)
+ * Catch errors parsing RSpec in `jacks-lib:cleanSiteIDsInOutputRSpec`. (#1347)
+ * Make bin/geni-ch-githash an optional file (#1358)
+ * Change SSH keys on existing slivers when changing members 
+     (only for IG/PG) (#1353)
+
+== 2.29.2 ==
+ * Use `window.open` not `window.location.replace` to launch SSH from
+   Jacks App. (#1344)
+
+== 2.29.1 ==
+ * Slice Map Details must close the session to allow AJAX calls in
+   parallel. (#1343)
+
+== 2.29 ==
+ * Deprecate Flack (#1219)
+ * Make the Jacks Add Resources and Slice pages the default. (#1183)
+  * Add a `Restart` button. (#1044)
+  * Handle bound RSpecs. (#389)
+  * Allow (re) binding nodes. (#1100)
+  * Warn about illegal RSpecs. (#1101)
+  * Handle partially bound RSpecs. (#1088)
+
+== 2.28.1 ==
+ * Initialize the certkey variable in tool-jfed to avoid
+   PHP warning for users with no private key for their outside cert. (#1331)
+ * Restore Renew function on slice page. (#1332)
+   * Rename the slice uid javascript variable as slice_uid to avoid conflicting
+     with jFed and restore setting it.
+   * Rename slice uid javascript variable for jFed as slice_urn.
+ * Make Geo View robust to an error getting the manifest from an AM. (#1334)
+ * On slice-jacks an empty manifest now looks like `<rspec/>`, and these too
+   should not be given to Jacks. (#1330)
+ * slice-jacks and slice pages must get only the values from the array
+   of unique AM IDs, so that javascript gets an actual array. (#1330)
+ * Ensure RSpecs from Jacks have newlines. (#1340)
+
 == 2.28 ==
- * Restrict AMs shown in jacks editor to only compute aggregates (#1316).
- * Remove excessive calls to validate rspec (#1313).
- * Remove duplicate jacks loads (#1312).
+ * Restrict AMs shown in Jacks editor to only compute aggregates (#1316).
+ * Remove excessive calls to validate rspec from Jacks editor (#1313).
+ * Remove duplicate Jacks loads from Jacks editor (#1312).
  * Remove site tag when component_manager_id is set, so the true site name
-   is shown (#1317).
- * Remove duplicate node with links (#1320).
- * Make site names black not white (#1321)
- * Remove previous <ip> tags when doing 
-   ip_auto_assignment (#1319)
- * jacks-app-expanded (viewer) has 'back' button (#1310).
+   is shown in Jacks (#1317).
+ * Remove 'Duplicate Node with Links' button (#1320).
+ * Make site names black not white in Jacks (#1321)
+ * Remove previous `<ip>` tags when doing 
+   ip_auto_assignment in Jacks editor. (#1319)
+ * jacks-app-expanded (viewer) adds a 'Back' button (#1310).
  * Update status (history and node color) even when manifests come in 
-   after statuses start coming in (#1314)
- * Prettify RSpecs. Check out Details page, sliceresources
+   after statuses start coming in in Jacks viewer (#1314)
+ * Prettify RSpecs. Details page, sliceresources
    (both request and manifest). (#1252)
  * Clean up jacks-add-resources-expand to aid debugging CSS/height
    issue for some users. (#1311)
+ * Remove duplicate aggregates (-a arguments to Omni) for multiple nodes 
+   on same aggregate (#1322).
+ * Fix Jacks app logic to handle retrying fetching status from AMs. (#1325)
+ * Update jFed launching to latest launcher code, including support for Java 8
+   and passing the URN of the current slice (if any). (#1210)
+ * Remove unused create-rspec.php (#1329)
+ * Try to remove unused site ID elements and change the ID of other sites to the name. (#1323)
 
 == 2.27 ==
  * Progress on #299 and #1120, remove dead code.

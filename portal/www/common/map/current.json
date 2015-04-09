@@ -6227,6 +6227,142 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-94.576278", 
+                    "39.033669"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm", 
+                "am": "UMKC InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-74.445183", 
                     "40.468090"
                 ]
@@ -21697,6 +21833,142 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.259457", 
+                    "34.048810"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.cenic.net+authority+cm", 
+                "am": "CENIC InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-83.813", 
                     "43.014"
                 ]
@@ -28633,6 +28905,23 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-118.259457", 
+                    "34.04881"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.instageni.cenic.net+authority+am", 
+                "am": "CENIC InstaGENI OpenFlow", 
+                "resources": 1, 
+                "component_id": "06:d6:84:34:97:d4:6c:00"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-84.503950", 
                     "38.033406"
                 ]
@@ -29137,6 +29426,159 @@
                 "am": "Kentucky InstaGENI OpenFlow", 
                 "resources": 1, 
                 "component_id": "06:df:6c:3b:e5:68:66:00"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-geni-core"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-al2s"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-81.609169", 
+                    "41.50588"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+geni.case.edu+authority+cm", 
+                "am": "Case Western InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
             }
         }, 
         {

@@ -15,14 +15,24 @@ example-services.ini: $(srcdir)/example-services.ini.in
 
 ch-services.ini: $(srcdir)/ch-services.ini.in
 
+# Distribute but do not install
+EXTRA_DIST =  \
+	ch-services.ini.in \
+	example-services.ini.in
+
+CLEANFILES =  \
+	ch-services.ini \
+	example-services.ini
+
 pkgsysconfdir = $(sysconfdir)/geni-ch
 
 dist_pkgsysconf_DATA = \
-	example-services.ini \
 	example-settings.php \
 	member-id-columns.dat
 
-# Do not distribute ch-services
-pkgsysconf_DATA = ch-services.ini
+# Do not distribute
+pkgsysconf_DATA = \
+	ch-services.ini \
+	example-services.ini
 
 cleandb:

@@ -39,7 +39,7 @@ if (! $user->isActive()) {
 <?php
 function no_slice_error() {
   header('HTTP/1.1 404 Not Found');
-  print 'No slice id specified.';
+  print 'No slice uid specified or slice not found.';
   exit();
 }
 
@@ -79,7 +79,7 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 <script src="amstatus.js"></script>
 <script>
   var thisInstance;
-  var slice= "<?php echo $slice_id ?>";
+  var slice_uid = "<?php echo $slice_id ?>";
   var am_id= <?php echo json_encode($am_ids) ?>;
   var pretty= "<?php echo $pretty ? 'true' : 'false';?>";
   var agg_info = {};
@@ -157,7 +157,7 @@ print "<p id='noresources' style='display:none;'><i>You have no resources</i><br
 print "</p>";
 print "<p id='refresh_buttons' style='display:block;'>";
 print "<button id='reload_all_button' type='button' onclick='location.reload(true)' $get_slice_credential_disable_buttons>Refresh All Details</button>";
-print "<button id='reload_all_button' type='button' onclick='add_all_logins(am_id,slice)' $get_slice_credential_disable_buttons>Refresh Status Only</button>";
+print "<button id='reload_all_button' type='button' onclick='add_all_logins(am_id,slice_uid)' $get_slice_credential_disable_buttons>Refresh Status Only</button>";
 print "</p>";
 
 print "<div class='xml'>";

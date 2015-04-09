@@ -176,83 +176,192 @@ function getDefaultCanvasOptions()
         {
 	    name: 'Xen VM',
 	    type: 'emulab-xen',
-	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
+	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD'
+	},
+	{
+            hardware: 'orca-vm-cloud',
+            icon: 'https://portal.geni.net/images/EG-VM-noTxt-centered.svg',
+            name: 'EG VM',
+            type: 'XOSmall'
 	},
         {
-	    name: 'Raw PC',
-	    type: 'emulab-rawpc',
-	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
+	    hardware: 'pc',
+	    name: 'Raw PC IG',
+	    type: 'raw-pc',
+	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD'
         },
-        {
-	    name: 'Small Exogeni',
-	    type: 'm1.small'
+	{
+            hardware: 'orca-xcat-cloud',
+            icon: 'https://portal.geni.net/images/RawPC-EG.svg',
+            name: 'Raw PC EG',
+            type: 'ExoGENI-M4'
 	},
         {
-	    name: 'Open VSwitch',
+	    name: 'OF OVS',
 	    type: 'emulab-xen',
-	    image: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS',
+	    image: 'urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS',
 	    icon: 'https://portal.geni.net/images/router.svg'
 	}];
 
   var images = [
+// InstaGENI
         {
-	    name: 'UBUNTU12-64-STD',
-	    id: 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD'
+	    name: 'Ubuntu 12 64bit',
+	    id: 'urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD'
 	},
         {
-	    name: 'OVS Image',
-	    id: 'urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS'
-	}
+	    name: 'OVS in Ubuntu 12 64bit',
+	    id: 'urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS'
+	},
+        {
+	    name: 'Fedora 15 32bit',
+	    id: 'urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD'
+	},
+        {
+	    name: 'OpenVZ Fedora 15',
+	    id: 'urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD'
+	},
+// OpenGENI
+      {
+        id: "fedora-19",
+        name: "OpenGENI Fedora 19"
+      },
+      {
+        id: "ubuntu-12.04",
+        name: "OpenGENI Ubuntu 12.04"
+      },
+      {
+        id: "centos-6.5",
+        name: "OpenGENI CentOS 6.5"
+      }
 	];
 
 var types =  [
+// InstaGENI node types
 	{
 	    name: 'Universal Default VM',
 	    id: 'default-vm'
 	},
         {
-	    name: 'Emulab Xen VM',
+	    name: 'InstaGENI Xen VM',
 	    id: 'emulab-xen'
 	      },
         {
-	    name: 'Emulab Raw PC',
-	    id: 'emulab-rawpc'
+	    name: 'InstaGENI Raw PC',
+	    id: 'raw-pc'
 	},
+// ExoGENI node types
         {
 	    name: 'ExoGENI Small VM',
-	    id: 'm1.small'
-	}];
+	    id: 'XOSmall'
+	},
+        {
+	    name: 'ExoGENI Large VM',
+	    id: 'XOLarge'
+	},
+      {
+        id: "EC2C1Medium",
+        name: "EC2 C1Medium VM"
+      },
+      {
+        id: "EC2M1XLarge",
+        name: "EC2 M1XLarge VM"
+      },
+      {
+        id: "EucaM1XLarge",
+        name: "Euca M1XLarge VM"
+      },
+      {
+        id: "EucaC1XLarge",
+        name: "Euca C1XLarge VM"
+      },
+      {
+        id: "EucaM1Small",
+        name: "Euca M1Small VM"
+      },
+      {
+        id: "EC2M1Small",
+        name: "EC2 M1Small VM"
+      },
+      {
+        id: "EucaC1Medium",
+        name: "Euca C1Medium VM"
+      },
+      {
+        id: "XOMedium",
+        name: "ExoGENI Medium VM"
+      },
+      {
+        id: "EC2M1Large",
+        name: "EC2 M1Large VM"
+      },
+      {
+        id: "EucaM1Large",
+        name: "Euca M1Large VM"
+      },
+      {
+        id: "XOXlarge",
+        name: "ExoGENI X-Large VM"
+      },
+        {
+	    name: 'ExoGENI Raw PC',
+	    id: 'ExoGENI-M4'
+	},
+    // OpenGENI node types
+      {
+        id: "m1.medium",
+        name: "OpenGENI M1 Medium"
+      },
+      {
+        id: "m1.small",
+        name: "OpenGENI M1 Small"
+      },
+      {
+        id: "m1.large",
+        name: "OpenGENI M1 Large"
+      },
+      {
+        id: "m1.tiny",
+        name: "OpenGENI M1 Tiny"
+      },
+      {
+        id: "m1.xlarge",
+        name: "OpenGENI M1 XLarge"
+      }
+];
 
 var hardware = [
+        {
+	    name: 'Dell dl360',
+	    id: 'dl360'
+	},
         {
 	    name: 'Dell d710',
 	    id: 'd710'
 	},
         {
-	    name: 'Dell 3Ghz',
-	    id: 'pc3000'
-	},
-        {
-	    name: 'Any PC',
-	    id: 'pc',
+	    name: 'Dell 360',
+	    id: 'dl360'
 	}];
 
 var linkTypes = [
         {
+	    name: 'Ethernet',
+	    id: 'lan' // ethernet, ipv4
+	},
+        {
+	    name: 'Stitched Ethernet',
+	    id: 'vlan'
+	},
+        {
 	    name: 'GRE Tunnel',
+	    ip: 'auto',
 	    id: 'gre-tunnel'
 	},
         {
 	    name: 'EGRE Tunnel',
+	    ip: 'auto',
 	    id: 'egre-tunnel'
-	},
-        {
-	    name: 'Ethernet',
-	    id: 'lan'
-	},
-        {
-	    name: 'Stitched Ethernet',
-	    id: 'stitched'
 	}];
 
 var sharedvlans = [];
@@ -269,11 +378,15 @@ return canvas_options;
 
  function getDefaultConstraints() 
 {
-var constraints = [
+    var constraints = [];
+
+ // Make the default constraints be no constraints - dont use these
+ /**
+    var constraints = [
         {
 	    node: {
 		'hardware': ['d710', 'pc3000'],
-		'types': ['emulab-rawpc', 'emulab-xen']
+		'types': ['raw-pc', 'emulab-xen']
 	    }
 	},
         {
@@ -290,24 +403,6 @@ var constraints = [
 	},
         {
 	    node: {
-		'hardware': ['pc', 'pc3000'],
-		'images': ['urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU12-64-STD']
-	    }
-	},
-        {
-	    node: {
-		'hardware': ['d710'],
-		'images': ['urn:publicid:IDN+instageni.gpolab.bbn.com+image+emulab-ops:Ubuntu12-64-OVS']
-	    }
-	},
-        {
-	    node: {
-		'hardware': ['*'],
-		'images': ['urn:blahblah:any']
-	    }
-	},
-        {
-	    node: {
 		'hardware': ['pc', 'd710'],
 		'types': ['m1.small']
 	    }
@@ -317,7 +412,7 @@ var constraints = [
 		'types': ['emulab-xen']
 	    },
 	    link: {
-		'linkTypes': ['egre-tunnel']
+		'linkTypes': ['egre-tunnel', 'vlan', 'lan']
 	    },
 	    node2: {
 		'types': ['emulab-xen']
@@ -325,16 +420,16 @@ var constraints = [
 	},
         {
 	    node: {
-		'types': ['emulab-rawpc']
+		'types': ['raw-pc']
 	    },
 	    link: {
-		'linkTypes': ['stitched'],
+		'linkTypes': ['vlan'],
 	    },
 	    node2: {
 		'types': ['m1.small']
 	    }
 	}];
-
+*/
 return constraints;
 
 }
@@ -583,7 +678,7 @@ JacksEditorApp.prototype.handleUpload = function(url) {
 };
 
 /**
- * Hanlde request to select an RSpec from embedding page's list
+ * Handle request to select an RSpec from embedding page's list
  */
 JacksEditorApp.prototype.handleSelect = function() {
     // Load the selected rspec into jacks
@@ -614,35 +709,16 @@ JacksEditorApp.prototype.handleDownload = function() {
  */
 JacksEditorApp.prototype.setTopology = function(rspec) {
     if (rspec == null || rspec == "") rspec = "<rspec></rspec>";
-
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    
     // Remove site tags if there are already component_manager_ids set on nodes
-    rspec = remove_superfluous_site_tags(rspec);
-
-    // Remove xmlns="" which Firefox puts into new elements 
-    // but Jacks can't handle
-    rspec = rspec.replace(/xmlns=""/g, '');
+    rspec = cleanSiteIDsInOutputRSpec(rspec, sites);
 
     this.jacksInput.trigger('change-topology', [{rspec: rspec}]);
 }
-
-function remove_superfluous_site_tags(rspec)
-{
-    var doc = jQuery.parseXML(rspec);
-    var rspec_root = $(doc).find('rspec')[0];
-    var nodes = $(rspec_root).find('node');
-    var num_nodes = nodes.length;
-    for(var i = 0; i < num_nodes; i++) {
-	var node = nodes[i];
-	if(node.hasAttribute('component_manager_id')) {
-	    $(node).find('site').remove();
-	}
-    }
-    var new_rspec = (new XMLSerializer()).serializeToString(doc);
-    return new_rspec;
-}
-
-
-
 
 /**
  * Handle request to paste an RSpec to the portal for use by Jacks
@@ -659,12 +735,18 @@ JacksEditorApp.prototype.handlePaste = function() {
 
 };
 
+// Unused method; see slice-jacks.php
 JacksEditorApp.prototype.postRspec = function(rspecs) 
 {
     if (rspecs.length == 0 || (!rspecs[0].rspec)) 
 	return;
 
-    rspec = rspecs[0].rspec;
+    sites = null;
+    if (this.currentTopology) {
+	sites = this.currentTopology.sites;
+    }
+    // Remove site tags if there are already component_manager_ids set on nodes
+    rspec = cleanSiteIDsInOutputRSpec(rspecs[0].rspec, sites);
 
     if (this.downloadingRspec) {
 	this.output.trigger(this.DOWNLOAD_EVENT_TYPE, {

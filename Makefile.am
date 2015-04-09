@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 SUBDIRS = etc lib portal kmtool sa sr cs ma pa logging \
-	  ca openid bin sbin ch man
+	  ca openid bin sbin ch man doc
 
 ## In more modern versions of automake we can use
 ## AM_EXTRA_RECURSIVE_TARGETS in configure.ac to create a recursive

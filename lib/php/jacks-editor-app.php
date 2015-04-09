@@ -24,7 +24,8 @@
 
 function build_jacks_editor()
 {
-  $output = "<script src='jacks-editor-app.js'></script>";
+  $output = "<script src='jacks-lib.js'></script>";
+  $output .= "<script src='jacks-editor-app.js'></script>";
   $output .= "<div id='jacks-editor-status'><p>Starting Jacks Editor...</p></div>";
   $output .= "<div id='jacks-editor-pane' class='jacks'></div>";
 
@@ -68,6 +69,15 @@ function setup_jacks_editor_slice_context()
 	$single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
 	$single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
 	$single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
+
+	//        // Until Jacks gets stitching just so, append a '(S)' on the
+	//        // end of the names of aggregates that are stitchable so
+	//        // user's know which ones are which.
+	//        if (strpos($am[SERVICE_ATTRIBUTE_TAG][SERVICE_ATTRIBUTE_AM_CAT],
+	//                   SERVICE_ATTRIBUTE_STITCHABLE_CAT)  !== FALSE) {
+	//          $single_am['name'] = $single_am['name'] . ' (S)';
+	//        }
+
 	$all_ams[$service_id] = $single_am;
 
 	if (array_key_exists(SERVICE_ATTRIBUTE_TAG, $am) &&
