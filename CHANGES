@@ -14,6 +14,7 @@
  * Make bin/geni-ch-githash an optional file (#1358)
  * Change SSH keys on existing slivers when changing members 
      (only for IG/PG) (#1353)
+ * Refresh login info for joint manifest/slice page (#1280)
 
 == 2.29.2 ==
  * Use `window.open` not `window.location.replace` to launch SSH from

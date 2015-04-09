@@ -640,6 +640,7 @@ function check_for_completeness(am_id, slice_id)
 	    $('span#numagg').text(numagg-1);
 	    $('#details').find('#agg_' + am_id).remove();
 	    $('#details').find('#rawstatus_' + am_id).remove();
+	    $('#details').find('#rawrspec_' + am_id).remove()
 	    var numagg = parseInt($('#numagg').text());
 	    add_agg_row_to_details_table(am_id, numagg);
 	}

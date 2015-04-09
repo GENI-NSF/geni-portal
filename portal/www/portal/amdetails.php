@@ -117,7 +117,24 @@ if (count($obj)>0) {
             </script>";
     }
     */
-  print '<div class="rawRSpec" style="display: none;">';
+  
+  $am_urls = array_keys($obj);
+  $am_url = $am_urls[0];
+  $am_id = 0; // *** We need to change the obj URL to am_id
+  // $ams is an array of array info: service_cert, service_name, 
+  // service_attributes, service_cert_contents, id, service_url, 
+  // service_urn, service_type, serrvice_description
+  // So look up the am_id from the am_url
+  foreach($ams as $am) {
+    if($am[SR_TABLE_FIELDNAME::SERVICE_URL] == $am_url) {
+      $am_id = $am[SR_TABLE_FIELDNAME::SERVICE_ID];
+      break;
+    }
+  }
+  print '<div class="rawRSpec" id="rawrspec_' . $am_id . '" style="display: none;">';
+  //  error_log("OBJ = " . $am_url . " " . $am_id);
+  //  error_log("AMS = " . print_r($ams, true));
+  //  error_log("GET = " . print_r($_GET, true));
   print_rspec( $obj, False, $filterToAM );
   print '</div>';
 } else {
