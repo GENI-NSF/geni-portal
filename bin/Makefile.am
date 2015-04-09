@@ -44,6 +44,8 @@ dist_bin_SCRIPTS = \
 bin_SCRIPTS = \
 	geni-get-ad-rspecs
 
+if INSTALL_GITHASH
 dist_pkgsysconf_DATA = geni-ch-githash
+endif
 
 cleandb:
