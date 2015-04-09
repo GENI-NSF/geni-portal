@@ -290,6 +290,10 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
   $aggs_for_slice = aggregates_in_slice($sa_url, $signer, $slice_urn);
   //  error_log("SLIVER_INFO.RES = " . print_r($aggs_for_slice, true));
   foreach($aggs_for_slice as $agg_info) {
+    if(!array_key_exists(SERVICE_ATTRIBUTE_TAG, $agg_info)) continue;
+    $agg_attributes = $agg_info[SERVICE_ATTRIBUTE_TAG];
+    $am_type = $agg_attributes[SERVICE_ATTRIBUTE_AM_TYPE];
+    if ($am_type != SERVICE_ATTRIBUTE_INSTAGENI_AM) continue; // This call only works for IG/PG racks
     $am_url = $agg_info[SR_TABLE_FIELDNAME::SERVICE_URL];
     $am_urls[] = $am_url;
   }
@@ -298,13 +302,13 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
   // Generate slice_users list of dictionaries: [{"urn" : urn, "keys" : [key1, key2]}, ...]
   $slice_users_list = array();
   $slice_members = get_slice_members($sa_url, $signer, $slice_id);
-  error_log("MEMBERS = " . print_r($slice_members, true));
+  //  error_log("MEMBERS = " . print_r($slice_members, true));
   foreach($slice_members as $member_info) {
     $member_id = $member_info[MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
     $member_urn = get_member_urn($ma_url, $signer, $member_id);
     $keys_res = lookup_public_ssh_keys($ma_url, $signer, $member_id);
-    error_log("MEMBER_ID = " . print_r($member_id, true));
-    error_log("KEYS_RES = " . print_r($keys_res, true));
+    //    error_log("MEMBER_ID = " . print_r($member_id, true));
+    //    error_log("KEYS_RES = " . print_r($keys_res, true));
     $member_public_keys = array();
     foreach($keys_res as $key_info) {
       $public_key = $key_info[MA_SSH_KEY_TABLE_FIELDNAME::PUBLIC_KEY];
@@ -321,7 +325,7 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
   }
 
   $slice_users = array('geni_users' => $slice_users_list);
-  error_log("GENI_USERS = " . print_r($slice_users, true));
+  //  error_log("GENI_USERS = " . print_r($slice_users, true));
 
   // invoke omni to call the geni_update_users POA
   $slice_users_json = json_encode($slice_users);
@@ -330,7 +334,7 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
 		"poa", $slice_urn, 'geni_update_users');
   $res = invoke_omni_function($am_urls, $signer, $args,
 			      array(), 0, 0, false, NULL, 3);
-  error_log("Update_user_keys_on_slivers.RES = " . print_r($res, true));
+  //   error_log("Update_user_keys_on_slivers.RES = " . print_r($res, true));
 
   // Clean up JSON file and invocation directory
   unlink($slice_users_filename);
@@ -361,7 +365,7 @@ function modify_slice_membership($sa_url, $signer, $slice_id,
   if (sizeof($members_to_remove)>0) { $options['members_to_remove'] = $members_to_remove; }
   $options = array_merge($options, $client->options());
   $res = $client->modify_slice_membership($slice_urn, $client->creds(), $options);
-  error_log("MSM.RES = " . print_r($res, true));
+  //  error_log("MSM.RES = " . print_r($res, true));
   $update_user_res = update_user_keys_on_slivers($sa_url, $signer, $slice_id, $slice_urn,
 						 $members_to_add, $members_to_change,
 						 $members_to_remove);
