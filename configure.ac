@@ -42,6 +42,8 @@ fi
 AC_MSG_RESULT($apache_group)
 AC_SUBST(apache_group)
 
+AM_CONDITIONAL(INSTALL_GITHASH, [test -f bin/geni-ch-githash])
+
 AC_CONFIG_FILES([Makefile etc/Makefile bin/Makefile])
 AC_CONFIG_FILES([sr/Makefile lib/Makefile cs/Makefile])
 AC_CONFIG_FILES([logging/Makefile ma/Makefile pa/Makefile sa/Makefile])
