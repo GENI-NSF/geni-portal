@@ -57,6 +57,7 @@ IN THE WORK.
 * Installation::     Installation guide for CentOS 6.5.
 * Operations::       Operator's guide.
 * System Administration:: Administrator's guide.
+* Updating AMsoil::  Updating AMsoil.
 * Index::            Complete index.
 @end menu
 
@@ -152,7 +153,7 @@ Get AMsoil tar ball
 @example
 cd /tmp
 export AMSOIL_TAR=AMsoil-gpo-0.3.3.tar.gz
-wget http://www.gpolab.bbn.com/internal/projects/chapi/"${AMSOIL_TAR}"
+wget http://www.gpolab.bbn.com/internal/projects/chapi/"$@{AMSOIL_TAR@}"
 @end example
 
 @subsection Install chapi
@@ -339,9 +340,9 @@ outlined below.
 
 @example
 export AMSOIL_TAG=gpo-0.3.3
-git archive --prefix=AMsoil-"${AMSOIL_TAG}"/ \
-        "${AMSOIL_TAG}" > AMsoil-"${AMSOIL_TAG}".tar
-gzip AMsoil-"${AMSOIL_TAG}".tar
+git archive --prefix=AMsoil-"$@{AMSOIL_TAG@}"/ \
+        "$@{AMSOIL_TAG@}" > AMsoil-"$@{AMSOIL_TAG@}".tar
+gzip AMsoil-"$@{AMSOIL_TAG@}".tar
 @end example
 
 Once the AMsoil compressed tar file is created, move it to the GENI
@@ -355,16 +356,16 @@ export APACHE_USER=www-data
 export APACHE_GROUP=www-data
 
 # Put the file in the chapi install directory
-mv AMsoil-"${AMSOIL_TAG}".tar /usr/share/geni-ch/chapi
+mv AMsoil-"$@{AMSOIL_TAG@}".tar /usr/share/geni-ch/chapi
 
 #Untar the file:
-sudo tar zxf AMsoil-"${AMSOIL_TAG}".tar.gz
+sudo tar zxf AMsoil-"$@{AMSOIL_TAG@}".tar.gz
 
 # Remove the old link
 sudo rm -f AMsoil
 
 # Point at the new version of AMsoil
-sudo ln -s AMsoil-"${AMSOIL_TAG}" AMsoil
+sudo ln -s AMsoil-"$@{AMSOIL_TAG@}" AMsoil
 
 # Create symlinks to the chapi AMsoil plugins
 for f in chapi/plugins/*; do
@@ -374,8 +375,8 @@ for f in chapi/plugins/*; do
  fi
 done
 
-sudo chown "${APACHE_USER}"."${APACHE_GROUP}" AMsoil/deploy
-sudo chown "${APACHE_USER}"."${APACHE_GROUP}" AMsoil/log
+sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/deploy
+sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/log
 
 # Restart apache to get the new version of AMsoil
 sudo service apache2 restart
