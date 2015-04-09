@@ -7,6 +7,7 @@
 == 2.30 ==
  * Migrate some scripts to chapi
  * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
+ * Rename stale-omni to geni-watch-omni and add man page (#1281)
  * Remove OBE `sliverstatus.php`. (#1333)
   * Remember to remove it from installations.
  * Fix typo in slice resource page. (#1348)

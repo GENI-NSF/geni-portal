@@ -37,6 +37,7 @@ dist_bin_SCRIPTS = \
 		geni-parse-map-data \
 		geni-remove-member-attribute \
 		geni-remove-project-member \
+		geni-watch-omni \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		report_genich_relations
