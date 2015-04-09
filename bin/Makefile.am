@@ -26,17 +26,18 @@ dist_sbin_SCRIPTS = geni-init-ca geni-init-services
 
 dist_bin_SCRIPTS = \
 		assert_email.sh \
-		geni-delete-outside-cert \
 		geni-add-member-attribute \
-		geni-remove-member-attribute \
 		geni-add-project-member \
 		geni-add-trusted-tool \
+		geni-delete-outside-cert \
+		geni-disable-user \
+		geni-enable-user \
 		geni-manage-maintenance \
 		geni-ops-report \
-		geni-remove-project-member \
-		geni-enable-user \
-		geni-disable-user \
 		geni-parse-map-data \
+		geni-remove-member-attribute \
+		geni-remove-project-member \
+		geni-watch-omni \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		report_genich_relations
