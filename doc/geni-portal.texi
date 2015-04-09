@@ -356,7 +356,8 @@ export APACHE_USER=www-data
 export APACHE_GROUP=www-data
 
 # Put the file in the chapi install directory
-mv AMsoil-"$@{AMSOIL_TAG@}".tar /usr/share/geni-ch/chapi
+sudo mv AMsoil-"$@{AMSOIL_TAG@}".tar.gz /usr/share/geni-ch/chapi
+cd /usr/share/geni-ch/chapi
 
 #Untar the file:
 sudo tar zxf AMsoil-"$@{AMSOIL_TAG@}".tar.gz
