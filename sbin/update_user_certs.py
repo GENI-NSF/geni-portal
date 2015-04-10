@@ -40,6 +40,8 @@ def read_file(filename):
 
 # Run SQL query and dump output into given file
 def run_sql_to_file(sql, outfile):
+    # The -A argument has the practical effect of stripping the trailing '+' from each line
+    # in keys when run against postgresql 9.1 (not seen in 8.4). No harm in earlier DBs.
     cmd = ['psql', 'portal', '-U',  'portal', '-h', 'localhost', '-c', sql, '-o', outfile, '-t' , '-q', '-A']
     output = subprocess.call(cmd);
 
