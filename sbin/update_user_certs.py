@@ -40,7 +40,7 @@ def read_file(filename):
 
 # Run SQL query and dump output into given file
 def run_sql_to_file(sql, outfile):
-    cmd = ['psql', 'portal', '-U',  'portal', '-h', 'localhost', '-c', sql, '-o', outfile, '-t' , '-q']
+    cmd = ['psql', 'portal', '-U',  'portal', '-h', 'localhost', '-c', sql, '-o', outfile, '-t' , '-q', '-A']
     output = subprocess.call(cmd);
 
 def run_sql(sql):
