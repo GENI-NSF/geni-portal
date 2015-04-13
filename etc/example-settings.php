@@ -64,4 +64,9 @@ $portal_analytics_string = "ga('create', 'UA-000000-01', 'example.com');";
  */
 $genilib_trusted_host = 'https://ch.example.com:8444'
 
+/*
+ * Is speaks-for enabled (required)?
+ */
+$speaks_for_enabled = false;
+
 ?>
