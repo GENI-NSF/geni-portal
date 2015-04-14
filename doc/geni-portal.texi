@@ -58,6 +58,7 @@ IN THE WORK.
 * Operations::       Operator's guide.
 * System Administration:: Administrator's guide.
 * Updating AMsoil::  Updating AMsoil.
+* Moving data to a new server:: Moving data to a new server.
 * Index::            Complete index.
 @end menu
 
@@ -213,6 +214,17 @@ sudo make install
 
 @section Introduction
 
+@section Configuration
+
+Some of the configuration files:
+@itemize @bullet
+@item @code{/etc/geni-ch/settings.php}
+@item @code{/etc/geni-ch/services.ini}
+@item @code{/etc/geni-chapi/chapi.ini}
+@item @code{/etc/geni-chapi/logging_config.conf} (??)
+@end itemize
+
+
 @section Project Lead Privileges
 @cindex lead, project
 @cindex project lead
@@ -300,12 +312,68 @@ generally best to leave it alone. If a job goes on for longer than 45
 - 60 minutes for some reason, the adminitrator can kill the job using
 the @code{kill} command with the default signal (@code{TERM}).
 
-@c FIXME
-@emph{N.B. The stale-omni script is currently not installed.}
 @example
-# Check for stale omni processes every 5 minutes
-*/5 * * * * /FIX/THIS/PATH/stale-omni
+# Check for long-running omni processes every 5 minutes
+*/5 * * * * /usr/local/bin/geni-watch-omni
 @end example
+
+
+@section Log files
+
+@subsection Apache portal error log file
+@cindex log files
+@cindex Apache
+The GENI portal software writes to the Apache log file. This is a good
+first place to look when things have gone wrong. The portal log file
+will provide information about frontend UI software errors,
+omni/stitcher commands executed, and indications that there are
+problems with the clearinghouse.
+
+The location of this log file depends on the configuration of your
+Apache web server. Typically, it will be found at
+@code{/var/log/httpd/portal_error.log} on Red Hat/CentOS and in
+@code{/var/log/apache2/portal_error.log} on Debian/Ubuntu.
+
+@subsection Clearinghouse log file
+@cindex log files
+The GENI clearinghouse software writes to its own log file. The
+location of this log file can be configured in
+@code{/etc/geni-chapi/chapi.ini}. The default location of the
+clearinghouse log file is @code{/var/log/geni-chapi/chapi.log}.
+
+While it is possible to change the location of the log file it is
+likely that there are dependencies on the default location. Changing
+the location is not recommended.
+
+@subsection Apache clearinghouse log file
+@cindex log files
+@cindex Apache
+Certain issues can cause the clearinghouse software to fail on
+start. If this happens, or might be happening, consult the Apache log
+file configured in the Apache configuration file for the clearinghouse
+server. Typically this file will be found at
+@code{/var/log/httpd/ch_error.log} on Red Hat/CentOS and in
+@code{/var/log/apache2/ch_error.log} on Debian/Ubuntu.
+
+@subsection AMsoil log file
+@cindex log files
+@cindex AMsoil
+The GENI clearinghouse relies on a service library called
+AMsoil. AMsoil provides an XML-RPC base upon which the GENI
+clearinghouse services are built. AMsoil has its own log file,
+@code{/usr/share/geni-ch/chapi/AMsoil/log/amsoil.log}. This log file
+will include startup messages for AMsoil. It will only be useful in
+rare cases.
+
+@subsection Apache error log file
+@cindex log files
+@cindex Apache
+In rare circumstances it is useful to look at Apache's own error log
+file. Some configuration issues will result in messages in this log
+file. This log file is typically located at
+@code{/var/log/httpd/error.log} on Red Hat/CentOS and in
+@code{/var/log/apache2/error.log} on Debian/Ubuntu.
+
 
 @section CRL error
 @cindex CRL error
@@ -384,6 +452,120 @@ sudo service apache2 restart
 @end example
 
 
+@node Moving data to a new server
+@appendix Moving data to a new server
+@section Export database
+@example
+pg_dump --clean -U portal -h localhost portal > db-dump.sql
+gzip db-dump.sql
+@end example
+
+@section Gather other files
+@enumerate
+@item Archive the CA directory, which can be large
+@example
+tar czf CA.tar.gz /usr/share/geni-ch/CA
+@end example
+@item Create a manifest for the rest of the files for @code{tar}
+@example
+/usr/share/geni-ch/cs/cs-cert.pem
+/usr/share/geni-ch/cs/cs-key.pem
+/usr/share/geni-ch/km/km-cert.pem
+/usr/share/geni-ch/km/km-key.pem
+/usr/share/geni-ch/logging/logging-cert.pem
+/usr/share/geni-ch/logging/logging-key.pem
+/usr/share/geni-ch/ma/ma-cert.pem
+/usr/share/geni-ch/ma/ma-key.pem
+/usr/share/geni-ch/pa/pa-cert.pem
+/usr/share/geni-ch/pa/pa-key.pem
+/usr/share/geni-ch/portal/portal-cert.pem
+/usr/share/geni-ch/portal/portal-key.pem
+/usr/share/geni-ch/sa/sa-cert.pem
+/usr/share/geni-ch/sa/sa-key.pem
+/usr/share/geni-ch/sr/sr-cert.pem
+/usr/share/geni-ch/sr/sr-key.pem
+/etc/geni-chapi/http-bundle.pem
+@end example
+@item Run tar with that manifest
+@example
+tar czTf manifest.txt migration.tar.gz
+@end example
+@end enumerate
+
+@section Install files on new server
+@example
+sudo tar Cxf / migration.tar.gz
+sudo tar Cxf / CA.tar.gz
+gunzip db-dump.sql
+psql -U portal -h localhost -f db-dump.sql portal
+@end example
+
+@emph{TODO: FIX PERMISSIONS IN CA DIRECTORY AS NECESSARY!}
+
+@section Edit chapi config file
+Regardless of the DNS, the clearinghouse configuration file must be
+updated to the new authority (i.e. host) name. Edit the file
+@code{/etc/geni-chapi/chapi.ini} to set the ``authority'' in the
+``chrm'' section to the new host name. This section of the
+configuration file will look something like this:
+
+@example
+[chrm]
+
+; name of CH/SA/MA authority
+; This is probably the hostname, or a CNAME alias for the host
+authority=dest.example.com
+@end example
+
+Change the @code{authority} from the destination host name to the
+origin host name. In this example, origin host name is
+@code{origin.example.com}, so the updated configuration would look
+like this:
+
+@example
+[chrm]
+
+; name of CH/SA/MA authority
+; This is probably the hostname, or a CNAME alias for the host
+authority=origin.example.com
+@end example
+
+@section Configure host: no DNS update
+@emph{This step is only necessary if the new server will use a
+different domain name than the original server.}
+@c render the single quotes properly for copy/paste
+@set codequoteundirected on
+@example
+update service_registry
+  set service_url = replace(service_url,
+                            'origin.example.com',
+                            'dest.example.com')
+  where service_url like '%origin.example.com%';
+@end example
+@set codequoteundirected off
+
+@section Configure host: DNS update
+@emph{This step is only necessary if the new server will use the same
+domain name than the origin server. The details need to be worked out.}
+
+@itemize
+@item /etc/geni-ch/services.ini (2 entries)
+@item /etc/geni-ch/settings.php (2 entries)
+@end itemize
+
+@section Final tasks
+@example
+sudo geni-create-ma-crl
+sudo service apache2 restart
+@end example
+
+@section Things to check
+@enumerate
+@item
+Service certificates -- are the correct set of service
+certificates installed on the destination host? If not the portal will
+die with a ``too many redirects'' error on the first page load.
+@end enumerate
 
 @node Index
 @unnumbered Index
