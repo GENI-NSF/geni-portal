@@ -306,6 +306,64 @@ the @code{kill} command with the default signal (@code{TERM}).
 */5 * * * * /usr/local/bin/geni-watch-omni
 @end example
 
+
+@section Log files
+
+@subsection Apache portal error log file
+@cindex log files
+@cindex Apache
+The GENI portal software writes to the Apache log file. This is a good
+first place to look when things have gone wrong. The portal log file
+will provide information about frontend UI software errors,
+omni/stitcher commands executed, and indications that there are
+problems with the clearinghouse.
+
+The location of this log file depends on the configuration of your
+Apache web server. Typically, it will be found at
+@code{/var/log/httpd/portal_error.log} on Red Hat/CentOS and in
+@code{/var/log/apache2/portal_error.log} on Debian/Ubuntu.
+
+@subsection Clearinghouse log file
+@cindex log files
+The GENI clearinghouse software writes to its own log file. The
+location of this log file can be configured in
+@code{/etc/geni-chapi/chapi.ini}. The default location of the
+clearinghouse log file is @code{/var/log/geni-chapi/chapi.log}.
+
+While it is possible to change the location of the log file it is
+likely that there are dependencies on the default location. Changing
+the location is not recommended.
+
+@subsection Apache clearinghouse log file
+@cindex log files
+@cindex Apache
+Certain issues can cause the clearinghouse software to fail on
+start. If this happens, or might be happening, consult the Apache log
+file configured in the Apache configuration file for the clearinghouse
+server. Typically this file will be found at
+@code{/var/log/httpd/ch_error.log} on Red Hat/CentOS and in
+@code{/var/log/apache2/ch_error.log} on Debian/Ubuntu.
+
+@subsection AMsoil log file
+@cindex log files
+@cindex AMsoil
+The GENI clearinghouse relies on a service library called
+AMsoil. AMsoil provides an XML-RPC base upon which the GENI
+clearinghouse services are built. AMsoil has its own log file,
+@code{/usr/share/geni-ch/chapi/AMsoil/log/amsoil.log}. This log file
+will include startup messages for AMsoil. It will only be useful in
+rare cases.
+
+@subsection Apache error log file
+@cindex log files
+@cindex Apache
+In rare circumstances it is useful to look at Apache's own error log
+file. Some configuration issues will result in messages in this log
+file. This log file is typically located at
+@code{/var/log/httpd/error.log} on Red Hat/CentOS and in
+@code{/var/log/apache2/error.log} on Debian/Ubuntu.
+
+
 @section CRL error
 @cindex CRL error
 In the file @code{/var/log/apache2/ch_error.log} the following errors
