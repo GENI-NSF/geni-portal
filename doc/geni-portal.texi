@@ -214,6 +214,17 @@ sudo make install
 
 @section Introduction
 
+@section Configuration
+
+Some of the configuration files:
+@itemize @bullet
+@item @code{/etc/geni-ch/settings.php}
+@item @code{/etc/geni-ch/services.ini}
+@item @code{/etc/geni-chapi/chapi.ini}
+@item @code{/etc/geni-chapi/logging_config.conf} (??)
+@end itemize
+
+
 @section Project Lead Privileges
 @cindex lead, project
 @cindex project lead
