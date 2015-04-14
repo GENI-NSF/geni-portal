@@ -241,6 +241,14 @@ function list_slice($slice,$user) {
 					       
   // Lookup the project for this project ID
   $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+  // There's an odd edge case in which a project has expired 
+  // but some slice of the project has not. In this case, $project_objects may not
+  // contain the project of the slice. If so, we don't show the slice on the slices page
+  // nor the home page but it can be seen from the slices in the expired 
+  // projects portion of the projects page.
+  if (!array_key_exists($slice_project_id, $project_objects)) {
+    return;
+  }
   $project = $project_objects[ $slice_project_id ];
   
   $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
