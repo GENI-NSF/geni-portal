@@ -301,11 +301,9 @@ generally best to leave it alone. If a job goes on for longer than 45
 - 60 minutes for some reason, the adminitrator can kill the job using
 the @code{kill} command with the default signal (@code{TERM}).
 
-@c FIXME
-@emph{N.B. The stale-omni script is currently not installed.}
 @example
-# Check for stale omni processes every 5 minutes
-*/5 * * * * /FIX/THIS/PATH/stale-omni
+# Check for long-running omni processes every 5 minutes
+*/5 * * * * /usr/local/bin/geni-watch-omni
 @end example
 
 @section CRL error
