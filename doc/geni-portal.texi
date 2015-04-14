@@ -58,6 +58,7 @@ IN THE WORK.
 * Operations::       Operator's guide.
 * System Administration:: Administrator's guide.
 * Updating AMsoil::  Updating AMsoil.
+* Moving data to a new server:: Moving data to a new server.
 * Index::            Complete index.
 @end menu
 
@@ -384,6 +385,120 @@ sudo service apache2 restart
 @end example
 
 
+@node Moving data to a new server
+@appendix Moving data to a new server
+@section Export database
+@example
+pg_dump --clean -U portal -h localhost portal > db-dump.sql
+gzip db-dump.sql
+@end example
+
+@section Gather other files
+@enumerate
+@item Archive the CA directory, which can be large
+@example
+tar czf CA.tar.gz /usr/share/geni-ch/CA
+@end example
+@item Create a manifest for the rest of the files for @code{tar}
+@example
+/usr/share/geni-ch/cs/cs-cert.pem
+/usr/share/geni-ch/cs/cs-key.pem
+/usr/share/geni-ch/km/km-cert.pem
+/usr/share/geni-ch/km/km-key.pem
+/usr/share/geni-ch/logging/logging-cert.pem
+/usr/share/geni-ch/logging/logging-key.pem
+/usr/share/geni-ch/ma/ma-cert.pem
+/usr/share/geni-ch/ma/ma-key.pem
+/usr/share/geni-ch/pa/pa-cert.pem
+/usr/share/geni-ch/pa/pa-key.pem
+/usr/share/geni-ch/portal/portal-cert.pem
+/usr/share/geni-ch/portal/portal-key.pem
+/usr/share/geni-ch/sa/sa-cert.pem
+/usr/share/geni-ch/sa/sa-key.pem
+/usr/share/geni-ch/sr/sr-cert.pem
+/usr/share/geni-ch/sr/sr-key.pem
+/etc/geni-chapi/http-bundle.pem
+@end example
+@item Run tar with that manifest
+@example
+tar czTf manifest.txt migration.tar.gz
+@end example
+@end enumerate
+
+@section Install files on new server
+@example
+sudo tar Cxf / migration.tar.gz
+sudo tar Cxf / CA.tar.gz
+gunzip db-dump.sql
+psql -U portal -h localhost -f db-dump.sql portal
+@end example
+
+@emph{TODO: FIX PERMISSIONS IN CA DIRECTORY AS NECESSARY!}
+
+@section Edit chapi config file
+Regardless of the DNS, the clearinghouse configuration file must be
+updated to the new authority (i.e. host) name. Edit the file
+@code{/etc/geni-chapi/chapi.ini} to set the ``authority'' in the
+``chrm'' section to the new host name. This section of the
+configuration file will look something like this:
+
+@example
+[chrm]
+
+; name of CH/SA/MA authority
+; This is probably the hostname, or a CNAME alias for the host
+authority=dest.example.com
+@end example
+
+Change the @code{authority} from the destination host name to the
+origin host name. In this example, origin host name is
+@code{origin.example.com}, so the updated configuration would look
+like this:
+
+@example
+[chrm]
+
+; name of CH/SA/MA authority
+; This is probably the hostname, or a CNAME alias for the host
+authority=origin.example.com
+@end example
+
+@section Configure host: no DNS update
+@emph{This step is only necessary if the new server will use a
+different domain name than the original server.}
+@c render the single quotes properly for copy/paste
+@set codequoteundirected on
+@example
+update service_registry
+  set service_url = replace(service_url,
+                            'origin.example.com',
+                            'dest.example.com')
+  where service_url like '%origin.example.com%';
+@end example
+@set codequoteundirected off
+
+@section Configure host: DNS update
+@emph{This step is only necessary if the new server will use the same
+domain name than the origin server. The details need to be worked out.}
+
+@itemize
+@item /etc/geni-ch/services.ini (2 entries)
+@item /etc/geni-ch/settings.php (2 entries)
+@end itemize
+
+@section Final tasks
+@example
+sudo geni-create-ma-crl
+sudo service apache2 restart
+@end example
+
+@section Things to check
+@enumerate
+@item
+Service certificates -- are the correct set of service
+certificates installed on the destination host? If not the portal will
+die with a ``too many redirects'' error on the first page load.
+@end enumerate
 
 @node Index
 @unnumbered Index
