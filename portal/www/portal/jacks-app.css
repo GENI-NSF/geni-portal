@@ -137,3 +137,7 @@
 .jacks .sitetext {
   color: black;
 }
+
+#jacks-app .gre-tunnel {
+    fill: yellow;
+}

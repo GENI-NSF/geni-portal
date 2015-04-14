@@ -113,6 +113,7 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
             that.initButtons(that.buttons);
 	    output.on('modified-topology', function (data) {
 		    that.currentTopology = data;
+		    that.decorateTopology();
 		});
 	    $(that.status).click(function () {
 		    that.handleStatusClick();
@@ -372,6 +373,25 @@ JacksApp.prototype.lookup_am_id = function (node_key) {
 	    }
 	});
     return am_id;
+}
+
+/*
+ * Decorate (set CSS styling) on topology elements based on new topology
+ */
+JacksApp.prototype.decorateTopology = function () {
+
+    // Set the class of all GRE/EGRE tunnels for CSS painting
+    var links = this.currentTopology.links;
+    if (links.length > 0) {
+	$.each(links, function(i, link) {
+		var link_type = link.link_type;
+		var link_id = link.id;
+		if (link_type == 'egre-tunnel' || 
+		    link_type == 'gre-tunnel') {
+		    $('#' + link_id).find('.checkbox').attr('class', 'checkbox gre-tunnel');
+		}
+	    });
+    }
 }
 
 
