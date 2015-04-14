@@ -127,6 +127,11 @@ print "<b>LabWiki</b></button> ";
   print "<img src='$cloudlab_image_url' height='100%'/>";
   print "</button>";
 
+// Show SAVI button
+    $savi_url = relative_url("savi.php");
+    print "<button onClick=\"window.location='$savi_url'\">";
+    print "<b>SAVI</b></button>";
+
   print "</p>";
 
 ?>
