@@ -74,7 +74,7 @@ Do you with to send your GENI certificate to SAVI?
 
 // Start a form
 echo '<form id="f1" action="' . $savi_url . '" method="post">';
-echo '<input type="hidden" name="cert" value="$cert"/>';
+echo '<input type="hidden" name="cert" value="' . $cert . '"/>';
 echo '<button type="submit" >Proceed</button>';
 echo '<button type="button" onClick="history.back(-1)"/>Cancel</button>';
 echo '</form>';
