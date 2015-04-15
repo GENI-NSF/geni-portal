@@ -839,7 +839,8 @@ JacksApp.prototype.onEpStatus = function(event) {
     var that = this;
     // *** Maybe here we just go through all entries in currentStatusByAM
     $.each(this.currentStatusByAm, function (am_id, statusAndmaxTime) {
-	that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1]);
+       if (am_id != event.am_id) continue;
+       that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1]);
 	});
 
     //    $.each(event.value, function(i, v) {

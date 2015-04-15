@@ -25,6 +25,7 @@
    CSS (#1299).
  * Return genilib.json in omnibundle with user_urn and 
    member's project info (#1352)
+ * Avoid double polling of sliver status in jacks-app (#1326)
 
 == 2.29.2 ==
  * Use `window.open` not `window.location.replace` to launch SSH from
