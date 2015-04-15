@@ -25,10 +25,10 @@ pkgsysconfdir = $(sysconfdir)/geni-ch
 dist_sbin_SCRIPTS = geni-init-ca geni-init-services
 
 dist_bin_SCRIPTS = \
-		assert_email.sh \
 		geni-add-member-attribute \
 		geni-add-project-member \
 		geni-add-trusted-tool \
+		geni-assert-email \
 		geni-delete-outside-cert \
 		geni-disable-user \
 		geni-enable-user \
