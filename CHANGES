@@ -7,24 +7,25 @@
 == 2.30 ==
  * Migrate some scripts to chapi
  * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
+ * Refresh login info for joint manifest/slice page (#1280)
  * Rename stale-omni to geni-watch-omni and add man page (#1281)
+ * Decorate GRE/EGRE tunnels differently (specifically, paint them yellow in
+   CSS (#1299).
  * Remove OBE `sliverstatus.php`. (#1333)
   * Remember to remove it from installations.
+ * Catch errors parsing RSpec in
+   `jacks-lib:cleanSiteIDsInOutputRSpec`. (#1347)
  * Fix typo in slice resource page. (#1348)
- * Catch errors parsing RSpec in `jacks-lib:cleanSiteIDsInOutputRSpec`. (#1347)
- * Make bin/geni-ch-githash an optional file (#1358)
+ * Return genilib.json in omnibundle with user_urn and
+   member's project info (#1352)
  * Change SSH keys on existing slivers when changing members 
-     (only for IG/PG) (#1353)
- * Refresh login info for joint manifest/slice page (#1280)
- * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
+   (only for IG/PG) (#1353)
  * Handle case in tool-slices in which the project is expired but
    slice is not. In this case, such slices are available through 
    the projects page (expired projects section) but not in the home
    or slices page (#1357).
- * Decorate GRE/EGRE tunnels differently (specifically, paint them yellow in 
-   CSS (#1299).
- * Return genilib.json in omnibundle with user_urn and 
-   member's project info (#1352)
+ * Make bin/geni-ch-githash an optional file (#1358)
+  * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
  * Change assert_email.sh to geni-assert-email, add man page (#1360)
 
 == 2.29.2 ==
