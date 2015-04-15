@@ -43,17 +43,10 @@ if (array_key_exists('project', $_REQUEST)) {
   $dest_file = $_REQUEST['file'];
 }
 
-$projects_for_user= get_projects_for_member($sa_url, $user, 
-					    $user->account_id, true);
-// error_log("PROJECTS = " . print_r($projects_for_user, true));
-$projects = lookup_project_details($sa_url, $user, $projects_for_user);
-$project_names = array();
-foreach($projects as $project_urn => $project_details) {
-  $project_name = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-  $expired = $project_details[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
-  if(!$expired)
-    $project_names[] = $project_name;
-}
+$projects_info= get_project_info_for_member($sa_url, $user, 
+						$user->account_id);
+// error_log("PROJECTS = " . print_r($projects_info, true));
+
 
 // Add ssh keys to zip
 function add_ssh_keys_to_zip($keys, $zip) {
@@ -138,16 +131,16 @@ $omni_config_chapi = get_template_omni_config($user, $omni_version, $default_pro
 $zip = new ZipArchive();
 $filename = tempnam(sys_get_temp_dir(), 'omnibundle');
 
-$omni_info = array('user_urn' => $user->urn,
-		   'projects' => $project_names);
-$omni_info_json = json_encode($omni_info);
+$genilib_info = array('user_urn' => $user->urn,
+		   'projects' => $projects_info);
+$genilib_info_json = json_encode($genilib_info);
 
 // Zip will open and overwrite the file, rather than try to read it.
 $zip->open($filename, ZipArchive::OVERWRITE);
 $zip->addFromString('omni_config', $omni_config);
 $zip->addFromString('omni_config_chapi', $omni_config_chapi);
 $zip->addFromString('geni_cert.pem', $geni_cert_pem);
-$zip->addFromString('omni_info.json', $omni_info_json);
+$zip->addFromString('genilib.json', $genilib_info_json);
 add_ssh_keys_to_zip($keys, $zip);
 $zip->close();
 
