@@ -545,12 +545,66 @@ update service_registry
 @set codequoteundirected off
 
 @section Configure host: DNS update
-@emph{This step is only necessary if the new server will use the same
-domain name than the origin server. The details need to be worked out.}
+This step is only necessary if the new, or ``target'' server will use the same
+domain name than the origin server.
+
+@emph{These details need to be worked out.}
+
+@subsection Update portal settings for new hostname
+Edit the @code{/etc/geni-ch/services.ini} file to update two settings:
 
 @itemize
-@item /etc/geni-ch/services.ini (2 entries)
-@item /etc/geni-ch/settings.php (2 entries)
+@item
+In the @code{DEFAULT} section change @code{authority} to the new
+hostname
+@item
+Also in the @code{DEFAULT} section change @code{servicehost} to
+the new hostname
+@end itemize
+
+Edit the @code{/etc/geni-ch/settings.php} file to update two settings:
+
+@itemize
+@item
+Change @code{$service_registry_url} to use the new hostname
+@item
+Change @code{$genilib_trusted_host} to use the new hostname
+@end itemize
+
+@subsection Update shibboleth configuration for new hostname
+@cindex Shibboleth
+When changing the DNS records, the Shibboleth configuration on the
+target host needs to be updated. The target host will need the
+certificate and private key from the origin host. These two files are:
+@itemize
+@item @code{/etc/shibboleth/sp-cert.pem}
+@item @code{/etc/shibboleth/sp-key.pem}
+@end itemize
+
+Additionally, the Shibboleth configuration on the target host must be
+updated with the correct entries. The file is
+@code{/etc/shibboleth/shibboleth2.xml}. The following changes need to
+be made:
+@itemize
+@item Change the @code{entityID} in the @code{ApplicationDefaults} tag
+to the value from the origin host
+@item Change the @code{discoveryURL} in the @code{SSO} tag to the
+correct (origin) host name
+@end itemize
+
+@subsection Update SSL certificates for new hostname
+Move the SSL certificates used by Apache
+
+@code{/etc/ssl/certs/my.host.name.pem}
+
+@subsection Update Apache configuration for new hostname
+Update the clearinghouse Apache configuration file
+(@code{/etc/apache2/sites-available/ch-ssl}), modifying the following
+directives whereever they appear (probably 3 places in the file):
+@itemize
+@item @code{ServerName}
+@item @code{SSLCertificateFile}
+@item @code{SSLCertificateKeyFile}
 @end itemize
 
 @section Final tasks
