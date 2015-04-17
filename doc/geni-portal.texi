@@ -121,6 +121,8 @@ sudo service iptables stop
 
 @emph{This section will be filled in later.}
 
+@emph{Include dependency on python-psutil for geni-watch-omni.}
+
 @section Install GENI Clearinghouse
 
 @subsection Install ABAC
