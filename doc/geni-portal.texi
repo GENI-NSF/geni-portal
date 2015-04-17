@@ -499,6 +499,9 @@ tar czTf manifest.txt migration.tar.gz
 sudo tar Cxf / migration.tar.gz
 sudo tar Cxf / CA.tar.gz
 gunzip db-dump.sql
+
+# Replace the user, hostname, and database name as needed
+# psql -U USER -h HOST -f FILE DATABASE
 psql -U portal -h localhost -f db-dump.sql portal
 @end example
 
@@ -597,12 +600,25 @@ correct (origin) host name
 @subsection Update SSL certificates for new hostname
 Move the SSL certificates used by Apache
 
-@code{/etc/ssl/certs/my.host.name.pem}
+@itemize
+@item @code{/etc/ssl/certs/my-portal.host.name.pem}
+@item @code{/etc/ssl/certs/my-ch.host.name.pem}
+@end itemize
 
 @subsection Update Apache configuration for new hostname
-Update the clearinghouse Apache configuration file
-(@code{/etc/apache2/sites-available/ch-ssl}), modifying the following
-directives whereever they appear (probably 3 places in the file):
+Update the Apache configuration files for both the portal and
+clearinghouse to reflect the origin hostname. The two files that need
+editing are probably named:
+
+@itemize
+@item @code{/etc/apache2/sites-available/ch-ssl}
+@item @code{/etc/apache2/sites-available/portal-ssl}
+@end itemize
+
+In both files, modify the following directives wherever they
+appear. These directives probably appear once in @code{portal-ssl} and
+up to three times in @code{ch-ssl}.
+
 @itemize
 @item @code{ServerName}
 @item @code{SSLCertificateFile}
@@ -621,6 +637,8 @@ sudo service apache2 restart
 Service certificates -- are the correct set of service
 certificates installed on the destination host? If not the portal will
 die with a ``too many redirects'' error on the first page load.
+@item
+Is @code{/etc/geni-ch/jacks-context.json} up to date?
 @end enumerate
 
 @node Index
