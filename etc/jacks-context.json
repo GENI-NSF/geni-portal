@@ -14,10 +14,6 @@
         "name": "clemson-clemson-control-1.clemson.edu"
       },
       {
-        "id": "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am",
-        "name": "exogeni.net:fiuvmsite"
-      },
-      {
         "id": "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am",
         "name": "exogeni.net:bbnvmsite"
       },
@@ -34,6 +30,10 @@
         "name": "exogeni.net:osfvmsite"
       },
       {
+        "id": "urn:publicid:IDN+exogeni.net:osfNet+authority+am",
+        "name": "exogeni.net:osfNet"
+      },
+      {
         "id": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am",
         "name": "exogeni.net:rcivmsite"
       },
@@ -44,6 +44,10 @@
       {
         "id": "urn:publicid:IDN+exogeni.net:slvmsite+authority+am",
         "name": "exogeni.net:slvmsite"
+      },
+      {
+        "id": "urn:publicid:IDN+exogeni.net:slNet+authority+am",
+        "name": "exogeni.net:slNet"
       },
       {
         "id": "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am",
@@ -66,6 +70,10 @@
         "name": "exogeni.net:uflvmsite"
       },
       {
+        "id": "urn:publicid:IDN+exogeni.net:uhNet+authority+am",
+        "name": "exogeni.net:uhNet"
+      },
+      {
         "id": "urn:publicid:IDN+exogeni.net:uhvmsite+authority+am",
         "name": "exogeni.net:uhvmsite"
       },
@@ -78,16 +86,12 @@
         "name": "exogeni.net:wsuNet"
       },
       {
+        "id": "urn:publicid:IDN+exogeni.net:wvnNet+authority+am",
+        "name": "exogeni.net:wvnNet"
+      },
+      {
         "id": "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am",
         "name": "exogeni.net:wvnvmsite"
-      },
-      {
-        "id": "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am",
-        "name": "bbn-cam-ctrl-1.gpolab.bbn.com"
-      },
-      {
-        "id": "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-        "name": "instageni.cenic.net"
       },
       {
         "id": "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
@@ -100,10 +104,6 @@
       {
         "id": "urn:publicid:IDN+geni.it.cornell.edu+authority+cm",
         "name": "geni.it.cornell.edu"
-      },
-      {
-        "id": "urn:publicid:IDN+geni.case.edu+authority+cm",
-        "name": "geni.case.edu"
       },
       {
         "id": "urn:publicid:IDN+instageni.rnoc.gatech.edu+authority+cm",
@@ -182,10 +182,6 @@
         "name": "pks2.sdn.uky.edu"
       },
       {
-        "id": "urn:publicid:IDN+instageni.umkc.edu+authority+cm",
-        "name": "instageni.umkc.edu"
-      },
-      {
         "id": "urn:publicid:IDN+utah.geniracks.net+authority+cm",
         "name": "utah.geniracks.net"
       },
@@ -256,6 +252,10 @@
       {
         "id": "d710",
         "name": "d710"
+      },
+      {
+        "id": "pc2400c2",
+        "name": "pc2400c2"
       }
     ],
     "icons": [
@@ -284,9 +284,24 @@
         "version": "c120b9d79d3f3882114c0e59cce14f671ef9b0db"
       },
       {
+        "id": "http://geni-images.renci.org/images/tqian/u64_32_delay.xml",
+        "name": "Delay.v1",
+        "version": "37be17f937c259d2068ad59060a745c033aa3145"
+      },
+      {
+        "id": "http://geni-images.renci.org/images/ibaldin/docker/centos6.6-docker-v0.1/centos6.6-docker-v0.1.xml",
+        "name": "Docker-v0.1",
+        "version": "b2262a8858c9c200f9f43d767e7727a152a02248"
+      },
+      {
         "id": "http://www.isi.edu/~faber/tmp/fedd.xml",
         "name": "Fedd-enabled Ubuntu 12.04",
         "version": "05cf5d86906c11cdb35ece535d2539fe38481d17"
+      },
+      {
+        "id": "http://geni-images.renci.org/images/ibaldin/perfSonar/psImage-v0.3/psImage-v0.3.xml",
+        "name": "perfSonar-v0.3",
+        "version": "e45a2c809729c1eb38cf58c4bff235510da7fde5"
       },
       {
         "id": "http://emmy9.casa.umass.edu/Disk_Images/ExoGENI/Ubuntu12.04-1.0.2/ubuntu12.04-1.0.2.xml",
@@ -355,40 +370,17 @@
         "name": "ubuntu-12.04"
       },
       {
-        "id": "ljw-test-ubuntu",
-        "name": "ljw-test-ubuntu"
-      },
-      {
-        "id": "PGA-Clemson",
-        "name": "PGA-Clemson"
-      },
-      {
-        "id": "gimi-image",
-        "name": "gimi-image"
-      },
-      {
-        "id": "ubuntu-14.04-OVS",
-        "name": "ubuntu-14.04-OVS"
-      },
-      {
-        "id": "PGA",
-        "name": "PGA"
-      },
-      {
-        "id": "PGA-Gpo",
-        "name": "PGA-Gpo"
-      },
-      {
-        "id": "PGA-GPO",
-        "name": "PGA-GPO"
-      },
-      {
         "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD",
         "name": "FreeBSD 9.2 32-bit version"
       },
       {
         "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD",
         "name": "Standard 32-bit Fedora 15 image"
+      },
+      {
+        "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31",
+        "name": "Ubuntu 14 with OVS, by Niky",
+        "nomac": true
       },
       {
         "id": "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS",
@@ -582,6 +574,10 @@
         "id": "egre-tunnel",
         "ip": "auto",
         "name": "EGRE Tunnel"
+      },
+      {
+        "id": "ethernet-bighp1",
+        "name": "ethernet-bighp1"
       }
     ],
     "types": [
@@ -1288,58 +1284,6 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOMedium"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOXlarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+instageni.maxgigapop.net+authority+cm"
         ],
         "images": [
@@ -1548,6 +1492,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+instageni.maxgigapop.net+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm"
         ],
         "images": [
@@ -1669,6 +1626,19 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+geni.uchicago.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
@@ -2315,188 +2285,6 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+lan.sdn.uky.edu+authority+cm"
         ],
         "images": [
@@ -2696,6 +2484,19 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+lan.sdn.uky.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
@@ -2913,6 +2714,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+instageni.rnoc.gatech.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm"
         ],
         "images": [
@@ -3034,6 +2848,19 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
@@ -3355,6 +3182,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+instageni.ku.gpeni.net+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+geni.kettering.edu+authority+cm"
         ],
         "images": [
@@ -3557,19 +3397,6 @@
         ],
         "types": [
           "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:nictavmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOMedium"
         ]
       }
     },
@@ -3595,7 +3422,7 @@
           "!"
         ],
         "types": [
-          "XOXlarge"
+          "XOLarge"
         ]
       }
     },
@@ -3608,215 +3435,20 @@
           "!"
         ],
         "types": [
-          "XOLarge"
+          "XOMedium"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
+          "urn:publicid:IDN+exogeni.net:nictavmsite+authority+am"
         ],
         "images": [
           "!"
         ],
         "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
+          "XOXlarge"
         ]
       }
     },
@@ -4022,6 +3654,19 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.metrodatacenter.com+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
@@ -4239,26 +3884,13 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+          "urn:publicid:IDN+instageni.iu.edu+authority+cm"
         ],
         "images": [
-          "!"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
+          "raw-pc"
         ]
       }
     },
@@ -4284,7 +3916,33 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
         ]
       }
     },
@@ -4499,234 +4157,910 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.clemson.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
           "!"
         ],
         "types": [
-          "m1.medium"
+          "emulab-openvz"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "ubuntu-12.04"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
         ],
         "types": [
-          "m1.medium"
+          "emulab-openvz"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
-        ],
-        "images": [
-          "fedora-19"
-        ],
-        "types": [
-          "m1.medium"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
           "!"
         ],
         "types": [
-          "m1.tiny"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "ubuntu-12.04"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
         ],
         "types": [
-          "m1.tiny"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "fedora-19"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
         ],
         "types": [
-          "m1.tiny"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "!"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
         ],
         "types": [
-          "m1.large"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "ubuntu-12.04"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
         ],
         "types": [
-          "m1.large"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "fedora-19"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
         ],
         "types": [
-          "m1.large"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "!"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
         ],
         "types": [
-          "m1.small"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
-        ],
-        "images": [
-          "ubuntu-12.04"
-        ],
-        "types": [
-          "m1.small"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
-        ],
-        "images": [
-          "fedora-19"
-        ],
-        "types": [
-          "m1.small"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
           "!"
         ],
         "types": [
-          "m1.super"
+          "raw-pc"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "ubuntu-12.04"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
         ],
         "types": [
-          "m1.super"
+          "raw-pc"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "images": [
-          "fedora-19"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
         ],
         "types": [
-          "m1.super"
+          "raw-pc"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
         ],
         "images": [
           "!"
         ],
         "types": [
-          "m1.xlarge"
+          "emulab-openvz"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
         ],
         "images": [
-          "ubuntu-12.04"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
         ],
         "types": [
-          "m1.xlarge"
+          "emulab-openvz"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
         ],
         "images": [
-          "fedora-19"
+          "!"
         ],
         "types": [
-          "m1.xlarge"
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
         ]
       }
     },
@@ -5049,656 +5383,6 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOMedium"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOXlarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
         ],
         "types": [
           "raw-pc"
@@ -6241,6 +5925,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+instageni.illinois.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm"
         ],
         "images": [
@@ -6449,6 +6146,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.nps.edu+authority+cm"
         ],
         "images": [
@@ -6657,13 +6367,13 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"
+          "urn:publicid:IDN+instageni.nps.edu+authority+cm"
         ],
         "images": [
-          "!"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
-          "XOMedium"
+          "raw-pc"
         ]
       }
     },
@@ -6689,7 +6399,7 @@
           "!"
         ],
         "types": [
-          "XOXlarge"
+          "XOLarge"
         ]
       }
     },
@@ -6702,7 +6412,20 @@
           "!"
         ],
         "types": [
-          "XOLarge"
+          "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOXlarge"
         ]
       }
     },
@@ -6917,26 +6640,13 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+          "urn:publicid:IDN+instageni.rutgers.edu+authority+cm"
         ],
         "images": [
-          "!"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
+          "raw-pc"
         ]
       }
     },
@@ -6962,6 +6672,19 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
         ]
       }
@@ -6969,6 +6692,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "images": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.northwestern.edu+authority+cm"
         ],
         "images": [
@@ -7177,6 +6913,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+instageni.northwestern.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.nysernet.org+authority+cm"
         ],
         "images": [
@@ -7385,179 +7134,10 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
+          "urn:publicid:IDN+instageni.nysernet.org+authority+cm"
         ],
         "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD92-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
@@ -7766,6 +7346,19 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.wisc.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
@@ -7986,6 +7579,19 @@
           "urn:publicid:IDN+utahddc.geniracks.net+authority+cm"
         ],
         "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+utahddc.geniracks.net+authority+cm"
+        ],
+        "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
         ],
         "types": [
@@ -8234,6 +7840,19 @@
         ],
         "images": [
           "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+geni.it.cornell.edu+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
         ],
         "types": [
           "raw-pc"
@@ -8289,188 +7908,6 @@
         ],
         "types": [
           "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:OPENVZ-STD"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FBSD82-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:Ubuntu12-64-OVS"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU12-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-64-STD"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "images": [
-          "urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"
-        ],
-        "types": [
-          "raw-pc"
         ]
       }
     },
@@ -8880,6 +8317,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+instageni.sox.net+authority+cm"
+        ],
+        "images": [
+          "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am"
         ],
         "images": [
@@ -9039,6 +8489,19 @@
           "urn:publicid:IDN+emulab.net+authority+cm"
         ],
         "hardware": [
+          "pc2400c2"
+        ],
+        "types": [
+          "!"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+emulab.net+authority+cm"
+        ],
+        "hardware": [
           "!"
         ],
         "types": [
@@ -9088,52 +8551,13 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+          "urn:publicid:IDN+emulab.net+authority+cm"
         ],
         "hardware": [
-          "!"
+          "pc2400c2"
         ],
         "types": [
-          "XOMedium"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOXlarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
+          "raw-pc"
         ]
       }
     },
@@ -9491,97 +8915,6 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+lan.sdn.uky.edu+authority+cm"
         ],
         "hardware": [
@@ -10095,7 +9428,7 @@
           "!"
         ],
         "types": [
-          "XOMedium"
+          "XOSmall"
         ]
       }
     },
@@ -10108,7 +9441,20 @@
           "!"
         ],
         "types": [
-          "XOSmall"
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:nictavmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOMedium"
         ]
       }
     },
@@ -10128,110 +9474,6 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:nictavmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+instageni.metrodatacenter.com+authority+cm"
         ],
         "hardware": [
@@ -10408,32 +9650,6 @@
         ],
         "types": [
           "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
         ]
       }
     },
@@ -10459,6 +9675,19 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
         ]
       }
@@ -10466,6 +9695,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.clemson.edu+authority+cm"
         ],
         "hardware": [
@@ -10557,78 +9799,416 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "hardware": [
-          "!"
+          "dl360"
         ],
         "types": [
-          "m1.medium"
+          "!"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "hardware": [
           "!"
         ],
         "types": [
-          "m1.tiny"
+          "emulab-openvz"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "hardware": [
-          "!"
+          "dl360"
         ],
         "types": [
-          "m1.large"
+          "emulab-openvz"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "hardware": [
           "!"
         ],
         "types": [
-          "m1.small"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "hardware": [
-          "!"
+          "dl360"
         ],
         "types": [
-          "m1.super"
+          "emulab-xen"
         ]
       }
     },
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
         ],
         "hardware": [
           "!"
         ],
         "types": [
-          "m1.xlarge"
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "!"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "!"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:tamuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOXlarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "!"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "emulab-openvz"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "emulab-xen"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "raw-pc"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
+        ],
+        "hardware": [
+          "dl360"
+        ],
+        "types": [
+          "raw-pc"
         ]
       }
     },
@@ -10674,331 +10254,6 @@
     {
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOMedium"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOXlarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+genirack.nyu.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+utah.geniracks.net+authority+cm"
         ],
         "hardware": [
@@ -11357,19 +10612,6 @@
         ],
         "types": [
           "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOMedium"
         ]
       }
     },
@@ -11395,7 +10637,7 @@
           "!"
         ],
         "types": [
-          "XOXlarge"
+          "XOLarge"
         ]
       }
     },
@@ -11408,7 +10650,20 @@
           "!"
         ],
         "types": [
-          "XOLarge"
+          "XOMedium"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:ucdvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOXlarge"
         ]
       }
     },
@@ -11500,32 +10755,6 @@
         ],
         "types": [
           "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOSmall"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "XOLarge"
         ]
       }
     },
@@ -11551,6 +10780,19 @@
           "!"
         ],
         "types": [
+          "XOSmall"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
           "XOXlarge"
         ]
       }
@@ -11558,6 +10800,19 @@
     {
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:wsuvmsite+authority+am"
+        ],
+        "hardware": [
+          "!"
+        ],
+        "types": [
+          "XOLarge"
+        ]
+      }
+    },
+    {
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+instageni.northwestern.edu+authority+cm"
         ],
         "hardware": [
@@ -11728,97 +10983,6 @@
       "node": {
         "aggregates": [
           "urn:publicid:IDN+instageni.nysernet.org+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ],
         "hardware": [
           "dl360"
@@ -12202,97 +11366,6 @@
         ],
         "types": [
           "XOLarge"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "!"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-openvz"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "emulab-xen"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "hardware": [
-          "!"
-        ],
-        "types": [
-          "raw-pc"
-        ]
-      }
-    },
-    {
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ],
-        "hardware": [
-          "dl360"
-        ],
-        "types": [
-          "raw-pc"
         ]
       }
     },
@@ -12508,9 +11581,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12544,9 +11615,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12580,9 +11649,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12616,9 +11683,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12652,9 +11717,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12688,9 +11751,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12724,9 +11785,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12760,9 +11819,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12796,9 +11853,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12832,9 +11887,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12868,9 +11921,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12904,9 +11955,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12940,9 +11989,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -12976,9 +12023,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -13012,9 +12057,7 @@
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -13048,9 +12091,7 @@
           "urn:publicid:IDN+instageni.rutgers.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -13084,9 +12125,7 @@
           "urn:publicid:IDN+instageni.rutgers.edu+authority+cm",
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -13120,9 +12159,7 @@
           "urn:publicid:IDN+instageni.rutgers.edu+authority+cm",
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
         ]
       }
     },
@@ -13156,9 +12193,7 @@
           "urn:publicid:IDN+instageni.rutgers.edu+authority+cm",
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
-          "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
+          "urn:publicid:IDN+geni.uchicago.edu+authority+cm"
         ]
       }
     },
@@ -13166,78 +12201,6 @@
       "link": {
         "linkTypes": [
           "vlan"
-        ]
-      },
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ]
-      },
-      "node2": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am",
-          "urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm",
-          "urn:publicid:IDN+utah.geniracks.net+authority+cm",
-          "urn:publicid:IDN+uky.emulab.net+authority+cm",
-          "urn:publicid:IDN+emulab.net+authority+cm",
-          "urn:publicid:IDN+utahddc.geniracks.net+authority+cm",
-          "urn:publicid:IDN+instageni.nysernet.org+authority+cm",
-          "urn:publicid:IDN+instageni.maxgigapop.net+authority+cm",
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm",
-          "urn:publicid:IDN+instageni.illinois.edu+authority+cm",
-          "urn:publicid:IDN+instageni.wisc.edu+authority+cm",
-          "urn:publicid:IDN+instageni.ku.gpeni.net+authority+cm",
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm",
-          "urn:publicid:IDN+instageni.nps.edu+authority+cm",
-          "urn:publicid:IDN+instageni.rutgers.edu+authority+cm",
-          "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
-          "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ]
-      }
-    },
-    {
-      "link": {
-        "linkTypes": [
-          "vlan"
-        ]
-      },
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ]
-      },
-      "node2": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am",
-          "urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm",
-          "urn:publicid:IDN+utah.geniracks.net+authority+cm",
-          "urn:publicid:IDN+uky.emulab.net+authority+cm",
-          "urn:publicid:IDN+emulab.net+authority+cm",
-          "urn:publicid:IDN+utahddc.geniracks.net+authority+cm",
-          "urn:publicid:IDN+instageni.nysernet.org+authority+cm",
-          "urn:publicid:IDN+instageni.maxgigapop.net+authority+cm",
-          "urn:publicid:IDN+instageni.rnet.missouri.edu+authority+cm",
-          "urn:publicid:IDN+instageni.illinois.edu+authority+cm",
-          "urn:publicid:IDN+instageni.wisc.edu+authority+cm",
-          "urn:publicid:IDN+instageni.ku.gpeni.net+authority+cm",
-          "urn:publicid:IDN+instageni.stanford.edu+authority+cm",
-          "urn:publicid:IDN+instageni.nps.edu+authority+cm",
-          "urn:publicid:IDN+instageni.rutgers.edu+authority+cm",
-          "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
-          "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
-          "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ]
-      }
-    },
-    {
-      "link": {
-        "linkTypes": [
-          "!"
         ]
       },
       "node": {
@@ -13265,7 +12228,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13293,7 +12256,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13321,7 +12284,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13349,7 +12312,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13377,7 +12340,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13405,7 +12368,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13433,7 +12396,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13461,7 +12424,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13489,7 +12452,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13517,7 +12480,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13545,7 +12508,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13573,7 +12536,7 @@
     {
       "link": {
         "linkTypes": [
-          "!"
+          "vlan"
         ]
       },
       "node": {
@@ -13609,11 +12572,9 @@
         "aggregates": [
           "urn:publicid:IDN+apt.emulab.net+authority+cm",
           "urn:publicid:IDN+utah.cloudlab.us+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
           "urn:publicid:IDN+instageni.clemson.edu+authority+cm",
           "urn:publicid:IDN+geni.it.cornell.edu+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
           "urn:publicid:IDN+instageni.rnoc.gatech.edu+authority+cm",
           "urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm",
           "urn:publicid:IDN+instageni.illinois.edu+authority+cm",
@@ -13633,7 +12594,6 @@
           "urn:publicid:IDN+instageni.stanford.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm",
           "urn:publicid:IDN+utah.geniracks.net+authority+cm",
           "urn:publicid:IDN+utahddc.geniracks.net+authority+cm",
           "urn:publicid:IDN+instageni.wisc.edu+authority+cm",
@@ -13646,11 +12606,9 @@
         "aggregates": [
           "urn:publicid:IDN+apt.emulab.net+authority+cm",
           "urn:publicid:IDN+utah.cloudlab.us+authority+cm",
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm",
           "urn:publicid:IDN+geni.uchicago.edu+authority+cm",
           "urn:publicid:IDN+instageni.clemson.edu+authority+cm",
           "urn:publicid:IDN+geni.it.cornell.edu+authority+cm",
-          "urn:publicid:IDN+geni.case.edu+authority+cm",
           "urn:publicid:IDN+instageni.rnoc.gatech.edu+authority+cm",
           "urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm",
           "urn:publicid:IDN+instageni.illinois.edu+authority+cm",
@@ -13670,7 +12628,6 @@
           "urn:publicid:IDN+instageni.stanford.edu+authority+cm",
           "urn:publicid:IDN+instageni.idre.ucla.edu+authority+cm",
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm",
           "urn:publicid:IDN+utah.geniracks.net+authority+cm",
           "urn:publicid:IDN+utahddc.geniracks.net+authority+cm",
           "urn:publicid:IDN+instageni.wisc.edu+authority+cm",
@@ -13739,23 +12696,6 @@
       },
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ]
-      },
-      "node2": {
-        "aggregates": [
-          "urn:publicid:IDN+exogeni.net:fiuvmsite+authority+am"
-        ]
-      }
-    },
-    {
-      "link": {
-        "linkTypes": [
-          "lan"
-        ]
-      },
-      "node": {
-        "aggregates": [
           "urn:publicid:IDN+exogeni.net:bbnvmsite+authority+am"
         ]
       },
@@ -13824,6 +12764,23 @@
       },
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:osfNet+authority+am"
+        ]
+      },
+      "node2": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:osfNet+authority+am"
+        ]
+      }
+    },
+    {
+      "link": {
+        "linkTypes": [
+          "lan"
+        ]
+      },
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am"
         ]
       },
@@ -13864,6 +12821,23 @@
       "node2": {
         "aggregates": [
           "urn:publicid:IDN+exogeni.net:slvmsite+authority+am"
+        ]
+      }
+    },
+    {
+      "link": {
+        "linkTypes": [
+          "lan"
+        ]
+      },
+      "node": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:slNet+authority+am"
+        ]
+      },
+      "node2": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:slNet+authority+am"
         ]
       }
     },
@@ -13960,6 +12934,23 @@
       },
       "node": {
         "aggregates": [
+          "urn:publicid:IDN+exogeni.net:uhNet+authority+am"
+        ]
+      },
+      "node2": {
+        "aggregates": [
+          "urn:publicid:IDN+exogeni.net:uhNet+authority+am"
+        ]
+      }
+    },
+    {
+      "link": {
+        "linkTypes": [
+          "lan"
+        ]
+      },
+      "node": {
+        "aggregates": [
           "urn:publicid:IDN+exogeni.net:uhvmsite+authority+am"
         ]
       },
@@ -14011,12 +13002,12 @@
       },
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
+          "urn:publicid:IDN+exogeni.net:wvnNet+authority+am"
         ]
       },
       "node2": {
         "aggregates": [
-          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
+          "urn:publicid:IDN+exogeni.net:wvnNet+authority+am"
         ]
       }
     },
@@ -14028,29 +13019,12 @@
       },
       "node": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
+          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
         ]
       },
       "node2": {
         "aggregates": [
-          "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am"
-        ]
-      }
-    },
-    {
-      "link": {
-        "linkTypes": [
-          "lan"
-        ]
-      },
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
-        ]
-      },
-      "node2": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.cenic.net+authority+cm"
+          "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am"
         ]
       }
     },
@@ -14102,23 +13076,6 @@
       "node2": {
         "aggregates": [
           "urn:publicid:IDN+geni.it.cornell.edu+authority+cm"
-        ]
-      }
-    },
-    {
-      "link": {
-        "linkTypes": [
-          "lan"
-        ]
-      },
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
-        ]
-      },
-      "node2": {
-        "aggregates": [
-          "urn:publicid:IDN+geni.case.edu+authority+cm"
         ]
       }
     },
@@ -14442,23 +13399,6 @@
       "node2": {
         "aggregates": [
           "urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm"
-        ]
-      }
-    },
-    {
-      "link": {
-        "linkTypes": [
-          "lan"
-        ]
-      },
-      "node": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
-        ]
-      },
-      "node2": {
-        "aggregates": [
-          "urn:publicid:IDN+instageni.umkc.edu+authority+cm"
         ]
       }
     },
@@ -14686,7 +13626,10 @@
         "images": [
           "http://geni-images.renci.org/images/standard/centos/centos6.3-v1.0.10.xml",
           "http://geni-images.renci.org/images/standard/debian/deb6.v1.0.10.xml",
+          "http://geni-images.renci.org/images/tqian/u64_32_delay.xml",
+          "http://geni-images.renci.org/images/ibaldin/docker/centos6.6-docker-v0.1/centos6.6-docker-v0.1.xml",
           "http://www.isi.edu/~faber/tmp/fedd.xml",
+          "http://geni-images.renci.org/images/ibaldin/perfSonar/psImage-v0.3/psImage-v0.3.xml",
           "http://emmy9.casa.umass.edu/Disk_Images/ExoGENI/Ubuntu12.04-1.0.2/ubuntu12.04-1.0.2.xml",
           "http://geni-images.renci.org/images/standard/ubuntu/ub1404-v1.0.3.xml"
         ],
