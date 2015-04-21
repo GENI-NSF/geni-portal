@@ -379,6 +379,14 @@ JacksApp.prototype.lookup_am_id = function (node_key) {
  * Decorate (set CSS styling) on topology elements based on new topology
  */
 JacksApp.prototype.decorateTopology = function () {
+    var that = this;
+
+    // Label all nodes that are of status ready as 'ready'
+    $.each(this.currentStatusByAm, function(am_id, statusAndMaxTime) {
+	    var status = statusAndMaxTime[0];
+	    var maxTime = statusAndMaxTime[1];
+	    that.handleNewStatus(am_id, status, maxTime, false);
+	});
 
     // Set the class of all GRE/EGRE tunnels for CSS painting
     var links = this.currentTopology.links;
@@ -839,7 +847,9 @@ JacksApp.prototype.onEpStatus = function(event) {
     var that = this;
     // *** Maybe here we just go through all entries in currentStatusByAM
     $.each(this.currentStatusByAm, function (am_id, statusAndmaxTime) {
-	that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1]);
+       if (am_id != event.am_id) return; // Exit this inner function call
+       that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1],
+			    true);
 	});
 
     //    $.each(event.value, function(i, v) {
@@ -851,7 +861,8 @@ JacksApp.prototype.onEpStatus = function(event) {
 // Change the status history message
 // Potentially paint the associated node boxes green/red 
 //     if they are ready/failed
-JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime)
+JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime,
+						   request_status)
 {
 
     var that = this;
@@ -861,27 +872,29 @@ JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime)
       // This only looks for READY and FAILED.
       // There may be other cases to look for.
     // Probably shouldn't poll infinitely.
-    if (typeof status === "undefined") {
-          // Poll again in a little while
-          setTimeout(function() {
-              that.getStatus(am_id, maxTime);
-          }, this.statusPollDelayMillis);
-    } else if (! this.isTerminalStatus(status)) {
-          this.updateStatus('Resources on ' + status['am_name'] + ' are '
-                            + status['geni_status'] + '. Polling again in '
-                            + this.statusPollDelayMillis/1000 + ' seconds.');
-          // Poll again in a little while
-          setTimeout(function() {
-              that.getStatus(am_id, maxTime);
-          }, this.statusPollDelayMillis);
-      } else if (status['geni_status'] == 'ready') {
-          this.updateStatus('Resources on '+status['am_name']+' are ready.');
-      } else if (status['geni_status'] == 'failed') {
-          this.updateStatus('Resources on '+status['am_name']+' have failed.');
-      } else if (status['geni_status'] == 'no resources') {
-	  this.getSliceManifests();
-	  return;
-      } 
+    if (request_status) {
+	if (typeof status === "undefined") {
+	    // Poll again in a little while
+	    setTimeout(function() {
+		    that.getStatus(am_id, maxTime);
+		}, this.statusPollDelayMillis);
+	} else if (! this.isTerminalStatus(status)) {
+	    this.updateStatus('Resources on ' + status['am_name'] + ' are '
+			      + status['geni_status'] + '. Polling again in '
+			      + this.statusPollDelayMillis/1000 + ' seconds.');
+	    // Poll again in a little while
+	    setTimeout(function() {
+		    that.getStatus(am_id, maxTime);
+		}, this.statusPollDelayMillis);
+	} else if (status['geni_status'] == 'ready') {
+	    this.updateStatus('Resources on '+status['am_name']+' are ready.');
+	} else if (status['geni_status'] == 'failed') {
+	    this.updateStatus('Resources on '+status['am_name']+' have failed.');
+	} else if (status['geni_status'] == 'no resources') {
+	    this.getSliceManifests();
+	    return;
+	} 
+    }
 
       // SHOULD PROBABLY CHANGE
       // This section is for coloring the nodes that are ready.

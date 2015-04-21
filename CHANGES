@@ -28,6 +28,7 @@
  * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
  * Change assert_email.sh to geni-assert-email, add man page (#1360)
  * Add GEE button to home page (#1363)
+ * Avoid double polling of sliver status in jacks-app (#1326)
 
 == 2.29.2 ==
  * Use `window.open` not `window.location.replace` to launch SSH from
