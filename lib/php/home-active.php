@@ -127,7 +127,14 @@ print "<b>LabWiki</b></button> ";
   print "<img src='$cloudlab_image_url' height='100%'/>";
   print "</button>";
 
+
+  // Show GEE button
+  $gee_url = "http://gee-project.org/user";
+  print "<button onClick=\"window.open('$gee_url')\">";
+  print "<b>GEE</b></button>";
+
   print "</p>";
+
 
 ?>
 
