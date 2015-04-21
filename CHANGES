@@ -27,6 +27,7 @@
  * Make bin/geni-ch-githash an optional file (#1358)
  * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
  * Change assert_email.sh to geni-assert-email, add man page (#1360)
+ * Add new OVS image to jacks context (#1361)
  * Add GEE button to home page (#1363)
  * Avoid double polling of sliver status in jacks-app (#1326)
 
