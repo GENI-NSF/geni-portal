@@ -121,6 +121,8 @@ sudo service iptables stop
 
 @emph{This section will be filled in later.}
 
+@emph{Include dependency on python-psutil for geni-watch-omni.}
+
 @section Install GENI Clearinghouse
 
 @subsection Install ABAC
@@ -497,6 +499,9 @@ tar czTf manifest.txt migration.tar.gz
 sudo tar Cxf / migration.tar.gz
 sudo tar Cxf / CA.tar.gz
 gunzip db-dump.sql
+
+# Replace the user, hostname, and database name as needed
+# psql -U USER -h HOST -f FILE DATABASE
 psql -U portal -h localhost -f db-dump.sql portal
 @end example
 
@@ -545,12 +550,79 @@ update service_registry
 @set codequoteundirected off
 
 @section Configure host: DNS update
-@emph{This step is only necessary if the new server will use the same
-domain name than the origin server. The details need to be worked out.}
+This step is only necessary if the new, or ``target'' server will use the same
+domain name than the origin server.
+
+@emph{These details need to be worked out.}
+
+@subsection Update portal settings for new hostname
+Edit the @code{/etc/geni-ch/services.ini} file to update two settings:
 
 @itemize
-@item /etc/geni-ch/services.ini (2 entries)
-@item /etc/geni-ch/settings.php (2 entries)
+@item
+In the @code{DEFAULT} section change @code{authority} to the new
+hostname
+@item
+Also in the @code{DEFAULT} section change @code{servicehost} to
+the new hostname
+@end itemize
+
+Edit the @code{/etc/geni-ch/settings.php} file to update two settings:
+
+@itemize
+@item
+Change @code{$service_registry_url} to use the new hostname
+@item
+Change @code{$genilib_trusted_host} to use the new hostname
+@end itemize
+
+@subsection Update shibboleth configuration for new hostname
+@cindex Shibboleth
+When changing the DNS records, the Shibboleth configuration on the
+target host needs to be updated. The target host will need the
+certificate and private key from the origin host. These two files are:
+@itemize
+@item @code{/etc/shibboleth/sp-cert.pem}
+@item @code{/etc/shibboleth/sp-key.pem}
+@end itemize
+
+Additionally, the Shibboleth configuration on the target host must be
+updated with the correct entries. The file is
+@code{/etc/shibboleth/shibboleth2.xml}. The following changes need to
+be made:
+@itemize
+@item Change the @code{entityID} in the @code{ApplicationDefaults} tag
+to the value from the origin host
+@item Change the @code{discoveryURL} in the @code{SSO} tag to the
+correct (origin) host name
+@end itemize
+
+@subsection Update SSL certificates for new hostname
+Move the SSL certificates used by Apache
+
+@itemize
+@item @code{/etc/ssl/certs/my-portal.host.name.pem}
+@item @code{/etc/ssl/certs/my-ch.host.name.pem}
+@end itemize
+
+@subsection Update Apache configuration for new hostname
+Update the Apache configuration files for both the portal and
+clearinghouse to reflect the origin hostname. The two files that need
+editing are probably named:
+
+@itemize
+@item @code{/etc/apache2/sites-available/ch-ssl}
+@item @code{/etc/apache2/sites-available/portal-ssl}
+@end itemize
+
+In both files, modify the following directives wherever they
+appear. These directives probably appear once in @code{portal-ssl} and
+up to three times in @code{ch-ssl}.
+
+@itemize
+@item @code{ServerName}
+@item @code{SSLCertificateFile}
+@item @code{SSLCertificateKeyFile}
 @end itemize
 
 @section Final tasks
@@ -565,6 +637,8 @@ sudo service apache2 restart
 Service certificates -- are the correct set of service
 certificates installed on the destination host? If not the portal will
 die with a ``too many redirects'' error on the first page load.
+@item
+Is @code{/etc/geni-ch/jacks-context.json} up to date?
 @end enumerate
 
 @node Index
