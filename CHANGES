@@ -25,8 +25,9 @@
    the projects page (expired projects section) but not in the home
    or slices page (#1357).
  * Make bin/geni-ch-githash an optional file (#1358)
-  * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
+ * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
  * Change assert_email.sh to geni-assert-email, add man page (#1360)
+ * Add GEE button to home page (#1363)
 
 == 2.29.2 ==
  * Use `window.open` not `window.location.replace` to launch SSH from
