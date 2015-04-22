@@ -285,6 +285,7 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
 {
   $username = $signer->username;
   $ma_url = sa_to_ma_url($sa_url);
+  $am_urls = array();
 
   // Get list of aggregates for slice
   $aggs_for_slice = aggregates_in_slice($sa_url, $signer, $slice_urn);
@@ -298,6 +299,11 @@ function update_user_keys_on_slivers($sa_url, $signer, $slice_id,
     $am_urls[] = $am_url;
   }
   //  error_log("AM_URLS = " . print_r($am_urls, true));
+
+  // If there are no AM URLs (e.g. no IG/PG AMs), then nothing to do here. Bail.
+  if (count($am_urls) < 1) {
+    return True;
+  }
 
   // Generate slice_users list of dictionaries: [{"urn" : urn, "keys" : [key1, key2]}, ...]
   $slice_users_list = array();
