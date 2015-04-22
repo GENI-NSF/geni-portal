@@ -5,9 +5,9 @@
 = GENI Portal Release Notes =
 
 == 2.30 ==
- * Migrate some scripts to chapi
+ * Migrate some scripts to chapi (see chapi CHANGES file for details)
  * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
- * Refresh login info for joint manifest/slice page (#1280)
+ * Refresh until get login info on joint manifest/status page (#1280)
  * Rename stale-omni to geni-watch-omni and add man page (#1281)
  * Decorate GRE/EGRE tunnels differently (specifically, paint them yellow in
    CSS (#1299).
