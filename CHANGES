@@ -4,11 +4,40 @@
 
 = GENI Portal Release Notes =
 
+== 2.30 ==
+ * Migrate some scripts to chapi (see chapi CHANGES file for details)
+ * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
+ * Refresh until get login info on joint manifest/status page (#1280)
+ * Rename stale-omni to geni-watch-omni and add man page (#1281)
+ * Decorate GRE/EGRE tunnels differently (specifically, paint them yellow in
+   CSS (#1299).
+ * Remove OBE `sliverstatus.php`. (#1333)
+  * Remember to remove it from installations.
+ * Catch errors parsing RSpec in
+   `jacks-lib:cleanSiteIDsInOutputRSpec`. (#1347)
+ * Fix typo in slice resource page. (#1348)
+ * Return genilib.json in omnibundle with user_urn and
+   member's project info (#1352)
+ * Change SSH keys on existing slivers when changing members 
+   (only for IG/PG) (#1353)
+ * Handle case in tool-slices in which the project is expired but
+   slice is not. In this case, such slices are available through 
+   the projects page (expired projects section) but not in the home
+   or slices page (#1357).
+ * Make bin/geni-ch-githash an optional file (#1358)
+ * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
+ * Change assert_email.sh to geni-assert-email, add man page (#1360)
+ * Add new OVS image to jacks context (#1361)
+ * Add GEE button to home page (#1363)
+ * Avoid double polling of sliver status in jacks-app (#1326)
+
 == 2.29.2 ==
- * Use `window.open` not `window.location.replace` to launch SSH from Jacks App. (#1344)
+ * Use `window.open` not `window.location.replace` to launch SSH from
+   Jacks App. (#1344)
 
 == 2.29.1 ==
- * Slice Map Details must close the session to allow AJAX calls in parallel. (#1343)
+ * Slice Map Details must close the session to allow AJAX calls in
+   parallel. (#1343)
 
 == 2.29 ==
  * Deprecate Flack (#1219)

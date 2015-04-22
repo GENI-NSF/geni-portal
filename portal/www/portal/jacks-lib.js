@@ -25,7 +25,21 @@
 // Remove site tag from any bound node
 // Change site ID to the site name for remaining sites
 function cleanSiteIDsInOutputRSpec(rspec, sites) {
-    var doc = jQuery.parseXML(rspec);
+    if (typeof rspec !== "string" || rspec.trim() === '') {
+	console.log("Empty or non string rspec");
+	return '';
+    }
+    var doc;
+    try {
+	doc = jQuery.parseXML(rspec);
+    } catch (err) {
+	console.log("Error parsing RSpec. Will return as is: " + err);
+	return rspec;
+    }
+    if (typeof doc === "undefined") {
+	console.log("Un-parsable RSpec returned as is");
+	return rspec;
+    }
     var rspec_root = $(doc).find('rspec')[0];
     var nodes = $(rspec_root).find('node');
     var num_nodes = nodes.length;

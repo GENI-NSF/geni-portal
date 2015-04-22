@@ -31,12 +31,11 @@ var count = 0;
 //      var json_agg;
 //      var name;
 //      var output; 
-//      var status_url, listres_url;
+//      var listres_url;
 
 //      var s = all_ams;
 //      var all_am_obj = JSON.parse(s);
 
-//      status_url = 'sliverstatus.php?slice_id='+slice;
 //      listres_url = 'listresources.php?slice_id='+slice;
 
 //      // (2) create an HTML table with one row for each aggregate
@@ -82,7 +81,6 @@ var count = 0;
 // 	    }
 // 	    // sliver actions
 // 	    output += "<td>";
-// 	    output += "<button id='status_button_"+am_id+"' disabled='' onClick=\"window.location='"+status_url+"&am_id="+am_id+"'\"><b>Resource Status</b></button>";
 // 	    output += "<button  id='details_button_"+am_id+"' disabled='' title='Login info, etc' onClick=\"window.location='"+listres_url+"&am_id="+am_id+"'\"><b>Details</b></button>\n";
 // 	    output += "<button  id='delete_button_"+am_id+"' disabled='' onClick=\"window.location='confirm-sliverdelete.php?slice_id=" + slice+ "&am_id="+am_id+"'\" "+ delete_slivers_disabled +"><b>Delete Resources</b></button>\n";
 // 	    output += "</td></tr>";
@@ -440,6 +438,7 @@ function add_agg_row_to_details_table(am_id, numagg) {
 // 	      $("#summary").css( 'display', 'block');
 // 	  }
 //       }
+
   });  
 }
 
@@ -501,8 +500,8 @@ function add_one_login(am_id, slice_id)
 	    agg_info = "Aggregate <b>" + am_name + "'s</b>  Status:";
 	    status_info = JSON.stringify(am, null, 1);
 
-	    status_info = "<div id='" + am_id + "' class='rawStatus' style='display:none'>" + 
-		"<div class='aggregate'>" + agg_info + "</div>" + 
+	    status_info = "<div id='rawstatus_" + am_id + "' class='rawStatus' style='display:none'>" + 
+		"<div class='aggregate' >" + agg_info + "</div>" + 
 		"<div class='resources' id='" + am_id + "'>" + 
 		"<div class='xml'>" + status_info + "</div>" + 
 		"</div>";
@@ -570,16 +569,19 @@ function add_one_login(am_id, slice_id)
 	    }
 
 	    if (!("login_info" in am)) {
+		check_for_completeness(am_id, slice_id);
 		return;
 	    }
 	    login_info = am['login_info'];
 	    if (!(login_info)) {
 		// sometimes (eg if BUSY) might have contain anything
+		check_for_completeness(am_id, slice_id);
 		return;
 	    }
 	    resources = login_info['resources'];
 
 	    if (!(resources)) {
+		check_for_completeness(am_id, slice_id);
 		return;
 	    }
 	    for (var i in resources ){
@@ -609,10 +611,47 @@ function add_one_login(am_id, slice_id)
 		}
 	    }
 	}
+
+	check_for_completeness(am_id, slice_id);
      }
      if(statusTxt=="error")
         alert("Error: "+xhr.status+": "+xhr.statusText);
    });
+}
+
+// We've completed getting manifest and status for a given AM
+// But we should regather status if the status isn't terminal
+// And if the status is terminal but there is no login info, 
+// We should re-get the manifest
+function check_for_completeness(am_id, slice_id)
+{
+    // Check if aggregate is ready or failed
+    var agg_status = $('#am_status_' + am_id).attr('class');
+    if (agg_status == 'ready' || agg_status == 'failed') {
+	// We're done with status. If there is no login info, we should get it
+	var login_info = $('#agg_' + am_id).find('.login');
+	if (login_info.length == 0) {
+	    // Remove all the previous manifest/status artifacts
+	    // Need to remove the 'resources' field
+	    // Need to remove the rawRSpec field
+	    // Decrement the aggregate counter 
+	    // since we're getting the manifest again
+	    var numagg = parseInt($('span#numagg').text());
+	    $('span#numagg').text(numagg-1);
+	    $('#details').find('#agg_' + am_id).remove();
+	    $('#details').find('#rawstatus_' + am_id).remove();
+	    $('#details').find('#rawrspec_' + am_id).remove()
+	    var numagg = parseInt($('#numagg').text());
+	    add_agg_row_to_details_table(am_id, numagg);
+	}
+    } else {
+	// We're not done with status. Get it again.
+	setTimeout(function() {
+		$('#details').children('#rawstatus_' + am_id).remove();
+		add_one_login(am_id, slice_id);
+	    }, 5000);
+	
+    }
 }
 
 

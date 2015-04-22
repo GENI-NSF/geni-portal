@@ -1,0 +1,43 @@
+.TH GENI-WATCH-OMNI 1 "April 9, 2015"
+.SH NAME
+geni-watch-omni \- monitor long-running omni processes
+.SH SYNOPSIS
+.B geni-watch-omni
+[\fB-m \fIMINUTES\fR]
+[\fB--debug\fR]
+.SH DESCRIPTION
+.B geni-watch-omni
+watches for \fBomni\fR or \fBstitcher\fR processes that have run
+longer than expected. When a long-running omni or stitcher process is
+detected an email is sent to a configured email address.
+.SH OPTIONS
+.TP
+\fB-m\fR, \fB--minutes \fIMINUTES
+Number of minutes before a process is considered stale (default is 12)
+.TP
+\fB--debug
+Show verbose debugging information.
+.SH FILES
+The email address for reports is extracted from
+\fB/etc/geni-chapi/chapi.ini\fR. This is a standard INI file. The
+email address will be found in the \fBchapi\fR section with the
+\fBportal_admin_email\fR key. For example:
+
+    [chapi]
+    portal_admin_email = portal-admin@example.com
+.SH EXAMPLES
+Check for stale omni processes:
+
+    geni-watch-omni
+
+Check for omni processes more than 30 minutes old:
+
+    geni-watch-omni -m 30
+
+crontab entry to watch omni processes every 5 minutes:
+
+    # Check for stale omni processes every 5 minutes
+    */5 * * * * /usr/local/bin/geni-watch-omni
+
+.SH AUTHOR
+geni-watch-omni was written by Raytheon BBN Technologies.

@@ -13,35 +13,40 @@ geni-get-ad-rspecs: Makefile
 
 geni-get-ad-rspecs: $(srcdir)/geni-get-ad-rspecs.in
 
+# Distribute but do not install
+EXTRA_DIST =  \
+	geni-get-ad-rspecs.in
+
+CLEANFILES =  \
+	geni-get-ad-rspecs
+
 pkgsysconfdir = $(sysconfdir)/geni-ch
 
 dist_sbin_SCRIPTS = geni-init-ca geni-init-services
 
 dist_bin_SCRIPTS = \
-		assert_email.sh \
-		geni-add-member-privilege \
-		geni-delete-outside-cert \
 		geni-add-member-attribute \
-		geni-remove-member-attribute \
 		geni-add-project-member \
 		geni-add-trusted-tool \
+		geni-assert-email \
+		geni-delete-outside-cert \
+		geni-disable-user \
+		geni-enable-user \
 		geni-manage-maintenance \
 		geni-ops-report \
-		geni-remove-project-member \
-		geni-revoke-member-privilege \
-		geni-enable-user \
-		geni-disable-user \
-		geni-get-ad-rspecs \
 		geni-parse-map-data \
+		geni-remove-member-attribute \
+		geni-remove-project-member \
+		geni-watch-omni \
 		gmoc_list_contacts \
 		gmoc_list_slices \
 		report_genich_relations
 
-dist_pkgsysconf_DATA = geni-ch-githash
+bin_SCRIPTS = \
+	geni-get-ad-rspecs
 
-# GPO Lab
-# Install in /usr/local/lib, not /usr/lib
-localpythondir = $(subst /usr/lib,/usr/local/lib,$(pythondir))
-nobase_dist_localpython_DATA = chapiclient/__init__.py chapiclient/chapi.py
+if INSTALL_GITHASH
+dist_pkgsysconf_DATA = geni-ch-githash
+endif
 
 cleandb:

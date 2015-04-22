@@ -45,6 +45,7 @@ require_once('pa_constants.php');
 require_once('cs_constants.php');
 require_once 'chapi.php';
 require_once('client_utils.php');
+require_once('print-text-helpers.php');
 
 include_once('irods_utils.php');
 
@@ -371,6 +372,43 @@ function get_project_members($sa_url, $signer, $project_id,
   }
   return $converted_result;  
 
+}
+
+// Return list of dictionaries about projects for which $member_id is a member
+// PROJECT_URN
+// PROJECT_UID
+// PROJECT_ROLE
+// Optionally, include expired projects
+function get_project_info_for_member($sa_url, $signer, $member_id, 
+				     $include_expired=false)
+{
+  if (! is_object($signer)) {
+    throw new InvalidArgumentException('Null signer');
+  }
+  if (! ($signer instanceof GeniUser)) {
+    /* Signer must be a GeniUser because we need its URN. */
+    throw new InvalidArgumentException('Signer is not a GeniUser');
+  }
+
+  $client = XMLRPCClient::get_client($sa_url, $signer);
+  $member_urn = $signer->urn;
+  $rows = $client->lookup_projects_for_member($member_urn, $client->creds(),
+                                              $client->options());
+
+  $result = array();
+  foreach($rows as $row) {
+    $expired = $row['EXPIRED'];
+    if ($expired && (!$include_expired)) continue;
+    //    error_log("ROW = " . print_r($row, true));
+    $new_row = project_details_chapi2portal($row);
+    $new_row['role'] = $row['PROJECT_ROLE'];
+    $project_urn = $new_row['project_urn'];
+    $project_name = get_name_from_urn($project_urn);
+    $new_row[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] = $project_name;
+    //    error_log("NEW_ROW = " . print_r($new_row, true));
+    $result[] = $new_row;
+  }
+  return $result;
 }
 
 // Return list of project ID's for given member_id
