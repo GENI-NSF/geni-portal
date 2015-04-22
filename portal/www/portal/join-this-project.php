@@ -25,8 +25,8 @@
 require_once("user.php");
 require_once("header.php");
 require_once('portal.php');
-require("logging_constants.php");
-require("logging_client.php");
+require_once("logging_constants.php");
+require_once("logging_client.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
 require_once("pa_client.php");
