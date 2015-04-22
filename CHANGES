@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.31 ==
+
+
 == 2.30 ==
  * Migrate some scripts to chapi (see chapi CHANGES file for details)
  * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
