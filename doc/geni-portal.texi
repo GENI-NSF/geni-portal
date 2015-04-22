@@ -377,7 +377,10 @@ file. This log file is typically located at
 @code{/var/log/apache2/error.log} on Debian/Ubuntu.
 
 
-@section CRL error
+@section Common errors
+This section outlines some common errors and their solution.
+
+@subsection CRL error
 @cindex CRL error
 In the file @code{/var/log/apache2/ch_error.log} the following errors
 are listed.
@@ -395,6 +398,7 @@ restart the web server:
 sudo /usr/local/sbin/geni-create-ma-crl
 sudo service apache2 restart
 @end example
+
 
 @node Updating AMsoil
 @appendix Updating AMsoil
