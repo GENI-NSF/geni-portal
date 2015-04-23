@@ -58,7 +58,11 @@ class Portal extends Signer
     }
     if (! is_null($san)) {
       // email:portal-sandbox-admin@gpolab.bbn.com, URI:urn:publicid:IDN+ch-ah.gpolab.bbn.com+authority+portal, URI:uuid:b2822cca-4c62-4b08-83fd-e0afaf331908
-      $uidbit = stristr($san, "URI:uuid");
+      $uidbit = stristr($san, "URI:urn:uuid");
+      if ($uidbit === False) {
+        // Try the legacy string
+        $uidbit = stristr($san, "URI:uuid");
+      }
       if ($uidbit !== False) {
 	$uid = substr($uidbit, 9);
       } else {
