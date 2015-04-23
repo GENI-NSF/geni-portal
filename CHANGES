@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.31 ==
+ * Fix UUID search in portal certificate (#1368)
 
 == 2.30.1 ==
  * Restore ability to join a project; `require_once logging_client`. (#1366)
