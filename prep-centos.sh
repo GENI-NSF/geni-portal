@@ -35,6 +35,7 @@ sudo yum -y install python-devel.x86_64 swig.x86_64 libxslt-devel.x86_64 php-xml
           postgresql-server.x86_64 postgresql.x86_64 postgresql-devel.x86_64 php-pgsql.x86_64 \
           mod_fastcgi.x86_64 rsyslog.x86_64 php-pear-MDB2-Driver-pgsql \
           java-1.6.0-openjdk.x86_64 ant.x86_64 perl-devel
+sudo yum -y install putty
 
 
 sudo pip2.7 install pyOpenSSL==0.14 pycparser==2.10 python-dateutil==2.2 pytz==2014.1.1 \

@@ -109,13 +109,15 @@ if (count($keys) == 0)
 else
   {
     $download_pkey_url = relative_url('downloadsshkey.php?');
+    $download_putty_url = relative_url('downloadputtykey.php?');
     $download_public_key_url = relative_url('downloadsshpublickey.php?');
     $edit_sshkey_url = relative_url('sshkeyedit.php?');
     $delete_sshkey_url = relative_url('deletesshkey.php?');
     js_delete_ssh_key();  // javascript for delete key confirmation
     print "\n<table>\n";
     print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
-          . "<th>Edit</th><th>Delete</th></tr>\n";
+      . "<th>PuTTY</th>"
+      . "<th>Edit</th><th>Delete</th></tr>\n";
     foreach ($keys as $key) {
       // generate key's fingerprint
         $fingerprint_key = NULL;
@@ -140,10 +142,14 @@ else
       $query = http_build_query($args);
       if (is_null($key['private_key'])) {
         $pkey_cell = 'N/A';
+	$putty_cell = "N/A";
       } else {
         $pkey_cell = ("<button onClick=\"window.location='"
                 . $download_pkey_url . $query
                 . "'\">Download Private Key</button>");
+        $putty_cell = ("<button onClick=\"window.location='"
+                . $download_putty_url . $query
+                . "'\">Download PuTTY Key</button>");
       }
       $public_key_download_cell = ("<button $disable_ssh_keys onClick=\"window.location='"
                 . $download_public_key_url . $query
@@ -159,6 +165,7 @@ else
       . "<td>" . htmlentities($key['description']) . "</td>"
       . '<td>' . $public_key_download_cell . '</td>'
       . '<td>' . $pkey_cell . '</td>'
+      . '<td>' . $putty_cell . '</td>'
       . '<td>' . $edit_cell . '</td>'
       . '<td>' . $delete_cell . '</td>'
       . "</tr>\n";
