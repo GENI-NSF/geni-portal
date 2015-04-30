@@ -450,6 +450,12 @@ for f in chapi/plugins/*; do
  fi
 done
 
+# Remove unused AMsoil plugins
+for pl in dhcprm dhcpgeni3 mailer worker geniv3rpc
+do
+    sudo rm AMsoil/src/plugins/$pl
+done
+
 sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/deploy
 sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/log
 
