@@ -51,7 +51,7 @@ print "<h1>Download PuTTY private Key</h1>";
 print "<form action=\"do-downloadputtykey.php\" method=\"post\">\n";
 print "<p><label for=\"passphrase\">Passphrase:</label>\n";
 print "<input type=\"password\" name=\"passphrase\">\n";
-print "<input type=\"submit\" name=\"submit\" value=\"Generate PuTTY key\"></p>";
+print "<input type=\"submit\" name=\"submit\" value=\"Download PuTTY key\"></p>";
 print "<input type=\"hidden\" name=\"key_id\" value=\"$key_id\"/>\n";
 print "</form>";
 
