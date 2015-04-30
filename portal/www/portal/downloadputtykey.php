@@ -47,7 +47,7 @@ if (is_null($key_id)) {
   relative_redirect('home.php');
 }
 
-print "<h1>Download PuTTY private Key</h1>";
+print "<h1>Download PuTTY Key</h1>";
 print "<form action=\"do-downloadputtykey.php\" method=\"post\">\n";
 print "<p><label for=\"passphrase\">Passphrase:</label>\n";
 print "<input type=\"password\" name=\"passphrase\">\n";

@@ -78,7 +78,6 @@ if (is_null($private_key)) {
   file_put_contents($private_key_filename, $private_key);
 
   // Run the comand to generate the puttygen command
-  $passphrase = "foobar";
   $cmd = "echo $passphrase | puttygen $private_key_filename -o $putty_key_filename";
   //  error_log("CMD = " . $cmd);
   system($cmd);
@@ -95,6 +94,10 @@ if (is_null($private_key)) {
   //  error_log("PUTTY_FILE = " . $putty_key_filename);
   //  error_log("PRIV= " . $private_key);
   //  error_log("PUTTY= " . $putty_key);
+
+  if($putty_key == NULL || strlen($putty_key) == 0) {
+    relative_redirect("error-text.php?error=" . urlencode("Invalid passphrase"));
+  }
   
 // Set headers for download
   header("Cache-Control: public");
