@@ -51,9 +51,7 @@ if (array_key_exists('slice_id', $_REQUEST)) {
 /*
  * Use this URL if not in slice context (i.e. not passing a slice id).
  */
-$gd_url = ('https://genidesktop.netlab.uky.edu/'
-           . $site
-           .'/slice_pages/slice_list.php');
+$gd_url = 'https://genidesktop.netlab.uky.edu/';
 
 /*
  * If a slice id is present, use a different URL to pass the slice id
