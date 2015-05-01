@@ -506,16 +506,42 @@ tar czTf manifest.txt migration.tar.gz
 
 @section Install files on new server
 @example
-sudo tar Cxf / migration.tar.gz
-sudo tar Cxf / CA.tar.gz
-gunzip db-dump.sql
+sudo tar Cxzf / migration.tar.gz
+sudo tar Cxzf / CA.tar.gz
+gunzip db-dump.sql.gz
 
 # Replace the user, hostname, and database name as needed
 # psql -U USER -h HOST -f FILE DATABASE
 psql -U portal -h localhost -f db-dump.sql portal
 @end example
 
-@emph{TODO: FIX PERMISSIONS IN CA DIRECTORY AS NECESSARY!}
+@section Fix permissions in CA directory
+Many files and directories under @code{/usr/share/geni-ch/CA} must be
+readable and writable by the user associated with the web server
+process. On Ubuntu this is typically @code{www-data} and on CentOS
+this is usually @code{apache}. If most (but not all) files in
+@code{/usr/share/geni-ch/CA} are owned by the correct user, skip this
+step.
+
+If you need to update permissions, use a comand like the following,
+which updates the files for CentOS by making them owned by user
+``apache'' and group ``apache''. Substitute the correct user and group
+as necessary for your own environment.
+
+@example
+sudo find /usr/share/geni-ch/CA -user 33 -exec chown apache:apache @{@} \;
+@end example
+
+@section Update bundle
+@emph{These instructions only apply to CentOS 6.}
+
+Due to a limitation in the curl library, the bundle of trusted
+certificates for the clearinghouse web server must be updated to
+include the MA certificate. Run the following command as root to
+include the MA certificate in the bundle:
+@example
+cat /usr/share/geni-ch/ma/ma-cert.pem >> /etc/geni-chapi/http-bundle.pem
+@end example
 
 @section Edit chapi config file
 Regardless of the DNS, the clearinghouse configuration file must be
@@ -590,11 +616,12 @@ Change @code{$genilib_trusted_host} to use the new hostname
 @cindex Shibboleth
 When changing the DNS records, the Shibboleth configuration on the
 target host needs to be updated. The target host will need the
-certificate and private key from the origin host. These two files are:
-@itemize
-@item @code{/etc/shibboleth/sp-cert.pem}
-@item @code{/etc/shibboleth/sp-key.pem}
-@end itemize
+certificate and private key from the origin host. Run the following
+command to install these two files:
+@example
+cp sp-cert.pem /etc/shibboleth/sp-cert.pem
+cp sp-key.pem /etc/shibboleth/sp-key.pem
+@end example
 
 Additionally, the Shibboleth configuration on the target host must be
 updated with the correct entries. The file is
@@ -602,9 +629,9 @@ updated with the correct entries. The file is
 be made:
 @itemize
 @item Change the @code{entityID} in the @code{ApplicationDefaults} tag
-to the value from the origin host
+to the value from the origin @emph{portal} host
 @item Change the @code{discoveryURL} in the @code{SSO} tag to the
-correct (origin) host name
+origin @emph{portal} host name
 @end itemize
 
 @subsection Update SSL certificates for new hostname
