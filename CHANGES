@@ -6,6 +6,7 @@
 
 == 2.31 ==
  * Fix UUID search in portal certificate (#1368)
+ * Change GENI Desktop URL (#1372)
  * Detect proxy errors when talking to Orbit. (#1373)
 
 == 2.30.1 ==
