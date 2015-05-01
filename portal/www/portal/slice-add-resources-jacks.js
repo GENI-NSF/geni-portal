@@ -328,6 +328,9 @@ function jacks_fetch_topology_callback(rspecs) {
       var editor_url = jacksEditorApp.passingContextToURL;
       jacksEditorApp.passingContextToURL = null;
       do_editor_expand_internal(editor_url, rspec);
+  } else if (jacksEditorApp.invoking_global_node) {
+      jacksEditorApp.invoking_global_node = false;
+      do_global_node_addition_internal();
   } else if (jacksEditorApp.invoking_auto_ip) {
       jacksEditorApp.invoking_auto_ip = false;
       do_auto_ip_assignment_internal();
@@ -754,6 +757,30 @@ function do_auto_ip_assignment_internal()
 	jacksEditorApp.setTopology(new_rspec);
     }
 }
+
+// Perform addition of GEMINI global node
+function do_global_node_addition()
+{
+    jacksEditorApp.invoking_global_node = true;
+    jacksEditorApp.jacksInput.trigger('fetch-topology');
+}
+
+// Perform addition of GEMINI global node
+// Translated from add_gemini in rspec_editor_routines.php from UKY
+function do_global_node_addition_internal()
+{
+    var rspec_string = $('#current_rspec_text').val();
+    $.get("gemini_add_global_node.php", {rspec : rspec_string},
+	  function(rt, st, xhr) {
+	      var revised_rspec = xhr.responseText;
+	      jacksEditorApp.setTopology(revised_rspec);
+	  })
+	.fail(function(xhr, ts, et) {
+		console.log("Error adding Global Node");
+	    });
+}
+
+
 
 // Grab current topology from Jacks editor and submit if valid
 function do_grab_editor_topology_and_submit()

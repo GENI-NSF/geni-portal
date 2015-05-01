@@ -240,6 +240,7 @@ function setup_jacks_editor_app_controls($enable_expansion)
   //   print '<button type="button" id="duplicate_nodes_links_button" onClick="do_selection_duplicate(true)">Duplicate Nodes/Links</button>';
   print '<button type="button" id="duplicate_nodes_only_button" onClick="do_selection_duplicate(false)">Duplicate Nodes only</button>';
   print '<button type="button" id="auto_ip_button" onClick="do_auto_ip_assignment()">Auto IP</button>';
+  print '<button type="button" id="global_node_button" onClick="do_global_node_addition()">Global Node</button>';
   print "</td></tr>";
 
   //print "<tr><th>Choose Aggregate</th><td>";
