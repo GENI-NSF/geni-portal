@@ -635,21 +635,31 @@ origin @emph{portal} host name
 @end itemize
 
 @subsection Update SSL certificates for new hostname
-Move the SSL certificates used by Apache
-
+The apache SSL certificates must be moved into place. The destination
+directory varies by OS:
 @itemize
-@item @code{/etc/ssl/certs/my-portal.host.name.pem}
-@item @code{/etc/ssl/certs/my-ch.host.name.pem}
+@item CentOS: @code{/etc/pki/tls/certs}
+@item Ubuntu: @code{/etc/ssl/certs}
 @end itemize
+
+There are usually two files to move into place, one for the
+clearinghouse and one for the portal. The examples below use a
+CERT_DIR environment variable to denote the correct location from
+above:
+@example
+cp PORTAL-HOST.pem "$@{CERT_DIR@}"
+cp CH-HOST.pem "$@{CERT_DIR@}"
+@end example
 
 @subsection Update Apache configuration for new hostname
 Update the Apache configuration files for both the portal and
 clearinghouse to reflect the origin hostname. The two files that need
-editing are probably named:
+editing are named @code{ch-ssl} and @code{portal-ssl} in one of the
+following two directories:
 
 @itemize
-@item @code{/etc/apache2/sites-available/ch-ssl}
-@item @code{/etc/apache2/sites-available/portal-ssl}
+@item CentOS: @code{/etc/httpd/sites-enabled}
+@item Ubuntu: @code{/etc/apache2/sites-available}
 @end itemize
 
 In both files, modify the following directives wherever they
@@ -660,11 +670,34 @@ up to three times in @code{ch-ssl}.
 @item @code{ServerName}
 @item @code{SSLCertificateFile}
 @item @code{SSLCertificateKeyFile}
+@item @code{ServerAlias} (only if present in the file)
 @end itemize
 
+Because there are multiple occurrences of these directives in the
+files it is useful to check using @code{grep} to make sure all
+instances have been updated. Use commands like the following:
+
+@example
+grep -n ServerName ch-ssl portal-ssl
+grep -n SSLCertificateFile ch-ssl portal-ssl
+grep -n SSLCertificateKeyFile ch-ssl portal-ssl
+grep -n ServerAlias ch-ssl portal-ssl
+@end example
+
+If necessary, update @code{SSLCertificateChainFile}. If the new SSL
+certificates configured above require a chain file, set the directive
+appropriately. If the new SSL certificates do not require a chain
+file, ensure that the directives are commented out from the files.
+
 @section Final tasks
+Run the following commands to finalize the configuration:
 @example
 sudo geni-create-ma-crl
+
+# On CentOS:
+sudo service httpd restart
+
+# On Ubuntu:
 sudo service apache2 restart
 @end example
 
