@@ -171,6 +171,31 @@ else
       . "</tr>\n";
     }
     print "</table>\n";
+    print "<p>On Linux and Mac systems and for most Windows SSH clients (not PuTTY), do:";
+    print "<ul>";
+    print "<li>Download your private key.</li>";
+    print "<li>On Linux and Mac, open a terminal.</li>";
+    print "<li>Store your key under '~/.ssh/'";
+    print "<ul>";
+    print "<li>If the directory does not exist, create it:</li>";
+    print "<pre>mkdir ~/.ssh</pre>";
+    print "<li>Move the key to ~/.ssh/ :</li>";
+    print "<pre>mv ~/Downloads/id_geni_ssh_rsa ~/.ssh/</pre>";
+    print "<li>Change the file permissions:";
+    print "<pre>chmod 0600 ~/.ssh/id_geni_ssh_rsa</pre>";
+    print "<li>Your SSH command will be something like:</li>";
+    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [usrname]@[hostname]</pre>";
+    print "<li>On Windows, just point your client (not PuTTY) to the downloaded private key.</li>";
+    print "</ul>";
+    print "</ul>";
+    print "<p>";
+    print "<p>For PuTTY users:";
+    print "<ul>";
+    print "<li>Download PuTTY key.";
+    print "<li>In PuTTY, create a newsession that uses the 'username', 'hostname' and 'port' for the resources you have reserved.</li>";
+    print "<li>Under the authentication menu, point the key field to the downloaded PuTTY key file.</li>";
+    print "</ul>";
+    /*
     print "<p><b>Note</b>: You will need your SSH private key on your local machine. </p>\n<p>If you generated your SSH keypair on this portal and have not already done so, be sure to:</p>
      <ol>
      <li>Download your SSH key.</li>
@@ -178,6 +203,7 @@ else
      <li>When you invoke SSH to log in to reserved resources, you will need to remember the path to that file.</li>
      <li>Your SSH command will be something like: <pre>ssh -i path-to-SSH-key-you-downloaded [username]@[hostname]</pre>\n";
     print "</ol>\n";
+    */
     print "<p><button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button></p>\n";
   }
 
