@@ -137,11 +137,13 @@ function handle_rspec_update(jsonResponse, rspec, updateJacks)
 function disable_reserve_resources()
 {
     $('#rspec_submit_button').attr('disabled', 'disabled');
+    $('#global_node_button').attr('disabled', 'true');
 }
 
 function enable_reserve_resources()
 {
     $('#rspec_submit_button').removeAttr('disabled');
+    $('#global_node_button').removeAttr('disabled');
 }
 
 /* Functions to do things when stitching/bound RSpecs are selected/deselected */
@@ -765,7 +767,7 @@ function do_global_node_addition()
     jacksEditorApp.jacksInput.trigger('fetch-topology');
 }
 
-// Perform addition of GEMINI global node
+// Perform addition of GEMINI global node(s) for each bound site
 // Translated from add_gemini in rspec_editor_routines.php from UKY
 function do_global_node_addition_internal()
 {

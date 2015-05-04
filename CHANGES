@@ -7,6 +7,7 @@
 == 2.31 ==
  * Fix UUID search in portal certificate (#1368)
  * Change GENI Desktop URL (#1372)
+ * Add global node to bound sites using "Add Global Node" button on Jacks Editor App (#1351).
 
 == 2.30.1 ==
  * Restore ability to join a project; `require_once logging_client`. (#1366)
