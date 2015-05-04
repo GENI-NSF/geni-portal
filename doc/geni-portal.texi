@@ -150,6 +150,7 @@ exit
 
 Get AMsoil tar ball
 
+@noindent
 @emph{N.B. Need to change to a publicly available URL or alter the
  download instructions.}
 
@@ -165,6 +166,32 @@ wget http://www.gpolab.bbn.com/internal/projects/chapi/"$@{AMSOIL_TAR@}"
 cd chapi/tools
 touch ../etc/geni-chapi-githash
 install-chapi-centos.sh
+@end example
+
+@subsection Configure @code{xinetd}
+@code{xinetd} is required to serve the Flash security policy which
+enabled Flack to connect to the clearinghouse. First ensure that
+@code{xinetd} is installed:
+
+@example
+yum install xinetd
+@end example
+
+@noindent
+Next, add the Flash security policy service to @code{/etc/services} as
+follows:
+
+@example
+flashpolicy	843/tcp			# Flash Policy service
+@end example
+
+@noindent
+Finally, configure @code{xinetd} to server the flash policy by adding
+a file named ``flashpolicy'' to the directory
+@code{/etc/xinetd.d}.
+
+@example
+cp chapi/etc/xinetd.d/flashpolicy /etc/xinetd.d/flashpolicy
 @end example
 
 @section Installing Updates
@@ -377,7 +404,10 @@ file. This log file is typically located at
 @code{/var/log/apache2/error.log} on Debian/Ubuntu.
 
 
-@section CRL error
+@section Common errors
+This section outlines some common errors and their solution.
+
+@subsection CRL error
 @cindex CRL error
 In the file @code{/var/log/apache2/ch_error.log} the following errors
 are listed.
@@ -395,6 +425,7 @@ restart the web server:
 sudo /usr/local/sbin/geni-create-ma-crl
 sudo service apache2 restart
 @end example
+
 
 @node Updating AMsoil
 @appendix Updating AMsoil
@@ -444,6 +475,12 @@ for f in chapi/plugins/*; do
    echo "Linking $f"
    sudo ln -s ../../../$f AMsoil/src/plugins
  fi
+done
+
+# Remove unused AMsoil plugins
+for pl in dhcprm dhcpgeni3 mailer worker geniv3rpc
+do
+    sudo rm AMsoil/src/plugins/$pl
 done
 
 sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/deploy
@@ -496,16 +533,42 @@ tar czTf manifest.txt migration.tar.gz
 
 @section Install files on new server
 @example
-sudo tar Cxf / migration.tar.gz
-sudo tar Cxf / CA.tar.gz
-gunzip db-dump.sql
+sudo tar Cxzf / migration.tar.gz
+sudo tar Cxzf / CA.tar.gz
+gunzip db-dump.sql.gz
 
 # Replace the user, hostname, and database name as needed
 # psql -U USER -h HOST -f FILE DATABASE
 psql -U portal -h localhost -f db-dump.sql portal
 @end example
 
-@emph{TODO: FIX PERMISSIONS IN CA DIRECTORY AS NECESSARY!}
+@section Fix permissions in CA directory
+Many files and directories under @code{/usr/share/geni-ch/CA} must be
+readable and writable by the user associated with the web server
+process. On Ubuntu this is typically @code{www-data} and on CentOS
+this is usually @code{apache}. If most (but not all) files in
+@code{/usr/share/geni-ch/CA} are owned by the correct user, skip this
+step.
+
+If you need to update permissions, use a comand like the following,
+which updates the files for CentOS by making them owned by user
+``apache'' and group ``apache''. Substitute the correct user and group
+as necessary for your own environment.
+
+@example
+sudo find /usr/share/geni-ch/CA -user 33 -exec chown apache:apache @{@} \;
+@end example
+
+@section Update bundle
+@emph{These instructions only apply to CentOS 6.}
+
+Due to a limitation in the curl library, the bundle of trusted
+certificates for the clearinghouse web server must be updated to
+include the MA certificate. Run the following command as root to
+include the MA certificate in the bundle:
+@example
+cat /usr/share/geni-ch/ma/ma-cert.pem >> /etc/geni-chapi/http-bundle.pem
+@end example
 
 @section Edit chapi config file
 Regardless of the DNS, the clearinghouse configuration file must be
@@ -580,11 +643,12 @@ Change @code{$genilib_trusted_host} to use the new hostname
 @cindex Shibboleth
 When changing the DNS records, the Shibboleth configuration on the
 target host needs to be updated. The target host will need the
-certificate and private key from the origin host. These two files are:
-@itemize
-@item @code{/etc/shibboleth/sp-cert.pem}
-@item @code{/etc/shibboleth/sp-key.pem}
-@end itemize
+certificate and private key from the origin host. Run the following
+command to install these two files:
+@example
+cp sp-cert.pem /etc/shibboleth/sp-cert.pem
+cp sp-key.pem /etc/shibboleth/sp-key.pem
+@end example
 
 Additionally, the Shibboleth configuration on the target host must be
 updated with the correct entries. The file is
@@ -592,27 +656,37 @@ updated with the correct entries. The file is
 be made:
 @itemize
 @item Change the @code{entityID} in the @code{ApplicationDefaults} tag
-to the value from the origin host
+to the value from the origin @emph{portal} host
 @item Change the @code{discoveryURL} in the @code{SSO} tag to the
-correct (origin) host name
+origin @emph{portal} host name
 @end itemize
 
 @subsection Update SSL certificates for new hostname
-Move the SSL certificates used by Apache
-
+The apache SSL certificates must be moved into place. The destination
+directory varies by OS:
 @itemize
-@item @code{/etc/ssl/certs/my-portal.host.name.pem}
-@item @code{/etc/ssl/certs/my-ch.host.name.pem}
+@item CentOS: @code{/etc/pki/tls/certs}
+@item Ubuntu: @code{/etc/ssl/certs}
 @end itemize
+
+There are usually two files to move into place, one for the
+clearinghouse and one for the portal. The examples below use a
+CERT_DIR environment variable to denote the correct location from
+above:
+@example
+cp PORTAL-HOST.pem "$@{CERT_DIR@}"
+cp CH-HOST.pem "$@{CERT_DIR@}"
+@end example
 
 @subsection Update Apache configuration for new hostname
 Update the Apache configuration files for both the portal and
 clearinghouse to reflect the origin hostname. The two files that need
-editing are probably named:
+editing are named @code{ch-ssl} and @code{portal-ssl} in one of the
+following two directories:
 
 @itemize
-@item @code{/etc/apache2/sites-available/ch-ssl}
-@item @code{/etc/apache2/sites-available/portal-ssl}
+@item CentOS: @code{/etc/httpd/sites-enabled}
+@item Ubuntu: @code{/etc/apache2/sites-available}
 @end itemize
 
 In both files, modify the following directives wherever they
@@ -623,11 +697,34 @@ up to three times in @code{ch-ssl}.
 @item @code{ServerName}
 @item @code{SSLCertificateFile}
 @item @code{SSLCertificateKeyFile}
+@item @code{ServerAlias} (only if present in the file)
 @end itemize
 
+Because there are multiple occurrences of these directives in the
+files it is useful to check using @code{grep} to make sure all
+instances have been updated. Use commands like the following:
+
+@example
+grep -n ServerName ch-ssl portal-ssl
+grep -n SSLCertificateFile ch-ssl portal-ssl
+grep -n SSLCertificateKeyFile ch-ssl portal-ssl
+grep -n ServerAlias ch-ssl portal-ssl
+@end example
+
+If necessary, update @code{SSLCertificateChainFile}. If the new SSL
+certificates configured above require a chain file, set the directive
+appropriately. If the new SSL certificates do not require a chain
+file, ensure that the directives are commented out from the files.
+
 @section Final tasks
+Run the following commands to finalize the configuration:
 @example
 sudo geni-create-ma-crl
+
+# On CentOS:
+sudo service httpd restart
+
+# On Ubuntu:
 sudo service apache2 restart
 @end example
 

@@ -5,12 +5,19 @@
 = GENI Portal Release Notes =
 
 == 2.31 ==
- * Add capability to download PuTTY key from SSH profile page
+ * Add capability to download PuTTY key from SSH profile page (#434)
+ * Fix UUID search in portal certificate (#1368)
+ * Change GENI Desktop URL (#1372)
+ * Add global node to bound sites using "Add Global Node" button on Jacks Editor App (#1351).
+ * Detect proxy errors when talking to Orbit. (#1373)
+
+== 2.30.1 ==
+ * Restore ability to join a project; `require_once logging_client`. (#1366)
 
 == 2.30 ==
- * Migrate some scripts to chapi
+ * Migrate some scripts to chapi (see chapi CHANGES file for details)
  * Clean up the default Jacks context in `jacks-editor-app.js`. (#1193)
- * Refresh login info for joint manifest/slice page (#1280)
+ * Refresh until get login info on joint manifest/status page (#1280)
  * Rename stale-omni to geni-watch-omni and add man page (#1281)
  * Decorate GRE/EGRE tunnels differently (specifically, paint them yellow in
    CSS (#1299).
@@ -30,7 +37,9 @@
  * Make bin/geni-ch-githash an optional file (#1358)
  * Fix `update_user_certs` for PostgreSQL 9.3. (#1359)
  * Change assert_email.sh to geni-assert-email, add man page (#1360)
+ * Add new OVS image to jacks context (#1361)
  * Add GEE button to home page (#1363)
+ * Avoid double polling of sliver status in jacks-app (#1326)
 
 == 2.29.2 ==
  * Use `window.open` not `window.location.replace` to launch SSH from

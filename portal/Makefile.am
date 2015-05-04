@@ -102,6 +102,7 @@ dist_svcweb_DATA = \
 	www/portal/flack.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
+	www/portal/gemini_add_global_node.php \
 	www/portal/get_omni_invocation_data.php \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \
