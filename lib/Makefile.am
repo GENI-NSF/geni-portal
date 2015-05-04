@@ -13,6 +13,7 @@ nobase_dist_svcdata_DATA = \
 	php/db_utils.php \
 	php/file_utils.php \
 	php/footer.php \
+	php/gemini_rspec_routines.php \
 	php/geni_syslog.php \
 	php/guard.php \
 	php/header.php \
