@@ -347,6 +347,9 @@ function wimax_delete_user($ldif_user_username, $ldif_user_groupname) {
   } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
     error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username: $res");
     return "Internal Error: $res";
+  } else if (strpos($res, "502 Proxy Error") !== false) {
+    error_log("wimax-enable curl get deleteUser: Error deleting user $ldif_user_username: $res");
+    return "Wireless Server Error: $res";
   }
 
   return true;
@@ -398,6 +401,9 @@ function wimax_delete_group($ldif_group_name) {
   } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
     error_log("wimax-enable curl get deleteGroup: Error deleting project $ldif_group_name: $res");
     return "Internal Error: $res";
+  } else if (strpos($res, "502 Proxy Error") !== false) {
+    error_log("wimax-enable curl get deleteGroup: Error deleting project $ldif_group_name: $res");
+    return "Wireless Server Error: $res";
   }
   return true;
 }
@@ -443,6 +449,9 @@ function wimax_make_group_admin($ldif_group_name, $ldif_user_username, $ldif_use
   } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
     error_log("wimax-enable curl get changeLeader: Error changing group $ldif_group_name lead to $ldif_user_username: $res");
     return "Internal Error: $res";
+  } else if (strpos($res, "502 Proxy Error") !== false) {
+    error_log("wimax-enable curl get changeLeader: Error changing group $ldif_group_name lead to $ldif_user_username: $res");
+    return "Wireless Server Error: $res";
   }
   return true;
 }
@@ -486,6 +495,9 @@ function wimax_change_group($ldif_group_name, $ldif_user_username, $ldif_user_gr
   } else if (strpos(strtolower($res), strtolower("Operation timed out")) !== false) {
     error_log("wimax-enable curl get changeGroup: Error changing to group $ldif_group_name for $ldif_user_username: $res");
     return "Internal Error: $res";
+  } else if (strpos($res, "502 Proxy Error") !== false) {
+    error_log("wimax-enable curl get changeGroup: Error changing to group $ldif_group_name for $ldif_user_username: $res");
+    return "Wireless Server Error: $res";
   }
   // Technically, this error could be returned. But I don't see how this could could cause this. It would mean that the user's 
   // existing group is a different DC - and yet the user was found successfully.

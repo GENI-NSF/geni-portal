@@ -132,7 +132,13 @@ print "<b>LabWiki</b></button> ";
     print "<button onClick=\"window.location='$savi_url'\">";
     print "<b>SAVI</b></button>";
 
+  // Show GEE button
+  $gee_url = "http://gee-project.org/user";
+  print "<button onClick=\"window.open('$gee_url')\">";
+  print "<b>GEE</b></button>";
+
   print "</p>";
+
 
 ?>
 
