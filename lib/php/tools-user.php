@@ -174,8 +174,10 @@ else
     print "<p>On Linux and Mac systems and for most Windows SSH clients (not PuTTY), do:";
     print "<ul>";
     print "<li>Download your private key.</li>";
+    print "<li>On Windows, just point your SSH client (not PuTTY) to the downloaded private key.</li>";
     print "<li>On Linux and Mac, open a terminal.</li>";
-    print "<li>Store your key under '~/.ssh/'";
+    print "<ul>";
+    print "<li>Store your key under ~/.ssh/ :";
     print "<ul>";
     print "<li>If the directory does not exist, create it:</li>";
     print "<pre>mkdir ~/.ssh</pre>";
@@ -183,16 +185,16 @@ else
     print "<pre>mv ~/Downloads/id_geni_ssh_rsa ~/.ssh/</pre>";
     print "<li>Change the file permissions:";
     print "<pre>chmod 0600 ~/.ssh/id_geni_ssh_rsa</pre>";
+    print "</ul>";
     print "<li>Your SSH command will be something like:</li>";
-    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [usrname]@[hostname]</pre>";
-    print "<li>On Windows, just point your client (not PuTTY) to the downloaded private key.</li>";
+    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname]</pre>";
     print "</ul>";
     print "</ul>";
     print "<p>";
     print "<p>For PuTTY users:";
     print "<ul>";
     print "<li>Download PuTTY key.";
-    print "<li>In PuTTY, create a newsession that uses the 'username', 'hostname' and 'port' for the resources you have reserved.</li>";
+    print "<li>In PuTTY, create a new session that uses the 'username', 'hostname' and 'port' for the resources you have reserved.</li>";
     print "<li>Under the authentication menu, point the key field to the downloaded PuTTY key file.</li>";
     print "</ul>";
     /*
