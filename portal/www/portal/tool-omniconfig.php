@@ -183,8 +183,8 @@ if ($num_projects > 1) {
     <li>Move the downloaded file to <code>~/.gcf</code> and rename it
         <code>omni_config</code></li>
     <li>If you decide to place the <code>omni_config</code> file at
-  a different location, DO NOT name it <code>omni_config</code>
-  and use the <code>-c</code> option in <code>omni</code> to
+  a different location, DO NOT name it <code>omni_config</code>.
+  Use the <code>-c</code> option in <code>omni</code> to
   specify its path when running <code>omni</code> commands.</li>
   </ul>
 </li>
@@ -221,7 +221,8 @@ if ($num_projects > 1) {
   </li>
   <li> When running omni:
     <ol type="a">
-     <li> If you did not save your configuration file at <code>~/.gcf/</code>,
+     <li> If you did not save your configuration file at
+          <code>~/.gcf/omni_config</code>,
           specify the path to the omni config file. For example:
         <pre>omni -c &lt;path to your omni config file&gt; getversion</pre>
       </li>
