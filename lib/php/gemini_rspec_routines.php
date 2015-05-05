@@ -28,8 +28,9 @@ define("gemini_namespace",'http://www.geni.net/resources/rspec/ext/gemini/1');
 define("color_namespace",'http://www.geni.net/resources/rspec/ext/color/2');
 define("rspec_namespace",'http://www.geni.net/resources/rspec/3');
 define("emulab_namespace","http://www.protogeni.net/resources/rspec/ext/emulab/1");
-define("RSPECLINT","/usr/bin/rspeclint");
+define("RSPECLINT","/usr/bin/rspeclint"); // WARNING: Not installed on portal systems
 
+// Unused function that relies on rspeclint being installed
 function validateRspec($rspec_string)
 {
   $result = False;
@@ -79,7 +80,7 @@ function add_gemini($rspec_string)
       $delete_me = false;
       if(isGemini($rspec_node))
         {
-	  # If nodes already has GEMINI Extensions,
+	  // If nodes already has GEMINI Extensions,
 	    list($rspec_node,$delete_me) = delete_colortag($rspec_node);
 	  if($delete_me)
 	    {
@@ -228,7 +229,7 @@ function delete_colortag($node)
       {
         $node->removeChild($colors->item(0));
       }
-  error_log("Need to delete ".$node->getAttribute('client_id'));
+  //error_log("Need to delete ".$node->getAttribute('client_id'));
   return array($node,$to_delete);
 }
 
