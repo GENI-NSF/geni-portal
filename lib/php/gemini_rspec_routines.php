@@ -81,7 +81,7 @@ function add_gemini($rspec_string)
       if(isGemini($rspec_node))
         {
 	  // If nodes already has GEMINI Extensions,
-	    list($rspec_node,$delete_me) = delete_colortag($rspec_node);
+	  list($rspec_node,$delete_me) = delete_colortag($rspec_node);
 	  if($delete_me)
 	    {
 	      array_push($nodes_to_delete,$rspec_node);
@@ -110,7 +110,8 @@ function add_gemini($rspec_string)
   foreach ($nodes_to_delete as $node_to_delete)
     {
       $rspec_roottag->removeChild($node_to_delete);
-    }/*
+    }
+  /*
        $rspec_nodes = array();
        $exogeni_virt_types = array('exogeni-m4','xo.small','xo.medium','xo.large','xo.xlarge','m1.small','m1.large','m1.xlarge','c1.medium','c1.xlarge');
        $rspec_nodes = $rspec_roottag->getElementsByTagNameNS(rspec_namespace, 'node');
@@ -225,10 +226,10 @@ function delete_colortag($node)
     {
       $to_delete = True;
     }
-    else
-      {
-        $node->removeChild($colors->item(0));
-      }
+  else
+    {
+      $node->removeChild($colors->item(0));
+    }
   //error_log("Need to delete ".$node->getAttribute('client_id'));
   return array($node,$to_delete);
 }
@@ -255,7 +256,8 @@ function getDiskImageNode($virt_type,$DiskJSON,$gemini_type)
 	$url = $DiskJSON['GN_Image_URI'];
 	}
 	break;
-      */case 'emulab-xen' :
+      */
+    case 'emulab-xen' :
 	$url = $DiskJSON['Xen_Image_URI'];
 	break;
     case 'exogeni' :
