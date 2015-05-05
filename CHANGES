@@ -6,7 +6,7 @@
 
 == 2.31 ==
  * Add capability to download PuTTY key from SSH profile page (#434)
- * Fix UUID search in portal certificate (#1368)
+ * Fix search for portal UUID in portal certificate to handle proper cert format. (#1368)
  * Change GENI Desktop URL (#1372)
  * Add global node to bound sites using "Add Global Node" button on Jacks Editor App (#1351).
  * Detect proxy errors when talking to Orbit. (#1373)
