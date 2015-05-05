@@ -222,7 +222,7 @@ if ($num_projects > 1) {
   <li> When running omni:
     <ol type="a">
      <li> If you did not save your configuration file at <code>~/.gcf/</code>,
-          specify the path to the omni config file For example:
+          specify the path to the omni config file. For example:
         <pre>omni -c &lt;path to your omni config file&gt; getversion</pre>
       </li>
 
