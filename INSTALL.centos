@@ -426,3 +426,19 @@ To add to /etc/sysconfig/iptables
       2.  python2.7 /usr/local/bin/geni-add-member-privilege --member rrhain -l --url https://fields.bbn.com/MA -k /usr/share/geni-ch/ma/ma-key.pem -c /usr/share/geni-ch/ma/ma-cert.pem  [This command creates a project lead, who can then create a project, and then ask for resources, by creating a slice.]
 
       Back to the web interface, you should be able to create a project and create a slice.
+
+
+======
+Add aggregates
+
+ 1. Add some aggregates using one of two methods:
+
+  a. Old way, legacy aggregates - Some aggregates are listed in
+     proto-ch/bin. Add some of these as desired. Then add their
+     attributes via populate_am_type_attribute.sql
+
+  b. New way, newer aggregates - See the sql files generated in
+     /usr/share/geni-chapi/sr/sql. For aggregates you want to add, run
+     these sql files into the database as follows:
+
+        psql -u <DB USER> -h <DB HOST> <DB> -f <aggregate file>

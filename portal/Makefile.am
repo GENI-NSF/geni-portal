@@ -73,6 +73,7 @@ dist_svcweb_DATA = \
 	www/portal/deletesshkey.php \
 	www/portal/disable-slice.php \
 	www/portal/do-accept-project-invite.php \
+	www/portal/do-downloadputtykey.php \
 	www/portal/do-delete-project-member.php \
 	www/portal/do-disable-slice.php \
 	www/portal/do-edit-project-member.php \
@@ -89,6 +90,7 @@ dist_svcweb_DATA = \
 	www/portal/dologout.php \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
+	www/portal/downloadputtykey.php \
 	www/portal/downloadsshkey.php \
 	www/portal/downloadsshpublickey.php \
 	www/portal/edit-project-member.php \
@@ -100,6 +102,7 @@ dist_svcweb_DATA = \
 	www/portal/flack.php \
 	www/portal/future.json \
 	www/portal/gemini.php \
+	www/portal/gemini_add_global_node.php \
 	www/portal/get_omni_invocation_data.php \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \

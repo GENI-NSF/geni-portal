@@ -170,34 +170,66 @@ if ($num_projects > 1) {
 }
 ?>
 
-  <li>Download this
-      <a id='configlink' href='<?php echo $config_link; ?>&version=2.5'>omni_config</a>
-      and save it to a file named <code>portal_omni_config</code>.
-      <ul>
-      <li>If you are running a version of omni older than 2.5, download this <a id='configlink2' href='<?php echo $config_link; ?>&version=2.3.1'>omni_config</a> instead.</li>
-      </ul>
+<li>Download this
+  <a id='configlink' href='<?php echo $config_link; ?>&version=2.5'>
+    omni_config
+  </a>
+  file. The default place for the omni_config file is under the directory
+  <code>~/.gcf/</code>. If the directory does not exist, create it.
+
+  <ul>
+    <li>If you already have an <code>omni_config</code> file make sure
+        you backup your previous version</li>
+    <li>Move the downloaded file to <code>~/.gcf</code> and rename it
+        <code>omni_config</code></li>
+    <li>If you decide to place the <code>omni_config</code> file at
+  a different location, DO NOT name it <code>omni_config</code>.
+  Use the <code>-c</code> option in <code>omni</code> to
+  specify its path when running <code>omni</code> commands.</li>
+  </ul>
 </li>
+
   <li><a href="<?php print $download_url; ?>" target="_blank">
         <?php echo $download_text; ?>
-      </a>, noting the path.
+      </a> and save it under <code>~/.ssl</code>. If the directory
+  does not exist, create it.
   </li>
-  <li> Edit the <code>portal_omni_config</code> to correct:
-    <ol>
-      <?php echo $cert_key_list_items; ?>
-      <li>the path to your SSH public key to use for node logon.
-        <ul><li>You can use <code>ssh-keygen</code> on many OSes to generate
-                an SSH keypair if you do not have one.</li>
-        </ul>
-      </li>
-    </ol>
+
+  <li> Download the ssh public keys you have in the portal (if any)
+    and save them under <code>~/.ssh</code>. If the directory does not
+    exist, create it.
+  </li>
+
+  <li> Edit your <code>omni_config</code> file
+      (<code>~/.gcf/omni_config</code> by default) to:
+    <ul>
+  <li>Replace "/PATH/TO/YOUR/CERTIFICATE/AS/DOWNLOADED/FROM/PORTAL/" with
+  the path to the combined certificate and private key downloaded in step 3
+  (<code>~/.ssl/</code> by default)</li>
+  <li>Replace "/PATH/TO/SSH/PUBLIC/KEY.pub" with
+  the full path to your SSH public key files, you want loaded
+  in the nodes.</li>
+  <ul>
+  <li>If you have downloaded ssh keys from the Portal on step 4,
+  you can simply point to those. This is a comma-separated list,
+  so you can add more than one public ssh key.</li>
+  <li>You can use <code>ssh-keygen</code> on many OSes to generate
+  an SSH keypair if you do not have one.</li>
+  </ul>
+  </ul>
+
   </li>
   <li> When running omni:
-    <ol>
-      <li> Specify the path to the omni config file and the slice name or URN.  For example:
-        <pre>omni -c portal_omni_config sliverstatus &lt;slice name or URN&gt;</pre>
+    <ol type="a">
+     <li> If you did not save your configuration file at
+          <code>~/.gcf/omni_config</code>,
+          specify the path to the omni config file. For example:
+        <pre>omni -c &lt;path to your omni config file&gt; getversion</pre>
       </li>
-      <li> Alternatively, you can specify a project with the <code>--project</code> option:
-        <pre>omni -c portal_omni_config --project &lt;project name&gt; sliverstatus &lt;slice name or URN&gt;</pre>
+
+        <li> If you want to run an omni command under a different project,
+             you can specify a project with the <code>--project</code> option:
+        <pre>omni --project &lt;project name&gt; getversion</pre>
       </li>
       </ol>
   </li>
@@ -206,7 +238,7 @@ if ($num_projects > 1) {
   <table id='tip'>
     <tr>
        <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"/></td>
-       <td><b>Tip</b> Make sure you are running <b>omni 2.3.1</b> or later.</td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.8.1</b> or later.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:
 	            <pre>omni --version</pre>
