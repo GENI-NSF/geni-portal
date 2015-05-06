@@ -54,13 +54,15 @@ show_header('SAVI Testbed', $TAB_HOME);
 ?>
 <h1>SAVI Testbed</h1>
 
-<p>This form will send your GENI certificate to authenticate to
+<p>This page helps you create a
    <a href="http://www.savinetwork.ca">SAVI</a>
-(or create a SAVI account if this is your first time connecting to SAVI).
-</p>
+  account. If you click proceed below,
+  your email address and GENI username will be shared with the SAVI
+  testbed.
+  </p>
 
 <p>
-Do you with to send your GENI certificate to SAVI?
+Do you want to send your GENI information to SAVI to create an account?
 </p>
 
 <?php
