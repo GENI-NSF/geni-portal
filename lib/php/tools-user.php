@@ -109,13 +109,15 @@ if (count($keys) == 0)
 else
   {
     $download_pkey_url = relative_url('downloadsshkey.php?');
+    $download_putty_url = relative_url('downloadputtykey.php?');
     $download_public_key_url = relative_url('downloadsshpublickey.php?');
     $edit_sshkey_url = relative_url('sshkeyedit.php?');
     $delete_sshkey_url = relative_url('deletesshkey.php?');
     js_delete_ssh_key();  // javascript for delete key confirmation
     print "\n<table>\n";
     print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
-          . "<th>Edit</th><th>Delete</th></tr>\n";
+      . "<th>PuTTY</th>"
+      . "<th>Edit</th><th>Delete</th></tr>\n";
     foreach ($keys as $key) {
       // generate key's fingerprint
         $fingerprint_key = NULL;
@@ -140,10 +142,14 @@ else
       $query = http_build_query($args);
       if (is_null($key['private_key'])) {
         $pkey_cell = 'N/A';
+	$putty_cell = "N/A";
       } else {
         $pkey_cell = ("<button onClick=\"window.location='"
                 . $download_pkey_url . $query
                 . "'\">Download Private Key</button>");
+        $putty_cell = ("<button onClick=\"window.location='"
+                . $download_putty_url . $query
+                . "'\">Download PuTTY Key</button>");
       }
       $public_key_download_cell = ("<button $disable_ssh_keys onClick=\"window.location='"
                 . $download_public_key_url . $query
@@ -159,11 +165,39 @@ else
       . "<td>" . htmlentities($key['description']) . "</td>"
       . '<td>' . $public_key_download_cell . '</td>'
       . '<td>' . $pkey_cell . '</td>'
+      . '<td>' . $putty_cell . '</td>'
       . '<td>' . $edit_cell . '</td>'
       . '<td>' . $delete_cell . '</td>'
       . "</tr>\n";
     }
     print "</table>\n";
+    print "<p>On Linux and Mac systems and for most Windows SSH clients (not PuTTY), do:";
+    print "<ul>";
+    print "<li>Download your private key.</li>";
+    print "<li>On Windows, just point your SSH client (not PuTTY) to the downloaded private key.</li>";
+    print "<li>On Linux and Mac, open a terminal.</li>";
+    print "<ul>";
+    print "<li>Store your key under ~/.ssh/ :";
+    print "<ul>";
+    print "<li>If the directory does not exist, create it:</li>";
+    print "<pre>mkdir ~/.ssh</pre>";
+    print "<li>Move the key to ~/.ssh/ :</li>";
+    print "<pre>mv ~/Downloads/id_geni_ssh_rsa ~/.ssh/</pre>";
+    print "<li>Change the file permissions:";
+    print "<pre>chmod 0600 ~/.ssh/id_geni_ssh_rsa</pre>";
+    print "</ul>";
+    print "<li>Your SSH command will be something like:</li>";
+    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname]</pre>";
+    print "</ul>";
+    print "</ul>";
+    print "<p>";
+    print "<p>For PuTTY users:";
+    print "<ul>";
+    print "<li>Download PuTTY key.";
+    print "<li>In PuTTY, create a new session that uses the 'username', 'hostname' and 'port' for the resources you have reserved.</li>";
+    print "<li>Under the authentication menu, point the key field to the downloaded PuTTY key file.</li>";
+    print "</ul>";
+    /*
     print "<p><b>Note</b>: You will need your SSH private key on your local machine. </p>\n<p>If you generated your SSH keypair on this portal and have not already done so, be sure to:</p>
      <ol>
      <li>Download your SSH key.</li>
@@ -171,6 +205,7 @@ else
      <li>When you invoke SSH to log in to reserved resources, you will need to remember the path to that file.</li>
      <li>Your SSH command will be something like: <pre>ssh -i path-to-SSH-key-you-downloaded [username]@[hostname]</pre>\n";
     print "</ol>\n";
+    */
     print "<p><button $disable_ssh_keys onClick=\"window.location='uploadsshkey.php'\">Upload another SSH public key</button></p>\n";
   }
 
@@ -430,7 +465,7 @@ In order to use <code>omni</code> you will need to generate an SSL certificate. 
   <table id='tip'>
     <tr>
        <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"></td>
-       <td><b>Tip</b> Make sure you are running <b>omni 2.5.3</b> or newer.</td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.8.1</b> or newer.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:
 	            <pre>omni --version</pre>
