@@ -32,8 +32,8 @@ IN THE WORK.
 
 @titlepage
 @title The GENI Portal and Clearinghouse
-@subtitle Version 2.30
-@subtitle April, 2015
+@subtitle Version 2.31
+@subtitle May, 2015
 @author Marshall Brinn
 @author Aaron Helsinger
 @author Tom Mitchell
