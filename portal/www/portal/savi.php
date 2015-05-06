@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,8 +22,6 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-
-
 // This file facilitates the passing of a GENI certificate to SAVI
 // for purposes of using an existing SAVI account or creating a new one.
 
@@ -33,10 +31,6 @@
 //   2. Ask them if they want to pass their certificate to SAVI. 
 //      If not, go back
 //      If so, POST {'cert' : cert) to $savi_url
-
-?>
-
-<?php
 
 require_once('user.php');
 require_once('portal.php');
@@ -64,7 +58,6 @@ $post_data = array('cert' => $cert);
 </p>
 
 <p>
-
 Do you with to send your GENI certificate to SAVI?
 </p>
 
