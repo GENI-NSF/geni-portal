@@ -37,7 +37,7 @@ require_once('portal.php');
 require_once('header.php');
 
 $user = geni_loadUser();
-$savi_url = 'http://controller.mcgeer-qv4564.vikelab-pg0.apt.emulab.net:5001/geni';
+$savi_url = 'http://shib.savitestbed.ca:5001/geni';
 $ssl_url = "profile.php#ssl";
 
 error_log("USER = " . print_r($user, true));
