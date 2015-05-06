@@ -32,6 +32,7 @@
 
 require_once("settings.php");
 require_once("user.php");
+require_once("header.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -47,7 +48,13 @@ if (is_null($key_id)) {
   relative_redirect('home.php');
 }
 
+$GENI_TITLE = "Download PuTTY Key";
+$load_user = TRUE;
+show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
+include("tool-breadcrumbs.php");
+
 print "<h1>Download PuTTY Key</h1>";
+print "<p>To download your SSH private key in PuTTY for Windows format, enter your SSH key passphrase (as entered on the Portal when you generated your SSH keys).</p>\n";
 print "<form action=\"do-downloadputtykey.php\" method=\"post\">\n";
 print "<p><label for=\"passphrase\">Passphrase:</label>\n";
 print "<input type=\"password\" name=\"passphrase\">\n";
@@ -56,7 +63,8 @@ print "<input type=\"hidden\" name=\"key_id\" value=\"$key_id\"/>\n";
 print "</form>";
 
 print "<button onClick=\"history.back(-1)\">Cancel</button>";
-print "<button onClick=\"window.location='home.php'\">Home</button>";
-print "<button onClick=\"window.location='profile.php#ssh'\">Profile SSH</button>";
+print "<button onClick=\"window.location='home.php'\">Return to Portal Home</button>";
+print "<button onClick=\"window.location='profile.php#ssh'\">Jump to Profile page SSH Tab</button>";
+include("footer.php");
 
 ?>

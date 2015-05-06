@@ -465,7 +465,7 @@ In order to use <code>omni</code> you will need to generate an SSL certificate. 
   <table id='tip'>
     <tr>
        <td rowspan=3><img id='tipimg' src="/images/Symbols-Tips-icon-clear.png" width="75" height="75" alt="Tip"></td>
-       <td><b>Tip</b> Make sure you are running <b>omni 2.5.3</b> or newer.</td>
+       <td><b>Tip</b> Make sure you are running <b>omni 2.8.1</b> or newer.</td>
     </tr>
        <tr><td>To determine the version of an existing <code>omni</code> installation, run:
 	            <pre>omni --version</pre>
