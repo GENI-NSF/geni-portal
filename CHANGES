@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.32 ==
+
 == 2.31 ==
  * Add capability to download PuTTY key from SSH profile page (#434)
  * Fix search for portal UUID in portal certificate to handle proper cert format. (#1368)
