@@ -42,7 +42,7 @@ $ssl_url = "profile.php#ssl";
 
 error_log("USER = " . print_r($user, true));
 
-$cert = $user->certificate();
+$cert = $user->insideCertificate();
 if ($cert == NULL || strlen($cert) == 0) {
   // *** Put up error message and button to return
 }
