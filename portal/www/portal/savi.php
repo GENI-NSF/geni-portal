@@ -49,11 +49,13 @@ if ($cert == NULL || strlen($cert) == 0) {
 
 error_log("CERT = " . print_r($cert, true));
 
-$post_data = array('cert' => $cert);
+show_header('SAVI Testbed', $TAB_HOME);
 
 ?>
+<h1>SAVI Testbed</h1>
 
-<p>This form will send your GENI certificate to authenicate to SAVI
+<p>This form will send your GENI certificate to authenticate to
+   <a href="http://www.savinetwork.ca">SAVI</a>
 (or create a SAVI account if this is your first time connecting to SAVI).
 </p>
 
@@ -69,6 +71,8 @@ Do you with to send your GENI certificate to SAVI?
 echo '<form id="f1" action="' . $savi_url . '" method="post">';
 echo '<input type="hidden" name="cert" value="' . $cert . '"/>';
 echo '<button type="submit" >Proceed</button>';
-echo '<button type="button" onClick="history.back(-1)"/>Cancel</button>';
+echo '<button type="button" onClick="window.location=\'home.php\'"/>Cancel</button>';
 echo '</form>';
+
+include("footer.php");
 ?>
