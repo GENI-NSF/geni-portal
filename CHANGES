@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.32 ==
+ * Clear a session setting in the speaks-for path (#1335)
 
 == 2.31 ==
  * Add capability to download PuTTY key from SSH profile page (#434)

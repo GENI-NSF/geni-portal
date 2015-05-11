@@ -67,21 +67,6 @@ if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
-/* If no certificate, we're doing to pass off to another page to help
-   the user create a certificate. Put a note in the session that the
-   user is in the process of loading a certificate into the signing
-   tool so that the certificate creation process can redirect back to
-   here.
- */
-
-/* this is how to check for a started session on PHP < 5.4 */
-if (session_id() == '') {
-    session_start();
-}
-$_SESSION['xml-signer']='loadcert.php';
-session_write_close();
-
-
 /*
  * We may be receiving a passphrase via POST. If so, use that passphrase
  * to encrypt the private key before proceeding.
@@ -181,11 +166,34 @@ if (! isset($genilib_trusted_path)) {
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
+
+/* this is how to check for a started session on PHP < 5.4 */
+if (session_id() == '') {
+    session_start();
+}
+
 if (is_null($certificate)) {
   /* No certificate so redirect to the create/download page. */
+
+  /* If no certificate, we're doing to pass off to another page to help
+     the user create a certificate. Put a note in the session that the
+     user is in the process of loading a certificate into the signing
+     tool so that the certificate creation process can redirect back to
+     here.
+  */
+  $_SESSION['xml-signer']='loadcert.php';
+  session_write_close();
+
+  /* Now redirect and exit. */
   header("Location: $create_url");
   exit;
+} else {
+
+  /* Clear out the session state, it is no longer needed. */
+  unset($_SESSION['xml-signer']);
+  session_write_close();
 }
+
 
 /*----------------------------------------------------------------------
  * Display happens below here.
