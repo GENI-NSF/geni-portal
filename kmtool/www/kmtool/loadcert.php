@@ -67,6 +67,16 @@ if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
+$expiration_key = 'expiration';
+$expired = False;
+if (isset($result)) {
+  if (array_key_exists($expiration_key, $result)) {
+    $expiration = $result[$expiration_key];
+    $now = new DateTime('now', new DateTimeZone("UTC"));
+    $expired = ($expiration < $now);
+  }
+}
+
 /*
  * We may be receiving a passphrase via POST. If so, use that passphrase
  * to encrypt the private key before proceeding.
@@ -110,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 /* URL for creating a certificate. */
 $server_name = $_SERVER['SERVER_NAME'];
 $create_url = "https://$server_name/secure/kmcert.php";
+$renew_url = "https://$server_name/secure/kmcert.php?renew=1";
 
 /*
  * Does the private key have a passphrase? We can tell by
@@ -186,6 +197,13 @@ if (is_null($certificate)) {
 
   /* Now redirect and exit. */
   header("Location: $create_url");
+  exit;
+} else if ($expired) {
+  $_SESSION['xml-signer']='loadcert.php';
+  session_write_close();
+
+  /* Now redirect and exit. */
+  header("Location: $renew_url");
   exit;
 } else {
 
