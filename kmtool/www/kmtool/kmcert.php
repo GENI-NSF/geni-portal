@@ -211,7 +211,7 @@ if (isset($error)) {
   unset($error);
 }
 
-if (isset($_SESSION['xml-signer'])) {
+if (isset($_SESSION['xml-signer']) && !$renew) {
   /* Special key when working with the xml-signer tool.
      This means we're in the flow of putting a cert/key into the tool, so
      maybe HTTP redirect there if this key exists in the session.
