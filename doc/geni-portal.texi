@@ -57,7 +57,7 @@ IN THE WORK.
 * Installation::     Installation guide for CentOS 6.5.
 * Operations::       Operator's guide.
 * System Administration:: Administrator's guide.
-* Updating AMsoil::  Updating AMsoil.
+* Updating geni-soil::  Updating geni-soil.
 * Moving data to a new server:: Moving data to a new server.
 * Index::            Complete index.
 @end menu
@@ -143,21 +143,6 @@ make install
 ln -s /usr/lib/python2.7/site-packages/_ABAC.* \
         /usr/local/lib/python2.7/site-packages/
 exit
-@end example
-
-@subsection Install AMSoil
-@cindex AMsoil
-
-Get AMsoil tar ball
-
-@noindent
-@emph{N.B. Need to change to a publicly available URL or alter the
- download instructions.}
-
-@example
-cd /tmp
-export AMSOIL_TAR=AMsoil-gpo-0.3.3.tar.gz
-wget http://www.gpolab.bbn.com/internal/projects/chapi/"$@{AMSOIL_TAR@}"
 @end example
 
 @subsection Install chapi
@@ -427,49 +412,47 @@ sudo service apache2 restart
 @end example
 
 
-@node Updating AMsoil
-@appendix Updating AMsoil
+@node Updating geni-soil
+@appendix Updating geni-soil
+@cindex geni-soil
 @cindex AMsoil
-AMsoil is a Python library that the GENI clearinghouse software uses
+geni-soil is a Python library that the GENI clearinghouse software uses
 to provide a framework for XML-RPC services. It should be a rare
-occurrence to update AMsoil. If an update is necessary, here are the
+occurrence to update geni-soil. If an update is necessary, here are the
 steps to perform the update on the clearinghouse host.
 
-The first step is to create a tar file with the version of AMsoil you
-want to install. There are many ways to do this, one approach is
-outlined below.
-
-@example
-export AMSOIL_TAG=gpo-0.3.3
-git archive --prefix=AMsoil-"$@{AMSOIL_TAG@}"/ \
-        "$@{AMSOIL_TAG@}" > AMsoil-"$@{AMSOIL_TAG@}".tar
-gzip AMsoil-"$@{AMSOIL_TAG@}".tar
-@end example
-
-Once the AMsoil compressed tar file is created, move it to the GENI
-clearinghouse host. Then follow the steps below to put the tar file in
-the right directory, unpack it, and configure it for the clearinghouse
-software.
+geni-soil was originally called AMsoil when it was part of the OFELIA
+project. That name had copyright issues so it was renamed. There are
+still references to the old name ``AMsoil''.
 
 @example
 # Change these as necessary for your OS
 export APACHE_USER=www-data
 export APACHE_GROUP=www-data
 
-# Put the file in the chapi install directory
-sudo mv AMsoil-"$@{AMSOIL_TAG@}".tar.gz /usr/share/geni-ch/chapi
+# Change this to the current version of geni-soil
+export SOIL_TAG=gpo-0.3.3
+
+export SOIL_FILE="$@{SOIL_TAG@}".tar.gz
+
+# Download the geni-soil tar file
+cd /tmp
+wget https://github.com/GENI-NSF/geni-soil/archive/"$@{SOIL_FILE@}"
+
+# Put the geni-soil tar file in the chapi install directory
 cd /usr/share/geni-ch/chapi
+sudo mv "$@{SOIL_TAG@}".tar.gz /usr/share/geni-ch/chapi
 
 #Untar the file:
-sudo tar zxf AMsoil-"$@{AMSOIL_TAG@}".tar.gz
+sudo tar zxf geni-soil-"$@{SOIL_TAG@}".tar.gz
 
 # Remove the old link
 sudo rm -f AMsoil
 
-# Point at the new version of AMsoil
-sudo ln -s AMsoil-"$@{AMSOIL_TAG@}" AMsoil
+# Point at the new version of geni-soil
+sudo ln -s geni-soil-"$@{SOIL_TAG@}" AMsoil
 
-# Create symlinks to the chapi AMsoil plugins
+# Create symlinks to the chapi geni-soil plugins
 for f in chapi/plugins/*; do
  if [ -d $f ]; then
    echo "Linking $f"
@@ -477,7 +460,7 @@ for f in chapi/plugins/*; do
  fi
 done
 
-# Remove unused AMsoil plugins
+# Remove unused geni-soil plugins
 for pl in dhcprm dhcpgeni3 mailer worker geniv3rpc
 do
     sudo rm AMsoil/src/plugins/$pl
@@ -486,7 +469,7 @@ done
 sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/deploy
 sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/log
 
-# Restart apache to get the new version of AMsoil
+# Restart apache to get the new version of geni-soil
 sudo service apache2 restart
 @end example
 
