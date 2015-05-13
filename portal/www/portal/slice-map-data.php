@@ -173,7 +173,7 @@ foreach($all_slice_aggs as $agg_urn => $agg_url) {
   if (is_null($raw_output)) {
     error_log("Null result from listresources at " . $agg_url . " on " . $slice_urn);
   } else if (! is_array($raw_output)) {
-    error_log("Error result from listresources at " . $agg_url . " on " . $slice_urn . ": " . $raw_output);
+    error_log("Error result from listresources at " . $agg_url . " on " . $slice_urn . ": '" . $raw_output . "'.");
   } else {
     $output = $raw_output[1][$agg_url];
     //  error_log("OUTPUT = " . print_r($output, true));
