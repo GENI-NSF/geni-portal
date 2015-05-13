@@ -32,7 +32,7 @@ IN THE WORK.
 
 @titlepage
 @title The GENI Portal and Clearinghouse
-@subtitle Version 2.31
+@subtitle Version 2.32
 @subtitle May, 2015
 @author Marshall Brinn
 @author Aaron Helsinger
