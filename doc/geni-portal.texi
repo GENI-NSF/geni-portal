@@ -32,8 +32,8 @@ IN THE WORK.
 
 @titlepage
 @title The GENI Portal and Clearinghouse
-@subtitle Version 2.30
-@subtitle April, 2015
+@subtitle Version 2.31
+@subtitle May, 2015
 @author Marshall Brinn
 @author Aaron Helsinger
 @author Tom Mitchell
@@ -540,7 +540,19 @@ gunzip db-dump.sql.gz
 # Replace the user, hostname, and database name as needed
 # psql -U USER -h HOST -f FILE DATABASE
 psql -U portal -h localhost -f db-dump.sql portal
+
+# Put Equifax certificate in expected location
+sudo cp Equifax_Secure_CA.pem /etc/ssl/certs
+
 @end example
+
+Optionally install the GPO Lab CA certificate if the file exists in
+the migration data directory:
+
+@example
+sudo cp ca_gpolab.crt /etc/ssl/certs
+@end example
+
 
 @section Fix permissions in CA directory
 Many files and directories under @code{/usr/share/geni-ch/CA} must be
@@ -555,9 +567,12 @@ which updates the files for CentOS by making them owned by user
 ``apache'' and group ``apache''. Substitute the correct user and group
 as necessary for your own environment.
 
+@emph{Note: this command may take a long time to run.}
+
 @example
 sudo find /usr/share/geni-ch/CA -user 33 -exec chown apache:apache @{@} \;
 @end example
+
 
 @section Update bundle
 @emph{These instructions only apply to CentOS 6.}
@@ -615,8 +630,6 @@ update service_registry
 @section Configure host: DNS update
 This step is only necessary if the new, or ``target'' server will use the same
 domain name than the origin server.
-
-@emph{These details need to be worked out.}
 
 @subsection Update portal settings for new hostname
 Edit the @code{/etc/geni-ch/services.ini} file to update two settings:
@@ -715,6 +728,12 @@ If necessary, update @code{SSLCertificateChainFile}. If the new SSL
 certificates configured above require a chain file, set the directive
 appropriately. If the new SSL certificates do not require a chain
 file, ensure that the directives are commented out from the files.
+
+@subsection Update DNS
+Now that the data has been moved the DNS server can be reconfigured to
+point to the new host. Additionally if a Shibboleth identity provider
+needs to be updated to include this now host, that can be done as
+well.
 
 @section Final tasks
 Run the following commands to finalize the configuration:

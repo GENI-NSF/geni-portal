@@ -16,6 +16,7 @@ check_errs()
 
 PKGS="postgresql git-core apache2 php5-pgsql php-mdb2-driver-pgsql"
 PKGS="$PKGS php5-uuid php5-curl curl python-psycopg2 autoconf libtool"
+PKGS="$PKGS putty"
 
 # Packages for gcf/omni
 PKGS="$PKGS python-m2crypto python-dateutil python-pyopenssl"
