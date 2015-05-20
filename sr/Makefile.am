@@ -39,7 +39,6 @@ cert_FILES = \
 	certs/illinois-ig-boss.pem \
 	certs/illinois-ig-cm.pem \
 	certs/illinois-ig-of.pem \
-	certs/ion.pem \
 	certs/irods.pem \
 	certs/irods-test.pem \
 	certs/kansas-ig-boss.pem \

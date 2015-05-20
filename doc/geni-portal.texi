@@ -32,8 +32,8 @@ IN THE WORK.
 
 @titlepage
 @title The GENI Portal and Clearinghouse
-@subtitle Version 2.30
-@subtitle April, 2015
+@subtitle Version 2.32
+@subtitle May, 2015
 @author Marshall Brinn
 @author Aaron Helsinger
 @author Tom Mitchell
@@ -57,7 +57,7 @@ IN THE WORK.
 * Installation::     Installation guide for CentOS 6.5.
 * Operations::       Operator's guide.
 * System Administration:: Administrator's guide.
-* Updating AMsoil::  Updating AMsoil.
+* Updating geni-soil::  Updating geni-soil.
 * Moving data to a new server:: Moving data to a new server.
 * Index::            Complete index.
 @end menu
@@ -143,21 +143,6 @@ make install
 ln -s /usr/lib/python2.7/site-packages/_ABAC.* \
         /usr/local/lib/python2.7/site-packages/
 exit
-@end example
-
-@subsection Install AMSoil
-@cindex AMsoil
-
-Get AMsoil tar ball
-
-@noindent
-@emph{N.B. Need to change to a publicly available URL or alter the
- download instructions.}
-
-@example
-cd /tmp
-export AMSOIL_TAR=AMsoil-gpo-0.3.3.tar.gz
-wget http://www.gpolab.bbn.com/internal/projects/chapi/"$@{AMSOIL_TAR@}"
 @end example
 
 @subsection Install chapi
@@ -427,49 +412,47 @@ sudo service apache2 restart
 @end example
 
 
-@node Updating AMsoil
-@appendix Updating AMsoil
+@node Updating geni-soil
+@appendix Updating geni-soil
+@cindex geni-soil
 @cindex AMsoil
-AMsoil is a Python library that the GENI clearinghouse software uses
+geni-soil is a Python library that the GENI clearinghouse software uses
 to provide a framework for XML-RPC services. It should be a rare
-occurrence to update AMsoil. If an update is necessary, here are the
+occurrence to update geni-soil. If an update is necessary, here are the
 steps to perform the update on the clearinghouse host.
 
-The first step is to create a tar file with the version of AMsoil you
-want to install. There are many ways to do this, one approach is
-outlined below.
-
-@example
-export AMSOIL_TAG=gpo-0.3.3
-git archive --prefix=AMsoil-"$@{AMSOIL_TAG@}"/ \
-        "$@{AMSOIL_TAG@}" > AMsoil-"$@{AMSOIL_TAG@}".tar
-gzip AMsoil-"$@{AMSOIL_TAG@}".tar
-@end example
-
-Once the AMsoil compressed tar file is created, move it to the GENI
-clearinghouse host. Then follow the steps below to put the tar file in
-the right directory, unpack it, and configure it for the clearinghouse
-software.
+geni-soil was originally called AMsoil when it was part of the OFELIA
+project. That name had copyright issues so it was renamed. There are
+still references to the old name ``AMsoil''.
 
 @example
 # Change these as necessary for your OS
 export APACHE_USER=www-data
 export APACHE_GROUP=www-data
 
-# Put the file in the chapi install directory
-sudo mv AMsoil-"$@{AMSOIL_TAG@}".tar.gz /usr/share/geni-ch/chapi
+# Change this to the current version of geni-soil
+export SOIL_TAG=gpo-0.3.3
+
+export SOIL_FILE="$@{SOIL_TAG@}".tar.gz
+
+# Download the geni-soil tar file
+cd /tmp
+wget https://github.com/GENI-NSF/geni-soil/archive/"$@{SOIL_FILE@}"
+
+# Put the geni-soil tar file in the chapi install directory
 cd /usr/share/geni-ch/chapi
+sudo mv "$@{SOIL_TAG@}".tar.gz /usr/share/geni-ch/chapi
 
 #Untar the file:
-sudo tar zxf AMsoil-"$@{AMSOIL_TAG@}".tar.gz
+sudo tar zxf geni-soil-"$@{SOIL_TAG@}".tar.gz
 
 # Remove the old link
 sudo rm -f AMsoil
 
-# Point at the new version of AMsoil
-sudo ln -s AMsoil-"$@{AMSOIL_TAG@}" AMsoil
+# Point at the new version of geni-soil
+sudo ln -s geni-soil-"$@{SOIL_TAG@}" AMsoil
 
-# Create symlinks to the chapi AMsoil plugins
+# Create symlinks to the chapi geni-soil plugins
 for f in chapi/plugins/*; do
  if [ -d $f ]; then
    echo "Linking $f"
@@ -477,7 +460,7 @@ for f in chapi/plugins/*; do
  fi
 done
 
-# Remove unused AMsoil plugins
+# Remove unused geni-soil plugins
 for pl in dhcprm dhcpgeni3 mailer worker geniv3rpc
 do
     sudo rm AMsoil/src/plugins/$pl
@@ -486,7 +469,7 @@ done
 sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/deploy
 sudo chown "$@{APACHE_USER@}"."$@{APACHE_GROUP@}" AMsoil/log
 
-# Restart apache to get the new version of AMsoil
+# Restart apache to get the new version of geni-soil
 sudo service apache2 restart
 @end example
 
@@ -540,7 +523,19 @@ gunzip db-dump.sql.gz
 # Replace the user, hostname, and database name as needed
 # psql -U USER -h HOST -f FILE DATABASE
 psql -U portal -h localhost -f db-dump.sql portal
+
+# Put Equifax certificate in expected location
+sudo cp Equifax_Secure_CA.pem /etc/ssl/certs
+
 @end example
+
+Optionally install the GPO Lab CA certificate if the file exists in
+the migration data directory:
+
+@example
+sudo cp ca_gpolab.crt /etc/ssl/certs
+@end example
+
 
 @section Fix permissions in CA directory
 Many files and directories under @code{/usr/share/geni-ch/CA} must be
@@ -555,9 +550,12 @@ which updates the files for CentOS by making them owned by user
 ``apache'' and group ``apache''. Substitute the correct user and group
 as necessary for your own environment.
 
+@emph{Note: this command may take a long time to run.}
+
 @example
 sudo find /usr/share/geni-ch/CA -user 33 -exec chown apache:apache @{@} \;
 @end example
+
 
 @section Update bundle
 @emph{These instructions only apply to CentOS 6.}
@@ -615,8 +613,6 @@ update service_registry
 @section Configure host: DNS update
 This step is only necessary if the new, or ``target'' server will use the same
 domain name than the origin server.
-
-@emph{These details need to be worked out.}
 
 @subsection Update portal settings for new hostname
 Edit the @code{/etc/geni-ch/services.ini} file to update two settings:
@@ -715,6 +711,12 @@ If necessary, update @code{SSLCertificateChainFile}. If the new SSL
 certificates configured above require a chain file, set the directive
 appropriately. If the new SSL certificates do not require a chain
 file, ensure that the directives are commented out from the files.
+
+@subsection Update DNS
+Now that the data has been moved the DNS server can be reconfigured to
+point to the new host. Additionally if a Shibboleth identity provider
+needs to be updated to include this now host, that can be done as
+well.
 
 @section Final tasks
 Run the following commands to finalize the configuration:

@@ -113,7 +113,7 @@ if (! isset($ams) || is_null($ams) || count($ams) <= 0) {
   
   // Get the slice URN via the SA
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  error_log("SLIVER RESTART SLICE_URN = $slice_urn");
+  //error_log("SLIVER RESTART SLICE_URN = $slice_urn");
 
   foreach ($ams as $am) {
     if (is_array($am)) {

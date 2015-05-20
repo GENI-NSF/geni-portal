@@ -51,7 +51,6 @@ insert into service_registry_attribute (service_id, name, value) values ((select
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://foam.instageni.illinois.edu:3626/foam/gapi/2'), 'UI_AM_TYPE', 'ui_foam_am');
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://instageni.wisc.edu:12369/protogeni/xmlrpc/am/2.0'), 'UI_AM_TYPE', 'ui_instageni_am');
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://foam.instageni.wisc.edu:3626/foam/gapi/2'), 'UI_AM_TYPE', 'ui_foam_am');
-insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://geni-am.net.internet2.edu:12346'), 'UI_AM_TYPE', 'ui_other_am');
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://geni.it.cornell.edu:12369/protogeni/xmlrpc/am/2.0'), 'UI_AM_TYPE', 'ui_instageni_am');
 
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://foam.geni.it.cornell.edu:3626/foam/gapi/2'), 'UI_AM_CAT', 'ui_prod_cat ui_network_cat');
@@ -105,5 +104,4 @@ insert into service_registry_attribute (service_id, name, value) values ((select
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://foam.instageni.illinois.edu:3626/foam/gapi/2'), 'UI_AM_CAT', 'ui_prod_cat ui_network_cat');
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://instageni.wisc.edu:12369/protogeni/xmlrpc/am/2.0'), 'UI_AM_CAT', 'ui_prod_cat ui_compute_cat ui_stitchable_cat');
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://foam.instageni.wisc.edu:3626/foam/gapi/2'), 'UI_AM_CAT', 'ui_prod_cat ui_network_cat');
-insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://geni-am.net.internet2.edu:12346'), 'UI_AM_CAT', 'ui_prod_cat ui_network_cat');
 insert into service_registry_attribute (service_id, name, value) values ((select id from service_registry where service_url='https://geni.it.cornell.edu:12369/protogeni/xmlrpc/am/2.0'), 'UI_AM_CAT', 'ui_prod_cat ui_compute_cat');
