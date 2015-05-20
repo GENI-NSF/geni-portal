@@ -39,7 +39,7 @@ function log_event($log_url, $signer, $message, $attributes )
                      $client->options());
 }
 
-function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours=24)
+function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours)
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
   $entries = $client->get_log_entries_by_author($user_id, $num_hours,
@@ -58,7 +58,7 @@ function get_attribute_for_context($context_type, $context_id)
 }
 
 function get_log_entries_for_context($log_url, $signer, $context_type,
-                                     $context_id, $num_hours=24)
+                                     $context_id, $num_hours)
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
   $entries = $client->get_log_entries_for_context($context_type, $context_id,
