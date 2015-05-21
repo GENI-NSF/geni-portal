@@ -5,9 +5,11 @@
 = GENI Portal Release Notes =
 
 == 2.33 ==
+ * Homepage shows next resource expiration for slice w/ colors (#1354)
  * Remove member attributes for other members as the Portal on the
    WiMAX page (as in when disabling their WiMAX account cause the
    project is disabled). (#1380)
+
 
 == 2.32 ==
  * Clear a session setting in the speaks-for path (#1335)
