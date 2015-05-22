@@ -36,7 +36,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 }
 
 $num_hours = 24;
-if (array_key_exists('hours', $_GET)) {
+if (array_key_exists('hours', $_REQUEST)) {
   $num_hours = (int) $_REQUEST['hours'];
 }
 
