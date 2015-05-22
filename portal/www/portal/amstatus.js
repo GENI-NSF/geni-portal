@@ -372,12 +372,12 @@ function build_details_table()
 	numAgg = Object.keys(json_agg).length;
         $("#total").text( numAgg );
 	for (var tmp_am_id in json_agg ) {
-	    add_agg_row_to_details_table(tmp_am_id, numAgg);
+	    add_agg_row_to_details_table(tmp_am_id, numAgg, false);
 	}
    });
 }
 
-function add_agg_row_to_details_table(am_id, numagg) {
+function add_agg_row_to_details_table(am_id, numagg, lastCall) {
   // This queries for the json file at (for example):
   // https://sergyar.gpolab.bbn.com/secure/amdetails.php?am_id=9&slice_id=b18cb314-c4dd-4f28-a6fd-b355190e1b61&pretty=False
     // amdetails.php returns HTML (not JSON) since there was already php code to generate the needed text
@@ -406,7 +406,7 @@ function add_agg_row_to_details_table(am_id, numagg) {
 	 $("div#details").append( output );
 	 output = "";
 	 if (pretty=="true" && am) {
-	     add_one_login(am_id, slice_uid);
+	     add_one_login(am_id, slice_uid, lastCall);
 	 }
      }
 
@@ -442,19 +442,6 @@ function add_agg_row_to_details_table(am_id, numagg) {
   });  
 }
 
-
-function add_all_logins_to_manifest_table() 
-{
-   // (1) query the server for all a list of aggregates
-    $.getJSON("aggregates.php", { am_id:am_id, slice_id:slice_uid }, function(responseTxt,statusTxt,xhr){
-     var json_agg;
-     json_agg = responseTxt;
-     for (var tmp_am_id in json_agg ) {
-	 add_one_login(tmp_am_id, slice_uid);
-     }
-   });
-}
-
 // Add all information from am_status for a set of AMs 
 // including login, status, expiration
 // slice_id is a slice_uid
@@ -462,14 +449,14 @@ function add_all_logins(am_ids, slice_id)
 {
     for(var i in am_ids) {
 	var am_id = am_ids[i];
-	add_one_login(am_id, slice_id);
+	add_one_login(am_id, slice_id, false);
     }
 }
 
 
 // Add all information from am_status including login, status, expiration
 // slice_id is a uid
-function add_one_login(am_id, slice_id) 
+function add_one_login(am_id, slice_id, lastCall) 
 {
 
     $("#am_status_" + am_id).text("...refreshing...");
@@ -513,19 +500,19 @@ function add_one_login(am_id, slice_id)
 	    var resource_elt = $('#details').children('.resources#agg_' + am_id);
 	    $(status_info).insertAfter(resource_elt);
 
+	    // Set the overall slice status at the aggregate
+	    if ('geni_status' in am) {
+		am_status = am['geni_status'];
+		am_status_box = $('#am_status_' + am_id);
+		am_status_box.text(am_status.toUpperCase());
+		for(var i in am_status_box) {
+		    am_status_box[i].className = am_status
+		}
+	    }
+
 	    // Set the expiration on each sliver
 	    if ('resources' in am) {
 		resources = am['resources'];
-
-		// Set the overall slice status at the aggregate
-		if ('geni_status' in am) {
-		    am_status = am['geni_status'];
-		    am_status_box = $('#am_status_' + am_id);
-		    am_status_box.text(am_status.toUpperCase());
-		    for(var i in am_status_box) {
-			am_status_box[i].className = am_status
-		    }
-		}
 
 		var expires = null;
 		if ('geni_expires' in am) {
@@ -565,55 +552,58 @@ function add_one_login(am_id, slice_id)
 			    }
 			}
 		    }
-		}
-	    }
+		} // End of block if we found an expires
+	    } // end of block if found a 'resources' section in status return
 
+	    // FIXME: Not all AMs have login_info to report. Like AL2S, or utah-stitch.
+	    // If we had a way to tell, that would be good
 	    if (!("login_info" in am)) {
-		check_for_completeness(am_id, slice_id);
+		check_for_completeness(am_id, slice_id, lastCall);
 		return;
 	    }
 	    login_info = am['login_info'];
 	    if (!(login_info)) {
 		// sometimes (eg if BUSY) might have contain anything
-		check_for_completeness(am_id, slice_id);
+		check_for_completeness(am_id, slice_id, lastCall);
 		return;
 	    }
 	    resources = login_info['resources'];
 
 	    if (!(resources)) {
-		check_for_completeness(am_id, slice_id);
+		check_for_completeness(am_id, slice_id, lastCall);
 		return;
 	    }
 	    for (var i in resources ){
 		var client = resources[i];
 		firstrow = true;
 		for (var j in client ){
-		var rsc = client[j];
-		hostname = rsc['hostname'];
-		client_id = rsc['client_id'];
-		port = rsc['port'];
-		username = rsc['username'];
-		// eg <a href='ssh://sedwards@pc1.pgeni3.gpolab.bbn.com:2020' target='_blank'>ssh sedwards@pc1.pgeni3.gpolab.bbn.com -p 2020</a>
-		anchor_login = "ssh://"+username+"@"+hostname;
-		login = "ssh "+username+"@"+hostname;
-		if (port !=22){
-		    login += " -p "+port;
-		    anchor_login += ":"+port;
-		}
-		// check for a div with an ID for the aggregates AND
-		// then update it's descendant td with an ID for the client_id
-		if (firstrow) {
-		    $("div#agg_"+am_id+" td#login_"+client_id).html( "<a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
-		    firstrow = false;
-		} else {
-		    $("div#agg_"+am_id+" td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
-		}
-		}
-	    }
-	}
+		    var rsc = client[j];
+		    hostname = rsc['hostname'];
+		    client_id = rsc['client_id'];
+		    port = rsc['port'];
+		    username = rsc['username'];
+		    // eg <a href='ssh://sedwards@pc1.pgeni3.gpolab.bbn.com:2020' target='_blank'>ssh sedwards@pc1.pgeni3.gpolab.bbn.com -p 2020</a>
+		    anchor_login = "ssh://"+username+"@"+hostname;
+		    login = "ssh "+username+"@"+hostname;
+		    if (port !=22){
+			login += " -p "+port;
+			anchor_login += ":"+port;
+		    }
+		    // check for a div with an ID for the aggregates AND
+		    // then update it's descendant td with an ID for the client_id
+		    if (firstrow) {
+			$("div#agg_"+am_id+" td#login_"+client_id).html( "<a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+			firstrow = false;
+		    } else {
+			$("div#agg_"+am_id+" td#login_"+client_id).append( "<br/><a href='"+anchor_login+"' target='_blank'>" + login+ "</a>" );
+		    }
+		} // End of loop over clients
+	    } // end of loop over resources
+	} // End of block handling got a status response
 
-	check_for_completeness(am_id, slice_id);
-     }
+	// Got no good status response. Will loop
+	check_for_completeness(am_id, slice_id, lastCall);
+     } // end of block where status claims success (which is not the same as 'ready')
      if(statusTxt=="error")
         alert("Error: "+xhr.status+": "+xhr.statusText);
    });
@@ -623,14 +613,14 @@ function add_one_login(am_id, slice_id)
 // But we should regather status if the status isn't terminal
 // And if the status is terminal but there is no login info, 
 // We should re-get the manifest
-function check_for_completeness(am_id, slice_id)
+function check_for_completeness(am_id, slice_id, lastCall)
 {
     // Check if aggregate is ready or failed
     var agg_status = $('#am_status_' + am_id).attr('class');
     if (agg_status == 'ready' || agg_status == 'failed') {
 	// We're done with status. If there is no login info, we should get it
 	var login_info = $('#agg_' + am_id).find('.login');
-	if (login_info.length == 0) {
+	if (login_info.length == 0 && !lastCall) {
 	    // Remove all the previous manifest/status artifacts
 	    // Need to remove the 'resources' field
 	    // Need to remove the rawRSpec field
@@ -638,19 +628,23 @@ function check_for_completeness(am_id, slice_id)
 	    // since we're getting the manifest again
 	    var numagg = parseInt($('span#numagg').text());
 	    $('span#numagg').text(numagg-1);
+	    //      print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
+	    // Unfortunately this deletes perfectly good manifest information, without a visual indication that it is doing something....
+	    $('#details').find('#aggT_' + am_id).remove();
 	    $('#details').find('#agg_' + am_id).remove();
 	    $('#details').find('#rawstatus_' + am_id).remove();
 	    $('#details').find('#rawrspec_' + am_id).remove()
 	    var numagg = parseInt($('#numagg').text());
-	    add_agg_row_to_details_table(am_id, numagg);
+	    // While we are looping here, only loop once. Status is in a terminal state,
+	    // so getting the manifest more than one more time makes no sense
+	    add_agg_row_to_details_table(am_id, numagg, true);
 	}
     } else {
 	// We're not done with status. Get it again.
 	setTimeout(function() {
-		$('#details').children('#rawstatus_' + am_id).remove();
-		add_one_login(am_id, slice_id);
-	    }, 5000);
-	
+	    $('#details').children('#rawstatus_' + am_id).remove();
+	    add_one_login(am_id, slice_id, lastCall);
+	}, 5000);
     }
 }
 

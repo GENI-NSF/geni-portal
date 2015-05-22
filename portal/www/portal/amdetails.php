@@ -88,8 +88,8 @@ if (count($obj)>0) {
   $filterToAM = True;
 
   print_rspec( $obj, True, $filterToAM );
-    // Get the rspec in xml format without HTML clutter
-    $xmlRspec = get_rspec_xml( $obj, False, $filterToAM );
+  // Get the rspec in xml format without HTML clutter
+  $xmlRspec = get_rspec_xml( $obj, False, $filterToAM );
 
     /*
     if ($xmlRspec && $xmlRspec != "null") {
