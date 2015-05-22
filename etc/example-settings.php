@@ -62,7 +62,7 @@ $portal_analytics_string = "ga('create', 'UA-000000-01', 'example.com');";
 /*
  * Base URL for xml-signer tool genilib JavaScript code.
  */
-$genilib_trusted_host = 'https://ch.example.com:8444'
+$genilib_trusted_host = 'https://ch.example.com:8444';
 
 /*
  * Is speaks-for enabled (required)?
