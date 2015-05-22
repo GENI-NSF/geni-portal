@@ -39,7 +39,7 @@ function log_event($log_url, $signer, $message, $attributes )
                      $client->options());
 }
 
-function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours)
+function get_log_entries_by_author($log_url, $signer, $user_id, $num_hours=24)
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
   $entries = $client->get_log_entries_by_author($user_id, $num_hours,

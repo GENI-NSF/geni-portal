@@ -35,8 +35,9 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+$num_hours = 24;
 if (array_key_exists('hours', $_GET)) {
-  $num_hours = (int) $_GET['hours'];
+  $num_hours = (int) $_REQUEST['hours'];
 }
 
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
