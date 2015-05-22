@@ -58,7 +58,6 @@ if (isset($project_id)) {
   }
 }
 
-
 //foreach($slice_objects as $so) { error_log("SO = " . print_r($so, true)); }
 //error_log("SLICE_OBJECTS = " . print_r($slice_objects, true));
 //error_log("MAP = " . print_r($project_slice_map, true));
@@ -138,34 +137,12 @@ if (count($my_slice_objects) > 0) {
 
   if (count($lead_slices) > 0) {
     print "<h3>Slices on which I am lead</h3>";
-    print "\n<table>\n";
-    print ("<tr><th>Slice Name</th>");
-    print ("<th>Project</th>");
-    print ("<th>Slice Expiration</th>");
-    print ("<th>Slice Lead</th>"
-	   . "<th>Actions</th>");
-    print "</tr>\n";
-
-    foreach ($lead_slices as $slice) {
-      list_slice($slice,$user);
-    }
-    print "</table>\n";
+    make_slice_table($lead_slices);
   }
 
   if (count($nonlead_slices) > 0) {
     print "<h3>Slices on which I am not lead</h3>";
-    print "\n<table>\n";
-    print ("<tr><th>Slice Name</th>");
-    print ("<th>Project</th>");
-    print ("<th>Slice Expiration</th>");
-    print ("<th>Slice Lead</th>"
-	   . "<th>Actions</th>");
-    print "</tr>\n";
-
-    foreach ($nonlead_slices as $slice) {
-      list_slice($slice,$user);
-    }
-    print "</table>\n";
+    make_slice_table($nonlead_slices);
   }
 } else {
   if (isset($project_id) && uuid_is_valid($project_id)) {
@@ -175,12 +152,32 @@ if (count($my_slice_objects) > 0) {
   }
 }
 
+function make_slice_table($slicelist){
+    global $user;
+    print "\n<table>\n";
+    print ("<tr><th>Slice Name</th>");
+    print ("<th>Project</th>");
+    print ("<th>Slice Expiration</th>");
+    print ("<th>Next Resource Expiration</th>");
+    print ("<th>Slice Lead</th>");
+    print "<th>Actions</th>";
+    // print "<th>Details</th>";
+
+    print "</tr>\n";
+
+    foreach ($slicelist as $slice) {
+      list_slice($slice,$user);
+    }
+    print "</table>\n";
+}
+
 function list_slice($slice,$user) {
   global $project_objects, $slice_owner_names;
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
   global $delete_sliver_base_url, $flack_url;
   global $gemini_base_url, $labwiki_base_url;
   global $disabled, $jfed_button_start, $jfed_button_part2;
+  global $sa_url, $user;
 
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $slice_expired = 'f';
@@ -204,8 +201,8 @@ function list_slice($slice,$user) {
   $listres_url = $listres_base_url . $query;
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
-  $expiration_db = $slice[SA_ARGUMENT::EXPIRATION];
-  $expiration = dateUIFormat($expiration_db);
+  $slice_exp_date = $slice[SA_ARGUMENT::EXPIRATION];
+  // $expiration = dateUIFormat($expiration_db);
   $slice_project_id = $slice[SA_ARGUMENT::PROJECT_ID];
   $gemini_url = $gemini_base_url . $query;
   $labwiki_url = $labwiki_base_url . $query;
@@ -254,14 +251,56 @@ function list_slice($slice,$user) {
 
   $slice_owner_id = $slice[SA_ARGUMENT::OWNER_ID];
   $slice_owner_name = $slice_owner_names[$slice_owner_id];
+  
   print "<tr>"
     . ("<td><a href=\"$slice_url\">" . htmlentities($slice_name)
        . "</a></td>");
   print "<td><a href=\"project.php?project_id=$slice_project_id\">" . htmlentities($slice_project_name) . "</a></td>";
-  print "<td>" . htmlentities($expiration) . "</td>";
   // FIXME: Make this a mailto. Need to use member_objects to do init_from_record of a member and then retrieve the email address
-  print "<td>$slice_owner_name</td>";
   //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
+
+  
+  function getUrgencyColor($exp_date){
+    $now = new DateTime('now');
+    $exp_datetime = new DateTime($exp_date);
+    if ($exp_datetime < $now) {
+      return "red; text-decoration: underline;";
+    } 
+    $interval = date_diff($exp_datetime, $now);
+    $num_hours = $interval->d * 24 + $interval->h;
+    if ($num_hours < 24) { 
+      return "red";
+    } else if ($num_hours < 48) {
+      return "orange";
+    } else {
+      return "green";
+    }
+  }
+
+  $slice_exp_color = getUrgencyColor($slice_exp_date);
+  print "<td>" . "<span style='color:$slice_exp_color'>" . htmlentities(dateUIFormat($slice_exp_date)) . "</span></td>";
+  print "<td>";
+  $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
+  if (count($slivers) == 0) {
+    $next_exp = "<i>No resources for this slice</i>";
+    $next_exp_color = "#5F584E";
+  } else {
+    $first_sliver = reset($slivers);
+    $next_exp = new DateTime($first_sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
+    foreach ($slivers as $sliver) {
+      $this_date = new DateTime($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
+      if ($next_exp > $this_date) {
+        $next_exp = $this_date;
+      }
+    }
+
+    $next_exp = dateUIFormat($next_exp);
+    $next_exp_color = getUrgencyColor($next_exp);
+  }
+
+  print "<span style='color:$next_exp_color'>" . $next_exp . "</span></td>";
+
+  print "<td>$slice_owner_name  </td>";
   print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
   //  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button title='Login info, etc' onClick=\"info_set_location('$slice_id', '$listres_url')\" $get_slice_credential_disable_buttons><b>Details</b></button>");
@@ -271,14 +310,13 @@ function list_slice($slice,$user) {
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
   
   print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>";
-  
   // Show a jfed button if there wasn't an error generating it
   if (! is_null($jfed_button_start)) {
     print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
   }
-
   print "</td>";
   print "</tr>\n";
 } // end of list_slice function
+
 
 print "<script src=\"tool-slices.js\"></script>";
