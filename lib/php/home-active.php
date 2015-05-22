@@ -59,7 +59,7 @@ if (! $user->portalIsAuthorized()) {
 
 include("tool-breadcrumbs.php");
 
-echo "<table style=\"margin-left: 0px;\"><tr><th>Current GENI Clearinghouse Resources</th></tr><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+echo "<table id='resourcemap'><tr><th>Current GENI Clearinghouse Resources</th></tr><tr><td>";
 include("map.html");
 echo "</td></tr></table>";
 
