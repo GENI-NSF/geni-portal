@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.33 ==
+ * Add dropdown to get logs for a given time period on homepage (#1318)
  * Remove member attributes for other members as the Portal on the
    WiMAX page (as in when disabling their WiMAX account cause the
    project is disabled). (#1380)
