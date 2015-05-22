@@ -123,7 +123,7 @@ print "<b>LabWiki</b></button> ";
   // Show cloudlab button
   $cloudlab_url = "https://www.cloudlab.us/login.php";
   $cloudlab_image_url = "https://www.cloudlab.us/img/cloudlab-big.png";
-  print "<button style='height:20px;' onClick=\"window.open('$cloudlab_url')\">";
+  print "<button type='button' style='height:20px;' onClick=\"window.open('$cloudlab_url')\">";
   print "<img src='$cloudlab_image_url' height='100%'/>";
   print "</button>";
 
