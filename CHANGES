@@ -8,6 +8,9 @@
  * Remove member attributes for other members as the Portal on the
    WiMAX page (as in when disabling their WiMAX account cause the
    project is disabled). (#1380)
+ * Only refetch the manifest on details page once after
+   sliverstatus says ready. AMs with no resources or login
+   info therefore won't be constantly re-polled. (#1378)
 
 == 2.32 ==
  * Clear a session setting in the speaks-for path (#1335)
