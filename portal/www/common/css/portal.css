@@ -1004,3 +1004,11 @@ img {
 .jacks #leftNav pre {
    color: black;
 }
+
+#maintenance_alert {
+  border-radius: 0px;
+  margin: 0px !important;
+  margin-bottom: -20px !important;
+  border-right: 1px solid #E5E5E5; 
+}
+
