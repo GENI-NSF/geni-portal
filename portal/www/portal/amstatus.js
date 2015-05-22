@@ -500,19 +500,19 @@ function add_one_login(am_id, slice_id, lastCall)
 	    var resource_elt = $('#details').children('.resources#agg_' + am_id);
 	    $(status_info).insertAfter(resource_elt);
 
+	    // Set the overall slice status at the aggregate
+	    if ('geni_status' in am) {
+		am_status = am['geni_status'];
+		am_status_box = $('#am_status_' + am_id);
+		am_status_box.text(am_status.toUpperCase());
+		for(var i in am_status_box) {
+		    am_status_box[i].className = am_status
+		}
+	    }
+
 	    // Set the expiration on each sliver
 	    if ('resources' in am) {
 		resources = am['resources'];
-
-		// Set the overall slice status at the aggregate
-		if ('geni_status' in am) {
-		    am_status = am['geni_status'];
-		    am_status_box = $('#am_status_' + am_id);
-		    am_status_box.text(am_status.toUpperCase());
-		    for(var i in am_status_box) {
-			am_status_box[i].className = am_status
-		    }
-		}
 
 		var expires = null;
 		if ('geni_expires' in am) {
@@ -628,6 +628,9 @@ function check_for_completeness(am_id, slice_id, lastCall)
 	    // since we're getting the manifest again
 	    var numagg = parseInt($('span#numagg').text());
 	    $('span#numagg').text(numagg-1);
+	    //      print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
+	    // Unfortunately this deletes perfectly good manifest information, without a visual indication that it is doing something....
+	    $('#details').find('#aggT_' + am_id).remove();
 	    $('#details').find('#agg_' + am_id).remove();
 	    $('#details').find('#rawstatus_' + am_id).remove();
 	    $('#details').find('#rawrspec_' + am_id).remove()
