@@ -58,7 +58,7 @@ function get_attribute_for_context($context_type, $context_id)
 }
 
 function get_log_entries_for_context($log_url, $signer, $context_type,
-                                     $context_id, $num_hours)
+                                     $context_id, $num_hours=24)
 {
   $client = XMLRPCClient::get_client($log_url, $signer);
   $entries = $client->get_log_entries_for_context($context_type, $context_id,
