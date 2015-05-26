@@ -172,6 +172,8 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $in_lockdown_mode;
   global $portal_analytics_enable;
   global $portal_analytics_string;
+  global $has_maintenance_alert;
+  global $maintenance_alert;
 
   if ($load_user) {
     global $user;
@@ -256,6 +258,10 @@ function show_header($title, $active_tab = '', $load_user=1)
   }
   echo '</div>';
   show_tab_bar($active_tab, $load_user);
+  if($has_maintenance_alert) {
+    // TODO: make a dismiss button 
+    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p></br>";
+  }
   echo '</div>';
   echo '<div id="content-outer">';
   echo '<div id="content">';

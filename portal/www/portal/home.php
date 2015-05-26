@@ -37,10 +37,7 @@ show_header('GENI Portal Home', $TAB_HOME);
 <div id="home-body">
 <?php
 
-  if($has_maintenance_alert) {
-    print "<p class='instruction'>$maintenance_alert</p></br>";
-  }
-  include("tool-showmessage.php");
+include("tool-showmessage.php");
 if (is_null($user)) {
   // TODO: Handle unknown state
   print "Unable to load user record.<br/>";

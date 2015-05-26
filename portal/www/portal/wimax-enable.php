@@ -744,8 +744,8 @@ if (isset($user->ma_member->enable_wimax)) {
 	  error_log("Since group $ldif_user_groupname disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
 	  $member_id = $member->member_id;
 	  // Change relevant MA attribute
-	  remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
-	  remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	  remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 	}
 	$user->ma_member->enable_wimax = False;
 	$user_is_wimax_enabled = False;
@@ -990,8 +990,8 @@ if (array_key_exists('project_id', $_REQUEST))
 	  error_log("Since group $ldif_user_groupname disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
 	  $member_id = $member->member_id;
 	  // Change relevant MA attribute
-	  remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
-	  remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	  remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 	}
 
 	// If this is the group for this user, disable this user
@@ -1133,8 +1133,8 @@ if (array_key_exists('project_id', $_REQUEST))
 	  error_log("Since group $ldif_group_name disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
 	  $member_id = $member->member_id;
 	  // Change relevant MA attribute
-	  remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
-	  remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	  remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax');
+	  remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 	}
 
 	// If this is the group for this user, disable this user
@@ -1644,8 +1644,8 @@ Get user's projects (expired or not)
 	      error_log("Since group $proj_group_name disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
 	      $member_id = $member->member_id;
 	      // Change relevant MA attribute
-	      remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
-	      remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	      remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax');
+	      remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 	    }
 
 	    // If this is the group for this user, disable this user
@@ -1789,8 +1789,8 @@ Get user's projects (expired or not)
 	    $res = wimax_delete_user($member_username, $proj_group_name);
 	    if (true === $res) {
 	      // Change relevant MA attribute
-	      remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
-	      remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+	      remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax');
+	      remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 	    } else {
 	      // FIXME: WiMAX has the user, we want them deleted.
 	      // FIXME FIXME Use $res
@@ -2036,8 +2036,8 @@ P7
 		error_log("Since group $proj_group_name disabled for WiMAX, disabling WiMAX user " . $member->prettyName() . " who lists it as their group");
 		$member_id = $member->member_id;
 		// Change relevant MA attribute
-		remove_member_attribute($ma_url, $user, $member_id, 'enable_wimax');
-		remove_member_attribute($ma_url, $user, $member_id, 'wimax_username');
+		remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'enable_wimax');
+		remove_member_attribute($ma_url, Portal::getInstance(), $member_id, 'wimax_username');
 	      }
 	    } else {
 	      // Failed to delete WiMAX group whose portal LEAD has no WiMAX group
