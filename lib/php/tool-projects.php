@@ -189,6 +189,7 @@ if (count($project_objects) > 0) {
 if (count($project_objects) > 0) {
   $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, 
 					     PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
+    print "<div class='tablecontainer'>";
   print "\n<table>\n";
   print ("<tr><th>Project Name</th><th>Project Lead</th><th>Purpose</th><th>Slice Count</th><th>Create Slice</th></tr>\n");
   // name, lead_id, purpose
@@ -243,6 +244,7 @@ if (count($project_objects) > 0) {
     // FIXME: Button to invite people to the project?
   }
   print "</table>\n";
+  print "</div>";
 } else {
   print "<i> No projects.</i><br/>\n";
 }
@@ -264,6 +266,7 @@ if (isset($reqs) && count($reqs) > 0) {
   print "<br/>\n";
   print "<h3>Projects you Asked to Join</h3>\n";
   print "Found " . count($reqs) . " outstanding project join request(s) by you:<br/>\n";
+  print "<div class='tablecontainer'>";
   print "<table>\n";
   // Could add a cancel button?
   print "<tr><th>Project Name</th><th>Project Lead</th><th>Project Purpose</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request</th></tr>\n";
@@ -286,6 +289,7 @@ if (isset($reqs) && count($reqs) > 0) {
     print "<tr><td>$project_name</td><td>$lead_name</td><td>$purpose</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
   }
   print "</table>\n";
+  print "</div>";
   print "<br/><br/>\n";
 } else {
   print "<div class='announce'><p>No outstanding project join requests by you.</p></div>\n";

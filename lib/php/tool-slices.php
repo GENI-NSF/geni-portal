@@ -152,8 +152,9 @@ if (count($my_slice_objects) > 0) {
   }
 }
 
-function make_slice_table($slicelist){
+function make_slice_table($slicelist) {
     global $user;
+    print "<div class='tablecontainer'>";
     print "\n<table>\n";
     print ("<tr><th>Slice Name</th>");
     print ("<th>Project</th>");
@@ -169,6 +170,7 @@ function make_slice_table($slicelist){
       list_slice($slice,$user);
     }
     print "</table>\n";
+    print "</div>";
 }
 
 function list_slice($slice,$user) {

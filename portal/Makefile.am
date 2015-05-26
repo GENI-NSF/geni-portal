@@ -231,7 +231,8 @@ dist_svcwebcommon_DATA = \
 	www/common/topbar_gradient2.png
 
 dist_svcwebcss_DATA =  \
-	www/common/css/portal.css
+	www/common/css/portal.css \
+	www/common/css/mobile-portal.css
 
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \

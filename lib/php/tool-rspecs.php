@@ -164,7 +164,7 @@ function rspec_table_header($table_id, $searchable=False, $public=False) {
       echo '</script>';
   }
 
-  print "<table id='$table_id'><thead>\n";
+  print "<div class='tablecontainer'><table id='$table_id'><thead>\n";
   if ($public) {
      $columns = array("Name &#x2191;&#x2193;", "Description &#x2191;&#x2193;",
                     "Owner &#x2191;&#x2193;", "&nbsp;", "&nbsp;");
@@ -272,6 +272,6 @@ function display_rspec($rspec, $owners, $public=False) {
   print "</tr>\n";
 }
 function rspec_table_footer() {
-  print "</tbody></table>\n";
+  print "</tbody></table></div>\n";
 }
 ?>
