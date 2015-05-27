@@ -60,9 +60,6 @@ cert_FILES = \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/sl-of.pem \
-	certs/sox-ig-boss.pem \
-	certs/sox-ig-cm.pem \
-	certs/sox-ig-of.pem \
 	certs/sox-of.pem \
 	certs/stanford-ig-boss.pem \
 	certs/stanford-ig-cm.pem \
