@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.33 ==
+ * Made CSS responsive to screen width, general CSS improvements
  * Add dropdown to get logs for a given time period on homepage (#1318)
  * Slices tables show next resource expiration for each slice 
    with color coding, or text indicating the slice has no resources. (#1354)
