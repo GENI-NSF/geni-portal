@@ -3,9 +3,6 @@ svcdatadir = $(pkgdatadir)/sr
 cert_FILES = \
 	certs/InCommonServerCA.pem \
 	certs/cenic-of.pem \
-	certs/clemson-ig-boss.pem \
-	certs/clemson-ig-cm.pem \
-	certs/clemson-ig-of.pem \
 	certs/cornell-ig-boss.pem \
 	certs/cornell-ig-cm.pem \
 	certs/cornell-ig-of.pem \
