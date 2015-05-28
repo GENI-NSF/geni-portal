@@ -3,9 +3,6 @@ svcdatadir = $(pkgdatadir)/sr
 cert_FILES = \
 	certs/InCommonServerCA.pem \
 	certs/cenic-of.pem \
-	certs/clemson-ig-boss.pem \
-	certs/clemson-ig-cm.pem \
-	certs/clemson-ig-of.pem \
 	certs/cornell-ig-boss.pem \
 	certs/cornell-ig-cm.pem \
 	certs/cornell-ig-of.pem \
@@ -17,16 +14,11 @@ cert_FILES = \
         certs/gr-bbn1-am.pem \
         certs/gr-bbn1-ch.pem \
 	certs/i2-of.pem \
-	certs/ig-gatech-boss.pem \
-	certs/ig-gatech-cm.pem \
-	certs/ig-gatech-of.pem \
 	certs/ig-gpo-boss.pem \
 	certs/ig-gpo-cm.pem \
         certs/ig-gpo-of.pem \
 	certs/ig-kettering-boss.pem \
 	certs/ig-kettering-cm.pem \
-	certs/ig-ky-boss.pem \
-	certs/ig-ky-cm.pem \
 	certs/ig-northwestern-boss.pem \
 	certs/ig-northwestern-cm.pem \
 	certs/ig-northwestern-of.pem \
@@ -63,15 +55,11 @@ cert_FILES = \
 	certs/pg-uky-boss.pem \
 	certs/pg-uky-cm.pem \
 	certs/sl-of.pem \
-	certs/sox-ig-boss.pem \
-	certs/sox-ig-cm.pem \
-	certs/sox-ig-of.pem \
 	certs/sox-of.pem \
 	certs/stanford-ig-boss.pem \
 	certs/stanford-ig-cm.pem \
 	certs/stanford-ig-of.pem \
 	certs/uen-of.pem \
-	certs/uky-ig-of.pem \
 	certs/utah-am.pem \
 	certs/wisconsin-ig-boss.pem \
 	certs/wisconsin-ig-cm.pem \
