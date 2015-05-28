@@ -15,6 +15,7 @@
  * Only refetch the manifest on details page once after
    sliverstatus says ready. AMs with no resources or login
    info therefore won't be constantly re-polled. (#1378)
+  * Be sure to handle status of 'no resources' as terminal.
  * When showing resource details / manifests, show something
    when no resources were found. And update the overall page status.
    Additionally, close the PHP session earlier. (#1365)
