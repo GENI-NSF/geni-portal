@@ -19,6 +19,7 @@
  * When showing resource details / manifests, show something
    when no resources were found. And update the overall page status.
    Additionally, close the PHP session earlier. (#1365)
+ * Migrate a few aggregates to the clearinghouse repository
 
 == 2.32 ==
  * Clear a session setting in the speaks-for path (#1335)
