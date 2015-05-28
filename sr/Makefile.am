@@ -14,9 +14,6 @@ cert_FILES = \
         certs/gr-bbn1-am.pem \
         certs/gr-bbn1-ch.pem \
 	certs/i2-of.pem \
-	certs/ig-gatech-boss.pem \
-	certs/ig-gatech-cm.pem \
-	certs/ig-gatech-of.pem \
 	certs/ig-gpo-boss.pem \
 	certs/ig-gpo-cm.pem \
         certs/ig-gpo-of.pem \
