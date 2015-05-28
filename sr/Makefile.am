@@ -19,8 +19,6 @@ cert_FILES = \
         certs/ig-gpo-of.pem \
 	certs/ig-kettering-boss.pem \
 	certs/ig-kettering-cm.pem \
-	certs/ig-ky-boss.pem \
-	certs/ig-ky-cm.pem \
 	certs/ig-northwestern-boss.pem \
 	certs/ig-northwestern-cm.pem \
 	certs/ig-northwestern-of.pem \
@@ -62,7 +60,6 @@ cert_FILES = \
 	certs/stanford-ig-cm.pem \
 	certs/stanford-ig-of.pem \
 	certs/uen-of.pem \
-	certs/uky-ig-of.pem \
 	certs/utah-am.pem \
 	certs/wisconsin-ig-boss.pem \
 	certs/wisconsin-ig-cm.pem \
