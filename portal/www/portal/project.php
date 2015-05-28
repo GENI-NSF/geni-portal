@@ -149,9 +149,6 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 }
 
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, 
-				       $user, // Portal::getInstance(),
-				       CS_CONTEXT_TYPE::PROJECT, $project_id);
 
 $actdisabled = '';
 if ($expired === True) {
@@ -283,7 +280,6 @@ $member_lists[2] = array();
 $member_lists[3] = array();
 $member_lists[4] = array();
 
-
   foreach($members as $member) {
      $member_id = $member['member_id'];
      $member_name = $member_names[$member_id];
@@ -339,30 +335,23 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 ?>
 
 <h2>Recent Project Actions</h2>
-<table>
-<tr><th>Time</th><th>Message</th><th>Member</th>
-<?php
-
-if (is_array($entries)) {
-  usort($entries, 'compare_log_entries');
-  $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
-					      LOGGING_TABLE_FIELDNAME::USER_ID);
-  foreach($entries as $entry) {
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
-    $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-    $member_name = $entry_member_names[$member_id];
-    //    error_log("ENTRY = " . print_r($entry, true));
-    // If the MA or other authority took the action, then there is no name and no user so don't show the project-member page
-    if ($member_name == "NONE") {
-      print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
-    } else {
-      print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
-    }
+<p>Showing logs for the last 
+<select onchange="getLogs(this.value);">
+  <option value="24">day</option>
+  <option value="48">2 days</option>
+  <option value="72">3 days</option>
+  <option value="168">week</option>
+</select>
+</p>
+<script type="text/javascript">
+  $(document).ready(function(){ getLogs(24); });
+  function getLogs(hours){
+    $.get("do-get-logs.php?hours="+hours+"&projectid="+<?php echo "\"" . $project_id . "\""; ?>, function(data) {
+      $('#log_table').html(data);
+    });
   }
-}
-?>
-</table>
+</script>
+<table id="log_table"></table>
 
 <?php
 include("footer.php");

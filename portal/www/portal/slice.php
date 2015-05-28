@@ -799,34 +799,27 @@ print "</table>\n";
 
 ?>
 
-
 <h2 id="recent_actions">Recent Slice Actions</h2>
-<table>
-	<tr>
-		<th>Time</th>
-		<th>Message</th>
-		<th>Member</th>
-		<?php
-		$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-                $entries = get_log_entries_for_context($log_url, $user,
-						       CS_CONTEXT_TYPE::SLICE, $slice_id);
-                $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
-								   LOGGING_TABLE_FIELDNAME::USER_ID);
+<p>Showing logs for the last 
+<select onchange="getLogs(this.value);">
+  <option value="24">day</option>
+  <option value="48">2 days</option>
+  <option value="72">3 days</option>
+  <option value="168">week</option>
+</select>
+</p>
 
-                usort($entries, 'compare_log_entries');
-		foreach($entries as $entry) {
-		  $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-		  $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
-		  $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-		  $member_name = $entry_member_names[$member_id];
-		  //    error_log("ENTRY = " . print_r($entry, true));
-		  //		  print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
-		  // FIXME: Want a mailto link
-		  print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
+<script type="text/javascript">
+  $(document).ready(function(){ getLogs(24); });
+  function getLogs(hours){
+    url = "do-get-logs.php?hours="+hours+"&sliceid=" + <?php echo "\"" . $slice_id . "\""; ?>; 
+    $.get(url, function(data) {
+      $('#log_table').html(data);
+    });
   }
-?>
+</script>
 
-</table>
+<table id="log_table"></table>
 
 <?php
 include("footer.php");

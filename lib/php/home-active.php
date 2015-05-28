@@ -157,7 +157,7 @@ print "<b>LabWiki</b></button> ";
   <option value="48">2 days</option>
   <option value="72">3 days</option>
   <option value="168">week</option>
-</select>
+</select></p>
 
 <script type="text/javascript">
   $(document).ready(function(){ getLogs(24); });

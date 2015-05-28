@@ -23,10 +23,31 @@
 //----------------------------------------------------------------------
 
 require_once("user.php");
+require_once("db_utils.php");
+require_once("ma_constants.php");
+require_once("ma_client.php");
+
 if (! $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   exit();
 }
 ?>
+
 <h1>Administrator Tools</h1>
 
-<p>This page intentionally left blank.</p>
+<p>This page is intentionally not blank.</p>
+
+<?php 
+
+$conn = portal_conn();
+$sql = "SELECT *"
+. " FROM account";
+$row = db_fetch_rows($sql, "fetch all users for admin page");
+$users = $row[RESPONSE_ARGUMENT::VALUE];
+print "total users here: " . count($users) . "<br>";
+$num = 1;
+foreach ($users as $user) {
+    print "user " . $num . ": " . $user[MA_MEMBER_ATTRIBUTE_TABLE_FIELDNAME::ID] . '<br>';
+    $num++;
+}
+
+?>
