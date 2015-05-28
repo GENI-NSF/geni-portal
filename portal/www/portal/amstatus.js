@@ -617,10 +617,11 @@ function check_for_completeness(am_id, slice_id, lastCall)
 {
     // Check if aggregate is ready or failed
     var agg_status = $('#am_status_' + am_id).attr('class');
-    if (agg_status == 'ready' || agg_status == 'failed') {
-	// We're done with status. If there is no login info, we should get it
+    if (agg_status == 'ready' || agg_status == 'failed' || agg_status == 'no resources') {
+	// We're done with status. If there is no login info, we should get it for AMs that were ready
+	// Note this means that an AM with no compute resources will refetch the manifest/status un-necessarily
 	var login_info = $('#agg_' + am_id).find('.login');
-	if (login_info.length == 0 && !lastCall) {
+	if (login_info.length == 0 && !lastCall && agg_status == 'ready') {
 	    // Remove all the previous manifest/status artifacts
 	    // Need to remove the 'resources' field
 	    // Need to remove the rawRSpec field
