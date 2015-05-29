@@ -20,6 +20,9 @@
    when no resources were found. And update the overall page status.
    Additionally, close the PHP session earlier. (#1365)
  * Migrate a few aggregates to the clearinghouse repository
+ * Do not verify iRODS server cert at all, as it fails on 
+   newer versions of cURL. (#1386)
+ * Reference a couple pages with explicit '.php' ending.
 
 == 2.32 ==
  * Clear a session setting in the speaks-for path (#1335)
