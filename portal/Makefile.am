@@ -82,6 +82,7 @@ dist_svcweb_DATA = \
 	www/portal/do-edit-slice-member.php \
 	www/portal/do-edit-slice.php \
 	www/portal/do-handle-project-request.php \
+	www/portal/do-get-logs.php \
 	www/portal/do-modify.php \
 	www/portal/do-register.php \
 	www/portal/do-renew-slice.php \

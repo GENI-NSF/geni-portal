@@ -72,7 +72,17 @@ if (array_key_exists("pretty", $_REQUEST)){
 
 $header = "Resources on slice: $slice_name";
 
+$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
+						   CS_CONTEXT_TYPE::SLICE,
+                                                   $slice_id);
 show_header('GENI Portal: Slices',  $TAB_SLICES);
+
+// Close the session here to allow multiple AJAX requests to run
+// concurrently. If the session is left open, it holds the session
+// lock, causing AJAX requests to run serially.
+// DO NOT DO ANY SESSION MANIPULATION AFTER THIS POINT!
+session_write_close();
+
 ?>
 
 <script src="<?php echo $jacks_stable_url;?>"></script>
@@ -138,9 +148,6 @@ show_header('GENI Portal: Slices',  $TAB_SLICES);
 
 include("tool-breadcrumbs.php");
 
-$get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, 
-						   CS_CONTEXT_TYPE::SLICE,
-                                                   $slice_id);
 $get_slice_credential_disable_buttons = "";
 $disabled = 'disabled = "disabled"';
 if(!$get_slice_credential_privilege) {

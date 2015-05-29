@@ -308,6 +308,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
   
   $link_num = 1;
   
+  $hadStitch = False;
   foreach ($links as $link) {
   
     // for stitching, skip links that don't have component managers
@@ -393,7 +394,7 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
         
             // look for x where <stitching><path id="x"> matches <link client_id="x">
             if((string)$path['id'] == (string)$client_id) {
-            
+	      $hadStitch = True;
                 print "<table style='margin-top:0px;margin-bottom:0px'><tr>\n";
                 print "<th>Hop #</th>\n";
                 print "<th>Authority</th>\n";
@@ -440,14 +441,11 @@ function print_rspec_pretty( $xml, $manifestOnly=True, $filterToAM=False, $compo
         }
     
     }
-    
-
   }
-  
-  
-    
-    
-    
+  if ($hadStitch == False && $link_num <= 1 && $node_num == 0) {
+    //      print_xml($xml);
+    print "<p><i>No resources at this aggregate.</i></p>";
+  }
   
   print "</div>\n";
 }
@@ -493,8 +491,12 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
        we print the error.
     */
     // error_log("Aggregate listresources code is " . $code); 
-    if (!(($code == -1 or $code == 12 or $code == 2) and $pretty)){ 
-      print "<div class='aggregate'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
+    if (!(($code == -1 or $code == 12 or $code == 2) and $pretty)){
+      if ($pretty) {
+	print "<div class='aggregate' id='aggT_" . $am_id . "'>Aggregate <b>".$arg_name."'s</b> Resources:</div>";
+      } else {
+	print "<div class='aggregate' id='aggT_" . $am_id . "'>Aggregate <b>".$arg_name."'s</b> Raw Resources:</div>";
+      }
       print "<div class='resources' id='agg_" . $am_id ."'>";
       if ($code == 0){
 	if ($pretty){
@@ -506,6 +508,9 @@ function print_rspec( $obj, $pretty, $filterToAM ) {
 	  print_xml($xml);
 	}
       } else {
+	if ($output == "") {
+	  $output = "[None. Return code: " . $code . "]";
+	}
 	echo "<p>Returned: <i>$output</i></p>";
       }
 
