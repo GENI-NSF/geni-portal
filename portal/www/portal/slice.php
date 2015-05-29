@@ -98,7 +98,6 @@ function compare_last_names($mem1,$mem2)
   return strcmp($name1,$name2);
 }
 
-
 function build_agg_table_on_slicepg() 
 {
      global $am_list;
@@ -405,7 +404,7 @@ $(document).ready(function() {
 
 <?php 
 print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
-print "<div style='position:relative'><p id='portalhelp'>Need help? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p></div>";
+print "<div style=''><p id='portalhelp'>Need help? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p></div>";
 if (isset($slice_expired) && convert_boolean($slice_expired) ) {
    print "<p class='warn'>This slice is expired!</p>\n";
 }

@@ -167,6 +167,7 @@ if ($expired === True) {
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
 
+print "<div class='tablecontainer'>";
 print "<table>\n";
 print "<tr><th>Project Actions</th></tr>\n";
 print "<tr>\n";
@@ -179,7 +180,7 @@ if (isset($project_id)) {
     $putBut = True;
     /* Create a new slice*/
     print "<button onClick=\"window.location='";
-    print relative_url("createslice?project_id=$project_id'");
+    print relative_url("createslice.php?project_id=$project_id'");
     print "\"$actdisabled><b>Create Slice</b></button>";
   }
   if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
@@ -195,7 +196,7 @@ if (isset($project_id)) {
 	/* Put in an empty table cell if no project. */
 	print "<td><i>None: no project.</i></td>";
 }
-print "</tr></table>\n";
+print "</tr></table></div>\n";
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
@@ -204,7 +205,7 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
       $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?project_id=" . $project_id . "'\"$actdisabled><b>Handle All Requests</b></button>";
       print "<p>$handle_button</p>\n";
     }
-    print "<table>\n";
+    print "<div class='tablecontainer'><table>\n";
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
     foreach ($reqs as $request) {
       $requestor = $user->fetchMember($request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]);
@@ -213,11 +214,11 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
       $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . "'\"$actdisabled><b>Handle Request</b></button>";
       print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
     }
-    print "</table><br/>\n";
+    print "</table></div><br/>\n";
   }
 }
 
-print "<table>\n";
+print "<div class='tablecontainer'><table>";
 print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
 print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
@@ -228,7 +229,7 @@ print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><td class='label'><b>URN</b></td><td>$project_urn</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
-print "</table>\n";
+print "</table></div>\n";
 
 // FIXME: If user is not a member of the project, don't show the tool-slices stuff - it will get
 // a permission error on lookup_slices
@@ -351,8 +352,9 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
     });
   }
 </script>
-<table id="log_table"></table>
-
+<div class='tablecontainer'>
+	<table id="log_table"></table>
+</div>
 <?php
 include("footer.php");
 ?>
