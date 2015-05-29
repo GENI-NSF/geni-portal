@@ -32,8 +32,8 @@ require_once('logging_client.php');
 require_once('logging_constants.php');
 require_once('ma_client.php');
 require_once('ma_constants.php');
+require_once("db_utils.php");
 include_once('/etc/geni-ch/settings.php');
-
 
 $user=geni_loadUser();
 if (! isset($user) || ! $user->isActive()) {
@@ -97,6 +97,15 @@ update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason,
 
 // Now handle project lead...
 
+function store_lead_request($urn, $email) {
+  $conn = portal_conn();
+  $sql = "INSERT into lead_request"
+  . " (requester_urn, requester_email) "
+  . "values (" . $conn->quote($urn, 'text') . ", "
+  .              $conn->quote($email, 'text') . ")";
+  db_execute_statement($sql, "insert lead request", true);
+}
+
 // If we got 'projectlead' in the POST, it is a pi_request.
 $pi_request = isset($req_projectlead);
 
@@ -114,6 +123,7 @@ if ($pi_request and ! $is_pi) {
   $body .= 'The following user has requested to no longer be a Project Lead:';
   $log_msg = $user->prettyName() . " requested to NOT be a Project Lead";
 }
+store_lead_request($user->urn(), $user->email());
 
 // If there's something to log, then send email about it too.
 if (isset($log_msg)) {
