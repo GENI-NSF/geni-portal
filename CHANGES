@@ -7,7 +7,7 @@
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage (#1318)
  * Slices tables show next resource expiration for each slice 
-   with color coding, or text indicating the slice has no resources. (#1354)
+   with color coding, or text indicating the slice has no resources. (#1354, #1384)
  * Alerts for maintenance show up on every page (#1375)
  * Remove member attributes for other members as the Portal on the
    WiMAX page (as in when disabling their WiMAX account cause the
