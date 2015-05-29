@@ -23,6 +23,7 @@
  * Do not verify iRODS server cert at all, as it fails on 
    newer versions of cURL. (#1386)
  * Reference a couple pages with explicit '.php' ending.
+  * See 'Create slice' on project page.
 
 == 2.32 ==
  * Clear a session setting in the speaks-for path (#1335)
