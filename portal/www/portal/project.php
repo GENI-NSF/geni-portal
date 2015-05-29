@@ -182,7 +182,7 @@ if (isset($project_id)) {
     $putBut = True;
     /* Create a new slice*/
     print "<button onClick=\"window.location='";
-    print relative_url("createslice?project_id=$project_id'");
+    print relative_url("createslice.php?project_id=$project_id'");
     print "\"$actdisabled><b>Create Slice</b></button>";
   }
   if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
