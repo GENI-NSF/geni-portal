@@ -255,12 +255,12 @@ function show_header($title, $active_tab = '', $load_user=1)
     $logout_url = relative_url("dologout.php");
     echo '<li style="border-right: none"><a href="' . $logout_url . '">Logout</a></li>';
     echo '</ul>';
-    echo '<img id="header-img-left" src="../../images/geni-header-left.png"/>';
 
 
     echo '</div>';
     
   }
+    echo '<img id="header-img-left" src="../../images/geni-header-left.png"/>';
   echo '</div>';
   show_tab_bar($active_tab, $load_user);
   if($has_maintenance_alert) {
