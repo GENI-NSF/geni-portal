@@ -196,6 +196,8 @@ dist_svcwebimages_DATA = \
 	www/images/geni.png \
 	www/images/geni_globe.png \
 	www/images/geni_globe_small.png \
+	www/images/geni-header-left.png \
+	www/images/geni-header-right.png \
 	www/images/header-home.jpg \
 	www/images/openVZvm-noTxt-centered.svg \
 	www/images/openVZvm-noTxt.svg \
@@ -229,7 +231,8 @@ dist_svcwebcommon_DATA = \
 	www/common/topbar_gradient2.png
 
 dist_svcwebcss_DATA =  \
-	www/common/css/portal.css
+	www/common/css/portal.css \
+	www/common/css/mobile-portal.css
 
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
