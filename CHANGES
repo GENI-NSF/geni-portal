@@ -5,7 +5,8 @@
 = GENI Portal Release Notes =
 
 == 2.33 ==
- * Add dropdown to get logs for a given time period on homepage (#1318)
+ * Add dropdown to get logs for a given time period on homepage, slice page,
+   and project page. (#1318)
  * Slices tables show next resource expiration for each slice 
    with color coding, or text indicating the slice has no resources. (#1354)
  * Alerts for maintenance show up on every page (#1375)

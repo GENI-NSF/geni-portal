@@ -812,7 +812,7 @@ print "</table>\n";
 <script type="text/javascript">
   $(document).ready(function(){ getLogs(24); });
   function getLogs(hours){
-    url = "do-get-logs.php?hours="+hours+"&sliceid=" + <?php echo "\"" . $slice_id . "\""; ?>; 
+    url = "do-get-logs.php?hours="+hours+"&slice_id=" + <?php echo "\"" . $slice_id . "\""; ?>; 
     $.get(url, function(data) {
       $('#log_table').html(data);
     });
