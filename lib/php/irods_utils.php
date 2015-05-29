@@ -108,7 +108,7 @@ function doRESTCall($url, $user, $password, $op="GET", $data="", $content_type="
   } else {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // FIXME: iren-web is using a self signed cert at the moment
   }
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // FIXME: The iRODS cert says just 'iRODS' so can't ensure we are talking to the right host
 
   if ($op == "DELETE") {
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');

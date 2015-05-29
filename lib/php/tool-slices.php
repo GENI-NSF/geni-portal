@@ -172,6 +172,27 @@ function make_slice_table($slicelist) {
     print "</div>";
 }
 
+/* returns a color based on how close the date is to now 
+   red = < 1 day
+   orange =  < 2 days 
+   green = > 2 days      */
+function get_urgency_color($exp_date){
+  $now = new DateTime('now');
+  $exp_datetime = new DateTime($exp_date);
+  if ($exp_datetime < $now) {
+    return "red; text-decoration: underline;";
+  } 
+  $interval = date_diff($exp_datetime, $now);
+  $num_hours = $interval->d * 24 + $interval->h;
+  if ($num_hours < 24) { 
+    return "red";
+  } else if ($num_hours < 48) {
+    return "orange";
+  } else {
+    return "green";
+  }
+}
+
 function list_slice($slice,$user) {
   global $project_objects, $slice_owner_names;
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
@@ -260,25 +281,7 @@ function list_slice($slice,$user) {
   // FIXME: Make this a mailto. Need to use member_objects to do init_from_record of a member and then retrieve the email address
   //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
 
-  
-  function getUrgencyColor($exp_date){
-    $now = new DateTime('now');
-    $exp_datetime = new DateTime($exp_date);
-    if ($exp_datetime < $now) {
-      return "red; text-decoration: underline;";
-    } 
-    $interval = date_diff($exp_datetime, $now);
-    $num_hours = $interval->d * 24 + $interval->h;
-    if ($num_hours < 24) { 
-      return "red";
-    } else if ($num_hours < 48) {
-      return "orange";
-    } else {
-      return "green";
-    }
-  }
-
-  $slice_exp_color = getUrgencyColor($slice_exp_date);
+  $slice_exp_color = get_urgency_color($slice_exp_date);
   print "<td>" . "<span style='color:$slice_exp_color'>" . htmlentities(dateUIFormat($slice_exp_date)) . "</span></td>";
   print "<td>";
   $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
@@ -296,7 +299,7 @@ function list_slice($slice,$user) {
     }
 
     $next_exp = dateUIFormat($next_exp);
-    $next_exp_color = getUrgencyColor($next_exp);
+    $next_exp_color = get_urgency_color($next_exp);
   }
 
   print "<span style='color:$next_exp_color'>" . $next_exp . "</span></td>";
