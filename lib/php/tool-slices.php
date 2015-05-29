@@ -152,16 +152,16 @@ if (count($my_slice_objects) > 0) {
   }
 }
 
-function make_slice_table($slicelist){
+function make_slice_table($slicelist) {
     global $user;
-    print "\n<table>\n";
+    print "<div class='tablecontainer'>";
+    print "\n<table class='slicetable'>\n";
     print ("<tr><th>Slice Name</th>");
     print ("<th>Project</th>");
     print ("<th>Slice Expiration</th>");
     print ("<th>Next Resource Expiration</th>");
     print ("<th>Slice Lead</th>");
     print "<th>Actions</th>";
-    // print "<th>Details</th>";
 
     print "</tr>\n";
 
@@ -169,6 +169,28 @@ function make_slice_table($slicelist){
       list_slice($slice,$user);
     }
     print "</table>\n";
+    print "</div>";
+}
+
+/* returns a color based on how close the date is to now 
+   red = < 1 day
+   orange =  < 2 days 
+   green = > 2 days      */
+function get_urgency_color($exp_date){
+  $now = new DateTime('now');
+  $exp_datetime = new DateTime($exp_date);
+  if ($exp_datetime < $now) {
+    return "red; text-decoration: underline;";
+  } 
+  $interval = date_diff($exp_datetime, $now);
+  $num_hours = $interval->d * 24 + $interval->h;
+  if ($num_hours < 24) { 
+    return "red";
+  } else if ($num_hours < 48) {
+    return "orange";
+  } else {
+    return "green";
+  }
 }
 
 function list_slice($slice,$user) {
@@ -259,25 +281,7 @@ function list_slice($slice,$user) {
   // FIXME: Make this a mailto. Need to use member_objects to do init_from_record of a member and then retrieve the email address
   //    print "<td><a href=\"slice-member.php?slice_id=$slice_id&member_id=$slice_owner_id\">" . htmlentities($slice_owner_name) . "</a></td>";
 
-  
-  function getUrgencyColor($exp_date){
-    $now = new DateTime('now');
-    $exp_datetime = new DateTime($exp_date);
-    if ($exp_datetime < $now) {
-      return "red; text-decoration: underline;";
-    } 
-    $interval = date_diff($exp_datetime, $now);
-    $num_hours = $interval->d * 24 + $interval->h;
-    if ($num_hours < 24) { 
-      return "red";
-    } else if ($num_hours < 48) {
-      return "orange";
-    } else {
-      return "green";
-    }
-  }
-
-  $slice_exp_color = getUrgencyColor($slice_exp_date);
+  $slice_exp_color = get_urgency_color($slice_exp_date);
   print "<td>" . "<span style='color:$slice_exp_color'>" . htmlentities(dateUIFormat($slice_exp_date)) . "</span></td>";
   print "<td>";
   $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
@@ -295,13 +299,13 @@ function list_slice($slice,$user) {
     }
 
     $next_exp = dateUIFormat($next_exp);
-    $next_exp_color = getUrgencyColor($next_exp);
+    $next_exp_color = get_urgency_color($next_exp);
   }
 
   print "<span style='color:$next_exp_color'>" . $next_exp . "</span></td>";
 
   print "<td>$slice_owner_name  </td>";
-  print ("<td><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
+  print ("<td><div id='actionbuttons'><button $add_slivers_disabled onClick=\"window.location='$sliceresource_url'\"><b>Add Resources</b></button>");
   //  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button title='Login info, etc' onClick=\"info_set_location('$slice_id', '$listres_url')\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button $delete_slivers_disabled onClick=\"info_set_location('$slice_id', '$delete_sliver_url')\"><b>Delete Resources</b></button>");
@@ -314,7 +318,7 @@ function list_slice($slice,$user) {
   if (! is_null($jfed_button_start)) {
     print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $get_slice_credential_disable_buttons><b>jFed</b></button>";
   }
-  print "</td>";
+  print "</div></td>";
   print "</tr>\n";
 } // end of list_slice function
 

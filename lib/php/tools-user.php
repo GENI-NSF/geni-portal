@@ -114,7 +114,7 @@ else
     $edit_sshkey_url = relative_url('sshkeyedit.php?');
     $delete_sshkey_url = relative_url('deletesshkey.php?');
     js_delete_ssh_key();  // javascript for delete key confirmation
-    print "\n<table>\n";
+    print "\n<div class='tablecontainer'><table>\n";
     print "<tr><th>Name</th><th>Description</th><th>Public Key</th><th>Private Key</th>"
       . "<th>PuTTY</th>"
       . "<th>Edit</th><th>Delete</th></tr>\n";
@@ -170,7 +170,7 @@ else
       . '<td>' . $delete_cell . '</td>'
       . "</tr>\n";
     }
-    print "</table>\n";
+    print "</table></div>\n";
     print "<p>On Linux and Mac systems and for most Windows SSH clients (not PuTTY), do:";
     print "<ul>";
     print "<li>Download your private key.</li>";
@@ -308,7 +308,7 @@ $sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE
 $reqs = array_merge($preqs, $sreqs);
 if (isset($reqs) && count($reqs) > 0) {
   print "Found " . count($reqs) . " outstanding request(s) by you:<br/>\n";
-  print "<table>\n";
+  print "<div class='tablecontainer'><table>\n";
   // Could add the lead and purpose?
   print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
   $REQ_TYPE_NAMES = array();
@@ -338,7 +338,7 @@ if (isset($reqs) && count($reqs) > 0) {
     $req_date = dateUIFormat($req_date_db);
     print "<tr><td>$typestr</td><td>$name</td><td>$req_date</td><td>$reason</td><td>$cancel_button</td></tr>\n";
   }
-  print "</table>\n";
+  print "</table></div>\n";
   print "<br/>\n";
 } else {
   print "<p><i>No outstanding requests to join projects or slices or change your profile.</i></p>\n";
@@ -367,7 +367,7 @@ $openid_url = ("$protocol://$host/server/server.php/idpage?user="
 print "<h2>Account Summary</h2>\n";
 // Show username, email, affiliation, IdP, urn, prettyName, maybe project count and slice count
 // Put this in a nice table
-print "<table>\n";
+print "<div class='tablecontainer'><table>\n";
 print "<tr><th>Name</th><td>" . $user->prettyName() . "</td></tr>\n";
 print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
 print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
@@ -380,7 +380,7 @@ if ($user->phone() != "")
 // FIXME: Project count? Slice count?
 // FIXME: Other attributes?
 // FIXME: Permissions
-print "</table>\n";
+print "</table></div>\n";
 print "<p><button $disable_account_details onClick=\"window.location='modify.php'\">Modify user supplied account details </button> (e.g. to become a Project Lead).</p>";
 
 $sfcred = $user->speaksForCred();

@@ -112,7 +112,7 @@ include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 print "<h1>Create New Slice</h1>\n";
 print "<p>A GENI slice is a container for reserving and managing a set of GENI resources.</p>\n";
-print '<form method="GET" action="createslice">';
+print '<form method="GET" action="createslice.php">';
 print "\n";
 print "<input type='hidden' name='project_id' value='$project_id'/>";
 print "\n";
