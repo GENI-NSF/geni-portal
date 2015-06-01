@@ -818,7 +818,9 @@ print "</table>\n";
   }
 </script>
 
-<div><table id="log_table"></table></div>
+<div class="tablecontainer">
+  <table id="log_table"></table>
+</div>
 
 <?php
 include("footer.php");

@@ -167,7 +167,9 @@ print "<b>LabWiki</b></button> ";
     });
   }
 </script>
-<div class="tablecontainer"><table id="log_table"></table></div>
+<div class="tablecontainer">
+  <table id="log_table"></table>
+</div>
 
 <?php
 $disable_invite_geni = "";
