@@ -26,43 +26,69 @@ require_once("user.php");
 require_once("db_utils.php");
 require_once("ma_constants.php");
 require_once("ma_client.php");
+require_once("util.php");
 
 if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   exit();
 }
-
-function store_lead_request($urn, $email) {
-  $conn = portal_conn();
-  $sql = "INSERT into lead_request"
-  . " (requester_urn, requester_email) "
-  . "values (" . $conn->quote($urn, 'text') . ", "
-  .              $conn->quote($email, 'text') . ")";
-  db_execute_statement($sql, "insert lead request", true);
-}
-store_lead_request($user->urn(), $user->email());
 ?>
+
+<script>
+$(document).ready(function(){
+  $(".moreinfo").hide();
+  $(".expandinfo").click(function(){
+    $($(this).parents()[1]).next().fadeIn(500); 
+  });
+  $(".hideinfo").click(function(){
+    $($(this).parents()[1]).fadeOut(500);
+  });
+});
+</script>
+
 
 <h1>Administrator Tools</h1>
 
 <p>This page is intentionally not blank.</p>
 <h2>Open lead requests</h2>
-<?php 
 
+<?php
+
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $conn = portal_conn();
+
 $sql = "SELECT *"
 . " FROM lead_request";
-$row = db_fetch_rows($sql, "fetch all lead requests for admin page");
-$lead_requests = $row[RESPONSE_ARGUMENT::VALUE];
+$rows = db_fetch_rows($sql, "fetch all lead requests for admin page");
+$lead_requests = $rows[RESPONSE_ARGUMENT::VALUE];
+$requester_uuids = array();
+foreach ($lead_requests as $lead_request) {
+  $requester_uuids[] = $lead_request['requester_uuid'];
+}
 
-print "<table><tr><th>username</th><th>requested at</th><th>email</th><th>actions</th></tr>";
-foreach ($lead_requests as $request) {
-	$username = $request['requester_urn'];
-  $timestamp = $request['request_ts'];
-  $mailto_link = "<p>No contact info?</p>";
-  if (array_key_exists('requester_email', $request)) {
-	 $mailto_link = "<a href='mailto:" . $request['requester_email'] . "'>" . $request['requester_email'] . "</a>"; 
-  }
-  print "<tr><td>$username</td><td>$timestamp<td>$mailto_link</td><td>\o_0/</tr>";
+$requester_details = lookup_member_details($ma_url, $user, $requester_uuids); 
+
+print "<table><tr><th>name</th><th>requested at</th><th>email</th><th>actions</th></tr>";
+foreach ($lead_requests as $lead_request) {
+  $requester_uuid = $lead_request['requester_uuid'];
+  $details = $requester_details[$requester_uuid];
+  $name = $details[MA_ATTRIBUTE_NAME::FIRST_NAME] . " " . $details[MA_ATTRIBUTE_NAME::LAST_NAME]
+           . " (" . $details[MA_ATTRIBUTE_NAME::USERNAME] . ")";
+  $email = $details[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
+  $timestamp = dateUIFormat($lead_request['request_ts']);
+  $mailto_link = "<a href='mailto:" . $email . "'>" . $email . "</a>"; 
+  print "<tr><td>$name</td><td>$timestamp<td>$mailto_link</td>";
+  print "<td><button>approve</button><button>deny</button><button class='expandinfo'>more info</button></tr>";
+  $affiliation = $details[MA_ATTRIBUTE_NAME::AFFILIATION];
+  $reference = $details[MA_ATTRIBUTE_NAME::REFERENCE];
+  $reason = $details[MA_ATTRIBUTE_NAME::REASON];
+  $url = $details[MA_ATTRIBUTE_NAME::URL];
+  $link = "<a href='" . $url . "'>" . $url . "</a>"; 
+  $info = "<b>affiliation: </b>" . ($affiliation != "" ? $affiliation : "NONE")  . "<br>" .
+          "<b>reason:      </b>" . ($reason      != "" ? $reason      : "NONE")  . "<br>" .
+          "<b>reference:   </b>" . ($reference   != "" ? $reference   : "NONE")  . "<br>" .
+          "<b>link:        </b>" . ($url         != "" ? $link        : "NONE")  . "<br>";
+  print "<tr class='moreinfo'><td colspan='2'>$info</td>";
+  print "<td><button class='hideinfo'>close</button></td><tr>";
 }
 ?>
 

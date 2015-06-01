@@ -97,12 +97,13 @@ update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason,
 
 // Now handle project lead...
 
-function store_lead_request($urn, $email) {
+function store_lead_request($urn, $uuid, $eppn) {
   $conn = portal_conn();
-  $sql = "INSERT into lead_request"
-  . " (requester_urn, requester_email) "
-  . "values (" . $conn->quote($urn, 'text') . ", "
-  .              $conn->quote($email, 'text') . ")";
+  $sql = "INSERT into lead_request "
+  . "(requester_urn, requester_uuid, requester_eppn) "
+  . "values (" . $conn->quote($urn, 'text')  .  ", "
+  .              $conn->quote($uuid, 'text') .  ", "
+  .              $conn->quote($eppn, 'text') .  ")";
   db_execute_statement($sql, "insert lead request", true);
 }
 
@@ -123,7 +124,7 @@ if ($pi_request and ! $is_pi) {
   $body .= 'The following user has requested to no longer be a Project Lead:';
   $log_msg = $user->prettyName() . " requested to NOT be a Project Lead";
 }
-store_lead_request($user->urn(), $user->email());
+store_lead_request($user->urn(), $user->account_id, $user->eppn);
 
 // If there's something to log, then send email about it too.
 if (isset($log_msg)) {
@@ -234,7 +235,7 @@ if ($pi_request and ! $is_pi) {
   print '</p>' . PHP_EOL;
 } else if (! $pi_request and $is_pi) {
   print '<p>' . PHP_EOL;
-  print "You have indicated that you no longer want to be a  Project Lead.";
+  print "You have indicated that you no longer want to be a Project Lead.";
   print " This is an administrative function that requires approval.";
   print " You should hear from us within 3 - 4 business days.";
   print '</p>' . PHP_EOL;
