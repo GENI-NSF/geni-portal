@@ -35,40 +35,119 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
+$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+
+
 $num_hours = 24;
 if (array_key_exists('hours', $_REQUEST)) {
   $num_hours = (int) $_REQUEST['hours'];
 }
 
-$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, 
-               $user, // Portal::getInstance(), 
-               CS_CONTEXT_TYPE::MEMBER, $user->account_id, $num_hours);
-$new_entries = get_log_entries_by_author($log_url, 
-           $user, // Portal::getInstance(), 
-           $user->account_id, $num_hours);
-$entries = array_merge($entries, $new_entries);
-
-$messages = array();
-$logs = array();
-if (is_array($entries) && count($entries) > 0) {
-  foreach($entries as $entry) {
-    $msg = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME] . $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    if (!in_array($msg, $messages)) {
-      $messages[] = $msg;
-      $logs[$msg] = $entry;
-    }
-  }
-
-  krsort($logs);
-  foreach ($logs as $msg => $entry) {
-    $rawtime = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = dateUIFormat($rawtime);
-    print "<tr><td>$time</td><td>$message</td></tr>\n";
-  }
+// is this for the homepage, projects, or slices?
+if (array_key_exists('slice_id', $_REQUEST)) {
+  get_slice_log_table($_REQUEST['slice_id']);
+} else if (array_key_exists('project_id', $_REQUEST)) {
+  get_project_log_table($_REQUEST['project_id']);
 } else {
-  print "<tr><td><i>No messages.</i></td></tr>\n";
+  get_homepage_log_table();
+}
+
+function get_slice_log_table($slice_id) {
+  global $user;
+  global $num_hours;
+  global $log_url;
+  global $ma_url;
+
+  print "<tr><th>Time</th><th>Message</th><th>Member</th></tr>";
+  $entries = get_log_entries_for_context($log_url, $user,
+                  CS_CONTEXT_TYPE::SLICE, $slice_id, $num_hours);
+  $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
+                  LOGGING_TABLE_FIELDNAME::USER_ID);
+  
+  usort($entries, 'compare_log_entries');
+  if (is_array($entries) && count($entries) > 0) {
+    foreach($entries as $entry) {
+      $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+      $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
+      $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
+      $member_name = $entry_member_names[$member_id];
+      //    error_log("ENTRY = " . print_r($entry, true));
+      //      print "<tr><td>$time</td><td>$message</td><td><a href=\"slice-member.php?slice_id=" . $slice_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+          // FIXME: Want a mailto link
+      print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
+    }
+  } else {
+    print "<tr><td></td><td><i>No messages.</i></td><td></td></tr>\n";
+  }
+}
+
+function get_project_log_table($project_id) {
+  global $user;
+  global $num_hours;
+  global $log_url;
+  global $ma_url;
+
+  print "<tr><th>Time</th><th>Message</th><th>Member</th></tr>";
+  $entries = get_log_entries_for_context($log_url, 
+                 $user, // Portal::getInstance(),
+                 CS_CONTEXT_TYPE::PROJECT, $project_id, $num_hours);
+  if (is_array($entries) && count($entries) > 0) {
+    usort($entries, 'compare_log_entries');
+    $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
+                  LOGGING_TABLE_FIELDNAME::USER_ID);
+    foreach($entries as $entry) {
+      $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+      $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
+      $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
+      $member_name = $entry_member_names[$member_id];
+      //    error_log("ENTRY = " . print_r($entry, true));
+      // If the MA or other authority took the action, then there is no name and no user so don't show the project-member page
+      if ($member_name == "NONE") {
+        print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
+      } else {
+        print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
+      }
+    }
+  }	else {
+    print "<tr><td></td><td><i>No messages.</i></td><td></td></tr>\n";
+  }
+}
+
+function get_homepage_log_table(){
+  global $user;
+  global $num_hours;
+  global $log_url;
+
+  $entries = get_log_entries_for_context($log_url, 
+                 $user, // Portal::getInstance(), 
+                 CS_CONTEXT_TYPE::MEMBER, $user->account_id, $num_hours);
+  $new_entries = get_log_entries_by_author($log_url, 
+             $user, // Portal::getInstance(), 
+             $user->account_id, $num_hours);
+  $entries = array_merge($entries, $new_entries);
+
+  $messages = array();
+  $logs = array();
+  if (is_array($entries) && count($entries) > 0) {
+    foreach($entries as $entry) {
+      $msg = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME] . $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+      if (!in_array($msg, $messages)) {
+        $messages[] = $msg;
+        $logs[$msg] = $entry;
+      }
+    }
+
+    krsort($logs);
+    foreach ($logs as $msg => $entry) {
+      $rawtime = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
+      $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
+      $time = dateUIFormat($rawtime);
+      print "<tr><td>$time</td><td>$message</td></tr>\n";
+    }
+  } else {
+    print "<tr><td></td><td><i>No messages.</i></td><td></td></tr>\n";
+  }
 }
 
 ?>
