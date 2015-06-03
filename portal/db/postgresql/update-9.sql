@@ -15,7 +15,9 @@ CREATE TABLE lead_request (
   requester_uuid  VARCHAR NOT NULL,
   requester_eppn  VARCHAR NOT NULL,
   request_ts timestamp NOT NULL default CURRENT_TIMESTAMP,
-  approver VARCHAR,
+  approver VARCHAR default '',
+  notes VARCHAR default '',
+  reason VARCHAR default '',
   status request_status NOT NULL default 'open',
   PRIMARY KEY (id)
 );

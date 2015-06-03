@@ -51,6 +51,22 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
   return $results;  // probably ignored
 }
 
+//Add a privilege to a member privilege is either OPERATOR or PROJECT_LEAD
+function add_member_privilege($ma_url, $signer, $member_id, $value)
+{
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  $results = $client->add_member_privilege($member_id, $value, $client->creds(), $client->options());
+  return $results;
+}
+
+//Add a privilege to a member privilege is either OPERATOR or PROJECT_LEAD
+function remove_member_privilege($ma_url, $signer, $member_id, $value)
+{
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  $results = $client->add_member_privilege($member_id, $value, $client->creds(), $client->options());
+  return $results;
+}
+
 // Remove member attribute
 function remove_member_attribute($ma_url, $signer, $member_id, $name)
 {
