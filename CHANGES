@@ -4,6 +4,29 @@
 
 = GENI Portal Release Notes =
 
+== 2.33 ==
+ * Add dropdown to get logs for a given time period on homepage, slice page,
+   and project page. (#1318)
+ * Made CSS responsive to screen width, general CSS improvements (#768)
+ * Slices tables show next resource expiration for each slice 
+   with color coding, or text indicating the slice has no resources. (#1354, #1384)
+ * Alerts for maintenance show up on every page (#1375)
+ * Remove member attributes for other members as the Portal on the
+   WiMAX page (as in when disabling their WiMAX account cause the
+   project is disabled). (#1380)
+ * Only refetch the manifest on details page once after
+   sliverstatus says ready. AMs with no resources or login
+   info therefore won't be constantly re-polled. (#1378)
+  * Be sure to handle status of 'no resources' as terminal.
+ * When showing resource details / manifests, show something
+   when no resources were found. And update the overall page status.
+   Additionally, close the PHP session earlier. (#1365)
+ * Migrate a few aggregates to the clearinghouse repository
+ * Do not verify iRODS server cert at all, as it fails on 
+   newer versions of cURL. (#1386)
+ * Reference a couple pages with explicit '.php' ending.
+  * See 'Create slice' on project page.
+
 == 2.32 ==
  * Clear a session setting in the speaks-for path (#1335)
  * Check for expired certificate in speaks-for path (#1336)

@@ -172,6 +172,8 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $in_lockdown_mode;
   global $portal_analytics_enable;
   global $portal_analytics_string;
+  global $has_maintenance_alert;
+  global $maintenance_alert;
 
   if ($load_user) {
     global $user;
@@ -198,7 +200,8 @@ function show_header($title, $active_tab = '', $load_user=1)
 
   /* Stylesheet(s) */
   echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
-  echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
+  echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
+  echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
   
   /* Google Analytics
@@ -231,6 +234,10 @@ function show_header($title, $active_tab = '', $load_user=1)
   /* datatables.net (for sortable/searchable tables) */
   echo '<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>';
 
+  /* for proper scaling on mobile devices/ mobile web app support */ 
+  echo '<meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>';
+  echo '<meta name="mobile-web-app-capable" content="yes">';
+
   /* Close the "head" */
   echo '</head>';
   echo '<body>';
@@ -248,11 +255,18 @@ function show_header($title, $active_tab = '', $load_user=1)
     $logout_url = relative_url("dologout.php");
     echo '<li style="border-right: none"><a href="' . $logout_url . '">Logout</a></li>';
     echo '</ul>';
-      echo '</div>';
+
+
+    echo '</div>';
     
   }
+    echo '<img id="header-img-left" src="../../images/geni-header-left.png"/>';
   echo '</div>';
   show_tab_bar($active_tab, $load_user);
+  if($has_maintenance_alert) {
+    // TODO: make a dismiss button 
+    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p></br>";
+  }
   echo '</div>';
   echo '<div id="content-outer">';
   echo '<div id="content">';

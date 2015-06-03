@@ -41,7 +41,6 @@
 */
 
 #jacks-app-div {
-    min-width: 795px;
     width: 100%;
 }
 
@@ -49,6 +48,7 @@
   border: 1px solid #000;
   position: relative;
 }
+
 #jacks-app #jacks-status {
   position: absolute;
   top: 0;
@@ -62,6 +62,7 @@
   background: #f5f5f5;
   font-weight: bold;
 }
+
 #jacks-app #jacks-status-history {
   position: absolute;
   top: 0;
@@ -75,6 +76,7 @@
   background: #f5f5f5;
   font-weight: bold;
 }
+
 #jacks-app #jacks-status-history:after {
   content: "";
   overflow: hidden;
@@ -86,24 +88,30 @@
   top: 20px;
   left: 0;
 }
+
 #jacks-app #jacks-status-history:hover {
   overflow-y: scroll;
   max-height: 75px;
 }
+
 #jacks-app #jacks-status-history:hover:after {
   display: none;
 }
+
 #jacks-app #jacks-status-history > p {
   margin-left: 10px;
   margin-top: 0;
   margin-bottom: 0;
 }
+
 #jacks-app #jacks-buttons {
   border-top: 1px solid #000;
 }
+
 #jacks-app #jacks-buttons > button {
     padding: 5px;
 }
+
 #jacks-app #jacks-pane {
   margin-top: 36px;
   height: 350px;

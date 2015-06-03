@@ -23,10 +23,15 @@
 //----------------------------------------------------------------------
 
 require_once("user.php");
+require_once("db_utils.php");
+require_once("ma_constants.php");
+require_once("ma_client.php");
+
 if (! $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   exit();
 }
 ?>
+
 <h1>Administrator Tools</h1>
 
-<p>This page intentionally left blank.</p>
+<p>This page is intentionally left blank.</p>

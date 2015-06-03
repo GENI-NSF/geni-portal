@@ -59,7 +59,7 @@ if (! $user->portalIsAuthorized()) {
 
 include("tool-breadcrumbs.php");
 
-echo "<table style=\"margin-left: 0px;\"><tr><th>Current GENI Clearinghouse Resources</th></tr><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
+echo "<table id='resourcemap'><tr><th>Current GENI Clearinghouse Resources</th></tr><tr><td>";
 include("map.html");
 echo "</td></tr></table>";
 
@@ -123,7 +123,7 @@ print "<b>LabWiki</b></button> ";
   // Show cloudlab button
   $cloudlab_url = "https://www.cloudlab.us/login.php";
   $cloudlab_image_url = "https://www.cloudlab.us/img/cloudlab-big.png";
-  print "<button style='height:20px;' onClick=\"window.open('$cloudlab_url')\">";
+  print "<button type='button' style='height:20px;' onClick=\"window.open('$cloudlab_url')\">";
   print "<img src='$cloudlab_image_url' height='100%'/>";
   print "</button>";
 
@@ -151,47 +151,27 @@ print "<b>LabWiki</b></button> ";
 ?>
 
 <h2>GENI Messages</h2>
-<table>
+<p>Showing logs for the last 
+<select onchange="getLogs(this.value);">
+  <option value="24">day</option>
+  <option value="48">2 days</option>
+  <option value="72">3 days</option>
+  <option value="168">week</option>
+</select></p>
+
+<script type="text/javascript">
+  $(document).ready(function(){ getLogs(24); });
+  function getLogs(hours){
+    $.get("do-get-logs.php?hours="+hours, function(data) {
+      $('#log_table').html(data);
+    });
+  }
+</script>
+<div class="tablecontainer">
+  <table id="log_table"></table>
+</div>
+
 <?php
-   // FIXME: foreach project or slice where user is admin or lead, get log entries for that context
-   // and foreach slice where user is ad
-require_once('logging_client.php');
-require_once('sr_constants.php');
-$log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, 
-				       $user, // Portal::getInstance(), 
-				       CS_CONTEXT_TYPE::MEMBER, $user->account_id);
-$new_entries = get_log_entries_by_author($log_url, 
-					 $user, // Portal::getInstance(), 
-					 $user->account_id);
-$entries = array_merge($entries, $new_entries);
-
-$messages = array();
-$logs = array();
-if (is_array($entries) && count($entries) > 0) {
-  foreach($entries as $entry) {
-    $msg = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME] . $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    if (!in_array($msg, $messages)) {
-      $messages[] = $msg;
-      $logs[$msg] = $entry;
-    /* } else { */
-    /*   error_log("Already in " . $msg); */
-    }
-  }
-
-  krsort($logs);
-  foreach ($logs as $msg => $entry) {
-    $rawtime = $entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME];
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = dateUIFormat($rawtime);
-    print "<tr><td>$time</td><td>$message</td></tr>\n";
-  }
-} else {
-  print "<tr><td><i>No messages.</i></td></tr>\n";
-}
-
-print "</table>";
-
 $disable_invite_geni = "";
 if ($in_lockdown_mode)
   $disable_invite_geni = "disabled";

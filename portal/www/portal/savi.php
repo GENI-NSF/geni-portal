@@ -40,14 +40,14 @@ $user = geni_loadUser();
 $savi_url = 'http://shib.savitestbed.ca:5001/geni';
 $ssl_url = "profile.php#ssl";
 
-error_log("USER = " . print_r($user, true));
+// error_log("USER = " . print_r($user, true));
 
 $cert = $user->insideCertificate();
 if ($cert == NULL || strlen($cert) == 0) {
   // *** Put up error message and button to return
 }
 
-error_log("CERT = " . print_r($cert, true));
+// error_log("CERT = " . print_r($cert, true));
 
 show_header('SAVI Testbed', $TAB_HOME);
 
