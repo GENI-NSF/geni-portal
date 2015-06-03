@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.34 ==
+
+
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,
    and project page. (#1318)
