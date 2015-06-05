@@ -183,7 +183,7 @@ function get_urgency_color($exp_date){
     return "red; text-decoration: underline;";
   } 
   $interval = date_diff($exp_datetime, $now);
-  $num_hours = $interval->d * 24 + $interval->h;
+  $num_hours = $interval->days * 24 + $interval->h;
   if ($num_hours < 24) { 
     return "red";
   } else if ($num_hours < 48) {
