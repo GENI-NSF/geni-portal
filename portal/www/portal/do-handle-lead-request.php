@@ -87,7 +87,7 @@ function handle_lead_request($request_id, $new_status, $approver, $user_uid, $re
 // Send email to admins about the fact that $new_lead was approved because of $reason
 function send_approved_mail($new_lead, $reason) {
   $pretty_name = $new_lead->prettyName();
-  $body = $pretty_name . " approved to be project lead. ";
+  $body = $pretty_name . " approved to be project lead. \r\n";
   $body .= "Reason: " . $reason;
   $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
   $headers .= "Content-Transfer-Encoding: 8bit\r\n";

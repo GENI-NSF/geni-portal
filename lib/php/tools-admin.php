@@ -75,7 +75,7 @@ function send_lead_request_response(requester_uuid, request_id, status, reason) 
 }
 
 function save_note(request_id) {
-  note = $("#notebox").val();
+  note = $("#notebox" + request_id).val();
   if (note){
     params = {request_id: request_id, notes: note};
     $.post( "do-handle-lead-request.php", params, function(data) {
@@ -140,35 +140,42 @@ foreach ($lead_requests as $lead_request) {
     $notes = $lead_request['notes'] == "" ? "None" : $lead_request['notes'];
     $request_id = $lead_request['id'];
     $details = $requester_details[$requester_uuid];
-    $username = $details[MA_ATTRIBUTE_NAME::USERNAME];
-    $name = $details[MA_ATTRIBUTE_NAME::FIRST_NAME] . " " . $details[MA_ATTRIBUTE_NAME::LAST_NAME]
-             . " (" . $username . ")";
-    $email = $details[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
-    $timestamp = dateUIFormat($lead_request['request_ts']);
-    $mailto_link = "<a href='mailto:" . $email . "?Subject=Geni%20Project%20Lead%20Request'>" . $email . "</a>"; 
-    print "<tr><td>$name</td><td>$timestamp<td>$mailto_link</td>";
-    print "<td id='notescontainer'><textarea id='notebox'>$notes</textarea><br><button id='savenote' onclick='save_note(\"$request_id\");'>Save note</button></td>";
-    print "<td><button onclick='approve_request(this, \"$requester_uuid\", \"$request_id\");'>Approve</button>";
-    print "<a href='mailto:$email?cc=ch-admins@geni.net&subject=GENI%20Project%20Lead%20Request'>";
-    print "<button onclick='deny_request(this, \"$requester_uuid\", \"$request_id\");'>Deny</button></a>";
-    print "<button onclick='expand_info(this);'>More info</button></td></tr>";
-    $affiliation = $details[MA_ATTRIBUTE_NAME::AFFILIATION];
-    $reference = $details[MA_ATTRIBUTE_NAME::REFERENCE];
-    $reason = $details[MA_ATTRIBUTE_NAME::REASON];
-    $url = $details[MA_ATTRIBUTE_NAME::URL];
-    $link = "<a href='" . $url . "'>" . $url . "</a>"; 
-    $info = "<b>Affiliation: </b>" . ($affiliation != "" ? $affiliation : "None")  . "<br>" .
-            "<b>Reason:      </b>" . ($reason      != "" ? $reason      : "None")  . "<br>" .
-            "<b>Reference:   </b>" . ($reference   != "" ? $reference   : "None")  . "<br>" .
-            "<b>Link:        </b>" . ($url         != "" ? $link        : "None")  . "<br>" . 
-            "<a target= 'blank' href = 'http://lmgtfy.com/?q=" . $details[MA_ATTRIBUTE_NAME::FIRST_NAME] . "+" .
-                                                 $details[MA_ATTRIBUTE_NAME::LAST_NAME]  . "+" . 
-                                                 get_school($affiliation) . "'>LMGTFY (beta)</a>";
-    print "<tr class='moreinfo'><td colspan='4'>$info</td>";
-    print "<td><button class='hideinfo' onclick='hide_info(this);'>close</button></td><tr>";
+    make_user_info_row($details, $user_id, $request_id);
     $open_requests++;
   }
 }
+
+function make_user_info_row($details, $user_id, $request_id){
+  $username = $details[MA_ATTRIBUTE_NAME::USERNAME];
+  $member = new Member($user_id);
+  $member->init_from_record($details);
+  $name = $member->prettyName();
+  $email = $details[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
+  $timestamp = dateUIFormat($lead_request['request_ts']);
+  $mailto_link = "<a href='mailto:" . $email . "?Subject=Geni%20Project%20Lead%20Request'>" . $email . "</a>"; 
+  print "<tr><td>$name ($username)</td><td>$timestamp<td>$mailto_link</td>";
+  print "<td id='notescontainer'>";
+  print "<textarea id='notebox$request_id'>$notes</textarea><br>";
+  print "<button id='savenote' onclick='save_note(\"$request_id\");'>Save note</button></td>";
+  print "<td><button onclick='approve_request(this, \"$user_id\", \"$request_id\");'>Approve</button>";
+  print "<a href='mailto:$email?cc=ch-admins@geni.net&subject=GENI%20Project%20Lead%20Request'>";
+  print "<button onclick='deny_request(this, \"$user_id\", \"$request_id\");'>Deny</button></a>";
+  print "<button onclick='expand_info(this);'>More info</button></td></tr>";
+  $affiliation = $details[MA_ATTRIBUTE_NAME::AFFILIATION];
+  $reason = $details[MA_ATTRIBUTE_NAME::REASON];
+  $reference = $details[MA_ATTRIBUTE_NAME::REFERENCE];
+  $url = $details[MA_ATTRIBUTE_NAME::URL];
+  $link = "<a href='" . $url . "'>" . $url . "</a>"; 
+  $info = "<b>Affiliation: </b>" . ($affiliation != "" ? $affiliation : "None")  . "<br>" .
+          "<b>Reason:      </b>" . ($reason      != "" ? $reason      : "None")  . "<br>" .
+          "<b>Reference:   </b>" . ($reference   != "" ? $reference   : "None")  . "<br>" .
+          "<b>Link:        </b>" . ($url         != "" ? $link        : "None")  . "<br>" . 
+          "<a target= 'blank' href = 'http://lmgtfy.com/?q=" . $name . "+" . get_school($affiliation) . "'>LMGTFY (beta)</a>";
+  print "<tr class='moreinfo'><td colspan='4'>$info</td>";
+  print "<td><button class='hideinfo' onclick='hide_info(this);'>close</button></td><tr>";
+}
+
+
 
 if ($open_requests == 0) {
   print "<td colspan='5'><i>No open lead requests.</i></td>";
