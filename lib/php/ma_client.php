@@ -51,7 +51,8 @@ function add_member_attribute($ma_url, $signer, $member_id, $name, $value, $self
   return $results;  // probably ignored
 }
 
-//Add a privilege to a member privilege is either OPERATOR or PROJECT_LEAD
+// Add a privilege to a member 
+// privilege is either OPERATOR or PROJECT_LEAD
 function add_member_privilege($ma_url, $signer, $member_id, $value)
 {
   $client = XMLRPCClient::get_client($ma_url, $signer);

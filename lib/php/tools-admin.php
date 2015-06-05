@@ -37,59 +37,78 @@ if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, nu
 
 <p>This page is intentionally not blank.</p>
 <script>
-  function expand_info(button){
-    $($(button).parents()[1]).next().fadeIn(500); 
-  }
-  function hide_info(button){
-    $($(button).parents()[1]).fadeOut(500);
-  }
-  function deny_request(button, requester_uuid, request_id){
-    old_row = $($(button).parents()[2]).html();
-    $($(button).parents()[2]).html("<td colspan='4' style='text-align: center;'><i>Request denied&nbsp;</i><button class='undo'>undo</button><button class='confirmdeny'>hide</button></td>");
-    $(".undo").click(function(){
-      send_lead_request_response(requester_uuid, request_id, "open");
-      $($(this).parents()[1]).html(old_row);
-    });
-    $(".confirmdeny").click(function(){
-      $($(this).parents()[1]).hide();
-    });
-    send_lead_request_response(requester_uuid, request_id, "denied", "");
-  }
+function expand_info(button){
+  $($(button).parents()[1]).next().show(); 
+}
+function hide_info(button){
+  $($(button).parents()[1]).hide();
+}
+function deny_request(button, requester_uuid, request_id){
+  old_row = $($(button).parents()[2]).html();
+  $($(button).parents()[2]).html("<td colspan='4' style='text-align: center;'>" +
+                                 "<i>Request denied&nbsp;</i>" +
+                                 "<button class='undo'>undo</button>" + 
+                                 "<button class='confirmdeny'>hide</button></td>");
+  $(".undo").click(function(){
+    send_lead_request_response(requester_uuid, request_id, "open", "");
+    $($(this).parents()[1]).html(old_row);
+  });
+  $(".confirmdeny").click(function(){
+    $($(this).parents()[1]).hide();
+  });
+  send_lead_request_response(requester_uuid, request_id, "denied", "");
+}
 
-  function approve_request(button, requester_uuid, request_id) {
-    reason = prompt("Why did you accept? (will be mailed to admins)");
-    if (reason) {
-      $($(button).parents()[2]).hide();
-      send_lead_request_response(requester_uuid, request_id, "approved", reason);
-    }
+function approve_request(button, requester_uuid, request_id) {
+  reason = prompt("Why did you accept? (will be mailed to admins)");
+  if (reason) {
+    $($(button).parents()[2]).hide();
+    send_lead_request_response(requester_uuid, request_id, "approved", reason);
   }
+}
 
-  function send_lead_request_response(requester_uuid, request_id, status, reason) {
-    params = {request_id: request_id, new_status: status, user_uid: requester_uuid, reason: reason };
+function send_lead_request_response(requester_uuid, request_id, status, reason) {
+  params = {request_id: request_id, new_status: status, user_uid: requester_uuid, reason: reason };
+  $.post( "do-handle-lead-request.php", params, function(data) {
+    console.log(data);
+  });
+}
+
+function save_note(request_id) {
+  note = $("#notebox").val();
+  if (note){
+    params = {request_id: request_id, notes: note};
     $.post( "do-handle-lead-request.php", params, function(data) {
       console.log(data);
     });
   }
+}
 
-  function save_note(request_id) {
-    note = $("#notebox").val();
-    if (note){
-      console.log("note_to_send isssssss "+ note);
-      params = {request_id: request_id, notes: note};
-      $.post( "do-handle-lead-request.php", params, function(data) {
-        console.log(data);
-      });
-    }
-  }
-
-  $(document).ready(function(){
-    $(".moreinfo").hide();
+$(document).ready(function(){
+  $(".moreinfo").hide();
+  $('#searchform').submit(function(e) {
+    $("#searchresults").html("loading...");
+    e.preventDefault();
+    params = ($(this).serialize());
+    $.get( "do-user-search.php?" + params, function(data) {
+      $("#searchresults").html(data);
+    });
   });
+});
 </script>
 
+<div id='tablist'>
+  <ul class='tabs'>
+    <li><a href='#leadrequests'>Lead Requests</a></li>
+    <li style="border-right: none"><a href='#usersearch'>User Search</a></li>
+  </ul>
+</div>
+
+<div id='leadrequests'>
 <h2>Open lead requests</h2>
 
 <?php
+// Returns what's between the '@' and the "." in a user's affiliation. Likely their school
 function get_school($affiliation){
   $tmp = explode("@", $affiliation);
   $tmp = explode(".", $tmp[1]);
@@ -111,7 +130,7 @@ foreach ($lead_requests as $lead_request) {
 
 $requester_details = lookup_member_details($ma_url, $user, $requester_uuids); 
 
-print "<table><tr><th>Name</th><th>Requested At</th><th>Email</th><th>Admin Notes (click to edit)</th><th>Actions</th></tr>";
+print "<table><tr><th>Name</th><th>Requested At</th><th>Email</th><th>Admin Notes</th><th>Actions</th></tr>";
 
 $open_requests = 0;
 
@@ -152,9 +171,24 @@ foreach ($lead_requests as $lead_request) {
 }
 
 if ($open_requests == 0) {
-  print "<td colspan='5'><i>$open_requests open lead requests.</i></td>";
+  print "<td colspan='5'><i>No open lead requests.</i></td>";
 }
 
 ?>
 
-</tbody></table>
+</tbody></table></div>
+
+<div id='usersearch'>
+  <h2>Find a GENI user:</h2>
+  <form id="searchform">
+    Search users:
+    <input type="search" name="term" placeholder="enter search term ..."><br>
+    by: <input type="radio" name="search_type" value="email" checked>email
+        <input type="radio" name="search_type" value="username">username
+        <input type="radio" name="search_type" value="lastname">lastname
+  </form>
+  <div id="searchresults"></div>
+</div>
+
+<?php include "tabs.js"; ?>
+

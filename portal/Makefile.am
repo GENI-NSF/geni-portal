@@ -89,6 +89,7 @@ dist_svcweb_DATA = \
 	www/portal/do-renew-slice.php \
 	www/portal/do-renew.php \
 	www/portal/do-upload-project-members.php \
+	www/portal/do-user-search.php \
 	www/portal/dologout.php \
 	www/portal/downloadkeycert.php \
 	www/portal/downloadomnibundle.php \
