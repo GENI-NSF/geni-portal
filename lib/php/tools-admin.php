@@ -28,6 +28,7 @@ require_once("ma_constants.php");
 require_once("ma_client.php");
 require_once("util.php");
 
+// This page is for OPERATORS only
 if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   exit();
 }
@@ -35,17 +36,25 @@ if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, nu
 
 <h1>Administrator Tools</h1>
 
-<p>This page is intentionally not blank.</p>
+<p>This page is intentionally <i>not</i> blank.</p>
+
 <script>
+function failed_request(){
+  $("#loading").hide();
+  alert("Failed to perform action. Check the server logs for more info.");
+}
+
 function expand_info(button){
   $($(button).parents()[1]).next().show(); 
 }
+
 function hide_info(button){
   $($(button).parents()[1]).hide();
 }
+
 function deny_request(button, requester_uuid, request_id){
   old_row = $($(button).parents()[2]).html();
-  $($(button).parents()[2]).html("<td colspan='4' style='text-align: center;'>" +
+  $($(button).parents()[2]).html("<td colspan='5' style='text-align: center;'>" +
                                  "<i>Request denied&nbsp;</i>" +
                                  "<button class='undo'>undo</button>" + 
                                  "<button class='confirmdeny'>hide</button></td>");
@@ -68,31 +77,54 @@ function approve_request(button, requester_uuid, request_id) {
 }
 
 function send_lead_request_response(requester_uuid, request_id, status, reason) {
-  params = {request_id: request_id, new_status: status, user_uid: requester_uuid, reason: reason };
+  params = {request_id: request_id, new_status: status, user_uid: requester_uuid, reason: reason};
+  $("#loading").show();
   $.post( "do-handle-lead-request.php", params, function(data) {
-    console.log(data);
-  });
+    $("#loading").hide();
+    $("#resultsbox").html(data);
+  }).fail(failed_request);
 }
 
 function save_note(request_id) {
   note = $("#notebox" + request_id).val();
   if (note){
+    $("#loading").show();
     params = {request_id: request_id, notes: note};
     $.post( "do-handle-lead-request.php", params, function(data) {
-      console.log(data);
-    });
+      $("#loading").hide();
+      $("#resultsbox").html(data);
+    }).fail(failed_request);
   }
+}
+
+function remove_from_project(member_id, project_id){
+  $("#loading").show();
+  params = {member_id: member_id, project_id: project_id, action: "remove"};
+  $.post( "do-user-admin.php", params, function(data) {
+    $("#loading").hide();
+    $("#resultsbox").html(data);
+  }).fail(failed_request);
 }
 
 $(document).ready(function(){
   $(".moreinfo").hide();
-  $('#searchform').submit(function(e) {
-    $("#searchresults").html("loading...");
+  $('#usersearchform').submit(function(e) {
+    $("#loading").show();
     e.preventDefault();
     params = ($(this).serialize());
     $.get( "do-user-search.php?" + params, function(data) {
-      $("#searchresults").html(data);
-    });
+      $("#loading").hide();
+      $("#usersearchresults").html(data);
+    }).fail(failed_request);
+  });
+  $('#slicesearchform').submit(function(e) {
+    $("#loading").show();
+    e.preventDefault();
+    params = ($(this).serialize());
+    $.get( "do-slice-search.php?" + params, function(data) {
+      $("#loading").hide();
+      $("#slicesearchresults").html(data);
+    }).fail(failed_request);
   });
 });
 </script>
@@ -100,22 +132,20 @@ $(document).ready(function(){
 <div id='tablist'>
   <ul class='tabs'>
     <li><a href='#leadrequests'>Lead Requests</a></li>
-    <li style="border-right: none"><a href='#usersearch'>User Search</a></li>
+    <li><a href='#usersearch'>User Search</a></li>
+    <li style="border-right: none"><a href='#slicesearch'>Slice Search</a></li>
   </ul>
 </div>
+<div id ='loading' style='display: none;'><h2 style="border: 0px; text-align: center;">Loading...</h2></div>
+<div id='resultsbox'></div>
+
 
 <div id='leadrequests'>
 <h2>Open lead requests</h2>
 
 <?php
-// Returns what's between the '@' and the "." in a user's affiliation. Likely their school
-function get_school($affiliation){
-  $tmp = explode("@", $affiliation);
-  $tmp = explode(".", $tmp[1]);
-  $school = $tmp[0];
-  return $school == NULL ? "" : $school;  
-}
 
+// Find open lead requests and display table with information about the requesters
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $conn = portal_conn();
 
@@ -138,24 +168,36 @@ foreach ($lead_requests as $lead_request) {
   if ($lead_request['status'] == "open") {
     $requester_uuid = $lead_request['requester_uuid'];
     $notes = $lead_request['notes'] == "" ? "None" : $lead_request['notes'];
+    $timestamp = dateUIFormat($lead_request['request_ts']);
     $request_id = $lead_request['id'];
     $details = $requester_details[$requester_uuid];
-    make_user_info_row($details, $user_id, $request_id);
+    make_user_info_rows($details, $requester_uuid, $request_id, $notes, $timestamp);
     $open_requests++;
   }
 }
 
-function make_user_info_row($details, $user_id, $request_id){
+// Returns what's between the '@' and the "." in a user's affiliation. Likely their school/ institution
+function get_school($affiliation)
+{
+  $tmp = explode("@", $affiliation);
+  $tmp = explode(".", $tmp[1]);
+  $school = $tmp[0];
+  return $school == NULL ? "" : $school;  
+}
+
+// Populate and print 2 rows for a user: one with basic information and approve/deny button,
+// a second which is default hidden and contains more information 
+function make_user_info_rows($details, $user_id, $request_id, $notes, $timestamp)
+{
   $username = $details[MA_ATTRIBUTE_NAME::USERNAME];
   $member = new Member($user_id);
   $member->init_from_record($details);
   $name = $member->prettyName();
   $email = $details[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
-  $timestamp = dateUIFormat($lead_request['request_ts']);
   $mailto_link = "<a href='mailto:" . $email . "?Subject=Geni%20Project%20Lead%20Request'>" . $email . "</a>"; 
   print "<tr><td>$name ($username)</td><td>$timestamp<td>$mailto_link</td>";
   print "<td id='notescontainer'>";
-  print "<textarea id='notebox$request_id'>$notes</textarea><br>";
+  print "<textarea rows='5' cols='40' id='notebox$request_id'>$notes</textarea><br>";
   print "<button id='savenote' onclick='save_note(\"$request_id\");'>Save note</button></td>";
   print "<td><button onclick='approve_request(this, \"$user_id\", \"$request_id\");'>Approve</button>";
   print "<a href='mailto:$email?cc=ch-admins@geni.net&subject=GENI%20Project%20Lead%20Request'>";
@@ -175,8 +217,6 @@ function make_user_info_row($details, $user_id, $request_id){
   print "<td><button class='hideinfo' onclick='hide_info(this);'>close</button></td><tr>";
 }
 
-
-
 if ($open_requests == 0) {
   print "<td colspan='5'><i>No open lead requests.</i></td>";
 }
@@ -187,14 +227,25 @@ if ($open_requests == 0) {
 
 <div id='usersearch'>
   <h2>Find a GENI user:</h2>
-  <form id="searchform">
+  <form id="usersearchform">
     Search users:
     <input type="search" name="term" placeholder="enter search term ..."><br>
     by: <input type="radio" name="search_type" value="email" checked>email
         <input type="radio" name="search_type" value="username">username
         <input type="radio" name="search_type" value="lastname">lastname
   </form>
-  <div id="searchresults"></div>
+  <div id="usersearchresults"></div>
+</div>
+
+<div id='slicesearch'>
+  <h2>Find a slice:</h2>
+  <form id="slicesearchform">
+    Search slices:
+    <input type="search" name="term" placeholder="enter search term ..."><br>
+     by: <input type="radio" name="search_type" value="owner_email" checked>owner email
+         <input type="radio" name="search_type" value="urn">urn
+  </form>
+  <div id="slicesearchresults"></div>
 </div>
 
 <?php include "tabs.js"; ?>

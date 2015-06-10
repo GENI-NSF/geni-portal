@@ -30,20 +30,22 @@ require_once("util.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
+  exit();
 }
 
+// This admin functionality is for OPERATORS only
 if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   exit();
 }
 
+// Handle the HTTP request to figure out which LEAD request we're dealing with 
 if (array_key_exists('request_id', $_REQUEST) && array_key_exists('new_status', $_REQUEST) && array_key_exists('user_uid', $_REQUEST)) {
   $request_id = $_REQUEST['request_id'];
   $new_status = $_REQUEST['new_status'];
   $user_uid = $_REQUEST['user_uid'];
   $reason = $_REQUEST['reason'];
   $approver = $user->prettyName();
-  handle_lead_request($request_id, $new_status, $approver, $user_uid, $reason);
+  handle_lead_request($request_id, $new_status, $approver, $user_uid, $reason, $user);
 } else {
   if (array_key_exists('request_id', $_REQUEST) && array_key_exists('notes', $_REQUEST)) {
     add_request_note($_REQUEST['request_id'], $_REQUEST['notes']);
@@ -52,40 +54,41 @@ if (array_key_exists('request_id', $_REQUEST) && array_key_exists('new_status', 
   }
 }
 
-// Update the lead_request db row identified by request_id with new_note
-function add_request_note($request_id, $new_note) {
-  global $user;
-  $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+// Update the lead_request db row identified by $request_id with $new_note
+function add_request_note($request_id, $new_note) 
+{
   $conn = portal_conn();
   $sql = "UPDATE lead_request set "
   . "notes = "   . $conn->quote($new_note, 'text')
   . "where id = "  . $conn->quote($request_id, 'text');
   $db_response = db_execute_statement($sql, "update lead request note for request id#: " . $request_id);
   $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
-  print $db_error == "" ? "response successfully stored " : "db error: " . $db_error;
+  print $db_error == "" ? "Response successfully stored " : "DB error: " . $db_error;
 }
 
-// Update the lead_request db row identified by request_id with new_status, approver, uid, and reason
-function handle_lead_request($request_id, $new_status, $approver, $user_uid, $reason) {
-  global $user;
+// Update the lead_request db row identified by $request_id with $new_status, 
+// $approver, $user_uid, and $reason
+function handle_lead_request($request_id, $new_status, $approver, $user_uid, $reason, $signer) 
+{
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   $conn = portal_conn();
   if ($new_status == "approved") {
-    add_member_privilege($ma_url, $user, $user_uid, "PROJECT_LEAD");
+    add_member_privilege($ma_url, $signer, $user_uid, "PROJECT_LEAD");
     send_approved_mail(geni_load_user_by_member_id($user_uid), $reason);
   }
   $sql = "UPDATE lead_request set "
   . "status = "   . $conn->quote($new_status, 'text')  .  ", "
   . "reason = "   . $conn->quote($reason, 'text')  .  ", "
   . "approver = " . $conn->quote($approver, 'text')
-  . "where id = "  . $conn->quote($request_id, 'text');
-  $db_response = db_execute_statement($sql, "update lead request id#:" . $request_id);
+  . "where id = " . $conn->quote($request_id, 'text');
+  $db_response = db_execute_statement($sql, "Update lead request id#:" . $request_id);
   $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
-  print $db_error == "" ? "response successfully stored " : "db error: " . $db_error;
+  print $db_error == "" ? "Response successfully stored " : "DB error: " . $db_error;
 }
 
 // Send email to admins about the fact that $new_lead was approved because of $reason
-function send_approved_mail($new_lead, $reason) {
+function send_approved_mail($new_lead, $reason) 
+{
   $pretty_name = $new_lead->prettyName();
   $body = $pretty_name . " approved to be project lead. \r\n";
   $body .= "Reason: " . $reason;
@@ -96,4 +99,5 @@ function send_approved_mail($new_lead, $reason) {
   $subject = "Approved project lead request";
   mail($to, $subject, $body, $headers);
 }
+
 ?>

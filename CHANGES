@@ -4,6 +4,9 @@
 
 = GENI Portal Release Notes =
 
+== 2.34 == 
+ * Added project lead request handling, user search, and slice search to the admin page
+
 == 2.33 ==
  * Made CSS responsive to screen width, general CSS improvements
  * Add dropdown to get logs for a given time period on homepage (#1318)
