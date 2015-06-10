@@ -249,4 +249,3 @@ if ($open_requests == 0) {
 </div>
 
 <?php include "tabs.js"; ?>
-
