@@ -35,92 +35,57 @@ function show_last_message() {
   }
 }
 
-
-
-  global $extra_js;
-
-  echo '<!DOCTYPE HTML>';
-  echo '<html>';
-  echo '<head>';
-  echo '<title>';
-  echo "Welcome to the GENI Experimenter Portal";
-  echo '</title>';
-  /* Stylesheet(s) */
-  echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
-  echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
-  /* Close the "head" */
-  echo '</head>';
-  echo '<body>';
-
-  echo '<div id="welcome">';
-
-  echo '<div id="welcome-left"><img src="/images/geni.png" alt="GENI"/></div>';
-  echo '<div id="welcome-right">';
-    echo '<div id="welcome-right-top">';
-    show_last_message();
-  echo '<h1> Welcome to GENI </h1>';
-  echo '<a href="http://www.geni.net">GENI</a> is a new, nationwide suite of infrastructure supporting ';
-  echo '"at scale" research in networking, distributed systems, security, and novel applications. ';
-  echo 'It is supported by the <a href="http://www.nsf.gov/">National Science Foundation</a>, ';
-  echo 'and available without charge for research and classroom use.';
-  echo '</div>';
-
-
-
-
-
 ?>
 
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Welcome to the GENI Experimenter Portal</title>
+  <link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />
+  <link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>
+  <link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>
+  <meta name="mobile-web-app-capable" content="yes">
+</head>
+<body>
 
-<div id="welcome-right-left">
-  <a href='secure/home.php' title='Login to the GENI Experimenter Portal''>
-    <img src="/images/UseGENI.png" id="usegeni" alt="Use GENI"/>
-  </a>
-<h2>Find out more about using GENI</h2>
-<ul><li>
-   <a href="http://groups.geni.net/geni/wiki/GeniNewcomersWelcome">New to GENI?</a>
-</li><li>
-   <a href="http://www.geni.net/experiment">Information for GENI experimenters</a>
-</li><li>
-  <a
-  href="http://groups.geni.net/geni/wiki/GENIBibliography">Published research that used GENI resources</a>
-</li><li>
-  Get <a href="mailto:help@geni.net">help</a> using GENI
-</li>
-</ul>
-</div>
+<div id="content-outer" style="border-top: 5px solid #5F584E;">
+<div id="content">
+  <div id="welcome-left">
+    <img src="/images/geni.png" alt="GENI"/>
+  </div>
+  <div id="welcome-right">
+    <div id="welcome-right-top">
+      <?php show_last_message(); ?>
+      <h1> Welcome to GENI </h1>
+      <a href="http://www.geni.net">GENI</a> is a new, nationwide suite of infrastructure supporting 
+      "at scale" research in networking, distributed systems, security, and novel applications. 
+      It is supported by the <a href="http://www.nsf.gov/">National Science Foundation</a>, 
+      and available without charge for research and classroom use.
+    </div>
 
-<div id="welcome-right-right">
-<?php include "common/map/map-small.html"; ?>
-<p><i>These are some of the many resources being used in GENI experiments across the country.</i></p>
-</div>
+    <div id="welcome-right-left">
+      <div id='usegenicontainer'>
+      <a href='secure/home.php' title='Login to the GENI Experimenter Portal' id="usegeni">
+        <!-- <img src="/images/UseGENI.png" id="usegeni" alt="Use GENI"/> -->
+        Use GENI
+      </a>
+      </div>
+      <h2>Find out more about using GENI</h2>
+      <ul>
+        <li><a href="http://groups.geni.net/geni/wiki/GeniNewcomersWelcome">New to GENI?</a></li>
+        <li><a href="http://www.geni.net/experiment">Information for GENI experimenters</a></li>
+        <li><a href="http://groups.geni.net/geni/wiki/GENIBibliography">Published research that used GENI resources</a></li>
+        <li>Get <a href="mailto:help@geni.net">help</a> using GENI</li>
+      </ul>
+    </div>
 
+    <div id="welcome-right-right">
+      <?php include "common/map/map-small.html"; ?>
+      <p><i>These are some of the many resources being used in GENI experiments across the country.</i></p>
+    </div>
+  </div>
+  <div style="clear: both;">&nbsp;</div>
 
-
-
-
-
-
-
-</div>
-
-</div>
-
-<!-- THIS SHOULD BE IN A COMMON FOOTER FILE --> 
-<div id="footer">
-<div id="footer-left">
-  <!-- <a href="https://portal.geni.net">GENI Portal Home</a><br>
-  <a href="http://www.geni.net">GENI Home</a><br>
-  <a href="http://groups.geni.net/geni">GENI Wiki</a> -->
-</div>
-<div id="footer-right">
-  GENI Portal<br/>
-  Copyright &copy; 2014 BBN Technologies<br>
-  All Rights Reserved - NSF Award CNS-0714770<br>
-  <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"/> National Science Foundation</a>
-</div>
-</div>
-
-</body>
-</html>
+<?php include("footer.php"); ?>

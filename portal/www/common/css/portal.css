@@ -588,7 +588,6 @@ hr {
 */
 
 #welcome {
-  border-top: 10px solid #5F584E;
   background-color: #FFFFFF;  
   border-bottom: 5px solid #F57F21;
   margin-left: auto;
@@ -596,34 +595,26 @@ hr {
   margin-top: 30px;
   margin-bottom: 20px;
   padding: 30px;
-  width: 840px;
+  width: 85%;
+  max-width: 1250px;
+  min-width: 800px;
   overflow: auto;
   box-shadow: 0px 0px 10px #5F584E;  
 }
 
 #welcome-left {
   float: left;
-  width: 220px;
+  width: 185px;
 }
 
 #welcome-right {
   float: right;
-  width: 620px;
+  width: 72.5%;
   overflow: auto;
   font-family: 'PT Serif', serif;
   font-weight: normal;
-  /* by default, let everything have a line
-     height of 1.4em unless otherwise specified */
   line-height: 1.4em;
   color: #5F584E;
-}
-
-#usegeni {
-    width: 1.5in;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 1em;
-    padding-bottom: 1em;
 }
 
 #welcome-right h1, h2 {
@@ -663,31 +654,31 @@ hr {
 
 #welcome-right a {
   color: #F57F21; /* official GENI orange */
-  border-bottom: 1px dashed #F57F21;
+  border-bottom: 1px solid #F57F21;
   text-decoration:none;
 }
 
 #welcome-right a:hover {
   background-color: #E5E5E5;
   color: #F57F21; /* official GENI orange */
-  border-bottom: 1px dashed #F57F21;
+  border-bottom: 1px solid #F57F21;
   text-decoration:none;
 }
 
 #welcome-right-top {
   float: left;
-  width: 620px;
+  width: 100%;
   padding-bottom: 20px;
 }
 
 #welcome-right-left {
   float: left;
-  width: 275px;
+  width: 45%;
 }
 
 #welcome-right-right {
   float: right;
-  width: 345px;
+  width: 55%;
   background: #E5E5E5;
   border-top: 5px solid #F57F21;
 }
@@ -696,6 +687,28 @@ hr {
   margin-left: 10px;
   margin-right: 10px;
   text-align: center;
+}
+
+#usegenicontainer {
+  text-align: center;
+  margin: 40px auto;
+}
+
+#usegeni {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2em;
+  font-weight: 800;
+  padding: 10px 20px;
+  color: white !important;
+  background-color: #F57F21;
+  box-shadow: 0px 0px 5px #5F584E;
+  text-align: center;
+  border-radius: 3px;
+}
+
+#usegeni:hover {
+  border-bottom: 0px !important;
+  background-color: #E17000 !important;
 }
 
 /*
@@ -710,20 +723,6 @@ hr {
   top: 3in;
   float: left;
   margin-left: .4in;
-}
-
-/* #loginButton, #loginHelp { */
-/*  width: 17em; */
-/*  padding: .25cm .25cm; */
-/* } */
-
-#usegeni {
-  width: 1.5in;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 1em;
-  padding-bottom: 1em;
 }
 
 .announce {
