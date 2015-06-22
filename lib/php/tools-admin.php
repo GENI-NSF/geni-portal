@@ -150,7 +150,7 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $conn = portal_conn();
 
 $sql = "SELECT *"
-. " FROM lead_request";
+. " FROM lead_request WHERE status='open'";
 $rows = db_fetch_rows($sql, "fetch all lead requests for admin page");
 $lead_requests = $rows[RESPONSE_ARGUMENT::VALUE];
 $requester_uuids = array();
@@ -165,15 +165,13 @@ print "<table><tr><th>Name</th><th>Requested At</th><th>Email</th><th>Admin Note
 $open_requests = 0;
 
 foreach ($lead_requests as $lead_request) {
-  if ($lead_request['status'] == "open") {
-    $requester_uuid = $lead_request['requester_uuid'];
-    $notes = $lead_request['notes'] == "" ? "None" : $lead_request['notes'];
-    $timestamp = dateUIFormat($lead_request['request_ts']);
-    $request_id = $lead_request['id'];
-    $details = $requester_details[$requester_uuid];
-    make_user_info_rows($details, $requester_uuid, $request_id, $notes, $timestamp);
-    $open_requests++;
-  }
+  $requester_uuid = $lead_request['requester_uuid'];
+  $notes = $lead_request['notes'] == "" ? "None" : $lead_request['notes'];
+  $timestamp = dateUIFormat($lead_request['request_ts']);
+  $request_id = $lead_request['id'];
+  $details = $requester_details[$requester_uuid];
+  make_user_info_rows($details, $requester_uuid, $request_id, $notes, $timestamp);
+  $open_requests++;
 }
 
 // Returns what's between the '@' and the "." in a user's affiliation. Likely their school/ institution
