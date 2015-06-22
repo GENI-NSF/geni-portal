@@ -97,6 +97,15 @@ update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason,
 
 // Now handle project lead...
 
+function check_duplicate_request($urn) {
+  $conn = portal_conn();
+  $sql = "SELECT * from lead_request where "
+  . "requester_urn =" . $conn->quote($urn, 'text') . " and status ='open'";
+  $rows = db_fetch_rows($sql, "check duplicate lead request");
+  $open_requests = $rows[RESPONSE_ARGUMENT::VALUE];
+  return count($open_requests) > 0;
+}
+
 function store_lead_request($urn, $uuid, $eppn) {
   $conn = portal_conn();
   $sql = "INSERT into lead_request "
@@ -113,6 +122,16 @@ $pi_request = isset($req_projectlead);
 // If the user is allowed to create a project, they are a PI (PL?)
 $is_pi = $user->isAllowed(PA_ACTION::CREATE_PROJECT,
                           CS_CONTEXT_TYPE::RESOURCE, null);
+
+if (check_duplicate_request($user->urn())) {
+  include("header.php");
+  show_header('GENI Portal: Profile', $TAB_PROFILE);
+  include("tool-breadcrumbs.php");
+  print "<p>You already have one outstanding request. You should hear from us with 3-4 business days of your original request</p>";
+  print "<p>Email <a href='mailto:help@geni.net'>GENI Help</a> if you have questions</p>";
+  include("footer.php");
+  exit();
+}
 
 $body = '';
 $subject = "GENI Project Lead request";
