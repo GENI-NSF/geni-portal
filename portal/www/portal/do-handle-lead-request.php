@@ -27,6 +27,7 @@ require_once("db_utils.php");
 require_once("ma_constants.php");
 require_once("ma_client.php");
 require_once("util.php");
+include_once('/etc/geni-ch/settings.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -89,13 +90,13 @@ function handle_lead_request($request_id, $new_status, $approver, $user_uid, $re
 // Send email to admins about the fact that $new_lead was approved because of $reason
 function send_approved_mail($new_lead, $reason) 
 {
+  global $portal_admin_email;
   $pretty_name = $new_lead->prettyName();
   $body = $pretty_name . " approved to be project lead. \r\n";
   $body .= "Reason: " . $reason;
   $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
   $headers .= "Content-Transfer-Encoding: 8bit\r\n";
-  $to = "ch-admins@geni.net";
-  $to = "chmeyer@bbn.com"; // for debugging purposes
+  $to = $portal_admin_email;
   $subject = "Approved project lead request";
   mail($to, $subject, $body, $headers);
 }

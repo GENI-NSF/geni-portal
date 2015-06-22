@@ -71,7 +71,7 @@ function deny_request(button, requester_uuid, request_id){
 function approve_request(button, requester_uuid, request_id) {
   reason = prompt("Why did you accept? (will be mailed to admins)");
   if (reason) {
-    $($(button).parents()[2]).hide();
+    $($(button).parents()[1]).hide();
     send_lead_request_response(requester_uuid, request_id, "approved", reason);
   }
 }
