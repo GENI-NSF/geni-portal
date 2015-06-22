@@ -177,10 +177,15 @@ foreach ($lead_requests as $lead_request) {
 // Returns what's between the '@' and the "." in a user's affiliation. Likely their school/ institution
 function get_school($affiliation)
 {
+  if ($affiliation == NULL){
+    return "";
+  }
   $tmp = explode("@", $affiliation);
+  if (count($tmp) == 1) {
+    return $affiliation;
+  }
   $tmp = explode(".", $tmp[1]);
-  $school = $tmp[0];
-  return $school == NULL ? "" : $school;  
+  return $tmp[0];
 }
 
 // Populate and print 2 rows for a user: one with basic information and approve/deny button,
