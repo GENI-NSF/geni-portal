@@ -174,6 +174,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $portal_analytics_string;
   global $has_maintenance_alert;
   global $maintenance_alert;
+  global $portal_jquery_url; 
 
   if ($load_user) {
     global $user;
@@ -191,7 +192,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '</title>';
 
   /* Javascript stuff. */
-  echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
+  echo "<script src='$portal_jquery_url'></script>";
   echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>';
 
   foreach ($extra_js as $js_url) {
@@ -232,7 +233,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   }
 
   /* datatables.net (for sortable/searchable tables) */
-  echo '<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>';
+  echo '<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>';
 
   /* for proper scaling on mobile devices/ mobile web app support */ 
   echo '<meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>';
