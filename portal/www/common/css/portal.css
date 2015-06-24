@@ -673,7 +673,8 @@ hr {
 
 #welcome-right-left {
   float: left;
-  width: 45%;
+  width: 40%;
+  margin-right: 20px;
 }
 
 #welcome-right-right {
