@@ -191,3 +191,47 @@ body {
 #mobilefooterbreak {
 	display: block;
 }
+
+/* Welcome page */
+
+#welcome-right-right {
+  width: 100%;
+}
+
+#welcome-left {
+  float: none;
+  margin: 0 auto;
+}
+
+#welcome-right {
+  float: none;
+  width: 90%;
+  margin: 0 auto;
+}
+
+#welcome-right-right {
+  width: 100%;
+}
+
+#welcome-right-left {
+  width: 100%;
+}
+
+#welcome-right-top {
+  padding-bottom: 0px;
+}
+
+#welcome-right h1 {
+  font-size: 1.8em;
+  padding-bottom: 15px;
+}
+
+#welcome-right h2 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-right: 20px;
+  border-bottom: 1px solid #F57F21;
+  padding-bottom: 7px;
+}
+
