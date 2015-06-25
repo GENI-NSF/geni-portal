@@ -113,7 +113,11 @@ function store_lead_request($urn, $uuid, $eppn) {
   . "values (" . $conn->quote($urn, 'text')  .  ", "
   .              $conn->quote($uuid, 'text') .  ", "
   .              $conn->quote($eppn, 'text') .  ")";
-  db_execute_statement($sql, "insert lead request", true);
+  $db_response = db_execute_statement($sql, "insert lead request", true);
+  $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
+  if($db_error != ""){
+    error_log("DB error when adding note to lead request table: " . $db_error);
+  }
 }
 
 // If we got 'projectlead' in the POST, it is a pi_request.
