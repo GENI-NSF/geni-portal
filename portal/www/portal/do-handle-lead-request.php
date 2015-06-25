@@ -87,7 +87,7 @@ function handle_lead_request($request_id, $new_status, $approver, $user_uid, $re
     if (!$response) {
       error_log("User $user_uid already a project lead, cannot be made a project lead");
     } else {
-      send_approved_mail(geni_load_user_by_member_id($user_uid), $reason);
+      send_approved_mail(geni_load_user_by_member_id($user_uid), $reason, $approver);
     }
   }
   $sql = "UPDATE lead_request set "
@@ -106,11 +106,11 @@ function handle_lead_request($request_id, $new_status, $approver, $user_uid, $re
 }
 
 // Send email to admins about the fact that $new_lead was approved because of $reason
-function send_approved_mail($new_lead, $reason) 
+function send_approved_mail($new_lead, $reason, $approver) 
 {
   global $portal_admin_email;
   $pretty_name = $new_lead->prettyName();
-  $body = $pretty_name . " approved to be project lead. \r\n";
+  $body = "$pretty_name approved to be project lead by $approver. \r\n";
   $body .= "Reason: " . $reason;
   $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
   $headers .= "Content-Transfer-Encoding: 8bit\r\n";
