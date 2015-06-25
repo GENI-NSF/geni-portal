@@ -192,6 +192,7 @@ function get_school($affiliation)
 // a second which is default hidden and contains more information 
 function make_user_info_rows($details, $user_id, $request_id, $notes, $timestamp)
 {
+  global $portal_admin_email;
   $username = $details[MA_ATTRIBUTE_NAME::USERNAME];
   $member = new Member($user_id);
   $member->init_from_record($details);
@@ -203,7 +204,7 @@ function make_user_info_rows($details, $user_id, $request_id, $notes, $timestamp
   print "<textarea rows='5' cols='40' id='notebox$request_id'>$notes</textarea><br>";
   print "<button id='savenote' onclick='save_note(\"$request_id\");'>Save note</button></td>";
   print "<td><button onclick='approve_request(this, \"$user_id\", \"$request_id\");'>Approve</button>";
-  print "<a href='mailto:$email?cc=ch-admins@geni.net&subject=GENI%20Project%20Lead%20Request'>";
+  print "<a href='mailto:$email?cc=$portal_admin_email&subject=GENI%20Project%20Lead%20Request'>";
   print "<button onclick='deny_request(this, \"$user_id\", \"$request_id\");'>Deny</button></a>";
   print "<button onclick='expand_info(this);'>More info</button></td></tr>";
   $affiliation = $details[MA_ATTRIBUTE_NAME::AFFILIATION];
