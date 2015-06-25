@@ -4,7 +4,9 @@
 
 = GENI Portal Release Notes =
 
-== 2.34 ==
+== 2.34 == 
+ * Added project lead request handling, user search, and slice search to the admin page.
+   Includes new DB table for tracking lead requests. (#273, #522, #404, #731, #964, #1059)
  * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
  * Set max width of map to avoid 0,0 centering issue (#1390)
  * Make welcome page responsive with screen width, scale properly on mobile

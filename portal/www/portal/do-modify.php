@@ -32,8 +32,8 @@ require_once('logging_client.php');
 require_once('logging_constants.php');
 require_once('ma_client.php');
 require_once('ma_constants.php');
+require_once("db_utils.php");
 include_once('/etc/geni-ch/settings.php');
-
 
 $user=geni_loadUser();
 if (! isset($user) || ! $user->isActive()) {
@@ -97,12 +97,41 @@ update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason,
 
 // Now handle project lead...
 
+function check_duplicate_request($urn) {
+  $conn = portal_conn();
+  $sql = "SELECT * from lead_request where "
+  . "requester_urn =" . $conn->quote($urn, 'text') . " and status ='open'";
+  $rows = db_fetch_rows($sql, "check duplicate lead request");
+  $open_requests = $rows[RESPONSE_ARGUMENT::VALUE];
+  return count($open_requests) > 0;
+}
+
+function store_lead_request($urn, $uuid, $eppn) {
+  $conn = portal_conn();
+  $sql = "INSERT into lead_request "
+  . "(requester_urn, requester_uuid, requester_eppn) "
+  . "values (" . $conn->quote($urn, 'text')  .  ", "
+  .              $conn->quote($uuid, 'text') .  ", "
+  .              $conn->quote($eppn, 'text') .  ")";
+  db_execute_statement($sql, "insert lead request", true);
+}
+
 // If we got 'projectlead' in the POST, it is a pi_request.
 $pi_request = isset($req_projectlead);
 
 // If the user is allowed to create a project, they are a PI (PL?)
 $is_pi = $user->isAllowed(PA_ACTION::CREATE_PROJECT,
                           CS_CONTEXT_TYPE::RESOURCE, null);
+
+if (check_duplicate_request($user->urn())) {
+  include("header.php");
+  show_header('GENI Portal: Profile', $TAB_PROFILE);
+  include("tool-breadcrumbs.php");
+  print "<p>You already have one outstanding request. You should hear from us with 3-4 business days of your original request</p>";
+  print "<p>Email <a href='mailto:help@geni.net'>GENI Help</a> if you have questions</p>";
+  include("footer.php");
+  exit();
+}
 
 $body = '';
 $subject = "GENI Project Lead request";
@@ -114,6 +143,7 @@ if ($pi_request and ! $is_pi) {
   $body .= 'The following user has requested to no longer be a Project Lead:';
   $log_msg = $user->prettyName() . " requested to NOT be a Project Lead";
 }
+store_lead_request($user->urn(), $user->account_id, $user->eppn);
 
 // If there's something to log, then send email about it too.
 if (isset($log_msg)) {
@@ -224,7 +254,7 @@ if ($pi_request and ! $is_pi) {
   print '</p>' . PHP_EOL;
 } else if (! $pi_request and $is_pi) {
   print '<p>' . PHP_EOL;
-  print "You have indicated that you no longer want to be a  Project Lead.";
+  print "You have indicated that you no longer want to be a Project Lead.";
   print " This is an administrative function that requires approval.";
   print " You should hear from us within 3 - 4 business days.";
   print '</p>' . PHP_EOL;
