@@ -105,7 +105,8 @@ function make_results_table($slices, $signer, $ma_url, $sa_url)
       $mailto_link = "<a href='mailto:$owner_email'>$owner_email</a>";
 
       print "<tr><td>$name</td><td>$owner_name</td><td>$mailto_link</td><td>$expiration</td>";
-      print "<td><button onclick='expand_info(this);'>More info</button></td></tr>";
+      print "<td><button onclick='expand_info(this);'>More info</button>";
+      print "<button class='hideinfo' onclick='hide_info(this);' style='display:none;'>Close</button></td></tr>";
 
       $project_info = get_project_info($slice, $signer, $ma_url, $sa_url);
       $aggregate_info = get_aggregate_info($slice, $signer, $sa_url);
@@ -113,8 +114,7 @@ function make_results_table($slices, $signer, $ma_url, $sa_url)
 
       print "<tr style='display:none'><td style='vertical-align:top'>$project_info</td>";
       print "<td colspan='2' style='vertical-align:top'>$aggregate_info</td>";
-      print "<td style='vertical-align:top'>$member_info</td>";
-      print "<td><button class='hideinfo' onclick='hide_info(this);'>Close</button></td></tr>";
+      print "<td colspan='2' style='vertical-align:top'>$member_info</td> </tr>";
     }
     print "</table>";
   }

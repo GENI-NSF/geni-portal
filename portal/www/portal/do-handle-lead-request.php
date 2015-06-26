@@ -111,7 +111,11 @@ function send_approved_mail($new_lead, $reason, $approver)
   global $portal_admin_email;
   $pretty_name = $new_lead->prettyName();
   $body = "$pretty_name approved to be project lead by $approver. \r\n";
-  $body .= "Reason: " . $reason;
+  $body .= "Approved because: " . $reason . "\r\n";
+  $body .= "Their username: " . $new_lead->username . "\r\n";
+  $body .= "Their email: " . $new_lead->email() . "\r\n";
+  $body .= "Their reason: " . $new_lead->reason() . "\r\n";
+  $body .= "Their link: " . $new_lead->url() . "\r\n";
   $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
   $headers .= "Content-Transfer-Encoding: 8bit\r\n";
   $to = $portal_admin_email;

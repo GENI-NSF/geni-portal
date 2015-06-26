@@ -36,8 +36,6 @@ if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, nu
 
 <h1>Administrator Tools</h1>
 
-<p>This page is intentionally <i>not</i> blank.</p>
-
 <script>
 function failed_request(){
   $("#loading").hide();
@@ -46,10 +44,14 @@ function failed_request(){
 
 function expand_info(button){
   $($(button).parents()[1]).next().show(); 
+  $(button).hide();
+  $(button).next().show();
 }
 
 function hide_info(button){
-  $($(button).parents()[1]).hide();
+  $($(button).parents()[1]).next().hide();
+  $(button).hide();
+  $(button).prev().show();
 }
 
 function deny_request(button, requester_uuid, request_id){
@@ -160,7 +162,7 @@ foreach ($lead_requests as $lead_request) {
 
 $requester_details = lookup_member_details($ma_url, $user, $requester_uuids); 
 
-print "<table><tr><th>Name</th><th>Requested At</th><th>Email</th><th>Admin Notes</th><th>Actions</th></tr>";
+print "<table><tr><th>Name</th><th>Link</th><th>Requested At</th><th>Email</th><th>Admin Notes</th><th>Actions</th></tr>";
 
 $open_requests = 0;
 
@@ -198,15 +200,18 @@ function make_user_info_rows($details, $user_id, $request_id, $notes, $timestamp
   $member->init_from_record($details);
   $name = $member->prettyName();
   $email = $details[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
+  $url = $details[MA_ATTRIBUTE_NAME::URL];
+  $link = $url == "" ? "None" : "<a href='$url'>$url</a>"; 
   $mailto_link = "<a href='mailto:" . $email . "?Subject=Geni%20Project%20Lead%20Request'>" . $email . "</a>"; 
-  print "<tr><td>$name ($username)</td><td>$timestamp<td>$mailto_link</td>";
+  print "<tr><td>$name ($username)</td><td>$link</td><td>$timestamp<td>$mailto_link</td>";
   print "<td id='notescontainer'>";
   print "<textarea rows='5' cols='40' id='notebox$request_id'>$notes</textarea><br>";
   print "<button id='savenote' onclick='save_note(\"$request_id\");'>Save note</button></td>";
   print "<td><button onclick='approve_request(this, \"$user_id\", \"$request_id\");'>Approve</button>";
   print "<a href='mailto:$email?cc=$portal_admin_email&subject=GENI%20Project%20Lead%20Request'>";
   print "<button onclick='deny_request(this, \"$user_id\", \"$request_id\");'>Deny</button></a>";
-  print "<button onclick='expand_info(this);'>More info</button></td></tr>";
+  print "<button onclick='expand_info(this);'>More info</button>";
+  print "<button class='hideinfo' onclick='hide_info(this);' style='display:none;'>Close</button></td></tr>";
   $affiliation = $details[MA_ATTRIBUTE_NAME::AFFILIATION];
   $reason = $details[MA_ATTRIBUTE_NAME::REASON];
   $reference = $details[MA_ATTRIBUTE_NAME::REFERENCE];
@@ -215,14 +220,12 @@ function make_user_info_rows($details, $user_id, $request_id, $notes, $timestamp
   $info = "<b>Affiliation: </b>" . ($affiliation != "" ? $affiliation : "None")  . "<br>" .
           "<b>Reason:      </b>" . ($reason      != "" ? $reason      : "None")  . "<br>" .
           "<b>Reference:   </b>" . ($reference   != "" ? $reference   : "None")  . "<br>" .
-          "<b>Link:        </b>" . ($url         != "" ? $link        : "None")  . "<br>" . 
           "<a target= 'blank' href = 'http://lmgtfy.com/?q=" . $name . "+" . get_school($affiliation) . "'>LMGTFY (beta)</a>";
-  print "<tr class='moreinfo'><td colspan='4'>$info</td>";
-  print "<td><button class='hideinfo' onclick='hide_info(this);'>close</button></td><tr>";
+  print "<tr class='moreinfo'><td colspan='6'>$info</td></tr>";
 }
 
 if ($open_requests == 0) {
-  print "<td colspan='5'><i>No open lead requests.</i></td>";
+  print "<td colspan='6' style='text-align: center;'><i>No open lead requests.</i></td>";
 }
 
 ?>
