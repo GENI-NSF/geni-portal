@@ -30,6 +30,7 @@ require_once 'portal.php';
 require_once 'cert_utils.php';
 require_once 'user.php';
 require_once 'db-util.php';
+require_once 'settings.php';
 
 $portal = Portal::getInstance();
 $toolcert = $portal->certificate();
@@ -103,8 +104,7 @@ if ($cred === false) {
  */
 show_header('GENI Portal: Authorization', '', FALSE);
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
-</script>
+<script src="<?php echo $portal_jquery_url; ?>"></script>
 <script src="<?php echo $auth_svc_js;?>"></script>
 <script type="text/plain" id="toolurn"><?php echo $toolurn;?></script>
 <script type="text/plain" id="toolcert"><?php echo $toolcert;?></script>

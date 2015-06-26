@@ -41,7 +41,6 @@ function show_last_message() {
 <html>
 <head>
   <title>Welcome to the GENI Experimenter Portal</title>
-  <link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />
   <link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>
   <link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">
@@ -68,7 +67,6 @@ function show_last_message() {
     <div id="welcome-right-left">
       <div id='usegenicontainer'>
       <a href='secure/home.php' title='Login to the GENI Experimenter Portal' id="usegeni">
-        <!-- <img src="/images/UseGENI.png" id="usegeni" alt="Use GENI"/> -->
         Use GENI
       </a>
       </div>
