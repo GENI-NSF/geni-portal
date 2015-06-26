@@ -10,6 +10,7 @@
 == 2.34 ==
  * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
  * Set max width of map to avoid 0,0 centering issue (#1390)
+ * Make welcome page responsive with screen width, scale properly on mobile
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,
