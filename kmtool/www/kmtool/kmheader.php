@@ -22,6 +22,8 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
+require_once('settings.php');
+
 // This gets used for both the page title and the page header
 $title = 'GPO Member Authority';
 
@@ -32,9 +34,10 @@ $title = 'GPO Member Authority';
   echo '<title>';
   echo "$title";
   echo '</title>';
+  echo "<script src='$portal_jquery_url'></script>";
 
   /* Stylesheet(s) */
-  echo '<link type="text/css" href="/common/css/kmtool.css" rel="Stylesheet"/>';
+  echo '<link type="text/css" href="/common/css/kmtool.css" rel="stylesheet"/>';
 
   /* Close the "head" */
   echo '</head>';
