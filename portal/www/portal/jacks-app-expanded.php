@@ -37,7 +37,7 @@ setup_jacks_slice_context();
 echo '<html><body><meta charset="utf-8">';
 echo '<div id="content" >';
 
-echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
+echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
 echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
 echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
 // echo '<script src="' . $jacks_stable_url . '"></script>';
@@ -51,7 +51,7 @@ echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+S
 <link rel="stylesheet" type="text/css" href="slice-table.css" />
 
 <script src="<?php echo $portal_jquery_url; ?>"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script src="<?php echo $portal_jqueryui_js_url; ?>"></script>
 
 <script>var jacks_app_expanded = true;</script>
 

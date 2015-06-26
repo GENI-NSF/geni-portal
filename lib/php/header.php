@@ -175,6 +175,10 @@ function show_header($title, $active_tab = '', $load_user=1)
   global $has_maintenance_alert;
   global $maintenance_alert;
   global $portal_jquery_url; 
+  global $portal_jqueryui_js_url; 
+  global $portal_jqueryui_css_url; 
+  global $portal_datatablesjs_url; 
+
 
   if ($load_user) {
     global $user;
@@ -193,14 +197,14 @@ function show_header($title, $active_tab = '', $load_user=1)
 
   /* Javascript stuff. */
   echo "<script src='$portal_jquery_url'></script>";
-  echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>';
+  echo "<script src='$portal_jqueryui_js_url'></script>";
 
   foreach ($extra_js as $js_url) {
     echo '<script src="' . $js_url . '"></script>' . PHP_EOL;
   }
 
   /* Stylesheet(s) */
-  echo '<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/humanity/jquery-ui.css" rel="Stylesheet" />';
+  echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
   echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
@@ -233,7 +237,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   }
 
   /* datatables.net (for sortable/searchable tables) */
-  echo '<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>';
+  echo "<script type='text/javascript' charset='utf8' src='$portal_datatablesjs_url'></script>";
 
   /* for proper scaling on mobile devices/ mobile web app support */ 
   echo '<meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>';
