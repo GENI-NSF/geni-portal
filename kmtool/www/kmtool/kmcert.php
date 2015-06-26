@@ -257,7 +257,6 @@ if ($has_cert && array_key_exists('expiration', $result)) {
 
 include('kmheader.php');
 ?>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 <script type="text/javascript">
 function toggleDiv(divId) {
    $("#"+divId).toggle();
