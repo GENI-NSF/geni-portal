@@ -29,11 +29,7 @@ body {
 }
 
 hr {
-  height: 0px;
-  border: none;
-  margin: 0px;
-  padding: 0px;
-  clear: both;
+  border-color: #5F584E;
 }
 
 /*

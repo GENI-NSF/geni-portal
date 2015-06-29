@@ -67,6 +67,7 @@ dist_svcweb_DATA = \
 	www/portal/confirm-sliverdelete.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
+	www/portal/dashboard.php \
 	www/portal/db_error_test.php \
 	www/portal/debug_clearcache.php \
 	www/portal/deletesliver.php \
