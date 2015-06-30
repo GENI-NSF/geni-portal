@@ -802,12 +802,11 @@ JacksApp.prototype.onEpManifest = function(event) {
     jacksXml.find('node').each(function(i, v) {
         var client_id = $(this).attr('client_id');
         var sliver_id = $(this).attr('sliver_id');
+        var component_manager_id = $(this).attr('component_manager_id');
         that.urn2clientId[sliver_id] = client_id;
         // This is needed because some AMs do return the client_id, so
         // the mapping needs to have both to avoid needing special cases.
         that.urn2clientId[client_id] = client_id;
-
-        var agg_urn = that.allAms[am_id].urn;
 
         // Dig out login info
         $(this).find('login').each(function(il, vl) {
@@ -816,7 +815,7 @@ JacksApp.prototype.onEpManifest = function(event) {
             var port = $(this).attr('port');
             var username = $(this).attr('username');
             var login_url = "ssh://" + username + "@" + hostname + ":" + port;
-            var client_host_key = client_id + ":" + agg_urn;
+            var client_host_key = client_id + ":" + component_manager_id;
             if (!(username in that.loginInfo)) {
 		that.loginInfo[username] = [];
 	    }
