@@ -1,0 +1,159 @@
+/* --------------------------------------------*/
+/* ----------- MOBILE DASHBOARD----------------*/
+/* --------------------------------------------*/
+
+.dashtext {
+  padding: 0px;
+  border: none !important;
+  margin: 0px !important;
+  color: #212121 !important;
+  text-shadow: none !important;
+  display: inline;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: normal;
+}
+
+.floatright {
+  float: right;
+}
+
+.floatleft {
+  float: left;
+}
+
+.slicebox {
+  width: 275px;
+  padding: 0px;
+  margin: 15px 10px 15px 20px;
+  border-radius: 3px;
+}
+
+.shadow {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.slicebox table {
+  margin: 0px !important;
+  box-shadow: none !important;
+}
+
+.slicebox td {
+  padding: 12px 4px;
+}
+
+select {
+  font-family: 'Open Sans';
+  font-size: 14px;
+  font-weight: bold;
+  color: #040404;
+  background-color: white;
+  border: 2px solid #5F584E;
+  padding: 5px;
+  border-radius: 0px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+select:hover {
+  background-color: #fcfcfc;
+}
+
+select:focus {
+  outline-width: 0;
+}
+
+option {
+  font-size: 16px;
+}
+
+option:focus {
+    outline-width: 0;
+}
+
+#projectswitch {
+  margin: 20px 15px;
+}
+
+#loglength {
+  margin: 20px 10px;
+}
+
+#sortby {
+  margin: 20px 15px;
+}
+
+.projectinfo {
+  margin: 0px;
+}
+
+#logtable {
+   margin-left: 15px;
+}
+
+.slicelink:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+td {
+  font-family: 'Open Sans' !important;
+}
+
+button {
+  width: 120px;
+}
+
+#logtable td {
+  padding: 10px 5px;
+}
+
+.expirationicon {
+  height: 16px;
+  width: 16px;
+  vertical-align: middle;
+  margin-left: 5px; 
+}
+/* --------------------------------------------*/
+/* ----------- MOBILE DASHBOARD----------------*/
+/* --------------------------------------------*/
+
+@media (max-width: 600px) {
+  .dashtext {
+    display: block;
+    text-align: center;
+    margin: 5px auto !important;
+  }
+
+  .floatright, .floatleft {
+    float: none;
+    margin: 0 auto;
+  }
+
+  .slicebox {
+    margin: 20px auto;
+  }
+
+  #dashboardtools {
+    text-align: center;
+  }
+
+  #projectcontrols {
+    text-align: center;
+  }
+
+  #projectswitch {
+    margin: 5px 15px;
+  }
+
+  .projectinfo {
+    margin: 0px;
+    text-align: center;
+  }
+
+  .slicelink {
+    text-decoration: underline;
+  }
+
+  #logtable {
+    margin-left: 0px;
+  }
+}

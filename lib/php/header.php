@@ -165,7 +165,19 @@ function add_js_script($script_url)
   $extra_js[] = $script_url;
 }
 
-function show_header($title, $active_tab = '', $load_user=1)
+function show_header($title, $active_tab = '', $load_user=1){
+  if (array_key_exists("dashtype", $_REQUEST)) {
+    if ($_REQUEST['dashtype'] == 1) {
+      show_old_header($title, $active_tab = '', $load_user=1);
+    } else {
+      show_new_header();
+    }
+  } else {
+    show_new_header();
+  }
+}
+
+function show_old_header($title, $active_tab = '', $load_user=1)
 {
   global $extra_js;
   global $in_maintenance_mode;
@@ -206,6 +218,7 @@ function show_header($title, $active_tab = '', $load_user=1)
   /* Stylesheet(s) */
   echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
   echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
+  echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
   
@@ -276,6 +289,118 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<div id="content-outer">';
   echo '<div id="content">';
   //  show_starter_status_bar($load_user);
+}
+
+function show_new_header(){
+  global $extra_js;
+  global $in_maintenance_mode;
+  global $in_lockdown_mode;
+  global $portal_analytics_enable;
+  global $portal_analytics_string;
+  global $has_maintenance_alert;
+  global $maintenance_alert;
+  global $portal_jquery_url; 
+  global $portal_jqueryui_js_url; 
+  global $portal_jqueryui_css_url; 
+  global $portal_datatablesjs_url; 
+  global $user;
+
+  if (!isset($user)) {
+    $user = geni_loadUser();
+  }
+  check_km_authorization($user);
+
+  echo '<!DOCTYPE HTML>';
+  echo '<html lang="en">';
+  echo '<head>';
+  echo '<meta charset="utf-8">';
+  echo '<title>GENI Portal</title>';
+
+  /* Javascript stuff. */
+  echo "<script src='$portal_jquery_url'></script>";
+  echo "<script src='$portal_jqueryui_js_url'></script>";
+  echo "<script type='text/javascript' charset='utf8' src='$portal_datatablesjs_url'></script>";
+  /* Stylesheet(s) */
+  echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
+  // echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
+  echo '<link type="text/css" href="/common/css/newportal.css" rel="stylesheet"/>';
+  echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+
+  if(isset($portal_analytics_enable)) {
+    if($portal_analytics_enable) {
+      // FIXME: Allow some users (e.g. operators) to bypass tracking
+      echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+      echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+      echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+      echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+      
+      if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
+        /* Use the following tracking IDs depending on which server this will be running on
+          portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+          portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+        */
+        $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+      }
+      
+      echo $portal_analytics_string;
+      
+      echo "ga('send', 'pageview');";
+      echo '</script>';
+    }
+  }
+
+  /* for proper scaling on mobile devices/ mobile web app support */ 
+  echo '<meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>';
+  echo '<meta name="mobile-web-app-capable" content="yes">';
+
+  /* Close the "head" */
+  echo '</head>';
+  echo '<body>';
+  echo '<script>';
+  echo '$(document).ready(function(){';
+  echo '$(".has-sub").hover(function(){ $(this).find(\'ul\').show(); }, function(){ $(this).find(\'ul\').hide(); });';
+  echo '});';
+  echo '</script>';
+  echo '<div id="dashboardheader" class="bigshadow">';
+  echo '<img class="floatleft" src="/common/geni-square.png" alt="Geni Logo" style="height:60px; margin-left: 20px;"/>';
+  echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
+  echo "<li class='has-sub headerlink'>{$user->prettyName()}";
+  echo '<ul class="submenu">';
+  echo '<li onclick="window.location=\'' . relative_url("dologout.php") . '\'"; >Logout</li>';
+  echo '<li onclick="window.location=\'preferences.php\'">Preferences</li></ul></li>';
+  echo '<li class="headerlink">Help</li>';
+  echo '<li class="headerlink has-sub">Tools';
+  echo '<ul class="submenu">';
+  $gemini_url = relative_url("gemini.php");
+  $labwiki_url = 'http://labwiki.casa.umass.edu'; 
+  $wimax_url = relative_url("wimax-enable.php");
+  $cloudlab_url = "https://www.cloudlab.us/login.php";
+  $savi_url = relative_url("savi.php");
+  $gee_url = "http://gee-project.org/user";
+  $tool_links = array("GENI Desktop" => $gemini_url, "LabWiki" => $labwiki_url, "GENI Wireless" => $wimax_url,
+                      "CloudLab" => $cloudlab_url, "SAVI" => $savi_url, "GEE" => $gee_url);
+  foreach ($tool_links as $name => $url) {
+    // print "<li onclick='window.location=\"$url\"'>$name</li>";
+    print "<li><a href='$url' target='_blank'>$name<img class='expirationicon' src='/common/external.png'/></a></li>";
+  }
+  echo '</ul></li>';
+
+  echo '<li class="headerlink has-sub">Profile';
+  echo '<ul class="submenu">';
+  echo '<li onclick="window.location=\'profile.php#outstandingrequests\'">Requests</li>';
+  echo '<li onclick="window.location=\'profile.php#omni\'">Omni</li> ';
+  echo '<li onclick="window.location=\'profile.php#ssh\'">SSH Keys</li> ';
+  echo '<li onclick="window.location=\'profile.php#accountsummary\'">Account</li>';
+  echo '</ul></li>';
+  echo '<li class="headerlink" onclick="window.location=\'dashboard.php\'">Dashboard</li></ul>';
+  echo '<div style="clear:both; font-size:1px;">&nbsp;</div>';
+  echo '</div>';
+
+  echo '<div style="clear:both;"></div>';
+  echo '<div id="content-outer">';
+  echo '<div id="content">';
 }
 
 ?>

@@ -67,6 +67,7 @@ dist_svcweb_DATA = \
 	www/portal/confirm-sliverdelete.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
+	www/portal/dashboard.js \
 	www/portal/dashboard.php \
 	www/portal/db_error_test.php \
 	www/portal/debug_clearcache.php \
@@ -137,6 +138,7 @@ dist_svcweb_DATA = \
 	www/portal/portal_omni_config.php \
 	www/portal/portal-jacks-app.js \
 	www/portal/portal-jacks-editor-app.js \
+	www/portal/preferences.php \
 	www/portal/print-text.php \
 	www/portal/profile.php \
 	www/portal/project-member.php \
@@ -226,17 +228,21 @@ dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
 	www/common/README-incommon-logo.txt \
 	www/common/dots.gif \
-	www/common/green.png \
+	www/common/external.png \
+	www/common/geni-square.png \
+	www/common/339933.png \
 	www/common/nsf1.gif \
 	www/common/logos.html \
-	www/common/orange.png \
-	www/common/red.png \
+	www/common/FFD92A.png \
+	www/common/EE583A.png \
 	www/common/topbar_gradient.png \
 	www/common/topbar_gradient2.png 
 
 dist_svcwebcss_DATA =  \
-	www/common/css/portal.css \
-	www/common/css/mobile-portal.css
+	www/common/css/dashboard.css \
+	www/common/css/mobile-portal.css \
+	www/common/css/newportal.css \
+	www/common/css/portal.css 
 
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
