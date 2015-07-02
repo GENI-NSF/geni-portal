@@ -39,9 +39,9 @@ body {
 }
 
 #content button, input[type=submit], input[type=button] {
-  box-shadow: none;
   margin: 4px;
   padding: 5px;
+  background-color: white;
 }
 
 #content table {

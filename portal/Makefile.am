@@ -196,12 +196,14 @@ dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt-centered.svg \
 	www/images/EG-VM-noTxt.svg \
 	www/images/EG-VM.svg \
+	www/images/email.png \
 	www/images/geni.png \
 	www/images/geni_globe.png \
 	www/images/geni_globe_small.png \
 	www/images/geni-header-left.png \
 	www/images/geni-header-right.png \
 	www/images/header-home.jpg \
+	www/images/menu.png \
 	www/images/openVZvm-noTxt-centered.svg \
 	www/images/openVZvm-noTxt.svg \
 	www/images/openVZvm.svg \

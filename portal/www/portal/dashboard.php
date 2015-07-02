@@ -53,14 +53,15 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
 ?>
 
 
-<h1 class="dashtext">Slices</h1><br>
+<h2 class="dashtext">Slices</h2><br>
 <?php
   if (count($project_objects) == 0){
     print "no projects";
   } else {
     $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, 
                                                 PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
-    $project_options = "<select id='projectswitch'>";
+    $project_options = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectswitch'>";
+    $project_options .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
     $project_info = "";
     $show_info = "";
     foreach ($project_objects as $project) {
@@ -69,19 +70,21 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
       $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
       $lead_name = $lead_names[$lead_id];
       $create_slice_button = "<button onClick='window.location=\"createslice.php?project_id=$project_id\"'><b>New slice</b></button>";
-      $selected_project = $show_info == "" ? "selected" : "";
-      $project_options .= "<option $selected_project value='{$project_name}'>Project: $project_name</option>";
+      $project_options .= "<li value='{$project_name}'>Project: $project_name</li>";
       $project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
       $project_info .= "project lead: $lead_name | $create_slice_button</div>";
       $show_info = "style='display:none;'";
     }
-    $project_options .= "<option value='-MY-'>All slices I lead</option>";
-    $project_options .= "<option value='-THEIR-'>All slices I don't lead</option>";
-    $project_options .= "<option value='-ALL-'>All slices</option>";
-    $project_options .= "</select>";
+    $project_options .= "<li value='-MY-'>All slices I lead</li>";
+    $project_options .= "<li value='-THEIR-'>All slices I don't lead</li>";
+    $project_options .= "<li value='-ALL-'>All slices</li>";
+    $project_options .= "</ul></li></ul>";
     print "<div id='projectcontrols'><h4 class='dashtext'>Filter by:</h4>$project_options"; 
-    print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4><select id='sortby'><option value='slicename'>Slice name</option><option value='sliceexp'>Slice expiration</option>";
-    print "<option value='resourceexp'>Next resource expiration</option></select>";
+    print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4>";
+    print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='sortby'>";
+    print "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
+    print "<li value='slicename'>Slice name</li><li value='sliceexp'>Slice expiration</li>";
+    print "<li value='resourceexp'>Resource expiration</li></ul></li></ul>";
     print "<input type='checkbox' id='ascendingcheck' value='ascending' checked>Sort ascending<br></div>";
     print $project_info;
   }
@@ -109,7 +112,7 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
 
   function make_slice_box($slice_name, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
                           $slice_exp, $resource_exp, $add_url, $remove_url) {
-    print "<div class='floatleft slicebox $whose_slice {$project_name}slices shadow' slicename='$slice_name' sliceexp='$slice_exp' resourceexp='$resource_exp'>";
+    print "<div class='floatleft slicebox $whose_slice {$project_name}slices' slicename='$slice_name' sliceexp='$slice_exp' resourceexp='$resource_exp'>";
     print "<table>";
     $resource_exp_icon = "";
     if ($resource_count > 0){
@@ -125,7 +128,7 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
     $slice_exp_color = get_urgency_color($slice_exp);
     $slice_info = "Slice expires in <b style='color: #{$slice_exp_color}'>$slice_exp_string</b>";
     $slice_exp_icon = "<img class='expirationicon' alt='slice expiration icon' src='/common/${slice_exp_color}.png'/>";
-    print "<tr><td class='slicetopbar' colspan='2' style='text-align:center; background-color: #F57F21;'>";
+    print "<tr><td class='slicetopbar' colspan='2' style='text-align:center; background-color: #F57F21; height: 30px; line-height: 30px;'>";
     print "<span class='dashtext' style='font-weight: normal; color:white !important; font-size: 16px' onclick='window.location=\"$slice_url\"'>$slice_name</span></td></tr>";
     print "<tr><td colspan='2' style='width:200px;'>Lead: $lead_name</td>";
     print "<td rowspan='3' style='text-align:center; border-left:1px solid #C2C2C2; border-bottom:none; display:none;' class='slicebuttons'>";
@@ -219,15 +222,20 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
 </div>
 
 <div style="clear:both;">&nbsp;</div>
-<h1 class="dashtext">Messages</h1><br>
-<h4 class='dashtext'>Showing logs for the last 
-<select id="loglength" onchange="getLogs(this.value);">
-  <option value="24">day</option>
-  <option value="48">2 days</option>
-  <option value="72">3 days</option>
-  <option value="168">week</option>
-</select></h4>
-
+<h2 class="dashtext">Messages</h2><br>
+<div style='text-align: left;'>
+<h4 class='dashtext' style='margin-top: 20px !important;'>Showing logs for the last</h4>
+<ul class="selectorcontainer"> 
+  <li class='has-sub selector' style='float:none;'><span class='selectorshown'>Day</span>
+  <ul class='submenu' id='loglength'>
+    <li value="24" onclick="getLogs(24);">day</li>
+    <li value="48" onclick="getLogs(48);">2 days</li>
+    <li value="72" onclick="getLogs(72);">3 days</li>
+    <li value="168" onclick="getLogs(168);">week</li>
+  </ul>
+  </li>
+</ul>
+</div>
 <script type="text/javascript">
   $(document).ready(function(){
     if(localStorage.loghours){
@@ -245,7 +253,7 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
   }
 </script>
 <div class="tablecontainer">
-  <table id="logtable" class='shadow'></table>
+  <table id="logtable"></table>
 </div>
 
 <?php

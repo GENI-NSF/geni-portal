@@ -220,7 +220,7 @@ function show_old_header($title, $active_tab = '', $load_user=1)
   echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400" rel="stylesheet" type="text/css">';
   
   /* Google Analytics
      Get this from /etc/geni-ch/settings.php, but first check to see if
@@ -326,7 +326,7 @@ function show_new_header(){
   echo '<link type="text/css" href="/common/css/newportal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
   echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400" rel="stylesheet" type="text/css">';
 
   if(isset($portal_analytics_enable)) {
     if($portal_analytics_enable) {
@@ -363,14 +363,24 @@ function show_new_header(){
   echo '$(".has-sub").hover(function(){ $(this).find(\'ul\').show(); }, function(){ $(this).find(\'ul\').hide(); });';
   echo '});';
   echo '</script>';
-  echo '<div id="dashboardheader" class="bigshadow">';
-  echo '<img class="floatleft" src="/common/geni-square.png" alt="Geni Logo" style="height:60px; margin-left: 20px;"/>';
+  echo '<div id="dashboardheader">';
+  echo '<img id="globe" src="/images/geni_globe.png" alt="Geni Logo" style="height:45px; margin-left: 20px; float: left;"/>';
+  echo '<img id="hamburger" src="/images/menu.png" alt="optionsicon" style="height:20px; width: 20px; padding:15px; float: left;"/>';
+  echo '<h2 class="dashtext" style="float: left; line-height: 50px; text-align: center; margin: 0 20px; display: inline; height: 50px">GENI Portal</h2>';
   echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
   echo "<li class='has-sub headerlink'>{$user->prettyName()}";
   echo '<ul class="submenu">';
-  echo '<li onclick="window.location=\'' . relative_url("dologout.php") . '\'"; >Logout</li>';
-  echo '<li onclick="window.location=\'preferences.php\'">Preferences</li></ul></li>';
-  echo '<li class="headerlink">Help</li>';
+  echo '<li><a href="' . relative_url("dologout.php") . '"; >Logout</li>';
+  echo '<li><a href="preferences.php">Preferences</a></li></ul></li>';
+  echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
+  echo '<ul class="submenu">';
+  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki</a></li>';
+  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations </a></li>';
+  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary</a></li>';
+  echo '<li><a href="login-help.php">Login Help</a></li>';
+  echo '<li><a href="mailto:portal-help@geni.net">Portal Help <img class="expirationicon" src="/images/email.png" /></a></li>';
+  echo '<li><a href="mailto:help@geni.net">GENI Help <img class="expirationicon" src="/images/email.png"/></a></li></li>';
+  echo '</ul></li>';
   echo '<li class="headerlink has-sub">Tools';
   echo '<ul class="submenu">';
   $gemini_url = relative_url("gemini.php");
@@ -389,12 +399,12 @@ function show_new_header(){
 
   echo '<li class="headerlink has-sub">Profile';
   echo '<ul class="submenu">';
-  echo '<li onclick="window.location=\'profile.php#outstandingrequests\'">Requests</li>';
-  echo '<li onclick="window.location=\'profile.php#omni\'">Omni</li> ';
-  echo '<li onclick="window.location=\'profile.php#ssh\'">SSH Keys</li> ';
-  echo '<li onclick="window.location=\'profile.php#accountsummary\'">Account</li>';
+  echo '<li><a href="profile.php#outstandingrequests">Requests</a></li>';
+  echo '<li><a href="profile.php#omni">Omni</a></li> ';
+  echo '<li><a href="profile.php#ssh">SSH Keys</a></li> ';
+  echo '<li><a href="profile.php#accountsummary">Account</a></li>';
   echo '</ul></li>';
-  echo '<li class="headerlink" onclick="window.location=\'dashboard.php\'">Dashboard</li></ul>';
+  echo '<li class="headerlink"><a href="dashboard.php">Dashboard</a></li></ul>';
   echo '<div style="clear:both; font-size:1px;">&nbsp;</div>';
   echo '</div>';
 

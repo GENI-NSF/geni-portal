@@ -1,23 +1,47 @@
   $(document).ready(function(){
-
-    if (localStorage.lastselection){
-      $("#projectswitch").val(localStorage.lastselection);
-    }
-    if (localStorage.lastsortby){
-      $("#lastsortby").val(localStorage.lastselection);
-    }
-    show_slices($("#projectswitch").val(), $("#sortby").val());
-
-    $("#projectswitch").change(function(){
-      show_slices($(this).val(), $("#sortby").val());
+    $("#hamburger").click(function(){
+      $("#dashboardtools").slideToggle();
     });
 
-    $("#sortby").change(function(){
-      show_slices($("#projectswitch").val(), $(this).val());
+    if (localStorage.lastselection && localStorage.lastselectionval) {
+      $("#projectswitch .selectorshown").html(localStorage.lastselection);
+      $("#projectswitch .selectorshown").attr("value", localStorage.lastselectionval);
+    } else {
+      $("#projectswitch .selectorshown").html($($("#projectswitch .submenu li")[0]).html());
+      $("#projectswitch .selectorshown").attr("value", $($("#projectswitch .submenu li")[0]).attr("value"));
+    }
+
+    if (localStorage.lastsortby && localStorage.lastsortbyval) {
+      $("#sortby .selectorshown").html(localStorage.lastsortby);
+      $("#sortby .selectorshown").attr("value", localStorage.lastsortbyval);
+    } else {
+      $("#sortby .selectorshown").html($($("#sortby .submenu li")[0]).html());
+      $("#sortby .selectorshown").attr("value", $($("#sortby .submenu li")[0]).attr("value"));
+    }
+
+    show_slices($("#projectswitch .selectorshown").attr("value"), $("#sortby .selectorshown").attr("value"),
+                $("#projectswitch .selectorshown").html(), $("#sortby .selectorshown").html());
+
+    $(".has-sub").hover(function(){ $(this).find('ul').show(); },
+                        function(){ $(this).find('ul').hide(); });
+
+    $(".selector > .submenu > li").click(function(){
+      $(this).parents(".selector").children(".selectorshown").html($(this).html());
+      $(this).parents(".selector").children(".selectorshown").attr("value", $(this).attr("value"));
     });
 
-    $('#ascendingcheck').change(function() {
-      sort_slices($("#sortby").val(), this.checked);       
+    $("#projectswitch .submenu li").click(function(){
+      show_slices($("#projectswitch .selectorshown").attr("value"), $("#sortby .selectorshown").attr("value"),
+                  $("#projectswitch .selectorshown").html(), $("#sortby .selectorshown").html());
+    });
+
+    $("#sortby .submenu li").click(function(){
+      show_slices($("#projectswitch .selectorshown").attr("value"), $("#sortby .selectorshown").attr("value"),
+                  $("#projectswitch .selectorshown").html(), $("#sortby .selectorshown").html());
+    });
+
+    $('#ascendingcheck').click(function() {
+      sort_slices($("#sortby > .selectorshown").attr("value"), this.checked);       
     });
 
     $('.slicebox').click(function(){
@@ -47,7 +71,7 @@
         });
     }
 
-    function show_slices(selection, sortby) {
+    function show_slices(selection, sortby, selectionstring, sortbystring) {
       $(".slicebox").each(function() {
         if ($(this).hasClass("expanded")) {
           unexpand_box($(this), 0);
@@ -56,8 +80,10 @@
       $(".slicebox").hide();
       $(".noslices").remove();
       $(".projectinfo").hide();
-      localStorage.setItem("lastselection", selection);
-      localStorage.setItem("lastsortby", sortby);
+      localStorage.setItem("lastselection", selectionstring);
+      localStorage.setItem("lastselectionval", selection);
+      localStorage.setItem("lastsortby", sortbystring);
+      localStorage.setItem("lastsortbyval", sortby);
 
       if (is_all(selection)) {
         project_name = "";
@@ -68,7 +94,6 @@
         class_name = selection + "slices";
         no_slice_msg = "No slices for project" + project_name;
         $("#" + project_name + "info").show();
-        // $("#" + project_name + "info").css("float", "right");
       }
 
       $("." + class_name).show();
@@ -101,7 +126,5 @@
       $("#slicearea").append(sorted_slices);
     }
 
-    $(".has-sub").hover(function(){ $(this).find('ul').show(); },
-                        function(){ $(this).find('ul').hide(); });
 
   });
