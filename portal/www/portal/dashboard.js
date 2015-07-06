@@ -22,7 +22,7 @@
     show_slices($("#projectswitch .selectorshown").attr("value"), $("#sortby .selectorshown").attr("value"),
                 $("#projectswitch .selectorshown").html(), $("#sortby .selectorshown").html());
 
-    $(".has-sub").hover(function(){ $(this).find('ul').show(); },
+    $(".has-sub").hover(function(){ $(this).find('ul').first().show(); },
                         function(){ $(this).find('ul').hide(); });
 
     $(".selector > .submenu > li").click(function(){
@@ -31,8 +31,10 @@
     });
 
     $("#projectswitch .submenu li").click(function(){
-      show_slices($("#projectswitch .selectorshown").attr("value"), $("#sortby .selectorshown").attr("value"),
+      if ($(this).attr('id') != "projectselectorlabel"){
+        show_slices($("#projectswitch .selectorshown").attr("value"), $("#sortby .selectorshown").attr("value"),
                   $("#projectswitch .selectorshown").html(), $("#sortby .selectorshown").html());
+      }
     });
 
     $("#sortby .submenu li").click(function(){
@@ -44,30 +46,34 @@
       sort_slices($("#sortby > .selectorshown").attr("value"), this.checked);       
     });
 
-    $('.slicebox').click(function(){
-      box = $(this);
-      if($(this).hasClass("expanded")){
-        unexpand_box(box, 200);
-      } else {
-        expand_box(box, 200);
-      }
-    });
+    // $('.sliceactions').click(function(){
+    //   box = $(this).parents('.slicebox');
+    //   if(box.hasClass("expanded")){
+    //     unexpand_box(box, 200);
+    //   } else {
+    //     expand_box(box, 200);
+    //   }
+    // });
+
+
 
     function expand_box(box, duration) {
       box.animate({width: "375px"}, duration,
         function(){
           box.find(".slicebuttons").slideToggle(duration/3);
+          box.find(".sliceactions").html("hide actions");
         });
-      $(box.find(".slicetopbar")).attr("colspan", "3");
+      $(box.find(".slicetopbar")).attr("colspan", "2");
       box.addClass("expanded");
     }
 
     function unexpand_box(box, duration) {
       box.find(".slicebuttons").slideToggle(duration / 3,
         function(){
-          $(box.find(".slicetopbar")).attr("colspan", "2");
+          $(box.find(".slicetopbar")).attr("colspan", "1");
           box.animate({width: "275px"}, duration);
           box.removeClass("expanded");
+          box.find(".sliceactions").html("actions");
         });
     }
 

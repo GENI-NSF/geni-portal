@@ -3,13 +3,11 @@
 /* --------------------------------------------*/
 
 .dashtext {
-/*  padding: 0px;
-  border: none !important;
-  margin: 5px 0px !important;*/
-  color: #303030 !important;
+  color: #303030;
   text-shadow: none !important;
   display: inline;
   font-weight: normal;
+  border: none !important;
 }
 
 .floatright {
@@ -21,7 +19,7 @@
 }
 
 .slicebox {
-  width: 300px;
+  width: 275px;
   padding: 0px;
   margin: 20px 15px 20px 25px;
   border-radius: 3px;
@@ -43,39 +41,128 @@
   padding: 12px 4px;
 }
 
-select {
+.slicetopbar {
+  background-color: #F57F21 !important;
+  height: 30px;
+  line-height: 30px;
+  color: white !important;
+}
+
+.slicetopbar:hover {
+  background-color: #FB8C00 !important;
+  cursor: pointer;
+}
+
+/* Header submenus and new selects */
+
+.submenu {
+  position: absolute;
+  display: none;
+  border-top: 1px solid #fff;
+  margin: 0 !important;
+  padding: 0;
+  width: 150px;
+  list-style-type: none;
+  background-color: #ffffff;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  z-index: 750;
+}
+
+.submenu li {
+  font-family: 'Open Sans';
+  background-color: #ffffff;
+  color: #303030;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  margin: 0px;
+  text-align: center;
+}
+
+.submenu li a {
+  font-family: 'Open Sans';
+  display: block;
+  text-decoration: none;
+  color: #303030;
+}
+
+.submenu li a:hover {
+  display: block;
+  text-decoration: none;
+  color: white;
+}
+
+.submenu li:hover {
+  background-color: #FB8C00;
+  color: white;
+}
+
+.selectorcontainer {
+  display: inline-block;
+}
+
+.selector {
+  background-color: #FFFFFF;
   font-size: 14px;
-  font-weight: bold;
-  color: #040404;
-  background-color: white;
-  border: 2px solid #5F584E;
-  padding: 5px;
-  border-radius: 0px;
+  font-weight: normal;
+  text-align: center;    
+  display: inline-block;
+  min-width: 150px;
+  width: 150px;
+  float: right;
+  height: 30px;
+  line-height: 30px;
+  margin: 0px 15px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
-select:hover {
-  background-color: #fcfcfc;
+.selector:hover {
+  background-color: #EEEEEE;
+  animation: raise;
+  animation-duration: .2s;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  
 }
 
-select:focus {
-  outline-width: 0;
+.selector .submenu {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  width: 150px;
 }
 
-option {
-  font-size: 16px;
+.selector .submenu li {
+  background-color: #ffffff;
+  min-width: 150px;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  margin: 0px;
 }
 
-option:focus {
-    outline-width: 0;
+.selector .submenu li:hover {
+  cursor: pointer;
+  background-color: #FB8C00;
+  color: white;
+}
+
+#projectselectorlabel {
+  font-weight: bold;
+}
+
+#projectselectorlabel:hover {
+  cursor: default;
+  background-color: #FFFFFF;
 }
 
 #projectswitch {
   margin: 20px 15px;
 }
 
+#ascendingcheck {
+  border: 2px solid #f2f2f2;
+}
+
 #loglength {
   margin: 20px 10px;
+  width: 150px;
 }
 
 #sortby {
@@ -100,6 +187,18 @@ option:focus {
   text-decoration: underline;
 }
 
+.sliceactions li {
+  height: 30px;
+}
+
+.sliceactions ul {
+  margin: 0px;
+}
+
+.sliceactions li .submenu li {
+  height: 30px;
+}
+
 button {
   width: 120px;
 }
@@ -114,11 +213,20 @@ button {
 #hamburger {
   display: none;
 }
+
+.mobilebreak {
+  display: none;
+}
+
 /* --------------------------------------------*/
 /* ----------- MOBILE DASHBOARD----------------*/
 /* --------------------------------------------*/
 
 @media (max-width: 600px) {
+  .mobilebreak {
+    display: block;
+  }
+
   #hamburger {
     display: inline;
   }
@@ -158,6 +266,14 @@ button {
     margin: 0 auto;
   }
 
+  .selector {
+    margin: 5px !important;
+  }
+
+  .selectorcontainer {
+    margin: 5px !important;
+  }
+  
   .slicebox {
     margin: 20px auto;
   }

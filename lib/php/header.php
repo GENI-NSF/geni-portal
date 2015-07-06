@@ -220,7 +220,7 @@ function show_old_header($title, $active_tab = '', $load_user=1)
   echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400" rel="stylesheet" type="text/css">';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400,700" rel="stylesheet" type="text/css">';
   
   /* Google Analytics
      Get this from /etc/geni-ch/settings.php, but first check to see if
@@ -319,6 +319,9 @@ function show_new_header(){
   /* Javascript stuff. */
   echo "<script src='$portal_jquery_url'></script>";
   echo "<script src='$portal_jqueryui_js_url'></script>";
+  foreach ($extra_js as $js_url) {
+    echo '<script src="' . $js_url . '"></script>' . PHP_EOL;
+  }
   echo "<script type='text/javascript' charset='utf8' src='$portal_datatablesjs_url'></script>";
   /* Stylesheet(s) */
   echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
@@ -374,10 +377,10 @@ function show_new_header(){
   echo '<li><a href="preferences.php">Preferences</a></li></ul></li>';
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
   echo '<ul class="submenu">';
-  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki</a></li>';
-  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations </a></li>';
-  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary</a></li>';
-  echo '<li><a href="login-help.php">Login Help</a></li>';
+  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki <img class="expirationicon" src="/images/external.png" /></a></li>';
+  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations <img class="expirationicon" src="/images/external.png" /> </a></li>';
+  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary <img class="expirationicon" src="/images/external.png" /></a></li>';
+  echo '<li><a href="/login-help.php">Login Help</a></li>';
   echo '<li><a href="mailto:portal-help@geni.net">Portal Help <img class="expirationicon" src="/images/email.png" /></a></li>';
   echo '<li><a href="mailto:help@geni.net">GENI Help <img class="expirationicon" src="/images/email.png"/></a></li></li>';
   echo '</ul></li>';
@@ -393,7 +396,7 @@ function show_new_header(){
                       "CloudLab" => $cloudlab_url, "SAVI" => $savi_url, "GEE" => $gee_url);
   foreach ($tool_links as $name => $url) {
     // print "<li onclick='window.location=\"$url\"'>$name</li>";
-    print "<li><a href='$url' target='_blank'>$name<img class='expirationicon' src='/common/external.png'/></a></li>";
+    print "<li><a href='$url' target='_blank'>$name<img class='expirationicon' src='/images/external.png'/></a></li>";
   }
   echo '</ul></li>';
 

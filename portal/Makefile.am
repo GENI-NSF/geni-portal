@@ -197,11 +197,14 @@ dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt.svg \
 	www/images/EG-VM.svg \
 	www/images/email.png \
+	www/images/external.png \
 	www/images/geni.png \
 	www/images/geni_globe.png \
 	www/images/geni_globe_small.png \
 	www/images/geni-header-left.png \
 	www/images/geni-header-right.png \
+	www/images/geni-square.png \
+	www/images/green.png \
 	www/images/header-home.jpg \
 	www/images/menu.png \
 	www/images/openVZvm-noTxt-centered.svg \
@@ -217,6 +220,7 @@ dist_svcwebimages_DATA = \
 	www/images/RawPC-IG-noTxt-centered.svg \
 	www/images/RawPC-IG-noTxt.svg \
 	www/images/RawPC-IG.svg \
+	www/images/red.png \
 	www/images/router.svg \
 	www/images/site-icon.png \
 	www/images/staticmap.png \
@@ -224,19 +228,15 @@ dist_svcwebimages_DATA = \
 	www/images/UseGENI.png \
 	www/images/Xen-VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt.svg \
-	www/images/Xen-VM.svg
+	www/images/Xen-VM.svg \
+	www/images/yellow.png 	
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
 	www/common/README-incommon-logo.txt \
 	www/common/dots.gif \
-	www/common/external.png \
-	www/common/geni-square.png \
-	www/common/339933.png \
 	www/common/nsf1.gif \
 	www/common/logos.html \
-	www/common/FFD92A.png \
-	www/common/EE583A.png \
 	www/common/topbar_gradient.png \
 	www/common/topbar_gradient2.png 
 

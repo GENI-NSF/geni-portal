@@ -50,8 +50,15 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
   $member_objects = $retVal[2];
   $project_slice_map = $retVal[3];
   $project_activeslice_map = $retVal[4];
-?>
 
+if(array_key_exists("showmap", $_REQUEST)) {
+  echo "<h2 class='dashtext'>Current GENI Resources</h2><br>";
+  echo "<table id='resourcemap'><tr><td>";
+  include("map.html");
+  echo "</td></tr></table>";  
+}
+
+?>
 
 <h2 class="dashtext">Slices</h2><br>
 <?php
@@ -61,30 +68,34 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
     $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, 
                                                 PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
     $project_options = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectswitch'>";
-    $project_options .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
+    $project_options .= "<span class='selectorshown'>Filters</span><ul class='submenu'><li id='projectselectorlabel'>Projects</li>";
     $project_info = "";
     $show_info = "";
     foreach ($project_objects as $project) {
-      $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-      $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-      $lead_name = $lead_names[$lead_id];
-      $create_slice_button = "<button onClick='window.location=\"createslice.php?project_id=$project_id\"'><b>New slice</b></button>";
-      $project_options .= "<li value='{$project_name}'>Project: $project_name</li>";
-      $project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
-      $project_info .= "project lead: $lead_name | $create_slice_button</div>";
-      $show_info = "style='display:none;'";
+      if (!$project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]) {
+        $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+        $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+        $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+        $lead_name = $lead_names[$lead_id];
+        $create_slice_button = "<button onclick='window.location=\"createslice.php?project_id=$project_id\"'>New slice</button>";
+        $manage_project_button = "<button onclick='window.location=\"project.php?project_id=$project_id\"'>Manage project</button>";
+        $project_options .= "<li value='{$project_name}'>$project_name</li>";
+        $project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
+        $project_info .= "Project lead: $lead_name | $create_slice_button $manage_project_button</div>";
+        $show_info = "style='display:none;'";
+      }
     }
+    $project_options .= "<li id='projectselectorlabel'>Categories</li>";
     $project_options .= "<li value='-MY-'>All slices I lead</li>";
     $project_options .= "<li value='-THEIR-'>All slices I don't lead</li>";
     $project_options .= "<li value='-ALL-'>All slices</li>";
     $project_options .= "</ul></li></ul>";
-    print "<div id='projectcontrols'><h4 class='dashtext'>Filter by:</h4>$project_options"; 
+    print "<div id='projectcontrols'><h4 class='dashtext'>Filter by:</h4>$project_options<br class='mobilebreak'>"; 
     print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4>";
     print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='sortby'>";
     print "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
     print "<li value='slicename'>Slice name</li><li value='sliceexp'>Slice expiration</li>";
-    print "<li value='resourceexp'>Resource expiration</li></ul></li></ul>";
+    print "<li value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
     print "<input type='checkbox' id='ascendingcheck' value='ascending' checked>Sort ascending<br></div>";
     print $project_info;
   }
@@ -119,22 +130,28 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
       $plural = $resource_count == 1 ? "" : "s";
       $resource_exp_string = get_time_diff_string($resource_exp);
       $resource_exp_color = get_urgency_color($resource_exp);
+      $resource_exp_icon = get_urgency_icon($resource_exp);
       $resource_info = "<b>$resource_count</b> resource{$plural}, next expiration in <b style='color: #{$resource_exp_color}'>$resource_exp_string</b>";
-      $resource_exp_icon = "<img class='expirationicon' alt='$resource_exp_color resource expiration icon' src='/common/${resource_exp_color}.png'/>";
+      $resource_exp_icon = "<img class='expirationicon' alt='resource expiration icon' src='/images/${resource_exp_icon}.png'/>";
     } else {
       $resource_info = "<i>No resources for this slice</i>";
     }
     $slice_exp_string = get_time_diff_string($slice_exp);
     $slice_exp_color = get_urgency_color($slice_exp);
+    $slice_exp_icon = get_urgency_icon($slice_exp);
     $slice_info = "Slice expires in <b style='color: #{$slice_exp_color}'>$slice_exp_string</b>";
-    $slice_exp_icon = "<img class='expirationicon' alt='slice expiration icon' src='/common/${slice_exp_color}.png'/>";
-    print "<tr><td class='slicetopbar' colspan='2' style='text-align:center; background-color: #F57F21; height: 30px; line-height: 30px;'>";
-    print "<span class='dashtext' style='font-weight: normal; color:white !important; font-size: 16px' onclick='window.location=\"$slice_url\"'>$slice_name</span></td></tr>";
+    $slice_exp_icon = "<img class='expirationicon' alt='slice expiration icon' src='/images/${slice_exp_icon}.png'/>";
+    print "<tr><td class='slicetopbar' style='text-align:left;' onclick='window.location=\"$slice_url\"'>";
+    print "<span style='font-weight: normal; font-size: 16px'>$slice_name</span></td>";
+    print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub'>actions<ul class='submenu'>";
+    print "<li onclick='window.location=\"$slice_url\"'>Manage slice</li>";
+    print "<li onclick='window.location=\"$add_url\"'>Add resources</li>";
+    print "<li onclick='window.location=\"$remove_url\"'>Remove resources</li></td></tr>";
     print "<tr><td colspan='2' style='width:200px;'>Lead: $lead_name</td>";
     print "<td rowspan='3' style='text-align:center; border-left:1px solid #C2C2C2; border-bottom:none; display:none;' class='slicebuttons'>";
-    print "<button onclick='window.location=\"$add_url\"'>Add resources</button><br><button onclick='window.location=\"$remove_url\"'>Remove resources</button></td></tr>";
     print "<tr><td style='width:200px;'>$slice_info</td><td style='vertical-align: center; style='width:30px;'>$slice_exp_icon</td></tr>";
-    print "<tr><td style='border-bottom:none; height:55px;'>$resource_info</td><td style='vertical-align: center; border-bottom:none'>$resource_exp_icon</td></tr>";
+    print "<tr><td style='border-bottom:none; height:55px;'>$resource_info</td>";
+    print "<td style='vertical-align: center; border-bottom:none'>$resource_exp_icon</td></tr>";
     print "</table></div>";
   }
   
@@ -160,9 +177,19 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
     if ($num_hours < 24) { 
       return "EE583A";
     } else if ($num_hours < 48) {
-      return "FFD92A";
+      return "FBC02D";
     } else {
       return "339933";
+    }
+  }
+
+  function get_urgency_icon($num_hours) {
+    if ($num_hours < 24) { 
+      return "red";
+    } else if ($num_hours < 48) {
+      return "yellow";
+    } else {
+      return "green";
     }
   }
 
@@ -198,7 +225,7 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
     $slice_exp = get_time_diff($slice_exp_date);
 
     if (count($slivers) == 0) {
-      $resource_exp = -999;
+      $resource_exp = 1000000000;
     } else {
       $first_sliver = reset($slivers);
       $next_exp = new DateTime($first_sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
@@ -226,7 +253,7 @@ show_header('GENI Portal: Dashboard', $TAB_HOME);
 <div style='text-align: left;'>
 <h4 class='dashtext' style='margin-top: 20px !important;'>Showing logs for the last</h4>
 <ul class="selectorcontainer"> 
-  <li class='has-sub selector' style='float:none;'><span class='selectorshown'>Day</span>
+  <li class='has-sub selector' style='float:none;'><span class='selectorshown'>day</span>
   <ul class='submenu' id='loglength'>
     <li value="24" onclick="getLogs(24);">day</li>
     <li value="48" onclick="getLogs(48);">2 days</li>
