@@ -145,39 +145,62 @@ body {
 }
 
 /* Buttons */
-#content button, input[type=submit], input[type=button] {
-  padding: 4px 6px;
+#content button, input[type=submit], input[type=button], .button {
+  padding: 5px 10px;
   border: none;
-  background-color: #ffffff;
+  background-color: #64B5F6;
+  color: #ffffff !important;
   font-family: inherit;
-  /*border: 2px solid #E0E0E0;*/
+  font-size: 13px;
   cursor: pointer;
-  font-weight: bold;
   margin: 2px;
   vertical-align: middle;
   box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.24);
 }
 
-#content button:hover, input[type=submit]:hover, input[type=button]:hover {
-  background-color: #EEEEEE;
+#content button:hover, #content input[type=submit]:hover, #content input[type=button]:hover, #content .button:hover{
+  background-color: #42A5F5;
   animation: raise;
   animation-duration: .2s;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  
+}
+
+#content td button, #content td input[type=submit], #content td input[type=button], #content td .button {
+  background-color: #FFFFFF;
+  color: #303030 !important;
+}
+
+#content td button:hover, #content td input[type=submit]:hover, #content td input[type=button]:hover, #content td .button:hover {
+  background-color: #EEEEEE;
+}
+
+#content button[disabled=disabled], #content button:disabled {
+  color: #E0E0E0 !important; 
+  background-color: #F9F9F9;
+}
+
+#content button[disabled=disabled]:hover, #content button:disabled:hover {
+  animation: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.24);
+  cursor: default;
 }
 
 button:focus {
   outline:0;
 }
 
+button b {
+  font-weight: normal !important;
+}
 /* Links */
 #content a {
-  color: #FB8C00; /* official GENI orange */
+  color: #FB8C00;
   text-decoration:none;
 }
 
 #content a:hover {
   background-color: #E5E5E5;
-  color: #FB8C00; /* official GENI orange */
+  color: #FB8C00;
   text-decoration:none;
 }
 
@@ -231,7 +254,6 @@ ul {
 
 #content td a {
   color: #616161;
-  border-bottom: 1px dashed #616161;
   font-weight: bold;
 }
 
@@ -474,7 +496,7 @@ ul {
 
 #welcome-right h1, h2 {
   font-weight: bold;
-  color: #FB8C00; /* official GENI orange */
+  color: #FB8C00;
 }
 
 #welcome-right h1 {
@@ -505,14 +527,14 @@ ul {
 }
 
 #welcome-right a {
-  color: #FB8C00; /* official GENI orange */
+  color: #FB8C00;
   border-bottom: 1px solid #FB8C00;
   text-decoration:none;
 }
 
 #welcome-right a:hover {
   background-color: #E5E5E5;
-  color: #FB8C00; /* official GENI orange */
+  color: #FB8C00;
   border-bottom: 1px solid #FB8C00;
   text-decoration:none;
 }
@@ -587,10 +609,6 @@ ul {
   margin-left: 0px !important;
   margin-top: 20px !important;
   margin-bottom: 20px !important;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius: 8px; /* future proofing */
-  -khtml-border-radius: 8px; /* for old Konqueror browsers */
 }
 
 .instruction:before {
@@ -610,10 +628,6 @@ ul {
   margin-left: 0px !important;
   margin-top: 20px !important;
   margin-bottom: 20px !important;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius: 8px; /* future proofing */
-  -khtml-border-radius: 8px; /* for old Konqueror browsers */
 }
 
 .warn:before {
@@ -633,10 +647,6 @@ ul {
   margin-left: 0px !important;
   margin-top: 20px !important;
   margin-bottom: 20px !important;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  border-radius: 8px; /* future proofing */
-  -khtml-border-radius: 8px; /* for old Konqueror browsers */
 }
 
 .error:before {
@@ -672,6 +682,7 @@ ul {
   color: black;
   background-color: BlanchedAlmond;
 }
+
 .configuring, .unknown, .busy, .ready, .failed {
  text-transform:uppercase;
 }

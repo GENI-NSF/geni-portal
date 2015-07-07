@@ -32,7 +32,9 @@ require_once('maintenance_mode.php');
 require_once("header.php");
 $user = geni_loadUser();
 
+relative_redirect("dashboard.php");
 show_header('GENI Portal Home', $TAB_HOME);
+
 ?>
 <div id="home-body">
 <?php

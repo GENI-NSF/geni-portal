@@ -3,11 +3,25 @@
 /* --------------------------------------------*/
 
 .dashtext {
-  color: #303030;
+  color: #303030 !important;
   text-shadow: none !important;
   display: inline;
   font-weight: normal;
   border: none !important;
+}
+
+.activesection {
+  font-weight: bold;
+}
+
+#sectionswitch a {
+  cursor: pointer;
+}
+
+#sectionswitch a:hover {
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #f9f9f9 !important; 
 }
 
 .floatright {
@@ -16,6 +30,21 @@
 
 .floatleft {
   float: left;
+}
+
+#slicearea {
+  overflow-x: hidden;
+}
+
+.slicebox {
+    transition-duration: 300ms;
+}
+
+.slicebox.loading {
+  transform: translate(500%);
+  /*margin-left: 290px;*/
+  opacity: 0;
+  transition-timing-function: ease-in;
 }
 
 .slicebox {
@@ -143,21 +172,18 @@
   color: white;
 }
 
-#projectselectorlabel {
+.selectorlabel {
   font-weight: bold;
 }
 
-#projectselectorlabel:hover {
-  cursor: default;
-  background-color: #FFFFFF;
+.selectorlabel:hover {
+  cursor: default !important;
+  background-color: #FFFFFF !important;
+  color: #303030 !important;
 }
 
-#projectswitch {
+#slicefilterswitch {
   margin: 20px 15px;
-}
-
-#ascendingcheck {
-  border: 2px solid #f2f2f2;
 }
 
 #loglength {
@@ -165,17 +191,36 @@
   width: 150px;
 }
 
-#sortby {
+#slicesortby {
   margin: 20px 15px;
 }
 
 .projectinfo {
-  margin-left: 20px;
+  margin: 0px 20px 20px 20px;
+}
+
+.noprojects {
+  clear: both;
+  margin-top: 30px !important;
+}
+
+.noslices {
+  clear: both;
+  margin-top: 30px !important;
+}
+
+.purposebox {
+  width: 255px;
+  max-width: 255px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #logtable {
    margin-left: 20px !important;
    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+   border-top: 2px solid #F57F21;
 }
 
 #logtable td {
@@ -197,10 +242,6 @@
 
 .sliceactions li .submenu li {
   height: 30px;
-}
-
-button {
-  width: 120px;
 }
 
 .expirationicon {
@@ -270,10 +311,6 @@ button {
     margin: 5px !important;
   }
 
-  .selectorcontainer {
-    margin: 5px !important;
-  }
-  
   .slicebox {
     margin: 20px auto;
   }

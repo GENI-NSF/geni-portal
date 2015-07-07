@@ -170,7 +170,7 @@ function show_header($title, $active_tab = '', $load_user=1){
     if ($_REQUEST['dashtype'] == 1) {
       show_old_header($title, $active_tab = '', $load_user=1);
     } else {
-      show_new_header();
+      show_new_header($title, $active_tab = '', $load_user=1);
     }
   } else {
     show_new_header();
@@ -291,7 +291,7 @@ function show_old_header($title, $active_tab = '', $load_user=1)
   //  show_starter_status_bar($load_user);
 }
 
-function show_new_header(){
+function show_new_header($title, $active_tab = '', $load_user=1){
   global $extra_js;
   global $in_maintenance_mode;
   global $in_lockdown_mode;
@@ -305,16 +305,19 @@ function show_new_header(){
   global $portal_datatablesjs_url; 
   global $user;
 
-  if (!isset($user)) {
-    $user = geni_loadUser();
+  if ($load_user) {
+    global $user;
+    if (!isset($user)) {
+      $user = geni_loadUser();
+    }
+    check_km_authorization($user);
   }
-  check_km_authorization($user);
-
+  
   echo '<!DOCTYPE HTML>';
   echo '<html lang="en">';
   echo '<head>';
   echo '<meta charset="utf-8">';
-  echo '<title>GENI Portal</title>';
+  echo "<title>GENI Portal</title>";
 
   /* Javascript stuff. */
   echo "<script src='$portal_jquery_url'></script>";
@@ -325,7 +328,6 @@ function show_new_header(){
   echo "<script type='text/javascript' charset='utf8' src='$portal_datatablesjs_url'></script>";
   /* Stylesheet(s) */
   echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
-  // echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
   echo '<link type="text/css" href="/common/css/newportal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
   echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
@@ -369,7 +371,8 @@ function show_new_header(){
   echo '<div id="dashboardheader">';
   echo '<img id="globe" src="/images/geni_globe.png" alt="Geni Logo" style="height:45px; margin-left: 20px; float: left;"/>';
   echo '<img id="hamburger" src="/images/menu.png" alt="optionsicon" style="height:20px; width: 20px; padding:15px; float: left;"/>';
-  echo '<h2 class="dashtext" style="float: left; line-height: 50px; text-align: center; margin: 0 20px; display: inline; height: 50px">GENI Portal</h2>';
+  echo '<h2 class="dashtext" style="float: left; line-height: 50px; text-align: center; margin: 0 20px; display: inline; height: 50px; cursor: pointer;" \
+          onclick="window.location=\'dashboard.php\'">GENI Portal</h2>';
   echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
   echo "<li class='has-sub headerlink'>{$user->prettyName()}";
   echo '<ul class="submenu">';
