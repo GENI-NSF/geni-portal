@@ -6,6 +6,7 @@
 
 == 2.35 ==
  * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables (1.10.7) (#1327)
+ * Allow SSH to work on ExoSM-allocated resources (#1397)
 
 == 2.34 ==
  * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
