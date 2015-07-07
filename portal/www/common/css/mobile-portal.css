@@ -1,0 +1,237 @@
+/*
+  CSS Style Sheet for GENI Portal (mobile)
+*/
+
+/* General */
+
+body {
+	box-shadow: none;
+	margin: 0px;
+}
+
+/* Main content */
+
+#content-outer {
+  width: 100%;
+  min-width: 0;
+  border: 0px;
+  padding: 0px;
+  margin-top: 0px;
+}
+
+#content {
+	border: 0px;
+	padding: 10px;
+	overflow-x: scroll;
+}
+
+#resourcemap {
+  display: none;
+}
+
+#breadcrumb {
+  display: none;
+}
+
+#tablist {
+  text-align: center;
+  box-shadow: none;
+}
+
+#content button, input[type=submit], input[type=button] {
+  box-shadow: none;
+  margin: 4px;
+  padding: 5px;
+}
+
+#content table {
+  background-color: #FFFFFF;
+  border-collapse: collapse;
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  line-height: 1.2em;
+  margin-left: 5px;
+  box-shadow: none;
+}
+
+.tablecontainer {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.slicetable {
+  width: 750px !important;
+}
+
+#content li {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  color: #5F584E;
+}
+
+#content pre {
+  padding: 5px;
+  padding-left: 5px;
+  margin-left: 5px;
+  border-left: 10px solid #E5E5E5;
+  box-shadow: none;
+  overflow: auto;
+}
+
+/* Header and navigation */
+
+#header {
+  width: 100%;
+  min-width: 0px;
+  box-shadow: none;
+  margin-top: 0px;
+  border: none;
+}
+
+#header-top {
+  height: 0px;
+  border-left: 0px;
+  background-color: #111111;
+  background-image: none;
+}
+
+#metanav {
+  padding: 0px;
+  color: #5F584E;
+  z-index: 5;
+}
+
+#metanav a {
+  color: #5F584E;
+}
+
+#metanav li { 
+  border-right: 2px solid #5F584E;
+}
+
+#metanav ul {
+  padding: 5px;
+  background-color: #E5E5E5;
+  float: none;
+  text-align: center;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px; /* future proofing */
+  -khtml-border-radius: 0px; /* for old Konqueror browsers */
+}
+
+#mainnav {
+  background: #5F584E;
+  border-top: 5px solid #5F584E;
+  border-bottom: 5px solid #5F584E;
+  margin: 0;
+  padding: 5px 0px;
+  width: 100%;
+  clear: both;
+  overflow-x: scroll;
+}
+
+#mainnav > ul {
+	padding: 0px;
+  text-align: center;	
+}
+
+#mainnav > ul {
+	border: none;
+}
+
+#mainnav li { 
+  border-left: 2px solid #ffffff;
+  padding: 0em;
+}
+
+#mainnav li:first-child {
+	border: none;
+}
+
+/* Footer */
+
+#footer {
+  width: 100%;
+  min-width: 0px;
+  margin: 0px;
+  padding: 5px 0px;
+  background-color: #5F584E;
+  color: #ffffff;
+  overflow: auto;
+  text-align: center;
+  border: 0px;
+}
+
+#footer a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+#footer-left {
+  float: left;
+  text-align: left;
+  width: 0px;
+  font-size: 0.9em;
+}
+
+#footer-right {
+  float: right;
+  text-align: center;
+  width: 100%;
+  font-size: 0.8em;
+  border-right: 0px;
+  padding-right: 0px;
+}
+
+#mobilefooterbreak {
+	display: block;
+}
+
+/* Welcome page */
+
+#welcome-right-right {
+  width: 100%;
+}
+
+#welcome-left {
+  float: none;
+  margin: 0 auto;
+}
+
+#welcome-right {
+  float: none;
+  width: 90%;
+  margin: 0 auto;
+}
+
+#welcome-right-right {
+  width: 100%;
+}
+
+#welcome-right-left {
+  width: 100%;
+}
+
+#welcome-right-top {
+  padding-bottom: 0px;
+}
+
+#welcome-right h1 {
+  font-size: 1.8em;
+  padding-bottom: 15px;
+}
+
+#welcome-right h2 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-right: 20px;
+  border-bottom: 1px solid #F57F21;
+  padding-bottom: 7px;
+}
+

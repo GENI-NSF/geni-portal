@@ -67,20 +67,15 @@ if (isset($result) && key_exists(MA_ARGUMENT::PRIVATE_KEY, $result)) {
   $private_key = $result[MA_ARGUMENT::PRIVATE_KEY];
 }
 
-/* If no certificate, we're doing to pass off to another page to help
-   the user create a certificate. Put a note in the session that the
-   user is in the process of loading a certificate into the signing
-   tool so that the certificate creation process can redirect back to
-   here.
- */
-
-/* this is how to check for a started session on PHP < 5.4 */
-if (session_id() == '') {
-    session_start();
+$expiration_key = 'expiration';
+$expired = False;
+if (isset($result)) {
+  if (array_key_exists($expiration_key, $result)) {
+    $expiration = $result[$expiration_key];
+    $now = new DateTime('now', new DateTimeZone("UTC"));
+    $expired = ($expiration < $now);
+  }
 }
-$_SESSION['xml-signer']='loadcert.php';
-session_write_close();
-
 
 /*
  * We may be receiving a passphrase via POST. If so, use that passphrase
@@ -125,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 /* URL for creating a certificate. */
 $server_name = $_SERVER['SERVER_NAME'];
 $create_url = "https://$server_name/secure/kmcert.php";
+$renew_url = "https://$server_name/secure/kmcert.php?renew=1";
 
 /*
  * Does the private key have a passphrase? We can tell by
@@ -181,11 +177,41 @@ if (! isset($genilib_trusted_path)) {
 }
 $auth_svc_js = $genilib_trusted_host . '/xml-signer/geni-auth.js';
 
+
+/* this is how to check for a started session on PHP < 5.4 */
+if (session_id() == '') {
+    session_start();
+}
+
 if (is_null($certificate)) {
   /* No certificate so redirect to the create/download page. */
+
+  /* If no certificate, we're doing to pass off to another page to help
+     the user create a certificate. Put a note in the session that the
+     user is in the process of loading a certificate into the signing
+     tool so that the certificate creation process can redirect back to
+     here.
+  */
+  $_SESSION['xml-signer']='loadcert.php';
+  session_write_close();
+
+  /* Now redirect and exit. */
   header("Location: $create_url");
   exit;
+} else if ($expired) {
+  $_SESSION['xml-signer']='loadcert.php';
+  session_write_close();
+
+  /* Now redirect and exit. */
+  header("Location: $renew_url");
+  exit;
+} else {
+
+  /* Clear out the session state, it is no longer needed. */
+  unset($_SESSION['xml-signer']);
+  session_write_close();
 }
+
 
 /*----------------------------------------------------------------------
  * Display happens below here.
@@ -195,7 +221,6 @@ if (is_null($certificate)) {
 include('kmheader.php');
 include("tool-showmessage.php");
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
 </script>
 <script src="<?php echo $auth_svc_js;?>">
 </script>

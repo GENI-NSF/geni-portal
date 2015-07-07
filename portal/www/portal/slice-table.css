@@ -3,30 +3,37 @@
 #header, #content-outer {
   position: relative;
 }
-#content #portalhelp {
+
+/*#content #portalhelp {
   position: absolute;
   top: -56px;
   right: 0px;
-}
-#content {
+}*/
+
+/*#content {
   padding: 20px 30px 30px;
   position: relative;
 }
+
 #content table {
   margin-left: 30px;
-  width: 795px;
+  width: 100%;
 }
+*/
 #content table table {
   margin: 0;
   border: 0;
   width: 100%;
 }
+
 #content table table td {
   border-top: 0;
 }
+
 #content #renewtable td {
   border-bottom: 0;
 }
+
 #content #renewcell {
   padding: 0;
   border-top: 0;
@@ -72,18 +79,22 @@
   overflow-y: scroll;
   margin: 0; 
 }
+
 #am_names > li {
   margin-left: 0;
 }
+
 #am_names ul, li {
     list-style: none;
     margin:0;
     padding:0;
     position: relative;
 }
+
 #am_names p:hover {
     background-color:#121212;
 }
+
 #am_names li {
     line-height:140%;
     text-indent:0px;
@@ -109,6 +120,7 @@
   width: 16px;
   height: 16px;
 }
+
 #am_names .collapsed .collapsable:after {
   content: "+";
   font-weight: bold;
@@ -116,6 +128,7 @@
   top:-2px;
   left: 5px;
 }
+
 #am_names .expanded .collapsable:after {
   content: "-";
 }
@@ -149,12 +162,15 @@
   position: relative;
   min-height: 26px;
 }
+
 #status_table tbody:hover .hide, #status_table tbody:focus .hide, #status_table tbody.activeBody .hide {
   border-left: 1px solid white;
 }
+
 #status_table tbody:hover .hide > div, #status_table tbody:focus .hide > div, #status_table tbody.activeBody .hide > div {
   visibility: visible;
 }
+
 #status_table .notqueried .expireText, #status_table .updating .expireText, #status_table .noresources .expireText, #status_table .busy .expireText, #status_table .failed .expireText {
 	display: none;
 }
@@ -200,17 +216,24 @@
   border-bottom: 0;
   padding: 2px;
 }
+
 #status_table tbody tr:nth-child(2) td {
   border-bottom: 1px solid #FFFFFF;
   padding: 2px 0 6px 15px;
 }
+
 #status_table tbody tr:nth-child(1) td {
   padding: 6px 0 2px 15px;
 }
+
 .am_name_field {
   width: 270px;
 }
+
 #ui-datepicker-div {
   z-index: 10 !important;
 }
 
+#jacks-app, #jacks-status {
+  padding: 5px 0px !important;
+}

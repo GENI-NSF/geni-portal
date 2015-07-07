@@ -1613,6 +1613,23 @@
                 "am_id": "urn:publicid:IDN+utah.cloudlab.us+authority+cm", 
                 "am": "Utah CloudLab", 
                 "resources": 1, 
+                "component_id": "interconnect-al2s"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-111.893288", 
+                    "40.750714"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+utah.cloudlab.us+authority+cm", 
+                "am": "Utah CloudLab", 
+                "resources": 1, 
                 "component_id": "ms0624"
             }
         }, 
@@ -5910,6 +5927,23 @@
             }, 
             "type": "Feature", 
             "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+lan.sdn.uky.edu+authority+cm", 
+                "am": "Kentucky InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-al2s"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-84.498135", 
+                    " 38.039324"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
                 "type": "pc", 
                 "am_id": "urn:publicid:IDN+lan.sdn.uky.edu+authority+cm", 
                 "am": "Kentucky InstaGENI", 
@@ -8437,40 +8471,6 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-84.3877", 
-                    "33.7589"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "pc", 
-                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
-                "am": "Utah ProtoGENI", 
-                "resources": 1, 
-                "component_id": "procurve-pgeni-atla"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-111.954", 
-                    "40.7562"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "pc", 
-                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
-                "am": "Utah ProtoGENI", 
-                "resources": 1, 
-                "component_id": "procurve-pgeni-salt"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
                     "-111.84581", 
                     "40.768652"
                 ]
@@ -8539,40 +8539,6 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-77.212", 
-                    "38.9206"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "pc", 
-                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
-                "am": "Utah ProtoGENI", 
-                "resources": 1, 
-                "component_id": "procurve-pgeni-wash"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-95.4172", 
-                    "29.9423"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "pc", 
-                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
-                "am": "Utah ProtoGENI", 
-                "resources": 1, 
-                "component_id": "procurve-pgeni-hous"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
                     "-111.84581", 
                     "40.768652"
                 ]
@@ -8584,23 +8550,6 @@
                 "am": "Utah ProtoGENI", 
                 "resources": 1, 
                 "component_id": "procurve3"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-118.26", 
-                    "34.0487"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "pc", 
-                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
-                "am": "Utah ProtoGENI", 
-                "resources": 1, 
-                "component_id": "procurve-pgeni-losa"
             }
         }, 
         {
@@ -8681,45 +8630,11 @@
             }, 
             "type": "Feature", 
             "properties": {
-                "type": "pc", 
-                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
-                "am": "Utah ProtoGENI", 
-                "resources": 1, 
-                "component_id": "procurve-pgeni-uen"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
                 "type": "unknown", 
                 "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
                 "am": "Utah ProtoGENI", 
                 "resources": 1, 
                 "component_id": "arista1"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
-                    "-111.84581", 
-                    "40.768652"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "switch", 
-                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
-                "am": "Utah ProtoGENI", 
-                "resources": 1, 
-                "component_id": "procurveA"
             }
         }, 
         {
@@ -11576,6 +11491,23 @@
                 "am": "Utah ProtoGENI", 
                 "resources": 1, 
                 "component_id": "pc202"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-99.7119", 
+                    "36.4566"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
+                "am": "Utah ProtoGENI", 
+                "resources": 1, 
+                "component_id": "ion"
             }
         }, 
         {
@@ -15124,6 +15056,23 @@
             }, 
             "type": "Feature", 
             "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
+                "am": "Utah ProtoGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-procurveA"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-111.84581", 
+                    "40.768652"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
                 "type": "pc", 
                 "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
                 "am": "Utah ProtoGENI", 
@@ -18087,6 +18036,23 @@
                 "am": "Utah ProtoGENI", 
                 "resources": 1, 
                 "component_id": "pc99"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-111.84581", 
+                    "40.768652"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+emulab.net+authority+cm", 
+                "am": "Utah ProtoGENI", 
+                "resources": 1, 
+                "component_id": "pcwf113"
             }
         }, 
         {
@@ -21816,6 +21782,159 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "switch", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "procurve2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-al2s"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc5"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc4"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "interconnect-highschool"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "pc2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-85.29890", 
+                    "35.04551"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.utc.edu+authority+cm", 
+                "am": "University of Tennessee at Chattanooga InstaGENI", 
+                "resources": 1, 
+                "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "151.19708", 
                     "-33.89533"
                 ]
@@ -24247,23 +24366,6 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
-                    "-118.25938", 
-                    "34.049033"
-                ]
-            }, 
-            "type": "Feature", 
-            "properties": {
-                "type": "unknown", 
-                "am_id": "urn:publicid:IDN+openflow:foam:foam.cenic.net+authority+am", 
-                "am": "CENIC OpenFlow", 
-                "resources": 1, 
-                "component_id": "00:24:38:9e:c2:00:00:00"
-            }
-        }, 
-        {
-            "geometry": {
-                "type": "Point", 
-                "coordinates": [
                     "-121.495143", 
                     "38.579395"
                 ]
@@ -24275,6 +24377,23 @@
                 "am": "CENIC OpenFlow", 
                 "resources": 1, 
                 "component_id": "00:24:38:9d:95:00:00:00"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-118.25938", 
+                    "34.049033"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+openflow:foam:foam.cenic.net+authority+am", 
+                "am": "CENIC OpenFlow", 
+                "resources": 1, 
+                "component_id": "00:24:38:9e:c2:00:00:00"
             }
         }, 
         {
@@ -29812,6 +29931,23 @@
             }, 
             "type": "Feature", 
             "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+instageni.illinois.edu+authority+cm", 
+                "am": "Illinois InstaGENI", 
+                "resources": 1, 
+                "component_id": "vtsbox"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-88.204247", 
+                    "40.109665"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
                 "type": "pc", 
                 "am_id": "urn:publicid:IDN+instageni.illinois.edu+authority+cm", 
                 "am": "Illinois InstaGENI", 
@@ -30122,7 +30258,7 @@
                 "am_id": "urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+authority+am", 
                 "am": "UtahDDC InstaGENI OpenFlow", 
                 "resources": 1, 
-                "component_id": "06:d6:24:be:05:fe:43:00"
+                "component_id": "06:dc:24:be:05:fe:43:00"
             }
         }, 
         {
@@ -30156,7 +30292,7 @@
                 "am_id": "urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+authority+am", 
                 "am": "UtahDDC InstaGENI OpenFlow", 
                 "resources": 1, 
-                "component_id": "06:dc:24:be:05:fe:43:00"
+                "component_id": "06:df:24:be:05:fe:43:00"
             }
         }, 
         {
@@ -30173,7 +30309,7 @@
                 "am_id": "urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+authority+am", 
                 "am": "UtahDDC InstaGENI OpenFlow", 
                 "resources": 1, 
-                "component_id": "06:dd:24:be:05:fe:43:00"
+                "component_id": "06:d6:24:be:05:fe:43:00"
             }
         }, 
         {
@@ -30207,7 +30343,7 @@
                 "am_id": "urn:publicid:IDN+openflow:foam:foam.utahddc.geniracks.net+authority+am", 
                 "am": "UtahDDC InstaGENI OpenFlow", 
                 "resources": 1, 
-                "component_id": "06:df:24:be:05:fe:43:00"
+                "component_id": "06:dd:24:be:05:fe:43:00"
             }
         }, 
         {
@@ -30259,6 +30395,40 @@
                 "am": "exogeni.net:pscvmsite", 
                 "resources": 1, 
                 "component_id": "orca-iscsi-luns"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-83.06556", 
+                    "42.357742"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:umassvmsite+authority+am", 
+                "am": "exogeni.net:umassvmsite", 
+                "resources": 1, 
+                "component_id": "orca-iscsi-luns"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-83.06556", 
+                    "42.357742"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:umassvmsite+authority+am", 
+                "am": "exogeni.net:umassvmsite", 
+                "resources": 1, 
+                "component_id": "orca-xcat-cloud"
             }
         }, 
         {
@@ -30384,6 +30554,23 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "4.955346", 
+                    "52.354843"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am", 
+                "am": "exogeni.net:uvanlvmsite", 
+                "resources": 1, 
+                "component_id": "orca-vm-cloud"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-87.681564", 
                     "42.05286"
                 ]
@@ -30429,6 +30616,23 @@
                 "am": "StarLight ExoGENI", 
                 "resources": 1, 
                 "component_id": "orca-xcat-cloud"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "4.955346", 
+                    "52.354843"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am", 
+                "am": "exogeni.net:uvanlvmsite", 
+                "resources": 1, 
+                "component_id": "orca-iscsi-luns"
             }
         }, 
         {
@@ -30520,6 +30724,23 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "-83.06556", 
+                    "42.357742"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:umassvmsite+authority+am", 
+                "am": "exogeni.net:umassvmsite", 
+                "resources": 1, 
+                "component_id": "orca-vm-cloud"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-95.34269", 
                     "29.72327"
                 ]
@@ -30529,6 +30750,23 @@
                 "type": "unknown", 
                 "am_id": "urn:publicid:IDN+exogeni.net:uhvmsite+authority+am", 
                 "am": "UH ExoGENI", 
+                "resources": 1, 
+                "component_id": "orca-vm-cloud"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-78.67714", 
+                    "35.774155"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:wvnvmsite+authority+am", 
+                "am": "WVNET ExoGENI", 
                 "resources": 1, 
                 "component_id": "orca-vm-cloud"
             }
@@ -30548,6 +30786,23 @@
                 "am": "OSF ExoGENI", 
                 "resources": 1, 
                 "component_id": "orca-xcat-cloud"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-77.04894", 
+                    "38.90145"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:gwuvmsite+authority+am", 
+                "am": "exogeni.net:gwuvmsite", 
+                "resources": 1, 
+                "component_id": "orca-vm-cloud"
             }
         }, 
         {
@@ -30718,6 +30973,23 @@
                 "am": "Texas A&M ExoGENI", 
                 "resources": 1, 
                 "component_id": "orca-iscsi-luns"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "4.955346", 
+                    "52.354843"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+exogeni.net:uvanlvmsite+authority+am", 
+                "am": "exogeni.net:uvanlvmsite", 
+                "resources": 1, 
+                "component_id": "orca-xcat-cloud"
             }
         }, 
         {

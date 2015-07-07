@@ -149,9 +149,6 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 }
 
 $log_url = get_first_service_of_type(SR_SERVICE_TYPE::LOGGING_SERVICE);
-$entries = get_log_entries_for_context($log_url, 
-				       $user, // Portal::getInstance(),
-				       CS_CONTEXT_TYPE::PROJECT, $project_id);
 
 $actdisabled = '';
 if ($expired === True) {
@@ -170,6 +167,7 @@ if ($expired === True) {
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
 
+print "<div class='tablecontainer'>";
 print "<table>\n";
 print "<tr><th>Project Actions</th></tr>\n";
 print "<tr>\n";
@@ -182,7 +180,7 @@ if (isset($project_id)) {
     $putBut = True;
     /* Create a new slice*/
     print "<button onClick=\"window.location='";
-    print relative_url("createslice?project_id=$project_id'");
+    print relative_url("createslice.php?project_id=$project_id'");
     print "\"$actdisabled><b>Create Slice</b></button>";
   }
   if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
@@ -198,7 +196,7 @@ if (isset($project_id)) {
 	/* Put in an empty table cell if no project. */
 	print "<td><i>None: no project.</i></td>";
 }
-print "</tr></table>\n";
+print "</tr></table></div>\n";
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
@@ -207,7 +205,7 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
       $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?project_id=" . $project_id . "'\"$actdisabled><b>Handle All Requests</b></button>";
       print "<p>$handle_button</p>\n";
     }
-    print "<table>\n";
+    print "<div class='tablecontainer'><table>\n";
     print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
     foreach ($reqs as $request) {
       $requestor = $user->fetchMember($request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]);
@@ -216,11 +214,11 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
       $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . "'\"$actdisabled><b>Handle Request</b></button>";
       print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
     }
-    print "</table><br/>\n";
+    print "</table></div><br/>\n";
   }
 }
 
-print "<table>\n";
+print "<div class='tablecontainer'><table>";
 print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
 print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
@@ -231,7 +229,7 @@ print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><td class='label'><b>URN</b></td><td>$project_urn</td></tr>\n";
 print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
-print "</table>\n";
+print "</table></div>\n";
 
 // FIXME: If user is not a member of the project, don't show the tool-slices stuff - it will get
 // a permission error on lookup_slices
@@ -282,7 +280,6 @@ $member_lists[1] = array();
 $member_lists[2] = array();
 $member_lists[3] = array();
 $member_lists[4] = array();
-
 
   foreach($members as $member) {
      $member_id = $member['member_id'];
@@ -339,31 +336,25 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 ?>
 
 <h2>Recent Project Actions</h2>
-<table>
-<tr><th>Time</th><th>Message</th><th>Member</th>
-<?php
-
-if (is_array($entries)) {
-  usort($entries, 'compare_log_entries');
-  $entry_member_names = lookup_member_names_for_rows($ma_url, $user, $entries, 
-					      LOGGING_TABLE_FIELDNAME::USER_ID);
-  foreach($entries as $entry) {
-    $message = $entry[LOGGING_TABLE_FIELDNAME::MESSAGE];
-    $time = dateUIFormat($entry[LOGGING_TABLE_FIELDNAME::EVENT_TIME]);
-    $member_id = $entry[LOGGING_TABLE_FIELDNAME::USER_ID];
-    $member_name = $entry_member_names[$member_id];
-    //    error_log("ENTRY = " . print_r($entry, true));
-    // If the MA or other authority took the action, then there is no name and no user so don't show the project-member page
-    if ($member_name == "NONE") {
-      print "<tr><td>$time</td><td>$message</td><td>$member_name</td></tr>\n";
-    } else {
-      print "<tr><td>$time</td><td>$message</td><td><a href=\"project-member.php?project_id=" . $project_id . "&member_id=$member_id\">$member_name</a></td></tr>\n";
-    }
+<p>Showing logs for the last 
+<select onchange="getLogs(this.value);">
+  <option value="24">day</option>
+  <option value="48">2 days</option>
+  <option value="72">3 days</option>
+  <option value="168">week</option>
+</select>
+</p>
+<script type="text/javascript">
+  $(document).ready(function(){ getLogs(24); });
+  function getLogs(hours){
+    $.get("do-get-logs.php?hours="+hours+"&project_id="+<?php echo "\"" . $project_id . "\""; ?>, function(data) {
+      $('#log_table').html(data);
+    });
   }
-}
-?>
-</table>
-
+</script>
+<div class='tablecontainer'>
+	<table id="log_table"></table>
+</div>
 <?php
 include("footer.php");
 ?>

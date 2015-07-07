@@ -2,18 +2,17 @@
   CSS Style Sheet for GENI Portal
 
   Color scheme:
-    #E17000 - official GENI orange
+    #F57F21 - official GENI orange (by color of orange in brand book: 
+              http://www.geni.net/wp-content/uploads/2009/04/geni_usage.pdf)
                   table headers
                   header colors
                   link colors
     #5F584E - dark gray
                   code background
                   navigation bar background
-    #C5D3D7 - medium gray
+    #C8DBE5 - medium gray
                   page background
-    #E5E5E5 - light gray
-                  footer background
-    #DBD7CC - tan
+    #E5E5E5 - tan
                   accents
                   
   Fonts:
@@ -24,17 +23,17 @@
 */
 
 body {
-  background-color: #C5D3D7;
+  background-color: #C8DBE5;
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
 hr {
- height: 0px;
- border: none;
- margin: 0px;
- padding: 0px;
- clear: both;
+  height: 0px;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  clear: both;
 }
 
 /*
@@ -43,34 +42,35 @@ hr {
 
 #header {
   padding-bottom: 0px;
-    /* center */
-    margin-left: auto;
-    margin-right: auto;
-    width: 897px;
-  border-left: 2px solid #5F584E;
-  border-right: 1px solid #5F584E;
-  margin-top: 30px;
-  margin-bottom: 0px;
+  width: 87.5%;
+  max-width: 1400px;
+  min-width: 800px;
+  border-left: 5px solid #5F584E;
+  border-right: 3px solid #5F584E;
+  margin: 30px auto 0 auto;
   border-top: 5px solid #5F584E;
   background-color: #FFFFFF;
   /* by default, let text be serif */
   font-family: 'Open Sans', sans-serif;
-  font-weight: 400;
+  font-weight: normal;
   vertical-align: bottom;
-  background-image: url("../../images/header-home.jpg");
-  background-repeat: no-repeat;
   box-shadow: 0px 0px 10px #5F584E;
 }
 
 #header-top {
   height: 145px;
-  border-left: 14px solid #DBD7CC;
+  border-left: 14px solid #E5E5E5;
+  background-color: #111111;
+  background-image: url('../../images/geni-header-right.png');
+  background-position: right; 
+  background-repeat: no-repeat;
 }
 
 #metanav {
   padding: 0px;
   color: #5F584E;
-  float: right;
+  top: 30px;
+  z-index: 5;
 }
 
 #metanav a {
@@ -85,20 +85,30 @@ hr {
   padding: 5px;
   background-color:#E5E5E5;
   /* background-color:rgba(229,229,229,0.75); */
+  float: right;
   -moz-border-radius: 0 0 0 10px;
   -webkit-border-radius: 0 0 0 10px;
   border-radius: 0 0 0 10px; /* future proofing */
   -khtml-border-radius: 0 0 0 10px; /* for old Konqueror browsers */
 }
 
+#header-img-left {
+  height: 145px;
+  float: left;
+  z-index: -1;
+}
+
 /* Main navigation bar */
 #mainnav {
   background: #5F584E;
-  border: 5px solid #5F584E;
+  border-top: 5px solid #5F584E;
+  border-bottom: 5px solid #5F584E;
   margin: 0;
-  padding: 5px;
-  width: 878px;
+  padding: 5px 0px;
+  width: 100%;
+  clear: both;
 }
+
 #mainnav li { 
   border-left: 2px solid #ffffff;
   padding: 0.25em;
@@ -119,6 +129,7 @@ hr {
   color: #ffffff;
   font-weight: bold;
 }
+
 #mainnav .active :link:hover, #mainnav .active :visited:hover {
   color: #ffffff;
   font-weight: bold;
@@ -143,49 +154,50 @@ hr {
   border-right: none;
 }
 
-
 /*
   CONTENT CONTAINER
 */
 
 /* orange bar on left side */
 #content-outer {
-  border-left: 2px solid #E17000;
-  border-right: 1px solid #E17000;
-  border-top: 5px solid #E17000;
-  border-bottom: 5px solid #E17000;
+  border-left: 2px solid #F57F21;
+  border-right: 1px solid #F57F21;
+  border-top: 5px solid #F57F21;
+  border-bottom: 5px solid #F57F21;
   margin-left: auto;
   margin-right: auto;
   margin-top: 20px;
-  width: 897px;
+  width: 87.5%;
+  max-width: 1400px;
+  min-width: 800px;
   box-shadow: 0px 0px 10px #5F584E;
 }
 
 #content {
   /* white space */
   background-color: #FFFFFF;
-  padding-left: 60px;
-  padding-right: 30px;
+  padding-left: 30px;
+  padding-right: 40px;
   padding-bottom: 30px;
   padding-top: 20px;
   margin-top: 0px;
   /* by default, let everything be serif 
      unless otherwise specified */
   font-family: 'PT Serif', serif;
-  font-weight: 400;
+  font-weight: normal;
   /* by default, let everything have a line
      height of 1.4em unless otherwise specified */
-  line-height: 1.4em;
+  /*line-height: 1.4em;*/
   /* side borders */
-  border-left: 14px solid #DBD7CC;
+  border-left: 14px solid #E5E5E5;
 }
 
 /* Headers: use sans serif */
 #content h1, h2, h3, h4, h5, h6, h7 {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   text-shadow: 0.1em 0.1em 0.2em #dddddd;
-  color: #E17000; /* official GENI orange */
+  color: #F57F21; /* official GENI orange */
 }
 
 /* Header spacing */
@@ -194,28 +206,33 @@ hr {
   margin-top: 30px;
   margin-bottom: 25px;
   margin-left: 0px;
+  margin-right: -10px;
 }
+
 #content h2 {
   font-size: 1.4em;
   margin-top: 20px;
   margin-bottom: 15px;
-  margin-left: 20px;
-  border-bottom: 1px solid #E17000;
+  /*margin-left: 10px;*/
+  border-bottom: 1px solid #F57F21;
   padding-bottom: 7px;
+  margin-right: -10px;
 }
+
 #content h3, h4, h5, h6, h7 {
   font-size: 1.1em;
   margin-top: 15px;
   margin-bottom: 10px;
-  margin-left: 40px;
-  border-bottom: 1px solid #E17000;
+  margin-left: 20px;
+  margin-right: -10px;
+  border-bottom: 1px solid #F57F21;
   padding-bottom: 4px;
 }
 
 /* Bold: use sans serif */
 #content b {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 /* Paragraphs: use serif */
@@ -223,7 +240,7 @@ hr {
   font-size: 1em;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 60px;
+  margin-left: 10px;
   color: #5F584E;
 }
 
@@ -232,7 +249,7 @@ hr {
   font-size: 1em;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 60px;
+  margin-left: 20px;
   color: #5F584E;
 }
 
@@ -244,50 +261,51 @@ hr {
 /* Blocks of code */
 #content pre {
   font-family: 'Droid Sans Mono', monospace;
-  font-weight: 400;
+  font-weight: normal;
   font-size: .8em;
   line-height: 1.3em;
   background-color: #5F584E;
   color: white;
   padding: 5px;
   padding-left: 10px;
-  margin-left: 45px;
-  border-left: 10px solid #DBD7CC;
+  margin-left: 30px;
+  border-left: 10px solid #E5E5E5;
   box-shadow: 4px 4px 10px #B5B5B5;
   overflow: auto;
-      white-space: pre-wrap;       /* CSS 3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  white-space: pre-wrap;       /* CSS 3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 /* Inline code */
 #content code, tt {
   font-family: 'Droid Sans Mono', monospace;
-  font-weight: 400;
+  font-weight: normal;
 }
 
 /* Buttons */
 #content button, input[type=submit], input[type=button] {
   /* make all buttons have bold text by default */
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   box-shadow: 0px 0px 5px #5F584E;
   margin: 2px;
+  vertical-align: middle;
 }
 
 /* Links */
 #content a {
-  color: #E17000; /* official GENI orange */
-  border-bottom: 1px dashed #E17000;
+  color: #F57F21; /* official GENI orange */
+  border-bottom: 1px dashed #F57F21;
   text-decoration:none;
 }
 
 #content a:hover {
   background-color: #E5E5E5;
-  color: #E17000; /* official GENI orange */
-  border-bottom: 1px dashed #E17000;
+  color: #F57F21; /* official GENI orange */
+  border-bottom: 1px dashed #F57F21;
   text-decoration:none;
 }
 
@@ -299,9 +317,9 @@ hr {
   margin-top: 20px;
   margin-bottom: 20px;
   line-height: 1.2em;
-  margin-left: 60px;
+  margin-left: 10px;
   box-shadow: 4px 4px 10px #B5B5B5;
-  width: 733px;
+  width: 100%;
 }
 
 #content table table {
@@ -316,10 +334,10 @@ hr {
 
 #content th {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
 	font-size: 1em;
 	padding: 6px;
-	background: #E17000;
+	background: #F57F21;
 	border-top: 4px solid #5F584E;
 	border-bottom: 1px solid #fff;
 	color: #fff;
@@ -328,7 +346,7 @@ hr {
 
 #content td {
   font-family: 'PT Serif', serif;
-  font-weight: 400;
+  font-weight: normal;
   font-size: 0.9em;
 	padding: 6px;
 	background: #E5E5E5; 
@@ -342,25 +360,27 @@ hr {
   color: #5F584E;
   border-bottom: 1px dashed #5F584E;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 #content p.tiny{
   font-size: 0.8em;
   font-style: italic;
 }
+
 /*
   BREADCRUMB CONTAINER
 */
+
 #breadcrumb {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   color: #5F584E;
   background-image: url("../../images/geni_globe_small.png");
   background-repeat:no-repeat;
   padding-left: 40px;
   min-height: 30px;
-  border-bottom: 1px solid #E17000;
+  border-bottom: 1px solid #F57F21;
 }
 
 #breadcrumb a {
@@ -381,7 +401,7 @@ hr {
   background: #5F584E;
   font-family: 'Open Sans', sans-serif;
   font-size: 0.8em;
-  font-weight: 400;
+  font-weight: normal;
   min-height: 1.4em;
   box-shadow: 4px 4px 10px #B5B5B5;
   -moz-border-radius: 8px;
@@ -414,7 +434,7 @@ hr {
 }
 
 #tablist a.active {
-  font-weight: 700;
+  font-weight: bold;
   border-bottom: none;
 }
 
@@ -439,6 +459,8 @@ hr {
 
 #map1 {
   color: #ffffff;
+  width: 100%;
+  height: 400px; /* todo: responsive */
   /*  box-shadow: 3px 3px 10px #5F584E;*/
 }
 
@@ -451,15 +473,15 @@ hr {
 #maptext {
   color: #5F584E;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 400;
+  font-weight: normal;
   padding: 5px;
 }
 
 #maptext h1 {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   text-shadow: 0.1em 0.1em 0.2em #dddddd;
-  color: #E17000;
+  color: #F57F21;
   font-size: 1em;
   margin: 5px;
   line-height: 1.2em;
@@ -495,44 +517,40 @@ hr {
 }
 
 #OpenLayers_Control_Zoom_5 a:hover {
-  color: #E17000 !important;
+  color: #F57F21 !important;
   background: transparent !important;
   border-bottom: none !important;
 }
 
 #OpenLayers_Control_Attribution_7 {
-    padding: 5px;
-    z-index: 1000;
-    bottom: 0.2em !important;
-    overflow: hidden;
-    color: #5F584E;
-    font-size: 0.8em !important;
-    text-align: right;
+  padding: 5px;
+  z-index: 1000;
+  bottom: 0.2em !important;
+  overflow: hidden;
+  color: #5F584E;
+  font-size: 0.8em !important;
+  text-align: right;
 }
 
 #OpenLayers_Control_Attribution_7 a {
       color: #5F584E;
 }
 
-
 /*
   FOOTER CONTAINER
 */
 
 #footer {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left:62px;
-  padding-right:31px;
-    /* center */
-    margin-left: auto;
-    margin-right: auto;
-    width: 807px;
-  margin-bottom: 30px;
-  margin-top: 20px;
-  /* by default, let text be serif */
+  width: 87.5%;
+  max-width: 1400px;
+  min-width: 800px;
+  padding: 15px 0px;
+  border-left: 5px solid #5F584E;
+  border-right: 3px solid #5F584E;
+  margin: 30px auto 0 auto;
+  border-top: 5px solid #5F584E;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 400;
+  font-weight: normal;
   box-shadow: 0px 0px 10px #5F584E;
   background-color: #5F584E;
   color: #ffffff;
@@ -542,23 +560,27 @@ hr {
 #footer a {
   text-decoration: none;
   color: #ffffff;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 #footer-left {
   float: left;
   text-align: left;
-  width: 400px;
+  width: 0px;
   font-size: 0.9em;
 }
 
 #footer-right {
   float: right;
   text-align: right;
-  width: 400px;
+  width: 100%;
   font-size: 0.8em;
-  border-right: 2px solid #ffffff;
+  /*border-right: 2px solid #ffffff;*/
   padding-right: 15px;
+}
+
+#mobilefooterbreak {
+  display: none;
 }
 
 /*
@@ -566,70 +588,61 @@ hr {
 */
 
 #welcome {
-  border-top: 10px solid #5F584E;
-  background-color: #FFFFFF;
-  
-  border-bottom: 5px solid #E17000;
+  background-color: #FFFFFF;  
+  border-bottom: 5px solid #F57F21;
   margin-left: auto;
   margin-right: auto;
   margin-top: 30px;
   margin-bottom: 20px;
   padding: 30px;
-  width: 840px;
+  width: 85%;
+  max-width: 1250px;
+  min-width: 800px;
   overflow: auto;
   box-shadow: 0px 0px 10px #5F584E;  
 }
 
 #welcome-left {
   float: left;
-  width: 220px;
+  width: 185px;
 }
 
 #welcome-right {
   float: right;
-  width: 620px;
+  width: 72.5%;
   overflow: auto;
   font-family: 'PT Serif', serif;
-  font-weight: 400;
-  /* by default, let everything have a line
-     height of 1.4em unless otherwise specified */
+  font-weight: normal;
   line-height: 1.4em;
   color: #5F584E;
 }
 
-#usegeni {
-    width: 1.5in;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 1em;
-    padding-bottom: 1em;
-}
-
 #welcome-right h1, h2 {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   text-shadow: 0.1em 0.1em 0.2em #dddddd;
-  color: #E17000; /* official GENI orange */
+  color: #F57F21; /* official GENI orange */
 }
 
 #welcome-right h1 {
   font-size: 2.5em;
   margin-bottom: 20px;
-  border-bottom: 1px solid #E17000;
+  border-bottom: 1px solid #F57F21;
   padding-bottom: 15px;
 }
+
 #welcome-right h2 {
   font-size: 1.4em;
   margin-top: 20px;
   margin-bottom: 15px;
   margin-right: 20px;
-  border-bottom: 1px solid #E17000;
+  border-bottom: 1px solid #F57F21;
   padding-bottom: 7px;
 }
 
 #welcome-right b {
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 #welcome-right p {
@@ -640,34 +653,35 @@ hr {
 }
 
 #welcome-right a {
-  color: #E17000; /* official GENI orange */
-  border-bottom: 1px dashed #E17000;
+  color: #F57F21; /* official GENI orange */
+  border-bottom: 1px solid #F57F21;
   text-decoration:none;
 }
 
 #welcome-right a:hover {
   background-color: #E5E5E5;
-  color: #E17000; /* official GENI orange */
-  border-bottom: 1px dashed #E17000;
+  color: #F57F21; /* official GENI orange */
+  border-bottom: 1px solid #F57F21;
   text-decoration:none;
 }
 
 #welcome-right-top {
   float: left;
-  width: 620px;
+  width: 100%;
   padding-bottom: 20px;
 }
 
 #welcome-right-left {
   float: left;
-  width: 275px;
+  width: 40%;
+  margin-right: 20px;
 }
 
 #welcome-right-right {
   float: right;
-  width: 345px;
+  width: 55%;
   background: #E5E5E5;
-  border-top: 5px solid #E17000;
+  border-top: 5px solid #F57F21;
 }
 
 #welcome-right-right p {
@@ -676,37 +690,44 @@ hr {
   text-align: center;
 }
 
+#usegenicontainer {
+  text-align: center;
+  margin: 40px auto;
+}
+
+#usegeni {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.2em;
+  font-weight: 800;
+  padding: 10px 20px;
+  color: white !important;
+  background-color: #F57F21;
+  box-shadow: 0px 0px 5px #5F584E;
+  text-align: center;
+  border-radius: 3px;
+}
+
+#usegeni:hover {
+  border-bottom: 0px !important;
+  background-color: #E17000 !important;
+}
+
 /*
   OTHER
 */
 
-
 #incommon-logo {
-width: .75in;
-padding: 0.25in;
-left: 0.5in;
-margin-top: .75in;
-top: 3in;
-float: left;
-margin-left: .4in;
-}
-
-/* #loginButton, #loginHelp { */
-/*  width: 17em; */
-/*  padding: .25cm .25cm; */
-/* } */
-
-#usegeni {
-    width: 1.5in;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 1em;
-    padding-bottom: 1em;
+  width: .75in;
+  padding: 0.25in;
+  left: 0.5in;
+  margin-top: .75in;
+  top: 3in;
+  float: left;
+  margin-left: .4in;
 }
 
 .announce {
-  font-style:italic;
+  font-style: italic;
 }
 
 .instruction {
@@ -715,7 +736,7 @@ margin-left: .4in;
   color: #5F584E;
   padding: 20px;
   font-family: 'PT Serif', serif;
-  font-weight: 400;
+  font-weight: normal;
   box-shadow: 4px 4px 10px #B5B5B5;
   margin-left: 0px !important;
   margin-top: 20px !important;
@@ -730,7 +751,7 @@ margin-left: .4in;
   content: "Notice";
   color: green;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   display: block;
   font-size: 1.1em !important;
 }
@@ -741,7 +762,7 @@ margin-left: .4in;
   color: #5F584E;
   padding: 20px;
   font-family: 'PT Serif', serif;
-  font-weight: 400;
+  font-weight: normal;
   box-shadow: 4px 4px 10px #B5B5B5;
   margin-left: 0px !important;
   margin-top: 20px !important;
@@ -756,7 +777,7 @@ margin-left: .4in;
   content: "Warning";
   color: red;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   display: block;
   font-size: 1.1em !important;
 }
@@ -767,7 +788,7 @@ margin-left: .4in;
   color: #5F584E;
   padding: 20px;
   font-family: 'PT Serif', serif;
-  font-weight: 400;
+  font-weight: normal;
   box-shadow: 4px 4px 10px #B5B5B5;
   margin-left: 0px !important;
   margin-top: 20px !important;
@@ -782,111 +803,105 @@ margin-left: .4in;
   content: "Error";
   color: red;
   font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
+  font-weight: bold;
   display: block;
   font-size: 1.1em !important;
 }
 
 .starter {
- color: black;
- font-weight: bold;
- border: 1px solid black;
- margin: 10px;
- padding: 10px;
+  color: black;
+  font-weight: bold;
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px;
 }
 
 .starter .done a{
-    color: green;
+  color: green;
 }
 .starter .notdone a{
-    color: red;
+  color: red;
 }
 
 .deemphasize {
- color: gray;
+  color: gray;
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
- padding: 2px;
- margin: 2px;
- color: black;
- background-color: BlanchedAlmond;
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  background-color: BlanchedAlmond;
 }
 .configuring, .unknown, .busy, .ready, .failed {
  text-transform:uppercase;
 }
 
 .ready {
- color: White !important;
- border-color: green;
- background-color: green !important;
+  color: White !important;
+  border-color: green;
+  background-color: green !important;
 }
 
 .failed {
- color: BlanchedAlmond !important;
- border-color: red;
- background-color: red !important;
+  color: BlanchedAlmond !important;
+  border-color: red;
+  background-color: red !important;
 }
 
 .busy {
- color: Black !important;
- border-color: yellow;
- background-color: yellow !important;
+  color: Black !important;
+  border-color: yellow;
+  background-color: yellow !important;
 }
 
 input.date {
- width: 14en;
+  width: 14en;
 }
-
-
-
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
  text-align:left;
 }
 
-
 td.label {
  background-color: #E6D4B8;
 }
 
-
 table .aggregate {
- background-color: SkyBlue;
+  background-color: SkyBlue;
 }
 
 table .resource {
- background-color: PowderBlue;
+  background-color: PowderBlue;
 }
 
 table .notapply {
- background-color: #DCE2E8;
+  background-color: #DCE2E8;
 }
 
 .aggregate, .resources {
   padding: 8px;
   margin-left: 20px;
   box-shadow: 4px 4px 10px #B5B5B5;
-  width: 757px;
- 
 }
+
 .aggregate {
- background-color: SkyBlue;
- margin-top: 15px;
+  background-color: SkyBlue;
+  margin-top: 15px;
 }
 
 .resources {
- margin-bottom: 15px;
- background-color: PowderBlue;
+  margin-bottom: 15px;
+  background-color: PowderBlue;
 }
 
 .xml, .msg {
- white-space: pre;
+  white-space: pre;
   font-family: 'Droid Sans Mono', monospace;
-  font-weight: 400;
+  font-weight: normal;
   font-size: .9em;
   line-height: 1.3em;
- overflow: auto;
+  overflow: auto;
 }
 
 .xml table {
@@ -898,14 +913,13 @@ table .notapply {
 
 .xml td {
   font-family: 'Droid Sans Mono', monospace !important;
-  font-weight: 400 !important;
+  font-weight: normal !important;
 }
 
 /* for IE browsers that want to put a border around linked images */
 img {
   border-style: none;
 }
-
 
 /* datatables.net */
 .dataTables_filter, .dataTables_info {
@@ -926,7 +940,6 @@ img {
     background: #000;
     opacity: 0.5;
 }
-
 
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
     border-bottom-right-radius: 0px;
@@ -955,10 +968,10 @@ img {
 }
 
 .ui-dialog-title {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
-	font-size: 0.9em;
-    padding: 6px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  font-size: 0.9em;
+  padding: 6px;
 }
 
 .ui-dialog .ui-dialog-titlebar {
@@ -966,7 +979,7 @@ img {
 }
 
 .ui-dialog-titlebar {
-	background: #E17000;
+	background: #F57F21;
 	border-top: 4px solid #5F584E;
 	border-bottom: 1px solid #fff;
 	border-right: 0px;
@@ -994,8 +1007,8 @@ img {
 }
 
 .ui-widget button {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 700;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
 	font-size: 0.8em;
 	color: #5F584E;
 }
@@ -1003,4 +1016,27 @@ img {
 /* For Jacks RSpec display instead of white-on-white */
 .jacks #leftNav pre {
    color: black;
+}
+
+#resourcemap {
+  margin: 0;
+  padding: 0;
+  max-width: 1000px;
+}
+
+#resourcemap td {
+  margin: 0;
+  padding: 0;
+}
+
+#resourcemap tr {
+  margin: 0;
+  padding: 0;
+}
+
+#maintenance_alert {
+  border-radius: 0px;
+  margin: 0px !important;
+  margin-bottom: -20px !important;
+  border-right: 1px solid #E5E5E5; 
 }

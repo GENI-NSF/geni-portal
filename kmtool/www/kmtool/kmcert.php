@@ -211,7 +211,7 @@ if (isset($error)) {
   unset($error);
 }
 
-if (isset($_SESSION['xml-signer'])) {
+if (isset($_SESSION['xml-signer']) && !$renew) {
   /* Special key when working with the xml-signer tool.
      This means we're in the flow of putting a cert/key into the tool, so
      maybe HTTP redirect there if this key exists in the session.
@@ -257,7 +257,6 @@ if ($has_cert && array_key_exists('expiration', $result)) {
 
 include('kmheader.php');
 ?>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 <script type="text/javascript">
 function toggleDiv(divId) {
    $("#"+divId).toggle();

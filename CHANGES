@@ -4,11 +4,51 @@
 
 = GENI Portal Release Notes =
 
+== 2.35 ==
+ * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables (1.10.7) (#1327)
+
+== 2.34 ==
+ * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
+ * Set max width of map to avoid 0,0 centering issue (#1390)
+ * Make welcome page responsive with screen width, scale properly on mobile
+
+== 2.33 ==
+ * Add dropdown to get logs for a given time period on homepage, slice page,
+   and project page. (#1318)
+ * Made CSS responsive to screen width, general CSS improvements (#768)
+ * Slices tables show next resource expiration for each slice 
+   with color coding, or text indicating the slice has no resources. (#1354, #1384)
+ * Alerts for maintenance show up on every page (#1375)
+ * Remove member attributes for other members as the Portal on the
+   WiMAX page (as in when disabling their WiMAX account cause the
+   project is disabled). (#1380)
+ * Only refetch the manifest on details page once after
+   sliverstatus says ready. AMs with no resources or login
+   info therefore won't be constantly re-polled. (#1378)
+  * Be sure to handle status of 'no resources' as terminal.
+ * When showing resource details / manifests, show something
+   when no resources were found. And update the overall page status.
+   Additionally, close the PHP session earlier. (#1365)
+ * Migrate a few aggregates to the clearinghouse repository
+ * Do not verify iRODS server cert at all, as it fails on 
+   newer versions of cURL. (#1386)
+ * Reference a couple pages with explicit '.php' ending.
+  * See 'Create slice' on project page.
+
+== 2.32 ==
+ * Clear a session setting in the speaks-for path (#1335)
+ * Check for expired certificate in speaks-for path (#1336)
+ * Add a button linking to SAVI on the home page. (#1355)
+ * Log Omni stderr output in portal_error. (#1376)
+ * Remove ION aggregate (#1377)
+
 == 2.31 ==
- * Fix UUID search in portal certificate (#1368)
+ * Add capability to download PuTTY key from SSH profile page (#434)
+ * Fix search for portal UUID in portal certificate to handle proper cert format. (#1368)
  * Change GENI Desktop URL (#1372)
  * Add global node to bound sites using "Add Global Node" button on Jacks Editor App (#1351).
  * Detect proxy errors when talking to Orbit. (#1373)
+ * Change wireless button text (#1374)
 
 == 2.30.1 ==
  * Restore ability to join a project; `require_once logging_client`. (#1366)
