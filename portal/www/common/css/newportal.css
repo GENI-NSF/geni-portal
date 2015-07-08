@@ -196,6 +196,7 @@ button b {
 #content a {
   color: #FB8C00;
   text-decoration:none;
+  border-bottom: 1px #303030;
 }
 
 #content a:hover {
@@ -293,6 +294,8 @@ ul {
   font-size: 0.8em;
   font-weight: normal;
   min-height: 1.4em;
+  width: 100%;
+  max-width: 1200px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
@@ -706,7 +709,7 @@ ul {
 }
 
 input.date {
-  width: 14en;
+  width: 14em;
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {

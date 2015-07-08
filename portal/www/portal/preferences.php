@@ -41,7 +41,7 @@ $(document).ready(function(){
 });
 </script>
 
-<h1>Preferences</h1>
+<!-- <h1>Preferences</h1> -->
 <i>(functionality coming soon)</i><br>
 Use new dashboard<input type='checkbox' id='dashcheck' value='ascending' checked>
 <script>

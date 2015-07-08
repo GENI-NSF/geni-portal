@@ -36,16 +36,23 @@
   overflow-x: hidden;
 }
 
+#projectarea {
+  overflow-x: hidden;
+}
+
 .slicebox {
-    transition-duration: 300ms;
+  -webkit-transition-duration: 300ms;
+  transition-duration: 300ms;
 }
 
 .slicebox.loading {
-  transform: translate(500%);
-  /*margin-left: 290px;*/
+  -webkit-transform: translate(300%);
+  transform: translate(300%);
   opacity: 0;
-  transition-timing-function: ease-in;
+  -webkit-transition-timing-function: cubic-bezier(.55,0,.1,1);
+  transition-timing-function: cubic-bezier(.55,0,.1,1);
 }
+
 
 .slicebox {
   width: 275px;

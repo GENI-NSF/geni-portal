@@ -32,7 +32,8 @@ require_once('rq_client.php');
 require_once("sa_client.php");
 require_once("cs_client.php");
 require_once("proj_slice_member.php");
-include("services.php");
+require_once("services.php");
+
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
@@ -290,7 +291,7 @@ if (! $user->portalIsAuthorized()) {
     $slice_exp_icon = "<img class='expirationicon' alt='slice expiration icon' src='/images/{$slice_exp_icon}.png'/>";
     print "<tr><td class='slicetopbar' style='text-align:left;' onclick='window.location=\"$slice_url\"'>";
     print "<span style='font-weight: normal; font-size: 16px'>$slice_name</span></td>";
-    print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub'>actions<ul class='submenu'>";
+    print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub'>Actions<ul class='submenu'>";
     print "<li onclick='window.location=\"$slice_url\"'>Manage slice</li>";
     print "<li onclick='window.location=\"$add_url\"'>Add resources</li>";
     print "<li onclick='window.location=\"$remove_url\"'>Remove resources</li></ul></li></ul></td></tr>";
@@ -306,14 +307,15 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<div class='floatleft slicebox $whose_proj'>";
     $box .= "<table><tr class='slicetopbar'>";
     $box .= "<td class='slicetopbar' style='text-align: left;' onclick='window.location=\"project.php?project_id=$project_id\"'>$project_name</td>";
-    $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'><ul><li class='has-sub'>actions<ul class='submenu'>";
-    $box .= "<li onclick='window.location=\"project.php?project_id=$project_id\"'>Manage slice</li>";
+    $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'><ul><li class='has-sub'>Actions<ul class='submenu'>";
+    $box .= "<li onclick='window.location=\"project.php?project_id=$project_id\"'>Manage project</li>";
     $box .= "<li onclick='window.location=\"createslice.php?project_id=$project_id\"'>New slice</li>";
     $box .= "<li onclick='window.location=\"edit-project.php?project_id=$project_id\"'>Edit project</li>";
     $box .= "<li onclick='window.location=\"edit-project-member.php?project_id=$project_id\"'>Edit membership</li>";
     $box .= "</ul></li></ul></td></tr>";
     $box .= "<tr><td colspan='2'>Lead: $lead_name</td></tr>";
     $box .= "<tr><td colspan='2'>";
+    $purpose = !$purpose ? "<i>None</i>" : $purpose;
     $box .= "<div class='purposebox'>Purpose: $purpose</div></td></tr>";
     if($expiration) {
       $exp_diff = get_time_diff($expiration);

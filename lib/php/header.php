@@ -168,12 +168,12 @@ function add_js_script($script_url)
 function show_header($title, $active_tab = '', $load_user=1){
   if (array_key_exists("dashtype", $_REQUEST)) {
     if ($_REQUEST['dashtype'] == 1) {
-      show_old_header($title, $active_tab = '', $load_user=1);
+      show_old_header($title, $active_tab, $load_user );
     } else {
-      show_new_header($title, $active_tab = '', $load_user=1);
+      show_new_header($title, $active_tab, $load_user);
     }
   } else {
-    show_new_header();
+    show_new_header($title, $active_tab, $load_user);
   }
 }
 

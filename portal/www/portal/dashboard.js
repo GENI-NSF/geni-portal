@@ -13,6 +13,8 @@ $(document).ready(function(){
     }
   });    
 
+  $(".has-sub").hover(function(){ $(this).find('ul').show(); }, function(){ $(this).find('ul').hide(); });
+  
   // Get the values that you last used and display them on page load
   if (localStorage.lastselection && localStorage.lastselectionval) {
     $("#slicefilterswitch .selectorshown").html(localStorage.lastselection);
@@ -62,7 +64,9 @@ $(document).ready(function(){
   });
 
   $('#sliceascendingcheck').click(function() {
-    sort_slices($("#slicesortby > .selectorshown").attr("value"), this.checked);       
+    sort_slices($("#slicesortby > .selectorshown").attr("value"), this.checked);
+    show_slices($("#slicefilterswitch .selectorshown").attr("value"), $("#slicesortby .selectorshown").attr("value"),
+                $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());    
   });
 
   // same idea for projects
@@ -97,9 +101,11 @@ function getLogs(hours){
 }
 
 function show_projects(selection, sortby, selectionstring, sortbystring) {
+  $("#projectarea .slicebox").addClass("gone");
   $("#projectarea .slicebox").hide();
   $(".noprojects").hide();
 
+  num_columns = Math.floor(parseInt($("#projectarea").css("width").split("px")[0]) / 315);
    // fancy slice animations
   $("." + selection).addClass("loading");
   $("." + selection).show();
@@ -108,8 +114,9 @@ function show_projects(selection, sortby, selectionstring, sortbystring) {
     setTimeout(function() {
         element = $(element);
         element.removeClass('loading');
-    }, index * 100);
+    }, (index % num_columns) * 100 + ((index * 100)/ num_columns));
   });
+
 
   // sort_slices(sortby, $("#ascendingcheck").prop("checked"));
   if($("." + selection).length == 0) {
@@ -138,7 +145,10 @@ function show_slices(selection, sortby, selectionstring, sortbystring) {
     $("#" + project_name + "info").show();
   }
 
- // fancy slice animations
+  num_columns = Math.floor(parseInt($("#slicearea").css("width").split("px")[0]) / 315);
+
+  sort_slices(sortby, $("#sliceascendingcheck").prop("checked"));
+  // fancy slice animations
   $("." + class_name).addClass("loading");
   $("." + class_name).show();
 
@@ -146,12 +156,11 @@ function show_slices(selection, sortby, selectionstring, sortbystring) {
     setTimeout(function() {
         element = $(element);
         element.removeClass('loading');
-    }, index * 100);
+    }, (index % num_columns) * 100 + ((index * 100)/ num_columns));
   });
 
   // $("." + class_name).show();
 
-  sort_slices(sortby, $("#sliceascendingcheck").prop("checked"));
   if($("." + class_name).length == 0) {
     $("#slicearea").append("<h4 class='dashtext noslices'>" + no_slice_msg + "</h4>");
   }
