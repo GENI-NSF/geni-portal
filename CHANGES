@@ -8,6 +8,7 @@
  * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables (1.10.7) (#1327)
  * Clear RSpec selector (paste, file, url, menu) when Jacks delete all or
    other jacks topology changes are made (#1246)
+ * Fix problem of expoential delete calls from Jacks delete (#1364)
  * Allow SSH to work on ExoSM-allocated resources (#1397)
 
 == 2.34 ==
