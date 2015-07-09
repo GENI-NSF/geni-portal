@@ -32,8 +32,8 @@ IN THE WORK.
 
 @titlepage
 @title The GENI Portal and Clearinghouse
-@subtitle Version 2.32
-@subtitle May, 2015
+@subtitle Version 2.34
+@subtitle July, 2015
 @author Marshall Brinn
 @author Aaron Helsinger
 @author Tom Mitchell
@@ -253,6 +253,55 @@ project lead privilege.
 geni-add-member-privilege -k <private key> -c <certificate> \
         -u https://ch.geni.net/ -l -m <member id>
 @end example
+
+@section Disabling Users
+@cindex lead, project
+@cindex disable user
+@pindex geni-list-member-projects
+@pindex geni-disable-user
+@pindex geni-remove-project-member
+@pindex geni-revoke-member-privilege
+User accounts sometimes need to be disabled. When email bounces to a user,
+or when a tutorial account expires, the account should be disabled. It is
+possible to reenable an account later if necessary.
+
+The first step in disabling a user is to determine their membership in
+projects. Users should first be removed from projects before they are
+disabled. To make this determination, use @code{geni-list-member-projects}.
+
+@example
+geni-list-member-projects -k <private key> -c <certificate> \
+        -u https://ch.geni.net/ -e -m <username>
+@end example
+
+This will display a list of projects and the user's role in each. Roles
+include LEAD, ADMIN, MEMBER, and AUDITOR. If they are a LEAD on any project
+that project must be handed off to another qualifying project lead. This
+may require adding a project lead with @code{geni-add-project-member}.
+
+For each project listed, the user should be removed from that project.
+
+@example
+geni-remove-project-member -k <private key> -c <certificate> \
+        -u https://ch.geni.net -p <project name> -m <username>
+@end example
+
+Remove lead privilege if the user has it (this command is a no-op if
+they do not have lead privilege so it is safe to run).
+@example
+geni-revoke-member-privilege -k <private key> -c <certificate> \
+        -u https://ch.geni.net/ -l -m <member id>
+@end example
+
+
+Finally, after the user is removed from all of their projects, the
+account can be disabled.
+
+@example
+geni-disable-user -k <private key> -c <certificate> \
+        -u https://ch.geni.net -m <username>
+@end example
+
 
 @node System Administration
 @chapter System Administration
