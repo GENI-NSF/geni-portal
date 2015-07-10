@@ -606,7 +606,11 @@ function get_omni_invocation_elapsed_time($dir, $raw=true) {
         // check if omni-stderr is empty - if not, then process probably failed
         $retValError = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::ERROR_LOG_FILE, 
             "error log");
-        if($retValError['code'] == 0) {
+	// Check if result has string 'rror from Aggregate', also meaning error
+	  $retValResult = get_omni_invocation_file_raw_contents($dir, OMNI_INVOCATION_FILE::CALL_RESULTS_FILE, 
+							       "omni_results");
+	  if(($retValError['code'] == 0) ||
+	     (strpos($retValResult['obj'], 'rror from Aggregate'))) {
             $retVal['msg'] = "<b style='color:red;'>Failed</b>";
         }
         else {
