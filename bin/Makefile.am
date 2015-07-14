@@ -25,22 +25,9 @@ pkgsysconfdir = $(sysconfdir)/geni-ch
 dist_sbin_SCRIPTS = geni-init-ca geni-init-services
 
 dist_bin_SCRIPTS = \
-		geni-add-member-attribute \
-		geni-add-project-member \
-		geni-add-trusted-tool \
-		geni-assert-email \
-		geni-delete-outside-cert \
-		geni-disable-user \
-		geni-enable-user \
 		geni-manage-maintenance \
-		geni-ops-report \
 		geni-parse-map-data \
-		geni-remove-member-attribute \
-		geni-remove-project-member \
-		geni-watch-omni \
-		gmoc_list_contacts \
-		gmoc_list_slices \
-		report_genich_relations
+		geni-watch-omni 
 
 bin_SCRIPTS = \
 	geni-get-ad-rspecs
