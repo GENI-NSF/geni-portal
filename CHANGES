@@ -11,6 +11,8 @@
  * Warn and disable "reserve resources" if RSpec is bound to unknown AM (#1346)
  * Fix problem of expoential delete calls from Jacks delete (#1364)
  * Allow SSH to work on ExoSM-allocated resources (#1397)
+ * Fix omni_invocation parsing to mark an error/failed if the aggregate 
+   returns "Error" in return text but not in code (#1406).
 
 == 2.34 ==
  * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
