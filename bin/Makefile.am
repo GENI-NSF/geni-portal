@@ -22,8 +22,6 @@ CLEANFILES =  \
 
 pkgsysconfdir = $(sysconfdir)/geni-ch
 
-dist_sbin_SCRIPTS = geni-init-ca geni-init-services
-
 dist_bin_SCRIPTS = \
 		geni-manage-maintenance \
 		geni-parse-map-data \
