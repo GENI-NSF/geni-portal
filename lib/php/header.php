@@ -364,8 +364,12 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   echo '</head>';
   echo '<body>';
   echo '<script>';
+  // For header interactivity
   echo '$(document).ready(function(){';
   echo '$(".has-sub").hover(function(){ $(this).find(\'ul\').show(); }, function(){ $(this).find(\'ul\').hide(); });';
+  echo '$("#hamburger").click(function(){';
+  echo '$("#dashboardtools").slideToggle();';
+  echo '});';
   echo '});';
   echo '</script>';
   echo '<div id="dashboardheader">';
@@ -398,17 +402,20 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   $tool_links = array("GENI Desktop" => $gemini_url, "LabWiki" => $labwiki_url, "GENI Wireless" => $wimax_url,
                       "CloudLab" => $cloudlab_url, "SAVI" => $savi_url, "GEE" => $gee_url);
   foreach ($tool_links as $name => $url) {
-    // print "<li onclick='window.location=\"$url\"'>$name</li>";
-    print "<li><a href='$url' target='_blank'>$name<img class='expirationicon' src='/images/external.png'/></a></li>";
+    $img = count(explode($name , "/")) > 0 ? "<img class='expirationicon' src='/images/external.png'/>" : "";
+    print "<li><a href='$url' target='_blank'>$name $img</a></li>";
   }
   echo '</ul></li>';
 
-  echo '<li class="headerlink has-sub">Profile';
+  echo '<li class="headerlink has-sub"><a href="profile.php">Profile</a>';
   echo '<ul class="submenu">';
-  echo '<li><a href="profile.php#outstandingrequests">Requests</a></li>';
-  echo '<li><a href="profile.php#omni">Omni</a></li> ';
-  echo '<li><a href="profile.php#ssh">SSH Keys</a></li> ';
   echo '<li><a href="profile.php#accountsummary">Account</a></li>';
+  echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
+  echo '<li><a href="profile.php#ssl">SSL</a></li>';
+  echo '<li><a href="profile.php#omni">Omni</a></li> ';
+  echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
+  echo '<li><a href="profile.php#tools">Tools</a></li>';  
+  echo '<li><a href="profile.php#outstandingrequests">Requests</a></li>';
   echo '</ul></li>';
   echo '<li class="headerlink"><a href="dashboard.php">Dashboard</a></li></ul>';
   echo '<div style="clear:both; font-size:1px;">&nbsp;</div>';

@@ -91,9 +91,19 @@ if (! $user->portalIsAuthorized()) {
 
   $project_objects = $unexpired_projects;
 
+  $disable_create_project = "";
+  $disable_join_project = "";
+  $disable_project_lead = "";
+  if ($in_lockdown_mode) {
+    $disable_create_project = "disabled";
+    $disable_join_project = "disabled";
+    $disable_project_lead = "disabled";
+  }
+
   if (count($project_objects) == 0) {
     if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
-      if ($num_projects==0) { //you're not in any projects at all, even expired 
+      if ($num_projects==0) { 
+        // You're not in any projects at all, even expired 
         print "<p class='instruction'>";
         print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
         print "You have been made a 'Project Lead', meaning you can create GENI Projects, as well as create slices in projects and reserve resources.<br/><br/>";
@@ -102,7 +112,8 @@ if (! $user->portalIsAuthorized()) {
         print "<p class='warn'>";
         print "You are not a member of any projects. You need to Create or Join a Project.";
         print "</p>";
-      } else { // you have some projects that are expired, none active
+      } else { 
+        // You have some projects that are expired, none active
         print "<p class='instruction'>You have no active projects at this time</p>";
       }
       print "<button $disable_create_project onClick=\"window.location='edit-project.php'\">Create New Project</button>\n";
@@ -125,13 +136,13 @@ if (! $user->portalIsAuthorized()) {
       print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>\n";
       print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button></p>\n";
     }
-  } else { //you have some projects or slices 
+  } else { 
+    // You have some projects or slices 
     print "<h2 class='dashtext' id='sectionswitch'>";
     print "<a id='Slicesbutton' class='dashtext activesection'>Slices</a> | ";
     print "<a class='dashtext' id='Projectsbutton'>Projects</a></h2><br>";
 
     // Start making the slice and project sections
-
     $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
     $project_options = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
     $project_options .= "<span class='selectorshown'>Filters</span><ul class='submenu'><li value='-ALL-' class='selectorlabel'>Projects</li>";
@@ -168,12 +179,22 @@ if (! $user->portalIsAuthorized()) {
     $project_options .= "</ul></li></ul>";
 
     print "<div id='Projectsection' class='dashsection' style='display:none;'>";
-    print "<h4 class='dashtext'>Filter by:</h4><ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectfilterswitch'>";
+    // project filters
+    print "<h4 class='dashtext'>Filter by:</h4><ul class='selectorcontainer'>";
+    print "<li class='has-sub selector' style='float:none;' id='projectfilterswitch'>";
     print "<span class='selectorshown'>Filters</span><ul class='submenu'>";
     print "<li value='-ALL-PROJECTS-'>All projects</li>";
     print "<li value='-MY-PROJECTS-'>Projects I lead</li>";
     print "<li value='-THEIR-PROJECTS-'>Projects I don't lead</li>";
-    print "</ul></li></ul><br>";
+    print "</ul></li></ul>";
+
+    // project sorts
+    print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4>";
+    print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectsortby'>";
+    print "<span value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
+    print "<li value='projname'>Project name</li><li value='projexp'>Project expiration</li></ul></li></ul>";
+    print "<input type='checkbox' id='projectascendingcheck' value='ascending' checked>Sort ascending<br>";
+    
     print "<div style='margin: 20px; clear: both;'>";
     if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
       print "<a class='button' href='edit-project.php'>Create New Project</a>";
@@ -183,19 +204,16 @@ if (! $user->portalIsAuthorized()) {
       print "<a href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a>";
       print "<a href='window.location='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></p>";
     }
-    // TODO: sort projects
-    // print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4>";
-    // print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicesortby'>";
-    // print "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
-    // print "<li value='slicename'>Project name</li><li value='sliceexp'>Project expiration</li>";
-    // print "<input type='checkbox' id='projascendingcheck' value='ascending' checked>Sort ascending<br></div>";
+
 
     print "<div id='projectarea'>$project_boxes</div></div>";
 
     print "<div id='Slicesection' class='dashsection'>";
+    // Slice filters
     print "<div id='projectcontrols'><h4 class='dashtext'>Filter by:</h4>$project_options<br class='mobilebreak'>"; 
     print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4>";
     print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicesortby'>";
+    // Slice sorts
     print "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
     print "<li value='slicename'>Slice name</li><li value='sliceexp'>Slice expiration</li>";
     print "<li value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
@@ -303,8 +321,14 @@ if (! $user->portalIsAuthorized()) {
   }
   
   function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $whose_proj) {
+    if ($expiration) {
+      $exp_diff = get_time_diff($expiration);
+    } else {
+      $exp_diff = 100000000;
+    }
+
     $box = '';
-    $box .= "<div class='floatleft slicebox $whose_proj'>";
+    $box .= "<div class='floatleft slicebox $whose_proj' projname='$project_name' projexp='$exp_diff'>";
     $box .= "<table><tr class='slicetopbar'>";
     $box .= "<td class='slicetopbar' style='text-align: left;' onclick='window.location=\"project.php?project_id=$project_id\"'>$project_name</td>";
     $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'><ul><li class='has-sub'>Actions<ul class='submenu'>";
@@ -318,7 +342,6 @@ if (! $user->portalIsAuthorized()) {
     $purpose = !$purpose ? "<i>None</i>" : $purpose;
     $box .= "<div class='purposebox'>Purpose: $purpose</div></td></tr>";
     if($expiration) {
-      $exp_diff = get_time_diff($expiration);
       $expiration_string = get_time_diff_string($exp_diff);
       $expiration_color = get_urgency_color($exp_diff);
       $expiration_string = "Project expires in <b style='color: $expiration_color'>$expiration_string</b>";
@@ -334,6 +357,7 @@ if (! $user->portalIsAuthorized()) {
     return $box;
   }
 
+  // Convert $num_hours into days if $num_hours is large
   function get_time_diff_string($num_hours) {
     if ($num_hours < 48) {
       return "$num_hours hours";
@@ -344,6 +368,7 @@ if (! $user->portalIsAuthorized()) {
     }
   }
   
+  // Return the difference in hours between now and $exp_date
   function get_time_diff($exp_date) {
     $now = new DateTime('now');
     $exp_datetime = new DateTime($exp_date);
@@ -352,6 +377,7 @@ if (! $user->portalIsAuthorized()) {
     return $num_hours;
   }
 
+  // Return a red if $num_hours is small, an orange if medium, a green if large 
   function get_urgency_color($num_hours) {
     if ($num_hours < 24) { 
       return "EE583A";
@@ -362,6 +388,7 @@ if (! $user->portalIsAuthorized()) {
     }
   }
 
+  // Return name of icons by same ideas as get_urgency_color
   function get_urgency_icon($num_hours) {
     if ($num_hours < 24) { 
       return "red";
