@@ -102,7 +102,8 @@ function make_result_table($user_ids, $signer, $ma_url)
       print "<tr style='display:none'>";
       print "<td colspan='3' style='vertical-align:top'>$user_profile_info</td>";
       print "<td style='vertical-align: top;'>$user_project_info</td>";
-      print "<td style='vertical-align: top;' colspan='2'>$user_slice_info</td></tr>";                    
+      print "<td style='vertical-align: top;'>$user_slice_info</td>";
+      print "<td style='vertical-align: top;'><button onclick='disable_user(\"$name\", \"$urn\");'>Disable user</button></tr>";                    
     }
     print "</table>";
   }

@@ -42,6 +42,16 @@ function failed_request(){
   alert("Failed to perform action. Check the server logs for more info.");
 }
 
+function send_ajax_request(url, params) {
+  $("#loading").show();
+  $("#resultsbox").hide();
+  $.post(url, params, function(data) {
+    $("#loading").hide();
+    $("#resultsbox").html(data);
+    $("#resultsbox").show();
+  }).fail(failed_request);
+}
+
 function expand_info(button){
   $($(button).parents()[1]).next().show(); 
   $(button).hide();
@@ -52,6 +62,13 @@ function hide_info(button){
   $($(button).parents()[1]).next().hide();
   $(button).hide();
   $(button).prev().show();
+}
+
+function disable_user(name, member_urn){
+  if(confirm("Are you sure you want to disable " + name + "?")) {
+    params = {action: "disable", member_urn: member_urn};
+    send_ajax_request("do-user-admin.php", params);
+  }
 }
 
 function deny_request(button, requester_uuid, request_id){
@@ -80,32 +97,20 @@ function approve_request(button, requester_uuid, request_id) {
 
 function send_lead_request_response(requester_uuid, request_id, status, reason) {
   params = {request_id: request_id, new_status: status, user_uid: requester_uuid, reason: reason};
-  $("#loading").show();
-  $.post( "do-handle-lead-request.php", params, function(data) {
-    $("#loading").hide();
-    $("#resultsbox").html(data);
-  }).fail(failed_request);
+  send_ajax_request("do-handle-lead-request.php", params);
 }
 
 function save_note(request_id) {
   note = $("#notebox" + request_id).val();
   if (note){
-    $("#loading").show();
     params = {request_id: request_id, notes: note};
-    $.post( "do-handle-lead-request.php", params, function(data) {
-      $("#loading").hide();
-      $("#resultsbox").html(data);
-    }).fail(failed_request);
+    send_ajax_request("do-handle-lead-request.php", params);
   }
 }
 
 function remove_from_project(member_id, project_id){
-  $("#loading").show();
   params = {member_id: member_id, project_id: project_id, action: "remove"};
-  $.post( "do-user-admin.php", params, function(data) {
-    $("#loading").hide();
-    $("#resultsbox").html(data);
-  }).fail(failed_request);
+  send_ajax_request("do-user-admin.php", params);
 }
 
 $(document).ready(function(){
@@ -139,7 +144,7 @@ $(document).ready(function(){
   </ul>
 </div>
 <div id ='loading' style='display: none;'><h2 style="border: 0px; text-align: center;">Loading...</h2></div>
-<div id='resultsbox'></div>
+<div style='text-align:center; font-weight: bold;' id='resultsbox'></div>
 
 
 <div id='leadrequests'>
@@ -236,7 +241,8 @@ if ($open_requests == 0) {
   <h2>Find a GENI user:</h2>
   <form id="usersearchform">
     Search users:
-    <input type="search" name="term" placeholder="enter search term ..."><br>
+    <input type="search" class='searchbox' name="term" placeholder="enter search term ...">
+        <input type="submit" value='search'><br>
     by: <input type="radio" name="search_type" value="email" checked>email
         <input type="radio" name="search_type" value="username">username
         <input type="radio" name="search_type" value="lastname">lastname
@@ -248,7 +254,8 @@ if ($open_requests == 0) {
   <h2>Find a slice:</h2>
   <form id="slicesearchform">
     Search slices:
-    <input type="search" name="term" placeholder="enter search term ..."><br>
+    <input type="search" class='searchbox' name="term" placeholder="enter search term ..." size="45">
+        <input type="submit" value='search'><br>
      by: <input type="radio" name="search_type" value="owner_email" checked>owner email
          <input type="radio" name="search_type" value="urn">urn
   </form>
