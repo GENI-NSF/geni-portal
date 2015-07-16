@@ -238,6 +238,110 @@ function derive_username() {
   die("Unable to find a username based on $username");
 }
 
+//--------------------------------------------------
+// Create the database connection
+//--------------------------------------------------
+$conn = portal_conn();
+if (PEAR::isError($conn)) {
+  die("error connecting to db: " . $conn->getMessage());
+}
+
+//--------------------------------------------------
+// Insert into account table
+//--------------------------------------------------
+$account_id = make_uuid();
+$username = derive_username();
+$sql = "INSERT INTO account (account_id, username, status) VALUES ("
+  . $conn->quote($account_id, 'text')
+  . ", ". $conn->quote($username, 'text')
+  . ", 'requested');";
+$result = $conn->exec($sql);
+if (PEAR::isError($result)) {
+  die("error on account insert: " . $result->getMessage());
+}
+
+//--------------------------------------------------
+// Insert into identity table
+//--------------------------------------------------
+
+// TODO: Check for the existence of each, error if not available.
+// TODO: Use filters to sanitize these
+$eppn = strtolower($_SERVER['eppn']);
+$shib_idp = $_SERVER['Shib-Identity-Provider'];
+$affiliation = "";
+if (array_key_exists('affiliation', $_SERVER)) {
+  $affiliation = $_SERVER['affiliation'];
+} else {
+  //  error_log("IdP " . $shib_idp . " gave no affiliation for eppn " . $eppn);
+}
+
+$sql = "INSERT INTO identity (provider_url, eppn, affiliation, account_id)"
+  . "VALUES ("
+  . $conn->quote($shib_idp, 'text')
+  . ", " . $conn->quote($eppn, 'text')
+  . ", " . $conn->quote($affiliation, 'text')
+  . ", " . $conn->quote($account_id, 'text')
+  . ");";
+// print $sql . "<br/>";
+
+$result = $conn->exec($sql);
+if (PEAR::isError($result)) {
+  die("error on identity insert: " . $result->getMessage());
+}
+
+//--------------------------------------------------
+// Now pull the id out of that newly inserted identity record and add
+// the additional attributes.
+//--------------------------------------------------
+$sql = "SELECT identity_id from identity WHERE provider_url = "
+  . $conn->quote($shib_idp, 'text')
+  . " AND eppn = "
+  . $conn->quote($eppn, 'text')
+  . ";";
+//print "Query = $sql<br/>";
+$resultset = $conn->query($sql);
+if (PEAR::isError($resultset)) {
+  die("error on identity id select: " . $resultset->getMessage());
+}
+$rows = $resultset->fetchall(MDB2_FETCHMODE_ASSOC);
+$rowcount = count($rows);
+//print "rowcount = $rowcount<br/>";
+$identity_id = $rows[0]['identity_id'];
+//print "identity_id = $identity_id<br/>";
+
+//--------------------------------------------------
+// Add extra attributes
+//--------------------------------------------------
+
+function addIdentityAttribute($conn, $identity_id, $attr, $value,
+                              $self_asserted) {
+  $sql = "INSERT INTO identity_attribute "
+    . "(identity_id, name, value, self_asserted) VALUES ("
+    . $conn->quote($identity_id, 'integer')
+    . ", " . $conn->quote($attr, 'text')
+    . ", " . $conn->quote($value, 'text')
+    . ", " . $conn->quote($self_asserted, 'boolean')
+    . ");";
+  /* print "attr insert: $sql<br/>"; */
+  $result = $conn->exec($sql);
+  if (PEAR::isError($result)) {
+    die("error on attr $attr insert: " . $result->getMessage());
+  }
+}
+
+if ($last_name) {
+  addIdentityAttribute($conn, $identity_id, 'sn', $last_name,
+                       $last_name_self_asserted);
+}
+if ($first_name) {
+  addIdentityAttribute($conn, $identity_id, 'givenName', $first_name,
+                       $first_name_self_asserted);
+}
+// We always have email address
+addIdentityAttribute($conn, $identity_id, 'mail', $email_address,
+                     $email_address_self_asserted);
+
+
 // if portal=portal, then authorize the portal.
 // FIXME: Really this should be in a util in the km area for code
 // cleanliness. Minor point though.
