@@ -133,7 +133,7 @@ $client_cert_parameter = $user->insideCertificate();
        src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js">
     </script>
     <script type="text/javascript"
-            src="https://code.jquery.com/jquery-2.0.3.min.js">
+            src="<?php echo $portal_jquery_url; ?>">
     </script>
   </head>
   <body>

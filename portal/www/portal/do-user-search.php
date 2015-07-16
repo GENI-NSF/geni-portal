@@ -82,7 +82,7 @@ function make_result_table($user_ids, $signer, $ma_url)
   if (count($user_ids) == 0) {
     print "<p>No results found. (warning: no partial matches!)</p>";
   } else {
-    print "<table><tr><th>name</th><th>Username</th><th>Email</th><th>UUID</th><th>URN</th><th>Actions</th></tr>";
+    print "<table><tr><th>Name</th><th>Username</th><th>Email</th><th>URN</th><th>UUID</th><th>Actions</th></tr>";
     $requester_details = lookup_member_details($ma_url, $signer, $user_ids); 
     foreach ($user_ids as $user_id) {
       $user_details = $requester_details[$user_id];  
@@ -93,23 +93,24 @@ function make_result_table($user_ids, $signer, $ma_url)
       $email = $user_details[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
       $urn = $user_details[MA_ATTRIBUTE_NAME::URN];
       $mail_to = "<a href='mailto:$email'>$email</a>";
-      print "<tr><td>$name</td><td>$username</td><td>$mail_to</td><td>$user_id</td><td>$urn</td>";
-      print "<td><button onclick='expand_info(this);'>More info</button></td></tr>";
-      $user_profile_info = get_user_profile_info($user_details, $name);
+      print "<tr><td>$name</td><td>$username</td><td>$mail_to</td><td>$urn</td><td>$user_id</td>";
+      print "<td><button onclick='expand_info(this);'>More info</button>";
+      print "<button class='hideinfo' onclick='hide_info(this);' style='display:none;'>Close</button></td></tr>";
+      $user_profile_info = get_user_profile_info($user_details, $name, $user_id);
       $user_project_info = get_user_project_info($user_id, $name, $signer);
       $user_slice_info = get_user_slice_info($user_id, $name, $signer);
       print "<tr style='display:none'>";
       print "<td colspan='3' style='vertical-align:top'>$user_profile_info</td>";
       print "<td style='vertical-align: top;'>$user_project_info</td>";
-      print "<td style='vertical-align: top;'>$user_slice_info</td>";                    
-      print "<td><button class='hideinfo' onclick='hide_info(this);'>close</button></td></tr>";
+      print "<td style='vertical-align: top;'>$user_slice_info</td>";
+      print "<td style='vertical-align: top;'><button onclick='disable_user(\"$name\", \"$urn\");'>Disable user</button></tr>";                    
     }
     print "</table>";
   }
 }
 
 // Returns a table entry with information about $name's profile
-function get_user_profile_info($user_details, $name)
+function get_user_profile_info($user_details, $name, $user_id)
 {
   $affiliation = $user_details[MA_ATTRIBUTE_NAME::AFFILIATION];
   $reference = $user_details[MA_ATTRIBUTE_NAME::REFERENCE];
@@ -163,13 +164,8 @@ function get_user_project_info($user_id, $name, $signer)
   foreach ($project_info as $project_id => $project_details) {
     if ($project_details['expired'] != 1) {
       $project_data .= "<b>Project name: </b>" . $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME] . "<br>";
-      $lead = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user_id ? "<b>YES</b>" : "no";
-      $project_data .= "<b>Lead? </b>$lead<br>";
-      $project_data .= "<b>Project ID: </b>$project_id<br>";
-      $project_id = $project_details[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-      $remove_button_disabled = $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user_id ? "disabled" : "";
-      $project_data .= "<button $remove_button_disabled \ 
-                      onclick='remove_from_project(\"$user_id\", \"$project_id\");'>remove from project</button>";
+      $project_data .= $project_details[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID] == $user_id ? "<b>$name is lead on this project</b><br>" : "";
+      $project_data .= "<button onclick='remove_from_project(\"$user_id\", \"$project_id\");'>Remove</button>";
       $project_data .= "<hr style='height: 1px; background-color: #5F584E; margin: 3px'>";
     }
   }

@@ -44,7 +44,11 @@ if (array_key_exists('request_id', $_REQUEST) && array_key_exists('new_status', 
   $request_id = $_REQUEST['request_id'];
   $new_status = $_REQUEST['new_status'];
   $user_uid = $_REQUEST['user_uid'];
-  $reason = $_REQUEST['reason'];
+  if (array_key_exists('reason', $_REQUEST)) {
+    $reason = $_REQUEST['reason'];
+  } else {
+    $reason = "No reason";
+  }
   $approver = $user->prettyName();
   handle_lead_request($request_id, $new_status, $approver, $user_uid, $reason, $user);
 } else {
@@ -64,7 +68,12 @@ function add_request_note($request_id, $new_note)
   . "where id = "  . $conn->quote($request_id, 'text');
   $db_response = db_execute_statement($sql, "update lead request note for request id#: " . $request_id);
   $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
-  print $db_error == "" ? "Response successfully stored " : "DB error: " . $db_error;
+  if($db_error == ""){
+    print "Response successfully stored";
+  } else {
+    print "DB error: " . $db_error;
+    error_log("DB error when adding note to lead request table: " . $db_error);
+  }
 }
 
 // Update the lead_request db row identified by $request_id with $new_status, 
@@ -74,8 +83,12 @@ function handle_lead_request($request_id, $new_status, $approver, $user_uid, $re
   $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
   $conn = portal_conn();
   if ($new_status == "approved") {
-    add_member_privilege($ma_url, $signer, $user_uid, "PROJECT_LEAD");
-    send_approved_mail(geni_load_user_by_member_id($user_uid), $reason);
+    $response = add_member_privilege($ma_url, $signer, $user_uid, "PROJECT_LEAD");
+    if (!$response) {
+      error_log("User $user_uid already a project lead, cannot be made a project lead");
+    } else {
+      send_approved_mail(geni_load_user_by_member_id($user_uid), $reason, $approver);
+    }
   }
   $sql = "UPDATE lead_request set "
   . "status = "   . $conn->quote($new_status, 'text')  .  ", "
@@ -84,16 +97,25 @@ function handle_lead_request($request_id, $new_status, $approver, $user_uid, $re
   . "where id = " . $conn->quote($request_id, 'text');
   $db_response = db_execute_statement($sql, "Update lead request id#:" . $request_id);
   $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
-  print $db_error == "" ? "Response successfully stored " : "DB error: " . $db_error;
+  if($db_error == ""){
+    print "Response successfully stored";
+  } else {
+    print "DB error: " . $db_error;
+    error_log("DB error when updating lead request table: " . $db_error);
+  }
 }
 
 // Send email to admins about the fact that $new_lead was approved because of $reason
-function send_approved_mail($new_lead, $reason) 
+function send_approved_mail($new_lead, $reason, $approver) 
 {
   global $portal_admin_email;
   $pretty_name = $new_lead->prettyName();
-  $body = $pretty_name . " approved to be project lead. \r\n";
-  $body .= "Reason: " . $reason;
+  $body = "$pretty_name approved to be project lead by $approver. \r\n";
+  $body .= "Approved because: " . $reason . "\r\n";
+  $body .= "Their username: " . $new_lead->username . "\r\n";
+  $body .= "Their email: " . $new_lead->email() . "\r\n";
+  $body .= "Their reason: " . $new_lead->reason() . "\r\n";
+  $body .= "Their link: " . $new_lead->url() . "\r\n";
   $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
   $headers .= "Content-Transfer-Encoding: 8bit\r\n";
   $to = $portal_admin_email;

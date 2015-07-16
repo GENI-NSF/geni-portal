@@ -91,8 +91,9 @@ function make_results_table($slices, $signer, $ma_url, $sa_url)
   if (count($slices) == 0) {
     print "<p>No results found. (warning: no partial matches!)</p>";
   } else {
-    print "<table><tr><th>Slice name</th><th>Owner name</th><th>Owner email</th><th>Expiration</th><th>Actions</th></tr>";
+    print "<table><tr><th>Slice name</th><th>Owner</th><th>Expiration</th><th>Next resource exp.</th><th>Actions</th></tr>";
     foreach ($slices as $slice) {
+      $slice_urn = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_URN];
       $name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
       $expiration  = dateUIFormat($slice[SA_SLICE_TABLE_FIELDNAME::EXPIRATION]);
       $owner_id = $slice[SA_SLICE_TABLE_FIELDNAME::OWNER_ID];
@@ -102,19 +103,36 @@ function make_results_table($slices, $signer, $ma_url, $sa_url)
       $member->init_from_record($owner_details);
       $owner_name = $member -> prettyName();
       $owner_email = $owner_details[MA_ATTRIBUTE_NAME::EMAIL_ADDRESS];
-      $mailto_link = "<a href='mailto:$owner_email'>$owner_email</a>";
-
-      print "<tr><td>$name</td><td>$owner_name</td><td>$mailto_link</td><td>$expiration</td>";
-      print "<td><button onclick='expand_info(this);'>More info</button></td></tr>";
+      $mailto_link = "<a href='mailto:$owner_email'>$owner_name</a>";
+      $slivers = lookup_sliver_info_by_slice($sa_url, $signer, $slice_urn);
+      if (count($slivers) == 0) {
+        $next_exp = "<i>No resources for this slice</i>";
+      } else {
+        $first_sliver = reset($slivers);
+        $next_exp = new DateTime($first_sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
+        foreach ($slivers as $sliver) {
+          $this_date = new DateTime($sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
+          if ($next_exp > $this_date) {
+            $next_exp = $this_date;
+          }
+        }
+        $next_exp = dateUIFormat($next_exp);
+      }
+      print "<tr><td>$name</td><td>$mailto_link</td><td>$expiration</td><td>$next_exp</td>";
+      print "<td><button onclick='expand_info(this);'>More info</button>";
+      print "<button class='hideinfo' onclick='hide_info(this);' style='display:none;'>Close</button></td></tr>";
 
       $project_info = get_project_info($slice, $signer, $ma_url, $sa_url);
       $aggregate_info = get_aggregate_info($slice, $signer, $sa_url);
       $member_info = get_member_info($slice, $signer, $ma_url, $sa_url);
 
-      print "<tr style='display:none'><td style='vertical-align:top'>$project_info</td>";
+      print "<tr style='display:none'>";
+      print "<td style='vertical-align:top'>";
+      print "<b style='text-decoration: underline;'>Slice URN</b><br> $slice_urn<br><br>";
+      print $project_info;
+      print "</td>";
       print "<td colspan='2' style='vertical-align:top'>$aggregate_info</td>";
-      print "<td style='vertical-align:top'>$member_info</td>";
-      print "<td><button class='hideinfo' onclick='hide_info(this);'>Close</button></td></tr>";
+      print "<td colspan='2' style='vertical-align:top'>$member_info</td> </tr>";
     }
     print "</table>";
   }
@@ -143,7 +161,7 @@ function get_project_info($slice, $signer, $ma_url, $sa_url)
                    "<b>Description: </b>$project_description<br>" .
                    "<b>Lead Name: </b>$project_lead_name<br>" . 
                    "<b>Lead Email: </b>$mailto_link<br>" . 
-                   "<b>Lead Number: </b>$project_lead_number";
+                   "<b>Lead Phone: </b>$project_lead_number";
   return $project_info;
 }
 
@@ -167,18 +185,35 @@ function get_member_info($slice, $signer, $ma_url, $sa_url)
   $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
   $slice_members = get_slice_members($sa_url, $signer, $slice_id);
   $member_ids = array();
+  $admin_ids = array();
   foreach ($slice_members as $slice_member) {
     if($slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE] == CS_ATTRIBUTE_TYPE::LEAD){
       $slice_lead_id = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID]; 
+    } else if($slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::ROLE] == CS_ATTRIBUTE_TYPE::ADMIN){
+      $admin_ids[] = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID]; 
+    } else {
+      $member_ids[] = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
     }
-    $member_ids[] = $slice_member[SA_SLICE_MEMBER_TABLE_FIELDNAME::MEMBER_ID];
   }
   $member_names = lookup_member_names($ma_url, $signer, $member_ids);
-  $member_info = "<b style='text-decoration: underline;'>Members</b><br>";
-  $member_info .= "Lead: " . $member_names[$slice_lead_id] . "<br>";
-  foreach ($member_names as $member_id => $member_name) {
-    if($member_id != $slice_lead_id){
+  $admin_names = lookup_member_names($ma_url, $signer, $admin_ids);
+  $member_info = "<b style='text-decoration: underline;'>Slice members</b><br>";
+  if (count($admin_names) > 0) {
+    $member_info .= "<b>Admins</b><br>";
+    foreach ($admin_names as $admin_id => $admin_name) {
+      $member_info .= $admin_name . "<br>";
+    }
+  } else {
+    $member_info .= "<i>No admins on slice</i><br>";
+  }
+  if (count($member_names) > 0) {
+    $member_info .= "<b>Members</b><br>";
+    foreach ($member_names as $member_id => $member_name) {
       $member_info .= $member_name . "<br>";
+    }
+  } else {
+    if(count($admin_names) == 0){
+      $member_info .= "<i>No members on slice</i><br>";
     }
   }
   return $member_info;

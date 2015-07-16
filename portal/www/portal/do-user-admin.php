@@ -26,6 +26,7 @@ require_once("user.php");
 require_once("util.php");
 require_once("sa_client.php");
 require_once("pa_client.php");
+require_once("ma_client.php");
 require_once('cs_constants.php');
 require_once('sr_constants.php');
 
@@ -40,21 +41,27 @@ if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, nu
 }
 
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$signer = $user;
 
 // Handle the request, determine which action to perform
 if (array_key_exists('action', $_REQUEST)) {
   $action = $_REQUEST['action'];
   if ($action == "remove"){
     if (array_key_exists('project_id', $_REQUEST) && array_key_exists('member_id', $_REQUEST)) {
-      modify_project_membership($sa_url, $signer, $project_id, array(), array(), array($member_id));
+      modify_project_membership($sa_url, $signer, $_REQUEST['project_id'], array(), array(), array($_REQUEST['member_id']));
     } else {
       print "Insufficient information given to remove user";
       exit();
     }
+  } else if ($action == "disable") {
+      if (array_key_exists('member_urn', $_REQUEST)) {
+        disable_user($ma_url, $signer, $_REQUEST['member_urn']);        
+      }
+  } else {
+      print "No action requested";
+      exit();
   }
-} else {
-  print "No supported action requested";
-  exit();
 }
 
 ?>
