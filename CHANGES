@@ -15,7 +15,7 @@
  * Fix problem of expoential delete calls from Jacks delete (#1364)
  * Allow SSH to work on ExoSM-allocated resources (#1397)
  * Fix omni_invocation parsing to mark an error/failed if the aggregate 
-   returns "Error" in return text but not in code (#1406).
+   returns "Error" in return text but not in code (#1134, #1406).
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,
