@@ -4,13 +4,19 @@
 
 = GENI Portal Release Notes =
 
-== 2.35 ==
- * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables (1.10.7) (#1327)
-
 == 2.34 ==
- * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
+ * Fix omni_invocation parsing to mark an error/failed if the aggregate
+   returns "Error" in return text but not in code (#1134, #1406).
+ * Clear RSpec selector (paste, file, url, menu) when Jacks delete all or
+   other jacks topology changes are made (#1246)
+ * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables
+   (1.10.7) (#1327)
+ * Warn and disable "reserve resources" if RSpec is bound to unknown AM (#1346)
+ * Fix problem of expoential delete calls from Jacks delete (#1364)
+ * Fix get_urgency_color bug, now properly computes time interval for color (#1387)
  * Set max width of map to avoid 0,0 centering issue (#1390)
  * Make welcome page responsive with screen width, scale properly on mobile
+ * Allow SSH to work on ExoSM-allocated resources (#1397)
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,

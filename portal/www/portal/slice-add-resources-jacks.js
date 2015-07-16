@@ -24,6 +24,7 @@
 /* do things when RSpec is uploaded by user (i.e. not chosen from list) */
 function fileupload_onchange()
 {
+    $('#loading_rspec').val("1");
     var user_rspec_file_input = document.getElementById("file_select");
     var user_rspec_file = user_rspec_file_input.files[0];
     validate_rspec_file(user_rspec_file, true, handle_validation_results);
@@ -216,6 +217,7 @@ function am_onchange()
 /* do things when RSpec is chosen from list (i.e. not uploaded) */
 function rspec_onchange()
 {
+    $('#loading_rspec').val("1");
     var rspec_opt = $('#rspec_select').val();
 
     //    console.log("IN RSPEC_ON_CHANGE");
@@ -356,8 +358,29 @@ function jacks_modified_topology_callback(data)
 
     //    console.log("MOD = " + data);
     rspec = data.rspec;
+    current_rspec = $('#current_rspec_text').val();
+    // Are we in the middle of loading an RSpec from editor?
+    loading_rspec = $('#loading_rspec').val(); 
 
+    // Strip all newlines from rspec. Jacks may transform original rspec newlines.
+    rspec = rspec.replace(/\r?\n|\r/g, '');
+    current_rspec = current_rspec.replace(/\r?\n|\r/g, '');
+
+
+    //    console.log("JMTC NODES = " + data.nodes.length + " LINKS = " + data.links.length + " SITES = " + data.sites.length + " RSPEC = " + rspec.length + " CR = " + current_rspec.length + " LOADING = " + loading_rspec + " RST = " + rspec.trim().length + " CST = " + current_rspec.trim().length + " SAME = " + (rspec == current_rspec));
+
+
+    // Clear out slice-add-resources menus when 
+    // action on jacks (delete all, adding/removing node or link)
+    // makes displayed file/RSpec/URL/text inconsistent with Jacks topology
+    if (loading_rspec != "1" && (rspec != current_rspec)) {
+	clear_other_inputs("");
+    }
+
+    $('#loading_rspec').val('0');
     $('#current_rspec_text').val(rspec);
+
+
 
     // id, client_id, aggregate_id, site_name
     nodes = data.nodes;
@@ -450,6 +473,7 @@ function do_show_editor_elements()
 function grab_paste_onchange()
 {
     // console.log("Grabbing paste");
+    $('#loading_rspec').val("1");
     var rspec = $('#paste_select').val();
     validate_rspec_file(rspec, false, handle_validation_results);
     clear_other_inputs('#paste_select');
@@ -458,6 +482,7 @@ function grab_paste_onchange()
 function urlupload_onchange()
 {
     // console.log("URLUPLOAD");
+    $('#loading_rspec').val("1");
     var url = $('#url_select').val().trim();
     $.get("upload-file.php", 
 	  {url : url}, 

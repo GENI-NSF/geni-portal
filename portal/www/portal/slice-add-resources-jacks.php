@@ -190,6 +190,7 @@ $( document ).ready(function() {
 <?php
 print '<input type="hidden" name="slice_id" value="' . $slice_id . '"/>';
 print '<input type="hidden" name="current_rspec_text" id="current_rspec_text" value="" />';
+print '<input type="hidden" name="loading_rspec" id="loading_rspec" value="0" />';
 
 // by default, assume RSpec is not bound or stitchable (0), but if a bound or
 // stitchable RSpec is selected, change this value (to 1) via slice-add-resources-jacks.js
