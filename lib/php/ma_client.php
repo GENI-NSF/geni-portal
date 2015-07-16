@@ -84,6 +84,13 @@ function remove_member_attribute($ma_url, $signer, $member_id, $name)
   return $results;  // probably ignored
 }
 
+function disable_user($ma_url, $signer, $member_urn) 
+{
+  $client = XMLRPCClient::get_client($ma_url, $signer);
+  $results = $client->enable_user($member_urn, false, $client->creds(), $client->options());
+  return $results;
+}
+
 // Get list of all member_ids in repository
 function get_member_ids($ma_url, $signer)
 {

@@ -221,7 +221,6 @@ if (is_null($certificate)) {
 include('kmheader.php');
 include("tool-showmessage.php");
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
 </script>
 <script src="<?php echo $auth_svc_js;?>">
 </script>
