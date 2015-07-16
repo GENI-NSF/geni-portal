@@ -425,7 +425,7 @@ function get_projects_for_member($sa_url, $signer, $member_id, $is_member)
   }
 
   $client = XMLRPCClient::get_client($sa_url, $signer);
-  $member_urn = $signer->urn;
+  $member_urn = get_member_urn(sa_to_ma_url($sa_url), $signer, $member_id);
   $rows = $client->lookup_projects_for_member($member_urn, $client->creds(),
                                               $client->options());
   if ($is_member) {    
