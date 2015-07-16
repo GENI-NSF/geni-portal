@@ -381,6 +381,9 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   echo "<li class='has-sub headerlink'>{$user->prettyName()}";
   echo '<ul class="submenu">';
   echo '<li><a href="' . relative_url("dologout.php") . '"; >Logout</li>';
+  if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
+    echo '<li><a href="admin.php">Admin</a></li>';
+  }
   echo '<li><a href="preferences.php">Preferences</a></li></ul></li>';
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
   echo '<ul class="submenu">';
