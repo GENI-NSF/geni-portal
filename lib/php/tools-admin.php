@@ -73,7 +73,7 @@ function disable_user(name, member_urn){
 
 function deny_request(button, requester_uuid, request_id){
   old_row = $($(button).parents()[2]).html();
-  $($(button).parents()[2]).html("<td colspan='5' style='text-align: center;'>" +
+  $($(button).parents()[2]).html("<td colspan='6' style='text-align: center;'>" +
                                  "<i>Request denied&nbsp;</i>" +
                                  "<button class='undo'>undo</button>" + 
                                  "<button class='confirmdeny'>hide</button></td>");

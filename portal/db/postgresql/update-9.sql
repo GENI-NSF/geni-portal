@@ -12,7 +12,7 @@ CREATE TYPE request_status AS ENUM ('open', 'approved', 'denied');
 CREATE TABLE lead_request (
   id SERIAL,
   requester_urn   VARCHAR NOT NULL,
-  requester_uuid  VARCHAR NOT NULL,
+  requester_uuid  UUID NOT NULL,
   requester_eppn  VARCHAR NOT NULL,
   request_ts timestamp NOT NULL default CURRENT_TIMESTAMP,
   approver VARCHAR default '',
