@@ -13,6 +13,7 @@
  * Allow SSH to work on ExoSM-allocated resources (#1397)
  * Fix omni_invocation parsing to mark an error/failed if the aggregate 
    returns "Error" in return text but not in code (#1406).
+ * Remove account and identity (and associated) tables, scripts and clients (#299)
 
 == 2.34 ==
  * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
