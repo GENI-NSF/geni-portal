@@ -10,7 +10,7 @@ alter table account_299 rename to account;
 alter table account_privilege_299 rename to account_privilege;
 alter table identity_attribute_299 rename to identity_attribute;
 alter table identity_299 rename to identity;
-alter table_299 requested_account rename to requested_account;
+alter table requested_account_299 rename to requested_account;
 alter table shib_attribute_299 rename to shib_attribute;
 alter table slice_299 rename to slice;
 

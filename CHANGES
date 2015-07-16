@@ -11,6 +11,7 @@
  * Warn and disable "reserve resources" if RSpec is bound to unknown AM (#1346)
  * Fix problem of expoential delete calls from Jacks delete (#1364)
  * Allow SSH to work on ExoSM-allocated resources (#1397)
+ * Remove account and identity (and associated) tables, scripts and clients (#299)
 
 == 2.34 ==
  * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
