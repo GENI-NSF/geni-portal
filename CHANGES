@@ -11,6 +11,7 @@
    other jacks topology changes are made (#1246)
  * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables
    (1.10.7) (#1327)
+   * Fix bug where new jQuery paths were undefined in tool-jfed (#1426)
  * Warn and disable "Reserve resources" if RSpec is bound to unknown AM (#1346)
  * Fix problem of exponential delete calls from Jacks delete (#1364)
  * Fix get_urgency_color bug, now properly computes time interval for color of resource expiration. (#1387)
