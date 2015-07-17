@@ -168,7 +168,7 @@ function show_projects(selection, sortby, selectionstring, sortbystring) {
   $("#projectarea .slicebox").hide();
   $(".noprojects").hide();
 
-  save_state("project", sortby, selectionstring, sortbystring);
+  save_state("project", selection, sortby, selectionstring, sortbystring);
 
   sort_slices(sortby, $("#projectascendingcheck").prop("checked"), "#projectarea");
   animate_boxes("#projectarea", selection);

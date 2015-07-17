@@ -7,7 +7,7 @@
 }
 
 .activesection {
-  font-weight: bold;
+  font-weight: bold !important;
 }
 
 #sectionswitch a {

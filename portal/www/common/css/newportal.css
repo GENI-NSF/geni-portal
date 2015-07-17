@@ -184,7 +184,8 @@ body {
   background-color: #42A5F5;
   animation: raise;
   animation-duration: .2s;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  font-weight: normal;  
 }
 
 #content td button, #content td input[type=submit], #content td input[type=button], #content td .button {
