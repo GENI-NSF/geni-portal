@@ -203,6 +203,7 @@ dist_svcwebimages_DATA = \
 	www/images/geni-header-left.png \
 	www/images/geni-header-right.png \
 	www/images/header-home.jpg \
+	www/images/marker.png \
 	www/images/openVZvm-noTxt-centered.svg \
 	www/images/openVZvm-noTxt.svg \
 	www/images/openVZvm.svg \

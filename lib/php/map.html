@@ -6,7 +6,13 @@
       aggdatalist = data.features;
       aggdict = {};
       aggdatalist.forEach(function(aggregate){
-        aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0], aggregate.properties.am];
+        if(aggdict[aggregate.properties.am]) {
+          aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              aggregate.properties.am, aggdict[aggregate.properties.am][3] + 1 ];
+        } else {
+          aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              aggregate.properties.am, 1];
+        }
       });
       for (agg in aggdict) {
         aggarray.push(aggdict[agg]);
@@ -21,12 +27,26 @@
     var infowindow = new google.maps.InfoWindow(); 
 
     for (i in aggarray){
-      var myLatlng = new google.maps.LatLng(aggarray[i][0], aggarray[i][1]);
+      lat = aggarray[i][0];
+      lng = aggarray[i][1];
+      aggname = aggarray[i][2];
+      numresources = aggarray[i][3];
+      var myLatlng = new google.maps.LatLng(lat, lng);
+
+      var pinIcon = new google.maps.MarkerImage(
+          "/images/marker.png",
+          null, /* size is determined at runtime */
+          null, /* origin is 0,0 */
+          null, /* anchor is bottom center of the scaled image */
+          new google.maps.Size(20 + Math.min(numresources / 5.0, 20), 32.33 + Math.min(numresources / 3.125, 32.33))
+      );
+
       var marker = new google.maps.Marker({
         position: myLatlng,
         map: map,
-        title: aggarray[i][2]
+        title:  aggname + '<br>' + numresources + " resources at this site"
       });
+      marker.setIcon(pinIcon);
 
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent("<span style='color:black;'>" + this.title + "</span>");
