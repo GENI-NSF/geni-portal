@@ -185,8 +185,7 @@ function show_slices(selection, sortby, selectionstring, sortbystring) {
   $("#slicearea .slicebox").hide();
   $(".noslices").remove();
   $(".projectinfo").hide();
-
-  save_state("slices", sortby, selectionstring, sortbystring);
+  save_state("slice", selection, sortby, selectionstring, sortbystring);
 
   if (is_category(selection)) {
     project_name = "";
