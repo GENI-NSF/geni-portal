@@ -58,7 +58,8 @@ END;
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
 			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
 			<li><a href='#tools'>Tools</a></li>
-			<li style="border-right: none"><a href='#outstandingrequests'>Outstanding Requests</a></li>
+			<li><a href='#outstandingrequests'>Outstanding Requests</a></li>
+      <li style="border-right: none"><a href='#preferences'>Portal Preferences</a></li>
 		</ul>
   </div>
 		
@@ -532,4 +533,19 @@ echo "</div>";
   echo "</div>";
 
 ?>
+<script type="text/javascript">
+  function save_preferences(user_urn) {
+    params = {user_urn: user_urn, show_map: $('#showmapcheck').prop("checked")};
+    $.post("do-update-user-preferences", params, function(data){
+      alert(data);
+    });
+  }
+</script>
+
+<div id='#preferences'>
+  <p>Set you</p>
+  <input id='showmapcheck' type='checkbox' value='showmap'/>Show map?<br>
+  <?php echo "<button onclick='save_preferences(\"{$user->urn()}\")'>Save those prefs</button>"; ?>
+</div>
+
 <?php include "tabs.js"; ?>
