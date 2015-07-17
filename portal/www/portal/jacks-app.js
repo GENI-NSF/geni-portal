@@ -103,6 +103,7 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	// size: { x: 1400, y: 350},
 	size: 'auto',
 	canvasOptions : {aggregates: aggregate_info},
+	isManifest : true,
         show: {
             menu: true,
             rspec: true,
