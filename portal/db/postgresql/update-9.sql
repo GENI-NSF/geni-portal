@@ -7,6 +7,8 @@
 
 DROP TABLE IF EXISTS lead_request;
 
+DROP TYPE IF EXISTS request_status;
+
 CREATE TYPE request_status AS ENUM ('open', 'approved', 'denied');
 
 CREATE TABLE lead_request (
