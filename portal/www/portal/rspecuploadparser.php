@@ -26,6 +26,9 @@ require_once("user.php");
 require_once 'geni_syslog.php';
 require_once 'tool-rspec-parse.php';
 
+require_once("sr_client.php");
+require_once("sr_constants.php");
+
 /*
     rspecuploadparser.php
     
@@ -60,6 +63,34 @@ require_once 'tool-rspec-parse.php';
 // error_log("FILES = " . print_r($_FILES, true));
 // error_log("POST = " . print_r($_POST, true));
 // error_log("GET = " . print_r($_GET, true));
+
+$all_known_aggs = get_services_of_type(SR_SERVICE_TYPE::AGGREGATE_MANAGER);
+
+// Return true if aggregate URN is unknown in service registry
+function isKnownAggregate($agg) {
+  global $all_known_aggs;
+  $is_known = false;
+  foreach($all_known_aggs as $known_agg) {
+    $known_agg_urn = $known_agg[SR_TABLE_FIELDNAME::SERVICE_URN];
+    if ($known_agg_urn == $agg) {
+      $is_known = true;
+      break;
+    }
+  }
+  return $is_known;
+}
+
+// Return list of aggregate URNs from given list 
+// that are unknown in service registry
+function checkForUnknownAggregates($aggs) {
+  $unknown_aggs = array();
+  foreach($aggs as $agg) {
+    if(!isKnownAggregate($agg)) {
+      $unknown_aggs[] = $agg;
+    }
+  }
+  return $unknown_aggs;
+}
 
 // defaults
 $results = array();
@@ -117,7 +148,20 @@ if (array_key_exists('user_rspec_file', $_FILES)) {
 	      $results['ams'] = $parse_results[3];
 	      $results['partially_bound'] = $parse_results[4];
 
-	      if($results['partially_bound']) {
+	      // Check for case wherein the rspec is bound to unknown aggregate
+	      $bound_aggregates = $results['ams'];
+	      $unknown_aggregates = checkForUnknownAggregates($bound_aggregates);
+	      if(count($unknown_aggregates) > 0){
+		$results['message'] = 'This RSpec is <b>bound to unknown aggregates: </b><i>';
+		foreach($unknown_aggregates as $unknown_aggregate) {
+		  $results['message'] .= $unknown_aggregate . " ";
+		}
+		$results['message'] .= "</i>";
+		$results['bound'] = False;
+		$results['partially_bound'] = 
+		  (count($unknown_aggregates) == count($bound_aggregates));
+	      }
+	      else if($results['partially_bound']) {
 		$results['message'] .= " and <b>partially bound</b>";
 	      }
 	      else if($results['stitch']) {
