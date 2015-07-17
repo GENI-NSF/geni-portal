@@ -26,6 +26,7 @@
      slice, slice lead, its project, which aggregates it has resources at, and its members.
    * Addresses (#273, #522, #404, #731, #964, #1059)
    * Fix portal/update-9.sql to drop the new type first, include changes in schema.sql (#1420)
+   * On duplicate lead request, clarify text to note profile was updated. (#1422)
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,

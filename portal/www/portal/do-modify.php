@@ -131,8 +131,9 @@ if (check_duplicate_request($user->urn())) {
   include("header.php");
   show_header('GENI Portal: Profile', $TAB_PROFILE);
   include("tool-breadcrumbs.php");
-  print "<p>You already have one outstanding request. You should hear from us with 3-4 business days of your original request</p>";
-  print "<p>Email <a href='mailto:help@geni.net'>GENI Help</a> if you have questions</p>";
+  print "<p>Your profile has been updated.</p>";
+  print "<p>You already have one outstanding request. You should hear from us within 3-4 business days of your original request.</p>";
+  print "<p>Email <a href='mailto:portal-help@geni.net'>GENI Portal Help</a> if you have questions.</p>";
   include("footer.php");
   exit();
 }
