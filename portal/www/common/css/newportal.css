@@ -1,14 +1,28 @@
+/*
+ *  CSS Style Sheet for GENI Portal
+ * 
+ *  Color scheme:
+ *    #FB8C00 - "official" GENI orange
+ * 
+ *    #616161 - dark gray
+ *                  code background
+ *                  navigation bar background
+ *    #BBDEFB - baby blue
+ *                  page background
+ *    #64B5F6 - deep blue
+ *                  buttons and accents
+ *  Fonts:
+ *    Open Sans - Everywhere except monospace
+ *    Droid Sans Mono - monospaced text 
+ */
+
 body {
   background-color: #BBDEFB;
   margin: 0px;
   font-family: 'Open Sans', sans-serif;
 }
 
-@keyframes raise {
-    from {box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);}
-    to {box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);}
-}
-
+/* General utility classes */
 .floatright {
   float: right;
 }
@@ -17,6 +31,14 @@ body {
   float: left;
 }
 
+.expirationicon {
+  height: 16px;
+  width: 16px;
+  vertical-align: middle;
+  margin-left: 5px; 
+}
+
+/* Reference classes for depth effect */ 
 .shadow1 {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
@@ -30,6 +52,7 @@ body {
 }
 
 /* HEADER */
+
 #dashboardheader {
   margin-bottom: 20px;
   vertical-align: middle;
@@ -74,8 +97,7 @@ body {
   color: #303030;
 }
 
-
-/* CONTENT CONTAINER */
+/* MAIN CONTENT */
 
 #content-outer {
   border-radius: 3px;
@@ -95,31 +117,23 @@ body {
   font-weight: normal;
 }
 
-#content h1, h2, h3, h4, h5, h6, h7 {
-  font-weight: bold;
-  color: #303030 !important;
+#content h1, h2, h3, h4, h5, h6 {
+  color: #303030;
 }
 
 #content h1 {
   font-size: 2em;
-  margin-top: 30px;
-  margin-bottom: 25px;
-  margin-left: 0px;
+  margin: 25px auto;
 }
 
 #content h2 {
   font-size: 1.4em;
-  margin-top: 20px;
-  margin-bottom: 15px;
-  padding-bottom: 7px;
+  margin-top: 15px auto;
 }
 
-#content h3, h4, h5, h6, h7 {
+#content h3, h4, h5, h6 {
   font-size: 1.1em;
-  margin-top: 15px;
-  margin-bottom: 10px;
-  margin-left: 20px;
-  padding-bottom: 4px;
+  margin: 15px;
 }
 
 /* Blocks of code */
@@ -138,14 +152,20 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
-/* Inline code */
 #content code, tt {
   font-family: 'Droid Sans Mono', monospace;
   font-weight: normal;
 }
 
 /* Buttons */
-#content button, input[type=submit], input[type=button], .button {
+
+/* CSS3 animation for nice effect when hovering over buttons, etc */
+@keyframes raise {
+    from {box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);}
+    to {box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);}
+}
+
+#content button, #content input[type=submit], #content input[type=button], #content .button {
   padding: 5px 10px;
   border: none;
   background-color: #64B5F6;
@@ -155,6 +175,8 @@ body {
   cursor: pointer;
   margin: 2px;
   vertical-align: middle;
+  text-decoration: none;
+  font-weight: normal;
   box-shadow: 0 2px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.24);
 }
 
@@ -185,24 +207,25 @@ body {
   cursor: default;
 }
 
-button:focus {
-  outline:0;
+#content button:focus {
+  outline: none;
 }
 
-button b {
+#content button b {
   font-weight: normal !important;
 }
+
 /* Links */
 #content a {
-  color: #FB8C00;
-  text-decoration:none;
-  border-bottom: 1px #303030;
+  color: #303030;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 #content a:hover {
   background-color: #E5E5E5;
-  color: #FB8C00;
-  text-decoration:none;
+  color: #303030;
+  font-weight: bold;
 }
 
 /* Tables */
@@ -282,7 +305,7 @@ ul {
   border-bottom: 0px;
 }
 
-/* TABS CONTAINER */
+/* TABS (i.e. those in us on Profile & Admin pages) */
 
 #tablist {
   margin-left: 0px;
@@ -310,8 +333,7 @@ ul {
   list-style:none;
   display:inline;
   margin-left: 0px;
-  padding-left:10px;
-  padding-right:10px;
+  padding: 0px 10px;
   border-right: 2px solid white;
 }
 
@@ -333,17 +355,8 @@ ul {
   border-bottom: none;
 }
 
-/* Use this if scrolling is needed in tabbed content */
-.tabContent {
-  /*height:900px;
-  overflow:auto;
-  padding:0px;
-  margin:0px;*/
-}
 
-/*
-  MAP CONTAINERS
-*/
+/* MAPS */
 
 #map1 {
   color: #ffffff;
@@ -417,22 +430,17 @@ ul {
 }
 
 #OpenLayers_Control_Attribution_7 a {
-      color: #616161;
+  color: #616161;
 }
 
-/*
-  FOOTER CONTAINER
-*/
+/* FOOTER */
 
 #footer {
   width: 92%;
   max-width: 1400px;
   min-width: 800px;
   padding: 15px 0px;
-  border-left: 5px solid #616161;
-  border-right: 3px solid #616161;
   margin: 30px auto 30px auto;
-  border-top: 5px solid #616161;
   font-weight: normal;
   background-color: #616161;
   color: #ffffff;
@@ -459,7 +467,6 @@ ul {
   text-align: right;
   width: 100%;
   font-size: 0.8em;
-  /*border-right: 2px solid #ffffff;*/
   padding-right: 15px;
 }
 
@@ -467,7 +474,7 @@ ul {
   display: none;
 }
 
-/* WELCOME PAGE CONTAINER */
+/* WELCOME PAGE */
 
 #welcome {
   background-color: #FFFFFF;  
@@ -495,27 +502,6 @@ ul {
   font-weight: normal;
   line-height: 1.4em;
   color: #616161;
-}
-
-#welcome-right h1, h2 {
-  font-weight: bold;
-  color: #FB8C00;
-}
-
-#welcome-right h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #FB8C00;
-  padding-bottom: 15px;
-}
-
-#welcome-right h2 {
-  font-size: 1.4em;
-  margin-top: 20px;
-  margin-bottom: 15px;
-  margin-right: 20px;
-  border-bottom: 1px solid #FB8C00;
-  padding-bottom: 7px;
 }
 
 #welcome-right b {
@@ -668,10 +654,11 @@ ul {
   padding: 10px;
 }
 
-.starter .done a{
+.starter .done a {
   color: green;
 }
-.starter .notdone a{
+
+.starter .notdone a {
   color: red;
 }
 
@@ -768,12 +755,35 @@ table .notapply {
   font-weight: normal !important;
 }
 
+#resourcemap {
+  margin: 0;
+  padding: 0;
+  max-width: 1000px;
+}
+
+#resourcemap td {
+  margin: 0;
+  padding: 0;
+}
+
+#resourcemap tr {
+  margin: 0;
+  padding: 0;
+}
+
+#maintenance_alert {
+  border-radius: 0px;
+  margin: 0px !important;
+  margin-bottom: -20px !important;
+  border-right: 1px solid #E5E5E5; 
+}
+
 /* for IE browsers that want to put a border around linked images */
 img {
   border-style: none;
 }
 
-/* datatables.net */
+/* Datatables styling */
 .dataTables_filter, .dataTables_info {
   font-size: 1em;
   margin-top: 10px;
@@ -865,34 +875,4 @@ img {
 /* For Jacks RSpec display instead of white-on-white */
 .jacks #leftNav pre {
    color: black;
-}
-
-#resourcemap {
-  margin: 0;
-  padding: 0;
-  max-width: 1000px;
-}
-
-#resourcemap td {
-  margin: 0;
-  padding: 0;
-}
-
-#resourcemap tr {
-  margin: 0;
-  padding: 0;
-}
-
-#maintenance_alert {
-  border-radius: 0px;
-  margin: 0px !important;
-  margin-bottom: -20px !important;
-  border-right: 1px solid #E5E5E5; 
-}
-
-.expirationicon {
-  height: 16px;
-  width: 16px;
-  vertical-align: middle;
-  margin-left: 5px; 
 }

@@ -1,13 +1,9 @@
-/* --------------------------------------------*/
-/* ----------- MOBILE DASHBOARD----------------*/
-/* --------------------------------------------*/
+/*  CSS Style Sheet for GENI Dashboard */
 
 .dashtext {
-  color: #303030 !important;
-  text-shadow: none !important;
   display: inline;
-  font-weight: normal;
-  border: none !important;
+  text-decoration: none !important;
+  font-weight: normal !important;
 }
 
 .activesection {
@@ -24,14 +20,6 @@
   background-color: #f9f9f9 !important; 
 }
 
-.floatright {
-  float: right;
-}
-
-.floatleft {
-  float: left;
-}
-
 #slicearea {
   overflow-x: hidden;
 }
@@ -40,6 +28,7 @@
   overflow-x: hidden;
 }
 
+/* Slicebox "fly in" animations */
 .slicebox {
   -webkit-transition-duration: 300ms;
   transition-duration: 300ms;
@@ -52,7 +41,6 @@
   -webkit-transition-timing-function: cubic-bezier(.55,0,.1,1);
   transition-timing-function: cubic-bezier(.55,0,.1,1);
 }
-
 
 .slicebox {
   width: 275px;
@@ -266,9 +254,7 @@
   display: none;
 }
 
-/* --------------------------------------------*/
-/* ----------- MOBILE DASHBOARD----------------*/
-/* --------------------------------------------*/
+/* ----------- MOBILE DASHBOARD ----------------*/
 
 @media (max-width: 600px) {
   .mobilebreak {
