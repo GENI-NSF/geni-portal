@@ -66,6 +66,10 @@ require_once('ma_constants.php');
 // But check for that 2nd arg being null - if so, avoid printing the button at all
 // See tool-slices for sample usage
 function get_jfed_strs($user) {
+  global $portal_jquery_url;
+  global $portal_jqueryui_css_url;
+  global $portal_jqueryui_js_url;
+
   $jfed_button_start = null;
   $jfed_script_text = '';
   $jfed_button_part2 = '';
