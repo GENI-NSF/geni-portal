@@ -372,7 +372,7 @@ JacksApp.prototype.lookup_am_id = function (node_key) {
 		    nd.sourceUurn in that.urn2amId) 
 		    {
 			am_id = that.urn2amId[nd.sourceUrn];
-			return;
+			return false;
 		}
 	    }
 	});
@@ -384,7 +384,7 @@ JacksApp.prototype.lookup_am_id = function (node_key) {
 	    if(nd.id == node_key) {
 		var urn = nd.aggregate_id;
 		am_id = that.urn2amId[urn];
-		return;
+		return false;
 	    }
 	});
     return am_id;
@@ -398,7 +398,7 @@ JacksApp.prototype.lookup_topology_node = function(selected_node) {
     $.each(this.currentTopology.nodes, function(ni, nd) {
 	    if(nd.id == selected_node.key) {
 		topo_node = nd;
-		return;
+		return false;
 	    }
 	});
     return topo_node;
@@ -810,7 +810,7 @@ JacksApp.prototype.onEpManifest = function(event) {
 	// Paint all the current manifests, first change then subsequent adds
 	var first_manifest = true;
 	$.each(this.currentManifestByAm, function(am_id, manifest) {
-	    if(that.isNullManifest(manifest)) return;
+	    if(that.isNullManifest(manifest)) return false;
 	    var node_am_urn = that.allAms[am_id].urn;
 	    if (first_manifest) {
 		that.jacksInput.trigger('change-topology', 
@@ -1037,12 +1037,12 @@ JacksApp.prototype.hasLoginInfo = function(am_id)
     var agg_urn = this.allAms[am_id].urn;
     var has_login_info = false;
     $.each(this.loginInfo, function(username) {
-	    if(has_login_info) return;
+	    if(has_login_info) return false;
 	    var client_host_keys = Object.keys(that.loginInfo[username]);
 	    $.each(client_host_keys, function(i, client_host_key) {
 		    if (client_host_key.includes(agg_urn)) {
 			has_login_info = true;
-			return;
+			return false;
 		    }
 		});
 	});
