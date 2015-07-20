@@ -33,6 +33,7 @@
  * Fix problem with jacks-app talking to racks rather than ExoSM
    for ExoSM-allocated resources (#1401).
  * Make ready resources green in Safari (#1436)
+ * Limit jacks app login polling to max time of 5 minutes (#1439)
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,
