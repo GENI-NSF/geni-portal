@@ -24,7 +24,12 @@
 // dashboard.js: enable interactivity and animations on the dashboard page
 
 $(document).ready(function(){
-  return_to_prev_state();
+  if($("#slicefilterswitch").length > 0){ // they have some projects or slices
+    return_to_prev_state();
+  } else { // they're a brand new user
+    $('#loglengthselector .selectorshown').html("day");
+    get_logs("24");
+  }
 
   // Make the toggle for the projects | slices work
   $("#sectionswitch a").click(function() {

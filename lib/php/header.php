@@ -380,7 +380,7 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
   echo "<li class='has-sub headerlink'>{$user->prettyName()}";
   echo '<ul class="submenu">';
-  echo '<li><a href="' . relative_url("dologout.php") . '"; >Logout</li>';
+  echo '<li><a href="' . relative_url("dologout.php") . '"; >Logout</a></li>';
   if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
     echo '<li><a href="admin.php">Admin</a></li>';
   }

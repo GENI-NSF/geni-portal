@@ -126,15 +126,15 @@ if (! $user->portalIsAuthorized()) {
         print "Note that your account is not a 'Project Lead' account, meaning you must join a project created by someone else, ";
         print "before you can create slices or use GENI resources.<br/><br/>";
         print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
-        print " See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>\n";
+        print " See the <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>Glossary</a>.</p>\n";
         print "<p class='warn'>";
         print "You are not a member of any projects. Please join an
            existing Project, ask someone to create a Project for you, or ask
            to be a Project Lead.</p>";
       }
-      print "<p><button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>\n";
+      print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>\n";
       print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>\n";
-      print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button></p>\n";
+      // print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button>\n";
     }
   } else { 
     // You have some projects or slices 
@@ -200,9 +200,9 @@ if (! $user->portalIsAuthorized()) {
       print "<a class='button' href='edit-project.php'>Create New Project</a>";
       print "<a class='button' href='join-project.php'>Join a Project</a></div>";
     } else {
-      print "<p><a href='join-project.php'><b>Join a Project</b></a>";
-      print "<a href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a>";
-      print "<a href='window.location='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></p>";
+      print "<a class='button' href='join-project.php'><b>Join a Project</b></a>";
+      print "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a>";
+      print "<a class='button' href='window.location='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
     }
 
 
