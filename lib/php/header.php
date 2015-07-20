@@ -278,7 +278,7 @@ function show_old_header($title, $active_tab = '', $load_user=1)
     echo '</div>';
     
   }
-    echo '<img id="header-img-left" src="../../images/geni-header-left.png"/>';
+    echo '<img id="header-img-left" src="../../images/geni-header-left.png" alt="GENI logo"/>';
   echo '</div>';
   show_tab_bar($active_tab, $load_user);
   if($has_maintenance_alert) {
@@ -375,24 +375,24 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   echo '<div id="dashboardheader">';
   echo '<img id="globe" src="/images/geni_globe.png" alt="Geni Logo" style="height:45px; margin-left: 20px; float: left;"/>';
   echo '<img id="hamburger" src="/images/menu.png" alt="optionsicon" style="height:20px; width: 20px; padding:15px; float: left;"/>';
-  echo '<h2 class="dashtext" style="float: left; line-height: 50px; text-align: center; margin: 0 20px; display: inline; height: 50px; cursor: pointer;" \
+  echo '<h2 class="dashtext" style="float: left; line-height: 50px; text-align: center; margin: 0 20px; display: inline; height: 50px; cursor: pointer;" 
           onclick="window.location=\'dashboard.php\'">GENI Portal</h2>';
   echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
   echo "<li class='has-sub headerlink'>{$user->prettyName()}";
   echo '<ul class="submenu">';
-  echo '<li><a href="' . relative_url("dologout.php") . '"; >Logout</a></li>';
+  echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
   if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
     echo '<li><a href="admin.php">Admin</a></li>';
   }
   echo '<li><a href="preferences.php">Preferences</a></li></ul></li>';
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
   echo '<ul class="submenu">';
-  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki <img class="expirationicon" src="/images/external.png" /></a></li>';
-  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations <img class="expirationicon" src="/images/external.png" /> </a></li>';
-  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary <img class="expirationicon" src="/images/external.png" /></a></li>';
+  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki <img class="expirationicon" src="/images/external.png" alt="external link to GENI Wiki" /></a></li>';
+  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations <img class="expirationicon" src="/images/external.png" alt="external link to GENI Operations" /> </a></li>';
+  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary <img class="expirationicon" src="/images/external.png" alt="external link to GENI Glossary"/></a></li>';
   echo '<li><a href="/login-help.php">Login Help</a></li>';
-  echo '<li><a href="mailto:portal-help@geni.net">Portal Help <img class="expirationicon" src="/images/email.png" /></a></li>';
-  echo '<li><a href="mailto:help@geni.net">GENI Help <img class="expirationicon" src="/images/email.png"/></a></li></li>';
+  echo '<li><a href="mailto:portal-help@geni.net">Portal Help <img class="expirationicon" src="/images/email.png" alt="email link" /></a></li>';
+  echo '<li><a href="mailto:help@geni.net">GENI Help <img class="expirationicon" src="/images/email.png" alt="email link"/></a></li>';
   echo '</ul></li>';
   echo '<li class="headerlink has-sub">Tools';
   echo '<ul class="submenu">';
@@ -405,7 +405,7 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   $tool_links = array("GENI Desktop" => $gemini_url, "LabWiki" => $labwiki_url, "GENI Wireless" => $wimax_url,
                       "CloudLab" => $cloudlab_url, "SAVI" => $savi_url, "GEE" => $gee_url);
   foreach ($tool_links as $name => $url) {
-    $img = count(explode($name , "/")) > 0 ? "<img class='expirationicon' src='/images/external.png'/>" : "";
+    $img = count(explode($name , "/")) > 0 ? "<img class='expirationicon' src='/images/external.png' alt='external link to $name' />" : "";
     print "<li><a href='$url' target='_blank'>$name $img</a></li>";
   }
   echo '</ul></li>';

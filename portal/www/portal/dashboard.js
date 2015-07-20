@@ -50,50 +50,50 @@ $(document).ready(function(){
   $(".selector > .submenu > li").click(function(){
     if (!$(this).hasClass("selectorlabel")){
       $(this).parents(".selector").children(".selectorshown").html($(this).html());
-      $(this).parents(".selector").children(".selectorshown").attr("value", $(this).attr("value"));
+      $(this).parents(".selector").children(".selectorshown").attr("data-value", $(this).attr("data-value"));
     }
   });
 
   // Make slices reappear when a filter or sort is changed
   $("#slicefilterswitch .submenu li").click(function(){
     if (!$(this).hasClass("selectorlabel")){
-      show_slices($("#slicefilterswitch .selectorshown").attr("value"), $("#slicesortby .selectorshown").attr("value"),
+      show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
                 $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());
     }
   });
 
   $("#slicesortby .submenu li").click(function(){
-    show_slices($("#slicefilterswitch .selectorshown").attr("value"), $("#slicesortby .selectorshown").attr("value"),
+    show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
                 $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());
   });
 
   $('#sliceascendingcheck').click(function() {
-    show_slices($("#slicefilterswitch .selectorshown").attr("value"), $("#slicesortby .selectorshown").attr("value"),
+    show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
                 $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());    
   });
 
   // Same idea for projects. TODO: Sorts
   $("#projectfilterswitch .submenu li").click(function(){
     if (!$(this).hasClass("selectorlabel")) {
-      show_projects($("#projectfilterswitch .selectorshown").attr("value"), $("#projectsortby .selectorshown").attr("value"),
+      show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
                 $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());
     }
   });
 
   $("#projectsortby .submenu li").click(function(){
-    show_projects($("#projectfilterswitch .selectorshown").attr("value"), $("#projectsortby .selectorshown").attr("value"),
+    show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
                 $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());
   });
 
   $('#projectascendingcheck').click(function() {
-    show_projects($("#projectfilterswitch .selectorshown").attr("value"), $("#projectsortby .selectorshown").attr("value"),
+    show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
                 $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());    
   });
 
   $('#loglength li').click(function() {
-    localStorage.loghours = $(this).val();
+    localStorage.loghours = $(this).attr("data-value");
     localStorage.loghoursstring = $(this).html();
-    get_logs($(this).val());
+    get_logs($(this).attr("data-value"));
   });
 
 });
@@ -110,40 +110,40 @@ function save_state(section, selection, sortby, selectionstring, sortbystring) {
 function return_to_prev_state() {
   if (localStorage.lastsliceselection && localStorage.lastsliceselectionval) {
     $("#slicefilterswitch .selectorshown").html(localStorage.lastsliceselection);
-    $("#slicefilterswitch .selectorshown").attr("value", localStorage.lastsliceselectionval);
+    $("#slicefilterswitch .selectorshown").attr("data-value", localStorage.lastsliceselectionval);
   } else {
     $("#slicefilterswitch .selectorshown").html($($("#slicefilterswitch .submenu li")[0]).html());
-    $("#slicefilterswitch .selectorshown").attr("value", $($("#slicefilterswitch .submenu li")[0]).attr("value"));
+    $("#slicefilterswitch .selectorshown").attr("data-value", $($("#slicefilterswitch .submenu li")[0]).attr("data-value"));
   }
 
   if (localStorage.lastslicesortby && localStorage.lastslicesortbyval) {
     $("#slicesortby .selectorshown").html(localStorage.lastslicesortby);
-    $("#slicesortby .selectorshown").attr("value", localStorage.lastslicesortbyval);
+    $("#slicesortby .selectorshown").attr("data-value", localStorage.lastslicesortbyval);
   } else {
     $("#slicesortby .selectorshown").html($($("#slicesortby .submenu li")[0]).html());
-    $("#slicesortby .selectorshown").attr("value", $($("#slicesortby .submenu li")[0]).attr("value"));
+    $("#slicesortby .selectorshown").attr("data-value", $($("#slicesortby .submenu li")[0]).attr("data-value"));
   }
 
   if (localStorage.lastprojectselection && localStorage.lastprojectselectionval) {
     $("#projectfilterswitch .selectorshown").html(localStorage.lastprojectselection);
-    $("#projectfilterswitch .selectorshown").attr("value", localStorage.lastprojectselectionval);
+    $("#projectfilterswitch .selectorshown").attr("data-value", localStorage.lastprojectselectionval);
   } else {
     $("#projectfilterswitch .selectorshown").html($($("#projectfilterswitch .submenu li")[0]).html());
-    $("#projectfilterswitch .selectorshown").attr("value", $($("#projectfilterswitch .submenu li")[0]).attr("value"));
+    $("#projectfilterswitch .selectorshown").attr("data-value", $($("#projectfilterswitch .submenu li")[0]).attr("data-value"));
   }
 
   if (localStorage.lastprojectsortby && localStorage.lastprojectsortbyval) {
     $("#projectsortby .selectorshown").html(localStorage.lastprojectsortby);
-    $("#projectsortby .selectorshown").attr("value", localStorage.lastprojectsortbyval);
+    $("#projectsortby .selectorshown").attr("data-value", localStorage.lastprojectsortbyval);
   } else {
     $("#projectsortby .selectorshown").html($($("#projectsortby .submenu li")[0]).html());
-    $("#projectsortby .selectorshown").attr("value", $($("#projectsortby .submenu li")[0]).attr("value"));
+    $("#projectsortby .selectorshown").attr("data-value", $($("#projectsortby .submenu li")[0]).attr("data-value"));
   }
 
-  show_slices($("#slicefilterswitch .selectorshown").attr("value"), $("#slicesortby .selectorshown").attr("value"),
+  show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
               $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());
 
-  show_projects($("#projectfilterswitch .selectorshown").attr("value"), $("#projectsortby .selectorshown").attr("value"),
+  show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
             $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());
 
   // Retrieve the last used amount of time for the logs or default to 24 hours
@@ -243,11 +243,11 @@ function sort_slices(attr, ascending, container) {
   numberical_attrs = ['sliceexp', 'resourceexp', 'resourcecount', 'projexp'];
   sorted_slices = $(container).children().sort(function(a, b) {
     if ($.inArray(attr, numberical_attrs) != -1) { // is it a numerical attribute, if so, don't lexically sort
-      vA = parseInt($(a).attr(attr));
-      vB = parseInt($(b).attr(attr));
+      vA = parseInt($(a).attr("data-" + attr));
+      vB = parseInt($(b).attr("data-" + attr));
     } else {
-      vA = $(a).attr(attr);
-      vB = $(b).attr(attr); 
+      vA = $(a).attr("data-" + attr);
+      vB = $(b).attr("data-" + attr); 
     }
     if(ascending) {
       return (vA < vB) ? -1 : (vA > vB) ? 1 : 0;

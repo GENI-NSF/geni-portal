@@ -145,7 +145,7 @@ if (! $user->portalIsAuthorized()) {
     // Start making the slice and project sections
     $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
     $project_options = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
-    $project_options .= "<span class='selectorshown'>Filters</span><ul class='submenu'><li value='-ALL-' class='selectorlabel'>Projects</li>";
+    $project_options .= "<span class='selectorshown'>Filters</span><ul class='submenu'><li data-value='-ALL-' class='selectorlabel'>Projects</li>";
     $project_info = "";
     $show_info = "";
     $project_boxes = "";
@@ -160,7 +160,7 @@ if (! $user->portalIsAuthorized()) {
         $lead_name = $lead_names[$lead_id];
         $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'>New slice</a>";
         $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
-        $project_options .= "<li value='{$project_name}'>$project_name</li>";
+        $project_options .= "<li data-value='{$project_name}'>$project_name</li>";
         $project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
         $project_info .= "Project lead: $lead_name | $create_slice_button $manage_project_button</div>";
         $show_info = "style='display:none;'";
@@ -173,9 +173,9 @@ if (! $user->portalIsAuthorized()) {
       }
     }
     $project_options .= "<li class='selectorlabel'>Categories</li>";
-    $project_options .= "<li value='-MY-'>Slices I lead</li>";
-    $project_options .= "<li value='-THEIR-'>Slices I don't lead</li>";
-    $project_options .= "<li value='-ALL-'>All slices</li>";
+    $project_options .= "<li data-value='-MY-'>Slices I lead</li>";
+    $project_options .= "<li data-value='-THEIR-'>Slices I don't lead</li>";
+    $project_options .= "<li data-value='-ALL-'>All slices</li>";
     $project_options .= "</ul></li></ul>";
 
     print "<div id='Projectsection' class='dashsection' style='display:none;'>";
@@ -183,17 +183,17 @@ if (! $user->portalIsAuthorized()) {
     print "<h4 class='dashtext'>Filter by:</h4><ul class='selectorcontainer'>";
     print "<li class='has-sub selector' style='float:none;' id='projectfilterswitch'>";
     print "<span class='selectorshown'>Filters</span><ul class='submenu'>";
-    print "<li value='-ALL-PROJECTS-'>All projects</li>";
-    print "<li value='-MY-PROJECTS-'>Projects I lead</li>";
-    print "<li value='-THEIR-PROJECTS-'>Projects I don't lead</li>";
+    print "<li data-value='-ALL-PROJECTS-'>All projects</li>";
+    print "<li data-value='-MY-PROJECTS-'>Projects I lead</li>";
+    print "<li data-value='-THEIR-PROJECTS-'>Projects I don't lead</li>";
     print "</ul></li></ul>";
 
     // project sorts
     print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4>";
     print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectsortby'>";
-    print "<span value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
-    print "<li value='projname'>Project name</li><li value='projexp'>Project expiration</li></ul></li></ul>";
-    print "<input type='checkbox' id='projectascendingcheck' value='ascending' checked>Sort ascending<br>";
+    print "<span data-value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
+    print "<li data-value='projname'>Project name</li><li data-value='projexp'>Project expiration</li></ul></li></ul>";
+    print "<input type='checkbox' id='projectascendingcheck' data-value='ascending' checked>Sort ascending<br>";
     
     print "<div style='margin: 20px; clear: both;'>";
     if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
@@ -215,9 +215,9 @@ if (! $user->portalIsAuthorized()) {
     print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicesortby'>";
     // Slice sorts
     print "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
-    print "<li value='slicename'>Slice name</li><li value='sliceexp'>Slice expiration</li>";
-    print "<li value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
-    print "<input type='checkbox' id='sliceascendingcheck' value='ascending' checked>Sort ascending<br></div>";
+    print "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
+    print "<li data-value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
+    print "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked>Sort ascending<br></div>";
     print $project_info;
 
     print "<div id='slicearea' style='clear:both;'>";
@@ -289,7 +289,7 @@ if (! $user->portalIsAuthorized()) {
 
   function make_slice_box($slice_name, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
                           $slice_exp, $resource_exp, $add_url, $remove_url) {
-    print "<div class='floatleft slicebox $whose_slice {$project_name}slices' slicename='$slice_name' sliceexp='$slice_exp' resourceexp='$resource_exp'>";
+    print "<div class='floatleft slicebox $whose_slice {$project_name}slices' data-slicename='$slice_name' data-sliceexp='$slice_exp' data-resourceexp='$resource_exp'>";
     print "<table>";
     $resource_exp_icon = "";
     if ($resource_count > 0){
@@ -314,7 +314,7 @@ if (! $user->portalIsAuthorized()) {
     print "<li onclick='window.location=\"$add_url\"'>Add resources</li>";
     print "<li onclick='window.location=\"$remove_url\"'>Remove resources</li></ul></li></ul></td></tr>";
     print "<tr><td colspan='2' style='width:200px;'>Lead: $lead_name</td>";
-    print "<tr><td style='width:200px;'>$slice_info</td><td style='vertical-align: middle; style='width:30px;'>$slice_exp_icon</td></tr>";
+    print "<tr><td style='width:200px;'>$slice_info</td><td style='vertical-align: middle; width:30px;'>$slice_exp_icon</td></tr>";
     print "<tr><td style='border-bottom:none; height:55px;'>$resource_info</td>";
     print "<td style='vertical-align: middle; border-bottom:none'>$resource_exp_icon</td></tr>";
     print "</table></div>";
@@ -328,7 +328,7 @@ if (! $user->portalIsAuthorized()) {
     }
 
     $box = '';
-    $box .= "<div class='floatleft slicebox $whose_proj' projname='$project_name' projexp='$exp_diff'>";
+    $box .= "<div class='floatleft slicebox $whose_proj' data-projname='$project_name' data-projexp='$exp_diff'>";
     $box .= "<table><tr class='slicetopbar'>";
     $box .= "<td class='slicetopbar' style='text-align: left;' onclick='window.location=\"project.php?project_id=$project_id\"'>$project_name</td>";
     $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'><ul><li class='has-sub'>Actions<ul class='submenu'>";
@@ -407,10 +407,10 @@ if (! $user->portalIsAuthorized()) {
 <ul class="selectorcontainer" id='loglengthselector'> 
   <li class='has-sub selector' style='float:none;'><span class='selectorshown'>day</span>
   <ul class='submenu' id='loglength'>
-    <li value="24">day</li>
-    <li value="48">2 days</li>
-    <li value="72">3 days</li>
-    <li value="168">week</li>
+    <li data-value="24">day</li>
+    <li data-value="48">2 days</li>
+    <li data-value="72">3 days</li>
+    <li data-value="168">week</li>
   </ul>
   </li>
 </ul>
