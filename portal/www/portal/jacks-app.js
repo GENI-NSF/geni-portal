@@ -369,24 +369,18 @@ JacksApp.prototype.lookup_am_id = function (node_key) {
     $.each(this.currentTopology.nodes, function(ni, nd) {
 	    if(nd.id == node_key) {
 		if (nd.sourceUrn != undefined && 
-		    nd.sourceUurn in that.urn2amId) 
+		    nd.sourceUrn in that.urn2amId) 
 		    {
-			am_id = that.urn2amId[nd.sourceUrn];
-			return false;
-		}
-	    }
-	});
-    if (am_id != null) return am_id;
-
-    // Old version: sourceUrn is not stored/returned by Jacks 
-    // prior to 7-20-2017
-    $.each(this.currentTopology.nodes, function(ni, nd) {
-	    if(nd.id == node_key) {
-		var urn = nd.aggregate_id;
+			var urn = nd.sourceUrn;
+		    } else 
+		    {
+			var urn = nd.aggregate_id;
+		    }
 		am_id = that.urn2amId[urn];
 		return false;
 	    }
 	});
+
     return am_id;
 }
 
