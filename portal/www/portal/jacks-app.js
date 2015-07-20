@@ -48,6 +48,13 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     // How long to wait before polling status again in milliseconds
     this.statusPollDelayMillis = 5000;
 
+    // Max time to poll for status/manifest before stopping.
+    // If no login info is available when this expires,
+    // no ssh info will be displayed. This avoids infinite
+    // looping when no login info will ever be available because
+    // no ssh keys were present when the request was made.
+    this.maxStatusPollSeconds = 300;
+
     this.jacks = jacks;
     this.jacks_editor = null;
     this.jacks_editor_visible = false;
@@ -450,6 +457,10 @@ JacksApp.prototype.getSliceManifests = function() {
     // manifests, but subsequent manfiests are added.
     this.first_manifest_pending=true;
 
+    // Poll for a limited amount of time, otherwise it can
+    // poll indefinitely if there is no login information.
+    var maxTime = Date.now() + this.maxStatusPollSeconds * 1000
+
     // Loop through each known AM and get the manifest.
     var that = this;
     $.each(sliceAms, function(i, am_id) {
@@ -461,7 +472,7 @@ JacksApp.prototype.getSliceManifests = function() {
                               am_id: am_id,
                               slice_id: that.sliceId,
                               callback: that.input,
-                              client_data: {}
+                              client_data: {maxTime: maxTime}
                             });
     });
 };
@@ -472,6 +483,10 @@ JacksApp.prototype.getSliceManifests = function() {
  * max_time is when to stop polling
  */
 JacksApp.prototype.getManifest = function(am_id, maxTime) {
+    var now = Date.now();
+    if (now > maxTime) {
+        return;
+    }
     this.updateStatus('Polling resource manifest from '
                       + this.amName(am_id) + '...');
     this.output.trigger(this.MANIFEST_EVENT_TYPE,
@@ -891,7 +906,9 @@ JacksApp.prototype.onEpManifest = function(event) {
     });
 
     // re-poll as necessary up to event.client_data.maxPollTime
-    var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    //var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    var maxPollTime = (event.client_data.maxTime
+                       || Date.now() + this.maxStatusPollSeconds * 1000);
     this.getStatus(am_id, maxPollTime);
 
 };
