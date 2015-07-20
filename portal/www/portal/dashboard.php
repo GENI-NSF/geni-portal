@@ -404,13 +404,13 @@ if (! $user->portalIsAuthorized()) {
 <h2 class="dashtext">Messages</h2><br>
 <div style='text-align: left;'>
 <h4 class='dashtext' style='margin-top: 20px !important;'>Showing logs for the last</h4>
-<ul class="selectorcontainer"> 
+<ul class="selectorcontainer" id='loglengthselector'> 
   <li class='has-sub selector' style='float:none;'><span class='selectorshown'>day</span>
   <ul class='submenu' id='loglength'>
-    <li value="24" onclick="getLogs(24);">day</li>
-    <li value="48" onclick="getLogs(48);">2 days</li>
-    <li value="72" onclick="getLogs(72);">3 days</li>
-    <li value="168" onclick="getLogs(168);">week</li>
+    <li value="24">day</li>
+    <li value="48">2 days</li>
+    <li value="72">3 days</li>
+    <li value="168">week</li>
   </ul>
   </li>
 </ul>

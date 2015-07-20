@@ -85,6 +85,12 @@ $(document).ready(function(){
                 $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());    
   });
 
+  $('#loglength li').click(function() {
+    localStorage.loghours = $(this).val();
+    localStorage.loghoursstring = $(this).html();
+    get_logs($(this).val());
+  });
+
 });
 
 function save_state(section, selection, sortby, selectionstring, sortbystring) {
@@ -136,10 +142,12 @@ function return_to_prev_state() {
             $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());
 
   // Retrieve the last used amount of time for the logs or default to 24 hours
-  if (localStorage.loghours) {
-    getLogs(localStorage.loghours);
+  if (localStorage.loghours && localStorage.loghoursstring) {
+    $('#loglengthselector .selectorshown').html(localStorage.loghoursstring);
+    get_logs(localStorage.loghours);
   } else {
-    getLogs("24");
+    $('#loglengthselector .selectorshown').html("day");
+    get_logs(24);
   }
 
   // Retrieve last used visited section on the dashboard
@@ -154,8 +162,7 @@ function return_to_prev_state() {
 }
 
 // Retrieve all the GENI logs for the user in the past hours hours
-function getLogs(hours){
-  localStorage['loghours'] = hours;
+function get_logs(hours){
   $.get("do-get-logs.php?hours="+hours, function(data) {
     $('#logtable').html(data);
   });
