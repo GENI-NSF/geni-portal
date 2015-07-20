@@ -25,7 +25,7 @@
     each result to contact user, disable user, or remove them from projects.
   * Make slice search tab allow for search by owner email or slice urn, with information about
     slice, slice lead, its project, which aggregates it has resources at, and its members.
-  * Addresses (#273, #522, #404, #731, #964, #1059)
+  * Addresses (#273, #404, #731, #964, #1059)
   * Fix `portal/update-9.sql` to drop the new type first. Include changes in `schema.sql` (#1420)
   * On duplicate lead request, clarify text to note profile was updated. (#1422)
   * Profile should not say you have no lead requests; it doesn't know. (#1425)
