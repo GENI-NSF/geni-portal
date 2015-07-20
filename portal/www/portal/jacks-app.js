@@ -881,14 +881,11 @@ JacksApp.prototype.onEpManifest = function(event) {
             var port = $(this).attr('port');
             var username = $(this).attr('username');
             var login_url = "ssh://" + username + "@" + hostname + ":" + port;
-            var client_host_key = client_id + ":" + component_manager_id;
+            var client_host_key = client_id + ":" + am_urn;
             if (!(username in that.loginInfo)) {
 		that.loginInfo[username] = [];
 	    }
-	    if (!(client_host_key in that.loginInfo[username])) {
-		that.loginInfo[username][client_host_key] = [];
-	    }
-	    that.loginInfo[username][client_host_key].push(login_url);
+	    that.loginInfo[username][client_host_key] = [login_url];
             debug(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });
@@ -912,7 +909,7 @@ JacksApp.prototype.onEpStatus = function(event) {
     var that = this;
     // We just go through all entries in currentStatusByAM
     $.each(this.currentStatusByAm, function (am_id, statusAndmaxTime) {
-       if (am_id != event.am_id) return; // Exit this inner function call
+       if (am_id != event.am_id) return false; // Exit this inner function call
        that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1],
 			    true);
 	});
@@ -1034,7 +1031,7 @@ JacksApp.prototype.hasLoginInfo = function(am_id)
 	    if(has_login_info) return false;
 	    var client_host_keys = Object.keys(that.loginInfo[username]);
 	    $.each(client_host_keys, function(i, client_host_key) {
-		    if (client_host_key.includes(agg_urn)) {
+            if (client_host_key.indexOf(agg_urn) > -1) {
 			has_login_info = true;
 			return false;
 		    }
