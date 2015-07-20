@@ -32,6 +32,7 @@
  * Add `isManifest` to Jacks app (#1419).
  * Fix problem with jacks-app talking to racks rather than ExoSM
    for ExoSM-allocated resources (#1401).
+ * Make ready resources green in Safari (#1436)
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,
