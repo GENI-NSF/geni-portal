@@ -11,6 +11,6 @@ CREATE TABLE user_preferences (
   id SERIAL,
   user_urn        VARCHAR NOT NULL,
   preference_name VARCHAR NOT NULL,
-  show_map        boolean,
+  preference_value VARCHAR NOT NULL,
   PRIMARY KEY (id)
 );

@@ -27,6 +27,8 @@ require_once("user.php");
 require_once("cert_utils.php");
 require_once("rq_client.php");
 require_once("settings.php");
+require_once("user-preferences.php");
+
 ?>
 
 <?php
@@ -534,18 +536,31 @@ echo "</div>";
 
 ?>
 <script type="text/javascript">
+  $(document).ready(function(){
+    $("#showmapcheck").change(function(){
+      $("#saveprefs").prop("disabled", false);
+    });
+  });
   function save_preferences(user_urn) {
     params = {user_urn: user_urn, show_map: $('#showmapcheck').prop("checked")};
     $.post("do-update-user-preferences", params, function(data){
       alert(data);
+      $("#saveprefs").prop("disabled", true);
     });
   }
 </script>
 
-<div id='#preferences'>
-  <p>Set you</p>
-  <input id='showmapcheck' type='checkbox' value='showmap'/>Show map?<br>
-  <?php echo "<button onclick='save_preferences(\"{$user->urn()}\")'>Save those prefs</button>"; ?>
-</div>
+<?php 
+echo "<div id='#preferences'>";
+echo "<h2>Portal preferences</h2>";
+$checked = '';
+if(get_preference($user->urn(), 'show_map') == "true"){
+  $checked = "checked";
+} 
+echo "Show map on homepage? <input id='showmapcheck' type='checkbox' value='showmap' $checked/><br><br>";
+echo "<button disabled onclick='save_preferences(\"{$user->urn()}\")' id='saveprefs'>Save preferences</button>";
+echo "</div>";
 
-<?php include "tabs.js"; ?>
+include "tabs.js"; 
+
+?>
