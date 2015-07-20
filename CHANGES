@@ -11,6 +11,7 @@
    other jacks topology changes are made (#1246)
  * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables
    (1.10.7) (#1327)
+  * Fix bug where new jQuery paths were undefined in tool-jfed (#1426)
  * Warn and disable "Reserve resources" if RSpec is bound to unknown AM (#1346)
  * Fix problem of exponential delete calls from Jacks delete (#1364)
  * Fix get_urgency_color bug, now properly computes time interval for color of resource expiration. (#1387)
@@ -18,13 +19,20 @@
  * Make welcome page responsive with screen width, scale properly on mobile
  * Allow SSH to work on ExoSM-allocated resources (#1397)
  * Add project lead request handling, user search, and slice search to the admin page.
-   * Make admin page show table of open lead requests with info about user and field for notes,
-     with buttons to approve or deny the request. Includes new DB table for the request tracking. 
-   * Make user search tab allow for searching by email, username, or lastname, with links on 
-     each result to contact user, disable user, or remove them from projects.
-   * Make slice search tab allow for search by owner email or slice urn, with information about
-     slice, slice lead, its project, which aggregates it has resources at, and its members.
-   * Addresses (#273, #522, #404, #731, #964, #1059)
+  * Make admin page show table of open lead requests with info about user and field for notes,
+    with buttons to approve or deny the request. Includes new DB table for the request tracking. 
+  * Make user search tab allow for searching by email, username, or lastname, with links on 
+    each result to contact user, disable user, or remove them from projects.
+  * Make slice search tab allow for search by owner email or slice urn, with information about
+    slice, slice lead, its project, which aggregates it has resources at, and its members.
+  * Addresses (#273, #404, #731, #964, #1059)
+  * Fix `portal/update-9.sql` to drop the new type first. Include changes in `schema.sql` (#1420)
+  * On duplicate lead request, clarify text to note profile was updated. (#1422)
+  * Profile should not say you have no lead requests; it doesn't know. (#1425)
+ * Add `isManifest` to Jacks app (#1419).
+ * Fix problem with jacks-app talking to racks rather than ExoSM
+   for ExoSM-allocated resources (#1401).
+ * Make ready resources green in Safari (#1436)
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,

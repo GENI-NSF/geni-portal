@@ -103,6 +103,7 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	// size: { x: 1400, y: 350},
 	size: 'auto',
 	canvasOptions : {aggregates: aggregate_info},
+	isManifest : true,
         show: {
             menu: true,
             rspec: true,
@@ -360,16 +361,41 @@ JacksApp.prototype.amName = function(am_id) {
   Return the AM ID assocaited with a node key (from the Jacks topology
  */
 JacksApp.prototype.lookup_am_id = function (node_key) {
+
     var that = this;
     var am_id = null;
+
+    // New version
     $.each(this.currentTopology.nodes, function(ni, nd) {
 	    if(nd.id == node_key) {
-		var urn = nd.aggregate_id;
+		if (nd.sourceUrn != undefined && 
+		    nd.sourceUrn in that.urn2amId) 
+		    {
+			var urn = nd.sourceUrn;
+		    } else 
+		    {
+			var urn = nd.aggregate_id;
+		    }
 		am_id = that.urn2amId[urn];
-		return;
+		return false;
 	    }
 	});
+
     return am_id;
+}
+
+/*
+ * Get a topology node from a selected node
+ */
+JacksApp.prototype.lookup_topology_node = function(selected_node) {
+    var topo_node = null;
+    $.each(this.currentTopology.nodes, function(ni, nd) {
+	    if(nd.id == selected_node.key) {
+		topo_node = nd;
+		return false;
+	    }
+	});
+    return topo_node;
 }
 
 /*
@@ -604,11 +630,12 @@ JacksApp.prototype.renewResources = function() {
 
     var msg = "Renew known slice resources until " + renewDate + "?";
 
-    // If any nodss selected, use only them
+    // If any nodes selected, use only them
     if(this.selectedNodes.length > 0) {
 	renewAMs = []
 	msg = "Renew slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
+
 		var am_id = that.lookup_am_id(selected_node.key);
 		renewAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
@@ -748,6 +775,7 @@ JacksApp.prototype.isNullManifest = function(manifest) {
 JacksApp.prototype.onEpManifest = function(event) {
 
     var that = this;
+    var am_urn = this.allAms[event.am_id].urn;
 
     if (event.code !== 0) {
         debug("Error retrieving manifest: " + event.output);
@@ -776,27 +804,38 @@ JacksApp.prototype.onEpManifest = function(event) {
 	// Paint all the current manifests, first change then subsequent adds
 	var first_manifest = true;
 	$.each(this.currentManifestByAm, function(am_id, manifest) {
-	    if(that.isNullManifest(manifest)) return;
+	    if(that.isNullManifest(manifest)) return false;
+	    var node_am_urn = that.allAms[am_id].urn;
 	    if (first_manifest) {
-		that.jacksInput.trigger('change-topology', [{ rspec: manifest}]);
+		that.jacksInput.trigger('change-topology', 
+					[{ rspec: manifest, 
+						    sourceUrn: node_am_urn}]);
 		first_manifest = false;
 	    } else {
-		that.jacksInput.trigger('add-topology', [{ rspec: manifest}]);
+		that.jacksInput.trigger('add-topology', 
+					[{ rspec: manifest,
+						    sourceUrn: node_am_urn}]);
 	    }
 	    });
 	// If we didn't paint any manifests, then change-topology to empty manifest
 	if (first_manifest)
-	    that.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+	    that.jacksInput.trigger('change-topology', 
+				    [{ rspec: rspecManifest,
+						sourceUrn : am_urn}]);
     } else if (this.first_manifest_pending) {
 	// If first manifest read of a group (from getSliceManifests, replace current topology
-	this.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+	this.jacksInput.trigger('change-topology', 
+				[{ rspec: rspecManifest,
+				   sourceUrn : am_urn}]);
 	this.first_manifest_pending = false;
     } else {
 	// Otherwise add to current topology
 	// <rspec></rspec> or <rspec/> is returned in some cases as an empty manifest.
 	// Don't add these to current topology (they show up as empty sites)
 	if (!this.isNullManifest(rspecManifest)) 
-	    this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
+	    this.jacksInput.trigger('add-topology', 
+				    [{ rspec: rspecManifest,
+				       sourceUrn: am_urn}]);
     }
     //
 
@@ -992,12 +1031,12 @@ JacksApp.prototype.hasLoginInfo = function(am_id)
     var agg_urn = this.allAms[am_id].urn;
     var has_login_info = false;
     $.each(this.loginInfo, function(username) {
-	    if(has_login_info) return;
+	    if(has_login_info) return false;
 	    var client_host_keys = Object.keys(that.loginInfo[username]);
 	    $.each(client_host_keys, function(i, client_host_key) {
-		    if (client_host_key.includes(agg_urn)) {
+            if (client_host_key.indexOf(agg_urn) > -1) {
 			has_login_info = true;
-			return;
+			return false;
 		    }
 		});
 	});
