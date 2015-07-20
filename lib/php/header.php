@@ -378,13 +378,15 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   echo '<h2 class="dashtext" style="float: left; line-height: 50px; text-align: center; margin: 0 20px; display: inline; height: 50px; cursor: pointer;" 
           onclick="window.location=\'dashboard.php\'">GENI Portal</h2>';
   echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
-  echo "<li class='has-sub headerlink'>{$user->prettyName()}";
-  echo '<ul class="submenu">';
-  echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
-  if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
-    echo '<li><a href="admin.php">Admin</a></li>';
+  if($load_user) {
+    echo "<li class='has-sub headerlink'>{$user->prettyName()}";
+    echo '<ul class="submenu">';
+    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
+    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
+      echo '<li><a href="admin.php">Admin</a></li>';
+    }
+    echo '<li><a href="preferences.php">Preferences</a></li></ul></li>';
   }
-  echo '<li><a href="preferences.php">Preferences</a></li></ul></li>';
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
   echo '<ul class="submenu">';
   echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki <img class="expirationicon" src="/images/external.png" alt="external link to GENI Wiki" /></a></li>';
