@@ -202,7 +202,7 @@ if (! $user->portalIsAuthorized()) {
     } else {
       print "<a class='button' href='join-project.php'><b>Join a Project</b></a>";
       print "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a>";
-      print "<a class='button' href='window.location='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
+      print "<a class='button' href='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
     }
 
 
