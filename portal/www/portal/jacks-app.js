@@ -1034,7 +1034,7 @@ JacksApp.prototype.hasLoginInfo = function(am_id)
 	    if(has_login_info) return false;
 	    var client_host_keys = Object.keys(that.loginInfo[username]);
 	    $.each(client_host_keys, function(i, client_host_key) {
-		    if (client_host_key.includes(agg_urn)) {
+            if (client_host_key.indexOf(agg_urn) > -1) {
 			has_login_info = true;
 			return false;
 		    }
