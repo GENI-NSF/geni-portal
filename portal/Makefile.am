@@ -109,6 +109,7 @@ dist_svcweb_DATA = \
 	www/portal/gemini.php \
 	www/portal/gemini_add_global_node.php \
 	www/portal/get_omni_invocation_data.php \
+	www/portal/gmap3.js \ 
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \
 	www/portal/getversion.php \

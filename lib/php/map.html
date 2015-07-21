@@ -1,60 +1,112 @@
 <script src="https://maps.googleapis.com/maps/api/js"></script>
-<script>
-  var aggarray = [];
-  function initialize() {
-    $.get("/common/map/current.json", function(data){
-      aggdatalist = data.features;
-      aggdict = {};
-      aggdatalist.forEach(function(aggregate){
-        if(aggdict[aggregate.properties.am]) {
-          aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
-                                              aggregate.properties.am, aggdict[aggregate.properties.am][3] + 1 ];
-        } else {
-          aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
-                                              aggregate.properties.am, 1];
-        }
-      });
-      for (agg in aggdict) {
-        aggarray.push(aggdict[agg]);
-      }
-    var mapCanvas = document.getElementById('map1');
-    var mapOptions = {
-      center: new google.maps.LatLng(42,-72),
-      zoom: 3,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    var map = new google.maps.Map(mapCanvas, mapOptions);
-    var infowindow = new google.maps.InfoWindow(); 
+<script type="text/javascript" src="gmap3.js"></script>
 
+<style>
+
+.cluster{
+  color: #FFFFFF;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  line-height: 30px;
+  font-weight: bold;
+  background-color: #F27D2F;
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+  border: 1px solid #303030;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+</style>
+
+
+<script>
+$(document).ready(function(){
+  $.get("/common/map/current.json", function(data){
+    aggarray = [];
+    aggdatalist = data.features;
+    aggdict = {};
+    aggdatalist.forEach(function(aggregate){
+      if(aggdict[aggregate.properties.am]) {
+        aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                            aggregate.properties.am, aggdict[aggregate.properties.am][3] + 1 ];
+      } else {
+        aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                            aggregate.properties.am, 1];
+      }
+    });
+    for (agg in aggdict) {
+      aggarray.push(aggdict[agg]);
+    }
+
+    pinslist = []
     for (i in aggarray){
       lat = aggarray[i][0];
       lng = aggarray[i][1];
       aggname = aggarray[i][2];
       numresources = aggarray[i][3];
-      var myLatlng = new google.maps.LatLng(lat, lng);
-
-      var pinIcon = new google.maps.MarkerImage(
-          "/images/marker.png",
-          null, /* size is determined at runtime */
-          null, /* origin is 0,0 */
-          null, /* anchor is bottom center of the scaled image */
-          new google.maps.Size(20 + Math.min(numresources / 5.0, 20), 32.33 + Math.min(numresources / 3.125, 32.33))
-      );
-
-      var marker = new google.maps.Marker({
-        position: myLatlng,
-        map: map,
-        title:  aggname + '<br>' + numresources + " resources at this site"
-      });
-      marker.setIcon(pinIcon);
-
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent("<span style='color:black;'>" + this.title + "</span>");
-        infowindow.open(map, this);
+      pinslist.push({
+        latLng:[lat, lng],
+        tag: "<span style='color: #303030'>" + aggname + '<br>' + numresources + " resources at this site</span>"
       });
     }
+      
+  $('#map1').gmap3({ 
+    map:{
+      options:{
+        center:[42,-72],
+        zoom: 3,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+    }
+  });
+
+  $('#map1').gmap3({
+    marker:{
+      values: pinslist,
+      cluster:{
+        radius: 5, 
+        0: {
+          content: '<div class="cluster">CLUSTER_COUNT</div>',
+          height: 30,
+          width: 30
+        },
+        events: {
+          click: clickOnCluster
+        }
+      },
+      events: {
+        click: clickOnPin
+      }
+      }
+    });
+  });
+});
+
+  function waitForBounds(){
+    alert("nice dude");
+  }
+
+  function clickOnPin(marker, event, context){
+    $(this).gmap3({
+      infowindow:{
+        anchor: marker, 
+        options:{content: context.tag}
+      }
     });
   }
-  google.maps.event.addDomListener(window, 'load', initialize);
+
+
+  function clickOnCluster(overlay, event, context){
+    $(this).gmap3({
+      infowindow:{
+        latLng: context.data.latLng,
+        options:{
+          content: $.map(context.data.markers, function(marker){return marker.tag}).join("<hr>")
+        }
+      }
+    });
+  }
 </script>
 <div id="map1"></div>
