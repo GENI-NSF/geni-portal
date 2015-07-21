@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.34 ==
+ * Fix redirects when project is successfully created. (#1434)
  * Fix omni_invocation parsing to mark an error/failed if the aggregate
    returns "Error" in return text but not in code (#1134, #1406).
  * Clear RSpec selector (paste, file, url, menu) when Jacks delete all or
