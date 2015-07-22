@@ -158,7 +158,7 @@ if (! $user->portalIsAuthorized()) {
         $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
         $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
         $lead_name = $lead_names[$lead_id];
-        $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'>New slice</a>";
+        $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'>New slice</a><br class='mobilebreak'>";
         $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
         $project_options .= "<li data-value='{$project_name}'>$project_name</li>";
         $project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
@@ -186,13 +186,13 @@ if (! $user->portalIsAuthorized()) {
     print "<li data-value='-ALL-PROJECTS-'>All projects</li>";
     print "<li data-value='-MY-PROJECTS-'>Projects I lead</li>";
     print "<li data-value='-THEIR-PROJECTS-'>Projects I don't lead</li>";
-    print "</ul></li></ul>";
+    print "</ul></li></ul><br class='mobilebreak'>";
 
     // project sorts
     print "<h4 class='dashtext' style='margin-left: 15px !important;'>Sort by:</h4>";
     print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectsortby'>";
     print "<span data-value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
-    print "<li data-value='projname'>Project name</li><li data-value='projexp'>Project expiration</li></ul></li></ul>";
+    print "<li data-value='projname'>Project name</li><li data-value='projexp'>Project expiration</li></ul></li></ul><br class='mobilebreak'>";
     print "<input type='checkbox' id='projectascendingcheck' data-value='ascending' checked>Sort ascending<br>";
     
     print "<div style='margin: 20px; clear: both;'>";
@@ -200,8 +200,8 @@ if (! $user->portalIsAuthorized()) {
       print "<a class='button' href='edit-project.php'>Create New Project</a>";
       print "<a class='button' href='join-project.php'>Join a Project</a></div>";
     } else {
-      print "<a class='button' href='join-project.php'><b>Join a Project</b></a>";
-      print "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a>";
+      print "<a class='button' href='join-project.php'><b>Join a Project</b></a><br class='mobilebreak'>";
+      print "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a><br class='mobilebreak'>";
       print "<a class='button' href='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
     }
 
@@ -252,6 +252,7 @@ if (! $user->portalIsAuthorized()) {
       $query = http_build_query($args);
       $add_resource_url = "slice-add-resources-jacks.php?" . $query;
       $delete_resource_url = "confirm-sliverdelete.php?" . $query;
+      $listres_url = "listresources.php?" . $query;
       $slice_url = "slice.php?" . $query;
       $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
       if (!array_key_exists($slice_project_id, $project_objects)) {
@@ -281,14 +282,14 @@ if (! $user->portalIsAuthorized()) {
         $resource_exp = get_time_diff(dateUIFormat($next_exp)); 
       }
       make_slice_box($slice_name, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
-                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url);
+                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url);
     }
 
     print "</div></div>";
   }
 
   function make_slice_box($slice_name, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
-                          $slice_exp, $resource_exp, $add_url, $remove_url) {
+                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url) {
     print "<div class='floatleft slicebox $whose_slice {$project_name}slices' data-slicename='$slice_name' data-sliceexp='$slice_exp' data-resourceexp='$resource_exp'>";
     print "<table>";
     $resource_exp_icon = "";
@@ -309,10 +310,14 @@ if (! $user->portalIsAuthorized()) {
     $slice_exp_icon = "<img class='expirationicon' alt='slice expiration icon' src='/images/{$slice_exp_icon}.png'/>";
     print "<tr><td class='slicetopbar' style='text-align:left;' onclick='window.location=\"$slice_url\"'>";
     print "<span style='font-weight: normal; font-size: 16px'>$slice_name</span></td>";
-    print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub'>Actions<ul class='submenu'>";
+    print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub' style='color: #ffffff;'>Actions<ul class='submenu'>";
     print "<li onclick='window.location=\"$slice_url\"'>Manage slice</li>";
     print "<li onclick='window.location=\"$add_url\"'>Add resources</li>";
-    print "<li onclick='window.location=\"$remove_url\"'>Remove resources</li></ul></li></ul></td></tr>";
+    if ($resource_count > 0) {
+      print "<li onclick='window.location=\"$listres_url\"'>Resource details</li>";
+      print "<li onclick='window.location=\"$remove_url\"'>Remove resources</li>";
+    }
+    print "</ul></li></ul></td></tr>";
     print "<tr><td colspan='2' style='width:200px;'>Lead: $lead_name</td>";
     print "<tr><td style='width:200px;'>$slice_info</td><td style='vertical-align: middle; width:30px;'>$slice_exp_icon</td></tr>";
     print "<tr><td style='border-bottom:none; height:55px;'>$resource_info</td>";

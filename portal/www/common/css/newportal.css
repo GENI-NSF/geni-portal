@@ -168,8 +168,8 @@ body {
 #content button, #content input[type=submit], #content input[type=button], #content .button {
   padding: 5px 10px;
   border: none;
-  background-color: #64B5F6;
-  color: #ffffff !important;
+  background-color: #42A5F5;
+  color: #ffffff;
   font-family: inherit;
   font-size: 13px;
   cursor: pointer;
@@ -181,7 +181,8 @@ body {
 }
 
 #content button:hover, #content input[type=submit]:hover, #content input[type=button]:hover, #content .button:hover{
-  background-color: #42A5F5;
+  background-color: #2196F3;
+  color: #ffffff;
   animation: raise;
   animation-duration: .2s;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
@@ -190,15 +191,16 @@ body {
 
 #content td button, #content td input[type=submit], #content td input[type=button], #content td .button {
   background-color: #FFFFFF;
-  color: #303030 !important;
+  color: #303030;
 }
 
 #content td button:hover, #content td input[type=submit]:hover, #content td input[type=button]:hover, #content td .button:hover {
   background-color: #EEEEEE;
+  color: #303030;
 }
 
 #content button[disabled=disabled], #content button:disabled {
-  color: #E0E0E0 !important; 
+  color: #E0E0E0; 
   background-color: #F9F9F9;
 }
 
@@ -219,7 +221,6 @@ body {
 /* Links */
 #content a {
   color: #303030;
-  font-weight: bold;
   text-decoration: underline;
 }
 
@@ -260,7 +261,7 @@ ul {
 #content th {
   font-weight: bold;
 	font-size: 1em;
-	padding: 6px;
+	padding: 6px 10px;
 	background: #FB8C00;
 	border-bottom: 1px solid #fff;
 	color: #fff;
@@ -876,4 +877,14 @@ img {
 /* For Jacks RSpec display instead of white-on-white */
 .jacks #leftNav pre {
    color: black;
+}
+
+.btn-primary {
+  color: #FFFFFF !important;
+  background-color: #3465A4 !important;
+}
+
+.btn-danger {
+  color: #FFFFFF !important;
+  background-color: #EF2929 !important;
 }
