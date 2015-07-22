@@ -4,6 +4,8 @@
 
 = GENI Portal Release Notes =
 
+== 2.35 ==
+
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
  * Fix omni_invocation parsing to mark an error/failed if the aggregate
