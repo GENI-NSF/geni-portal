@@ -23,6 +23,7 @@
 //----------------------------------------------------------------------
 
 require_once('user.php');
+require_once('settings.php');
 require_once('sr_client.php');
 require_once('sr_constants.php');
 require_once('ma_client.php');
@@ -65,6 +66,10 @@ require_once('ma_constants.php');
 // But check for that 2nd arg being null - if so, avoid printing the button at all
 // See tool-slices for sample usage
 function get_jfed_strs($user) {
+  global $portal_jquery_url;
+  global $portal_jqueryui_css_url;
+  global $portal_jqueryui_js_url;
+
   $jfed_button_start = null;
   $jfed_script_text = '';
   $jfed_button_part2 = '';
@@ -129,9 +134,9 @@ function get_jfed_strs($user) {
         //var slice_urn = 'urn:publicid:IDN+ch.geni.net:CHtest+slice+vm1';
         var slice_urn = ''; // over-ridden in the onclick of the jFed button with the specific slice URN. launchjFed() uses this global. Tom says Gross!
         </script>
-        <script src='https://authority.ilabt.iminds.be/js/jquery/jquery.min.js'></script> <!-- jQuery v2.1.1 | (c) 2005, 2014 jQuery Foundation, Inc -->
-        <link rel='stylesheet' href='https://authority.ilabt.iminds.be/js/jquery/jquery-ui.css' /> <!-- Query UI - v1.11.2 - 2014-10-16 -->
-        <script src='https://authority.ilabt.iminds.be/js/jquery/jquery-ui.min.js'></script> <!-- Query UI - v1.11.2 - 2014-10-16 -->
+        <script src='$portal_jquery_url'></script>
+        <link rel='stylesheet' href='$portal_jqueryui_css_url' />
+        <script src='$portal_jqueryui_js_url'></script>
         <script src=\"//java.com/js/dtjava.js\"></script>
         <script src='https://authority.ilabt.iminds.be/js/jfed_webstart_geni.js'></script>
 <div id='java7Dialog' title=\"Old Java version detected\" style=\"display: none\">

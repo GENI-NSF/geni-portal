@@ -209,30 +209,6 @@ function do_modify_project_membership($selections, $project_id, $project_members
   return $result;
 }
 
-function orig_do_modify_project_membership($project_id, $member_id, $selection_id, 
-				 $project_members_by_role, $is_member)
-{
-  global $sa_url;
-  global $user;
-  //   error_log("MSM = " . $member_id . " " . $selection_id . " " . $is_member);
-
-  if($is_member) {
-    $role = $project_members_by_role[$member_id];
-    if ($selection_id == 0) {
-      // Remove this member from this project and associated slices
-      remove_project_member($sa_url, $user, $project_id, $member_id);
-    } else if ($selection_id != $role) {
-      // Change the role of this member in this project
-      change_member_role($sa_url, $user, $project_id, $member_id, $selection_id);
-    }
-  } else {
-    if ($selection_id > 0) {
-      // Add this member to this project
-      add_project_member($sa_url, $user, $project_id, $member_id, $selection_id);
-    }
-  }
-}
-
 // error_log("REQUEST = " . print_r($_REQUEST, true));
 $project_id = $_REQUEST['project_id'];
 unset($_REQUEST['project_id']);

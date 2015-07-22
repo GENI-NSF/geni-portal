@@ -48,6 +48,13 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     // How long to wait before polling status again in milliseconds
     this.statusPollDelayMillis = 5000;
 
+    // Max time to poll for status/manifest before stopping.
+    // If no login info is available when this expires,
+    // no ssh info will be displayed. This avoids infinite
+    // looping when no login info will ever be available because
+    // no ssh keys were present when the request was made.
+    this.maxStatusPollSeconds = 300;
+
     this.jacks = jacks;
     this.jacks_editor = null;
     this.jacks_editor_visible = false;
@@ -70,6 +77,9 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     this.first_manifest_pending = false;
 
     this.loginInfo = {};
+
+    // Most recent manifest return element for each am (by am_id)
+    this.currentManifestByAm = {};
 
     // Most recent status return element for each am (by am_id)
     this.currentStatusByAm = {};
@@ -100,6 +110,7 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	// size: { x: 1400, y: 350},
 	size: 'auto',
 	canvasOptions : {aggregates: aggregate_info},
+	isManifest : true,
         show: {
             menu: true,
             rspec: true,
@@ -255,12 +266,6 @@ JacksApp.prototype.hideStatusHistory = function()
 JacksApp.prototype.initButtons = function(buttonSelector) {
     var that = this;
 
-    /*
-    var btn = $('<button type="button">Get Manifest</button>');
-    btn.click(function(){ that.getSliceManifests();});
-    $(buttonSelector).append(btn);
-    */
-
     btn = $('<button type="button">Renew</button>');
     btn.click(function() {
         that.renewResources();
@@ -363,16 +368,41 @@ JacksApp.prototype.amName = function(am_id) {
   Return the AM ID assocaited with a node key (from the Jacks topology
  */
 JacksApp.prototype.lookup_am_id = function (node_key) {
+
     var that = this;
     var am_id = null;
+
+    // New version
     $.each(this.currentTopology.nodes, function(ni, nd) {
 	    if(nd.id == node_key) {
-		var urn = nd.aggregate_id;
+		if (nd.sourceUrn != undefined && 
+		    nd.sourceUrn in that.urn2amId) 
+		    {
+			var urn = nd.sourceUrn;
+		    } else 
+		    {
+			var urn = nd.aggregate_id;
+		    }
 		am_id = that.urn2amId[urn];
-		return;
+		return false;
 	    }
 	});
+
     return am_id;
+}
+
+/*
+ * Get a topology node from a selected node
+ */
+JacksApp.prototype.lookup_topology_node = function(selected_node) {
+    var topo_node = null;
+    $.each(this.currentTopology.nodes, function(ni, nd) {
+	    if(nd.id == selected_node.key) {
+		topo_node = nd;
+		return false;
+	    }
+	});
+    return topo_node;
 }
 
 /*
@@ -427,6 +457,10 @@ JacksApp.prototype.getSliceManifests = function() {
     // manifests, but subsequent manfiests are added.
     this.first_manifest_pending=true;
 
+    // Poll for a limited amount of time, otherwise it can
+    // poll indefinitely if there is no login information.
+    var maxTime = Date.now() + this.maxStatusPollSeconds * 1000
+
     // Loop through each known AM and get the manifest.
     var that = this;
     $.each(sliceAms, function(i, am_id) {
@@ -438,7 +472,7 @@ JacksApp.prototype.getSliceManifests = function() {
                               am_id: am_id,
                               slice_id: that.sliceId,
                               callback: that.input,
-                              client_data: {}
+                              client_data: {maxTime: maxTime}
                             });
     });
 };
@@ -449,6 +483,10 @@ JacksApp.prototype.getSliceManifests = function() {
  * max_time is when to stop polling
  */
 JacksApp.prototype.getManifest = function(am_id, maxTime) {
+    var now = Date.now();
+    if (now > maxTime) {
+        return;
+    }
     this.updateStatus('Polling resource manifest from '
                       + this.amName(am_id) + '...');
     this.output.trigger(this.MANIFEST_EVENT_TYPE,
@@ -607,11 +645,12 @@ JacksApp.prototype.renewResources = function() {
 
     var msg = "Renew known slice resources until " + renewDate + "?";
 
-    // If any nodss selected, use only them
+    // If any nodes selected, use only them
     if(this.selectedNodes.length > 0) {
 	renewAMs = []
 	msg = "Renew slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
+
 		var am_id = that.lookup_am_id(selected_node.key);
 		renewAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
@@ -744,13 +783,26 @@ JacksApp.prototype.selectObjects = function(objs, select) {
 // Jacks App Events from Embedding Page
 //----------------------------------------------------------------------
 
+JacksApp.prototype.isNullManifest = function(manifest) {
+    return manifest == null || manifest == "" || manifest == "<rspec></rspec>" || manifest == "<rspec/>";
+}
+
 JacksApp.prototype.onEpManifest = function(event) {
 
     var that = this;
+    var am_urn = this.allAms[event.am_id].urn;
 
     if (event.code !== 0) {
         debug("Error retrieving manifest: " + event.output);
         return;
+    }
+
+    // Remove the entry from table if empty manifest, 
+    // Otherwise update the table with new manifest
+    if (this.isNullManifest(event.value)) {
+	delete this.currentManifestByAm[event.am_id];
+    } else {
+	this.currentManifestByAm[event.am_id] = event.value;
     }
 
     sites = null;
@@ -760,16 +812,45 @@ JacksApp.prototype.onEpManifest = function(event) {
     // Remove site tags if there are already component_manager_ids set on nodes
     var rspecManifest = cleanSiteIDsInOutputRSpec(event.value,sites);
 
-    // If first manifest, replace current topology
-    if (this.first_manifest_pending) {
-	this.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+    // If empty manifest, redraw entire topology since we want to remove this site 
+    // at which resources no longer exist
+    if (this.isNullManifest(rspecManifest)) {
+
+	// Paint all the current manifests, first change then subsequent adds
+	var first_manifest = true;
+	$.each(this.currentManifestByAm, function(am_id, manifest) {
+	    if(that.isNullManifest(manifest)) return false;
+	    var node_am_urn = that.allAms[am_id].urn;
+	    if (first_manifest) {
+		that.jacksInput.trigger('change-topology', 
+					[{ rspec: manifest, 
+						    sourceUrn: node_am_urn}]);
+		first_manifest = false;
+	    } else {
+		that.jacksInput.trigger('add-topology', 
+					[{ rspec: manifest,
+						    sourceUrn: node_am_urn}]);
+	    }
+	    });
+	// If we didn't paint any manifests, then change-topology to empty manifest
+	if (first_manifest)
+	    that.jacksInput.trigger('change-topology', 
+				    [{ rspec: rspecManifest,
+						sourceUrn : am_urn}]);
+    } else if (this.first_manifest_pending) {
+	// If first manifest read of a group (from getSliceManifests, replace current topology
+	this.jacksInput.trigger('change-topology', 
+				[{ rspec: rspecManifest,
+				   sourceUrn : am_urn}]);
 	this.first_manifest_pending = false;
     } else {
 	// Otherwise add to current topology
 	// <rspec></rspec> or <rspec/> is returned in some cases as an empty manifest.
 	// Don't add these to current topology (they show up as empty sites)
-	if (rspecManifest && rspecManifest != "" && rspecManifest != "<rspec></rspec>" && rspecManifest != "<rspec/>")
-	    this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
+	if (!this.isNullManifest(rspecManifest)) 
+	    this.jacksInput.trigger('add-topology', 
+				    [{ rspec: rspecManifest,
+				       sourceUrn: am_urn}]);
     }
     //
 
@@ -802,12 +883,11 @@ JacksApp.prototype.onEpManifest = function(event) {
     jacksXml.find('node').each(function(i, v) {
         var client_id = $(this).attr('client_id');
         var sliver_id = $(this).attr('sliver_id');
+        var component_manager_id = $(this).attr('component_manager_id');
         that.urn2clientId[sliver_id] = client_id;
         // This is needed because some AMs do return the client_id, so
         // the mapping needs to have both to avoid needing special cases.
         that.urn2clientId[client_id] = client_id;
-
-        var agg_urn = that.allAms[am_id].urn;
 
         // Dig out login info
         $(this).find('login').each(function(il, vl) {
@@ -816,20 +896,19 @@ JacksApp.prototype.onEpManifest = function(event) {
             var port = $(this).attr('port');
             var username = $(this).attr('username');
             var login_url = "ssh://" + username + "@" + hostname + ":" + port;
-            var client_host_key = client_id + ":" + agg_urn;
+            var client_host_key = client_id + ":" + am_urn;
             if (!(username in that.loginInfo)) {
 		that.loginInfo[username] = [];
 	    }
-	    if (!(client_host_key in that.loginInfo[username])) {
-		that.loginInfo[username][client_host_key] = [];
-	    }
-	    that.loginInfo[username][client_host_key].push(login_url);
+	    that.loginInfo[username][client_host_key] = [login_url];
             debug(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });
 
     // re-poll as necessary up to event.client_data.maxPollTime
-    var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    //var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    var maxPollTime = (event.client_data.maxTime
+                       || Date.now() + this.maxStatusPollSeconds * 1000);
     this.getStatus(am_id, maxPollTime);
 
 };
@@ -845,16 +924,12 @@ JacksApp.prototype.onEpStatus = function(event) {
     this.currentStatusByAm[event.am_id] = [event.value[event.am_id], event.client_data.maxTime];
 
     var that = this;
-    // *** Maybe here we just go through all entries in currentStatusByAM
+    // We just go through all entries in currentStatusByAM
     $.each(this.currentStatusByAm, function (am_id, statusAndmaxTime) {
        if (am_id != event.am_id) return; // Exit this inner function call
        that.handleNewStatus(am_id, statusAndmaxTime[0], statusAndmaxTime[1],
 			    true);
 	});
-
-    //    $.each(event.value, function(i, v) {
-    //	    that.handleNewStatus(i, v);
-    //	});
 }
 
 // Handle a newly received status message for a given AM
@@ -888,10 +963,12 @@ JacksApp.prototype.handleNewStatus = function (am_id, status, maxTime,
 		}, this.statusPollDelayMillis);
 	} else if (status['geni_status'] == 'ready') {
 	    this.updateStatus('Resources on '+status['am_name']+' are ready.');
+	    if(!this.hasLoginInfo(am_id))
+		this.getManifest(am_id, maxTime);
 	} else if (status['geni_status'] == 'failed') {
 	    this.updateStatus('Resources on '+status['am_name']+' have failed.');
 	} else if (status['geni_status'] == 'no resources') {
-	    this.getSliceManifests();
+	    this.getManifest(am_id, maxTime);
 	    return;
 	} 
     }
@@ -926,7 +1003,8 @@ JacksApp.prototype.onEpDelete = function(event) {
     }
 
     this.updateStatus("Resources deleted");
-    this.getSliceManifests();
+    var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    this.getStatus(event.am_id, maxPollTime);
 };
 
 JacksApp.prototype.onEpDetails = function(event) {
@@ -958,8 +1036,26 @@ JacksApp.prototype.onEpRestart = function(event) {
 
     var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
     this.getStatus(event.am_id, maxPollTime);
-    //    this.getSliceManifests();
 };
+
+// Has login info been set for this aggreagate?
+JacksApp.prototype.hasLoginInfo = function(am_id)
+{
+    var that = this;
+    var agg_urn = this.allAms[am_id].urn;
+    var has_login_info = false;
+    $.each(this.loginInfo, function(username) {
+	    if(has_login_info) return false;
+	    var client_host_keys = Object.keys(that.loginInfo[username]);
+	    $.each(client_host_keys, function(i, client_host_key) {
+            if (client_host_key.indexOf(agg_urn) > -1) {
+			has_login_info = true;
+			return false;
+		    }
+		});
+	});
+    return has_login_info;
+}
 
 JacksApp.prototype.lookup_jacks_id_from_client_id = function (agg_urn, 
 							     client_id, 
