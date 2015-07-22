@@ -15,7 +15,6 @@
   width: 25px;
   border-radius: 13px;
   border: 1px solid #303030;
-  /*box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
 }
 
 </style>
@@ -28,12 +27,23 @@ $(document).ready(function(){
     aggdatalist = data.features;
     aggdict = {};
     aggdatalist.forEach(function(aggregate){
-      if(aggdict[aggregate.properties.am]) {
-        aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
-                                            aggregate.properties.am, aggdict[aggregate.properties.am][3] + 1 ];
+      name = aggregate.properties.am.split(" OpenFlow")[0]
+      if(aggdict[name]) {
+        if (aggregate.properties.am.indexOf(" OpenFlow") > -1) {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, aggdict[name][3], aggdict[name][4] + 1];
+        } else {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, aggdict[name][3] + 1, aggdict[name][4]];
+        }
       } else {
-        aggdict[aggregate.properties.am] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
-                                            aggregate.properties.am, 1];
+        if (aggregate.properties.am.indexOf(" OpenFlow") > -1) {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, 0, 1];
+        } else {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, 1, 0];
+        }
       }
     });
     for (agg in aggdict) {
@@ -46,9 +56,12 @@ $(document).ready(function(){
       lng = aggarray[i][1];
       aggname = aggarray[i][2];
       numresources = aggarray[i][3];
+      numopenflowresources = aggarray[i][4];
       pinslist.push({
         latLng:[lat, lng],
-        tag: "<span style='color: #303030'>" + aggname + '<br>' + numresources + " resources at this site</span>"
+        tag: "<span style='color: #303030'><b>" + aggname + '</b>' 
+          + (numresources > 0 ? '<br>&nbsp;&nbsp;' + numresources + " resources at this site" : "")
+          + (numopenflowresources > 0 ? "<br>&nbsp;&nbsp;" + numopenflowresources  + " OpenFlow resources at this site </span>" : "</span>")
       });
     }
       
@@ -66,7 +79,7 @@ $(document).ready(function(){
     marker:{
       values: pinslist,
       cluster:{
-        radius: 20, 
+        radius: 1, 
         0: {
           content: '<div class="cluster">CLUSTER_COUNT</div>',
           height: 25,
