@@ -302,15 +302,20 @@ if (! isset($ma_url)) {
   }
 }
 
-// FIXME: Also show rejected requests?
+// This next block of code pretends to handle requests to join a slice, but we don't do that
+// It also claims to handle profile modification requests. But those are handled separately.
+
+// FIXME: Show outstanding project lead requests. See code in tools-admin.php
+
 $preqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
-$sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
-$reqs = array_merge($preqs, $sreqs);
+//$sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
+//$reqs = array_merge($preqs, $sreqs);
+$reqs = $preqs;
 if (isset($reqs) && count($reqs) > 0) {
   print "Found " . count($reqs) . " outstanding request(s) by you:<br/>\n";
   print "<div class='tablecontainer'><table>\n";
   // Could add the lead and purpose?
-  print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
+  print "<tr><th>Request Type</th><th>Project</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
   $REQ_TYPE_NAMES = array();
   $REQ_TYPE_NAMES[] = 'Join';
   $REQ_TYPE_NAMES[] = 'Update Attributes';
@@ -323,13 +328,13 @@ if (isset($reqs) && count($reqs) > 0) {
       $project = lookup_project($sa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $cancel_url="cancel-join-project.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
-    } elseif ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::SLICE) {
-      $slice = lookup_slice($sa_url, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
-      $name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
-      $cancel_url="cancel-join-slice.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
-    } else {
-      $name = "";
-      $cancel_url="cancel-account-mod.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+      //    } elseif ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::SLICE) {
+      //      $slice = lookup_slice($sa_url, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      //      $name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+      //      $cancel_url="cancel-join-slice.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+//    } else {
+//      $name = "";
+//      $cancel_url="cancel-account-mod.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
     }
 
     $cancel_button = "<button style=\"\" onClick=\"window.location='" . $cancel_url . "'\"><b>Cancel Request</b></button>";
@@ -341,7 +346,7 @@ if (isset($reqs) && count($reqs) > 0) {
   print "</table></div>\n";
   print "<br/>\n";
 } else {
-  print "<p><i>No outstanding requests to join projects or slices or change your profile.</i></p>\n";
+  print "<p><i>No outstanding requests to join projects.</i></p>\n";
 }
 
 // END outstanding requests tab

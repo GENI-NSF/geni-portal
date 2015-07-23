@@ -1,16 +1,26 @@
--- -------------------
--- Apply changes to rename abac, identity, account portal tables
--- (make inaccessible from existing code, but archive)
--- See geni-portal #299
--- -------------------
+-- ----------------------------------------------------------------------
+-- lead request
+--
+-- Record project lead requests that users create
+-- ----------------------------------------------------------------------
 
-alter table abac_assertion rename to abac_assertion_299;
-alter table abac rename to abac_299;
-alter table account rename to account_299;
-alter table account_privilege rename to account_privilege_299;
-alter table identity_attribute rename to identity_attribute_299;
-alter table identity rename to identity_299;
-alter table requested_account rename to requested_account_299;
-alter table shib_attribute rename to shib_attribute_299;
-alter table slice rename to slice_299;
+DROP TABLE IF EXISTS lead_request;
+
+DROP TYPE IF EXISTS request_status;
+
+CREATE TYPE request_status AS ENUM ('open', 'approved', 'denied');
+
+CREATE TABLE lead_request (
+  id SERIAL,
+  requester_urn   VARCHAR NOT NULL,
+  requester_uuid  UUID NOT NULL,
+  requester_eppn  VARCHAR NOT NULL,
+  request_ts timestamp NOT NULL default CURRENT_TIMESTAMP,
+  approver VARCHAR default '',
+  notes VARCHAR default '',
+  reason VARCHAR default '',
+  status request_status NOT NULL default 'open',
+  PRIMARY KEY (id)
+);
+CREATE INDEX lead_request_index_requester_urn ON lead_request (requester_urn);
 
