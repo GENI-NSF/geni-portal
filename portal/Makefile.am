@@ -41,6 +41,7 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-7.sql \
 	db/postgresql/update-8.sql \
 	db/postgresql/update-9.sql \
+	db/postgresql/update-10.sql \
 	gcf.d/example-gcf.ini
 
 #----------------------------------------------------
