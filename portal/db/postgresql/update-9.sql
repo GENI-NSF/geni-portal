@@ -1,3 +1,4 @@
+
 -- ----------------------------------------------------------------------
 -- lead request
 --
@@ -23,4 +24,3 @@ CREATE TABLE lead_request (
   PRIMARY KEY (id)
 );
 CREATE INDEX lead_request_index_requester_urn ON lead_request (requester_urn);
-
