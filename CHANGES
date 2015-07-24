@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 2.35 ==
+ * Remove account and identity (and associated) tables, scripts and clients (#299)
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
