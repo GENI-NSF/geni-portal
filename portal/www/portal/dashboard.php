@@ -127,7 +127,6 @@ if (! $user->portalIsAuthorized()) {
     if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
       if ($num_projects==0) { 
         // You're not in any projects at all, even expired
-        print "<div class='card' data-cardname='info' id='info'>"; 
         print "<p class='instruction'>";
         print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
         print "You have been made a 'Project Lead', meaning you can create GENI Projects, as well as create slices in projects and reserve resources.<br/><br/>";
@@ -136,7 +135,6 @@ if (! $user->portalIsAuthorized()) {
         print "<p class='warn'>";
         print "You are not a member of any projects. You need to Create or Join a Project.";
         print "</p>";
-        print "</div>";
       } else { 
         // You have some projects that are expired, none active
         print "<p class='instruction'>You have no active projects at this time</p>";
@@ -165,9 +163,9 @@ if (! $user->portalIsAuthorized()) {
     // You have some projects or slices 
     print "<div class='nav2'><ul class='tabs'>";
     // include("tool-breadcrumbs.php");
-    print "<li><a class='tab' data-tabname='slices' href='#slices'>Slices</a></li>";
-    print "<li><a class='tab' data-tabname='projects' href='#projects'>Projects</a></li>";
-    print "<li><a class='tab' data-tabname='logs' href='#logs'>Logs</a></li>";
+    print "<li><a class='tab' data-tabindex=1 data-tabname='slices' href='#slices'>Slices</a></li>";
+    print "<li><a class='tab' data-tabindex=2 data-tabname='projects' href='#projects'>Projects</a></li>";
+    print "<li><a class='tab' data-tabindex=3 data-tabname='logs' href='#logs'>Logs</a></li>";
     print "</ul></div>";
 
     // Start making the slice and project sections
@@ -227,7 +225,7 @@ if (! $user->portalIsAuthorized()) {
     print "<li data-value='projname'>Project name</li><li data-value='projexp'>Project expiration</li></ul></li></ul><br class='mobilebreak'>";
     print "<input type='checkbox' id='projectascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br>";
     
-    print "<div style='margin: 10px 0px; clear: both;'>";
+    print "<div style='margin: 15px 0px; clear: both;'>";
     if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
       print "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
       print "<a class='button' href='join-project.php'>Join a Project</a></div>";

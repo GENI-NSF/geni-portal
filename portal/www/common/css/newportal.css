@@ -89,16 +89,22 @@ body {
   background-color: #FFFFFF;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   padding: 20px;
-  margin: 25px 0px;
+  margin: 35px 0px;
   clear: both;
-  -webkit-transition-duration: 300ms;
-  transition-duration: 300ms;
+  -webkit-transition-duration: 500ms;
+  transition-duration: 500ms;
 }
 
-.card.loading {
-  -webkit-transform: translate(300%);
-  transform: translate(300%);
-  opacity: 0;
+.card.loadingright {
+  -webkit-transform: translate(100%);
+  transform: translate(100%);
+  -webkit-transition-timing-function: cubic-bezier(.55,0,.1,1);
+  transition-timing-function: cubic-bezier(.55,0,.1,1);
+}
+
+.card.loadingleft {
+  -webkit-transform: translate(-100%);
+  transform: translate(-100%);
   -webkit-transition-timing-function: cubic-bezier(.55,0,.1,1);
   transition-timing-function: cubic-bezier(.55,0,.1,1);
 }
@@ -178,6 +184,7 @@ body {
   width: 92.5%;
   max-width: 1400px;
   min-width: 800px;
+  margin: 35px auto;
 }
 
 .one-card {
@@ -192,7 +199,7 @@ body {
 
 .content-cards #content {
   background-color: #BBDEFB;
-  padding: 10px 20px;
+  padding: 0px;
   margin-top: 0px;
 }
 
@@ -530,8 +537,8 @@ ul {
 /* FOOTER */
 
 #footer {
-  width: 92%;
-  max-width: 1400px;
+  width: calc(92.5% - 40px);
+  max-width: 1360px;
   min-width: 800px;
   padding: 10px 20px;
   margin: 30px auto 30px auto;
@@ -539,7 +546,6 @@ ul {
   background-color: #616161;
   color: #FFFFFF;
   overflow: auto;
-  border-radius: 3px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
