@@ -538,7 +538,7 @@ print "<h2></h2>\n";
 
 ?>
 
-
+<a id='manage'></a>
 <div id='tablist'>
   <ul class='tabs'>
     <li><a href='#jacks-app'>Graphical View</a></li>
