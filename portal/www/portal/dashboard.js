@@ -24,146 +24,99 @@
 // dashboard.js: enable interactivity and animations on the dashboard page
 
 $(document).ready(function(){
-  if($("#slicefilterswitch").length > 0){ // they have some projects or slices
-    return_to_prev_state();
+  if ($("#slicefilterswitch").length > 0) { // they have some projects or slices
+    resume_dashboard();
   } else { // they're a brand new user
     $('#loglengthselector .selectorshown').html("day");
     get_logs("24");
   }
-
-  // Make the toggle for the projects | slices work
-  $("#sectionswitch a").click(function() {
-    if(!$(this).hasClass("activesection")){
-      $('#Projectsection').toggle();
-      $('#Slicesection').toggle();
-      $("#sectionswitch a").removeClass("activesection");
-      $(this).addClass("activesection");
-      localStorage.lastsection = $(this).html();
-    }
-  });    
   
   // Make header links and new selectors show dropdown when you hover on them
   $(".has-sub").hover(function(){ $(this).find('ul').first().show(); },
                       function(){ $(this).find('ul').hide(); });
 
   // Make the new selectors behave like regular html selects
-  $(".selector > .submenu > li").click(function(){
+  $(".selector > .submenu > li").click(function() {
     if (!$(this).hasClass("selectorlabel")){
-      $(this).parents(".selector").children(".selectorshown").html($(this).html());
-      $(this).parents(".selector").children(".selectorshown").attr("data-value", $(this).attr("data-value"));
+      update_selector($(this).parents(".selector"), $(this).attr("data-value"));
     }
   });
 
   // Make slices reappear when a filter or sort is changed
-  $("#slicefilterswitch .submenu li").click(function(){
+  $("#slicefilterswitch .submenu li").click(function() {
     if (!$(this).hasClass("selectorlabel")){
-      show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
-                $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());
+      update_slices();
     }
   });
-
-  $("#slicesortby .submenu li").click(function(){
-    show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
-                $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());
-  });
-
-  $('#sliceascendingcheck').click(function() {
-    show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
-                $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());    
-  });
+  $("#slicesortby .submenu li").click(update_slices);
+  $('#sliceascendingcheck').click(update_slices);
 
   // Same idea for projects. TODO: Sorts
-  $("#projectfilterswitch .submenu li").click(function(){
-    if (!$(this).hasClass("selectorlabel")) {
-      show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
-                $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());
-    }
-  });
-
-  $("#projectsortby .submenu li").click(function(){
-    show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
-                $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());
-  });
-
-  $('#projectascendingcheck').click(function() {
-    show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
-                $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());    
-  });
+  $("#projectfilterswitch .submenu li").click(update_projects);
+  $("#projectsortby .submenu li").click(update_projects);
+  $('#projectascendingcheck').click(update_projects);
 
   $('#loglength li').click(function() {
     localStorage.loghours = $(this).attr("data-value");
-    localStorage.loghoursstring = $(this).html();
     get_logs($(this).attr("data-value"));
   });
-
 });
 
-function save_state(section, selection, sortby, selectionstring, sortbystring) {
-  localStorage.setItem("last" + section + "selection", selectionstring);
-  localStorage.setItem("last" + section + "selectionval", selection);
-  localStorage.setItem("last" + section + "sortby", sortbystring);
-  localStorage.setItem("last" + section + "sortbyval", sortby);
+function update_slices() {
+  show_slices(get_selector_value($("#slicefilterswitch")), get_selector_value($("#slicesortby")));
 }
 
+function update_projects() {
+  show_projects(get_selector_value($("#projectfilterswitch")), get_selector_value($("#projectsortby")));
+}
 
-// Get the values that you last used and display them on page load
-function return_to_prev_state() {
-  if (localStorage.lastsliceselection && localStorage.lastsliceselectionval) {
-    $("#slicefilterswitch .selectorshown").html(localStorage.lastsliceselection);
-    $("#slicefilterswitch .selectorshown").attr("data-value", localStorage.lastsliceselectionval);
-  } else {
-    $("#slicefilterswitch .selectorshown").html($($("#slicefilterswitch .submenu li")[0]).html());
-    $("#slicefilterswitch .selectorshown").attr("data-value", $($("#slicefilterswitch .submenu li")[0]).attr("data-value"));
-  }
+// save the state of section section with filter selection and sort criterion sortby
+function save_state(section, selection, sortby) {
+  localStorage.setItem("last" + section + "selection", selection);
+  localStorage.setItem("last" + section + "sortby", sortby);
+}
 
-  if (localStorage.lastslicesortby && localStorage.lastslicesortbyval) {
-    $("#slicesortby .selectorshown").html(localStorage.lastslicesortby);
-    $("#slicesortby .selectorshown").attr("data-value", localStorage.lastslicesortbyval);
-  } else {
-    $("#slicesortby .selectorshown").html($($("#slicesortby .submenu li")[0]).html());
-    $("#slicesortby .selectorshown").attr("data-value", $($("#slicesortby .submenu li")[0]).attr("data-value"));
-  }
+// Get the values that you last used and display them
+function resume_dashboard() {
+  return_to_prev_state($("#slicefilterswitch"), "lastsliceselection");
+  return_to_prev_state($("#slicesortby"), "lastslicesortby");
+  return_to_prev_state($("#projectfilterswitch"), "lastprojectselection");
+  return_to_prev_state($("#projectsortby"), "lastprojectsortby");
 
-  if (localStorage.lastprojectselection && localStorage.lastprojectselectionval) {
-    $("#projectfilterswitch .selectorshown").html(localStorage.lastprojectselection);
-    $("#projectfilterswitch .selectorshown").attr("data-value", localStorage.lastprojectselectionval);
-  } else {
-    $("#projectfilterswitch .selectorshown").html($($("#projectfilterswitch .submenu li")[0]).html());
-    $("#projectfilterswitch .selectorshown").attr("data-value", $($("#projectfilterswitch .submenu li")[0]).attr("data-value"));
-  }
+  update_slices();
+  update_projects();
 
-  if (localStorage.lastprojectsortby && localStorage.lastprojectsortbyval) {
-    $("#projectsortby .selectorshown").html(localStorage.lastprojectsortby);
-    $("#projectsortby .selectorshown").attr("data-value", localStorage.lastprojectsortbyval);
-  } else {
-    $("#projectsortby .selectorshown").html($($("#projectsortby .submenu li")[0]).html());
-    $("#projectsortby .selectorshown").attr("data-value", $($("#projectsortby .submenu li")[0]).attr("data-value"));
-  }
-
-  show_slices($("#slicefilterswitch .selectorshown").attr("data-value"), $("#slicesortby .selectorshown").attr("data-value"),
-              $("#slicefilterswitch .selectorshown").html(), $("#slicesortby .selectorshown").html());
-
-  show_projects($("#projectfilterswitch .selectorshown").attr("data-value"), $("#projectsortby .selectorshown").attr("data-value"),
-            $("#projectfilterswitch .selectorshown").html(), $("#projectsortby .selectorshown").html());
-
-  // Retrieve the last used amount of time for the logs or default to 24 hours
-  if (localStorage.loghours && localStorage.loghoursstring) {
-    $('#loglengthselector .selectorshown').html(localStorage.loghoursstring);
+  if (localStorage.loghours) {
     get_logs(localStorage.loghours);
   } else {
     $('#loglengthselector .selectorshown').html("day");
     get_logs(24);
   }
+}
 
-  // Retrieve last used visited section on the dashboard
-  // default is slices page if no data found
-  if (localStorage.lastsection) {
-    sectionname = localStorage.lastsection
-    $("#sectionswitch a").removeClass("activesection");
-    $("#" + sectionname + "button").addClass("activesection");
-    $(".dashsection").hide();
-    $("#" + sectionname + "ection").show();
+// sets the selector to have the value stored at localStorage[storage_key] selected
+function return_to_prev_state(selector, storage_key) {
+  if (localStorage[storage_key]) {
+    update_selector(selector, localStorage[storage_key]);
+  } else {
+    update_selector(selector, get_selector_default(selector));
   }
+}
+
+// gets default selector value, aka the value of the first item in the dropdown
+function get_selector_default(selector) {
+  return selector.find("li:not(.selectorlabel)").first().attr("data-value");
+}
+
+function get_selector_value(selector) {
+  return selector.find(".selectorshown").first().attr("data-value");
+}
+
+// update a selector to display the dropdown item with newval
+function update_selector(selector, newval) { 
+  newtext = selector.find(".submenu li[data-value='" + newval + "']:not(.selectorlabel)").html();
+  selector.find(".selectorshown").attr("data-value", newval);
+  selector.find(".selectorshown").html(newtext);
 }
 
 // Retrieve all the GENI logs for the user in the past hours hours
@@ -173,31 +126,29 @@ function get_logs(hours){
   });
 }
 
-// Shows all the projects matching selection, sorting by the sorting type
-// given by sortby. *string are for use in displaying in the selectors
-function show_projects(selection, sortby, selectionstring, sortbystring) {
+// Shows all the projects matching selection, sorting by the sorting type given by sortby. 
+function show_projects(selection, sortby) {
   $("#projectarea .slicebox").addClass("gone");
   $("#projectarea .slicebox").hide();
   $(".noprojects").hide();
 
-  save_state("project", selection, sortby, selectionstring, sortbystring);
+  save_state("project", selection, sortby);
 
-  sort_slices(sortby, $("#projectascendingcheck").prop("checked"), "#projectarea");
+  sort_boxes(sortby, $("#projectascendingcheck").prop("checked"), "#projectarea");
   animate_boxes("#projectarea", selection);
 
-  // sort_slices(sortby, $("#ascendingcheck").prop("checked"));
+  // sort_boxes(sortby, $("#ascendingcheck").prop("checked"));
   if($("." + selection).length == 0) {
-    $("#projectarea").append("<h3 class='dashtext noprojects'><i>No projects to display.</i></h3>");
+    $("#projectarea").append("<h6 class='dashtext noprojects'><i>No projects to display.</i></h6>");
   }
 }
 
-// Shows all the slices matching selection, sorting by the sorting type
-// given by sortby. *string are for use in displaying in the selectors
-function show_slices(selection, sortby, selectionstring, sortbystring) {
+// Shows all the slices matching selection, sorting by the sorting type given by sortby.
+function show_slices(selection, sortby) {
   $("#slicearea .slicebox").hide();
   $(".noslices").remove();
   $(".projectinfo").hide();
-  save_state("slice", selection, sortby, selectionstring, sortbystring);
+  save_state("slice", selection, sortby);
 
   if (is_category(selection)) {
     project_name = "";
@@ -210,11 +161,11 @@ function show_slices(selection, sortby, selectionstring, sortbystring) {
     $("#" + project_name + "info").show();
   }
 
-  sort_slices(sortby, $("#sliceascendingcheck").prop("checked"), "#slicearea");
+  sort_boxes(sortby, $("#sliceascendingcheck").prop("checked"), "#slicearea");
   animate_boxes("#slicearea", class_name);
 
   if($("." + class_name).length == 0) {
-    $("#slicearea").append("<h4 class='dashtext noslices'><i>" + no_slice_msg + "</i></h4>");
+    $("#slicearea").append("<h6 class='dashtext noslices'><i>" + no_slice_msg + "</i></h6>");
   }
 }
 
@@ -239,15 +190,15 @@ function animate_boxes(container, selection) {
 }
 
 // sort boxes in container based on their values for attribute attr
-function sort_slices(attr, ascending, container) {
+function sort_boxes(attr, ascending, container) {
   numberical_attrs = ['sliceexp', 'resourceexp', 'resourcecount', 'projexp'];
-  sorted_slices = $(container).children().sort(function(a, b) {
+  sorted_slices = $(container).children(".slicebox").sort(function(a, b) {
     if ($.inArray(attr, numberical_attrs) != -1) { // is it a numerical attribute, if so, don't lexically sort
       vA = parseInt($(a).attr("data-" + attr));
       vB = parseInt($(b).attr("data-" + attr));
     } else {
-      vA = $(a).attr("data-" + attr);
-      vB = $(b).attr("data-" + attr); 
+      vA = $(a).attr("data-" + attr).toLowerCase();
+      vB = $(b).attr("data-" + attr).toLowerCase(); 
     }
     if(ascending) {
       return (vA < vB) ? -1 : (vA > vB) ? 1 : 0;

@@ -32,24 +32,9 @@ show_header('GENI Portal: Profile', $TAB_PROFILE);
 
 ?>
 
-<script type="text/javascript">
-$(document).ready(function(){
-	$("#dashcheck").change(function(){
-		alert("nice");
-		document.cookie("ayyy=lmao;path=/;");
-	});
-});
-</script>
-
 <!-- <h1>Preferences</h1> -->
-<i>(functionality coming soon)</i><br>
-Use new dashboard<input type='checkbox' id='dashcheck' value='ascending' checked>
-<script>
-$(document).ready(function(){
-
-
-});
-</script>
+<i>(functionality coming soon)</i><!-- <br>
+Use new dashboard<input type='checkbox' id='dashcheck' value='ascending' checked> -->
 
 <?php
 

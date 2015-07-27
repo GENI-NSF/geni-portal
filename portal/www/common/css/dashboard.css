@@ -2,22 +2,42 @@
 
 .dashtext {
   display: inline;
-  text-decoration: none !important;
-  font-weight: normal !important;
+}
+/*
+a {
+  vertical-align: middle;
+}
+*/
+.material-icons {
+  display: inline;
+  vertical-align: middle;
+  font-size: 18px;
+  margin: 0px 3px;
 }
 
-.activesection {
-  font-weight: bold !important;
+li .material-icons, button .material-icons, .button .material-icons{
+  font-size: 18px;
 }
 
-#sectionswitch a {
-  cursor: pointer;
+button .material-icons, .button .material-icons {
+  /*margin: 0px;*/
 }
 
-#sectionswitch a:hover {
-  cursor: pointer;
-  font-weight: bold;
-  background-color: #f9f9f9 !important; 
+td .material-icons {
+  display: inline;
+  font-size: 24px;
+}
+
+#sectionswitch {
+  height: 50px;
+  font-size: 24px;
+  line-height: 50px;
+}
+
+#sectionswitch li {
+  height: 50px;
+  line-height: 50px;
+  font-size: 24px;
 }
 
 #slicearea {
@@ -45,8 +65,7 @@
 .slicebox {
   width: 275px;
   padding: 0px;
-  margin: 20px 15px 20px 25px;
-  border-radius: 3px;
+  margin: 15px 15px 15px 25px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
@@ -59,6 +78,7 @@
 .slicebox table {
   margin: 0px !important;
   box-shadow: none !important;
+  width: 100% !important;
 }
 
 .slicebox td {
@@ -106,19 +126,25 @@
 .submenu li a {
   font-family: 'Open Sans';
   display: block;
-  text-decoration: none;
+  text-decoration: none !important;
   color: #303030;
+  width: 100%;
+  margin: 0px;
+}
+
+@keyframes selectorhighlight{
+    from {background-color: #FFFFFF; color: #303030;}
+    to {background-color: #FB8C00 !important; color: #FFFFFF !important;}
 }
 
 .submenu li a:hover {
   display: block;
-  text-decoration: none;
-  color: white;
-}
-
-.submenu li:hover {
-  background-color: #FB8C00;
-  color: white;
+  text-decoration: none !important;
+  color: white !important;
+  background-color: #FB8C00 !important;
+  animation: selectorhighlight;
+  -webkit-transition-duration: 100ms;
+  transition-duration: 100ms;
 }
 
 .selectorcontainer {
@@ -127,15 +153,14 @@
 
 .selector {
   background-color: #FFFFFF;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: normal;
   text-align: center;    
   display: inline-block;
-  min-width: 150px;
   width: 150px;
   float: right;
-  height: 30px;
-  line-height: 30px;
+  height: 25px;
+  line-height: 25px;
   margin: 0px 15px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
@@ -154,10 +179,9 @@
 
 .selector .submenu li {
   background-color: #ffffff;
-  min-width: 150px;
   width: 150px;
-  height: 30px;
-  line-height: 30px;
+  height: 25px;
+  line-height: 25px;
   margin: 0px;
 }
 
@@ -183,7 +207,15 @@
 
 #loglength {
   margin: 20px 10px;
-  width: 150px;
+  width: 100px;
+}
+
+#loglength li {
+  width: 100px;
+}
+
+#loglengthselector {
+  width: 100px;
 }
 
 #slicesortby {
@@ -191,7 +223,7 @@
 }
 
 .projectinfo {
-  margin: 0px 20px 20px 20px;
+  margin: 10px 0px;
 }
 
 .noprojects {
@@ -225,6 +257,11 @@
 .slicelink:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.sliceactions {
+  max-width: 30px;
+  padding: 5px !important;
 }
 
 .sliceactions li {
@@ -306,7 +343,7 @@
   }
 
   .slicebox {
-    margin: 20px auto;
+    margin: 10px auto;
   }
 
   #projectcontrols {

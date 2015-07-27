@@ -165,15 +165,15 @@ function add_js_script($script_url)
   $extra_js[] = $script_url;
 }
 
-function show_header($title, $active_tab = '', $load_user=1){
+function show_header($title, $active_tab = '', $load_user=1, $show_cards=false){
   if (array_key_exists("dashtype", $_REQUEST)) {
     if ($_REQUEST['dashtype'] == 1) {
-      show_old_header($title, $active_tab, $load_user );
+      show_old_header($title, $active_tab, $load_user);
     } else {
-      show_new_header($title, $active_tab, $load_user);
+      show_new_header($title, $active_tab, $load_user, $show_cards);
     }
   } else {
-    show_new_header($title, $active_tab, $load_user);
+    show_new_header($title, $active_tab, $load_user, $show_cards);
   }
 }
 
@@ -291,7 +291,7 @@ function show_old_header($title, $active_tab = '', $load_user=1)
   //  show_starter_status_bar($load_user);
 }
 
-function show_new_header($title, $active_tab = '', $load_user=1){
+function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=false){
   global $extra_js;
   global $in_maintenance_mode;
   global $in_lockdown_mode;
@@ -331,7 +331,7 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   echo '<link type="text/css" href="/common/css/newportal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
   echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400" rel="stylesheet" type="text/css">';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400|Material+Icons" rel="stylesheet" type="text/css">';
 
   if(isset($portal_analytics_enable)) {
     if($portal_analytics_enable) {
@@ -381,20 +381,21 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   if($load_user) {
     echo "<li class='has-sub headerlink'>{$user->prettyName()}";
     echo '<ul class="submenu">';
-    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
     if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
       echo '<li><a href="admin.php">Admin</a></li>';
     }
-    echo '<li><a href="preferences.php">Preferences</a></li></ul></li>';
+    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
+    // echo '<li><a href="preferences.php">Preferences</a></li>';
+    echo '</ul></li>';
   }
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
   echo '<ul class="submenu">';
-  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki <img class="expirationicon" src="/images/external.png" alt="external link to GENI Wiki" /></a></li>';
-  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations <img class="expirationicon" src="/images/external.png" alt="external link to GENI Operations" /> </a></li>';
-  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary <img class="expirationicon" src="/images/external.png" alt="external link to GENI Glossary"/></a></li>';
+  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki <i class="material-icons">launch</i></a></li>';
+  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations <i class="material-icons">launch</i> </a></li>';
+  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary <i class="material-icons">launch</i></a></li>';
   echo '<li><a href="/login-help.php">Login Help</a></li>';
-  echo '<li><a href="mailto:portal-help@geni.net">Portal Help <img class="expirationicon" src="/images/email.png" alt="email link" /></a></li>';
-  echo '<li><a href="mailto:help@geni.net">GENI Help <img class="expirationicon" src="/images/email.png" alt="email link"/></a></li>';
+  echo '<li><a href="mailto:portal-help@geni.net">Portal Help <i class="material-icons">email</i></a></li>';
+  echo '<li><a href="mailto:help@geni.net">GENI Help <i class="material-icons">email</i></a></li>';
   echo '</ul></li>';
   echo '<li class="headerlink has-sub">Tools';
   echo '<ul class="submenu">';
@@ -407,7 +408,7 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   $tool_links = array("GENI Desktop" => $gemini_url, "LabWiki" => $labwiki_url, "GENI Wireless" => $wimax_url,
                       "CloudLab" => $cloudlab_url, "SAVI" => $savi_url, "GEE" => $gee_url);
   foreach ($tool_links as $name => $url) {
-    $img = count(explode($name , "/")) > 0 ? "<img class='expirationicon' src='/images/external.png' alt='external link to $name' />" : "";
+    $img = count(explode($name , "/")) > 0 ? "<i class='material-icons'>launch</i>" : "";
     print "<li><a href='$url' target='_blank'>$name $img</a></li>";
   }
   echo '</ul></li>';
@@ -422,13 +423,19 @@ function show_new_header($title, $active_tab = '', $load_user=1){
   echo '<li><a href="profile.php#tools">Tools</a></li>';  
   echo '<li><a href="profile.php#outstandingrequests">Requests</a></li>';
   echo '</ul></li>';
-  echo '<li class="headerlink"><a href="dashboard.php">Dashboard</a></li></ul>';
-  echo '<div style="clear:both; font-size:1px;">&nbsp;</div>';
+  echo '<li class="headerlink has-sub"><a href="dashboard.php">Dashboard</a>';
+  echo '<ul class="submenu">';
+  echo '<li><a href="dashboard.php#slices">Slices</a></li>';
+  echo '<li><a href="dashboard.php#projects">Projects</a></li>';
+  // echo '<li><a href="dashboard.php#logs">Logs</a></li>';
+  echo '</ul></li></ul>';
   echo '</div>';
 
-  echo '<div style="clear:both;"></div>';
-  echo '<div id="content-outer">';
-  echo '<div id="content">';
+  $cards_class = $show_cards ? 'content-cards' : 'one-card'; 
+
+  echo '<div style="clear:both; height: 50px;">&nbsp;</div>';
+  echo "<div id='content-outer' class='$cards_class'>";
+  echo "<div id='content'>";
 }
 
 ?>
