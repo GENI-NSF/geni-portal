@@ -70,6 +70,7 @@ if (! isset($all_ams)) {
       $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
       $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
       $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
+      $single_am['attributes'] = $am[SR_ARGUMENT::SERVICE_ATTRIBUTES];
       $all_ams[$service_id] = $single_am;
     }
 }
