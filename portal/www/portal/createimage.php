@@ -71,7 +71,6 @@ function do_create_image()
   var div = $('#create_image_text_div');
   div.append($('<i>Creating image....</i>'));
   console.log("do_image_create " + image_name + " " + image_public);
-  return;
   $.getJSON('image_operations.php',
 	    {
 	    am_id : AM_ID, 
@@ -83,6 +82,7 @@ function do_create_image()
 		public: image_public
 		},
 	    function (rt, st, xhr) {
+	      div.empty();
 	      if (rt.code == 0) {
 		var image_urn = rt.value[0];
 		var image_id = rt.value[1];
@@ -92,8 +92,12 @@ function do_create_image()
 		div.append($(line2));
 		var line3 = '<br><p>To delete this image, run the following command from a UNIX shell:</p>';
 		div.append($(line3));
-		var line4 = '<p><i>omni.py -a ' + am_url + ' deleteimage ' + image_urn + '</i></p>';
+		var line4 = '<p><i>omni.py -a ' + AM_URL + ' deleteimage ' + image_urn + '</i></p>';
 		div.append($(line4));
+		var line5 = '<br><p>To list your images at this aggregate, run the following command from a UNIX shell:</p>';
+		div.append($(line5));
+		var line6 = '<p><i>omni.py -a ' + AM_URL + ' listimages </i></p>';
+		div.append($(line6));
 	      } else {
 		var line1 = '<p><b>Error creating image: </b>' + rt.output + '</p>';
 		div.append($(line1));
@@ -112,9 +116,8 @@ function do_create_image()
 
 show_header('GENI Portal: Slices', $TAB_SLICES);
 
-error_log("GET = " . print_r($_GET, true));
-error_log("AM = " . print_r($am, true));
-error_log("AMS = " . print_r($ams, true));
+// error_log("GET = " . print_r($_GET, true));
+// error_log("AM = " . print_r($am, true));
 
 print "<h1>Create Image on Selected Node</h1>";
 
