@@ -8063,6 +8063,40 @@
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
+                    "7.7689", 
+                    "49.4447"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+glab077.e4.ukl.german-lab.de:gcf+authority+am", 
+                "am": "Kaiserslautern OpenGENI", 
+                "resources": 1, 
+                "component_id": "glab078"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "7.7689", 
+                    "49.4447"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+glab077.e4.ukl.german-lab.de:gcf+authority+am", 
+                "am": "Kaiserslautern OpenGENI", 
+                "resources": 1, 
+                "component_id": "glab079"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
                     "-73.995906", 
                     "40.729371"
                 ]
@@ -35546,6 +35580,108 @@
                 "am": "Missouri InstaGENI", 
                 "resources": 1, 
                 "component_id": "internet"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-71.147599", 
+                    "42.389806"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am", 
+                "am": "GPO OpenGENI", 
+                "resources": 1, 
+                "component_id": "bbn-cam-cmpe-1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-71.147599", 
+                    "42.389806"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "unknown", 
+                "am_id": "urn:publicid:IDN+bbn-cam-ctrl-1.gpolab.bbn.com+authority+am", 
+                "am": "GPO OpenGENI", 
+                "resources": 1, 
+                "component_id": "bbn-cam-cmpe-2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-82.839167", 
+                    "34.678333"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+clemson-clemson-control-1.clemson.edu+authority+am", 
+                "am": "Clemson OpenGENI", 
+                "resources": 1, 
+                "component_id": "clemson-clemson-compute-1"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-82.839167", 
+                    "34.678333"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+clemson-clemson-control-1.clemson.edu+authority+am", 
+                "am": "Clemson OpenGENI", 
+                "resources": 1, 
+                "component_id": "clemson-clemson-compute-3"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-82.839167", 
+                    "34.678333"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+clemson-clemson-control-1.clemson.edu+authority+am", 
+                "am": "Clemson OpenGENI", 
+                "resources": 1, 
+                "component_id": "clemson-clemson-compute-2"
+            }
+        }, 
+        {
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    "-82.839167", 
+                    "34.678333"
+                ]
+            }, 
+            "type": "Feature", 
+            "properties": {
+                "type": "pc", 
+                "am_id": "urn:publicid:IDN+clemson-clemson-control-1.clemson.edu+authority+am", 
+                "am": "Clemson OpenGENI", 
+                "resources": 1, 
+                "component_id": "clemson-clemson-compute-4"
             }
         }, 
         {
