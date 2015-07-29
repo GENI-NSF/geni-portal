@@ -31,6 +31,7 @@ require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
 require_once('cs_constants.php');
+require_once("tool-jfed.php");
 include_once('/etc/geni-ch/settings.php');
 
 
@@ -219,7 +220,7 @@ function show_old_header($title, $active_tab = '', $load_user=1)
   echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
   echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
   echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
-  echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
+  echo '<link type="text/css" rel="stylesheet" media="(max-width: 480px)" href="/common/css/mobile-portal.css" />';
   echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400,700" rel="stylesheet" type="text/css">';
   
   /* Google Analytics
@@ -384,8 +385,15 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
     if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
       echo '<li><a href="admin.php">Admin</a></li>';
     }
-    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
     // echo '<li><a href="preferences.php">Preferences</a></li>';
+    echo '<li><a href="profile.php#accountsummary">Account</a></li>';
+    echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
+    echo '<li><a href="profile.php#ssl">SSL</a></li>';
+    echo '<li><a href="profile.php#omni">Omni</a></li> ';
+    echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
+    echo '<li><a href="profile.php#tools">Tools</a></li>'; 
+    echo '<li><a href="profile.php#outstandingrequests">Requests</a></li>';
+    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
     echo '</ul></li>';
   }
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
@@ -397,45 +405,64 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo '<li><a href="mailto:portal-help@geni.net">Portal Help <i class="material-icons">email</i></a></li>';
   echo '<li><a href="mailto:help@geni.net">GENI Help <i class="material-icons">email</i></a></li>';
   echo '</ul></li>';
+
+  if (! isset($jfed_button_start)) {
+    $jfedret = get_jfed_strs($user);
+    $jfed_script_text = $jfedret[0];
+    $jfed_button_start = $jfedret[1];
+    $jfed_button_part2 = $jfedret[2];
+    if (! is_null($jfed_button_start)) {
+      print $jfed_script_text;
+    }
+  }
+
+
   echo '<li class="headerlink has-sub">Tools';
   echo '<ul class="submenu">';
-  $gemini_url = relative_url("gemini.php");
-  $labwiki_url = 'http://labwiki.casa.umass.edu'; 
-  $wimax_url = relative_url("wimax-enable.php");
-  $cloudlab_url = "https://www.cloudlab.us/login.php";
-  $savi_url = relative_url("savi.php");
-  $gee_url = "http://gee-project.org/user";
-  $tool_links = array("GENI Desktop" => $gemini_url, "LabWiki" => $labwiki_url, "GENI Wireless" => $wimax_url,
-                      "CloudLab" => $cloudlab_url, "SAVI" => $savi_url, "GEE" => $gee_url);
-  foreach ($tool_links as $name => $url) {
-    $img = count(explode($name , "/")) > 0 ? "<i class='material-icons'>launch</i>" : "";
-    print "<li><a href='$url' target='_blank'>$name $img</a></li>";
+  echo "<li><a href='gemini.php' target='_blank'>GENI Desktop<i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='wimax-enable.php' target='_blank'>GENI Wireless</a></li>";
+  echo "<li><a href='irods.php' target='_blank'>iRods</a></li>";
+  if (! is_null($jfed_button_start)) {
+    echo "<li>";
+    echo $jfed_button_start . getjFedSliceScript(NULL) . $jfed_button_part2 . ">jFed<i class='material-icons'>launch</i></button>";
+    echo "</li>";
   }
+  echo "<li><a href='http://labwiki.casa.umass.edu' target='_blank'>LabWiki <i class='material-icons'>launch</i></a></li>";
   echo '</ul></li>';
 
-  echo '<li class="headerlink has-sub"><a href="profile.php">Profile</a>';
+  // echo '<li class="headerlink has-sub"><a href="profile.php">Profile</a>';
+  // echo '<ul class="submenu">';
+  // echo '</ul></li>';
+
+  echo '<li class="headerlink has-sub">Links';
   echo '<ul class="submenu">';
-  echo '<li><a href="profile.php#accountsummary">Account</a></li>';
-  echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
-  echo '<li><a href="profile.php#ssl">SSL</a></li>';
-  echo '<li><a href="profile.php#omni">Omni</a></li> ';
-  echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
-  echo '<li><a href="profile.php#tools">Tools</a></li>';  
-  echo '<li><a href="profile.php#outstandingrequests">Requests</a></li>';
+  echo "<li><a href='https://www.cloudlab.us/login.php' target='_blank'>CloudLab <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://gee-project.org/user' target='_blank'>GEE <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='https://geni.orbit-lab.org/' target='_blank'>ORBIT<i class='material-icons'>launch</i></a></li>";
+  echo '<li><a href="genimap.php">Resource map</a></li>';
+  echo "<li><a href='savi.php' target='_blank'>SAVI</a></li>";
+  echo "<li><a href='http://witestlab.poly.edu/site/index.php' target='_blank'>WiTest<i class='material-icons'>launch</i></a></li>";
   echo '</ul></li>';
-  echo '<li class="headerlink has-sub"><a href="dashboard.php">Dashboard</a>';
+
+
+  echo '<li class="headerlink has-sub"><a href="dashboard.php">Home</a>';
   echo '<ul class="submenu">';
   echo '<li><a href="dashboard.php#slices">Slices</a></li>';
   echo '<li><a href="dashboard.php#projects">Projects</a></li>';
-  // echo '<li><a href="dashboard.php#logs">Logs</a></li>';
+  echo '<li><a href="dashboard.php#logs">Logs</a></li>';
   echo '</ul></li></ul>';
   echo '</div>';
 
   $cards_class = $show_cards ? 'content-cards' : 'one-card'; 
 
   echo '<div style="clear:both; height: 50px;">&nbsp;</div>';
+
   echo "<div id='content-outer' class='$cards_class'>";
   echo "<div id='content'>";
+  if($has_maintenance_alert) {
+    // TODO: make a dismiss button 
+    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p></br>";
+  }
 }
 
 ?>

@@ -89,7 +89,7 @@ body {
   background-color: #FFFFFF;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   padding: 20px;
-  margin: 35px 0px;
+  margin: 25px 0px;
   clear: both;
   -webkit-transition-duration: 500ms;
   transition-duration: 500ms;
@@ -109,12 +109,18 @@ body {
   transition-timing-function: cubic-bezier(.55,0,.1,1);
 }
 
+.tabs {
+  margin: 0px;
+}
+
 .tabs li {
   display: inline;
 }
 
 .tab {
-  font-size: 16px;
+  text-align: center;
+  min-width: 75px;
+  font-size: 15px;
   padding: 15px;
   text-decoration: none !important;
 }
@@ -182,9 +188,9 @@ body {
   margin-left: auto;
   margin-right: auto;
   width: 92.5%;
-  max-width: 1400px;
+  max-width: 1500px;
   min-width: 800px;
-  margin: 35px auto;
+  margin: 25px auto 35px auto;
 }
 
 .one-card {
@@ -538,7 +544,7 @@ ul {
 
 #footer {
   width: calc(92.5% - 40px);
-  max-width: 1360px;
+  max-width: 1460px;
   min-width: 800px;
   padding: 10px 20px;
   margin: 30px auto 30px auto;
@@ -689,7 +695,7 @@ ul {
 }
 
 .instruction {
-  background-color: #E5E5E5;
+  background-color: #FFFFFF;
   border-left: 10px solid green;
   color: #616161;
   padding: 20px;
@@ -697,6 +703,7 @@ ul {
   margin-left: 0px !important;
   margin-top: 20px !important;
   margin-bottom: 20px !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 .instruction:before {

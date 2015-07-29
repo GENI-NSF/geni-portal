@@ -56,8 +56,10 @@ if (array_key_exists("slice_description", $_REQUEST)) {
 }
 
 if (is_null($project_id) || $project_id == '') {
-  error_log("createslice: invalid project_id from GET");
-  relative_redirect("home.php");
+  $project_name = get_users_projects($user);
+  $project_id_input = '';
+} else {
+  $project_id_input =  "<input type='hidden' name='project_id' value='$project_id'/>";
 }
 
 if (!is_null($slice_name) && $slice_name == '') {
@@ -78,6 +80,21 @@ function sa_create_slice($user, $slice_name, $project_id, $project_name, $descri
   $result = create_slice($sa_url, $user, $project_id, $project_name,
                          $slice_name, $owner_id, $description);
   return $result;
+}
+
+function get_users_projects($user) {
+  $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+  $member_id = $user->account_id;
+  $projects = get_project_info_for_member($sa_url, $user, $member_id);
+  print_r($info);
+  $select = '<select name="project_id" form="createsliceform">';
+  foreach ($projects as $project) {
+    $select .= "<option value='" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID] . "'>";
+    $select .= $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+    $select .= "</option>";
+  }
+  $select .= "</select>";
+  return $select;
 }
 
 // Do we have all the required params?
@@ -105,16 +122,15 @@ if ($slice_name) {
 require_once("header.php");
 show_header('GENI Portal: Slices', '');
 if ($message) {
-  // It would be nice to put this in red...
   print "<i>" . $message . "</i>\n";
 }
-include("tool-breadcrumbs.php");
+// include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 print "<h1>Create New Slice</h1>\n";
 print "<p>A GENI slice is a container for reserving and managing a set of GENI resources.</p>\n";
-print '<form method="GET" action="createslice.php">';
+print '<form method="GET" action="createslice.php" id="createsliceform">';
 print "\n";
-print "<input type='hidden' name='project_id' value='$project_id'/>";
+print $project_id_input;
 print "\n";
 print "<table>";
 print "<tr><th>Project name</th><td><b>$project_name</b></td></tr>\n";

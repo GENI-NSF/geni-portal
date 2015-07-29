@@ -126,6 +126,35 @@ function get_logs(hours){
   });
 }
 
+function renew_slice(slice_id, days, count, sliceexphours) {
+  result = true;
+  if (count > 10) {
+    result = confirm("This action will renew resources at "
+                     + count
+                     + " aggregates and may take several minutes.");
+  }
+
+  if (result) {
+    var newexp = new Date();
+    // (sliceexphours / 24) ?!?!?!?1 TODO: ask tom
+    newexp.setDate(newexp.getDate() + days);
+    var d = newexp.getDate();
+    var m = newexp.getMonth() + 1;
+    var y = newexp.getFullYear();
+
+    var newexpstring = y + '-' + m + '-'+ d; 
+  }
+  
+  if (count > 0) {
+    url = "do-renew.php?renew=slice_sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;
+    info_set_location(slice_id, url);
+  } else {
+    url = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;
+    window.location = url;
+  }
+
+}
+
 // Shows all the projects matching selection, sorting by the sorting type given by sortby. 
 function show_projects(selection, sortby) {
   $("#projectarea .slicebox").addClass("gone");
@@ -139,7 +168,7 @@ function show_projects(selection, sortby) {
 
   // sort_boxes(sortby, $("#ascendingcheck").prop("checked"));
   if($("." + selection).length == 0) {
-    $("#projectarea").append("<h6 class='dashtext noprojects'><i>No projects to display.</i></h6>");
+    $("#projectarea").append("<h6 style='margin:15px;' class='noprojects'><i>No projects to display.</i></h6>");
   }
 }
 
@@ -154,6 +183,7 @@ function show_slices(selection, sortby) {
     project_name = "";
     class_name = selection;
     no_slice_msg = "No slices to display.";
+    $("#categoryinfo").show();
   } else {
     project_name = selection;
     class_name = selection + "slices";
@@ -165,7 +195,7 @@ function show_slices(selection, sortby) {
   animate_boxes("#slicearea", class_name);
 
   if($("." + class_name).length == 0) {
-    $("#slicearea").append("<h6 class='dashtext noslices'><i>" + no_slice_msg + "</i></h6>");
+    $("#slicearea").append("<h6 style='margin:15px;' class='noslices'><i>" + no_slice_msg + "</i></h6>");
   }
 }
 

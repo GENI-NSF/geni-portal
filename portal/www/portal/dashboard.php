@@ -40,27 +40,25 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 show_header('GENI Portal: Dashboard', $TAB_HOME, true, true);
+include("tool-showmessage.php");
+
 ?>
 
 <script src='dashboard.js'></script>
 <?php include "cards.js"; ?>
 
 <script>
-function info_set_location(slice_id, url)
+function info_set_location(slice_id, url, stop_if_none)
 {
   $.getJSON("aggregates.php", { slice_id: slice_id },
     function (responseTxt, statusTxt, xhr) {
         var json_agg = responseTxt;
         var agg_ids = Object.keys(json_agg);
         var agg_count = agg_ids.length;
-        if (agg_count > 0) {
-            for (var i = 0; i < agg_count; i++) {
-                url += "&am_id[]=" + agg_ids[i];
-            }
-            window.location = url;
-        } else {
-            alert("This slice has no known resources. \n\nSomething missing? Select aggregates manually on the slice page.");
+        for (var i = 0; i < agg_count; i++) {
+            url += "&am_id[]=" + agg_ids[i];
         }
+        window.location = url;
     })
     .fail(function() {
         alert("Unable to locate sliver information for this slice.");
@@ -194,11 +192,13 @@ if (! $user->portalIsAuthorized()) {
       $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
       $project_options .= "<li data-value='{$project_name}'>$project_name</li>";
       $project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
-      $project_info .= "Project lead: $lead_name | $create_slice_button $manage_project_button</div>";
+      // $project_info .= "Project lead: $lead_name | $create_slice_button $manage_project_button</div>";
+      $project_info .= "$create_slice_button $manage_project_button</div>";
+
       $show_info = "style='display:none;'";
 
       $expired_project_class = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED] ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
-      $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS" : "-THEIR-PROJECTS-";
+      $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
       $categories = "$expired_project_class $project_lead_class";
 
       $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories);
@@ -248,6 +248,9 @@ if (! $user->portalIsAuthorized()) {
     print "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
     print "<li data-value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
     print "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br></div>";
+    $project_info .= "<div $show_info class='projectinfo' id='categoryinfo'>";
+    $project_info .= "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a></div>";
+
     print $project_info;
 
     print "<div id='slicearea' style='clear:both;'>";
@@ -282,11 +285,12 @@ if (! $user->portalIsAuthorized()) {
       $query = http_build_query($args);
       $add_resource_url = "slice-add-resources-jacks.php?" . $query;
       $delete_resource_url = "confirm-sliverdelete.php?" . $query;
-      $listres_url = "listresources.php?";
+      $listres_url = "listresources.php?" . $query;
       $slice_url = "slice.php?" . $query;
       $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
       if (!array_key_exists($slice_project_id, $project_objects)) {
         $slice_project_name = "-Expired Project-";
+        $project = array();
       } else {
         $project = $project_objects[ $slice_project_id ];
         $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -297,6 +301,17 @@ if (! $user->portalIsAuthorized()) {
 
       $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
       $slice_exp = get_time_diff($slice_exp_date);
+      // determine maximum date of slice renewal
+      $renewal_days = min($portal_max_slice_renewal_days, 7);
+      $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+      if ($project_expiration) {
+        $project_expiration_dt = new DateTime($project_expiration);
+        $now_dt = new DateTime();
+        $difference = $project_expiration_dt->diff($now_dt);
+        $renewal_days = $difference->days;
+        // take the minimum of the two as the constraint
+        $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, 7);
+      }
 
       if (count($slivers) == 0) {
         $resource_exp = 1000000000;
@@ -312,14 +327,14 @@ if (! $user->portalIsAuthorized()) {
         $resource_exp = get_time_diff(dateUIFormat($next_exp)); 
       }
       make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
-                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url);
+                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $renewal_days);
     }
 
     print "</div></div>";
   }
 
   function make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
-                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url) {
+                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $renewal_days) {
     $has_resources = $resource_count > 0 ? "-has-resources-" : "-no-resources-";
     print "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
                 data-resourcecount='$resource_count' data-slicename='$slice_name' 
@@ -331,32 +346,35 @@ if (! $user->portalIsAuthorized()) {
       $resource_exp_string = get_time_diff_string($resource_exp);
       $resource_exp_color = get_urgency_color($resource_exp);
       $resource_exp_icon = get_urgency_icon($resource_exp);
-      $resource_info = "<b>$resource_count</b> resource{$plural}, next expiration in <b style='color: #{$resource_exp_color}'>$resource_exp_string</b>";
+      $resource_info = "<b>$resource_count</b> resource{$plural}, next exp. in <b style='color: $resource_exp_color'>$resource_exp_string</b>";
+      $resource_exp_icon = "<i class='material-icons' style='color: $resource_exp_color;'>$resource_exp_icon</i>";
     } else {
       $resource_info = "<i>No resources for this slice</i>";
+      $resource_exp_icon = "<i></i>";
     }
     $slice_exp_string = get_time_diff_string($slice_exp);
     $slice_exp_color = get_urgency_color($slice_exp);
     $slice_exp_icon = get_urgency_icon($slice_exp);
-    $slice_info = "Slice expires in <b style='color: #{$slice_exp_color}'>$slice_exp_string</b>";
-    print "<tr><td class='slicetopbar' title='Manage slice $slice_name' style='text-align:left;' onclick='window.location=\"$slice_url\"'>";
-    print "$slice_name</td>";
+    $slice_info = "Slice expires in <b style='color: $slice_exp_color'>$slice_exp_string</b>";
+    print "<tr><td class='slicetopbar' title='Manage slice $slice_name' style='text-align:left;'>";
+    print "<a class='slicename' href='$slice_url'>$slice_name</a></td>";
     print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub' style='color: #ffffff;'>";
     print "<i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
     print "<li><a href='$slice_url'>Manage slice</a></li>";
+    print "<li><a onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, \"$slice_exp\");'>Renew slice ($renewal_days days)</a></li>";
     print "<li><a href='$add_url'>Add resources</a></li>";
     if ($resource_count > 0) {
       print "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
-      print "<li><a href='$remove_url'>Remove resources</a></li>";
+      print "<li><a onclick='info_set_location(\"$slice_id\", \"$remove_url\")'>Remove resources</a></li>";
     }
     print "</ul></li></ul></td></tr>";
-    // print "<tr><td colspan='2' style='width:200px;'>Project: $slice_project_name</td></tr>";
-    print "<tr><td colspan='2' style='width:200px;'>Lead: $lead_name</td></tr>";
-    print "<tr><td style='width:200px;'>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
+    print "<tr><td colspan='2'><b>Project:</b> $project_name </td></tr>";
+    print "<tr><td colspan='2'><b>Owner:</b> $lead_name</td></tr>";
+    print "<tr><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
     print "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
-    print "<tr><td style='border-bottom:none; height:55px;'>$resource_info</td>";
+    print "<tr style='height:50px;'><td style='border-bottom:none; height: 30px;'>$resource_info</td>";
     print "<td style='vertical-align: middle; border-bottom:none'>";
-    print "<i class='material-icons' style='color: $resource_exp_color;'>$resource_exp_icon</i></td></tr>";
+    print "$resource_exp_icon</td></tr>";
     print "</table></div>";
   }
   
@@ -370,12 +388,14 @@ if (! $user->portalIsAuthorized()) {
     $box = '';
     $box .= "<div class='floatleft slicebox $categories' data-projname='$project_name' data-projexp='$exp_diff'>";
     $box .= "<table><tr class='slicetopbar'>";
-    $box .= "<td class='slicetopbar' style='text-align: left;' onclick='window.location=\"project.php?project_id=$project_id\"'>$project_name</td>";
-    $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'><ul><li class='has-sub'><i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
-    $box .= "<li onclick='window.location=\"project.php?project_id=$project_id\"'>Manage project</li>";
-    $box .= "<li onclick='window.location=\"createslice.php?project_id=$project_id\"'>New slice</li>";
-    $box .= "<li onclick='window.location=\"edit-project.php?project_id=$project_id\"'>Edit project</li>";
-    $box .= "<li onclick='window.location=\"edit-project-member.php?project_id=$project_id\"'>Edit membership</li>";
+    $box .= "<td class='slicetopbar' style='text-align: left;'>";
+    $box .= "<a href='project.php?project_id=$project_id' class='projectname'>$project_name</a></td>";
+    $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'>";
+    $box .= "<ul><li class='has-sub'><i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
+    $box .= "<li><a href='project.php?project_id=$project_id'>Manage project</a></li>";
+    $box .= "<li><a href='createslice.php?project_id=$project_id'>New slice</a></li>";
+    $box .= "<li><a href='edit-project.php?project_id=$project_id'>Edit project</a></li>";
+    $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
     $box .= "</ul></li></ul></td></tr>";
     $box .= "<tr><td colspan='2'>Lead: $lead_name</td></tr>";
     // $box .= "<tr><td colspan='2'>Lead: $lead_name</td></tr>"; 5 slices, next expiration: 
@@ -387,13 +407,13 @@ if (! $user->portalIsAuthorized()) {
       $expiration_color = get_urgency_color($exp_diff);
       $expiration_string = "Project expires in <b style='color: $expiration_color'>$expiration_string</b>";
       $expiration_icon = get_urgency_icon($exp_diff);
-      $expiration_icon = "<img class='expirationicon' alt='project expiration icon' src='/images/{$expiration_icon}.png'/>";
+      $expiration_icon = "<i class='material-icons' style='color: $expiration_color'>$expiration_icon</i>";
     } else {
       $expiration_string = "<i>No expiration</i>";
       $expiration_icon = "";
     }
     $box .= "<tr><td style='border-bottom:none'>$expiration_string</td>";
-    $box .= "<td style='vertical-align: middle; border-bottom:none'>$expiration_icon</td></tr>";
+    $box .= "<td style='vertical-align: middle; border-bottom:none; height: 35px;'>$expiration_icon</td></tr>";
     $box .= "</table></div>";
     return $box;
   }

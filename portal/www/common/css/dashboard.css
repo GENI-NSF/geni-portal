@@ -28,18 +28,6 @@ td .material-icons {
   font-size: 24px;
 }
 
-#sectionswitch {
-  height: 50px;
-  font-size: 24px;
-  line-height: 50px;
-}
-
-#sectionswitch li {
-  height: 50px;
-  line-height: 50px;
-  font-size: 24px;
-}
-
 #slicearea {
   overflow-x: hidden;
 }
@@ -63,9 +51,9 @@ td .material-icons {
 }
 
 .slicebox {
-  width: 275px;
+  width: 290px;
   padding: 0px;
-  margin: 15px 15px 15px 25px;
+  margin: 15px 10px 15px 20px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
@@ -81,21 +69,35 @@ td .material-icons {
   width: 100% !important;
 }
 
-.slicebox td {
-  padding: 12px 4px;
+#content .slicebox td {
+  font-size: 14px;
 }
 
-.slicetopbar {
+#content .slicebox .slicetopbar {
   background-color: #F57F21 !important;
-  height: 30px;
-  line-height: 30px;
+  font-size: 15px;
   color: white !important;
 }
 
-.slicetopbar:hover {
+#content .slicebox .slicetopbar:hover {
   background-color: #FB8C00 !important;
   cursor: pointer;
 }
+
+.slicename, .projectname {
+  display: block;
+  color: #FFFFFF !important;
+  text-decoration: none !important;
+  width: 100%;
+  max-width: 200px;
+  text-overflow: hidden;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.slicename:hover, .projectname:hover {
+  background-color: #FB8C00 !important;
+} 
 
 /* Header submenus and new selects */
 
@@ -119,6 +121,7 @@ td .material-icons {
   width: 150px;
   height: 30px;
   line-height: 30px;
+  font-size: 15px;
   margin: 0px;
   text-align: center;
 }
@@ -130,6 +133,37 @@ td .material-icons {
   color: #303030;
   width: 100%;
   margin: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* thanks jfed */
+.submenu li button {
+  font-family: 'Open Sans';
+  border: 0px;
+  background-color: #FFFFFF;
+  display: block;
+  text-decoration: none !important;
+  color: #303030;
+  width: 100%;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 15px;
+}
+
+.submenu li button:focus {
+  outline: none;
+}
+
+.submenu li button:hover {
+  cursor: pointer;
+  background-color: #FB8C00 !important;
+  color: #FFFFFF;
+  animation: selectorhighlight;
+  -webkit-transition-duration: 100ms;
+  transition-duration: 100ms;
 }
 
 @keyframes selectorhighlight{
@@ -183,6 +217,10 @@ td .material-icons {
   height: 25px;
   line-height: 25px;
   margin: 0px;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .selector .submenu li:hover {
@@ -228,12 +266,10 @@ td .material-icons {
 
 .noprojects {
   clear: both;
-  margin-top: 30px !important;
 }
 
 .noslices {
   clear: both;
-  margin-top: 30px !important;
 }
 
 .purposebox {
@@ -274,6 +310,7 @@ td .material-icons {
 
 .sliceactions li .submenu li {
   height: 30px;
+  font-size: 13px;
 }
 
 .expirationicon {
@@ -293,7 +330,16 @@ td .material-icons {
 
 /* ----------- MOBILE DASHBOARD ----------------*/
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
+
+  .has-sub > a {
+    pointer-events: none;
+  }
+
+  .selectorcontainer {
+    margin: 5px;
+  }
+
   .mobilebreak {
     display: block;
   }
@@ -326,7 +372,7 @@ td .material-icons {
 
   #dashboardtools li .submenu {
     left: 130px;
-    top: 50px;
+    top: 0px;
   }
 
   .dashtext {
@@ -343,7 +389,12 @@ td .material-icons {
   }
 
   .slicebox {
-    margin: 10px auto;
+    margin: 20px auto;
+  }
+
+  .sliceactions .submenu {
+    position: absolute;
+    right: 30px;
   }
 
   #projectcontrols {
