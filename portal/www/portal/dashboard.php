@@ -181,6 +181,25 @@ if (! $user->portalIsAuthorized()) {
     $show_info = "";
     $project_boxes = "";
     $user_id = $user->account_id;
+
+    // Project join requests
+    $project_request_map = array();
+    if (count($project_objects) > 0) {
+      $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
+                  CS_CONTEXT_TYPE::PROJECT);
+      foreach ($reqlist as $req) {
+         if ($req[RQ_REQUEST_TABLE_FIELDNAME::STATUS] != RQ_REQUEST_STATUS::PENDING){
+            continue;
+         }
+         $context_id = $req[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID];
+         if (array_key_exists($context_id , $project_request_map )) {
+           $project_request_map[$context_id][] = $req;
+         } else {
+           $project_request_map[$context_id] = array($req);
+         }
+     }                       
+    }
+
     foreach ($project_objects as $project) {
       $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
       $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
@@ -200,8 +219,9 @@ if (! $user->portalIsAuthorized()) {
       $expired_project_class = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED] ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
       $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
       $categories = "$expired_project_class $project_lead_class";
+      $handle_req_str = get_pending_requests($project_id, $project_request_map);
 
-      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories);
+      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str);
     }
     $project_options .= "</ul></li></ul>";
     
@@ -378,7 +398,7 @@ if (! $user->portalIsAuthorized()) {
     print "</table></div>";
   }
   
-  function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories) {
+  function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str) {
     if ($expiration) {
       $exp_diff = get_time_diff($expiration);
     } else {
@@ -397,12 +417,11 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<li><a href='edit-project.php?project_id=$project_id'>Edit project</a></li>";
     $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
     $box .= "</ul></li></ul></td></tr>";
-    $box .= "<tr><td colspan='2'>Lead: $lead_name</td></tr>";
-    // $box .= "<tr><td colspan='2'>Lead: $lead_name</td></tr>"; 5 slices, next expiration: 
+    $box .= "<tr><td colspan='2'>Lead: $lead_name $handle_req_str</td></tr>";
     $box .= "<tr><td colspan='2'>";
     $purpose = !$purpose ? "<i>None</i>" : $purpose;
     $box .= "<div class='purposebox'>Purpose: $purpose</div></td></tr>";
-    if($expiration) {
+    if ($expiration) {
       $expiration_string = get_time_diff_string($exp_diff);
       $expiration_color = get_urgency_color($exp_diff);
       $expiration_string = "Project expires in <b style='color: $expiration_color'>$expiration_string</b>";
@@ -463,6 +482,28 @@ if (! $user->portalIsAuthorized()) {
       return "check_circle";
     }
   }
+
+  function get_pending_requests($project_id, $project_request_map) {
+    global $user;
+    $handle_req_str = "";
+    if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+      if (array_key_exists($project_id , $project_request_map )) {
+        $reqcnt = count($project_request_map[$project_id]);
+      } else {
+        $reqcnt = 0;
+      }
+      if ($reqcnt == 0) {
+        $handle_req_str = "";
+      } elseif ($reqcnt == 1) {
+        $rid = $project_request_map[$project_id][0][RQ_REQUEST_TABLE_FIELDNAME::ID];
+        $handle_req_str = "(<a href=\"handle-project-request.php?request_id=$rid\"><b>$reqcnt</b> join request</a>) ";
+      } else {
+        $handle_req_str = "(<a href=\"handle-project-request.php?project_id=$project_id\"><b>$reqcnt</b> join requests</a>) ";
+      }
+    }
+    return $handle_req_str;
+  }
+
 ?>
 
 <div class='card' data-cardname='logs' id='logs'>
