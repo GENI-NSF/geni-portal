@@ -58,8 +58,10 @@ if (array_key_exists("slice_description", $_REQUEST)) {
 if (is_null($project_id) || $project_id == '') {
   $project_name = get_users_projects($user);
   $project_id_input = '';
+  $show_breadcrumbs = false;
 } else {
   $project_id_input =  "<input type='hidden' name='project_id' value='$project_id'/>";
+  $show_breadcrumbs = true;
 }
 
 if (!is_null($slice_name) && $slice_name == '') {
@@ -124,7 +126,10 @@ show_header('GENI Portal: Slices', '');
 if ($message) {
   print "<i>" . $message . "</i>\n";
 }
-// include("tool-breadcrumbs.php");
+
+if ($show_breadcrumbs) {
+  include("tool-breadcrumbs.php");
+}
 include("tool-showmessage.php");
 print "<h1>Create New Slice</h1>\n";
 print "<p>A GENI slice is a container for reserving and managing a set of GENI resources.</p>\n";
