@@ -64,6 +64,46 @@ var PROJECT_NAME = "<?php echo $project_name ?>";
 var SLIVER_ID = window.location.href.split('sliver_id=')[1];
 var AM_URL = "<?php echo $am['service_url'] ?>";
 
+function add_image_info(image_urn, image_id)
+{
+  var div = $('#create_image_text_div');
+  div.empty();
+
+  var line0 = '<p>Your image is being created. You will receive an email ' + 
+    'from the aggregate administrator when the image is ready.</p>';
+  div.append($(line0));
+
+  var line_table = '<table>' + 
+    '<tr><th>Image URN</th><td>' + image_urn + '</td></tr>' + 
+    '<tr><th>Image ID</th><td>' + image_id + '</td></tr>' + 
+    '</table>';
+  div.append($(line_table));
+  var line3a = '<p>To use this image at this aggregate in Jacks, ' + 
+    '\n\tselect <i>Other...</i> under the Disk Image pulldown and enter the image URN.</pr>';
+  div.append($(line3a));
+  var line3 = '<p>To delete this image, run the following command from a command line:</p>';
+  div.append($(line3));
+  var line4 = '<pre><i>omni -a ' + AM_URL + ' deleteimage ' + image_urn + '</i></pre>';
+  div.append($(line4));
+  var line5 = '<p>To list your images at this aggregate, run the following command from a command line:</p>';
+  div.append($(line5));
+  var line6 = '<pre><i>omni -a ' + AM_URL + ' listimages </i></pre>';
+  div.append($(line6));
+  var line7 = '<p>More information about managing images is available ' + 
+    '<a href="http://groups.geni.net/geni/wiki/HowTo/ManageCustomImagesInstaGENI">here</a>.</p>';
+  div.append($(line7));
+
+}
+
+function add_image_error(msg)
+{
+  var div = $('#create_image_text_div');
+  div.empty();
+
+  var line1 = '<code><b>Error creating image: </b>' + msg + '</code>';
+  div.append($(line1));
+}
+
 function do_create_image()
 {
   image_name = ($('#create_image_name'))[0].value;
@@ -82,31 +122,16 @@ function do_create_image()
 		public: image_public
 		},
 	    function (rt, st, xhr) {
-	      div.empty();
 	      if (rt.code == 0) {
 		var image_urn = rt.value[0];
 		var image_id = rt.value[1];
-		var line1 = '<p><b>Image ID: </b>' + image_id + '</p>';
-		div.append($(line1));
-		var line2 = '<p><b>Image URN: </b>' + image_urn + '</p>';
-		div.append($(line2));
-		var line3 = '<br><p>To delete this image, run the following command from a UNIX shell:</p>';
-		div.append($(line3));
-		var line4 = '<p><i>omni.py -a ' + AM_URL + ' deleteimage ' + image_urn + '</i></p>';
-		div.append($(line4));
-		var line5 = '<br><p>To list your images at this aggregate, run the following command from a UNIX shell:</p>';
-		div.append($(line5));
-		var line6 = '<p><i>omni.py -a ' + AM_URL + ' listimages </i></p>';
-		div.append($(line6));
+		add_image_info(image_urn, image_id);
 	      } else {
-		var line1 = '<p><b>Error creating image: </b>' + rt.output + '</p>';
-		div.append($(line1));
+		add_image_error(rt.output);
 	      }
 	    })
 	    .fail(function (xhr, ts, et) {
-		div.empty();
-		var line1 = '<p><b>Error creating image: </b>' + et + '</p>';
-		div.append($(line1));
+		add_image_error(et);
 	      }
 	    );
 }
@@ -122,16 +147,17 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 print "<h1>Create Image on Selected Node</h1>";
 
 print "<form method='POST' >";
-print "Image Name: <input name='ImageName' type='text' id='create_image_name' size='30'><br>";
-print "Public <input name='ImagePublic' type='radio' checked='checked' id='create_image_public'/>";
-print "Private <input name='ImagePrivate' type='radio' id='create_image_private'><br>";
+
+print "<table><tr><th>Image Name</th><td><input type='text' id='create_image_name' size'30'></td></tr>";
+print "<tr><th>Image Visibility</th><td>Public <input type='radio' checked='checked' name='create_image_visibility' id='create_image_public'> Private <input type='radio' name='create_image_visibility' id='create_image_private'></td></tr>";
+print "</table>";
 
 print "<input type='button' value='Create' onclick='do_create_image()' />";
 print "<input type='button' value='Back' onclick='history.back(-1)'/>";
 
 print "</form>";
 
-print "<div id='create_image_text_div' class='xml' style='display:block' >";
+print "<div id='create_image_text_div' style='display:block' >";
 print "</div>";
 
 
