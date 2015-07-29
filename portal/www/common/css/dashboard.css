@@ -90,7 +90,7 @@ td .material-icons {
   text-decoration: none !important;
   width: 100%;
   max-width: 200px;
-  text-overflow: hidden;
+  text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -133,9 +133,6 @@ td .material-icons {
   color: #303030;
   width: 100%;
   margin: 0px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* thanks jfed */
@@ -183,6 +180,7 @@ td .material-icons {
 
 .selectorcontainer {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .selector {
@@ -192,6 +190,9 @@ td .material-icons {
   text-align: center;    
   display: inline-block;
   width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   float: right;
   height: 25px;
   line-height: 25px;
@@ -213,10 +214,11 @@ td .material-icons {
 
 .selector .submenu li {
   background-color: #ffffff;
-  width: 150px;
+  width: 140px;
   height: 25px;
   line-height: 25px;
   margin: 0px;
+  padding: 0px 5px;
   font-size: 13px;
   text-overflow: ellipsis;
   overflow: hidden;
