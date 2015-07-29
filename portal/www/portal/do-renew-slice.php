@@ -82,7 +82,7 @@ print_r($res);
 print "</div>";
 
 print "<hr/>";
-print "<p><a href='slices.php'>Back to All slices</a>";
+print "<p><a href='dashboard.php#slices'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 include("footer.php");
