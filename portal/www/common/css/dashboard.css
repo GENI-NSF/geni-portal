@@ -310,9 +310,14 @@ td .material-icons {
   margin: 0px;
 }
 
+.sliceactions .submenu {
+  width: 160px;
+}
+
 .sliceactions li .submenu li {
   height: 30px;
   font-size: 13px;
+  width: 160px;
 }
 
 .expirationicon {

@@ -515,6 +515,12 @@ ul {
     padding: 0px;
 }
 
+#OpenLayers_Control_MaximizeDiv {
+  display: none !important;
+}
+
+
+
 #OpenLayers_Control_Zoom_5 a {
   color: #FFFFFF !important;
   border-bottom: none !important;
@@ -981,6 +987,15 @@ img {
 }
 
 /* For Jacks RSpec display instead of white-on-white */
+
+#jacks-app td {
+  background-color: #EEEEEE !important;
+}
+
+#jacks-editor-app td {
+  background-color: #EEEEEE !important;
+}
+
 .jacks #leftNav pre {
    color: black;
 }

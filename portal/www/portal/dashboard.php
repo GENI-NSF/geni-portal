@@ -164,6 +164,7 @@ if (! $user->portalIsAuthorized()) {
     print "<li><a class='tab' data-tabindex=1 data-tabname='slices' href='#slices'>Slices</a></li>";
     print "<li><a class='tab' data-tabindex=2 data-tabname='projects' href='#projects'>Projects</a></li>";
     print "<li><a class='tab' data-tabindex=3 data-tabname='logs' href='#logs'>Logs</a></li>";
+    print "<li><a class='tab' data-tabindex=4 data-tabname='map' href='#map'>Map</a></li>";
     print "</ul></div>";
 
     // Start making the slice and project sections
@@ -383,7 +384,7 @@ if (! $user->portalIsAuthorized()) {
     print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub' style='color: #ffffff;'>";
     print "<i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
     print "<li><a href='$slice_url'>Manage slice</a></li>";
-    print "<li><a onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, \"$slice_exp\");'>Renew slice ($renewal_days days)</a></li>";
+    print "<li><a onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, \"$slice_exp\");'>Renew resources ($renewal_days days)</a></li>";
     print "<li><a href='$add_url'>Add resources</a></li>";
     if ($resource_count > 0) {
       print "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
@@ -419,10 +420,10 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<li><a href='edit-project.php?project_id=$project_id'>Edit project</a></li>";
     $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
     $box .= "</ul></li></ul></td></tr>";
-    $box .= "<tr><td colspan='2'>Lead: $lead_name $handle_req_str</td></tr>";
+    $box .= "<tr><td colspan='2'><b>Lead:</b> $lead_name $handle_req_str</td></tr>";
     $box .= "<tr><td colspan='2'>";
     $purpose = !$purpose ? "<i>None</i>" : $purpose;
-    $box .= "<div class='purposebox'>Purpose: $purpose</div></td></tr>";
+    $box .= "<div class='purposebox'><b>Purpose:</b> $purpose</div></td></tr>";
     if ($expiration) {
       $expiration_string = get_time_diff_string($exp_diff);
       $expiration_color = get_urgency_color($exp_diff);
@@ -530,8 +531,12 @@ if (! $user->portalIsAuthorized()) {
 </div>
 </div>
 
-<?php
+<!-- <div class='card' data-cardname='map' id='map'> -->
+<div class='card' data-cardname='map' id='map'>
+<table style="max-width: 1000px;"><th>Current GENI Resources</th><tr>
+<td style="padding: 0px;">
+<?php include("map.html"); ?>
+</td></tr></table>
+</div>
 
-include("footer.php");
-
-?>
+<?php include("footer.php"); ?>

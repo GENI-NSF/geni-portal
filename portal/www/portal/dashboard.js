@@ -28,6 +28,11 @@ $(document).ready(function(){
     resume_dashboard();
   } else { // they're a brand new user
     $("#logs").hide();
+    $("#map").hide();
+  }
+
+  if(window.location.hash == "#map") {
+    map_init();
   }
   
   // Make header links and new selectors show dropdown when you hover on them

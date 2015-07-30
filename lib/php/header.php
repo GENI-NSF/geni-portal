@@ -382,28 +382,22 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   if($load_user) {
     echo "<li class='has-sub headerlink'>{$user->prettyName()}";
     echo '<ul class="submenu">';
+    echo '<li><a href="profile.php">Profile</a></li>';
+    echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
+    echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
+    echo '<li><a href="profile.php#tools">Manage Accounts</a></li>'; 
+    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
     if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
       echo '<li><a href="admin.php">Admin</a></li>';
     }
-    // echo '<li><a href="preferences.php">Preferences</a></li>';
-    echo '<li><a href="profile.php#accountsummary">Account</a></li>';
-    echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
-    echo '<li><a href="profile.php#ssl">SSL</a></li>';
-    echo '<li><a href="profile.php#omni">Omni</a></li> ';
-    echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
-    echo '<li><a href="profile.php#tools">Tools</a></li>'; 
-    echo '<li><a href="profile.php#outstandingrequests">Requests</a></li>';
-    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
     echo '</ul></li>';
   }
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
   echo '<ul class="submenu">';
-  echo '<li><a href="http://groups.geni.net/geni/wiki">GENI Wiki <i class="material-icons">launch</i></a></li>';
-  echo '<li><a href="http://gmoc.grnoc.iu.edu/gmoc/index/support.html">GENI Operations <i class="material-icons">launch</i> </a></li>';
-  echo '<li><a href="http://groups.geni.net/geni/wiki/GENIGlossary">GENI Glossary <i class="material-icons">launch</i></a></li>';
-  echo '<li><a href="/login-help.php">Login Help</a></li>';
-  echo '<li><a href="mailto:portal-help@geni.net">Portal Help <i class="material-icons">email</i></a></li>';
-  echo '<li><a href="mailto:help@geni.net">GENI Help <i class="material-icons">email</i></a></li>';
+  echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki">GENI Wiki <i class="material-icons">launch</i></a></li>';
+  echo '<li><a target="_blank" href="http://gmoc.grnoc.iu.edu/gmoc/index/support/gmoc-operations-calendars.html">Outages <i class="material-icons">launch</i> </a></li>';
+  echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki/GENIGlossary">Glossary <i class="material-icons">launch</i></a></li>';
+  echo '<li><a href="help.php">Contact Us</a></li>';
   echo '</ul></li>';
 
   if (! isset($jfed_button_start)) {
@@ -416,12 +410,18 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
     }
   }
 
+  echo '<li class="headerlink has-sub">Partners';
+  echo '<ul class="submenu">';
+  echo "<li><a href='https://www.cloudlab.us/login.php' target='_blank'>CloudLab <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://gee-project.org/user' target='_blank'>GEE <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='https://geni.orbit-lab.org/' target='_blank'>ORBIT<i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://portal.savitestbed.ca/auth/login' target='_blank'>SAVI<i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://witestlab.poly.edu/site/index.php' target='_blank'>WiTest<i class='material-icons'>launch</i></a></li>";
+  echo '</ul></li>';
 
   echo '<li class="headerlink has-sub">Tools';
   echo '<ul class="submenu">';
   echo "<li><a href='gemini.php' target='_blank'>GENI Desktop<i class='material-icons'>launch</i></a></li>";
-  echo "<li><a href='wimax-enable.php' target='_blank'>GENI Wireless</a></li>";
-  echo "<li><a href='irods.php' target='_blank'>iRODS</a></li>";
   if (! is_null($jfed_button_start)) {
     echo "<li>";
     echo $jfed_button_start . getjFedSliceScript(NULL) . $jfed_button_part2 . ">jFed<i class='material-icons'>launch</i></button>";
@@ -434,22 +434,12 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   // echo '<ul class="submenu">';
   // echo '</ul></li>';
 
-  echo '<li class="headerlink has-sub">Links';
-  echo '<ul class="submenu">';
-  echo "<li><a href='https://www.cloudlab.us/login.php' target='_blank'>CloudLab <i class='material-icons'>launch</i></a></li>";
-  echo "<li><a href='http://gee-project.org/user' target='_blank'>GEE <i class='material-icons'>launch</i></a></li>";
-  echo "<li><a href='https://geni.orbit-lab.org/' target='_blank'>ORBIT<i class='material-icons'>launch</i></a></li>";
-  echo '<li><a href="genimap.php">Resource map</a></li>';
-  echo "<li><a href='savi.php' target='_blank'>SAVI</a></li>";
-  echo "<li><a href='http://witestlab.poly.edu/site/index.php' target='_blank'>WiTest<i class='material-icons'>launch</i></a></li>";
-  echo '</ul></li>';
 
 
   echo '<li class="headerlink has-sub"><a href="dashboard.php">Home</a>';
   echo '<ul class="submenu">';
   echo '<li><a href="dashboard.php#slices">Slices</a></li>';
   echo '<li><a href="dashboard.php#projects">Projects</a></li>';
-  echo '<li><a href="dashboard.php#logs">Logs</a></li>';
   echo '</ul></li></ul>';
   echo '</div>';
 
