@@ -59,6 +59,11 @@ $(document).ready(function(){
     localStorage.loghours = $(this).attr("data-value");
     get_logs($(this).attr("data-value"));
   });
+
+  $(window).resize(function() {
+    $("#dashboardtools").show();
+  });
+
 });
 
 function update_slices() {

@@ -372,6 +372,10 @@ td .material-icons {
     background-color: #EEEEEE;
   }
 
+  #dashboardtools li button {
+    background-color: #EEEEEE !important;
+  }
+
   #dashboardtools li .submenu {
     left: 130px;
     top: 0px;

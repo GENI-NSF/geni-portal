@@ -366,7 +366,8 @@ if (! $user->portalIsAuthorized()) {
       $resource_exp_string = get_time_diff_string($resource_exp);
       $resource_exp_color = get_urgency_color($resource_exp);
       $resource_exp_icon = get_urgency_icon($resource_exp);
-      $resource_info = "<b>$resource_count</b> resource{$plural}, next exp. in <b style='color: $resource_exp_color'>$resource_exp_string</b>";
+      // $resource_info = "<b>$resource_count</b> resource{$plural}, next exp. in <b style='color: $resource_exp_color'>$resource_exp_string</b>";
+      $resource_info = "<b>$resource_count</b> resource{$plural}, next exp. in <b>$resource_exp_string</b>";
       $resource_exp_icon = "<i class='material-icons' style='color: $resource_exp_color;'>$resource_exp_icon</i>";
     } else {
       $resource_info = "<i>No resources for this slice</i>";
@@ -375,7 +376,8 @@ if (! $user->portalIsAuthorized()) {
     $slice_exp_string = get_time_diff_string($slice_exp);
     $slice_exp_color = get_urgency_color($slice_exp);
     $slice_exp_icon = get_urgency_icon($slice_exp);
-    $slice_info = "Slice expires in <b style='color: $slice_exp_color'>$slice_exp_string</b>";
+    // $slice_info = "Slice expires in <b style='color: $slice_exp_color'>$slice_exp_string</b>";
+    $slice_info = "Slice expires in <b>$slice_exp_string</b>";
     print "<tr><td class='slicetopbar' title='Manage slice $slice_name' style='text-align:left;'>";
     print "<a class='slicename' href='$slice_url'>$slice_name</a></td>";
     print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub' style='color: #ffffff;'>";
@@ -390,9 +392,9 @@ if (! $user->portalIsAuthorized()) {
     print "</ul></li></ul></td></tr>";
     print "<tr><td colspan='2'><b>Project:</b> $project_name </td></tr>";
     print "<tr><td colspan='2'><b>Owner:</b> $lead_name</td></tr>";
-    print "<tr><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
+    print "<tr style='height:40px;'><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
     print "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
-    print "<tr style='height:50px;'><td style='border-bottom:none; height: 30px;'>$resource_info</td>";
+    print "<tr style='height:40px;'><td style='border-bottom:none;'>$resource_info</td>";
     print "<td style='vertical-align: middle; border-bottom:none'>";
     print "$resource_exp_icon</td></tr>";
     print "</table></div>";
@@ -424,7 +426,8 @@ if (! $user->portalIsAuthorized()) {
     if ($expiration) {
       $expiration_string = get_time_diff_string($exp_diff);
       $expiration_color = get_urgency_color($exp_diff);
-      $expiration_string = "Project expires in <b style='color: $expiration_color'>$expiration_string</b>";
+      // $expiration_string = "Project expires in <b style='color: $expiration_color'>$expiration_string</b>";
+      $expiration_string = "Project expires in <b>$expiration_string</b>";
       $expiration_icon = get_urgency_icon($exp_diff);
       $expiration_icon = "<i class='material-icons' style='color: $expiration_color'>$expiration_icon</i>";
     } else {
