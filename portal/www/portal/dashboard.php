@@ -155,7 +155,7 @@ if (! $user->portalIsAuthorized()) {
       }
       print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>\n";
       print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>\n";
-      // print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button>\n";
+      print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button>\n";
     }
   } else { 
     // You have some projects or slices 

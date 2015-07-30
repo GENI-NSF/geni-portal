@@ -27,8 +27,7 @@ $(document).ready(function(){
   if ($("#slicefilterswitch").length > 0) { // they have some projects or slices
     resume_dashboard();
   } else { // they're a brand new user
-    $('#loglengthselector .selectorshown').html("day");
-    get_logs("24");
+    $("#logs").hide();
   }
   
   // Make header links and new selectors show dropdown when you hover on them
