@@ -199,7 +199,7 @@ if (! $user->portalIsAuthorized()) {
       if (array_key_exists($slice_project_id, $project_slice_counts)) {
         $project_slice_counts[$slice_project_id]++;
       } else {
-        $project_slice_counts[$slice_project_id] = 0;
+        $project_slice_counts[$slice_project_id] = 1;
       }
       if (!array_key_exists($slice_project_id, $project_objects)) {
         $slice_project_name = "-Expired Project-";
@@ -415,6 +415,7 @@ if (! $user->portalIsAuthorized()) {
   }
   
   function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str) {
+
     global $project_slice_counts;
     if (array_key_exists($project_id, $project_slice_counts)) {
       $slice_count = $project_slice_counts[$project_id];
