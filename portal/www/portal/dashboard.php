@@ -208,9 +208,6 @@ if (! $user->portalIsAuthorized()) {
         $project = $project_objects[ $slice_project_id ];
         $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       }
-      $add_slivers_privilege = $user->isAllowed(SA_ACTION::ADD_SLIVERS,
-                CS_CONTEXT_TYPE::SLICE, 
-                $slice_id);
 
       $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
       $slice_exp = get_time_diff($slice_exp_date);
@@ -228,6 +225,7 @@ if (! $user->portalIsAuthorized()) {
 
       if (count($slivers) == 0) {
         $resource_exp = 1000000000;
+        $next_exp = "";
       } else {
         $first_sliver = reset($slivers);
         $next_exp = new DateTime($first_sliver[SA_SLIVER_INFO_TABLE_FIELDNAME::SLIVER_INFO_EXPIRATION]);
@@ -237,7 +235,11 @@ if (! $user->portalIsAuthorized()) {
             $next_exp = $this_date;
           }
         }
-        $resource_exp = get_time_diff(dateUIFormat($next_exp)); 
+        if ($next_exp != "") {
+          $resource_exp = get_time_diff(dateUIFormat($next_exp)); 
+        } else {
+          $resource_exp = "";
+        }
       }
       $slice_boxes .= make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
                                      count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $renewal_days, 
@@ -252,7 +254,11 @@ if (! $user->portalIsAuthorized()) {
       $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
       $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
       $lead_name = $lead_names[$lead_id];
-      $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
+      if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+        $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
+      } else {
+        $create_slice_button = "";
+      }
       $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
       $slice_filters .= "<li data-value='{$project_name}'>$project_name</li>";
       $slice_project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
@@ -369,6 +375,7 @@ if (! $user->portalIsAuthorized()) {
 
   function make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
                           $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $renewal_days, $slice_exp_date, $next_exp) {
+    global $user;
     $has_resources = $resource_count > 0 ? "-has-resources-" : "-no-resources-";
     $box = "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
                 data-resourcecount='$resource_count' data-slicename='$slice_name' 
@@ -395,11 +402,17 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub' style='color: #ffffff;'>";
     $box .= "<i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
     $box .= "<li><a href='$slice_url'>Manage slice</a></li>";
-    $box .= "<li><a href='$add_url'>Add resources</a></li>";
+    if ($user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+      $box .= "<li><a href='$add_url'>Add resources</a></li>";
+    }
     if ($resource_count > 0) {
       $box .= "<li><a onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, \"$slice_exp\");'>Renew resources ($renewal_days days)</a></li>";
-      $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
-      $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$remove_url\")'>Delete resources</a></li>";
+      if ($user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+        $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
+      }
+      if ($user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
+        $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$remove_url\")'>Delete resources</a></li>";
+      }
     }
     $box .= "</ul></li></ul></td></tr>";
     $box .= "<tr><td colspan='2'><b>Project:</b> $project_name </td></tr>";
@@ -415,8 +428,7 @@ if (! $user->portalIsAuthorized()) {
   }
   
   function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str) {
-
-    global $project_slice_counts;
+    global $project_slice_counts, $user;
     if (array_key_exists($project_id, $project_slice_counts)) {
       $slice_count = $project_slice_counts[$project_id];
     } else {
@@ -430,7 +442,6 @@ if (! $user->portalIsAuthorized()) {
       $exp_diff = 100000000;
     }
 
-
     $box = '';
     $box .= "<div class='floatleft slicebox $categories $has_slices' data-projname='$project_name' data-projexp='$exp_diff' data-slicecount='$slice_count'>";
     $box .= "<table><tr class='slicetopbar'>";
@@ -439,9 +450,15 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'>";
     $box .= "<ul><li class='has-sub'><i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
     $box .= "<li><a href='project.php?project_id=$project_id'>Manage project</a></li>";
-    $box .= "<li><a href='createslice.php?project_id=$project_id'>New slice</a></li>";
-    $box .= "<li><a href='edit-project.php?project_id=$project_id'>Edit project</a></li>";
-    $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
+    if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+      $box .= "<li><a href='createslice.php?project_id=$project_id'>New slice</a></li>";
+    }
+    if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+      $box .= "<li><a href='edit-project.php?project_id=$project_id'>Edit project</a></li>";
+    }
+    if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+      $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
+    }
     $box .= "</ul></li></ul></td></tr>";
     $box .= "<tr><td colspan='2'><b>Lead:</b> $lead_name $handle_req_str</td></tr>";
     $box .= $slice_count == 0 ? "<tr><td colspan='2'><i> No slices</i></td></tr>" : "<tr><td colspan='2'>Has <b>$slice_count</b> slices</td></tr>";

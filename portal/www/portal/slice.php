@@ -262,7 +262,7 @@ $get_slice_credential_disable_buttons = "";
 if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
 
 // String to disable button or other active element
-$disabled = "disabled = " . '"' . "disabled" . '"'; 
+$disabled = "disabled"; 
 
 $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
