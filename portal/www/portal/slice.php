@@ -242,7 +242,6 @@ $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = "mailto:$owner_email";
 //$slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
 $omni_url = "tool-omniconfig.php";
-$flack_url = "flack.php?slice_id=".$slice_id;
 $gemini_url = "gemini.php?slice_id=" . $slice_id;
 $labwiki_url = 'http://labwiki.casa.umass.edu/?slice_id=' . $slice_id;
 
@@ -411,7 +410,6 @@ if (isset($slice_expired) && convert_boolean($slice_expired) ) {
 }
 
 // FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
-// FIXME: Disable launch flack if in lockdown mode?
 
 print "<table id='sliceActions' cols='4'>\n";
 print "<tr><th colspan='4'>Slice Actions</th></tr>\n";
@@ -502,7 +500,6 @@ print "<tr><th colspan='4'>Slice Tools</th></tr>\n";
 print "<tr><td colspan='4'>\n";
 /* print "To use a command line tool:<br/>"; */
 $hostname = $_SERVER['SERVER_NAME'];
-print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><b>Flack <br/>(deprecated)</b> </button>\n";
 
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>\n";
 
