@@ -67,6 +67,7 @@ dist_svcweb_DATA = \
 	www/portal/cancel-join-project.php \
 	www/portal/certificate.php \
 	www/portal/confirm-sliverdelete.php \
+	www/portal/createimage.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
 	www/portal/dashboard.js \
@@ -121,6 +122,7 @@ dist_svcweb_DATA = \
 	www/portal/help.php \
 	www/portal/index.php \
 	www/portal/home.php \
+	www/portal/image_operations.php \
 	www/portal/invite-to-geni.php \
 	www/portal/invite-to-project.php \
         www/portal/jacks-app.css \
