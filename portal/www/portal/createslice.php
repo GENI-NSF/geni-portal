@@ -88,7 +88,6 @@ function get_users_projects($user) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $member_id = $user->account_id;
   $projects = get_project_info_for_member($sa_url, $user, $member_id);
-  print_r($info);
   $select = '<select name="project_id" form="createsliceform">';
   foreach ($projects as $project) {
     $select .= "<option value='" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID] . "'>";

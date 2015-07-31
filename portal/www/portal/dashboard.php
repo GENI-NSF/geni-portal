@@ -267,7 +267,7 @@ if (! $user->portalIsAuthorized()) {
     $slice_filters .= "</ul></li></ul>";
 
     // Make slice section
-    $slice_card .= "<div class='dashsection card' data-cardname='slices' id='slices'>";
+    $slice_card = "<div class='dashsection card' data-cardname='slices' id='slices'>";
     $slice_card .= "<h3 class='dashtext'>Slices</h3><br>";
     // Slice filters
     $slice_card .= "<div id='projectcontrols'><h6 class='dashtext'>Filter by:</h6>$slice_filters<br class='mobilebreak'>"; 
