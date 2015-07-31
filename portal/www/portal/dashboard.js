@@ -230,7 +230,7 @@ function animate_boxes(container, selection) {
 
 // sort boxes in container based on their values for attribute attr
 function sort_boxes(attr, ascending, container) {
-  numberical_attrs = ['sliceexp', 'resourceexp', 'resourcecount', 'projexp'];
+  numberical_attrs = ['sliceexp', 'resourceexp', 'resourcecount', 'projexp', 'slicecount'];
   sorted_slices = $(container).children(".slicebox").sort(function(a, b) {
     if ($.inArray(attr, numberical_attrs) != -1) { // is it a numerical attribute, if so, don't lexically sort
       vA = parseInt($(a).attr("data-" + attr));

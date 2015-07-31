@@ -122,68 +122,26 @@ if (! $user->portalIsAuthorized()) {
   }
 
   if (count($project_objects) == 0) {
-    if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
-      if ($num_projects==0) { 
-        // You're not in any projects at all, even expired
-        print "<p class='instruction'>";
-        print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
-        print "You have been made a 'Project Lead', meaning you can create GENI Projects, as well as create slices in projects and reserve resources.<br/><br/>";
-        print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
-        print "See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>\n";
-        print "<p class='warn'>";
-        print "You are not a member of any projects. You need to Create or Join a Project.";
-        print "</p>";
-      } else { 
-        // You have some projects that are expired, none active
-        print "<p class='instruction'>You have no active projects at this time</p>";
-      }
-      print "<button $disable_create_project onClick=\"window.location='edit-project.php'\"><i class='material-icons'>add</i> New Project</button>\n";
-      print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>\n";
-      print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>\n";
-    } else {
-      if ($num_projects==0) {
-        print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/><br/>";
-        print "You can now participate in GENI research, by joining a 'Project'.<br/>";
-        print "Note that your account is not a 'Project Lead' account, meaning you must join a project created by someone else, ";
-        print "before you can create slices or use GENI resources.<br/><br/>";
-        print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
-        print " See the <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>Glossary</a>.</p>\n";
-        print "<p class='warn'>";
-        print "You are not a member of any projects. Please join an
-           existing Project, ask someone to create a Project for you, or ask
-           to be a Project Lead.</p>";
-      }
-      print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>\n";
-      print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>\n";
-      print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button>\n";
-    }
+    make_new_user_greeting($user);
   } else { 
-    // You have some projects or slices 
-    print "<div class='nav2'><ul class='tabs'>";
-    // include("tool-breadcrumbs.php");
-    print "<li><a class='tab' data-tabindex=1 data-tabname='slices' href='#slices'>Slices</a></li>";
-    print "<li><a class='tab' data-tabindex=2 data-tabname='projects' href='#projects'>Projects</a></li>";
-    print "<li><a class='tab' data-tabindex=3 data-tabname='logs' href='#logs'>Logs</a></li>";
-    print "<li><a class='tab' data-tabindex=4 data-tabname='map' href='#map'>Map</a></li>";
-    print "</ul></div>";
+    // you have some projects or slices
+    make_navigation_tabs();
 
     // Start making the slice and project sections
     $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
-    $project_options = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
-    $project_options .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
-    $project_options .= "<li data-value='-ALL-' class='selectorlabel'>Categories</li>";
-    $project_options .= "<li data-value='-ALL-'>All slices</li>";
-    $project_options .= "<li data-value='-MY-'>Slices I lead</li>";
-    // $project_options .= "<li data-value='-THEIR-'>Slices I don't lead</li>";
-    $project_options .= "<li data-value='-has-resources-'>Has resources</li>";
-    // $project_options .= "<li data-value='-no-resources-'>Has no resources</li>";
-    $project_options .= "<li data-value='-ALL-' class='selectorlabel'>Projects</li>";
-    $project_info = "";
+    $slice_filters = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
+    $slice_filters .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
+    $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Categories</li>";
+    $slice_filters .= "<li data-value='-ALL-'>All slices</li>";
+    $slice_filters .= "<li data-value='-MY-'>Slices I lead</li>";
+    $slice_filters .= "<li data-value='-has-resources-'>Has resources</li>";
+    $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Projects</li>";
+    $slice_project_info = "";
     $show_info = "";
     $project_boxes = "";
     $user_id = $user->account_id;
 
-    // Project join requests
+    // Make and fill dictionary of project join requests
     $project_request_map = array();
     if (count($project_objects) > 0) {
       $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
@@ -201,80 +159,7 @@ if (! $user->portalIsAuthorized()) {
      }                       
     }
 
-    foreach ($project_objects as $project) {
-      $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
-      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-      $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
-      $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
-      $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
-      $lead_name = $lead_names[$lead_id];
-      $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
-      $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
-      $project_options .= "<li data-value='{$project_name}'>$project_name</li>";
-      $project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
-      // $project_info .= "Project lead: $lead_name | $create_slice_button $manage_project_button</div>";
-      $project_info .= "$create_slice_button $manage_project_button</div>";
-
-      $show_info = "style='display:none;'";
-
-      $expired_project_class = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED] ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
-      $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
-      $categories = "$expired_project_class $project_lead_class";
-      $handle_req_str = get_pending_requests($project_id, $project_request_map);
-
-      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str);
-    }
-    $project_options .= "</ul></li></ul>";
-    
-    print "<div class='dashsection card' data-cardname='projects' id='projects'>";
-    print "<h3 class='dashtext'>Projects</h3><br>";
-
-    // project filters
-    print "<h6 class='dashtext'>Filter by:</h6><ul class='selectorcontainer'>";
-    print "<li class='has-sub selector' style='float:none;' id='projectfilterswitch'>";
-    print "<span class='selectorshown'>Filters</span><ul class='submenu'>";
-    print "<li data-value='-ACTIVE-PROJECTS-'>Active projects</li>";
-    print "<li data-value='-MY-PROJECTS-'>Projects I lead</li>";
-    // print "<li data-value='-THEIR-PROJECTS-'>Projects I don't lead</li>";
-    print "<li data-value='-EXPIRED-PROJECTS-'>Expired projects</li>";
-    print "</ul></li></ul><br class='mobilebreak'>";
-
-    // project sorts
-    print "<h6 class='dashtext'>Sort by:</h6>";
-    print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectsortby'>";
-    print "<span data-value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
-    print "<li data-value='projname'>Project name</li><li data-value='projexp'>Project expiration</li></ul></li></ul><br class='mobilebreak'>";
-    print "<input type='checkbox' id='projectascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br>";
-    
-    print "<div style='margin: 15px 0px; clear: both;'>";
-    if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
-      print "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
-      print "<a class='button' href='join-project.php'>Join a Project</a></div>";
-    } else {
-      print "<a class='button' href='join-project.php'><b>Join a Project</b></a><br class='mobilebreak'>";
-      print "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a><br class='mobilebreak'>";
-      print "<a class='button' href='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
-    }
-
-    print "<div id='projectarea'>$project_boxes</div></div>";
-
-    print "<div class='dashsection card' data-cardname='slices' id='slices'>";
-    print "<h3 class='dashtext'>Slices</h3><br>";
-    // Slice filters
-    print "<div id='projectcontrols'><h6 class='dashtext'>Filter by:</h6>$project_options<br class='mobilebreak'>"; 
-    print "<h6 class='dashtext'>Sort by:</h6>";
-    print "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicesortby'>";
-    // Slice sorts
-    print "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
-    print "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
-    print "<li data-value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
-    print "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br></div>";
-    $project_info .= "<div $show_info class='projectinfo' id='categoryinfo'>";
-    $project_info .= "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a></div>";
-
-    print $project_info;
-
-    print "<div id='slicearea' style='clear:both;'>";
+    // Get the user's unexpired slices
     $unexpired_slices = array();
     foreach($slice_objects as $slice) {
       $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
@@ -291,6 +176,8 @@ if (! $user->portalIsAuthorized()) {
     }
 
     $user_id = $user->account_id;
+    $project_slice_counts = array();
+    $slice_boxes = '';
     foreach ($slice_objects as $slice) {
       $slice_id = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_ID];
       $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
@@ -309,6 +196,11 @@ if (! $user->portalIsAuthorized()) {
       $listres_url = "listresources.php?" . $query;
       $slice_url = "slice.php?" . $query;
       $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+      if (array_key_exists($slice_project_id, $project_slice_counts)) {
+        $project_slice_counts[$slice_project_id]++;
+      } else {
+        $project_slice_counts[$slice_project_id] = 0;
+      }
       if (!array_key_exists($slice_project_id, $project_objects)) {
         $slice_project_name = "-Expired Project-";
         $project = array();
@@ -347,28 +239,148 @@ if (! $user->portalIsAuthorized()) {
         }
         $resource_exp = get_time_diff(dateUIFormat($next_exp)); 
       }
-      make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
-                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $renewal_days);
+      $slice_boxes .= make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
+                                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $renewal_days, 
+                                     dateUIFormat($slice_exp_date), dateUIFormat($next_exp));
     }
 
-    print "</div></div>";
+    // populate slice filters with project names, make project boxes
+    foreach ($project_objects as $project) {
+      $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+      $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+      $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+      $lead_name = $lead_names[$lead_id];
+      $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
+      $manage_project_button = "<a class='button' href='project.php?project_id=$project_id'>Manage project</a>";
+      $slice_filters .= "<li data-value='{$project_name}'>$project_name</li>";
+      $slice_project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
+      $slice_project_info .= "$create_slice_button $manage_project_button</div>";
+      $show_info = "style='display:none;'";
+      $expired_project_class = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED] ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
+      $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
+      $categories = "$expired_project_class $project_lead_class";
+      $handle_req_str = get_pending_requests($project_id, $project_request_map);
+      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str);
+    }
+    $slice_filters .= "</ul></li></ul>";
+
+    // Make slice section
+    $slice_card .= "<div class='dashsection card' data-cardname='slices' id='slices'>";
+    $slice_card .= "<h3 class='dashtext'>Slices</h3><br>";
+    // Slice filters
+    $slice_card .= "<div id='projectcontrols'><h6 class='dashtext'>Filter by:</h6>$slice_filters<br class='mobilebreak'>"; 
+    $slice_card .= "<h6 class='dashtext'>Sort by:</h6>";
+    $slice_card .= "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicesortby'>";
+    // Slice sorts
+    $slice_card .= "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
+    $slice_card .= "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
+    $slice_card .= "<li data-value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
+    $slice_card .= "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br></div>";
+    $slice_project_info .= "<div $show_info class='projectinfo' id='categoryinfo'>";
+    $slice_project_info .= "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a></div>";
+
+    $slice_card .= $slice_project_info;
+
+    $slice_card .= "<div id='slicearea' style='clear:both;'>$slice_boxes</div></div>";
+
+    // Make projects section
+    $project_card = "<div class='dashsection card' data-cardname='projects' id='projects'>";
+    $project_card .= "<h3 class='dashtext'>Projects</h3><br>";
+    // Project filters
+    $project_card .= "<h6 class='dashtext'>Filter by:</h6><ul class='selectorcontainer'>";
+    $project_card .= "<li class='has-sub selector' style='float:none;' id='projectfilterswitch'>";
+    $project_card .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
+    $project_card .= "<li data-value='-ACTIVE-PROJECTS-'>Active projects</li>";
+    $project_card .= "<li data-value='-MY-PROJECTS-'>Projects I lead</li>";
+    $project_card .= "<li data-value='-HAS-SLICES-'>Has slices</li>";
+    $project_card .= "<li data-value='-EXPIRED-PROJECTS-'>Expired projects</li>";
+    $project_card .= "</ul></li></ul><br class='mobilebreak'>";
+    // Project sorts
+    $project_card .= "<h6 class='dashtext'>Sort by:</h6>";
+    $project_card .= "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='projectsortby'>";
+    $project_card .= "<span data-value='projname' class='selectorshown'>Sorts</span><ul class='submenu'>";
+    $project_card .= "<li data-value='projname'>Project name</li>";
+    $project_card .= "<li data-value='projexp'>Project expiration</li>";
+    $project_card .= "<li data-value='slicecount'>Slice count</li>";
+    $project_card .= "</ul></li></ul><br class='mobilebreak'>";
+    $project_card .= "<input type='checkbox' id='projectascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br>";
+    
+    $project_card .= "<div style='margin: 15px 0px; clear: both;'>";
+    if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
+      $project_card .= "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
+      $project_card .= "<a class='button' href='join-project.php'>Join a Project</a></div>";
+    } else {
+      // TODO: are all of these always worthwhile?
+      $project_card .= "<a class='button' href='join-project.php'><b>Join a Project</b></a><br class='mobilebreak'>";
+      $project_card .= "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a><br class='mobilebreak'>";
+      $project_card .= "<a class='button' href='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
+    }
+
+    $project_card .= "<div id='projectarea'>$project_boxes</div></div>";
+
+    // Finally, print the slice and project cards to the dashboard
+    print $slice_card;
+    print $project_card;
+  }
+
+  // Print the tab switching navigation bar 
+  function make_navigation_tabs() {
+    print "<div class='nav2'><ul class='tabs'>";
+    print "<li><a class='tab' data-tabindex=1 data-tabname='slices' href='#slices'>Slices</a></li>";
+    print "<li><a class='tab' data-tabindex=2 data-tabname='projects' href='#projects'>Projects</a></li>";
+    print "<li><a class='tab' data-tabindex=3 data-tabname='logs' href='#logs'>Logs</a></li>";
+    print "<li><a class='tab' data-tabindex=4 data-tabname='map' href='#map'>Map</a></li>";
+    print "</ul></div>";
+  }
+
+  // Print the message that shows up for $user when they have no projects or slices
+  function make_new_user_greeting($user) {
+    if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
+      // You're not in any projects at all, even expired
+      print "<p class='instruction'>";
+      print "Congratulations! Your GENI Portal account is now active.<br/><br/>";
+      print "You have been made a 'Project Lead', meaning you can create GENI Projects, as well as create slices in projects and reserve resources.<br/><br/>";
+      print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
+      print "See the <a href=\"http://groups.geni.net/geni/wiki/GENIGlossary\">Glossary</a>.</p>\n";
+      print "<p class='warn'>";
+      print "You are not a member of any projects. You need to Create or Join a Project.";
+      print "</p>";
+      print "<button $disable_create_project onClick=\"window.location='edit-project.php'\"><i class='material-icons'>add</i> New Project</button>\n";
+      print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>\n";
+      print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>\n";
+    } else {
+      print "<p class='instruction'>Congratulations! Your GENI Portal account is now active.<br/><br/>";
+      print "You can now participate in GENI research, by joining a 'Project'.<br/>";
+      print "Note that your account is not a 'Project Lead' account, meaning you must join a project created by someone else, ";
+      print "before you can create slices or use GENI resources.<br/><br/>";
+      print "A project is a group of people and their research, led by a single responsible individual - the project lead.";
+      print " See the <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>Glossary</a>.</p>\n";
+      print "<p class='warn'>";
+      print "You are not a member of any projects. Please join an
+         existing Project, ask someone to create a Project for you, or ask
+         to be a Project Lead.</p>";
+      print "<button $disable_join_project onClick=\"window.location='join-project.php'\">Join a Project</button>\n";
+      print "<button $disable_join_project onClick=\"window.location='ask-for-project.php'\">Ask Someone to Create a Project</button>\n";
+      print "<button $disable_project_lead onClick=\"window.location='modify.php?belead=belead'\">Ask to be a Project Lead</button>\n";
+    }
   }
 
   function make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
-                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $renewal_days) {
+                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $renewal_days, $slice_exp_date, $next_exp) {
     $has_resources = $resource_count > 0 ? "-has-resources-" : "-no-resources-";
-    print "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
+    $box = "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
                 data-resourcecount='$resource_count' data-slicename='$slice_name' 
                 data-sliceexp='$slice_exp' data-resourceexp='$resource_exp'>";
-    print "<table>";
+    $box .= "<table>";
     $resource_exp_icon = "";
     if ($resource_count > 0){
       $plural = $resource_count == 1 ? "" : "s";
       $resource_exp_string = get_time_diff_string($resource_exp);
       $resource_exp_color = get_urgency_color($resource_exp);
       $resource_exp_icon = get_urgency_icon($resource_exp);
-      // $resource_info = "<b>$resource_count</b> resource{$plural}, next exp. in <b style='color: $resource_exp_color'>$resource_exp_string</b>";
-      $resource_info = "<b>$resource_count</b> resource{$plural}, next exp. in <b>$resource_exp_string</b>";
+      $resource_info = "<b>$resource_count</b> resource{$plural}, next exp. in <b title='$next_exp'>$resource_exp_string</b>";
       $resource_exp_icon = "<i class='material-icons' style='color: $resource_exp_color;'>$resource_exp_icon</i>";
     } else {
       $resource_info = "<i>No resources for this slice</i>";
@@ -377,39 +389,49 @@ if (! $user->portalIsAuthorized()) {
     $slice_exp_string = get_time_diff_string($slice_exp);
     $slice_exp_color = get_urgency_color($slice_exp);
     $slice_exp_icon = get_urgency_icon($slice_exp);
-    // $slice_info = "Slice expires in <b style='color: $slice_exp_color'>$slice_exp_string</b>";
-    $slice_info = "Slice expires in <b>$slice_exp_string</b>";
-    print "<tr><td class='slicetopbar' title='Manage slice $slice_name' style='text-align:left;'>";
-    print "<a class='slicename' href='$slice_url'>$slice_name</a></td>";
-    print "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub' style='color: #ffffff;'>";
-    print "<i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
-    print "<li><a href='$slice_url'>Manage slice</a></li>";
-    print "<li><a onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, \"$slice_exp\");'>Renew resources ($renewal_days days)</a></li>";
-    print "<li><a href='$add_url'>Add resources</a></li>";
+    $slice_info = "Slice expires in <b title='$slice_exp_date'>$slice_exp_string</b>";
+    $box .= "<tr><td class='slicetopbar' title='Manage slice $slice_name' style='text-align:left;'>";
+    $box .= "<a class='slicename' href='$slice_url'>$slice_name</a></td>";
+    $box .= "<td class='slicetopbar sliceactions' style='text-align:right;'><ul><li class='has-sub' style='color: #ffffff;'>";
+    $box .= "<i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
+    $box .= "<li><a href='$slice_url'>Manage slice</a></li>";
+    $box .= "<li><a href='$add_url'>Add resources</a></li>";
     if ($resource_count > 0) {
-      print "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
-      print "<li><a onclick='info_set_location(\"$slice_id\", \"$remove_url\")'>Remove resources</a></li>";
+      $box .= "<li><a onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, \"$slice_exp\");'>Renew resources ($renewal_days days)</a></li>";
+      $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
+      $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$remove_url\")'>Delete resources</a></li>";
     }
-    print "</ul></li></ul></td></tr>";
-    print "<tr><td colspan='2'><b>Project:</b> $project_name </td></tr>";
-    print "<tr><td colspan='2'><b>Owner:</b> $lead_name</td></tr>";
-    print "<tr style='height:40px;'><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
-    print "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
-    print "<tr style='height:40px;'><td style='border-bottom:none;'>$resource_info</td>";
-    print "<td style='vertical-align: middle; border-bottom:none'>";
-    print "$resource_exp_icon</td></tr>";
-    print "</table></div>";
+    $box .= "</ul></li></ul></td></tr>";
+    $box .= "<tr><td colspan='2'><b>Project:</b> $project_name </td></tr>";
+    $box .= "<tr><td colspan='2'><b>Owner:</b> $lead_name</td></tr>";
+    $box .= "<tr style='height:40px;'><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
+    $box .= "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
+    $box .= "<tr style='height:40px;'><td style='border-bottom:none;'>$resource_info</td>";
+    $box .= "<td style='vertical-align: middle; border-bottom:none'>";
+    $box .= "$resource_exp_icon</td></tr>";
+    $box .= "</table></div>";
+
+    return $box;
   }
   
   function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str) {
+    global $project_slice_counts;
+    if (array_key_exists($project_id, $project_slice_counts)) {
+      $slice_count = $project_slice_counts[$project_id];
+    } else {
+      $slice_count = 0;
+    }
+    $has_slices = $slice_count == 0 ? '' : "-HAS-SLICES-";
+
     if ($expiration) {
       $exp_diff = get_time_diff($expiration);
     } else {
       $exp_diff = 100000000;
     }
 
+
     $box = '';
-    $box .= "<div class='floatleft slicebox $categories' data-projname='$project_name' data-projexp='$exp_diff'>";
+    $box .= "<div class='floatleft slicebox $categories $has_slices' data-projname='$project_name' data-projexp='$exp_diff' data-slicecount='$slice_count'>";
     $box .= "<table><tr class='slicetopbar'>";
     $box .= "<td class='slicetopbar' style='text-align: left;'>";
     $box .= "<a href='project.php?project_id=$project_id' class='projectname'>$project_name</a></td>";
@@ -421,14 +443,11 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
     $box .= "</ul></li></ul></td></tr>";
     $box .= "<tr><td colspan='2'><b>Lead:</b> $lead_name $handle_req_str</td></tr>";
-    $box .= "<tr><td colspan='2'>";
-    $purpose = !$purpose ? "<i>None</i>" : $purpose;
-    $box .= "<div class='purposebox'><b>Purpose:</b> $purpose</div></td></tr>";
+    $box .= $slice_count == 0 ? "<tr><td colspan='2'><i> No slices</i></td></tr>" : "<tr><td colspan='2'>Has <b>$slice_count</b> slices</td></tr>";
     if ($expiration) {
       $expiration_string = get_time_diff_string($exp_diff);
       $expiration_color = get_urgency_color($exp_diff);
-      // $expiration_string = "Project expires in <b style='color: $expiration_color'>$expiration_string</b>";
-      $expiration_string = "Project expires in <b>$expiration_string</b>";
+      $expiration_string = "Project expires in <b title='$expiration'>$expiration_string</b>";
       $expiration_icon = get_urgency_icon($exp_diff);
       $expiration_icon = "<i class='material-icons' style='color: $expiration_color'>$expiration_icon</i>";
     } else {
@@ -531,7 +550,6 @@ if (! $user->portalIsAuthorized()) {
 </div>
 </div>
 
-<!-- <div class='card' data-cardname='map' id='map'> -->
 <div class='card' data-cardname='map' id='map'>
 <table style="max-width: 1000px;"><th>Current GENI Resources</th><tr>
 <td style="padding: 0px;">
