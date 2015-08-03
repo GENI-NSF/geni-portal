@@ -4,7 +4,6 @@ nobase_dist_svcdata_DATA = \
 	php/abac.php \
 	php/am_client.php \
 	php/am_map.php \
-	php/cards.js \
 	php/cert_utils.php \
 	php/chapi.php \
 	php/client_utils.php \
