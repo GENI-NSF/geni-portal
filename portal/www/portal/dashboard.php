@@ -338,9 +338,7 @@ if (! $user->portalIsAuthorized()) {
       $project_card .= "<a class='button' href='edit-project.php'><i class='material-icons'>add</i>New Project</a>";
       $project_card .= "<a class='button' href='join-project.php'>Join a Project</a></div>";
     } else {
-      // TODO: are all of these always worthwhile?
       $project_card .= "<a class='button' href='join-project.php'>Join a Project</a><br class='mobilebreak'>";
-      $project_card .= "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a><br class='mobilebreak'>";
       $project_card .= "<a class='button' href='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
     }
 
@@ -470,7 +468,7 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<td class='slicetopbar sliceactions' style='text-align: right;'>";
     $box .= "<ul><li class='has-sub'><i class='material-icons' style='font-size: 22px;'>more_horiz</i><ul class='submenu'>";
     $box .= "<li><a href='project.php?project_id=$project_id'>Manage project</a></li>";
-    if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+    if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id) && !$expired) {
       $box .= "<li><a href='createslice.php?project_id=$project_id'>New slice</a></li>";
     }
     if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
