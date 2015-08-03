@@ -8,6 +8,19 @@
  * Add create image function for PG/IG racks within jacks-app (#1389).
  * Remove account and identity (and associated) tables, scripts and clients (#299)
  * Restore 'Manage Resources' functionality (#1448)
+ * Update Portal with new look and feel. Some key features:
+  * The home page has been re-designed using tabs, and 'cards' for each project or slice. (#1146)
+  * To act on a slice or project, click '...'
+  * 'Projects' and 'Slices' pages are tabs on the home page, reachable from the header menus under 'Home'
+  * Links from the 'Tools' section of the old home page are now largely under 'Partners' or 'Tools'
+    in the header, available on every page.
+  * To launch a tool in a slice context (jFed, GENI Desktop, LabWiki), use the button on the slice page.
+  * You can now renew slice resources directly from the home page. (#711)
+  * A Slice card indicates (using colors and icons) if the slice or resources expire soon. (#613)
+  * Flack has been removed. (#1451)
+  * Added a link to the page to request a SAVI account. (#1455)
+  * The GENI Wireless button is now under 'Manage Accounts' on the profile, 
+    with direct links to wireless testbeds under 'Partners' (#1262)
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
