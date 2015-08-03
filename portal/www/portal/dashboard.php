@@ -109,7 +109,7 @@ if (! $user->portalIsAuthorized()) {
     else
       $unexpired_projects[$project_id] = $project;
   }
-
+  $all_projects = $project_objects;
   $project_objects = $unexpired_projects;
 
   $disable_create_project = "";
@@ -121,14 +121,14 @@ if (! $user->portalIsAuthorized()) {
     $disable_project_lead = "disabled";
   }
 
-  if (count($project_objects) == 0) {
+  if (count($all_projects) == 0) {
     make_new_user_greeting($user);
   } else { 
     // you have some projects or slices
     make_navigation_tabs();
 
     // Start making the slice and project sections
-    $lead_names = lookup_member_names_for_rows($ma_url, $user, $project_objects, PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
+    $lead_names = lookup_member_names_for_rows($ma_url, $user, $all_projects, PA_PROJECT_TABLE_FIELDNAME::LEAD_ID);
     $slice_filters = "<ul class='selectorcontainer'><li class='has-sub selector' style='float:none;' id='slicefilterswitch'>";
     $slice_filters .= "<span class='selectorshown'>Filters</span><ul class='submenu'>";
     $slice_filters .= "<li data-value='-ALL-' class='selectorlabel'>Categories</li>";
@@ -202,26 +202,25 @@ if (! $user->portalIsAuthorized()) {
         $project_slice_counts[$slice_project_id] = 1;
       }
       if (!array_key_exists($slice_project_id, $project_objects)) {
+        $project_expiration_dt = new DateTime();
         $slice_project_name = "-Expired Project-";
-        $project = array();
       } else {
         $project = $project_objects[ $slice_project_id ];
+        $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+        $project_expiration_dt = new DateTime($project_expiration);
         $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       }
 
       $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
       $slice_exp = get_time_diff($slice_exp_date);
       // determine maximum date of slice renewal
+      
       $renewal_days = min($portal_max_slice_renewal_days, 7);
-      $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
-      if ($project_expiration) {
-        $project_expiration_dt = new DateTime($project_expiration);
-        $now_dt = new DateTime();
-        $difference = $project_expiration_dt->diff($now_dt);
-        $renewal_days = $difference->days;
-        // take the minimum of the two as the constraint
-        $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, 7);
-      }
+      $now_dt = new DateTime();
+      $difference = $project_expiration_dt->diff($now_dt);
+      $renewal_days = $difference->days;
+      // take the minimum of the two as the constraint
+      $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, 7);
 
       if (count($slivers) == 0) {
         $resource_exp = 1000000000;
