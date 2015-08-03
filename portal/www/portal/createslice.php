@@ -88,13 +88,22 @@ function get_users_projects($user) {
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $member_id = $user->account_id;
   $projects = get_project_info_for_member($sa_url, $user, $member_id);
-  $select = '<select name="project_id" form="createsliceform">';
+  $has_projects = false;
+  $options = '';
   foreach ($projects as $project) {
-    $select .= "<option value='" . $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID] . "'>";
-    $select .= $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
-    $select .= "</option>";
+    $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+    if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+      $options .= "<option value='" . $project_id . "'>";
+      $options .= $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $options .= "</option>";
+      $has_projects = true;
+    }
+    if ($has_projects) {
+      $select = "<select name='project_id' form='createsliceform'>$options</select>";
+    } else {
+      $select = '<i>You are not a member of projects where you can create a slice</i>';
+    }
   }
-  $select .= "</select>";
   return $select;
 }
 
