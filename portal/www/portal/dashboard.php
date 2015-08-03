@@ -360,6 +360,15 @@ if (! $user->portalIsAuthorized()) {
 
   // Print the message that shows up for $user when they have no projects or slices
   function make_new_user_greeting($user) {
+    global $in_lockdown_mode;
+    $disable_create_project = "";
+    $disable_join_project = "";
+    $disable_project_lead = "";
+    if ($in_lockdown_mode) {
+      $disable_create_project = "disabled";
+      $disable_join_project = "disabled";
+      $disable_project_lead = "disabled";
+    }
     if ($user->isAllowed(PA_ACTION::CREATE_PROJECT, CS_CONTEXT_TYPE::RESOURCE, null)) {
       // You're not in any projects at all, even expired
       print "<p class='instruction'>";

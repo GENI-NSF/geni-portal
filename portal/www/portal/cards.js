@@ -76,9 +76,9 @@ $(document).ready(function() {
       active.addClass('activesection');
       content.show();
     } else {
-      active.removeClass('activesection');
-      content.hide();
       $('ul.tabs').each(function() {
+        active.removeClass('activesection');
+        content.hide();
         var links = $(this).find('a');
         active = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
         active.addClass('activesection');
