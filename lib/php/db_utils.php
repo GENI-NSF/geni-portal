@@ -100,7 +100,7 @@ function db_execute_statement($stmt, $msg = "", $rollback_on_error = false)
 function log_db_error($error_result, $query, $msg)
 {
   if ($msg) {
-    $log_msg .= "DB ERROR $msg: \"";
+    $log_msg = "DB ERROR $msg: \"";
   } else {
     $log_msg = "DB ERROR: \"";
   }

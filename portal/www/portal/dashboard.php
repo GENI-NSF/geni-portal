@@ -347,7 +347,7 @@ if (! $user->portalIsAuthorized()) {
     print "<li><a class='tab' data-tabindex=1 data-tabname='slices' href='#slices'>Slices</a></li>";
     print "<li><a class='tab' data-tabindex=2 data-tabname='projects' href='#projects'>Projects</a></li>";
     print "<li><a class='tab' data-tabindex=3 data-tabname='logs' href='#logs'>Logs</a></li>";
-    print "<li><a class='tab' data-tabindex=4 data-tabname='map' href='#map'>Map</a></li>";
+    print "<li><a class='tab' data-tabindex=4 data-tabname='map' href='#map' id='maptab'>Map</a></li>";
     print "</ul></div>";
   }
 

@@ -432,4 +432,8 @@ td .material-icons {
   #dashboardheader {
     min-width: 0px;
   }
+
+  #maptab {
+    display: none;
+  }
 }
