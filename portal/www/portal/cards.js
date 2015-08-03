@@ -1,4 +1,3 @@
-<script>
 $(document).ready(function() {
   var active, content;
   $('ul.tabs').each(function() {
@@ -64,4 +63,3 @@ $(document).ready(function() {
     }
   });
 });
-</script>

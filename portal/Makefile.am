@@ -65,6 +65,7 @@ dist_svcweb_DATA = \
 	www/portal/amstatus.php \
 	www/portal/ask-for-project.php \
 	www/portal/cancel-join-project.php \
+	www/portal/cards.js \
 	www/portal/certificate.php \
 	www/portal/confirm-sliverdelete.php \
 	www/portal/createimage.php \
@@ -113,7 +114,6 @@ dist_svcweb_DATA = \
 	www/portal/future.json \
 	www/portal/gemini.php \
 	www/portal/gemini_add_global_node.php \
-	www/portal/genimap.php \
 	www/portal/get_omni_invocation_data.php \
 	www/portal/irods.php \
 	www/portal/generatesshkey.php \
@@ -205,15 +205,11 @@ dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt-centered.svg \
 	www/images/EG-VM-noTxt.svg \
 	www/images/EG-VM.svg \
-	www/images/email.png \
-	www/images/external.png \
 	www/images/geni.png \
 	www/images/geni_globe.png \
 	www/images/geni_globe_small.png \
 	www/images/geni-header-left.png \
 	www/images/geni-header-right.png \
-	www/images/geni-square.png \
-	www/images/green.png \
 	www/images/header-home.jpg \
 	www/images/menu.png \
 	www/images/openVZvm-noTxt-centered.svg \
@@ -229,7 +225,6 @@ dist_svcwebimages_DATA = \
 	www/images/RawPC-IG-noTxt-centered.svg \
 	www/images/RawPC-IG-noTxt.svg \
 	www/images/RawPC-IG.svg \
-	www/images/red.png \
 	www/images/router.svg \
 	www/images/site-icon.png \
 	www/images/staticmap.png \
@@ -237,8 +232,7 @@ dist_svcwebimages_DATA = \
 	www/images/UseGENI.png \
 	www/images/Xen-VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt.svg \
-	www/images/Xen-VM.svg \
-	www/images/yellow.png 	
+	www/images/Xen-VM.svg 
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \

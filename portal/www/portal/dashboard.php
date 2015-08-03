@@ -45,7 +45,7 @@ include("tool-showmessage.php");
 ?>
 
 <script src='dashboard.js'></script>
-<?php include "cards.js"; ?>
+<script src='cards.js'></script>
 
 <script>
 function info_set_location(slice_id, url, stop_if_none)
