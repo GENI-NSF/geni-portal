@@ -150,6 +150,8 @@ JacksApp.prototype.RENEW_EVENT_TYPE = "RENEW";
 JacksApp.prototype.RESTART_EVENT_TYPE = "RESTART";
 JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
 
+JacksApp.prototype.INSTAGENI_AGGREGATE_TYPE = "ui_instageni_am";
+
 
 //----------------------------------------------------------------------
 // Jacks App Methods
@@ -252,6 +254,27 @@ JacksApp.prototype.handleStatusClick = function() {
     $(this.statusHistory).show();
 }
 
+JacksApp.prototype.handleCreateImage = function() {
+    // Need am_id, slice_id, sliver_id
+    // The createimage.php page 
+    //    computes slice_name and project_name from slice_id
+    //    solicits image_name and public
+    // And then we go to image_operations.php which gives us either
+    // an image_urn and image_id or an error, which will then update
+    // that page. We put a 'back' button on the page to go 
+    // back to the slice page.
+    // *** HTTP encode the ID's ***
+    selected_node = this.selectedNodes[0];
+    am_id = this.lookup_am_id(selected_node.key);
+    slice_id = this.sliceInfo.slice_id;
+    sliver_id = this.lookup_topology_node(selected_node).sliver_id;
+    create_image_url = "createimage.php?slice_id=" + slice_id + 
+    "&am_id=" + am_id +					
+    "&sliver_id=" + sliver_id;
+    window.location.replace(create_image_url);
+    console.log("CREATE IMAGE");
+}
+
 JacksApp.prototype.handleStatusHistoryClick = function() {
     debug("STATUS HISTORY Click");
     this.hideStatusHistory();
@@ -293,6 +316,11 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
 
     btn = $('<button type="button">Restart</button>');
     btn.click(function(){ that.handleRestart();});
+    $(buttonSelector).append(btn);
+
+    btn = $('<button type="button" id="create_image_button">Snapshot</button>');
+    btn.click(function(){ that.handleCreateImage();});
+    btn.attr('disabled', 'disabled');
     $(buttonSelector).append(btn);
 
     //  GAP
@@ -750,7 +778,33 @@ JacksApp.prototype.onSelectionEvent = function(event) {
 	this.selectedLinks = event.items;
 	this.selectObjects(this.selectedLinks, true);
     }
+
+    // Enable/Disable 'create image button based on selection
+    this.toggleCreateImage(this.selectedNodes);
+
+
 }
+
+// Enable the "create image" button if a single IG node is selected
+JacksApp.prototype.toggleCreateImage = function(selected_nodes) {
+    var should_enable_create_image = false;
+
+    if(selected_nodes.length == 1) {
+	selected_node = selected_nodes[0];
+	node_key = selected_node.key;
+	am_id = this.lookup_am_id(node_key);
+	aggregate = this.allAms[am_id];
+	aggregate_type = aggregate.attributes.UI_AM_TYPE;
+	if (aggregate_type == this.INSTAGENI_AGGREGATE_TYPE) 
+	    should_enable_create_image = true;
+    }
+
+    if (should_enable_create_image)
+	$('#create_image_button').removeAttr('disabled');
+    else
+	$('#create_image_button').attr('disabled', 'disabled');
+}
+
 
 JacksApp.prototype.selectObjects = function(objs, select) {
     $.each(objs, function(i) {
