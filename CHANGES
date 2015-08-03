@@ -8,6 +8,8 @@
  * Add create image function for PG/IG racks within jacks-app (#1389).
  * Remove account and identity (and associated) tables, scripts and clients (#299)
  * Restore 'Manage Resources' functionality (#1448)
+ * Avoid always storing profile changes as lead requests. (#1463)
+ * Avoid listing all profile edits as having changed the telephone number. (#1339)
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
