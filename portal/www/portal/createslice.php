@@ -84,11 +84,13 @@ function sa_create_slice($user, $slice_name, $project_id, $project_name, $descri
   return $result;
 }
 
+$has_projects = false;
+
 function get_users_projects($user) {
+  global $has_projects;
   $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
   $member_id = $user->account_id;
   $projects = get_project_info_for_member($sa_url, $user, $member_id);
-  $has_projects = false;
   $options = '';
   foreach ($projects as $project) {
     $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
@@ -98,11 +100,11 @@ function get_users_projects($user) {
       $options .= "</option>";
       $has_projects = true;
     }
-    if ($has_projects) {
-      $select = "<select name='project_id' form='createsliceform'>$options</select>";
-    } else {
-      $select = '<i>You are not a member of projects where you can create a slice</i>';
-    }
+  }
+  if ($has_projects) {
+    $select = "<select name='project_id' form='createsliceform'>$options</select>";
+  } else {
+    $select = '<i>You are not a member of projects where you can create a slice</i>';
   }
   return $select;
 }
@@ -157,7 +159,8 @@ print "<td><input type='text' name='slice_description' value='$slice_description
 print "</tr></table>\n";
 print '<p><b>Note</b>: Slice names must not contain whitespace. Use at most 19 alphanumeric characters or hyphen (no leading hyphen) : "a-zA-Z0-9-".</b></p>';
 echo '<p><b>Note: Slice names are public and must be unique across your project.</b></p>';
-print '<p><input type="submit" value="Create slice"/>';
+$create_slice_disabled = $has_projects ? "" : "disabled";
+print "<p><input $create_slice_disabled type='submit' value='Create slice'/>";
 print "\n";
 print "<input type=\"button\" value=\"Cancel\" onClick=\"history.back(-1)\"/></p>\n";
 print '</form>';

@@ -307,7 +307,7 @@ body {
   color: #303030;
 }
 
-#content button[disabled=disabled], #content button:disabled {
+#content button[disabled=disabled], #content button:disabled, #content input[type=submit]:disabled {
   color: #E0E0E0; 
   background-color: #F9F9F9;
 }
