@@ -32,6 +32,89 @@ import os
 import subprocess
 import xml.dom.minidom
 
+
+# Orbit Delegated Account Management API Error codes
+# As of 6/25/2014
+class CODES:
+
+    # Means portal tried to add a user that already exists. Handled explicitly.
+    ERROR1 = 'ERROR 1: UID and OU and DC match'
+
+    # Means trying to change project. Shouldn't happen, but code checks for this
+    ERROR2 = 'ERROR 2: UID and DC match but OU is different'
+
+    # Member username exists from different authority. Code tries to pick a different username.
+    ERROR3 = 'ERROR 3: UID matches but DC and OU are different'
+
+    # Seems to imply that group ou must be unique for both local and portal created groups? Huh?
+    # FIXME FIXME
+    ERROR4 = 'ERROR 4: UID and OU match but DC is different'
+
+
+    # Handled explicitly when trying to deleteUser, changeLeader, changeProject
+    ERROR5 = 'ERROR 5: Unknown username:'
+
+    # Handled explicity in deleteUser
+    ERROR6 = 'ERROR 6: Cannot delete user: User is a admin for'
+
+    # Handled explicitly in deleteProject, changeLeader, changeProject
+    ERROR7 = 'ERROR 7: Unknown group name'
+
+    # Handled explicitly in deleteProject
+    ERROR8 = 'ERROR 8: Group/project not deleted because it contains admin(s):'
+
+    # Theoretically could happen from changeProject if I'm trying to move a user not created
+    # by the portal to a different project. Shouldn't happen.
+    ERROR9 = 'ERROR 9: Cannot move users: different DCs'
+
+    # Malformed LDIF
+    ERROR10 = 'ERROR 10: Missing OU LDIF entry'
+
+    # Malformed LDIF
+    ERROR11 = 'ERROR 11: Missing group name attribute in OU entry'
+
+    # Malformed LDIF
+    ERROR12 = 'ERROR 12: Missing objectClass attribute (organizationalUnit/organizationalRole/organizationalUnit) for'
+
+    # Attempt to create a group without an admin, or with unknown admin 
+    ERROR17 = 'ERROR 17: Missing PI entry'
+
+    # Tried to create a group that already exists.
+    # FIXME: Mostly handled below, but perhaps could be better.
+    ERROR20 = 'ERROR 20: Group exists'
+
+    # Malformed LDIF. Note all users must have an email address.
+    ERROR21 = 'ERROR 21: Missing PI mail:'
+
+    # Malformed LDIF. Note we explicitly require users have an SSH key.
+    ERROR22 = 'ERROR 22: Missing PI ssh public key:'
+
+    # Malformed LDIF.
+    ERROR30 = 'ERROR 30: Missing username (UID)'
+
+    # FIXME: I need to handle this (see comments below). This means I tried to add a 
+    # user to a group that doesn't exist.
+    ERROR31 = 'ERROR 31: Organization does not exist for this user. Missing organization LDIF entry'
+
+    # Malformed LDIF. Not all portal users must have an email address. 
+    ERROR32 = 'ERROR 32: Missing users email address'
+
+    # Malformed LDIF. Note we explicitly require users have an SSH key.
+    ERROR33 = 'ERROR 33: Missing users ssh public key:'
+
+    ALL = [ERROR1, ERROR2, ERROR3, ERROR4, ERROR5, ERROR5, 
+           ERROR6, ERROR7, ERROR8, ERROR9, ERROR10, ERROR11,
+           ERROR12, ERROR17, ERROR20, ERROR21, ERROR22, 
+           ERROR30, ERROR31, ERROR32, ERROR33]
+
+# Does given string contain one of the defined errors?
+# If so, return the error, otherwise, return None
+def find_error_code(str):
+    for cd in CODES.ALL:
+        if str.find(cd) >= 0:
+            return cd;
+    return None
+
 BASE_ORBIT_URL = "https://www.orbit-lab.org/delegatedAM"
 
 # Return value from CURL on URL
