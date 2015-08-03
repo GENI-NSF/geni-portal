@@ -318,7 +318,7 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo '<html lang="en">';
   echo '<head>';
   echo '<meta charset="utf-8">';
-  echo "<title>GENI Portal</title>";
+  echo "<title>$title</title>";
 
   /* Javascript stuff. */
   echo "<script src='$portal_jquery_url'></script>";
