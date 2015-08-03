@@ -424,7 +424,7 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo '<li class="headerlink has-sub">Tools';
   echo '<ul class="submenu">';
   echo "<li><a href='gemini.php' target='_blank'>GENI Desktop<i class='material-icons'>launch</i></a></li>";
-  if (! is_null($jfed_button_start)) {
+  if ($load_user && !is_null($jfed_button_start)) {
     echo "<li>";
     echo $jfed_button_start . getjFedSliceScript(NULL) . $jfed_button_part2 . ">jFed<i class='material-icons'>launch</i></button>";
     echo "</li>";
