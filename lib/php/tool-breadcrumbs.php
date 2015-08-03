@@ -110,7 +110,7 @@ $parents = array("profile.php" => "home.php",
 		 "tool-rspecs.php" => "profile.php",
                  "omni-bundle.php" => "profile.php",
 		 "irods.php" => "profile.php",
-		 "wimax-enable.php" => "home.php",
+		 "wimax-enable.php" => "profile.php",
                  "gemini.php" => "slice.php",
 		 "tool-aggwarning.php" => "slice.php",
 		 "send_bug_report.php" => "slice.php",);

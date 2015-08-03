@@ -524,7 +524,7 @@ $irodsdisabled="disabled";
 if (! isset($disable_irods) or $user->hasAttribute('enable_irods')) {
   $irodsdisabled = "";
 }
-print "<a class='button' href='irods.php' $irodsdisabled>Create iRODS Account</a><br><br>\n";
+print "<a class='button' href='irods.php' $irodsdisabled>Manage iRODS Account</a><br><br>\n";
 print "<a class='button' href='savi.php' $irodsdisabled>Create SAVI Account</a><br><br>\n";
 print "<a class='button' href='wimax-enable.php'>Manage Wireless Account</a>\n";
 
