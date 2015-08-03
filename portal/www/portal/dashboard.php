@@ -264,11 +264,31 @@ if (! $user->portalIsAuthorized()) {
       $slice_project_info .= "<div $show_info class='projectinfo' id='{$project_name}info'>";
       $slice_project_info .= "$create_slice_button $manage_project_button</div>";
       $show_info = "style='display:none;'";
-      $expired_project_class = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED] ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
+      $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+      $expired_project_class = $expired ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
       $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
       $categories = "$expired_project_class $project_lead_class";
       $handle_req_str = get_pending_requests($project_id, $project_request_map);
-      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str);
+      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $expired, $categories, $handle_req_str);
+    }
+    foreach ($expired_projects as $project) {
+      $project_id = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_ID];
+      $project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
+      $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
+      $purpose = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_PURPOSE];
+      $expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
+      $lead_name = $lead_names[$lead_id];
+      if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
+        $create_slice_button = "<a class='button' href='createslice.php?project_id=$project_id'><i class='material-icons'>add</i> New slice</a><br class='mobilebreak'>";
+      } else {
+        $create_slice_button = "";
+      }
+      $expired = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED];
+      $expired_project_class = $expired ? "-EXPIRED-PROJECTS-" : "-ACTIVE-PROJECTS-";
+      $project_lead_class = $lead_id == $user_id ? "-MY-PROJECTS-" : "-THEIR-PROJECTS-";
+      $categories = "$expired_project_class $project_lead_class";
+      $handle_req_str = get_pending_requests($project_id, $project_request_map);
+      $project_boxes .= make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $expired, $categories, $handle_req_str);
     }
     $slice_filters .= "</ul></li></ul>";
 
@@ -319,7 +339,7 @@ if (! $user->portalIsAuthorized()) {
       $project_card .= "<a class='button' href='join-project.php'>Join a Project</a></div>";
     } else {
       // TODO: are all of these always worthwhile?
-      $project_card .= "<a class='button' href='join-project.php'><b>Join a Project</b></a><br class='mobilebreak'>";
+      $project_card .= "<a class='button' href='join-project.php'>Join a Project</a><br class='mobilebreak'>";
       $project_card .= "<a class='button' href='ask-for-project.php'><b>Ask Someone to Create a Project</b></a><br class='mobilebreak'>";
       $project_card .= "<a class='button' href='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
     }
@@ -427,7 +447,7 @@ if (! $user->portalIsAuthorized()) {
     return $box;
   }
   
-  function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $categories, $handle_req_str) {
+  function make_project_box($project_id, $project_name, $lead_id, $lead_name, $purpose, $expiration, $expired, $categories, $handle_req_str) {
     global $project_slice_counts, $user;
     if (array_key_exists($project_id, $project_slice_counts)) {
       $slice_count = $project_slice_counts[$project_id];
@@ -463,11 +483,16 @@ if (! $user->portalIsAuthorized()) {
     $box .= "<tr><td colspan='2'><b>Lead:</b> $lead_name $handle_req_str</td></tr>";
     $box .= $slice_count == 0 ? "<tr><td colspan='2'><i> No slices</i></td></tr>" : "<tr><td colspan='2'>Has <b>$slice_count</b> slices</td></tr>";
     if ($expiration) {
-      $expiration_string = get_time_diff_string($exp_diff);
-      $expiration_color = get_urgency_color($exp_diff);
-      $expiration_string = "Project expires in <b title='$expiration'>$expiration_string</b>";
-      $expiration_icon = get_urgency_icon($exp_diff);
-      $expiration_icon = "<i class='material-icons' style='color: $expiration_color'>$expiration_icon</i>";
+      if (!$expired) {
+        $expiration_string = get_time_diff_string($exp_diff);
+        $expiration_color = get_urgency_color($exp_diff);
+        $expiration_string = "Project expires in <b title='$expiration'>$expiration_string</b>";
+        $expiration_icon = get_urgency_icon($exp_diff);
+        $expiration_icon = "<i class='material-icons' style='color: $expiration_color'>$expiration_icon</i>";
+      } else {
+        $expiration_string = "<b>Project is expired</i>";
+        $expiration_icon = "<i class='material-icons' style='color: #EE583A;'>report</i>";
+      }
     } else {
       $expiration_string = "<i>No expiration</i>";
       $expiration_icon = "";

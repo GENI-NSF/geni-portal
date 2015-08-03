@@ -175,6 +175,8 @@ function show_projects(selection, sortby) {
   sort_boxes(sortby, $("#projectascendingcheck").prop("checked"), "#projectarea");
   animate_boxes("#projectarea", selection);
 
+
+
   // sort_boxes(sortby, $("#ascendingcheck").prop("checked"));
   if($("." + selection).length == 0) {
     $("#projectarea").append("<h6 style='margin:15px;' class='noprojects'><i>No projects to display.</i></h6>");
@@ -219,6 +221,9 @@ function animate_boxes(container, selection) {
    // fancy slice animations
   $("." + selection).addClass("loading");
   $("." + selection).show();
+  if(selection != "-EXPIRED-PROJECTS-") {
+    $(".-EXPIRED-PROJECTS-").hide();
+  }
 
   $('.' + selection).each(function(index, element) {
     setTimeout(function() {

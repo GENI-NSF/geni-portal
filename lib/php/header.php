@@ -432,12 +432,6 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo "<li><a href='http://labwiki.casa.umass.edu' target='_blank'>LabWiki <i class='material-icons'>launch</i></a></li>";
   echo '</ul></li>';
 
-  // echo '<li class="headerlink has-sub"><a href="profile.php">Profile</a>';
-  // echo '<ul class="submenu">';
-  // echo '</ul></li>';
-
-
-
   echo '<li class="headerlink has-sub"><a href="dashboard.php">Home</a>';
   echo '<ul class="submenu">';
   echo '<li><a href="dashboard.php#slices">Slices</a></li>';
@@ -450,7 +444,7 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo '<div style="clear:both; height: 50px;">&nbsp;</div>';
 
   if ($in_maintenance_mode) {
-    echo "<center><b>***** Maintenance Mode *****</b></center>";
+    echo "<center><b>***** Maintenance Outage *****</b></center>";
   }
 
   echo "<div id='content-outer' class='$cards_class'>";
