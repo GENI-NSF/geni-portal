@@ -73,13 +73,6 @@ function info_set_location(slice_id, url, stop_if_none)
   $project_slice_map = $retVal[3];
   $project_activeslice_map = $retVal[4];
 
-if(array_key_exists("showmap", $_REQUEST)) {
-  echo "<h2 class='dashtext'>Current GENI Resources</h2><br>";
-  echo "<table id='resourcemap'><tr><td>";
-  include("map.html");
-  echo "</td></tr></table>";  
-}
-
 if (! $user->portalIsAuthorized()) {
   $km_url = get_first_service_of_type(SR_SERVICE_TYPE::KEY_MANAGER);
   $params['redirect'] = selfURL();
