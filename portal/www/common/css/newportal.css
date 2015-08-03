@@ -162,11 +162,15 @@ body {
 }
 
 .headerlink:hover {
-  cursor: pointer;
+  cursor: default;
   background-color: #EEEEEE;
   animation: headerhighlight;
   -webkit-transition-duration: 200ms;
   transition-duration: 200ms;
+}
+
+.headerlink.islink:hover {
+  cursor: pointer;
 }
 
 .headerlink a {
@@ -820,6 +824,7 @@ input.date {
 td.label {
  background-color: #E6D4B8;
 }
+
 
 table .aggregate {
   background-color: SkyBlue;
