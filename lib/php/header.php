@@ -400,13 +400,15 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo '<li><a href="help.php">Contact Us</a></li>';
   echo '</ul></li>';
 
-  if (! isset($jfed_button_start)) {
-    $jfedret = get_jfed_strs($user);
-    $jfed_script_text = $jfedret[0];
-    $jfed_button_start = $jfedret[1];
-    $jfed_button_part2 = $jfedret[2];
-    if (! is_null($jfed_button_start)) {
-      print $jfed_script_text;
+  if ($load_user) {
+    if (! isset($jfed_button_start)) {
+      $jfedret = get_jfed_strs($user);
+      $jfed_script_text = $jfedret[0];
+      $jfed_button_start = $jfedret[1];
+      $jfed_button_part2 = $jfedret[2];
+      if (! is_null($jfed_button_start)) {
+        print $jfed_script_text;
+      }
     }
   }
 
@@ -446,6 +448,10 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   $cards_class = $show_cards ? 'content-cards' : 'one-card'; 
 
   echo '<div style="clear:both; height: 50px;">&nbsp;</div>';
+
+  if ($in_maintenance_mode) {
+    echo "<center><b>***** Maintenance Mode *****</b></center>";
+  }
 
   echo "<div id='content-outer' class='$cards_class'>";
   echo "<div id='content'>";
