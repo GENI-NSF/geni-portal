@@ -132,7 +132,7 @@ def get_curl_output(query_url):
 # Invoke an ORBIT REST API call
 # Create url, make call via curl and exit if an (untolerated) error returned
 def invoke_orbit_method(method, args, tolerated_error_codes = []):
-    url = "%s/%s?args" % (BASE_ORBIT_URL, method, args)
+    url = "%s/%s?%s" % (BASE_ORBIT_URL, method, args)
     output = get_curl_output(url)
     code = find_error_code(output)
     if code and code not in tolerated_error_codes:
@@ -146,6 +146,11 @@ def add_user_to_group(group_name, user_name):
     invoke_orbit_method("addMemberToGroup", 
                         "groupname=%s&username=%s" %  (group_name, user_name))
 
+# Remove ORBIT user to ORBIT group
+def remove_user_from_group(group_name, user_name):
+    invoke_orbit_method("removeMemberFromGroup",
+                        "groupname=%s&username=%s" %  (group_name, user_name))
+
 # Change ORBIT group admin
 def change_group_admin(group_name, admin_name):
     invoke_orbit_method("changeGroupAdmin", 
@@ -155,6 +160,16 @@ def change_group_admin(group_name, admin_name):
 def enable_user(user_name):
     invoke_orbit_method("enableUser", 
                         "username=%s" % user_name, [CODES.ERROR6])
+
+# Disable ORBIT user
+def disable_user(user_name):
+    invoke_orbit_method("disableUser", 
+                        "username=%s" % user_name, [CODES.ERROR6])
+
+# Delete ORBIT group
+def delete_group(group_name):
+    invoke_orbit_method("deleteGroup", "groupname=%s"% group_name)
+
 
 # Get ORBIT group/user info
 def get_orbit_groups_and_users():

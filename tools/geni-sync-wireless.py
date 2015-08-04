@@ -56,12 +56,13 @@ def parse_args(argv):
                       default="geni-HOLDINGPEN")
     parser.add_option("--holdingpen_admin", 
                       help="GENI username of admin of ORBIT 'holding pen'",
-                      default="seskar")
+                      default="agosain")
     parser.add_option("--project", help="specific project name to sync", 
                       default=None)
     parser.add_option("--user", help="specific username to sync", default=None)
     parser.add_option("--cleanup", 
                       help="delete obsolete groups and group memberships", 
+                      dest='cleanup', action='store_true',
                       default=False)
     parser.add_option("-v", "--verbose", help="Print verbose debug info", 
                       dest = 'verbose', action='store_true',
@@ -120,6 +121,11 @@ class WirelessProjectManager:
         self._orbit_groups = {}
         self._orbit_users = {}
 
+        # These keep state of deleted information in the current
+        # synchronize call between sub-methods
+        self._deleted_orbit_groups = []
+        self._deleted_orbit_members = {}
+
         
     # Print error and exit
     def error(self, msg): print msg; sys.exit()
@@ -132,8 +138,11 @@ class WirelessProjectManager:
             return "%s %s" % (member_info['first_name'], 
                               member_info['last_name'])
 
-    # Turn GENI name to ORBIT name
+    # Turn GENI name to ORBIT name (add geni- prefix)
     def to_orbit_name(self, name): return "geni-%s" % name
+
+    # Turn ORBIT name to GENI name (remove geni- prefix)
+    def to_geni_name(self, name): return name[5:]
 
     # Top level synchronization function
     # Gather GENI clearinghouse sense of projects/members
@@ -334,11 +343,80 @@ class WirelessProjectManager:
                     (orbit_group_name, orbit_group_admin, orbit_lead_username)
                 orb.change_group_admin(orbit_group_name, orbit_lead_username)
 
+    # Delete members of a group that aren't members of corresponding project
+    # Keep list of users removed from groups
+    def delete_group_members_not_in_project(self): 
+        for group_name, group_info in self._orbit_groups.items():
+            geni_project_name = self.to_geni_name(group_name)
+            if self._project and geni_project_name != self._project: continue
+            if group_name == self._options.holdingpen_group: continue
+            geni_project_info = self.lookup_geni_project(geni_project_name)
+            if geni_project_info:
+                geni_project_members = \
+                    [self._geni_members[geni_member_id]['username'] \
+                         for geni_member_id in geni_project_info['members']]
+            else:
+                # No GENI project, remove all group members
+                geni_project_members = [] 
+            for orbit_username in group_info['users']:
+                geni_username = self.to_geni_name(orbit_username)
+                if geni_username not in geni_project_members:
+                    if orbit_username not in self._deleted_orbit_members:
+                        self._deleted_orbit_members[orbit_username] = []
+                    self._deleted_orbit_members[orbit_username].append(group_name)
+                    print "Removing %s from group %s" % \
+                        (orbit_username, group_name)
+                    orb.remove_user_from_group(group_name, orbit_username)
 
-    # WRITE ME
-    def delete_group_members_not_in_project(self): pass
-    def delete_groups_without_projects(self): pass
-    def disable_users_in_no_project(self): pass
+    # Delete groups that don't correspond to projects
+    # Keep a list of deleted groups
+    def delete_groups_without_projects(self): 
+        for group_name, group_info in self._orbit_groups.items():
+            geni_project_name = self.to_geni_name(group_name)
+            if self._project and geni_project_name != self._project: continue
+            if group_name == self._options.holdingpen_group: continue
+            geni_project_info = self.lookup_geni_project(geni_project_name)
+            if not geni_project_info:
+                print "Removing group %s" % group_name
+                orb.delete_group(group_name)
+                self._deleted_orbit_groups.append(group_name)
+
+    # Disable users who are only in the ORBIT holdingpen group
+    # Note: we've deleted some projects at this point, so 
+    # we mean users who are in at least one recently deleted group
+    # but no other non-deleted groups
+    def disable_users_in_no_project(self): 
+        for orbit_username in self._orbit_users:
+            geni_username = self.to_geni_name(orbit_username)
+            user_in_some_deleted_group = False
+            user_in_some_non_deleted_group = False
+            for group_name, group_info in self._orbit_groups.items():
+                if group_name == self._options.holdingpen_group: continue
+                recently_deleted_from_group = \
+                    orbit_username in self._deleted_orbit_members and \
+                    group_name in self._deleted_orbit_members[orbit_username]
+                # Check of you've been deleted from a group
+                if orbit_username in group_info['users']:
+                    if group_name in self._deleted_orbit_groups  or \
+                            recently_deleted_from_group:
+                        user_in_some_deleted_group = True
+                # Check if you're still in a group
+                    else:
+                        user_in_some_non_deleted_group = True
+                        break
+            # If you're recently deleted from a group and not in another
+            # group, disable user
+            if user_in_some_deleted_group and \
+                    not user_in_some_non_deleted_group:
+                print "Disabling user: %s" % orbit_username
+                orb.disable_user(orbit_username)
+
+    # Lookup GENI project by name
+    def lookup_geni_project(self, project_name):
+        for project_id, project_info in self._geni_projects.items():
+            if project_info['project_name'] == project_name:
+                return  project_info
+        return None
 
     # Grab project info [indexed by project id] for all wimax-enabled projects
     # Only single project for --project option
