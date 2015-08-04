@@ -56,10 +56,12 @@ if (array_key_exists("slice_description", $_REQUEST)) {
 }
 
 if (is_null($project_id) || $project_id == '') {
+  $has_projects = false; 
   $project_name = get_users_projects($user);
   $project_id_input = '';
   $show_breadcrumbs = false;
 } else {
+  $has_projects = true;
   $project_id_input =  "<input type='hidden' name='project_id' value='$project_id'/>";
   $show_breadcrumbs = true;
 }
@@ -84,7 +86,6 @@ function sa_create_slice($user, $slice_name, $project_id, $project_name, $descri
   return $result;
 }
 
-$has_projects = false;
 
 function get_users_projects($user) {
   global $has_projects;
