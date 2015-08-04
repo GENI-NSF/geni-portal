@@ -4,7 +4,7 @@
 
 = GENI Portal Release Notes =
 
-== 2.35 ==
+== 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
  * Remove account and identity (and associated) tables, scripts and clients (#299)
  * Restore 'Manage Resources' functionality (#1448)
