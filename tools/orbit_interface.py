@@ -30,6 +30,8 @@
 
 import os
 import subprocess
+import sys
+import tempfile
 import xml.dom.minidom
 
 
@@ -118,10 +120,10 @@ def find_error_code(str):
 BASE_ORBIT_URL = "https://www.orbit-lab.org/delegatedAM"
 
 # Return value from CURL on URL
-def get_curl_output(url):
+def get_curl_output(query_url):
     DEVNULL = open(os.devnull, 'w')
     raw_curl_output = \
-        subprocess.check_output(["curl", orbit_query_url], stderr=DEVNULL)
+        subprocess.check_output(["curl", "-k", query_url], stderr=DEVNULL)
     return raw_curl_output
 
 
@@ -137,10 +139,37 @@ def delete_orbit_group(group_name):
 def create_orbit_user(user_name):
     print "CREATE ORBIT USER %s" % user_name
         
-# Add member to ORBIT group
-def add_member_to_group(user_name, user_orbit_name, group_name):
-    print "ADD MEMBER %s(%s) TO ORBIT GROUP %s" % \
-        (user_name, user_orbit_name, group_name)
+# Add ORBIT user to ORBIT group
+# NOTE: No error trying to add a user to a group to which it already exists
+def add_user_to_group(group_name, user_name):
+    url = "%s/addMemberToGroup?groupname=%s&username=%s" % \
+        (BASE_ORBIT_URL, group_name, user_name)
+    output = get_curl_output(url)
+    code = find_error_code(output)
+    if code:
+        print "Error in addMemberToGroup call: %s" % output
+        sys.exit(0)
+
+# Change ORBIT group admin
+def change_group_admin(group_name, admin_name):
+    url = "%s/changeGroupAdmin?groupname=%s&username=%s" % \
+        (BASE_ORBIT_URL, group_name, admin_name)
+    output = get_curl_output(url)
+    code = find_error_code(output)
+    if code:
+        print "Error in changeGroupAdmin call: %s" % output
+        sys.exit(0)
+
+# Enable ORBIT user
+def enable_user(user_name):
+    url = "%s/enableUser?username=%s" % \
+        (BASE_ORBIT_URL, user_name)
+    output = get_curl_output(url)
+    code = find_error_code(output)
+    if code and code not in [CODES.ERROR6]:
+        print "Error in enableUser call: %s" % output
+        sys.exit(0)
+    
 
 # Remove member from ORBIT group
 def remote_member_from_group(user, group_name):
@@ -148,11 +177,20 @@ def remote_member_from_group(user, group_name):
 
 
 # Get ORBIT group/user info
-def get_orbit_groups():
+def get_orbit_groups_and_users():
     orbit_query_url = "%s/getGroupsAndUsers" % BASE_ORBIT_URL
     orbit_info_raw = get_curl_output(orbit_query_url)
     orbit_groups = parse_group_user_info(orbit_info_raw)
-    return orbit_groups
+    orbit_users = set()
+    for group_name, group_info in orbit_groups.items():
+        orbit_group_member_query_url = "%s/getProjectMembers?groupname=%s" %\
+            (BASE_ORBIT_URL, group_name)
+        orbit_member_info_raw = get_curl_output(orbit_group_member_query_url)
+        users = parse_group_members(orbit_member_info_raw)
+        for user in users:
+            orbit_users.add(user)
+        group_info['users'] = users
+    return orbit_groups, list(orbit_users)
 
 # Parse results from getGroupsAndUsers call
 def parse_group_user_info(orbit_info_raw):
@@ -172,6 +210,16 @@ def parse_group_user_info(orbit_info_raw):
                 (group_name, user_name)
         group = groups[group_name]['users'].append(user_name)
     return groups
+
+# Parse results from getProjectMembers call
+def parse_group_members(orbit_info_raw):
+    users = []
+    orbit_info = xml.dom.minidom.parseString(orbit_info_raw)
+    user_nodes = orbit_info.getElementsByTagName("User")
+    for user_node in user_nodes:
+        user_name = user_node.getAttribute('username')
+        users.append(user_name)
+    return users
 
 #----------------------------------------------------------------------
 # Routines to create LDIF for project/group, user/member and admin
@@ -255,5 +303,27 @@ def ldif_for_user(user_name, group_name, user_prettyname,
        irods_entry, ssh_entries,
        user_name, user_group_description)
   return user_ldif
+
+# Save group/admin/user data in LDF
+def saveUser(user_ldif_data):
+    
+    save_user_url = "%s/saveUser" % BASE_ORBIT_URL 
+
+    out_file, out_filename = tempfile.mkstemp()
+    os.write(out_file, user_ldif_data)
+    os.close(out_file)
+    FNULL = open(os.devnull, 'w')
+
+    ldif_arg = "ldif=@%s" % out_filename
+    output = subprocess.check_output(["curl", "-PUT", "-H", 
+                                      "Content-type: multipart/form-data", 
+                                      "-F", ldif_arg, save_user_url],
+                                     stderr=FNULL)
+    error_code = find_error_code(output)
+    if error_code and error_code not in [CODES.ERROR1]:
+        print "Error in saveUser call: %s" % output
+        sys.exit(0)
+
+    os.unlink(out_filename)
        
 
