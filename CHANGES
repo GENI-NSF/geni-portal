@@ -27,6 +27,7 @@
  * Fix infinite redirect on wimax-enable with no projects (#1464)
  * Fix issue where length of renewal wrong in slice actions dropdown. (#1471)
  * Fix issue where renew button in slice dropdown would try and shorten slice lifetime (#1473)
+ * Fix issue where create slice button was disabled when project_id was given in URL params (#1478)
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
