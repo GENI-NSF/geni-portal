@@ -331,7 +331,7 @@ if (! $user->portalIsAuthorized()) {
       $project_card .= "<a class='button' href='join-project.php'>Join a Project</a></div>";
     } else {
       $project_card .= "<a class='button' href='join-project.php'>Join a Project</a><br class='mobilebreak'>";
-      $project_card .= "<a class='button' href='modify.php?belead=belead'><b>Ask to be a Project Lead</b></a></div>";
+      $project_card .= "<a class='button' href='modify.php?belead=belead'>Ask to be a Project Lead</a></div>";
     }
 
     $project_card .= "<div id='projectarea'>$project_boxes</div></div>";
@@ -489,7 +489,7 @@ if (! $user->portalIsAuthorized()) {
         $expiration_icon = get_urgency_icon($exp_diff);
         $expiration_icon = "<i class='material-icons' style='color: $expiration_color'>$expiration_icon</i>";
       } else {
-        $expiration_string = "<b>Project is expired</i>";
+        $expiration_string = "<b>Project is expired</b>";
         $expiration_icon = "<i class='material-icons' style='color: #EE583A;'>report</i>";
       }
     } else {
