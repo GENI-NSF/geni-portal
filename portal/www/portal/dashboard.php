@@ -565,9 +565,9 @@ if (! $user->portalIsAuthorized()) {
         $handle_req_str = "";
       } elseif ($reqcnt == 1) {
         $rid = $project_request_map[$project_id][0][RQ_REQUEST_TABLE_FIELDNAME::ID];
-        $handle_req_str = "(<a href=\"handle-project-request.php?request_id=$rid\"><b>$reqcnt</b> request</a>) ";
+        $handle_req_str = "(<a href=\"handle-project-request.php?request_id=$rid\"><b>$reqcnt</b> join request</a>) ";
       } else {
-        $handle_req_str = "(<a href=\"handle-project-request.php?project_id=$project_id\"><b>$reqcnt</b> requests</a>) ";
+        $handle_req_str = "(<a href=\"handle-project-request.php?project_id=$project_id\"><b>$reqcnt</b> join requests</a>) ";
       }
     }
     return $handle_req_str;
