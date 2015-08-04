@@ -428,8 +428,15 @@ if (! $user->portalIsAuthorized()) {
     if ($user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
       $box .= "<li><a href='$add_url'>Add resources</a></li>";
     }
+
+    $renewal_hours = 24 * $renewal_days;
+    $disable_renewal = "";
+    if ($slice_exp > $renewal_hours && $resource_exp > $renewal_hours) {
+      $disable_renewal = "class='disabledaction'";
+    }
+
     if ($resource_count > 0) {
-      $box .= "<li><a onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, \"$slice_exp\");'>Renew resources ($renewal_days days)</a></li>";
+      $box .= "<li><a $disable_renewal onclick='renew_slice(this, \"$slice_id\", $renewal_days, $resource_count, $slice_exp, $resource_exp);'>Renew resources ($renewal_days days)</a></li>";
       if ($user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
         $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
       }

@@ -178,6 +178,18 @@ td .material-icons {
   transition-duration: 100ms;
 }
 
+.submenu li a.disabledaction {
+  text-decoration: none !important;
+  color: #E5E5E5 !important;
+  width: 100%;
+  margin: 0px;
+}
+
+.submenu li a.disabledaction:hover {
+  cursor: default !important;
+  background-color: #FFFFFF !important;
+}
+
 .selectorcontainer {
   display: inline-block;
   vertical-align: middle;
