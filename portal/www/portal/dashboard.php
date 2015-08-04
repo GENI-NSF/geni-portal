@@ -194,26 +194,30 @@ if (! $user->portalIsAuthorized()) {
       } else {
         $project_slice_counts[$slice_project_id] = 1;
       }
-      if (!array_key_exists($slice_project_id, $project_objects)) {
+      if (!array_key_exists($slice_project_id, $project_objects)) { // slice belongs to an expired project
+        $project_expiration = "";
         $project_expiration_dt = new DateTime();
         $slice_project_name = "-Expired Project-";
       } else {
-        $project = $project_objects[ $slice_project_id ];
+        $project = $project_objects[$slice_project_id];
         $project_expiration = $project[PA_PROJECT_TABLE_FIELDNAME::EXPIRATION];
         $project_expiration_dt = new DateTime($project_expiration);
         $slice_project_name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       }
 
+      $dashboard_max_renewal_days = 7;
+
+      $renewal_days = min($dashboard_max_renewal_days, $portal_max_slice_renewal_days);
+      if ($project_expiration) {
+        $project_expiration_dt = new DateTime($project_expiration);
+        $now_dt = new DateTime();
+        $difference = $project_expiration_dt->diff($now_dt);
+        $renewal_days = $difference->days;
+        $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, $dashboard_max_renewal_days);
+      }
+
       $slivers = lookup_sliver_info_by_slice($sa_url, $user, $slice_urn);
       $slice_exp = get_time_diff($slice_exp_date);
-      // determine maximum date of slice renewal
-      
-      $renewal_days = min($portal_max_slice_renewal_days, 7);
-      $now_dt = new DateTime();
-      $difference = $project_expiration_dt->diff($now_dt);
-      $renewal_days = $difference->days;
-      // take the minimum of the two as the constraint
-      $renewal_days = min($renewal_days, $portal_max_slice_renewal_days, 7);
 
       if (count($slivers) == 0) {
         $resource_exp = 1000000000;
@@ -561,9 +565,9 @@ if (! $user->portalIsAuthorized()) {
         $handle_req_str = "";
       } elseif ($reqcnt == 1) {
         $rid = $project_request_map[$project_id][0][RQ_REQUEST_TABLE_FIELDNAME::ID];
-        $handle_req_str = "(<a href=\"handle-project-request.php?request_id=$rid\"><b>$reqcnt</b> join request</a>) ";
+        $handle_req_str = "(<a href=\"handle-project-request.php?request_id=$rid\"><b>$reqcnt</b> request</a>) ";
       } else {
-        $handle_req_str = "(<a href=\"handle-project-request.php?project_id=$project_id\"><b>$reqcnt</b> join requests</a>) ";
+        $handle_req_str = "(<a href=\"handle-project-request.php?project_id=$project_id\"><b>$reqcnt</b> requests</a>) ";
       }
     }
     return $handle_req_str;
