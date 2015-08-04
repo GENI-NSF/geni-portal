@@ -42,13 +42,16 @@ class CODES:
     # Means portal tried to add a user that already exists. Handled explicitly.
     ERROR1 = 'ERROR 1: UID and OU and DC match'
 
-    # Means trying to change project. Shouldn't happen, but code checks for this
+    # Means trying to change project. 
+    # Shouldn't happen, but code checks for this
     ERROR2 = 'ERROR 2: UID and DC match but OU is different'
 
-    # Member username exists from different authority. Code tries to pick a different username.
+    # Member username exists from different authority. 
+    # Code tries to pick a different username.
     ERROR3 = 'ERROR 3: UID matches but DC and OU are different'
 
-    # Seems to imply that group ou must be unique for both local and portal created groups? Huh?
+    # Seems to imply that group ou must be unique for both 
+    # local and portal created groups? Huh?
     # FIXME FIXME
     ERROR4 = 'ERROR 4: UID and OU match but DC is different'
 
@@ -65,8 +68,8 @@ class CODES:
     # Handled explicitly in deleteProject
     ERROR8 = 'ERROR 8: Group/project not deleted because it contains admin(s):'
 
-    # Theoretically could happen from changeProject if I'm trying to move a user not created
-    # by the portal to a different project. Shouldn't happen.
+    # Theoretically could happen from changeProject if I'm trying to move a 
+    # user not created by the portal to a different project. Shouldn't happen.
     ERROR9 = 'ERROR 9: Cannot move users: different DCs'
 
     # Malformed LDIF
@@ -94,8 +97,8 @@ class CODES:
     # Malformed LDIF.
     ERROR30 = 'ERROR 30: Missing username (UID)'
 
-    # FIXME: I need to handle this (see comments below). This means I tried to add a 
-    # user to a group that doesn't exist.
+    # FIXME: I need to handle this (see comments below). 
+    # This means I tried to add a user to a group that doesn't exist.
     ERROR31 = 'ERROR 31: Organization does not exist for this user. Missing organization LDIF entry'
 
     # Malformed LDIF. Not all portal users must have an email address. 
@@ -126,55 +129,32 @@ def get_curl_output(query_url):
         subprocess.check_output(["curl", "-k", query_url], stderr=DEVNULL)
     return raw_curl_output
 
-
-# Create ORBIT group
-def create_orbit_group(group_name):
-    print "CREATE ORBIT GROUP: %s" % group_name
-
-# Delete ORBIT group
-def delete_orbit_group(group_name):
-    print "DELETE ORBIT GROUP: %s" % group_name
-
-# Create ORBIT user
-def create_orbit_user(user_name):
-    print "CREATE ORBIT USER %s" % user_name
-        
-# Add ORBIT user to ORBIT group
-# NOTE: No error trying to add a user to a group to which it already exists
-def add_user_to_group(group_name, user_name):
-    url = "%s/addMemberToGroup?groupname=%s&username=%s" % \
-        (BASE_ORBIT_URL, group_name, user_name)
+# Invoke an ORBIT REST API call
+# Create url, make call via curl and exit if an (untolerated) error returned
+def invoke_orbit_method(method, args, tolerated_error_codes = []):
+    url = "%s/%s?args" % (BASE_ORBIT_URL, method, args)
     output = get_curl_output(url)
     code = find_error_code(output)
-    if code:
-        print "Error in addMemberToGroup call: %s" % output
-        sys.exit(0)
-
-# Change ORBIT group admin
-def change_group_admin(group_name, admin_name):
-    url = "%s/changeGroupAdmin?groupname=%s&username=%s" % \
-        (BASE_ORBIT_URL, group_name, admin_name)
-    output = get_curl_output(url)
-    code = find_error_code(output)
-    if code:
-        print "Error in changeGroupAdmin call: %s" % output
-        sys.exit(0)
-
-# Enable ORBIT user
-def enable_user(user_name):
-    url = "%s/enableUser?username=%s" % \
-        (BASE_ORBIT_URL, user_name)
-    output = get_curl_output(url)
-    code = find_error_code(output)
-    if code and code not in [CODES.ERROR6]:
-        print "Error in enableUser call: %s" % output
+    if code and code not in tolerated_error_codes:
+        print "Error in %s call: %s" % (method, output)
         sys.exit(0)
     
 
-# Remove member from ORBIT group
-def remote_member_from_group(user, group_name):
-    print "REMOVE MEMBER %s from ORBIT GROUP %s" %  (user, group_name)
+# Add ORBIT user to ORBIT group
+# NOTE: No error trying to add a user to a group to which it already exists
+def add_user_to_group(group_name, user_name):
+    invoke_orbit_method("addMemberToGroup", 
+                        "groupname=%s&username=%s" %  (group_name, user_name))
 
+# Change ORBIT group admin
+def change_group_admin(group_name, admin_name):
+    invoke_orbit_method("changeGroupAdmin", 
+                        "groupname=%s&username=%a" % (group_name, admin_name))
+
+# Enable ORBIT user
+def enable_user(user_name):
+    invoke_orbit_method("enableUser", 
+                        "username=%s" % user_name, [CODES.ERROR6])
 
 # Get ORBIT group/user info
 def get_orbit_groups_and_users():

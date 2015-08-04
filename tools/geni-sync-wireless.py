@@ -124,17 +124,6 @@ class WirelessProjectManager:
     # Print error and exit
     def error(self, msg): print msg; sys.exit()
 
-    # Lookup attribute
-    def lookup_attribute(self, attrs, name):
-        for attr in attrs:
-            if attr['name'] == name:
-                return attr['value']
-        return None
-
-    # Make sure 'enable_wimax' is in list of attributes (for project)
-    def is_wimax_enabled(self, attrs):
-        return self.lookup_attribute(attrs, 'enable_wimax') != None
-
     # Get pretty name from member data
     def get_pretty_name(self, member_info):
         if 'displayName' in member_info:
@@ -150,7 +139,17 @@ class WirelessProjectManager:
     # Gather GENI clearinghouse sense of projects/members
     #    Possibly limited to specific project or user
     # Gather ORBIT sense of groups/users
-    # Make sure the 'holding pen' group exists
+    # Make sure the 'holding pen' group and admin exist
+    # Make sure all members of wimax-enabled projects exist in ORBIT
+    # Make sure all wimax-enabled projects exist as ORBIT groups
+    # Make sure membership in wimax-enabled projects leads to 
+    #     membership in ORBIT groups
+    # Make sure project lead on wimax-enabled projects translates to
+    #     admin in ORBIT group
+    # If we're doing cleanup:
+    #    Delete group members not in project
+    #    Delete groups not corresponding to projects
+    #    Disable users in no group (other than holdingpen)
     def synchronize(self):
 
         now = datetime.datetime.now()
@@ -340,95 +339,6 @@ class WirelessProjectManager:
     def delete_group_members_not_in_project(self): pass
     def delete_groups_without_projects(self): pass
     def disable_users_in_no_project(self): pass
-
-    # Top level synchronization function
-    # Gather GENI clearinghouse sense of projects/members
-    # Gather ORBIT sense of groups/users
-    # Make appropriate calls to ORBIT to make its sense reflect that of GENI CH
-    #
-    # For every GENI project that is not an ORBIT group, create group
-    # For every ORBIT group that is not a GENI project, delete group
-    # For every user in a GENI project that is not an ORBIT user,
-    #    create user
-    # For every member of GENI project that is not user of 
-    #    corresponding ORBIT group, add user to ORBIT group
-    # For every user of ORBIT group that is not a member of 
-    #    corresponding GENI project, remove user from ORBIT group
-    def synchronizeOLD(self):
-
-        # Grab project info for project of given name
-        orbit_projects = self.get_orbit_projects()
-        print "PROJECTS = %s" % orbit_projects
-
-        # Get the ORBIT list of groups and members
-        orbit_groups = orb.get_orbit_groups()
-        print "GROUPS = %s" % orbit_groups
-
-        # For every GENI project that is not an ORBIT group, create group
-        for project_urn, project_info in orbit_projects.items():
-            wimax_group_name = project_info['wimax_group_name']
-            if wimax_group_name not in orbit_groups:
-                orb.create_orbit_group(wimax_group_name)
-
-        # For every ORBIT group that is not a GENI project, delete group
-        # Only for full synch: Don't bother if only synching for one project
-        if self._project == None:
-            for group_name, group_info in orbit_groups.items():
-                project_urn = \
-                    self.lookup_project_for_wimax_group_name(orbit_projects,
-                                                             group_name)
-                if project_urn == None:
-                    orb.delete_orbit_group(group_name)
-
-        # For every user in a GENI project that is not an ORBIT user,
-        #    create user
-        for project_urn, project_info in orbit_projects.items():
-            group_name = project_info['wimax_group_name']
-            group = orbit_groups[group_name]
-            for user_urn, user_info in project_info['users'].items():
-                user_name = user_info['username']
-                user_orbit_name = user_info['wimax_username']
-                if user_orbit_name == None:
-                    orb.create_orbit_user(user_name)
-
-        # For every member of a GENI project that is not a member of
-        # the corresponding ORBIT group, add member to group
-        for project_urn, project_info in orbit_projects.items():
-            group_name = project_info['wimax_group_name']
-            group = orbit_groups[group_name]
-            for user_urn, user_info in project_info['users'].items():
-                user_name = user_info['username']
-                user_orbit_name = user_info['wimax_username']
-                if user_orbit_name not in group['users']:
-                    orb.add_member_to_group(user_name, user_orbit_name, 
-                                           group_name)
-
-        # For every member of orbit group that is not a member of 
-        # the corresponding GENI project, remove member from group
-        for group_name, group_info in orbit_groups.items():
-            project_urn = self.lookup_project_for_wimax_group_name(
-                orbit_projects, group_name)
-            if not project_urn: continue
-            project_members = orbit_projects[project_urn]['users']
-            for user in group_info['users']:
-                member_urn = self.lookup_member_for_wimax_user_name(
-                    project_members, user)
-                if member_urn == None:
-                    orb.remove_member_from_group(user, group_name)
-
-    # Lookup project from given table whose wimax_group_name matches given 
-    def lookup_project_for_wimax_group_name(self, orbit_projects, group_name):
-        for project_urn, project_info in orbit_projects.items():
-            if project_info['wimax_group_name'] == group_name:
-                return project_urn
-        return None
-
-    # Lookup member from given table whose wimax_name matches given 
-    def lookup_member_for_wimax_user_name(self, project_members, user_name):
-        for member_urn, member_info in project_members.items():
-            if member_info['wimax_username'] == user_name:
-                return member_urn
-        return None
 
     # Grab project info [indexed by project id] for all wimax-enabled projects
     # Only single project for --project option
