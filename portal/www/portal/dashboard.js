@@ -162,7 +162,7 @@ function renew_slice(slice_id, days, count, sliceexphours, resourceexphours) {
       url = "do-renew.php?renew=sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
     }
   } else {
-    if (resourceexphours < renewalhours) {
+    if (sliceexphours < renewalhours) {
       url = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
     } else {
       return;
