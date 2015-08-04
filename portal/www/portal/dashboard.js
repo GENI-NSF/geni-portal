@@ -135,7 +135,7 @@ function get_logs(hours){
   });
 }
 
-function renew_slice(button, slice_id, days, count, sliceexphours, resourceexphours) {
+function renew_slice(slice_id, days, count, sliceexphours, resourceexphours) {
   result = true;
   if (count > 10) {
     result = confirm("This action will renew resources at "

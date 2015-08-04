@@ -436,7 +436,7 @@ if (! $user->portalIsAuthorized()) {
     }
 
     if ($resource_count > 0) {
-      $box .= "<li><a $disable_renewal onclick='renew_slice(this, \"$slice_id\", $renewal_days, $resource_count, $slice_exp, $resource_exp);'>Renew resources ($renewal_days days)</a></li>";
+      $box .= "<li><a $disable_renewal onclick='renew_slice(\"$slice_id\", $renewal_days, $resource_count, $slice_exp, $resource_exp);'>Renew resources ($renewal_days days)</a></li>";
       if ($user->isAllowed(SA_ACTION::GET_SLICE_CREDENTIAL, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
         $box .= "<li><a onclick='info_set_location(\"$slice_id\", \"$listres_url\")'>Resource details</a></li>";
       }
