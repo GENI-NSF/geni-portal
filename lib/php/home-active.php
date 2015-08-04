@@ -56,7 +56,6 @@ if (! $user->portalIsAuthorized()) {
   print "</p>";
   return 0;
 }
-
 include("tool-breadcrumbs.php");
 
 echo "<table id='resourcemap'><tr><th>Current GENI Clearinghouse Resources</th></tr><tr><td>";

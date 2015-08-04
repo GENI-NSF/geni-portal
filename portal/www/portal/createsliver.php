@@ -82,18 +82,13 @@ if (isset($slice_expired) && convert_boolean($slice_expired)) {
     $slice_name = "";
   }
   $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
-  relative_redirect('slices.php');
+  relative_redirect('dashboard.php#slices');
 }
 
 // redirect if user isn't allowed to add slivers
 if(!$user->isAllowed(SA_ACTION::ADD_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
   relative_redirect('home.php');
 }
-
-// print header/breadcrumbs since we know slice information
-show_header('GENI Portal: Add Resources to Slice (Results)',  $TAB_SLICES);
-include("tool-breadcrumbs.php");
-echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
 
 // get RSpec if tool-lookupids.php hasn't already gotten it
 // both will store contents of RSpec in $rspec
@@ -344,7 +339,15 @@ function no_am_error() {
   }
 }
 
+function show_page_header() {
+  // print header/breadcrumbs since we know slice information
+  show_header('GENI Portal: Add Resources to Slice (Results)',  $TAB_SLICES);
+  include("tool-breadcrumbs.php");
+  echo "<h1>Add Resources to GENI Slice <i>$slice_name</i> (Results)</h1>";
+}
+
 function create_sliver_error($error) {
+    show_page_header();
     echo "<p class='error'>$error</p>";
     echo '<form method="GET" action="back">';
     echo '<input type="button" value="Back" onClick="history.back(-1)"/>';
@@ -362,14 +365,15 @@ function create_sliver_error($error) {
 }
 
 function create_sliver_success($link, $full_link) {
-    $string = "<p class='instruction'>Resource request submitted. If you are ";
-    $string .= "not automatically redirected, <a href='$full_link'>click here</a> ";
-    $string .= "to view request progress and results.</p>";
-    echo $string;
-    include("footer.php");
-
     global $background;
     if($background) {
+      show_page_header();
+      $string = "<p class='instruction'>Resource request submitted. If you are ";
+      $string .= "not automatically redirected, <a href='$full_link'>click here</a> ";
+      $string .= "to view request progress and results.</p>";
+      echo $string;
+      include("footer.php");
+
       ob_end_clean();
       print_r($link);
     }  else {

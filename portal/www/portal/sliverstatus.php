@@ -65,7 +65,7 @@ if (isset($slice_expired) && convert_boolean($slice_expired)) {
     $slice_name = "";
   }
   $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
-  relative_redirect('slices.php');
+  relative_redirect('dashboard.php#slices');
 }
 
 $header = "Status of Slivers on slice: $slice_name";
@@ -145,7 +145,7 @@ if (isset($am_id) && $am_id ) {
 
 print "<p><a href='raw-sliverstatus.php?slice_id=".$slice_id.$am_id_str."'>(Refetch and) Show Raw SliverStatus</a></p>";
 print "<hr/>";
-print "<p><a href='slices.php'>Back to All slices</a>";
+print "<p><a href='dashboard.php#slices'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 

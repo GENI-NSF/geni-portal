@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -21,29 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS
 // IN THE WORK.
 //----------------------------------------------------------------------
-
 require_once("user.php");
-require_once('portal.php');
-require_once('cs_constants.php');
-require_once('maintenance_mode.php');
+require_once("header.php");
+require_once('util.php');
+$user = geni_loadUser();
+if (!isset($user) || is_null($user) || ! $user->isActive()) {
+  relative_redirect('home.php');
+}
+show_header('GENI Portal: Preferences', $TAB_PROFILE);
 
-relative_redirect("dashboard.php");
+?>
 
-// include("tool-showmessage.php");
-// if (is_null($user)) {
-//   // TODO: Handle unknown state
-//   print "Unable to load user record.<br/>";
-// } else {
-//   if ($user->isRequested()) {
-//     include("home-requested.php");
-//   } else if ($user->isDisabled()) {
-//     print "User $user->eppn has been disabled.";
-//   } else if ($user->isActive()) {
-//     include("home-active.php");
-//   } else {
-//     // TODO: Handle unknown state
-//     print "Unknown account state: $user->status<br/>";
-//   }
-// }
-// include("footer.php");
+<!-- <h1>Preferences</h1> -->
+<i>(functionality coming soon)</i><!-- <br>
+Use new dashboard<input type='checkbox' id='dashcheck' value='ascending' checked> -->
+
+<?php
+
+include("footer.php");
 ?>

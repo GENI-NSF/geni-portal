@@ -97,7 +97,6 @@ if (count($my_slice_objects) > 0) {
   $listres_base_url = relative_url("listresources.php?");
   $resource_base_url = relative_url("slice-add-resources-jacks.php?");
   $delete_sliver_base_url = relative_url("confirm-sliverdelete.php?");
-  $flack_url = relative_url("flack.php?");
   $gemini_base_url = relative_url("gemini.php?");
   $labwiki_base_url = 'http://labwiki.casa.umass.edu/?';
 
@@ -196,7 +195,7 @@ function get_urgency_color($exp_date){
 function list_slice($slice,$user) {
   global $project_objects, $slice_owner_names;
   global $base_url, $slice_base_url, $listres_base_url, $resource_base_url;
-  global $delete_sliver_base_url, $flack_url;
+  global $delete_sliver_base_url;
   global $gemini_base_url, $labwiki_base_url;
   global $disabled, $jfed_button_start, $jfed_button_part2;
   global $sa_url, $user;
@@ -219,7 +218,6 @@ function list_slice($slice,$user) {
   $slice_url = $slice_base_url . $query;
   $sliceresource_url = $resource_base_url . $query;
   $delete_sliver_url = $delete_sliver_base_url . $query;
-  $sliceflack_url = $flack_url . $query;
   $listres_url = $listres_base_url . $query;
   $slice_name = $slice[SA_ARGUMENT::SLICE_NAME];
   $slice_urn = $slice[SA_ARGUMENT::SLICE_URN];
@@ -309,7 +307,6 @@ function list_slice($slice,$user) {
   //  print ("<button title='Login info, etc' onClick=\"window.location='$listres_url'\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button title='Login info, etc' onClick=\"info_set_location('$slice_id', '$listres_url')\" $get_slice_credential_disable_buttons><b>Details</b></button>");
   print ("<button $delete_slivers_disabled onClick=\"info_set_location('$slice_id', '$delete_sliver_url')\"><b>Delete Resources</b></button>");
-  print "<button $add_slivers_disabled onClick=\"window.open('$sliceflack_url')\">Launch Flack<br/>(deprecated)</button>";
   
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>";
   
