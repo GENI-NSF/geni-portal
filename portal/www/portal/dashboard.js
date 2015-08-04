@@ -135,7 +135,7 @@ function get_logs(hours){
   });
 }
 
-function renew_slice(slice_id, days, count, sliceexphours) {
+function renew_slice(slice_id, days, count, sliceexphours, resourceexphours) {
   result = true;
   if (count > 10) {
     result = confirm("This action will renew resources at "
@@ -145,7 +145,6 @@ function renew_slice(slice_id, days, count, sliceexphours) {
 
   if (result) {
     var newexp = new Date();
-    // (sliceexphours / 24) ?!?!?!?1 TODO: ask tom
     newexp.setDate(newexp.getDate() + days);
     var d = newexp.getDate();
     var m = newexp.getMonth() + 1;
@@ -154,14 +153,22 @@ function renew_slice(slice_id, days, count, sliceexphours) {
     var newexpstring = y + '-' + m + '-'+ d; 
   }
   
-  if (count > 0) {
-    url = "do-renew.php?renew=slice_sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;
-    info_set_location(slice_id, url);
-  } else {
-    url = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;
-    window.location = url;
-  }
+  renewalhours = 24 * days;
 
+  if (count > 0 && resourceexphours < renewalhours) {
+    if (sliceexphours < renewalhours) {
+      url = "do-renew.php?renew=slice_sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
+    } else {
+      url = "do-renew.php?renew=sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
+    }
+  } else {
+    if (sliceexphours < renewalhours) {
+      url = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
+    } else {
+      return;
+    }
+  }
+  info_set_location(slice_id, url);
 }
 
 // Shows all the projects matching selection, sorting by the sorting type given by sortby. 
