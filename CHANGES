@@ -25,7 +25,7 @@
  * Avoid listing all profile edits as having changed the telephone number. (#1339)
  * Fix undefined variable in log_db_error (#1467)
  * Fix infinite redirect on wimax-enable with no projects (#1464)
- * Fix issue where length of renewal wrong in slice actions dropdown. (#1472)
+ * Fix issue where length of renewal wrong in slice actions dropdown. (#1471)
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
