@@ -430,6 +430,7 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
     echo "</li>";
   }
   echo "<li><a href='http://labwiki.casa.umass.edu' target='_blank'>LabWiki <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://groups.geni.net/geni/wiki/GENIExperimenter/Tools' target='_blank' title='Omni, Geni-lib, VTS...'>Other Tools <i class='material-icons'>launch</i></a></li>";
   echo '</ul></li>';
 
   echo '<li class="headerlink has-sub"><a href="dashboard.php">Home</a>';

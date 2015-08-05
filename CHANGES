@@ -3,6 +3,8 @@
 #       reconciliation at release time
 
 = GENI Portal Release Notes =
+== 3.01 == 
+ * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
