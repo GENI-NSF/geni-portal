@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = etc lib portal kmtool sr pa logging \
+SUBDIRS = etc lib portal kmtool sr logging \
 	  ca openid bin sbin ch man doc
 
 ## In more modern versions of automake we can use
