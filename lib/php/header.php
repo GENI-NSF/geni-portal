@@ -31,6 +31,7 @@ require_once('geni_syslog.php');
 require_once("maintenance_mode.php");
 require_once('settings.php');
 require_once('cs_constants.php');
+require_once("tool-jfed.php");
 include_once('/etc/geni-ch/settings.php');
 
 
@@ -165,7 +166,19 @@ function add_js_script($script_url)
   $extra_js[] = $script_url;
 }
 
-function show_header($title, $active_tab = '', $load_user=1)
+function show_header($title, $active_tab = '', $load_user=1, $show_cards=false){
+  if (array_key_exists("dashtype", $_REQUEST)) {
+    if ($_REQUEST['dashtype'] == 1) {
+      show_old_header($title, $active_tab, $load_user);
+    } else {
+      show_new_header($title, $active_tab, $load_user, $show_cards);
+    }
+  } else {
+    show_new_header($title, $active_tab, $load_user, $show_cards);
+  }
+}
+
+function show_old_header($title, $active_tab = '', $load_user=1)
 {
   global $extra_js;
   global $in_maintenance_mode;
@@ -206,8 +219,9 @@ function show_header($title, $active_tab = '', $load_user=1)
   /* Stylesheet(s) */
   echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
   echo '<link type="text/css" href="/common/css/portal.css" rel="stylesheet"/>';
-  echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+  echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
+  echo '<link type="text/css" rel="stylesheet" media="(max-width: 480px)" href="/common/css/mobile-portal.css" />';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400,700" rel="stylesheet" type="text/css">';
   
   /* Google Analytics
      Get this from /etc/geni-ch/settings.php, but first check to see if
@@ -265,7 +279,7 @@ function show_header($title, $active_tab = '', $load_user=1)
     echo '</div>';
     
   }
-    echo '<img id="header-img-left" src="../../images/geni-header-left.png"/>';
+    echo '<img id="header-img-left" src="../../images/geni-header-left.png" alt="GENI logo"/>';
   echo '</div>';
   show_tab_bar($active_tab, $load_user);
   if($has_maintenance_alert) {
@@ -276,6 +290,169 @@ function show_header($title, $active_tab = '', $load_user=1)
   echo '<div id="content-outer">';
   echo '<div id="content">';
   //  show_starter_status_bar($load_user);
+}
+
+function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=false){
+  global $extra_js;
+  global $in_maintenance_mode;
+  global $in_lockdown_mode;
+  global $portal_analytics_enable;
+  global $portal_analytics_string;
+  global $has_maintenance_alert;
+  global $maintenance_alert;
+  global $portal_jquery_url; 
+  global $portal_jqueryui_js_url; 
+  global $portal_jqueryui_css_url; 
+  global $portal_datatablesjs_url; 
+  global $user;
+
+  if ($load_user) {
+    global $user;
+    if (!isset($user)) {
+      $user = geni_loadUser();
+    }
+    check_km_authorization($user);
+  }
+  
+  echo '<!DOCTYPE HTML>';
+  echo '<html lang="en">';
+  echo '<head>';
+  echo '<meta charset="utf-8">';
+  echo "<title>$title</title>";
+
+  /* Javascript stuff. */
+  echo "<script src='$portal_jquery_url'></script>";
+  echo "<script src='$portal_jqueryui_js_url'></script>";
+  foreach ($extra_js as $js_url) {
+    echo '<script src="' . $js_url . '"></script>' . PHP_EOL;
+  }
+  echo "<script type='text/javascript' charset='utf8' src='$portal_datatablesjs_url'></script>";
+  /* Stylesheet(s) */
+  echo "<link type='text/css' href='$portal_jqueryui_css_url' rel='stylesheet' />";
+  echo '<link type="text/css" href="/common/css/newportal.css" rel="stylesheet"/>';
+  echo '<link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />';
+  echo '<link type="text/css" rel="stylesheet" href="/common/css/dashboard.css" />';
+  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono|Roboto:400|Material+Icons" rel="stylesheet" type="text/css">';
+
+  if(isset($portal_analytics_enable)) {
+    if($portal_analytics_enable) {
+      // FIXME: Allow some users (e.g. operators) to bypass tracking
+      echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+      echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+      echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+      echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+      
+      if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
+        /* Use the following tracking IDs depending on which server this will be running on
+          portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+          portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+        */
+        $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+      }
+      
+      echo $portal_analytics_string;
+      
+      echo "ga('send', 'pageview');";
+      echo '</script>';
+    }
+  }
+
+  /* for proper scaling on mobile devices/ mobile web app support */ 
+  echo '<meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>';
+  echo '<meta name="mobile-web-app-capable" content="yes">';
+
+  /* Close the "head" */
+  echo '</head>';
+  echo '<body>';
+  echo '<script>';
+  // For header interactivity
+  echo '$(document).ready(function(){';
+  echo '$(".has-sub").hover(function(){ $(this).find(\'ul\').show(); }, function(){ $(this).find(\'ul\').hide(); });';
+  echo '$("#hamburger").click(function(){';
+  echo '$("#dashboardtools").slideToggle();';
+  echo '});';
+  echo '});';
+  echo '</script>';
+  echo '<div id="dashboardheader">';
+  echo '<img id="globe" src="/images/geni_globe.png" alt="Geni Logo" style="height:45px; margin-left: 20px; float: left;"/>';
+  echo '<img id="hamburger" src="/images/menu.png" alt="optionsicon" style="height:20px; width: 20px; padding:15px; float: left;"/>';
+  echo '<h2 class="dashtext" style="float: left; line-height: 50px; text-align: center; margin: 0 20px; display: inline; height: 50px; cursor: pointer;" 
+          onclick="window.location=\'dashboard.php\'">GENI Portal</h2>';
+  echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
+  if($load_user) {
+    echo "<li class='has-sub headerlink'>{$user->prettyName()}";
+    echo '<ul class="submenu">';
+    echo '<li><a href="profile.php">Profile</a></li>';
+    echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
+    echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
+    echo '<li><a href="profile.php#tools">Manage Accounts</a></li>'; 
+    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
+    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
+      echo '<li><a href="admin.php">Admin</a></li>';
+    }
+    echo '</ul></li>';
+  }
+  echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
+  echo '<ul class="submenu">';
+  echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki">GENI Wiki <i class="material-icons">launch</i></a></li>';
+  echo '<li><a target="_blank" href="http://gmoc.grnoc.iu.edu/gmoc/index/support/gmoc-operations-calendars.html">Outages <i class="material-icons">launch</i> </a></li>';
+  echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki/GENIGlossary">Glossary <i class="material-icons">launch</i></a></li>';
+  echo '<li><a href="help.php">Contact Us</a></li>';
+  echo '</ul></li>';
+
+  if ($load_user) {
+    if (! isset($jfed_button_start)) {
+      $jfedret = get_jfed_strs($user);
+      $jfed_script_text = $jfedret[0];
+      $jfed_button_start = $jfedret[1];
+      $jfed_button_part2 = $jfedret[2];
+      if (! is_null($jfed_button_start)) {
+        print $jfed_script_text;
+      }
+    }
+  }
+
+  echo '<li class="headerlink has-sub">Partners';
+  echo '<ul class="submenu">';
+  echo "<li><a href='https://www.cloudlab.us/login.php' target='_blank'>CloudLab <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://gee-project.org/user' target='_blank'>GEE <i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='https://geni.orbit-lab.org/' target='_blank'>ORBIT<i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://portal.savitestbed.ca/auth/login' target='_blank'>SAVI<i class='material-icons'>launch</i></a></li>";
+  echo "<li><a href='http://witestlab.poly.edu/site/index.php' target='_blank'>WiTest<i class='material-icons'>launch</i></a></li>";
+  echo '</ul></li>';
+
+  echo '<li class="headerlink has-sub">Tools';
+  echo '<ul class="submenu">';
+  echo "<li><a href='gemini.php' target='_blank'>GENI Desktop<i class='material-icons'>launch</i></a></li>";
+  if ($load_user && !is_null($jfed_button_start)) {
+    echo "<li>";
+    echo $jfed_button_start . getjFedSliceScript(NULL) . $jfed_button_part2 . ">jFed<i class='material-icons'>launch</i></button>";
+    echo "</li>";
+  }
+  echo "<li><a href='http://labwiki.casa.umass.edu' target='_blank'>LabWiki <i class='material-icons'>launch</i></a></li>";
+  echo '</ul></li>';
+
+  echo '<li class="headerlink has-sub"><a href="dashboard.php">Home</a>';
+  echo '<ul class="submenu">';
+  echo '<li><a href="dashboard.php#slices">Slices</a></li>';
+  echo '<li><a href="dashboard.php#projects">Projects</a></li>';
+  echo '</ul></li></ul>';
+  echo '</div>';
+
+  $cards_class = $show_cards ? 'content-cards' : 'one-card'; 
+
+  echo '<div style="clear:both; height: 50px;">&nbsp;</div>';
+
+  if ($in_maintenance_mode) {
+    echo "<center><b>***** Maintenance Outage *****</b></center>";
+  }
+
+  echo "<div id='content-outer' class='$cards_class'>";
+  echo "<div id='content'>";
+  if($has_maintenance_alert) {
+    // TODO: make a dismiss button 
+    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p></br>";
+  }
 }
 
 ?>
