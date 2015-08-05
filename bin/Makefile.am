@@ -37,6 +37,7 @@ dist_bin_SCRIPTS = \
 		geni-parse-map-data \
 		geni-remove-member-attribute \
 		geni-remove-project-member \
+		geni-sync-wireless \
 		geni-watch-omni \
 		gmoc_list_contacts \
 		gmoc_list_slices \
@@ -48,5 +49,8 @@ bin_SCRIPTS = \
 if INSTALL_GITHASH
 dist_pkgsysconf_DATA = geni-ch-githash
 endif
+
+localpythondir = $(subst /usr/lib,/usr/local/lib,$(pythondir))
+nobase_dist_localpython_DATA = portal_utils/__init__.py portal_utils/orbit_interface.py
 
 cleandb:

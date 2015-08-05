@@ -39,7 +39,7 @@ import logging
 import xml.dom.minidom
 import optparse
 import sys
-import orbit_interface as orb
+from portal_utils.orbit_interface import ORBIT_Interface
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -47,9 +47,6 @@ from sqlalchemy.ext.declarative import declarative_base
 def parse_args(argv):
     parser = optparse.OptionParser(usage="Synchronize ORBIT and GENI CH " + 
                                    "sense of projects/groups and members")
-    parser.add_option("--debug", action="store_true", default=False,
-                       help="enable debugging output")
-    parser.add_option("--database_url", help="CH database url") 
     parser.add_option("--holdingpen_group", 
                       help="Name of ORBIT 'holding pen' that is the primary"+\
                       " group for all GENI users in wimax-enabled projects", 
@@ -64,14 +61,14 @@ def parse_args(argv):
                       help="delete obsolete groups and group memberships", 
                       dest='cleanup', action='store_true',
                       default=False)
+    parser.add_option("--settings_file", 
+                      help="location of settings.php file containing db_dsn (database URL) variable",
+                      default="/etc/geni-ch/settings.php")
     parser.add_option("-v", "--verbose", help="Print verbose debug info", 
                       dest = 'verbose', action='store_true',
                       default=False)
 
     options,args = parser.parse_args()
-    if not (options.database_url):
-        parser.print_usage()
-        raise Exception("Missing some required arguments")
 
     # User and project options are mutually exclusive
     if options.project and options.user:
@@ -91,7 +88,7 @@ class WirelessProjectManager:
         self._cleanup = self._options.cleanup
         self._user = self._options.user
 
-        self._db_url = self._options.database_url
+        self._db_url = self.find_database_url()
         self._db = create_engine(self._db_url)
         self._session_class = sessionmaker(bind=self._db)
         self._metadata = MetaData(self._db)
@@ -108,8 +105,13 @@ class WirelessProjectManager:
                                           self._metadata, autoload=True)
         self.SSH_KEY_TABLE = Table('ma_ssh_key',
                                    self._metadata, autoload=True)
+        self.SERVICE_REGISTRY_TABLE = Table('service_registry', 
+                                   self._metadata, autoload=True)
 
         self.holdingpen_group_description = "GENI ORBIT MEMBER HOLDINGPEN"
+
+        self._base_orbit_url = self.get_orbit_base_url()
+        self._orb = ORBIT_Interface(self._base_orbit_url)
 
         # These are instance variables filled in during synchronize
 
@@ -126,6 +128,32 @@ class WirelessProjectManager:
         self._deleted_orbit_groups = []
         self._deleted_orbit_members = {}
 
+    # Return URL for ORBIT Delegated AM REST API from service registry
+    def get_orbit_base_url(self):
+        WIMAX_SITE = 10
+        query = self._session.query(self.SERVICE_REGISTRY_TABLE)
+        query = query.filter(self.SERVICE_REGISTRY_TABLE.c.service_type == WIMAX_SITE)
+        rows = query.all()
+        if len(rows) == 0:
+            self.error("NO WIMAX_SITE (%s) defined in SERVICE_REGISTRY" % \
+                           WIMAX_SITE)
+        orbit_base_url = rows[0].service_url
+        return orbit_base_url
+
+    # Parse settings.php file and extract db_dsn value
+    def find_database_url(self):
+        data = None
+        try:
+            data = open(self._options.settings_file, 'r').read()
+        except Exception:
+            self.error("Error reading settings file: %s" % \
+                           self._options.settings_file)
+        lines = data.split('\n')
+        for line in lines:
+            if line.find("$db_dsn") == 0:
+                db_url = line.split('\'')[1].replace('pgsql', 'postgresql')
+                return db_url
+        self.error("No $db_dsn entry in settings file")
         
     # Print error and exit
     def error(self, msg): print msg; sys.exit()
@@ -174,7 +202,7 @@ class WirelessProjectManager:
 
         # Get the ORBIT list of groups and admins
         self._orbit_groups, self._orbit_users = \
-            orb.get_orbit_groups_and_users()
+            self._orb.get_orbit_groups_and_users()
         if self._options.verbose:
             print "GENI PROJECTS = %s" % self._geni_projects
             print "GENI MEMBERS = %s" % self._geni_members
@@ -229,10 +257,10 @@ class WirelessProjectManager:
         ldif_text = ""
         if self._options.holdingpen_group not in self._orbit_groups:
             ldif_text = ldif_text + \
-                orb.ldif_for_group(self._options.holdingpen_group,
+                self._orb.ldif_for_group(self._options.holdingpen_group,
                                    self.holdingpen_group_description)
             ldif_text = ldif_text + \
-                orb.ldif_for_group_admin(self._options.holdingpen_group,
+                self._orb.ldif_for_group_admin(self._options.holdingpen_group,
                                          holdingpen_admin_username,
                                          self._options.holdingpen_group)
             print "Creating holdingpen group: %s" % \
@@ -240,7 +268,7 @@ class WirelessProjectManager:
 
         if holdingpen_admin_username not in self._orbit_users:
             ldif_text = ldif_text + \
-                orb.ldif_for_user(holdingpen_admin_username,
+                self._orb.ldif_for_user(holdingpen_admin_username,
                                   self._options.holdingpen_group,
                                   admin_pretty_name,
                                   holdingpen_admin_info['first_name'],
@@ -252,7 +280,7 @@ class WirelessProjectManager:
                 holdingpen_admin_username
 
         if ldif_text != "":
-            orb.saveUser(ldif_text)
+            self._orb.saveUser(ldif_text)
 
     # Make sure that all members of wimax-enabled projects exist in orbit
     # If not, create and place in holdingpen group as their primary group
@@ -268,7 +296,7 @@ class WirelessProjectManager:
                 member_pretty_name = self.get_pretty_name(member_info)
                 member_ssh_keys = member_info['ssh_keys']
                 ldif_text = \
-                    orb.ldif_for_user(orbit_username,
+                    self._orb.ldif_for_user(orbit_username,
                                       self._options.holdingpen_group,
                                       member_pretty_name,
                                       member_info['first_name'],
@@ -276,7 +304,7 @@ class WirelessProjectManager:
                                       member_info['last_name'],
                                       member_ssh_keys,
                                       self.holdingpen_group_description, None)
-                orb.saveUser(ldif_text)
+                self._orb.saveUser(ldif_text)
 
     
     # Make sure all wimax-enabled GENI projects have a corresponding 
@@ -291,13 +319,13 @@ class WirelessProjectManager:
                 lead_id = project_info['lead_id']
                 lead_username = self._geni_members[lead_id]['username']
                 orbit_lead_username = self.to_orbit_name(lead_username)
-                ldif_text = orb.ldif_for_group(orbit_group_name, 
+                ldif_text = self._orb.ldif_for_group(orbit_group_name, 
                                                project_description)
                 ldif_text = ldif_text + \
-                    orb.ldif_for_group_admin(orbit_group_name, 
+                    self._orb.ldif_for_group_admin(orbit_group_name, 
                                              orbit_lead_username,
                                              self._options.holdingpen_group)
-                orb.saveUser(ldif_text)
+                self._orb.saveUser(ldif_text)
 
                 # Add new group to self._orbit_groups structure
                 # Leave users blank so we'll re-create them later
@@ -321,13 +349,13 @@ class WirelessProjectManager:
                 if orbit_username not in group_info['users']:
                     print "Adding user %s to group %s" % (orbit_username, 
                                                           orbit_group_name)
-                    orb.add_user_to_group(orbit_group_name, orbit_username)
+                    self._orb.add_user_to_group(orbit_group_name, orbit_username)
                     users_to_enable.add(orbit_username)
 
         # Enable all users that have been added to groups
         for user_to_enable in users_to_enable:
             print "Enabling user: %s" % user_to_enable
-            orb.enable_user(user_to_enable)
+            self._orb.enable_user(user_to_enable)
 
     # Make sure the lead of the project is the corresponding group admin
     def ensure_project_leads_are_group_admins(self): 
@@ -341,7 +369,7 @@ class WirelessProjectManager:
             if orbit_group_admin != orbit_lead_username:
                 print "Change admin of group %s from %s to %s" % \
                     (orbit_group_name, orbit_group_admin, orbit_lead_username)
-                orb.change_group_admin(orbit_group_name, orbit_lead_username)
+                self._orb.change_group_admin(orbit_group_name, orbit_lead_username)
 
     # Delete members of a group that aren't members of corresponding project
     # Keep list of users removed from groups
@@ -366,7 +394,7 @@ class WirelessProjectManager:
                     self._deleted_orbit_members[orbit_username].append(group_name)
                     print "Removing %s from group %s" % \
                         (orbit_username, group_name)
-                    orb.remove_user_from_group(group_name, orbit_username)
+                    self._orb.remove_user_from_group(group_name, orbit_username)
 
     # Delete groups that don't correspond to projects
     # Keep a list of deleted groups
@@ -378,7 +406,7 @@ class WirelessProjectManager:
             geni_project_info = self.lookup_geni_project(geni_project_name)
             if not geni_project_info:
                 print "Removing group %s" % group_name
-                orb.delete_group(group_name)
+                self._orb.delete_group(group_name)
                 self._deleted_orbit_groups.append(group_name)
 
     # Disable users who are only in the ORBIT holdingpen group
@@ -409,7 +437,7 @@ class WirelessProjectManager:
             if user_in_some_deleted_group and \
                     not user_in_some_non_deleted_group:
                 print "Disabling user: %s" % orbit_username
-                orb.disable_user(orbit_username)
+                self._orb.disable_user(orbit_username)
 
     # Lookup GENI project by name
     def lookup_geni_project(self, project_name):
