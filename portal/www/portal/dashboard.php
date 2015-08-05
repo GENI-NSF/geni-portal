@@ -445,8 +445,8 @@ if (! $user->portalIsAuthorized()) {
       }
     }
     $box .= "</ul></li></ul></td></tr>";
-    $box .= "<tr><td colspan='2'><b>Project:</b> $project_name </td></tr>";
-    $box .= "<tr><td colspan='2'><b>Owner:</b> $lead_name</td></tr>";
+    $box .= "<tr><td colspan='2'><span class='leadname'><b>Project:</b> $project_name </span></td></tr>";
+    $box .= "<tr><td colspan='2'><span class='leadname'><b>Owner:</b> $lead_name</span></td></tr>";
     $box .= "<tr style='height:40px;'><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
     $box .= "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
     $box .= "<tr style='height:40px;'><td style='border-bottom:none;'>$resource_info</td>";
@@ -508,7 +508,7 @@ if (! $user->portalIsAuthorized()) {
       $expiration_icon = "";
     }
     $box .= "<tr><td style='border-bottom:none'>$expiration_string</td>";
-    $box .= "<td style='vertical-align: middle; border-bottom:none; height: 35px;'>$expiration_icon</td></tr>";
+    $box .= "<td style='vertical-align: middle; border-bottom:none;'>$expiration_icon</td></tr>";
     $box .= "</table></div>";
     return $box;
   }
