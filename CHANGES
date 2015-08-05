@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 3.1 ==
+ * Fix erroneous warning when renewing slices on the dashboard (#1481)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).

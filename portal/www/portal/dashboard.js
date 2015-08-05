@@ -168,14 +168,14 @@ function renew_resources(url, slice_id) {
         }
         if (agg_count > 10) {
           result = confirm("This action will renew resources at "
-                           + count
+                           + agg_count
                            + " aggregates and may take several minutes.");
           if (result) {
             window.location = url;
+          } else {
+            return;
           }
-          return;
         }
-        alert("renewing slice and resources at " + agg_count + "aggregates");
         window.location = url;
     })
     .fail(function() {
