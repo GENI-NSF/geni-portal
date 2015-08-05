@@ -65,7 +65,7 @@ class ProjectField
   public function show($project)
   {
     $txt = "<tr>";
-    $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
+    $txt .= "<th><b>" . $this->pretty_name . "</b></th>";
     $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
     // $project can be "new", so include is_array test
     if (is_array($project) && array_key_exists($this->field, $project)) {
@@ -91,7 +91,7 @@ class DateField extends ProjectField
   public function show($project)
   {
     $txt = "<tr>";
-    $txt .= "<td><b>" . $this->pretty_name . "</b></td>";
+    $txt .= "<th><b>" . $this->pretty_name . "</b></th>";
     $txt .= "<td><input type=\"text\" name=\"" . $this->field . "\"";
     $txt .= " id=\"datepicker\"";
     // $project can be "new", so include is_array test

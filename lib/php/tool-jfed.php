@@ -134,9 +134,6 @@ function get_jfed_strs($user) {
         //var slice_urn = 'urn:publicid:IDN+ch.geni.net:CHtest+slice+vm1';
         var slice_urn = ''; // over-ridden in the onclick of the jFed button with the specific slice URN. launchjFed() uses this global. Tom says Gross!
         </script>
-        <script src='$portal_jquery_url'></script>
-        <link rel='stylesheet' href='$portal_jqueryui_css_url' />
-        <script src='$portal_jqueryui_js_url'></script>
         <script src=\"//java.com/js/dtjava.js\"></script>
         <script src='https://authority.ilabt.iminds.be/js/jfed_webstart_geni.js'></script>
 <div id='java7Dialog' title=\"Old Java version detected\" style=\"display: none\">

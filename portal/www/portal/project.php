@@ -109,7 +109,7 @@ if (! is_null($project) && $project != "None") {
   }
 } else {
   $_SESSION['lasterror'] = "No project specified for project page";
-  relative_redirect('projects.php');
+  relative_redirect('dashboard.php#projects');
 }
 
 // Fill in members of project member table

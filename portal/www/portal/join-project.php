@@ -86,7 +86,7 @@ print "<p>Once the project lead makes a decision about your request you
 if (! isset($pids) || is_null($pids) || count($pids) < 1) {
   print "<p><i>There are no more projects for you to join.</i></p>\n";
   if (count($rpids) > 0) {
-    print "<p>You have " . count($rpids) . " open <a href='projects.php'>request(s) to join a project</a>.</p>";
+    print "<p>You have " . count($rpids) . " open <a href='dashboard.php#projects'>request(s) to join a project</a>.</p>";
   }
 
 } else {

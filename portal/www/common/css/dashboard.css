@@ -1,0 +1,451 @@
+/*  CSS Style Sheet for GENI Dashboard */
+
+.dashtext {
+  display: inline;
+}
+/*
+a {
+  vertical-align: middle;
+}
+*/
+.material-icons {
+  display: inline;
+  vertical-align: middle;
+  font-size: 18px;
+  margin: 0px 3px;
+}
+
+li .material-icons, button .material-icons, .button .material-icons{
+  font-size: 18px;
+}
+
+button .material-icons, .button .material-icons {
+  /*margin: 0px;*/
+}
+
+td .material-icons {
+  display: inline;
+  font-size: 24px;
+}
+
+#slicearea {
+  overflow-x: hidden;
+}
+
+#projectarea {
+  overflow-x: hidden;
+}
+
+/* Slicebox "fly in" animations */
+.slicebox {
+  -webkit-transition-duration: 300ms;
+  transition-duration: 300ms;
+}
+
+.slicebox.loading {
+  -webkit-transform: translate(300%);
+  transform: translate(300%);
+  opacity: 0;
+  -webkit-transition-timing-function: cubic-bezier(.55,0,.1,1);
+  transition-timing-function: cubic-bezier(.55,0,.1,1);
+}
+
+.slicebox {
+  width: 290px;
+  padding: 0px;
+  margin: 15px 10px 15px 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.slicebox:hover {
+  animation: raise;
+  animation-duration: .2s;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.slicebox table {
+  margin: 0px !important;
+  box-shadow: none !important;
+  width: 100% !important;
+}
+
+#content .slicebox td {
+  font-size: 14px;
+}
+
+#content .slicebox .slicetopbar {
+  background-color: #F57F21 !important;
+  font-size: 15px;
+  color: white !important;
+}
+
+#content .slicebox .slicetopbar:hover {
+  background-color: #FB8C00 !important;
+  cursor: pointer;
+}
+
+.slicename, .projectname {
+  display: block;
+  color: #FFFFFF !important;
+  text-decoration: none !important;
+  width: 100%;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.slicename:hover, .projectname:hover {
+  background-color: #FB8C00 !important;
+} 
+
+/* Header submenus and new selects */
+
+.submenu {
+  position: absolute;
+  display: none;
+  border-top: 1px solid #fff;
+  margin: 0 !important;
+  padding: 0;
+  width: 150px;
+  list-style-type: none;
+  background-color: #ffffff;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  z-index: 750;
+}
+
+.submenu li {
+  font-family: 'Open Sans';
+  background-color: #ffffff;
+  color: #303030;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 15px;
+  margin: 0px;
+  text-align: center;
+}
+
+.submenu li a {
+  font-family: 'Open Sans';
+  display: block;
+  text-decoration: none !important;
+  color: #303030;
+  width: 100%;
+  margin: 0px;
+}
+
+/* thanks jfed */
+.submenu li button {
+  font-family: 'Open Sans';
+  border: 0px;
+  background-color: #FFFFFF;
+  display: block;
+  text-decoration: none !important;
+  color: #303030;
+  width: 100%;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 15px;
+}
+
+.submenu li button:focus {
+  outline: none;
+}
+
+.submenu li button:hover {
+  cursor: pointer;
+  background-color: #FB8C00 !important;
+  color: #FFFFFF;
+  animation: selectorhighlight;
+  -webkit-transition-duration: 100ms;
+  transition-duration: 100ms;
+}
+
+@keyframes selectorhighlight{
+    from {background-color: #FFFFFF; color: #303030;}
+    to {background-color: #FB8C00 !important; color: #FFFFFF !important;}
+}
+
+.submenu li a:hover {
+  display: block;
+  text-decoration: none !important;
+  color: white !important;
+  background-color: #FB8C00 !important;
+  animation: selectorhighlight;
+  -webkit-transition-duration: 100ms;
+  transition-duration: 100ms;
+}
+
+.submenu li a.disabledaction {
+  text-decoration: none !important;
+  color: #E5E5E5 !important;
+  width: 100%;
+  margin: 0px;
+}
+
+.submenu li a.disabledaction:hover {
+  cursor: default !important;
+  background-color: #FFFFFF !important;
+}
+
+.selectorcontainer {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.selector {
+  background-color: #FFFFFF;
+  font-size: 13px;
+  font-weight: normal;
+  text-align: center;    
+  display: inline-block;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  float: right;
+  height: 25px;
+  line-height: 25px;
+  margin: 0px 15px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.selector:hover {
+  background-color: #EEEEEE;
+  animation: raise;
+  animation-duration: .2s;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  
+}
+
+.selector .submenu {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  width: 150px;
+}
+
+.selector .submenu li {
+  background-color: #ffffff;
+  width: 140px;
+  height: 25px;
+  line-height: 25px;
+  margin: 0px;
+  padding: 0px 5px;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.selector .submenu li:hover {
+  cursor: pointer;
+  background-color: #FB8C00;
+  color: white;
+}
+
+.selectorlabel {
+  font-weight: bold;
+}
+
+.selectorlabel:hover {
+  cursor: default !important;
+  background-color: #FFFFFF !important;
+  color: #303030 !important;
+}
+
+#slicefilterswitch {
+  margin: 20px 15px;
+}
+
+#loglength {
+  margin: 20px 10px;
+  width: 100px;
+}
+
+#loglength li {
+  width: 100px;
+}
+
+#loglengthselector {
+  width: 100px;
+}
+
+#slicesortby {
+  margin: 20px 15px;
+}
+
+.projectinfo {
+  margin: 10px 0px;
+}
+
+.noprojects {
+  clear: both;
+}
+
+.noslices {
+  clear: both;
+}
+
+.purposebox {
+  width: 255px;
+  max-width: 255px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#logtable {
+   margin-left: 20px !important;
+   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+   border-top: 2px solid #F57F21;
+}
+
+#logtable td {
+  padding: 10px 20px;
+}
+
+.slicelink:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.sliceactions {
+  max-width: 30px;
+  padding: 5px !important;
+}
+
+.sliceactions li {
+  height: 30px;
+}
+
+.sliceactions ul {
+  margin: 0px;
+}
+
+.sliceactions .submenu {
+  width: 160px;
+}
+
+.sliceactions li .submenu li {
+  height: 30px;
+  font-size: 13px;
+  width: 160px;
+}
+
+.expirationicon {
+  height: 16px;
+  width: 16px;
+  vertical-align: middle;
+  margin-left: 5px; 
+}
+
+#hamburger {
+  display: none;
+}
+
+.mobilebreak {
+  display: none;
+}
+
+/* ----------- MOBILE DASHBOARD ----------------*/
+
+@media (max-width: 480px) {
+
+  .has-sub > a {
+    pointer-events: none;
+  }
+
+  .selectorcontainer {
+    margin: 5px;
+  }
+
+  .mobilebreak {
+    display: block;
+  }
+
+  #hamburger {
+    display: inline;
+  }
+
+  #globe {
+    display: none;
+  }
+
+  #dashboardtools {
+    display: none;
+    background-color: #EEEEEE;
+    width: 130px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    position: absolute;
+    border-top: 1px solid #fff;
+    margin: 0 !important;
+    padding: 0;
+    z-index: 2;
+    top: 50px;
+    height: auto;
+  }
+
+  #dashboardtools li {
+    background-color: #EEEEEE;
+  }
+
+  #dashboardtools li button {
+    background-color: #EEEEEE !important;
+  }
+
+  #dashboardtools li .submenu {
+    left: 130px;
+    top: 0px;
+  }
+
+  .dashtext {
+    text-align: center;
+  }
+
+  .floatright, .floatleft {
+    float: none;
+    margin: 0 auto;
+  }
+
+  .selector {
+    margin: 5px !important;
+  }
+
+  .slicebox {
+    margin: 20px auto;
+  }
+
+  .sliceactions .submenu {
+    position: absolute;
+    right: 30px;
+  }
+
+  #projectcontrols {
+    text-align: center;
+  }
+
+  #projectswitch {
+    margin: 5px 15px;
+  }
+
+  .projectinfo {
+    margin: 0px 0px 0px 20px;
+    text-align: center;
+  }
+
+  .slicelink {
+    text-decoration: underline;
+  }
+
+  #logtable {
+    margin-left: 0px;
+  }
+
+  #dashboardheader {
+    min-width: 0px;
+  }
+
+  #maptab {
+    display: none;
+  }
+}

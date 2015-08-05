@@ -40,6 +40,8 @@ nobase_dist_svcdata_DATA = \
 	db/postgresql/update-6.sql \
 	db/postgresql/update-7.sql \
 	db/postgresql/update-8.sql \
+	db/postgresql/update-9.sql \
+	db/postgresql/update-10.sql \
 	gcf.d/example-gcf.ini
 
 #----------------------------------------------------
@@ -63,10 +65,14 @@ dist_svcweb_DATA = \
 	www/portal/amstatus.php \
 	www/portal/ask-for-project.php \
 	www/portal/cancel-join-project.php \
+	www/portal/cards.js \
 	www/portal/certificate.php \
 	www/portal/confirm-sliverdelete.php \
+	www/portal/createimage.php \
 	www/portal/createslice.php \
 	www/portal/createsliver.php \
+	www/portal/dashboard.js \
+	www/portal/dashboard.php \
 	www/portal/db_error_test.php \
 	www/portal/debug_clearcache.php \
 	www/portal/deletesliver.php \
@@ -116,6 +122,7 @@ dist_svcweb_DATA = \
 	www/portal/help.php \
 	www/portal/index.php \
 	www/portal/home.php \
+	www/portal/image_operations.php \
 	www/portal/invite-to-geni.php \
 	www/portal/invite-to-project.php \
         www/portal/jacks-app.css \
@@ -140,6 +147,7 @@ dist_svcweb_DATA = \
 	www/portal/portal_omni_config.php \
 	www/portal/portal-jacks-app.js \
 	www/portal/portal-jacks-editor-app.js \
+	www/portal/preferences.php \
 	www/portal/print-text.php \
 	www/portal/profile.php \
 	www/portal/project-member.php \
@@ -203,6 +211,7 @@ dist_svcwebimages_DATA = \
 	www/images/geni-header-left.png \
 	www/images/geni-header-right.png \
 	www/images/header-home.jpg \
+	www/images/menu.png \
 	www/images/openVZvm-noTxt-centered.svg \
 	www/images/openVZvm-noTxt.svg \
 	www/images/openVZvm.svg \
@@ -223,7 +232,7 @@ dist_svcwebimages_DATA = \
 	www/images/UseGENI.png \
 	www/images/Xen-VM-noTxt-centered.svg \
 	www/images/Xen-VM-noTxt.svg \
-	www/images/Xen-VM.svg
+	www/images/Xen-VM.svg 
 
 dist_svcwebcommon_DATA = \
 	www/common/InC_Participant.png \
@@ -232,11 +241,13 @@ dist_svcwebcommon_DATA = \
 	www/common/nsf1.gif \
 	www/common/logos.html \
 	www/common/topbar_gradient.png \
-	www/common/topbar_gradient2.png
+	www/common/topbar_gradient2.png 
 
 dist_svcwebcss_DATA =  \
-	www/common/css/portal.css \
-	www/common/css/mobile-portal.css
+	www/common/css/dashboard.css \
+	www/common/css/mobile-portal.css \
+	www/common/css/newportal.css \
+	www/common/css/portal.css 
 
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
