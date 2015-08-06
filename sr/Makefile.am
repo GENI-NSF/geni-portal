@@ -1,6 +1,6 @@
 svcdatadir = $(pkgdatadir)/sr
 
-cert_FILES = \
+nobase_dist_svcdata_DATA = \
 	certs/InCommonServerCA.pem \
 	certs/exo-nicta-am.pem \
 	certs/genidesktop.netlab.uky.edu.pem \
@@ -12,5 +12,3 @@ cert_FILES = \
 	certs/irods-test.pem \
 	certs/nlr-of.pem \
 	certs/uen-of.pem
-
-nobase_dist_svcdata_DATA = $(cert_FILES)
