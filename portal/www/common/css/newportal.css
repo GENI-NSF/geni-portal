@@ -363,6 +363,11 @@ ul {
   list-style-type: none;
 }
 
+ul.instructions {
+  list-style-type: disc; 
+  margin-left: 30px;
+}
+
 /* inline table should not have large left margin */
 #content table table {
   margin-left: 0px;

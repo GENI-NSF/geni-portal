@@ -172,13 +172,13 @@ else
     }
     print "</table></div>\n";
     print "<p>On Linux and Mac systems and for most Windows SSH clients (not PuTTY), do:";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Download your private key.</li>";
     print "<li>On Windows, just point your SSH client (not PuTTY) to the downloaded private key.</li>";
     print "<li>On Linux and Mac, open a terminal.</li>";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Store your key under ~/.ssh/ :";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>If the directory does not exist, create it:</li>";
     print "<pre>mkdir ~/.ssh</pre>";
     print "<li>Move the key to ~/.ssh/ :</li>";
@@ -192,7 +192,7 @@ else
     print "</ul>";
     print "<p>";
     print "<p>For PuTTY users:";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Download PuTTY key.";
     print "<li>In PuTTY, create a new session that uses the 'username', 'hostname' and 'port' for the resources you have reserved.</li>";
     print "<li>Under the authentication menu, point the key field to the downloaded PuTTY key file.</li>";
