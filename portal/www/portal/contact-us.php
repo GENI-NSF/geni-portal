@@ -38,9 +38,9 @@ $hostname = $_SERVER['SERVER_NAME'];
 
 <h2>Contact Us</h2>
 
-<p>For feedback, issues and questions about the GENI Portal please email <a href="mailto:portal-help@geni.net">portal-help@geni.net</a></p>
+<p>For feedback, issues and questions about the GENI Portal please email <a href="mailto:portal-help@geni.net">portal-help@geni.net</a>.</p>
 
-<p>For technical assistance or advice about your GENI experiment please email the community forum  <a href="mailto:geni-users@googlegroups.com"> geni-users@googlegroups.com.</a>
+<p>For technical assistance or advice about your GENI experiment please email the community forum  <a href="mailto:geni-users@googlegroups.com"> geni-users@googlegroups.com</a>.
 If you are not already a member please <a href="https://groups.google.com/forum/#!forum/geni-users" target="_blank">register</a> to be able to receive the responses.</p>
 
 <p>To report an issue with an existing or a failed resource reservation made through the portal:</p>
@@ -50,7 +50,7 @@ If you are not already a member please <a href="https://groups.google.com/forum/
 <li>Click on the “Send Problem Report” tab.</li>
 </ol>
 
-<p>For all other questions please email <a href="mailto:help@geni.net">help@geni.net</a></p> 
+<p>For all other questions please email <a href="mailto:help@geni.net">help@geni.net</a>.</p> 
 
 
 <?php
