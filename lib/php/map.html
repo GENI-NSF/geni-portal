@@ -20,7 +20,7 @@
 </style>
 
 <script>
-$(document).ready(function(){
+function map_init() {
   $.get("/common/map/current.json", function(data){
     aggarray = [];
     aggdatalist = data.features;
@@ -103,31 +103,28 @@ $(document).ready(function(){
       }
     });
   });
-});
+}
 
-  function waitForBounds(){
-    alert("nice dude");
-  }
+function clickOnPin(marker, event, context){
+  $(this).gmap3({
+    infowindow:{
+      anchor: marker, 
+      options:{content: context.tag}
+    }
+  });
+}
 
-  function clickOnPin(marker, event, context){
-    $(this).gmap3({
-      infowindow:{
-        anchor: marker, 
-        options:{content: context.tag}
+
+function clickOnCluster(overlay, event, context){
+  $(this).gmap3({
+    infowindow:{
+      latLng: context.data.latLng,
+      options:{
+        content: $.map(context.data.markers, function(marker){return marker.tag}).join("<hr>")
       }
-    });
-  }
+    }
+  });
+}
 
-
-  function clickOnCluster(overlay, event, context){
-    $(this).gmap3({
-      infowindow:{
-        latLng: context.data.latLng,
-        options:{
-          content: $.map(context.data.markers, function(marker){return marker.tag}).join("<hr>")
-        }
-      }
-    });
-  }
 </script>
 <div id="map1"></div>
