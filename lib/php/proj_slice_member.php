@@ -190,8 +190,6 @@ function get_all_members_of_slice_as_users( $sa_url, $ma_url, $user, $slice_id) 
 	$slice_user = new GeniUser();     
    	$slice_user->init_from_member($member);
 	//	error_log("Slice user = " . print_r($slice_user, TRUE));
- 	$identity = geni_load_identity_by_eppn($slice_user->eppn);
-     	$slice_user->init_from_identity($identity);
  	$slice_users[] = $slice_user;
    }
 

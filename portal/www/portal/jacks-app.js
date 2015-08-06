@@ -48,6 +48,13 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
     // How long to wait before polling status again in milliseconds
     this.statusPollDelayMillis = 5000;
 
+    // Max time to poll for status/manifest before stopping.
+    // If no login info is available when this expires,
+    // no ssh info will be displayed. This avoids infinite
+    // looping when no login info will ever be available because
+    // no ssh keys were present when the request was made.
+    this.maxStatusPollSeconds = 300;
+
     this.jacks = jacks;
     this.jacks_editor = null;
     this.jacks_editor_visible = false;
@@ -103,6 +110,7 @@ function JacksApp(jacks, status, statusHistory, buttons, sliceAms, allAms, slice
 	// size: { x: 1400, y: 350},
 	size: 'auto',
 	canvasOptions : {aggregates: aggregate_info},
+	isManifest : true,
         show: {
             menu: true,
             rspec: true,
@@ -141,6 +149,8 @@ JacksApp.prototype.MANIFEST_EVENT_TYPE = "MANIFEST";
 JacksApp.prototype.RENEW_EVENT_TYPE = "RENEW";
 JacksApp.prototype.RESTART_EVENT_TYPE = "RESTART";
 JacksApp.prototype.STATUS_EVENT_TYPE = "STATUS";
+
+JacksApp.prototype.INSTAGENI_AGGREGATE_TYPE = "ui_instageni_am";
 
 
 //----------------------------------------------------------------------
@@ -244,6 +254,27 @@ JacksApp.prototype.handleStatusClick = function() {
     $(this.statusHistory).show();
 }
 
+JacksApp.prototype.handleCreateImage = function() {
+    // Need am_id, slice_id, sliver_id
+    // The createimage.php page 
+    //    computes slice_name and project_name from slice_id
+    //    solicits image_name and public
+    // And then we go to image_operations.php which gives us either
+    // an image_urn and image_id or an error, which will then update
+    // that page. We put a 'back' button on the page to go 
+    // back to the slice page.
+    // *** HTTP encode the ID's ***
+    selected_node = this.selectedNodes[0];
+    am_id = this.lookup_am_id(selected_node.key);
+    slice_id = this.sliceInfo.slice_id;
+    sliver_id = this.lookup_topology_node(selected_node).sliver_id;
+    create_image_url = "createimage.php?slice_id=" + slice_id + 
+    "&am_id=" + am_id +					
+    "&sliver_id=" + sliver_id;
+    window.location.replace(create_image_url);
+    console.log("CREATE IMAGE");
+}
+
 JacksApp.prototype.handleStatusHistoryClick = function() {
     debug("STATUS HISTORY Click");
     this.hideStatusHistory();
@@ -285,6 +316,11 @@ JacksApp.prototype.initButtons = function(buttonSelector) {
 
     btn = $('<button type="button">Restart</button>');
     btn.click(function(){ that.handleRestart();});
+    $(buttonSelector).append(btn);
+
+    btn = $('<button type="button" id="create_image_button">Snapshot</button>');
+    btn.click(function(){ that.handleCreateImage();});
+    btn.attr('disabled', 'disabled');
     $(buttonSelector).append(btn);
 
     //  GAP
@@ -360,16 +396,41 @@ JacksApp.prototype.amName = function(am_id) {
   Return the AM ID assocaited with a node key (from the Jacks topology
  */
 JacksApp.prototype.lookup_am_id = function (node_key) {
+
     var that = this;
     var am_id = null;
+
+    // New version
     $.each(this.currentTopology.nodes, function(ni, nd) {
 	    if(nd.id == node_key) {
-		var urn = nd.aggregate_id;
+		if (nd.sourceUrn != undefined && 
+		    nd.sourceUrn in that.urn2amId) 
+		    {
+			var urn = nd.sourceUrn;
+		    } else 
+		    {
+			var urn = nd.aggregate_id;
+		    }
 		am_id = that.urn2amId[urn];
-		return;
+		return false;
 	    }
 	});
+
     return am_id;
+}
+
+/*
+ * Get a topology node from a selected node
+ */
+JacksApp.prototype.lookup_topology_node = function(selected_node) {
+    var topo_node = null;
+    $.each(this.currentTopology.nodes, function(ni, nd) {
+	    if(nd.id == selected_node.key) {
+		topo_node = nd;
+		return false;
+	    }
+	});
+    return topo_node;
 }
 
 /*
@@ -424,6 +485,10 @@ JacksApp.prototype.getSliceManifests = function() {
     // manifests, but subsequent manfiests are added.
     this.first_manifest_pending=true;
 
+    // Poll for a limited amount of time, otherwise it can
+    // poll indefinitely if there is no login information.
+    var maxTime = Date.now() + this.maxStatusPollSeconds * 1000
+
     // Loop through each known AM and get the manifest.
     var that = this;
     $.each(sliceAms, function(i, am_id) {
@@ -435,7 +500,7 @@ JacksApp.prototype.getSliceManifests = function() {
                               am_id: am_id,
                               slice_id: that.sliceId,
                               callback: that.input,
-                              client_data: {}
+                              client_data: {maxTime: maxTime}
                             });
     });
 };
@@ -446,6 +511,10 @@ JacksApp.prototype.getSliceManifests = function() {
  * max_time is when to stop polling
  */
 JacksApp.prototype.getManifest = function(am_id, maxTime) {
+    var now = Date.now();
+    if (now > maxTime) {
+        return;
+    }
     this.updateStatus('Polling resource manifest from '
                       + this.amName(am_id) + '...');
     this.output.trigger(this.MANIFEST_EVENT_TYPE,
@@ -604,11 +673,12 @@ JacksApp.prototype.renewResources = function() {
 
     var msg = "Renew known slice resources until " + renewDate + "?";
 
-    // If any nodss selected, use only them
+    // If any nodes selected, use only them
     if(this.selectedNodes.length > 0) {
 	renewAMs = []
 	msg = "Renew slice resources at ";
 	$.each(this.selectedNodes, function(i, selected_node) {
+
 		var am_id = that.lookup_am_id(selected_node.key);
 		renewAMs.push(am_id);
 		if(i > 0) msg = msg + ", ";
@@ -708,7 +778,33 @@ JacksApp.prototype.onSelectionEvent = function(event) {
 	this.selectedLinks = event.items;
 	this.selectObjects(this.selectedLinks, true);
     }
+
+    // Enable/Disable 'create image button based on selection
+    this.toggleCreateImage(this.selectedNodes);
+
+
 }
+
+// Enable the "create image" button if a single IG node is selected
+JacksApp.prototype.toggleCreateImage = function(selected_nodes) {
+    var should_enable_create_image = false;
+
+    if(selected_nodes.length == 1) {
+	selected_node = selected_nodes[0];
+	node_key = selected_node.key;
+	am_id = this.lookup_am_id(node_key);
+	aggregate = this.allAms[am_id];
+	aggregate_type = aggregate.attributes.UI_AM_TYPE;
+	if (aggregate_type == this.INSTAGENI_AGGREGATE_TYPE) 
+	    should_enable_create_image = true;
+    }
+
+    if (should_enable_create_image)
+	$('#create_image_button').removeAttr('disabled');
+    else
+	$('#create_image_button').attr('disabled', 'disabled');
+}
+
 
 JacksApp.prototype.selectObjects = function(objs, select) {
     $.each(objs, function(i) {
@@ -748,6 +844,7 @@ JacksApp.prototype.isNullManifest = function(manifest) {
 JacksApp.prototype.onEpManifest = function(event) {
 
     var that = this;
+    var am_urn = this.allAms[event.am_id].urn;
 
     if (event.code !== 0) {
         debug("Error retrieving manifest: " + event.output);
@@ -776,27 +873,38 @@ JacksApp.prototype.onEpManifest = function(event) {
 	// Paint all the current manifests, first change then subsequent adds
 	var first_manifest = true;
 	$.each(this.currentManifestByAm, function(am_id, manifest) {
-	    if(that.isNullManifest(manifest)) return;
+	    if(that.isNullManifest(manifest)) return false;
+	    var node_am_urn = that.allAms[am_id].urn;
 	    if (first_manifest) {
-		that.jacksInput.trigger('change-topology', [{ rspec: manifest}]);
+		that.jacksInput.trigger('change-topology', 
+					[{ rspec: manifest, 
+						    sourceUrn: node_am_urn}]);
 		first_manifest = false;
 	    } else {
-		that.jacksInput.trigger('add-topology', [{ rspec: manifest}]);
+		that.jacksInput.trigger('add-topology', 
+					[{ rspec: manifest,
+						    sourceUrn: node_am_urn}]);
 	    }
 	    });
 	// If we didn't paint any manifests, then change-topology to empty manifest
 	if (first_manifest)
-	    that.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+	    that.jacksInput.trigger('change-topology', 
+				    [{ rspec: rspecManifest,
+						sourceUrn : am_urn}]);
     } else if (this.first_manifest_pending) {
 	// If first manifest read of a group (from getSliceManifests, replace current topology
-	this.jacksInput.trigger('change-topology', [{ rspec: rspecManifest}]);
+	this.jacksInput.trigger('change-topology', 
+				[{ rspec: rspecManifest,
+				   sourceUrn : am_urn}]);
 	this.first_manifest_pending = false;
     } else {
 	// Otherwise add to current topology
 	// <rspec></rspec> or <rspec/> is returned in some cases as an empty manifest.
 	// Don't add these to current topology (they show up as empty sites)
 	if (!this.isNullManifest(rspecManifest)) 
-	    this.jacksInput.trigger('add-topology', [{ rspec: rspecManifest}]);
+	    this.jacksInput.trigger('add-topology', 
+				    [{ rspec: rspecManifest,
+				       sourceUrn: am_urn}]);
     }
     //
 
@@ -842,20 +950,19 @@ JacksApp.prototype.onEpManifest = function(event) {
             var port = $(this).attr('port');
             var username = $(this).attr('username');
             var login_url = "ssh://" + username + "@" + hostname + ":" + port;
-            var client_host_key = client_id + ":" + component_manager_id;
+            var client_host_key = client_id + ":" + am_urn;
             if (!(username in that.loginInfo)) {
 		that.loginInfo[username] = [];
 	    }
-	    if (!(client_host_key in that.loginInfo[username])) {
-		that.loginInfo[username][client_host_key] = [];
-	    }
-	    that.loginInfo[username][client_host_key].push(login_url);
+	    that.loginInfo[username][client_host_key] = [login_url];
             debug(authn + "://" + username + "@" + hostname + ":" + port);
         });
     });
 
     // re-poll as necessary up to event.client_data.maxPollTime
-    var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    //var maxPollTime = Date.now() + this.maxStatusPollSeconds * 1000;
+    var maxPollTime = (event.client_data.maxTime
+                       || Date.now() + this.maxStatusPollSeconds * 1000);
     this.getStatus(am_id, maxPollTime);
 
 };
@@ -992,12 +1099,12 @@ JacksApp.prototype.hasLoginInfo = function(am_id)
     var agg_urn = this.allAms[am_id].urn;
     var has_login_info = false;
     $.each(this.loginInfo, function(username) {
-	    if(has_login_info) return;
+	    if(has_login_info) return false;
 	    var client_host_keys = Object.keys(that.loginInfo[username]);
 	    $.each(client_host_keys, function(i, client_host_key) {
-		    if (client_host_key.includes(agg_urn)) {
+            if (client_host_key.indexOf(agg_urn) > -1) {
 			has_login_info = true;
-			return;
+			return false;
 		    }
 		});
 	});

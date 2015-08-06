@@ -57,7 +57,7 @@ END;
 			<li><a href='#ssl'>SSL</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
 			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
-			<li><a href='#tools'>Tools</a></li>
+			<li><a href='#tools'>Manage Accounts</a></li>
 			<li style="border-right: none"><a href='#outstandingrequests'>Outstanding Requests</a></li>
 		</ul>
   </div>
@@ -378,7 +378,6 @@ print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
 print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
 print "<tr><th>GENI OpenID URL</th><td>" . $openid_url . "</td></tr>\n";
 print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
-print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
 print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
 if ($user->phone() != "")
   print "<tr><th>Telephone Number</th><td>" . $user->phone() . "</td></tr>\n";
@@ -516,15 +515,19 @@ if($in_lockdown_mode) {
 /* Only show the tools authorization page if we're not in full
  * speaks-for mode.
  */
+print '<h2>Manage accounts</h2>';
 if (!$speaks_for_enabled) {
   print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
 }
 
-print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
-if (! isset($disable_irods) or $user->hasAttribute('enable_irods'))
+if (! isset($disable_irods) or $user->hasAttribute('enable_irods')) {
   $irodsdisabled = "";
-print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
+}
+print "<a class='button' href='irods.php' $irodsdisabled>Manage iRODS Account</a><br><br>\n";
+print "<a class='button' href='savi.php'>Create SAVI Account</a><br><br>\n";
+print "<a class='button' href='wimax-enable.php'>Manage Wireless Account</a>\n";
+
 // END tools tab
 echo "</div>";
 
