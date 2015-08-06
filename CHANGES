@@ -3,10 +3,10 @@
 #       reconciliation at release time
 
 = GENI Portal Release Notes =
-== 3.01 == 
- * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
 
 == 3.1 ==
+ * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
+ * Fix erroneous warning when renewing slices on the dashboard (#1481)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
