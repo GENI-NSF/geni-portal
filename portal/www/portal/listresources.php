@@ -197,7 +197,7 @@ print "<p style='display:none;'><a id='hideRawResource' style='cursor: pointer;'
 print "<p><a id='rawStatus' style='cursor: pointer;'>Show Raw JSON Resource Status </a></p>";
 print "<p style='display:none;'><a id='hideRawStatus' style='cursor: pointer;'>Hide Raw JSON Resource Status </a></p>";
 print "<hr/><p>";
-print "<a href='slices.php'>Back to All slices</a>";
+print "<a href='dashboard.php#slices'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 include("footer.php");

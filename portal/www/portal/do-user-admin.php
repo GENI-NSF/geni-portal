@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -23,37 +23,45 @@
 //----------------------------------------------------------------------
 
 require_once("user.php");
-require_once("header.php");
+require_once("util.php");
+require_once("sa_client.php");
+require_once("pa_client.php");
+require_once("ma_client.php");
+require_once('cs_constants.php');
 require_once('sr_constants.php');
-require_once('sr_client.php');
-require_once('sa_constants.php');
-require_once('sa_client.php');
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
-  relative_redirect('home.php');
+  exit();
 }
 
-include("tool-lookupids.php");
-
-if (isset($slice) && ! is_null($slice)) {
-  // FIXME: Do anything to slices first? Members?
-  $result = "Disable Slice Not Implemented";
-  error_log("Disable Slice not implemented");
-  //  $result = delete_slice($sa_url, $slice_id);
-  //  if (! $result) {
-  //    error_log("Failed to Disable slice $slice_id: $result");
-  //  }
-} else {
-  error_log("Didnt find to disable slice $slice_id");
+// This admin functionality is for OPERATORS only
+if (!$user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
+  exit();
 }
-// FIXME: remove the slice from the DB
-// Invalidate credentials?
-// FIXME
-$_SESSION['lastmessage'] = "Asked to disable slice $slice_name - NOT IMPLEMENTED";
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
-relative_redirect('dashboard.php#slices');
+$sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+$ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
+$signer = $user;
 
-include("footer.php");
+// Handle the request, determine which action to perform
+if (array_key_exists('action', $_REQUEST)) {
+  $action = $_REQUEST['action'];
+  if ($action == "remove"){
+    if (array_key_exists('project_id', $_REQUEST) && array_key_exists('member_id', $_REQUEST)) {
+      modify_project_membership($sa_url, $signer, $_REQUEST['project_id'], array(), array(), array($_REQUEST['member_id']));
+    } else {
+      print "Insufficient information given to remove user";
+      exit();
+    }
+  } else if ($action == "disable") {
+      if (array_key_exists('member_urn', $_REQUEST)) {
+        disable_user($ma_url, $signer, $_REQUEST['member_urn']);        
+      }
+  } else {
+      print "No action requested";
+      exit();
+  }
+}
+
 ?>

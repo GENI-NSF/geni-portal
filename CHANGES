@@ -4,19 +4,68 @@
 
 = GENI Portal Release Notes =
 
-== 2.35 ==
- * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables (1.10.7) (#1327)
- * Clear RSpec selector (paste, file, url, menu) when Jacks delete all or
-   other jacks topology changes are made (#1246)
- * Warn and disable "reserve resources" if RSpec is bound to unknown AM (#1346)
- * Fix problem of expoential delete calls from Jacks delete (#1364)
- * Allow SSH to work on ExoSM-allocated resources (#1397)
- * Move SR certs from geni-portal to geni-ch (CH #102).
+== 3.1 ==
+ * Migrate schema files for CH tables to geni-ch (geni-ch #103)
+ * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
+ * Fix erroneous warning when renewing slices on the dashboard (#1481)
+ * Move SR certs from geni-portal to geni-ch (geni-ch #102).
+
+== 3.0 ==
+ * Add create image function for PG/IG racks within jacks-app (#1389).
+ * Remove account and identity (and associated) tables, scripts and clients (#299)
+ * Restore 'Manage Resources' functionality (#1448)
+ * Update Portal with new look and feel. Some key features:
+  * The home page has been re-designed using tabs, and 'cards' for each project or slice. (#1146)
+  * To act on a slice or project, click '...'
+  * 'Projects' and 'Slices' pages are tabs on the home page, reachable from the header menus under 'Home'
+  * Links from the 'Tools' section of the old home page are now largely under 'Partners' or 'Tools'
+    in the header, available on every page.
+  * To launch a tool in a slice context (jFed, GENI Desktop, LabWiki), use the button on the slice page.
+  * You can now renew slice resources directly from the home page. (#711)
+  * A Slice card indicates (using colors and icons) if the slice or resources expire soon. (#613)
+  * Flack has been removed. (#1451)
+  * Added a link to the page to request a SAVI account. (#1455)
+  * The GENI Wireless button is now under 'Manage Accounts' on the profile, 
+    with direct links to wireless testbeds under 'Partners' (#1262)
+ * Avoid always storing profile changes as lead requests. (#1463)
+ * Avoid listing all profile edits as having changed the telephone number. (#1339)
+ * Fix undefined variable in log_db_error (#1467)
+ * Fix infinite redirect on wimax-enable with no projects (#1464)
+ * Fix issue where length of renewal wrong in slice actions dropdown. (#1471)
+ * Fix issue where renew button in slice dropdown would try and shorten slice lifetime (#1473)
+ * Fix issue where create slice button was disabled when project_id was given in URL params (#1478)
 
 == 2.34 ==
- * Fix get_urgency_color bug, now properly computes time interval for color (#1387) 
+ * Fix redirects when project is successfully created. (#1434)
+ * Fix omni_invocation parsing to mark an error/failed if the aggregate
+   returns "Error" in return text but not in code (#1134, #1406).
+ * Clear RSpec selector (paste, file, url, menu) when Jacks delete all or
+   other jacks topology changes are made (#1246)
+ * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables
+   (1.10.7) (#1327)
+  * Fix bug where new jQuery paths were undefined in tool-jfed (#1426)
+ * Warn and disable "Reserve resources" if RSpec is bound to unknown AM (#1346)
+ * Fix problem of exponential delete calls from Jacks delete (#1364)
+ * Fix get_urgency_color bug, now properly computes time interval for color of resource expiration. (#1387)
  * Set max width of map to avoid 0,0 centering issue (#1390)
  * Make welcome page responsive with screen width, scale properly on mobile
+ * Allow SSH to work on ExoSM-allocated resources (#1397)
+ * Add project lead request handling, user search, and slice search to the admin page.
+  * Make admin page show table of open lead requests with info about user and field for notes,
+    with buttons to approve or deny the request. Includes new DB table for the request tracking. 
+  * Make user search tab allow for searching by email, username, or lastname, with links on 
+    each result to contact user, disable user, or remove them from projects.
+  * Make slice search tab allow for search by owner email or slice urn, with information about
+    slice, slice lead, its project, which aggregates it has resources at, and its members.
+  * Addresses (#273, #404, #731, #964, #1059)
+  * Fix `portal/update-9.sql` to drop the new type first. Include changes in `schema.sql` (#1420)
+  * On duplicate lead request, clarify text to note profile was updated. (#1422)
+  * Profile should not say you have no lead requests; it doesn't know. (#1425)
+ * Add `isManifest` to Jacks app (#1419).
+ * Fix problem with jacks-app talking to racks rather than ExoSM
+   for ExoSM-allocated resources (#1401).
+ * Make ready resources green in Safari (#1436)
+ * Limit jacks app login polling to max time of 5 minutes (#1439)
 
 == 2.33 ==
  * Add dropdown to get logs for a given time period on homepage, slice page,

@@ -96,7 +96,7 @@ if (isset($slice_expired) && convert_boolean($slice_expired)) {
     $slice_name = "";
   }
   $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
-  relative_redirect('slices.php');
+  relative_redirect('dashboard.php#slices');
 }
 
 // redirect if user isn't allowed to look up slice

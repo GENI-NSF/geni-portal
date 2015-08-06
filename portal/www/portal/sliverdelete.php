@@ -60,7 +60,7 @@ if (isset($slice_expired) && convert_boolean($slice_expired)) {
     $slice_name = "";
   }
   $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
-  relative_redirect('slices.php');
+  relative_redirect('dashboard.php#slices');
 }
 
 if (!$user->isAllowed(SA_ACTION::DELETE_SLIVERS, CS_CONTEXT_TYPE::SLICE, $slice_id)) {
@@ -122,7 +122,7 @@ print "<div id='deleteerror'><ul id='deleteerror'></ul></div>";
 print "</div>\n";
 
 print "<hr/>";
-print "<p><a href='slices.php'>Back to All slices</a>";
+print "<p><a href='dashboard.php#slices'>Back to All slices</a>";
 print "<br/>";
 print "<a href='slice.php?slice_id=$slice_id'>Back to Slice <i>$slice_name</i></a></p>";
 include("footer.php");

@@ -65,26 +65,4 @@ cert_FILES = \
 	certs/wisconsin-ig-cm.pem \
 	certs/wisconsin-ig-of.pem
 
-db_FILES = \
-	db/postgresql/README.txt \
-	db/postgresql/data.sql \
-	db/postgresql/schema.sql \
-	db/postgresql/update-1.sql \
-	db/postgresql/update-2.sql \
-	db/postgresql/update-3.sql \
-	db/postgresql/update-4.sql
-
-
-nobase_dist_svcdata_DATA = $(cert_FILES) \
-				$(db_FILES)
-
-# To do: transition database initialization to a script using
-# the installed schema and data SQL files.
-PSQL = /usr/bin/psql
-DB.USER = portal
-DB.HOST = localhost
-DB.DB = portal
-SCHEMA.SQL = db/postgresql/schema.sql
-DATA.SQL = db/postgresql/data.sql
-cleandb:
-	$(PSQL) -U $(DB.USER) -h $(DB.HOST) -f $(SCHEMA.SQL) $(DB.DB)
+nobase_dist_svcdata_DATA = $(cert_FILES)

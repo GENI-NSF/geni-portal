@@ -35,40 +35,39 @@ function show_last_message() {
   }
 }
 
+global $extra_js;
 
+echo '<!DOCTYPE HTML>';
+echo '<html>';
+echo '<head>';
+echo '<title>';
+echo "Troubleshooting logging into GENI";
+echo '</title>';
+/* Stylesheet(s) */
+echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
+echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
+/* Close the "head" */
+echo '</head>';
+echo '<body>';
 
-  global $extra_js;
+echo '<div id="welcome">';
 
-  echo '<!DOCTYPE HTML>';
-  echo '<html>';
-  echo '<head>';
-  echo '<title>';
-  echo "Troubleshooting logging into GENI";
-  echo '</title>';
-  /* Stylesheet(s) */
-  echo '<link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>';
-  echo '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">';
-  /* Close the "head" */
-  echo '</head>';
-  echo '<body>';
-
-  echo '<div id="welcome">';
-
-  echo '<div id="welcome-left"><img src="/images/geni.png" alt="GENI"/></div>';
-  echo '<div id="welcome-right">';
-    echo '<div id="welcome-right-top">';
-    show_last_message();
-  echo '<h1> Welcome to GENI </h1>';
-  echo '<a href="http://www.geni.net">GENI</a> is a new, nationwide suite of infrastructure supporting ';
-  echo '"at scale" research in networking, distributed systems, security, and novel applications. ';
-  echo 'It is supported by the <a href="http://www.nsf.gov/">National Science Foundation</a>, ';
-  echo 'and available without charge for research and classroom use.';
+echo '<div id="welcome-left"><img src="/images/geni.png" alt="GENI"/></div>';
+echo '<div id="welcome-right">';
+echo '<div id="welcome-right-top">';
+show_last_message();
+echo '<h1> Welcome to GENI </h1>';
+echo '<a href="http://www.geni.net">GENI</a> is a new, nationwide suite of infrastructure supporting ';
+echo '"at scale" research in networking, distributed systems, security, and novel applications. ';
+echo 'It is supported by the <a href="http://www.nsf.gov/">National Science Foundation</a>, ';
+echo 'and available without charge for research and classroom use.';
 
 ?>
-
-  <a href='secure/home.php'>
-    <img src="/images/UseGENI.png" id="usegeni" alt="Use GENI"/>
-  </a>
+<div id='usegenicontainer' style='text-align: left;'>
+<a href='secure/home.php' title='Login to the GENI Experimenter Portal' id="usegeni">
+  Use GENI
+</a>
+</div>
 
 <h2> Logging into GENI </h2>
 
@@ -99,7 +98,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 </ul>
 
 
-<h3 id='requestGENIAccount''>If you are a member of an InCommon federated institution...</h3>
+<h3 id='requestGENIAccount'>If you are a member of an InCommon federated institution...</h3>
 <ul>
 <li>
 <b>... and you don't have an account at your home institution</b>, contact your local IT department or computer help desk to inquire about getting a login.
@@ -133,21 +132,7 @@ GENI allows users to log in using their existing accounts via our partnership in
 </li>
 </ul>
 
-<!-- THIS SHOULD BE IN A COMMON FOOTER FILE --> 
 </div>
-</div>
-</div>
-<div id="footer">
-<div id="footer-left">
-  <!-- <a href="https://portal.geni.net">GENI Portal Home</a><br>
-  <a href="http://www.geni.net">GENI Home</a><br>
-  <a href="http://groups.geni.net/geni">GENI Wiki</a> -->
-</div>
-<div id="footer-right">
-  Copyright &copy; 2014 BBN Technologies<br>
-  All Rights Reserved - NSF Award CNS-0714770<br>
-  <a href="http://www.geni.net/">GENI</a> is sponsored by the <a href="http://www.nsf.gov/"><img src="/common/nsf1.gif" alt="NSF Logo" height="16" width="16"/> National Science Foundation</a>
-</div>
-</div>
-</body>
-</html>
+
+<?php include("footer.php"); ?>
+
