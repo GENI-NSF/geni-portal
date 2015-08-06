@@ -85,12 +85,23 @@ td .material-icons {
   cursor: pointer;
 }
 
-.slicename, .projectname, .leadname {
+.slicename, .projectname, .leadname, .smallleadname {
   display: block;
   width: calc(300px - 20px);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.smallleadname {
+  max-width: 170px;
+  float: left;
+}
+
+.requeststring {
+  display: block;
+  width: 110px;
+  float: left;
 }
 
 .slicetopbar .slicename, .projectname {

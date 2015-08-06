@@ -135,6 +135,7 @@ if (! $user->portalIsAuthorized()) {
     $user_id = $user->account_id;
 
     // Make and fill dictionary of project join requests
+    // Do this for ACTIVE projects only
     $project_request_map = array();
     if (count($project_objects) > 0) {
       $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
@@ -447,9 +448,9 @@ if (! $user->portalIsAuthorized()) {
     $box .= "</ul></li></ul></td></tr>";
     $box .= "<tr><td colspan='2'><span class='leadname'><b>Project:</b> $project_name </span></td></tr>";
     $box .= "<tr><td colspan='2'><span class='leadname'><b>Owner:</b> $lead_name</span></td></tr>";
-    $box .= "<tr style='height:40px;'><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
+    $box .= "<tr style='height:40px;'><td style='padding: 0px 10px;'>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
     $box .= "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
-    $box .= "<tr style='height:40px;'><td style='border-bottom:none;'>$resource_info</td>";
+    $box .= "<tr style='height:40px;'><td style='border-bottom:none; padding: 0px 10px;'>$resource_info</td>";
     $box .= "<td style='vertical-align: middle; border-bottom:none'>";
     $box .= "$resource_exp_icon</td></tr>";
     $box .= "</table></div>";
@@ -490,7 +491,12 @@ if (! $user->portalIsAuthorized()) {
       $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
     }
     $box .= "</ul></li></ul></td></tr>";
-    $box .= "<tr><td colspan='2'><b>Lead:</b> $lead_name $handle_req_str</td></tr>";
+    if ($handle_req_str) {
+      $box .= "<tr><td colspan='2'><span class='smallleadname'><b>Lead:</b> $lead_name </span> <span class='requeststring'>$handle_req_str</span></td></tr>";
+    } else {
+      $box .= "<tr><td colspan='2'><span class='leadname'><b>Lead:</b> $lead_name </span></td></tr>";
+    }
+
     $box .= $slice_count == 0 ? "<tr><td colspan='2'><i> No slices</i></td></tr>" : "<tr><td colspan='2'>Has <b>$slice_count</b> slices</td></tr>";
     if ($expiration) {
       if (!$expired) {
@@ -507,7 +513,7 @@ if (! $user->portalIsAuthorized()) {
       $expiration_string = "<i>No expiration</i>";
       $expiration_icon = "";
     }
-    $box .= "<tr><td style='border-bottom:none'>$expiration_string</td>";
+    $box .= "<tr style='height: 40px;'><td style='border-bottom:none;'>$expiration_string</td>";
     $box .= "<td style='vertical-align: middle; border-bottom:none;'>$expiration_icon</td></tr>";
     $box .= "</table></div>";
     return $box;
