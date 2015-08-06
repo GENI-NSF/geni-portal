@@ -187,7 +187,7 @@ else
     print "<pre>chmod 0600 ~/.ssh/id_geni_ssh_rsa</pre>";
     print "</ul>";
     print "<li>Your SSH command will be something like:</li>";
-    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname]</pre>";
+    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname] -p [port]</pre>";
     print "</ul>";
     print "</ul>";
     print "<p>";
