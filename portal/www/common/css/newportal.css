@@ -469,6 +469,10 @@ ul {
 
 /* MAPS */
 
+#geoviewmap #map1 {
+  height: 600px;
+}
+
 #smallmap #map1 {
   width: 100%;
   height: 300px !important;
