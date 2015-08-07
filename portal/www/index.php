@@ -70,8 +70,8 @@ function show_last_message() {
         Use GENI
       </a>
       </div>
-      <h2>Find out more about using GENI</h2>
-      <ul>
+      <h2>Find out more about using GENI:</h2>
+      <ul class='instructions'>
         <li><a href="http://groups.geni.net/geni/wiki/GeniNewcomersWelcome">New to GENI?</a></li>
         <li><a href="http://www.geni.net/experiment">Information for GENI experimenters</a></li>
         <li><a href="http://groups.geni.net/geni/wiki/GENIBibliography">Published research that used GENI resources</a></li>
