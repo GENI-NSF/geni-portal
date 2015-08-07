@@ -304,6 +304,23 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
+?>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    old_callback = get_callback;
+    get_callback = function(tab_name){
+      if(tab_name == "#geo_view_div") {
+        return function(){ map_init( <?php echo "'$slice_id'"; ?>); };
+      } else {
+        return old_callback(tab_name);
+      }
+    }
+  });
+  
+</script>
+
+<?php
 include("tabs.js");
 
 // Finish jFed setup
