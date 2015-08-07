@@ -66,10 +66,8 @@ setup_jacks_editor_slice_context();
 
 <?php
 
-echo "<table style=\"margin-left: 0px;width:90%;height:20px\"><tr><th>Add Resources to GENI Slice $slice_name</th></tr></table>";
-
-print "<table style=\"margin-left: 0px; width:90%; height:70%\" id='jacks-editor-app'>";
-print "<tr><td><div id='jacks-editor-app-container' style='width:100%; height:100%'>";
+echo "<table id='jacks-editor-app'><tr><th>Add Resources to GENI Slice $slice_name</th></tr>";
+print "<tr><td><div id='jacks-editor-app-container' style='width:100%; height:700px;'>";
 print build_jacks_editor();
 print "</div></td></tr></table>";
 print "<script src='portal-jacks-editor-app.js'></script>";
