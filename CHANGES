@@ -8,6 +8,7 @@
  * Migrate schema files for CH tables to geni-ch (geni-ch #103)
  * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
  * Fix erroneous warning when renewing slices on the dashboard (#1481)
+ * Handle text overflow for project names and lead names on dashboard (#1484)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
