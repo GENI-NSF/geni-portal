@@ -22,14 +22,24 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once("user.php");
+//--------------------------------------------------------------------------
+// NOTE: This page is deprecated as of 8/2015 with the release of Portal 3.0
+// This page now simply redirects to the Projects tab of the new dashboard.
+//--------------------------------------------------------------------------
+
+require_once("util.php");
+relative_redirect("dashboard.php#projects");
+
 require_once("header.php");
+require_once("user.php");
 include("services.php");
 
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
+
+
 show_header('GENI Portal: Projects', $TAB_PROJECTS);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
