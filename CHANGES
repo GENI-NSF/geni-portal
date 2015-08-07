@@ -11,6 +11,7 @@
  * Handle text overflow for project names and lead names on dashboard (#1484)
  * Add "Contact Us" page to the portal, and add link to it in help dropdown (#1486)
  * Fix formatting on the SSH tab of the profile page to be clearer (#1485)
+ * Add Google Analytics (via adding header) to jacks expanded views (#1488)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
