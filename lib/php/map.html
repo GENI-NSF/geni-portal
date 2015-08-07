@@ -56,11 +56,23 @@ function map_init() {
       aggname = aggarray[i][2];
       numresources = aggarray[i][3];
       numopenflowresources = aggarray[i][4];
+
+      resourcestr = "";
+      openflowstr = "</span>";
+
+      if (numresources > 0) {
+        plural = numresources == 1 ? "" : "s";
+        resourcestr = "<br><b>" + numresources  + "</b> resource" + plural + " at this site";
+      }
+
+      if (numopenflowresources > 0) {
+        plural = numopenflowresources == 1 ? "" : "s";
+        openflowstr = "<br>&nbsp;&nbsp;<b>" + numopenflowresources  + "</b> OpenFlow resource" + plural + " at this site </span>";
+      }
+
       pinslist.push({
         latLng:[lat, lng],
-        tag: "<span style='color: #303030'><b>" + aggname + '</b>' 
-          + (numresources > 0 ? '<br>&nbsp;&nbsp;' + numresources + " resources at this site" : "")
-          + (numopenflowresources > 0 ? "<br>&nbsp;&nbsp;" + numopenflowresources  + " OpenFlow resources at this site </span>" : "</span>")
+        tag: "<span style='color: #303030'><b>" + aggname + '</b>' + resourcestr + openflowstr
       });
     }
       
