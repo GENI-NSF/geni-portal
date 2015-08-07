@@ -26,10 +26,10 @@
 // NOTE: This page is deprecated as of 8/2015 with the release of Portal 3.0
 // This page now simply redirects to the Slices tab of the new dashboard. 
 //--------------------------------------------------------------------------
-require_once("header.php");
+require_once("util.php");
 relative_redirect("dashboard.php#slices");
 
-
+require_once("header.php");
 require_once("user.php");
 require_once("sr_client.php");
 require_once("sr_constants.php");
