@@ -9,6 +9,7 @@
  * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
  * Fix erroneous warning when renewing slices on the dashboard (#1481)
  * Handle text overflow for project names and lead names on dashboard (#1484)
+ * Add "Contact Us" page to the portal, and add link to it in help dropdown (#1486)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
