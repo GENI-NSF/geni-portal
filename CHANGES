@@ -12,6 +12,9 @@
   * Includes dashboard "Map" tab, the small welcome page map, and both slice
     geo views ("Geographic View" and "Geo Map").
   * This fixes the half loaded map in the "Geographic View" slice tab (#1272)
+ * Add "Contact Us" page to the portal, and add link to it in help dropdown (#1486)
+ * Fix formatting on the SSH tab of the profile page to be clearer (#1485)
+
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
