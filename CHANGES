@@ -15,6 +15,7 @@
  * Update welcome page to use new portal CSS styles.
  * Make projects.php redirect to projects tab on the dashbaord (#1487)
  * Add Google Analytics (via adding header) to jacks expanded views (#1488)
+ * Fix bug where hamburger menu would expand on every page resize (#1500)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
