@@ -41,7 +41,7 @@ function show_last_message() {
 <html>
 <head>
   <title>Welcome to the GENI Experimenter Portal</title>
-  <link type="text/css" href="/common/css/portal.css" rel="Stylesheet"/>
+  <link type="text/css" href="/common/css/newportal.css" rel="Stylesheet"/>
   <link type="text/css" rel="stylesheet" media="(max-width: 600px)" href="/common/css/mobile-portal.css" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>
@@ -49,8 +49,8 @@ function show_last_message() {
 </head>
 <body>
 
-<div id="content-outer" style="border-top: 5px solid #5F584E;">
-<div id="content">
+<div id="content-outer" class="one-card">
+<div id="content" style='background-color: #FFFFFF'>
   <div id="welcome-left">
     <img src="/images/geni.png" alt="GENI"/>
   </div>
@@ -66,12 +66,12 @@ function show_last_message() {
 
     <div id="welcome-right-left">
       <div id='usegenicontainer'>
-      <a href='secure/home.php' title='Login to the GENI Experimenter Portal' id="usegeni">
+      <a href='secure/home.php' title='Login to the GENI Experimenter Portal' id="usegeni" class='button'>
         Use GENI
       </a>
       </div>
-      <h2>Find out more about using GENI</h2>
-      <ul>
+      <h2>Find out more about using GENI:</h2>
+      <ul class='instructions'>
         <li><a href="http://groups.geni.net/geni/wiki/GeniNewcomersWelcome">New to GENI?</a></li>
         <li><a href="http://www.geni.net/experiment">Information for GENI experimenters</a></li>
         <li><a href="http://groups.geni.net/geni/wiki/GENIBibliography">Published research that used GENI resources</a></li>

@@ -678,19 +678,16 @@ ul.instructions {
   margin: 40px auto;
 }
 
-#usegeni {
+#content #usegeni {
   font-size: 1.2em;
   font-weight: 800;
   padding: 10px 20px;
   color: white !important;
-  background-color: #F57F21;
-  text-align: center;
-  border-radius: 3px;
+  background-color: #FB8C00 !important;
 }
 
-#usegeni:hover {
-  border-bottom: 0px !important;
-  background-color: #E17000 !important;
+#content #usegeni:hover {
+  background-color: #F57C00 !important;
 }
 
 /* OTHER */
