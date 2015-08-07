@@ -7,6 +7,7 @@
 == 3.1 ==
  * Migrate schema files for CH tables to geni-ch (geni-ch #103)
  * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
+ * Fix CSS on Jacks expanded views (#1458)
  * Fix erroneous warning when renewing slices on the dashboard (#1481)
  * Handle text overflow for project names and lead names on dashboard (#1484)
  * Add "Contact Us" page to the portal, and add link to it in help dropdown (#1486)
