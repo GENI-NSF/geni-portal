@@ -46,8 +46,9 @@ function show_last_message() {
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Serif:400,400italic|Droid+Sans+Mono" rel="stylesheet" type="text/css">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>
   <meta name="mobile-web-app-capable" content="yes">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
-<body>
+<body onload="map_init('/common/map/current.json', [42,-60], 2);">
 
 <div id="content-outer" class="one-card">
 <div id="content" style='background-color: #FFFFFF'>
@@ -80,8 +81,10 @@ function show_last_message() {
     </div>
 
     <div id="welcome-right-right">
-      <?php include "common/map/map-small.html"; ?>
-      <p><i>These are some of the many resources being used in GENI experiments across the country.</i></p>
+    <div id="smallmap">
+      <?php include "map.html"; ?>
+      <p><i>These are some of the many resources being used in GENI experiments across the world.</i></p>
+    </div>
     </div>
   </div>
   <div style="clear: both;">&nbsp;</div>
