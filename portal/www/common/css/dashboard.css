@@ -51,7 +51,7 @@ td .material-icons {
 }
 
 .slicebox {
-  width: 290px;
+  width: 300px;
   padding: 0px;
   margin: 15px 10px 15px 20px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
@@ -71,6 +71,7 @@ td .material-icons {
 
 #content .slicebox td {
   font-size: 14px;
+  padding: 5px 10px;
 }
 
 #content .slicebox .slicetopbar {
@@ -84,15 +85,30 @@ td .material-icons {
   cursor: pointer;
 }
 
-.slicename, .projectname {
+.slicename, .projectname, .leadname, .smallleadname {
   display: block;
-  color: #FFFFFF !important;
-  text-decoration: none !important;
-  width: 100%;
-  max-width: 200px;
+  width: calc(300px - 20px);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.smallleadname {
+  max-width: 170px;
+  float: left;
+}
+
+.requeststring {
+  display: block;
+  width: 110px;
+  float: left;
+}
+
+.slicetopbar .slicename, .projectname {
+  display: block;
+  max-width: 200px;
+  color: #FFFFFF !important;
+  text-decoration: none !important;
 }
 
 .slicename:hover, .projectname:hover {
