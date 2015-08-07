@@ -8,6 +8,10 @@
  * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
  * Fix erroneous warning when renewing slices on the dashboard (#1481)
  * Handle text overflow for project names and lead names on dashboard (#1484)
+ * Replace OpenLayers maps on the portal with Google maps
+  * Includes dashboard "Map" tab, the small welcome page map, and both slice
+    geo views ("Geographic View" and "Geo Map").
+  * This fixes the half loaded map in the "Geographic View" slice tab (#1272)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
