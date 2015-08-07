@@ -32,7 +32,7 @@ $(document).ready(function(){
   }
 
   if(window.location.hash == "#map") {
-    map_init();
+    map_init("/common/map/current.json", [42, -72], 3);
   }
   
   // Make header links and new selectors show dropdown when you hover on them

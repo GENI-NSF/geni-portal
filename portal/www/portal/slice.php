@@ -304,6 +304,23 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
+?>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    old_callback = get_callback;
+    get_callback = function(tab_name){
+      if(tab_name == "#geo_view_div") {
+        return function(){ map_init( <?php echo "'slice-map-data.php?slice_id=$slice_id'"; ?>, [42, -72], 3); };
+      } else {
+        return old_callback(tab_name);
+      }
+    }
+  });
+  
+</script>
+
+<?php
 include("tabs.js");
 
 // Finish jFed setup
@@ -666,7 +683,7 @@ print "</div>";
   // Slice geo view
   print "<div id='geo_view_div' >\n";
   echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
-  include('slice_map.html');
+  include('map.html');
   echo "</td></tr></table>";
   print "</div>";
 
