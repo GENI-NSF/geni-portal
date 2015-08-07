@@ -50,7 +50,7 @@ If you are not already a member please <a href="https://groups.google.com/forum/
 <li>Click on the “Send Problem Report” tab.</li>
 </ol>
 
-<p>For all other questions please email <a href="mailto:help@geni.net">help@geni.net</a>.</p> 
+<p>For all other questions please email <a href="mailto:help@geni.net">help@geni.net</a>.</p>
 
 
 <?php
