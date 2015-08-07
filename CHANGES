@@ -7,6 +7,12 @@
 == 3.1 ==
  * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
    Wireless Account Management page (wimax-enable.php) accordinlgy (#1392).
+ * Migrate schema files for CH tables to geni-ch (geni-ch #103)
+ * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
+ * Fix erroneous warning when renewing slices on the dashboard (#1481)
+ * Handle text overflow for project names and lead names on dashboard (#1484)
+ * Add "Contact Us" page to the portal, and add link to it in help dropdown (#1486)
+ * Fix formatting on the SSH tab of the profile page to be clearer (#1485)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).

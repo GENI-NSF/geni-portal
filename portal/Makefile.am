@@ -67,6 +67,7 @@ dist_svcweb_DATA = \
 	www/portal/cancel-join-project.php \
 	www/portal/cards.js \
 	www/portal/certificate.php \
+	www/portal/contact-us.php \
 	www/portal/confirm-sliverdelete.php \
 	www/portal/createimage.php \
 	www/portal/createslice.php \
