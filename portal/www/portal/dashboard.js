@@ -66,7 +66,9 @@ $(document).ready(function(){
   });
 
   $(window).resize(function() {
-    $("#dashboardtools").show();
+    if ($(window).width() > 480) {
+      $("#dashboardtools").show();
+    }
   });
 
 });
