@@ -24,7 +24,7 @@
 
 //--------------------------------------------------------------------------
 // NOTE: This page is deprecated as of 8/2015 with the release of Portal 3.0
-// This page now simply redirects to the Slices tab of the new dashboard. 
+// This page now simply redirects to the Slices tab of the new dashboard.
 //--------------------------------------------------------------------------
 require_once("util.php");
 relative_redirect("dashboard.php#slices");
