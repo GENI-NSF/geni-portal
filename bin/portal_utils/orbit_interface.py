@@ -165,7 +165,7 @@ class ORBIT_Interface:
     # Change ORBIT group admin
     def change_group_admin(self, group_name, admin_name):
         self.invoke_orbit_method("changeGroupAdmin", 
-                                 "groupname=%s&username=%a" % \
+                                 "groupname=%s&username=%s" % \
                                      (group_name, admin_name))
 
     # Enable ORBIT user
