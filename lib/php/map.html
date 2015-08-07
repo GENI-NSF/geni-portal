@@ -20,8 +20,8 @@
 </style>
 
 <script>
-function map_init() {
-  $.get("/common/map/current.json", function(data){
+function map_init(url, center, zoom) {
+  $.get(url, function(data){
     aggarray = [];
     aggdatalist = data.features;
     aggdict = {};
@@ -79,8 +79,8 @@ function map_init() {
   $('#map1').gmap3({ 
     map:{
       options:{
-        center:[42,-72],
-        zoom: 3,
+        center: center,
+        zoom: zoom,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
     }

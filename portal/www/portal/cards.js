@@ -59,8 +59,8 @@ $(document).ready(function() {
           element = $(element);
           element.removeClass(loadingdirection);
         }, 0);
-        if(new_active == "#map" && $(".olMap").length == 0) {
-          map_init();
+        if(new_active == "#map") {
+          map_init("/common/map/current.json", [42, -72], 3);
         }
       });
       e.preventDefault();
@@ -84,6 +84,9 @@ $(document).ready(function() {
         active.addClass('activesection');
         content = $(active.attr('href'));
         content.show();
+        if(active == "#map") {
+          map_init("/common/map/current.json", [42, -72], 3);
+        }
       });
     }
   });

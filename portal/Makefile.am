@@ -254,7 +254,6 @@ dist_svcwebcss_DATA =  \
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
 	www/common/map/gmap3.js \
-	www/common/map/map-small.html \
 	www/common/map/rspec-dragon-maxgigapop-net.xml \
 	www/common/map/rspec-emulab-net.xml \
 	www/common/map/rspec-exogeni-net-bbnvmsite.xml \
