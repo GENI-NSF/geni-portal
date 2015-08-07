@@ -199,7 +199,8 @@ dist_svcweb_DATA = \
 	www/portal/upload-file.php \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
-        www/portal/wimax-enable.php
+        www/portal/wimax-enable.php \
+	www/portal/wireless_operations.php 
 
 dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt-centered.svg \

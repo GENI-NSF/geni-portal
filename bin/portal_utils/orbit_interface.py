@@ -105,7 +105,7 @@ class CODES:
     ERROR32 = 'ERROR 32: Missing users email address'
 
     # Malformed LDIF. Note we explicitly require users have an SSH key.
-    ERROR33 = 'ERROR 33: Missing users ssh public key:'
+    ERROR33 = "ERROR 33: Missing user's sshpublickey:"
 
     ALL = [ERROR1, ERROR2, ERROR3, ERROR4, ERROR5, ERROR5, 
            ERROR6, ERROR7, ERROR8, ERROR9, ERROR10, ERROR11,
@@ -240,10 +240,11 @@ class ORBIT_Interface:
         os.close(out_file)
 
         ldif_arg = "ldif=@%s" % out_filename
-        output = subprocess.check_output(["curl", "-PUT", "-H", 
+        output = subprocess.check_output(["curl", "-k", "-PUT", "-H", 
                                           "Content-type: multipart/form-data", 
                                           "-F", ldif_arg, save_user_url],
                                          stderr=self._DEVNULL)
+#        print "OUTPUT = %s" % output
         error_code = self.find_error_code(output)
         if error_code and error_code not in [CODES.ERROR1]:
             print "Error in saveUser call: %s" % output
@@ -273,7 +274,7 @@ class ORBIT_Interface:
         project_dn = self.ldif_dn_for_group(group_name)
         lead_ldif_template = \
             "# LDIF for the project lead\n" + \
-            "dn: cn=admin,%s" + \
+            "dn: cn=admin,%s\n" + \
             "cn: admin\n" + \
             "objectclass: top\n" + \
             "objectclass: organizationalRole\n" + \

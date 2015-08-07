@@ -292,18 +292,28 @@ class WirelessProjectManager:
             if username == self._options.holdingpen_admin: continue
             orbit_username = self.to_orbit_name(username)
             if orbit_username not in self._orbit_users:
-                print "Creating ORBIT user: %s" % orbit_username
                 member_pretty_name = self.get_pretty_name(member_info)
                 member_ssh_keys = member_info['ssh_keys']
+                if len(member_ssh_keys) == 0:
+                    print "Skipping user with no ssh keys: %s" % username
+                    continue
+                print "Creating ORBIT user: %s" % orbit_username
+                first_name = ""
+                if 'first_name' in member_info: 
+                    first_name = member_info['first_name']
+                last_name = ""
+                if 'last_name' in member_info: 
+                    last_name = member_info['last_name']
                 ldif_text = \
                     self._orb.ldif_for_user(orbit_username,
-                                      self._options.holdingpen_group,
-                                      member_pretty_name,
-                                      member_info['first_name'],
-                                      member_info['email_address'],
-                                      member_info['last_name'],
-                                      member_ssh_keys,
-                                      self.holdingpen_group_description, None)
+                                            self._options.holdingpen_group,
+                                            member_pretty_name,
+                                            first_name,
+                                            member_info['email_address'],
+                                            last_name,
+                                            member_ssh_keys,
+                                            self.holdingpen_group_description,
+                                            None)
                 self._orb.saveUser(ldif_text)
 
     
@@ -343,7 +353,10 @@ class WirelessProjectManager:
             orbit_group_name = self.to_orbit_name(project_name)
             group_info = self._orbit_groups[orbit_group_name]
             for member_id in project_info['members']:
+                if member_id not in self._geni_members: continue
                 member_info = self._geni_members[member_id]
+                member_ssh_keys = member_info['ssh_keys']
+                if len(member_ssh_keys) == 0: continue
                 geni_username = member_info['username']
                 orbit_username = self.to_orbit_name(geni_username)
                 if orbit_username not in group_info['users']:
@@ -523,6 +536,11 @@ class WirelessProjectManager:
         holdingpen_admin_rows = query.all()
         for row in holdingpen_admin_rows:
             member_ids.add(row.member_id)
+
+        # Add the project leads
+        for proj_id, project_info in projects.items():
+            lead_id = project_info['lead_id']
+            member_ids.add(lead_id)
 
         # Turn set back into list, to grab all users with these member ID's
         member_ids = list(member_ids)
