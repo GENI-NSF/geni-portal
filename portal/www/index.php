@@ -47,7 +47,7 @@ function show_last_message() {
   <meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height"/>
   <meta name="mobile-web-app-capable" content="yes">
 </head>
-<body>
+<body onload="map_init();">
 
 <div id="content-outer" style="border-top: 5px solid #5F584E;">
 <div id="content">
@@ -80,8 +80,10 @@ function show_last_message() {
     </div>
 
     <div id="welcome-right-right">
+    <div id="smallmap">
       <?php include "common/map/map-small.html"; ?>
       <p><i>These are some of the many resources being used in GENI experiments across the country.</i></p>
+    </div>
     </div>
   </div>
   <div style="clear: both;">&nbsp;</div>

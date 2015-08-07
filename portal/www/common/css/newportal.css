@@ -469,13 +469,18 @@ ul {
 
 /* MAPS */
 
-#map1 {
+#smallmap #map1 {
+  width: 100%;
+  height: 300px !important;
+}
+
+#map #map1 {
   color: #FFFFFF;
   width: 100%;
   height: 400px; /* todo: responsive */
 }
 
-#map1 a {
+#map #map1 a {
   color: #FFFFFF;
   text-decoration: none;
   border-bottom: 0px;
