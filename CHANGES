@@ -20,6 +20,7 @@
  * Make projects.php redirect to projects tab on the dashbaord (#1487)
  * Add Google Analytics (via adding header) to jacks expanded views (#1488)
  * Fix bug where hamburger menu would expand on every page resize (#1500)
+ * Add google analytics to flack page (#1504)
 
 
 == 3.0 ==
