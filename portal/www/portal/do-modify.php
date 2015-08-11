@@ -32,8 +32,8 @@ require_once('logging_client.php');
 require_once('logging_constants.php');
 require_once('ma_client.php');
 require_once('ma_constants.php');
+require_once("db_utils.php");
 include_once('/etc/geni-ch/settings.php');
-
 
 $user=geni_loadUser();
 if (! isset($user) || ! $user->isActive()) {
@@ -95,7 +95,30 @@ update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::URL, $req_url, $user->url());
 update_ma($ma_url, $user, MA_ATTRIBUTE_NAME::REASON, $req_reason,
           $user->reason());
 
-// Now handle project lead...
+// Now handle project lead and sending emails...
+
+function check_duplicate_request($urn) {
+  $conn = portal_conn();
+  $sql = "SELECT * from lead_request where "
+  . "requester_urn =" . $conn->quote($urn, 'text') . " and status ='open'";
+  $rows = db_fetch_rows($sql, "check duplicate lead request");
+  $open_requests = $rows[RESPONSE_ARGUMENT::VALUE];
+  return count($open_requests) > 0;
+}
+
+function store_lead_request($urn, $uuid, $eppn) {
+  $conn = portal_conn();
+  $sql = "INSERT into lead_request "
+  . "(requester_urn, requester_uuid, requester_eppn) "
+  . "values (" . $conn->quote($urn, 'text')  .  ", "
+  .              $conn->quote($uuid, 'text') .  ", "
+  .              $conn->quote($eppn, 'text') .  ")";
+  $db_response = db_execute_statement($sql, "insert lead request", true);
+  $db_error = $db_response[RESPONSE_ARGUMENT::OUTPUT];
+  if($db_error != ""){
+    error_log("DB error when adding note to lead request table: " . $db_error);
+  }
+}
 
 // If we got 'projectlead' in the POST, it is a pi_request.
 $pi_request = isset($req_projectlead);
@@ -104,17 +127,28 @@ $pi_request = isset($req_projectlead);
 $is_pi = $user->isAllowed(PA_ACTION::CREATE_PROJECT,
                           CS_CONTEXT_TYPE::RESOURCE, null);
 
+// Does this person have an open request to be a project lead?
+$duplicateRequest = check_duplicate_request($user->urn());
+
 $body = '';
 $subject = "GENI Project Lead request";
 
 if ($pi_request and ! $is_pi) {
   $body .= 'The following user has requested to be a Project Lead:';
   $log_msg = $user->prettyName() . " requested to be a Project Lead";
+  if (!$duplicateRequest) {
+    // don't store duplicate requests
+    store_lead_request($user->urn(), $user->account_id, $user->eppn);
+  } else {
+    $log_msg .= " (again)";
+  }
 } else if (! $pi_request and $is_pi) {
   $body .= 'The following user has requested to no longer be a Project Lead:';
   $log_msg = $user->prettyName() . " requested to NOT be a Project Lead";
+  // See issue #1431
 }
 
+// If this is someone requesting to be / not be a lead, then log it.
 // If there's something to log, then send email about it too.
 if (isset($log_msg)) {
   $log_attributes = get_attribute_for_context(CS_CONTEXT_TYPE::MEMBER,
@@ -132,14 +166,19 @@ if (isset($log_msg)) {
   $body .= "Reference: $req_reference\n";
   $body .= "Url: $req_url\n";
   $body .= "Reason: $req_reason\n";
+  if ($duplicateRequest) {
+    $body .= "(Duplicate request)";
+  }
 
   mail($portal_admin_email, $subject, $body);
 }
 
+// Now email them to say we got their lead request (if this is a new request)
+
 // If they submitted a new name, use it. Otherwise, use what we have.
 $pretty_name = isset($req_name) ? $req_name : $user->prettyName();
 
-if ($pi_request and ! $is_pi) {
+if (! $duplicateRequest and $pi_request and ! $is_pi) {
   $body = "Dear $pretty_name,\n\n";
   $body .= "We have received your request to be a GENI Project Lead.";
   $body .= " We are processing your request and you should hear from us";
@@ -165,7 +204,8 @@ if ($pi_request and ! $is_pi) {
  * Send an email listing values changed.
  */
 function note_change($field, $new, $old) {
-  if ($old === $new) {
+  // Use == here to avoid empty phone looking like a change
+  if ($old == $new) {
     return '';
   } else {
     return "$field was '$old', now '$new'\n";
@@ -200,7 +240,6 @@ if (! empty($change_text)) {
   mail($portal_admin_email, $subject, $body);
 }
 
-
 /*
  * Now display the web page to the user.
  */
@@ -212,19 +251,24 @@ print '<h1> Modify Your Account </h1>' . PHP_EOL;
 print '<p><b>Your account information has been updated.</b></p>';
 
 if ($pi_request and ! $is_pi) {
-  print '<p>' . PHP_EOL;
-  print "Your Project Lead request has been received.";
-  print " Project Lead requests take several days to review.";
-  print " You should hear from us within 3 - 4 business days.";
-  print '</p>' . PHP_EOL;
-  print '<p>' . PHP_EOL;
-  print 'If you have any questions about your request or about';
-  print ' using GENI in general, please email';
-  print ' <a href="mailto:help@geni.net">GENI Help</a>.';
-  print '</p>' . PHP_EOL;
+  if ($duplicateRequest) {
+    print "<p>You already have one outstanding request. You should hear from us within 3-4 business days of your original request.</p>";
+    print "<p>Email <a href='mailto:portal-help@geni.net'>GENI Portal Help</a> if you have questions.</p>";
+  } else {
+    print '<p>' . PHP_EOL;
+    print "Your Project Lead request has been received.";
+    print " Project Lead requests take several days to review.";
+    print " You should hear from us within 3 - 4 business days.";
+    print '</p>' . PHP_EOL;
+    print '<p>' . PHP_EOL;
+    print 'If you have any questions about your request or about';
+    print ' using GENI in general, please email';
+    print ' <a href="mailto:help@geni.net">GENI Help</a>.';
+    print '</p>' . PHP_EOL;
+  }
 } else if (! $pi_request and $is_pi) {
   print '<p>' . PHP_EOL;
-  print "You have indicated that you no longer want to be a  Project Lead.";
+  print "You have indicated that you no longer want to be a Project Lead.";
   print " This is an administrative function that requires approval.";
   print " You should hear from us within 3 - 4 business days.";
   print '</p>' . PHP_EOL;

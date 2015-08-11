@@ -1,223 +1,141 @@
-<script type="text/javascript"
-        src="/common/map/OpenLayers-2.13/OpenLayers.js"></script>
-<script type="text/javascript">
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script type="text/javascript" src="/common/map/gmap3.js"></script>
 
-// Adapted from http://acuriousanimal.com/code/animatedCluster/
+<style>
 
-window.onload = function init() {
+.cluster{
+  color: #FFFFFF;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  line-height: 25px;
+  font-weight: bold;
+  background-color: #F27D2F;
+  height: 25px;
+  width: 25px;
+  border-radius: 13px;
+  border: 1px solid #303030;
+}
 
-  // create map and add OSM as base
-  var map1 = new OpenLayers.Map("map1");
-  // Explicitly use HTTPS URLs to avoid a mixed content warning
-  // from web browsers. The default tile URLs use HTTP.
-  var tileURLs = ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                  "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                  "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"];
-  var osm1 = new OpenLayers.Layer.OSM("OpenStreetMap", tileURLs);
-  map1.addLayer(osm1);
-  
-  // Initial view location
-  var center = new OpenLayers.LonLat(-109,22);
-  center.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-  map1.setCenter(center, 2);
-  map1.addControl(new OpenLayers.Control.LayerSwitcher());
-     
-  // set up style for current GENI resources
-  var style = new OpenLayers.Style(null, {
-      context: {
-        resourceCount: 
-          function(feature) {
-            var sum = 0;
-            for(var i = 0; i < feature.cluster.length; i++) {
-              sum = sum + feature.cluster[i].attributes.resources;
-            }
-            return sum;
-          } ,
-        radius:
-          function(feature) {
-            var sum = 0;
-            for(var i = 0; i < feature.cluster.length; i++) {
-              sum = sum + feature.cluster[i].attributes.resources;
-            }
-            if(sum < 10) {
-              return 16;
-            }
-            else if (sum < 100) {
-              return 24;
-            }
-            else {
-              return 36;
-            }
-          }
+</style>
 
-      }, 
-        
-      rules: [new OpenLayers.Rule({
-      symbolizer: {
-          externalGraphic: "/images/site-icon.png",
-          graphicWidth: "${radius}",
-          graphicHeight: "${radius}",
-          graphicOpacity: 1.0
+<script>
+function map_init(url, center, zoom) {
+  $.get(url, function(data){
+    aggarray = [];
+    aggdatalist = data.features;
+    aggdict = {};
+    aggdatalist.forEach(function(aggregate){
+      name = aggregate.properties.am.split(" OpenFlow")[0]
+      if(aggdict[name]) {
+        if (aggregate.properties.am.indexOf(" OpenFlow") > -1) {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, aggdict[name][3], aggdict[name][4] + 1];
+        } else {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, aggdict[name][3] + 1, aggdict[name][4]];
+        }
+      } else {
+        if (aggregate.properties.am.indexOf(" OpenFlow") > -1) {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, 0, 1];
+        } else {
+          aggdict[name] = [aggregate.geometry.coordinates[1], aggregate.geometry.coordinates[0],
+                                              name, 1, 0];
+        }
       }
-  })]
-      
-  });  
+    });
+    for (agg in aggdict) {
+      aggarray.push(aggdict[agg]);
+    }
 
-  // currentSites: layer for current GENI resources
-  var currentSites = new OpenLayers.Layer.Vector("GENI CH Resources", {
-      protocol: new OpenLayers.Protocol.HTTP({
-          url: "/common/map/current.json",
-          format: new OpenLayers.Format.GeoJSON()
-      }),
-      strategies: [
-          new OpenLayers.Strategy.Fixed(),
-          new OpenLayers.Strategy.Cluster({distance:1})
-      ],
-      styleMap:  new OpenLayers.StyleMap(style)
+    pinslist = []
+    for (i in aggarray){
+      lat = aggarray[i][0];
+      lng = aggarray[i][1];
+      aggname = aggarray[i][2];
+      numresources = aggarray[i][3];
+      numopenflowresources = aggarray[i][4];
+
+      resourcestr = "";
+      openflowstr = "</span>";
+
+      if (numresources > 0) {
+        plural = numresources == 1 ? "" : "s";
+        resourcestr = "<br><b>" + numresources  + "</b> resource" + plural + " at this site";
+      }
+
+      if (numopenflowresources > 0) {
+        plural = numopenflowresources == 1 ? "" : "s";
+        openflowstr = "<br>&nbsp;&nbsp;<b>" + numopenflowresources  + "</b> OpenFlow resource" + plural + " at this site </span>";
+      }
+
+      pinslist.push({
+        latLng:[lat, lng],
+        tag: "<span style='color: #303030'><b>" + aggname + '</b>' + resourcestr + openflowstr
+      });
+    }
       
+  $('#map1').gmap3({ 
+    map:{
+      options:{
+        center: center,
+        zoom: zoom,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+    }
   });
-  
-  // add GENI current resources to map
-  map1.addLayer(currentSites);
-  
-  /*
-    resourceString
-      returns list of resources
-  */
-  function resourceString(feature) {
-    var sum = feature.cluster[0].attributes.component_id;
-    for(var i = 1; i < feature.cluster.length; i++) {
-        sum = sum + ", " + feature.cluster[i].attributes.component_id;
-    }
-    return sum;
-  /*
-    resourceCount
-      returns number of resources
-  */
-  function resourceCount(feature) {
-    var sum = 0;
-    for(var i = 0; i < feature.cluster.length; i++) {
-      sum = sum + feature.cluster[i].attributes.resources;
-    }
-    return sum;
-  }
-  
-  }
 
-  /* 
-    amString
-      determines unique list of AMs and resource counts
-  */
-  function amString(feature) {
-  
-    var ams = new Array();
-    var ams_count = new Array();
-    
-    // look through each AM
-    for(var i = 0; i < feature.cluster.length; i++) {
-    
-        // look through AMs already in array
-        var found = 0;
-        for(var j = 0; j < ams.length; j++) {
-          if(ams[j] === feature.cluster[i].attributes.am) {
-            ams_count[j] = ams_count[j] + parseInt(feature.cluster[i].attributes.resources);
-            found = 1;
+  $('#map1').gmap3({
+    marker:{
+      values: pinslist,
+      cluster:{
+        radius: 1, 
+        0: {
+          content: '<div class="cluster">CLUSTER_COUNT</div>',
+          height: 25,
+          width: 25
+        },
+        events: {
+          click: clickOnCluster
+        }
+      },
+      events: {
+        click: clickOnPin
+      },
+      options: {
+        icon: {
+          url:"/images/pin.png",
+          scaledSize: {
+            height: 25,
+            width: 25
           }
         }
-        if(!found) {
-          ams.push(feature.cluster[i].attributes.am);
-          ams_count.push(parseInt(feature.cluster[i].attributes.resources));
-        }
-    
-    }
-    
-    // create the string that lists AMs
-    var sum = "";
-    for(var i = 0; i < ams.length; i++) {
-        sum = sum + "<li>" + ams[i] + " <b>(" + ams_count[i] + ")</b></li>";
-    }
-    return sum;
-    
-  }
-
-  /*
-    popups windows for current GENI resources
-  */
-  function onPopupClose(evt) {
-    selectControl.unselect(selectedFeature);
-  }
-  function onFeatureSelect(feature) {
-    selectedFeature = feature;
-    popup = new OpenLayers.Popup.Anchored("chicken", 
-         feature.geometry.getBounds().getCenterLonLat(),
-         new OpenLayers.Size(250,156),
-            "<div id='maptext'>" +
-            "<h1>Aggregate Manager(s):</h1>" + 
-            "<ul>" + 
-            amString(feature) + 
-            "</ul>" + 
-            "<h1>Node(s):</h1>" + 
-            "<p>" + 
-            resourceString(feature) + 
-            "</p>" + 
-            "</div>",
-         null, false, onPopupClose);
-    popup.setBackgroundColor("#ffffff");
-    popup.setBorder("1px solid #5F584E");     
-    feature.popup = popup;
-    map1.addPopup(popup);
-  }
-  function onFeatureUnselect(feature) {
-    map1.removePopup(feature.popup);
-    feature.popup.destroy();
-    feature.popup = null;
-  }      
-  var selectControl = new OpenLayers.Control.SelectFeature(currentSites, {
-      onSelect: onFeatureSelect,
-      onUnselect: onFeatureUnselect
+      }
+      }
+    });
   });
-  map1.addControl(selectControl);
-  selectControl.activate();
+}
+
+function clickOnPin(marker, event, context){
+  $(this).gmap3({
+    infowindow:{
+      anchor: marker, 
+      options:{content: context.tag}
+    }
+  });
+}
 
 
-
-            // set up presentation rules for style
-            var rule_future = new OpenLayers.Rule({
-                symbolizer: {
-                    fillColor: '#E17000',
-                    fillOpacity: 0.75, 
-                    strokeColor: '#5F584E',
-                    strokeOpacity: 1,
-                    strokeWidth: 2,
-                    pointRadius: 3,
-                    fontSize: "12px"
-                }
-            });
-           
-            // set up style
-            var style_future = new OpenLayers.Style(null, {     
-                rules: [rule_future]
-            });            
-
-            // Create a vector layers
-            var vector2 = new OpenLayers.Layer.Vector("Future GENI Resources", {
-                protocol: new OpenLayers.Protocol.HTTP({
-                    url: "future.json",
-                    format: new OpenLayers.Format.GeoJSON()
-                }),
-                strategies: [
-                    new OpenLayers.Strategy.Fixed(),
-                    new OpenLayers.Strategy.Cluster()
-                ],
-                styleMap:  new OpenLayers.StyleMap(style_future)
-                
-                
-            });
-            
-            //map1.addLayer(vector2);
-
-
-  
+function clickOnCluster(overlay, event, context){
+  $(this).gmap3({
+    infowindow:{
+      latLng: context.data.latLng,
+      options:{
+        content: $.map(context.data.markers, function(marker){return marker.tag}).join("<hr>")
+      }
+    }
+  });
 }
 
 </script>

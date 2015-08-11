@@ -905,7 +905,7 @@ if (isset($user->ma_member->enable_wimax)) {
 } else { // user not enabled
   if ($num_projects == 0) {
     $_SESSION['lasterror'] = 'You are not a member of any projects.';
-    relative_redirect('wimax-enable.php');
+    relative_redirect('home.php');
   }
 }
 

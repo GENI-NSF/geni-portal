@@ -154,7 +154,7 @@ if (! isset($sa_url)) {
 if(! isset($slice_id) || $slice_id == '' || $slice_id == 'none') {
   error_log("Slice ID not set");
   $_SESSION['lasterror'] = "Slice not specified to edit";
-  relative_redirect("slices.php");
+  relative_redirect("dashboard.php#slices");
 }
 if(! isset($project_id) || $project_id == '' || $project_id == 'none') {
   error_log("Project ID not set");

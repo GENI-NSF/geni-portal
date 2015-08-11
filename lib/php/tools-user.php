@@ -57,7 +57,7 @@ END;
 			<li><a href='#ssl'>SSL</a></li>
 			<li><a href='#omni'>Configure <code>omni</code></a></li>
 			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
-			<li><a href='#tools'>Tools</a></li>
+			<li><a href='#tools'>Manage Accounts</a></li>
 			<li style="border-right: none"><a href='#outstandingrequests'>Outstanding Requests</a></li>
 		</ul>
   </div>
@@ -172,13 +172,13 @@ else
     }
     print "</table></div>\n";
     print "<p>On Linux and Mac systems and for most Windows SSH clients (not PuTTY), do:";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Download your private key.</li>";
     print "<li>On Windows, just point your SSH client (not PuTTY) to the downloaded private key.</li>";
     print "<li>On Linux and Mac, open a terminal.</li>";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Store your key under ~/.ssh/ :";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>If the directory does not exist, create it:</li>";
     print "<pre>mkdir ~/.ssh</pre>";
     print "<li>Move the key to ~/.ssh/ :</li>";
@@ -187,12 +187,12 @@ else
     print "<pre>chmod 0600 ~/.ssh/id_geni_ssh_rsa</pre>";
     print "</ul>";
     print "<li>Your SSH command will be something like:</li>";
-    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname]</pre>";
+    print "<pre>ssh -i ~/.ssh/id_geni_ssh_rsa [username]@[hostname] -p [port]</pre>";
     print "</ul>";
     print "</ul>";
     print "<p>";
     print "<p>For PuTTY users:";
-    print "<ul>";
+    print "<ul class='instructions'>";
     print "<li>Download PuTTY key.";
     print "<li>In PuTTY, create a new session that uses the 'username', 'hostname' and 'port' for the resources you have reserved.</li>";
     print "<li>Under the authentication menu, point the key field to the downloaded PuTTY key file.</li>";
@@ -302,15 +302,20 @@ if (! isset($ma_url)) {
   }
 }
 
-// FIXME: Also show rejected requests?
+// This next block of code pretends to handle requests to join a slice, but we don't do that
+// It also claims to handle profile modification requests. But those are handled separately.
+
+// FIXME: Show outstanding project lead requests. See code in tools-admin.php
+
 $preqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::PROJECT, null, RQ_REQUEST_STATUS::PENDING);
-$sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
-$reqs = array_merge($preqs, $sreqs);
+//$sreqs = get_requests_by_user($sa_url, $user, $user->account_id, CS_CONTEXT_TYPE::SLICE, null, RQ_REQUEST_STATUS::PENDING);
+//$reqs = array_merge($preqs, $sreqs);
+$reqs = $preqs;
 if (isset($reqs) && count($reqs) > 0) {
   print "Found " . count($reqs) . " outstanding request(s) by you:<br/>\n";
   print "<div class='tablecontainer'><table>\n";
   // Could add the lead and purpose?
-  print "<tr><th>Request Type</th><th>Project/Slice</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
+  print "<tr><th>Request Type</th><th>Project</th><th>Request Created</th><th>Request Reason</th><th>Cancel Request?</th></tr>\n";
   $REQ_TYPE_NAMES = array();
   $REQ_TYPE_NAMES[] = 'Join';
   $REQ_TYPE_NAMES[] = 'Update Attributes';
@@ -323,13 +328,13 @@ if (isset($reqs) && count($reqs) > 0) {
       $project = lookup_project($sa_url, $user, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
       $name = $project[PA_PROJECT_TABLE_FIELDNAME::PROJECT_NAME];
       $cancel_url="cancel-join-project.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
-    } elseif ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::SLICE) {
-      $slice = lookup_slice($sa_url, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
-      $name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
-      $cancel_url="cancel-join-slice.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
-    } else {
-      $name = "";
-      $cancel_url="cancel-account-mod.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+      //    } elseif ($request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_TYPE] == CS_CONTEXT_TYPE::SLICE) {
+      //      $slice = lookup_slice($sa_url, $request[RQ_REQUEST_TABLE_FIELDNAME::CONTEXT_ID]);
+      //      $name = $slice[SA_SLICE_TABLE_FIELDNAME::SLICE_NAME];
+      //      $cancel_url="cancel-join-slice.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
+//    } else {
+//      $name = "";
+//      $cancel_url="cancel-account-mod.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID];
     }
 
     $cancel_button = "<button style=\"\" onClick=\"window.location='" . $cancel_url . "'\"><b>Cancel Request</b></button>";
@@ -341,7 +346,7 @@ if (isset($reqs) && count($reqs) > 0) {
   print "</table></div>\n";
   print "<br/>\n";
 } else {
-  print "<p><i>No outstanding requests to join projects or slices or change your profile.</i></p>\n";
+  print "<p><i>No outstanding requests to join projects.</i></p>\n";
 }
 
 // END outstanding requests tab
@@ -373,7 +378,6 @@ print "<tr><th>Email</th><td>" . $user->email() . "</td></tr>\n";
 print "<tr><th>GENI Username</th><td>" . $user->username . "</td></tr>\n";
 print "<tr><th>GENI OpenID URL</th><td>" . $openid_url . "</td></tr>\n";
 print "<tr><th>GENI URN</th><td>" . $user->urn() . "</td></tr>\n";
-print "<tr><th>Home Institution</th><td>" . $user->idp_url . "</td></tr>\n";
 print "<tr><th>Affiliation</th><td>" . $user->affiliation . "</td></tr>\n";
 if ($user->phone() != "")
   print "<tr><th>Telephone Number</th><td>" . $user->phone() . "</td></tr>\n";
@@ -511,15 +515,19 @@ if($in_lockdown_mode) {
 /* Only show the tools authorization page if we're not in full
  * speaks-for mode.
  */
+print '<h2>Manage accounts</h2>';
 if (!$speaks_for_enabled) {
   print "<p><button $disable_authorize_tools onClick=\"window.location='kmhome.php'\">Authorize or De-authorize tools</button> to act on your behalf.</p>";
 }
 
-print '<h2>iRODS</h2>';
 $irodsdisabled="disabled";
-if (! isset($disable_irods) or $user->hasAttribute('enable_irods'))
+if (! isset($disable_irods) or $user->hasAttribute('enable_irods')) {
   $irodsdisabled = "";
-print "<p><button onClick=\"window.location='irods.php'\" $irodsdisabled><b>Create iRODS Account</b></button></p>\n";
+}
+print "<a class='button' href='irods.php' $irodsdisabled>Manage iRODS Account</a><br><br>\n";
+print "<a class='button' href='savi.php'>Create SAVI Account</a><br><br>\n";
+print "<a class='button' href='wimax-enable.php'>Manage Wireless Account</a>\n";
+
 // END tools tab
 echo "</div>";
 
