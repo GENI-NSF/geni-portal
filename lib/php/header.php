@@ -451,11 +451,10 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   }
 
   echo "<div id='content-outer' class='$cards_class'>";
-  echo "<div id='content'>";
   if($has_maintenance_alert) {
-    // TODO: make a dismiss button 
-    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p></br>";
+    print "<p class='instruction' id='maintenance_alert' style='margin-bottom: 0px !important;'>$maintenance_alert</p></br>";
   }
+  echo "<div id='content'>";
 }
 
 ?>
