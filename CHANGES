@@ -21,7 +21,7 @@
  * Add Google Analytics (via adding header) to jacks expanded views (#1488)
  * Fix bug where hamburger menu would expand on every page resize (#1500)
  * Add google analytics to flack page (#1504)
-
+ * Add link to GENI Bibliography (#1510)
 
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
