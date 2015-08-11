@@ -34,10 +34,22 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 
 $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
+$wimax_url = get_first_service_of_type(SR_SERVICE_TYPE::WIMAX_SITE);
+
+error_log("WIMAX_URL " . print_r($wimax_url, true));
+
 
 show_header('GENI Portal: Wireless Account Setup', $TAB_PROFILE);
 include('tool-breadcrumbs.php');
 include("tool-showmessage.php");
+
+if ($wimax_url == NULL) {
+  echo "This Portal is not configured to enable or manage wireless-enabled projects.<br>";
+  echo "See system administrator to enable management of wireless-enabled projects on this Portal.<br>";
+  echo"<button onClick=\"history.back(-1)\">Back</button>\n";
+  return;
+}
+
 
 ?>
 
