@@ -46,6 +46,11 @@ body {
   margin-left: 5px;
 }
 
+.card {
+  padding: 5px;
+  width: 100%;
+}
+
 .tablecontainer {
   width: 100%;
   overflow-x: scroll;
@@ -62,6 +67,21 @@ body {
   border-left: 10px solid #E5E5E5;
   overflow: auto;
 }
+
+#sliceactionbar h2 {
+  display: block !important;
+}
+
+#sliceactionbar div {
+  display: block !important;
+  margin: 5px auto;
+}
+
+#sliceactionbar table td {
+  display: block !important;
+  margin: 5px auto;
+}
+
 
 /* Footer */
 
