@@ -54,7 +54,7 @@ if (isset($slice_expired) && convert_boolean($slice_expired)) {
     $slice_name = "";
   }
   $_SESSION['lasterror'] = "Slice " . $slice_name . " is expired.";
-  relative_redirect('slices.php');
+  relative_redirect('dashboard.php#slices');
 }
 
 $keys = $user->sshKeys();
@@ -129,6 +129,27 @@ $client_cert_parameter = $user->insideCertificate();
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" style="text/css" href="flack.css">
 
+<?php
+  if(isset($portal_analytics_enable)) {
+    if($portal_analytics_enable) {
+      // FIXME: Allow some users (e.g. operators) to bypass tracking
+      echo '<script>(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){';
+      echo '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
+      echo 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
+      echo '})(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');';
+      if (! isset($portal_analytics_string) || is_null($portal_analytics_string)) {
+        /* Use the following tracking IDs depending on which server this will be running on
+          portal1.gpolab.bbn.com:   ga('create', 'UA-42566976-1', 'bbn.com');
+          portal.geni.net:          ga('create', 'UA-42566976-2', 'geni.net');
+        */
+        $portal_analytics_string = "ga('create', 'UA-42566976-1', 'bbn.com');";
+      }
+      echo $portal_analytics_string;
+      echo "ga('send', 'pageview');";
+      echo '</script>';
+    }
+  }
+?>
     <script type="text/javascript"
        src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js">
     </script>

@@ -29,11 +29,7 @@ body {
 }
 
 hr {
-  height: 0px;
-  border: none;
-  margin: 0px;
-  padding: 0px;
-  clear: both;
+  border-color: #5F584E;
 }
 
 /*
@@ -287,10 +283,14 @@ hr {
 
 /* Buttons */
 #content button, input[type=submit], input[type=button] {
+  padding: 3px 6px;
+  border: 2px solid #5F584E;
+  background-color: #ffffff;
+  font-family: inherit;
+  border-radius: 3px;
   /* make all buttons have bold text by default */
   font-family: 'Open Sans', sans-serif;
   font-weight: bold;
-  box-shadow: 0px 0px 5px #5F584E;
   margin: 2px;
   vertical-align: middle;
 }
@@ -1021,7 +1021,7 @@ img {
 #resourcemap {
   margin: 0;
   padding: 0;
-  max-width: 1000px;
+  /*max-width: 1000px;*/
 }
 
 #resourcemap td {

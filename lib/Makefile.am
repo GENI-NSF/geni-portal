@@ -50,7 +50,6 @@ nobase_dist_svcdata_DATA = \
 	php/session_cache.php \
 	php/settings.php \
 	php/signer.php \
-	php/slice_map.html \
 	php/sliceresource.js \
 	php/smime.php \
 	php/speaksforcred.php \

@@ -32,12 +32,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->isAllowed
 }
 show_header('GENI Portal: Administration', $TAB_ADMIN);
 ?>
-<center>
-Welcome, 
-<?php
-print $user->prettyName();
-?>
-</center>
+
 <?php
 include("tools-admin.php");
 include("footer.php");

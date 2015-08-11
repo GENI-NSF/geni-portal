@@ -70,6 +70,7 @@ if (! isset($all_ams)) {
       $single_am['name'] = $am[SR_TABLE_FIELDNAME::SERVICE_NAME];
       $single_am['url'] = $am[SR_TABLE_FIELDNAME::SERVICE_URL];
       $single_am['urn'] = $am[SR_TABLE_FIELDNAME::SERVICE_URN];
+      $single_am['attributes'] = $am[SR_ARGUMENT::SERVICE_ATTRIBUTES];
       $all_ams[$service_id] = $single_am;
     }
 }
@@ -241,7 +242,6 @@ $proj_url = 'project.php?project_id='.$slice_project_id;
 $slice_own_url = "mailto:$owner_email";
 //$slice_own_url = 'slice-member.php?member_id='.$slice_owner_id . "&slice_id=" . $slice_id;
 $omni_url = "tool-omniconfig.php";
-$flack_url = "flack.php?slice_id=".$slice_id;
 $gemini_url = "gemini.php?slice_id=" . $slice_id;
 $labwiki_url = 'http://labwiki.casa.umass.edu/?slice_id=' . $slice_id;
 
@@ -262,7 +262,7 @@ $get_slice_credential_disable_buttons = "";
 if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
 
 // String to disable button or other active element
-$disabled = "disabled = " . '"' . "disabled" . '"'; 
+$disabled = "disabled"; 
 
 $delete_slivers_privilege = $user->isAllowed(SA_ACTION::DELETE_SLIVERS,
 				    CS_CONTEXT_TYPE::SLICE, $slice_id);
@@ -304,6 +304,23 @@ show_header('GENI Portal: Slices', $TAB_SLICES);
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
+?>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    old_callback = get_callback;
+    get_callback = function(tab_name){
+      if(tab_name == "#geo_view_div") {
+        return function(){ map_init( <?php echo "'slice-map-data.php?slice_id=$slice_id'"; ?>, [42, -72], 3); };
+      } else {
+        return old_callback(tab_name);
+      }
+    }
+  });
+  
+</script>
+
+<?php
 include("tabs.js");
 
 // Finish jFed setup
@@ -410,7 +427,6 @@ if (isset($slice_expired) && convert_boolean($slice_expired) ) {
 }
 
 // FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
-// FIXME: Disable launch flack if in lockdown mode?
 
 print "<table id='sliceActions' cols='4'>\n";
 print "<tr><th colspan='4'>Slice Actions</th></tr>\n";
@@ -501,7 +517,6 @@ print "<tr><th colspan='4'>Slice Tools</th></tr>\n";
 print "<tr><td colspan='4'>\n";
 /* print "To use a command line tool:<br/>"; */
 $hostname = $_SERVER['SERVER_NAME'];
-print "<button $add_slivers_disabled onClick=\"window.open('$flack_url')\" $disable_buttons_str><b>Flack <br/>(deprecated)</b> </button>\n";
 
   print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>\n";
 
@@ -538,7 +553,7 @@ print "<h2></h2>\n";
 
 ?>
 
-
+<a id='manage'></a>
 <div id='tablist'>
   <ul class='tabs'>
     <li><a href='#jacks-app'>Graphical View</a></li>
@@ -668,7 +683,7 @@ print "</div>";
   // Slice geo view
   print "<div id='geo_view_div' >\n";
   echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
-  include('slice_map.html');
+  include('map.html');
   echo "</td></tr></table>";
   print "</div>";
 
