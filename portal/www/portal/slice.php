@@ -368,28 +368,65 @@ include("tool-showmessage.php");
 
 <script src='cards.js'></script>
 <script src='dashboard.js'></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#showrenewbox").click(function(){
+      $("#renewbox").show();
+    });
+    $("#cancelrenew").click(function(){
+      $("#renewbox").hide();
+    });
+  });
+</script>
 
 <div class='nav2'>
   <ul class='tabs'>
     <li><a class='tab' data-tabindex=1 href='#jacks-app'>Resources</a></li>
     <li><a class='tab' data-tabindex=2 href='#actions_table'>Aggregates</a></li>
     <li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>
-    <li><a class='tab' data-tabindex=4 href='#manageslice'>Info</a></li>
     <li><a class='tab' data-tabindex=5 href='#members'>Members</a></li>
+    <li><a class='tab' data-tabindex=4 href='#manageslice'>Info</a></li>
     <li><a class='tab' data-tabindex=6 href='#logs'>Logs</a></li>
   </ul>
 </div>
 
 <?php
 print "<div class='card' id='sliceactionbar'>";
+print "<div style='display: table-cell; vertical-align: middle; width: 250px;'>";
+print "<h3 style='margin: 0px; font-size: 1.1em;'><b>Slice:</b> $slice_name </h3>\n";
+print "<h6 style='margin: 0px; width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'><b>Project: </b><a href='$proj_url'>$project_name</a></h6>\n";
+print "</div>";
+
+if ($project_expiration) {
+  $project_exp_hours = get_time_diff($project_expiration);
+  $project_exp_print = get_time_diff_string($project_exp_hours);
+  $project_exp_color = get_urgency_color($project_exp_hours);
+  $project_exp_icon = get_urgency_icon($project_exp_hours);
+  $project_line = "Project expires in <b style='color: $project_exp_color' title='$project_expiration'>$project_exp_print</b>";
+  $project_line .= "<i class='material-icons' style='font-size: 18px; color: $project_exp_color'>$project_exp_icon</i>";
+} else {
+  $project_line = "Project has no expiration <i class='material-icons' style='font-size: 18px; color: #339933'>check_circle</i>";
+}
+
+$slice_exp_hours = get_time_diff($slice_expiration);
+$slice_exp_print = get_time_diff_string($slice_exp_hours);
+$slice_exp_color = get_urgency_color($slice_exp_hours);
+$slice_exp_icon = get_urgency_icon($slice_exp_hours);
+$slice_line = "Slice expires in <b style='color: $slice_exp_color' title='$slice_expiration'>$slice_exp_print</b>";
+$slice_line .= "<i class='material-icons' style='font-size: 18px; color: $slice_exp_color'>$slice_exp_icon</i>";
+
+print "<div style='display: table-cell; vertical-align: middle; width: 275px;'>";
+print "<h6 style='margin: 0px;'>$slice_line</h6>";
+print "<h6 style='margin: 0px;'>$project_line</h6>";
+print "</div>";
+
 print "<div style='display: table-cell; vertical-align: middle;'>";
-print "<h2 style='display: inline; margin-right: 10px;' >Slice: " . "<i>" . $slice_name . "</i>" . " </h2>\n";
-/* Renew */
-print "<a class='button' href='$add_url' $add_slivers_disabled $disable_buttons_str>Add Resources</a>";
+print "<a class='button' href='$add_url' style='margin-right: 5px;' $add_slivers_disabled $disable_buttons_str>Add Resources</a>";
+print "<a class='button' id='showrenewbox'>Renew</a>";
 
 $hostname = $_SERVER['SERVER_NAME'];
 
-print "<ul class='has-sub selector' id='slicetools' style='vertical-align: middle; float: none;'>";
+print "<ul class='has-sub selector' id='slicetools' style='vertical-align: middle; float: none; margin: 5px !important;'>";
 print "<span class='selectorshown'>Tools</span><ul class='submenu' style='width: 100px;'>";
 print "<li $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str>GENI Desktop</li>";
 print "<li $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str>LabWiki</li>";
@@ -404,31 +441,11 @@ print "<li onClick=\"window.location='$map_url'\" $disable_buttons_str>Geo Map</
 print "</ul></ul>";
 print "</div>";
 
-print "<table style='box-shadow: none; width: auto; display: inline-table; margin: 10px 0px;'>";
-print "<tr><td style='border-bottom:none; padding: 0px 10px;'>";
-if ($project_expiration) {
-  $project_exp_hours = get_time_diff($project_expiration);
-  $project_exp_print = get_time_diff_string($project_exp_hours);
-  $project_exp_color = get_urgency_color($project_exp_hours);
-  $project_exp_icon = get_urgency_icon($project_exp_hours);
-  $project_line = "Project expires in <b style='color: $project_exp_color' title='$project_expiration'>$project_exp_print</b>";
-  $project_line .= "<i class='material-icons' style='font-size: 18px; color: $project_exp_color'>$project_exp_icon</i><br>";
-} else {
-  $project_line = "Project has no expiration <i class='material-icons' style='font-size: 18px; color: #339933'>check_circle</i><br>";
-}
-
-print "$project_line";
-
-$slice_exp_hours = get_time_diff($slice_expiration);
-$slice_exp_print = get_time_diff_string($slice_exp_hours);
-$slice_exp_color = get_urgency_color($slice_exp_hours);
-$slice_exp_icon = get_urgency_icon($slice_exp_hours);
-$slice_line = "Slice expires in <b style='color: $slice_exp_color' title='$slice_expiration'>$slice_exp_print</b>";
-$slice_line .= "<i class='material-icons' style='font-size: 18px; color: $slice_exp_color'>$slice_exp_icon</i>";
-print $slice_line;
-print "</td>";
+print "</div>";
 
 if ($renew_slice_privilege) {
+  print "<div id='renewbox' class='card' style='display: none;'><tr>";
+  print "<table style='box-shadow: none; margin: 0px; width: auto;'>";
   print "<td style='border-bottom:none; padding: 0px 10px;'>";
   print "<div>";
   print "<input type='radio' id='sliceonly' name='renew' value='slice'>renew slice until <br>";
@@ -441,13 +458,13 @@ if ($renew_slice_privilege) {
   print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
   print " maxlength='20' value=\"$slice_date_expiration\"/>\n";
   print "<button id='actualrenewbutton' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
+  print "<a class='button' id='cancelrenew'>Cancel</a>";
   print "</form>\n";
   print "</td>";
 }
 
-print "</tr></table>\n";
+print "</tr></table></div>\n";
 
-print "</div>";
 
 ?>
 
@@ -649,7 +666,6 @@ print "</div></td></tr></tbody></table>";
   // and set up all of the button clicks.
   function jacks_init() {
     if (!jacks_inited) {
-      console.log("init jacks!");
       var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
   			  '#jacks-status-history', '#jacks-buttons',
   			  jacks_slice_ams, jacks_all_ams, 
