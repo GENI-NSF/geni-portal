@@ -56,7 +56,6 @@ function compare_members_by_role($mem1, $mem2)
   else if ($role1 > $role2) 
     return 1;
   else return 0;
-  
 }
 
 function compare_last_names($mem1,$mem2)
@@ -84,7 +83,6 @@ if (array_key_exists("result", $_GET)) {
     $result = " (" . $result . ")";
   }
 }
-
 
 include("tool-lookupids.php");
 if (! is_null($project) && $project != "None") {
@@ -115,7 +113,6 @@ if (! is_null($project) && $project != "None") {
 // Fill in members of project member table
 $members = get_project_members($sa_url, $user, $project_id, null, $project_urn);
 
-
 /*------------------------------------------------------------
  * Does this user have privileges on this project?
  *
@@ -134,7 +131,6 @@ if (! $user_is_project_member) {
                               . $project_name);
   relative_redirect('home.php');
 }
-
 
 $member_names = lookup_member_names_for_rows($ma_url, $user, $members, 
 					     MA_MEMBER_TABLE_FIELDNAME::MEMBER_ID);
@@ -155,95 +151,92 @@ if ($expired === True) {
   $actdisabled = $disabled;
 }
 
+show_header('GENI Portal: Projects', $TAB_PROJECTS, true, true);
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+?>
+<script src='cards.js'></script>
 
-include("tool-breadcrumbs.php");
+<div class='nav2'>
+  <ul class='tabs'>
+    <li><a class='tab' data-tabindex=1 href='#slices'>Slices</a></li>
+    <li><a class='tab' data-tabindex=2 href='#members'>Members</a></li>
+    <li><a class='tab' data-tabindex=3 href='#info'>Info</a></li>
+    <li><a class='tab' data-tabindex=4 href='#logs'>Logs</a></li>
+  </ul>
+</div>
+
+<?php
 include("tool-showmessage.php");
-print "<h1>GENI Project: " . "<i>" . $project_name . "</i>" . "$result</h1>\n";
+
+print "<div class='card' id='projectactionsbar' style=' padding: 10px 20px;'>";
+print "<h3 style='display:inline;'>Project: $project_name $result</h3>\n";
 if ($expired === True) {
   print "<p class='warn'>This project is expired!</p>\n";
 }
 $edit_url = 'edit-project.php?project_id='.$project_id;
 $edit_project_members_url = 'edit-project-member.php?project_id='.$project_id;
 
-print "<div class='tablecontainer'>";
-print "<table>\n";
-print "<tr><th>Project Actions</th></tr>\n";
-print "<tr>\n";
-/* Edit Project */
-/* Only show create slice link if user has appropriate privilege. */
 if (isset($project_id)) {
-  print "<td>";
-  $putBut = False;
   if ($user->isAllowed(SA_ACTION::CREATE_SLICE, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-    $putBut = True;
-    /* Create a new slice*/
     print "<button onClick=\"window.location='";
     print relative_url("createslice.php?project_id=$project_id'");
-    print "\"$actdisabled><b>Create Slice</b></button>";
+    print "\"$actdisabled style='margin: 0px 15px;'><b>Create Slice</b></button>";
   }
   if ($user->isAllowed(PA_ACTION::UPDATE_PROJECT, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
-    $putBut = True;
-    print "<button onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
-  }
-  if (! $putBut) {
-    /* Put in an empty table cell if no slice privilege. */
-    print "<i>None: no privileges.</i>";
+    print "<button onClick=\"window.location='$edit_url'\" style='margin-right: 15px;'><b>Edit Project</b></button>";
   }
   print "</td>\n";
-} else {
-	/* Put in an empty table cell if no project. */
-	print "<td><i>None: no project.</i></td>";
-}
-print "</tr></table></div>\n";
+} 
 
 if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $project_id)) {
   if (isset($reqs) && ! is_null($reqs) && count($reqs) >= 1) {
-    print "<h3>Approve new project members</h3>\n";
-    if (count($reqs) > 1) {
-      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?project_id=" . $project_id . "'\"$actdisabled><b>Handle All Requests</b></button>";
-      print "<p>$handle_button</p>\n";
-    }
-    print "<div class='tablecontainer'><table>\n";
-    print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
-    foreach ($reqs as $request) {
-      $requestor = $user->fetchMember($request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]);
-      $created_db = $request[RQ_REQUEST_TABLE_FIELDNAME::CREATION_TIMESTAMP];
-      $created = dateUIFormat($created_db);
-      $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . "'\"$actdisabled><b>Handle Request</b></button>";
-      print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
-    }
-    print "</table></div><br/>\n";
+    $num_reqs = count($reqs);
+    $req_word = $num_reqs == 1 ? "request" : "requests";
+    print "<h6 style='display: inline;'>$num_reqs new project join $req_word</h3>\n";
+    $handle_button = "<button style=\"margin: 0px 15px;\" onClick=\"window.location='handle-project-request.php?project_id=" . $project_id . "'\"$actdisabled><b>Handle $req_word</b></button>";
+    print "$handle_button";
+    // print "<div class='tablecontainer'><table>\n";
+    // print "<tr><th>Requestor</th><th>Request Created</th><th>Handle</th></tr>\n";
+    // foreach ($reqs as $request) {
+    //   $requestor = $user->fetchMember($request[RQ_REQUEST_TABLE_FIELDNAME::REQUESTOR]);
+    //   $created_db = $request[RQ_REQUEST_TABLE_FIELDNAME::CREATION_TIMESTAMP];
+    //   $created = dateUIFormat($created_db);
+    //   $handle_button = "<button style=\"\" onClick=\"window.location='handle-project-request.php?request_id=" . $request[RQ_REQUEST_TABLE_FIELDNAME::ID] . "'\"$actdisabled><b>Handle Request</b></button>";
+    //   print "<tr><td>" . $requestor->prettyName() . "</td><td>$created</td><td>$handle_button</td></tr>\n";
+    // }
+    // print "</table></div>\n";
   }
 }
+print "</div>";
 
+print "<div class='card' id='info'>";
 print "<div class='tablecontainer'><table>";
-print "<tr><th colspan='2'>Project Identifiers (public)</th></tr>\n";
+print "<tr><th colspan='2'>Project Info</th></tr>\n";
 print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
+$purpose = $purpose == "" ? "<i>No project purpose</i>" : $purpose;
 print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
 print "\n";
 print "</td></tr>\n";
 print "<tr><td class='label'><b>Expiration</b></td><td>$expiration</td></tr>\n";
 print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
 print "<tr><td class='label'><b>URN</b></td><td>$project_urn</td></tr>\n";
-print "<tr><th colspan='2'>Contact Information</th></tr>\n";
 print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table></div>\n";
+print "</div>";
 
 // FIXME: If user is not a member of the project, don't show the tool-slices stuff - it will get
 // a permission error on lookup_slices
 
-
-
 ?>
+<div class='card' id='slices'>
 <h2>Project Slices:</h2>
 <?php
 include("tool-slices.php");
 include("tool-expired-slices.php");
 ?>
+</div>
 
-
+<div class='card' id='members'>
 <h2>Project Members</h2>
 
 <?php
@@ -334,7 +327,11 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
   }
 }
 ?>
+</div>
 
+
+
+<div class='card' id='logs'>
 <h2>Recent Project Actions</h2>
 <p>Showing logs for the last 
 <select onchange="getLogs(this.value);">
@@ -354,6 +351,7 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 </script>
 <div class='tablecontainer'>
 	<table id="log_table"></table>
+</div>
 </div>
 <?php
 include("footer.php");
