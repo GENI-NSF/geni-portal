@@ -18,7 +18,6 @@ nobase_dist_svcdata_DATA = \
 	php/guard.php \
 	php/header.php \
 	php/home-active.php \
-	php/home-requested.php \
 	php/irods_utils.php \
         php/jacks-app.php \
 	php/jacks-editor-app.php \
