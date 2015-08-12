@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 3.2 ==
+ * Move alerts above main content, below header (#1516)
 
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)
