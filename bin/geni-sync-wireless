@@ -200,6 +200,10 @@ class WirelessProjectManager:
         # Grab members in wimax-enabled projects
         self.get_geni_members()
 
+        # Remove disabled members from projects and members 
+        # (unless member is lead)
+        self.remove_disabled_members()
+
         # Get the ORBIT list of groups and admins
         self._orbit_groups, self._orbit_users = \
             self._orb.get_orbit_groups_and_users()
@@ -549,7 +553,7 @@ class WirelessProjectManager:
         query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.member_id.in_(\
                 member_ids))
         query = query.filter(self.MEMBER_ATTRIBUTE_TABLE.c.name.in_(\
-                ["username", "first_name", "email_address", 
+                ["username", 'member_enabled', "first_name", "email_address", 
                  "last_name", "displayName"]))
         
         member_rows = query.all()
@@ -570,6 +574,34 @@ class WirelessProjectManager:
             members[row.member_id]['ssh_keys'].append(row.public_key)
 
         self._geni_members = members
+
+    # Remove disabled members from projects and members
+    # Unless the disabled member is the lead of project
+    def remove_disabled_members(self):
+
+        # Gather all disabled members
+        disabled_members = []
+        for member_id, member_info in self._geni_members.items():
+            if 'member_enabled' in member_info and \
+                    member_info['member_enabled'] == 'n':
+                disabled_members.append(member_id)
+
+        # Exclude all members that are still project leads
+        for project_id, project_info in self._geni_projects.items():
+            lead_id = project_info['lead_id']
+            if lead_id in disabled_members:
+                disabled_members.remove[lead_id]
+
+        # Remove all disabled members from list of geni members and projects
+        for disabled_member_id in disabled_members:
+
+            # Remove disabled members from geni_members
+            del self._geni_members[disabled_member_id]
+
+            # Remove all disabled members from members of geni_projects
+            for project_id, project_info in self._geni_projects.items():
+                if disabled_member_id in project_info['members']:
+                    project_info['members'].remove(disabled_member_id)
 
 
 def main():
