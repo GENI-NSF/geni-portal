@@ -904,7 +904,7 @@ table .notapply {
 #maintenance_alert {
   border-radius: 0px;
   margin: 20px auto 0px auto !important;
-  width: calc(95%-50px); 
+  width: calc(95% - 50px); 
   max-width: 1350px;
   min-width: 750px;
 }
