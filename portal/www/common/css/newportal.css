@@ -951,9 +951,10 @@ table .notapply {
 
 #maintenance_alert {
   border-radius: 0px;
-  margin: 0px !important;
-  margin-bottom: -20px !important;
-  border-right: 1px solid #E5E5E5; 
+  margin: 20px auto 0px auto !important;
+  width: calc(95% - 50px); 
+  max-width: 1350px;
+  min-width: 750px;
 }
 
 /* for IE browsers that want to put a border around linked images */

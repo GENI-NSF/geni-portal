@@ -450,12 +450,11 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
     echo "<center><b>***** Maintenance Outage *****</b></center>";
   }
 
+  if($has_maintenance_alert) {
+    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p>";
+  }
   echo "<div id='content-outer' class='$cards_class'>";
   echo "<div id='content'>";
-  if($has_maintenance_alert) {
-    // TODO: make a dismiss button 
-    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p></br>";
-  }
 }
 
 ?>
