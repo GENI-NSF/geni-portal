@@ -7,6 +7,8 @@
 == 3.1 ==
  * Deploy GENI/ORBIT sync service (geni-sync-wireless.py) and change
    Wireless Account Management page (wimax-enable.php) accordinlgy (#1392).
+ * Changes for Wireless management cover previous wimax tickets. 
+   (#772, #773, #1058, #1076, #1136).
  * Migrate schema files for CH tables to geni-ch (geni-ch #103)
  * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc. (#1457)
  * Fix erroneous warning when renewing slices on the dashboard (#1481)
