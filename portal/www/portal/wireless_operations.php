@@ -62,7 +62,7 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 function sync_project($project_name)
 {
   $cmd = "geni-sync-wireless --project " . $project_name;
-  error_log("SYNC(cmd) " . $cmd);
+  //  error_log("SYNC(cmd) " . $cmd);
   $descriptors = array(0 => array("pipe", "r",), 
 		 1 => array("pipe", "w"), 
 		 2 => array("pipe", "w"));
@@ -71,18 +71,25 @@ function sync_project($project_name)
   $err = stream_get_contents($pipes[2]);
   fclose($pipes[1]);
   fclose($pipes[2]);
-  proc_close($process);
+  $proc_value = proc_close($process);
   $full_output = $out . $err;
+
+  //  error_log("OUT = " . $out);
+  //  error_log("ERR = " . $err);
+  //  error_log("PROC_VALUE = " . $proc_value);
+  
   foreach(split("\n", $full_output) as $line) {
     error_log("SYNC(output) " . $line);
   }
+
+  return $proc_value;
 }
 
 // Synch GENI and ORBIT project/group and member/user data for given project
 function perform_wireless_sync($project_name) 
 {
-  sync_project($project_name);
-  return generate_response(0, "", array());
+  $ret_code = sync_project($project_name);
+  return generate_response($ret_code, "", array());
 }
 
 // Enable project for wireless by adding enable_wimax attribute
@@ -91,15 +98,23 @@ function perform_wireless_enable($sa_url, $user, $project_id, $project_name)
   $result = add_project_attribute($sa_url, $user, $project_id,
 				  PA_ATTRIBUTE_NAME::ENABLE_WIMAX, 
 				  $user->account_id);
-  sync_project($project_name);
-  return $result;
+
+  if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
+    return $result;
+
+  $ret_code = sync_project($project_name);
+  return generate_response($ret_code, "", array());
 }
 
 // Disble project for wireless by removing enable_wimax attribute
 function perform_wireless_disable($sa_url, $user, $project_id, $project_name)
 {
-  $result = remove_project_attribute($sa_url, $user, $project_id,
+  $success = remove_project_attribute($sa_url, $user, $project_id,
 				     PA_ATTRIBUTE_NAME::ENABLE_WIMAX);
+  $error_code = 0;
+  if (!$success) $error_code = RESPONSE_ERROR::DATABASE;
+
+  $result = generate_response($error_code, "", array());
   return $result;
 }
 

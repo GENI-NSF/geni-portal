@@ -131,9 +131,15 @@ class ORBIT_Interface:
 
     # Return value from CURL on URL
     def get_curl_output(self, query_url):
-        raw_curl_output = \
-            subprocess.check_output(["curl", "-k", query_url], 
-                                    stderr=self._DEVNULL)
+        raw_curl_output = ""
+        try:
+            raw_curl_output = \
+                subprocess.check_output(["curl", "-k", query_url], 
+                                        stderr=self._DEVNULL)
+        except subprocess.CalledProcessError as e:
+            print "Error invoking CURL on %s: Error %s" % \
+                (query_url, e.returncode)
+            sys.exit(e.returncode)
         return raw_curl_output
 
     # Invoke an ORBIT REST API call
@@ -146,7 +152,7 @@ class ORBIT_Interface:
         code = self.find_error_code(output)
         if code and code not in tolerated_error_codes:
             print "Error in %s call: %s" % (method, output)
-            sys.exit(0)
+            sys.exit(code)
     
 
     # Add ORBIT user to ORBIT group
@@ -240,10 +246,17 @@ class ORBIT_Interface:
         os.close(out_file)
 
         ldif_arg = "ldif=@%s" % out_filename
-        output = subprocess.check_output(["curl", "-k", "-PUT", "-H", 
-                                          "Content-type: multipart/form-data", 
-                                          "-F", ldif_arg, save_user_url],
-                                         stderr=self._DEVNULL)
+        output = ""
+        try:
+            output = subprocess.check_output(["curl", "-k", "-PUT", "-H", 
+                                              "Content-type: multipart/form-data", 
+                                              "-F", ldif_arg, save_user_url],
+                                             stderr=self._DEVNULL)
+        except subprocess.CaledProcessError as e:
+            print "Error invoking curl LDIF saveUser command: %s: Error %s" \
+                (save_user_url, e.returncode)
+            sys.exit(e.returncode)
+
 #        print "OUTPUT = %s" % output
         error_code = self.find_error_code(output)
         if error_code and error_code not in [CODES.ERROR1]:

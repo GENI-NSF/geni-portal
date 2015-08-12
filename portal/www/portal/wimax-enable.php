@@ -36,7 +36,7 @@ $ma_url = get_first_service_of_type(SR_SERVICE_TYPE::MEMBER_AUTHORITY);
 $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 $wimax_url = get_first_service_of_type(SR_SERVICE_TYPE::WIMAX_SITE);
 
-error_log("WIMAX_URL " . print_r($wimax_url, true));
+// error_log("WIMAX_URL " . print_r($wimax_url, true));
 
 
 show_header('GENI Portal: Wireless Account Setup', $TAB_PROFILE);
@@ -54,6 +54,16 @@ if ($wimax_url == NULL) {
 ?>
 
 <script>
+
+function set_error_text(responseTxt, project_id)
+{
+  if(responseTxt.code == 0) {
+    $('#error-' + project_id).text('');
+  } else {
+    $('#error-' + project_id).text('Sync Error: ' + responseTxt.code).css('color', 'red');
+  }
+}
+
 function do_enable_wireless(project_id, project_name) 
 {
   $('#enable-' + project_id).attr('disabled', true);
@@ -66,6 +76,7 @@ function do_enable_wireless(project_id, project_name)
       $('#sync-' + project_id).show();
       $('#sync-' + project_id).removeAttr('disabled');
       $('#group-' + project_id).text('geni-' + project_name);
+      set_error_text(responseTxt, project_id);
     })
     .fail(function(xhr, ts, et) {
 	console.log("ERROR FROM ENABLE " + xhr);
@@ -83,6 +94,7 @@ function do_disable_wireless(project_id, project_name)
       $('#sync-' + project_id).hide();
       $('#sync-' + project_id).attr('disabled', true);
       $('#group-' + project_id).text("");
+      set_error_text(responseTxt, project_id);
     })
     .fail(function(xhr, ts, et) {
       console.log("ERROR FROM DISABLE " + xhr);
@@ -95,7 +107,8 @@ function do_wireless_sync(project_id, project_name)
 	project_name : project_name,
 	project_id : project_id},
     function(responseTxt, statusTxt, xhr) {
-       $('#sync-' + project_id).removeAttr('disabled');
+      $('#sync-' + project_id).removeAttr('disabled');
+      set_error_text(responseTxt, project_id);
     })
     .fail(function(xhr, ts, et) {
       console.log("ERROR FROM SYNC");
@@ -134,7 +147,7 @@ function draw_table($projects, $lead_names, $attribs_by_project, $show_actions)
   $purpose_entry = "";
   if ($show_purpose) $purpose_entry = "<tr>Purpose</th>";
 
-  echo "<tr><th>Project Name</th><th>Wireless Group</th><th>Project Lead</th>$purpose_entry $actions_entry</tr>";
+  echo "<tr><th>Project Name</th><th>Wireless Group</th><th>Project Lead</th>$purpose_entry $actions_entry<th></th></tr>";
 
   foreach ($projects as $project) {
     $lead_id = $project[PA_PROJECT_TABLE_FIELDNAME::LEAD_ID];
@@ -166,7 +179,7 @@ function draw_table($projects, $lead_names, $attribs_by_project, $show_actions)
       $disable_button_hidden = 'hidden="hidden"';
       $disable_button_id = "disable-$proj_id";
 
-      $sync_button_name = "ORBIT sync";
+      $sync_button_name = "Sync Project";
       $sync_button_action = "do_wireless_sync('$proj_id', '$proj_name');";
       $sync_button_disabled = "disabled=\"disabled\"";
       $sync_button_id = "sync-$proj_id";
@@ -192,7 +205,10 @@ function draw_table($projects, $lead_names, $attribs_by_project, $show_actions)
       $purpose_entry = "<td>$proj_purpose</td>";
     }
 
-    echo "<tr><td>$proj_href</td><td id=\"group-$proj_id\">$group_name</td><td>$lead_name</td>$purpose_entry $actions_entry</tr>";
+    $error_entry_id = "error-" . $proj_id;
+    $error_entry = "<td id=\"$error_entry_id\"></td>";
+
+    echo "<tr><td>$proj_href</td><td id=\"group-$proj_id\">$group_name</td><td>$lead_name</td>$purpose_entry $actions_entry $error_entry</tr>";
   }
 
   echo "</table>";
@@ -243,17 +259,25 @@ foreach($projects as $proj) {
 // error_log("OTHERS = " . print_r($other_projects, true));
 
 echo "<h2>Projects You Manage</h2>";
-echo "This table shows all projects of which you are a lead or admin.<br>";
-echo "If a project has not been enabled for wireless access, the <b>Enable project</b> button will enable it.<br>";
-echo "If a project has already been enabled for wireless access, the <b>Disable project</b> button will disable it.<br>";
-echo "Wireless-enabled projects allow for synchronizing GENI and ORBIT project and member state with the <b>ORBIT sync</b> button.<br>";
+
+if (count($my_projects) == 0) {
+  echo "You have no projects of which you are lead or admin.<br>";
+} else {
+  echo "This table shows all projects of which you are a lead or admin.<br>";
+  echo "If a project has not been enabled for wireless access, the <b>Enable project</b> button will enable it.<br>";
+  echo "If a project has already been enabled for wireless access, the <b>Disable project</b> button will disable it.<br>";
+  echo "Wireless-enabled projects allow for synchronizing GENI and Wireless project and member state with the <b>Sync Project</b> button.<br>";
+}
 
 draw_table($my_projects, $lead_names, $attribs_by_project, true);
 
-echo "<h2>Projects Others Manage</h2>";
-echo "This table shows all projects to which you belong but do not have management privileges.<br>";
-echo "Contact the project lead if you would like to modify wireless settings for a given project.<br>";
-draw_table($other_projects, $lead_names, $attribs_by_project, false);
+if(count($other_projects) > 0) {
+  echo "<h2>Projects Others Manage</h2>";
+  echo "This table shows all projects to which you belong but do not have management privileges.<br>";
+  echo "The projects with a 'Wireless Group' indicated are already wireless-enabled.<br>";
+  echo "Contact the project lead if you would like to modify wireless settings for a given project.<br>";
+  draw_table($other_projects, $lead_names, $attribs_by_project, false);
+}
 
 
 include("footer.php");
