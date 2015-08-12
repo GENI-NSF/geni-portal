@@ -201,7 +201,8 @@ dist_svcweb_DATA = \
 	www/portal/upload-project-members.php \
 	www/portal/uploadsshkey.php \
         www/portal/wimax-enable.php \
-	www/portal/wireless_operations.php 
+	www/portal/wireless_operations.php \
+	www/portal/wireless_redirect.php 
 
 dist_svcwebimages_DATA = \
 	www/images/EG-VM-noTxt-centered.svg \

@@ -59,9 +59,9 @@ $sa_url = get_first_service_of_type(SR_SERVICE_TYPE::SLICE_AUTHORITY);
 
 
 // Invoke geni-sync-wireless tool on given project
-function sync_project($project_name)
+function sync_object($object_type, $object_name)
 {
-  $cmd = "geni-sync-wireless --project " . $project_name;
+  $cmd = "geni-sync-wireless $object_type $object_name";
   //  error_log("SYNC(cmd) " . $cmd);
   $descriptors = array(0 => array("pipe", "r",), 
 		 1 => array("pipe", "w"), 
@@ -88,7 +88,13 @@ function sync_project($project_name)
 // Synch GENI and ORBIT project/group and member/user data for given project
 function perform_wireless_sync($project_name) 
 {
-  $ret_code = sync_project($project_name);
+  $ret_code = sync_object("--project", $project_name);
+  return generate_response($ret_code, "", array());
+}
+
+function perform_wireless_sync_for_user($username)
+{
+  $ret_code = sync_object("--user", $username);
   return generate_response($ret_code, "", array());
 }
 
@@ -102,7 +108,7 @@ function perform_wireless_enable($sa_url, $user, $project_id, $project_name)
   if ($result[RESPONSE_ARGUMENT::CODE] != RESPONSE_ERROR::NONE)
     return $result;
 
-  $ret_code = sync_project($project_name);
+  $ret_code = sync_object("--project", $project_name);
   return generate_response($ret_code, "", array());
 }
 
