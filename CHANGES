@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 3.2 ==
+ * Update profile page to use new tab/cards style (#1513)
  * Move alerts above main content, below header (#1516)
 
 == 3.1.1 ==

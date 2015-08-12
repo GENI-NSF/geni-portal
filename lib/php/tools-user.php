@@ -48,19 +48,19 @@ END;
 }
 ?>
 
-<h1>Profile</h1>
+<script src='cards.js'></script>
 
-  <div id='tablist'>
-		<ul class='tabs'>
-			<li><a href='#accountsummary'>Account Summary</a></li>
-			<li><a href='#ssh'>SSH Keys</a></li>
-			<li><a href='#ssl'>SSL</a></li>
-			<li><a href='#omni'>Configure <code>omni</code></a></li>
-			<li><a href='#rspecs' title="Resource Specifications">RSpecs</a></li>
-			<li><a href='#tools'>Manage Accounts</a></li>
-			<li style="border-right: none"><a href='#outstandingrequests'>Outstanding Requests</a></li>
-		</ul>
-  </div>
+<div class='nav2'>
+	<ul class='tabs'>
+		<li><a class='tab' data-tabindex=1 href='#accountsummary'>Account Summary</a></li>
+		<li><a class='tab' data-tabindex=2 href='#ssh'>SSH Keys</a></li>
+		<li><a class='tab' data-tabindex=3 href='#ssl'>SSL</a></li>
+		<li><a class='tab' data-tabindex=4 href='#omni'>Configure <code>omni</code></a></li>
+		<li><a class='tab' data-tabindex=5 href='#rspecs' title="Resource Specifications">RSpecs</a></li>
+		<li><a class='tab' data-tabindex=6 href='#tools'>Manage Accounts</a></li>
+		<li><a class='tab' data-tabindex=7 href='#outstandingrequests'>Outstanding Requests</a></li>
+	</ul>
+</div>
 		
 <?php
 
@@ -76,7 +76,7 @@ END;
  *----------------------------------------------------------------------
  */
 // BEGIN SSH tab
-echo "<div id='ssh'>";
+echo "<div class='card' id='ssh'>";
 print "<h2>SSH Keys</h2>\n";
 $keys = $user->sshKeys();
 
@@ -217,7 +217,7 @@ echo "</div>";
  *----------------------------------------------------------------------
  */
 // BEGIN SSL tab
-echo "<div id='ssl'>";
+echo "<div class='card' id='ssl'>";
 print "<h2>SSL Certificate</h2>\n";
 print "<p>";
 if (! isset($ma_url)) {
@@ -285,7 +285,7 @@ if (! $has_certificate) {
 echo "</div>";
 
 // BEGIN outstand requests tab
-echo "<div id='outstandingrequests'>";
+echo "<div class='card' id='outstandingrequests'>";
 print "<h2>Outstanding Requests</h2>";
 
 // Show outstanding requests BY this user
@@ -353,7 +353,7 @@ if (isset($reqs) && count($reqs) > 0) {
 echo "</div>";
 
 // BEGIN account summary tab
-echo "<div id='accountsummary'>";
+echo "<div class='card' id='accountsummary'>";
 $disable_account_details = "";
 if($in_lockdown_mode) {
   $disable_account_details = "disabled";
@@ -410,7 +410,7 @@ echo "</div>";
 //print "<h1>My Stuff</h1>\n";
 
 // BEGIN rspecs tab
-echo "<div id='rspecs'>";
+echo "<div class='card' id='rspecs'>";
 /*----------------------------------------------------------------------
  * RSpecs
  *----------------------------------------------------------------------
@@ -430,7 +430,7 @@ echo "</div>";
  */
 
 // BEGIN omni tab
-echo "<div id='omni'>";
+echo "<div class='card' id='omni'>";
 
 // Does the user have an outside certificate?
 $result = ma_lookup_certificate($ma_url, $user, $user->account_id);
@@ -505,7 +505,7 @@ echo "</div>";
 -->
 <?php
 // BEGIN tools tab
-echo "<div id='tools'>";
+echo "<div class='card' id='tools'>";
 
 $disable_authorize_tools = "";
 if($in_lockdown_mode) {
@@ -535,4 +535,3 @@ echo "</div>";
   echo "</div>";
 
 ?>
-<?php include "tabs.js"; ?>
