@@ -4,6 +4,25 @@
 
 = GENI Portal Release Notes =
 
+== 3.1 ==
+ * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc.
+   (#1457, #1491)
+ * Fix CSS on Jacks expanded views (#1458)
+ * Fix erroneous warning when renewing slices on the dashboard (#1481)
+ * Handle text overflow for project names and lead names on dashboard (#1484)
+ * Replace OpenLayers maps on the portal with Google maps (PR #1428)
+  * Includes dashboard "Map" tab, the small welcome page map, and both slice
+    geo views ("Geographic View" and "Geo Map").
+  * This fixes the half loaded map in the "Geographic View" slice tab (#1272)
+ * Add "Contact Us" page to the portal, and add link to it in help dropdown (#1486)
+ * Fix formatting on the SSH tab of the profile page to be clearer (#1485)
+ * Update welcome page to use new portal CSS styles. (PR #1501)
+ * Make projects.php redirect to projects tab on the dashbaord (#1487)
+ * Add Google Analytics (via adding header) to jacks expanded views (#1488)
+ * Fix bug where hamburger menu would expand on every page resize (#1500)
+ * Add google analytics to flack page (#1504)
+ * Add link to GENI Bibliography (#1510)
+
 == 3.0 ==
  * Add create image function for PG/IG racks within jacks-app (#1389).
  * Remove account and identity (and associated) tables, scripts and clients (#299)
@@ -1022,4 +1041,3 @@
    * bulk add people to projects (#171)
    * slice membership (#58)
    * Allow adding known people to projects/slices (#86)
-

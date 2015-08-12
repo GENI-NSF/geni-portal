@@ -32,7 +32,7 @@ $(document).ready(function(){
   }
 
   if(window.location.hash == "#map") {
-    map_init();
+    map_init("/common/map/current.json", [42, -72], 3);
   }
   
   // Make header links and new selectors show dropdown when you hover on them
@@ -66,7 +66,9 @@ $(document).ready(function(){
   });
 
   $(window).resize(function() {
-    $("#dashboardtools").show();
+    if ($(window).width() > 480) {
+      $("#dashboardtools").show();
+    }
   });
 
 });
@@ -136,39 +138,51 @@ function get_logs(hours){
 }
 
 function renew_slice(slice_id, days, count, sliceexphours, resourceexphours) {
-  result = true;
-  if (count > 10) {
-    result = confirm("This action will renew resources at "
-                     + count
-                     + " aggregates and may take several minutes.");
-  }
-
-  if (result) {
-    var newexp = new Date();
-    newexp.setDate(newexp.getDate() + days);
-    var d = newexp.getDate();
-    var m = newexp.getMonth() + 1;
-    var y = newexp.getFullYear();
-
-    var newexpstring = y + '-' + m + '-'+ d; 
-  }
-  
+  var newexp = new Date();
+  newexp.setDate(newexp.getDate() + days);
+  var d = newexp.getDate();
+  var m = newexp.getMonth() + 1;
+  var y = newexp.getFullYear();
+  var newexpstring = y + '-' + m + '-'+ d; 
   renewalhours = 24 * days;
 
   if (count > 0 && resourceexphours < renewalhours) {
     if (sliceexphours < renewalhours) {
-      url = "do-renew.php?renew=slice_sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
+      renew_resources("do-renew.php?renew=slice_sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring, slice_id);   
     } else {
-      url = "do-renew.php?renew=sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
+      renew_resources("do-renew.php?renew=sliver&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring, slice_id);   
     }
   } else {
     if (sliceexphours < renewalhours) {
-      url = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
-    } else {
-      return;
+      window.location = "do-renew.php?renew=slice&slice_id=" + slice_id + "&sliver_expiration=" + newexpstring;    
     }
   }
-  info_set_location(slice_id, url);
+}
+
+function renew_resources(url, slice_id) {
+  $.getJSON("aggregates.php", { slice_id: slice_id },
+    function (responseTxt, statusTxt, xhr) {
+        var json_agg = responseTxt;
+        var agg_ids = Object.keys(json_agg);
+        var agg_count = agg_ids.length;
+        for (var i = 0; i < agg_count; i++) {
+            url += "&am_id[]=" + agg_ids[i];
+        }
+        if (agg_count > 10) {
+          result = confirm("This action will renew resources at "
+                           + agg_count
+                           + " aggregates and may take several minutes.");
+          if (result) {
+            window.location = url;
+          } else {
+            return;
+          }
+        }
+        window.location = url;
+    })
+    .fail(function() {
+        alert("Unable to locate sliver information for this slice.");
+    });
 }
 
 // Shows all the projects matching selection, sorting by the sorting type given by sortby. 
