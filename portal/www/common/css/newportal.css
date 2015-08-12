@@ -95,6 +95,10 @@ body {
   transition-duration: 500ms;
 }
 
+.card.nopadding {
+  padding: 0px;
+}
+
 .card.loadingright {
   -webkit-transform: translate(100%);
   transform: translate(100%);
@@ -183,6 +187,50 @@ body {
   display: block;
   text-decoration: none;
   color: #303030;
+}
+
+#slicetools {
+  width: 100px;
+  margin: 22px 0px;
+}
+
+#slicetools .selectorshown {
+  width: 100px;
+}
+
+#slicetools li {
+  width: 100px;
+  padding: 0px;
+}
+
+#slicetools li button {
+  border: 0px;
+  background-color: #FFFFFF;
+  display: block;
+  text-decoration: none !important;
+  color: #303030;
+  width: 100%;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  box-shadow: none;
+  padding: 0px;
+}
+
+#actualrenewbutton {
+  background-color: #42A5F5 !important;
+  color: #FFFFFF !important;
+}
+
+#actualrenewbutton:hover {
+  background-color: #2196F3 !important;
+}
+
+#sliceactionbar {
+  padding: 10px 20px;
+  height: 50px;
+  display: table;
 }
 
 /* MAIN CONTENT */
@@ -825,7 +873,7 @@ ul.instructions {
 }
 
 input.date {
-  width: 14em;
+  width: 6em;
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
