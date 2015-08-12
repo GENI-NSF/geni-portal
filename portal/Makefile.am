@@ -191,7 +191,6 @@ dist_svcweb_DATA = \
 	www/portal/speaks-for-delete.php \
 	www/portal/speaks-for-upload.php \
 	www/portal/sshkeyedit.php \
-	www/portal/starter-status-bar.php \
 	www/portal/status_constants_import.php \
 	www/portal/tool-aggwarning.php \
 	www/portal/tool-omniconfig.php \

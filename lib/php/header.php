@@ -398,6 +398,7 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki/GENIExperimenter/GetHelp">GENI Help Wiki <i class="material-icons">launch</i></a></li>';
   echo '<li><a target="_blank" href="http://gmoc.grnoc.iu.edu/gmoc/index/support/gmoc-operations-calendars.html">Outages <i class="material-icons">launch</i> </a></li>';
   echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki/GENIGlossary">Glossary <i class="material-icons">launch</i></a></li>';
+  echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki/GENIBibliography">Bibliography<i class="material-icons">launch</i></a></li>';
   echo '<li><a href="contact-us.php">Contact Us</a></li>';
   echo '</ul></li>';
 
