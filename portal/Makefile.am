@@ -191,7 +191,6 @@ dist_svcweb_DATA = \
 	www/portal/speaks-for-delete.php \
 	www/portal/speaks-for-upload.php \
 	www/portal/sshkeyedit.php \
-	www/portal/starter-status-bar.php \
 	www/portal/status_constants_import.php \
 	www/portal/tool-aggwarning.php \
 	www/portal/tool-omniconfig.php \
@@ -220,6 +219,7 @@ dist_svcwebimages_DATA = \
 	www/images/openVZvm.svg \
 	www/images/orbit_banner.png \
 	www/images/witest-logo-white.png \
+	www/images/pin.png \
 	www/images/portal.png \
 	www/images/portal2.png \
 	www/images/RawPC-EG-noTxt-centered.svg \
@@ -254,7 +254,7 @@ dist_svcwebcss_DATA =  \
 
 dist_svcwebmap_DATA =  \
 	www/common/map/current.json \
-	www/common/map/map-small.html \
+	www/common/map/gmap3.js \
 	www/common/map/rspec-dragon-maxgigapop-net.xml \
 	www/common/map/rspec-emulab-net.xml \
 	www/common/map/rspec-exogeni-net-bbnvmsite.xml \
