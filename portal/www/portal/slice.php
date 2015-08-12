@@ -99,6 +99,52 @@ function compare_last_names($mem1,$mem2)
   return strcmp($name1,$name2);
 }
 
+// Convert $num_hours into days if $num_hours is large
+function get_time_diff_string($num_hours) {
+  if ($num_hours < 1) {
+    return "less than 1 hour";
+  } else if ($num_hours == 1 ) {
+    return "in 1 hour";
+  } else if ($num_hours < 48) {
+    return "$num_hours hours";
+  } else {
+    $num_days =  $num_hours / 24;
+    $num_days = (int) $num_days;
+    return "$num_days days";
+  }
+}
+
+// Return the difference in hours between now and $exp_date
+function get_time_diff($exp_date) {
+  $now = new DateTime('now');
+  $exp_datetime = new DateTime($exp_date);
+  $interval = date_diff($exp_datetime, $now);
+  $num_hours = $interval->days * 24 + $interval->h;
+  return $num_hours;
+}
+
+// Return a red if $num_hours is small, an orange if medium, a green if large 
+function get_urgency_color($num_hours) {
+  if ($num_hours < 24) { 
+    return "#EE583A";
+  } else if ($num_hours < 48) {
+    return "#FBC02D";
+  } else {
+    return "#339933";
+  }
+}
+
+// Return name of icons by same ideas as get_urgency_color
+function get_urgency_icon($num_hours) {
+  if ($num_hours < 24) { 
+    return "report";
+  } else if ($num_hours < 48) {
+    return "warning";
+  } else {
+    return "check_circle";
+  }
+}
+
 function build_agg_table_on_slicepg() 
 {
      global $am_list;
@@ -123,7 +169,7 @@ function build_agg_table_on_slicepg()
      $initial_text = "Status not retrieved";
 
      $output = "";
-     $output .= "<table id='actions_table'>";
+     $output .= "<table id='actions_table' class='card'>";
      $output .= "<tr id='manage'><th colspan='3'>Manage Resources</th></tr>";
      $output .= "<tr class='statusButtons'><td><button onClick=\"selectAll()\">Select All</button>";
      $output .= "<button onClick=\"deselectAll()\">Deselect All</button></td>";
@@ -300,8 +346,8 @@ $jfed_script_text = $jfedret[0];
 $jfed_button_start = $jfedret[1];
 $jfed_button_part2 = $jfedret[2];
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
-include("tool-breadcrumbs.php");
+show_header('GENI Portal: Slices', $TAB_SLICES, true, true);
+// include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 
 ?>
@@ -320,12 +366,111 @@ include("tool-showmessage.php");
   
 </script>
 
-<?php
-include("tabs.js");
+<script src='cards.js'></script>
+<script src='dashboard.js'></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#showrenewbox").click(function(){
+      $("#renewbox").show();
+    });
+    $("#cancelrenew").click(function(){
+      $("#renewbox").hide();
+    });
+  });
+</script>
 
+<div class='nav2'>
+  <ul class='tabs'>
+    <li><a class='tab' data-tabindex=1 href='#jacks-app'>Resources</a></li>
+    <li><a class='tab' data-tabindex=2 href='#actions_table'>Aggregates</a></li>
+    <li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>
+    <li><a class='tab' data-tabindex=4 href='#members'>Members</a></li>
+    <li><a class='tab' data-tabindex=5 href='#manageslice'>Info</a></li>
+    <li><a class='tab' data-tabindex=6 href='#logs'>Logs</a></li>
+  </ul>
+</div>
+
+<?php
+print "<div class='card' id='sliceactionbar'>";
+print "<div style='display: table-cell; vertical-align: middle; width: 250px;'>";
+print "<h3 style='margin: 0px; font-size: 1.1em;'><b>Slice:</b> $slice_name </h3>\n";
+print "<h6 style='margin: 0px; width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'><b>Project: </b><a href='$proj_url'>$project_name</a></h6>\n";
+print "</div>";
+
+if ($project_expiration) {
+  $project_exp_hours = get_time_diff($project_expiration);
+  $project_exp_print = get_time_diff_string($project_exp_hours);
+  $project_exp_color = get_urgency_color($project_exp_hours);
+  $project_exp_icon = get_urgency_icon($project_exp_hours);
+  $project_line = "Project expires in <b style='color: $project_exp_color' title='$project_expiration'>$project_exp_print</b>";
+  $project_line .= "<i class='material-icons' style='font-size: 18px; color: $project_exp_color'>$project_exp_icon</i>";
+} else {
+  $project_line = "Project has no expiration <i class='material-icons' style='font-size: 18px; color: #339933'>check_circle</i>";
+}
+
+$slice_exp_hours = get_time_diff($slice_expiration);
+$slice_exp_print = get_time_diff_string($slice_exp_hours);
+$slice_exp_color = get_urgency_color($slice_exp_hours);
+$slice_exp_icon = get_urgency_icon($slice_exp_hours);
+$slice_line = "Slice expires in <b style='color: $slice_exp_color' title='$slice_expiration'>$slice_exp_print</b>";
+$slice_line .= "<i class='material-icons' style='font-size: 18px; color: $slice_exp_color'>$slice_exp_icon</i>";
+
+print "<div style='display: table-cell; vertical-align: middle; width: 275px;'>";
+print "<h6 style='margin: 0px;'>$slice_line</h6>";
+print "<h6 style='margin: 0px;'>$project_line</h6>";
+print "</div>";
+
+print "<div style='display: table-cell; vertical-align: middle;'>";
+print "<a class='button' href='$add_url' style='margin-right: 5px;' $add_slivers_disabled $disable_buttons_str>Add Resources</a>";
+print "<a class='button' id='showrenewbox'>Renew</a>";
+
+$hostname = $_SERVER['SERVER_NAME'];
+
+print "<ul class='has-sub selector' id='slicetools' style='vertical-align: middle; float: none; margin: 5px !important;'>";
+print "<span class='selectorshown'>Tools</span><ul class='submenu' style='width: 100px;'>";
+print "<li $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str>GENI Desktop</li>";
+print "<li $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str>LabWiki</li>";
+print "<li onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str>Omni</li>";
+if (! is_null($jfed_button_start)) {
+  print "<li>";
+  print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $disable_buttons_str>jFed</button>";
+  print "</li>";
+}
+$map_url = "slice-map-view.php?slice_id=$slice_id";
+print "<li onClick=\"window.location='$map_url'\" $disable_buttons_str>Geo Map</li>\n";
+print "</ul></ul>";
+print "</div>";
+
+print "</div>";
+
+if ($renew_slice_privilege) {
+  print "<div id='renewbox' class='card' style='display: none;'><tr>";
+  print "<table style='box-shadow: none; margin: 0px; width: auto;'>";
+  print "<td style='border-bottom:none; padding: 0px 10px;'>";
+  print "<div>";
+  print "<input type='radio' id='sliceonly' name='renew' value='slice'>renew slice until <br>";
+  print "<input type='radio' id='sliceslivers' name='renew' value='slice_sliver' checked>renew slice & resources until";
+  print "</div>";
+  print "</td>";
+  print "<td id='renewbutton' style='border-bottom:none; padding: 0px 10px;'>";
+  print "<form id='renewform' method='GET' action=\"do-renew.php\">";
+  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
+  print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
+  print " maxlength='20' value=\"$slice_date_expiration\"/>\n";
+  print "<button id='actualrenewbutton' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
+  print "<a class='button' id='cancelrenew'>Cancel</a>";
+  print "</form>\n";
+  print "</td>";
+}
+
+print "</tr></table></div>\n";
+
+
+?>
+
+<?php
 // Finish jFed setup
 print $jfed_script_text;
-
 ?>
 
 <!-- Jacks JS and App CSS -->
@@ -420,71 +565,25 @@ $(document).ready(function() {
 
 
 <?php 
-print "<h1>GENI Slice: " . "<i>" . $slice_name . "</i>" . " </h1>\n";
-print "<div style=''><p id='portalhelp'>Need help? Look at the <a href='help.php'>Portal Help</a> or <a href='http://groups.geni.net/geni/wiki/GENIGlossary'>GENI Glossary</a>.</p></div>";
+print "<div class='card' id='manageslice'>";
 if (isset($slice_expired) && convert_boolean($slice_expired) ) {
    print "<p class='warn'>This slice is expired!</p>\n";
 }
 
-// FIXME: Set add_slivers_disabled if in_lockdown_mode or otherwise disable 'Add Resources'?
-
-print "<table id='sliceActions' cols='4'>\n";
-print "<tr><th colspan='4'>Slice Actions</th></tr>\n";
-print "<tr><td colspan='4'>\n";
-print "<button onClick=\"window.location='$add_url'\" $add_slivers_disabled $disable_buttons_str><b>Add Resources</b></button>\n";
-print "<a href='#manage' style='border-bottom:0;'><button><b>Manage Resources</b></button></a>\n";
-print "<a href=\"#members\" style=\"border-bottom:0;\"><button><b>Manage Slice Members</b></button></a>";
-print "<a href=\"#identifiers\" style=\"border-bottom:0;\"><button><b>Slice Identifiers</b></button></a>";
-
-print "<a href=\"#recent_actions\" style=\"border-bottom:0;\"><button><b>Recent Actions</b></button></a>";
-print "</td></tr>\n";
-
-print "<tr><th colspan='4'>Renew Slice</th></tr>\n";
-
-print "<tr>\n";
-/* Renew */
-if ($project_expiration) {
-  $project_exp_print = dateUIFormat($project_expiration);
-  $project_line = "Project expires on <b>$project_exp_print</b><br>";
-} else {
-  $project_line = "Project does not have an expiration date<br>";
-}
-if ($renew_slice_privilege) {
-  print "<td id='renewtext' colspan='1' style=\"width:320px;\">\n";
-} else {
-  print "<td colspan='4'>\n";
-}
-print $project_line;
-print "Slice expires on <b>$slice_expiration</b>";
-print "</td>\n";
-
-
-if ($renew_slice_privilege) {
-  print "<td id='renewcell' colspan='3'>\n";
-  print "<form id='renewform' method='GET' action=\"do-renew.php\">";
-  print "<table id='renewtable'><tr><td>";
-  print "Renew ";
-  print "</td><td>";
-  print "<div>";
-  print "<input type='radio' id='sliceonly' name='renew' value='slice'>slice only<br>";
-  print "<input type='radio' id='sliceslivers' name='renew' value='slice_sliver' checked>slice & known resources";
-  print "</div>";
-  print "</td><td>";
-  print " until <br/>";
-  print "</td>";
-  print "<td id='renewbutton'>";
-  print "<input type=\"hidden\" name=\"slice_id\" value=\"$slice_id\"/>\n";
-  print "<input class='date' type='text' name='sliver_expiration' id='datepicker'";
-  $size = strlen($slice_date_expiration) + 3;
-  print " size=\"$size\" value=\"$slice_date_expiration\"/>\n";
-  print "<button type='button' onclick='confirmQuery()' name= 'Renew' value='Renew' title='Renew until the specified date' $disable_buttons_str>Renew</button>\n";
-  print "</td></tr></table>";
-  print "</form>\n";
-  print "</td>\n";
-}
-print "</tr>\n";
+print "<h2 id='identifiers'>Slice Info</h2>";
+print "<table>\n";
+print "<tr><th class='label'><b>Name</b></th><td>$slice_name</td></tr>\n";
+print "<tr><th class='label'><b>Project</b></th><td><a href='$proj_url'>$project_name</a></td></tr>\n";
+print "<tr><th class='label deemphasize'><b>URN</b></th><td  class='deemphasize'>$slice_urn</td></tr>\n";
+print "<tr><th class='label'><b>Creation</b></th><td>$slice_creation</td></tr>\n";
+$slice_desc = $slice_desc == "" ? "<i>No description</i>" : $slice_desc;
+print "<tr><th class='label'><b>Description</b></th><td>$slice_desc</td></tr>\n";
+print "<tr><th class='label'><b>Slice Owner</b></th><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
+print "</table>\n";
 
 ?>
+</div>
+
 <script>
   $(function() {
     function focusParent(am_id) {
@@ -510,77 +609,15 @@ print "</tr>\n";
 </script>
 <?php
 
-
-
-print "<tr><th colspan='4'>Slice Tools</th></tr>\n";
-/* Tools */
-print "<tr><td colspan='4'>\n";
-/* print "To use a command line tool:<br/>"; */
-$hostname = $_SERVER['SERVER_NAME'];
-
-  print "<button $add_slivers_disabled onClick=\"window.open('$gemini_url')\" $disable_buttons_str><b>GENI Desktop</b></button>\n";
-
-  print "<button $add_slivers_disabled onClick=\"window.open('$labwiki_url')\" $disable_buttons_str><b>LabWiki</b></button>\n";
-
-print "<button onClick=\"window.location='$omni_url'\" $add_slivers_disabled $disable_buttons_str><b>Omni</b></button>\n";
-//print "<button disabled='disabled'><b>Download GUSH Config</b></button>\n";
-
-// Show a jfed button if there wasn't an error generating it
-if (! is_null($jfed_button_start)) {
-  print $jfed_button_start . getjFedSliceScript($slice_urn) . $jfed_button_part2 . " $disable_buttons_str><b>jFed</b></button>";
-}
-
-$map_url = "slice-map-view.php?slice_id=$slice_id";
-print "<button onClick=\"window.location='$map_url'\" $disable_buttons_str><b>Geo Map</b></button>\n";
-
-print "</td>\n";
-print "</tr>\n";
-
-
-
-print "</table>\n";
-
-/* print "<h2>Slice Operational Monitoring</h2>\n"; */
-/* print "<table>\n"; */
-/* print "<tr><td><b>Slice data</b></td><td><a href='https://gmoc-db.grnoc.iu.edu/protected-openid/index.pl?method=slice_details;slice=".$slice_urn."'>Slice $slice_name</a></td></tr>\n"; */
-/* print "</table>\n"; */
-
-
-// ----
-// Now show slice / sliver status
-
-print "<h2></h2>\n";
-
-?>
-
-<a id='manage'></a>
-<div id='tablist'>
-  <ul class='tabs'>
-    <li><a href='#jacks-app'>Graphical View</a></li>
-    <li><a href='#status_table_div'>Aggregate View</a></li>
-    <li><a href='#geo_view_div'>Geographic View</a></li>
-  </ul>
-</div>
-
-<?php
-
 // Grab all rspecs 
 $all_rspecs = fetchRSpecMetaData($user);
 usort($all_rspecs, "cmp");
 
 // JACKS-APP STUFF //
-print "<div id='jacks-app-div'>";
-print "<table id='jacks-app'><tbody><tr>";
+print "<table class='card' id='jacks-app' style='width:100%; margin: 0px;'><tbody><tr>";
 print "<th>Manage Resources</th></tr><tr><td><div id='jacks-app-container'>";
 print build_jacks_viewer();
 print "</div></td></tr></tbody></table>";
-print "</div>";
-
-//include("jacks-editor-app.php");
-//print "<table id='jacks-editor-app'><tbody><tr>";
-//print "<th>Add Resources</th></tr><tr><td><div id='jacks-editor-app-container'>";
-//print build_jacks_editor();
-//print "</div></td></tr></tbody></table>";
 
 ?>
 
@@ -623,65 +660,46 @@ print "</div>";
   var jacks_enable_buttons = true;
   var jacksEditorApp = null;
 
-  $(document).ready(function() {
+  var jacks_inited = false;
 
-      // This funciton will start up a Jacks viewer, get the status bar going
-      // and set up all of the button clicks.
+  // This funciton will start up a Jacks viewer, get the status bar going
+  // and set up all of the button clicks.
+  function jacks_init() {
+    if (!jacks_inited) {
       var jacksApp = new JacksApp('#jacks-pane', '#jacks-status', 
-				  '#jacks-status-history', '#jacks-buttons',
-				  jacks_slice_ams, jacks_all_ams, 
-				  jacks_slice_info,
-				  jacks_user_info,
-				  portal_jacks_app_ready);
- 
+  			  '#jacks-status-history', '#jacks-buttons',
+  			  jacks_slice_ams, jacks_all_ams, 
+  			  jacks_slice_info,
+  			  jacks_user_info,
+  			  portal_jacks_app_ready);
+
       jacksApp.hideStatusHistory();
-    });
+      jacks_inited = true;
+    }
+  }
 
-
-//function  portal_jacks_combo_app_ready(ja, ja_input, ja_output) {
-//  portal_jacks_app_ready(ja, ja_input, ja_output);
-//  // This funciton will start up a Jacks viewer, get the status bar going
-//  // and set up all of the button clicks.
-//  jacksEditorApp = new JacksEditorApp('#jacks-editor-pane', 
-//				      '#jacks-editor-status', 
-//				      '#jacks-editor-buttons',
-//				      jacks_slice_ams, jacks_all_ams, 
-//				      jacks_all_rspecs,
-//				      jacks_slice_info,
-//				      jacks_user_info,
-//				      jacks_enable_buttons, 
-//				      null, null,
-//				      portal_jacks_editor_app_ready,
-//				      JacksEditorApp.prototype.postRspec
-//				      );
-//
-//  jacksEditorApp.setJacksViewer(ja);
-//  ja.setJacksEditor(jacksEditorApp);
-//  if(jacks_slice_ams.length == 0) {
-//    // Initially hide the viewer if there are no resources
-//    ja.hide();
-//  } else {
-//    // Initally hide the editor if there are resources
-//    jacksEditorApp.hide(); 
-//  }
-//};
-//
+  jacksold_callback = get_callback;
+  get_callback = function(tab_name){
+    if(tab_name == "#jacks-app") {
+      return jacks_init;
+    } else {
+      return jacksold_callback(tab_name);
+    }
+  }
 
 </script>
 
 <?php
 
-// END JACKS-APP STUFF //
-
   $slice_status='';
 
-  print "<div id='status_table_div'>\n";
+  // print "<div class='card nopadding' id='status_table_div'>\n";
   print build_agg_table_on_slicepg();
-  print "</div>\n";
-
+  // print "</div>\n";
 
   // Slice geo view
-  print "<div id='geo_view_div' >\n";
+  print "<div class='card' id='geo_view_div' >\n";
+  print "<h2>Slice Geo View</h2>";
   echo "<table style=\"margin-left: 0px;width:100%\"><tr><td style=\"padding: 0px;margin: 0px\" class='map'>";
   include('map.html');
   echo "</td></tr></table>";
@@ -697,17 +715,10 @@ $(document).ready(function() {
     $("#map1").height(400); 
     $("#map1").width('100%'); 
   });
-
 </script>
 
-
-<?php
-
-// --- End of Slice and Sliver Status table
-
-print "<h2 id='members'>Slice Members</h2>";
-?>
-
+<div class='card' id='members'>
+<h2 id='members'>Slice Members</h2>
 
 <p>Slice members will be able to login to resources reserved <i>in the future</i> if:</p>
 <ul>
@@ -716,11 +727,11 @@ print "<h2 id='members'>Slice Members</h2>";
 </ul>
 
 <table>
-	<tr>
-		<th>Slice Member</th>
-		<th>Role</th>
-	</tr>
-	<?php
+  <tr>
+    <th>Slice Member</th>
+    <th>Role</th>
+  </tr>
+  <?php
 usort($members, 'compare_members_by_role');
 // Write each row in the project member table
 // Sort alphabetically by role
@@ -792,49 +803,34 @@ if (!$user->isAllowed(SA_ACTION::ADD_SLICE_MEMBER, CS_CONTEXT_TYPE::SLICE, $slic
   $edit_members_disabled = $disabled;
 }
 echo "<p><button $edit_members_disabled onClick=\"window.location='$edit_slice_members_url'\"><b>Edit Slice Membership</b></button></p>";
-
-print "<h2 id='identifiers'>Slice Identifiers</h2>";
-// Slice Identifers table
-print "<table>\n";
-print "<tr><th colspan='2'>Slice Identifiers (public)</th></tr>\n";
-print "<tr><td class='label'><b>Name</b></td><td>$slice_name</td></tr>\n";
-print "<tr><td class='label'><b>Project</b></td><td><a href='$proj_url'>$project_name</a></td></tr>\n";
-print "<tr><td class='label deemphasize'><b>URN</b></td><td  class='deemphasize'>$slice_urn</td></tr>\n";
-print "<tr><td class='label'><b>Creation</b></td><td>$slice_creation</td></tr>\n";
-print "<tr><td class='label'><b>Description</b></td><td>$slice_desc ";
-// If this is always disabled, just don't show it.
-//echo "<button disabled=\"disabled\" onClick=\"window.location='$edit_url'\"><b>Edit</b></button>";
-print "</td></tr>\n";
-print "<tr><th colspan='2'>Contact Information</th></tr>\n";
-print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a></td></tr>\n";
-//print "<tr><td class='label'><b>Slice Owner</b></td><td><a href=$slice_own_url>$slice_owner_name</a> <a href='mailto:$owner_email'>e-mail</a></td></tr>\n";
-print "</table>\n";
-// ---
-
+echo "</div>";
 ?>
 
-<h2 id="recent_actions">Recent Slice Actions</h2>
-<p>Showing logs for the last 
-<select onchange="getLogs(this.value);">
-  <option value="24">day</option>
-  <option value="48">2 days</option>
-  <option value="72">3 days</option>
-  <option value="168">week</option>
-</select>
-</p>
+<div class='card' id='logs'>
+  <h2 id="recent_actions">Recent Slice Actions</h2>
+  <p>Showing logs for the last 
+  <select onchange="getLogs(this.value);">
+    <option value="24">day</option>
+    <option value="48">2 days</option>
+    <option value="72">3 days</option>
+    <option value="168">week</option>
+  </select>
+  </p>
 
-<script type="text/javascript">
-  $(document).ready(function(){ getLogs(24); });
-  function getLogs(hours){
-    url = "do-get-logs.php?hours="+hours+"&slice_id=" + <?php echo "\"" . $slice_id . "\""; ?>; 
-    $.get(url, function(data) {
-      $('#log_table').html(data);
-    });
-  }
-</script>
+  <script type="text/javascript">
+    $(document).ready(function(){ getLogs(24); });
+    function getLogs(hours){
+      url = "do-get-logs.php?hours="+hours+"&slice_id=" + <?php echo "\"" . $slice_id . "\""; ?>; 
+      $.get(url, function(data) {
+        $('#log_table').html(data);
+      });
+    }
+  </script>
 
-<div class="tablecontainer">
-  <table id="log_table"></table>
+  <div class="tablecontainer">
+    <table id="log_table"></table>
+  </div>
+  </div>
 </div>
 
 <?php
