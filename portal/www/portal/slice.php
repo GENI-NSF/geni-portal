@@ -384,8 +384,8 @@ include("tool-showmessage.php");
     <li><a class='tab' data-tabindex=1 href='#jacks-app'>Resources</a></li>
     <li><a class='tab' data-tabindex=2 href='#actions_table'>Aggregates</a></li>
     <li><a class='tab' data-tabindex=3 href='#geo_view_div'>Map</a></li>
-    <li><a class='tab' data-tabindex=5 href='#members'>Members</a></li>
-    <li><a class='tab' data-tabindex=4 href='#manageslice'>Info</a></li>
+    <li><a class='tab' data-tabindex=4 href='#members'>Members</a></li>
+    <li><a class='tab' data-tabindex=5 href='#manageslice'>Info</a></li>
     <li><a class='tab' data-tabindex=6 href='#logs'>Logs</a></li>
   </ul>
 </div>
