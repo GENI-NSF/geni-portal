@@ -232,12 +232,11 @@ function lookup_slice_by_urn($sa_url, $signer, $slice_urn)
   $urns = array_keys($slices);
   $urn = $urns[0];
   $slice = $slices[$urn];
-  
   return array($slice['SLICE_UID'],
 	       $slice['SLICE_NAME'],
-	       $slice['PROJECT_URN'],  // UID?
+	       $slice['_GENI_PROJECT_UID'],
 	       $slice['SLICE_EXPIRATION'],
-	       $slice['OWNER_URN'],    // UID?
+	       $slice['_GENI_SLICE_OWNER'],
 	       $slice['SLICE_URN']);
 }
 
