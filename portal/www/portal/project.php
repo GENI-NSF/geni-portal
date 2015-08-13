@@ -210,17 +210,17 @@ if ($user->isAllowed(PA_ACTION::ADD_PROJECT_MEMBER, CS_CONTEXT_TYPE::PROJECT, $p
 print "</div>";
 
 print "<div class='card' id='info'>";
+print "<h2>Project Info</h2>";
 print "<div class='tablecontainer'><table>";
-print "<tr><th colspan='2'>Project Info</th></tr>\n";
-print "<tr><td class='label'><b>Name</b></td><td>$project_name</td></tr>\n";
+print "<tr><th class='label'><b>Name</b></th><td>$project_name</td></tr>\n";
 $purpose = $purpose == "" ? "<i>No project purpose</i>" : $purpose;
-print "<tr><td class='label'><b>Purpose</b></td><td>$purpose ";
+print "<tr><th class='label'><b>Purpose</b></th><td>$purpose ";
 print "\n";
 print "</td></tr>\n";
-print "<tr><td class='label'><b>Expiration</b></td><td>$expiration</td></tr>\n";
-print "<tr><td class='label'><b>Creation</b></td><td>$creation</td></tr>\n";
-print "<tr><td class='label'><b>URN</b></td><td>$project_urn</td></tr>\n";
-print "<tr><td class='label'><b>Project Lead</b></td><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
+print "<tr><th class='label'><b>Expiration</b></th><td>$expiration</td></tr>\n";
+print "<tr><th class='label'><b>Creation</b></th><td>$creation</td></tr>\n";
+print "<tr><th class='label'><b>URN</b></th><td>$project_urn</td></tr>\n";
+print "<tr><th class='label'><b>Project Lead</b></th><td><a href=\"project-member.php?project_id=$project_id&member_id=$leadid\">$leadname</a> <a href=\"mailto:$leademail\">e-mail</a></td></tr>\n";
 print "</table></div>\n";
 print "</div>";
 
