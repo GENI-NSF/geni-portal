@@ -299,7 +299,8 @@ if (! $user->portalIsAuthorized()) {
     // Slice sorts
     $slice_card .= "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
     $slice_card .= "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
-    $slice_card .= "<li data-value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
+    $slice_card .= "<li data-value='resourceexp'>Resource expiration</li><li data-value='projname'>Project name</li>";
+    $slice_card .= "</ul></li></ul><br class='mobilebreak'>";
     $slice_card .= "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br></div>";
     $slice_project_info .= "<div $show_info class='projectinfo' id='categoryinfo'>";
     $slice_project_info .= "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a></div>";
@@ -403,7 +404,7 @@ if (! $user->portalIsAuthorized()) {
     $has_resources = $resource_count > 0 ? "-has-resources-" : "-no-resources-";
     $box = "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
                 data-resourcecount='$resource_count' data-slicename='$slice_name' 
-                data-sliceexp='$slice_exp' data-resourceexp='$resource_exp'>";
+                data-sliceexp='$slice_exp' data-resourceexp='$resource_exp' data-projname='$project_name'>";
     $box .= "<table>";
     $resource_exp_icon = "";
     if ($resource_count > 0){
