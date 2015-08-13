@@ -13,6 +13,8 @@
  * Update project page to use new tab/cards style (#1514)
  * Move alerts above main content, below header (#1516)
  * Fix formatting of the aggregate view on the slice page (#1518)
+ * Show links to profile pages in header even when "$load_user" false (#1519)
+ * Add link to projects tab from new slice page when not in any projects (#1524)
  * Fix php warnings about undefined indices on admin page (#1535)
 
 == 3.1.1 ==
