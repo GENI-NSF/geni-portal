@@ -28,8 +28,8 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Profile', $TAB_PROFILE);
-include("tool-breadcrumbs.php");
+show_header('GENI Portal: Profile', $TAB_PROFILE, true, true);
+// include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 include("tools-user.php");
 include("footer.php");

@@ -23,6 +23,10 @@
 
 // cards.js: enable switching between tabs with nice animations
 
+get_callback = function(tab_name) {
+  return function(){};
+}
+
 $(document).ready(function() {
   var active, content;
   $('ul.tabs').each(function() {
@@ -30,6 +34,8 @@ $(document).ready(function() {
     active = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
     active.addClass('activesection');
     content = $(active.attr('href'));
+    callback = get_callback(active.attr('href'));
+    callback();
 
     links.not(active).each(function() {
       $($(this).attr('href')).hide();
@@ -59,10 +65,12 @@ $(document).ready(function() {
           element = $(element);
           element.removeClass(loadingdirection);
         }, 0);
-        if(new_active == "#map" && $(".olMap").length == 0) {
-          map_init();
+        if(new_active == "#map") {
+          map_init("/common/map/current.json", [42, -72], 3);
         }
       });
+      callback = get_callback($(this).attr('href'));
+      callback();
       e.preventDefault();
     });
   });
@@ -84,6 +92,9 @@ $(document).ready(function() {
         active.addClass('activesection');
         content = $(active.attr('href'));
         content.show();
+        if(active == "#map") {
+          map_init("/common/map/current.json", [42, -72], 3);
+        }
       });
     }
   });

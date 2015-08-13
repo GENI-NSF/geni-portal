@@ -95,6 +95,10 @@ body {
   transition-duration: 500ms;
 }
 
+.card.nopadding {
+  padding: 0px;
+}
+
 .card.loadingright {
   -webkit-transform: translate(100%);
   transform: translate(100%);
@@ -185,14 +189,58 @@ body {
   color: #303030;
 }
 
+#slicetools {
+  width: 100px;
+  margin: 22px 0px;
+}
+
+#slicetools .selectorshown {
+  width: 100px;
+}
+
+#slicetools li {
+  width: 100px;
+  padding: 0px;
+}
+
+#slicetools li button {
+  border: 0px;
+  background-color: #FFFFFF;
+  display: block;
+  text-decoration: none !important;
+  color: #303030;
+  width: 100%;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  box-shadow: none;
+  padding: 0px;
+}
+
+#actualrenewbutton {
+  background-color: #42A5F5 !important;
+  color: #FFFFFF !important;
+}
+
+#actualrenewbutton:hover {
+  background-color: #2196F3 !important;
+}
+
+#sliceactionbar {
+  padding: 10px 20px;
+  height: 50px;
+  display: table;
+}
+
 /* MAIN CONTENT */
 
 #content-outer {
   border-radius: 3px;
   margin-left: auto;
   margin-right: auto;
-  width: 92.5%;
-  max-width: 1500px;
+  width: 95%;
+  max-width: 1400px;
   min-width: 800px;
   margin: 25px auto 35px auto;
 }
@@ -363,6 +411,11 @@ ul {
   list-style-type: none;
 }
 
+ul.instructions {
+  list-style-type: disc;
+  margin-left: 30px;
+}
+
 /* inline table should not have large left margin */
 #content table table {
   margin-left: 0px;
@@ -469,13 +522,22 @@ ul {
 
 /* MAPS */
 
-#map1 {
+#geoviewmap #map1 {
+  height: 600px;
+}
+
+#smallmap #map1 {
+  width: 100%;
+  height: 300px !important;
+}
+
+#map #map1 {
   color: #FFFFFF;
   width: 100%;
   height: 400px; /* todo: responsive */
 }
 
-#map1 a {
+#map #map1 a {
   color: #FFFFFF;
   text-decoration: none;
   border-bottom: 0px;
@@ -673,19 +735,16 @@ ul {
   margin: 40px auto;
 }
 
-#usegeni {
+#content #usegeni {
   font-size: 1.2em;
   font-weight: 800;
   padding: 10px 20px;
   color: white !important;
-  background-color: #F57F21;
-  text-align: center;
-  border-radius: 3px;
+  background-color: #FB8C00 !important;
 }
 
-#usegeni:hover {
-  border-bottom: 0px !important;
-  background-color: #E17000 !important;
+#content #usegeni:hover {
+  background-color: #F57C00 !important;
 }
 
 /* OTHER */
@@ -814,7 +873,7 @@ ul {
 }
 
 input.date {
-  width: 14em;
+  width: 6em;
 }
 
 .notqueried, .configuring, .unknown, .busy, .ready, .failed {
@@ -892,9 +951,10 @@ table .notapply {
 
 #maintenance_alert {
   border-radius: 0px;
-  margin: 0px !important;
-  margin-bottom: -20px !important;
-  border-right: 1px solid #E5E5E5; 
+  margin: 20px auto 0px auto !important;
+  width: calc(95% - 50px); 
+  max-width: 1350px;
+  min-width: 750px;
 }
 
 /* for IE browsers that want to put a border around linked images */

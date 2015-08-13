@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// Copyright (c) 2012-2015 Raytheon BBN Technologies
+// Copyright (c) 2015 Raytheon BBN Technologies
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and/or hardware specification (the "Work") to
@@ -22,36 +22,37 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 
-require_once('user.php');
-require_once('header.php');
-
+require_once("user.php");
+require_once("header.php");
+require_once('util.php');
 $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-unset($slice);
-include("tool-lookupids.php");
-
-show_header('GENI Portal: Geo View', $TAB_SLICES, true, true);
-  
+skip_km_authorization();
+show_header('GENI Portal: Contact Us', $TAB_HELP);
+include("tool-breadcrumbs.php");
+$hostname = $_SERVER['SERVER_NAME'];
+// Links to wiki, help, tutorials
 ?>
 
-<script>
-var slice_id = <?php echo json_encode($slice_id); ?>
+<h2>Contact Us</h2>
 
-$(document).ready(function(){
-	map_init('slice-map-data.php?slice_id=' + slice_id, [42, -72], 3);
-});
-</script>
+<p>For feedback, issues and questions about the GENI Portal please email <a href="mailto:portal-help@geni.net">portal-help@geni.net</a>.</p>
+
+<p>For technical assistance or advice about your GENI experiment please email the community forum  <a href="mailto:geni-users@googlegroups.com"> geni-users@googlegroups.com</a>.
+If you are not already a member please <a href="https://groups.google.com/forum/#!forum/geni-users" target="_blank">register</a> to be able to receive the responses.</p>
+
+<p>To report an issue with an existing or a failed resource reservation made through the portal:</p>
+<ol>
+<li>Go to the <a href="dashboard.php#logs">Logs</a> tab in the Home page.</li>
+<li>Find the log message about the reservation attempt and load the results.</li>
+<li>Click on the “Send Problem Report” tab.</li>
+</ol>
+
+<p>For all other questions please email <a href="mailto:help@geni.net">help@geni.net</a>.</p>
+
 
 <?php
-
-echo "<table style=\"margin-left: 0px;width:100%;height:20px\"><tr><th>Geographic View for Slice $slice_name</th></tr>";
-echo "<tr><td style=\"padding: 0px;margin: 0px\" class='map' id='geoviewmap'>";
-include('map.html');
-echo "</td></tr></table>";
-echo '</div>';
-
-include('footer.php');
-
+include("footer.php");
 ?>

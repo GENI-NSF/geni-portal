@@ -135,6 +135,7 @@ if (! $user->portalIsAuthorized()) {
     $user_id = $user->account_id;
 
     // Make and fill dictionary of project join requests
+    // Do this for ACTIVE projects only
     $project_request_map = array();
     if (count($project_objects) > 0) {
       $reqlist = get_pending_requests_for_user($sa_url, $user, $user->account_id, 
@@ -189,6 +190,8 @@ if (! $user->portalIsAuthorized()) {
       $listres_url = "listresources.php?" . $query;
       $slice_url = "slice.php?" . $query;
       $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+      $slice_project_url = "project.php?project_id=$slice_project_id";
+
       if (array_key_exists($slice_project_id, $project_slice_counts)) {
         $project_slice_counts[$slice_project_id]++;
       } else {
@@ -238,7 +241,7 @@ if (! $user->portalIsAuthorized()) {
         }
       }
       $slice_boxes .= make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
-                                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $renewal_days, 
+                                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $slice_project_url, $renewal_days, 
                                      dateUIFormat($slice_exp_date), dateUIFormat($next_exp));
     }
 
@@ -298,7 +301,8 @@ if (! $user->portalIsAuthorized()) {
     // Slice sorts
     $slice_card .= "<span class='selectorshown'>Sorts</span><ul class='submenu'>";
     $slice_card .= "<li data-value='slicename'>Slice name</li><li data-value='sliceexp'>Slice expiration</li>";
-    $slice_card .= "<li data-value='resourceexp'>Resource expiration</li></ul></li></ul><br class='mobilebreak'>";
+    $slice_card .= "<li data-value='resourceexp'>Resource expiration</li><li data-value='projname'>Project name</li>";
+    $slice_card .= "</ul></li></ul><br class='mobilebreak'>";
     $slice_card .= "<input type='checkbox' id='sliceascendingcheck' data-value='ascending' checked><span style='font-size: 13px;'>Sort ascending</span><br></div>";
     $slice_project_info .= "<div $show_info class='projectinfo' id='categoryinfo'>";
     $slice_project_info .= "<a class='button' href='createslice.php'><i class='material-icons'>add</i> New slice</a></div>";
@@ -397,12 +401,12 @@ if (! $user->portalIsAuthorized()) {
   }
 
   function make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
-                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $renewal_days, $slice_exp_date, $next_exp) {
+                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $project_url, $renewal_days, $slice_exp_date, $next_exp) {
     global $user;
     $has_resources = $resource_count > 0 ? "-has-resources-" : "-no-resources-";
     $box = "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
                 data-resourcecount='$resource_count' data-slicename='$slice_name' 
-                data-sliceexp='$slice_exp' data-resourceexp='$resource_exp'>";
+                data-sliceexp='$slice_exp' data-resourceexp='$resource_exp' data-projname='$project_name'>";
     $box .= "<table>";
     $resource_exp_icon = "";
     if ($resource_count > 0){
@@ -445,11 +449,11 @@ if (! $user->portalIsAuthorized()) {
       }
     }
     $box .= "</ul></li></ul></td></tr>";
-    $box .= "<tr><td colspan='2'><b>Project:</b> $project_name </td></tr>";
-    $box .= "<tr><td colspan='2'><b>Owner:</b> $lead_name</td></tr>";
-    $box .= "<tr style='height:40px;'><td>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
+    $box .= "<tr><td colspan='2'><span class='leadname'><b>Project:</b> <a href='$project_url'>$project_name</a> </span></td></tr>";
+    $box .= "<tr><td colspan='2'><span class='leadname'><b>Owner:</b> $lead_name</span></td></tr>";
+    $box .= "<tr style='height:40px;'><td style='padding: 0px 10px;'>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
     $box .= "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
-    $box .= "<tr style='height:40px;'><td style='border-bottom:none;'>$resource_info</td>";
+    $box .= "<tr style='height:40px;'><td style='border-bottom:none; padding: 0px 10px;'>$resource_info</td>";
     $box .= "<td style='vertical-align: middle; border-bottom:none'>";
     $box .= "$resource_exp_icon</td></tr>";
     $box .= "</table></div>";
@@ -490,7 +494,12 @@ if (! $user->portalIsAuthorized()) {
       $box .= "<li><a href='edit-project-member.php?project_id=$project_id'>Edit membership</a></li>";
     }
     $box .= "</ul></li></ul></td></tr>";
-    $box .= "<tr><td colspan='2'><b>Lead:</b> $lead_name $handle_req_str</td></tr>";
+    if ($handle_req_str) {
+      $box .= "<tr><td colspan='2'><span class='smallleadname'><b>Lead:</b> $lead_name </span> <span class='requeststring'>$handle_req_str</span></td></tr>";
+    } else {
+      $box .= "<tr><td colspan='2'><span class='leadname'><b>Lead:</b> $lead_name </span></td></tr>";
+    }
+
     $box .= $slice_count == 0 ? "<tr><td colspan='2'><i> No slices</i></td></tr>" : "<tr><td colspan='2'>Has <b>$slice_count</b> slices</td></tr>";
     if ($expiration) {
       if (!$expired) {
@@ -507,8 +516,8 @@ if (! $user->portalIsAuthorized()) {
       $expiration_string = "<i>No expiration</i>";
       $expiration_icon = "";
     }
-    $box .= "<tr><td style='border-bottom:none'>$expiration_string</td>";
-    $box .= "<td style='vertical-align: middle; border-bottom:none; height: 35px;'>$expiration_icon</td></tr>";
+    $box .= "<tr style='height: 40px;'><td style='border-bottom:none;'>$expiration_string</td>";
+    $box .= "<td style='vertical-align: middle; border-bottom:none;'>$expiration_icon</td></tr>";
     $box .= "</table></div>";
     return $box;
   }
