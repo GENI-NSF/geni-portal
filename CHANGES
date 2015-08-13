@@ -5,6 +5,7 @@
 = GENI Portal Release Notes =
 
 == 3.2 ==
+ * Allow for sorting of slices by project name on dashboard (#1497)
  * Update slice page to use new tab/cards style (#1509)
  * Update profile page to use new tab/cards style (#1513)
  * Update project page to use new tab/cards style (#1514)
