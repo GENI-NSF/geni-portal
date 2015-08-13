@@ -8,6 +8,7 @@
  * Update slice page to use new tab/cards style (#1509)
  * Update profile page to use new tab/cards style (#1513)
  * Move alerts above main content, below header (#1516)
+ * Fix php warnings about undefined indices on admin page (#1535)
 
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)
