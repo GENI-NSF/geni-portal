@@ -190,6 +190,8 @@ if (! $user->portalIsAuthorized()) {
       $listres_url = "listresources.php?" . $query;
       $slice_url = "slice.php?" . $query;
       $slice_project_id = $slice[SA_SLICE_TABLE_FIELDNAME::PROJECT_ID];
+      $slice_project_url = "project.php?project_id=$slice_project_id";
+
       if (array_key_exists($slice_project_id, $project_slice_counts)) {
         $project_slice_counts[$slice_project_id]++;
       } else {
@@ -239,7 +241,7 @@ if (! $user->portalIsAuthorized()) {
         }
       }
       $slice_boxes .= make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $slice_owner_names[$slice_owner_id], $slice_project_name,
-                                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $renewal_days, 
+                                     count($slivers), $slice_exp, $resource_exp, $add_resource_url, $delete_resource_url, $listres_url, $slice_project_url, $renewal_days, 
                                      dateUIFormat($slice_exp_date), dateUIFormat($next_exp));
     }
 
@@ -398,7 +400,7 @@ if (! $user->portalIsAuthorized()) {
   }
 
   function make_slice_box($slice_name, $slice_id, $whose_slice, $slice_url, $lead_name, $project_name, $resource_count, 
-                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $renewal_days, $slice_exp_date, $next_exp) {
+                          $slice_exp, $resource_exp, $add_url, $remove_url, $listres_url, $project_url, $renewal_days, $slice_exp_date, $next_exp) {
     global $user;
     $has_resources = $resource_count > 0 ? "-has-resources-" : "-no-resources-";
     $box = "<div class='floatleft slicebox $whose_slice {$project_name}slices $has_resources' 
@@ -446,7 +448,7 @@ if (! $user->portalIsAuthorized()) {
       }
     }
     $box .= "</ul></li></ul></td></tr>";
-    $box .= "<tr><td colspan='2'><span class='leadname'><b>Project:</b> $project_name </span></td></tr>";
+    $box .= "<tr><td colspan='2'><span class='leadname'><b>Project:</b> <a href='$project_url'>$project_name</a> </span></td></tr>";
     $box .= "<tr><td colspan='2'><span class='leadname'><b>Owner:</b> $lead_name</span></td></tr>";
     $box .= "<tr style='height:40px;'><td style='padding: 0px 10px;'>$slice_info</td><td style='vertical-align: middle; width:30px;'>";
     $box .= "<i class='material-icons' style='color:$slice_exp_color;'>$slice_exp_icon</i></td></tr>";
