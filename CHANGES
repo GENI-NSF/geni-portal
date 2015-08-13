@@ -6,6 +6,7 @@
 
 == 3.2 ==
  * Update slice page to use new tab/cards style (#1509)
+ * Make project names on slice cards a link to that project (#1512)
  * Update profile page to use new tab/cards style (#1513)
  * Update project page to use new tab/cards style (#1514)
  * Move alerts above main content, below header (#1516)
