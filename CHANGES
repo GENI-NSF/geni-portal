@@ -6,6 +6,7 @@
 
 == 3.2 ==
  * Move SR certs from geni-portal to geni-ch (geni-ch #102).
+ * Fix bug where login screen gets embedded in logs card on session timeout (#1460)
  * Allow for sorting of slices by project name on dashboard (#1497)
  * Update slice page to use new tab/cards style (#1509)
  * Make project names on slice cards a link to that project (#1512)
