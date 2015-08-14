@@ -4,6 +4,22 @@
 
 = GENI Portal Release Notes =
 
+== 3.2 ==
+ * Move SR certs from geni-portal to geni-ch (geni-ch #102).
+ * Allow for sorting of slices by project name on dashboard (#1497)
+ * Update slice page to use new tab/cards style (#1509)
+ * Make project names on slice cards a link to that project (#1512)
+ * Update profile page to use new tab/cards style (#1513)
+ * Update project page to use new tab/cards style (#1514)
+ * Move alerts above main content, below header (#1516)
+ * Fix formatting of the aggregate view on the slice page (#1518)
+ * Show links to profile pages in header even when "$load_user" false (#1519)
+ * Add link to projects tab from new slice page when not in any projects (#1524)
+ * Fix php warnings about undefined indices on admin page (#1535)
+
+== 3.1.1 ==
+ * Remove obsolete files (from Makefiles too)
+
 == 3.1 ==
  * Add link to "Other Tools" wiki page listing Omni, VTS, geni-lib, etc.
    (#1457, #1491)
@@ -47,6 +63,7 @@
  * Fix issue where length of renewal wrong in slice actions dropdown. (#1471)
  * Fix issue where renew button in slice dropdown would try and shorten slice lifetime (#1473)
  * Fix issue where create slice button was disabled when project_id was given in URL params (#1478)
+<<<<<<< HEAD
 
 == 2.35 ==
  * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables (1.10.7) (#1327)
@@ -56,6 +73,8 @@
  * Fix problem of expoential delete calls from Jacks delete (#1364)
  * Allow SSH to work on ExoSM-allocated resources (#1397)
  * Move SR certs from geni-portal to geni-ch (CH #102).
+=======
+>>>>>>> 5d153fbf889c03df05278018a652e16cd32b7f43
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
