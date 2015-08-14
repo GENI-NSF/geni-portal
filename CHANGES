@@ -63,18 +63,6 @@
  * Fix issue where length of renewal wrong in slice actions dropdown. (#1471)
  * Fix issue where renew button in slice dropdown would try and shorten slice lifetime (#1473)
  * Fix issue where create slice button was disabled when project_id was given in URL params (#1478)
-<<<<<<< HEAD
-
-== 2.35 ==
- * Use only one version of jQuery (2.1.4), jQueryUI (1.11.4), and dataTables (1.10.7) (#1327)
- * Clear RSpec selector (paste, file, url, menu) when Jacks delete all or
-   other jacks topology changes are made (#1246)
- * Warn and disable "reserve resources" if RSpec is bound to unknown AM (#1346)
- * Fix problem of expoential delete calls from Jacks delete (#1364)
- * Allow SSH to work on ExoSM-allocated resources (#1397)
- * Move SR certs from geni-portal to geni-ch (CH #102).
-=======
->>>>>>> 5d153fbf889c03df05278018a652e16cd32b7f43
 
 == 2.34 ==
  * Fix redirects when project is successfully created. (#1434)
