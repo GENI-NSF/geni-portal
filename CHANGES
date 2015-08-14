@@ -15,6 +15,7 @@
  * Show links to profile pages in header even when "$load_user" false (#1519)
  * Add link to projects tab from new slice page when not in any projects (#1524)
  * Fix php warnings about undefined indices on admin page (#1535)
+ * Clean up code in header.php, remove references to old header tabs (#1553)
 
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)
