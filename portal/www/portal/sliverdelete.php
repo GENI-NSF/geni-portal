@@ -86,7 +86,7 @@ if (! isset($ams) || is_null($ams)) {
 $header = "Deleting resources on slice: $slice_name";
 
 
-show_header('GENI Portal: Slices',  $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 
 if (! isset($am_id) or is_null($am_id)) {

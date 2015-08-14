@@ -90,7 +90,7 @@ if(!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id)
 }
 
 // show header and breadcrumbs
-show_header('GENI Portal: Add Resources to Slice (Results)',  $TAB_SLICES);
+show_header('GENI Portal: Add Resources to Slice (Results)');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 

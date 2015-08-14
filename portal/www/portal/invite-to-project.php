@@ -33,7 +33,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 include("tool-lookupids.php");
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 
 include("tool-breadcrumbs.php");
 

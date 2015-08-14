@@ -37,7 +37,7 @@ if (!$user->isAllowed(SA_ACTION::LOOKUP_SLICE, CS_CONTEXT_TYPE::SLICE, $slice_id
   relative_redirect('home.php');
 }
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 relative_redirect('slice.php?slice_id='.$slice_id);
 
 // FIXME: Allow editing the slice description

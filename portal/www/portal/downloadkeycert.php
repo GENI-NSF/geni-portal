@@ -91,7 +91,7 @@ if ($show_form) {
   // Display the form and exit
   $GENI_TITLE = "Download certificate and key";
   $load_user = TRUE;
-  show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
+  show_header('GENI Portal: Profile', $load_user);
   include("tool-breadcrumbs.php");
   show_form($error_msg);
   include("footer.php");

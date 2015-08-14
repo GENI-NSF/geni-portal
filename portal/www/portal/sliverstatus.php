@@ -78,7 +78,7 @@ $get_slice_credential_privilege = $user->isAllowed(SA_ACTION::GET_SLICE_CREDENTI
 $get_slice_credential_disable_buttons = "";
 if(!$get_slice_credential_privilege) {$get_slice_credential_disable_buttons = $disabled; }
 
-show_header('GENI Portal: Slices',  $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 if (! isset($am_id) or is_null($am_id)) {
   $am_id = "";

@@ -39,7 +39,7 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Home', $TAB_HOME, true, true);
+show_header('GENI Portal: Home', true, true);
 include("tool-showmessage.php");
 
 ?>

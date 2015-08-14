@@ -22,7 +22,7 @@
 // IN THE WORK.
 //----------------------------------------------------------------------
 require_once("header.php");
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 $location = $_GET['loc'];

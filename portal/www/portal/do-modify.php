@@ -244,7 +244,7 @@ if (! empty($change_text)) {
  * Now display the web page to the user.
  */
 include("header.php");
-show_header('GENI Portal: Profile', $TAB_PROFILE);
+show_header('GENI Portal: Profile');
 include("tool-breadcrumbs.php");
 
 print '<h1> Modify Your Account </h1>' . PHP_EOL;

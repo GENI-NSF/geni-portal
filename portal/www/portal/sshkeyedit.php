@@ -116,7 +116,7 @@ if (array_key_exists('id', $_REQUEST)
   relative_redirect('profile.php');
 } else {
   // User has requested edit
-  show_header('GENI Portal: Profile', $TAB_PROFILE);
+  show_header('GENI Portal: Profile');
   include("tool-breadcrumbs.php");
   print "<h1>Edit SSH Key</h1>";
   if (array_key_exists('id', $_REQUEST)) {

@@ -139,7 +139,7 @@ function do_create_image()
 
 <?php
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 
 // error_log("GET = " . print_r($_GET, true));
 // error_log("AM = " . print_r($am, true));

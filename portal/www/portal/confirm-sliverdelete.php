@@ -81,7 +81,7 @@ if (isset($am_id) && $am_id) {
   }
 }
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 print "<h2>Delete resources from GENI Slice: " . "<i>" . $slice_name . "</i>" . "</h2>\n";
 print "<p class='warn'>$confirm_msg Otherwise click <b>Cancel</b>.</p>\n";
 print "<p><button onclick=\"window.location='$edit_url'\"><b>Delete Resources</b></button> \n";

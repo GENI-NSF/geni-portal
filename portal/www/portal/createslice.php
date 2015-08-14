@@ -133,7 +133,7 @@ if ($slice_name) {
 
 // If here, present the form
 require_once("header.php");
-show_header('GENI Portal: Slices', '');
+show_header('GENI Portal: Slices');
 if ($message) {
   print "<i>" . $message . "</i>\n";
 }

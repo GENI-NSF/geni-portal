@@ -58,7 +58,7 @@ foreach ($rs as $request) {
 }
 
 $pids = array_diff($mpids, $rpids);
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 
 include("tool-breadcrumbs.php");
 
