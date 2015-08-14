@@ -68,47 +68,6 @@ if ($show_debug) {
 			   'url' => 'debug.php');
 }
 
-function show_tab_bar($active_tab = '', $load_user=true)
-{
-  global $standard_tabs;
-  global $TAB_ADMIN;
-  global $user;
-
-  // Do we check per user permissions/state to modify the set of tabs?
-  if ($load_user) {
-
-    if (!isset($user)) {
-      $user = geni_loadUser();
-    }
-    
-    if (isset($user) && ! is_null($user)) {
-      if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
-	array_push($standard_tabs, array('name' => $TAB_ADMIN,
-					 'url' => 'admin.php'));
-      }
-      // Record the last seen time/place
-      record_last_seen($user, $_SERVER['REQUEST_URI']);
-    }
-  }
-
-  echo '<div id="mainnav" class="nav">';
-  echo '<ul>';
-  if (!$load_user || (isset($user) && !is_null($user) && $user->isActive())) {
-    foreach ($standard_tabs as $tab) {
-      echo '<li';
-      if ($active_tab == $tab['name']) {
-	echo ' class="active first">';
-      } else {
-	echo '>';
-      }
-      echo '<a href="' . relative_url($tab['url']) . '">' . $tab['name'] . '</a>';
-      echo '</li>';
-    }
-  }
-  echo '</ul>';
-  echo '</div>';
-}
-
 function skip_km_authorization() {
   global $NO_AUTHZ_REDIRECT;
   $NO_AUTHZ_REDIRECT = true;
@@ -167,10 +126,6 @@ function add_js_script($script_url)
 }
 
 function show_header($title, $active_tab = '', $load_user=1, $show_cards=false){
-  show_new_header($title, $active_tab, $load_user, $show_cards);
-}
-
-function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=false){
   global $extra_js;
   global $in_maintenance_mode;
   global $in_lockdown_mode;
