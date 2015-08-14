@@ -242,6 +242,14 @@ function show_slices(selection, sortby) {
   }
 }
 
+// Shows the slices for project projectname
+
+function show_slices_for_project(projectname) { 
+  update_selector($("#slicefilterswitch"), projectname);
+  switch_to_card("#slices");
+  update_slices();
+}
+
 // Determines if a selection for show_slices is a project name or a category
 function is_category(class_name) {
   return class_name[0] == '-';
