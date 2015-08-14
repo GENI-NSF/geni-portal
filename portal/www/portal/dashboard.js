@@ -235,7 +235,7 @@ function show_slices(selection, sortby) {
 
 function show_slices_for_project(projectname) { 
   update_selector($("#slicefilterswitch"), projectname);
-  switch_to_tab("#slices");
+  switch_to_card("#slices");
   update_slices();
 }
 
