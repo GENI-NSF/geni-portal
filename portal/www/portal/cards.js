@@ -90,9 +90,6 @@ $(document).ready(function() {
         active.addClass('activesection');
         content = $(active.attr('href'));
         content.show();
-        if(active == "#map") {
-          map_init("/common/map/current.json", [42, -72], 3);
-        }
       });
     }
   });
