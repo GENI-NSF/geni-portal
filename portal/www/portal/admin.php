@@ -30,7 +30,7 @@ $user = geni_loadUser();
 if (!isset($user) || is_null($user) || ! $user->isActive() || ! $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
   relative_redirect('home.php');
 }
-show_header('GENI Portal: Administration', $TAB_ADMIN);
+show_header('GENI Portal: Administration');
 ?>
 
 <?php

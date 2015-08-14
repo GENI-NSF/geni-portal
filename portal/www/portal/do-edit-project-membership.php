@@ -343,7 +343,7 @@ if ($error) {
   $_SESSION['lastmessage'] = "Edited project $project_name members: $result";
 }
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 relative_redirect('project.php?project_id='.$project_id . "&result=" . $result);
 
 include("footer.php");

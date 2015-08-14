@@ -347,7 +347,7 @@ $jfed_script_text = $jfedret[0];
 $jfed_button_start = $jfedret[1];
 $jfed_button_part2 = $jfedret[2];
 
-show_header('GENI Portal: Slices', $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 

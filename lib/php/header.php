@@ -34,39 +34,7 @@ require_once('cs_constants.php');
 require_once("tool-jfed.php");
 include_once('/etc/geni-ch/settings.php');
 
-
-/*----------------------------------------------------------------------
- * Tab Bar
- *----------------------------------------------------------------------
- */
-
-$TAB_HOME = 'Home';
-$TAB_SLICES = 'Slices';
-$TAB_PROJECTS = 'Projects';
-$TAB_ADMIN = 'Admin';
-$TAB_DEBUG = 'Debug';
-$TAB_HELP = "Help";
-$TAB_PROFILE = "Profile";
 require_once("user.php");
-
-// Should the Debug tab be shown?
-$show_debug = false;
-
-$standard_tabs = array(array('name' => $TAB_HOME,
-                             'url' => 'home.php'),
-                       array('name' => $TAB_PROJECTS,
-                             'url' => 'projects.php'),
-                       array('name' => $TAB_SLICES,
-                             'url' => 'slices.php'),
-                       array('name' => $TAB_PROFILE,
-                             'url' => 'profile.php'),
-                       array('name' => $TAB_HELP,
-                             'url' => 'help.php')
-		       );
-if ($show_debug) {
-  $standard_tabs[] = array('name' => $TAB_DEBUG,
-			   'url' => 'debug.php');
-}
 
 function skip_km_authorization() {
   global $NO_AUTHZ_REDIRECT;
@@ -107,17 +75,6 @@ if ($shib_id_changed) {
   $_SESSION[$CURRENT_SHIB_ID_TAG] = $current_shib_id;
 }
 
-/*----------------------------------------------------------------------
- * Default settings
- *----------------------------------------------------------------------
- */
-if (! isset($GENI_TITLE)) {
-  $GENI_TITLE = "GENI Portal";
-}
-if (! isset($ACTIVE_TAB)) {
-  $ACTIVE_TAB = $TAB_HOME;
-}
-
 $extra_js = array();
 function add_js_script($script_url)
 {
@@ -125,7 +82,7 @@ function add_js_script($script_url)
   $extra_js[] = $script_url;
 }
 
-function show_header($title, $active_tab = '', $load_user=1, $show_cards=false){
+function show_header($title, $load_user=1, $show_cards=false){
   global $extra_js;
   global $in_maintenance_mode;
   global $in_lockdown_mode;

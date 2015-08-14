@@ -47,7 +47,7 @@ include("tool-lookupids.php");
 
 
 
-show_header('GENI Portal: Add Resources to Slice', $TAB_HOME, true, false);
+show_header('GENI Portal: Add Resources to Slice', true, false);
 
 echo '<script src="/secure/jacks-lib.js"></script>';
 echo '<script src="/secure/slice-add-resources-jacks.js"></script>';

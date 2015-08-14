@@ -33,7 +33,7 @@ require_once("pa_client.php");
 require_once('cs_constants.php');
 
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS);
+show_header('GENI Portal: Projects');
 include("tool-lookupids.php");
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
@@ -183,7 +183,7 @@ if (array_key_exists('file', $_FILES)) {
   $contents = $_REQUEST['candidates'];
 }
 
-// show_header('GENI Portal: Project', $TAB_PROJECT, 0); // 
+// show_header('GENI Portal: Project', 0); // 
 // include("tool-breadcrumbs.php");
 // include("tool-showmessage.php");
   print("<h2>Upload Project Members</h2>\n");

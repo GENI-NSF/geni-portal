@@ -104,7 +104,7 @@ if ($show_form) {
   // Display the form and exit
   $GENI_TITLE = "Generate SSH keypair";
   $load_user = TRUE;
-  show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
+  show_header('GENI Portal: Profile', $load_user);
   include("tool-breadcrumbs.php");
   show_form($error_msg);
   include("footer.php");
@@ -134,7 +134,7 @@ if ($status != 0) {
         if (file_exists($publickeyfile)) { unlink($publickeyfile); }
 	$GENI_TITLE = "Generate SSH keypair";
 	$load_user = TRUE;
-	show_header('GENI Portal: Profile', $TAB_PROFILE, $load_user);
+	show_header('GENI Portal: Profile', $load_user);
 	include("tool-breadcrumbs.php");
 	print '<h1>An error occurred while generating your SSH keypair.</h1>';
 	include("footer.php");

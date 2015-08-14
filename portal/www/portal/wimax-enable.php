@@ -1509,7 +1509,7 @@ if (array_key_exists('project_id', $_REQUEST))
   
   // Now display the page with the result for the user
 
-  show_header('GENI Portal: Wireless Account Setup', $TAB_PROFILE);
+  show_header('GENI Portal: Wireless Account Setup');
   include('tool-breadcrumbs.php');
   include("tool-showmessage.php");
 
@@ -1844,7 +1844,7 @@ Get user's projects (expired or not)
 
   // Now show the page
 
-  show_header('GENI Portal: Wireless Account Setup', $TAB_PROFILE);
+  show_header('GENI Portal: Wireless Account Setup');
   include('tool-breadcrumbs.php');
   include("tool-showmessage.php");
 

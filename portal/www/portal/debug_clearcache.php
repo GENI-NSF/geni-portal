@@ -38,7 +38,7 @@ if (isset($_SESSION)) {
 
 require_once("user.php");
 require_once("header.php");
-show_header('GENI Portal: Clear cache', $TAB_DEBUG);
+show_header('GENI Portal: Clear cache');
 
 if (count($cleared_keys) > 0) {
   print "<h1>Cache Cleared</h1>\n";
