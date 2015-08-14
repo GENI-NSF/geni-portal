@@ -133,7 +133,11 @@ function update_selector(selector, newval) {
 // Retrieve all the GENI logs for the user in the past hours hours
 function get_logs(hours){
   $.get("do-get-logs.php?hours="+hours, function(data) {
-    $('#logtable').html(data);
+    if (data.split("<html").length == 1) {
+      $('#logtable').html(data);
+    } else {
+      location.reload();
+    }
   });
 }
 
