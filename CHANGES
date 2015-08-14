@@ -17,6 +17,8 @@
  * Show links to profile pages in header even when "$load_user" false (#1519)
  * Add link to projects tab from new slice page when not in any projects (#1524)
  * Fix php warnings about undefined indices on admin page (#1535)
+ * Remove references to map initialization code in cards.js (#1544)
+ * Allow for switching between arbitrary cards in cards.js (#1545)
 
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)

@@ -31,8 +31,15 @@ $(document).ready(function(){
     $("#map").hide();
   }
 
-  if(window.location.hash == "#map") {
-    map_init("/common/map/current.json", [42, -72], 3);
+  var old_callback = get_callback;
+  get_callback = function (tab_name) {
+    if (tab_name == "#map") {
+      return function(){
+        map_init("/common/map/current.json", [42, -72], 3);
+      }
+    } else {
+      return old_callback(tab_name);
+    }
   }
   
   // Make header links and new selectors show dropdown when you hover on them
