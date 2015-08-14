@@ -157,6 +157,8 @@ function draw_table($projects, $lead_names, $attribs_by_project, $show_actions)
     $lead_name = $lead_names[$lead_id];
     $expired = convert_boolean($project[PA_PROJECT_TABLE_FIELDNAME::EXPIRED]);
 
+    error_log("PN = $proj_name EXP = $expired");
+
 
     $group_name = "";
     $wimax_enabled = is_wimax_enabled($proj_id, $attribs_by_project);

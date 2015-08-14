@@ -399,7 +399,8 @@ class WirelessProjectManager:
             if geni_project_info:
                 geni_project_members = \
                     [self._geni_members[geni_member_id]['username'] \
-                         for geni_member_id in geni_project_info['members']]
+                         for geni_member_id in geni_project_info['members']\
+                         if geni_member_id in self._geni_members]
             else:
                 # No GENI project, remove all group members
                 geni_project_members = [] 
@@ -478,6 +479,7 @@ class WirelessProjectManager:
                                  self.PROJECT_ATTRIBUTE_TABLE.c.project_id)
         query = query.filter(self.PROJECT_ATTRIBUTE_TABLE.c.name == \
                                  'enable_wimax')
+        query = query.filter(self.PROJECT_TABLE.c.expired == 'f')
         if (self._project):
             query = query.filter(self.PROJECT_TABLE.c.project_name == \
                                      self._project)
