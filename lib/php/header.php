@@ -312,6 +312,7 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
       $user = geni_loadUser();
     }
     check_km_authorization($user);
+    record_last_seen($user, $_SERVER['REQUEST_URI']);
   }
   
   echo '<!DOCTYPE HTML>';
