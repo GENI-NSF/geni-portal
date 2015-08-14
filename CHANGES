@@ -10,6 +10,16 @@
  * Changes for Wireless management cover previous wimax tickets. 
    (#772, #773, #1058, #1076, #1136).
  * Migrate schema files for CH tables to geni-ch (geni-ch #103)
+ * Allow for sorting of slices by project name on dashboard (#1497)
+ * Update slice page to use new tab/cards style (#1509)
+ * Make project names on slice cards a link to that project (#1512)
+ * Update profile page to use new tab/cards style (#1513)
+ * Update project page to use new tab/cards style (#1514)
+ * Move alerts above main content, below header (#1516)
+ * Fix formatting of the aggregate view on the slice page (#1518)
+ * Show links to profile pages in header even when "$load_user" false (#1519)
+ * Add link to projects tab from new slice page when not in any projects (#1524)
+ * Fix php warnings about undefined indices on admin page (#1535)
 
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)

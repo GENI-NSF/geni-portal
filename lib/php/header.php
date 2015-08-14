@@ -381,17 +381,19 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
   echo '<ul id="dashboardtools" class="floatright" style="vertical-align: top;">';
   if($load_user) {
     echo "<li class='has-sub headerlink'>{$user->prettyName()}";
-    echo '<ul class="submenu">';
-    echo '<li><a href="profile.php">Profile</a></li>';
-    echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
-    echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
-    echo '<li><a href="profile.php#tools">Manage Accounts</a></li>'; 
-    echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
-    if ($user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
-      echo '<li><a href="admin.php">Admin</a></li>';
-    }
-    echo '</ul></li>';
+  } else {
+    echo "<li class='has-sub headerlink'>User";
   }
+  echo '<ul class="submenu">';
+  echo '<li><a href="profile.php">Profile</a></li>';
+  echo '<li><a href="profile.php#ssh">SSH Keys</a></li>';
+  echo '<li><a href="profile.php#rspecs">RSpecs</a></li>';
+  echo '<li><a href="profile.php#tools">Manage Accounts</a></li>'; 
+  echo '<li><a href="' . relative_url("dologout.php") . '" >Logout</a></li>';
+  if ($load_user && $user->isAllowed(CS_ACTION::ADMINISTER_MEMBERS, CS_CONTEXT_TYPE::MEMBER, null)) {
+    echo '<li><a href="admin.php">Admin</a></li>';
+  }
+  echo '</ul></li>';
   echo '<li class="headerlink has-sub"><a href="help.php">Help</a>';
   echo '<ul class="submenu">';
   echo '<li><a target="_blank" href="http://groups.geni.net/geni/wiki">GENI Wiki <i class="material-icons">launch</i></a></li>';
@@ -450,12 +452,11 @@ function show_new_header($title, $active_tab = '', $load_user=1, $show_cards=fal
     echo "<center><b>***** Maintenance Outage *****</b></center>";
   }
 
+  if($has_maintenance_alert) {
+    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p>";
+  }
   echo "<div id='content-outer' class='$cards_class'>";
   echo "<div id='content'>";
-  if($has_maintenance_alert) {
-    // TODO: make a dismiss button 
-    print "<p class='instruction' id='maintenance_alert'>$maintenance_alert</p></br>";
-  }
 }
 
 ?>
