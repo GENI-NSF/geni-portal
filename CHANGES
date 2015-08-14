@@ -21,6 +21,7 @@
  * Remove references to map initialization code in cards.js (#1544)
  * Allow for switching between arbitrary cards in cards.js (#1545)
  * Fixed broken renew button on the (new) slice page (#1549)
+ * Fix issue where the "last_seen" table was not being populated (#1550)
 
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)
