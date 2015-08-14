@@ -387,6 +387,7 @@ body {
 #content a:hover {
   background-color: #E5E5E5;
   color: #303030;
+  cursor: pointer;
 }
 
 /* Tables */
