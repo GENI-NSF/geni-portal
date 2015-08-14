@@ -500,7 +500,9 @@ if (! $user->portalIsAuthorized()) {
       $box .= "<tr><td colspan='2'><span class='leadname'><b>Lead:</b> $lead_name </span></td></tr>";
     }
 
-    $box .= $slice_count == 0 ? "<tr><td colspan='2'><i> No slices</i></td></tr>" : "<tr><td colspan='2'>Has <b>$slice_count</b> slices</td></tr>";
+    $slice_word = $slice_count > 1 ? "slices" : "slice";
+    $box .= $slice_count == 0 ? "<tr><td colspan='2'><i> No slices</i>" : "<tr><td colspan='2'>Has <a onclick='show_slices_for_project(\"$project_name\");'><b>$slice_count</b> $slice_word</a>";
+    $box .= "</td></tr>";
     if ($expiration) {
       if (!$expired) {
         $expiration_string = get_time_diff_string($exp_diff);

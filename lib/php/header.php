@@ -102,6 +102,7 @@ function show_header($title, $load_user=1, $show_cards=false){
       $user = geni_loadUser();
     }
     check_km_authorization($user);
+    record_last_seen($user, $_SERVER['REQUEST_URI']);
   }
   
   echo '<!DOCTYPE HTML>';
