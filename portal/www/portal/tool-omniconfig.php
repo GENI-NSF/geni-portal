@@ -129,7 +129,7 @@ if ($num_projects > 0) {
 $config_link .= "?project=$proj_name";
 
 /* ---------- PAGE OUTPUT STARTS HERE ---------- */
-show_header('GENI Portal: Profile', $TAB_PROFILE);
+show_header('GENI Portal: Profile');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 ?>

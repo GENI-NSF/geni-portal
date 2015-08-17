@@ -73,7 +73,7 @@ $res = $res . " - slice expiration is now: <b>$slice_expiration</b>\n";
 
 $header = "Renewed Slice $slice_name";
 
-show_header('GENI Portal: Slices',  $TAB_SLICES);
+show_header('GENI Portal: Slices');
 include("tool-breadcrumbs.php");
 print "<h2>$header</h2>\n";
 

@@ -22,6 +22,7 @@
  * Allow for switching between arbitrary cards in cards.js (#1545)
  * Fixed broken renew button on the (new) slice page (#1549)
  * Fix issue where the "last_seen" table was not being populated (#1550)
+ * Clean up code in header.php, remove references to old header tabs (#1553)
 
 == 3.1.1 ==
  * Remove obsolete files (from Makefiles too)

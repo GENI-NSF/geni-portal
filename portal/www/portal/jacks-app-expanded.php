@@ -32,7 +32,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
   relative_redirect('home.php');
 }
 
-show_header('GENI Portal: View Resources', $TAB_HOME, true, true);
+show_header('GENI Portal: View Resources', true, true);
 
 setup_jacks_slice_context();
 

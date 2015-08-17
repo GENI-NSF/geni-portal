@@ -25,7 +25,7 @@ require_once("settings.php");
 require_once("header.php");
 
 /* Display starts here. */
-show_header('GENI Portal: Profile', $TAB_PROFILE);
+show_header('GENI Portal: Profile');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 include ("tool-rspecs.php");

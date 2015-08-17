@@ -343,7 +343,7 @@ if ($didCreate or $userExisted) {
 
 // Now show a page with the result
 
-show_header('GENI Portal: Profile', $TAB_PROFILE);
+show_header('GENI Portal: Profile');
 include("tool-breadcrumbs.php");
 include("tool-showmessage.php");
 

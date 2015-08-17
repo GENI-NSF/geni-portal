@@ -102,7 +102,7 @@ if ($cred === false) {
  * Page display starts here
  *------------------------------------------------------------
  */
-show_header('GENI Portal: Authorization', '', FALSE);
+show_header('GENI Portal: Authorization', FALSE);
 ?>
 <script src="<?php echo $portal_jquery_url; ?>"></script>
 <script src="<?php echo $auth_svc_js;?>"></script>

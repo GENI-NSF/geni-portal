@@ -151,7 +151,7 @@ if ($expired === True) {
   $actdisabled = $disabled;
 }
 
-show_header('GENI Portal: Projects', $TAB_PROJECTS, true, true);
+show_header('GENI Portal: Projects', true, true);
 
 ?>
 <script src='cards.js'></script>

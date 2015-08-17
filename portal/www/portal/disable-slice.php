@@ -37,7 +37,7 @@ if (!isset($user) || is_null($user) || ! $user->isActive()) {
 $slice_id = "None";
 $slice_name = "None";
 include("tool-lookupids.php");
-show_header('GENI Portal: slices', $TAB_SLICES);
+show_header('GENI Portal: slices');
 include("tool-breadcrumbs.php");
 
 print "<h1>DISABLE GENI Slice: " . "<i>" . $slice_name . "</i>" .  "</h1>\n";

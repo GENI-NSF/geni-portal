@@ -120,12 +120,12 @@ $parents = array("profile.php" => "home.php",
 // FIXME: From a DB that the script uses too?
 // Note %project_name, %slice_name, %member_name will be filled in later
 // Note ?project_id in script name in some places
-$names = array("home.php" => $TAB_HOME,
-	      "profile.php" => $TAB_PROFILE,
-	      "admin.php" => $TAB_ADMIN,
-	      "projects.php" => $TAB_PROJECTS,
-	      "slices.php" => $TAB_SLICES,
-	      "help.php" => $TAB_HELP,
+$names = array("home.php" => "Home",
+	      "profile.php" => "Profle",
+	      "admin.php" => "Admin",
+	      "projects.php" => "Projects",
+	      "slices.php" => "Slices",
+	      "help.php" => "Help",
 	      "dashboard.php" => "Dashboard",
 	      "slice.php" => "Slice %slice_name",
 	      "slice-old.php" => "Slice %slice_name",
