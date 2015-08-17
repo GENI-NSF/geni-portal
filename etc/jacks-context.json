@@ -246,6 +246,12 @@
         "type": "ExoGENI-M4"
       },
       {
+        "icon": "https://portal-mb.gpolab.bbn.com/images/VTS.svg",
+        "image": "bss:ovs-201",
+        "name": "VTS Switch",
+        "type": "vts-node"
+      },
+      {
         "icon": "https://portal.geni.net/images/router.svg",
         "image": "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU14-OVS2.31",
         "name": "OF OVS",
@@ -756,6 +762,14 @@
       {
         "id": "urn:publicid:IDN+wilab2.ilabt.iminds.be+image+emulab-ops:UBUNTU12-OMF54-USRP",
         "name": "UBUNTU12-64-OMF54 with USRP software"
+      },
+      {
+        "id" : "bss:ovs-201-of",
+	"name" : "VTS OF 1.0 image"
+      },
+      {
+        "id" : "bss:ovs-201",
+	"name" : "VTS L2 image"
       }
     ],
     "linkTypes": [
@@ -808,6 +822,10 @@
       {
         "id": "ethernet-coreswitch",
         "name": "ethernet-coreswitch"
+      },
+      {
+        "id" : "vts-link",
+	"name" : "vts-link"
       }
     ],
     "types": [
@@ -870,6 +888,10 @@
       {
         "id": "XOXlarge",
         "name": "XOXlarge"
+      },
+      {
+        "id": "vts-node",
+        "name": "vts-node"
       }
     ]
   },
@@ -18884,6 +18906,48 @@
           "XOSmall",
           "XOXlarge"
         ]
+      }
+    },
+    {
+      "node" : {
+        "aggregates" : [
+	"urn:publicid:IDN+instageni.clemson.edu+authority+cm",
+	"urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm",
+	"urn:publicid:IDN+instageni.illinois.edu+authority+cm",
+	"urn:publicid:IDN+instageni.maxgigapop.net+authority+cm",
+	"urn:publicid:IDN+instageni.nps.edu+authority+cm",
+	"urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
+	"urn:publicid:IDN+utahddc.geniracks.net+authority+cm"
+        ],
+	"images" : ["bss:ovs-201", "bss:ovs-201-of"],
+	"types" : ["vts-node"]
+      }
+    },
+    {
+      "link" : {
+         "linkTypes" : [ "vts-link"]
+      },
+      "node" : {
+         "aggregates" : [
+	"urn:publicid:IDN+instageni.clemson.edu+authority+cm",
+	"urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm",
+	"urn:publicid:IDN+instageni.illinois.edu+authority+cm",
+	"urn:publicid:IDN+instageni.maxgigapop.net+authority+cm",
+	"urn:publicid:IDN+instageni.nps.edu+authority+cm",
+	"urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
+	"urn:publicid:IDN+utahddc.geniracks.net+authority+cm"
+	 ]
+      },
+      "node2" : {
+         "aggregates" : [
+	"urn:publicid:IDN+instageni.clemson.edu+authority+cm",
+	"urn:publicid:IDN+instageni.gpolab.bbn.com+authority+cm",
+	"urn:publicid:IDN+instageni.illinois.edu+authority+cm",
+	"urn:publicid:IDN+instageni.maxgigapop.net+authority+cm",
+	"urn:publicid:IDN+instageni.nps.edu+authority+cm",
+	"urn:publicid:IDN+pks2.sdn.uky.edu+authority+cm",
+	"urn:publicid:IDN+utahddc.geniracks.net+authority+cm"
+	 ]
       }
     }
   ]
